@@ -2,7 +2,8 @@ import { cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "../../../testing/render-route";
-import { NightSkyBackdropMount } from "../../components/night-sky-backdrop";
+
+import { NightSkyBackdropMount } from "./night-sky-backdrop-mount";
 
 // What the catalog's chunk does when it loads: fails as a chunk does, answers
 // with rows the schema rejects, or answers well.
@@ -10,7 +11,7 @@ const catalog = vi.hoisted(() => ({
   mode: "failing",
 }));
 
-vi.mock(import("../../components/use-night-sky.catalog.json"), () => ({
+vi.mock(import("../../hooks/use-night-sky/use-night-sky.catalog.json"), () => ({
   get default(): never[] {
     if (catalog.mode === "failing") {
       throw new Error("The chunk could not be loaded");

@@ -3,10 +3,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "../../../testing/render-route";
 import { setReducedMotion } from "../../../testing/viewport";
-import { EventsCalendar } from "../../components/events-calendar";
-import { NightSkyBackdropMount } from "../../components/night-sky-backdrop";
-import { computeStartingSiderealDegrees } from "../../components/use-night-sky.utilities";
+import { computeStartingSiderealDegrees } from "../../hooks/use-night-sky/night-sky.utilities";
 import { getRouter } from "../../router";
+import { EventsCalendar } from "../events-calendar/events-calendar";
+
+import { NightSkyBackdropMount } from "./night-sky-backdrop-mount";
 
 // The route helper renders under a bare root, so the backdrop the real root
 // mounts is wrapped around the router's matches here.
@@ -35,11 +36,14 @@ vi.mock(import("../../router"), async (importOriginal) => {
 
 // Counts how often the page renders the calendar, to show a change to the
 // sky's keys leaves it alone.
-vi.mock(import("../../components/events-calendar"), async (importOriginal) => {
-  const original = await importOriginal();
+vi.mock(
+  import("../events-calendar/events-calendar"),
+  async (importOriginal) => {
+    const original = await importOriginal();
 
-  return { ...original, EventsCalendar: vi.fn(original.EventsCalendar) };
-});
+    return { ...original, EventsCalendar: vi.fn(original.EventsCalendar) };
+  },
+);
 
 const WINDOW_SIZE = {
   innerHeight: globalThis.innerHeight,
