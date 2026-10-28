@@ -95,8 +95,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
     ...NEST_BASELINE,
     application: COMMAND_PROJECT_BASELINE,
   },
-  "projects/ic-suite/callidescope/callidescope-configuration": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-core": NEST_BASELINE,
   "projects/ic-suite/callidescope/callidescope-graph": NEST_BASELINE,
   "projects/ic-suite/callidescope/callidescope-nx": NEST_BASELINE,
   "projects/ic-suite/callidescope/callidescope-output": NEST_BASELINE,
