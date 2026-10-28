@@ -7,7 +7,8 @@
 
 import { SiderealTime } from "astronomy-engine";
 
-import { formatSkyDefinitions } from "./use-night-sky.colors";
+import { formatSkyDefinitions } from "./night-sky-colors.utilities";
+import { resolveOptions } from "./night-sky-options.utilities";
 import {
   COLOR_BUCKET_HIGHEST,
   COLOR_BUCKET_LOWEST,
@@ -19,7 +20,6 @@ import {
   DEBUG_LINE_ATTRIBUTES,
   DEBUG_MARGIN,
   DEBUG_STAR_FACTOR,
-  DEFAULT_OPTIONS,
   DEGREES_PER_HOUR,
   EARTH_ROTATION_RADIANS_PER_SECOND,
   GLOW_MAGNITUDE_LIMIT,
@@ -429,34 +429,6 @@ function renderStar(
       magnitude < GLOW_MAGNITUDE_LIMIT
         ? `<circle ${center} r="${(size * GLOW_RADIUS_FACTOR).toFixed(2)}"/>`
         : undefined,
-  };
-}
-
-/**
- * Fills every option the caller left out with its default.
- */
-function resolveOptions(options: NightSkyOptions): ResolvedNightSkyOptions {
-  return {
-    backgroundBottomColor:
-      options.backgroundBottomColor ?? DEFAULT_OPTIONS.backgroundBottomColor,
-    backgroundTopColor:
-      options.backgroundTopColor ?? DEFAULT_OPTIONS.backgroundTopColor,
-    bottomAltitudeDegrees:
-      options.bottomAltitudeDegrees ?? DEFAULT_OPTIONS.bottomAltitudeDegrees,
-    debug: options.debug ?? DEFAULT_OPTIONS.debug,
-    faintestMagnitude:
-      options.faintestMagnitude ?? DEFAULT_OPTIONS.faintestMagnitude,
-    height: options.height,
-    latitudeDegrees: options.latitudeDegrees,
-    localSiderealDegrees: options.localSiderealDegrees,
-    pixelsPerSecond: options.pixelsPerSecond ?? DEFAULT_OPTIONS.pixelsPerSecond,
-    stars: options.stars,
-    starScale: options.starScale ?? DEFAULT_OPTIONS.starScale,
-    still: options.still ?? DEFAULT_OPTIONS.still,
-    verticalFieldOfViewDegrees:
-      options.verticalFieldOfViewDegrees ??
-      DEFAULT_OPTIONS.verticalFieldOfViewDegrees,
-    width: options.width,
   };
 }
 

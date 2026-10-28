@@ -1,13 +1,8 @@
 import {
+  COLOR_DIGITS_PATTERN,
   DEFAULT_OPTIONS,
   STAR_GLOW_DEFINITION,
-} from "./use-night-sky.constants";
-
-// 🔖 Constants
-
-// Three or six hexadecimal digits, with or without the leading `#`, which a
-// link can only carry as `%23`.
-const COLOR_DIGITS_PATTERN = /^#?(?:[\da-f]{3}|[\da-f]{6})$/iu;
+} from "./night-sky.constants";
 
 // 🌎 Public Functions
 

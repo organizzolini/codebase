@@ -97,6 +97,10 @@ export const DEBUG_MARGIN = 30;
 
 // 🎨 Color
 
+// Three or six hexadecimal digits, with or without the leading `#`, which a
+// link can only carry as `%23`.
+export const COLOR_DIGITS_PATTERN = /^#?(?:[\da-f]{3}|[\da-f]{6})$/iu;
+
 export const COLOR_BUCKETS_PER_UNIT = 10;
 
 export const COLOR_BUCKET_LOWEST = -4;

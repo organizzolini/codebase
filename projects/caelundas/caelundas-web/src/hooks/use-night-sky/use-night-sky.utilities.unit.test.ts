@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { readNightSkyOverrides } from "./use-night-sky.overrides";
+import { readNightSkyOverrides } from "./use-night-sky.utilities";
 
 describe(readNightSkyOverrides, () => {
   it("reads the background colors with or without the #, as lowercase #rrggbb", () => {
