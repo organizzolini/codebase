@@ -1327,6 +1327,19 @@ export default [
       "vitest/consistent-vitest-vi": "error",
       "vitest/hoisted-apis-on-top": "error",
       "vitest/max-nested-describe": ["error", { max: 3 }],
+      "vitest/expect-expect": [
+        "error",
+        {
+          // The shared testing helpers assert for the test that calls them.
+          assertFunctionNames: [
+            "expect",
+            "expectLoggerContext",
+            "expectModuleExports",
+            "expectModuleImports",
+            "expectModuleProvides",
+          ],
+        },
+      ],
       "vitest/no-alias-methods": "error",
       "vitest/no-commented-out-tests": "error",
       "vitest/no-disabled-tests": "error",
