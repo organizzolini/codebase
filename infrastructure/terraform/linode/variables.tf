@@ -15,3 +15,9 @@ variable "region" {
   type        = string
   default     = "us-iad"
 }
+
+variable "s3_endpoint_name" {
+  description = "Name of the bucket's S3 endpoint, the first label of its hostname."
+  type        = string
+  default     = "us-iad-18"
+}

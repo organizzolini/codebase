@@ -84,6 +84,11 @@ resource "github_repository" "codebase" {
   squash_merge_commit_title   = "PR_TITLE"
   squash_merge_commit_message = "PR_BODY"
 
+  # Merge commits are off; these are the values the repository holds, which the
+  # provider would otherwise replace with its own defaults.
+  merge_commit_title   = "PR_TITLE"
+  merge_commit_message = "BLANK"
+
   allow_auto_merge            = true
   allow_update_branch         = true
   delete_branch_on_merge      = true
@@ -161,8 +166,9 @@ resource "github_repository_ruleset" "main" {
   target      = "branch"
   enforcement = "active"
 
+  # GitHub reports no ID for this actor, which the provider reads as 0.
   bypass_actors {
-    actor_id    = 1
+    actor_id    = 0
     actor_type  = "OrganizationAdmin"
     bypass_mode = "always"
   }

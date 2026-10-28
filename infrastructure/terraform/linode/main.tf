@@ -33,13 +33,14 @@ provider "linode" {
 # Destroying it would delete that state, so Terraform refuses to.
 import {
   to = linode_object_storage_bucket.state
-  id = "${var.region}:${var.bucket_label}"
+  id = "${var.s3_endpoint_name}:${var.bucket_label}"
 }
 
 resource "linode_object_storage_bucket" "state" {
   label         = var.bucket_label
   region        = var.region
   endpoint_type = "E3"
+  s3_endpoint   = "${var.s3_endpoint_name}.linodeobjects.com"
   acl           = "private"
 
   lifecycle {
