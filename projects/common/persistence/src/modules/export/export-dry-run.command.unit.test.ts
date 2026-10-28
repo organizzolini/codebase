@@ -1,17 +1,10 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
@@ -27,7 +20,7 @@ const PASSWORD = "hunter2-secret";
 const SOURCE_URI = `postgresql://fixture_username:${PASSWORD}@127.0.0.1:1/fixture_development`;
 
 describe("export --dry-run", () => {
-  let directory: string;
+  const directory = useTemporaryDirectory("export-dry-run-unit");
   let file: string;
 
   /** A dry run exporting `fixture.widgets` to `file`, plus `extra`. */
@@ -49,16 +42,11 @@ describe("export --dry-run", () => {
     });
 
   beforeAll(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "export-dry-run-unit-"));
-    file = path.join(directory, "fixture.dump");
+    file = path.join(directory(), "fixture.dump");
   });
 
   beforeEach(() => {
     fs.rmSync(file, { force: true });
-  });
-
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
   it("prints the plan and runs nothing but the version check", async () => {
@@ -77,7 +65,7 @@ describe("export --dry-run", () => {
     expect(`${output}${result.stderr}`).not.toContain(PASSWORD);
     expect(spawned.map(({ args }) => args)).toStrictEqual([["--version"]]);
     expect(initialize).not.toHaveBeenCalled();
-    expect(fs.readdirSync(directory)).toStrictEqual([]);
+    expect(fs.readdirSync(directory())).toStrictEqual([]);
   });
 
   it("with --sqlite plans a SQLite file and checks no client tool", async () => {
@@ -92,7 +80,7 @@ describe("export --dry-run", () => {
     expect(output).toContain(`to ${file} as SQLite`);
     expect(spawned).toStrictEqual([]);
     expect(initialize).not.toHaveBeenCalled();
-    expect(fs.readdirSync(directory)).toStrictEqual([]);
+    expect(fs.readdirSync(directory())).toStrictEqual([]);
   });
 
   it.each([
@@ -141,7 +129,7 @@ describe("export --dry-run", () => {
     expect(result.logs.join("\n")).toContain(`Planning to overwrite ${file}`);
     expect(fs.readFileSync(file, "utf8")).toBe("an earlier dump");
     expect(fs.statSync(file).mtimeMs).toBe(before);
-    expect(fs.readdirSync(directory)).toStrictEqual(["fixture.dump"]);
+    expect(fs.readdirSync(directory())).toStrictEqual(["fixture.dump"]);
     expect(spawned.map(({ args }) => args)).toStrictEqual([["--version"]]);
   });
 

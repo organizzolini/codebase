@@ -1,6 +1,5 @@
 import { execFile } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
@@ -13,6 +12,8 @@ import {
   it,
   vi,
 } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
@@ -67,12 +68,9 @@ describe("export --sqlite", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   beforeEach(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-sqlite-"));
+    directory = createTemporaryDirectory("fixture-sqlite");
     file = path.join(directory, "fixture.sqlite");
     vi.mocked(execFile).mockClear();
-    return () => {
-      fs.rmSync(directory, { force: true, recursive: true });
-    };
   });
 
   afterAll(async () => {

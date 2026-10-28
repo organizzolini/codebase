@@ -1,7 +1,9 @@
 import { ConfigModule } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import { DefaultNamingStrategy } from "typeorm";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
+
+import { overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DATABASE_OPTIONS } from "./postgresql.constants";
 import { PostgresqlService } from "./postgresql.service";
@@ -10,36 +12,31 @@ describe(PostgresqlService, () => {
   let service: PostgresqlService;
   const namingStrategy = new DefaultNamingStrategy();
 
+  const options = {
+    imports: [ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true })],
+    providers: [
+      {
+        provide: DATABASE_OPTIONS,
+        useValue: { entities: [], namingStrategy, project: "fixture" },
+      },
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true })],
-      providers: [
-        PostgresqlService,
-        {
-          provide: DATABASE_OPTIONS,
-          useValue: {
-            entities: [],
-            namingStrategy,
-            project: "fixture",
-          },
-        },
-      ],
-    }).compile();
-
-    service = await module.resolve(PostgresqlService);
+    ({ instance: service } = await buildTestingModule(
+      PostgresqlService,
+      options,
+    ));
   });
 
-  afterEach(() => {
-    vi.unstubAllEnvs();
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PostgresqlService, options);
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(PostgresqlService);
   });
 
   it("connects with the project's defaults while the root's unprefixed variables are set", () => {
-    vi.stubEnv("POSTGRES_DB", "postgres");
-    vi.stubEnv("POSTGRES_USER", "postgres");
+    overrideEnvironment({ POSTGRES_DB: "postgres", POSTGRES_USER: "postgres" });
 
     expect(service.connection()).toStrictEqual({
       database: "fixture_development",
@@ -52,8 +49,10 @@ describe(PostgresqlService, () => {
   });
 
   it("reads the project's prefixed variables through configuration", () => {
-    vi.stubEnv("FIXTURE_POSTGRES_DATABASE", "fixture_testing");
-    vi.stubEnv("FIXTURE_POSTGRES_PORT", "15432");
+    overrideEnvironment({
+      FIXTURE_POSTGRES_DATABASE: "fixture_testing",
+      FIXTURE_POSTGRES_PORT: "15432",
+    });
 
     expect(service.connection()).toMatchObject({
       database: "fixture_testing",
@@ -71,10 +70,9 @@ describe(PostgresqlService, () => {
   });
 
   it("refuses to connect when its module was imported without forRoot", async () => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(PostgresqlService, {
       imports: [ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true })],
-      providers: [PostgresqlService],
-    }).compile();
+    });
 
     expect(() => module.get(PostgresqlService).connection()).toThrow(
       /PostgresqlModule\.forRoot/,

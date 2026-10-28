@@ -1,6 +1,4 @@
 import { execFile } from "node:child_process";
-import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
@@ -15,6 +13,7 @@ import {
   vi,
 } from "vitest";
 
+import { useTemporaryDirectory } from "@codebase/testing";
 import { startPostgresContainer } from "@codebase/testing/postgres";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
@@ -53,11 +52,11 @@ describe("import", () => {
   let empty: StartedPostgresContainer;
   let emptyDataSource: DataSource;
   let emptyUri: string;
-  let directory: string;
+  const directory = useTemporaryDirectory("fixture-import");
 
   /** Where `export` wrote the dump named `name`. */
   const dump = (name: keyof typeof DUMPS): string =>
-    path.join(directory, `${name}.dump`);
+    path.join(directory(), `${name}.dump`);
 
   /**
    * Runs `import` with `argv` through the real command line, unqualified
@@ -120,7 +119,6 @@ describe("import", () => {
       "CREATE SCHEMA archive; CREATE TABLE archive.notes (id serial PRIMARY KEY, body text NOT NULL UNIQUE); INSERT INTO archive.notes (body) VALUES ('first'), ('second')",
     );
 
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-import-"));
     for (const [name, argv] of Object.entries(DUMPS)) {
       const result = await runCliCommandLine({
         argv: [
@@ -131,7 +129,7 @@ describe("import", () => {
           "fixture",
           ...argv,
           "--file",
-          path.join(directory, `${name}.dump`),
+          path.join(directory(), `${name}.dump`),
         ],
       });
       if (result.exitCode !== 0) throw new Error(result.stderr);
@@ -147,7 +145,6 @@ describe("import", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {
-    fs.rmSync(directory, { force: true, recursive: true });
     await emptyDataSource.destroy();
     await Promise.all([source.close(), target.close(), empty.stop()]);
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);

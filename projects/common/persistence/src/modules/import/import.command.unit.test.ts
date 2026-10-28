@@ -1,12 +1,14 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { useTemporaryDirectory } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses, processFailure } from "../../../testing/mocks";
@@ -59,8 +61,7 @@ async function runImport(
 }
 
 describe(ImportCommand, () => {
-  let command: ImportCommand;
-  let directory: string;
+  const directory = useTemporaryDirectory("import-unit");
   let file: string;
 
   /** A command line that imports `tables` with `content` from the dump file. */
@@ -76,54 +77,23 @@ describe(ImportCommand, () => {
     file,
   ];
 
-  beforeAll(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-unit-"));
-    file = path.join(directory, "fixture.dump");
+  beforeAll(() => {
+    file = path.join(directory(), "fixture.dump");
     fs.writeFileSync(file, "a dump");
-
-    const module = await Test.createTestingModule({
-      providers: [
-        ImportCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PostgresqlUtilitiesService,
-          useValue: createMock<PostgresqlUtilitiesService>(),
-        },
-      ],
-    }).compile();
-
-    command = await module.resolve(ImportCommand);
   });
 
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ImportCommand, {
+      mocks: [PostgresqlUtilitiesService],
+    });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+    expect(instance).toBeInstanceOf(ImportCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ImportCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PostgresqlUtilitiesService,
-          useValue: createMock<PostgresqlUtilitiesService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("ImportCommand");
+    await expectLoggerContext(ImportCommand, {
+      mocks: [PostgresqlUtilitiesService],
+    });
   });
 
   describe("fails fast, before any process starts", () => {
@@ -362,14 +332,14 @@ describe(ImportCommand, () => {
         .fn<PostgresqlUtilitiesService["restore"]>()
         .mockRejectedValue(new Error("ENOSPC: no space left on device")),
     });
-    const module = await Test.createTestingModule({
-      providers: [
-        ImportCommand,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: PostgresqlUtilitiesService, useValue: postgresClient },
-      ],
-    }).compile();
-    const importCommand = await module.resolve(ImportCommand);
+    const { instance: importCommand } = await buildTestingModule(
+      ImportCommand,
+      {
+        providers: [
+          { provide: PostgresqlUtilitiesService, useValue: postgresClient },
+        ],
+      },
+    );
 
     const failure = importCommand.run([], {
       data: true,
