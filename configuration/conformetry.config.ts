@@ -100,7 +100,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/callidescope/callidescope-graph": NEST_BASELINE,
   "projects/ic-suite/callidescope/callidescope-nx": NEST_BASELINE,
   "projects/ic-suite/callidescope/callidescope-output": NEST_BASELINE,
-  "projects/ic-suite/codependix/codependix-cli": CLI_BASELINE,
   "projects/ic-suite/codometer/codometer-cli": CLI_BASELINE,
   "projects/ic-suite/codometer/codometer-configuration": NEST_BASELINE,
   "projects/ic-suite/codometer/codometer-core": NEST_BASELINE,
@@ -207,7 +206,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/codependix",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/codometer/codometer-cli"],
