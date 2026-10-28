@@ -1,7 +1,8 @@
 import { ConfigurationService } from "@callidescope/configuration";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RunConfigurationService } from "./run-configuration.service";
 
@@ -14,14 +15,11 @@ describe(RunConfigurationService, () => {
   beforeAll(async () => {
     configurationService = createMock<ConfigurationService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(RunConfigurationService, {
       providers: [
-        RunConfigurationService,
         { provide: ConfigurationService, useValue: configurationService },
       ],
-    }).compile();
-
-    service = await module.resolve(RunConfigurationService);
+    }));
   });
 
   beforeEach(() => {
@@ -32,9 +30,14 @@ describe(RunConfigurationService, () => {
     });
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(RunConfigurationService, {
+      mocks: [ConfigurationService],
+    });
+
+    expect(instance).toBeInstanceOf(RunConfigurationService);
   });
 
   describe("load", () => {

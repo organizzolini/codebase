@@ -6,96 +6,73 @@ import {
   ProjectConfigurationFieldNotPermittedError,
 } from "@callidescope/configuration";
 import { ProgramConfigurationError } from "@callidescope/graph";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  type MockInstance,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { captureExitCode, captureOutput } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { LimitsCommand } from "./limits.command";
 import { LimitsService } from "./limits.service";
 import { RenderLimitsService } from "./render-limits.service";
 
+import type { LoggerService } from "@codebase/observability";
+import type { CapturedOutput } from "@codebase/testing";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
 /** The workspace configuration every run must be pointed at with `--config`. */
 const CONFIGURATION_PATH = "callidescope.config.ts";
 
+/** What the command is built from in every test that builds it. */
+const COMMAND_MODULE: TestingModuleOptions = {
+  imports: [ConfigurationModule],
+  mocks: [LimitsService, RenderLimitsService],
+};
+
 describe(LimitsCommand, () => {
   let command: LimitsCommand;
+  let exitCode: ReturnType<typeof captureExitCode>;
+  let output: CapturedOutput;
   let limitsService: LimitsService;
   let logger: LoggerService;
   let renderLimitsService: RenderLimitsService;
-  let write: MockInstance<typeof process.stdout.write>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [
-        LimitsCommand,
-        { provide: LimitsService, useValue: createMock<LimitsService>() },
-        {
-          provide: RenderLimitsService,
-          useValue: createMock<RenderLimitsService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(LimitsCommand, COMMAND_MODULE);
 
-    command = await module.resolve(LimitsCommand);
-    limitsService = module.get(LimitsService);
-    logger = module.get(LoggerService);
-    renderLimitsService = module.get(RenderLimitsService);
+    command = built.instance;
+    limitsService = built.mock(LimitsService);
+    logger = built.logger;
+    renderLimitsService = built.mock(RenderLimitsService);
   });
 
   beforeEach(() => {
     vi.mocked(limitsService.list).mockResolvedValue([]);
     vi.mocked(renderLimitsService.render).mockReturnValue("rendered");
     vi.mocked(logger.error).mockClear();
-    write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
-    process.exitCode = undefined;
+    output = captureOutput();
+    exitCode = captureExitCode();
   });
 
-  afterEach(() => {
-    process.exitCode = undefined;
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      LimitsCommand,
+      COMMAND_MODULE,
+    );
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+    expect(instance).toBeInstanceOf(LimitsCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [
-        LimitsCommand,
-        { provide: LimitsService, useValue: createMock<LimitsService>() },
-        {
-          provide: RenderLimitsService,
-          useValue: createMock<RenderLimitsService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    await module.resolve(LimitsCommand);
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("LimitsCommand");
+    await expectLoggerContext(LimitsCommand, COMMAND_MODULE);
   });
 
   it("writes the rendered listing to standard output", async () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
-    expect(write).toHaveBeenCalledWith("rendered\n");
+    expect(output.stdout()).toBe("rendered\n");
   });
 
   it("renders the rows the service resolved", async () => {
@@ -127,7 +104,7 @@ describe(LimitsCommand, () => {
   it("leaves the exit code alone, because it gates nothing", async () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("reads the configuration path it is given, and refuses a blank one", () => {
@@ -183,8 +160,8 @@ describe(LimitsCommand, () => {
 
       await command.run([], { config: CONFIGURATION_PATH });
 
-      expect(write).not.toHaveBeenCalled();
-      expect(process.exitCode).toBe(1);
+      expect(output.stdout()).toBe("");
+      expect(exitCode()).toBe(1);
       expect(logger.error).toHaveBeenCalledWith(headline, undefined, {
         reason: error.message,
       });
