@@ -2,16 +2,20 @@ import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
 import { ModulesContainer, NestFactory } from "@nestjs/core";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { MainModule } from "../../../testing/codependix-nestjs-modules.module";
 
 import { NestjsProjectService } from "./nestjs-project.service";
 
 import type { NestjsProject } from "./nestjs-project.types";
+import type { LoggerService } from "@codebase/observability";
+import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { INestApplicationContext } from "@nestjs/common";
 
 /** Paths the mocked workspace reports as existing. */
@@ -71,19 +75,12 @@ function buildTaggedProject(
 }
 
 describe(NestjsProjectService, () => {
-  let logger: LoggerService;
+  let logger: DeepMocked<LoggerService>;
   let service: NestjsProjectService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        NestjsProjectService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    logger = await module.resolve(LoggerService);
-    service = await module.resolve(NestjsProjectService);
+    ({ instance: service, logger } =
+      await buildTestingModule(NestjsProjectService));
   });
 
   beforeEach(() => {
@@ -95,21 +92,14 @@ describe(NestjsProjectService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NestjsProjectService);
+
+    expect(instance).toBeInstanceOf(NestjsProjectService);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        NestjsProjectService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    const localLogger = await module.resolve(LoggerService);
-
-    expect(localLogger.setContext).toHaveBeenCalledWith("NestjsProjectService");
+    await expectLoggerContext(NestjsProjectService);
   });
 
   describe("isNestjsProject", () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildFixtureProgram } from "../../../testing/programs";
 
@@ -22,15 +23,19 @@ describe(TypescriptImportGraphService, () => {
   let service: TypescriptImportGraphService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [TypescriptImportGraphService, TypescriptProjectService],
-    }).compile();
-
-    service = await module.resolve(TypescriptImportGraphService);
+    ({ instance: service } = await buildTestingModule(
+      TypescriptImportGraphService,
+      { providers: [TypescriptProjectService] },
+    ));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      TypescriptImportGraphService,
+      { providers: [TypescriptProjectService] },
+    );
+
+    expect(instance).toBeInstanceOf(TypescriptImportGraphService);
   });
 
   it("resolves a relative .js-extension import to its real .ts source file", () => {

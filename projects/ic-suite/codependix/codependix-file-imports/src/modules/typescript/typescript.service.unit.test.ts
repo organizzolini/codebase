@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TypescriptImportGraphService } from "./typescript-import-graph.service";
 import { TypescriptProjectService } from "./typescript-project.service";
@@ -21,9 +22,8 @@ describe(TypescriptService, () => {
     typescriptImportGraphService = createMock<TypescriptImportGraphService>();
     typescriptProjectService = createMock<TypescriptProjectService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(TypescriptService, {
       providers: [
-        TypescriptService,
         {
           provide: TypescriptImportGraphService,
           useValue: typescriptImportGraphService,
@@ -33,13 +33,24 @@ describe(TypescriptService, () => {
           useValue: typescriptProjectService,
         },
       ],
-    }).compile();
-
-    service = await module.resolve(TypescriptService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TypescriptService, {
+      providers: [
+        {
+          provide: TypescriptImportGraphService,
+          useValue: typescriptImportGraphService,
+        },
+        {
+          provide: TypescriptProjectService,
+          useValue: typescriptProjectService,
+        },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(TypescriptService);
   });
 
   it("delegates buildGraph to TypescriptImportGraphService", () => {

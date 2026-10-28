@@ -1,9 +1,10 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PythonImportGraphService } from "./python-import-graph.service";
 import { PythonImportParserService } from "./python-import-parser.service";
@@ -16,9 +17,7 @@ import type { PythonProject } from "./python.types";
 async function buildProject(
   files: Record<string, string>,
 ): Promise<PythonProject> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "codependix-imports-python-"),
-  );
+  const workspaceRoot = createTemporaryDirectory("codependix-imports-python");
 
   for (const [name, text] of Object.entries(files)) {
     await mkdir(path.join(workspaceRoot, path.dirname(name)), {
@@ -34,19 +33,18 @@ describe(PythonImportGraphService, () => {
   let service: PythonImportGraphService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PythonImportGraphService,
-        PythonImportParserService,
-        PythonProjectService,
-      ],
-    }).compile();
-
-    service = await module.resolve(PythonImportGraphService);
+    ({ instance: service } = await buildTestingModule(
+      PythonImportGraphService,
+      { providers: [PythonImportParserService, PythonProjectService] },
+    ));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PythonImportGraphService, {
+      providers: [PythonImportParserService, PythonProjectService],
+    });
+
+    expect(instance).toBeInstanceOf(PythonImportGraphService);
   });
 
   it("resolves an absolute from-import to its owned source file", async () => {
