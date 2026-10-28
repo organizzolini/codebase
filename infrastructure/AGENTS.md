@@ -29,7 +29,8 @@ infrastructure/
 ├── helm/
 │   └── kubernetes-job/      # Reusable chart for K8s Jobs
 └── terraform/               # Cluster provisioning
-    ├── github/              # Repository settings and Actions variables
+    ├── github/              # Repository settings, ruleset, Actions variables
+    ├── linode/              # Object Storage bucket holding the state
     └── openrouter/          # OpenRouter workspace, key, guardrail, preset
 ```
 

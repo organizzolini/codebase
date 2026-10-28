@@ -122,3 +122,102 @@ resource "github_repository_vulnerability_alerts" "codebase" {
   repository = github_repository.codebase.name
   enabled    = true
 }
+
+# The ruleset on the default branch, imported as it is configured.
+#
+# The provider cannot express two parts of it: the `code_quality` rule and
+# `require_extra_approval_for_unattributed_changes` on the pull request rule.
+# GitHub replaces a ruleset's rules whenever it is updated, so any apply that
+# changes this ruleset drops both. Read the plan before merging a change here,
+# and re-add them in the settings afterwards, until the provider supports them.
+import {
+  to = github_repository_ruleset.main
+  id = "${var.repository}:12030459"
+}
+
+locals {
+  # GitHub Actions, the app every required check comes from.
+  github_actions_integration_id = 15368
+
+  required_checks = [
+    "🧑‍🎨 Format",
+    "🧑‍🎓 Typecheck",
+    "🕵️ Secure",
+    "🧑‍🔬 Test",
+    "💂 Guard",
+    "👷 Build",
+    "🧑‍🔧 Lint",
+    "🧟 Deprecate",
+    "🧑‍⚖️ Comply",
+    "🧑‍🔬 Test Meanderaw",
+    "🧑‍🔬 Test IC Suite",
+    "🧑‍🔬 Test Caelundas",
+  ]
+}
+
+resource "github_repository_ruleset" "main" {
+  name        = "main"
+  repository  = github_repository.codebase.name
+  target      = "branch"
+  enforcement = "active"
+
+  bypass_actors {
+    actor_id    = 1
+    actor_type  = "OrganizationAdmin"
+    bypass_mode = "always"
+  }
+
+  conditions {
+    ref_name {
+      include = ["~DEFAULT_BRANCH"]
+      exclude = []
+    }
+  }
+
+  rules {
+    non_fast_forward        = true
+    required_linear_history = true
+    required_signatures     = true
+
+    pull_request {
+      allowed_merge_methods             = ["squash"]
+      dismiss_stale_reviews_on_push     = true
+      require_code_owner_review         = true
+      require_last_push_approval        = false
+      required_approving_review_count   = 0
+      required_review_thread_resolution = true
+    }
+
+    required_status_checks {
+      do_not_enforce_on_create             = true
+      strict_required_status_checks_policy = false
+
+      dynamic "required_check" {
+        for_each = local.required_checks
+
+        content {
+          context        = required_check.value
+          integration_id = local.github_actions_integration_id
+        }
+      }
+    }
+
+    required_code_scanning {
+      required_code_scanning_tool {
+        alerts_threshold          = "errors"
+        security_alerts_threshold = "high_or_higher"
+        tool                      = "CodeQL"
+      }
+    }
+
+    merge_queue {
+      check_response_timeout_minutes    = 32
+      grouping_strategy                 = "ALLGREEN"
+      max_entries_to_build              = 6
+      max_entries_to_merge              = 6
+      merge_method                      = "SQUASH"
+      min_entries_to_merge              = 1
+      min_entries_to_merge_wait_minutes = 6
+    }
+  }
+}
