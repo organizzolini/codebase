@@ -11,7 +11,7 @@
 | [helm/kubernetes-job](helm/kubernetes-job)   | Reusable Helm chart for batch job deployments with PVC storage    |
 | [terraform/](terraform)                      | Linode LKE (Kubernetes) cluster provisioning                      |
 | [terraform/openrouter](terraform/openrouter) | OpenRouter workspace, API key, guardrail, and ranked-model preset |
-| [terraform/github](terraform/github)         | GitHub Actions variables fed from the OpenRouter outputs          |
+| [terraform/github](terraform/github)         | GitHub repository settings and Actions variables                  |
 
 ## Quick Start
 
@@ -101,4 +101,4 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 - **[caelundas AGENTS.md](../caelundas/caelundas-cli/AGENTS.md)**: Application deployment example
 - **[Main AGENTS.md](../../AGENTS.md)**: Codebase architecture and Nx workflows
 
-The `terraform/github` root sets the `OPENWIKI_MODEL_ID` Actions variable to the OpenRouter preset (`@preset/docs-refresh`) by reading the openrouter root's state. It needs `TF_VAR_state_bucket` and `TF_VAR_github_token`; CI reads the `TERRAFORM_GITHUB_TOKEN` repository secret, a fine-grained token with Variables write on this repository, because `GITHUB_TOKEN` cannot manage Actions variables. Terraform cannot read the value of the imported "Default key", so `OPENROUTER_API_KEY` stays a hand-set secret.
+The `terraform/github` root imports the repository's settings (merge methods, features, secret scanning, Dependabot security updates) and sets the `OPENWIKI_MODEL_ID` Actions variable to the OpenRouter preset (`@preset/docs-refresh`) by reading the openrouter root's state. It needs `TF_VAR_state_bucket` and `TF_VAR_github_token`; CI reads the `TERRAFORM_GITHUB_TOKEN` repository secret, a fine-grained token with Administration, Variables, and Secrets write on this repository, because `GITHUB_TOKEN` cannot manage Actions variables. Terraform cannot read the value of the imported "Default key", so `OPENROUTER_API_KEY` stays a hand-set secret.

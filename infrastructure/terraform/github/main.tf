@@ -57,3 +57,68 @@ resource "github_actions_variable" "openwiki_model_id" {
   variable_name = "OPENWIKI_MODEL_ID"
   value         = data.terraform_remote_state.openrouter.outputs.refresh_documentation_model
 }
+
+# The repository itself, imported as it is configured. Destroying it would
+# delete the codebase, so Terraform refuses to, and archives it if it ever does.
+import {
+  to = github_repository.codebase
+  id = var.repository
+}
+
+resource "github_repository" "codebase" {
+  name               = var.repository
+  description        = "organizzolini codebase"
+  visibility         = "public"
+  topics             = []
+  archive_on_destroy = true
+
+  has_discussions = true
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+
+  # Squash merges only, with the pull request title and body as the commit.
+  allow_merge_commit          = false
+  allow_rebase_merge          = false
+  allow_squash_merge          = true
+  squash_merge_commit_title   = "PR_TITLE"
+  squash_merge_commit_message = "PR_BODY"
+
+  allow_auto_merge            = true
+  allow_update_branch         = true
+  delete_branch_on_merge      = true
+  web_commit_signoff_required = true
+
+  security_and_analysis {
+    secret_scanning {
+      status = "enabled"
+    }
+    secret_scanning_push_protection {
+      status = "enabled"
+    }
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+import {
+  to = github_repository_dependabot_security_updates.codebase
+  id = var.repository
+}
+
+resource "github_repository_dependabot_security_updates" "codebase" {
+  repository = github_repository.codebase.name
+  enabled    = true
+}
+
+import {
+  to = github_repository_vulnerability_alerts.codebase
+  id = var.repository
+}
+
+resource "github_repository_vulnerability_alerts" "codebase" {
+  repository = github_repository.codebase.name
+  enabled    = true
+}
