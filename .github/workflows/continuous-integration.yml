@@ -253,11 +253,15 @@ jobs:
           TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_openrouter_api_key: ${{ secrets.OPENROUTER_API_KEY }}
           TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
-        run: pnpm exec nx run infrastructure:terraform-plan
+          TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
+          TF_VAR_github_token: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
+        run: |
+          pnpm exec nx run infrastructure:terraform-plan:openrouter
+          pnpm exec nx run infrastructure:terraform-plan:github
 
-      # Posts the plan as one comment that each push updates. A failed plan
-      # fails the leg above and shows in its log instead.
-      - name: 📊 Report Plan
+      # Posts each root's plan as one comment that every push updates. A
+      # failed plan fails the leg above and shows in its log instead.
+      - name: 📊 Report OpenRouter Plan
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'plan-terraform'
@@ -266,7 +270,18 @@ jobs:
           token: ${{ github.token }}
           working-directory: infrastructure/terraform/openrouter
           planfile: plan.tfplan
-          header: 🏗️ Terraform Plan
+          header: 🏗️ Terraform Plan (OpenRouter)
+
+      - name: 📊 Report GitHub Plan
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
+        uses: borchero/terraform-plan-comment@v2
+        with:
+          token: ${{ github.token }}
+          working-directory: infrastructure/terraform/github
+          planfile: plan.tfplan
+          header: 🏗️ Terraform Plan (GitHub)
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-

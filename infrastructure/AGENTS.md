@@ -29,6 +29,7 @@ infrastructure/
 ├── helm/
 │   └── kubernetes-job/      # Reusable chart for K8s Jobs
 └── terraform/               # Cluster provisioning
+    ├── github/              # Actions variables fed from the OpenRouter outputs
     └── openrouter/          # OpenRouter workspace, key, guardrail, preset
 ```
 
