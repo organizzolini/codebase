@@ -8,10 +8,11 @@ import {
   computeStartingSiderealDegrees,
 } from "./night-sky.utilities";
 import catalog from "./use-night-sky.catalog.json";
+import { starCatalogSchema } from "./use-night-sky.schemas";
 
 import type { StarRow } from "./night-sky.types";
 
-const stars = catalog as unknown as readonly StarRow[];
+const stars = starCatalogSchema.parse(catalog);
 const LATITUDE = 40.73;
 const LONGITUDE = -74;
 const WIDTH = 1100;
@@ -123,6 +124,41 @@ describe("night sky", () => {
       });
 
       expect(svg).toContain('from="-100.000" to="-460.000"');
+    });
+
+    it("stands still at minus the sidereal angle, the animation's starting angle", () => {
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        localSiderealDegrees: 100,
+        still: true,
+      });
+
+      expect(svg).toContain('<g transform="rotate(-100.000)">');
+      expect(svg).not.toContain("animateTransform");
+    });
+
+    it("draws the background gradient in the colors it is given", () => {
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        backgroundBottomColor: "#123",
+        backgroundTopColor: "A0B1C2",
+      });
+      const plain = buildNightSky(baseOptions).svg;
+
+      expect(svg).toContain('offset="0" stop-color="#a0b1c2"');
+      expect(svg).toContain('offset="1" stop-color="#112233"');
+      expect(plain).toContain('offset="0" stop-color="#04060f"');
+      expect(plain).toContain('offset="1" stop-color="#0d1533"');
+    });
+
+    it("keeps anything but a hexadecimal color out of the markup", () => {
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        backgroundTopColor: 'red"/><script>',
+      });
+
+      expect(svg).not.toContain("<script>");
+      expect(svg).toContain('offset="0" stop-color="#04060f"');
     });
 
     it("puts the pole above the top edge and sets the period from the speed", () => {

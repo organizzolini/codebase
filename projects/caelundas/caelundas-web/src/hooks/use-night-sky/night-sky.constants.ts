@@ -28,13 +28,35 @@ export const J2000_JULIAN_DAY = 2_451_545;
 // 🔭 Defaults
 
 export const DEFAULT_OPTIONS = {
+  backgroundBottomColor: "#0d1533",
+  backgroundTopColor: "#04060f",
   bottomAltitudeDegrees: 0,
   debug: false,
   faintestMagnitude: 6.5,
   pixelsPerSecond: 12,
   starScale: 1,
+  still: false,
   verticalFieldOfViewDegrees: 20,
 } as const;
+
+/**
+ * The default observer, New York, whose sky the backdrop shows unless a link
+ * names another place.
+ */
+export const DEFAULT_OBSERVER = {
+  latitudeDegrees: 40.73,
+  longitudeDegrees: -74,
+} as const;
+
+// ⏱ Page
+
+/**
+ * How long the window must stay the same size before the sky is rebuilt to
+ * fit it.
+ */
+export const RESIZE_DEBOUNCE_MILLISECONDS = 250;
+
+export const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 // 📐 Geometry
 
@@ -75,6 +97,10 @@ export const DEBUG_MARGIN = 30;
 
 // 🎨 Color
 
+// Three or six hexadecimal digits, with or without the leading `#`, which a
+// link can only carry as `%23`.
+export const COLOR_DIGITS_PATTERN = /^#?(?:[\da-f]{3}|[\da-f]{6})$/iu;
+
 export const COLOR_BUCKETS_PER_UNIT = 10;
 
 export const COLOR_BUCKET_LOWEST = -4;
@@ -111,15 +137,11 @@ export const COLOR_INDEX_HIGHEST = 2;
 
 // 🖼 Markup
 
-export const SKY_DEFINITIONS =
-  '<defs><linearGradient id="sky-background" x1="0" y1="0" x2="0" y2="1">' +
-  '<stop offset="0" stop-color="#04060f"/>' +
-  '<stop offset="1" stop-color="#0d1533"/>' +
-  "</linearGradient>" +
+export const STAR_GLOW_DEFINITION =
   '<radialGradient id="star-glow">' +
   '<stop offset="0" stop-color="#cfd9ff" stop-opacity=".42"/>' +
   '<stop offset="1" stop-color="#cfd9ff" stop-opacity="0"/>' +
-  "</radialGradient></defs>";
+  "</radialGradient>";
 
 export const DEBUG_LINE_ATTRIBUTES =
   'fill="none" stroke="#ffb877" vector-effect="non-scaling-stroke"';

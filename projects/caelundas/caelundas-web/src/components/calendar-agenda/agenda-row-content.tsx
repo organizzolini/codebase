@@ -2,6 +2,7 @@ import { Button } from "@codebase/presentation";
 
 import { CalendarEventRow } from "../calendar-event-row/calendar-event-row";
 import { formatCalendarDay } from "../events-calendar/calendar-format.utilities";
+import { SURFACE_CLASS_NAMES } from "../events-calendar/calendar-surfaces.constants";
 
 import { HEADING_TAGS } from "./calendar-agenda.constants";
 import { formatEventCount } from "./calendar-agenda.utilities";
@@ -47,7 +48,9 @@ export function AgendaRowContent(
       const Heading = HEADING_TAGS[dayLevel] ?? "h6";
 
       content = (
-        <Heading className="bg-muted/60 flex h-full items-center border-b px-4 text-sm font-semibold">
+        <Heading
+          className={`${SURFACE_CLASS_NAMES.agendaDate} flex h-full items-center border-b px-4 text-sm font-semibold`}
+        >
           {formatCalendarDay(row.day)}
         </Heading>
       );
@@ -59,7 +62,7 @@ export function AgendaRowContent(
 
       content = (
         <Heading
-          className="bg-background flex h-full items-center gap-2 border-b px-4 font-semibold"
+          className={`${SURFACE_CLASS_NAMES.agendaGroup} flex h-full items-center gap-2 border-b px-4 font-semibold`}
           style={{ paddingInlineStart: `${String(1 + row.node.level)}rem` }}
         >
           <span className="truncate">{row.node.label}</span>{" "}

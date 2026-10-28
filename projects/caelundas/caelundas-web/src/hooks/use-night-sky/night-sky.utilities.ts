@@ -7,6 +7,8 @@
 
 import { SiderealTime } from "astronomy-engine";
 
+import { formatSkyDefinitions } from "./night-sky-colors.utilities";
+import { resolveOptions } from "./night-sky-options.utilities";
 import {
   COLOR_BUCKET_HIGHEST,
   COLOR_BUCKET_LOWEST,
@@ -18,7 +20,6 @@ import {
   DEBUG_LINE_ATTRIBUTES,
   DEBUG_MARGIN,
   DEBUG_STAR_FACTOR,
-  DEFAULT_OPTIONS,
   DEGREES_PER_HOUR,
   EARTH_ROTATION_RADIANS_PER_SECOND,
   GLOW_MAGNITUDE_LIMIT,
@@ -31,7 +32,6 @@ import {
   RADIANS_PER_DEGREE,
   RING_MARGIN,
   SIDEREAL_DAY_SECONDS,
-  SKY_DEFINITIONS,
   STAR_RADIUS_BASE,
   STAR_RADIUS_FLOOR,
   STAR_RADIUS_PER_MAGNITUDE,
@@ -149,15 +149,18 @@ function assembleSvg(parts: {
   viewport: Viewport;
 }): string {
   const { geometry, motion, options, rendered, viewport } = parts;
-  const spin = formatSpin(options.localSiderealDegrees, motion.periodSeconds);
+  const spin = options.still
+    ? ""
+    : formatSpin(options.localSiderealDegrees, motion.periodSeconds);
+  const start = `rotate(${(-options.localSiderealDegrees).toFixed(3)})`;
   const sky = `${spin}${formatGlowGroup(rendered)}${formatStarGroups(rendered)}`;
 
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewport.viewBox}" ` +
     `preserveAspectRatio="${viewport.aspectRatio}" role="img" ` +
-    `aria-label="Slowly rotating night sky">${SKY_DEFINITIONS}${
+    `aria-label="Slowly rotating night sky">${formatSkyDefinitions(options.backgroundTopColor, options.backgroundBottomColor)}${
       viewport.ground
-    }<g transform="translate(${geometry.poleX} ${geometry.poleY.toFixed(1)})"><g>${sky}</g></g>${
+    }<g transform="translate(${geometry.poleX} ${geometry.poleY.toFixed(1)})"><g${options.still ? ` transform="${start}"` : ""}>${sky}</g></g>${
       viewport.overlay
     }</svg>`
   );
@@ -426,29 +429,6 @@ function renderStar(
       magnitude < GLOW_MAGNITUDE_LIMIT
         ? `<circle ${center} r="${(size * GLOW_RADIUS_FACTOR).toFixed(2)}"/>`
         : undefined,
-  };
-}
-
-/**
- * Fills every option the caller left out with its default.
- */
-function resolveOptions(options: NightSkyOptions): ResolvedNightSkyOptions {
-  return {
-    bottomAltitudeDegrees:
-      options.bottomAltitudeDegrees ?? DEFAULT_OPTIONS.bottomAltitudeDegrees,
-    debug: options.debug ?? DEFAULT_OPTIONS.debug,
-    faintestMagnitude:
-      options.faintestMagnitude ?? DEFAULT_OPTIONS.faintestMagnitude,
-    height: options.height,
-    latitudeDegrees: options.latitudeDegrees,
-    localSiderealDegrees: options.localSiderealDegrees,
-    pixelsPerSecond: options.pixelsPerSecond ?? DEFAULT_OPTIONS.pixelsPerSecond,
-    stars: options.stars,
-    starScale: options.starScale ?? DEFAULT_OPTIONS.starScale,
-    verticalFieldOfViewDegrees:
-      options.verticalFieldOfViewDegrees ??
-      DEFAULT_OPTIONS.verticalFieldOfViewDegrees,
-    width: options.width,
   };
 }
 
