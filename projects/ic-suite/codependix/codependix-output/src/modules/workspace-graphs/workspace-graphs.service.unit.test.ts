@@ -1,5 +1,4 @@
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { ConfigurationService } from "@codependix/configuration";
@@ -15,8 +14,10 @@ import {
 } from "@codependix/nestjs-modules";
 import { WorkspaceGraphService } from "@codependix/nx-projects";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnchorsService } from "../anchors/anchors.service";
 import { DeliveryService } from "../delivery/delivery.service";
@@ -93,11 +94,10 @@ describe(WorkspaceGraphsService, () => {
     typescriptService = createMock<TypescriptService>();
     workspaceGraphService = createMock<WorkspaceGraphService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(WorkspaceGraphsService, {
       providers: [
         AnchorsService,
         DeliveryService,
-        WorkspaceGraphsService,
         {
           provide: ConfigurationService,
           useValue: configurationService,
@@ -116,15 +116,11 @@ describe(WorkspaceGraphsService, () => {
         { provide: TypescriptService, useValue: typescriptService },
         { provide: WorkspaceGraphService, useValue: workspaceGraphService },
       ],
-    }).compile();
-
-    service = await module.resolve(WorkspaceGraphsService);
+    }));
   });
 
-  beforeEach(async () => {
-    projectRoot = await mkdtemp(
-      path.join(tmpdir(), "workspace-graphs-service-"),
-    );
+  beforeEach(() => {
+    projectRoot = createTemporaryDirectory("workspace-graphs-service");
 
     vi.mocked(typescriptService.discoverProjects).mockReturnValue([]);
     vi.mocked(typescriptService.buildProgram).mockReturnValue(
@@ -154,8 +150,32 @@ describe(WorkspaceGraphsService, () => {
     );
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WorkspaceGraphsService, {
+      providers: [
+        AnchorsService,
+        DeliveryService,
+        {
+          provide: ConfigurationService,
+          useValue: configurationService,
+        },
+        {
+          provide: FileImportsWorkspaceGraphService,
+          useValue: fileImportsWorkspaceGraphService,
+        },
+        { provide: ModuleGraphService, useValue: moduleGraphService },
+        {
+          provide: NestjsModulesWorkspaceGraphService,
+          useValue: nestjsModulesWorkspaceGraphService,
+        },
+        { provide: NestjsProjectService, useValue: nestjsProjectService },
+        { provide: PythonService, useValue: pythonService },
+        { provide: TypescriptService, useValue: typescriptService },
+        { provide: WorkspaceGraphService, useValue: workspaceGraphService },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(WorkspaceGraphsService);
   });
 
   describe("runFileImportsWorkspaceGraph", () => {
