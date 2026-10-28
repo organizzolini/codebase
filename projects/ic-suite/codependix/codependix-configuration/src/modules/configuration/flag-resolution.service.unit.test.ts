@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { missingInputError } from "../input/input.constants";
 import { InputService } from "../input/input.service";
@@ -17,18 +18,17 @@ describe(FlagResolutionService, () => {
   beforeAll(async () => {
     inputService = createMock<InputService>();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        FlagResolutionService,
-        { provide: InputService, useValue: inputService },
-      ],
-    }).compile();
-
-    service = await module.resolve(FlagResolutionService);
+    ({ instance: service } = await buildTestingModule(FlagResolutionService, {
+      providers: [{ provide: InputService, useValue: inputService }],
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(FlagResolutionService, {
+      providers: [{ provide: InputService, useValue: inputService }],
+    });
+
+    expect(instance).toBeInstanceOf(FlagResolutionService);
   });
 
   it("reads one check name", async () => {

@@ -102,8 +102,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/callidescope/callidescope-output": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-boundaries": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-cli": CLI_BASELINE,
-  "projects/ic-suite/codependix/codependix-configuration": NEST_BASELINE,
-  "projects/ic-suite/codependix/codependix-core": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-file-imports": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-nestjs-modules": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-nx": NEST_BASELINE,
