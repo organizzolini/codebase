@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import ts from "typescript";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import { buildFixtureProgram } from "../../../testing/programs";
@@ -57,19 +58,12 @@ function resolve(args: {
 }
 
 describe(ClassesService, () => {
-  let service: ClassesService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ClassesService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [ClassesService],
-    }).compile();
+    });
 
-    service = await module.resolve(ClassesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(ClassesService);
   });
 
   it("finds a class that declares it implements the interface", () => {

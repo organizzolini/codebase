@@ -91,15 +91,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/caelundas/caelundas-web": WEB_BASELINE,
   "projects/common/observability": NEST_BASELINE,
   "projects/common/persistence": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-cli": {
-    ...NEST_BASELINE,
-    application: COMMAND_PROJECT_BASELINE,
-  },
-  "projects/ic-suite/callidescope/callidescope-configuration": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-core": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-graph": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-nx": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-output": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-boundaries": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-cli": CLI_BASELINE,
   "projects/ic-suite/codependix/codependix-configuration": NEST_BASELINE,
@@ -207,7 +198,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/callidescope",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/codependix/codependix-cli"],

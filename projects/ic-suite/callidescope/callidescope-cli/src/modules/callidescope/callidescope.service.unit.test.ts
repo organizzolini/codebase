@@ -16,10 +16,9 @@ import {
 } from "@callidescope/graph";
 import { ProjectReportsService } from "@callidescope/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import {
@@ -39,6 +38,7 @@ import type {
   ResolvedCallidescopeConfiguration,
 } from "@callidescope/configuration";
 import type { CallGraphResult } from "@callidescope/core";
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 /** The real configuration facade, resolved once by `beforeAll` below. */
@@ -151,26 +151,24 @@ function resolveLimits(args: {
 }
 
 describe(CallidescopeService, () => {
-  let service: CallidescopeService;
-
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(CallidescopeService, {
       imports: [...ANALYSIS_MODULES, ConfigurationModule],
-      providers: [
-        CallidescopeService,
-        GraphAssemblyService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+      providers: [GraphAssemblyService],
+    });
 
-    service = await module.resolve(CallidescopeService);
     // The real facade, wired by its own module, so `resolveLimits` below runs
     // the tool's own resolver rather than a second copy of its rules.
-    configurationService = await module.resolve(ConfigurationService);
+    configurationService = await built.module.resolve(ConfigurationService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CallidescopeService, {
+      imports: [...ANALYSIS_MODULES, ConfigurationModule],
+      providers: [GraphAssemblyService],
+    });
+
+    expect(instance).toBeInstanceOf(CallidescopeService);
   });
 
   it("logs a summary when the analysis finishes", () => {

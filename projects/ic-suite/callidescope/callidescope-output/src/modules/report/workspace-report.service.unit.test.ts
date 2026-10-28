@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   buildProjectLimitsLookup,
@@ -58,16 +59,17 @@ describe(WorkspaceReportService, () => {
   let service: WorkspaceReportService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(WorkspaceReportService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [WorkspaceReportService],
-    }).compile();
-
-    service = await module.resolve(WorkspaceReportService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WorkspaceReportService, {
+      imports: [...ANALYSIS_MODULES],
+    });
+
+    expect(instance).toBeInstanceOf(WorkspaceReportService);
   });
 
   // 📇 The project index

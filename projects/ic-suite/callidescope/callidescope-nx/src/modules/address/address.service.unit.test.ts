@@ -2,8 +2,9 @@ import { AddressLookupService } from "@callidescope/cli";
 import { AddressDepthService, BreadthService } from "@callidescope/graph";
 import { AddressReportService } from "@callidescope/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AddressService } from "./address.service";
 
@@ -30,17 +31,14 @@ describe(AddressService, () => {
     addressReportService = createMock<AddressReportService>();
     breadthService = createMock<BreadthService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(AddressService, {
       providers: [
-        AddressService,
         { provide: AddressDepthService, useValue: addressDepthService },
         { provide: AddressLookupService, useValue: addressLookupService },
         { provide: AddressReportService, useValue: addressReportService },
         { provide: BreadthService, useValue: breadthService },
       ],
-    }).compile();
-
-    service = await module.resolve(AddressService);
+    }));
   });
 
   /** Stubs a lookup that resolved, holding one traced callable. */
@@ -67,9 +65,19 @@ describe(AddressService, () => {
     stubResolved();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(AddressService, {
+      mocks: [
+        AddressDepthService,
+        AddressLookupService,
+        AddressReportService,
+        BreadthService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(AddressService);
   });
 
   it("resolves the address against the directories it was given, never prompting", async () => {

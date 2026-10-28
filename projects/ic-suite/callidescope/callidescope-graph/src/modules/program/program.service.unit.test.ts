@@ -1,11 +1,12 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import ts from "typescript";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import { WorkspaceService } from "../workspace/workspace.service";
@@ -70,9 +71,7 @@ async function buildProject(args: {
   omitManifest?: boolean;
   sources?: Record<string, string>;
 }): Promise<{ project: WorkspaceProject; workspaceRoot: string }> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "callidescope-program-"),
-  );
+  const workspaceRoot = createTemporaryDirectory("callidescope-program");
 
   return {
     project: await addProject({ ...args, workspaceRoot }),
@@ -90,19 +89,12 @@ function readProjectNames(programSet: {
 }
 
 describe(ProgramService, () => {
-  let service: ProgramService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ProgramService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [ProgramService],
-    }).compile();
+    });
 
-    service = await module.resolve(ProgramService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(ProgramService);
   });
 
   let subjectLogger: DeepMocked<LoggerService>;
@@ -428,9 +420,7 @@ describe(ProgramService, () => {
   });
 
   it("does not let a file above the workspace drag in the workspace root", async () => {
-    const enclosing = await mkdtemp(
-      path.join(tmpdir(), "callidescope-enclosing-"),
-    );
+    const enclosing = createTemporaryDirectory("callidescope-enclosing");
     const workspaceRoot = path.join(enclosing, "workspace");
 
     await mkdir(path.join(enclosing, "outside"), { recursive: true });

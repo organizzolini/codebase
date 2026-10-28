@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildSourceLocation, buildStackFrame } from "../../../testing/mocks";
 import { ANALYSIS_MODULES } from "../../../testing/modules";
@@ -34,16 +35,17 @@ describe(ReportService, () => {
   let service: ReportService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(ReportService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [ReportService],
-    }).compile();
-
-    service = await module.resolve(ReportService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ReportService, {
+      imports: [...ANALYSIS_MODULES],
+    });
+
+    expect(instance).toBeInstanceOf(ReportService);
   });
 
   it("prints every frame of a stack", () => {

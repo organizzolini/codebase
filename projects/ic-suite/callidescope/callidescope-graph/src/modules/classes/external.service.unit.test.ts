@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
@@ -20,19 +21,12 @@ function sourceFile(args: {
 }
 
 describe(ExternalService, () => {
-  let service: ExternalService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ExternalService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [ExternalService],
-    }).compile();
+    });
 
-    service = await module.resolve(ExternalService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(ExternalService);
   });
 
   const buildSubject = (): ExternalService => {

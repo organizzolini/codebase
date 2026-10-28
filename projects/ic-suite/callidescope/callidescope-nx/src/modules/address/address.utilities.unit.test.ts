@@ -1,6 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
+
 import { OptionsService } from "../options/options.service";
 
 import { runAddressExecutor } from "./address.utilities";
@@ -75,7 +77,7 @@ describe(runAddressExecutor, () => {
       ok: true,
       report: "# Breadth",
     });
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    captureOutput();
   });
 
   it.each([

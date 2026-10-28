@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
@@ -34,19 +35,12 @@ function edge(from: string, to: string): CallEdge {
 }
 
 describe(ComponentsService, () => {
-  let service: ComponentsService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ComponentsService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [ComponentsService],
-    }).compile();
+    });
 
-    service = await module.resolve(ComponentsService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(ComponentsService);
   });
 
   it("gives every callable in an acyclic graph its own component", () => {

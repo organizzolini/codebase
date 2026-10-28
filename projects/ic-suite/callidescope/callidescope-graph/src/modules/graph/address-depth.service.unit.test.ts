@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   buildDiscoveredCallable,
@@ -52,16 +53,19 @@ describe(AddressDepthService, () => {
   let service: AddressDepthService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(AddressDepthService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [AddressDepthService, PathsService],
-    }).compile();
-
-    service = await module.resolve(AddressDepthService);
+      providers: [PathsService],
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(AddressDepthService, {
+      imports: [...ANALYSIS_MODULES],
+      providers: [PathsService],
+    });
+
+    expect(instance).toBeInstanceOf(AddressDepthService);
   });
 
   it("walks a chain down to its leaf", () => {

@@ -1,8 +1,9 @@
 import { ConfigurationService } from "@callidescope/configuration";
 import { AddressService } from "@callidescope/graph";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CallidescopeService } from "../callidescope/callidescope.service";
 
@@ -62,20 +63,21 @@ describe(AddressLookupService, () => {
     callidescopeService = createMock<CallidescopeService>();
     configurationService = createMock<ConfigurationService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(AddressLookupService, {
       providers: [
-        AddressLookupService,
         { provide: AddressService, useValue: addressService },
         { provide: CallidescopeService, useValue: callidescopeService },
         { provide: ConfigurationService, useValue: configurationService },
       ],
-    }).compile();
-
-    service = await module.resolve(AddressLookupService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(AddressLookupService, {
+      mocks: [AddressService, CallidescopeService, ConfigurationService],
+    });
+
+    expect(instance).toBeInstanceOf(AddressLookupService);
   });
 
   // 🔍 Looking up an address
