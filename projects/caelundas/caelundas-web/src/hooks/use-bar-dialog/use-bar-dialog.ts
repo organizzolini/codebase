@@ -1,6 +1,6 @@
 import { createElement, useState } from "react";
 
-import { CalendarClusterDialog } from "../../components/calendar-cluster-dialog";
+import { CalendarClusterDialog } from "../../components/calendar-cluster-dialog/calendar-cluster-dialog";
 
 import { describeBar } from "./use-bar-dialog.utilities";
 

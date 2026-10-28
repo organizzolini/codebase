@@ -17,8 +17,10 @@ the file by hand:
 
 | Shape | Generator | Lands in |
 | ----- | --------- | -------- |
-| Component | `nx g conformetry:react-component --name=user-card --project=<project>` | `src/components/user-card.tsx` |
-| Hook | `nx g conformetry:react-hook --name=use-user --project=<project>` | `src/hooks/use-user/` |
+| Component folder | `nx g conformetry:react-component-folder --name=user-card --project=<project>` | `src/components/user-card/` |
+| Component in a folder | `nx g conformetry:react-component-file --name=user-avatar --module=user-card --project=<project>` | `src/components/user-card/user-avatar.tsx` |
+| Hook folder | `nx g conformetry:react-hook-folder --name=use-user --project=<project>` | `src/hooks/use-user/` |
+| Hook in a folder | `nx g conformetry:react-hook-file --name=use-user-name --module=use-user --project=<project>` | `src/hooks/use-user/use-user-name.ts` |
 | Route | `nx g conformetry:tanstack-route --name=word.$id --path=/word/$id --project=<project>` | `src/routes/word.$id.tsx` |
 | Server functions | `nx g conformetry:tanstack-server-function --name=bookmarks --project=<project>` | `src/modules/bookmarks/` |
 | Application | `nx g conformetry:tanstack-application --name=<name> --directory=projects` | `projects/<name>/` |
@@ -36,22 +38,30 @@ that holds anything else:
 
 | File | Holds only |
 | ---- | ---------- |
-| `src/components/<name>.tsx` | Imports, one exported component, and its exported `<Name>Properties` |
-| `src/hooks/use-<name>/use-<name>.ts` | Imports and one exported hook |
+| `src/components/<folder>/<name>.tsx` | Imports, one exported component, and its exported `<Name>Properties` |
+| `src/hooks/<folder>/use-<name>.ts` | Imports and one exported hook |
 | `src/routes/<route>.tsx` | Imports, the exported `Route`, and the components it renders |
 | `*.types.ts` | Types and interfaces |
 | `*.constants.ts` | `const` declarations, and the `Error` classes thrown beside them |
 | `*.utilities.ts` | Function declarations |
 
-What a component or hook uses besides itself goes in sibling files that share
-its name: `calendar-agenda.constants.ts` beside `calendar-agenda.tsx`, and
-`use-user.types.ts` inside `src/hooks/use-user/`. What several files share goes
-in `src/types/`, `src/constants/`, or `src/utilities/`. A second component is
-a second component file. A `lib/` folder is not allowed, and any other `.ts`
-file in `src/` — a barrel `index.ts`, a loose helper — fails as a kind it is
-not. The hook generator writes the folder with the hook, its test, and the
-`<Name>Result` type it returns; add `.constants.ts` and `.utilities.ts` beside
-them once the hook has some, since an empty one is an unused file to knip.
+`src/` holds `components/`, `hooks/`, and `routes/`, and every component and
+hook sits in a folder of its own with its `.types.ts`, `.constants.ts`, and
+`.utilities.ts`, the way a NestJS service sits in its module. The folder
+generators write all of them; the file generators add another component or
+hook to a folder that exists, so a component can still be split into parts.
+Code several components or hooks share goes in the folder that owns it most
+naturally, under its own name, such as `calendar-window.utilities.ts` inside
+`src/components/events-calendar/`. `constants/`, `types/`, `utilities/`, and
+`lib/` folders are not allowed, and any other `.ts` file in `src/` — a barrel
+`index.ts`, a loose helper — fails as a kind it is not. A folder's own
+constants, types, or utilities file may hold only its section markers until
+the folder needs them; knip and fallow leave those placeholders alone.
+
+The workspace's size and complexity limits — `max-lines`, `max-lines-per-function`,
+`max-statements`, `max-depth`, `max-nested-callbacks`, three parameters, and a
+complexity of eight as an error rather than a warning — hold for every file but
+tests, and a project's own ESLint configuration may not relax them.
 
 ## Component Structure
 
@@ -71,7 +81,7 @@ its section is empty:
 | Markup | 🎨 | The JSX return |
 
 ```typescript
-// src/components/user-card.tsx
+// src/components/user-card/user-card.tsx
 import { useEffect, useState } from "react";
 
 import type { ReactNode } from "react";
@@ -302,7 +312,7 @@ Use Vitest and React Testing Library, beside the file under test:
 
 | File | Test | Shape |
 | ---- | ---- | ----- |
-| `user-card.tsx` | `user-card.unit.test.tsx` | `describe(UserCard, …)`, rendering with `render` |
+| `user-card/user-card.tsx` | `user-card/user-card.unit.test.tsx` | `describe(UserCard, …)`, rendering with `render` |
 | `use-user/use-user.ts` | `use-user/use-user.unit.test.ts` | `describe(useUser, …)`, rendering with `renderHook` |
 | `word.$id.tsx` | `word.$id.integration.test.tsx` | `describe("word.$id", …)`, rendering with `renderRoute` |
 

@@ -1,4 +1,4 @@
-import type { TagTreeRow } from "../../types/event-filter-tag-tree.types";
+import type { TagTreeRow } from "../../components/filter-tag-editor/event-filter-tag-tree.types";
 import type { FilterEditorProps } from "@codebase/presentation";
 import type { KeyboardEvent } from "react";
 

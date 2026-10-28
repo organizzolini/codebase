@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { describeBar } from "./use-bar-dialog.utilities";
 
-import type { CalendarEventRecord } from "../../types/events-database.types";
+import type { CalendarEventRecord } from "../../components/events-calendar/events-database.types";
 
 function record(id: string): CalendarEventRecord {
   return {

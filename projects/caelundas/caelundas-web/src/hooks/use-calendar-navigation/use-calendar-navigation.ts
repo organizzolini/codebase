@@ -3,9 +3,9 @@ import { useCallback, useMemo, useRef as useReference, useState } from "react";
 import {
   formatCalendarDate,
   isDayShown,
-} from "../../utilities/calendar-window.utilities";
+} from "../../components/events-calendar/calendar-window.utilities";
 
-import type { CalendarNavigation } from "../../components/calendar-navigation-group.types";
+import type { CalendarNavigation } from "../../components/calendar-navigation-group/calendar-navigation-group.types";
 import type {
   UseCalendarNavigationProperties,
   UseCalendarNavigationResult,

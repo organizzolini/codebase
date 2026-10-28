@@ -1,14 +1,14 @@
-import type { CalendarSearch } from "../../types/calendar-search.types";
-import type { CalendarSymbols } from "../../types/calendar-symbols.types";
-import type {
-  CalendarViewName,
-  TimelineScale,
-} from "../../types/calendar-views.types";
-import type { EventFilterQuery } from "../../types/event-filters.types";
+import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
 import type {
   EventGrouping,
   EventGroupLevel,
-} from "../../types/event-groups.types";
+} from "../../components/calendar-group-by/event-groups.types";
+import type {
+  CalendarViewName,
+  TimelineScale,
+} from "../../components/events-calendar/calendar-views.types";
+import type { CalendarSearch } from "./calendar-search.types";
+import type { CalendarSymbols } from "./calendar-symbols.types";
 
 // 🏷️ Types
 

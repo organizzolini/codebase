@@ -1,11 +1,11 @@
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { MAXIMUM_AGENDA_DAYS } from "../../constants/calendar-views.constants";
+import { MAXIMUM_AGENDA_DAYS } from "../../components/events-calendar/calendar-views.constants";
 
 import { useCalendarSearch } from "./use-calendar-search";
 
-import type { CalendarSearch } from "../../types/calendar-search.types";
+import type { CalendarSearch } from "./calendar-search.types";
 
 const navigate = vi.hoisted(() =>
   vi.fn<

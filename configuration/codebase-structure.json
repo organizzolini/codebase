@@ -247,13 +247,10 @@
       "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
     },
     "component-file": {
-      "name": "^[a-z0-9-]+(.(constants|schemas|types|utilities))?(.(unit|integration).test)?.(ts|tsx)$"
+      "name": "^([a-z0-9-]+(.(constants|schemas|types|utilities))?(.(unit|integration).test)?.(ts|tsx)|[a-z0-9-]+.worker.ts)$"
     },
     "component-folder": {
       "children": [
-        {
-          "ruleId": "component-folder"
-        },
         {
           "ruleId": "component-file"
         }
@@ -555,7 +552,10 @@
     "hook-folder": {
       "children": [
         {
-          "name": "^{folder-name}(.(constants|schemas|types|utilities))?(.(unit|integration).test)?.ts$"
+          "name": "^use-[a-z0-9-]+(.(constants|schemas|types|utilities))?(.(unit|integration).test)?.ts$"
+        },
+        {
+          "name": "^[a-z0-9-]+.(constants|schemas|types|utilities)(.(unit|integration).test)?.ts$"
         }
       ],
       "name": "^use-[a-z0-9-]+$"
@@ -676,9 +676,6 @@
               "children": [
                 {
                   "ruleId": "component-folder"
-                },
-                {
-                  "ruleId": "component-file"
                 }
               ],
               "name": "components"
@@ -686,18 +683,11 @@
             {
               "children": [
                 {
-                  "name": "^[a-z0-9-]+.constants(.(unit|integration).test)?.(ts|tsx)$"
+                  "ruleId": "any-file"
                 }
               ],
+              "enforceExistence": "__constants_folders_are_forbidden_in_web_applications__",
               "name": "constants"
-            },
-            {
-              "children": [
-                {
-                  "ruleId": "hook-folder"
-                }
-              ],
-              "name": "hooks"
             },
             {
               "children": [
@@ -707,6 +697,32 @@
               ],
               "enforceExistence": "__lib_folders_are_forbidden_in_web_applications__",
               "name": "lib"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "enforceExistence": "__types_folders_are_forbidden_in_web_applications__",
+              "name": "types"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "enforceExistence": "__utilities_folders_are_forbidden_in_web_applications__",
+              "name": "utilities"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "hook-folder"
+                }
+              ],
+              "name": "hooks"
             },
             {
               "children": [
@@ -748,25 +764,6 @@
                 }
               ],
               "name": "assets"
-            },
-            {
-              "children": [
-                {
-                  "name": "^[a-z0-9-]+.types(.(unit|integration).test)?.(ts|tsx)$"
-                }
-              ],
-              "name": "types"
-            },
-            {
-              "children": [
-                {
-                  "name": "^[a-z0-9-]+.utilities(.(unit|integration).test)?.(ts|tsx)$"
-                }
-              ],
-              "name": "utilities"
-            },
-            {
-              "name": "^[a-z0-9-]+.worker.ts$"
             },
             {
               "ruleId": "source-entry-file"

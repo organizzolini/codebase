@@ -6,7 +6,7 @@ import { getRouter } from "../src/router";
 
 import { createTestEventsDatabase } from "./events-database";
 
-import type { EventsDatabase } from "../src/types/events-database.types";
+import type { EventsDatabase } from "../src/components/events-calendar/events-database.types";
 
 // The real root renders a whole `<html>` document, which cannot mount inside
 // the `<div>` a test renders into, so routes are rendered under a bare root.

@@ -5,12 +5,12 @@ import {
   getTagStates,
   toggleTag,
   toTagTreeRows,
-} from "../../utilities/event-filter-tag-tree.utilities";
+} from "../../components/filter-tag-editor/event-filter-tag-tree.utilities";
 
 import { KEY_ACTIONS } from "./use-tag-picker.constants";
 import { focusSibling } from "./use-tag-picker.utilities";
 
-import type { TagTreeRow } from "../../types/event-filter-tag-tree.types";
+import type { TagTreeRow } from "../../components/filter-tag-editor/event-filter-tag-tree.types";
 import type {
   UseTagPickerProperties,
   UseTagPickerResult,

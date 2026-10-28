@@ -1,10 +1,10 @@
 import { createElement, useCallback, useMemo, useState } from "react";
 
-import { CalendarClusterDialog } from "../../components/calendar-cluster-dialog";
-import { CLUSTER_ID_PREFIX } from "../../constants/calendar-clusters.constants";
-import { clusterEvents } from "../../utilities/calendar-clusters.utilities";
-import { getViewWindows } from "../../utilities/calendar-window.utilities";
+import { CalendarClusterDialog } from "../../components/calendar-cluster-dialog/calendar-cluster-dialog";
+import { getViewWindows } from "../../components/events-calendar/calendar-window.utilities";
 
+import { CLUSTER_ID_PREFIX } from "./calendar-clusters.constants";
+import { clusterEvents } from "./calendar-clusters.utilities";
 import {
   CLUSTER_TUNING,
   CLUSTERED_VIEWS,

@@ -1,8 +1,8 @@
-import { DEFAULT_EVENT_FILTER_COLLECTION_ID } from "../../constants/event-filter-collections.constants";
-import { EMPTY_EVENT_FILTER } from "../../constants/event-filter-tree.constants";
+import { DEFAULT_EVENT_FILTER_COLLECTION_ID } from "../../components/calendar-filters/event-filter-collections.constants";
+import { EMPTY_EVENT_FILTER } from "../../components/calendar-filters/event-filter-tree.constants";
 
-import type { ResolvedEventFilterCollection } from "../../types/event-filter-collections.types";
-import type { EventFilterQuery } from "../../types/event-filters.types";
+import type { ResolvedEventFilterCollection } from "../../components/calendar-filters/event-filter-collections.types";
+import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
 
 // 🔏 Private Functions
 

@@ -2,8 +2,8 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-import { listLocalTimeFunctions } from "../src/utilities/events-database-local-time.utilities";
-import { createEventsDatabase } from "../src/utilities/events-database.utilities";
+import { listLocalTimeFunctions } from "../src/components/events-calendar/events-database-local-time.utilities";
+import { createEventsDatabase } from "../src/components/events-calendar/events-database.utilities";
 
 import type {
   EventsDatabase,
@@ -11,7 +11,7 @@ import type {
   SqlExecutor,
   SqlRow,
   SqlValue,
-} from "../src/types/events-database.types";
+} from "../src/components/events-calendar/events-database.types";
 
 // The database belongs to caelundas-cli: its tables are what its migration
 // creates, and its seed rows and the SQL that rewrites its read model are its

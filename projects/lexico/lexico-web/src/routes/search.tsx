@@ -7,13 +7,16 @@ import { useCallback, useMemo } from "react";
 
 import { Button } from "@codebase/presentation";
 
-import { SearchBar } from "../components/search-bar";
-import { SearchLanding } from "../components/search-landing";
-import { SearchResults } from "../components/search-results";
-import { getSearch, searchSchema } from "../constants/search.constants";
+import { SearchBar } from "../components/search-bar/search-bar";
+import { SearchLanding } from "../components/search-landing/search-landing";
+import { SearchResults } from "../components/search-results/search-results";
+import {
+  getSearch,
+  searchSchema,
+} from "../components/search-results/search.constants";
 
-import type { LexemeFormRow } from "../components/lexeme-forms.types";
-import type { SearchParameters } from "../types/search.types";
+import type { LexemeFormRow } from "../components/lexeme-forms/lexeme-forms.types";
+import type { SearchParameters } from "../components/search-results/search.types";
 import type { ReactNode } from "react";
 
 // 🧭 Route

@@ -1,16 +1,16 @@
 import { useMemo, useState } from "react";
 
-import { resolveEventFilterCollections } from "../../utilities/event-filter-collections.utilities";
-import { compileEventFilter } from "../../utilities/event-filter-compiler.utilities";
+import { resolveEventFilterCollections } from "../../components/calendar-filters/event-filter-collections.utilities";
+import { compileEventFilter } from "../../components/calendar-filters/event-filter-compiler.utilities";
 import {
   isSameEventFilter,
   toLinkedEventFilter,
-} from "../../utilities/event-filter-tree.utilities";
+} from "../../components/calendar-filters/event-filter-tree.utilities";
 
 import { getDefaultFilter } from "./use-filter-query.utilities";
 
-import type { EventFilterQuery } from "../../types/event-filters.types";
-import type { EventFacet } from "../../types/events-database.types";
+import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
+import type { EventFacet } from "../../components/events-calendar/events-database.types";
 import type { UseFilterQueryResult } from "./use-filter-query.types";
 
 // 🧩 Hook

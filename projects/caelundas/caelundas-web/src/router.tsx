@@ -1,7 +1,7 @@
 import { createRouter, type Router } from "@tanstack/react-router";
 
+import { createBrowserEventsDatabase } from "./components/events-calendar/events-database-browser.utilities";
 import { routeTree } from "./routeTree.gen";
-import { createBrowserEventsDatabase } from "./utilities/events-database-browser.utilities";
 
 /**
  * Creates the application router, which TanStack Start calls once per request

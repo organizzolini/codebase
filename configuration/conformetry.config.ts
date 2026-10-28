@@ -33,20 +33,6 @@ function defineInputs(
   return inputs;
 }
 
-/**
- * Code the shadcn CLI writes, which is vendored rather than authored here: each
- * directory is one of the aliases a project's `components.json` hands the CLI.
- * Holding it to a template would mean editing files the next `shadcn add`
- * overwrites, so every frontend instance group leaves it out of validation.
- */
-const SHADCN_GENERATED_PATTERNS = [
-  "projects/common/presentation/src/components/examples/**",
-  "projects/common/presentation/src/components/reui/**",
-  "projects/common/presentation/src/components/ui/**",
-  "projects/common/presentation/src/hooks/**",
-  "projects/common/presentation/src/lib/**",
-];
-
 const conformetryConfiguration: ConformetryNxConfiguration = [
   // Groups without tags are plain workspace globs — the form a host with no
   // project graph writes, and the right one where the set of projects is not a
@@ -269,29 +255,52 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
   // template their files fit, not to the group that found them, so a route's
   // test is `.integration.test.tsx` and a component's `.unit.test.tsx` —
   // otherwise `index.tsx` would fit both templates equally and be held to both.
+  // A React application holds every component and hook in a folder of its
+  // own, the way a NestJS project holds every service in a module: the folder
+  // generators write the folder with its types, constants, and utilities, and
+  // the file generators add one more component or hook to a folder that
+  // exists, the way `nestjs-service-file` adds a service to a module.
   {
     description:
-      "A React component and unit test file template for an existing React project, placed in src/components",
+      "A React component folder — the component, its types, constants, and utilities, and its unit test — in src/components of an existing React application",
     inputs: defineInputs({
       name: z.string().describe("Component name in kebab-case"),
       project: z.string().describe("Parent project name in kebab-case"),
     }),
     instances: [
       {
-        patterns: [
-          "src/components/!(*.unit.test).tsx",
-          "src/components/*.unit.test.tsx",
-        ],
-        exclude: SHADCN_GENERATED_PATTERNS,
-        tags: ["framework:react"],
+        patterns: ["src/components/*"],
+        tags: ["framework:react", "type:application"],
       },
     ],
-    name: "react-component",
-    templatePath: "configuration/conformetry-templates/react-component",
+    name: "react-component-folder",
+    templatePath: "configuration/conformetry-templates/react-component-folder",
   },
   {
     description:
-      "A React hook, the result type it returns, and its unit test, in its own src/hooks/use-<name>/ folder of an existing React project",
+      "A React component and its unit test, added to an existing component folder of a React application",
+    inputs: defineInputs({
+      module: z
+        .string()
+        .describe("Component folder to add the component to, in kebab-case"),
+      name: z.string().describe("Component name in kebab-case"),
+      project: z.string().describe("Parent project name in kebab-case"),
+    }),
+    instances: [
+      {
+        patterns: [
+          "src/components/*/!(*.test).tsx",
+          "src/components/*/*.unit.test.tsx",
+        ],
+        tags: ["framework:react", "type:application"],
+      },
+    ],
+    name: "react-component-file",
+    templatePath: "configuration/conformetry-templates/react-component-file",
+  },
+  {
+    description:
+      "A React hook folder — the hook, the result type it returns, its constants and utilities, and its unit test — in src/hooks of an existing React application",
     inputs: defineInputs({
       name: z
         .string()
@@ -301,13 +310,34 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     }),
     instances: [
       {
-        patterns: ["src/hooks/use-*"],
-        exclude: SHADCN_GENERATED_PATTERNS,
-        tags: ["framework:react"],
+        patterns: ["src/hooks/*"],
+        tags: ["framework:react", "type:application"],
       },
     ],
-    name: "react-hook",
-    templatePath: "configuration/conformetry-templates/react-hook",
+    name: "react-hook-folder",
+    templatePath: "configuration/conformetry-templates/react-hook-folder",
+  },
+  {
+    description:
+      "A React hook, the result type it returns, and its unit test, added to an existing hook folder of a React application",
+    inputs: defineInputs({
+      module: z
+        .string()
+        .describe("Hook folder to add the hook to, in kebab-case"),
+      name: z
+        .string()
+        .regex(/^use-[a-z0-9-]+$/u)
+        .describe("Hook name in kebab-case, starting with use-"),
+      project: z.string().describe("Parent project name in kebab-case"),
+    }),
+    instances: [
+      {
+        patterns: ["src/hooks/*/use-+([a-z0-9-]).ts"],
+        tags: ["framework:react", "type:application"],
+      },
+    ],
+    name: "react-hook-file",
+    templatePath: "configuration/conformetry-templates/react-hook-file",
   },
   {
     description:

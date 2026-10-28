@@ -131,7 +131,7 @@ const WEB_APPLICATION_FILE_KINDS = [
   "**/*.utilities.ts",
   "**/*.worker.ts",
   "src/client.tsx",
-  "src/components/**/*.tsx",
+  "src/components/*/*.tsx",
   "src/hooks/*/use-*.ts",
   "src/modules/*/*.functions.ts",
   "src/routeTree.gen.ts",
@@ -151,11 +151,36 @@ const HOOK_SIBLING_FILES = [
 ];
 
 /**
+ * The size and complexity limits every authored file in a web application is
+ * held to: the workspace's own, with complexity raised from a warning to an
+ * error. A project's own configuration comes after this one and could loosen
+ * them, so a web application's must not.
+ */
+const WEB_APPLICATION_LIMITS: NonNullable<ConfigWithExtends["rules"]> = {
+  "better-max-params/better-max-params": [
+    "error",
+    { constructor: 12, func: 3 },
+  ],
+  complexity: ["error", { max: 8 }],
+  "max-depth": ["error", { max: 4 }],
+  "max-lines": ["error", { max: 512 }],
+  "max-lines-per-function": ["error", { max: 128 }],
+  "max-nested-callbacks": ["error", { max: 3 }],
+  "max-statements": ["error", { max: 16 }],
+};
+
+/**
  * The file-shape blocks for one web application, rooted at `basePath` so the
  * same globs match whether ESLint runs from the workspace or the project.
  */
 function defineWebApplicationFileShape(basePath: string): ConfigWithExtends[] {
   return [
+    {
+      basePath,
+      files: ["src/**/*.ts", "src/**/*.tsx"],
+      ignores: ["**/*.test.ts", "**/*.test.tsx", "src/routeTree.gen.ts"],
+      rules: WEB_APPLICATION_LIMITS,
+    },
     {
       basePath,
       files: ["src/**/*.ts", "src/**/*.tsx"],
@@ -166,7 +191,7 @@ function defineWebApplicationFileShape(basePath: string): ConfigWithExtends[] {
           ...RESTRICTED_SYNTAX,
           {
             message:
-              "This file fits no kind a web application allows. Name it *.types.ts, *.constants.ts, *.utilities.ts, or *.schemas.ts, move a hook to src/hooks/use-<name>/use-<name>.ts, or a component to src/components/.",
+              "This file fits no kind a web application allows. Put it in the component or hook folder it belongs to, src/components/<name>/ or src/hooks/use-<name>/, named *.types.ts, *.constants.ts, *.utilities.ts, or *.schemas.ts.",
             selector: "Program",
           },
         ],

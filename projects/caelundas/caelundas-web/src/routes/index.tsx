@@ -5,32 +5,33 @@ import {
 } from "@tanstack/react-router";
 import { type ReactNode, useMemo, useSyncExternalStore } from "react";
 
-import { CalendarEmpty } from "../components/calendar-empty";
-import { CalendarError } from "../components/calendar-error";
-import { CalendarFilters } from "../components/calendar-filters";
-import { CalendarSkeleton } from "../components/calendar-skeleton";
-import { CalendarViewOptions } from "../components/calendar-view-options";
-import { EventsCalendar } from "../components/events-calendar";
+import { CalendarEmpty } from "../components/calendar-empty/calendar-empty";
+import { CalendarError } from "../components/calendar-error/calendar-error";
+import { CalendarFilters } from "../components/calendar-filters/calendar-filters";
+import { createEventFilterFields } from "../components/calendar-filters/event-filter-fields.utilities";
+import { EMPTY_EVENT_FILTER } from "../components/calendar-filters/event-filter-tree.constants";
+import { CalendarSkeleton } from "../components/calendar-skeleton/calendar-skeleton";
+import { CalendarViewOptions } from "../components/calendar-view-options/calendar-view-options";
+import { loadCalendar } from "../components/events-calendar/calendar-loader.utilities";
 import {
-  CalendarSymbolsContext,
-  DEFAULT_CALENDAR_SYMBOLS,
-} from "../constants/calendar-symbols.constants";
+  isWideViewport,
+  subscribeToViewport,
+} from "../components/events-calendar/calendar-viewport.utilities";
 import {
   AGENDA_DAY_COUNT,
   CALENDAR_VIEW_PERIODS,
   DEFAULT_TIMELINE_SCALE,
-} from "../constants/calendar-views.constants";
-import { EMPTY_EVENT_FILTER } from "../constants/event-filter-tree.constants";
-import { useCalendarSearch } from "../hooks/use-calendar-search/use-calendar-search";
-import { loadCalendar } from "../utilities/calendar-loader.utilities";
-import { validateCalendarSearch } from "../utilities/calendar-search.utilities";
+} from "../components/events-calendar/calendar-views.constants";
+import { getDefaultCalendarView } from "../components/events-calendar/calendar-views.utilities";
+import { parseCalendarDate } from "../components/events-calendar/calendar-window.utilities";
+import { EventsCalendar } from "../components/events-calendar/events-calendar";
+import { readTimeZone } from "../components/events-calendar/events-calendar.utilities";
+import { validateCalendarSearch } from "../hooks/use-calendar-search/calendar-search.utilities";
 import {
-  isWideViewport,
-  subscribeToViewport,
-} from "../utilities/calendar-viewport.utilities";
-import { getDefaultCalendarView } from "../utilities/calendar-views.utilities";
-import { parseCalendarDate } from "../utilities/calendar-window.utilities";
-import { createEventFilterFields } from "../utilities/event-filter-fields.utilities";
+  CalendarSymbolsContext,
+  DEFAULT_CALENDAR_SYMBOLS,
+} from "../hooks/use-calendar-search/calendar-symbols.constants";
+import { useCalendarSearch } from "../hooks/use-calendar-search/use-calendar-search";
 
 // 🧭 Route
 
@@ -118,8 +119,7 @@ function IndexPage(): ReactNode {
   // 🏗 Setup
   const { filter } = search;
   const view = search.view ?? getDefaultCalendarView(isWide);
-  const timeZone =
-    dataset?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const timeZone = readTimeZone(dataset);
 
   // 💪 Handlers
   const {

@@ -3,10 +3,10 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   AGENDA_DAY_COUNT,
   MAXIMUM_AGENDA_DAYS,
-} from "../../constants/calendar-views.constants";
-import { formatCalendarDate } from "../../utilities/calendar-window.utilities";
+} from "../../components/events-calendar/calendar-views.constants";
+import { formatCalendarDate } from "../../components/events-calendar/calendar-window.utilities";
 
-import type { CalendarSearch } from "../../types/calendar-search.types";
+import type { CalendarSearch } from "./calendar-search.types";
 import type { UseCalendarSearchResult } from "./use-calendar-search.types";
 
 // 🧩 Hook

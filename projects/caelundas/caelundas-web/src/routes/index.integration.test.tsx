@@ -20,7 +20,7 @@ import {
 } from "../../testing/events-database";
 import { renderRoute } from "../../testing/render-route";
 import { setViewportWidth } from "../../testing/viewport";
-import { UnsupportedBrowserError } from "../constants/events-database.constants";
+import { UnsupportedBrowserError } from "../components/events-calendar/events-database.constants";
 
 import { Route } from "./index";
 

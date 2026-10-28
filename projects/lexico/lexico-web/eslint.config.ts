@@ -9,21 +9,6 @@ export default [
     ignores: ["codegen.ts", "src/graphql/generated/**", "src/routeTree.gen.ts"],
   },
 
-  // ⚛️ React Component Complexity Overrides
-  // Components naturally have more JSX branches, state, and conditional rendering
-  // than plain functions — allow 2× the base limits for TSX files.
-  {
-    files: ["**/*.tsx"],
-    rules: {
-      complexity: ["warn", { max: 16 }],
-      "max-depth": ["warn", { max: 8 }],
-      "max-lines-per-function": [
-        "warn",
-        { max: 128, skipBlankLines: true, skipComments: true },
-      ],
-      "max-statements": ["warn", { max: 32 }],
-    },
-  },
   // 📦 Dependency Checks
   {
     files: ["**/*.json"],

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { useCalendarNavigation } from "./use-calendar-navigation";
 
-import type { CalendarNavigation } from "../../components/calendar-navigation-group.types";
+import type { CalendarNavigation } from "../../components/calendar-navigation-group/calendar-navigation-group.types";
 
 function renderNavigation(anchor: Date): {
   result: { current: ReturnType<typeof useCalendarNavigation> };
