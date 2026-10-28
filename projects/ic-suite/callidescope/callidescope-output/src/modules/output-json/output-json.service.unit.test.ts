@@ -1,10 +1,11 @@
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildEmptyCallGraphResult } from "../../../testing/mocks";
 import { ANALYSIS_MODULES } from "../../../testing/modules";
@@ -15,19 +16,12 @@ import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 describe(OutputJsonService, () => {
-  let service: OutputJsonService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(OutputJsonService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [OutputJsonService],
-    }).compile();
+    });
 
-    service = await module.resolve(OutputJsonService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(OutputJsonService);
   });
 
   const subjectLogger: DeepMocked<LoggerService> = createMock<LoggerService>();
@@ -36,8 +30,8 @@ describe(OutputJsonService, () => {
   const result = buildEmptyCallGraphResult();
 
   /** Returns a path inside a fresh temporary directory. */
-  async function temporaryPath(): Promise<string> {
-    const directory = await mkdtemp(path.join(tmpdir(), "callidescope-json-"));
+  function temporaryPath(): string {
+    const directory = createTemporaryDirectory("callidescope-json");
 
     return path.join(directory, "report.json");
   }
@@ -64,7 +58,7 @@ describe(OutputJsonService, () => {
   });
 
   it("writes the report in write mode", async () => {
-    const reportPath = await temporaryPath();
+    const reportPath = temporaryPath();
 
     subject.sync({
       check: false,
@@ -83,7 +77,7 @@ describe(OutputJsonService, () => {
   });
 
   it("creates parent directories that do not exist yet", async () => {
-    const directory = await mkdtemp(path.join(tmpdir(), "callidescope-json-"));
+    const directory = createTemporaryDirectory("callidescope-json");
     const reportPath = path.join(directory, "nested", "deeper", "report.json");
 
     subject.sync({
@@ -96,7 +90,7 @@ describe(OutputJsonService, () => {
   });
 
   it("reports a matching file as current in check mode", async () => {
-    const reportPath = await temporaryPath();
+    const reportPath = temporaryPath();
     const destinationAt = { indentation: 2, path: reportPath };
 
     await writeFile(
@@ -111,7 +105,7 @@ describe(OutputJsonService, () => {
   });
 
   it("reports a differing file as stale in check mode", async () => {
-    const reportPath = await temporaryPath();
+    const reportPath = temporaryPath();
 
     await writeFile(reportPath, "{}\n", "utf8");
 
@@ -124,18 +118,18 @@ describe(OutputJsonService, () => {
     ).toBe(false);
   });
 
-  it("reports a missing file as stale rather than failing", async () => {
+  it("reports a missing file as stale rather than failing", () => {
     expect(
       subject.sync({
         check: true,
-        destination: { indentation: 2, path: await temporaryPath() },
+        destination: { indentation: 2, path: temporaryPath() },
         result,
       }),
     ).toBe(false);
   });
 
   it("writes nothing in check mode", async () => {
-    const reportPath = await temporaryPath();
+    const reportPath = temporaryPath();
 
     await writeFile(reportPath, "untouched", "utf8");
     subject.sync({

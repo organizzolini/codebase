@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import {
@@ -40,16 +41,17 @@ describe(DocumentationService, () => {
   let service: DocumentationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(DocumentationService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [DocumentationService],
-    }).compile();
-
-    service = await module.resolve(DocumentationService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DocumentationService, {
+      imports: [...ANALYSIS_MODULES],
+    });
+
+    expect(instance).toBeInstanceOf(DocumentationService);
   });
 
   /** Reads the documentation of one named callable. */

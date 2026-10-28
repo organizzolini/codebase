@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import ts from "typescript";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import { buildFixtureProgram } from "../../../testing/programs";
@@ -97,19 +98,12 @@ function resolveFirstConstruction(source: string): ResolvedCallSite {
 }
 
 describe(SymbolResolutionService, () => {
-  let service: SymbolResolutionService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SymbolResolutionService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [SymbolResolutionService],
-    }).compile();
+    });
 
-    service = await module.resolve(SymbolResolutionService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(SymbolResolutionService);
   });
 
   it("marks a plain call as direct", () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildDiscoveredCallable } from "../../../testing/mocks";
 import { ANALYSIS_MODULES } from "../../../testing/modules";
@@ -47,19 +48,12 @@ function measure(args: { ids: string[]; pairs: [string, string][] }): {
 }
 
 describe(BreadthService, () => {
-  let service: BreadthService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(BreadthService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [BreadthService],
-    }).compile();
+    });
 
-    service = await module.resolve(BreadthService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(BreadthService);
   });
 
   it("counts a leaf as zero", () => {

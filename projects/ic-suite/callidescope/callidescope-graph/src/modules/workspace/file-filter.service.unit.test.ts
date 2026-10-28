@@ -1,10 +1,11 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
@@ -49,19 +50,12 @@ const PROJECTS: readonly WorkspaceProject[] = [
 const PERMISSIVE_FILTER: FileFilter = { isExcluded: (): boolean => false };
 
 describe(FileFilterService, () => {
-  let service: FileFilterService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(FileFilterService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [FileFilterService],
-    }).compile();
+    });
 
-    service = await module.resolve(FileFilterService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(FileFilterService);
   });
 
   const subjectLogger: DeepMocked<LoggerService> = createMock<LoggerService>();
@@ -85,8 +79,8 @@ describe(FileFilterService, () => {
     expect(filter.isExcluded("packages/example/src/api.ts")).toBe(false);
   });
 
-  it("warns and continues when an ignore file is missing", async () => {
-    const root = await mkdtemp(path.join(tmpdir(), "callidescope-ignore-"));
+  it("warns and continues when an ignore file is missing", () => {
+    const root = createTemporaryDirectory("callidescope-ignore");
     const filter = subject.buildFileFilter({
       exclude: [],
       excludeFrom: ["configuration/.callidescopeignore"],
@@ -104,9 +98,7 @@ describe(FileFilterService, () => {
   it("survives an ignore file git cannot apply", async () => {
     // No git repository here, so `git ls-files` fails — which must degrade to
     // "nothing ignored" rather than taking the run down.
-    const root = await mkdtemp(
-      path.join(tmpdir(), "callidescope-unversioned-"),
-    );
+    const root = createTemporaryDirectory("callidescope-unversioned");
 
     await mkdir(path.join(root, "configuration"), { recursive: true });
     await writeFile(

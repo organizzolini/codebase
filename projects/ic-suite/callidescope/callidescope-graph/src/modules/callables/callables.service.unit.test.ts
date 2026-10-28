@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import {
@@ -44,19 +45,12 @@ function collectNames(args: Parameters<typeof collect>[0]): string[] {
 }
 
 describe(CallablesService, () => {
-  let service: CallablesService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CallablesService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [CallablesService],
-    }).compile();
+    });
 
-    service = await module.resolve(CallablesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(CallablesService);
   });
 
   it("collects every function-like declaration with a body", () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
@@ -73,19 +74,12 @@ function measure(args: {
 }
 
 describe(GraphDepthService, () => {
-  let service: GraphDepthService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(GraphDepthService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [GraphDepthService],
-    }).compile();
+    });
 
-    service = await module.resolve(GraphDepthService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(GraphDepthService);
   });
 
   it("counts a leaf as one frame", () => {

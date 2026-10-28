@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   buildDiscoveredCallable,
@@ -138,16 +139,17 @@ describe(ProjectReportsService, () => {
   let service: ProjectReportsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(ProjectReportsService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [ProjectReportsService],
-    }).compile();
-
-    service = await module.resolve(ProjectReportsService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ProjectReportsService, {
+      imports: [...ANALYSIS_MODULES],
+    });
+
+    expect(instance).toBeInstanceOf(ProjectReportsService);
   });
 
   it("reports one project per traced project, in the order they were traced", () => {

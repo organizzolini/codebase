@@ -1,10 +1,11 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import { ProgramConfigurationError } from "../program/program.constants";
@@ -31,7 +32,7 @@ async function buildWorkspace(
   projectRoots: readonly string[],
   options: { rootsWithoutManifest?: readonly string[] } = {},
 ): Promise<string> {
-  const root = await mkdtemp(path.join(tmpdir(), "callidescope-workspace-"));
+  const root = createTemporaryDirectory("callidescope-workspace");
   const rootsWithoutManifest = options.rootsWithoutManifest ?? [];
 
   for (const projectRoot of projectRoots) {
@@ -137,16 +138,17 @@ describe(WorkspaceService, () => {
   let service: WorkspaceService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(WorkspaceService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [WorkspaceService],
-    }).compile();
-
-    service = await module.resolve(WorkspaceService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WorkspaceService, {
+      imports: [...ANALYSIS_MODULES],
+    });
+
+    expect(instance).toBeInstanceOf(WorkspaceService);
   });
 
   const subjectLogger: DeepMocked<LoggerService> = createMock<LoggerService>();
@@ -184,7 +186,7 @@ describe(WorkspaceService, () => {
     // Stepping over it was the old behavior, and it is how a run came to
     // report a workspace smaller than the one it was pointed at — a typo in a
     // `--directories` list passed every gate for having traced less.
-    const root = await mkdtemp(path.join(tmpdir(), "callidescope-untyped-"));
+    const root = createTemporaryDirectory("callidescope-untyped");
 
     await mkdir(path.join(root, "packages", "untyped"), { recursive: true });
 
@@ -197,7 +199,7 @@ describe(WorkspaceService, () => {
   });
 
   it("names the directory it found no tsconfig in", async () => {
-    const root = await mkdtemp(path.join(tmpdir(), "callidescope-untyped-"));
+    const root = createTemporaryDirectory("callidescope-untyped");
 
     await mkdir(path.join(root, "packages", "untyped"), { recursive: true });
 
@@ -324,8 +326,8 @@ describe(WorkspaceService, () => {
     ).toStrictEqual([]);
   });
 
-  it("finds nothing in an empty workspace", async () => {
-    const root = await mkdtemp(path.join(tmpdir(), "callidescope-empty-"));
+  it("finds nothing in an empty workspace", () => {
+    const root = createTemporaryDirectory("callidescope-empty");
 
     expect(
       subject.discoverProjects({ directories: [], workspaceRoot: root }),
