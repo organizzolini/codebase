@@ -1,0 +1,214 @@
+import { appendFileSync } from "node:fs";
+
+import { Injectable } from "@nestjs/common";
+import { Command, CommandRunner } from "nest-commander";
+
+import { LoggerService } from "@codebase/observability";
+
+import { PullRequestIssueGithubService } from "./pull-request-issue-github.service";
+import {
+  PULL_REQUEST_NUMBER_PATTERN,
+  REMEDIATION_LINES,
+  STEP_SUMMARY_FAILURE_MESSAGE,
+  STEP_SUMMARY_VARIABLE,
+  USAGE_LINES,
+} from "./pull-request-issue.constants";
+import { PullRequestIssueService } from "./pull-request-issue.service";
+
+import type { PullRequestIssuesResolution } from "./pull-request-issue.types";
+
+/**
+ * CLI command that checks a pull request closes or references an issue.
+ *
+ * Reads `closingIssuesReferences` live through `gh pr view`, which is GitHub's
+ * own record of the link — a closing keyword in the body or the Development
+ * sidebar — so a plain `Related to #N` mention does not satisfy it. There is
+ * no workflow-mode environment path: the `pull_request` webhook payload does
+ * not carry the list, so a `gh` call is unavoidable either way.
+ *
+ * The whole report is mirrored to `GITHUB_STEP_SUMMARY` when it is set. Exits
+ * 0 when at least one issue is linked and 1 when none is or the input cannot
+ * be used, and never anything else.
+ */
+@Command({
+  description: "Check that a pull request closes or references an issue",
+  name: "pull-request-issue",
+})
+@Injectable()
+export class PullRequestIssueCommand extends CommandRunner {
+  // 🏗 Dependency Injection
+
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly pullRequestIssueGithubService: PullRequestIssueGithubService,
+    private readonly pullRequestIssueService: PullRequestIssueService,
+  ) {
+    super();
+    this.logger.setContext(PullRequestIssueCommand.name);
+  }
+
+  // 🔐 Private Fields
+
+  // 🔑 Public Fields
+
+  // 🔏 Private Methods
+
+  /** Echoes one report line and keeps it for the step summary. */
+  private appendToReport(reportLines: string[], reportLine: string): void {
+    reportLines.push(reportLine);
+    console.info(reportLine);
+  }
+
+  /** Reports one line, mirrors the report, and exits non-zero. */
+  private failWithMessage(reportLines: string[], failure: string): never {
+    this.appendToReport(reportLines, failure);
+    this.mirrorToStepSummary(reportLines);
+
+    return process.exit(1);
+  }
+
+  /** Reports one line, then how to invoke this check, and exits non-zero. */
+  private failWithUsageError(reportLines: string[], failure: string): never {
+    this.appendToReport(reportLines, failure);
+    this.appendToReport(reportLines, "");
+
+    for (const usageLine of USAGE_LINES) {
+      this.appendToReport(reportLines, usageLine);
+    }
+
+    this.mirrorToStepSummary(reportLines);
+
+    return process.exit(1);
+  }
+
+  /** Mirrors the report into the GitHub Actions step summary, if there is one. */
+  private mirrorToStepSummary(reportLines: readonly string[]): void {
+    const summaryPath = process.env[STEP_SUMMARY_VARIABLE];
+
+    if (summaryPath === undefined || summaryPath === "") {
+      return;
+    }
+
+    if (reportLines.length === 0) {
+      return;
+    }
+
+    try {
+      appendFileSync(summaryPath, `${reportLines.join("\n")}\n`, "utf8");
+    } catch {
+      console.warn(STEP_SUMMARY_FAILURE_MESSAGE);
+    }
+  }
+
+  /** Reads the pull request's closing issues live, through `gh pr view`. */
+  private readLivePullRequest(
+    reportLines: string[],
+    pullRequestNumber: string,
+  ): PullRequestIssuesResolution {
+    if (!this.pullRequestIssueGithubService.isAvailable()) {
+      this.failWithUsageError(
+        reportLines,
+        `❌ Unable to read pull request ${pullRequestNumber}: gh is not available`,
+      );
+    }
+
+    const view = this.pullRequestIssueGithubService.run([
+      "pr",
+      "view",
+      pullRequestNumber,
+      "--json",
+      "closingIssuesReferences",
+    ]);
+
+    if (!view.succeeded) {
+      this.failWithUsageError(
+        reportLines,
+        `❌ Unable to read pull request ${pullRequestNumber}: gh pr view failed (${this.pullRequestIssueGithubService.describeFailure(view)})`,
+      );
+    }
+
+    return this.pullRequestIssueService.resolveFromDocument(
+      view.standardOutput,
+    );
+  }
+
+  /**
+   * The pull request number this run checks, from the argument or the
+   * environment.
+   */
+  private resolvePullRequestNumber(
+    reportLines: string[],
+    passedParameters: string[],
+  ): string {
+    if (passedParameters.length > 1) {
+      this.failWithUsageError(
+        reportLines,
+        "❌ Expected at most one argument, the pull request number",
+      );
+    }
+
+    const argument = passedParameters[0];
+
+    if (argument !== undefined) {
+      if (!PULL_REQUEST_NUMBER_PATTERN.test(argument)) {
+        this.failWithUsageError(
+          reportLines,
+          `❌ Not a pull request number: ${argument}`,
+        );
+      }
+
+      return argument;
+    }
+
+    const fromEnvironment = process.env["PULL_REQUEST_NUMBER"] ?? "";
+
+    if (fromEnvironment === "") {
+      this.failWithUsageError(
+        reportLines,
+        "❌ Expected a pull request number, or PULL_REQUEST_NUMBER in the environment",
+      );
+    }
+
+    return fromEnvironment;
+  }
+
+  // 🌎 Public Methods
+
+  /** Checks the pull request links an issue and exits 0 or 1. */
+  public async run(passedParameters: string[]): Promise<void> {
+    // Nothing here is asynchronous; the base class signature is.
+    await Promise.resolve();
+
+    const reportLines: string[] = [];
+    const pullRequestNumber = this.resolvePullRequestNumber(
+      reportLines,
+      passedParameters,
+    );
+    const resolution = this.readLivePullRequest(reportLines, pullRequestNumber);
+
+    if (!resolution.resolved) {
+      this.failWithMessage(reportLines, resolution.failure);
+    }
+
+    if (resolution.issueNumbers.length === 0) {
+      this.appendToReport(
+        reportLines,
+        `❌ Pull request ${pullRequestNumber} closes or references no issue`,
+      );
+      this.appendToReport(reportLines, "");
+
+      for (const remediationLine of REMEDIATION_LINES) {
+        this.appendToReport(reportLines, remediationLine);
+      }
+
+      this.mirrorToStepSummary(reportLines);
+      process.exit(1);
+    }
+
+    this.appendToReport(
+      reportLines,
+      `✅ Pull request ${pullRequestNumber} links issue(s): ${resolution.issueNumbers.map((issueNumber) => `#${issueNumber}`).join(", ")}`,
+    );
+    this.mirrorToStepSummary(reportLines);
+  }
+}
