@@ -312,6 +312,9 @@ const MODULE_BOUNDARIES = {
   // interface, and each of those may use the testing package's helpers in
   // its own tests and keep its old testing entry as a re-export of it.
   ignoredCircularDependencies: [
+    // The conformetry templates import the testing package, and the common
+    // packages' own configuration files import the configuration project.
+    ["configuration", "testing"],
     ["interface", "testing"],
     ["observability", "testing"],
     ["persistence", "testing"],
