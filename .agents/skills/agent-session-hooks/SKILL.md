@@ -14,21 +14,22 @@ Startup checks run at the start of every agent session and inject their failure 
 
 ## Architecture
 
-| Script                                  | Checks                                                                                                            |
-| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `validate-session-branch-name.sh`       | Shim over `validation`'s `session-branch-name`: branch follows `<type>/<scope>-<description>`                     |
-| `validate-session-worktree-name.sh`     | Shim over `validation`'s `session-worktree-name`: worktree is kebab-case and gitignored                           |
-| `validate-session-commit-signing.sh`    | `commit.gpgsign`, `user.signingkey`, and a GPG signing smoke test                                                 |
-| `validate-session-gh-authentication.sh` | The active `gh` account plus Projects access                                                                      |
-| `validate-session-skills.sh`            | Shim over `synchronization`'s `installed-skills check`: every skill in `skills-lock.json` is present              |
-| `validate-session-hooks-path.sh`        | `core.hooksPath` resolves to a directory holding a pre-commit hook; git runs no hooks, silently, when it does not |
+| Script                                  | Checks                                                                                                                          |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `validate-session-branch-name.sh`       | Shim over `validation`'s `session-branch-name`: branch follows `<type>/<scope>-<description>`                                   |
+| `validate-session-worktree-name.sh`     | Shim over `validation`'s `session-worktree-name`: worktree is kebab-case and gitignored                                         |
+| `validate-session-commit-signing.sh`    | `commit.gpgsign`, `user.signingkey`, and a GPG signing smoke test                                                               |
+| `validate-session-gh-authentication.sh` | The active `gh` account plus Projects access                                                                                    |
+| `validate-session-skills.sh`            | Shim over `synchronization`'s `installed-skills check`: every skill in `skills-lock.json` is present                            |
+| `validate-session-hooks-path.sh`        | `core.hooksPath` resolves to a directory holding a pre-commit hook; git runs no hooks, silently, when it does not               |
+| `validate-subagent-model.sh`            | `PreToolUse` check on `Agent`/`task`: blocks Opus/Sol or higher on subagents and requires an explicit model on `Explore`/`Plan` |
 
 Each script is registered twice, once per harness, and both registrations point at the same file:
 
-| Harness        | Registration                                      |
-| -------------- | ------------------------------------------------- |
-| Claude Code    | `SessionStart` entries in `.claude/settings.json` |
-| GitHub Copilot | `sessionStart` entries in `.github/hooks/*.json`  |
+| Harness        | Registration                                                       |
+| -------------- | ------------------------------------------------------------------ |
+| Claude Code    | `SessionStart` and `PreToolUse` entries in `.claude/settings.json` |
+| GitHub Copilot | `sessionStart` and `preToolUse` entries in `.github/hooks/*.json`  |
 
 ## Adding a New Check
 

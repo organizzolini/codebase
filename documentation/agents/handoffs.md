@@ -66,5 +66,6 @@ implementation run legitimate. Five repository rules override
     cross-file integration, non-trivial design judgment, or fix-loop escalation
     after repeated failures).
   - **Review subagents**: **Haiku/Luna-level** or **Sonnet/Terra-level** model
-    scaled to the diff's size and risk, rather than defaulting reviews to an
-    Opus/Sol-level model.
+    scaled to the diff's size and risk. Never spawn any subagent on an
+    Opus/Sol-level model or higher — Opus/Sol is selectable only by humans for
+    main sessions.

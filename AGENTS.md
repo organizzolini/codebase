@@ -36,8 +36,10 @@ model, orchestrate implementation (coordinating tickets or tasks across steps
 5–8) on a Sonnet/Terra-level model, and execute implementation tasks and
 subagents on a Haiku/Luna-level model — escalating an implementation subagent to
 a Sonnet/Terra-level model only when really necessary (complex multi-file
-integration, non-trivial architectural judgment, or fix-loop escalation). Always
-pass the subagent model explicitly so it does not inherit a larger session model.
+integration, non-trivial architectural judgment, or fix-loop escalation). Opus/Sol-level
+models are reserved for human-selected main sessions; never spawn a subagent on
+Opus/Sol or higher, and always pass the subagent model explicitly so it does not
+inherit a larger session model.
 
 1. **Clarify**: Run [brainstorming](.agents/skills/brainstorming/SKILL.md) with
    [grill-with-docs](.agents/skills/grill-with-docs/SKILL.md) (domain models/ADRs)
