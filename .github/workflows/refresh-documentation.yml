@@ -19,13 +19,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 196
     env:
-      # OpenRouter's free Nemotron 3 Ultra, which is never billed. Free models
+      # The OpenRouter preset that Terraform keeps (infrastructure/terraform),
+      # whose ranked list starts with the free Nemotron 3 Ultra, never billed.
+      # Terraform sets the variable, so change the models there. Free models
       # are capped at 20 requests a minute and, once $10 of credit has been
       # bought, 1,000 a day. A free endpoint can go down or be gated to
       # approved apps, so a failed run is worth checking the model's health.
       # The retry count is high so that backing off outlasts a spent minute.
       OPENWIKI_PROVIDER: openrouter
-      OPENWIKI_MODEL_ID: nvidia/nemotron-3-ultra-550b-a55b:free
+      OPENWIKI_MODEL_ID: ${{ vars.OPENWIKI_MODEL_ID }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       OPENWIKI_MAX_OUTPUT_TOKENS: "16384"
       OPENWIKI_PROVIDER_RETRY_ATTEMPTS: "12"
