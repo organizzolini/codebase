@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.41.0](https://github.com/organizzolini/codebase/compare/v3.40.0...v3.41.0) (2026-10-29)
+
+### ✨ Features
+
+* **infrastructure,installation:** ✨ manage github and linode with terraform ([#1979](https://github.com/organizzolini/codebase/issues/1979)) ([0c9d11d](https://github.com/organizzolini/codebase/commit/0c9d11d10f53564b2130b6154dc24a968e029365))
+
 ## [3.40.0](https://github.com/organizzolini/codebase/compare/v3.39.0...v3.40.0) (2026-10-27)
 
 ### ✨ Features
