@@ -132,9 +132,9 @@ resource "github_repository_vulnerability_alerts" "codebase" {
 #
 # The provider cannot express two parts of it: the `code_quality` rule and
 # `require_extra_approval_for_unattributed_changes` on the pull request rule.
-# GitHub replaces a ruleset's rules whenever it is updated, so any apply that
-# changes this ruleset drops both. Read the plan before merging a change here,
-# and re-add them in the settings afterwards, until the provider supports them.
+# GitHub replaces a ruleset's rules whenever it is updated, so
+# `terraform_data.main_ruleset_unsupported_rules` patches both back through the
+# GitHub REST API whenever `github_repository_ruleset.main.rules` changes.
 import {
   to = github_repository_ruleset.main
   id = "${var.repository}:12030459"
@@ -231,3 +231,53 @@ resource "github_repository_ruleset" "main" {
     }
   }
 }
+
+# Re-applies the two ruleset settings `integrations/github` does not model yet
+# (`code_quality` and `pull_request.require_extra_approval_for_unattributed_changes`)
+# after any apply that updates `github_repository_ruleset.main`. The provider
+# ignores both on read, so restoring them does not cause drift on subsequent plans.
+resource "terraform_data" "main_ruleset_unsupported_rules" {
+  triggers_replace = [
+    github_repository_ruleset.main.rules,
+  ]
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      gh api "repos/$OWNER/$REPOSITORY/rulesets/$RULESET_ID" \
+        | jq '{
+            name,
+            target,
+            enforcement,
+            bypass_actors: [.bypass_actors[] | {actor_id, actor_type, bypass_mode}],
+            conditions,
+            rules: (
+              [
+                .rules[]
+                | if .type == "pull_request" then
+                    .parameters.require_extra_approval_for_unattributed_changes = true
+                  else
+                    .
+                  end
+                | select(.type != "code_quality")
+              ] + [
+                {
+                  type: "code_quality",
+                  parameters: {
+                    severity: "errors"
+                  }
+                }
+              ]
+            )
+          }' \
+        | gh api --method PUT "repos/$OWNER/$REPOSITORY/rulesets/$RULESET_ID" --input - >/dev/null
+    EOT
+
+    environment = {
+      GH_TOKEN   = var.github_token
+      OWNER      = var.owner
+      REPOSITORY = var.repository
+      RULESET_ID = github_repository_ruleset.main.ruleset_id
+    }
+  }
+}
+
