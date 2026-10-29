@@ -3,9 +3,6 @@ type: workflow
 title: Scaffolding with Conformetry
 description: How to scaffold new projects, modules, and components using conformetry generators. Covers the nx g conformetry:<generator> command, the template picker, required inputs, and the validation that ensures generated code stays conformant. Lists available templates and their use cases.
 tags: [scaffolding, generators, conformetry, nx, project-creation, module-creation, file-creation]
-verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
 sources:
   - id: openwiki-source-d5a2a32b7849ae8b44301e20
     resource: repo://.agents/skills/nx-generate/SKILL.md

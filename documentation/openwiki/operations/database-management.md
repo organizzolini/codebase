@@ -3,23 +3,31 @@ type: operations-guide
 title: Database Management
 description: Documents Postgres database operations including migrations, schema/project/role conventions, moving data between databases (export/import), and Testcontainers for integration testing.
 tags: [database, postgres, migrations, testcontainers, export-import, operations]
+verified:
+  - by: openwiki/0.7.0
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-fde0a41d410be4adddc7d9c3
     resource: repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md
   - id: openwiki-source-e84c9845fa1929e0b3fde349
     resource: repo://infrastructure/README.md
+  - id: openwiki-source-de4dffad77fdd24cedfe1707
+    resource: repo://projects/common/persistence/project.json
   - id: openwiki-source-bb47f0ae03a5325f0d8fdea7
     resource: repo://projects/common/persistence/README.md
+  - id: openwiki-source-fc42ee038a699462f3a81a78
+    resource: repo://projects/common/persistence/src/modules/postgresql-export/postgresql-export.command.ts
+  - id: openwiki-source-554d553372fdf135d48804d7
+    resource: repo://projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts
   - id: openwiki-source-a688f65f433758aea382c292
     resource: repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts
   - id: openwiki-source-79618aae32d9845bfacb091d
     resource: repo://projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts
+  - id: openwiki-source-02fa1cfa852d65c0cb15fcaf
+    resource: repo://projects/common/persistence/src/persistence.main.ts
   - id: openwiki-source-4808dd4ba16cde901f5bc82f
     resource: repo://projects/common/persistence/testing/persistence-testing.utilities.ts
-verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
 # Database Management
@@ -45,6 +53,19 @@ Every project owns its own database, schema, and role. The database name carries
 **Project name rules:** Lowercase letters, digits, and underscores, starting with a letter, so the name can prefix a variable and name a database unquoted.
 
 **Reference:** [ADR 0022: Give Every Database Project Its Own Database, Schema, and Role](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
+
+### meanderaw Exception
+
+meanderaw's database already exists from ADR 0020's initialization. When adding it to an existing volume, the standard init script would fail on the `CREATE DATABASE` step. The workaround uses `psql` directly with an `ALTER DATABASE` instead:
+
+```bash
+docker exec -i postgres psql -U postgres -d postgres <<'SQL'
+CREATE ROLE meanderaw_username LOGIN PASSWORD 'meanderaw_password';
+ALTER DATABASE meanderaw_development OWNER TO meanderaw_username;
+\connect meanderaw_development
+CREATE SCHEMA meanderaw AUTHORIZATION meanderaw_username;
+SQL
+```
 
 ---
 
@@ -111,13 +132,13 @@ Run through Nx; the working directory is `projects/common/persistence`, so a rel
 ### Export
 
 ```bash
-nx run persistence:start:export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
+nx run persistence:start:postgresql-export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
 ```
 
 ### Import
 
 ```bash
-nx run persistence:start:import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
+nx run persistence:start:postgresql-import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
 ```
 
 ### Options
@@ -265,7 +286,7 @@ The `POSTGRES_PROJECTS` list is defined in `infrastructure/docker/docker-compose
 ```yaml
 environment:
   # Every database-backed project: adding one is adding its name here.
-  POSTGRES_PROJECTS: caelundas lexico meanderaw
+  POSTGRES_PROJECTS: lexico meanderaw
 ```
 
 An inline config script (`databases.sh`) runs on first start and loops over `POSTGRES_PROJECTS` to create each role, its `_development` database, and its schema.
@@ -281,18 +302,37 @@ docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb
 
 The script stops at the first object that already exists, so name **only the projects the volume lacks**. Never use `infrastructure:postgres:recreate` for this: it deletes the volume and every row in it.
 
-**Exception for meanderaw:** Its database already exists from ADR 0020's init, so it takes the script's statements through `psql` with an `ALTER DATABASE` in place of the `CREATE DATABASE`:
-
-```bash
-docker exec -i postgres psql -U postgres -d postgres <<'SQL'
-CREATE ROLE meanderaw_username LOGIN PASSWORD 'meanderaw_password';
-ALTER DATABASE meanderaw_development OWNER TO meanderaw_username;
-\connect meanderaw_development
-CREATE SCHEMA meanderaw AUTHORIZATION meanderaw_username;
-SQL
-```
+See the meanderaw exception section above for the special case.
 
 Confirm with `\l` (databases), `\dn` (schemas), and `\du` (roles) in `psql`.
+
+---
+
+## SQLite Support
+
+The same `@codebase/persistence` package provides SQLite support for projects that don't need Postgres (e.g., caelundas). The APIs mirror the Postgres ones:
+
+- `SqliteModule.forRoot({ entities, migrations, project })`
+- `createSqliteDataSource({ entities, migrations, project })`
+- `sqliteEnvironmentSchema({ project })`
+- `SqliteIdentifiableEntity`, `SqliteCreatableEntity`, etc.
+
+### Key Differences from Postgres
+
+| Aspect | PostgreSQL | SQLite |
+| --- | --- | --- |
+| Connection | Host, port, database, schema, role | File path only (`<project>.sqlite` or `:memory:`) |
+| Writers | Multiple, pooled | Single writer (better-sqlite3 is synchronous) |
+| Migrations at runtime | Never (`migrationsRun: false`) | Run on `forRoot` if given (single writer avoids races) |
+| Folder creation | N/A | Created on start if missing |
+| Schema/role/search_path | Yes, pinned to project schema | None |
+| Native UUID/timestamptz/numeric | Yes | No — TypeORM refuses them at connect time |
+| Column comments | Yes | No |
+| ID generation | `uuidv7()` (DB default) | `uuid` v4 (TypeORM generates on `save`) |
+| Timestamps | `timestamptz` | `datetime` (UTC text `YYYY-MM-DD HH:MM:SS[.SSS]`) |
+| Partial index syntax | Postgres (`::` casts, `now()`) | SQLite (no casts, `1`/`0` for booleans) |
+
+**Reference:** [Persistence README — SQLite section](../../projects/common/persistence/README.md#sqlite)
 
 ---
 

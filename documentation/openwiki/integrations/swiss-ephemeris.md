@@ -24,10 +24,10 @@ sources:
     resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.utilities.ts
   - id: openwiki-source-edceb0d5d036b656596819fc
     resource: repo://projects/caelundas/caelundas-cli/src/modules/input/input.constants.ts
+generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+    at: 2026-10-29T03:39:46.432Z
 ---
 
 # Swiss Ephemeris Integration

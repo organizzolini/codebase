@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:1f8fda26d1d7fe09a0f87ae9b46ecbd5fdbcd549c4b0c526a76857c004909659",
+  "pageVersion": "sha256:2314f0f8cb3778a585ab79a36e0e2c57351ffa06dd4ee981b0c0c2ffc6f611d6",
   "claims": [
     {
       "id": "claim_1f71c14e89574734acd22c1f76c31751",
@@ -11,7 +11,7 @@
           "version": "repo-lines-v1:sha256:3d8e037dbb6c167595d1da70774e9805834652ecb704e4b40c9b969036886ace:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZDcyYzUwMWE1OWUyZGY2MTliYzM1OWRkNzk5ZTQ1OGQ2YWEzZTE5ZGY5ZTdlOWYzZWIyNGE5N2NmYzk0ZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2OTVlMTViNjZjOTA1MDFkY2UxMzkzODA0YzRlOGVjMDNkNWMzM2MxNjA1MGM4ZWYzNzRmYTBiODBmNTFmMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViMzU4OGQxNjFiNjg3NGE5ODQ3ZWNiYjc2NzNhMTA3YTMzZDZjOWVkM2ExMGNkYjZmOWZmMTYzMTQ2NTkxY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlY2RmNWI1NDFmODBkMjU4MTUyZTgzZjM5OGFhNTM5NWJmM2Q5ODA1Yjc2MTk2MmM0N2Q1OWRkZjI4MjhiZmUifQ"
         },
         {
-          "resource": "repo://README.md#L155-L168",
+          "resource": "repo://README.md#L183-L196",
           "version": "repo-lines-v1:sha256:ae5a8381ae33b4077da1187d6d0ee889c06b66922c486eb1feaf180ebed6430b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZjgwZWZmZDdlNGRjOWY5MWY0ZTIyOTc4MDA4NzEwZTc1MzVkNjkyMTI3MTk1ZTQwODkxMzhmZDIwNDEzZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YjBhYmNlYzM0OGY0YTEwYTNhM2Q2ZjNlZmVlMDI5MDdmMjM1N2E2ZTE0OTQxYmQ1OGQ3Mjc3NzczNGJkMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhZWJlODdlYWM3OTIzMjZmYjkzMjBiZDM1N2Q0MGI2MjE1Zjg5MWY1YjdlNDc3NWQ3Yzk2NzlmMWUxMGVlYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmOTQ0YzdhYWQwOThjM2M3OTcwYmY1ZjFjMjc5ZDBjNzI1ZDM4ZDQyMjMwYmY2ODNhOWE0Yjk1OGQxOTNlZjEifQ"
         }
       ]
@@ -41,7 +41,7 @@
       "statement": "The conformetry toolchain consists of 9 packages under projects/ic-suite/conformetry/: agents (skills), cli (command-line host), configuration (loading/discovery/rendering), core (contracts/types), examples (11 runnable CI examples), generation (rendering runtime), languages (6 language validators + fallback + scoring), nx (Nx plugin with generators/executors), output (reporting/inventory), validation (orchestration/deduplication/scoring).",
       "evidence": [
         {
-          "resource": "repo://README.md#L155-L168",
+          "resource": "repo://README.md#L183-L196",
           "version": "repo-lines-v1:sha256:ae5a8381ae33b4077da1187d6d0ee889c06b66922c486eb1feaf180ebed6430b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZjgwZWZmZDdlNGRjOWY5MWY0ZTIyOTc4MDA4NzEwZTc1MzVkNjkyMTI3MTk1ZTQwODkxMzhmZDIwNDEzZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YjBhYmNlYzM0OGY0YTEwYTNhM2Q2ZjNlZmVlMDI5MDdmMjM1N2E2ZTE0OTQxYmQ1OGQ3Mjc3NzczNGJkMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhZWJlODdlYWM3OTIzMjZmYjkzMjBiZDM1N2Q0MGI2MjE1Zjg5MWY1YjdlNDc3NWQ3Yzk2NzlmMWUxMGVlYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmOTQ0YzdhYWQwOThjM2M3OTcwYmY1ZjFjMjc5ZDBjNzI1ZDM4ZDQyMjMwYmY2ODNhOWE0Yjk1OGQxOTNlZjEifQ"
         },
         {
@@ -50,15 +50,15 @@
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/package.json",
-          "version": "repo-file-v1:sha256:4ba6bf30bc5aa5cec5c1f4031b2b4fbea3b10998aaa2771e1fa04341c6fc84af"
+          "version": "repo-file-v1:sha256:0bdb31212d539e6d906ec5152b95c613f0f3bca5e3e4f619c18a25cdc60fe8cd"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-configuration/package.json",
-          "version": "repo-file-v1:sha256:d8637a1003d4127814995b33c6622d0ec9872787f15b46c57e92b817f99467dd"
+          "version": "repo-file-v1:sha256:5702389ee8419ad47abfe8154dfbdf67ab90cda4d50c0e67f36cc322284c9c2b"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-core/package.json",
-          "version": "repo-file-v1:sha256:b4cabd9bda8feba459ca619c178755a84cca7c6671eb07b9f476f1d76eb4c042"
+          "version": "repo-file-v1:sha256:086df9edcc228d89b17fc89c7f32ba73d232a4797ed8fc1f84787d127d010c95"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-examples/package.json",
@@ -66,23 +66,23 @@
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-generation/package.json",
-          "version": "repo-file-v1:sha256:2b0c87b923d3bb19ae3ac8e31e8b35e6232df2f252908a4d37f9370b46bf6980"
+          "version": "repo-file-v1:sha256:8e604c2786e44168516c3e0453bede111d09f2322afd25235fe703a71cdade89"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/package.json",
-          "version": "repo-file-v1:sha256:70a9b9b6f5e90b1caa2383768abca2a09474e4dc83ae4e4e4ea0fd46a92b498c"
+          "version": "repo-file-v1:sha256:70819d62f6b9ca9ceeeafd602d3124b06bbd2177de3defbb8ad1ff1080632270"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-nx/package.json",
-          "version": "repo-file-v1:sha256:2db47d155aff38c1495f0961762ec0835ac33f0eac6956dffa521da569ee17db"
+          "version": "repo-file-v1:sha256:3de1bc24f52d78820fb73a246db1dd3d44e223bdd3c40d37de74e4eedf5b4122"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-output/package.json",
-          "version": "repo-file-v1:sha256:8679ca13752daf7df7a14bbd1ef035dc743e955000c6d2e097ab88d5cc532ea5"
+          "version": "repo-file-v1:sha256:71f17ff0af18a4a804821dc7d59eb042652a2629f2d42e331650e5ba4301e582"
         },
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-validation/package.json",
-          "version": "repo-file-v1:sha256:80accabd01d30e4724a79064b8335382619b9042ec9f84562337c870ce6632a6"
+          "version": "repo-file-v1:sha256:c08360c0676d5e88e5fd84460595e07da604b17345b7fa221f369cbc2925c3f0"
         }
       ]
     },
@@ -141,6 +141,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-24T21:02:40.299Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }
