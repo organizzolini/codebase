@@ -7,6 +7,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { PullRequestIssueGithubService } from "./pull-request-issue-github.service";
 import {
+  MERGE_GROUP_REF_PATTERN,
   PULL_REQUEST_NUMBER_PATTERN,
   REMEDIATION_LINES,
   STEP_SUMMARY_FAILURE_MESSAGE,
@@ -22,9 +23,10 @@ import type { PullRequestIssuesResolution } from "./pull-request-issue.types";
  *
  * Reads `closingIssuesReferences` live through `gh pr view`, which is GitHub's
  * own record of the link — a closing keyword in the body or the Development
- * sidebar — so a plain `Related to #N` mention does not satisfy it. There is
- * no workflow-mode environment path: the `pull_request` webhook payload does
- * not carry the list, so a `gh` call is unavoidable either way.
+ * sidebar — so a plain `Related to #N` mention does not satisfy it. A pull
+ * request Dependabot opened is passed unchecked, since it writes its own body.
+ * The argument is a pull request number or, in the merge queue, the group's
+ * temporary ref, which carries one.
  *
  * The whole report is mirrored to `GITHUB_STEP_SUMMARY` when it is set. Exits
  * 0 when at least one issue is linked and 1 when none is or the input cannot
@@ -62,6 +64,26 @@ export class PullRequestIssueCommand extends CommandRunner {
   /** Reports one line, mirrors the report, and exits non-zero. */
   private failWithMessage(reportLines: string[], failure: string): never {
     this.appendToReport(reportLines, failure);
+    this.mirrorToStepSummary(reportLines);
+
+    return process.exit(1);
+  }
+
+  /** Reports that no issue is linked, then how to link one, and exits non-zero. */
+  private failWithNoIssue(
+    reportLines: string[],
+    pullRequestNumber: string,
+  ): never {
+    this.appendToReport(
+      reportLines,
+      `❌ Pull request ${pullRequestNumber} closes or references no issue`,
+    );
+    this.appendToReport(reportLines, "");
+
+    for (const remediationLine of REMEDIATION_LINES) {
+      this.appendToReport(reportLines, remediationLine);
+    }
+
     this.mirrorToStepSummary(reportLines);
 
     return process.exit(1);
@@ -110,7 +132,7 @@ export class PullRequestIssueCommand extends CommandRunner {
       "view",
       pullRequestNumber,
       "--json",
-      "closingIssuesReferences",
+      "author,closingIssuesReferences",
     ]);
 
     if (!view.available) {
@@ -132,7 +154,12 @@ export class PullRequestIssueCommand extends CommandRunner {
     );
   }
 
-  /** The pull request number this run checks, from the argument. */
+  /**
+   * The pull request number this run checks, from the argument.
+   *
+   * The argument is a number, or a merge queue's temporary ref with the number
+   * inside it.
+   */
   private resolvePullRequestNumber(
     reportLines: string[],
     passedParameters: string[],
@@ -140,24 +167,30 @@ export class PullRequestIssueCommand extends CommandRunner {
     if (passedParameters.length > 1) {
       this.failWithUsageError(
         reportLines,
-        "❌ Expected at most one argument, the pull request number",
+        "❌ Expected at most one argument, the pull request number or merge group ref",
       );
     }
 
     const argument = passedParameters[0];
 
     if (argument === undefined) {
-      this.failWithUsageError(reportLines, "❌ Expected a pull request number");
-    }
-
-    if (!PULL_REQUEST_NUMBER_PATTERN.test(argument)) {
       this.failWithUsageError(
         reportLines,
-        `❌ Not a pull request number: ${argument}`,
+        "❌ Expected a pull request number or a merge group ref",
       );
     }
 
-    return argument;
+    const pullRequestNumber =
+      MERGE_GROUP_REF_PATTERN.exec(argument)?.[1] ?? argument;
+
+    if (!PULL_REQUEST_NUMBER_PATTERN.test(pullRequestNumber)) {
+      this.failWithUsageError(
+        reportLines,
+        `❌ Not a pull request number or merge group ref: ${argument}`,
+      );
+    }
+
+    return pullRequestNumber;
   }
 
   // 🌎 Public Methods
@@ -178,19 +211,18 @@ export class PullRequestIssueCommand extends CommandRunner {
       this.failWithMessage(reportLines, resolution.failure);
     }
 
-    if (resolution.issueNumbers.length === 0) {
+    if (resolution.exempt) {
       this.appendToReport(
         reportLines,
-        `❌ Pull request ${pullRequestNumber} closes or references no issue`,
+        `⏭️ Pull request ${pullRequestNumber} is Dependabot's, which writes its own body: not checked`,
       );
-      this.appendToReport(reportLines, "");
-
-      for (const remediationLine of REMEDIATION_LINES) {
-        this.appendToReport(reportLines, remediationLine);
-      }
-
       this.mirrorToStepSummary(reportLines);
-      process.exit(1);
+
+      return;
+    }
+
+    if (resolution.issueNumbers.length === 0) {
+      this.failWithNoIssue(reportLines, pullRequestNumber);
     }
 
     this.appendToReport(

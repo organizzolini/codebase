@@ -17,12 +17,30 @@ export const STEP_SUMMARY_VARIABLE = "GITHUB_STEP_SUMMARY";
 export const STEP_SUMMARY_FAILURE_MESSAGE =
   "⚠️ Unable to write the report to GITHUB_STEP_SUMMARY";
 
-/** A pull request number, as an argument may spell one. */
+/** A pull request number, as an argument spells one. */
 export const PULL_REQUEST_NUMBER_PATTERN = /^\d+$/u;
+
+/**
+ * The pull request number inside a merge queue's temporary ref.
+ *
+ * A merge group carries no pull request payload, only its
+ * `gh-readonly-queue/<base>/pr-<number>-<sha>` ref, so the workflow hands that
+ * over as it is and this reads the number out of it.
+ */
+export const MERGE_GROUP_REF_PATTERN = /(?:^|\/)pr-(\d+)-[0-9a-f]+$/u;
+
+/**
+ * A pull request Dependabot opened, however `gh` spells the author.
+ *
+ * `gh pr view` reports a bot as `app/dependabot`, the REST API as
+ * `dependabot[bot]`. Dependabot writes its own body, so it cannot be asked to
+ * carry an issue link.
+ */
+export const DEPENDABOT_AUTHOR_PATTERN = /^(?:app\/)?dependabot(?:\[bot\])?$/u;
 
 /** How to run this check, printed whenever the input could not be used. */
 export const USAGE_LINES = [
-  "Usage: validation pull-request-issue <pull-request-number>",
+  "Usage: validation pull-request-issue <pull-request-number | merge-group-ref>",
 ];
 
 /** How to give a pull request the issue link this check wants. */
@@ -33,7 +51,8 @@ export const REMEDIATION_LINES = [
   "No issue yet? File or backfill one with the link-issue skill.",
 ];
 
-/** The shape a `gh pr view --json closingIssuesReferences` document is read as. */
+/** The shape a `gh pr view --json author,closingIssuesReferences` document is read as. */
 export const pullRequestDocumentSchema = z.object({
+  author: z.object({ login: z.string() }).optional(),
   closingIssuesReferences: z.array(z.object({ number: z.number() })).optional(),
 });

@@ -16,7 +16,16 @@ export interface GithubCliResult {
   readonly succeeded: boolean;
 }
 
-/** The issues a pull request closes, or why they could not be read. */
+/**
+ * The issues a pull request closes, or why they could not be read.
+ *
+ * `exempt` is true for a pull request whose author cannot be asked to link an
+ * issue, so the check passes it without looking at `issueNumbers`.
+ */
 export type PullRequestIssuesResolution =
-  | { readonly failure: string; readonly resolved: false }
-  | { readonly issueNumbers: readonly number[]; readonly resolved: true };
+  | {
+      readonly exempt: boolean;
+      readonly issueNumbers: readonly number[];
+      readonly resolved: true;
+    }
+  | { readonly failure: string; readonly resolved: false };

@@ -28,6 +28,7 @@ describe(PullRequestIssueService, () => {
       });
 
       expect(service.resolveFromDocument(document)).toStrictEqual({
+        exempt: false,
         issueNumbers: [12, 34],
         resolved: true,
       });
@@ -38,20 +39,43 @@ describe(PullRequestIssueService, () => {
 
       expect(
         service.resolveFromDocument('{"closingIssuesReferences":[]}'),
-      ).toStrictEqual({ issueNumbers: [], resolved: true });
+      ).toStrictEqual({ exempt: false, issueNumbers: [], resolved: true });
     });
 
     it("reads a missing or malformed field as no issues", () => {
       expect.hasAssertions();
 
       expect(service.resolveFromDocument("{}")).toStrictEqual({
+        exempt: false,
         issueNumbers: [],
         resolved: true,
       });
       expect(
         service.resolveFromDocument('{"closingIssuesReferences":"nope"}'),
-      ).toStrictEqual({ issueNumbers: [], resolved: true });
+      ).toStrictEqual({ exempt: false, issueNumbers: [], resolved: true });
     });
+
+    it.each(["app/dependabot", "dependabot[bot]", "dependabot"])(
+      "exempts a pull request authored by %s",
+      (login) => {
+        expect.hasAssertions();
+
+        expect(
+          service.resolveFromDocument(JSON.stringify({ author: { login } })),
+        ).toStrictEqual(expect.objectContaining({ exempt: true }));
+      },
+    );
+
+    it.each(["JimmyPaolini", "app/claude", "not-dependabot"])(
+      "does not exempt a pull request authored by %s",
+      (login) => {
+        expect.hasAssertions();
+
+        expect(
+          service.resolveFromDocument(JSON.stringify({ author: { login } })),
+        ).toStrictEqual(expect.objectContaining({ exempt: false }));
+      },
+    );
 
     it("fails on output that is not JSON", () => {
       expect.hasAssertions();

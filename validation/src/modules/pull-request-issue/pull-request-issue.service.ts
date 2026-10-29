@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common";
 
-import { pullRequestDocumentSchema } from "./pull-request-issue.constants";
+import {
+  DEPENDABOT_AUTHOR_PATTERN,
+  pullRequestDocumentSchema,
+} from "./pull-request-issue.constants";
 
 import type { PullRequestIssuesResolution } from "./pull-request-issue.types";
 
@@ -9,7 +12,8 @@ import type { PullRequestIssuesResolution } from "./pull-request-issue.types";
  *
  * `closingIssuesReferences` is GitHub's own record of the link, whether it came
  * from a closing keyword in the body or from the Development sidebar, so
- * nothing here parses a description. A document with the field missing reads
+ * nothing here parses a description. The author comes from the same document,
+ * so deciding whether to check at all costs no second request. A document with the field missing reads
  * as no issues rather than as an error: the check's job is to say the link is
  * absent.
  */
@@ -45,11 +49,11 @@ export class PullRequestIssueService {
     }
 
     const result = pullRequestDocumentSchema.safeParse(parsed);
-    const references = result.success
-      ? (result.data.closingIssuesReferences ?? [])
-      : [];
+    const document = result.success ? result.data : {};
+    const references = document.closingIssuesReferences ?? [];
 
     return {
+      exempt: DEPENDABOT_AUTHOR_PATTERN.test(document.author?.login ?? ""),
       issueNumbers: references.map((reference) => reference.number),
       resolved: true,
     };

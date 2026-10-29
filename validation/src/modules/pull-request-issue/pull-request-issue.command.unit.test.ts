@@ -43,9 +43,13 @@ const failed = (standardError: string): GithubCliResult => ({
   succeeded: false,
 });
 
-/** A `gh pr view --json closingIssuesReferences` document. */
-const pullRequestDocument = (issueNumbers: number[]): string =>
+/** A `gh pr view --json author,closingIssuesReferences` document. */
+const pullRequestDocument = (
+  issueNumbers: number[],
+  author = "JimmyPaolini",
+): string =>
   JSON.stringify({
+    author: { login: author },
     closingIssuesReferences: issueNumbers.map((number) => ({ number })),
   });
 
@@ -147,7 +151,7 @@ describe(PullRequestIssueCommand, () => {
       "view",
       "7",
       "--json",
-      "closingIssuesReferences",
+      "author,closingIssuesReferences",
     ]);
     expect(reportLines.join("\n")).toContain("#12, #34");
   });
@@ -164,6 +168,34 @@ describe(PullRequestIssueCommand, () => {
     expect(reportLines.join("\n")).toContain("Closes #<issue-number>");
   });
 
+  it("reads the pull request number out of a merge group ref", async () => {
+    expect.hasAssertions();
+
+    vi.mocked(githubService.run).mockReturnValue(
+      succeeded(pullRequestDocument([3])),
+    );
+
+    await expect(
+      runCommand([
+        "gh-readonly-queue/main/pr-1981-3b0ad097e435d3aa39b7e043931dd1ffd7cb64ff",
+      ]),
+    ).resolves.toBe(false);
+    expect(githubService.run).toHaveBeenCalledWith(
+      expect.arrayContaining(["1981"]),
+    );
+  });
+
+  it("passes a Dependabot pull request that links no issue", async () => {
+    expect.hasAssertions();
+
+    vi.mocked(githubService.run).mockReturnValue(
+      succeeded(pullRequestDocument([], "app/dependabot")),
+    );
+
+    await expect(runCommand(["7"])).resolves.toBe(false);
+    expect(reportLines.join("\n")).toContain("Dependabot");
+  });
+
   it("fails with usage when no pull request number is given", async () => {
     expect.hasAssertions();
 
@@ -175,7 +207,9 @@ describe(PullRequestIssueCommand, () => {
     expect.hasAssertions();
 
     await expect(runCommand(["abc"])).resolves.toBe(true);
-    expect(reportLines.join("\n")).toContain("Not a pull request number: abc");
+    expect(reportLines.join("\n")).toContain(
+      "Not a pull request number or merge group ref: abc",
+    );
   });
 
   it("fails with usage on more than one argument", async () => {
