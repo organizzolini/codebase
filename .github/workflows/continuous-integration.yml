@@ -50,7 +50,7 @@ jobs:
             emoji: 🧑‍🎨
           - target: lint-code
             name: Lint
-            emoji: 🧑‍🔧
+            emoji: 🧑‍⚕️
           - target: deprecate-code
             name: Deprecate
             emoji: 🧟
@@ -120,7 +120,7 @@ jobs:
           # times slower.
           - target: verify-publishable-packages
             name: Publishable Packages
-            emoji: 📦
+            emoji: 🤵
             timeout-minutes: 15
           # Plans the OpenRouter Terraform when a pull request changes it, and
           # comments what the plan would create, update, replace, and delete. It
@@ -132,7 +132,7 @@ jobs:
           # is not given the secrets the plan needs.
           - target: plan-terraform
             name: Infrastructure
-            emoji: 🏗️
+            emoji: 🧑‍🚀
             timeout-minutes: 15
           # Builds and tests the devcontainer image when a pull request changes
           # a file the image or its test reads, without publishing it:
@@ -141,7 +141,7 @@ jobs:
           # when the change calls for it. It needs none of the Node setup.
           - target: build-devcontainer
             name: Devcontainer
-            emoji: 🐋
+            emoji: 🧑‍🏭
             timeout-minutes: 20
 
     steps:

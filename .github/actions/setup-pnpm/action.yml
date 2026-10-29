@@ -1,4 +1,4 @@
-name: 📦 Setup pnpm
+name: 🧖 Setup pnpm
 description: |
   Install the pnpm version `package.json`'s `packageManager` field pins,
   restoring the install from cache rather than refetching it every run
