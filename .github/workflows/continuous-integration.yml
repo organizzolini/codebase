@@ -267,7 +267,7 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@v2
+        uses: borchero/terraform-plan-comment@v3
         with:
           token: ${{ github.token }}
           working-directory: infrastructure/terraform/openrouter
@@ -278,7 +278,7 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@v2
+        uses: borchero/terraform-plan-comment@v3
         with:
           token: ${{ github.token }}
           working-directory: infrastructure/terraform/github
@@ -289,7 +289,7 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@v2
+        uses: borchero/terraform-plan-comment@v3
         with:
           token: ${{ github.token }}
           working-directory: infrastructure/terraform/linode
