@@ -153,43 +153,35 @@ jobs:
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
             validation/src/validation.main.ts issue-metadata --all
 
-      # A merge group carries no pull request payload, only its temporary
-      # `gh-readonly-queue/<base>/pr-<number>-<sha>` ref. The link is read live
-      # through this number, so a body edited after the pull request entered
-      # the queue is caught here. The author is read too, since `github.actor`
-      # is whoever queued the pull request, never the bot that opened it.
-      - name: 🚂 Resolve Merge Group Pull Request
-        id: merge-group
-        if: github.event_name == 'merge_group'
+      # Every pull request closes or references an issue through GitHub's own
+      # link (a closing keyword in the body, or the Development sidebar). A
+      # merge group carries no pull request payload, only its temporary
+      # `gh-readonly-queue/<base>/pr-<number>-<sha>` ref, so the number is parsed
+      # from it and the link is read live: a body edited after queueing is
+      # caught. The author is read too, since `github.actor` is whoever queued
+      # the pull request, never the bot that opened it. Skipped for a pull
+      # request Dependabot authored, whose body it writes itself.
+      - name: 🔗 Validate Pull Request Issue
+        if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_REF: ${{ github.event.merge_group.head_ref }}
+          PULL_REQUEST_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          PULL_REQUEST_NUMBER="$(sed -nE 's#^.*/pr-([0-9]+)-[0-9a-f]+$#\1#p' <<< "$HEAD_REF")"
-          if [ -z "$PULL_REQUEST_NUMBER" ]; then
-            echo "::error::Unable to parse a pull request number from ${HEAD_REF}"
-            exit 1
+          if [ "$GITHUB_EVENT_NAME" = "merge_group" ]; then
+            PULL_REQUEST_NUMBER="$(sed -nE 's#^.*/pr-([0-9]+)-[0-9a-f]+$#\1#p' <<< "$HEAD_REF")"
+            [ -n "$PULL_REQUEST_NUMBER" ] || {
+              echo "::error::Unable to parse a pull request number from ${HEAD_REF}"
+              exit 1
+            }
+            PULL_REQUEST_AUTHOR="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST_NUMBER}" \
+              --jq .user.login)"
           fi
-          PULL_REQUEST_AUTHOR="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST_NUMBER}" \
-            --jq .user.login)"
-          echo "pull-request-number=${PULL_REQUEST_NUMBER}" >> "$GITHUB_OUTPUT"
-          echo "pull-request-author=${PULL_REQUEST_AUTHOR}" >> "$GITHUB_OUTPUT"
-
-      # Every pull request closes or references an issue through GitHub's own
-      # link (a closing keyword in the body, or the Development sidebar), which
-      # `gh pr view --json closingIssuesReferences` reports. Skipped for a pull
-      # request Dependabot authored, whose body it writes itself; keyed off the
-      # author, not `github.actor`.
-      - name: 🔗 Validate Pull Request Issue
-        if: >-
-          (github.event_name == 'pull_request' || github.event_name == 'merge_group') &&
-          (github.event.pull_request.user.login ||
-          steps.merge-group.outputs.pull-request-author) != 'dependabot[bot]'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PULL_REQUEST_NUMBER: >-
-            ${{ github.event.pull_request.number || steps.merge-group.outputs.pull-request-number }}
-        run: |
+          if [ "$PULL_REQUEST_AUTHOR" = "dependabot[bot]" ]; then
+            echo "⏭️ Dependabot writes its own body, not checked."
+            exit 0
+          fi
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
             validation/src/validation.main.ts pull-request-issue "$PULL_REQUEST_NUMBER"
 
