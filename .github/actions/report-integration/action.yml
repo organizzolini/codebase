@@ -1,4 +1,4 @@
-name: 📊 Report Integration
+name: 🙋 Report Integration
 description: Process artifacts, baseline reports, and coverage after a CI run
 
 inputs:
