@@ -148,15 +148,18 @@ locals {
     "🧑‍🎨 Format",
     "🧑‍🎓 Typecheck",
     "🕵️ Secure",
-    "🧑‍🔬 Test",
     "💂 Guard",
     "👷 Build",
     "🧑‍🔧 Lint",
     "🧟 Deprecate",
     "🧑‍⚖️ Comply",
-    "🧑‍🔬 Test Meanderaw",
-    "🧑‍🔬 Test IC Suite",
+    "🧑‍🔬 Test Affirmancy",
     "🧑‍🔬 Test Caelundas",
+    "🧑‍🔬 Test Codebase",
+    "🧑‍🔬 Test Common",
+    "🧑‍🔬 Test IC Suite",
+    "🧑‍🔬 Test Lexico",
+    "🧑‍🔬 Test Meanderaw",
   ]
 }
 

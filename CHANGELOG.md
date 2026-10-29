@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.41.4](https://github.com/organizzolini/codebase/compare/v3.41.3...v3.41.4) (2026-10-29)
+
+### 📝 Documentation
+
+* **documentation:** 📝 refresh OpenWiki ([#2031](https://github.com/organizzolini/codebase/issues/2031)) ([09f661c](https://github.com/organizzolini/codebase/commit/09f661c6e918e9cbdbf30841bc0e3f31fa63c917))
+
+## [3.41.3](https://github.com/organizzolini/codebase/compare/v3.41.2...v3.41.3) (2026-10-29)
+
+## [3.41.2](https://github.com/organizzolini/codebase/compare/v3.41.1...v3.41.2) (2026-10-29)
+
+### ♻️ Code Refactoring
+
+* **infrastructure:** ♻️ rename the openrouter preset to refresh-documentation ([#2030](https://github.com/organizzolini/codebase/issues/2030)) ([206fdd4](https://github.com/organizzolini/codebase/commit/206fdd4cdc05487b700c306541ce4b1db7c410f1))
+
 ## [3.41.1](https://github.com/organizzolini/codebase/compare/v3.41.0...v3.41.1) (2026-10-29)
 
 ## [3.41.0](https://github.com/organizzolini/codebase/compare/v3.40.0...v3.41.0) (2026-10-29)

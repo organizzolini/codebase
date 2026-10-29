@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:a9c953c675694779bd7c42aa1c3177c2c0342b67ad12659939302f30f96206f1",
+  "claims": [
+    {
+      "id": "claim_a1cc8f0d72204aa1b98d74d6cdb4f960",
+      "statement": "The caelundas-cli test suite uses Vitest with a shared base configuration extended for CLI-specific coverage rules that exclude entity files and test files from coverage.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/vitest.config.ts",
+          "version": "repo-file-v1:sha256:9fb4e236c84cbe95596cfa4f08f059d7e9292ee1181e23713247a82513061e91"
+        }
+      ]
+    },
+    {
+      "id": "claim_46110818124d43e59a5bea98bcba8974",
+      "statement": "The CLI entry point CaelundasCommand is tested at unit level by mocking nest-commander's CommandFactory.run to verify bootstrap behavior without executing the command.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/src/caelundas-cli.main.unit.test.ts",
+          "version": "repo-file-v1:sha256:3b565283b66594944fccb9543744771fce0c9bdbf9bd008f6f84544284ed470f"
+        }
+      ]
+    },
+    {
+      "id": "claim_cc2b68f19db74994b8b95d331d577bc2",
+      "statement": "End-to-end CLI tests boot a real NestJS application context per run using runCalendarCommand utility, replacing only PerfectiveService and ProgressiveService with stand-in detectors while running real input parsing, ephemeris verification, calendar rendering, and SQLite persistence.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/src/caelundas-cli.main.end-to-end.test.ts",
+          "version": "repo-file-v1:sha256:9f086bcffbc7e7e941a8185a0e75e4d17d96104c89333d37648049e7b1e9a1bc"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/calendar-command.utilities.ts",
+          "version": "repo-file-v1:sha256:870409641ed9b9db504ff2f1f63da1452f9fd666ea5518fbfbedb8ecae1fc75d"
+        }
+      ]
+    },
+    {
+      "id": "claim_9ec5715763e944799905407783f7e466",
+      "statement": "Temporary SQLite databases are created per test suite in os.tmpdir() with migrations applied, and CAELUNDAS_SQLITE_DATABASE is pointed at the file for the test duration.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/temporary-database.utilities.ts",
+          "version": "repo-file-v1:sha256:cd141b30b01a6b1e0e274dd9968b30c3328caf4d2d8a6b89b053d8f982dab400"
+        }
+      ]
+    },
+    {
+      "id": "claim_da829ccc8d67413e80b3a036f4a6dbbe",
+      "statement": "Event detection accuracy is verified against committed reference fixtures from USNO, JPL Horizons, and NASA, each containing source metadata, retrieval date, tolerance minutes, window parameters, expected events with summaries and times, absent events that must not appear, and exact count requirements.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference-fixtures.constants.ts",
+          "version": "repo-file-v1:sha256:0731e0ce752f8603a9ef67d6cd45bca322640a0f14b883234a7a086201bc63e0"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference-fixtures.utilities.ts",
+          "version": "repo-file-v1:sha256:5ce48bdbfc1be6c2ac1a1725a516e2743699c797fb81c9e2ec97e9f528a9448e"
+        }
+      ]
+    },
+    {
+      "id": "claim_3d1245045d4a476c8970320a0ab3745a",
+      "statement": "The assertReferenceEvents utility pairs each reference event with the nearest detected event sharing its summary, computes start/end time deltas, passes if within tolerance, and fails with detailed messages citing fixture source, retrieval date, and per-event deltas; it also enforces absent and counts constraints.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference-fixtures.utilities.ts",
+          "version": "repo-file-v1:sha256:5ce48bdbfc1be6c2ac1a1725a516e2743699c797fb81c9e2ec97e9f528a9448e"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference-fixtures.utilities.unit.test.ts",
+          "version": "repo-file-v1:sha256:8d67e03c3f4a17d03cad8f438e119ebeef552c7baa49503cdac3065776efded0"
+        }
+      ]
+    },
+    {
+      "id": "claim_748b3b1f5ae24cb1b904824af953d5be",
+      "statement": "Moon phase detection tests sweep ±30 minutes around each USNO 2026 published phase, computing Moon/Sun ephemeris via real EphemerisService and running MonthlyLunarCycleService.detect minute-by-minute.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/moon-phases-reference.end-to-end.test.ts",
+          "version": "repo-file-v1:sha256:526c592febaba8f22bc6217de806d2577b9b4607ee0b9dacc8c4da7af3379f6b"
+        }
+      ]
+    },
+    {
+      "id": "claim_de537a019ec94e179c45c5f01778876e",
+      "statement": "Compound aspect tests run the full PipelineWindowModule (both perfective and progressive passes) over real time windows, verifying deduplication, T-square emission as one boundary pair plus one span, and dissolution alignment with leg endings.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/compound-aspects.end-to-end.test.ts",
+          "version": "repo-file-v1:sha256:1a3a7f0265ee0f55a5161da1526127611361c0201f333eb444616c54e65ed719"
+        }
+      ]
+    },
+    {
+      "id": "claim_09abd654ee804c3e968817f0a19beea6",
+      "statement": "Compound aspect seeding tests verify that simple aspects forming at a window's first minute were out of orb one minute earlier using real ephemeris, not caelundas' own state.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/compound-aspect-seeding.end-to-end.test.ts",
+          "version": "repo-file-v1:sha256:e43a21cde4b602778d0ac14577c065ab9886cfbfdba2b9c47a47eaf915e0a869"
+        }
+      ]
+    },
+    {
+      "id": "claim_442b20f69aa54d09b5d1324051b1338d",
+      "statement": "Retrograde station detection is tested at unit level by spying on private isRetrograde/isDirect predicates, and at integration level using 61-minute longitude windows (30 before/after) for all retrogradeBodies simultaneously, verifying event shape including tags, summary, and timestamp.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.integration.test.ts",
+          "version": "repo-file-v1:sha256:3543947759de9236ab67d08aaa1bd33e3f71a62b6aa97fca884e06fad40ddd37"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:ff63ac22c3c62b0e959e12a44eec17ac77ac548f9d6a3ae3e3c0fc36f5080aae"
+        }
+      ]
+    },
+    {
+      "id": "claim_b677df54aedb48808bf11f3ff8e92a80",
+      "statement": "Stellium detection tests use JPL Horizons longitude fixtures to build conjunction registries at boundary minutes, run StelliumService.detect/detectProgressive, and compare boundaries and spans against fixture expectations.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/stellium-reference.unit.test.ts",
+          "version": "repo-file-v1:sha256:a2500f1d5a55a734796c0058604134f3f151f4bf7373d98515cf610902121006"
+        }
+      ]
+    },
+    {
+      "id": "claim_ec3f39a6519d423c8ff09161d325b072",
+      "statement": "Pipeline window tests assemble a minimal Nest module with PerfectiveModule and ProgressiveModule, then run full detection sweeps day-by-day, minute-by-minute via runPipelineWindow, returning perfective, progressive, and combined events.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/pipeline-window.functions.ts",
+          "version": "repo-file-v1:sha256:5782d8d2afe3f0a68650b90be669c4c93c00ad00080afd5b034c1d67b156bce3"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/pipeline-window.module.ts",
+          "version": "repo-file-v1:sha256:72c339e3579d172b640096149164541974fbbe8b3717ab1185d5f26e4dde65e9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d79fa6ce24324c2c95f11b98c9b5d5f6",
+      "statement": "The caelundas-web test suite uses Vitest with jsdom environment, excluding browser-only files, server functions, and router entry points from coverage, and uses a path alias @ for vendored components.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/vitest.config.ts",
+          "version": "repo-file-v1:sha256:cc5fddd0998928d65e4b86d45df59ebf907d6871435cc20a7cc2126a76dbdb3a"
+        }
+      ]
+    },
+    {
+      "id": "claim_e86f5723d1be4ce1a675f677b275ef66",
+      "statement": "Web global test setup polyfills jsdom's missing layout/scroll/animation/resize APIs: scrollTo no-op, getAnimations returns empty array, ResizeObserver fires immediately with getBoundingClientRect, and a viewport simulation is installed.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/testing/setup.ts",
+          "version": "repo-file-v1:sha256:59196332801b2ae868f3fee3f9d7bd093af577e6a84336db019d85be885b48fa"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/testing/viewport.ts",
+          "version": "repo-file-v1:sha256:dea27e7171d90d0ec18b697bc04b29642565d68a401212410db03110e128cda0"
+        }
+      ]
+    },
+    {
+      "id": "claim_0d28bee64f2244159e79c591dcc880bd",
+      "statement": "Component unit tests use React Testing Library with Vitest, rendering components with props, querying by role/test-id/text, asserting structure and accessibility, and firing events for interactions.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/src/components/calendar-toolbar.unit.test.tsx",
+          "version": "repo-file-v1:sha256:ffa8d2b1f4d62072c96560339da26f6d06e22d5a7693191abe6fae7a3647b009"
+        }
+      ]
+    },
+    {
+      "id": "claim_8bdf36c15c134acaad72ce76b9857f0b",
+      "statement": "Route integration tests render the full TanStack Start router at a given path using renderRoute, which mocks the __root route, injects a test eventsDatabase, runs the route loader, and uses createMemoryHistory for navigation simulation.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/src/routes/index.integration.test.tsx",
+          "version": "repo-file-v1:sha256:8a107dd176d2d64e4314ea79165fa9deb4f5059a27ebd45499e3b9b4021beb31"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/testing/render-route.tsx",
+          "version": "repo-file-v1:sha256:c005f06654c4cf80e2ec07560f70477d78797a13a3ca3f3898b772f50a9ff09c"
+        }
+      ]
+    },
+    {
+      "id": "claim_c92bae3c14ad424d8229f829b8b48a93",
+      "statement": "The web events database is built in-memory from committed SQL: migration *-up.sql files in order, events-seed.sql for reference events, events-read-model.sql for derived tables, with local-time SQL functions registered, backed by node:sqlite synchronous executor.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/testing/events-database.ts",
+          "version": "repo-file-v1:sha256:d941af45ce67bdd71d59aa0eebdcf2c1315217cac556cd5ed7ec0ee6e0a92601"
+        }
+      ]
+    },
+    {
+      "id": "claim_ac153e9f559d4a1d900476eab790747f",
+      "statement": "Test database variants include createFailingEventsDatabase (rejects all reads until recover), createRecordingEventsDatabase (records queries with optional delay), and createTestSqlExecutor (bare executor for direct SQL verification).",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/testing/events-database.ts",
+          "version": "repo-file-v1:sha256:d941af45ce67bdd71d59aa0eebdcf2c1315217cac556cd5ed7ec0ee6e0a92601"
+        }
+      ]
+    },
+    {
+      "id": "claim_b241ff7267e24d0eae4d1dae928ac5a6",
+      "statement": "The common persistence testing layer provides startDatabaseTestingModule which starts a throwaway PostgreSQL container via Testcontainers, sets PROJECT_POSTGRES_* env vars, compiles a Nest testing module with ConfigModule and PostgresqlModule (or project's own database module), runs migrations, and returns a DatabaseTestingModule with close, container, dataSource, module, and repository accessor.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/testing/persistence-testing.types.ts",
+          "version": "repo-file-v1:sha256:b3a51ee9b307e84400ccc21f318a30dd0dc3b49ed738799ba7465738e4b548e2"
+        },
+        {
+          "resource": "repo://projects/common/persistence/testing/persistence-testing.utilities.ts",
+          "version": "repo-file-v1:sha256:678c0f4fc556bfe0d446b8ca78a5f1f416b892bc5d3ab957d2daf48824f263aa"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-29T03:39:46.432Z"
+  }
+}

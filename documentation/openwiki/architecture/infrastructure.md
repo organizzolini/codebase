@@ -1,11 +1,11 @@
 ---
 type: concept
 title: Infrastructure & Deployment
-description: Documents Docker Compose services (Postgres, SearxNG, Open WebUI), the reusable kubernetes-job Helm chart for batch job deployments with PVC storage, and Terraform provisioning for Linode LKE clusters.
-tags: [infrastructure, deployment, kubernetes, helm, terraform, docker-compose, linode]
+description: Documents Docker Compose services (Postgres, SearxNG, Open WebUI), the reusable kubernetes-job Helm chart for batch job deployments with PVC storage, Terraform modules for Linode LKE, OpenRouter, GitHub, and state management, plus GitHub Actions CI/CD workflows.
+tags: [infrastructure, deployment, kubernetes, helm, terraform, docker-compose, linode, github-actions, ci-cd]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-fde0a41d410be4adddc7d9c3
     resource: repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md
@@ -27,12 +27,12 @@ sources:
     resource: repo://infrastructure/terraform/main.tf
   - id: openwiki-source-0aba2796cdeec5dfca2ad43b
     resource: repo://infrastructure/terraform/variables.tf
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
 # Infrastructure & Deployment
 
-This page documents the infrastructure tooling that provisions cloud Kubernetes clusters, runs local development services, and deploys batch workloads to Kubernetes.
+This page documents the infrastructure tooling that provisions cloud Kubernetes clusters, runs local development services, deploys batch workloads to Kubernetes, and automates continuous integration and deployment.
 
 ## Overview
 
@@ -42,10 +42,10 @@ The `infrastructure/` directory contains three independent deployment layers:
 |-------|------------|---------|
 | **Local services** | Docker Compose | PostgreSQL, SearxNG, Open WebUI for local development |
 | **Kubernetes workloads** | Helm (`kubernetes-job`) | Reusable chart for batch Jobs with optional PVC storage |
-| **Cluster provisioning** | Terraform | Linode LKE (Linode Kubernetes Engine) cluster |
+| **Cluster & services provisioning** | Terraform | Linode LKE cluster, OpenRouter workspace/keys/presets, GitHub repository settings, Linode Object Storage bucket for Terraform state |
 
-<!-- openwiki: broken internal link [../workflows/nx-targets.md] file "../workflows/nx-targets.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-These layers are orchestrated through [Nx targets](../workflows/nx-targets.md) defined in `infrastructure/project.json`.
+<!-- openwiki: broken internal link [project.json] file "project.json" does not exist. Fix the href or restore the target, then delete this comment. -->
+These layers are orchestrated through [Nx targets](project.json) defined in `infrastructure/project.json`.
 
 ---
 
@@ -90,7 +90,7 @@ The script reads `POSTGRES_PROJECTS` (a space-separated list in the Compose envi
 2. A database: `<project>_development` owned by that role
 3. A schema: `<project>` inside that database, owned by the role
 
-Current `POSTGRES_PROJECTS` value: `caelundas lexico meanderaw`
+Current `POSTGRES_PROJECTS` value: `lexico meanderaw`
 
 #### Adding a Project to an Existing Volume
 
@@ -104,7 +104,8 @@ nx run infrastructure:postgres:up
 docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh
 ```
 
-The script stops at the first object that already exists, so specify only the projects the volume lacks. See [ADR 0022](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md) for the full rationale and meanderaw's one exception (its database existed from a prior ADR).
+<!-- openwiki: broken internal link [../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md] file "../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+The script stops at the first object that already exists, so specify only the projects the volume lacks. See [ADR 0022](../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md) for the full rationale and meanderaw's one exception (its database existed from a prior ADR).
 
 ---
 
@@ -189,36 +190,90 @@ This runs in CI as part of `lint-code`.
 
 ---
 
-## Cluster Provisioning (Terraform)
+## Cluster & Services Provisioning (Terraform)
 
-Terraform at `infrastructure/terraform/` provisions a **Linode LKE (Linode Kubernetes Engine)** cluster.
+Terraform provisions four independent roots, all using a shared Linode Object Storage bucket (S3-compatible backend) for state:
 
-### Configuration
+### Directory Structure
 
-| File | Purpose |
-|------|---------|
-| `main.tf` | Cluster resource definition |
-| `variables.tf` | Input variables |
+```
+infrastructure/terraform/
+├── main.tf                 # Root module: Linode LKE cluster
+├── variables.tf            # Input variables (linode_token, linode_region, cluster_id)
+├── openrouter/             # OpenRouter workspace, API key, guardrail, preset
+├── github/                 # GitHub repository settings, ruleset, Actions variables
+└── linode/                 # Object Storage bucket and access key for Terraform state
+```
 
-**`main.tf`** defines:
-- A single-node pool (`g6-standard-1`) with autoscaling (1–3 nodes)
-- Kubernetes version 1.34
-- Region configurable via variable (default: `us-east`)
-- Cluster label `lexico-prod`
-- Outputs the kubeconfig (sensitive)
+### Root Module: Linode LKE Cluster (`main.tf`)
 
-**`variables.tf`** declares:
-- `linode_token` (sensitive) — Linode API token
-- `linode_region` (default: `us-east`)
-- `linode_kubernetes_engine_cluster_id` — for import operations
+Provisions a **Linode LKE (Linode Kubernetes Engine)** cluster:
 
-### Provisioning Workflow
+- **Label**: `lexico-prod`
+- **Kubernetes version**: 1.34
+- **Region**: configurable via `linode_region` variable (default: `us-east`)
+- **Node pool**: `g6-standard-1`, count 1, autoscaler min 1 / max 3
+- **Required variable**: `linode_token` (sensitive)
+- **Output**: kubeconfig (sensitive)
 
 ```bash
 cd infrastructure/terraform
 terraform init
 terraform plan -var="linode_token=$LINODE_API_TOKEN"
 terraform apply -var="linode_token=$LINODE_API_TOKEN"
+```
+
+### Module: OpenRouter (`terraform/openrouter/`)
+
+Manages OpenRouter resources for the `refresh-documentation` workflow:
+
+- **Workspace**: imports existing workspace by ID
+- **Guardrail**: `refresh-documentation` with allowed models and monthly USD limit
+- **API Key**: imports existing key by name (`refresh-documentation`), preserves its value
+- **Preset**: ranked model list written via `terraform_data` + `local-exec` (provider lacks preset resource)
+- **State backend**: Linode Object Storage bucket, key `codebase/terraform.tfstate`
+
+### Module: GitHub (`terraform/github/`)
+
+Manages GitHub repository configuration:
+
+- **Repository**: imported, squash merges only, security features enabled
+- **Branch protection**: `main` ruleset with required status checks, linear history
+- **Actions variables**: `OPENWIKI_MODEL_ID` sourced from OpenRouter module output
+- **State backend**: same bucket, key `codebase/github.tfplan`
+- **Depends on**: OpenRouter module outputs (applied first in CD)
+
+### Module: Linode (`terraform/linode/`)
+
+Manages the Object Storage bucket that holds **all Terraform state**:
+
+- **Bucket**: imported, label configurable, region configurable, ACL private, `prevent_destroy = true`
+- **Access key**: imported by numeric ID, read_write permissions on the bucket, `prevent_destroy = true`
+- **State backend**: same bucket, key `codebase/linode.tfstate`
+
+### State Management
+
+All four roots share a **Linode Object Storage bucket** as an S3-compatible backend:
+
+- **Bucket**: created/managed by `linode` root, imported by others
+- **Endpoint**: `AWS_ENDPOINT_URL_S3` (Linode S3 endpoint)
+- **Credentials**: `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` (Linode Object Storage key)
+- **No state locking**: CI serializes applies via workflow concurrency group
+- **Backend config**: `skip_credentials_validation`, `skip_metadata_api_check`, `skip_region_validation`, `skip_requesting_account_id`, `skip_s3_checksum`
+
+### Provisioning Workflow
+
+Each root is initialized, planned, and applied independently via Nx targets:
+
+```bash
+# Initialize a root (--configuration=openrouter, github, or linode)
+nx run infrastructure:terraform-init:openrouter
+
+# Plan a root and write plan.tfplan
+nx run infrastructure:terraform-plan:openrouter
+
+# Apply a root (run by CD on main; run locally only on purpose)
+nx run infrastructure:terraform-apply:openrouter
 ```
 
 ### Trivy Configuration Scan
@@ -243,16 +298,118 @@ All infrastructure operations are available as Nx targets in `infrastructure/pro
 | `postgres` | `up`, `down`, `recreate` | Start, stop, or recreate the local PostgreSQL container (recreate removes the volume) |
 | `searxng` | `up`, `down`, `open` | Manage the SearxNG Docker service |
 | `open-webui` | `up`, `down`, `open` | Manage the Open WebUI Docker service |
-| `terraform` | `plan` (default), `import` | Run Terraform commands against the cluster |
+| `terraform` | `plan` (default), `import` | Run Terraform commands against the LKE cluster root |
+| `terraform-init` | `openrouter`, `github`, `linode` | Initialize a Terraform root against its Linode Object Storage backend |
+| `terraform-plan` | `openrouter`, `github`, `linode` | Plan a Terraform root and write `plan.tfplan` |
+| `terraform-apply` | `openrouter`, `github`, `linode` | Apply a Terraform root (CD runs on main) |
+| `terraform-format` | — | Check Terraform formatting (`fmt -check -diff -recursive`) |
+| `terraform-validate` | — | Validate Terraform without backend or credentials |
 | `trivy-config` | — | Scan Terraform infrastructure code for misconfigurations using Trivy |
 | `helm-lint` | — | Lint the `kubernetes-job` chart against its base values |
-| `compose-config` | — | Validate the Docker Compose file |
+| `compose-config` | — | Validate the Docker Compose file (creates missing `.env` from `.env.default`) |
 
 ### CI Integration
 
 - `helm-lint` and `compose-config` run in CI as part of `lint-code` (the Lint leg of `.github/workflows/continuous-integration.yml`)
 - `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one
+- `terraform-format` and `terraform-validate` run in CI as part of `lint-code`
 - `trivy-config` runs in the Secure Code workflow when triggered
+
+---
+
+## GitHub Actions CI/CD Workflows
+
+### `setup-codebase` Composite Action (`.github/actions/setup-codebase/action.yml`)
+
+Reusable setup for every CI/CD job. All optional steps are gated by inputs so a job pays only for what it uses.
+
+| Input | Default | Purpose |
+|-------|---------|---------|
+| `gitleaks` | `false` | Install gitleaks (secret scanning) |
+| `install` | `true` | Install node dependencies with pnpm |
+| `nx-cache` | `true` | Restore and save the Nx task cache |
+| `nx-cache-scope` | `${{ github.job }}` | Cache key partition (matrix jobs must pass unique value) |
+| `nx-graph-cache` | `true` | Restore/save Nx project graph (~11s cold start savings) |
+| `nx-shas` | `true` | Resolve NX_BASE/NX_HEAD for `nx affected` |
+| `nx-base` | `last-successful` | Push base: `last-successful` or `push-before` |
+| `python-dependencies` | `true` | Sync uv workspace into `.venv` (for yamllint, sqlfluff) |
+| `postgres-client` | `false` | Install PostgreSQL 18 client tools (pg_dump, pg_restore) |
+| `trivy` | `false` | Install trivy (infrastructure scanning) |
+| `terraform` | `false` | Install terraform (lint, plan, apply) |
+| `eslint-cache` | `false` | Restore/save ESLint cache |
+| `uv` | `true` | Install uv (used by yaml-lint, sqlfluff on every TS project) |
+
+**Outputs**: `nx-cache-primary-key`, `nx-cache-scope` (for `cleanup-codebase`)
+
+### `cleanup-codebase` Composite Action (`.github/actions/cleanup-codebase/action.yml`)
+
+Saves Nx cache progress even on timeout/cancellation. Call as last step with `if: always()`.
+
+| Input | Default | Purpose |
+|-------|---------|---------|
+| `nx-cache` | `true` | Save the Nx task cache |
+| `nx-cache-primary-key` | — | Exact-match key from `setup-codebase` output (required when `nx-cache=true`) |
+| `nx-cache-scope` | `""` | Names the artifact for merge group |
+| `nx-cache-artifact` | `false` | Upload cache as artifact for merge group (PRs only) |
+| `eslint-cache` | `false` | Save ESLint cache |
+
+### Continuous Integration (`.github/workflows/continuous-integration.yml`)
+
+Runs on push to `main`, PRs, merge group, and workflow_dispatch.
+
+**Concurrency**: per-workflow + ref, cancels in-progress on non-main refs.
+
+**Matrix jobs** (fail-fast: false):
+
+| Target | Name | Emoji | Timeout |
+|--------|------|-------|---------|
+| `typecheck-code` | Typecheck | 🧑‍🎓 | 12m |
+| `format-code` | Format | 🧑‍🎨 | 12m |
+| `lint-code` | Lint | 🧑‍🔧 | 12m |
+| `deprecate-code` | Deprecate | 🧟 | 12m |
+| `guard-code` | Guard | 💂 | 20m |
+| `test-code` | Test | 🧑‍🔬 | 12m |
+| `test-code` (caelundas shard) | Test Caelundas | 🧑‍🔬 | 12m |
+| `test-code` (meanderaw-cli shard) | Test Meanderaw | 🧑‍🔬 | 12m |
+| `test-code` (ic-suite shard) | Test IC Suite | 🧑‍🔬 | 12m |
+| `secure-code` | Secure | 🕵️ | 12m |
+| `build-projects` | Build | 👷 | 12m |
+
+**Key setup-codebase inputs per job**: `secure-code` enables `trivy`; `lint-code` runs `helm-lint`, `compose-config`, `terraform-format`, `terraform-validate` via Nx.
+
+### Continuous Deployment (`.github/workflows/continuous-deployment.yml`)
+
+Runs on push to `main` and workflow_dispatch. **Never cancels** (`cancel-in-progress: false`).
+
+**Matrix targets**:
+
+| ID | Name | Emoji | Timeout | Purpose |
+|----|------|-------|---------|---------|
+| `build-devcontainer` | Devcontainer | 🧑‍🏭 | 20m | Build & test devcontainer image |
+| `push-releases` | Releases | 🦸 | 32m | Version, build, publish npm packages |
+| `apply-terraform` | Infrastructure | 🏗️ | 20m | Apply Terraform roots on main |
+
+**Infrastructure apply order** (enforced by CD):
+1. `openrouter` — GitHub root reads its outputs
+2. `github` — Depends on OpenRouter outputs
+3. `linode` — Manages state bucket
+
+**Secrets injected for `apply-terraform`**:
+- `TERRAFORM_STATE_BUCKET`, `TERRAFORM_STATE_ENDPOINT`, `TERRAFORM_STATE_ACCESS_KEY_ID`, `TERRAFORM_STATE_SECRET_ACCESS_KEY`
+- `OPENROUTER_API_KEY`, `OPENROUTER_MANAGEMENT_KEY`
+- `GH_TOKEN`, `LINODE_TOKEN`
+
+### Refresh Documentation (`.github/workflows/refresh-documentation.yml`)
+
+Weekly scheduled (Friday 8:18 UTC) + manual dispatch.
+
+Runs OpenWiki in repository code mode, opens PR with documentation updates on `docs/documentation-refresh` branch.
+
+### Upgrade Dependencies (`.github/workflows/upgrade-dependencies.yml`)
+
+Weekly scheduled (Friday 8:18 UTC) + manual dispatch.
+
+Runs upgrades for pnpm, Node, Python, lockfile, Python deps, skills, Impeccable. Opens PR with results.
 
 ---
 
@@ -261,3 +418,5 @@ All infrastructure operations are available as Nx targets in `infrastructure/pro
 - [Database Management](../operations/database-management.md) — Per-project database, schema, and role conventions
 - [Local Development](../operations/local-development.md) — Running services locally with Nx
 - [CI/CD Workflows](../workflows/ci-cd.md) — Continuous integration and deployment pipelines
+- [Ollama & SearxNG Integration](../integrations/ollama-searxng.md) — Local LLM inference and metasearch
+- [External Services](../integrations/external-services.md) — OpenRouter, Linode, GitHub configuration

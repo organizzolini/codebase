@@ -5,7 +5,7 @@ description: Template-driven code generation and conformance validation toolchai
 tags: [conformetry, generation, validation, scaffolding, nx-plugin, code-quality]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-24T21:02:40.299Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-75161601af5a39bb60abb392
     resource: repo://configuration/conformetry.config.ts
@@ -47,7 +47,7 @@ sources:
     resource: repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-24T21:02:40.299Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
 # Conformetry
@@ -236,14 +236,14 @@ flowchart TD
      - **Fallback** (`TextService`) widened to claim any unclaimed extensions — line-by-line text comparison.
    - **RunnerService** runs each validator: compares rendered template document vs. instance document.
    - Validators return `ConformetryDifference[]` with `differenceType` (`code`, `comment`, `placeholder`, etc.), `language`, `weight`, `fix`, and location info.
-3. **ValidationDeduplicationService** deduplicates findings across languages (same template element reported by multiple passes).
-4. **ValidationScoringService** computes `InstanceScore`:
+4. **ValidationDeduplicationService** deduplicates findings across languages (same template element reported by multiple passes).
+5. **ValidationScoringService** computes `InstanceScore`:
    - `totalWeight` = sum of all template requirements (existence + content weights).
    - `missingWeight` = sum of weights of reported differences.
    - `score = 1 - missingWeight / totalWeight` (clamped 0–1).
-   - Special cases: empty template → `EMPTY_TEMPLATE_SCORE` (0.5); perfect → `PERFECT_SCORE` (1).
-5. **ValidationFindingsService** determines pass/fail against the generator's `threshold` (or CLI `--threshold`).
-5. **ReportingService** renders console output and/or JSON report; **InventoryService** emits template/instance inventory.
+   - Special cases: empty template → `EMPTY_TEMPLATE_SCORE` (1); perfect → `PERFECT_SCORE` (1).
+6. **ValidationFindingsService** determines pass/fail against the generator's `threshold` (or CLI `--threshold`).
+7. **ReportingService** renders console output and/or JSON report; **InventoryService** emits template/instance inventory.
 
 ---
 
@@ -316,6 +316,44 @@ All six languages live in one package (ADR 0006). Each exports a `ConformetryLan
 
 ---
 
+## Instance Discovery & Matching
+
+Instance matching infers which template an instance directory was generated from — nothing declares the answer, so the template is inferred from how much of its structure the instance already has.
+
+### Matching Algorithm (`InstanceDiscoveryMatchingService`)
+
+1. **Build substitutions** from the instance's stem (name variants) and instance-level `substitutions`.
+2. **Score each template**: For every template, render it with the substitutions (filling missing placeholders with random stand-ins), then count how many template files exist in the instance.
+3. **Rank by coverage ratio** (`matchedFileCount / template.filePaths.length`), then by absolute matched file count, then by template name.
+4. **Outcomes**:
+   - **Best fit** (`matchRatio >= MINIMUM_MATCH_RATIO`, currently 0): top-ranked template(s).
+   - **No match** (`reason: "no-match"`): no template shares any file with the instance.
+   - **Ambiguous** (`reason: "ambiguous"`): multiple templates tied for best ratio, but `matchRatio < 1` (incomplete match).
+   - **Complete tie** (`matchRatio === 1`): instance satisfies multiple templates fully — all are applied (e.g., a module holding both a command and a service).
+
+### Key Constants
+
+| Constant | Value | Meaning |
+|----------|-------|---------|
+| `MINIMUM_MATCH_RATIO` | `0` | Any overlap puts a template in the running; ranking decides. Zero means drifted instances are never silently dropped. |
+| `COMPLETE_MATCH_RATIO` | `1` | Coverage at which an instance has every file a template declares. Multiple templates reaching this are all applied. |
+
+---
+
+## Validation Orchestration & Finding Deduplication
+
+### ValidationDeduplicationService
+
+One file is usually covered by several instances (e.g., `logger.service.ts` reached by project glob, module glob, and service-file glob). Each matches a different template. Reporting all three would print the same defect multiple times.
+
+**Deduplication strategy**:
+- Orders instances by template size (smallest wins — narrowest fix context).
+- For each instance file path, selects the owner instance with the smallest template.
+- Collapses duplicate instance/template file pairs into one finding.
+- Known trade-off: a requirement unique to a larger template goes unreported for files a smaller template also covers; acceptable while overlapping templates share file contents.
+
+---
+
 ## Conformance Scoring
 
 - **Weight**: Each difference carries a `weight` (default 1). A missing class stands for its whole subtree; a missing import stands for itself.
@@ -324,6 +362,7 @@ All six languages live in one package (ADR 0006). Each exports a `ConformetryLan
 - **Score**: `1 - missingWeight / totalWeight`, clamped to `[0, 1]`.
 - **Threshold**: Generator-level `threshold` (0–1) or CLI `--threshold` gates pass/fail.
 - **CI gating**: The `conformetry-validate` executor (Nx) or `ValidateCommand` (CLI) exits non-zero when any instance scores below its threshold.
+- **Special scores**: Empty template → 1 (perfect); no requirements, nothing to violate.
 
 ---
 
@@ -336,6 +375,7 @@ All six languages live in one package (ADR 0006). Each exports a `ConformetryLan
 | **Custom Generator Hooks** | In generator definition, add `hooks: { preGenerate?: (ctx) => Promise<void>; postGenerate?: (ctx) => Promise<void> }`. Context provides `generatorName`, `inputs`, `instancePath`, `templatePath`, `fs`. |
 | **Custom Output Format** | Implement `FormatterAdapter` (from `conformetry-generation`) and pass to `GenerationService`; or extend `ReportingService` in `conformetry-output`. |
 | **Per-Generator Threshold** | Set `threshold` on the generator definition; overrides run-level default. |
+| **Per-Instance-Group Threshold** | Set `threshold` on an instance group; overrides generator-level threshold for that group's instances (useful for migrations). |
 
 ---
 
@@ -355,6 +395,13 @@ All six languages live in one package (ADR 0006). Each exports a `ConformetryLan
   threshold?: number,  // 0–1, optional
 }
 ```
+
+`instance.group` fields:
+- `patterns?: string[]` — globs locating instances (workspace-relative or project-relative via tags)
+- `tags?: string[]` — Nx project tags selecting hosts
+- `exclude?: string[]` — globs for paths to ignore (e.g., vendored/shadcn components)
+- `substitutions?: Record<string, string>` — fixed placeholder values for this group
+- `threshold?: number` — per-group conformance floor
 
 ### CLI Commands
 
@@ -414,6 +461,7 @@ nx affected --target=conformetry-validate
 <!-- openwiki: broken internal link [../testing/conformetry.md] file "../testing/conformetry.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 - [Conformetry Testing Guide](../testing/conformetry.md) — how to test generators, validators, and the toolchain itself
 - [Code Quality Workflows](../workflows/code-quality.md) — where conformetry validation sits in the CI pipeline
+- [Scaffolding Workflows](../workflows/scaffolding.md) — generator usage patterns
 
 ---
 

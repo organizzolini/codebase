@@ -3,24 +3,55 @@ type: domain
 title: Lexico — Latin-English Dictionary Suite
 description: Four-project suite (lexico-cli, lexico-entities, lexico-api, lexico-web) that scrapes Latin dictionary and literature sources into Postgres, exposes them via a Relay-paginated GraphQL API, and renders search via TanStack Start SSR.
 tags: [latin, dictionary, graphql, nestjs, tanstack, ingestion, relay]
+verified:
+  - by: openwiki/0.7.0
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-cffe8ea3d9a4c39bbbf89d4a
     resource: repo://projects/common/interface/README.md
-  - id: openwiki-source-86e1affafdb1072b1530ca80
-    resource: repo://projects/lexico/lexico-api/AGENTS.md
   - id: openwiki-source-5f3e5fd7adac683aca8996b8
     resource: repo://projects/lexico/lexico-api/README.md
-  - id: openwiki-source-f7e80b93b0380046951af5e1
-    resource: repo://projects/lexico/lexico-cli/AGENTS.md
+  - id: openwiki-source-5b4fa122bb0f24668e50959b
+    resource: repo://projects/lexico/lexico-api/src/lexico-api.module.ts
+  - id: openwiki-source-3bdbf3345e8015b4a1cf3d99
+    resource: repo://projects/lexico/lexico-api/src/modules/lexemes/lexeme.entities.ts
+  - id: openwiki-source-912fe26f73983cba4a5f0e7b
+    resource: repo://projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts
+  - id: openwiki-source-0bf962d4b829277613510224
+    resource: repo://projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts
+  - id: openwiki-source-29f2810db4c223b268105bcc
+    resource: repo://projects/lexico/lexico-api/src/modules/search/search.service.ts
   - id: openwiki-source-5e40db637ff9cea3eb6ab5fe
     resource: repo://projects/lexico/lexico-cli/README.md
+  - id: openwiki-source-1c96ca3526446eb357f2cfd8
+    resource: repo://projects/lexico/lexico-cli/src/modules/dictionary/dictionary.command.ts
+  - id: openwiki-source-7a510b540ce8d31fa655c72a
+    resource: repo://projects/lexico/lexico-cli/src/modules/lexico-ingestion/lexico-ingestion.command.ts
+  - id: openwiki-source-21e8cd86f65328ec0cc787e2
+    resource: repo://projects/lexico/lexico-cli/src/modules/library/library.command.ts
+  - id: openwiki-source-0413e6d3c67dc3d345eebc77
+    resource: repo://projects/lexico/lexico-cli/src/modules/library/providers/corpus-scriptorum-ecclesiasticorum-latinorum-library.provider.ts
+  - id: openwiki-source-05cc736189be2ff51a83e912
+    resource: repo://projects/lexico/lexico-cli/src/modules/library/providers/epigraphik-datenbank-clauss-slaby-library.provider.ts
+  - id: openwiki-source-e5c8eaa71052567df73086b5
+    resource: repo://projects/lexico/lexico-cli/src/modules/library/providers/latin-library.provider.ts
+  - id: openwiki-source-e8182980d939873c3102c725
+    resource: repo://projects/lexico/lexico-cli/src/modules/library/providers/perseus-library.provider.ts
+  - id: openwiki-source-90c63621715af0d615812115
+    resource: repo://projects/lexico/lexico-cli/src/modules/literature/literature.command.ts
+  - id: openwiki-source-12e2a7148f8283d761134b05
+    resource: repo://projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts
   - id: openwiki-source-f57e87962098814771e94b3a
     resource: repo://projects/lexico/lexico-entities/README.md
-  - id: openwiki-source-84d7efea91b804cee8e9f746
-    resource: repo://projects/lexico/lexico-web/AGENTS.md
+  - id: openwiki-source-68484052635cbea3c13fef17
+    resource: repo://projects/lexico/lexico-entities/src/modules/entities/dictionary/form/adjectival-form.entity.ts
+  - id: openwiki-source-65ebce7a35a866e0cee30a3b
+    resource: repo://projects/lexico/lexico-entities/src/modules/entities/dictionary/inflection/adjective-inflection.entity.ts
   - id: openwiki-source-cbca90a5ed54cecf99d6ea3f
     resource: repo://projects/lexico/lexico-web/README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-24T21:02:40.299Z" }
+  - id: openwiki-source-285050fb501154943e7f78e7
+    resource: repo://projects/lexico/lexico-web/src/routes/search.tsx
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
 # Lexico — Latin-English Dictionary Suite
@@ -89,19 +120,15 @@ Generated migrations emit `-up.sql` and `-down.sql` alongside the TypeScript fil
 
 A NestJS CLI application built with `nest-commander`. The root command (`LexicoIngestionCommand`) prompts for any stage flags not provided on the command line, then runs the selected stages in order.
 
-### Five Ingestion Stages (+ Clear)
+### Six Ingestion Stages (+ Clear)
 
 | Stage Flag | Command | Source / Action |
 |------------|---------|-----------------|
+| `--wikipedia` | `wiktionary` | Wiktionary page dumps (raw HTML cached locally as `data/wiktionary/*.json`). |
 | `--dictionary` | `dictionary` | Dictionary entries, forms, inflections. Resumable by `--startLemma` / `--endLemma` (lemma range). |
+| `--library-sources` | `perseus`, `latin-library`, `corpus-scriptorum-ecclesiasticorum-latinorum`, `epigraphik-datenbank-clauss-slaby` | Upstream sources each work came from (downloads and normalizes to markdown). |
 | `--library` | `library` | Library of works (author/text metadata). |
-| `--library-sources` | `library-sources` | Upstream sources each work came from. |
 | `--literature` | `literature` | Lines and tokens for loaded texts. |
-| `--wikipedia` | `wiktionary` | Wiktionary page dumps (raw HTML cached locally). |
-| — | `perseus` | Perseus Digital Library. |
-| — | `latin-library` | The Latin Library. |
-| — | `corpus-scriptorum-ecclesiasticorum-latinorum` | CSEL (ecclesiastical Latin corpus). |
-| — | `epigraphik-datenbank-clauss-slaby` | EDCS (Latin inscription database). |
 | — | `clear` | Truncates all ingested tables for a clean start. |
 
 **Resumability**: The dictionary stage processes cached Wiktionary JSON files (`data/wiktionary/*.json`) within an optional lemma range. A run that stops mid-way resumes by pointing `--startLemma` at the last processed lemma.
@@ -117,24 +144,85 @@ Each source has its own module under `src/modules/` containing:
 
 This isolates layout changes: a change to one site's HTML is contained to one module.
 
+### Source Modules Detail
+
+#### Wiktionary (`src/modules/wiktionary/`)
+Downloads all Latin Wiktionary category pages and stores each article's HTML as a JSON file under `./data/wiktionary`, following pagination until every page in every configured category is exhausted.
+- **Categories**: lemma, verb, noun, adjective, adverb, etc. (defined in `wiktionary.constants.ts`)
+- **Resumability**: Skips words that already have a cached JSON file.
+- **Rate limiting**: 500ms delay between requests, exponential backoff on HTTP 429.
+- **Output**: `data/wiktionary/<word>.json` containing `{ category, href, word, html }`
+
+#### Dictionary (`src/modules/dictionary/`)
+Ingests cached Wiktionary pages into lexemes, resolves cross-translation references, and applies manual dictionary corrections.
+- **Input**: `data/wiktionary/*.json` files
+- **Resumable range**: `--startLemma` / `--endLemma` filter files by lemma name
+- **Processing flow**: `ingestAll()` → `processFile()` → `ingestLexeme()` → `LexemesService.parseLexemes()` (cheerio parses `p:has(strong.Latn.headword)` sections) → `LexemesService.enrichLexeme()` (pronunciation, forms, translations, principal parts, etymology)
+- **Translation references**: Recursive resolution of `*{reference}*` patterns in translations to existing lexemes
+- **Error logging**: Failed files logged to `output/dictionary-<timestamp>.log`
+
+#### Perseus (`src/modules/perseus/`)
+Downloads and parses texts from the Perseus Digital Library.
+- **Provider**: Implements `LibrarySourceProvider` interface for the library pipeline
+- **Output**: Normalized markdown files under `data/library/perseus/<author>/<text>.md`
+
+#### Latin Library (`src/modules/latin-library/`)
+Scrapes The Latin Library (thelatinlibrary.com) for classical Latin texts.
+- **Provider**: Implements `LibrarySourceProvider` interface
+- **Output**: Normalized markdown files under `data/library/latin-library/<author>/<text>.md`
+
+#### Corpus Scriptorum Ecclesiasticorum Latinorum (`src/modules/corpus-scriptorum-ecclesiasticorum-latinorum/`)
+Downloads ecclesiastical Latin texts from CSEL.
+- **Provider**: Implements `LibrarySourceProvider` interface
+- **Output**: Normalized markdown files under `data/library/corpus-scriptorum-ecclesiasticorum-latinorum/<author>/<text>.md`
+
+#### Epigraphik Datenbank Clauss-Slaby (`src/modules/epigraphik-datenbank-clauss-slaby/`)
+Ingests Latin inscriptions from EDCS.
+- **Provider**: Implements `LibrarySourceProvider` interface
+- **Output**: Normalized markdown files under `data/library/epigraphik-datenbank-clauss-slaby/<author>/<text>.md`
+
+#### Library (`src/modules/library/`)
+Runs configured library source providers and writes normalized markdown files into the local `data/library` tree.
+- **Provider orchestration**: Selects provider(s), author(s), and text(s) via CLI options with terminal prompts
+- **Deduplication**: By provider priority (perseus > CSEL > thelatinlibrary > EDCS) for same author/text
+- **Scanning**: `scanLibrary()` walks `data/library` to build catalog for subsequent stages
+
+#### Literature (`src/modules/literature/`)
+Ingests markdown texts from `data/library` into literature entities with provider-aware deduplication.
+- **Input**: Markdown files from `data/library/<provider>/<author>/.../<text>.md`
+- **Deduplication**: Same as library stage (by provider priority)
+- **Filtering**: `--provider`, `--author`, `--text` options with terminal prompts
+- **Processing**: `ingestAllAuthors()` parses markdown → creates `Author`, `Text`, `Line`, `Token` entities
+- **Token linking**: Each `Token` links back to `Word` entity in dictionary
+
+#### Forms, Inflections, Principal Parts, Pronunciation, Etymology, Translations, Words
+Supporting modules that parse specific grammatical data from Wiktionary HTML:
+- **Forms** (`src/modules/forms/`): Parses inflection tables into `Form` entity hierarchy
+- **Inflections** (`src/modules/inflections/`): Parses inflection patterns into `Inflection` entity hierarchy
+- **Principal Parts** (`src/modules/principal-parts/`): Extracts verb/noun principal parts
+- **Pronunciation** (`src/modules/pronunciation/`): Classical + ecclesiastical phoneme classifiers
+- **Etymology** (`src/modules/etymology/`): Extracts etymology sections
+- **Translations** (`src/modules/translations/`): Parses translation glosses and resolves cross-references
+- **Words** (`src/modules/words/`): Manages `Word` and `WordLexeme`/`WordForm` join tables
+
 ### Execution Flow
 
 ```
 LexicoIngestionCommand.run()
   ├─ ClearService.clearDictionary()
-  ├─ WiktionaryService.ingestWiktionary()
-  ├─ DictionaryService.ingestAll()      # orchestrates full Wiktionary → Lexeme pipeline
-  └─ ManualService.ingestManual()
+  ├─ WiktionaryService.ingestWiktionary()        # --wikipedia
+  ├─ DictionaryService.ingestAll()               # --dictionary
+  │     └─ ManualService.ingestManual()          # Manual corrections
+  ├─ LibrarySourcesStage.runLibrarySources()     # --library-sources
+  │     ├─ PerseusCommand.run()
+  │     ├─ LatinLibraryCommand.run()
+  │     ├─ CorpusScriptorumEcclesiasticorumLatinorumCommand.run()
+  │     └─ EpigraphikDatenbankClaussSlabyCommand.run()
+  ├─ LibraryCommand.run()                        # --library
+  └─ LiteratureCommand.run()                     # --literature
 ```
 
-Sub-commands: `wiktionary`, `dictionary`, `words`, `clear` (plus the source-specific ones above).
-
-### Key Implementation Details
-
-- **Dictionary ingestion** (`DictionaryCommand.ingestAll`): iterates cached Wiktionary pages in lemma range → `DictionaryCommand.processFile` → `DictionaryCommand.ingestLexeme` (recursive, resolves translation references) → `LexemesService.parseLexemes` (cheerio parses `p:has(strong.Latn.headword)` sections) → `LexemesService.enrichLexeme` (pronunciation, forms, translations, principal parts, etymology).
-- **Forms & Inflections**: parsed by dedicated modules (`forms/`, `principal-parts/`, `inflections/` sub-types) mapping Latin morphology into the single-table hierarchies.
-- **Pronunciation**: classical + ecclesiastical phoneme classifiers (`pronunciation-ecclesiastical.service.ts`).
-- **Literature ingestion**: `library` loads author/text metadata; `literature` tokenizes text lines and links tokens to `Word` entities.
+Sub-commands: `wiktionary`, `dictionary`, `words`, `clear`, `perseus`, `latin-library`, `corpus-scriptorum-ecclesiasticorum-latinorum`, `epigraphik-datenbank-clauss-slaby`, `library`, `literature`, `manual`, `numerals`, `part-of-speech`.
 
 ### Moving Data Between Databases
 
@@ -182,6 +270,12 @@ NestJS + Apollo Server (`ApolloDriver`), code-first schema emitted to `src/schem
 - Converts `first`/`after`/`before` into keyset bounds on sort key + id.
 - `decodeCursor` reads the row a cursor claims; `readCursorId` extracts entity id.
 - `paginateQueryByParent` batches child connections for many parents at once (used by `LiteratureRelationsLoader` for `author→texts`, `text→lines`, `text→childTexts`, `line→tokens`).
+
+The pagination uses a CTE-based approach:
+1. Materializes filtered rows with `sortKey` and `id`
+2. Reads cursor-claimed rows as CTEs
+3. Computes total count, window, and hasRowBefore in single statement
+4. Loads entities in chunks (configurable `LOAD_CHUNK_SIZE`)
 
 ### Search Details
 
@@ -354,6 +448,7 @@ nx run lexico-web:vitest
 - [Domain Overview](../domain/overview.md) — workspace domain map
 - [Local Development](../operations/local-development.md) — Docker, env, Nx
 - [Lexico Testing](../testing/lexico.md) — test patterns, Testcontainers, MSW
+- [Database Management](../operations/database-management.md) — migration workflows
 
 ---
 

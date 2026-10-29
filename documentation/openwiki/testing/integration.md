@@ -1,37 +1,34 @@
 ---
-type: concept
-title: Integration Testing Patterns
-description: Cross-project integration testing patterns using Testcontainers Postgres, GraphQL mock servers, Nx affected test runs, and workspace-wide validation with production-equivalent wiring.
-tags: [testing, integration, testcontainers, graphql, nx, persistence]
+type: "Reference"
+title: "Integration Testing"
+openwiki_generated: true
+verified:
+  - by: openwiki/0.7.0
+    at: 2026-10-29T03:39:46.432Z
 sources:
-  - id: openwiki-source-343a267167db0186d4c7a103
-    resource: repo://.agents/skills/create-pull-request/SKILL.md
-  - id: openwiki-source-4cfef24d7967ddef88357d1c
-    resource: repo://.agents/skills/testing-mocks/SKILL.md
   - id: openwiki-source-db7eb71a3306403209a370a4
     resource: repo://.agents/skills/testing-strategy/SKILL.md
-  - id: openwiki-source-8037e2358a2c4f9b2c722a11
-    resource: repo://AGENTS.md
+  - id: openwiki-source-cb3df90b3af3b7ee2f16c98e
+    resource: repo://.agents/skills/triage-integration/SKILL.md
+  - id: openwiki-source-6315af249215d8768fb68811
+    resource: repo://.github/workflows/continuous-integration.yml
+  - id: openwiki-source-bbab45af4bebcbd50cf915b0
+    resource: repo://integration/src/integration.main.end-to-end.test.ts
   - id: openwiki-source-c226aa5c7f690262741b3f25
     resource: repo://projects/common/interface/testing/graphql-mock-server.ts
   - id: openwiki-source-79e7b4ee4ecfb08c4edc2d59
     resource: repo://projects/common/interface/testing/pagination.ts
-  - id: openwiki-source-bb47f0ae03a5325f0d8fdea7
-    resource: repo://projects/common/persistence/README.md
   - id: openwiki-source-a688f65f433758aea382c292
     resource: repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts
   - id: openwiki-source-4808dd4ba16cde901f5bc82f
     resource: repo://projects/common/persistence/testing/persistence-testing.utilities.ts
-  - id: openwiki-source-02549341c8e1ccbd9077c65c
-    resource: repo://projects/lexico/lexico-api/src/modules/search/search.service.integration.test.ts
-  - id: openwiki-source-b9108d2fc15726287e4f9485
-    resource: repo://projects/lexico/lexico-web/src/routes/search.integration.test.tsx
   - id: openwiki-source-d2bcabd613e9901cd5519864
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-24T21:02:40.299Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
-# Integration Testing Patterns
+
+# Integration Testing
 
 This document describes the integration testing patterns used across the workspace. Integration tests exercise real infrastructure (Postgres, GraphQL) through the same module wiring as production, validating schema migrations, pagination logic, and cross-service behavior.
 
@@ -230,6 +227,26 @@ The `nx affected --target=vitest` command runs **all** vitest configurations (un
 - **Correctness**: Nx computes the project graph and knows which projects transitively depend on what changed
 - **CI efficiency**: The same command runs locally and in CI with identical semantics
 
+## CI Integration Test Sharding (4 Legs)
+
+In CI, the `test-code` target is split into four parallel legs so no single leg waits for the slowest projects. This is configured in `.github/workflows/continuous-integration.yml`:
+
+| Leg | Name | Shard | Excludes |
+|-----|------|-------|----------|
+| 1 | Test | — | `meanderaw-cli`, `projects/caelundas/**`, `projects/ic-suite/**` |
+| 2 | Test Caelundas | `caelundas` | `*,!projects/caelundas/**` |
+| 3 | Test Meanderaw | `meanderaw-cli` | `*,!meanderaw-cli` |
+| 4 | Test IC Suite | `ic-suite` | `*,!projects/ic-suite/**` |
+
+**Rationale (from CI workflow comments):**
+- Meanderaw alone took over seven minutes uncached beside the rest, and about three minutes alone
+- ic-suite's 37 packages were most of what remained
+- Caelundas's command line cannot start until its ephemeris download finishes, so it ran last and alone for four more minutes
+- The fourth leg ("everything else") keeps the `Test` name branch protection has always required
+- A leg with nothing affected runs nothing
+
+Each leg runs with `--configuration=coverage` and `--parallel=4`. The `setup-codebase` composite action installs the Postgres client only for the primary `test-code` leg (`matrix.check.target == 'test-code' && !matrix.check.shard`).
+
 ## Mocking Patterns in Integration Tests
 
 Integration tests combine real infrastructure (Postgres via Testcontainers) with selective mocking of external services or complex dependencies using `@golevelup/ts-vitest`'s `createMock<T>()`.
@@ -311,11 +328,49 @@ nx affected --target=vitest --configuration=coverage --base=main
 
 Docker must be running for Testcontainers-based tests.
 
+## End-to-End Tests in the `integration` Project
+
+The `integration` project itself has an end-to-end test (`integration.main.end-to-end.test.ts`) that spawns the real CLI entrypoint (`integration/src/integration.main.ts`) and verifies:
+
+1. The NestJS command container boots without DI resolution errors
+2. All 12 CI commands are registered (`adopt-task-database`, `bound-base-to-push`, `cleanup-codebase`, `collect-codometer-baseline`, `import-pr-task-cache`, `keep-task-database`, `merge-task-cache`, `report-codometer-changes`, `run-affected`, `setup-codebase`, `upgrade-dependencies`, `verify-task-database`)
+3. Environment schema validation works with defaults
+
+This is the highest seam test for the CI plumbing commands.
+
+## Diagnosing CI Integration Failures
+
+The **triage-integration** skill covers diagnosing and fixing codebase integration failures, whether they occur locally (Husky pre-commit/pre-push hooks, lint-staged) or remotely (GitHub Actions CI workflows). Key procedures:
+
+### Local Submission Failure
+```bash
+NX_PERF_LOGGING=false lint-staged --config configuration/lint-staged.config.ts --continue-on-error
+```
+
+### CI Workflow Failure
+```bash
+gh run view <run-id> --log-failed
+# or fetch all failing runs for current PR
+gh pr checks --json name,state,link --jq '.[] | select(.state == "FAILURE") | "\(.name) \(.link)"'
+```
+
+### Step-by-Step Triage
+1. **Identify the failing hook** (pre-commit, commit-msg, pre-push) or **CI target** (typecheck-code, lint-code, test-code, guard-code, secure-code, build-projects)
+2. **Read the error output** — determine which Nx target failed and which project(s)
+3. **Locate relevant configuration** — use the triage-integration skill's configuration tables
+4. **Apply targeted fixes** — auto-fix with `--configuration=write` where available, manual fixes for typecheck, spell-check, etc.
+5. **Validate fixes** — run the exact failing target with `--configuration=check`
+6. **Leave files unstaged** for user review
+
+**Critical rule**: After applying fixes with `--configuration=write`, you MUST validate with `--configuration=check` but MUST NOT run `lint-staged`, `git commit`, or `git push`.
+
 ## Related Pages
 
 - [Testing Overview](overview.md)
 - [Affirmancy Testing](affirmancy.md)
-<!-- openwiki: broken internal link [caelundas.md] file "caelundas.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 - [Caelundas Testing](caelundas.md)
 - [Lexico Testing](lexico.md)
 - [Meanderaw Testing](meanderaw.md)
+- [Architecture: Common Packages](../architecture/common-packages.md)
+- [Operations: Database Management](../operations/database-management.md)
+- [Workflows: CI/CD](../workflows/ci-cd.md)
