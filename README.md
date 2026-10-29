@@ -14394,7 +14394,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3474-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3476-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-467-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-90-8b5cf6?style=flat-square)
@@ -14402,7 +14402,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3310-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-660-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-662-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
