@@ -555,8 +555,8 @@ catalogs:
       specifier: ^24.0.0
       version: 24.0.0
     openwiki:
-      specifier: ^0.7.0
-      version: 0.7.0
+      specifier: ^0.7.2
+      version: 0.7.2
     oxfmt:
       specifier: ^0.74.0
       version: 0.74.0
@@ -879,7 +879,7 @@ importers:
         version: 24.0.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))
       openwiki:
         specifier: 'catalog:'
-        version: 0.7.0(614fac5d24ed614a26f9a8922660326c)
+        version: 0.7.2(614fac5d24ed614a26f9a8922660326c)
       oxfmt:
         specifier: 'catalog:'
         version: 0.74.0
@@ -6364,8 +6364,8 @@ packages:
   '@microsoft/tsdoc@0.17.0':
     resolution: {integrity: sha512-p68VexhnH7ojf3U27RdryUDqnKJgKaWUbCL96vJR7N0mqDuhKG5OIECk3sCPPdynxjk+yoVhRkScqtv5KQjzsw==}
 
-  '@modelcontextprotocol/sdk@1.30.1':
-    resolution: {integrity: sha512-H2HxLvC3HDNybePJaLdSrU1hhUK5iQw+WvV1b01myFyI7sdVGe1u/IPTE5D9fGCiJDVtgMV/lmFkQXLmQyIFYA==}
+  '@modelcontextprotocol/sdk@1.32.2':
+    resolution: {integrity: sha512-SWsVtH/0vULSQStoZ6xxH2K09Li8fXYTMC64ZeogCdpZ3XSi1eCPOByV1OpuJxuI3OcmHhosDWYyii07tpPsLw==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
@@ -10790,12 +10790,6 @@ packages:
     resolution: {integrity: sha512-KfYbmpRm0VbLjEvVa9yGwCi9GI34xvi7A/HXYWQO65CSD2u3MczUJSuwXKFIxlGsgBQizV9q5J9NHj4VG0n+pA==}
     engines: {node: '>=12.0.0'}
 
-  express-rate-limit@8.7.0:
-    resolution: {integrity: sha512-hOwV7WOxXfjRpAM1DSJWZDXx3GhplwD8IfwuwvogD8i1Qnkgosw/H45s4ZnFAUHDAhPjlY9hLBvJhKmGMyY26g==}
-    engines: {node: '>= 16'}
-    peerDependencies:
-      express: '>= 4.11'
-
   express-rate-limit@8.7.1:
     resolution: {integrity: sha512-2FXbqkygil3mZiXzEtM0IjE/UBmBNot0J1GEVrJT4JbrvwOSoEtqtO+wHbiMQELWe1eNvHoYRg2dkjOid+6JkA==}
     engines: {node: '>= 16'}
@@ -13187,12 +13181,12 @@ packages:
     resolution: {integrity: sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==}
     hasBin: true
 
-  openwiki@0.7.0:
-    resolution: {integrity: sha512-Tw3AZE9eEmB9P8078lWCfjtrd7Xrl2rwBKfX5suie6sUH3gPLzEeGVIIugGtg1fnWfyJiVcqmw6WbXzujA1N7A==}
+  openwiki@0.7.2:
+    resolution: {integrity: sha512-+DJd/g2knw92fhem+QXzuVFU3A8tYjTPTQ5LPNXMFzDyVhruvxcKxrweDXUN9lKWJhhFetvYsKTz4Ac/hGUVOA==}
     engines: {node: '>=22.22.0'}
     hasBin: true
     peerDependencies:
-      jsdom: ^29.1.1
+      jsdom: ^29.1.1 || ^30.0.0
       mermaid: ^11.16.0
     peerDependenciesMeta:
       jsdom:
@@ -18725,7 +18719,7 @@ snapshots:
 
   '@microsoft/tsdoc@0.17.0': {}
 
-  '@modelcontextprotocol/sdk@1.30.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.5)':
+  '@modelcontextprotocol/sdk@1.32.2(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.5)':
     dependencies:
       '@hono/node-server': 2.1.1(hono@4.13.9)
       ajv: 8.20.0
@@ -18735,8 +18729,8 @@ snapshots:
       cross-spawn: 7.0.6
       eventsource: 3.0.7
       eventsource-parser: 3.1.1
-      express: 5.2.1(supports-color@10.2.2)
-      express-rate-limit: 8.7.0(express@5.2.1(supports-color@10.2.2))(supports-color@10.2.2)
+      express: 5.3.0(supports-color@10.2.2)
+      express-rate-limit: 8.7.1(express@5.3.0(supports-color@10.2.2))(supports-color@10.2.2)
       hono: 4.13.9
       jose: 6.2.12
       json-schema-typed: 8.0.2
@@ -23443,14 +23437,6 @@ snapshots:
 
   expect-type@1.4.0: {}
 
-  express-rate-limit@8.7.0(express@5.2.1(supports-color@10.2.2))(supports-color@10.2.2):
-    dependencies:
-      debug: 4.4.3(supports-color@10.2.2)
-      express: 5.2.1(supports-color@10.2.2)
-      ip-address: 10.7.2
-    transitivePeerDependencies:
-      - supports-color
-
   express-rate-limit@8.7.1(express@5.3.0(supports-color@10.2.2))(supports-color@10.2.2):
     dependencies:
       debug: 4.4.3(supports-color@10.2.2)
@@ -26144,7 +26130,7 @@ snapshots:
 
   opener@1.5.2: {}
 
-  openwiki@0.7.0(614fac5d24ed614a26f9a8922660326c):
+  openwiki@0.7.2(614fac5d24ed614a26f9a8922660326c):
     dependencies:
       '@anthropic-ai/vertex-sdk': 0.19.11(supports-color@10.2.2)(zod@4.6.5)
       '@aws-sdk/client-bedrock-runtime': 3.1140.0
@@ -26158,7 +26144,7 @@ snapshots:
       '@langchain/openrouter': 0.4.13(@aws-sdk/credential-provider-node@3.972.84)(@langchain/core@1.2.12(openai@7.23.0(@aws-sdk/credential-provider-node@3.972.84)(@smithy/signature-v4@5.7.3)(undici@8.11.2)(ws@8.21.3)(zod@4.6.5))(ws@8.21.3))(@smithy/signature-v4@5.7.3)(undici@8.11.2)(ws@8.21.3)(zod@4.6.5)
       '@langchain/protocol': 0.0.19
       '@langchain/tavily': 1.2.0(@langchain/core@1.2.12(openai@7.23.0(@aws-sdk/credential-provider-node@3.972.84)(@smithy/signature-v4@5.7.3)(undici@8.11.2)(ws@8.21.3)(zod@4.6.5))(ws@8.21.3))
-      '@modelcontextprotocol/sdk': 1.30.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.5)
+      '@modelcontextprotocol/sdk': 1.32.2(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.5)
       ci-info: 4.4.0
       cron-parser: 5.10.1
       cronstrue: 3.27.0
