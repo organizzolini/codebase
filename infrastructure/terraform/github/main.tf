@@ -152,6 +152,7 @@ locals {
     "👷 Build",
     "🧑‍🔧 Lint",
     "🧟 Deprecate",
+    "👮 Enforce",
     "🧑‍⚖️ Comply",
     "🧑‍🔬 Test Affirmancy",
     "🧑‍🔬 Test Caelundas",
