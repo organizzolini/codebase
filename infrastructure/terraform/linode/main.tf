@@ -47,3 +47,26 @@ resource "linode_object_storage_bucket" "state" {
     prevent_destroy = true
   }
 }
+
+# The access key the other roots' backends authenticate with, imported by its
+# numeric ID from `linode-cli object-storage keys-list`. Terraform cannot read
+# its secret key, so the key stays in the TERRAFORM_STATE_* secrets as it is.
+# Destroying it would lock every root out of its state.
+import {
+  to = linode_object_storage_key.state
+  id = "7042178"
+}
+
+resource "linode_object_storage_key" "state" {
+  label = var.bucket_label
+
+  bucket_access {
+    bucket_name = linode_object_storage_bucket.state.label
+    region      = var.region
+    permissions = "read_write"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
