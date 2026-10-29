@@ -31,6 +31,16 @@ never chain skills automatically — stop after each step and wait for explicit
 invocation. During implementation, subagents execute autonomously and may create
 sub-issues without asking.
 
+**Match the model tier to the role.** Run planning (steps 1–4) on an Opus/Sol-level
+model, orchestrate implementation (coordinating tickets or tasks across steps
+5–8) on a Sonnet/Terra-level model, and execute implementation tasks and
+subagents on a Haiku/Luna-level model — escalating an implementation subagent to
+a Sonnet/Terra-level model only when really necessary (complex multi-file
+integration, non-trivial architectural judgment, or fix-loop escalation). Opus/Sol-level
+models are reserved for human-selected main sessions; never spawn a subagent on
+Opus/Sol or higher, and always pass the subagent model explicitly so it does not
+inherit a larger session model.
+
 1. **Clarify**: Run [brainstorming](.agents/skills/brainstorming/SKILL.md) with
    [grill-with-docs](.agents/skills/grill-with-docs/SKILL.md) (domain models/ADRs)
    or [grill-me](.agents/skills/grill-me/SKILL.md) (plain interview). Follow
@@ -51,8 +61,10 @@ sub-issues without asking.
 5. **Build**: Set tickets to `status:in-progress` before testing (see
    [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)).
    - **Multi-ticket spec**: Dispatch each parent issue to a fresh subagent
-     ([subagent-driven-development](.agents/skills/subagent-driven-development/SKILL.md));
-     never implement sequentially in this session. Parallelize independent tickets
+     ([subagent-driven-development](.agents/skills/subagent-driven-development/SKILL.md))
+     on a Haiku/Luna-level model (or a Sonnet/Terra-level model only when really
+     necessary); never implement sequentially in this session. Parallelize
+     independent tickets
      ([dispatching-parallel-agents](.agents/skills/dispatching-parallel-agents/SKILL.md))
      or stack dependent ones ([gh-stack](.agents/skills/gh-stack/SKILL.md)). Brief each
      with its ticket, the spec, and steps 5–8. See
@@ -115,12 +127,13 @@ shape of the run:
 
 Each dispatched ticket subagent is self-contained: its own worktree, branch,
 implementation, tests, validation, and pull request, all inside that
-subagent's context. This orchestrating session never reads the files a
-dispatched ticket touches — only the report the subagent returns. That
-separation, not just the parallelism, is why tickets are dispatched rather
-than implemented here one after another: it is what keeps this session able
-to re-plan the remaining tickets, answer a subagent's mid-task question, or
-reorder the stack without running out of room.
+subagent's context on a Haiku/Luna-level model (or a Sonnet/Terra-level model
+only when really necessary). This Sonnet/Terra-level orchestrating session never
+reads the files a dispatched ticket touches — only the report the subagent
+returns. That separation, not just the parallelism, is why tickets are
+dispatched rather than implemented here one after another: it is what keeps this
+session able to re-plan the remaining tickets, answer a subagent's mid-task
+question, or reorder the stack without running out of room.
 
 Two things keep the run from stalling. **An open pull request is a finished
 ticket**, so do not idle waiting for a review or a merge before starting the
@@ -141,7 +154,9 @@ temporary directory, and follow the five repository rules in
 [`documentation/agents/handoffs.md`](documentation/agents/handoffs.md) when
 writing it: prescribe the workflow skills in call order, answer the plan-file and
 test-seam questions, state that the session owns every pull request, and assign a
-model and thinking level per role.
+model and thinking level per role (Opus/Sol-level for planning,
+Sonnet/Terra-level to orchestrate implementation, and Haiku/Luna-level — or
+Sonnet/Terra-level only when really necessary — for implementation subagents).
 
 ## Projects
 
@@ -170,7 +185,7 @@ invented scope fails validation.
 
 - When coding or refactoring, focus on one project at a time, or for sufficiently large requests only one module/folder at a time.
 - If a request spans multiple projects or scopes, complete the first project end-to-end before starting the next one.
-- If the work is truly independent across projects, split it into separate subagents or separate passes so each agent stays project-scoped.
+- If the work is truly independent across projects, split it into separate subagents (using a Haiku/Luna-level model, or a Sonnet/Terra-level model only when really necessary) or separate passes so each agent stays project-scoped.
 - Avoid mixing unrelated project changes in one context unless the task is explicitly orchestrating them.
 - This also keeps a pull request's commits at one release significance: see [Release Significance](.github/CONTRIBUTING.md#release-significance) for why a branch that stays within one project or module rarely accumulates a commit more significant than the type its title was going to use.
 
