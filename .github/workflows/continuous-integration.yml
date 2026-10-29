@@ -63,35 +63,45 @@ jobs:
             name: Guard
             emoji: 💂
             timeout-minutes: 20
-          # Tests run in four legs that together cover every project once, so
-          # none waits for a free `--parallel` slot behind the slow ones.
-          # Meanderaw alone took over seven minutes uncached beside the rest,
-          # and about three alone. ic-suite's 37 packages were most of what
-          # remained. Caelundas's command line cannot start until its
-          # ephemeris download finishes, so it ran last and alone for four more
-          # minutes. Its leg takes the whole folder, so a new project joins it.
-          # The fourth leg, everything else, keeps the `Test` name branch
-          # protection has always required. A leg with nothing affected runs
-          # nothing.
+          # New projects stay in Test Codebase until they are explicitly split
+          # into their own suite here.
           - target: test-code
-            name: Test
+            name: Test Codebase
             emoji: 🧑‍🔬
-            exclude: meanderaw-cli,projects/caelundas/**,projects/ic-suite/**
+            exclude: projects/affirmancy/**,projects/caelundas/**,projects/ic-suite/**,projects/lexico/**,projects/meanderaw/**,projects/common/**
+            shard: codebase
+          - target: test-code
+            name: Test Common
+            emoji: 🧑‍🔬
+            exclude: "*,!projects/common/**"
+            shard: common
+            postgres-client: true
+          - target: test-code
+            name: Test Affirmancy
+            emoji: 🧑‍🔬
+            exclude: "*,!projects/affirmancy/**"
+            shard: affirmancy
           - target: test-code
             name: Test Caelundas
             emoji: 🧑‍🔬
             exclude: "*,!projects/caelundas/**"
             shard: caelundas
           - target: test-code
-            name: Test Meanderaw
-            emoji: 🧑‍🔬
-            exclude: "*,!meanderaw-cli"
-            shard: meanderaw-cli
-          - target: test-code
             name: Test IC Suite
             emoji: 🧑‍🔬
             exclude: "*,!projects/ic-suite/**"
             shard: ic-suite
+          - target: test-code
+            name: Test Lexico
+            emoji: 🧑‍🔬
+            exclude: "*,!projects/lexico/**"
+            shard: lexico
+            postgres-client: true
+          - target: test-code
+            name: Test Meanderaw
+            emoji: 🧑‍🔬
+            exclude: "*,!projects/meanderaw/**"
+            shard: meanderaw
           - target: secure-code
             name: Secure
             emoji: 🕵️
@@ -224,8 +234,7 @@ jobs:
             matrix.check.target != 'verify-publishable-packages' &&
             matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
           postgres-client: >-
-            ${{ matrix.check.target == 'test-code' && !matrix.check.shard &&
-            'true' || 'false' }}
+            ${{ matrix.check['postgres-client'] && 'true' || 'false' }}
           uv: ${{ matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
           # The infrastructure project's `terraform-format` and
           # `terraform-validate` run as part of lint-code, and the runner image
