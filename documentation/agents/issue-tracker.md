@@ -108,7 +108,7 @@ A pull request must close or reference an issue through GitHub's own link: a clo
 
 The Continuous Compliance issue job enforces this with `validation pull-request-issue`, which reads `gh pr view --json closingIssuesReferences`. Agents use the [link-issue](../../.agents/skills/link-issue/SKILL.md) skill to find the planned ticket, to file one before ad-hoc work starts, or to backfill one when the work is already done.
 
-**The issue holds the why and the intent** — problem, motivation, acceptance criteria, scope, decisions, and plan. **The pull request holds the what, as built** — a conventional title, a Summary of the outcome, Details of what changed (including departures from the plan), and how it was verified. Each states a thing once and links to the other.
+What belongs in the issue versus the pull request description is set out in [link-issue](../../.agents/skills/link-issue/SKILL.md#issue-vs-pull-request-content).
 
 ## Marking work in progress
 

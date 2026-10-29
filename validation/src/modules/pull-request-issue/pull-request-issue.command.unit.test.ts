@@ -73,7 +73,6 @@ describe(PullRequestIssueCommand, () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    Reflect.deleteProperty(process.env, "PULL_REQUEST_NUMBER");
     Reflect.deleteProperty(process.env, STEP_SUMMARY_VARIABLE);
 
     reportLines = [];
@@ -83,7 +82,6 @@ describe(PullRequestIssueCommand, () => {
     vi.spyOn(console, "warn").mockImplementation((line: unknown): void => {
       reportLines.push(String(line));
     });
-    vi.mocked(githubService.isAvailable).mockReturnValue(true);
     vi.mocked(githubService.describeFailure).mockImplementation(
       (result: GithubCliResult) =>
         result.standardError === "" ? "no output" : result.standardError,
@@ -166,20 +164,6 @@ describe(PullRequestIssueCommand, () => {
     expect(reportLines.join("\n")).toContain("Closes #<issue-number>");
   });
 
-  it("reads the pull request number from the environment", async () => {
-    expect.hasAssertions();
-
-    process.env["PULL_REQUEST_NUMBER"] = "9";
-    vi.mocked(githubService.run).mockReturnValue(
-      succeeded(pullRequestDocument([1])),
-    );
-
-    await expect(runCommand()).resolves.toBe(false);
-    expect(githubService.run).toHaveBeenCalledWith(
-      expect.arrayContaining(["9"]),
-    );
-  });
-
   it("fails with usage when no pull request number is given", async () => {
     expect.hasAssertions();
 
@@ -204,7 +188,12 @@ describe(PullRequestIssueCommand, () => {
   it("fails when gh is not available", async () => {
     expect.hasAssertions();
 
-    vi.mocked(githubService.isAvailable).mockReturnValue(false);
+    vi.mocked(githubService.run).mockReturnValue({
+      available: false,
+      standardError: "spawn gh ENOENT",
+      standardOutput: "",
+      succeeded: false,
+    });
 
     await expect(runCommand(["7"])).resolves.toBe(true);
     expect(reportLines.join("\n")).toContain("gh is not available");

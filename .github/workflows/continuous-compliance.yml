@@ -154,13 +154,9 @@ jobs:
             validation/src/validation.main.ts issue-metadata --all
 
       # Every pull request closes or references an issue through GitHub's own
-      # link (a closing keyword in the body, or the Development sidebar). A
-      # merge group carries no pull request payload, only its temporary
-      # `gh-readonly-queue/<base>/pr-<number>-<sha>` ref, so the number is parsed
-      # from it and the link is read live: a body edited after queueing is
-      # caught. The author is read too, since `github.actor` is whoever queued
-      # the pull request, never the bot that opened it. Skipped for a pull
-      # request Dependabot authored, whose body it writes itself.
+      # link. A merge group carries only its `pr-<number>` ref, so the number
+      # and author are read from that; `github.actor` there is whoever queued
+      # it. Skipped for Dependabot, whose body it writes itself.
       - name: 🔗 Validate Pull Request Issue
         if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
         env:

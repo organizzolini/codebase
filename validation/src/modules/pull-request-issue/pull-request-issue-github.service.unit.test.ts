@@ -105,24 +105,6 @@ describe(PullRequestIssueGithubService, () => {
     });
   });
 
-  describe("isAvailable", () => {
-    it("is true when gh runs", () => {
-      expect.hasAssertions();
-
-      completeWith({ stdout: "gh version 2" });
-
-      expect(service.isAvailable()).toBe(true);
-    });
-
-    it("is false when gh cannot be executed", () => {
-      expect.hasAssertions();
-
-      completeWith({ error: new Error("spawn gh ENOENT") });
-
-      expect(service.isAvailable()).toBe(false);
-    });
-  });
-
   describe("describeFailure", () => {
     it("joins both streams", () => {
       expect.hasAssertions();

@@ -105,13 +105,6 @@ export class PullRequestIssueCommand extends CommandRunner {
     reportLines: string[],
     pullRequestNumber: string,
   ): PullRequestIssuesResolution {
-    if (!this.pullRequestIssueGithubService.isAvailable()) {
-      this.failWithUsageError(
-        reportLines,
-        `❌ Unable to read pull request ${pullRequestNumber}: gh is not available`,
-      );
-    }
-
     const view = this.pullRequestIssueGithubService.run([
       "pr",
       "view",
@@ -119,6 +112,13 @@ export class PullRequestIssueCommand extends CommandRunner {
       "--json",
       "closingIssuesReferences",
     ]);
+
+    if (!view.available) {
+      this.failWithUsageError(
+        reportLines,
+        `❌ Unable to read pull request ${pullRequestNumber}: gh is not available`,
+      );
+    }
 
     if (!view.succeeded) {
       this.failWithUsageError(
@@ -132,10 +132,7 @@ export class PullRequestIssueCommand extends CommandRunner {
     );
   }
 
-  /**
-   * The pull request number this run checks, from the argument or the
-   * environment.
-   */
+  /** The pull request number this run checks, from the argument. */
   private resolvePullRequestNumber(
     reportLines: string[],
     passedParameters: string[],
@@ -149,27 +146,18 @@ export class PullRequestIssueCommand extends CommandRunner {
 
     const argument = passedParameters[0];
 
-    if (argument !== undefined) {
-      if (!PULL_REQUEST_NUMBER_PATTERN.test(argument)) {
-        this.failWithUsageError(
-          reportLines,
-          `❌ Not a pull request number: ${argument}`,
-        );
-      }
-
-      return argument;
+    if (argument === undefined) {
+      this.failWithUsageError(reportLines, "❌ Expected a pull request number");
     }
 
-    const fromEnvironment = process.env["PULL_REQUEST_NUMBER"] ?? "";
-
-    if (fromEnvironment === "") {
+    if (!PULL_REQUEST_NUMBER_PATTERN.test(argument)) {
       this.failWithUsageError(
         reportLines,
-        "❌ Expected a pull request number, or PULL_REQUEST_NUMBER in the environment",
+        `❌ Not a pull request number: ${argument}`,
       );
     }
 
-    return fromEnvironment;
+    return argument;
   }
 
   // 🌎 Public Methods

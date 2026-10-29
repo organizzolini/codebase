@@ -17,13 +17,12 @@ export const STEP_SUMMARY_VARIABLE = "GITHUB_STEP_SUMMARY";
 export const STEP_SUMMARY_FAILURE_MESSAGE =
   "⚠️ Unable to write the report to GITHUB_STEP_SUMMARY";
 
-/** A pull request number, as an argument or the environment may spell one. */
+/** A pull request number, as an argument may spell one. */
 export const PULL_REQUEST_NUMBER_PATTERN = /^\d+$/u;
 
 /** How to run this check, printed whenever the input could not be used. */
 export const USAGE_LINES = [
   "Usage: validation pull-request-issue <pull-request-number>",
-  "   or: PULL_REQUEST_NUMBER=… validation pull-request-issue",
 ];
 
 /** How to give a pull request the issue link this check wants. */

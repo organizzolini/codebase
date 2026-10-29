@@ -46,11 +46,6 @@ export class PullRequestIssueGithubService {
     return output === "" ? "no output" : output;
   }
 
-  /** Whether the `gh` binary can be executed at all. */
-  public isAvailable(): boolean {
-    return this.run(["--version"]).available;
-  }
-
   /** Invokes `gh` with these arguments, capturing each stream on its own. */
   public run(commandArguments: readonly string[]): GithubCliResult {
     const completion = spawnSync(GITHUB_CLI_BINARY, [...commandArguments], {
