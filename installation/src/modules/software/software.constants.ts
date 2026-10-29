@@ -61,8 +61,9 @@ export const NO_KEY_INSTRUCTIONS = [
  *
  * gitleaks scans for secrets in the pre-commit hook. terraform manages the
  * LKE cluster, trivy scans images, jq parses JSON in CI
- * scripts, gh drives pull requests, helm deploys caelundas, and kubectl
- * inspects the cluster.
+ * scripts, gh drives pull requests, helm deploys caelundas, kubectl
+ * inspects the cluster, and linode-cli reads the Linode account the
+ * Terraform imports from.
  */
 export const INFRASTRUCTURE_TOOLS: InfrastructureTool[] = [
   { name: "gitleaks" },
@@ -72,6 +73,7 @@ export const INFRASTRUCTURE_TOOLS: InfrastructureTool[] = [
   { name: "gh" },
   { name: "helm" },
   { formula: "kubernetes-cli", name: "kubectl" },
+  { name: "linode-cli" },
 ];
 
 /** The name that asks for PostgreSQL 18's `pg_dump` and `pg_restore`. */

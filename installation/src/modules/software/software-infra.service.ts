@@ -44,6 +44,7 @@ export class SoftwareInfraService {
       `   Trivy:       ${this.readTrivyVersion()}`,
       `   Helm:        ${this.read("helm", ["version", "--short"])}`,
       `   kubectl:     ${this.readKubectlVersion()}`,
+      `   Linode CLI:  ${this.readMerged("linode-cli", ["--version"], "not installed").split("\n", 1).join("")}`,
       `   Docker:      ${this.readMerged("docker", ["--version"], "not installed")}`,
     ];
   }
