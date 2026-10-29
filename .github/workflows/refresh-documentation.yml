@@ -17,7 +17,7 @@ jobs:
   refresh-documentation:
     name: 🧑‍🏫 Refresh Documentation
     runs-on: ubuntu-latest
-    timeout-minutes: 392
+    timeout-minutes: 360
     env:
       # The OpenRouter preset that Terraform keeps (infrastructure/terraform),
       # whose ranked list starts with the free Nemotron 3 Ultra, never billed.
