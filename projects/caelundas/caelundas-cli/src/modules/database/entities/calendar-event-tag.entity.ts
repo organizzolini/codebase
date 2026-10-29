@@ -23,13 +23,15 @@ export class CalendarEventTag {
   @ManyToOne(() => CalendarEvent, { onDelete: "CASCADE" })
   calendarEvent?: Relation<CalendarEvent>;
 
-  @PrimaryColumn("uuid", { comment: "The event that carries the tag" })
+  /** The event that carries the tag. */
+  @PrimaryColumn("text")
   calendarEventId!: string;
 
   @JoinColumn({ name: "tag_id" })
   @ManyToOne(() => Tag, { onDelete: "CASCADE" })
   tag?: Relation<Tag>;
 
-  @PrimaryColumn("uuid", { comment: "The tag the event carries" })
+  /** The tag the event carries. */
+  @PrimaryColumn("text")
   tagId!: string;
 }

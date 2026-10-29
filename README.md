@@ -506,7 +506,6 @@ graph LR
   module_caelundas_cli_MonthlyLunarCycleModule["caelundas-cli/MonthlyLunarCycleModule"]
   module_caelundas_cli_PerfectiveModule["caelundas-cli/PerfectiveModule"]
   module_caelundas_cli_PhasesModule["caelundas-cli/PhasesModule"]
-  module_caelundas_cli_PostgresqlModule["caelundas-cli/PostgresqlModule"]
   module_caelundas_cli_ProgressiveModule["caelundas-cli/ProgressiveModule"]
   module_caelundas_cli_ProgressiveUtilitiesModule["caelundas-cli/ProgressiveUtilitiesModule"]
   module_caelundas_cli_QuadrupleAspectsModule["caelundas-cli/QuadrupleAspectsModule"]
@@ -514,6 +513,7 @@ graph LR
   module_caelundas_cli_RetrogradesModule["caelundas-cli/RetrogradesModule"]
   module_caelundas_cli_SextupleAspectsModule["caelundas-cli/SextupleAspectsModule"]
   module_caelundas_cli_SpecialtyAspectsModule["caelundas-cli/SpecialtyAspectsModule"]
+  module_caelundas_cli_SqliteModule["caelundas-cli/SqliteModule"]
   module_caelundas_cli_StelliumModule["caelundas-cli/StelliumModule"]
   module_caelundas_cli_TagsModule["caelundas-cli/TagsModule"]
   module_caelundas_cli_TripleAspectsModule["caelundas-cli/TripleAspectsModule"]
@@ -1006,13 +1006,13 @@ graph LR
   module_meanderaw_cli_TypeOrmModule["meanderaw-cli/TypeOrmModule"]
   module_observability_LoggerModule["observability/LoggerModule"]
   module_persistence_DiscoveryModule["persistence/DiscoveryModule"]
-  module_persistence_ExportModule["persistence/ExportModule"]
-  module_persistence_ImportModule["persistence/ImportModule"]
   module_persistence_LoggerModule["persistence/LoggerModule"]
   module_persistence_MainModule["persistence/MainModule"]
+  module_persistence_PostgresqlExportModule["persistence/PostgresqlExportModule"]
+  module_persistence_PostgresqlImportModule["persistence/PostgresqlImportModule"]
   module_persistence_PostgresqlModule["persistence/PostgresqlModule"]
   module_persistence_PostgresqlUtilitiesModule["persistence/PostgresqlUtilitiesModule"]
-  module_persistence_SqliteExportModule["persistence/SqliteExportModule"]
+  module_persistence_SqliteModule["persistence/SqliteModule"]
   module_publication_DiscoveryModule["publication/DiscoveryModule"]
   module_publication_LinkPackagesModule["publication/LinkPackagesModule"]
   module_publication_LoggerModule["publication/LoggerModule"]
@@ -1106,7 +1106,7 @@ graph LR
   module_caelundas_cli_DailyCyclesModule --> module_caelundas_cli_CalendarModule
   module_caelundas_cli_DailyCyclesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_DailyCyclesModule --> module_caelundas_cli_MathModule
-  module_caelundas_cli_DatabaseModule --> module_caelundas_cli_PostgresqlModule
+  module_caelundas_cli_DatabaseModule --> module_caelundas_cli_SqliteModule
   module_caelundas_cli_DatabaseModule --> module_caelundas_cli_TypeOrmModule
   module_caelundas_cli_EclipsesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_EclipsesModule --> module_caelundas_cli_MathModule
@@ -1137,7 +1137,6 @@ graph LR
   module_caelundas_cli_PhasesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_PhasesModule --> module_caelundas_cli_MathModule
   module_caelundas_cli_PhasesModule --> module_caelundas_cli_ProgressiveUtilitiesModule
-  module_caelundas_cli_PostgresqlModule --> module_caelundas_cli_TypeOrmModule
   module_caelundas_cli_ProgressiveModule --> module_caelundas_cli_AnnualSolarCycleModule
   module_caelundas_cli_ProgressiveModule --> module_caelundas_cli_AspectsModule
   module_caelundas_cli_ProgressiveModule --> module_caelundas_cli_EclipsesModule
@@ -1160,6 +1159,7 @@ graph LR
   module_caelundas_cli_SpecialtyAspectsModule --> module_caelundas_cli_AspectsUtilitiesModule
   module_caelundas_cli_SpecialtyAspectsModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_SpecialtyAspectsModule --> module_caelundas_cli_ProgressiveUtilitiesModule
+  module_caelundas_cli_SqliteModule --> module_caelundas_cli_TypeOrmModule
   module_caelundas_cli_StelliumModule --> module_caelundas_cli_AspectsUtilitiesModule
   module_caelundas_cli_StelliumModule --> module_caelundas_cli_ProgressiveUtilitiesModule
   module_caelundas_cli_TripleAspectsModule --> module_caelundas_cli_AspectsUtilitiesModule
@@ -1899,12 +1899,11 @@ graph LR
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_ConnectivityModule
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_PathUtilitiesModule
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_PointCharacteristicsModule
-  module_persistence_ExportModule --> module_persistence_PostgresqlUtilitiesModule
-  module_persistence_ExportModule --> module_persistence_SqliteExportModule
-  module_persistence_ImportModule --> module_persistence_PostgresqlUtilitiesModule
   module_persistence_MainModule --> module_persistence_DiscoveryModule
-  module_persistence_MainModule --> module_persistence_ExportModule
-  module_persistence_MainModule --> module_persistence_ImportModule
+  module_persistence_MainModule --> module_persistence_PostgresqlExportModule
+  module_persistence_MainModule --> module_persistence_PostgresqlImportModule
+  module_persistence_PostgresqlExportModule --> module_persistence_PostgresqlUtilitiesModule
+  module_persistence_PostgresqlImportModule --> module_persistence_PostgresqlUtilitiesModule
   module_publication_LinkPackagesModule --> module_publication_ProcessRunnerModule
   module_publication_LinkPackagesModule --> module_publication_ReleaseGroupModule
   module_publication_MainModule --> module_publication_DiscoveryModule
@@ -2043,8 +2042,6 @@ graph LR
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts["caelundas-cli/src/modules/calendar-events/calendar-events.service.ts"]
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts["caelundas-cli/src/modules/calendar-events/calendar-events.service.unit.test.ts"]
   file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts["caelundas-cli/src/modules/calendar-events/calendar-events.types.ts"]
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts["caelundas-cli/src/modules/calendar-events/calendar-events.utilities.ts"]
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_unit_test_ts["caelundas-cli/src/modules/calendar-events/calendar-events.utilities.unit.test.ts"]
   file_caelundas_cli_src_modules_calendar_calendar_constants_ts["caelundas-cli/src/modules/calendar/calendar.constants.ts"]
   file_caelundas_cli_src_modules_calendar_calendar_module_ts["caelundas-cli/src/modules/calendar/calendar.module.ts"]
   file_caelundas_cli_src_modules_calendar_calendar_service_ts["caelundas-cli/src/modules/calendar/calendar.service.ts"]
@@ -2058,6 +2055,8 @@ graph LR
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts["caelundas-cli/src/modules/daily-cycles/daily-cycles.service.unit.test.ts"]
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_types_ts["caelundas-cli/src/modules/daily-cycles/daily-cycles.types.ts"]
   file_caelundas_cli_src_modules_database_data_source_constants_ts["caelundas-cli/src/modules/database/data-source.constants.ts"]
+  file_caelundas_cli_src_modules_database_data_source_constants_unit_test_ts["caelundas-cli/src/modules/database/data-source.constants.unit.test.ts"]
+  file_caelundas_cli_src_modules_database_database_constants_integration_test_ts["caelundas-cli/src/modules/database/database.constants.integration.test.ts"]
   file_caelundas_cli_src_modules_database_database_constants_ts["caelundas-cli/src/modules/database/database.constants.ts"]
   file_caelundas_cli_src_modules_database_database_module_ts["caelundas-cli/src/modules/database/database.module.ts"]
   file_caelundas_cli_src_modules_database_database_service_ts["caelundas-cli/src/modules/database/database.service.ts"]
@@ -2068,7 +2067,7 @@ graph LR
   file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts["caelundas-cli/src/modules/database/entities/calendar-event-tag.entity.ts"]
   file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts["caelundas-cli/src/modules/database/entities/calendar-event.entity.ts"]
   file_caelundas_cli_src_modules_database_entities_tag_entity_ts["caelundas-cli/src/modules/database/entities/tag.entity.ts"]
-  file_caelundas_cli_src_modules_database_migrations_1792416080531_migration_ts["caelundas-cli/src/modules/database/migrations/1792416080531-migration.ts"]
+  file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts["caelundas-cli/src/modules/database/migrations/1793045891250-migration.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_constants_ts["caelundas-cli/src/modules/datetime/datetime.constants.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_module_ts["caelundas-cli/src/modules/datetime/datetime.module.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_service_ts["caelundas-cli/src/modules/datetime/datetime.service.ts"]
@@ -2312,12 +2311,13 @@ graph LR
   file_caelundas_cli_testing_setup_ts["caelundas-cli/testing/setup.ts"]
   file_caelundas_cli_testing_stellium_cliques_unit_test_ts["caelundas-cli/testing/stellium-cliques.unit.test.ts"]
   file_caelundas_cli_testing_stellium_reference_unit_test_ts["caelundas-cli/testing/stellium-reference.unit.test.ts"]
+  file_caelundas_cli_testing_temporary_database_types_ts["caelundas-cli/testing/temporary-database.types.ts"]
+  file_caelundas_cli_testing_temporary_database_utilities_ts["caelundas-cli/testing/temporary-database.utilities.ts"]
   file_caelundas_cli_vitest_config_ts["caelundas-cli/vitest.config.ts"]
   file_caelundas_web_callidescope_config_ts["caelundas-web/callidescope.config.ts"]
   file_caelundas_web_codometer_config_ts["caelundas-web/codometer.config.ts"]
   file_caelundas_web_eslint_config_ts["caelundas-web/eslint.config.ts"]
   file_caelundas_web_scripts_build_events_database_ts["caelundas-web/scripts/build-events-database.ts"]
-  file_caelundas_web_scripts_export_events_database_ts["caelundas-web/scripts/export-events-database.ts"]
   file_caelundas_web_src_client_tsx["caelundas-web/src/client.tsx"]
   file_caelundas_web_src_components_calendar_agenda_tsx["caelundas-web/src/components/calendar-agenda.tsx"]
   file_caelundas_web_src_components_calendar_agenda_unit_test_tsx["caelundas-web/src/components/calendar-agenda.unit.test.tsx"]
@@ -2453,7 +2453,6 @@ graph LR
   file_caelundas_web_src_lib_events_database_events_database_browser_types_ts["caelundas-web/src/lib/events-database/events-database.browser.types.ts"]
   file_caelundas_web_src_lib_events_database_events_database_constants_ts["caelundas-web/src/lib/events-database/events-database.constants.ts"]
   file_caelundas_web_src_lib_events_database_events_database_errors_ts["caelundas-web/src/lib/events-database/events-database.errors.ts"]
-  file_caelundas_web_src_lib_events_database_events_database_integration_test_ts["caelundas-web/src/lib/events-database/events-database.integration.test.ts"]
   file_caelundas_web_src_lib_events_database_events_database_local_time_ts["caelundas-web/src/lib/events-database/events-database.local-time.ts"]
   file_caelundas_web_src_lib_events_database_events_database_ts["caelundas-web/src/lib/events-database/events-database.ts"]
   file_caelundas_web_src_lib_events_database_events_database_types_ts["caelundas-web/src/lib/events-database/events-database.types.ts"]
@@ -5162,39 +5161,35 @@ graph LR
   file_persistence_codometer_config_ts["persistence/codometer.config.ts"]
   file_persistence_eslint_config_ts["persistence/eslint.config.ts"]
   file_persistence_src_index_ts["persistence/src/index.ts"]
-  file_persistence_src_modules_export_export_arguments_command_integration_test_ts["persistence/src/modules/export/export-arguments.command.integration.test.ts"]
-  file_persistence_src_modules_export_export_dry_run_command_integration_test_ts["persistence/src/modules/export/export-dry-run.command.integration.test.ts"]
-  file_persistence_src_modules_export_export_dry_run_command_unit_test_ts["persistence/src/modules/export/export-dry-run.command.unit.test.ts"]
-  file_persistence_src_modules_export_export_log_convention_command_unit_test_ts["persistence/src/modules/export/export-log-convention.command.unit.test.ts"]
-  file_persistence_src_modules_export_export_missing_table_command_integration_test_ts["persistence/src/modules/export/export-missing-table.command.integration.test.ts"]
-  file_persistence_src_modules_export_export_missing_table_command_unit_test_ts["persistence/src/modules/export/export-missing-table.command.unit.test.ts"]
-  file_persistence_src_modules_export_export_preflight_command_integration_test_ts["persistence/src/modules/export/export-preflight.command.integration.test.ts"]
-  file_persistence_src_modules_export_export_schema_command_unit_test_ts["persistence/src/modules/export/export-schema.command.unit.test.ts"]
-  file_persistence_src_modules_export_export_sqlite_types_command_integration_test_ts["persistence/src/modules/export/export-sqlite-types.command.integration.test.ts"]
-  file_persistence_src_modules_export_export_sqlite_command_integration_test_ts["persistence/src/modules/export/export-sqlite.command.integration.test.ts"]
-  file_persistence_src_modules_export_export_sqlite_command_unit_test_ts["persistence/src/modules/export/export-sqlite.command.unit.test.ts"]
-  file_persistence_src_modules_export_export_command_integration_test_ts["persistence/src/modules/export/export.command.integration.test.ts"]
-  file_persistence_src_modules_export_export_command_ts["persistence/src/modules/export/export.command.ts"]
-  file_persistence_src_modules_export_export_command_unit_test_ts["persistence/src/modules/export/export.command.unit.test.ts"]
-  file_persistence_src_modules_export_export_constants_ts["persistence/src/modules/export/export.constants.ts"]
-  file_persistence_src_modules_export_export_module_ts["persistence/src/modules/export/export.module.ts"]
-  file_persistence_src_modules_export_export_types_ts["persistence/src/modules/export/export.types.ts"]
-  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts["persistence/src/modules/import/import-clean-data.command.integration.test.ts"]
-  file_persistence_src_modules_import_import_clean_data_command_unit_test_ts["persistence/src/modules/import/import-clean-data.command.unit.test.ts"]
-  file_persistence_src_modules_import_import_clean_command_integration_test_ts["persistence/src/modules/import/import-clean.command.integration.test.ts"]
-  file_persistence_src_modules_import_import_clean_command_unit_test_ts["persistence/src/modules/import/import-clean.command.unit.test.ts"]
-  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts["persistence/src/modules/import/import-dry-run.command.integration.test.ts"]
-  file_persistence_src_modules_import_import_dry_run_command_unit_test_ts["persistence/src/modules/import/import-dry-run.command.unit.test.ts"]
-  file_persistence_src_modules_import_import_preflight_command_integration_test_ts["persistence/src/modules/import/import-preflight.command.integration.test.ts"]
-  file_persistence_src_modules_import_import_schema_command_integration_test_ts["persistence/src/modules/import/import-schema.command.integration.test.ts"]
-  file_persistence_src_modules_import_import_schema_command_unit_test_ts["persistence/src/modules/import/import-schema.command.unit.test.ts"]
-  file_persistence_src_modules_import_import_sqlite_command_unit_test_ts["persistence/src/modules/import/import-sqlite.command.unit.test.ts"]
-  file_persistence_src_modules_import_import_command_integration_test_ts["persistence/src/modules/import/import.command.integration.test.ts"]
-  file_persistence_src_modules_import_import_command_ts["persistence/src/modules/import/import.command.ts"]
-  file_persistence_src_modules_import_import_command_unit_test_ts["persistence/src/modules/import/import.command.unit.test.ts"]
-  file_persistence_src_modules_import_import_constants_ts["persistence/src/modules/import/import.constants.ts"]
-  file_persistence_src_modules_import_import_module_ts["persistence/src/modules/import/import.module.ts"]
-  file_persistence_src_modules_import_import_types_ts["persistence/src/modules/import/import.types.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_arguments_command_integration_test_ts["persistence/src/modules/postgresql-export/postgresql-export-arguments.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_dry_run_command_integration_test_ts["persistence/src/modules/postgresql-export/postgresql-export-dry-run.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_dry_run_command_unit_test_ts["persistence/src/modules/postgresql-export/postgresql-export-dry-run.command.unit.test.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_log_convention_command_unit_test_ts["persistence/src/modules/postgresql-export/postgresql-export-log-convention.command.unit.test.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_missing_table_command_integration_test_ts["persistence/src/modules/postgresql-export/postgresql-export-missing-table.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_missing_table_command_unit_test_ts["persistence/src/modules/postgresql-export/postgresql-export-missing-table.command.unit.test.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_preflight_command_integration_test_ts["persistence/src/modules/postgresql-export/postgresql-export-preflight.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_schema_command_unit_test_ts["persistence/src/modules/postgresql-export/postgresql-export-schema.command.unit.test.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_integration_test_ts["persistence/src/modules/postgresql-export/postgresql-export.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_ts["persistence/src/modules/postgresql-export/postgresql-export.command.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_unit_test_ts["persistence/src/modules/postgresql-export/postgresql-export.command.unit.test.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_constants_ts["persistence/src/modules/postgresql-export/postgresql-export.constants.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_module_ts["persistence/src/modules/postgresql-export/postgresql-export.module.ts"]
+  file_persistence_src_modules_postgresql_export_postgresql_export_types_ts["persistence/src/modules/postgresql-export/postgresql-export.types.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_data_command_integration_test_ts["persistence/src/modules/postgresql-import/postgresql-import-clean-data.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_data_command_unit_test_ts["persistence/src/modules/postgresql-import/postgresql-import-clean-data.command.unit.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts["persistence/src/modules/postgresql-import/postgresql-import-clean.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_command_unit_test_ts["persistence/src/modules/postgresql-import/postgresql-import-clean.command.unit.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_dry_run_command_integration_test_ts["persistence/src/modules/postgresql-import/postgresql-import-dry-run.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_dry_run_command_unit_test_ts["persistence/src/modules/postgresql-import/postgresql-import-dry-run.command.unit.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_preflight_command_integration_test_ts["persistence/src/modules/postgresql-import/postgresql-import-preflight.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_schema_command_integration_test_ts["persistence/src/modules/postgresql-import/postgresql-import-schema.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_schema_command_unit_test_ts["persistence/src/modules/postgresql-import/postgresql-import-schema.command.unit.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_integration_test_ts["persistence/src/modules/postgresql-import/postgresql-import.command.integration.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_ts["persistence/src/modules/postgresql-import/postgresql-import.command.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_unit_test_ts["persistence/src/modules/postgresql-import/postgresql-import.command.unit.test.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_constants_ts["persistence/src/modules/postgresql-import/postgresql-import.constants.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_module_ts["persistence/src/modules/postgresql-import/postgresql-import.module.ts"]
+  file_persistence_src_modules_postgresql_import_postgresql_import_types_ts["persistence/src/modules/postgresql-import/postgresql-import.types.ts"]
   file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts["persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts"]
   file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_unit_test_ts["persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.unit.test.ts"]
   file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_ts["persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts"]
@@ -5223,12 +5218,18 @@ graph LR
   file_persistence_src_modules_postgresql_postgresql_types_ts["persistence/src/modules/postgresql/postgresql.types.ts"]
   file_persistence_src_modules_postgresql_postgresql_utilities_ts["persistence/src/modules/postgresql/postgresql.utilities.ts"]
   file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts["persistence/src/modules/postgresql/postgresql.utilities.unit.test.ts"]
-  file_persistence_src_modules_sqlite_export_sqlite_export_constants_ts["persistence/src/modules/sqlite-export/sqlite-export.constants.ts"]
-  file_persistence_src_modules_sqlite_export_sqlite_export_module_ts["persistence/src/modules/sqlite-export/sqlite-export.module.ts"]
-  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts["persistence/src/modules/sqlite-export/sqlite-export.service.ts"]
-  file_persistence_src_modules_sqlite_export_sqlite_export_service_unit_test_ts["persistence/src/modules/sqlite-export/sqlite-export.service.unit.test.ts"]
-  file_persistence_src_modules_sqlite_export_sqlite_export_types_ts["persistence/src/modules/sqlite-export/sqlite-export.types.ts"]
-  file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts["persistence/src/modules/sqlite-export/sqlite-export.utilities.ts"]
+  file_persistence_src_modules_sqlite_entities_creatable_entity_ts["persistence/src/modules/sqlite/entities/creatable.entity.ts"]
+  file_persistence_src_modules_sqlite_entities_deletable_entity_ts["persistence/src/modules/sqlite/entities/deletable.entity.ts"]
+  file_persistence_src_modules_sqlite_entities_identifiable_entity_ts["persistence/src/modules/sqlite/entities/identifiable.entity.ts"]
+  file_persistence_src_modules_sqlite_entities_updatable_entity_ts["persistence/src/modules/sqlite/entities/updatable.entity.ts"]
+  file_persistence_src_modules_sqlite_sqlite_constants_ts["persistence/src/modules/sqlite/sqlite.constants.ts"]
+  file_persistence_src_modules_sqlite_sqlite_module_integration_test_ts["persistence/src/modules/sqlite/sqlite.module.integration.test.ts"]
+  file_persistence_src_modules_sqlite_sqlite_module_ts["persistence/src/modules/sqlite/sqlite.module.ts"]
+  file_persistence_src_modules_sqlite_sqlite_service_ts["persistence/src/modules/sqlite/sqlite.service.ts"]
+  file_persistence_src_modules_sqlite_sqlite_service_unit_test_ts["persistence/src/modules/sqlite/sqlite.service.unit.test.ts"]
+  file_persistence_src_modules_sqlite_sqlite_types_ts["persistence/src/modules/sqlite/sqlite.types.ts"]
+  file_persistence_src_modules_sqlite_sqlite_utilities_ts["persistence/src/modules/sqlite/sqlite.utilities.ts"]
+  file_persistence_src_modules_sqlite_sqlite_utilities_unit_test_ts["persistence/src/modules/sqlite/sqlite.utilities.unit.test.ts"]
   file_persistence_src_persistence_main_end_to_end_test_ts["persistence/src/persistence.main.end-to-end.test.ts"]
   file_persistence_src_persistence_main_ts["persistence/src/persistence.main.ts"]
   file_persistence_src_persistence_main_unit_test_ts["persistence/src/persistence.main.unit.test.ts"]
@@ -5242,10 +5243,12 @@ graph LR
   file_persistence_testing_fixtures_gadget_entity_ts["persistence/testing/fixtures/gadget.entity.ts"]
   file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts["persistence/testing/fixtures/migrations/1767225600000-create-widgets.ts"]
   file_persistence_testing_fixtures_migrations_1767225600001_create_parts_ts["persistence/testing/fixtures/migrations/1767225600001-create-parts.ts"]
+  file_persistence_testing_fixtures_migrations_1767225600002_create_sprockets_ts["persistence/testing/fixtures/migrations/1767225600002-create-sprockets.ts"]
   file_persistence_testing_fixtures_sample_greeting_constants_ts["persistence/testing/fixtures/sample-greeting.constants.ts"]
   file_persistence_testing_fixtures_sample_greeting_module_ts["persistence/testing/fixtures/sample-greeting.module.ts"]
   file_persistence_testing_fixtures_sample_widgets_module_ts["persistence/testing/fixtures/sample-widgets.module.ts"]
   file_persistence_testing_fixtures_sample_widgets_service_ts["persistence/testing/fixtures/sample-widgets.service.ts"]
+  file_persistence_testing_fixtures_sprocket_entity_ts["persistence/testing/fixtures/sprocket.entity.ts"]
   file_persistence_testing_fixtures_widget_entity_ts["persistence/testing/fixtures/widget.entity.ts"]
   file_persistence_testing_index_ts["persistence/testing/index.ts"]
   file_persistence_testing_mocks_ts["persistence/testing/mocks.ts"]
@@ -5737,11 +5740,11 @@ graph LR
   file_affirmancy_testing_test_prompts_py --> file_affirmancy_src_prompts_py
   file_affirmancy_testing_test_services_py --> file_affirmancy_src_services_py
   file_affirmancy_testing_test_subjects_py --> file_affirmancy_src_subjects_py
+  file_caelundas_cli_src_caelundas_cli_constants_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
-  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_database_module_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
-  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_migrations_1792416080531_migration_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_service_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
@@ -5751,6 +5754,8 @@ graph LR
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_calendar_command_types_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_calendar_command_utilities_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_major_aspects_utilities_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_temporary_database_types_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_temporary_database_utilities_ts
   file_caelundas_cli_src_caelundas_cli_main_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
   file_caelundas_cli_src_caelundas_cli_main_unit_test_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
   file_caelundas_cli_src_caelundas_cli_module_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
@@ -5938,6 +5943,7 @@ graph LR
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_stellium_stellium_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_twilights_twilights_module_ts
+  file_caelundas_cli_src_modules_caelundas_caelundas_module_unit_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_types_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_types_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_types_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
@@ -5949,33 +5955,27 @@ graph LR
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_constants_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_module_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_entities_tag_entity_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_migrations_1792416080531_migration_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_constants_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_database_database_service_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_tags_tags_service_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_tags_tags_utilities_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_service_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_service_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_types_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_utilities_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts --> file_caelundas_cli_src_modules_tags_tags_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_constants_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts --> file_caelundas_cli_src_modules_tags_tags_utilities_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_utilities_ts
   file_caelundas_cli_src_modules_calendar_calendar_module_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_ts --> file_caelundas_cli_src_modules_calendar_calendar_constants_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_ts --> file_caelundas_cli_src_modules_calendar_calendar_types_ts
@@ -6010,11 +6010,16 @@ graph LR
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_database_data_source_constants_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_src_modules_database_data_source_constants_unit_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_src_modules_database_database_constants_integration_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_src_modules_database_database_constants_integration_test_ts --> file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts
   file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts
   file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_tag_entity_ts
   file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_database_service_ts
+  file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts
+  file_caelundas_cli_src_modules_database_database_service_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_modules_database_database_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_service_ts
   file_caelundas_cli_src_modules_database_database_types_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_database_database_utilities_unit_test_ts --> file_caelundas_cli_src_modules_database_database_utilities_ts
@@ -6907,7 +6912,6 @@ graph LR
   file_caelundas_cli_src_modules_tags_tag_map_functions_ts --> file_caelundas_cli_src_modules_tags_tags_types_ts
   file_caelundas_cli_src_modules_tags_tags_module_ts --> file_caelundas_cli_src_modules_tags_tags_service_ts
   file_caelundas_cli_src_modules_tags_tags_service_ts --> file_caelundas_cli_src_modules_database_entities_tag_entity_ts
-  file_caelundas_cli_src_modules_tags_tags_service_ts --> file_caelundas_cli_src_modules_tags_tags_constants_ts
   file_caelundas_cli_src_modules_tags_tags_service_ts --> file_caelundas_cli_src_modules_tags_tags_types_ts
   file_caelundas_cli_src_modules_tags_tags_service_ts --> file_caelundas_cli_src_modules_tags_tags_utilities_ts
   file_caelundas_cli_src_modules_tags_tags_service_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_service_ts
@@ -7114,7 +7118,9 @@ graph LR
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_stellium_stellium_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_testing_reference_longitudes_constants_ts
-  file_caelundas_web_scripts_build_events_database_ts --> file_caelundas_web_scripts_export_events_database_ts
+  file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts
+  file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_testing_temporary_database_types_ts
   file_caelundas_web_src_components_calendar_agenda_tsx --> file_caelundas_web_src_components_calendar_event_row_tsx
   file_caelundas_web_src_components_calendar_agenda_tsx --> file_caelundas_web_src_components_virtual_list_tsx
   file_caelundas_web_src_components_calendar_agenda_tsx --> file_caelundas_web_src_lib_calendar_calendar_agenda_ts
@@ -7471,8 +7477,6 @@ graph LR
   file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_ts
   file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_lib_events_database_events_database_browser_types_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
-  file_caelundas_web_src_lib_events_database_events_database_integration_test_ts --> file_caelundas_web_testing_events_database_ts
-  file_caelundas_web_src_lib_events_database_events_database_integration_test_ts --> file_caelundas_web_testing_render_route_tsx
   file_caelundas_web_src_lib_events_database_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_constants_ts
   file_caelundas_web_src_lib_events_database_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_lib_events_database_events_database_unit_test_ts --> file_caelundas_web_testing_events_database_ts
@@ -13076,107 +13080,95 @@ graph LR
   file_observability_src_modules_logger_logger_service_ts --> file_observability_src_modules_logger_logger_constants_ts
   file_observability_src_modules_logger_logger_service_ts --> file_observability_src_modules_logger_logger_types_ts
   file_observability_src_modules_logger_logger_service_unit_test_ts --> file_observability_src_modules_logger_logger_service_ts
-  file_persistence_src_modules_export_export_arguments_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_arguments_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_export_export_dry_run_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_dry_run_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_export_export_dry_run_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_dry_run_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_export_export_log_convention_command_unit_test_ts --> file_persistence_src_modules_export_export_constants_ts
-  file_persistence_src_modules_export_export_log_convention_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_log_convention_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_export_export_missing_table_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_missing_table_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_export_export_missing_table_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_missing_table_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_export_export_preflight_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_preflight_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_export_export_schema_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_schema_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_export_export_sqlite_types_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_sqlite_types_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_export_export_sqlite_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_sqlite_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_export_export_sqlite_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_sqlite_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
-  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
-  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_export_export_constants_ts
-  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_export_export_types_ts
-  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
-  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
-  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_constants_ts
-  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_service_ts
-  file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_src_modules_export_export_command_ts
-  file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_service_ts
-  file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_export_export_constants_ts --> file_persistence_src_modules_export_export_types_ts
-  file_persistence_src_modules_export_export_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_persistence_src_modules_export_export_module_ts --> file_persistence_src_modules_export_export_command_ts
-  file_persistence_src_modules_export_export_module_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_module_ts
-  file_persistence_src_modules_export_export_module_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_module_ts
-  file_persistence_src_modules_export_export_types_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
-  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
-  file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
-  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_import_import_clean_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_clean_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
-  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_import_import_dry_run_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_dry_run_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_import_import_preflight_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_preflight_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_import_import_schema_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_schema_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_import_import_schema_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_persistence_src_modules_import_import_schema_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_schema_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_import_import_sqlite_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_sqlite_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
-  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
-  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_import_import_constants_ts
-  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_import_import_types_ts
-  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
-  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
-  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_persistence_src_modules_import_import_command_unit_test_ts --> file_persistence_src_modules_import_import_command_ts
-  file_persistence_src_modules_import_import_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_persistence_src_modules_import_import_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
-  file_persistence_src_modules_import_import_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_import_import_constants_ts --> file_persistence_src_modules_import_import_types_ts
-  file_persistence_src_modules_import_import_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_persistence_src_modules_import_import_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_persistence_src_modules_import_import_module_ts --> file_persistence_src_modules_import_import_command_ts
-  file_persistence_src_modules_import_import_module_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_module_ts
-  file_persistence_src_modules_import_import_types_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_arguments_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_arguments_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_dry_run_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_dry_run_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_dry_run_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_dry_run_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_log_convention_command_unit_test_ts --> file_persistence_src_modules_postgresql_export_postgresql_export_constants_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_log_convention_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_log_convention_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_missing_table_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_missing_table_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_missing_table_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_missing_table_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_preflight_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_preflight_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_schema_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_schema_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_ts --> file_persistence_src_modules_postgresql_export_postgresql_export_constants_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_ts --> file_persistence_src_modules_postgresql_export_postgresql_export_types_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_unit_test_ts --> file_persistence_src_modules_postgresql_export_postgresql_export_command_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_constants_ts --> file_persistence_src_modules_postgresql_export_postgresql_export_types_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_module_ts --> file_persistence_src_modules_postgresql_export_postgresql_export_command_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_module_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_module_ts
+  file_persistence_src_modules_postgresql_export_postgresql_export_types_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_data_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_data_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_data_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_data_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_data_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_data_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_data_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_data_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_clean_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_dry_run_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_dry_run_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_dry_run_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_dry_run_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_dry_run_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_dry_run_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_preflight_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_preflight_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_schema_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_schema_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_schema_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_schema_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_schema_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_ts --> file_persistence_src_modules_postgresql_import_postgresql_import_constants_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_ts --> file_persistence_src_modules_postgresql_import_postgresql_import_types_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_unit_test_ts --> file_persistence_src_modules_postgresql_import_postgresql_import_command_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_constants_ts --> file_persistence_src_modules_postgresql_import_postgresql_import_types_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_module_ts --> file_persistence_src_modules_postgresql_import_postgresql_import_command_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_module_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_module_ts
+  file_persistence_src_modules_postgresql_import_postgresql_import_types_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
   file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
   file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
   file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
@@ -13243,22 +13235,30 @@ graph LR
   file_persistence_src_modules_postgresql_postgresql_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
   file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
   file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_constants_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_types_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_module_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_service_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_constants_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_types_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_service_unit_test_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_service_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_types_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_constants_ts
-  file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_types_ts
+  file_persistence_src_modules_sqlite_entities_creatable_entity_ts --> file_persistence_src_modules_sqlite_entities_identifiable_entity_ts
+  file_persistence_src_modules_sqlite_entities_deletable_entity_ts --> file_persistence_src_modules_sqlite_entities_updatable_entity_ts
+  file_persistence_src_modules_sqlite_entities_updatable_entity_ts --> file_persistence_src_modules_sqlite_entities_creatable_entity_ts
+  file_persistence_src_modules_sqlite_sqlite_module_integration_test_ts --> file_persistence_src_modules_sqlite_sqlite_module_ts
+  file_persistence_src_modules_sqlite_sqlite_module_integration_test_ts --> file_persistence_src_modules_sqlite_sqlite_utilities_ts
+  file_persistence_src_modules_sqlite_sqlite_module_integration_test_ts --> file_persistence_testing_fixtures_migrations_1767225600002_create_sprockets_ts
+  file_persistence_src_modules_sqlite_sqlite_module_integration_test_ts --> file_persistence_testing_fixtures_sprocket_entity_ts
+  file_persistence_src_modules_sqlite_sqlite_module_ts --> file_persistence_src_modules_sqlite_sqlite_constants_ts
+  file_persistence_src_modules_sqlite_sqlite_module_ts --> file_persistence_src_modules_sqlite_sqlite_service_ts
+  file_persistence_src_modules_sqlite_sqlite_module_ts --> file_persistence_src_modules_sqlite_sqlite_types_ts
+  file_persistence_src_modules_sqlite_sqlite_service_ts --> file_persistence_src_modules_sqlite_sqlite_constants_ts
+  file_persistence_src_modules_sqlite_sqlite_service_ts --> file_persistence_src_modules_sqlite_sqlite_types_ts
+  file_persistence_src_modules_sqlite_sqlite_service_ts --> file_persistence_src_modules_sqlite_sqlite_utilities_ts
+  file_persistence_src_modules_sqlite_sqlite_service_unit_test_ts --> file_persistence_src_modules_sqlite_sqlite_constants_ts
+  file_persistence_src_modules_sqlite_sqlite_service_unit_test_ts --> file_persistence_src_modules_sqlite_sqlite_service_ts
+  file_persistence_src_modules_sqlite_sqlite_service_unit_test_ts --> file_persistence_testing_fixtures_migrations_1767225600002_create_sprockets_ts
+  file_persistence_src_modules_sqlite_sqlite_types_ts --> file_persistence_src_modules_sqlite_sqlite_constants_ts
+  file_persistence_src_modules_sqlite_sqlite_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
+  file_persistence_src_modules_sqlite_sqlite_utilities_ts --> file_persistence_src_modules_sqlite_sqlite_constants_ts
+  file_persistence_src_modules_sqlite_sqlite_utilities_ts --> file_persistence_src_modules_sqlite_sqlite_types_ts
+  file_persistence_src_modules_sqlite_sqlite_utilities_unit_test_ts --> file_persistence_src_modules_sqlite_sqlite_utilities_ts
   file_persistence_src_persistence_main_ts --> file_persistence_src_persistence_module_ts
-  file_persistence_src_persistence_module_ts --> file_persistence_src_modules_export_export_module_ts
-  file_persistence_src_persistence_module_ts --> file_persistence_src_modules_import_import_module_ts
+  file_persistence_src_persistence_module_ts --> file_persistence_src_modules_postgresql_export_postgresql_export_module_ts
+  file_persistence_src_persistence_module_ts --> file_persistence_src_modules_postgresql_import_postgresql_import_module_ts
   file_persistence_src_persistence_module_unit_test_ts --> file_persistence_src_persistence_module_ts
   file_persistence_src_persistence_module_unit_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_persistence_repl_ts --> file_persistence_src_persistence_module_ts
@@ -13275,6 +13275,7 @@ graph LR
   file_persistence_testing_fixtures_sample_widgets_module_ts --> file_persistence_testing_fixtures_sample_widgets_service_ts
   file_persistence_testing_fixtures_sample_widgets_module_ts --> file_persistence_testing_fixtures_widget_entity_ts
   file_persistence_testing_fixtures_sample_widgets_service_ts --> file_persistence_testing_fixtures_widget_entity_ts
+  file_persistence_testing_fixtures_sprocket_entity_ts --> file_persistence_src_modules_sqlite_entities_deletable_entity_ts
   file_persistence_testing_fixtures_widget_entity_ts --> file_persistence_src_modules_postgresql_entities_deletable_entity_ts
   file_persistence_testing_persistence_testing_types_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
   file_persistence_testing_persistence_testing_types_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
@@ -14329,8 +14330,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Repository
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-64171-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.75_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-160-4a4a4a?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.77_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-161-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-616-3178c6?style=flat-square)
 
 ### TypeScript
@@ -14378,30 +14379,30 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-47-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7436-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-1140-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-419-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-2743-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2583-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7497-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-1152-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-425-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-2784-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2609-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-39-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-189-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-194-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1587-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4370-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1595-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4419-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3226-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3439-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-438-7c3aed?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-463-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-90-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1525-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3071-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1630-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3268-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-621-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-659-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -14444,15 +14445,15 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### HCL
 
-![HCL Files](https://img.shields.io/badge/HCL_Files-2-844fba?style=flat-square)
-![HCL Lines](https://img.shields.io/badge/HCL_Lines-52-a78bfa?style=flat-square)
-![HCL Blocks](https://img.shields.io/badge/HCL_Blocks-11-7c3aed?style=flat-square)
-![HCL Resources](https://img.shields.io/badge/HCL_Resources-1-0284c7?style=flat-square)
-![HCL Variables](https://img.shields.io/badge/HCL_Variables-3-16a34a?style=flat-square)
-![HCL Outputs](https://img.shields.io/badge/HCL_Outputs-1-059669?style=flat-square)
-![HCL Attributes](https://img.shields.io/badge/HCL_Attributes-20-0ea5e9?style=flat-square)
-![HCL Interpolations](https://img.shields.io/badge/HCL_Interpolations-0-db2777?style=flat-square)
-![HCL Comments](https://img.shields.io/badge/HCL_Comments-0-64748b?style=flat-square)
+![HCL Files](https://img.shields.io/badge/HCL_Files-5-844fba?style=flat-square)
+![HCL Lines](https://img.shields.io/badge/HCL_Lines-222-a78bfa?style=flat-square)
+![HCL Blocks](https://img.shields.io/badge/HCL_Blocks-35-7c3aed?style=flat-square)
+![HCL Resources](https://img.shields.io/badge/HCL_Resources-8-0284c7?style=flat-square)
+![HCL Variables](https://img.shields.io/badge/HCL_Variables-10-16a34a?style=flat-square)
+![HCL Outputs](https://img.shields.io/badge/HCL_Outputs-2-059669?style=flat-square)
+![HCL Attributes](https://img.shields.io/badge/HCL_Attributes-83-0ea5e9?style=flat-square)
+![HCL Interpolations](https://img.shields.io/badge/HCL_Interpolations-1-db2777?style=flat-square)
+![HCL Comments](https://img.shields.io/badge/HCL_Comments-21-64748b?style=flat-square)
 
 ### CSS
 
@@ -14513,23 +14514,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-143-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27811-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27826-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-838-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-751-a78bfa?style=flat-square)
+![H3](https://img.shields.io/badge/H3-752-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6356-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6359-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-964-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4572-22c55e?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4573-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-285-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-2794-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-912-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-915-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-564-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15236-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-565-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15245-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -14542,13 +14543,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7396 |
-| Files | 2143 |
-| Calls traced | 8090 |
-| Call stacks | 2068 |
+| Callables | 7370 |
+| Files | 2145 |
+| Calls traced | 8066 |
+| Call stacks | 2066 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
-| Unfollowable calls | 468 |
+| Unfollowable calls | 455 |
 
 ### Projects
 

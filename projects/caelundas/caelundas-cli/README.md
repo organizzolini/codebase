@@ -4,7 +4,7 @@
 
 Caelundas computes planetary positions minute by minute over a date range,
 detects the astronomical events in them — aspects, phases, eclipses,
-retrogrades, ingresses, solstices, twilights — stores them in Postgres, and
+retrogrades, ingresses, solstices, twilights — stores them in a SQLite file, and
 renders an iCalendar file you can subscribe to in Google Calendar, Apple
 Calendar, or anything else that reads `.ics`, plus a JSON file of the same
 events.
@@ -18,10 +18,7 @@ nx run caelundas-cli:download-ephemeris
 # 2. Configure your observer location and date range
 cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
 
-# 3. Create the tables (needs the local Postgres container running)
-nx run caelundas-cli:migration:run
-
-# 4. Generate the calendar
+# 3. Generate the calendar; the first run creates output/database.sqlite and its tables
 nx run caelundas-cli:start
 ```
 
@@ -40,12 +37,10 @@ END_DATE="2026-07-31"         # YYYY-MM-DD
 OUTPUT_DIRECTORY="./output"
 ```
 
-Every field is optional. The database connection is read from
-`CAELUNDAS_POSTGRES_HOST`, `_PORT`, `_USERNAME`, `_PASSWORD`, `_DATABASE`, and
-`_SCHEMA`,
-which default to the local Docker Postgres: the `caelundas_development`
-database, `caelundas` schema, and `caelundas_username` role. Location defaults to Philadelphia, and the date range
-to a two-month window centered on today.
+Every field is optional. The database is the SQLite file `CAELUNDAS_SQLITE_DATABASE`
+names, or `:memory:`; by default it is `output/database.sqlite` in this project's
+folder, wherever the command runs from, and is gitignored with the rest of `output/`. Location defaults to
+Philadelphia, and the date range to a two-month window centered on today.
 
 The **timezone is derived from your coordinates** rather than configured
 separately — a calendar whose location and timezone could disagree is a
@@ -235,18 +230,27 @@ under, and carries the nodes above through the closure table. The `.ics`
 output keeps the `CATEGORIES` property, and the JSON output a `tags` array,
 both holding the linked tags' names.
 
-Postgres returns `numeric` columns as strings, so compare coordinates as such.
-The schema comes from a generated migration: `nx run caelundas-cli:migration:run`
-applies it and `nx run caelundas-cli:migration:generate` creates the next one.
-Both read the data source and migrations from
-`src/modules/database/`, the folder the `migration` target's
-`module` option names.
+Coordinates are stored as text, fixed to six decimals, so the natural key
+compares them exactly; compare them as such. `start` and `end` are ISO 8601
+text in UTC, such as `2026-03-04T15:20:00.000Z`, which sorts as the instants
+it names.
 
-The initial migration was regenerated at this schema, under a new name, rather
-than migrated, so a database built from the old one cannot be upgraded in
-place. Revert it first with `nx run caelundas-cli:migration:revert` from a
-checkout that still has it, or drop the `caelundas` schema and recreate it
-empty, then run the migrations and rerun ingestion.
+A run creates `output/database.sqlite` and applies the migration when the
+table is missing, and adds to it on later runs: the same event for the same
+place updates its row. The schema comes from a generated migration:
+`nx run caelundas-cli:migration:generate` creates the next one, and
+`migration:run`, `migration:revert` and `migration:show` work on the file
+directly. They read the data source and migrations from
+`src/modules/database/`, the folder the `migration` target's `module` option
+names. The same file is what the web application, `caelundas-web`, reads: the
+migration creates the read model it queries (`tag_nodes`,
+`calendar_event_tag_nodes` and the `calendar_events_derived` view), and every
+run ends by rewriting those tables with `data/events-read-model.sql`, so there
+is no separate build step. Build the web application with
+`nx run caelundas-web:build:ingested`, which copies the file.
+
+SQLite takes one writer at a time, so run one ingestion against a file at a
+time; a second waits five seconds and then fails with `SQLITE_BUSY`.
 
 ## Structure
 
@@ -260,7 +264,7 @@ src/
     ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena
     ├── perfective/          # Exact-moment detection across every event service
     ├── progressive/         # Spans derived from those moments
-    ├── database/            # Postgres connection, entities, migrations
+    ├── database/            # SQLite connection, entities, migrations
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── tags/                # Resolving raw tag strings to nodes of the tag tree
     ├── calendar/            # iCalendar and JSON rendering and output
@@ -280,8 +284,8 @@ nx run caelundas-cli:start
 
 ## Test
 
-Integration and end-to-end suites start a throwaway Postgres 18 container, so
-Docker must be running.
+Integration and end-to-end suites use an in-memory or temporary SQLite file,
+so they need no container.
 
 ```bash
 nx run caelundas-cli:vitest
@@ -289,8 +293,8 @@ nx run caelundas-cli:vitest
 
 ```bash
 nx run caelundas-cli:vitest:unit          # Fast tests only
-nx run caelundas-cli:vitest:end-to-end    # Full pipeline, against a Postgres container
-nx run caelundas-cli:vitest:integration   # Calendar events service, against a Postgres container
+nx run caelundas-cli:vitest:end-to-end    # Full pipeline, against a temporary SQLite file
+nx run caelundas-cli:vitest:integration   # Calendar events service, against an in-memory SQLite file
 ```
 
 ## Development
@@ -324,9 +328,9 @@ Call stacks traced through `projects/caelundas/caelundas-cli`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 1033 |
-| Files | 192 |
-| Calls traced | 1310 |
+| Callables | 1037 |
+| Files | 191 |
+| Calls traced | 1317 |
 | Call stacks | 105 |
 | Deepest stack | 15 |
 | Stacks through recursion | 0 |
@@ -1656,10 +1660,11 @@ What this project is judged against, as declared in its own `callidescope.config
 | `AnnualSolarCycleEventsService.getWinterEvents` | 8 | `AnnualSolarCycleEventsService.isWinterSolstice`, `AnnualSolarCycleEventsService.buildWinterSolsticeEvent`, `AnnualSolarCycleEventsService.isThirteenthHexadecan`, `AnnualSolarCycleEventsService.buildThirteenthHexadecanEvent`, `AnnualSolarCycleEventsService.isImbolc`, `AnnualSolarCycleEventsService.buildImbolcEvent`, `AnnualSolarCycleEventsService.isFifteenthHexadecan`, `AnnualSolarCycleEventsService.buildFifteenthHexadecanEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:123` |
 | `PerfectiveService.detectOrbitalEvents` | 8 | `RetrogradesService.detect`, `IngressesService.detect`, `MonthlyLunarCycleService.detect`, `MonthlyLunarCycleService.detectApsides`, `AnnualSolarCycleService.detect`, `PhasesService.getMartianPhaseEvents`, `PhasesService.getMercurianPhaseEvents`, `PhasesService.getVenusianPhaseEvents` | `projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:171` |
 | `ProgressiveService.detect` | 8 | `AspectsService.detectProgressive`, `RetrogradesService.detectProgressive`, `EclipsesService.detectProgressive`, `IngressesService.detectProgressive`, `MonthlyLunarCycleService.detectProgressive`, `TwilightsService.detectProgressive`, `PhasesService.detectProgressive`, `AnnualSolarCycleService.detectProgressive` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive.service.ts:47` |
+| `CalendarEventsService.transaction(…)` | 7 | `TagsService.resolve`, `CalendarEventsService.flatMap(…)`, `CalendarEventsService.writeRows`, `CalendarEventsService.map(…)`, `CalendarEventsService.replaceTagLinks`, `CalendarEventsService.toTagLinks`, `DatabaseService.refreshReadModel` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:379` |
 | `PhasesService.detectProgressive` | 7 | `PhasesService.filter(…)`, `PhasesService.filter(…)`, `VenusianPhaseService.getVenusianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MercurianPhaseService.getMercurianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MartianPhaseService.getMartianPhaseProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:97` |
 | `classifyEvent` | 6 | `flatMap(…)`, `pruneAncestorPaths`, `flatMap(…)`, `ingressPaths`, `eclipsePaths`, `isInstant` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:20` |
 | `dignityPaths` | 6 | `find(…)`, `map(…)`, `find(…)`, `map(…)`, `isSign`, `find(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:57` |
-| `CalendarEventsService.transaction(…)` | 6 | `TagsService.resolve`, `CalendarEventsService.flatMap(…)`, `CalendarEventsService.writeRows`, `CalendarEventsService.map(…)`, `CalendarEventsService.replaceTagLinks`, `toTagLinks` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:239` |
+| `CalendarEventsService.writeRows` | 6 | `CalendarEventsService.map(…)`, `CalendarEventsService.formatCoordinate`, `CalendarEventsService.map(…)`, `CalendarEventsService.map(…)`, `CalendarEventsService.mapWrittenIds`, `CalendarEventsService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:168` |
 | `AspectsService.detectCompositeAspects` | 6 | `QuadrupleAspectsService.detect`, `QuintupleAspectsService.detect`, `SextupleAspectsService.detect`, `StelliumService.detect`, `TripleAspectsService.detect`, `AspectsService.compoundEventKey` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:82` |
 | `EclipseClassificationService.getSolarEclipseType` | 6 | `EclipseClassificationService.isInProgress(…)`, `EclipseClassificationService.isInProgress`, `EclipseClassificationService.getClosestApproach(…)`, `EclipseClassificationService.getClosestApproach`, `EclipseClassificationService.getGamma`, `EclipseClassificationService.getUmbralRadius` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-classification.service.ts:205` |
 | `EclipseCalculationService.getGeocentricEvents` | 6 | `EclipseCalculationService.getSolarEclipsePhases`, `EclipseCalculationService.getLunarEclipsePhases`, `EclipseCalculationService.continueOccurrence`, `EclipseClassificationService.getSolarEclipseType`, `EclipseClassificationService.getLunarEclipseType`, `EclipseCalculationService.buildGeocentricEclipseEvents` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-calculation.service.ts:178` |
@@ -1685,8 +1690,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TripleAspectsDetectorService.composeYods` | 5 | `AspectGraphService.unionAspectBodies`, `TripleAspectsDetectorService.groupAspectsByType`, `TripleAspectsDetectorService.canonicalPair`, `TripleAspectsComposerService.findBodiesWithAspectTo`, `TripleAspectsDetectorService.checkYodApexBody` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:432` |
 | `flatMap(…)` | 4 | `one`, `mapEach(…)`, `mapEach`, `map(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:24` |
 | `pruneAncestorPaths` | 4 | `map(…)`, `map(…)`, `toSorted(…)`, `filter(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:161` |
-| `CalendarEventsService.findInRange` | 4 | `formatCoordinate`, `CalendarEventsService.findTagNames`, `CalendarEventsService.map(…)`, `CalendarEventsService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:178` |
-| `CalendarEventsService.upsert` | 4 | `tidyText`, `calendarEventKey`, `classifyEvent`, `CalendarEventsService.transaction(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:217` |
+| `CalendarEventsService.findInRange` | 4 | `CalendarEventsService.formatCoordinate`, `CalendarEventsService.findTagNames`, `CalendarEventsService.map(…)`, `CalendarEventsService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:236` |
+| `CalendarEventsService.upsert` | 4 | `CalendarEventsService.tidyText`, `CalendarEventsService.calendarEventKey`, `classifyEvent`, `CalendarEventsService.transaction(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:354` |
 | `CalendarService.buildTimezoneContent` | 4 | `CalendarService.flatMap(…)`, `CalendarService.buildObservance`, `CalendarService.map(…)`, `CalendarService.findTransitions` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:80` |
 | `EphemerisPhenomenaService.computeIlluminationForBody` | 4 | `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays`, `assertSwissEphemerisResult` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-phenomena.service.ts:55` |
 | `EphemerisAggregationService.accumulateBodyEphemeris` | 4 | `EphemerisConstantsService.isNode`, `EphemerisCoordinateService.computeNodeBodyMinutes`, `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `EphemerisAggregationService.computeNonNodeBodyMinutes` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts:158` |
@@ -1893,14 +1898,13 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ingressKind` | 1 | `isInstant` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:105` |
 | `map(…)` | 1 | `tagPathKey` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:162` |
 | `filter(…)` | 1 | `some(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:166` |
-| `TagsService.ensurePath` | 1 | `tagNodeKey` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.service.ts:32` |
-| `TagsService.map(…)` | 1 | `tagNodeKey` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.service.ts:82` |
-| `mapWrittenIds` | 1 | `map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.utilities.ts:43` |
-| `map(…)` | 1 | `calendarEventKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.utilities.ts:48` |
-| `toTagLinks` | 1 | `tagPathKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.utilities.ts:71` |
-| `CalendarEventsService.toRow` | 1 | `formatCoordinate` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:128` |
-| `CalendarEventsService.writeRows` | 1 | `mapWrittenIds` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:150` |
-| `CalendarEventsService.map(…)` | 1 | `CalendarEventsService.toRow` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:253` |
+| `TagsService.ensurePath` | 1 | `tagNodeKey` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.service.ts:31` |
+| `TagsService.map(…)` | 1 | `tagNodeKey` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.service.ts:78` |
+| `CalendarEventsService.toRow` | 1 | `CalendarEventsService.formatCoordinate` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:139` |
+| `CalendarEventsService.map(…)` | 1 | `CalendarEventsService.calendarEventKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:206` |
+| `CalendarEventsService.mapWrittenIds` | 1 | `CalendarEventsService.calendarEventKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:283` |
+| `CalendarEventsService.toTagLinks` | 1 | `tagPathKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:315` |
+| `CalendarEventsService.map(…)` | 1 | `CalendarEventsService.toRow` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:393` |
 | `CalendarService.buildObservance` | 1 | `CalendarService.formatOffset` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:57` |
 | `CalendarService.map(…)` | 1 | `CalendarService.buildObservance` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:105` |
 | `CalendarService.findTransitions` | 1 | `CalendarService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:127` |
@@ -2332,7 +2336,6 @@ flowchart LR
   MonthlyLunarCycleModule
   PerfectiveModule
   PhasesModule
-  PostgresqlModule
   ProgressiveModule
   ProgressiveUtilitiesModule
   QuadrupleAspectsModule
@@ -2340,6 +2343,7 @@ flowchart LR
   RetrogradesModule
   SextupleAspectsModule
   SpecialtyAspectsModule
+  SqliteModule
   StelliumModule
   TagsModule
   TripleAspectsModule
@@ -2387,7 +2391,7 @@ flowchart LR
   DailyCyclesModule --> CalendarModule
   DailyCyclesModule --> EphemerisModule
   DailyCyclesModule --> MathModule
-  DatabaseModule --> PostgresqlModule
+  DatabaseModule --> SqliteModule
   DatabaseModule --> TypeOrmModule
   EclipsesModule --> EphemerisModule
   EclipsesModule --> MathModule
@@ -2418,7 +2422,6 @@ flowchart LR
   PhasesModule --> EphemerisModule
   PhasesModule --> MathModule
   PhasesModule --> ProgressiveUtilitiesModule
-  PostgresqlModule --> TypeOrmModule
   ProgressiveModule --> AnnualSolarCycleModule
   ProgressiveModule --> AspectsModule
   ProgressiveModule --> EclipsesModule
@@ -2441,6 +2444,7 @@ flowchart LR
   SpecialtyAspectsModule --> AspectsUtilitiesModule
   SpecialtyAspectsModule --> EphemerisModule
   SpecialtyAspectsModule --> ProgressiveUtilitiesModule
+  SqliteModule --> TypeOrmModule
   StelliumModule --> AspectsUtilitiesModule
   StelliumModule --> ProgressiveUtilitiesModule
   TripleAspectsModule --> AspectsUtilitiesModule
@@ -2514,8 +2518,6 @@ graph LR
   file_src_modules_calendar_events_calendar_events_service_ts["src/modules/calendar-events/calendar-events.service.ts"]
   file_src_modules_calendar_events_calendar_events_service_unit_test_ts["src/modules/calendar-events/calendar-events.service.unit.test.ts"]
   file_src_modules_calendar_events_calendar_events_types_ts["src/modules/calendar-events/calendar-events.types.ts"]
-  file_src_modules_calendar_events_calendar_events_utilities_ts["src/modules/calendar-events/calendar-events.utilities.ts"]
-  file_src_modules_calendar_events_calendar_events_utilities_unit_test_ts["src/modules/calendar-events/calendar-events.utilities.unit.test.ts"]
   file_src_modules_calendar_calendar_constants_ts["src/modules/calendar/calendar.constants.ts"]
   file_src_modules_calendar_calendar_module_ts["src/modules/calendar/calendar.module.ts"]
   file_src_modules_calendar_calendar_service_ts["src/modules/calendar/calendar.service.ts"]
@@ -2529,6 +2531,8 @@ graph LR
   file_src_modules_daily_cycles_daily_cycles_service_unit_test_ts["src/modules/daily-cycles/daily-cycles.service.unit.test.ts"]
   file_src_modules_daily_cycles_daily_cycles_types_ts["src/modules/daily-cycles/daily-cycles.types.ts"]
   file_src_modules_database_data_source_constants_ts["src/modules/database/data-source.constants.ts"]
+  file_src_modules_database_data_source_constants_unit_test_ts["src/modules/database/data-source.constants.unit.test.ts"]
+  file_src_modules_database_database_constants_integration_test_ts["src/modules/database/database.constants.integration.test.ts"]
   file_src_modules_database_database_constants_ts["src/modules/database/database.constants.ts"]
   file_src_modules_database_database_module_ts["src/modules/database/database.module.ts"]
   file_src_modules_database_database_service_ts["src/modules/database/database.service.ts"]
@@ -2539,7 +2543,7 @@ graph LR
   file_src_modules_database_entities_calendar_event_tag_entity_ts["src/modules/database/entities/calendar-event-tag.entity.ts"]
   file_src_modules_database_entities_calendar_event_entity_ts["src/modules/database/entities/calendar-event.entity.ts"]
   file_src_modules_database_entities_tag_entity_ts["src/modules/database/entities/tag.entity.ts"]
-  file_src_modules_database_migrations_1792416080531_migration_ts["src/modules/database/migrations/1792416080531-migration.ts"]
+  file_src_modules_database_migrations_1793045891250_migration_ts["src/modules/database/migrations/1793045891250-migration.ts"]
   file_src_modules_datetime_datetime_constants_ts["src/modules/datetime/datetime.constants.ts"]
   file_src_modules_datetime_datetime_module_ts["src/modules/datetime/datetime.module.ts"]
   file_src_modules_datetime_datetime_service_ts["src/modules/datetime/datetime.service.ts"]
@@ -2783,12 +2787,14 @@ graph LR
   file_testing_setup_ts["testing/setup.ts"]
   file_testing_stellium_cliques_unit_test_ts["testing/stellium-cliques.unit.test.ts"]
   file_testing_stellium_reference_unit_test_ts["testing/stellium-reference.unit.test.ts"]
+  file_testing_temporary_database_types_ts["testing/temporary-database.types.ts"]
+  file_testing_temporary_database_utilities_ts["testing/temporary-database.utilities.ts"]
   file_vitest_config_ts["vitest.config.ts"]
+  file_src_caelundas_cli_constants_ts --> file_src_modules_database_database_constants_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_caelundas_cli_constants_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_calendar_calendar_service_ts
-  file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_database_database_module_ts
+  file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_database_database_constants_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
-  file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_database_migrations_1792416080531_migration_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_ingresses_ingresses_service_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_input_input_constants_ts
@@ -2798,6 +2804,8 @@ graph LR
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_calendar_command_types_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_calendar_command_utilities_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_major_aspects_utilities_ts
+  file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_temporary_database_types_ts
+  file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_temporary_database_utilities_ts
   file_src_caelundas_cli_main_ts --> file_src_caelundas_cli_module_ts
   file_src_caelundas_cli_main_unit_test_ts --> file_src_caelundas_cli_module_ts
   file_src_caelundas_cli_module_ts --> file_src_caelundas_cli_constants_ts
@@ -2985,6 +2993,7 @@ graph LR
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_stellium_stellium_module_ts
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_triple_aspects_triple_aspects_module_ts
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_twilights_twilights_module_ts
+  file_src_modules_caelundas_caelundas_module_unit_test_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_caelundas_caelundas_types_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_caelundas_caelundas_types_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
   file_src_modules_caelundas_caelundas_types_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
@@ -2996,33 +3005,27 @@ graph LR
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_constants_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_module_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_service_ts
-  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_database_constants_ts
-  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_database_module_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_database_types_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_entities_tag_entity_ts
-  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_migrations_1792416080531_migration_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_calendar_events_calendar_events_constants_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
-  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_calendar_events_calendar_events_utilities_ts
+  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_database_service_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_database_types_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_entities_calendar_event_tag_entity_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_tags_tags_service_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_tags_tags_utilities_ts
   file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_service_ts
+  file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_database_database_service_ts
   file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_tags_tags_service_ts
+  file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_tags_tags_types_ts
+  file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_tags_tags_utilities_ts
   file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_database_database_types_ts
   file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_database_entities_calendar_event_tag_entity_ts
   file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_tags_tags_types_ts
-  file_src_modules_calendar_events_calendar_events_utilities_ts --> file_src_modules_calendar_events_calendar_events_constants_ts
-  file_src_modules_calendar_events_calendar_events_utilities_ts --> file_src_modules_calendar_events_calendar_events_types_ts
-  file_src_modules_calendar_events_calendar_events_utilities_ts --> file_src_modules_tags_tags_utilities_ts
-  file_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_src_modules_calendar_events_calendar_events_utilities_ts
-  file_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_src_modules_tags_tags_types_ts
-  file_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_src_modules_tags_tags_utilities_ts
   file_src_modules_calendar_calendar_module_ts --> file_src_modules_calendar_calendar_service_ts
   file_src_modules_calendar_calendar_service_ts --> file_src_modules_calendar_calendar_constants_ts
   file_src_modules_calendar_calendar_service_ts --> file_src_modules_calendar_calendar_types_ts
@@ -3057,11 +3060,16 @@ graph LR
   file_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_src_modules_math_math_service_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_database_data_source_constants_unit_test_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_database_database_constants_integration_test_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_database_database_constants_integration_test_ts --> file_src_modules_database_migrations_1793045891250_migration_ts
   file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_calendar_event_tag_entity_ts
   file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_tag_entity_ts
   file_src_modules_database_database_module_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_database_module_ts --> file_src_modules_database_database_service_ts
+  file_src_modules_database_database_module_ts --> file_src_modules_database_migrations_1793045891250_migration_ts
+  file_src_modules_database_database_service_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_database_service_unit_test_ts --> file_src_modules_database_database_service_ts
   file_src_modules_database_database_types_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_database_database_utilities_unit_test_ts --> file_src_modules_database_database_utilities_ts
@@ -3954,7 +3962,6 @@ graph LR
   file_src_modules_tags_tag_map_functions_ts --> file_src_modules_tags_tags_types_ts
   file_src_modules_tags_tags_module_ts --> file_src_modules_tags_tags_service_ts
   file_src_modules_tags_tags_service_ts --> file_src_modules_database_entities_tag_entity_ts
-  file_src_modules_tags_tags_service_ts --> file_src_modules_tags_tags_constants_ts
   file_src_modules_tags_tags_service_ts --> file_src_modules_tags_tags_types_ts
   file_src_modules_tags_tags_service_ts --> file_src_modules_tags_tags_utilities_ts
   file_src_modules_tags_tags_service_unit_test_ts --> file_src_modules_tags_tags_service_ts
@@ -4161,6 +4168,9 @@ graph LR
   file_testing_stellium_reference_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_testing_stellium_reference_unit_test_ts --> file_src_modules_stellium_stellium_service_ts
   file_testing_stellium_reference_unit_test_ts --> file_testing_reference_longitudes_constants_ts
+  file_testing_temporary_database_utilities_ts --> file_src_modules_database_database_constants_ts
+  file_testing_temporary_database_utilities_ts --> file_src_modules_database_migrations_1793045891250_migration_ts
+  file_testing_temporary_database_utilities_ts --> file_testing_temporary_database_types_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
@@ -4170,40 +4180,40 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-56797-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-1.94_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-36-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-326-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-57188-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-1.96_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-37-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-328-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-190.56_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-191.32_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-326-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-87-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-328-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-88-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-15-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-155-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-944-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-156-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-952-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-20-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-114-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-21-8b5cf6?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-115-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-22-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-117-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2650-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-852-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-3298-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-204-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3917-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2192-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-482-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-1994-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-4184-475569?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2665-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-862-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-3310-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-217-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3933-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2210-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-478-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2004-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-4231-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -4224,16 +4234,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-52-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-2624-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-473-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-2631-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-474-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-91-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1797-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1006-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1800-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1008-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-555-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-10-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-286-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-2135-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-2138-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML
@@ -4276,17 +4286,17 @@ graph LR
 
 ### SQL
 
-![SQL Files](https://img.shields.io/badge/SQL_Files-2-e38c00?style=flat-square)
-![SQL Lines](https://img.shields.io/badge/SQL_Lines-129-f29111?style=flat-square)
-![SQL Statements](https://img.shields.io/badge/SQL_Statements-55-7c3aed?style=flat-square)
-![SQL Selects](https://img.shields.io/badge/SQL_Selects-0-16a34a?style=flat-square)
-![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-2-22c55e?style=flat-square)
+![SQL Files](https://img.shields.io/badge/SQL_Files-4-e38c00?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-368-f29111?style=flat-square)
+![SQL Statements](https://img.shields.io/badge/SQL_Statements-32-7c3aed?style=flat-square)
+![SQL Selects](https://img.shields.io/badge/SQL_Selects-10-16a34a?style=flat-square)
+![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-7-22c55e?style=flat-square)
 ![SQL Updates](https://img.shields.io/badge/SQL_Updates-5-0ea5e9?style=flat-square)
-![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-5-dc2626?style=flat-square)
-![SQL Creates](https://img.shields.io/badge/SQL_Creates-9-0284c7?style=flat-square)
-![SQL Joins](https://img.shields.io/badge/SQL_Joins-0-8b5cf6?style=flat-square)
-![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-7-059669?style=flat-square)
-![SQL Comments](https://img.shields.io/badge/SQL_Comments-0-64748b?style=flat-square)
+![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-7-dc2626?style=flat-square)
+![SQL Creates](https://img.shields.io/badge/SQL_Creates-15-0284c7?style=flat-square)
+![SQL Joins](https://img.shields.io/badge/SQL_Joins-3-8b5cf6?style=flat-square)
+![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-0-059669?style=flat-square)
+![SQL Comments](https://img.shields.io/badge/SQL_Comments-15-64748b?style=flat-square)
 
 ### HCL
 
@@ -4318,11 +4328,11 @@ graph LR
 ![Service Files](https://img.shields.io/badge/Service_Files-74-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-2-16a34a?style=flat-square)
 ![Constants Files](https://img.shields.io/badge/Constants_Files-40-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-33-db2777?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-34-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-12-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-3-059669?style=flat-square)
 ![Unit Tests](https://img.shields.io/badge/Unit_Tests-91-ca8a04?style=flat-square)
-![Integration Tests](https://img.shields.io/badge/Integration_Tests-14-7c3aed?style=flat-square)
+![Integration Tests](https://img.shields.io/badge/Integration_Tests-15-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-9-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
 ![HCL Comment Budget](https://img.shields.io/badge/HCL_Comment_Budget-0-ea580c?style=flat-square)
@@ -4359,14 +4369,14 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-445-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-451-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-11-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-23-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-128-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-131-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-19-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-80-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
@@ -4375,7 +4385,7 @@ graph LR
 ![Links](https://img.shields.io/badge/Links-22-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-18-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-209-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-246-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

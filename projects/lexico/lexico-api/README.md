@@ -1330,7 +1330,7 @@ What this project is judged against, as declared in its own `callidescope.config
    ↳ Finds an author by ID or slug.
   └─> toAuthorType(author: Author): AuthorType [projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:132]
      ↳ Maps an author to its GraphQL type.
-    └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
+    └─> toDeletableFields(entity: PostgresqlDeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
        ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
@@ -1433,7 +1433,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 toPrincipalPartType(principalPart: PrincipalPart): PrincipalPartType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:51]
    ↳ Maps a principal part entity to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
+  └─> toDeletableFields(entity: PostgresqlDeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
@@ -1442,7 +1442,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 toPronunciationType(pronunciation: Pronunciation): PronunciationType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:62]
    ↳ Maps a pronunciation entity to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
+  └─> toDeletableFields(entity: PostgresqlDeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
@@ -1451,7 +1451,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 toTranslationType(translation: Translation): TranslationType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:75]
    ↳ Maps a translation entity to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
+  └─> toDeletableFields(entity: PostgresqlDeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
@@ -1460,7 +1460,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 toWordFormType(wordForm: WordForm): WordFormType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:33]
    ↳ Maps a word-form link, and the form it loaded, to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
+  └─> toDeletableFields(entity: PostgresqlDeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
@@ -1469,7 +1469,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 toWordLexemeType(wordLexeme: WordLexeme): WordLexemeType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:41]
    ↳ Maps a word-lexeme link, and the lexeme it loaded, to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
+  └─> toDeletableFields(entity: PostgresqlDeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
@@ -1478,7 +1478,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 toLineType(line: Line): LineType [projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:141]
    ↳ Maps a line, and each relation it loaded, to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
+  └─> toDeletableFields(entity: PostgresqlDeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:8]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
@@ -1683,7 +1683,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-18186-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-563.60_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-563.64_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-181-3178c6?style=flat-square)
 

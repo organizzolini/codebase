@@ -1,23 +1,23 @@
+import { setTimeout as sleep } from "node:timers/promises";
+
+import { ConfigModule } from "@nestjs/config";
+import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
-import { In } from "typeorm";
+import { DataSource, In } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../../caelundas-cli.constants";
-import { DATABASE_ENTITIES } from "../database/database.constants";
-import { DatabaseModule } from "../database/database.module";
 import { CalendarEvent } from "../database/entities/calendar-event.entity";
 import { Tag } from "../database/entities/tag.entity";
-import { Migration1792416080531 } from "../database/migrations/1792416080531-migration";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";
 import { CalendarEventsService } from "./calendar-events.service";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
-import type { DatabaseTestingModule } from "@codebase/persistence/testing";
+import type { TestingModule } from "@nestjs/testing";
 import type { Repository, TreeRepository } from "typeorm";
 
 const philadelphia = {
@@ -53,37 +53,35 @@ function tagged(
   return { ...event(summary, start), tags: eventTags };
 }
 
-/**
- * Two minutes rather than the shared ten seconds, as the end-to-end suite
- * allows: starting a container and running the migration took over ten
- * seconds during a full coverage run, with every suite competing for it.
- */
-const CONTAINER_START_TIMEOUT_MILLISECONDS = 120_000;
-
 describe("calendar events service integration", () => {
-  let database: DatabaseTestingModule;
+  let module: TestingModule;
   let service: CalendarEventsService;
   let repository: Repository<CalendarEvent>;
   let tags: TreeRepository<Tag>;
 
   beforeAll(async () => {
-    // The root's unprefixed variables must never reach the connection.
-    vi.stubEnv("POSTGRES_DB", "postgres");
-    database = await startDatabaseTestingModule({
-      database: DatabaseModule,
-      entities: DATABASE_ENTITIES,
-      imports: [LoggerModule, CalendarEventsModule],
-      migrations: [Migration1792416080531],
-      project: "caelundas",
-      validate: (config) => environmentSchema.parse(config),
-    });
-    service = database.module.get(CalendarEventsService);
-    repository = database.repository(CalendarEvent);
-    tags = database.dataSource.getTreeRepository(Tag);
-  }, CONTAINER_START_TIMEOUT_MILLISECONDS);
+    // One in-memory database, migrated by the module itself as it starts.
+    vi.stubEnv("CAELUNDAS_SQLITE_DATABASE", ":memory:");
+    module = await Test.createTestingModule({
+      imports: [
+        ConfigModule.forRoot({
+          ignoreEnvFile: true,
+          isGlobal: true,
+          validate: (config: Record<string, unknown>) =>
+            environmentSchema.parse(config),
+        }),
+        LoggerModule,
+        CalendarEventsModule,
+      ],
+    }).compile();
+    const dataSource = module.get(DataSource);
+    service = module.get(CalendarEventsService);
+    repository = dataSource.getRepository(CalendarEvent);
+    tags = dataSource.getTreeRepository(Tag);
+  });
 
   afterAll(async () => {
-    await database.close();
+    await module.close();
     vi.unstubAllEnvs();
   });
 
@@ -98,6 +96,51 @@ describe("calendar events service integration", () => {
 
     expect(row?.latitude).toBe("39.949309");
     expect(row?.longitude).toBe("-75.171690");
+  });
+
+  it("rewrites the read model caelundas-web queries after every upsert", async () => {
+    expect.hasAssertions();
+
+    await service.upsert(
+      [tagged("Read model", "2026-01-13T00:00:00Z", ["Planet", "Sun"])],
+      philadelphia,
+    );
+    const nodes = await repository.manager.query<
+      { is_direct: number; tag_name: string }[]
+    >(
+      `select tag_name, is_direct from calendar_event_tag_nodes n join calendar_events e on e.id = n.calendar_event_id where e.summary = 'Read model' order by tag_name`,
+    );
+    const [derived] = await repository.manager.query<{ temporality: string }[]>(
+      `select temporality from calendar_events_derived where summary = 'Read model'`,
+    );
+    const paths = await repository.manager.query<{ path: string }[]>(
+      `select path from tag_nodes where name = 'Sun'`,
+    );
+
+    expect(nodes.map(({ tag_name: name }) => name)).toContain("Sun");
+    expect(derived?.temporality).toBe("Instant");
+    expect(paths.map(({ path }) => path)).toContain("Planet / Sun");
+  });
+
+  it("stores an instant as ISO 8601 UTC text and reads it back as a UTC moment", async () => {
+    expect.hasAssertions();
+
+    await service.upsert(
+      [event("Instant text", "2026-01-12T06:30:15.250Z")],
+      philadelphia,
+    );
+    const [raw] = await repository.manager.query<
+      { end: string; start: string }[]
+    >(
+      `select "start", "end" from calendar_events where summary = 'Instant text'`,
+    );
+    const [row] = await repository.findBy({ summary: "Instant text" });
+
+    expect(raw).toStrictEqual({
+      end: "2026-01-12T06:30:15.250Z",
+      start: "2026-01-12T06:30:15.250Z",
+    });
+    expect(row?.start.toISOString(true)).toBe("2026-01-12T06:30:15.250+00:00");
   });
 
   it("stores each event with its observer's timezone", async () => {
@@ -125,6 +168,8 @@ describe("calendar events service integration", () => {
       philadelphia,
     );
     const [first] = await repository.findBy({ summary: "Repeated" });
+    // SQLite stamps `updated_at` to the second, so let one pass.
+    await sleep(1100);
     await service.upsert(
       [
         {
@@ -294,6 +339,18 @@ describe("calendar events service integration", () => {
         ["Inside", ["Instant", "inside", "moon"]],
         ["Spans end", ["Duration", "aspects", "moon"]],
       ]);
+    });
+
+    it("returns nothing for a range no event overlaps", async () => {
+      expect.hasAssertions();
+
+      await expect(
+        service.findInRange({
+          ...range,
+          end: moment.utc("1999-01-31T00:00:00Z"),
+          start: moment.utc("1999-01-01T00:00:00Z"),
+        }),
+      ).resolves.toStrictEqual([]);
     });
 
     it("returns only the requested location", async () => {
@@ -544,8 +601,12 @@ describe("calendar events service integration", () => {
       await tag("Mars", planet);
       await tag("Mars", sign);
 
-      await expect(tag("Mars", planet)).rejects.toThrow(/tags_sibling_name/u);
-      await expect(tag("Unique planet")).rejects.toThrow(/tags_root_name/u);
+      await expect(tag("Mars", planet)).rejects.toThrow(
+        /UNIQUE constraint failed: tags\.parent_id, tags\.name/u,
+      );
+      await expect(tag("Unique planet")).rejects.toThrow(
+        /UNIQUE constraint failed: tags\.name/u,
+      );
     });
   });
 });

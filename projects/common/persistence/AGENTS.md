@@ -1,14 +1,16 @@
-# Persistence: Shared Postgres Package
+# Persistence: Shared Postgres and SQLite Package
 
 ## Quick Start
 
 **Type**: NestJS library package (`@codebase/persistence`) and nest-commander
-command line (`export` and `import`)
+command line (`postgresql-export` and `postgresql-import`)
 
 **Purpose**: Two jobs. The library is the one way a database-backed project
 connects to Postgres: the `<PROJECT>_POSTGRES_*` environment fragment, the
 TypeORM options factory, the NestJS module and command-line data source built
-from it, and the naming convention behind them. The command line moves
+from it, and the naming convention behind them. `SqliteModule` does the same
+for a SQLite file through better-sqlite3, from one `<PROJECT>_SQLITE_DATABASE`
+variable, with its own base entities. The command line moves
 selected tables between databases through `pg_dump` and `pg_restore`, each
 database named by a URI. See the [README](README.md) for the exports, the
 naming table, and every command-line option.
@@ -36,7 +38,7 @@ src/
   persistence.module.ts             # MainModule: the command line's root, not PostgresqlModule
   persistence.repl.ts               # NestJS REPL over MainModule
   modules/
-    database/
+    postgresql/
       postgresql.constants.ts         # Variable suffixes and connection defaults
       postgresql.module.ts            # PostgresqlModule.forRoot over TypeOrmModule.forRootAsync
       postgresql.service.ts           # The TypeORM options factory forRoot hands TypeORM
@@ -44,10 +46,10 @@ src/
       postgresql.utilities.ts         # postgresEnvironmentSchema, postgresDataSourceOptions, createDataSource, variable names
       entities/                     # identifiable → creatable → updatable → deletable
       postgresql-container.*.ts       # startPostgresContainer, the testing entry's harness
-    export/                         # The export command: options, plan, dry run, atomic write, --sqlite routing
-    import/                         # The import command: options, plan, --clean (no prompt), dry run
-    postgres-client/                # pg_dump, pg_restore, and truncate behind one service
-    sqlite-export/                  # export --sqlite: node:sqlite writer, column type mapping, no client tools
+    postgresql-export/              # The postgresql-export command: options, plan, dry run, atomic write
+    postgresql-import/              # The postgresql-import command: options, plan, --clean (no prompt), dry run
+    postgresql-utilities/           # pg_dump, pg_restore, and truncate behind one service
+    sqlite/                         # SqliteModule.forRoot, the options factory, createSqliteDataSource, SQLite base entities
 testing/
   index.ts                          # The @codebase/persistence/testing entry
   persistence-testing.*.ts          # startDatabaseTestingModule, the entry's Nest helper
@@ -63,8 +65,14 @@ testing/
 
 - **Never read an unprefixed `POSTGRES_*` variable.** They are the shared
   container's admin login, loaded by Nx into every task.
-- **Never let `synchronize` or `migrationsRun` be configured on.** The schema
-  changes only through reviewed migrations, run as their own step.
+- **Never let `synchronize` be configured on.** The schema changes only
+  through reviewed migrations. Postgres runs them as their own step;
+  `SqliteModule.forRoot` alone runs the migrations it is given on start, since
+  a file has one writer.
+- **Never share a Postgres entity with SQLite.** `uuid` and `timestamptz`
+  are refused by TypeORM's SQLite driver; use the `Sqlite*Entity` bases, whose
+  ids TypeORM generates in the application and whose timestamps are
+  `datetime`. Never read an unprefixed `SQLITE_DATABASE` either.
 - **Never name a schema in code.** It comes from `<PROJECT>_POSTGRES_SCHEMA`.
 - **Never run migrations from `PostgresqlModule.forRoot`.** It takes none;
   `createDataSource` and `startPostgresContainer` do.
@@ -90,12 +98,12 @@ testing/
 nx run persistence:typecheck-code,lint-code,format-code,deprecate-code,guard-code
 nx run persistence:vitest:unit
 nx run persistence:type-coverage
-nx run persistence:start:export --args="--source-uri <uri> --table <schema.table> --data --file <path>"
-nx run persistence:start:import --args="--target-uri <uri> --table <schema.table> --data --file <path>"
+nx run persistence:start:postgresql-export --args="--source-uri <uri> --table <schema.table> --data --file <path>"
+nx run persistence:start:postgresql-import --args="--target-uri <uri> --table <schema.table> --data --file <path>"
 ```
 
-`import --clean` never prompts and has no `--yes`; the preview is
-`import --dry-run`, which names what `--clean` would drop or truncate. Run it
+`postgresql-import --clean` never prompts and has no `--yes`; the preview is
+`postgresql-import --dry-run`, which names what `--clean` would drop or truncate. Run it
 first.
 
 The `start` configurations run the command line with the working directory at
