@@ -168,7 +168,7 @@ runs:
 
     - name: 🌌 Setup uv
       if: inputs.uv == 'true'
-      uses: astral-sh/setup-uv@v10.3.0
+      uses: astral-sh/setup-uv@v10.3.2
       with:
         # The version the devcontainers pin and the `software` command
         # installs, so a runner, a devcontainer, and a laptop run one uv. A
@@ -193,7 +193,7 @@ runs:
     # output is Terraform's own, which the plan comment reads.
     - name: 🏗️ Setup Terraform
       if: inputs.terraform == 'true'
-      uses: hashicorp/setup-terraform@v3
+      uses: hashicorp/setup-terraform@v4
       with:
         terraform_version: 1.14.5
         terraform_wrapper: false
