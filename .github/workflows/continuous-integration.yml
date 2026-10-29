@@ -33,106 +33,132 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  discover-checks:
+    name: 🔎 Discover Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    outputs:
+      checks: ${{ steps.discover.outputs.checks }}
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: projects
+
+      - name: 🔎 Discover Checks
+        id: discover
+        run: |
+          node -e '
+            const fs = require("fs");
+            const path = require("path");
+
+            const knownNames = {
+              affirmancy: "Test Affirmancy",
+              caelundas: "Test Caelundas",
+              "ic-suite": "Test IC Suite",
+              lexico: "Test Lexico",
+              meanderaw: "Test Meanderaw",
+            };
+            const postgresFolders = new Set(["lexico"]);
+
+            const staticChecks = [
+              { target: "typecheck-code", name: "Typecheck", emoji: "🧑‍🎓" },
+              { target: "format-code", name: "Format", emoji: "🧑‍🎨" },
+              { target: "lint-code", name: "Lint", emoji: "🧑‍🔧" },
+              { target: "deprecate-code", name: "Deprecate", emoji: "🧟" },
+              {
+                target: "guard-code",
+                name: "Guard",
+                emoji: "💂",
+                "timeout-minutes": 20,
+              },
+              { target: "secure-code", name: "Secure", emoji: "🕵️" },
+              { target: "build-projects", name: "Build", emoji: "👷" },
+              {
+                target: "verify-publishable-packages",
+                name: "Publishable Packages",
+                emoji: "📦",
+                "timeout-minutes": 15,
+              },
+              {
+                target: "plan-terraform",
+                name: "Infrastructure",
+                emoji: "🏗️",
+                "timeout-minutes": 15,
+              },
+              {
+                target: "build-devcontainer",
+                name: "Devcontainer",
+                emoji: "🐋",
+                "timeout-minutes": 20,
+              },
+              {
+                target: "test-code",
+                name: "Test Codebase",
+                emoji: "🧑‍🔬",
+                exclude: "projects/**",
+                shard: "codebase",
+              },
+              {
+                target: "test-code",
+                name: "Test Common",
+                emoji: "🧑‍🔬",
+                exclude: "*,!projects/common/**",
+                shard: "common",
+                "postgres-client": true,
+              },
+            ];
+
+            const projectsDir = path.resolve("projects");
+            const entries = fs.readdirSync(projectsDir, { withFileTypes: true });
+
+            const dynamicChecks = entries
+              .filter(
+                (entry) =>
+                  entry.isDirectory() &&
+                  !entry.name.startsWith(".") &&
+                  entry.name !== "common" &&
+                  entry.name !== "JimmyPaolini",
+              )
+              .map((entry) => entry.name)
+              .sort()
+              .map((dir) => {
+                const displayName =
+                  knownNames[dir] ||
+                  "Test " +
+                    dir
+                      .split("-")
+                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(" ");
+                const check = {
+                  target: "test-code",
+                  name: displayName,
+                  emoji: "🧑‍🔬",
+                  exclude: `*,!projects/${dir}/**`,
+                  shard: dir,
+                };
+                if (postgresFolders.has(dir)) {
+                  check["postgres-client"] = true;
+                }
+                return check;
+              });
+
+            const allChecks = [...staticChecks, ...dynamicChecks];
+            const json = JSON.stringify(allChecks);
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `checks=${json}\n`);
+          '
+
   continuous-integration:
     name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
+    needs: discover-checks
     runs-on: ubuntu-latest
     timeout-minutes: ${{ matrix.check.timeout-minutes || 12 }}
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     strategy:
       fail-fast: false
       matrix:
-        check:
-          - target: typecheck-code
-            name: Typecheck
-            emoji: 🧑‍🎓
-          - target: format-code
-            name: Format
-            emoji: 🧑‍🎨
-          - target: lint-code
-            name: Lint
-            emoji: 🧑‍🔧
-          - target: deprecate-code
-            name: Deprecate
-            emoji: 🧟
-          # Guard runs cold whenever a change reaches the shared configuration
-          # project, and cold it sits near the 12-minute limit: a cold run took
-          # 10m29s, and runs were cancelled at the limit with every finished
-          # task passing. Warm it takes about two. 20 minutes covers a cold
-          # run with the setup and cleanup around it.
-          - target: guard-code
-            name: Guard
-            emoji: 💂
-            timeout-minutes: 20
-          # Tests run in four legs that together cover every project once, so
-          # none waits for a free `--parallel` slot behind the slow ones.
-          # Meanderaw alone took over seven minutes uncached beside the rest,
-          # and about three alone. ic-suite's 37 packages were most of what
-          # remained. Caelundas's command line cannot start until its
-          # ephemeris download finishes, so it ran last and alone for four more
-          # minutes. Its leg takes the whole folder, so a new project joins it.
-          # The fourth leg, everything else, keeps the `Test` name branch
-          # protection has always required. A leg with nothing affected runs
-          # nothing.
-          - target: test-code
-            name: Test
-            emoji: 🧑‍🔬
-            exclude: meanderaw-cli,projects/caelundas/**,projects/ic-suite/**
-          - target: test-code
-            name: Test Caelundas
-            emoji: 🧑‍🔬
-            exclude: "*,!projects/caelundas/**"
-            shard: caelundas
-          - target: test-code
-            name: Test Meanderaw
-            emoji: 🧑‍🔬
-            exclude: "*,!meanderaw-cli"
-            shard: meanderaw-cli
-          - target: test-code
-            name: Test IC Suite
-            emoji: 🧑‍🔬
-            exclude: "*,!projects/ic-suite/**"
-            shard: ic-suite
-          - target: secure-code
-            name: Secure
-            emoji: 🕵️
-          - target: build-projects
-            name: Build
-            emoji: 👷
-          # Packs every publishable ic-suite package and installs the tarballs
-          # into a consumer outside the checkout, then runs its command lines
-          # and one inferred target per Nx plugin. Runs whole, and only when an
-          # ic-suite package or the check is affected — see the
-          # `publishable-packages-gate` command of the `publication` project.
-          # Never authenticates to a registry: no step is given an npm token,
-          # and setup-node is given no `registry-url`. Its first run on #1473
-          # took 4m05s with nothing cached: 2m49s to pack and check, 34s of
-          # that in the consumer. 15 minutes leaves room for a runner several
-          # times slower.
-          - target: verify-publishable-packages
-            name: Publishable Packages
-            emoji: 📦
-            timeout-minutes: 15
-          # Plans the OpenRouter Terraform when a pull request changes it, and
-          # comments what the plan would create, update, replace, and delete. It
-          # is a comment, not part of the body, so it cannot race the Codometer
-          # report that rewrites the body. Nothing is applied: Continuous
-          # Deployment does that once the change reaches `main`. The leg always
-          # reports, so it can be a required check, and its steps run only for a
-          # same-repository pull request that changes the module, since a fork
-          # is not given the secrets the plan needs.
-          - target: plan-terraform
-            name: Infrastructure
-            emoji: 🏗️
-            timeout-minutes: 15
-          # Builds and tests the devcontainer image when a pull request changes
-          # a file the image or its test reads, without publishing it:
-          # Continuous Deployment builds and pushes the image on `main`. Like
-          # the infrastructure leg it always reports, and does its work only
-          # when the change calls for it. It needs none of the Node setup.
-          - target: build-devcontainer
-            name: Devcontainer
-            emoji: 🐋
-            timeout-minutes: 20
+        check: ${{ fromJson(needs.discover-checks.outputs.checks) }}
 
     steps:
       # Decides first what the job has to do, so the skip decision below and
@@ -224,8 +250,9 @@ jobs:
             matrix.check.target != 'verify-publishable-packages' &&
             matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
           postgres-client: >-
-            ${{ matrix.check.target == 'test-code' && !matrix.check.shard &&
-            'true' || 'false' }}
+            ${{ (matrix.check['postgres-client'] ||
+            matrix.check.shard == 'lexico' ||
+            matrix.check.shard == 'common') && 'true' || 'false' }}
           uv: ${{ matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
           # The infrastructure project's `terraform-format` and
           # `terraform-validate` run as part of lint-code, and the runner image
