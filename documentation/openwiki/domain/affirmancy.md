@@ -5,7 +5,7 @@ description: Python LangGraph ReAct agent that researches spiritual subjects via
 tags: [affirmancy, langgraph, ollama, searxng, pydantic, spiritual-practices, affirmations]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-834d9e55d27cecb197701e79
     resource: repo://projects/affirmancy/AGENTS.md
@@ -27,7 +27,7 @@ sources:
     resource: repo://projects/affirmancy/src/subjects.py
   - id: openwiki-source-29bc3185c9e8810f2d6f2941
     resource: repo://projects/affirmancy/testing/test_services.py
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
 # Affirmancy — Affirmation Generation Pipeline
@@ -93,6 +93,7 @@ The grammar system is the distinctive feature of Affirmancy. Rather than produci
 
 | Axis | Type | Values | Description |
 |------|------|--------|-------------|
+| **Form** | `Form` | FINITE, INFINITIVE, GERUND, PARTICIPLE, SUPINE (5 values) | Finite vs. non-finite verb forms |
 | **Mood** | `Mood` | INDICATIVE, SUBJUNCTIVE, CONDITIONAL, INTERROGATIVE, POTENTIAL, DUBITATIVE, PRESUMPTIVE, ENERGETIC, INFERENTIAL, SPECULATIVE, IMPERATIVE, PROHIBITIVE, JUSSIVE, HORTATIVE, OPTATIVE, COMMISSIVE, BENEDICTIVE, AORIST, DEBITIVE, PRECATIVE, PERMISSIVE, NECESSITATIVE (21 values) | Speaker's attitude toward the proposition (realis vs. irrealis, epistemic vs. deontic) |
 | **Voice** | `Voice` | ACTIVE, PASSIVE (2 values) | Relationship between subject and verb |
 | **Tense** | `Tense` | PAST, RECENT_PAST, REMOTE_PAST, PLUPERFECT, NONPAST, NONFUTURE, PRESENT, FUTURE, NEAR_FUTURE, REMOTE_FUTURE, FUTURE_PERFECT, FUTURE_IN_THE_PAST (12 values) | Temporal location of the event |
@@ -101,267 +102,248 @@ The grammar system is the distinctive feature of Affirmancy. Rather than produci
 | **Number** | `Number` | SINGULAR, PLURAL, DUAL, TRIPLE, EXISTENTIAL, UNIVERSAL, PAUCAL, SUPERPLURAL (8 values) | Grammatical number |
 | **Polarity** | `Polarity` | POSITIVE, NEGATIVE (2 values) | Positive vs. negative assertion |
 | **Deixis** | `Deixis` | PROXIMAL, MEDIAL, DISTAL, FAR_DISTAL, IMMEDIATE, PROXIMATE_TEMPORAL, REMOTE_TEMPORAL, INCLUSIVE, EXCLUSIVE (9 values) | Anchoring to speaker's "here and now" (spatial, temporal, personal) |
-| **Form** | `Form` | FINITE, INFINITIVE, GERUND, PARTICIPLE, SUPINE (5 values) | Finite vs. non-finite verb forms |
 
-### `DescribedEnum` Pattern
+Each axis is a `DescribedEnum` (a `StrEnum` subclass) that stores:
+- **description**: Imperative generation instruction for the LLM
+- **examples**: Six short usage examples demonstrating the specifier
 
-Each grammatical value is a `DescribedEnum` (a `StrEnum` subclass) carrying:
+### Predefined Grammar Compositions (`GRAMMARS`)
 
-```python
-class DescribedEnum(StrEnum):
-    _description: str        # Imperative generation instruction for the LLM
-    _examples: tuple[str, ...]  # Six short usage examples
+The `GRAMMARS` list in `src/grammars.py` defines 18 pre-composed `Grammar` objects that each select specific values across the axes:
 
-    @property
-    def description(self) -> str: ...
+| Grammar | Form | Mood | Voice | Tense | Aspect | Person | Number | Deixis | Polarity |
+|---------|------|------|-------|-------|--------|--------|--------|--------|----------|
+| PAST | FINITE | INDICATIVE | ACTIVE | PAST | SIMPLE | FIRST | SINGULAR | — | — |
+| PRESENT | FINITE | INDICATIVE | ACTIVE | PRESENT | SIMPLE | FIRST | SINGULAR | — | — |
+| FUTURE | FINITE | INDICATIVE | ACTIVE | FUTURE | SIMPLE | FIRST | SINGULAR | — | — |
+| PERFECT_PROGRESSIVE | FINITE | INDICATIVE | ACTIVE | PRESENT | PERFECT_PROGRESSIVE | FIRST | SINGULAR | — | — |
+| FUTURE_PERFECT | FINITE | INDICATIVE | ACTIVE | FUTURE_PERFECT | PERFECTIVE | FIRST | SINGULAR | — | — |
+| FIRST_PLURAL | FINITE | INDICATIVE | ACTIVE | PRESENT | SIMPLE | FIRST | PLURAL | — | — |
+| THIRD_PRESENT | FINITE | INDICATIVE | ACTIVE | PRESENT | SIMPLE | THIRD | — | — | — |
+| POTENTIAL | FINITE | POTENTIAL | ACTIVE | PRESENT | SIMPLE | FIRST | SINGULAR | — | — |
+| OPTATIVE | FINITE | OPTATIVE | ACTIVE | — | — | FIRST | SINGULAR | — | — |
+| IMPERATIVE | FINITE | IMPERATIVE | ACTIVE | — | — | SECOND | SINGULAR | — | — |
+| INTERROGATIVE | FINITE | INTERROGATIVE | ACTIVE | PRESENT | — | FIRST | SINGULAR | — | NEGATIVE |
+| INFINITIVE | INFINITIVE | — | ACTIVE | — | SIMPLE | — | — | — | — |
+| GERUND | GERUND | — | ACTIVE | — | — | — | — | — | — |
+| PASSIVE | FINITE | INDICATIVE | PASSIVE | PRESENT | SIMPLE | FIRST | SINGULAR | — | — |
+| HABITUAL | FINITE | INDICATIVE | ACTIVE | PRESENT | HABITUAL | FIRST | SINGULAR | — | — |
+| NEGATIVE | FINITE | INDICATIVE | ACTIVE | PRESENT | SIMPLE | FIRST | SINGULAR | — | NEGATIVE |
 
-    @property
-    def examples(self) -> tuple[str, ...]: ...
-```
+Each `Grammar` object exposes computed properties:
+- `specifiers` — ordered list of active specifier values (e.g., `["INDICATIVE", "ACTIVE", "PRESENT", "SIMPLE", "FIRST", "SINGULAR"]`)
+- `name` — emoji-prefixed Capital Start Case name (e.g., `"⭐ Indicative Active Present Simple First Singular"`)
+- `slug` — kebab-case slug for filenames (e.g., `"indicative-active-present-simple-first-singular"`)
+- `specifier_descriptions` — assembled imperative instructions from active specifiers
+- `description` — human-readable purpose of the grammar
+- `examples` — template examples using `{adjective}`, `{noun}`, `{verb}`, `{verb-past}`, `{verbing}`, `{past-participle}`, `{time-unit}`, `{description}`
 
-This lets the pipeline embed **per-value generation guidance** directly in the prompt — e.g., `Mood.INTERROGATIVE.description` includes "CRITICAL: The sentence MUST be a QUESTION and MUST end with '?'", while `Voice.PASSIVE.description` warns "The word immediately after the be-auxiliary MUST be a true past participle (a verb form), NOT a noun, adjective, or present participle".
+## Subject Taxonomy
 
-### `Grammar` Composition Model
+Subjects are declared in `src/subjects.py` as `Subject` objects with a `SubjectCategory`. The taxonomy comprises 24 categories spanning major spiritual practices:
 
-```python
-class Grammar(BaseModel):
-    emoji: str
-    description: str
-    examples: list[str]
-
-    form: Form | None = None
-    mood: Mood | None = None
-    tense: Tense | None = None
-    person: Person | None = None
-    voice: Voice | None = None
-    aspect: Aspect | None = None
-    number: Number | None = None
-    deixis: Deixis | None = None
-    polarity: Polarity | None = None
-
-    @computed_field
-    @property
-    def specifiers(self) -> list[str]: ...      # ["FINITE", "INDICATIVE", "ACTIVE", "PRESENT", "SIMPLE", "FIRST", "SINGULAR"]
-
-    @computed_field
-    @property
-    def name(self) -> str: ...                   # "⭐ Indicative Active Present Simple First Singular"
-
-    @computed_field
-    @property
-    def slug(self) -> str: ...                   # "indicative-active-present-simple-first-singular"
-
-    @computed_field
-    @property
-    def specifier_descriptions(self) -> str: ... # Assembled imperative instructions for the prompt
-```
-
-All fields are optional — omitted fields are left to the LLM's discretion. This allows minimal grammars (e.g., `Grammar(mood=Mood.INDICATIVE)`) or fully-specified ones.
-
-### Predefined Grammars (18)
-
-The `GRAMMARS` list in `grammars.py` defines 18 reusable grammatical forms used by the pipeline:
-
-| Grammar | Specifiers | Purpose |
-|---------|------------|---------|
-| `PAST` | Finite, Indicative, Active, Past, Simple, First, Singular | Grounds affirmation in completed past action |
-| `PRESENT` | Finite, Indicative, Active, Present, Simple, First, Singular | Fundamental present-moment assertion |
-| `FUTURE` | Finite, Indicative, Active, Future, Simple, First, Singular | Confident intention projection |
-| `PERFECT_PROGRESSIVE` | Finite, Indicative, Active, Present, Perfect Progressive, First, Singular | Continuous progress from past to now |
-| `FUTURE_PERFECT` | Finite, Indicative, Active, Future Perfect, Perfective, First, Singular | Visualize future completion |
-| `FIRST_PLURAL` | Finite, Indicative, Active, Present, Simple, First, Plural | Shared collective strength |
-| `THIRD_PRESENT` | Finite, Indicative, Active, Present, Simple, Third | Perspective beyond self |
-| `POTENTIAL` | Finite, Potential, Active, Present, Simple, First, Singular | Capability and possibility |
-| `OPTATIVE` | Finite, Optative, Active, First, Singular | Sincere wish or deep longing |
-| `IMPERATIVE` | Finite, Imperative, Active, Second, Singular | Direct command to act |
-| `INTERROGATIVE` | Finite, Interrogative, Active, Present, First, Singular, Negative | Challenge limiting beliefs |
-| `INFINITIVE` | Infinitive, Active, Simple | Pure purpose/aspiration |
-| `GERUND` | Gerund, Active | Affirm through process/action |
-| `PASSIVE` | Finite, Indicative, Passive, Present, Simple, First, Singular | Openness to being received/supported |
-| `HABITUAL` | Finite, Indicative, Active, Present, Habitual, First, Singular | Repeated practice reinforcement |
-| `NEGATIVE` | Finite, Indicative, Active, Present, Simple, First, Singular, Negative | Negate false belief/limitation |
-
-## Pipeline — Notebook-Driven LangGraph
-
-The main pipeline lives in `src/affirmancy.ipynb` as a series of LangGraph `StateGraph` definitions. Each cell builds on the previous one, culminating in a full graph that processes all subjects.
-
-### State Definitions
-
-```python
-class SubjectState(TypedDict):
-    subject: Subject
-    query: NotRequired[str]
-    sources: NotRequired[str]
-
-class GenerateDocumentFromSourcesState(SubjectState):
-    document: NotRequired[str]
-
-class GenerateDocumentFromAnalysisState(GenerateDocumentFromSourcesState):
-    source_analysis: NotRequired[str]
-
-class GenerateAffirmationsState(GenerateDocumentFromAnalysisState):
-    document_analysis: NotRequired[str]
-    grammars: list[Grammar]
-    grammar_affirmations: NotRequired[list[GrammarAffirmations]]
-    validation_failures: NotRequired[Annotated[list[str], operator.add]]
-```
-
-### Graph Nodes
-
-| Node | Function | Description |
-|------|----------|-------------|
-| `search_sources` | `search_sources(state)` | SearxNG query → 12 results → Trafilatura extraction (32k chars each) |
-| `analyze_sources` | `analyze_sources(state)` | LLM (analytical, 0.12 temp) produces research brief from sources |
-| `generate_document` | `generate_document(state)` | LLM (generative, 0.24 temp) writes flowing prose reference document (≤1000 words) |
-| `analyze_document` | `analyze_document(state)` | LLM (analytical) extracts key themes for affirmation generation |
-| `generate_affirmations` | `generate_affirmations(state)` | For each `Grammar` in `GRAMMARS`, LLM (creative, 0.48 temp) generates affirmations matching the grammatical specifiers; output parsed via `Json5PydanticOutputParser` into `GeneratedAffirmations` |
-| `validate_affirmations_grammars` | `validate_affirmations_grammars(state)` | LLM (validator, 0.06 temp) checks each affirmation against its grammar specifiers; failures collected |
-| `validate_affirmations_subject` | `validate_affirmations_subject(state)` | LLM (validator) checks each affirmation for subject relevance using the reference document |
-| `write_affirmations` | `write_affirmations(state)` | Writes `SubjectAffirmations` to JSON and Markdown via `output.py` |
-
-### Retry Logic
-
-All LLM calls use `tenacity.Retrying` with exponential backoff:
-- 6 attempts max
-- Wait: `wait_exponential(multiplier=1, min=1, max=10)`
-- Logs each failure before retry
-
-### LLM Temperature Strategy
-
-| LLM Instance | Temperature | Purpose |
-|--------------|-------------|---------|
-| `llm_validator` | 0.06 | Strict validation (grammar + subject) |
-| `llm_analytical` | 0.12 | Source analysis, document analysis |
-| `llm_generative` | 0.24 | Reference document generation |
-| `llm_creative` | 0.48 | Affirmation generation (maximal variety) |
-
-### Output Structure
-
-```
-output/
-├── affirmations/
-│   └── {category-slug}/
-│       ├── {order}-{slug}.json    # SubjectAffirmations model
-│       └── {order}-{slug}.md      # Human-readable markdown
-└── affirmations/documents/
-    └── {category-slug}/
-        └── {order}-{slug}.md      # Reference document
-```
-
-Example JSON structure:
-```json
-{
-  "subject": { "name": "The Fool", "slug": "the-fool", "order": 0, "category": { "name": "Tarot Card", "slug": "tarot-card" } },
-  "grammars": [
-    {
-      "grammar": { "emoji": "⭐", "description": "...", "specifiers": ["FINITE", "INDICATIVE", "ACTIVE", "PRESENT", "SIMPLE", "FIRST", "SINGULAR"], ... },
-      "affirmations": [
-        { "text": "I trust the journey unfolding before me" },
-        { "text": "I embrace new beginnings with an open heart" }
-      ]
-    }
-  ]
-}
-```
-
-## Subject Categories
-
-Subjects are declared in `src/subjects.py` as `Subject` instances with a `SubjectCategory`. The categories in place span:
-
-| Category | Slug | Count | Notes |
-|----------|------|-------|-------|
-| Tarot Card | `tarot-card` | 78 | Major + Minor Arcana (RWS ordering) |
-| Lenormand | `lenormand` | 38 | 36 cards + 2 additional |
-| Astrology Sign | `astrology-sign` | 13 | 12 signs + Ophiuchus |
-| Astrology Planet | `astrology-planet` | 10 | Traditional + modern planets |
-| Astrology Node | `astrology-node` | 2 | North/South Node |
-| Astrology Asteroid | `astrology-asteroid` | 4 | Ceres, Pallas, Juno, Vesta |
-| Astrology Aspect | `astrology-aspect` | 5 | Conjunction, Opposition, Trine, Square, Sextile (metadata: angle, fraction) |
-| Astrology House | `astrology-house` | 12 | Houses 1–12 |
+| Category | Slug | Count | Description |
+|----------|------|-------|-------------|
+| Tarot Card | `tarot-card` | 78 | Major Arcana (22) + Minor Arcana (56) |
+| Lenormand | `lenormand` | 36 | 36 Lenormand cards |
+| Astrology Sign | `astrology-sign` | 13 | 12 zodiac signs + Ophiuchus |
+| Astrology Planet | `astrology-planet` | 10 | Classical + modern planets |
+| Astrology Asteroid | `astrology-asteroid` | 6 | Chiron, Lilith, Ceres, Pallas, Juno, Vesta |
+| Astrology Aspect | `astrology-aspect` | 17 | Major + minor aspects with angle metadata |
+| Astrology House | `astrology-house` | 12 | 12 houses including angular houses |
 | Modality | `modality` | 3 | Cardinal, Fixed, Mutable |
-| Polarity | `polarity` | 2 | Yang/Masculine, Yin/Feminine |
-| Chakra | `chakra` | 7 | Root through Crown |
-| Rune | `rune` | 24 | Elder Futhark |
-| Sephiroth | `sephiroth` | 10 | Tree of Life spheres |
-| Hebrew Letter | `hebrew-letter` | 22 | Aleph through Tav (metadata: Hebrew character) |
-| Kabbalah World | `kabbalah-world` | 4 | Atziluth, Beriah, Yetzirah, Assiyah |
-| Solfeggio | `solfeggio` | 9 | 174Hz–963Hz frequencies |
-| Weekday | `weekday` | 7 | Monday–Sunday |
-| Element | `element` | 4 | Fire, Water, Air, Earth |
-| Color | `color` | 12 | Basic + extended palette |
-| Gemstone | `gemstone` | 38 | Crystals with metaphysical properties |
-| Metal | `metal` | 7 | Traditional alchemical metals |
-| Number | `number` | 32 | 1–32 with numerological meanings |
+| Polarity | `polarity` | 2 | Negative, Positive |
+| Chakra | `chakra` | 7 | 7 primary chakras (Muladhara → Sahasrara) |
+| Rune | `rune` | 24 | Elder Futhark runes |
+| Sephiroth | `sephiroth` | 10 | Tree of Life sephiroth |
+| Hebrew Letter | `hebrew-letter` | 22 | 22 letters with Hebrew glyph metadata |
+| Kabbalah World | `kabbalah-world` | 4 | Atziluth, Briah, Yetzirah, Assiah |
+| Solfeggio | `solfeggio` | 7 | Do, Re, Mi, Fa, Sol, La, Ti |
+| Weekday | `weekday` | 7 | Monday → Sunday |
+| Element | `element` | 4 | Earth, Air, Fire, Water |
+| Color | `color` | 12 | Black, White, Red, Orange, Yellow, Green, Blue, Indigo, Violet, Pink, Brown, Gray |
+| Gemstone | `gemstone` | 12 | Garnet, Amethyst, Aquamarine, Diamond, Emerald, Pearl, Ruby, Peridot, Sapphire, Opal, Topaz, Turquoise |
+| Metal | `metal` | 7 | Gold, Mercury, Copper, Silver, Iron, Tin, Lead |
+| Number | `number` | 32 | One → Thirty Two |
 
-Total: **300+ subjects** across 21 categories. Adding a practice means adding its category and subjects to `subjects.py` — nothing else in the pipeline needs to change.
+**Total subjects: ~308** (combined `SUBJECTS` list)
+
+Each `Subject` carries:
+- `category` → `SubjectCategory(name, slug)`
+- `name` — display name (e.g., "The Fool")
+- `slug` — URL-safe identifier (e.g., "the-fool")
+- `order` — integer sort order within category
+- `metadata` — optional dict (e.g., astrology aspects store `{"angle": 120, "fraction": "1/3"}`)
+
+Adding a new practice means adding its `SubjectCategory` and `Subject` entries to `src/subjects.py` — nothing else in the pipeline needs to change.
+
+## Pipeline Execution Flow
+
+The main pipeline lives in `src/affirmancy.ipynb` as a sequence of LangGraph `StateGraph` compilations that progressively build up the state:
+
+### 1. Search Sources (`search_sources` node)
+- Builds a query: `"{subject_name} {category_name} meaning interpretation significance symbolism themes"`
+- Queries SearxNG via `SearxSearchWrapper` (12 results)
+- Extracts text from each URL via Trafilatura (`fetch_url` → `extract`)
+- Truncates each source to 32,000 chars
+- Returns concatenated sources in state
+
+### 2. Analyze Sources (`analyze_sources` node)
+- Uses `llm_analytical` (temperature 0.12) with `affirmations_analyze_sources_prompt_template`
+- Produces a concise factual research brief with uncertainty flags
+- Retries up to 6 attempts with exponential backoff (tenacity)
+
+### 3. Generate Document (`generate_document` node)
+- Uses `llm_generative` (temperature 0.24) with `affirmations_generate_document_prompt_template`
+- Produces a 1000-word flowing prose reference document (no markdown)
+- Writes to `output/affirmations/documents/{category}/{order}-{slug}.md`
+
+### 4. Analyze Document (`analyze_document` node)
+- Uses `llm_analytical` with `affirmations_analyze_document_prompt_template`
+- Produces structured analysis for affirmation generation
+
+### 5. Generate Affirmations (`generate_affirmations` node)
+- Iterates over all 18 `GRAMMARS`
+- For each grammar, uses `llm_creative` (temperature 0.48) with `affirmations_generate_affirmations_prompt_template`
+- Prompt includes: `grammar_name`, `grammar_description`, `grammar_specifier_descriptions`, `grammar_specifiers`, `grammar_examples`, `grammar_emoji`
+- Parses JSON5 output into `GeneratedAffirmations` (list of strings)
+- Strips leading/trailing punctuation, wraps in `Affirmation` model
+- Accumulates `GrammarAffirmations(grammar, affirmations)` list
+
+### 6. Validate Grammar (`validate_affirmations_grammars` node)
+- Uses `llm_validator` (temperature 0.06) with `affirmations_validate_affirmation_prompt_template`
+- Validates each affirmation against its grammar's specifiers
+- Collects failures with grammar name, affirmation text, and reason
+
+### 7. Validate Subject Relevance (`validate_affirmations_subject` node)
+- Uses `llm_validator` with `affirmations_validate_affirmation_subject_prompt_template`
+- Checks each affirmation against the source document for subject relevance
+- Collects failures
+
+### 8. Write Output (`write_affirmations` node)
+- Constructs `SubjectAffirmations(subject, grammars)`
+- Writes JSON to `output/affirmations/{category}/{order}-{slug}.json` (via `model_dump_json(indent=2)`)
+- Writes Markdown to `output/affirmations/{category}/{order}-{slug}.md` (structured by grammar)
+
+The final loop iterates over `SUBJECTS` invoking the full compiled graph per subject.
+
+## LLM Configuration
+
+Four `ChatOllama` instances with different temperatures:
+
+| Variable | Temperature | Purpose |
+|----------|-------------|---------|
+| `llm_validator` | 0.06 | Grammar + subject validation (deterministic) |
+| `llm_analytical` | 0.12 | Source/document analysis |
+| `llm_generative` | 0.24 | Reference document generation |
+| `llm_creative` | 0.48 | Affirmation generation |
+
+All use:
+- `model="gemma4:e2b"`
+- `base_url=os.environ.get("OLLAMA_HOST", "http://localhost:11434")`
+- `keep_alive="12m"`
+- `reasoning=False`
+- `TokenCountsCallbackHandler` for token accounting
+
+### Ollama Model Variants
+
+| Model | Pull Command | Use Case |
+|-------|--------------|----------|
+| `gemma4:e2b` | `nx run affirmancy:ollama --configuration=pull-small` | Primary model (128k context) |
+| `gemma4:27b` | `nx run affirmancy:ollama --configuration=pull-large` | Larger model for quality (if available) |
 
 ## SearxNG Configuration
 
-`searxng.settings.yml` configures the metasearch instance for spiritual research:
+The `searxng.settings.yml` configures a private instance layered on upstream defaults (`use_default_settings: true`):
 
-- **Hostname boosting**: 100+ high-priority domains (sacred-texts.com, hermetic.com, biddytarot.com, astro.com, chabad.org, sefaria.org, crystalvaults.com, etc.) sorted to top of results
-- **Low-priority**: SEO farms, generic horoscopes, dictionary definitions
-- **Removed**: Non-English content farms (zhihu.com), medical sites, image-only (Pinterest), affiliate marketplaces (Etsy, Amazon)
-- **Engine tuning**: Longer timeouts (8s/15s) for LLM tolerance; reduced suspension times for faster dev iteration
-- **Safe search**: Disabled (0) — spiritual/occult content often misclassified
-- **Formats**: HTML (UI) + JSON (LangGraph agent)
+### Key Settings
+- **Hostname boosting** (`hostnames:` plugin): 100+ high-priority patterns for spiritual sources (sacred-texts.com, hermetic.com, biddytarot.com, labyrinthos.co, chabad.org, sefaria.org, runesecrets.com, crystalvaults.com, etc.)
+- **Low priority**: SEO farms, generic horoscope sites, dictionaries
+- **Remove**: Non-English content farms, medical sites, image-only sites, affiliate marketplaces
+- **Safe search**: Off (0) — spiritual content often misclassified
+- **Engine weights**: Wikisource (2.0), Open Library (2.0), Wikipedia (1.5), Startpage (1.5), Reddit (1.2), DuckDuckGo (1.0), Brave (0.9), Bing (0.7)
+- **Timeouts**: 8s request / 15s max for LLM tolerance
 
-## Development Setup
+## Nx Targets
 
-This application is a member of the **uv workspace** declared in `configuration/pyproject.toml`, sharing `configuration/uv.lock` and the root `.venv`.
+Targets defined in `nx.json` (inherited via `targetDefaults`) and `pyproject.toml`:
 
-```bash
-# Sync dependencies from repository root
-uv sync --project configuration
+| Target | Command | Description |
+|--------|---------|-------------|
+| `ruff-lint` | `ruff check src testing` | Linting |
+| `ruff-format` | `ruff format src testing` | Formatting |
+| `pyright` | `pyright` | Primary type checker (strict) |
+| `ty` | `ty check` | Supplementary type checker |
+| `pytest` | `pytest testing` | All tests (unit + integration) |
+| `pytest:unit` | `pytest testing -m unit` | Unit tests only |
+| `pytest:integration` | `pytest testing -m integration` | Integration tests (require services) |
+| `test-coverage` | `pytest --cov=src testing` | Coverage report |
+| `vulture` | `vulture src --exclude=__init__.py` | Dead code detection |
+| `bandit` | `bandit -r src` | Security linter |
+| `nbstripout` | `nbstripout src/*.ipynb` | Strip notebook outputs |
+| `typecheck` | `pyright` + `ty` (parallel) | Composite type checking |
+| `lint` | `ruff-lint` + `bandit` + `vulture` | Composite linting |
+| `format` | `ruff-format` + `nbstripout` | Composite formatting |
+| `gate` | `typecheck` + `lint` + `pytest` | Full quality gate |
 
-# Start services
-nx run affirmancy:ollama --configuration=start
-nx run infrastructure:searxng:up
-nx run infrastructure:open-webui:up
+### Service Management Targets
 
-# Pull model (one-time)
-nx run affirmancy:ollama --configuration=pull-small   # gemma4:e2b
+| Target | Configuration | Description |
+|--------|---------------|-------------|
+| `affirmancy:ollama` | `start` / `stop` / `pull-small` / `pull-large` | Ollama container lifecycle + model pulls |
+| `infrastructure:searxng` | `up` / `down` / `open` | SearxNG container + browser |
+| `infrastructure:open-webui` | `up` / `down` / `open` | Open WebUI container + browser |
 
-# Open src/affirmancy.ipynb in VSCode and run cells sequentially
+## Project Structure
+
+```
+projects/affirmancy/
+├── src/
+│   ├── __init__.py              # Package marker
+│   ├── affirmancy.ipynb         # Main Jupyter notebook pipeline
+│   ├── grammars.py              # Grammar enums (9 axes) + Grammar model + GRAMMARS list
+│   ├── models.py                # Pydantic models (Affirmation, GrammarAffirmations, SubjectAffirmations, ValidationResult)
+│   ├── output.py                # JSON/Markdown file I/O utilities
+│   ├── prices.ipynb             # Token pricing research notebook
+│   ├── prompts.py               # LangChain prompt templates (8 templates)
+│   ├── py.typed                 # PEP 561 typed package marker
+│   ├── semantics.ipynb          # Semantic analysis notebook
+│   ├── services.py              # SearxNG health check (fails loudly if not running)
+│   └── subjects.py              # Subject + SubjectCategory definitions (~308 subjects)
+├── testing/
+│   ├── __init__.py
+│   ├── test_grammars.py
+│   ├── test_models.py
+│   ├── test_output.py
+│   ├── test_prompts.py
+│   ├── test_services.py
+│   └── test_subjects.py
+├── output/
+│   └── .gitkeep                 # Generated files (gitignored)
+├── AGENTS.md
+├── pyproject.toml
+├── uv.lock
+├── searxng.settings.yml
+└── README.md
 ```
 
-Python ≥3.14 required (pyproject.toml specifies `>=3.14,<3.15`).
+## Key Dependencies (`pyproject.toml`)
 
-## Testing
+**Runtime** (≥ Python 3.15):
+- `langchain>=1.4.5`, `langchain-core>=1.6.7`, `langchain-ollama>=1.0`, `langchain-community>=0.4`
+- `langgraph>=0.3`
+- `pydantic>=2.14.1`
+- `jupyter>=1.1`, `ipykernel>=6.29`, `tornado>=6.5.8`
+- `wikipedia>=1.4`, `trafilatura>=2.0`, `inflect>=7.5.0`, `pandas>=2.0`
 
-Pytest suite in `testing/` with unit and integration markers:
-
-| Test File | Coverage |
-|-----------|----------|
-| `test_grammars.py` | Grammar model properties, specifier composition, `DescribedEnum` examples, `specifier_descriptions` assembly |
-| `test_models.py` | Pydantic model construction, serialization round-trips, `GeneratedAffirmations` trailing-period stripping |
-| `test_subjects.py` | Subject/category construction, counts per category, metadata presence, `SUBJECTS` aggregation |
-| `test_prompts.py` | Prompt template rendering, variable substitution |
-| `test_services.py` | `require_searxng` success/failure behavior |
-| `test_output.py` | JSON/Markdown writers, directory creation, filename conventions |
-
-Run with:
-```bash
-uv run pytest testing/ -v
-uv run pytest testing/ -m unit      # fast mocked tests
-uv run pytest testing/ -m integration  # requires real services
-```
-
-## Extension Points
-
-| Extension | Location | Description |
-|-----------|----------|-------------|
-| New spiritual practice | `src/subjects.py` | Add `SubjectCategory` + `Subject` list |
-| New grammatical axis | `src/grammars.py` | Add `DescribedEnum` subclass + update `Grammar` model |
-| New predefined grammar | `src/grammars.py` | Add `Grammar` instance to `GRAMMARS` list |
-| Custom validation | `src/prompts.py` | Add validation prompt templates |
-| Output format | `src/output.py` | Add new writer functions |
-| Search engines | `searxng.settings.yml` | Adjust hostname priorities, engine weights |
+**Dev**:
+- `ruff>=0.16.10`, `pyright>=1.1`, `ty>=0.0.28`
+- `pytest>=9.0.3`, `pytest-cov>=6.0`
+- `bandit[toml]>=1.9.4`, `vulture>=2.14`, `nbstripout>=0.8`
 
 ## Related Pages
 
-<!-- openwiki: broken internal link [../overview.md] file "../overview.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [Overview](../overview.md) — Repository architecture
-- [Ollama + SearxNG Integration](../integrations/ollama-searxng.md) — Service deployment details
-- [Local Development](../operations/local-development.md) — Devcontainer, uv workspace, Nx commands
-- [Affirmancy Testing](../testing/affirmancy.md) — Test organization and execution
+- [Ollama & SearxNG Integration](../integrations/ollama-searxng.md) — Service setup and configuration details
+- [Local Development](../operations/local-development.md) — Running the pipeline locally
+- [Architecture Overview](../architecture/common-packages.md) — Shared workspace conventions
+- [Testing Affirmancy](../testing/affirmancy.md) — Test organization and running

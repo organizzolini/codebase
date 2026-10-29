@@ -3,9 +3,6 @@ type: workflow
 title: Code Quality Gates
 description: Documents the four IC-Suite quality gates (callidescope depth/breadth, codependix boundaries, codometer limits, conformetry conformance) and their integration into CI via Nx targets.
 tags: [ic-suite, quality-gates, nx, ci, callidescope, codependix, codometer, conformetry]
-verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
 sources:
   - id: openwiki-source-cb3df90b3af3b7ee2f16c98e
     resource: repo://.agents/skills/triage-integration/SKILL.md

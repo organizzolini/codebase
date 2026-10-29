@@ -5,7 +5,7 @@ description: Documents testing infrastructure for meanderaw-cli and meanderaw-we
 tags: [testing, meanderaw, vitest, integration, database, historical-corpus]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-6315af249215d8768fb68811
     resource: repo://.github/workflows/continuous-integration.yml
@@ -45,7 +45,7 @@ sources:
     resource: repo://projects/meanderaw/meanderaw-web/testing/render-route.tsx
   - id: openwiki-source-b17018e99ba1a5502f1a4a5d
     resource: repo://projects/meanderaw/meanderaw-web/vitest.config.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
 # Meanderaw Testing
@@ -111,17 +111,19 @@ The extraction revealed **21 Codes filed under two different families** simultan
 The corpus is **evidence, and evidence can be wrong**. A family rule that disagrees with a corpus label has found a disagreement to adjudicate by looking at the drawing — it has not failed a test. The retired aspect-ratio rules reproduced this corpus perfectly and were still wrong (they failed against the enumerated space, which the corpus never contained). A corpus that any wrong rule can satisfy is not an oracle.
 
 **Consequences for testing:**
-- A family rule is tested against `HISTORICAL_CORPUS` and every disagreement is looked at, not assumed to be the rule's fault
-- The fixture set alone cannot validate a family rule; the enumerated space has to be reviewed as well
-- `filedUnder` is an array, so a Code filed under two names keeps both, and a contradiction stays visible **in the corpus** instead of being resolved by whichever name happened to sort first
-- The twenty-one contradictions are open questions, not defects fixed here
-- The nine mis-filed whirls are one meander stored once, not twice, because they are literally one drawing filed twice
+
+1. A family rule is tested against `HISTORICAL_CORPUS` and every disagreement is looked at, not assumed to be the rule's fault
+2. The fixture set alone cannot validate a family rule; the enumerated space has to be reviewed as well
+3. `filedUnder` is an array, so a Code filed under two names keeps both, and a contradiction stays visible **in the corpus** instead of being resolved by whichever name happened to sort first
+4. The twenty-one contradictions are open questions, not defects fixed here
+5. The nine mis-filed whirls are one meander stored once, not twice, because they are literally one drawing filed twice
 
 ### Corpus Ingestion in Draw Runs
 
 `CorpusService` ingests the historical corpus into the `meanders` database table **through the exact same pipeline** used for enumerated meanders (generic reader → canonical phase → `CharacteristicsService.compute`). Only the Code comes from the corpus; all characteristics are measured fresh.
 
 **Which entries are ingested is computed, not listed:**
+
 - The corpus was extracted against a 16-edge budget (`HISTORICAL_CORPUS_EDGE_BUDGET = 16`)
 - The draw run starts at a row floor (`DRAW_MINIMUM_ROWS`) because a single-row band has no southward edges
 - An entry is preserved as a hardcoded row when **either bound puts it outside** the enumeration's reach
@@ -156,7 +158,9 @@ Located in `projects/meanderaw/meanderaw-cli/testing/`:
 
 ### Legacy Characteristic Regression Suite
 
-`projects/meanderaw/meanderaw-cli/testing/legacy-characteristics.ts` captures the output of the retired monolithic `CharacteristicsService` for a fixed set of Codes. Each fixture is a space-separated line of values in `LEGACY_FIELD_KEYS` order. This pins the new evaluator architecture to the exact values the old service produced, catching drift.
+`projects/meanderaw/meanderaw-cli/testing/legacy-characteristics.ts` captures the output of the retired monolithic `CharacteristicsService` for a fixed set of Codes. Each fixture is a space-separated line of values in `LEGACY_FIELD_KEYS` order (29 fields: betti numbers, corner/cross/fork/edge counts, density, dots, free ends, longest runs, tile crossing metrics, compound predicates). This pins the new evaluator architecture to the exact values the old service produced, catching drift.
+
+The fixtures include the first, middle, and last enumerated Code of each retired classifier group, the smallest hardcoded Code of each group the enumeration never reaches, and three Codes whose repeating unit is narrower than the Code as filed (exercising unreduced tile-crossing across every column rotation).
 
 ### Letter Characteristic Testing
 
@@ -172,10 +176,17 @@ The harness exposes:
 ### Enumeration Logic Tests
 
 Unit tests for enumeration live alongside source modules (e.g., `src/modules/enumeration/enumeration.service.unit.test.ts`, `src/modules/enumeration/tile-enumeration.service.unit.test.ts`). They test:
+
 - Tile enumeration across all edge assignments
 - Shape enumeration (columns × rows)
 - Symmetry deduplication
 - Lattice addressing (codes as coordinates in the enumeration space)
+
+Key test assertions verify:
+- The 25 shapes admitted at edge budget 24 (e.g., `2r1c` through `12r1c` and multi-column shapes up to `5r4c`)
+- Exact tile counts per shape matching historical `mosaic` corpus (e.g., 2r1c = 6 tiles, 2r2c = 21 tiles, 3r3c = 3100 tiles)
+- Code canonicalization order stability (canonical edge key order makes draw runs stable across runs)
+- Shape admission/bounded behavior under `DRAW_MAXIMUM_ROWS` and `DRAW_MAXIMUM_COLUMNS`
 
 ### Characteristic Measurement Tests
 

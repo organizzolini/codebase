@@ -5,7 +5,7 @@ description: High-level system architecture showing the four major domains (affi
 tags: [architecture, codebase, nx, TypeScript, Python]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-3813a8d6b5fb514dbe957652
     resource: repo://configuration/codependix.config.ts
@@ -51,7 +51,7 @@ sources:
     resource: repo://projects/meanderaw/meanderaw-cli/project.json
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 # Architecture Overview
 
@@ -61,50 +61,50 @@ This document presents the high-level architecture of the codebase, organized in
 ```text
 flowchart TD
     subgraph Domains [Application Domains]
-        Affirmancy[affirmancy<br/>Python LangGraph agent]
-        Caelundas[caelundas<br/>NestJS CLI + TanStack Start web]
-        Lexico[lexico<br/>NestJS API + TanStack Start web]
-        Meanderaw[meanderaw<br/>NestJS CLI + TanStack Start web]
+        Affirmancy["affirmancy<br/>Python LangGraph agent"]
+        Caelundas["caelundas<br/>NestJS CLI + TanStack Start web"]
+        Lexico["lexico<br/>NestJS API + TanStack Start web"]
+        Meanderaw["meanderaw<br/>NestJS CLI + TanStack Start web"]
     end
 
     subgraph ICSuite [IC-Suite Toolchains]
-        Callidescope[callidescope<br/>Call stack tracing]
-        Codependix[codependix<br/>Dependency graph export]
-        Codometer[codometer<br/>Repository measurement]
-        Conformetry[conformetry<br/>Template generation & validation]
+        Callidescope["callidescope<br/>Call stack tracing"]
+        Codependix["codependix<br/>Dependency graph export"]
+        Codometer["codometer<br/>Repository measurement"]
+        Conformetry["conformetry<br/>Template generation & validation"]
     end
 
     subgraph ICSuiteLayers [IC-Suite Layer Spine (ADR 0013)]
-        Core[core<br/>layer:core<br/>Contracts leaf]
-        Config[configuration<br/>layer:configuration<br/>Config resolution]
-        Analysis[analysis<br/>layer:analysis<br/>Tool logic]
-        Output[output<br/>layer:output<br/>Rendering]
-        CLI[cli<br/>layer:cli<br/>Entrypoints]
-        NXPlugin[nx plugin<br/>layer:cli<br/>Nx host]
+        Core["core<br/>layer:core<br/>Contracts leaf"]
+        Config["configuration<br/>layer:configuration<br/>Config resolution"]
+        Analysis["analysis<br/>layer:analysis<br/>Tool logic"]
+        Output["output<br/>layer:output<br/>Rendering"]
+        CLI["cli<br/>layer:cli<br/>Entrypoints"]
+        NXPlugin["nx plugin<br/>layer:cli<br/>Nx host"]
     end
 
     subgraph Common [Common Packages]
-        Interface[interface<br/>GraphQL types & helpers]
-        Observability[observability<br/>Pino logger service]
-        Persistence[persistence<br/>Postgres, TypeORM, Testcontainers]
-        Presentation[presentation<br/>React components]
+        Interface["interface<br/>GraphQL types & helpers"]
+        Observability["observability<br/>Pino logger service"]
+        Persistence["persistence<br/>Postgres, TypeORM, Testcontainers"]
+        Presentation["presentation<br/>React components"]
     end
 
     subgraph Infra [Infrastructure]
-        Kubernetes[Helm charts<br/>kubernetes-job]
-        Terraform[Linode LKE<br/>cluster provisioning]
-        DockerCompose[Local services<br/>Postgres, SearxNG, Open WebUI]
-        CIWorkflows[GitHub Actions<br/>CI/CD/Compliance]
+        Kubernetes["Helm charts<br/>kubernetes-job"]
+        Terraform["Linode LKE<br/>cluster provisioning"]
+        DockerCompose["Local services<br/>Postgres, SearxNG, Open WebUI"]
+        CIWorkflows["GitHub Actions<br/>CI/CD/Compliance"]
     end
 
     subgraph ConfigTools [Configuration & Tooling]
-        Configuration[configuration<br/>Shared tool config]
-        Synchronization[synchronization<br/>Derived config regeneration]
-        Validation[validation<br/>One-sided checks]
-        Documentation[documentation<br/>Docs refresh]
-        Installation[installation<br/>Dev machine setup]
-        Integration[integration<br/>CI plumbing]
-        Publication[publication<br/>Publish plumbing]
+        Configuration["configuration<br/>Shared tool config"]
+        Synchronization["synchronization<br/>Derived config regeneration"]
+        Validation["validation<br/>One-sided checks"]
+        Documentation["documentation<br/>Docs refresh"]
+        Installation["installation<br/>Dev machine setup"]
+        Integration["integration<br/>CI plumbing"]
+        Publication["publication<br/>Publish plumbing"]
     end
 
     %% Domain dependencies on common packages

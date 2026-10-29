@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:d408dbe4cb9e2b480df3373c2df401cf0270709a5137c9ccf452e178a3ebc00f",
+  "pageVersion": "sha256:59c73b76ad6b52a06bef69d8ae2db9d8adc2f4eefc89e02ad467e58461ab341f",
   "claims": [
     {
       "id": "claim_6ba1f48fb60e4cdc8e8e767e2f7a6779",
@@ -202,25 +202,21 @@
     },
     {
       "id": "claim_01da2e1e55a94d58bd8e17b624f5d9fb",
-      "statement": "CI test execution is sharded into four parallel jobs in .github/workflows/continuous-integration.yml: general (default test-code job excluding meanderaw-cli, caelundas, ic-suite), caelundas (only projects/caelundas/**, runs separately due to ephemeris download), meanderaw (only meanderaw-cli, heavy integration suite), and ic-suite (only projects/ic-suite/**, 37 packages). Each shard runs nx affected --target=vitest --configuration=coverage with its exclude pattern. The postgres-client tool is installed for the general test-code target.",
+      "statement": "CI test execution is sharded into four parallel jobs in .github/workflows/continuous-integration.yml: general (default test-code job excluding meanderaw-cli, caelundas, ic-suite), caelundas (only projects/caelundas/**, runs separately due to ephemeris download), meanderaw (only meanderaw-cli, heavy integration suite), and ic-suite (only projects/ic-suite/**, 37 packages). Each shard runs nx affected --target=vitest --configuration=coverage with its exclude pattern. The postgres-client tool is installed only for the general test-code target (where matrix.check.shard is not set).",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L154-L156",
-          "version": "repo-lines-v1:sha256:04a7da28f9d58c0db9915e076d192e887b69cea5d010bc177f30516f96c7154e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQ0MzYxNjEzODdhMjRkNDMxMTNjNmM4OTFkN2ViZmQ2NmQ5ZDAyMGZkMTViNmU1NzYwMDRjOGI1ODNmZjE4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2Y4MTc3OTIyMjNiMzZlMjZlNjI0NTQ5OWUxNTVmYWVlNTA4NzBmOTkzYTdhNTU0OWM5NjM5ODE5NmNkODE5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmYzMTQwYjcwOTAzM2E5YmY3ZjNlZTNmODQ3NTVlZTM3Mjc3ZmQzMjE4NGVhZjhhMjgwYWQ0NzdjMDVjMzIyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzczMDU0MWI2MGUyZTI3NDBjOTUxZjJmNWQ5YWY1ZTJiYzk5ZDY5Y2RhNjZjZTBlZjllMjJjMzI1MDQyYzM5NiJ9"
+          "resource": "repo://.github/workflows/continuous-integration.yml#L226-L228",
+          "version": "repo-lines-v1:sha256:04a7da28f9d58c0db9915e076d192e887b69cea5d010bc177f30516f96c7154e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQ0MzYxNjEzODdhMjRkNDMxMTNjNmM4OTFkN2ViZmQ2NmQ5ZDAyMGZkMTViNmU1NzYwMDRjOGI1ODNmZjE4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2Y4MTc3OTIyMjNiMzZlMjZlNjI0NTQ5OWUxNTVmYWVlNTA4NzBmOTkzYTdhNTU0OWM5NjM5ODE5NmNkODE5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmI3YTg4YWFlNmI0MmM0MmUwOTYxOTE4MTZiNGIxMWE1MmY0NmVlYjdhZjY2MjA1OWY5OGZlOWVkMzgwNjc3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWI3ZDA4YmUzNTVmNmU4MDVmNDBlYWExMmNkOTA0OWY0NmI2YTg0MWUyN2M1Y2M2YTkwZTZlOGUzZGI1MGYyMCJ9"
         },
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L195-L201",
-          "version": "repo-lines-v1:sha256:f192288a6d4383d93aa9d95fa2247449141463adeabb2bb8310eb4a7243eb9f7:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzY5NWRjMTk5NjY1MzkwNWQwZmUzNTQyMTM4YTY1NTcwMTAzZWQ5NjFiMzdhYzlkZmNhMDYxMmZlN2Q5ZDVjYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M4MTJhMmJhNTBjOWNkZGU1ZDg2NjgyOWIwYTU2NDY5ZTY1MDRiMWQzYzM0M2JmZjgzOGJhMGZiNzY5ODlkNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDIwMTBlYWMwYWU4YTEwYTdjMmUxNzliMjk4YzE5NzIxYmIwMmI2ZmIzYzA0YWUwNGM5ZWIwOGJhNzczM2EzOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODFhYTAwYzkxM2NhN2I1YmM2YTE4ZTM0YWQxY2Y3N2RmMjI1ZTM0YzdkMGIyMjMxNTVkZDk2NzEwOGUzZmZjNCJ9"
-        },
-        {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L64-L92",
-          "version": "repo-lines-v1:sha256:573d183bc962cdc30776e2bae4e02ebc9f1ce50ad7525e543019d57bc8e71a4f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NWM3MGU4NDgxNWNkMGYyZGYxYTAzNzg1YjM3ODdkY2Y0NzEwZWZiMzg1M2U4OTYzNjNlZDRlMjJhNDIyMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3OTAxYWI2MDNiNTgwODM3NDJjMjc2YWUwZjBlN2Q3M2NiY2NhYjk0NDBiNTY4ZDNhMDUwYjFmMTc1Y2YxMGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyYjdjNGQyMGJhNmQzOWU3Yjk2NmZhNzFhOGFiZTljMGY2Njk4MmQwN2ViNmYyYTZlZmMxNzRiOTQyNjZkOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjNDgyOGNkN2UwMDMwODgwMjU3NzBhYTg3OWM5ZmJjMDc0YTI4NzgyNzUwMGI4MTg5ZTIzYTdiZDg4ZGVjOTYifQ"
+          "resource": "repo://.github/workflows/continuous-integration.yml#L76-L94",
+          "version": "repo-lines-v1:sha256:70f93165384f19fe2b9111004e6ff6571db95b8b1378c84a25352226c0f2e295:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlN2JlMDdjMjI1OTNhN2RhNGQ1MTBlNGI1ZTMzZGVkMjgyN2ZlNzU4NzY4NzcxYzg3ZWYwMDI0YTExZDUwY2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3OTAxYWI2MDNiNTgwODM3NDJjMjc2YWUwZjBlN2Q3M2NiY2NhYjk0NDBiNTY4ZDNhMDUwYjFmMTc1Y2YxMGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2YWIxYmExY2FkMDVjYThkMTk2OGRiNWQ0YWIzYmYxNDY1NjNlNzkyOWJlZGIxOTc1M2YyYzc4YWRlMTkzOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjNDgyOGNkN2UwMDMwODgwMjU3NzBhYTg3OWM5ZmJjMDc0YTI4NzgyNzUwMGI4MTg5ZTIzYTdiZDg4ZGVjOTYifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-26T01:23:39.729Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }
