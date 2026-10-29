@@ -85,27 +85,6 @@
       "completedBy": "openwiki/0.7.0",
       "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
     },
-    "/openwiki/domain/lexico.md": {
-      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
-      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
-      "pageVersion": "sha256:07ac31ffc60cf468243ca07bf25b9c9cbeaab67c21c4e4ad74393ff90b77af20",
-      "completedBy": "openwiki/0.7.0",
-      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
-    },
-    "/openwiki/domain/meanderaw.md": {
-      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
-      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
-      "pageVersion": "sha256:0ff30674160d8384f7ef5599e7791a055e4fbb936731a6e04f197d1eee4b1c05",
-      "completedBy": "openwiki/0.7.0",
-      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
-    },
-    "/openwiki/domain/overview.md": {
-      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
-      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
-      "pageVersion": "sha256:60a1a6965aff955e2e6d0bc3835b81571372201333a6b243786624c71d502e92",
-      "completedBy": "openwiki/0.7.0",
-      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
-    },
     "/openwiki/domain/projects.md": {
       "pageVersion": "sha256:cb8aabf5abf1b2efd7e77310994203f85964ca5029054c03ef9370ade4f4b573",
       "completedBy": "openwiki/0.7.0",
@@ -141,40 +120,12 @@
       "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
       "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
     },
-    "/openwiki/operations/local-development.md": {
-      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
-      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
-      "pageVersion": "sha256:4d4e901d01442ab4c897cb7c088dfc63f879ff25891f7c3e4ee9cca4611458af",
-      "completedBy": "openwiki/0.7.0",
-      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
-    },
     "/openwiki/quickstart.md": {
       "pageVersion": "sha256:8ab4391989b899c63b5b8009152bdda63e6f9e013e0ca1167862e36c32553ca4",
       "completedBy": "openwiki/0.7.0",
       "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
       "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
       "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
-    },
-    "/openwiki/testing/affirmancy.md": {
-      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
-      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
-      "pageVersion": "sha256:29d6d5bdceb236d5d1032fe84bcfb8e6e35c68fdf5146a7436bf531d9a1b4004",
-      "completedBy": "openwiki/0.7.0",
-      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
-    },
-    "/openwiki/testing/integration.md": {
-      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
-      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
-      "pageVersion": "sha256:645e55c467f803db7a0c11b8f039180c1b12c12feecdd8f9847654ff076922b4",
-      "completedBy": "openwiki/0.7.0",
-      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
-    },
-    "/openwiki/testing/lexico.md": {
-      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
-      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
-      "pageVersion": "sha256:b8a11f9718666368baf74fe8368fd6c062e651218cf88a9f3223d68e65235773",
-      "completedBy": "openwiki/0.7.0",
-      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
     },
     "/openwiki/testing/meanderaw.md": {
       "pageVersion": "sha256:5100425b556d5d7109c3a3a3d6b6cf6c715791a708e2e026420052a93da64e27",
