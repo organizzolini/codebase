@@ -27,7 +27,7 @@ jobs:
       # approved apps, so a failed run is worth checking the model's health.
       # The retry count is high so that backing off outlasts a spent minute.
       OPENWIKI_PROVIDER: openrouter
-      OPENWIKI_MODEL_ID: ${{ vars.OPENWIKI_MODEL_ID }}
+      OPENWIKI_MODEL_ID: nvidia/nemotron-3-ultra-550b-a55b:free
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       OPENWIKI_MAX_OUTPUT_TOKENS: "16384"
       OPENWIKI_PROVIDER_RETRY_ATTEMPTS: "12"
