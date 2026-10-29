@@ -242,20 +242,6 @@ jobs:
           nx-base: push-before
           eslint-cache: ${{ matrix.check.target == 'lint-code' && 'true' || 'false' }}
 
-      # TEMPORARY: prints the bucket's region, endpoint, and type so the Linode
-      # import ID can be set. Remove with the next push.
-      - name: 🔎 Diagnose Linode
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform'
-        continue-on-error: true
-        env:
-          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
-        run: |
-          curl -sS -H "Authorization: Bearer $LINODE_TOKEN" \
-            https://api.linode.com/v4/object-storage/buckets \
-            | jq '.data[] | {region, label, hostname, s3_endpoint, endpoint_type}'
-
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
           steps.check-skip.outputs.skip != 'true' &&

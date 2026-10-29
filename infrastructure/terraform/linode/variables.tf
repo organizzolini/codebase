@@ -11,13 +11,7 @@ variable "bucket_label" {
 }
 
 variable "region" {
-  description = "Region of that bucket."
+  description = "Region of that bucket, as the Linode API names it: us-iad-2, whose S3 endpoint is us-iad-18."
   type        = string
-  default     = "us-iad"
-}
-
-variable "s3_endpoint_name" {
-  description = "Name of the bucket's S3 endpoint, the first label of its hostname."
-  type        = string
-  default     = "us-iad-18"
+  default     = "us-iad-2"
 }
