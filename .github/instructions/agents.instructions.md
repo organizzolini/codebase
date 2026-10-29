@@ -57,8 +57,11 @@ infer: true
 
 - Specifies which AI model the agent should use
 - Supported in VS Code, JetBrains IDEs, Eclipse, and Xcode
-- Example: `'Claude Sonnet 4.5'`, `'gpt-4'`, `'gpt-4o'`
-- Choose based on agent complexity and required capabilities
+- Example: `'Claude Sonnet 4.5'`, `'Claude Haiku 4.5'`, `'Claude Opus 4.6'`, or OpenAI `'Sol'`, `'Terra'`, `'Luna'` equivalents
+- Match the model tier to the agent's role:
+  - **Planning agents**: Use an **Opus/Sol-level** model for clarifying requirements, authoring specs, and decomposing tickets
+  - **Implementation orchestrators**: Use a **Sonnet/Terra-level** model for coordinating ticket sets, managing worktrees and stacks, and dispatching subagents
+  - **Implementation task subagents**: Use a **Haiku/Luna-level** model by default, or a **Sonnet/Terra-level** model only when really necessary (complex multi-file integration or non-trivial architectural judgment)
 
 #### **target** (OPTIONAL)
 
