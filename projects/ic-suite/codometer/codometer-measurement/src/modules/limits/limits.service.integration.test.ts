@@ -1,15 +1,15 @@
-import { mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
   ConfigurationModule,
   ConfigurationService,
 } from "@codometer/configuration";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { removeFixtureTree } from "../../../testing/fixture-tree";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { buildCodeStatistics } from "../../../testing/mocks";
 
 import { LimitsService } from "./limits.service";
@@ -37,11 +37,10 @@ const TARGETS: MeasuredTarget[] = [
 
 describe("limits written in a configuration file", () => {
   let evaluated: EvaluatedLimit[];
-  let directory: string;
+  const directory = useTemporaryDirectory("codometer-limits-");
 
   beforeAll(async () => {
-    directory = await mkdtemp(path.join(tmpdir(), "codometer-limits-"));
-    const configurationPath = path.join(directory, "codometer.config.json");
+    const configurationPath = path.join(directory(), "codometer.config.json");
 
     await writeFile(
       configurationPath,
@@ -60,10 +59,10 @@ describe("limits written in a configuration file", () => {
       "utf8",
     );
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(LimitsService, {
       imports: [ConfigurationModule],
-      providers: [LimitsService, MetricIndexService],
-    }).compile();
+      providers: [MetricIndexService],
+    });
     const configuration = await module
       .get(ConfigurationService)
       .loadConfiguration({ configurationPath });
@@ -73,10 +72,6 @@ describe("limits written in a configuration file", () => {
     evaluated = module
       .get(LimitsService)
       .evaluate({ configuration, indexes }).limits;
-  });
-
-  afterAll(() => {
-    removeFixtureTree(directory);
   });
 
   it("holds an unqualified path against the default target", () => {

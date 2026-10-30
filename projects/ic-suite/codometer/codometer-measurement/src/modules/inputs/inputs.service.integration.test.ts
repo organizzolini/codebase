@@ -2,13 +2,12 @@ import {
   ConfigurationModule,
   ConfigurationService,
 } from "@codometer/configuration";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { createInputTree, removeInputTree } from "../../../testing/input-tree";
+import { createInputTree } from "../../../testing/input-tree";
 
 import { InputsService } from "./inputs.service";
 
@@ -30,6 +29,7 @@ function buildInput(
 }
 
 describe(`${InputsService.name} over a real directory`, () => {
+  const getWorkingDirectory = useTemporaryDirectory("codometer-input");
   let configurationService: ConfigurationService;
   let service: InputsService;
   let workingDirectory: string;
@@ -40,21 +40,14 @@ describe(`${InputsService.name} over a real directory`, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { instance, module } = await buildTestingModule(InputsService, {
       imports: [ConfigurationModule],
-      providers: [
-        InputsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    });
 
     configurationService = await module.resolve(ConfigurationService);
-    service = await module.resolve(InputsService);
-    workingDirectory = createInputTree();
-  });
-
-  afterAll(() => {
-    removeInputTree(workingDirectory);
+    service = instance;
+    workingDirectory = getWorkingDirectory();
+    createInputTree(workingDirectory);
   });
 
   it("holds every file its globs claim, sorted", () => {

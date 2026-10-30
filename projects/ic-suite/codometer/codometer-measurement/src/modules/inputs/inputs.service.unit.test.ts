@@ -1,29 +1,51 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputOutsideRepositoryError } from "./inputs.constants";
 import { InputsService } from "./inputs.service";
 
 import type { ResolvedCodometerInput } from "@codometer/configuration";
-import type { Dirent } from "node:fs";
+import type { Dirent, PathLike } from "node:fs";
+import type * as NodeFileSystem from "node:fs";
 
 // The walk is mocked down to the one filesystem call it makes for an ordinary
 // tree, which is what lets these assertions read which directories it entered.
 // Real trees, links, and unreadable directories are walked in
 // `inputs.service.integration.test.ts`.
 const { existsSyncMock, readdirSyncMock } = vi.hoisted(() => ({
-  existsSyncMock: vi.fn<(candidatePath: string) => boolean>(),
-  readdirSyncMock: vi.fn<(directory: string) => Dirent[]>(),
+  existsSyncMock: vi.fn<(candidatePath: PathLike) => boolean>(),
+  readdirSyncMock:
+    vi.fn<(directory: string, options: { withFileTypes: true }) => Dirent[]>(),
 }));
 
-vi.mock("node:fs", async (importOriginal) => ({
-  ...(await importOriginal<Record<string, unknown>>()),
-  existsSync: existsSyncMock,
-  readdirSync: readdirSyncMock,
-}));
+vi.mock("node:fs", async (importOriginal) => {
+  const { mockPartially } = await import("@codebase/testing/mocks");
+  const actual = await importOriginal<typeof NodeFileSystem>();
+  const readdirSync = new Proxy(actual.readdirSync, {
+    apply(
+      target,
+      thisArgument: typeof NodeFileSystem | undefined,
+      argumentsList: unknown[],
+    ) {
+      const [directory] = argumentsList;
+
+      if (typeof directory !== "string") {
+        return Reflect.apply(target, thisArgument, argumentsList) as ReturnType<
+          typeof target
+        >;
+      }
+
+      return readdirSyncMock(directory, { withFileTypes: true });
+    },
+  });
+
+  return mockPartially(actual, {
+    existsSync: existsSyncMock,
+    readdirSync,
+  });
+});
 
 /** An in-memory tree, keyed by absolute directory path. */
 const TREE: Readonly<Record<string, readonly (readonly [string, boolean])[]>> =
@@ -85,14 +107,9 @@ describe(InputsService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        InputsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance } = await buildTestingModule(InputsService);
 
-    service = await module.resolve(InputsService);
+    service = instance;
   });
 
   beforeEach(() => {
@@ -100,7 +117,7 @@ describe(InputsService, () => {
     // The mocked tree is a repository rooted at `/repo`, which is how far out
     // of the measured folder an input is allowed to reach.
     existsSyncMock.mockImplementation(
-      (candidatePath: string) => candidatePath === "/repo/.git",
+      (candidatePath) => candidatePath.toString() === "/repo/.git",
     );
     readdirSyncMock.mockReset();
     readdirSyncMock.mockImplementation((directory: string) =>
@@ -110,8 +127,10 @@ describe(InputsService, () => {
     );
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(InputsService);
+
+    expect(instance).toBeInstanceOf(InputsService);
   });
 
   it("holds every file its globs claim, sorted", () => {

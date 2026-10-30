@@ -1,16 +1,32 @@
-import * as fs from "node:fs";
-
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IgnoreRulesService } from "./ignore-rules.service";
 
 import type { IgnoreScope } from "./ignore-rules.types";
+import type * as NodeFileSystem from "node:fs";
 
 // Pattern matching is pure, so the only I/O this service does — reading an
 // ignore file — is mocked rather than staged on disk. Real trees are walked in
 // `discovery.service.integration.test.ts`.
-vi.mock("node:fs");
+const { existsSyncMock, readFileSyncMock } = vi.hoisted(() => ({
+  existsSyncMock: vi.fn<typeof NodeFileSystem.existsSync>(),
+  readFileSyncMock: vi.fn<(filePath: string, encoding: "utf8") => string>(),
+}));
+
+vi.mock("node:fs", async (importOriginal) => {
+  const { mockFileSystem, mockPartially } =
+    await import("@codebase/testing/mocks");
+  const actual = await importOriginal<typeof NodeFileSystem>();
+
+  return mockPartially(
+    mockFileSystem(actual, {
+      utf8: (filePath) => readFileSyncMock(filePath, "utf8"),
+    }),
+    { existsSync: existsSyncMock },
+  );
+});
 
 describe(IgnoreRulesService, () => {
   let service: IgnoreRulesService;
@@ -21,15 +37,15 @@ describe(IgnoreRulesService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [IgnoreRulesService],
-    }).compile();
-    service = await module.resolve(IgnoreRulesService);
+    const { instance } = await buildTestingModule(IgnoreRulesService);
+
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(IgnoreRulesService);
+
+    expect(instance).toBeInstanceOf(IgnoreRulesService);
   });
 
   describe("gitignore pattern syntax", () => {
@@ -170,8 +186,8 @@ describe(IgnoreRulesService, () => {
 
   describe("reading a rule set from a file", () => {
     beforeEach(() => {
-      vi.mocked(fs.existsSync).mockReturnValue(true);
-      vi.mocked(fs.readFileSync).mockReturnValue(
+      existsSyncMock.mockReturnValue(true);
+      readFileSyncMock.mockReturnValue(
         "# Generated\npnpm-lock.yaml\n\n/CHANGELOG.md\n",
       );
     });
@@ -185,7 +201,7 @@ describe(IgnoreRulesService, () => {
       });
       const scopes = scope === undefined ? [] : [scope];
 
-      expect(fs.readFileSync).toHaveBeenCalledWith(
+      expect(readFileSyncMock).toHaveBeenCalledWith(
         "/repository/.codometerignore",
         "utf8",
       );
@@ -213,7 +229,7 @@ describe(IgnoreRulesService, () => {
     it("returns nothing when the file is absent", () => {
       expect.hasAssertions();
 
-      vi.mocked(fs.existsSync).mockReturnValue(false);
+      existsSyncMock.mockReturnValue(false);
 
       expect(
         service.readScope({
@@ -221,7 +237,7 @@ describe(IgnoreRulesService, () => {
           filePath: "/nowhere/.codometerignore",
         }),
       ).toBeUndefined();
-      expect(fs.readFileSync).not.toHaveBeenCalled();
+      expect(readFileSyncMock).not.toHaveBeenCalled();
     });
   });
 });

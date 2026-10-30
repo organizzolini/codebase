@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildCodeStatistics } from "../../../testing/mocks";
 
@@ -98,16 +99,18 @@ describe(LimitsService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [LimitsService, MetricIndexService],
-    }).compile();
+    const { instance, module } = await buildTestingModule(LimitsService, {
+      providers: [MetricIndexService],
+    });
 
-    service = await module.resolve(LimitsService);
-    metricIndexService = await module.resolve(MetricIndexService);
+    service = instance;
+    metricIndexService = module.get(MetricIndexService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LimitsService);
+
+    expect(instance).toBeInstanceOf(LimitsService);
   });
 
   it.each([

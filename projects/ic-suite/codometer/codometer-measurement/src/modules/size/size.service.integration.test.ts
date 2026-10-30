@@ -1,14 +1,12 @@
 import { gzipSync } from "node:zlib";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   createTargetTree,
-  removeTargetTree,
   TARGET_FIXTURE_FILES,
 } from "../../../testing/target-tree";
 
@@ -44,6 +42,7 @@ const PINNED_BYTES: Readonly<Record<CodometerCompression, number>> = {
 const DEFAULT_LEVEL_BYTES = 924;
 
 describe(`${SizeService.name} over real files`, () => {
+  const getWorkingDirectory = useTemporaryDirectory("codometer-target");
   let service: SizeService;
   let workingDirectory: string;
 
@@ -56,19 +55,11 @@ describe(`${SizeService.name} over real files`, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SizeService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance } = await buildTestingModule(SizeService);
 
-    service = await module.resolve(SizeService);
-    workingDirectory = createTargetTree();
-  });
-
-  afterAll(() => {
-    removeTargetTree(workingDirectory);
+    service = instance;
+    workingDirectory = getWorkingDirectory();
+    createTargetTree(workingDirectory);
   });
 
   it.each(["brotli", "gzip", "none"] as const)(

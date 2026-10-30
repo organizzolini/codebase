@@ -1,13 +1,9 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import {
-  createFixtureTree,
-  removeFixtureTree,
-} from "../../../testing/fixture-tree";
+import { createFixtureTree } from "../../../testing/fixture-tree";
 
 import { DiscoveryService } from "./discovery.service";
 import { IgnoreRulesService } from "./ignore-rules.service";
@@ -23,29 +19,22 @@ const DEFAULT_EXCLUDE = [
 ];
 
 describe(`${DiscoveryService.name} over a real directory`, () => {
+  const getWorkingDirectory = useTemporaryDirectory("codometer-discovery");
   let result: DiscoveryResult;
   let workingDirectory: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DiscoveryService,
-        IgnoreRulesService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const service = await module.resolve(DiscoveryService);
+    const { instance: service } = await buildTestingModule(DiscoveryService, {
+      providers: [IgnoreRulesService],
+    });
 
-    workingDirectory = createFixtureTree();
+    workingDirectory = getWorkingDirectory();
+    createFixtureTree(workingDirectory);
     result = service.discoverFiles({
       exclude: DEFAULT_EXCLUDE,
       excludeFrom: [".codometerignore"],
       workingDirectory,
     });
-  });
-
-  afterAll(() => {
-    removeFixtureTree(workingDirectory);
   });
 
   it("discovers every measurable file in the tree, sorted", () => {
