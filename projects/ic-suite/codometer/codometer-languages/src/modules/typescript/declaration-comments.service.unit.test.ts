@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import tsCompiler from "typescript";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CommentsService } from "../comments/comments.service";
 
@@ -82,15 +83,19 @@ describe(DeclarationCommentsService, () => {
   let service: DeclarationCommentsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [CommentsService, DeclarationCommentsService],
-    }).compile();
+    const { instance } = await buildTestingModule(DeclarationCommentsService, {
+      providers: [CommentsService],
+    });
 
-    service = await module.resolve(DeclarationCommentsService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DeclarationCommentsService, {
+      providers: [CommentsService],
+    });
+
+    expect(instance).toBeInstanceOf(DeclarationCommentsService);
   });
 
   it("returns nothing when the walk carries no comment counter", () => {

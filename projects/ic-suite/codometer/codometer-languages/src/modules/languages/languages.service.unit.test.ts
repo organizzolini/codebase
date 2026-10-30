@@ -1,8 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CommentsService } from "../comments/comments.service";
 import { CssCommentsService } from "../comments/css-comments.service";
@@ -79,40 +78,37 @@ describe(LanguagesService, () => {
   let yamlService: YamlService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { instance, mock } = await buildTestingModule(LanguagesService, {
+      mocks: [
+        CssService,
+        HclService,
+        JsonService,
+        JupyterService,
+        MarkdownService,
+        PythonService,
+        ShellService,
+        SqlService,
+        TomlService,
+        TypescriptService,
+        YamlService,
+      ],
       providers: [
         CommentsService,
         CssCommentsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         HashCommentsService,
         HclCommentsService,
         LanguageCommentsService,
         SqlCommentsService,
         TypescriptCommentsService,
         YamlCommentsService,
-        LanguagesService,
-        { provide: CssService, useValue: createMock<CssService>() },
-        { provide: HclService, useValue: createMock<HclService>() },
-        { provide: JsonService, useValue: createMock<JsonService>() },
-        { provide: JupyterService, useValue: createMock<JupyterService>() },
-        { provide: MarkdownService, useValue: createMock<MarkdownService>() },
-        { provide: PythonService, useValue: createMock<PythonService>() },
-        { provide: ShellService, useValue: createMock<ShellService>() },
-        { provide: SqlService, useValue: createMock<SqlService>() },
-        { provide: TomlService, useValue: createMock<TomlService>() },
-        {
-          provide: TypescriptService,
-          useValue: createMock<TypescriptService>(),
-        },
-        { provide: YamlService, useValue: createMock<YamlService>() },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(LanguagesService);
-    cssService = await module.resolve(CssService);
-    jupyterService = await module.resolve(JupyterService);
-    pythonService = await module.resolve(PythonService);
-    yamlService = await module.resolve(YamlService);
+    service = instance;
+    cssService = mock(CssService);
+    jupyterService = mock(JupyterService);
+    pythonService = mock(PythonService);
+    yamlService = mock(YamlService);
   });
 
   beforeEach(() => {
@@ -125,8 +121,34 @@ describe(LanguagesService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LanguagesService, {
+      mocks: [
+        CssService,
+        HclService,
+        JsonService,
+        JupyterService,
+        MarkdownService,
+        PythonService,
+        ShellService,
+        SqlService,
+        TomlService,
+        TypescriptService,
+        YamlService,
+      ],
+      providers: [
+        CommentsService,
+        CssCommentsService,
+        HashCommentsService,
+        HclCommentsService,
+        LanguageCommentsService,
+        SqlCommentsService,
+        TypescriptCommentsService,
+        YamlCommentsService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(LanguagesService);
   });
 
   it("gives each analyzer only the files of its own language", () => {
@@ -155,35 +177,25 @@ describe(LanguagesService, () => {
   });
 
   it("hands every counter to both the comment readers and typescript", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LanguagesService,
-        {
-          provide: LanguageCommentsService,
-          useValue: createMock<LanguageCommentsService>(),
-        },
-        { provide: CssService, useValue: createMock<CssService>() },
-        { provide: HclService, useValue: createMock<HclService>() },
-        { provide: JsonService, useValue: createMock<JsonService>() },
-        { provide: JupyterService, useValue: createMock<JupyterService>() },
-        { provide: MarkdownService, useValue: createMock<MarkdownService>() },
-        { provide: PythonService, useValue: createMock<PythonService>() },
-        { provide: ShellService, useValue: createMock<ShellService>() },
-        { provide: SqlService, useValue: createMock<SqlService>() },
-        { provide: TomlService, useValue: createMock<TomlService>() },
-        {
-          provide: TypescriptService,
-          useValue: createMock<TypescriptService>(),
-        },
-        { provide: YamlService, useValue: createMock<YamlService>() },
+    const { instance, mock } = await buildTestingModule(LanguagesService, {
+      mocks: [
+        LanguageCommentsService,
+        CssService,
+        HclService,
+        JsonService,
+        JupyterService,
+        MarkdownService,
+        PythonService,
+        ShellService,
+        SqlService,
+        TomlService,
+        TypescriptService,
+        YamlService,
       ],
-    }).compile();
-
-    const isolatedService = await module.resolve(LanguagesService);
-    const isolatedLanguageComments = await module.resolve(
-      LanguageCommentsService,
-    );
-    const isolatedTypescriptService = await module.resolve(TypescriptService);
+    });
+    const isolatedService = instance;
+    const isolatedLanguageComments = mock(LanguageCommentsService);
+    const isolatedTypescriptService = mock(TypescriptService);
 
     isolatedService.analyze({
       commentCounters,

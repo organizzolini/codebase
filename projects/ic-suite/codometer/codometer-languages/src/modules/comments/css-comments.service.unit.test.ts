@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CssCommentsService } from "./css-comments.service";
 
@@ -7,15 +8,14 @@ describe(CssCommentsService, () => {
   let service: CssCommentsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [CssCommentsService],
-    }).compile();
-
-    service = await module.resolve(CssCommentsService);
+    const { instance } = await buildTestingModule(CssCommentsService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CssCommentsService);
+
+    expect(instance).toBeInstanceOf(CssCommentsService);
   });
 
   it("reads a comment's line, prose, and source", () => {

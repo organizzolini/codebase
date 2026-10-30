@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { YamlCommentsService } from "./yaml-comments.service";
 
@@ -7,15 +8,14 @@ describe(YamlCommentsService, () => {
   let service: YamlCommentsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [YamlCommentsService],
-    }).compile();
-
-    service = await module.resolve(YamlCommentsService);
+    const { instance } = await buildTestingModule(YamlCommentsService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(YamlCommentsService);
+
+    expect(instance).toBeInstanceOf(YamlCommentsService);
   });
 
   it("does not read a `#` inside a quoted scalar as a comment", () => {

@@ -1,15 +1,14 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { HclService } from "./hcl.service";
 
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type * as NodeFileSystem from "node:fs";
 
@@ -17,33 +16,29 @@ import type * as NodeFileSystem from "node:fs";
 // a rejected promise or a thrown literal is not an Error, and the analyzer
 // still has to report which file it gave up on.
 vi.mock("node:fs", async (importOriginal) => {
+  const { mockFileSystem } = await import("@codebase/testing/mocks");
   const actual = await importOriginal<typeof NodeFileSystem>();
 
-  return {
-    ...actual,
-    readFileSync: (filePath: string, encoding: "utf8") => {
-      if (filePath.endsWith("throws-a-string.tf")) {
-        // eslint-disable-next-line @typescript-eslint/only-throw-error
-        throw "not an Error";
-      }
+  return mockFileSystem(actual, (filePath) => {
+    if (filePath.endsWith("throws-a-string.tf")) {
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
+      throw "not an Error";
+    }
 
-      return actual.readFileSync(filePath, encoding);
-    },
-  };
+    return actual.readFileSync(filePath, "utf8");
+  });
 });
 
 describe(HclService, () => {
   let service: HclService;
   let loggerService: DeepMocked<LoggerService>;
-  const temporaryDirectories: string[] = [];
 
   /** Writes sources into a fresh directory and returns it with their names. */
   function writeSources(files: Record<string, string>): {
     hclFiles: string[];
     workingDirectory: string;
   } {
-    const workingDirectory = mkdtempSync(path.join(tmpdir(), "codometer-hcl-"));
-    temporaryDirectories.push(workingDirectory);
+    const workingDirectory = createTemporaryDirectory("codometer-hcl-");
 
     for (const [fileName, content] of Object.entries(files)) {
       writeFileSync(path.join(workingDirectory, fileName), content, "utf8");
@@ -53,27 +48,20 @@ describe(HclService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        HclService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, logger } = await buildTestingModule(HclService);
 
-    service = await module.resolve(HclService);
-    loggerService = await module.resolve(LoggerService);
+    service = instance;
+    loggerService = logger;
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-
-    for (const temporaryDirectory of temporaryDirectories.splice(0)) {
-      rmSync(temporaryDirectory, { force: true, recursive: true });
-    }
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(HclService);
+
+    expect(instance).toBeInstanceOf(HclService);
   });
 
   it("counts blocks by the kind each one opens", () => {

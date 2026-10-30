@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
+
+import { expectModuleProvides } from "@codebase/testing/nestjs";
 
 import { CommentsModule } from "./comments.module";
 import { CommentsService } from "./comments.service";
@@ -12,22 +13,17 @@ import { TypescriptCommentsService } from "./typescript-comments.service";
 import { YamlCommentsService } from "./yaml-comments.service";
 
 describe(CommentsModule, () => {
-  it("provides every comment reader and the service that measures them", async () => {
-    const module = await Test.createTestingModule({
-      imports: [CommentsModule],
-    }).compile();
-
-    await expect(module.resolve(CommentsService)).resolves.toBeDefined();
-    await expect(module.resolve(CssCommentsService)).resolves.toBeDefined();
-    await expect(module.resolve(HashCommentsService)).resolves.toBeDefined();
-    await expect(module.resolve(HclCommentsService)).resolves.toBeDefined();
-    await expect(
-      module.resolve(LanguageCommentsService),
-    ).resolves.toBeDefined();
-    await expect(module.resolve(SqlCommentsService)).resolves.toBeDefined();
-    await expect(
-      module.resolve(TypescriptCommentsService),
-    ).resolves.toBeDefined();
-    await expect(module.resolve(YamlCommentsService)).resolves.toBeDefined();
+  it("provides every comment reader and the service that measures them", () => {
+    expectModuleProvides(
+      CommentsModule,
+      CommentsService,
+      CssCommentsService,
+      HashCommentsService,
+      HclCommentsService,
+      LanguageCommentsService,
+      SqlCommentsService,
+      TypescriptCommentsService,
+      YamlCommentsService,
+    );
   });
 });

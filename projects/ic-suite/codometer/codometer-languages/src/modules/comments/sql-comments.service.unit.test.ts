@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SqlCommentsService } from "./sql-comments.service";
 
@@ -7,15 +8,14 @@ describe(SqlCommentsService, () => {
   let service: SqlCommentsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [SqlCommentsService],
-    }).compile();
-
-    service = await module.resolve(SqlCommentsService);
+    const { instance } = await buildTestingModule(SqlCommentsService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SqlCommentsService);
+
+    expect(instance).toBeInstanceOf(SqlCommentsService);
   });
 
   it("reads a line comment's line, prose, and source", () => {

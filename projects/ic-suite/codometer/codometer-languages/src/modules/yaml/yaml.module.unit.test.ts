@@ -1,21 +1,16 @@
-import { MODULE_METADATA } from "@nestjs/common/constants";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
+
+import {
+  expectModuleExports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { YamlModule } from "./yaml.module";
 import { YamlService } from "./yaml.service";
 
 describe(YamlModule, () => {
   it("exports and provides YamlService", () => {
-    const exportsMetadata = Reflect.getMetadata(
-      MODULE_METADATA.EXPORTS,
-      YamlModule,
-    ) as undefined | unknown[];
-    const providersMetadata = Reflect.getMetadata(
-      MODULE_METADATA.PROVIDERS,
-      YamlModule,
-    ) as undefined | unknown[];
-
-    expect(exportsMetadata).toContain(YamlService);
-    expect(providersMetadata).toContain(YamlService);
+    expectModuleExports(YamlModule, YamlService);
+    expectModuleProvides(YamlModule, YamlService);
   });
 });

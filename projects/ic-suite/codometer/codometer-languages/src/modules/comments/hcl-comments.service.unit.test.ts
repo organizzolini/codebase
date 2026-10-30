@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { HclCommentsService } from "./hcl-comments.service";
 
@@ -7,15 +8,14 @@ describe(HclCommentsService, () => {
   let service: HclCommentsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [HclCommentsService],
-    }).compile();
-
-    service = await module.resolve(HclCommentsService);
+    const { instance } = await buildTestingModule(HclCommentsService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(HclCommentsService);
+
+    expect(instance).toBeInstanceOf(HclCommentsService);
   });
 
   it("reads a `#` comment's line, prose, and source", () => {
