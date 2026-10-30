@@ -7,6 +7,7 @@ import type { IssueMetadataModule } from "./modules/issue-metadata/issue-metadat
 import type { LockfileModule } from "./modules/lockfile/lockfile.module";
 import type { PublishablePackagesModule } from "./modules/publishable-packages/publishable-packages.module";
 import type { PullRequestBodyModule } from "./modules/pull-request-body/pull-request-body.module";
+import type { PullRequestIssueModule } from "./modules/pull-request-issue/pull-request-issue.module";
 import type { PullRequestMetadataModule } from "./modules/pull-request-metadata/pull-request-metadata.module";
 import type { PullRequestReleaseSignificanceModule } from "./modules/pull-request-release-significance/pull-request-release-significance.module";
 import type { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
@@ -31,6 +32,7 @@ const catalogManifestsModuleMock = createMock<CatalogManifestsModule>();
 const issueMetadataModuleMock = createMock<IssueMetadataModule>();
 const lockfileModuleMock = createMock<LockfileModule>();
 const pullRequestBodyModuleMock = createMock<PullRequestBodyModule>();
+const pullRequestIssueModuleMock = createMock<PullRequestIssueModule>();
 const pullRequestMetadataModuleMock = createMock<PullRequestMetadataModule>();
 const pullRequestReleaseSignificanceModuleMock =
   createMock<PullRequestReleaseSignificanceModule>();
@@ -100,6 +102,12 @@ vi.mock("./modules/lockfile/lockfile.module", () => ({
 vi.mock("./modules/pull-request-body/pull-request-body.module", () => ({
   PullRequestBodyModule: function PullRequestBodyModule() {
     return pullRequestBodyModuleMock;
+  },
+}));
+
+vi.mock("./modules/pull-request-issue/pull-request-issue.module", () => ({
+  PullRequestIssueModule: function PullRequestIssueModule() {
+    return pullRequestIssueModuleMock;
   },
 }));
 

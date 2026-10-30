@@ -16,6 +16,16 @@ This skill teaches how to create and manage pull requests for this codebase. Fol
 - Understanding PR workflows and requirements
 - Linking PRs to issues
 
+## Every PR Closes an Issue
+
+Every pull request must close or reference a GitHub issue through GitHub's own link: a closing keyword in the body or the Development sidebar. Use the [link-issue skill](../link-issue/SKILL.md) to find the planned ticket, file one before starting ad-hoc work, or backfill one for work already done. Put `Closes #N` as the first bullet of 🔗 Related, then confirm GitHub recorded it:
+
+```bash
+gh pr view <number> --json closingIssuesReferences --jq '.closingIssuesReferences[].number'
+```
+
+The issue holds the why, the acceptance criteria, and the discussion; the pull request holds what changed and how it was verified. Do not copy the issue's requirements into the description.
+
 ## PR Title Format
 
 PR titles **must** follow the same format as commit messages:
@@ -38,19 +48,19 @@ suffixes do not push the queued commit subject over the header limit.
 
 <!-- types-start -->
 
-| Type | Description |
-| ---- | ----------- |
-| `feat` | A new feature or capability that adds value for users |
-| `fix` | A bug fix that addresses a specific issue or problem |
-| `docs` | Documentation, AGENTS.md, SKILL.md, README, and planning files |
-| `test` | Adding or correcting unit, integration, or end-to-end tests |
-| `refactor` | Code restructuring that neither fixes a bug nor adds a feature |
-| `style` | Formatting, whitespace, or code structure changes with no semantic effect |
-| `perf` | A code change that improves performance (caching, query optimization, etc.) |
-| `chore` | Housekeeping that doesn't modify src or test files (gitignore, editor config, etc.) |
-| `ci` | GitHub Actions workflows, composite actions, and CI/CD scripts |
-| `build` | Build system, Vite/Docker/Helm config, or external dependency integration |
-| `revert` | Reverts a previous commit |
+| Type       | Description                                                                         |
+| ---------- | ----------------------------------------------------------------------------------- |
+| `feat`     | A new feature or capability that adds value for users                               |
+| `fix`      | A bug fix that addresses a specific issue or problem                                |
+| `docs`     | Documentation, AGENTS.md, SKILL.md, README, and planning files                      |
+| `test`     | Adding or correcting unit, integration, or end-to-end tests                         |
+| `refactor` | Code restructuring that neither fixes a bug nor adds a feature                      |
+| `style`    | Formatting, whitespace, or code structure changes with no semantic effect           |
+| `perf`     | A code change that improves performance (caching, query optimization, etc.)         |
+| `chore`    | Housekeeping that doesn't modify src or test files (gitignore, editor config, etc.) |
+| `ci`       | GitHub Actions workflows, composite actions, and CI/CD scripts                      |
+| `build`    | Build system, Vite/Docker/Helm config, or external dependency integration           |
+| `revert`   | Reverts a previous commit                                                           |
 
 <!-- types-end -->
 
@@ -58,39 +68,39 @@ suffixes do not push the queued commit subject over the header limit.
 
 <!-- scopes-start -->
 
-| Scope | Description |
-| ----- | ----------- |
-| `ic-suite` | In-house code measurement and validation toolchains (Callidescope, Codependix, Codometer, Conformetry) and their shared conventions |
-| `affirmancy` | Python Jupyter notebook application for LangGraph affirmation generation |
-| `caelundas` | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris) |
-| `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
-| `conformetry` | Code generator templates and validation tests for generated instances |
-| `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
-| `interface` | Shared GraphQL package: Relay connection helpers, entity-to-object types, client code generation, and test helpers |
-| `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
-| `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
-| `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
-| `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources |
-| `installation` | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software) |
-| `integration` | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database |
-| `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
-| `lexico` | TanStack Start SSR Latin dictionary web app |
-| `presentation` | Shared React/shadcn component library |
-| `lexico-entities` | Shared TypeORM entities and GraphQL types |
-| `lexico-cli` | Data ingestion scripts for Lexico |
-| `meanderaw` | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads |
-| `sempientor` | Lexical gap discovery CLI that surveys English for morphological, phonotactic, and semantic gaps and coins words to fill them |
-| `callidescope` | Call stack tracing and linting CLI, the configuration package it reads, and the packages that build and render its call graph |
-| `codependix` | Dependency graph export CLI, the configuration package it reads, and the package that judges the graphs against declared rules |
-| `codometer` | Code statistics measurement CLI, the configuration package it reads, and the packages that diff and render its pull request change report |
-| `no-release` | Escape hatch: suppress semantic-release for any commit type |
-| `publication` | Publication CLI: the CI release steps and the publishable-packages gate |
-| `release` | Version bumps and release commits generated by semantic-release |
-| `reporting` | Pull request change report generation and the packages that diff and render it |
-| `scripts` | Shell and TypeScript scripts in scripts/ (sync, setup, utilities) |
-| `testing` | Vitest configuration, shared test utilities, and coverage setup |
-| `synchronization` | Synchronization application and commands for automating workflows |
-| `validation` | Validation CLI and the checks it runs, such as pull request metadata |
+| Scope             | Description                                                                                                                               |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `ic-suite`        | In-house code measurement and validation toolchains (Callidescope, Codependix, Codometer, Conformetry) and their shared conventions       |
+| `affirmancy`      | Python Jupyter notebook application for LangGraph affirmation generation                                                                  |
+| `caelundas`       | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris)                                                                     |
+| `configuration`   | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.)                                                                     |
+| `conformetry`     | Code generator templates and validation tests for generated instances                                                                     |
+| `persistence`     | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations                                         |
+| `interface`       | Shared GraphQL package: Relay connection helpers, entity-to-object types, client code generation, and test helpers                        |
+| `dependencies`    | Dependency version changes (upgrades, additions, removals via pnpm)                                                                       |
+| `deployments`     | GitHub Actions workflows and CI/CD pipeline configuration                                                                                 |
+| `documentation`   | Markdown docs, skills, planning files, and AGENTS.md files                                                                                |
+| `infrastructure`  | Helm charts, Terraform configs, and Kubernetes resources                                                                                  |
+| `installation`    | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software)         |
+| `integration`     | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database              |
+| `JimmyPaolini`    | Static GitHub profile README project (markdown and assets)                                                                                |
+| `lexico`          | TanStack Start SSR Latin dictionary web app                                                                                               |
+| `presentation`    | Shared React/shadcn component library                                                                                                     |
+| `lexico-entities` | Shared TypeORM entities and GraphQL types                                                                                                 |
+| `lexico-cli`      | Data ingestion scripts for Lexico                                                                                                         |
+| `meanderaw`       | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads                                             |
+| `sempientor`      | Lexical gap discovery CLI that surveys English for morphological, phonotactic, and semantic gaps and coins words to fill them             |
+| `callidescope`    | Call stack tracing and linting CLI, the configuration package it reads, and the packages that build and render its call graph             |
+| `codependix`      | Dependency graph export CLI, the configuration package it reads, and the package that judges the graphs against declared rules            |
+| `codometer`       | Code statistics measurement CLI, the configuration package it reads, and the packages that diff and render its pull request change report |
+| `no-release`      | Escape hatch: suppress semantic-release for any commit type                                                                               |
+| `publication`     | Publication CLI: the CI release steps and the publishable-packages gate                                                                   |
+| `release`         | Version bumps and release commits generated by semantic-release                                                                           |
+| `reporting`       | Pull request change report generation and the packages that diff and render it                                                            |
+| `scripts`         | Shell and TypeScript scripts in scripts/ (sync, setup, utilities)                                                                         |
+| `testing`         | Vitest configuration, shared test utilities, and coverage setup                                                                           |
+| `synchronization` | Synchronization application and commands for automating workflows                                                                         |
+| `validation`      | Validation CLI and the checks it runs, such as pull request metadata                                                                      |
 
 <!-- scopes-end -->
 
@@ -152,15 +162,15 @@ Write clear, comprehensive descriptions that help reviewers understand changes. 
 | 🌰 Summary | One plain paragraph saying what the PR does and why, readable at a glance                    | 48         |
 | 📝 Details | A bulleted list of changes using one marker throughout, nested bullets included              | 512        |
 | 🧪 Testing | An ordered list of verification steps; a step may hold a code block                          | —          |
-| 🔗 Related | A `-` list of issues, pull requests, specs, or docs first (never empty); anything may follow | —          |
+| 🔗 Related | A `-` list opening with `Closes #N`, then pull requests, specs, or docs; anything may follow | —          |
 
-> ⚠️ **Strict Validation:** CI validates that all 4 headings (`## 🌰 Summary`, `## 📝 Details`, `## 🧪 Testing`, `## 🔗 Related`) are present and non-empty, that each holds only the shape in the table above and stays within its word limit, and that no HTML template comments (`<!-- ... -->`) remain. Words are counted as `wc -w` would. In Summary, Details, and Testing, a paragraph, heading, or code block sitting beside the list fails the section: indent a code block under its Testing step instead. Details may use `-`, `*`, or `+`, but only one of them, as markdownlint's MD004 requires. Related only has to open with its `-` list; an attribution line or any other closing content may follow. If there is no tracking issue, link to the relevant spec, files, or documentation in `🔗 Related`.
+> ⚠️ **Strict Validation:** CI validates that all 4 headings (`## 🌰 Summary`, `## 📝 Details`, `## 🧪 Testing`, `## 🔗 Related`) are present and non-empty, that each holds only the shape in the table above and stays within its word limit, and that no HTML template comments (`<!-- ... -->`) remain. Words are counted as `wc -w` would. In Summary, Details, and Testing, a paragraph, heading, or code block sitting beside the list fails the section: indent a code block under its Testing step instead. Details may use `-`, `*`, or `+`, but only one of them, as markdownlint's MD004 requires. Related only has to open with its `-` list; an attribution line or any other closing content may follow. The separate `validation pull-request-issue` check reads GitHub's issue link. A pull request with no tracking issue gets one from the [link-issue skill](../link-issue/SKILL.md), never a documentation link in its place.
 
 ## Step-by-Step Workflow
 
-### 1. Create Feature Branch
+### 1. Ensure an Issue, Then Create Feature Branch
 
-Branch name must follow conventions. See [checkout-branch skill](../checkout-branch/SKILL.md).
+Settle the issue first with the [link-issue skill](../link-issue/SKILL.md): use the planned ticket, or file one before starting. Then create the branch; its name must follow conventions. See [checkout-branch skill](../checkout-branch/SKILL.md).
 
 ```bash
 # Create branch from main
@@ -244,6 +254,8 @@ the assignee and labels with `issue_write` (`method: update`, same issue number)
 - `assignees`: the session's user, from `get_me`
 - `labels`: `type:<type>`, `scope:<scope>` (one per scope), and `source:agent`
 
+Either way, check `closingIssuesReferences` once the pull request exists (see [Every PR Closes an Issue](#every-pr-closes-an-issue)).
+
 ### 5. Address Review Feedback
 
 ```bash
@@ -269,6 +281,7 @@ All PRs must pass these checks before merging:
 | Branch Name          | `validate-branch-name`                                 | Branch follows naming conventions                                                                                                |
 | PR Title             | `commitlint`                                           | Title follows commit message format                                                                                              |
 | PR Body              | `validation pull-request-body`                         | Required sections: 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related, each in its shape and within its word limit                   |
+| Issue Link           | `validation pull-request-issue`                        | Pull request closes or references an issue (`closingIssuesReferences` is not empty)                                              |
 | Release Significance | `validation pull-request-release-significance`         | Title's type is at least as significant as the most significant commit, and the title shares at least one scope with each commit |
 | Lint                 | `nx affected --target=lint-code`                       | Every static check: ESLint, oxlint, oxfmt, typecheck, spell-check, knip, and more                                                |
 | Test                 | `nx affected --target=vitest --configuration=coverage` | Unit and integration tests against the coverage gates                                                                            |
@@ -300,16 +313,18 @@ gh pr ready
 
 ## Linking Issues and Documentation
 
-Reference issues and relevant documentation in the PR description:
+Reference the issue and relevant documentation in the PR description:
 
 ### Issues
 
-| Keyword           | Effect                      |
-| ----------------- | --------------------------- |
-| `Closes #123`     | Closes issue when PR merges |
-| `Fixes #123`      | Closes issue when PR merges |
-| `Resolves #123`   | Closes issue when PR merges |
-| `Related to #123` | Links without closing       |
+| Keyword           | Effect                                                        |
+| ----------------- | ------------------------------------------------------------- |
+| `Closes #123`     | Links the issue and closes it when the PR merges              |
+| `Fixes #123`      | Links the issue and closes it when the PR merges              |
+| `Resolves #123`   | Links the issue and closes it when the PR merges              |
+| `Related to #123` | Mentions only; GitHub records no link, so it does not suffice |
+
+Use a closing keyword for the one issue this PR finishes. See the [link-issue skill](../link-issue/SKILL.md) for choosing it and for stacked pull requests.
 
 ### Documentation
 
@@ -388,7 +403,8 @@ Before creating the PR, verify:
 - [ ] Title follows `<type>(<scope>): <gitmoji> <subject>` format (max 128 chars, target ≤ 115)
 - [ ] Subject uses imperative mood and lowercase after gitmoji
 - [ ] Description includes Summary (one paragraph, ≤ 48 words), Details (bullets only, one marker, ≤ 512 words), and Testing (an ordered list only) sections
-- [ ] Related issues and documentation are linked in the Related section, opening with a `-` list
+- [ ] An issue exists for the work ([link-issue](../link-issue/SKILL.md)), and Related opens with a `-` list whose first bullet is `Closes #N`
+- [ ] `gh pr view <number> --json closingIssuesReferences` lists that issue once the PR is open
 - [ ] The title's type and scopes are at least as release-significant as every commit on the branch — see [Release Significance](../commit-code/SKILL.md#release-significance)
 - [ ] Local CI checks pass: `nx affected --target=lint-code --configuration=check --base=main && nx affected --target=vitest --configuration=coverage --base=main`
 
@@ -470,6 +486,7 @@ Adds comprehensive CONTRIBUTING.md with setup instructions and guidelines.
 
 ## 🔗 Related
 
+- Closes #345
 - [CONTRIBUTING.md](.github/CONTRIBUTING.md), the guide this adds.
 ```
 
@@ -495,6 +512,7 @@ Updates TanStack Router to latest version with bug fixes.
 
 ## 🔗 Related
 
+- Closes #567
 - [TanStack Router releases](https://github.com/TanStack/router/releases)
 ```
 
@@ -507,6 +525,7 @@ Updates TanStack Router to latest version with bug fixes.
 | PR title rejected | Format incorrect                       | Follow commit message conventions                                                                          |
 | PR body rejected  | Missing required sections              | Add ## 🌰 Summary, ## 📝 Details, ## 🧪 Testing, ## 🔗 Related sections                                    |
 | PR body rejected  | Section in the wrong shape or too long | Match the [Description Guidelines](#description-guidelines) table; indent code blocks under a Testing step |
+| No linked issue   | No closing keyword, or no issue yet    | File or find one with [link-issue](../link-issue/SKILL.md); make `Closes #N` the first Related bullet      |
 | Tests failing     | Missing dependencies                   | Run `pnpm install`                                                                                         |
 | Typecheck errors  | Type issues                            | Fix TypeScript errors                                                                                      |
 
@@ -535,6 +554,7 @@ gh pr merge --squash --delete-branch
 ## Resources
 
 - [PR template](../../../.github/PULL_REQUEST_TEMPLATE.md) — Default PR description template
+- [link-issue skill](../link-issue/SKILL.md) — Find, file, or backfill the issue every PR closes
 - [commit-code skill](../commit-code/SKILL.md) — Commit and PR title format
 - [checkout-branch skill](../checkout-branch/SKILL.md) — Branch naming conventions
 - [triage-integration skill](../triage-integration/SKILL.md) — Diagnosing failing CI checks on a PR

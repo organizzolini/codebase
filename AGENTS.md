@@ -58,7 +58,9 @@ inherit a larger session model.
 4. **Handoff**: Run [handoff](.agents/skills/handoff/SKILL.md) only on manual
    request for multi-session work. Post the `# Handoff` comment on the spec issue
    (see [Handoffs](#handoffs)) and **stop**.
-5. **Build**: Set tickets to `status:in-progress` before testing (see
+5. **Build**: Every pull request closes an issue, so use
+   [link-issue](.agents/skills/link-issue/SKILL.md) first: use the planned ticket,
+   or file one before starting ad-hoc work. Set tickets to `status:in-progress` before testing (see
    [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)).
    - **Multi-ticket spec**: Dispatch each parent issue to a fresh subagent
      ([subagent-driven-development](.agents/skills/subagent-driven-development/SKILL.md))
@@ -265,7 +267,8 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
 - **Never run `git submodule update --init` for `projects/JimmyPaolini`.** That submodule is deliberately uninitialized everywhere. If `pnpm install` rewrites its `pnpm-lock.yaml` entry, **revert the lockfile** rather than reconciling it.
 - **Release Significance:** The PR title determines the semantic-release bump. Ensure the PR title's type is at least as significant as the highest commit on the branch.
 - **Pull Request Compliance:**
-  - Every PR description must carry all 4 mandatory sections (`## 🌰 Summary`, `## 📝 Details`, `## 🧪 Testing`, `## 🔗 Related`) with real content and no unfilled placeholder comments. Never omit `🔗 Related` (link to specs, files, or documentation if no issue exists).
+  - Every PR must close or reference a GitHub issue through GitHub's own link (`Closes #N` as the first `🔗 Related` bullet, or the Development sidebar). Work done without one gets an issue backfilled with [link-issue](.agents/skills/link-issue/SKILL.md) before the PR opens.
+  - Every PR description must carry all 4 mandatory sections (`## 🌰 Summary`, `## 📝 Details`, `## 🧪 Testing`, `## 🔗 Related`) with real content and no unfilled placeholder comments. Never omit `🔗 Related`: its first bullet is the `Closes #N` issue link, followed by any specs, files, or documentation.
   - Each section has one shape: Summary is only one plain paragraph of at most 48 words, Details is only a bulleted list with one marker and at most 512 words, Testing is only an ordered list (indent code blocks under a step), and Related opens with a `-` list, after which anything may follow.
   - Pre-flight validate PR descriptions locally using `validation/src/validation.main.ts pull-request-body <path-to-body>` before creating the PR.
   - Set all required metadata at creation: `--assignee @me`, `--label type:<type>`, `--label scope:<scope>`, and `--label source:agent`.

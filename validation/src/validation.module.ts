@@ -10,6 +10,7 @@ import { IssueMetadataModule } from "./modules/issue-metadata/issue-metadata.mod
 import { LockfileModule } from "./modules/lockfile/lockfile.module";
 import { PublishablePackagesModule } from "./modules/publishable-packages/publishable-packages.module";
 import { PullRequestBodyModule } from "./modules/pull-request-body/pull-request-body.module";
+import { PullRequestIssueModule } from "./modules/pull-request-issue/pull-request-issue.module";
 import { PullRequestMetadataModule } from "./modules/pull-request-metadata/pull-request-metadata.module";
 import { PullRequestReleaseSignificanceModule } from "./modules/pull-request-release-significance/pull-request-release-significance.module";
 import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
@@ -35,6 +36,7 @@ import { environmentSchema } from "./validation.constants";
     LockfileModule,
     LoggerModule,
     PullRequestBodyModule,
+    PullRequestIssueModule,
     PullRequestMetadataModule,
     PullRequestReleaseSignificanceModule,
     PublishablePackagesModule,

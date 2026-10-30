@@ -2,7 +2,8 @@ name: 🦹 Continuous Compliance
 
 # External and repository compliance checks:
 # 1. 🧑‍💼 Issue: Issue metadata, Issue Types (roots are Feature or Bug,
-#    sub-issues are Task), hierarchy, and release significance.
+#    sub-issues are Task), hierarchy, and release significance; and that every
+#    pull request closes or references one of them.
 # 2. 👮 Enforce: Repository governance and workflow security, on pull requests,
 #    the merge queue, and main.
 # 3. 🧑‍⚖️ Comply: Pull request metadata and commit message conventions, on
@@ -56,11 +57,16 @@ jobs:
     name: 🧑‍💼 Issue
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # Pull requests are judged here only for the issue they close. The metadata
+    # sweeps below key off the event name, not the issue payload, so a pull
+    # request event never triggers them.
     if: >-
       github.actor != 'dependabot[bot]' &&
       (github.event_name == 'issues' ||
       github.event_name == 'schedule' ||
-      github.event_name == 'workflow_dispatch')
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'merge_group' ||
+      (github.event_name == 'pull_request' && !github.event.pull_request.draft))
 
     steps:
       - name: 📥 Checkout Repository
@@ -117,7 +123,7 @@ jobs:
       # assign any that are currently unassigned. The REST issues endpoint
       # also returns pull requests, which are excluded before assignment.
       - name: 🧑‍💼 Ensure Open Issues Have Assignees
-        if: github.event.issue == null
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -144,12 +150,25 @@ jobs:
       # Sweeps and audits all open issues and hierarchy relationships on
       # scheduled runs and manual dispatches.
       - name: 🧾 Audit All Open Issues Metadata
-        if: github.event.issue == null
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
             validation/src/validation.main.ts issue-metadata --all
+
+      # Every pull request closes or references an issue through GitHub's own
+      # link. A merge group carries only its `pr-<number>` ref, which the
+      # command reads the number from.
+      - name: 🔗 Validate Pull Request Issue
+        if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PULL_REQUEST: >-
+            ${{ github.event.pull_request.number || github.event.merge_group.head_ref }}
+        run: |
+          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+            validation/src/validation.main.ts pull-request-issue "$PULL_REQUEST"
 
   enforce:
     name: 👮 Enforce

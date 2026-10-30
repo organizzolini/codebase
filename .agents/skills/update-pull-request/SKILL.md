@@ -90,25 +90,35 @@ From the diff, determine:
 6. **Testing strategy** — An ordered list of `nx` commands and manual verification steps
 7. **Affected projects** — Which Nx projects are touched (for testing commands)
 
-### Step 4 — Discover Related Issues and Documentation
+### Step 4 — Ensure the Linked Issue
 
-Search for issues and documentation that may be related to this PR:
+Every pull request closes an issue. Check what GitHub already records:
+
+```bash
+gh pr view <PR_NUMBER> --json closingIssuesReferences --jq '.closingIssuesReferences[].number'
+```
+
+- **A number comes back**: keep that link, and keep `Closes #N` as the first Related bullet so a rewrite does not drop it.
+- **Nothing comes back**: use the [link-issue skill](../link-issue/SKILL.md) to find the planned ticket, or backfill an issue from the diff when none exists. Then add `Closes #N` to Related.
+
+Also search for other related material:
 
 - Parse the branch name for issue numbers (e.g., `feat/lexico-fix-123` → `#123`)
 - Scan commit messages for issue references
-- Search for open issues matching keywords: `gh issue list --search "<keywords>"`
 - Look for relevant documentation links: AGENTS.md, SKILL.md, planning files, or external library docs referenced in the changes
 
-Use appropriate linking keywords:
+Only a closing keyword creates a link GitHub records:
 
-| Keyword           | Effect                      |
-| ----------------- | --------------------------- |
-| `Closes #N`       | Closes issue when PR merges |
-| `Fixes #N`        | Closes issue when PR merges |
-| `Resolves #N`     | Closes issue when PR merges |
-| `Related to #N`   | Links without closing       |
+| Keyword         | Effect                                           |
+| --------------- | ------------------------------------------------ |
+| `Closes #N`     | Links the issue and closes it when the PR merges |
+| `Fixes #N`      | Links the issue and closes it when the PR merges |
+| `Resolves #N`   | Links the issue and closes it when the PR merges |
+| `Related to #N` | Mentions only; it does not satisfy the rule      |
 
-If no related issues are found, link the relevant spec, files, or documentation instead — the Related section is never empty.
+Documentation links go after the closing keyword; they never replace it.
+
+When rewriting, do not copy the issue's requirements into the description. The issue keeps the why and the acceptance criteria; Summary links to it through Related, and Details records what changed, including any departure from the issue.
 
 ### Step 5 — Generate Updated Title
 
@@ -152,7 +162,7 @@ Fill each section based on **only facts derived from the diff**:
 - **Summary**: One plain paragraph, at most 48 words, synthesizing the overall purpose from the actual changes — no lists, headings, or code blocks
 - **Details**: Bullets only, one marker throughout, at most 512 words in all — one bullet per meaningful change, present tense, specific file/component names; nested bullets are fine, a closing paragraph is not
 - **Testing**: An ordered list only — `nx run <project>:<target>` commands for affected projects, plus manual steps; indent a code block under its step rather than leaving it beside the list
-- **Related**: Opens with a `-` list of discovered issue links and relevant documentation links, never empty; anything, such as an attribution line, may follow
+- **Related**: Opens with a `-` list whose first bullet is `Closes #N`, followed by relevant documentation links; anything, such as an attribution line, may follow
 
 These shapes and limits are enforced by `validation pull-request-body` — see the [create-pull-request skill](../create-pull-request/SKILL.md#description-guidelines).
 
@@ -168,13 +178,14 @@ gh pr edit <PR_NUMBER> \
 
 ### Step 8 — Verify
 
-After updating, confirm the PR was updated successfully:
+After updating, confirm the PR was updated successfully and still closes its issue:
 
 ```bash
 gh pr view <PR_NUMBER>
+gh pr view <PR_NUMBER> --json closingIssuesReferences --jq '.closingIssuesReferences[].number'
 ```
 
-Report the updated title and a brief confirmation to the user.
+If the second command prints nothing, the link was lost in the rewrite: restore `Closes #N`. Report the updated title and a brief confirmation to the user.
 
 ## Quality Checklist
 
@@ -185,7 +196,9 @@ Before submitting the update, verify:
 - [ ] Summary is one paragraph of at most 48 words and accurately reflects the diff (no speculative content)
 - [ ] Details is only a bulleted list with one marker, at most 512 words, covering all meaningful changes from the diff
 - [ ] Testing is only an ordered list and includes relevant `nx` commands for affected projects
-- [ ] Related opens with a `-` list; issues use correct linking keywords and documentation links are included where relevant
+- [ ] Related opens with a `-` list whose first bullet is `Closes #N`, and `closingIssuesReferences` still lists that issue
+- [ ] Documentation links follow the closing keyword where relevant
+- [ ] The description records what changed and does not restate the issue's requirements
 - [ ] Description uses present tense ("Add", "Update", "Remove")
 
 ## Error Recovery
@@ -205,4 +218,5 @@ gh pr edit <PR_NUMBER> \
 ## Resources
 
 - [create-pull-request skill](../create-pull-request/SKILL.md) — Full PR conventions and creation workflow
+- [link-issue skill](../link-issue/SKILL.md) — Find, file, or backfill the issue every PR closes
 - [commit-code skill](../commit-code/SKILL.md) — Types, scopes, and gitmoji reference
