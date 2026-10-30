@@ -11,9 +11,10 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
+          // @codebase/testing: imported only by tests and the test setup.
           // vitest: referenced via tsconfig "types" array; it's a devDependency and
           // the @nx/dependency-checks rule misidentifies it as a production dependency.
-          ignoredDependencies: ["vitest"],
+          ignoredDependencies: ["@codebase/testing", "vitest"],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
         },
       ],
