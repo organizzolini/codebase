@@ -27,10 +27,48 @@
     "pack": {},
     "prettier": {},
     "spell-check": {},
-    "test-code": {},
+    "test-code": {
+      "inputs": [
+        "{workspaceRoot}/configuration/conformetry.config.ts",
+        "default"
+      ]
+    },
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vitest": {
+      "inputs": [
+        "^production",
+        "default",
+        {
+          "dependencies": true,
+          "fileset": "{projectRoot}/tsconfig.spec.json"
+        },
+        {
+          "dependencies": true,
+          "fileset": "{projectRoot}/tsconfig.storybook.json"
+        },
+        {
+          "fields": ["compilerOptions"],
+          "json": "{workspaceRoot}/configuration/tsconfig.json"
+        },
+        {
+          "fields": ["compilerOptions"],
+          "json": "{workspaceRoot}/configuration/tsconfig.workspace.json"
+        },
+        {
+          "externalDependencies": ["vitest"]
+        },
+        {
+          "env": "CI"
+        },
+        {
+          "dependentTasksOutputFiles": "**/*.js",
+          "transitive": true
+        },
+        "{workspaceRoot}/configuration/conformetry.config.ts"
+      ]
+    },
     "yaml-lint": {}
   }
 }

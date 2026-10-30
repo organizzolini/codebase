@@ -77,7 +77,7 @@ missing one before that.
 A template's own inputs are passed as flags alongside these:
 
 ```bash
-conformetry generate --config configuration/conformetry.config.ts --template react-component --name search-bar
+conformetry generate --config configuration/conformetry.config.ts --template react-component-folder --name search-bar
 ```
 
 **Omitting `--template` at a terminal offers a picker** — an autocomplete over

@@ -382,8 +382,13 @@ describe(ConfigurationService, () => {
       "configuration/conformetry.config.ts",
     );
 
-    expect(configuration.map((generator) => generator.name)).toContain(
-      "react-component",
+    expect(configuration.map((generator) => generator.name)).toStrictEqual(
+      expect.arrayContaining([
+        "react-component-file",
+        "react-component-folder",
+        "react-hook-file",
+        "react-hook-folder",
+      ]),
     );
   });
 

@@ -1,6 +1,6 @@
 import { createRouter, type Router } from "@tanstack/react-router";
 
-import { createBrowserEventsDatabase } from "./lib/events-database/events-database.browser";
+import { createBrowserEventsDatabase } from "./components/events-calendar/events-database-browser.utilities";
 import { routeTree } from "./routeTree.gen";
 
 /**

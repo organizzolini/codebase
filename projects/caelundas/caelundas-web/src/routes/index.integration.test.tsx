@@ -20,7 +20,7 @@ import {
 } from "../../testing/events-database";
 import { renderRoute } from "../../testing/render-route";
 import { setViewportWidth } from "../../testing/viewport";
-import { UnsupportedBrowserError } from "../lib/events-database/events-database.errors";
+import { UnsupportedBrowserError } from "../components/events-calendar/events-database.constants";
 
 import { Route } from "./index";
 
@@ -51,7 +51,10 @@ describe("index", () => {
     expect(
       within(within(toolbar).getByRole("group", { name: "View" })).getByRole(
         "button",
-        { name: "Month", pressed: true },
+        {
+          name: "Month",
+          pressed: true,
+        },
       ),
     ).toBeDefined();
   });
