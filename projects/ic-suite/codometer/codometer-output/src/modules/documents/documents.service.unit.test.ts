@@ -1,16 +1,16 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { captureOutput, createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DocumentsService } from "./documents.service";
 
 import type { DocumentMarkers } from "./documents.types";
+import type { LoggerService } from "@codebase/observability";
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 const MARKERS: DocumentMarkers = {
   end: "<!-- report:end -->",
@@ -24,36 +24,20 @@ const OTHER_MARKERS: DocumentMarkers = {
 
 describe(DocumentsService, () => {
   let service: DocumentsService;
-  let logger: LoggerService;
-  const temporaryDirectories: string[] = [];
-
-  /** A throwaway directory that cleans itself up after the suite. */
-  function makeDirectory(): string {
-    const directory = mkdtempSync(path.join(tmpdir(), "codometer-output-"));
-    temporaryDirectories.push(directory);
-    return directory;
-  }
+  let logger: DeepMocked<LoggerService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DocumentsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, logger: loggerMock } =
+      await buildTestingModule(DocumentsService);
 
-    service = await module.resolve(DocumentsService);
-    logger = await module.resolve(LoggerService);
+    service = instance;
+    logger = loggerMock;
   });
 
-  afterAll(() => {
-    for (const directory of temporaryDirectories) {
-      rmSync(directory, { force: true, recursive: true });
-    }
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DocumentsService);
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(DocumentsService);
   });
 
   describe("wrap", () => {
@@ -109,7 +93,7 @@ describe(DocumentsService, () => {
 
   describe("emit", () => {
     it("prints the wrapped section when given no destination", async () => {
-      const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+      const output = captureOutput();
 
       await service.emit({
         body: "## Heading\n\ncontent",
@@ -117,8 +101,7 @@ describe(DocumentsService, () => {
         label: "stand-in",
         markers: MARKERS,
       });
-      const printed = String(write.mock.calls[0]?.[0]);
-      write.mockRestore();
+      const printed = output.stdout();
 
       expect(printed).toContain("<!-- report:start -->");
       expect(printed).toContain("## Heading");
@@ -130,7 +113,10 @@ describe(DocumentsService, () => {
     });
 
     it("writes the section on its own to an output file", async () => {
-      const output = path.join(makeDirectory(), "section.md");
+      const output = path.join(
+        createTemporaryDirectory("codometer-output-"),
+        "section.md",
+      );
 
       await service.emit({
         body: "## Heading\n\ncontent",
@@ -147,7 +133,10 @@ describe(DocumentsService, () => {
     });
 
     it("splices into a document, keeping the prose around it", async () => {
-      const markdown = path.join(makeDirectory(), "document.md");
+      const markdown = path.join(
+        createTemporaryDirectory("codometer-output-"),
+        "document.md",
+      );
       writeFileSync(markdown, "## Summary\n\nProse.\n", "utf8");
 
       await service.emit({
@@ -171,7 +160,10 @@ describe(DocumentsService, () => {
     });
 
     it("replaces rather than appends on a second run", async () => {
-      const markdown = path.join(makeDirectory(), "document.md");
+      const markdown = path.join(
+        createTemporaryDirectory("codometer-output-"),
+        "document.md",
+      );
       writeFileSync(markdown, "## Summary\n", "utf8");
 
       await service.emit({
@@ -194,7 +186,10 @@ describe(DocumentsService, () => {
     });
 
     it("creates a document that does not exist yet", async () => {
-      const markdown = path.join(makeDirectory(), "document.md");
+      const markdown = path.join(
+        createTemporaryDirectory("codometer-output-"),
+        "document.md",
+      );
 
       await service.emit({
         body: "## Heading\n\ncontent",
@@ -207,7 +202,7 @@ describe(DocumentsService, () => {
     });
 
     it("writes both destinations when both are given", async () => {
-      const directory = makeDirectory();
+      const directory = createTemporaryDirectory("codometer-output-");
       const markdown = path.join(directory, "document.md");
       const output = path.join(directory, "section.md");
 

@@ -1,14 +1,14 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { UnreadableTargetFileError } from "./size.constants";
 import { SizeService } from "./size.service";
 
+import type { LoggerService } from "@codebase/observability";
 import type { CodometerCompression } from "@codometer/configuration";
 import type { DeepMocked } from "@golevelup/ts-vitest";
+import type * as NodeFileSystem from "node:fs";
 
 // Reading is mocked down to the one call the measurement makes, so the bytes
 // under test come from the compression rather than from a temporary directory.
@@ -17,10 +17,12 @@ const { readFileSyncMock } = vi.hoisted(() => ({
   readFileSyncMock: vi.fn<(filePath: string) => Buffer>(),
 }));
 
-vi.mock("node:fs", async (importOriginal) => ({
-  ...(await importOriginal<Record<string, unknown>>()),
-  readFileSync: readFileSyncMock,
-}));
+vi.mock("node:fs", async (importOriginal) => {
+  const { mockFileSystem } = await import("@codebase/testing/mocks");
+  const actual = await importOriginal<typeof NodeFileSystem>();
+
+  return mockFileSystem(actual, { buffer: readFileSyncMock });
+});
 
 /** The two files every measurement here is made of, keyed by absolute path. */
 const FILE_CONTENTS: Readonly<Record<string, string>> = {
@@ -49,15 +51,10 @@ describe(SizeService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SizeService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, logger } = await buildTestingModule(SizeService);
 
-    service = await module.resolve(SizeService);
-    loggerService = await module.resolve(LoggerService);
+    service = instance;
+    loggerService = logger;
   });
 
   beforeEach(() => {
@@ -73,8 +70,10 @@ describe(SizeService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SizeService);
+
+    expect(instance).toBeInstanceOf(SizeService);
   });
 
   it.each(["brotli", "gzip", "none"] as const)(

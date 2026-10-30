@@ -11,7 +11,6 @@
     "pino": "catalog:",
     "pino-pretty": "catalog:",
     "postcss": "catalog:",
-    "reflect-metadata": "catalog:",
     "remark": "catalog:",
     "remark-frontmatter": "catalog:",
     "remark-gfm": "catalog:",
@@ -22,8 +21,8 @@
   "description": "Language parsers and comment analyzers across TypeScript, JSON, Markdown, Python, and SQL for Codometer",
   "devDependencies": {
     "@codebase/observability": "workspace:*",
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
-    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/mdast": "catalog:",

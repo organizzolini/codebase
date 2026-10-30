@@ -32,6 +32,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./graphql": "./src/graphql.ts",
+    "./mocks": "./src/mocks.ts",
     "./nestjs": "./src/nestjs.ts",
     "./postgres": "./src/postgres.ts",
     "./react": "./src/react.ts",
@@ -52,6 +53,10 @@
       ".": {
         "default": "./dist/src/index.js",
         "types": "./dist/src/index.d.ts"
+      },
+      "./mocks": {
+        "default": "./dist/src/mocks.js",
+        "types": "./dist/src/mocks.d.ts"
       },
       "./graphql": {
         "default": "./dist/src/graphql.js",

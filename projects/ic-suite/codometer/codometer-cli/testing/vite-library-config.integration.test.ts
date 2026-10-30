@@ -1,10 +1,11 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { build } from "vite";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import viteConfiguration from "../vite.config.ts";
 
@@ -104,11 +105,11 @@ function readLibraryOptions(configuration: UserConfig): LibraryOptions {
 }
 
 describe("the published library build", () => {
-  let fixtureDirectory = "";
+  const getFixtureDirectory = useTemporaryDirectory("vite-library-config");
   let bundle: FixtureBundle;
 
   beforeAll(async () => {
-    fixtureDirectory = mkdtempSync(path.join(tmpdir(), "vite-library-config-"));
+    const fixtureDirectory = getFixtureDirectory();
     for (const [relativePath, contents] of Object.entries(FIXTURE_FILES)) {
       const absolutePath = path.join(fixtureDirectory, relativePath);
       mkdirSync(path.dirname(absolutePath), { recursive: true });
@@ -116,14 +117,6 @@ describe("the published library build", () => {
     }
     bundle = await buildFixture(fixtureDirectory);
   }, 120_000);
-
-  afterAll(() => {
-    // Left empty when the directory was never created, so a failure there
-    // surfaces as itself rather than as a cleanup error.
-    if (fixtureDirectory) {
-      rmSync(fixtureDirectory, { force: true, recursive: true });
-    }
-  });
 
   it("keeps the name of an exported class", () => {
     expect(bundle.ExportedService.name).toBe("ExportedService");

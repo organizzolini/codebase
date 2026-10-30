@@ -11,6 +11,7 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
+          // @codebase/testing: imported only by tests and the test setup.
           // @codebase/observability: bundled directly into the emitted library bundle by Vite,
           // so it is a build-time devDependency rather than a runtime dependency.
           // @golevelup/ts-vitest: a devDependency used only in test files, which
@@ -22,6 +23,7 @@ export default [
           // the @nx/dependency-checks rule misidentifies it as a production dependency.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "@golevelup/ts-vitest",
             "ignore",
             "pino",

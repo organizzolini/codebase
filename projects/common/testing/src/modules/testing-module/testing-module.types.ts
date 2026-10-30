@@ -35,4 +35,7 @@ export interface TestingModuleOptions {
 
   /** Further providers, such as real dependencies or hand-made values. */
   readonly providers?: readonly Provider[];
+
+  /** Whether to provide the target directly instead of resolving it from imports. */
+  readonly provideTarget?: boolean;
 }

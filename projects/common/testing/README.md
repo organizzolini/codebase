@@ -64,12 +64,18 @@ describe("the command line", () => {
 Every helper that changes global state undoes it once the test finishes, so a
 test cannot leak a directory, a stream spy, an exit code, or a variable into
 the next. `useTemporaryDirectory` is the suite-level variant: one directory
-from the suite's first test to its last.
+from the suite's first test to its last. Either helper accepts a parent
+directory when a child process needs the temporary directory to remain under a
+workspace root.
 
 `loadFixture(import.meta.url, "fixtures/page.html")` reads a fixture relative
 to the test file. `mockChildProcess` and `mockPartially` build `vi.mock`
 factories, `stubFetch` queues responses for `fetch`, and `answerPrompts`
 queues answers for the `promptsMock` stand-in of the `prompts` package.
+Inside a `vi.mock` factory for a Node built-in, import the mock helpers from
+`@codebase/testing/mocks` so the root package's filesystem helpers do not
+participate in the factory. `mockFileSystem` replaces selected UTF-8 string or
+buffer reads while preserving other `node:fs` members and overloads.
 
 ### Nest
 

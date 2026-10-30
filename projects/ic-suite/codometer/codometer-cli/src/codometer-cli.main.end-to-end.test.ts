@@ -1,17 +1,12 @@
 import { spawnSync } from "node:child_process";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { createFixtureTree, removeFixtureTree } from "../testing/fixture-tree";
+import { useTemporaryDirectory } from "@codebase/testing";
+
+import { createFixtureTree } from "../testing/fixture-tree";
 
 import { environmentSchema } from "./codometer-cli.constants";
 
@@ -31,8 +26,6 @@ const COMMAND_PATH = path.resolve(import.meta.dirname, "codometer-cli.main.ts");
  * outside the workspace entirely never reaches either. `tmp/` is gitignored
  * everywhere in this repository, so a fixture rooted here is never committed.
  */
-const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
-
 describe("main end-to-end suite", () => {
   describe("environment schema e2e", () => {
     it("allows an empty schema by default", () => {
@@ -45,13 +38,17 @@ describe("main end-to-end suite", () => {
   // thing under test is which file descriptor each byte came out of — and a
   // logger writing through a transport worker cannot be observed any other way.
   describe("the streams the command writes to", () => {
+    const getWorkingDirectory = useTemporaryDirectory(
+      "codometer-streams",
+      path.resolve(import.meta.dirname, ".."),
+    );
     let standardOutput: string;
     let standardError: string;
     let workingDirectory: string;
 
     beforeAll(() => {
-      mkdirSync(FIXTURE_ROOT, { recursive: true });
-      workingDirectory = createFixtureTree(FIXTURE_ROOT);
+      workingDirectory = getWorkingDirectory();
+      createFixtureTree(workingDirectory);
 
       writeFileSync(
         path.join(workingDirectory, "codometer.config.json"),
@@ -102,10 +99,6 @@ describe("main end-to-end suite", () => {
       standardError = result.stderr;
       standardOutput = result.stdout;
     }, 150_000);
-
-    afterAll(() => {
-      removeFixtureTree(workingDirectory);
-    });
 
     // `codometer --format json > report.json` has to produce a file something
     // can parse. A diagnostic sharing that stream is not a note beside the
@@ -169,13 +162,14 @@ describe("main end-to-end suite", () => {
   // a real process because the exit code is half of what is under test, and
   // nothing beneath the command line reports one.
   describe("the configuration command given a configuration that cannot be read", () => {
+    const getWorkingDirectory = useTemporaryDirectory("codometer-listing");
     let standardOutput: string;
     let standardError: string;
     let exitCode: null | number;
     let workingDirectory: string;
 
     beforeAll(() => {
-      workingDirectory = mkdtempSync(path.join(tmpdir(), "codometer-listing-"));
+      workingDirectory = getWorkingDirectory();
 
       mkdirSync(path.join(workingDirectory, "packages", "logging"), {
         recursive: true,
@@ -215,10 +209,6 @@ describe("main end-to-end suite", () => {
       standardOutput = result.stdout;
     }, 150_000);
 
-    afterAll(() => {
-      rmSync(workingDirectory, { force: true, recursive: true });
-    });
-
     it("still lists every limit the tree declares", () => {
       expect.hasAssertions();
 
@@ -245,11 +235,12 @@ describe("main end-to-end suite", () => {
   });
 
   describe("the changes command", () => {
+    const getWorkingDirectory = useTemporaryDirectory("codometer-changes");
     let workingDirectory: string;
     let outputPath: string;
 
     beforeAll(() => {
-      workingDirectory = mkdtempSync(path.join(tmpdir(), "codometer-changes-"));
+      workingDirectory = getWorkingDirectory();
       outputPath = path.join(workingDirectory, "section.md");
 
       mkdirSync(path.join(workingDirectory, "packages", "logging"), {
@@ -323,10 +314,6 @@ describe("main end-to-end suite", () => {
         },
       );
     }, 150_000);
-
-    afterAll(() => {
-      rmSync(workingDirectory, { force: true, recursive: true });
-    });
 
     it("writes a report naming the project whose metric changed", () => {
       expect.hasAssertions();

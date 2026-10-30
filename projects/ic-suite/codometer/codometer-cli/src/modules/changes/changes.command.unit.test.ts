@@ -1,5 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { ConfigurationModule as CodometerConfigurationModule } from "@codometer/configuration";
@@ -8,23 +7,19 @@ import {
   DocumentsService,
   RenderService,
 } from "@codometer/output";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { captureOutput, createTemporaryDirectory } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { ChangesCommand } from "./changes.command";
 
+import type { LoggerService } from "@codebase/observability";
 import type { MetricCollection, MetricRow } from "@codometer/output";
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 const row: MetricRow = {
   baseValue: undefined,
@@ -42,65 +37,55 @@ const row: MetricRow = {
 
 describe(ChangesCommand, () => {
   let command: ChangesCommand;
-  let logger: LoggerService;
+  let logger: DeepMocked<LoggerService>;
   const collect = vi.fn<() => MetricCollection>(() => ({
     failures: [],
     rows: [row],
   }));
-  const temporaryDirectories: string[] = [];
-
-  /** A throwaway directory that cleans itself up after the suite. */
-  function makeDirectory(): string {
-    const directory = mkdtempSync(path.join(tmpdir(), "codometer-changes-"));
-    temporaryDirectories.push(directory);
-    return directory;
-  }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CodometerConfigurationModule],
-      providers: [
-        ChangesCommand,
-        DocumentsService,
-        RenderService,
-        { provide: ChangesService, useValue: { collect } },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, logger: loggerMock } = await buildTestingModule(
+      ChangesCommand,
+      {
+        imports: [CodometerConfigurationModule],
+        providers: [
+          DocumentsService,
+          RenderService,
+          { provide: ChangesService, useValue: { collect } },
+        ],
+      },
+    );
 
-    command = await module.resolve(ChangesCommand);
-    logger = await module.resolve(LoggerService);
+    command = instance;
+    logger = loggerMock;
   });
 
   afterEach(() => {
     collect.mockClear();
   });
 
-  afterAll(() => {
-    for (const directory of temporaryDirectories) {
-      rmSync(directory, { force: true, recursive: true });
-    }
-  });
-
-  it("is defined", () => {
-    expect(command).toBeDefined();
-  });
-
-  it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ChangesCommand, {
       imports: [CodometerConfigurationModule],
       providers: [
-        ChangesCommand,
         DocumentsService,
         RenderService,
         { provide: ChangesService, useValue: { collect } },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
-    const logger = await module.resolve(LoggerService);
+    expect(instance).toBeInstanceOf(ChangesCommand);
+  });
 
-    expect(logger.setContext).toHaveBeenCalledWith("ChangesCommand");
+  it("sets logger context", async () => {
+    await expectLoggerContext(ChangesCommand, {
+      imports: [CodometerConfigurationModule],
+      providers: [
+        DocumentsService,
+        RenderService,
+        { provide: ChangesService, useValue: { collect } },
+      ],
+    });
   });
 
   it.each([
@@ -123,17 +108,18 @@ describe(ChangesCommand, () => {
   });
 
   it("prints the section when given no destination", async () => {
-    const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    const output = captureOutput();
 
     await command.run([], {});
-    const printed = String(write.mock.calls[0]?.[0]);
-    write.mockRestore();
 
-    expect(printed).toContain("## ⏲️ Codometer");
+    expect(output.stdout()).toContain("## ⏲️ Codometer");
   });
 
   it("ignores a valueless baseline URL rather than rendering it as text", async () => {
-    const output = path.join(makeDirectory(), "section.md");
+    const output = path.join(
+      createTemporaryDirectory("codometer-changes-"),
+      "section.md",
+    );
 
     // Commander reports `--baseline-url` with no value as `true`, without
     // calling the option's parser.
@@ -155,7 +141,10 @@ describe(ChangesCommand, () => {
   });
 
   it("writes the section alone to an output file", async () => {
-    const output = path.join(makeDirectory(), "section.md");
+    const output = path.join(
+      createTemporaryDirectory("codometer-changes-"),
+      "section.md",
+    );
 
     await command.run([], { output });
 
@@ -166,7 +155,10 @@ describe(ChangesCommand, () => {
   });
 
   it("splices the section into a markdown file, keeping its prose", async () => {
-    const markdown = path.join(makeDirectory(), "description.md");
+    const markdown = path.join(
+      createTemporaryDirectory("codometer-changes-"),
+      "description.md",
+    );
     writeFileSync(markdown, "## 🌰 Summary\n\nProse.\n", "utf8");
 
     await command.run([], { markdown });
@@ -180,7 +172,10 @@ describe(ChangesCommand, () => {
   });
 
   it("replaces the section rather than appending on a second run", async () => {
-    const markdown = path.join(makeDirectory(), "description.md");
+    const markdown = path.join(
+      createTemporaryDirectory("codometer-changes-"),
+      "description.md",
+    );
     writeFileSync(markdown, "## 🌰 Summary\n", "utf8");
 
     await command.run([], { markdown });
@@ -194,7 +189,10 @@ describe(ChangesCommand, () => {
   it("passes the baseline through to collection", async () => {
     await command.run([], {
       baseline: ".baseline",
-      output: path.join(makeDirectory(), "section.md"),
+      output: path.join(
+        createTemporaryDirectory("codometer-changes-"),
+        "section.md",
+      ),
     });
 
     expect(collect).toHaveBeenCalledWith({
@@ -204,7 +202,10 @@ describe(ChangesCommand, () => {
   });
 
   it("threads the baseline url into the rendered comparison", async () => {
-    const output = path.join(makeDirectory(), "section.md");
+    const output = path.join(
+      createTemporaryDirectory("codometer-changes-"),
+      "section.md",
+    );
 
     await command.run([], {
       baselineUrl: "https://example.test/actions/runs/1",

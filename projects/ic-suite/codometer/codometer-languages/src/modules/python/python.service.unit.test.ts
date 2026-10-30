@@ -1,46 +1,40 @@
+import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EMPTY_PYTHON_RESULT } from "./python.constants";
 import { PythonService } from "./python.service";
 
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
+import type * as NodeChildProcess from "node:child_process";
 
-const { execSyncMock } = vi.hoisted(() => ({
-  execSyncMock: vi.fn(),
-}));
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } = await import("@codebase/testing/mocks");
 
-vi.mock("node:child_process", () => ({
-  execSync: execSyncMock,
-}));
+  return mockChildProcess(await importOriginal<typeof NodeChildProcess>());
+});
+
+const execSyncMock = vi.mocked(execSync);
 
 describe(PythonService, () => {
   let service: PythonService;
   let loggerService: DeepMocked<LoggerService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PythonService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, logger } = await buildTestingModule(PythonService);
 
-    service = await module.resolve(PythonService);
-    loggerService = await module.resolve(LoggerService);
+    service = instance;
+    loggerService = logger;
   });
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PythonService);
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(PythonService);
   });
 
   it("skips the interpreter when there are no python files", () => {

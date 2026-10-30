@@ -1,9 +1,10 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import { createRequire } from "node:module";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import type {
   CodometerReport,
@@ -64,10 +65,10 @@ const commandLineEntry = path.resolve(
 );
 
 /**
- * Where a throwaway copy of the corpus is made, inside this package.
+ * The package root, where corpus copies need to live for spawned processes to
+ * resolve this workspace's dependencies.
  *
- * Not `os.tmpdir()`, and the reason is the loader rather than tidiness. A
- * measurement spawns the command line with its `cwd` set to the copy, and
+ * A measurement spawns the command line with its `cwd` set to the copy, and
  * `@swc-node/register`'s ESM hook registers itself against that working
  * directory — so a copy outside the workspace leaves the hook resolving
  * `@swc-node/register` from a directory with no `node_modules` above it, and
@@ -76,13 +77,9 @@ const commandLineEntry = path.resolve(
  * `node_modules`, and failed on every Linux runner, whose `os.tmpdir()` is
  * `/tmp`.
  *
- * `tmp/` is already ignored by `.gitignore` and by
- * `configuration/codebase-structure.json`, so nothing has to be taught about
- * it — the same arrangement `main.end-to-end.test.ts` uses for the same
- * reason.
+ * The shared temporary-directory helper creates and removes each copy under
+ * this root.
  */
-const scratchDirectory = path.join(packageDirectory, "tmp");
-
 /** Everything this package ships to be run: one directory per example. */
 export const examplesDirectory = path.join(packageDirectory, "examples");
 
@@ -227,7 +224,7 @@ export const runPipeline = (
   upstream: CodometerRun,
   readReport: string,
 ): CodometerRun => {
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "codometer-pipe-"));
+  const directory = createTemporaryDirectory("codometer-pipe");
   const downstream = path.join(directory, "downstream.mjs");
 
   // Says outright that the upstream stage produced nothing, rather than
@@ -256,27 +253,23 @@ export const runPipeline = (
     ].join("\n"),
   );
 
-  try {
-    // Only what the run wrote to standard output crosses over. Its standard
-    // error is held back deliberately: that separation is the property under
-    // test, and merging the streams here would test nothing.
-    const result = spawnSync(process.execPath, [downstream], {
-      cwd: workspaceDirectory,
-      encoding: "utf8",
-      env: { ...process.env, NODE_OPTIONS: "" },
-      input: upstream.standardOutput,
-      maxBuffer: 32 * 1024 * 1024,
-    });
+  // Only what the run wrote to standard output crosses over. Its standard
+  // error is held back deliberately: that separation is the property under
+  // test, and merging the streams here would test nothing.
+  const result = spawnSync(process.execPath, [downstream], {
+    cwd: workspaceDirectory,
+    encoding: "utf8",
+    env: { ...process.env, NODE_OPTIONS: "" },
+    input: upstream.standardOutput,
+    maxBuffer: 32 * 1024 * 1024,
+  });
 
-    return {
-      exitCode:
-        upstream.exitCode === 0 ? (result.status ?? 1) : upstream.exitCode,
-      standardError: upstream.standardError + result.stderr,
-      standardOutput: result.stdout,
-    };
-  } finally {
-    fs.rmSync(directory, { force: true, recursive: true });
-  }
+  return {
+    exitCode:
+      upstream.exitCode === 0 ? (result.status ?? 1) : upstream.exitCode,
+    standardError: upstream.standardError + result.stderr,
+    standardOutput: result.stdout,
+  };
 };
 
 /**
@@ -440,15 +433,16 @@ export const readCounters = (
 export const withCorpusCopy = <Result>(
   body: (directory: string) => Result,
 ): Result => {
-  fs.mkdirSync(scratchDirectory, { recursive: true });
+  const directory = createTemporaryDirectory(
+    "codometer-corpus",
+    packageDirectory,
+  );
+  createCorpusCopy(directory);
 
-  const directory = fs.mkdtempSync(path.join(scratchDirectory, "corpus-"));
-
-  try {
-    fs.cpSync(corpusDirectory, directory, { recursive: true });
-
-    return body(directory);
-  } finally {
-    fs.rmSync(directory, { force: true, recursive: true });
-  }
+  return body(directory);
 };
+
+/** Copies the committed corpus into a suite-scoped temporary directory. */
+export function createCorpusCopy(directory: string): void {
+  fs.cpSync(corpusDirectory, directory, { recursive: true });
+}

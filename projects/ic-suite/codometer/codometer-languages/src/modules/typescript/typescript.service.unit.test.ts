@@ -1,9 +1,10 @@
 // `param` is the name of the JSDoc tag these tests count, not an abbreviation.
 // cspell:ignore param
 
-import { Test } from "@nestjs/testing";
 import tsCompiler from "typescript";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CommentsService } from "../comments/comments.service";
 
@@ -16,33 +17,38 @@ import type {
 } from "../comments/comments.types";
 import type { TypescriptSymbolCounter } from "./typescript.types";
 import type { CodometerSymbolKind } from "@codometer/core";
+import type * as NodeFileSystem from "node:fs";
 
 const { readFileSyncMock } = vi.hoisted(() => ({
   readFileSyncMock: vi.fn<(filePath: string, encoding: string) => string>(),
 }));
 
-vi.mock("node:fs", () => ({ readFileSync: readFileSyncMock }));
+vi.mock("node:fs", async (importOriginal) => {
+  const { mockFileSystem } = await import("@codebase/testing/mocks");
+  const actual = await importOriginal<typeof NodeFileSystem>();
+
+  return mockFileSystem(actual, (filePath, encoding) =>
+    readFileSyncMock(filePath, encoding),
+  );
+});
 
 describe(TypescriptService, () => {
   let service: TypescriptService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CommentsService,
-        DeclarationCommentsService,
-        TypescriptService,
-      ],
-    }).compile();
-    service = await module.resolve(TypescriptService);
+    const { instance } = await buildTestingModule(TypescriptService, {
+      providers: [CommentsService, DeclarationCommentsService],
+    });
+
+    service = instance;
   });
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TypescriptService, {
+      providers: [CommentsService, DeclarationCommentsService],
+    });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(TypescriptService);
   });
 
   it("counts classes, exported symbols, and methods", () => {

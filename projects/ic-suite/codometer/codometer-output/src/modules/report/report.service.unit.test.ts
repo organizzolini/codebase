@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ReportService } from "./report.service";
 
@@ -45,15 +46,15 @@ describe(ReportService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ReportService],
-    }).compile();
+    const { instance } = await buildTestingModule(ReportService);
 
-    service = await module.resolve(ReportService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ReportService);
+
+    expect(instance).toBeInstanceOf(ReportService);
   });
 
   // Spec #749 user story 16: a breach still names its file and line once it

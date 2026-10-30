@@ -1,16 +1,19 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import {
-  createFixtureTree,
-  removeFixtureTree,
-} from "../../../testing/fixture-tree";
-import { MainModule } from "../../codometer-cli.module";
+  captureExitCode,
+  captureOutput,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { createFixtureTree } from "../../../testing/fixture-tree";
 
 import { MeasureCommand } from "./measure.command";
+import { MeasureModule } from "./measure.module";
 
 import type { CodometerReport } from "@codometer/core";
 
@@ -27,6 +30,7 @@ const LONG_YAML_COMMENT = [
 ].join("\n");
 
 describe("measure command over a fixture directory", () => {
+  const getWorkingDirectory = useTemporaryDirectory("codometer-measure");
   let metrics: Map<string, number>;
   let firstReport: string;
   let secondReport: string;
@@ -36,32 +40,28 @@ describe("measure command over a fixture directory", () => {
   let originalWorkingDirectory: string;
 
   /** Runs the measure command with the process rooted at the fixture tree. */
-  async function run(options: Parameters<MeasureCommand["run"]>[1]): Promise<{
-    exitCode: number;
-  }> {
+  async function run(
+    options: Parameters<MeasureCommand["run"]>[1],
+  ): Promise<void> {
     process.chdir(workingDirectory);
     process.exitCode = 0;
 
-    const module = await Test.createTestingModule({
-      imports: [MainModule],
-    }).compile();
-    const command = module.get(MeasureCommand, { strict: false });
+    try {
+      const { instance: command } = await buildTestingModule(MeasureCommand, {
+        imports: [MeasureModule],
+        provideTarget: false,
+      });
 
-    await command.run([], { config: "codometer.config.json", ...options });
-
-    const exitCode = process.exitCode;
-
-    process.exitCode = 0;
-    process.chdir(originalWorkingDirectory);
-
-    return {
-      exitCode: typeof exitCode === "string" ? Number(exitCode) : exitCode,
-    };
+      await command.run([], { config: "codometer.config.json", ...options });
+    } finally {
+      process.chdir(originalWorkingDirectory);
+    }
   }
 
   beforeAll(async () => {
     originalWorkingDirectory = process.cwd();
-    workingDirectory = createFixtureTree();
+    workingDirectory = getWorkingDirectory();
+    createFixtureTree(workingDirectory);
 
     // The fixture is not a git repository and never becomes one. Discovery
     // that shelled out to `git ls-files` could not measure it at all.
@@ -128,10 +128,6 @@ describe("measure command over a fixture directory", () => {
       codebase?.metrics.map((metric) => [metric.path, metric.value]),
     );
   }, 60_000);
-
-  afterAll(() => {
-    removeFixtureTree(workingDirectory);
-  });
 
   it("measures the files discovery kept", () => {
     expect.hasAssertions();
@@ -237,15 +233,17 @@ describe("measure command over a fixture directory", () => {
   });
 
   it("fails the run when --check limits sees the breach", async () => {
-    const { exitCode } = await run({ check: "limits", outputJson: true });
+    const readExitCode = captureExitCode();
+    await run({ check: "limits", outputJson: true });
 
-    expect(exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
   });
 
   it("passes a bare run gating nothing, even with the same breach", async () => {
-    const { exitCode } = await run({ outputJson: true });
+    const readExitCode = captureExitCode();
+    await run({ outputJson: true });
 
-    expect(exitCode).toBe(0);
+    expect(readExitCode()).toBe(0);
   });
 
   // `--inputs` replaces every configured input, not a filter narrowing it —
@@ -277,9 +275,7 @@ describe("measure command over a fixture directory", () => {
   // this has to be checked against what actually reads the headline: the
   // markdown badge block printed to standard output.
   it("--inputs produces real, non-zero headline statistics for the console badges, not a name lookup that misses", async () => {
-    const standardOutput = vi
-      .spyOn(process.stdout, "write")
-      .mockReturnValue(true);
+    const standardOutput = captureOutput();
 
     await run({
       format: "markdown",
@@ -296,13 +292,7 @@ describe("measure command over a fixture directory", () => {
 
     expect(linesOfCode).toBeGreaterThan(0);
 
-    const printed = standardOutput.mock.calls
-      .map(([chunk]) => String(chunk))
-      .join("");
-
-    expect(printed).toContain(`Lines_of_Code-${linesOfCode}-`);
-
-    standardOutput.mockRestore();
+    expect(standardOutput.stdout()).toContain(`Lines_of_Code-${linesOfCode}-`);
   });
 
   // The refusal a run has no way to have produced a destination for, before
@@ -314,8 +304,9 @@ describe("measure command over a fixture directory", () => {
       JSON.stringify({ format: "json" }),
     );
 
-    const { exitCode } = await run({ outputMarkdown: true });
+    const readExitCode = captureExitCode();
+    await run({ outputMarkdown: true });
 
-    expect(exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
   });
 });

@@ -1,35 +1,58 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DiscoveryService } from "./discovery.service";
 import { IgnoreRulesService } from "./ignore-rules.service";
 
 import type { DiscoveryResult } from "./discovery.types";
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
-import type { Dirent } from "node:fs";
+import type { Dirent, PathLike } from "node:fs";
+import type * as NodeFileSystem from "node:fs";
 
 // The walk is mocked down to the three filesystem calls it makes, so this
 // stays a unit test. Real directories are walked in
 // `discovery.service.integration.test.ts`.
 const { existsSyncMock, readdirSyncMock, readFileSyncMock } = vi.hoisted(
   () => ({
-    existsSyncMock: vi.fn<(filePath: string) => boolean>(),
-    readdirSyncMock: vi.fn<(directory: string) => Dirent[]>(),
+    existsSyncMock: vi.fn<(filePath: PathLike) => boolean>(),
+    readdirSyncMock:
+      vi.fn<
+        (directory: string, options: { withFileTypes: true }) => Dirent[]
+      >(),
     readFileSyncMock: vi.fn<(filePath: string) => string>(),
   }),
 );
 
-vi.mock("node:fs", async (importOriginal) => ({
-  // Everything else the module graph reaches for stays real; only the three
-  // calls the walk makes are answered from the in-memory tree below.
-  ...(await importOriginal<Record<string, unknown>>()),
-  existsSync: existsSyncMock,
-  readdirSync: readdirSyncMock,
-  readFileSync: readFileSyncMock,
-}));
+vi.mock("node:fs", async (importOriginal) => {
+  const { mockFileSystem, mockPartially } =
+    await import("@codebase/testing/mocks");
+  const actual = await importOriginal<typeof NodeFileSystem>();
+  const readdirSync = new Proxy(actual.readdirSync, {
+    apply(
+      target,
+      thisArgument: typeof NodeFileSystem | undefined,
+      argumentsList: unknown[],
+    ) {
+      const [directory] = argumentsList;
+
+      if (typeof directory !== "string") {
+        return Reflect.apply(target, thisArgument, argumentsList) as ReturnType<
+          typeof target
+        >;
+      }
+
+      return readdirSyncMock(directory, { withFileTypes: true });
+    },
+  });
+
+  return mockPartially(mockFileSystem(actual, { utf8: readFileSyncMock }), {
+    existsSync: existsSyncMock,
+    readdirSync,
+  });
+});
 
 const DEFAULT_EXCLUDE = [
   "**/.nx/**",
@@ -100,15 +123,12 @@ describe(DiscoveryService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DiscoveryService,
-        IgnoreRulesService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    service = await module.resolve(DiscoveryService);
-    loggerService = await module.resolve(LoggerService);
+    const { instance, logger } = await buildTestingModule(DiscoveryService, {
+      providers: [IgnoreRulesService],
+    });
+
+    service = instance;
+    loggerService = logger;
   });
 
   beforeEach(() => {
@@ -121,15 +141,20 @@ describe(DiscoveryService, () => {
 
       return entries.map(([name, kind]) => createEntry(name, kind));
     });
-    existsSyncMock.mockImplementation((filePath) => filePath in IGNORE_FILES);
+    existsSyncMock.mockImplementation(
+      (filePath) => filePath.toString() in IGNORE_FILES,
+    );
     readFileSyncMock.mockImplementation(
       (filePath) => IGNORE_FILES[filePath] ?? "",
     );
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DiscoveryService, {
+      providers: [IgnoreRulesService],
+    });
+
+    expect(instance).toBeInstanceOf(DiscoveryService);
   });
 
   it("discovers every measurable file, sorted, and nothing else", () => {

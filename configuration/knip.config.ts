@@ -399,6 +399,10 @@ const config: KnipConfig = {
     "projects/ic-suite/codometer/codometer-cli": {
       entry: ["src/codometer-cli.main.ts", "src/codometer-cli.repl.ts"],
       ignore: ["src/**/*.test.ts", "testing/**"],
+      ignoreDependencies: [
+        // Required by the command-project template; shared test helpers hide its direct use from Knip.
+        "@nestjs/testing",
+      ],
       project: "src/**/*.ts",
     },
     "projects/ic-suite/codometer/codometer-configuration": {

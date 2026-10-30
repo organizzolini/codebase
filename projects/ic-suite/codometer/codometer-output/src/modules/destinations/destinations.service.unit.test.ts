@@ -1,9 +1,13 @@
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DestinationsService } from "./destinations.service";
 
@@ -63,15 +67,15 @@ describe(DestinationsService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [DestinationsService],
-    }).compile();
+    const { instance } = await buildTestingModule(DestinationsService);
 
-    service = await module.resolve(DestinationsService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DestinationsService);
+
+    expect(instance).toBeInstanceOf(DestinationsService);
   });
 
   describe("where the output goes", () => {
@@ -282,16 +286,18 @@ describe(DestinationsService, () => {
   describe("what the run is measuring", () => {
     // Real directories rather than a mocked filesystem: the whole question is
     // whether a marker is on disk beside the measured directory.
-    const root = mkdtempSync(path.join(tmpdir(), "codometer-scope-"));
+    const getRoot = useTemporaryDirectory("codometer-scope-");
 
     it("calls a directory carrying a repository marker a repository", () => {
+      const root = getRoot();
+
       mkdirSync(path.join(root, ".git"), { recursive: true });
 
       expect(service.selectScope(root)).toBe("repository");
     });
 
     it("calls a workspace file a repository marker too", () => {
-      const workspace = mkdtempSync(path.join(tmpdir(), "codometer-scope-"));
+      const workspace = createTemporaryDirectory("codometer-scope-");
 
       writeFileSync(
         path.join(workspace, "pnpm-workspace.yaml"),
@@ -303,7 +309,7 @@ describe(DestinationsService, () => {
     });
 
     it("calls a directory beneath one a project", () => {
-      const project = path.join(root, "packages", "logger");
+      const project = path.join(getRoot(), "packages", "logger");
 
       mkdirSync(project, { recursive: true });
 

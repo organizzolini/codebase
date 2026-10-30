@@ -1,13 +1,14 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
   ConfigurationFileNotFoundError,
   UnknownConfigurationFileTypeError,
 } from "@codometer/core";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationLoaderService } from "./configuration-loader.service";
 
@@ -16,7 +17,7 @@ async function writeConfigurationFile(
   fileName: string,
   contents: string,
 ): Promise<string> {
-  const directory = await mkdtemp(path.join(tmpdir(), "codometer-loader-"));
+  const directory = createTemporaryDirectory("codometer-loader");
   const configurationPath = path.join(directory, fileName);
 
   await writeFile(configurationPath, contents, "utf8");
@@ -28,15 +29,14 @@ describe(ConfigurationLoaderService, () => {
   let service: ConfigurationLoaderService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ConfigurationLoaderService],
-    }).compile();
-
-    service = await module.resolve(ConfigurationLoaderService);
+    const { instance } = await buildTestingModule(ConfigurationLoaderService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConfigurationLoaderService);
+
+    expect(instance).toBeInstanceOf(ConfigurationLoaderService);
   });
 
   it("loads a JSON configuration file", async () => {
@@ -106,8 +106,8 @@ describe(ConfigurationLoaderService, () => {
   });
 
   it("throws when no repository root holds the relative path either", async () => {
-    const searchDirectory = await mkdtemp(
-      path.join(tmpdir(), "codometer-loader-rootless-"),
+    const searchDirectory = createTemporaryDirectory(
+      "codometer-loader-rootless",
     );
     const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(searchDirectory);
 
@@ -126,8 +126,8 @@ describe(ConfigurationLoaderService, () => {
     // whenever it sets the cwd to the project rather than the workspace. The
     // fixture is a temporary repository rather than this one so that loading
     // it never evaluates this package's own sources a second time.
-    const repositoryRoot = await mkdtemp(
-      path.join(tmpdir(), "codometer-loader-repository-"),
+    const repositoryRoot = createTemporaryDirectory(
+      "codometer-loader-repository",
     );
     await writeFile(
       path.join(repositoryRoot, "pnpm-workspace.yaml"),

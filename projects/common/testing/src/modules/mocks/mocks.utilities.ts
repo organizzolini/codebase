@@ -4,6 +4,7 @@ import { promptsMock } from "./mocks.constants";
 
 import type { ChildProcessMock, PromptAnswers } from "./mocks.types";
 import type * as ChildProcess from "node:child_process";
+import type * as NodeFileSystem from "node:fs";
 
 /**
  * Queues the answers the next `prompts` calls resolve with, one object per
@@ -46,6 +47,54 @@ export function mockChildProcess(
     spawn: vi.fn(actual.spawn),
     spawnSync: vi.fn(actual.spawnSync),
   };
+}
+
+/**
+ * Replaces selected UTF-8 or buffer reads while keeping every other `node:fs`
+ * member and `readFileSync` overload real.
+ */
+export function mockFileSystem(
+  actual: typeof NodeFileSystem,
+  readFileSync:
+    | ((filePath: string, encoding: "utf8") => string)
+    | {
+        readonly buffer?: (filePath: string) => Buffer;
+        readonly utf8?: (filePath: string) => string;
+      },
+): typeof NodeFileSystem {
+  const reads =
+    typeof readFileSync === "function"
+      ? { utf8: (filePath: string) => readFileSync(filePath, "utf8") }
+      : readFileSync;
+  const mockedReadFileSync = new Proxy(actual.readFileSync, {
+    apply(
+      target: typeof actual.readFileSync,
+      thisArgument: unknown,
+      argumentsList: unknown[],
+    ) {
+      const [filePath, encoding] = argumentsList;
+
+      if (typeof filePath !== "string") {
+        return Reflect.apply(target, thisArgument, argumentsList) as ReturnType<
+          typeof target
+        >;
+      }
+
+      if (encoding === "utf8" && reads.utf8 !== undefined) {
+        return reads.utf8(filePath);
+      }
+
+      if (encoding === undefined && reads.buffer !== undefined) {
+        return reads.buffer(filePath);
+      }
+
+      return Reflect.apply(target, thisArgument, argumentsList) as ReturnType<
+        typeof target
+      >;
+    },
+  });
+
+  return mockPartially(actual, { readFileSync: mockedReadFileSync });
 }
 
 /**

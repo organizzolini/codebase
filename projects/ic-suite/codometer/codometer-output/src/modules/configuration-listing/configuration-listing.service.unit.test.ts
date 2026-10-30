@@ -3,9 +3,9 @@ import {
   DEFAULT_EXCLUDE_GLOBS,
 } from "@codometer/configuration";
 import { DiscoveryService } from "@codometer/measurement";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationListingService } from "./configuration-listing.service";
 
@@ -60,23 +60,14 @@ describe(ConfigurationListingService, () => {
   let discoveryService: DiscoveryService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConfigurationListingService,
-        {
-          provide: CodometerConfigurationService,
-          useValue: createMock<CodometerConfigurationService>(),
-        },
-        {
-          provide: DiscoveryService,
-          useValue: createMock<DiscoveryService>(),
-        },
-      ],
-    }).compile();
+    const { instance, mock } = await buildTestingModule(
+      ConfigurationListingService,
+      { mocks: [CodometerConfigurationService, DiscoveryService] },
+    );
 
-    service = await module.resolve(ConfigurationListingService);
-    codometerConfigurationService = module.get(CodometerConfigurationService);
-    discoveryService = module.get(DiscoveryService);
+    service = instance;
+    codometerConfigurationService = mock(CodometerConfigurationService);
+    discoveryService = mock(DiscoveryService);
   });
 
   beforeEach(() => {
@@ -84,8 +75,12 @@ describe(ConfigurationListingService, () => {
     vi.mocked(discoveryService.discoverFiles).mockReset();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConfigurationListingService, {
+      mocks: [CodometerConfigurationService, DiscoveryService],
+    });
+
+    expect(instance).toBeInstanceOf(ConfigurationListingService);
   });
 
   describe("findConfigurationFiles", () => {
