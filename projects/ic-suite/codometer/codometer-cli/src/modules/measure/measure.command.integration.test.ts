@@ -1,9 +1,13 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { captureExitCode, useTemporaryDirectory } from "@codebase/testing";
+import {
+  captureExitCode,
+  captureOutput,
+  useTemporaryDirectory,
+} from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createFixtureTree } from "../../../testing/fixture-tree";
@@ -271,9 +275,7 @@ describe("measure command over a fixture directory", () => {
   // this has to be checked against what actually reads the headline: the
   // markdown badge block printed to standard output.
   it("--inputs produces real, non-zero headline statistics for the console badges, not a name lookup that misses", async () => {
-    const standardOutput = vi
-      .spyOn(process.stdout, "write")
-      .mockReturnValue(true);
+    const standardOutput = captureOutput();
 
     await run({
       format: "markdown",
@@ -290,13 +292,7 @@ describe("measure command over a fixture directory", () => {
 
     expect(linesOfCode).toBeGreaterThan(0);
 
-    const printed = standardOutput.mock.calls
-      .map(([chunk]) => String(chunk))
-      .join("");
-
-    expect(printed).toContain(`Lines_of_Code-${linesOfCode}-`);
-
-    standardOutput.mockRestore();
+    expect(standardOutput.stdout()).toContain(`Lines_of_Code-${linesOfCode}-`);
   });
 
   // The refusal a run has no way to have produced a destination for, before
