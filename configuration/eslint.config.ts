@@ -312,10 +312,35 @@ const MODULE_BOUNDARIES = {
   // interface, and each of those may use the testing package's helpers in
   // its own tests and keep its old testing entry as a re-export of it.
   ignoredCircularDependencies: [
+    ["configuration", "testing"],
     ["interface", "testing"],
     ["observability", "testing"],
     ["persistence", "testing"],
   ],
+};
+
+const TEST_MODULE_BOUNDARIES = {
+  ...MODULE_BOUNDARIES,
+  checkDynamicDependenciesExceptions: [
+    "@codebase/testing",
+    "@codebase/testing/**",
+  ],
+  depConstraints: MODULE_BOUNDARIES.depConstraints.map((constraint) => {
+    if (
+      "onlyDependOnLibsWithTags" in constraint &&
+      constraint.sourceTag.startsWith("name:codometer-")
+    ) {
+      return {
+        ...constraint,
+        onlyDependOnLibsWithTags: [
+          ...constraint.onlyDependOnLibsWithTags,
+          "name:testing",
+        ],
+      };
+    }
+
+    return constraint;
+  }),
 };
 
 export default [
@@ -1001,10 +1026,11 @@ export default [
   },
 
   // 🧪 Test Code Boundaries
-  // A React project's tests and test harnesses may import the testing package,
-  // whose Nest and Postgres adapters reach packages tagged `framework:nestjs`;
-  // the rule follows dependencies transitively, so only these files drop the
-  // React-to-Nest constraint, and a React project's own code still may not.
+  // Tests may import shared helpers their project may not use at runtime.
+  // Codometer's dependency layers still apply to tests, with the testing
+  // package added to each layer's allowed targets; production files retain the
+  // original constraints. React tests also drop the React-to-Nest constraint
+  // because the shared Nest and Postgres adapters reach `framework:nestjs`.
   {
     files: [
       "**/*.test.ts",
@@ -1016,8 +1042,8 @@ export default [
       "@nx/enforce-module-boundaries": [
         "error",
         {
-          ...MODULE_BOUNDARIES,
-          depConstraints: MODULE_BOUNDARIES.depConstraints.filter(
+          ...TEST_MODULE_BOUNDARIES,
+          depConstraints: TEST_MODULE_BOUNDARIES.depConstraints.filter(
             (constraint) => constraint.sourceTag !== "framework:react",
           ),
         },
@@ -1320,6 +1346,18 @@ export default [
           it: "each",
           suite: "each",
           test: "each",
+        },
+      ],
+      "vitest/expect-expect": [
+        "error",
+        {
+          assertFunctionNames: [
+            "expect",
+            "assert",
+            "expectLoggerContext",
+            "expectModuleExports",
+            "expectModuleProvides",
+          ],
         },
       ],
       "vitest/consistent-test-filename": "error",

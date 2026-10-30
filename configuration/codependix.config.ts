@@ -96,8 +96,10 @@ const codependixConfiguration: CodependixConfiguration = {
    * rule waves through: a package tagged into the wrong layer, and a
    * cross-toolchain edge, which `layer:*` cannot express at all because there
    * is no `suite:*` tag. Rules are ANDed, so a name rule only ever tightens a
-   * generic one. No generic rule carries an exception for any one toolchain,
-   * which is what the convergence had to be able to say.
+   * generic one. The shared `testing` package is a target exception on each
+   * layer: this project graph cannot distinguish test imports from production
+   * imports, so ESLint's test-only boundary override keeps the actual imports
+   * constrained.
    *
    * Five rather than four because the contracts leaf reaches nothing, and the
    * schema compels that one to be a forbid: `boundarySelectorSchema` in
@@ -216,7 +218,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "A contracts leaf declares types and reaches nothing at all. This is the ic-suite spine stated once for every toolchain rather than four times: core, then configuration, then analysis, then output, then cli, each layer reaching its own layer and every layer beneath it. A forbid because the configuration schema refuses a selector naming no nodes, so the allow that would say the same thing cannot be written.",
         name: "core-is-a-leaf",
-        to: { id: ["!(configuration)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["layer:configuration"] },
@@ -227,6 +229,7 @@ const codependixConfiguration: CodependixConfiguration = {
         to: {
           tags: [
             "name:configuration",
+            "name:testing",
             "layer:configuration",
             "layer:core",
             "name:observability",
@@ -242,6 +245,7 @@ const codependixConfiguration: CodependixConfiguration = {
         to: {
           tags: [
             "name:configuration",
+            "name:testing",
             "layer:analysis",
             "layer:configuration",
             "layer:core",
@@ -258,6 +262,7 @@ const codependixConfiguration: CodependixConfiguration = {
         to: {
           tags: [
             "name:configuration",
+            "name:testing",
             "layer:analysis",
             "layer:configuration",
             "layer:core",
@@ -275,6 +280,7 @@ const codependixConfiguration: CodependixConfiguration = {
         to: {
           tags: [
             "name:configuration",
+            "name:testing",
             "layer:analysis",
             "layer:cli",
             "layer:configuration",
@@ -291,7 +297,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "The callidescope spine points one way: core is the contracts leaf, configuration resolves the file and the flags over it, the graph builder analyzes, the output renderer reads both, the command-line host composes them, and the Nx plugin sits on top so `@nx/devkit` never reaches a package that traces.",
         name: "callidescope-core-is-a-leaf",
-        to: { id: ["!(configuration)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["name:callidescope-configuration"] },
@@ -483,9 +489,9 @@ const codependixConfiguration: CodependixConfiguration = {
         from: { tags: ["name:codometer-core"] },
         kind: "forbid",
         message:
-          "The codometer chain is the ic-suite five-layer spine: `core <- configuration <- measurement <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, measurement counts, output owns every render target including report diffing, and the command-line host composes all of them.",
+          "The codometer chain is the ic-suite five-layer spine: `core <- configuration <- measurement <- output <- cli`. Core is the contracts leaf; `testing` is the one test-only package exception, enforced by ESLint because the project graph includes test imports.",
         name: "codometer-core-is-a-leaf",
-        to: { id: ["!(configuration)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["name:codometer-configuration"] },
@@ -494,7 +500,7 @@ const codependixConfiguration: CodependixConfiguration = {
           "The codometer chain is the ic-suite five-layer spine: `core <- configuration <- measurement <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, measurement counts, output owns every render target including report diffing, and the command-line host composes all of them.",
         name: "codometer-configuration-layer",
         to: {
-          tags: ["name:configuration", "name:codometer-core"],
+          tags: ["name:configuration", "name:codometer-core", "name:testing"],
         },
       },
       {
@@ -508,6 +514,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:configuration",
             "name:codometer-configuration",
             "name:codometer-core",
+            "name:testing",
             "name:observability",
           ],
         },
@@ -524,6 +531,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codometer-configuration",
             "name:codometer-core",
             "name:codometer-languages",
+            "name:testing",
             "name:observability",
           ],
         },
@@ -540,6 +548,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codometer-configuration",
             "name:codometer-core",
             "name:codometer-measurement",
+            "name:testing",
             "name:observability",
           ],
         },
@@ -557,6 +566,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codometer-core",
             "name:codometer-measurement",
             "name:codometer-output",
+            "name:testing",
             "name:observability",
           ],
         },
@@ -741,7 +751,7 @@ const codependixConfiguration: CodependixConfiguration = {
       {
         kind: "acyclic",
         message:
-          "Two projects that depend on each other cannot be built, released, or reasoned about apart. Stated here rather than left to Nx because an implicit edge closes a cycle just as a real import does, and `@nx/enforce-module-boundaries` has no import statement to flag for one. The testing package is left out: observability, persistence, and interface may use it in their own tests while its adapters wrap them, and the rule above keeps those cycles among the common packages.",
+          "Two projects that depend on each other cannot be built, released, or reasoned about apart. Stated here rather than left to Nx because an implicit edge closes a cycle just as a real import does, and `@nx/enforce-module-boundaries` has no import statement to flag for one. The testing package is left out because its adapters wrap common packages, and the project graph cannot distinguish test-only imports of it from production imports; ESLint keeps that allowance on test files.",
         name: "no-project-cycles",
         nodes: { id: ["!(testing)"] },
       },
