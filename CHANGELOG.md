@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.41.8](https://github.com/organizzolini/codebase/compare/v3.41.7...v3.41.8) (2026-10-30)
+
+### 📝 Documentation
+
+* **documentation,scripts:** 📝 specify model tiers for planning and subagent execution ([#2054](https://github.com/organizzolini/codebase/issues/2054)) ([e279ce0](https://github.com/organizzolini/codebase/commit/e279ce0d16798eea961fb6b43da6baad2dfee3c9))
+
 ## [3.41.7](https://github.com/organizzolini/codebase/compare/v3.41.6...v3.41.7) (2026-10-29)
 
 ## [3.41.6](https://github.com/organizzolini/codebase/compare/v3.41.5...v3.41.6) (2026-10-29)
