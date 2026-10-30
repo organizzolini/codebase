@@ -45,6 +45,7 @@ body:
         - affirmancy
         - caelundas
         - configuration
+        - compliance
         - conformetry
         - persistence
         - interface

@@ -272,8 +272,6 @@ graph LR
   file_src_executors_gate_executor_ts["src/executors/gate/executor.ts"]
   file_src_executors_gate_executor_types_ts["src/executors/gate/executor.types.ts"]
   file_src_executors_gate_executor_unit_test_ts["src/executors/gate/executor.unit.test.ts"]
-  file_src_executors_gate_hasher_ts["src/executors/gate/hasher.ts"]
-  file_src_executors_gate_hasher_unit_test_ts["src/executors/gate/hasher.unit.test.ts"]
   file_src_executors_gate_loader_unit_test_ts["src/executors/gate/loader.unit.test.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
@@ -306,11 +304,6 @@ graph LR
   file_src_executors_gate_executor_types_ts --> file_src_modules_gate_gate_types_ts
   file_src_executors_gate_executor_unit_test_ts --> file_src_executors_gate_executor_ts
   file_src_executors_gate_executor_unit_test_ts --> file_src_modules_gate_gate_service_ts
-  file_src_executors_gate_hasher_ts --> file_src_modules_gate_gate_types_ts
-  file_src_executors_gate_hasher_ts --> file_src_modules_plugin_plugin_context_utilities_ts
-  file_src_executors_gate_hasher_unit_test_ts --> file_src_executors_gate_hasher_ts
-  file_src_executors_gate_hasher_unit_test_ts --> file_src_modules_gate_gate_service_ts
-  file_src_executors_gate_hasher_unit_test_ts --> file_src_modules_gate_gate_types_ts
   file_src_index_ts --> file_src_modules_plugin_plugin_context_utilities_ts
   file_src_index_ts --> file_src_modules_plugin_plugin_inputs_utilities_ts
   file_src_index_ts --> file_src_modules_plugin_plugin_tsconfig_utilities_ts
@@ -324,7 +317,6 @@ graph LR
   file_src_modules_gate_gate_service_ts --> file_src_modules_gate_gate_types_ts
   file_src_modules_gate_gate_service_ts --> file_src_modules_plugin_plugin_service_ts
   file_src_modules_gate_gate_service_unit_test_ts --> file_src_modules_gate_gate_service_ts
-  file_src_modules_gate_gate_service_unit_test_ts --> file_src_modules_gate_gate_types_ts
   file_src_modules_gate_gate_service_unit_test_ts --> file_src_modules_plugin_plugin_service_ts
   file_src_modules_plugin_plugin_context_utilities_ts --> file_src_codependix_nx_module_ts
   file_src_modules_plugin_plugin_context_utilities_ts --> file_src_modules_gate_gate_service_ts
@@ -562,3 +554,106 @@ graph LR
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- callidescope:start -->
+
+## 🔭 Callidescope
+
+Call stacks traced through `projects/ic-suite/codependix/codependix-nx`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+
+| Measure | Value |
+| --- | --- |
+| Callables | 68 |
+| Files | 21 |
+| Calls traced | 79 |
+| Call stacks | 2 |
+| Deepest stack | 6 |
+| Stacks through recursion | 0 |
+| Unfollowable calls | 6 |
+
+### Limits
+
+What this project is judged against, as declared in its own `callidescope.config.ts`.
+
+| Limit | Value |
+| --- | --- |
+| `maximumDepth` | 6 |
+| `maximumBreadth` | 5 |
+
+### Call stacks (depth)
+
+**1. `anonymous`** — depth ≥ 6 · orphan-root
+
+```text
+🚀 anonymous(…): Promise<CreateNodesResultArray> [projects/ic-suite/codependix/codependix-nx/src/index.ts:45]
+  └─> resolveToolInputs(args: ResolveToolInputsArguments): InferredInput[] [projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:65]
+     ↳ The cache inputs that tie a gate to the codependix command line it runs.
+    └─> resolveWorkspaceInputs(…): InferredInput[] [projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:209]
+       ↳ Globs over the sources and manifest of the command line and of every workspace package it reaches, sorted so the cache…
+      └─> collectWorkspacePackages(cliDirectory: string): WorkspacePackages [projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:103]
+         ↳ Collects a workspace package and every workspace package it reaches, development dependencies included: a package this…
+        └─> readDependencies(directory: string): [string, unknown][] [projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:41]
+           ↳ Every dependency a package's manifest declares, in either map.
+          └─> readManifest(directory: string): Record<string, unknown> [projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:173]
+             ↳ Reads a package directory's manifest, or an empty one when there is none or it cannot be parsed — which leaves that…
+```
+
+**2. `gateExecutor`** — depth ≥ 6 · orphan-root
+
+```text
+🚀 gateExecutor(…): Promise<{ success: boolean; }> [projects/ic-suite/codependix/codependix-nx/src/executors/gate/executor.ts:21]
+   ↳ Fails one project's task when a codependix boundary finding is charged to it.
+  └─> GateService.run(args: RunGateArguments): Promise<boolean> [projects/ic-suite/codependix/codependix-nx/src/modules/gate/gate.service.ts:215]
+     ↳ Runs one gate, and settles on whether it passed.
+    └─> GateService.resolveConfigurationPath(args: { configuration?: string | undefined; workspaceRoot: string; }): string [projects/ic-suite/codependix/codependix-nx/src/modules/gate/gate.service.ts:161]
+       ↳ Resolves the configuration path one gate runs with.
+      └─> PluginService.resolvePluginOptions(args: ResolvePluginOptionsArguments): CodependixPluginOptions [projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin.service.ts:156]
+         ↳ Resolves the effective plugin options from an untrusted value. `configurationPath` is required and never searched for:…
+        └─> ConfigurationService.requireConfigurationPath(configurationPath: string | undefined, surface: string): string [projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts:309]
+           ↳ Returns the main configuration path, refusing one that is missing.
+          └─> ConfigurationPathRequiredError.constructor(surface: string): ConfigurationPathRequiredError [projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts:304]
+```
+
+### Breadth
+
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `GateService.run` | 5 | `GateService.resolveSelection`, `GateService.judgesOwnProject`, `GateService.buildCommandArguments`, `GateService.resolveConfigurationPath`, `GateService.spawnCommandLine` | `projects/ic-suite/codependix/codependix-nx/src/modules/gate/gate.service.ts:215` |
+| `resolveToolInputs` | 5 | `locatePackage`, `warnUnresolved`, `isInsideWorkspace`, `resolveWorkspaceInputs`, `resolveExternalInputs` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:65` |
+| `anonymous` | 5 | `resolvePluginService`, `PluginService.inferTargets`, `resolveToolInputs`, `resolveTsconfigInputs`, `flatMap(…)` | `projects/ic-suite/codependix/codependix-nx/src/index.ts:45` |
+
+<details>
+<summary>27 more callables</summary>
+
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `PluginService.readRegisteredOptions` | 4 | `PluginService.toRecord`, `PluginService.isUnknownArray`, `PluginService.find(…)`, `PluginService.map(…)` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin.service.ts:134` |
+| `GateService.resolveConfigurationPath` | 4 | `ConfigurationService.requireConfigurationPath`, `PluginService.resolvePluginOptions`, `PluginService.readRegisteredOptions`, `GateService.readNxConfiguration` | `projects/ic-suite/codependix/codependix-nx/src/modules/gate/gate.service.ts:161` |
+| `collectWorkspacePackages` | 4 | `map(…)`, `filter(…)`, `readDependencies`, `locatePackage` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:103` |
+| `followExtendsChain` | 4 | `readRegistryDependencies`, `readExtends`, `resolveExtendedBase`, `warnSkipped` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-tsconfig.utilities.ts:89` |
+| `resolveExtendedBase` | 4 | `resolvePathBase`, `resolvePackageBase`, `isInsideWorkspace`, `readInstalledPackageName` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-tsconfig.utilities.ts:204` |
+| `PluginService.selectProjectRoots` | 3 | `PluginService.filter(…)`, `PluginService.map(…)`, `PluginService.filter(…)` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin.service.ts:65` |
+| `PluginService.inferTargets` | 3 | `PluginService.resolvePluginOptions`, `PluginService.map(…)`, `PluginService.selectProjectRoots` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin.service.ts:99` |
+| `PluginService.resolvePluginOptions` | 3 | `PluginService.toRecord`, `ConfigurationService.requireConfigurationPath`, `PluginService.readString` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin.service.ts:156` |
+| `GateService.readNameList` | 3 | `GateService.filter(…)`, `GateService.map(…)`, `GateService.flatMap(…)` | `projects/ic-suite/codependix/codependix-nx/src/modules/gate/gate.service.ts:70` |
+| `GateService.anonymous` | 3 | `GateService.on(…)`, `GateService.on(…)`, `GateService.on(…)` | `projects/ic-suite/codependix/codependix-nx/src/modules/gate/gate.service.ts:108` |
+| `resolveExternalInputs` | 3 | `filter(…)`, `map(…)`, `readDependencies` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:197` |
+| `resolveWorkspaceInputs` | 3 | `collectWorkspacePackages`, `warnUnresolved`, `flatMap(…)` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:209` |
+| `readRegistryDependencies` | 3 | `map(…)`, `filter(…)`, `readDependencies` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-tsconfig.utilities.ts:180` |
+| `readDependencies` | 2 | `readManifest`, `toRecord` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:41` |
+| `resolveTsconfigInputs` | 2 | `followExtendsChain`, `map(…)` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-tsconfig.utilities.ts:42` |
+| `gateExecutor` | 2 | `resolveGateService`, `GateService.run` | `projects/ic-suite/codependix/codependix-nx/src/executors/gate/executor.ts:21` |
+| `PluginService.map(…)` | 1 | `PluginService.toRecord` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin.service.ts:142` |
+| `GateService.spawnCommandLine` | 1 | `GateService.anonymous` | `projects/ic-suite/codependix/codependix-nx/src/modules/gate/gate.service.ts:104` |
+| `GateService.resolveSelection` | 1 | `GateService.readNameList` | `projects/ic-suite/codependix/codependix-nx/src/modules/gate/gate.service.ts:187` |
+| `resolveGateService` | 1 | `resolvePluginContext` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-context.utilities.ts:16` |
+| `resolvePluginService` | 1 | `resolvePluginContext` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-context.utilities.ts:23` |
+| `locatePackage` | 1 | `readManifest` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:145` |
+| `flatMap(…)` | 1 | `map(…)` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts:224` |
+| `readExtends` | 1 | `filter(…)` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-tsconfig.utilities.ts:133` |
+| `filter(…)` | 1 | `some(…)` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-tsconfig.utilities.ts:184` |
+| `resolvePackageBase` | 1 | `flatMap(…)` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-tsconfig.utilities.ts:247` |
+| `warnSkipped` | 1 | `describeSkippedBase` | `projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin-tsconfig.utilities.ts:291` |
+
+</details>
+<!-- callidescope:end -->

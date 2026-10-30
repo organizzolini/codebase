@@ -797,13 +797,13 @@ Call stacks traced through `projects/ic-suite/callidescope/callidescope-nx`, dee
 
 | Measure | Value |
 | --- | --- |
-| Callables | 78 |
+| Callables | 74 |
 | Files | 38 |
 | Calls traced | 109 |
 | Call stacks | 6 |
 | Deepest stack | 17 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 2 |
+| Unfollowable calls | 1 |
 
 ### Limits
 
@@ -823,7 +823,7 @@ What this project is judged against, as declared in its own `callidescope.config
    ↳ Prints each named callable's direct callers and callees side by side — the two questions a rename or a refactor needs…
   └─> runAddressExecutor(…): Promise<{ success: boolean; }> [projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.utilities.ts:19]
      ↳ Runs the address lookups on behalf of the `depth` or `breadth` executor.
-    └─> AddressService.runDepth(args: LookupArguments): Promise<LookupResult> [projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:154]
+    └─> AddressService.runDepth(args: LookupArguments): Promise<LookupResult> [projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:152]
        ↳ Prints every call stack above and below each callable.
       └─> AddressService.locate(…): Promise<string | { identified: { address: string; id: string; }[]; workspace: LocatedWorkspace; }> [projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:74]
          ↳ Traces the selection, then matches every address against it.
@@ -860,7 +860,7 @@ What this project is judged against, as declared in its own `callidescope.config
    ↳ Prints every call stack above and below each named callable — every caller chain up to a root, every callee chain down…
   └─> runAddressExecutor(…): Promise<{ success: boolean; }> [projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.utilities.ts:19]
      ↳ Runs the address lookups on behalf of the `depth` or `breadth` executor.
-    └─> AddressService.runDepth(args: LookupArguments): Promise<LookupResult> [projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:154]
+    └─> AddressService.runDepth(args: LookupArguments): Promise<LookupResult> [projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:152]
        ↳ Prints every call stack above and below each callable.
       └─> AddressService.locate(…): Promise<string | { identified: { address: string; id: string; }[]; workspace: LocatedWorkspace; }> [projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:74]
          ↳ Traces the selection, then matches every address against it.
@@ -893,9 +893,9 @@ What this project is judged against, as declared in its own `callidescope.config
 **3. `gateExecutor`** — depth ≥ 15 · orphan-root
 
 ```text
-🚀 gateExecutor(…): Promise<{ success: boolean; }> [projects/ic-suite/callidescope/callidescope-nx/src/executors/gate/executor.ts:28]
+🚀 gateExecutor(…): Promise<{ success: boolean; }> [projects/ic-suite/callidescope/callidescope-nx/src/executors/gate/executor.ts:31]
    ↳ Fails one project's task when its call stacks broke the limits it is held to.
-  └─> PluginService.runGate(args: RunGateArguments): Promise<RunTraceResult> [projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:427]
+  └─> PluginService.runGate(args: RunGateArguments): Promise<RunTraceResult> [projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:430]
      ↳ Traces the resolved directories and judges what it found against the limits every project in scope declared.
     └─> CallidescopeService.trace(args: TraceArguments): Promise<TraceOutcome> [projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.service.ts:408]
        ↳ Traces a workspace and returns everything the run found.
@@ -931,7 +931,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 traceExecutor(…): Promise<{ success: boolean; }> [projects/ic-suite/callidescope/callidescope-nx/src/executors/trace/executor.ts:25]
    ↳ Traces one selection of Nx projects with callidescope.
-  └─> PluginService.runTrace(args: RunTraceArguments): Promise<RunTraceResult> [projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:472]
+  └─> PluginService.runTrace(args: RunTraceArguments): Promise<RunTraceResult> [projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:475]
      ↳ Traces the resolved directories and renders the report.
     └─> CallidescopeService.trace(args: TraceArguments): Promise<TraceOutcome> [projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.service.ts:408]
        ↳ Traces a workspace and returns everything the run found.
@@ -963,19 +963,19 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ```text
 🚀 anonymous(…): Promise<CreateNodesResultArray> [projects/ic-suite/callidescope/callidescope-nx/src/index.ts:59]
-  └─> PluginService.inferTargets(args: InferTargetsArguments): Promise<Map<string, InferredTargets>> [projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:333]
+  └─> PluginService.inferTargets(args: InferTargetsArguments): Promise<Map<string, InferredTargets>> [projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:336]
      ↳ Infers this plugin's targets onto every project holding a `tsconfig.json`.
     └─> PluginService.buildExclusionFilter(…): Promise<FileFilter> [projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:92]
        ↳ Builds the predicate deciding which projects the workspace configuration keeps out of every trace.
-      └─> ConfigurationService.loadConfigurationFile(args?: LoadConfigurationArguments): Promise<LoadedCallidescopeConfiguration> [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts:87]
+      └─> ConfigurationService.loadConfigurationFile(args: LoadConfigurationArguments): Promise<LoadedCallidescopeConfiguration> [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts:80]
          ↳ Loads a configuration, and says what the file itself declared and which file answered.
-        └─> ConfigurationFileService.loadConfigurationFile(args?: LoadConfigurationArguments): Promise<LoadedCallidescopeConfiguration> [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts:326]
+        └─> ConfigurationFileService.loadConfigurationFile(args: LoadConfigurationArguments): Promise<LoadedCallidescopeConfiguration> [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts:290]
            ↳ Loads a configuration, and says what the file itself declared and which file answered.
-          └─> ConfigurationFileService.resolveConfigurationPath(configurationPath: string): string [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts:158]
+          └─> ConfigurationFileService.resolveConfigurationPath(configurationPath: string): string [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts:130]
              ↳ Resolves a configuration path against the cwd, then the repository root.
-            └─> ConfigurationFileService.findRepositoryRoot(): string | undefined [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts:97]
+            └─> ConfigurationFileService.findRepositoryRoot(): string | undefined [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts:69]
                ↳ Walks upward from the process cwd looking for the repository root.
-              └─> ConfigurationFileService.some(…)(marker: ".git" | "pnpm-workspace.yaml"): boolean [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts:102]
+              └─> ConfigurationFileService.some(…)(marker: ".git" | "pnpm-workspace.yaml"): boolean [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts:74]
 ```
 
 **6. `resolveProjectsService`** — depth 2 · orphan-root
@@ -993,45 +993,44 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `runAddressExecutor` | 7 | `filter(…)`, `resolveExecutorScope`, `resolveOptionsService`, `resolveAddressService`, `OptionsService.readFormat`, `AddressService.runDepth`, `AddressService.runBreadth` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.utilities.ts:19` |
+| `runAddressExecutor` | 7 | `filter(…)`, `resolveExecutorScope`, `resolveOptionsService`, `resolveAddressService`, `OptionsService.readLookupOptions`, `AddressService.runDepth`, `AddressService.runBreadth` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.utilities.ts:19` |
 | `ProjectsService.resolveProjectNames` | 6 | `ProjectsService.readProjects`, `ProjectsService.map(…)`, `ProjectsService.resolveTaggedNames`, `ProjectsService.map(…)`, `ProjectsService.readTags`, `ProjectsService.toSorted(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/projects/projects.service.ts:195` |
-| `OptionsService.readStringList` | 5 | `OptionsService.isUnknownArray`, `OptionsService.filter(…)`, `OptionsService.map(…)`, `OptionsService.flatMap(…)`, `OptionsService.filter(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:124` |
+| `traceExecutor` | 6 | `resolveExecutorScope`, `resolveOptionsService`, `resolvePluginService`, `PluginService.runTrace`, `OptionsService.readConfiguration`, `OptionsService.readFormat` | `projects/ic-suite/callidescope/callidescope-nx/src/executors/trace/executor.ts:25` |
 
 <details>
-<summary>36 more callables</summary>
+<summary>35 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `PluginService.inferTargets` | 5 | `OptionsService.resolvePluginOptions`, `PluginService.buildExclusionFilter`, `PluginService.holdsProgram`, `PluginService.buildInferredTargets`, `PluginService.isExcludedProject` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:333` |
-| `PluginService.runGate` | 5 | `RunConfigurationService.load`, `CallidescopeService.trace`, `PluginService.judge`, `PluginService.explainVerdict`, `MarkdownReportService.renderFindings` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:427` |
-| `PluginService.runTrace` | 5 | `RunConfigurationService.load`, `CallidescopeService.trace`, `PluginService.judge`, `MarkdownReportService.renderRun`, `PluginService.explainVerdict` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:472` |
+| `OptionsService.readStringList` | 5 | `OptionsService.isUnknownArray`, `OptionsService.filter(…)`, `OptionsService.map(…)`, `OptionsService.flatMap(…)`, `OptionsService.filter(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:109` |
+| `PluginService.inferTargets` | 5 | `OptionsService.resolvePluginOptions`, `PluginService.buildExclusionFilter`, `PluginService.holdsProgram`, `PluginService.buildInferredTargets`, `PluginService.isExcludedProject` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:336` |
+| `PluginService.runGate` | 5 | `RunConfigurationService.load`, `CallidescopeService.trace`, `PluginService.judge`, `PluginService.explainVerdict`, `MarkdownReportService.renderFindings` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:430` |
+| `PluginService.runTrace` | 5 | `RunConfigurationService.load`, `CallidescopeService.trace`, `PluginService.judge`, `MarkdownReportService.renderRun`, `PluginService.explainVerdict` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:475` |
 | `resolveExecutorScope` | 5 | `resolveOptionsService`, `OptionsService.readStringList`, `resolvePluginService`, `PluginService.resolveTraceScope`, `PluginService.describeRefusedScope` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.utilities.ts:24` |
-| `traceExecutor` | 5 | `resolveExecutorScope`, `resolveOptionsService`, `resolvePluginService`, `PluginService.runTrace`, `OptionsService.readFormat` | `projects/ic-suite/callidescope/callidescope-nx/src/executors/trace/executor.ts:25` |
-| `PluginService.resolveTraceScope` | 4 | `ProjectsService.readProjectGraph`, `ProjectsService.resolveProjectNames`, `ProjectsService.resolveDependencyClosure`, `ProjectsService.resolveDirectories` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:383` |
+| `gateExecutor` | 5 | `resolveExecutorScope`, `resolveOptionsService`, `resolvePluginService`, `PluginService.runGate`, `OptionsService.readConfiguration` | `projects/ic-suite/callidescope/callidescope-nx/src/executors/gate/executor.ts:31` |
+| `PluginService.resolveTraceScope` | 4 | `ProjectsService.readProjectGraph`, `ProjectsService.resolveProjectNames`, `ProjectsService.resolveDependencyClosure`, `ProjectsService.resolveDirectories` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:386` |
 | `anonymous` | 4 | `resolvePluginService`, `PluginService.inferTargets`, `filter(…)`, `map(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/index.ts:59` |
-| `AddressService.runBreadth` | 3 | `AddressService.locate`, `BreadthService.describeDirectCalls`, `AddressReportService.renderBreadthReports` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:110` |
-| `AddressService.runDepth` | 3 | `AddressService.locate`, `AddressReportService.renderDepthReports`, `AddressService.map(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:154` |
+| `AddressService.runBreadth` | 3 | `AddressService.locate`, `BreadthService.describeDirectCalls`, `AddressReportService.renderBreadthReports` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:108` |
+| `AddressService.runDepth` | 3 | `AddressService.locate`, `AddressReportService.renderDepthReports`, `AddressService.map(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:152` |
 | `ProjectsService.toDirectories` | 3 | `ProjectsService.map(…)`, `ProjectsService.readProjects`, `ProjectsService.toSorted(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/projects/projects.service.ts:233` |
-| `RunConfigurationService.load` | 3 | `OptionsService.resolveConfigurationPath`, `RunConfigurationService.readNxConfiguration`, `ConfigurationService.loadConfigurationFile` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/run-configuration/run-configuration.service.ts:69` |
-| `gateExecutor` | 3 | `resolveExecutorScope`, `resolvePluginService`, `PluginService.runGate` | `projects/ic-suite/callidescope/callidescope-nx/src/executors/gate/executor.ts:28` |
 | `AddressService.identify` | 2 | `AddressLookupService.resolve`, `AddressLookupService.describeProblem` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:47` |
 | `AddressService.locate` | 2 | `AddressLookupService.locate`, `AddressService.identify` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:74` |
-| `AddressService.map(…)` | 2 | `AddressDepthService.buildDownwardStacks`, `AddressDepthService.buildUpwardStacks` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:167` |
-| `OptionsService.readRegisteredConfigurationPath` | 2 | `OptionsService.isUnknownArray`, `OptionsService.readEntryConfigurationPath` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:66` |
-| `OptionsService.resolveConfigurationPath` | 2 | `OptionsService.readRegisteredConfigurationPath`, `OptionsService.find(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:145` |
+| `AddressService.map(…)` | 2 | `AddressDepthService.buildDownwardStacks`, `AddressDepthService.buildUpwardStacks` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/address/address.service.ts:165` |
+| `OptionsService.readLookupOptions` | 2 | `OptionsService.readConfiguration`, `OptionsService.readFormat` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:87` |
+| `OptionsService.resolvePluginOptions` | 2 | `ConfigurationService.requireConfigurationPath`, `OptionsService.readString` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:128` |
 | `ProjectsService.readTags` | 2 | `ProjectsService.toSorted(…)`, `ProjectsService.flatMap(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/projects/projects.service.ts:37` |
 | `ProjectsService.resolveTaggedNames` | 2 | `ProjectsService.filter(…)`, `ProjectsService.map(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/projects/projects.service.ts:53` |
 | `ProjectsService.readProjects` | 2 | `ProjectsService.toSorted(…)`, `ProjectsService.map(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/projects/projects.service.ts:92` |
 | `ProjectsService.resolveDependencyClosure` | 2 | `ProjectsService.filter(…)`, `ProjectsService.toSorted(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/projects/projects.service.ts:122` |
 | `ProjectsService.resolveDirectories` | 2 | `ProjectsService.resolveProjectNames`, `ProjectsService.toDirectories` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/projects/projects.service.ts:171` |
 | `PluginService.buildExclusionFilter` | 2 | `ConfigurationService.loadConfigurationFile`, `FileFilterService.buildFileFilter` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:92` |
-| `PluginService.judge` | 2 | `ProjectReportsService.findOwnedFindings`, `ProjectReportsService.findUnreadProjects` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:263` |
-| `OptionsService.readEntryConfigurationPath` | 1 | `OptionsService.readString` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:42` |
-| `OptionsService.readFormat` | 1 | `OptionsService.find(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:109` |
-| `OptionsService.resolvePluginOptions` | 1 | `OptionsService.readString` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:159` |
+| `PluginService.judge` | 2 | `ProjectReportsService.findOwnedFindings`, `ProjectReportsService.findUnreadProjects` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:266` |
+| `OptionsService.readConfiguration` | 1 | `ConfigurationService.requireConfigurationPath` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:63` |
+| `OptionsService.readFormat` | 1 | `OptionsService.find(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.service.ts:77` |
+| `RunConfigurationService.load` | 1 | `ConfigurationService.loadConfigurationFile` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/run-configuration/run-configuration.service.ts:39` |
 | `reportUnreadProjects` | 1 | `map(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.constants.ts:72` |
-| `PluginService.explainVerdict` | 1 | `reportUnreadProjects` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:185` |
-| `PluginService.describeRefusedScope` | 1 | `PluginService.filter(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:305` |
+| `PluginService.explainVerdict` | 1 | `reportUnreadProjects` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:188` |
+| `PluginService.describeRefusedScope` | 1 | `PluginService.filter(…)` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts:308` |
 | `resolveAddressService` | 1 | `resolvePluginContext` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin-context.utilities.ts:18` |
 | `resolveOptionsService` | 1 | `resolvePluginContext` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin-context.utilities.ts:25` |
 | `resolvePluginService` | 1 | `resolvePluginContext` | `projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin-context.utilities.ts:32` |

@@ -7,6 +7,7 @@
     "url": "https://github.com/organizzolini/codebase/issues"
   },
   "dependencies": {
+    "@codebase/observability": "workspace:*",
     "@codometer/configuration": "workspace:*",
     "@codometer/core": "workspace:*",
     "@codometer/measurement": "workspace:*",
@@ -22,7 +23,6 @@
   },
   "description": "Command-line tool for measuring repository size, counts, and comments against configured limits",
   "devDependencies": {
-    "@codebase/observability": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",

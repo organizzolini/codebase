@@ -112,29 +112,14 @@
     "start": {
       "cache": false,
       "configurations": {
-        "audit-governance": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts audit-governance"
-        },
-        "audit-issues": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts issue-metadata --all"
-        },
         "catalog-manifests": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts catalog-manifests"
-        },
-        "issue-metadata": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts issue-metadata"
         },
         "lockfile": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts lockfile"
         },
         "publishable-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts publishable-packages"
-        },
-        "pull-request-body": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts pull-request-body"
-        },
-        "pull-request-metadata": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts pull-request-metadata"
         },
         "readme-projects": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts readme-projects"

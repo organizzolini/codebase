@@ -197,24 +197,24 @@ This project was generated from the [nestjs-command-project](../../configuration
 
 Call stacks traced through `synchronization`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 
-| Measure                  | Value |
-| ------------------------ | ----- |
-| Callables                | 322   |
-| Files                    | 75    |
-| Calls traced             | 336   |
-| Call stacks              | 19    |
-| Deepest stack            | 10    |
-| Stacks through recursion | 0     |
-| Unfollowable calls       | 16    |
+| Measure | Value |
+| --- | --- |
+| Callables | 308 |
+| Files | 68 |
+| Calls traced | 305 |
+| Call stacks | 18 |
+| Deepest stack | 10 |
+| Stacks through recursion | 0 |
+| Unfollowable calls | 16 |
 
 ### Limits
 
 What this project is judged against, as declared in its own `callidescope.config.ts`.
 
-| Limit            | Value |
-| ---------------- | ----- |
-| `maximumDepth`   | 10    |
-| `maximumBreadth` | 11    |
+| Limit | Value |
+| --- | --- |
+| `maximumDepth` | 10 |
+| `maximumBreadth` | 11 |
 
 ### Call stacks (depth)
 
@@ -286,24 +286,24 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>16 more call stacks</summary>
+<summary>15 more call stacks</summary>
 
-**4. `IssueLabelsCommand.run`** — depth 7 · decorated-method
+**4. `ProjectPortsCommand.run`** — depth 8 · decorated-method
 
 ```text
-🚀 IssueLabelsCommand.run(): Promise<void> [synchronization/src/modules/issue-labels/issue-labels.command.ts:158]
-   ↳ Adds whichever type and scope labels the issue's body implies.
-  └─> IssueLabelsCommand.resolvePlan(): undefined | { issueNumber: string; missingLabels: string[]; } [synchronization/src/modules/issue-labels/issue-labels.command.ts:130]
-     ↳ What this run needs to do, or `undefined` when there is nothing to add.
-    └─> IssueLabelsCommand.readExistingLabelNames(): string[] [synchronization/src/modules/issue-labels/issue-labels.command.ts:94]
-       ↳ Reads the labels already on the issue, from `ISSUE_LABELS`.
-      └─> IssueLabelsCommand.readLabelNames(entries: unknown[]): string[] [synchronization/src/modules/issue-labels/issue-labels.command.ts:118]
-         ↳ Every label name in this array, with the nameless entries dropped.
-        └─> IssueLabelsCommand.map(…)(entry: unknown): string [synchronization/src/modules/issue-labels/issue-labels.command.ts:120]
-          └─> IssueLabelsCommand.nameOf(entry: unknown): string [synchronization/src/modules/issue-labels/issue-labels.command.ts:82]
-             ↳ Reads one label entry's name, whichever shape it arrived in.
-            └─> IssueLabelsCommand.isRecord(value: unknown): value is Record<string, unknown> [synchronization/src/modules/issue-labels/issue-labels.command.ts:77]
-               ↳ Whether this value can be read by property name at all.
+🚀 ProjectPortsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/project-ports/project-ports.command.ts:254]
+   ↳ Runs the project-ports sync command in check or write mode.
+  └─> ProjectPortsCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [synchronization/src/modules/project-ports/project-ports.command.ts:273]
+     ↳ Synchronizes every application's port and reports success without exiting.
+    └─> ProjectPortsCommand.map(…)(project: PortProject): boolean [synchronization/src/modules/project-ports/project-ports.command.ts:281]
+      └─> ProjectPortsCommand.synchronizeProject(mode: SynchronizationMode, root: string, project: PortProject): boolean [synchronization/src/modules/project-ports/project-ports.command.ts:186]
+         ↳ Brings one project's port into line, or reports how it differs, and says whether it was current.
+        └─> ProjectPortsCommand.rewritePort(root: string, project: PortProject, currentPort: number): string[] [synchronization/src/modules/project-ports/project-ports.command.ts:163]
+           ↳ Rewrites a project's old port across its scope and returns the files that changed.
+          └─> ProjectPortsCommand.filter(…)(file: string): boolean [synchronization/src/modules/project-ports/project-ports.command.ts:169]
+            └─> ProjectPortsService.replacePort(content: string, from: number, to: number): string [synchronization/src/modules/project-ports/project-ports.service.ts:36]
+               ↳ Rewrites a port to another on every line that is about a port.
+              └─> ProjectPortsService.map(…)(line: string): string [synchronization/src/modules/project-ports/project-ports.service.ts:41]
 ```
 
 **5. `ConformetryGeneratorsCommand.run`** — depth ≥ 7 · decorated-method
@@ -324,24 +324,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Drops the hooks a generator left unset, rather than carrying them as explicit `undefined`, so what a host forwards is…
 ```
 
-**6. `PullRequestLabelsCommand.run`** — depth 7 · decorated-method
-
-```text
-🚀 PullRequestLabelsCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:281]
-   ↳ Runs the pull-request-labels reconciliation in check or write mode.
-  └─> PullRequestLabelsCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:300]
-     ↳ Reconciles the label vocabulary and always reports success.
-    └─> PullRequestLabelsCommand.reconcile(mode: SynchronizationMode, reportLines: string[]): void [synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:175]
-       ↳ Reconciles the vocabulary, appending everything it did to the report.
-      └─> PullRequestLabelsService.planReconciliation(…): LabelReconciliationPlan [synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:66]
-         ↳ Works out what reconciling would create, update, and leave behind.
-        └─> PullRequestLabelsService.filter(…)(label: ConventionalLabel): boolean [synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:82]
-          └─> PullRequestLabelsService.isTrackedLabel(labelName: string): boolean [synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:45]
-             ↳ Whether this reconciliation owns the label with this name.
-            └─> PullRequestLabelsService.some(…)(prefix: string): boolean [synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:46]
-```
-
-**7. `VscodeExtensionsCommand.run`** — depth 7 · decorated-method
+**6. `VscodeExtensionsCommand.run`** — depth 7 · decorated-method
 
 ```text
 🚀 VscodeExtensionsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:187]
@@ -359,7 +342,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Whether two lists hold the same entries, in any order.
 ```
 
-**8. `PackageManifestsCommand.run`** — depth 6 · decorated-method
+**7. `PackageManifestsCommand.run`** — depth 6 · decorated-method
 
 ```text
 🚀 PackageManifestsCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/package-manifests/package-manifests.command.ts:50]
@@ -375,7 +358,7 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> PackageManifestsService.toSorted(…)(leftKey: string, rightKey: string): number [synchronization/src/modules/package-manifests/package-manifests.service.ts:85]
 ```
 
-**9. `PullRequestTemplateCommand.run`** — depth 6 · decorated-method
+**8. `PullRequestTemplateCommand.run`** — depth 6 · decorated-method
 
 ```text
 🚀 PullRequestTemplateCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/pull-request-template/pull-request-template.command.ts:202]
@@ -391,23 +374,23 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Extracts the content between start and end marker comments from a file.
 ```
 
-**10. `SkillExclusionsCommand.run`** — depth ≥ 6 · decorated-method
+**9. `SkillExclusionsCommand.run`** — depth ≥ 6 · decorated-method
 
 ```text
-🚀 SkillExclusionsCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:165]
+🚀 SkillExclusionsCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:191]
    ↳ Runs the skill-exclusions sync command in check or write mode.
-  └─> SkillExclusionsCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:180]
+  └─> SkillExclusionsCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:206]
      ↳ Synchronizes the exclusion lists and reports success without exiting.
-    └─> SkillExclusionsCommand.findStaleFiles(skillNames: string[]): string[] [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:71]
+    └─> SkillExclusionsCommand.findStaleFiles(inputs: SkillExclusionInputs): string[] [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:81]
        ↳ Every file whose generated block differs from what the lockfile implies.
-      └─> SkillExclusionsCommand.filter(…)(file: SkillExclusionFile): boolean [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:72]
-        └─> SkillExclusionsCommand.readExclusionFile(…): { afterMarker: string; beforeMarker: string; generatedContent: string; } [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:82]
+      └─> SkillExclusionsCommand.filter(…)(file: SkillExclusionFile): boolean [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:82]
+        └─> SkillExclusionsCommand.readExclusionFile(…): { afterMarker: string; beforeMarker: string; generatedContent: string; } [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:90]
            ↳ Splits one exclusion file around its generated block.
-          └─> SkillExclusionsCommand.renderStartMarker(file: SkillExclusionFile): string [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:139]
+          └─> SkillExclusionsCommand.renderStartMarker(file: SkillExclusionFile): string [synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:164]
              ↳ The comment opening this file's generated block, in its own syntax.
 ```
 
-**11. `DevcontainerConfigurationCommand.run`** — depth 5 · decorated-method
+**10. `DevcontainerConfigurationCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 DevcontainerConfigurationCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:266]
@@ -422,7 +405,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Returns true if the feature key refers to a Docker-in-Docker or Docker-outside-of-Docker feature.
 ```
 
-**12. `VscodeSettingsCommand.run`** — depth 4 · decorated-method
+**11. `VscodeSettingsCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 VscodeSettingsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/vscode-settings/vscode-settings.command.ts:102]
@@ -435,10 +418,10 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Returns true when the provided value is a supported synchronization mode.
 ```
 
-**13. `SynchronizationCommand.run`** — depth ≥ 4 · decorated-method
+**12. `SynchronizationCommand.run`** — depth ≥ 4 · decorated-method
 
 ```text
-🚀 SynchronizationCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/synchronization/synchronization.command.ts:132]
+🚀 SynchronizationCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/synchronization/synchronization.command.ts:130]
    ↳ Runs every synchronization, exiting once if any reported drift.
   └─> SynchronizationService.resolveSynchronizationModeOrExit(options: SynchronizationModeResolutionOptions): SynchronizationMode [synchronization/src/modules/synchronization/synchronization.service.ts:59]
      ↳ Resolves synchronization mode or exits the process when the mode is invalid.
@@ -448,7 +431,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Returns true when the provided value is a supported synchronization mode.
 ```
 
-**14. `run`** — depth 4 · orphan-root
+**13. `run`** — depth 4 · orphan-root
 
 ```text
 🚀 run(command: ProcessCommand): ProcessResult [synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:69]
@@ -457,7 +440,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> isLockfileDirty(): boolean [synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:42]
 ```
 
-**15. `TypeormMigrationSqlExtractorService.visit`** — depth 3 · orphan-root
+**14. `TypeormMigrationSqlExtractorService.visit`** — depth 3 · orphan-root
 
 ```text
 🚀 TypeormMigrationSqlExtractorService.visit(node: ts.Node): void [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:318]
@@ -467,7 +450,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ SQL text from a query argument literal.
 ```
 
-**16. `TypeormMigrationSqlExtractorService.visit`** — depth 3 · orphan-root
+**15. `TypeormMigrationSqlExtractorService.visit`** — depth 3 · orphan-root
 
 ```text
 🚀 TypeormMigrationSqlExtractorService.visit(node: ts.Node): void [synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:340]
@@ -477,7 +460,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ SQL statements extracted from one migration method body.
 ```
 
-**17. `SynchronizationMarkersService.extractContent`** — depth 3 · orphan-root
+**16. `SynchronizationMarkersService.extractContent`** — depth 3 · orphan-root
 
 ```text
 🚀 SynchronizationMarkersService.extractContent(content: string, markerName: string): string | undefined [synchronization/src/modules/synchronization/synchronization-markers.service.ts:44]
@@ -488,7 +471,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Renders the opening marker comment for a marker name.
 ```
 
-**18. `SynchronizationMarkersService.replaceContent`** — depth 3 · orphan-root
+**17. `SynchronizationMarkersService.replaceContent`** — depth 3 · orphan-root
 
 ```text
 🚀 SynchronizationMarkersService.replaceContent(content: string, markerName: string, replacement: string): string [synchronization/src/modules/synchronization/synchronization-markers.service.ts:65]
@@ -499,7 +482,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Renders the opening marker comment for a marker name.
 ```
 
-**19. `lockSkills`** — depth 2 · orphan-root
+**18. `lockSkills`** — depth 2 · orphan-root
 
 ```text
 🚀 lockSkills(workspace: string, skillNames: string[]): void [synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:90]
@@ -511,159 +494,151 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Breadth
 
-| Callable                                    | Breadth | Calls directly                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Location                                                                             |
-| ------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `PullRequestLabelsCommand.reconcile`        | 9       | `PullRequestLabelsGithubService.run`, `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsGithubService.describeFailure`, `PullRequestLabelsService.planReconciliation`, `PullRequestLabelsService.parseRepositoryLabels`, `PullRequestLabelsService.readExpectedLabels`, `PullRequestLabelsCommand.describeError`, `PullRequestLabelsCommand.reportPlan`, `PullRequestLabelsCommand.reportStaleLabels`                                                | `synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:175` |
-| `ConventionalConfigService.handleCheckMode` | 8       | `ConventionalConfigValidatorsService.checkSettingsSync`, `ConventionalConfigValidatorsService.checkAllSkillsSync`, `ConventionalConfigValidatorsService.checkAllTemplatesSync`, `ConventionalConfigService.loadReleaseConfig`, `ConventionalConfigValidatorsService.checkReleaseRulesSync`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigValidatorsService.checkPresetConfigSync`, `ConventionalConfigIoService.getPresetConfigTypes` | `synchronization/src/modules/conventional-config/conventional-config.service.ts:126` |
-| `ConventionalConfigService.handleWriteMode` | 7       | `ConventionalConfigValidatorsService.checkSettingsSync`, `ConventionalConfigService.filter(…)`, `ConventionalConfigService.filter(…)`, `ConventionalConfigIoService.writeSettingsSync`, `ConventionalConfigIoService.writeSkillSync`, `ConventionalConfigIoService.writeIssueTemplateSync`, `ConventionalConfigService.syncReleaseConfigIfNeeded`                                                                                                               | `synchronization/src/modules/conventional-config/conventional-config.service.ts:182` |
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `ConventionalConfigService.handleCheckMode` | 8 | `ConventionalConfigValidatorsService.checkSettingsSync`, `ConventionalConfigValidatorsService.checkAllSkillsSync`, `ConventionalConfigValidatorsService.checkAllTemplatesSync`, `ConventionalConfigService.loadReleaseConfig`, `ConventionalConfigValidatorsService.checkReleaseRulesSync`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigValidatorsService.checkPresetConfigSync`, `ConventionalConfigIoService.getPresetConfigTypes` | `synchronization/src/modules/conventional-config/conventional-config.service.ts:126` |
+| `ConventionalConfigService.handleWriteMode` | 7 | `ConventionalConfigValidatorsService.checkSettingsSync`, `ConventionalConfigService.filter(…)`, `ConventionalConfigService.filter(…)`, `ConventionalConfigIoService.writeSettingsSync`, `ConventionalConfigIoService.writeSkillSync`, `ConventionalConfigIoService.writeIssueTemplateSync`, `ConventionalConfigService.syncReleaseConfigIfNeeded` | `synchronization/src/modules/conventional-config/conventional-config.service.ts:182` |
+| `ConventionalConfigIoService.writeReleaseConfigSync` | 6 | `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.filter(…)`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigIoService.getPresetConfigTypes`, `ConventionalConfigIoService.appendToReleaseRules`, `ConventionalConfigIoService.appendToPresetTypes` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:290` |
 
 <details>
-<summary>142 more callables</summary>
+<summary>134 more callables</summary>
 
-| Callable                                                           | Breadth | Calls directly                                                                                                                                                                                                                                                                               | Location                                                                                           |
-| ------------------------------------------------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `ConventionalConfigIoService.writeReleaseConfigSync`               | 6       | `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.filter(…)`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigIoService.getPresetConfigTypes`, `ConventionalConfigIoService.appendToReleaseRules`, `ConventionalConfigIoService.appendToPresetTypes` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:290`            |
-| `ConventionalConfigService.runSynchronization`                     | 6       | `ConventionalConfigService.loadConventionalConfig`, `ConventionalConfigService.map(…)`, `ConventionalConfigIoService.parseSettingsScopes`, `ConventionalConfigService.map(…)`, `ConventionalConfigService.handleCheckMode`, `ConventionalConfigService.handleWriteMode`                      | `synchronization/src/modules/conventional-config/conventional-config.service.ts:240`               |
-| `InstalledSkillsService.restoreSkills`                             | 6       | `InstalledSkillsService.git`, `InstalledSkillsService.hasChanges`, `InstalledSkillsService.findCleanSkillFolders`, `InstalledSkillsService.runRestore`, `InstalledSkillsService.revertTrackedChanges`, `InstalledSkillsService.verifyRestoration`                                            | `synchronization/src/modules/installed-skills/installed-skills.service.ts:205`                     |
-| `PackageManifestsService.checkPackageManifest`                     | 6       | `PackageManifestsService.readPackageManifest`, `PackageManifestsService.deriveMetadata`, `PackageManifestsService.compareStringField`, `PackageManifestsService.compareBugsField`, `PackageManifestsService.compareRepositoryField`, `PackageManifestsService.filter(…)`                     | `synchronization/src/modules/package-manifests/package-manifests.service.ts:125`                   |
-| `PullRequestLabelsService.planReconciliation`                      | 6       | `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.filter(…)`, `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.filter(…)`, `PullRequestLabelsService.filter(…)`                                                                    | `synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:66`                |
-| `ConventionalConfigService.syncReleaseConfigIfNeeded`              | 5       | `ConventionalConfigService.loadReleaseConfig`, `ConventionalConfigService.filter(…)`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigIoService.getPresetConfigTypes`, `ConventionalConfigIoService.writeReleaseConfigSync`                                           | `synchronization/src/modules/conventional-config/conventional-config.service.ts:93`                |
-| `TypeormMigrationSqlExtractorService.synchronize`                  | 5       | `TypeormMigrationSqlExtractorService.targets`, `TypeormMigrationSqlExtractorService.migrationFiles`, `TypeormMigrationSqlExtractorService.migrationOption`, `TypeormMigrationSqlExtractorService.synchronizeMigration`, `TypeormMigrationSqlExtractorService.migrationSqlPaths`              | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:425` |
-| `TypeormMigrationSqlExtractorService.targets`                      | 5       | `TypeormMigrationSqlExtractorService.explicitTarget`, `TypeormMigrationSqlExtractorService.projectJsonPaths`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.filter(…)`, `TypeormMigrationSqlExtractorService.map(…)`                                    | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:480` |
-| `SynchronizationCommand.reportResults`                             | 5       | `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)`                                                                                                                 | `synchronization/src/modules/synchronization/synchronization.command.ts:101`                       |
-| `IssueLabelsCommand.resolvePlan`                                   | 4       | `IssueLabelsCommand.readIssueNumber`, `IssueLabelsService.parseFormAnswers`, `IssueLabelsCommand.readExistingLabelNames`, `IssueLabelsService.missingLabels`                                                                                                                                 | `synchronization/src/modules/issue-labels/issue-labels.command.ts:130`                             |
-| `ConventionalConfigIoService.writeSkillSync`                       | 4       | `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.generateMarkdownTable`, `ConventionalConfigIoService.replaceMarkerContent`                                                                                                          | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:353`            |
-| `InstalledSkillsCommand.write`                                     | 4       | `InstalledSkillsCommand.isSet`, `InstalledSkillsService.findMissingSkills`, `InstalledSkillsCommand.announceRestoration`, `InstalledSkillsService.restoreSkills`                                                                                                                             | `synchronization/src/modules/installed-skills/installed-skills.command.ts:146`                     |
-| `PackageManifestsService.checkAll`                                 | 4       | `PackageManifestsService.readRootManifest`, `PackageManifestsService.map(…)`, `PackageManifestsService.filter(…)`, `PackageManifestsService.filter(…)`                                                                                                                                       | `synchronization/src/modules/package-manifests/package-manifests.service.ts:100`                   |
-| `PullRequestLabelsCommand.reportPlan`                              | 4       | `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsCommand.describePlan`, `PullRequestLabelsCommand.createLabels`, `PullRequestLabelsCommand.updateLabels`                                                                                                                         | `synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:215`               |
-| `PullRequestLabelsCommand.synchronize`                             | 4       | `PullRequestLabelsCommand.reconcile`, `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsCommand.describeError`, `PullRequestLabelsCommand.mirrorToStepSummary`                                                                                                                    | `synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:300`               |
-| `PullRequestTemplateCommand.synchronize`                           | 4       | `PullRequestTemplateCommand.map(…)`, `PullRequestTemplateCommand.loadTemplate`, `PullRequestTemplateCommand.handleCheckMode`, `PullRequestTemplateCommand.handleWriteMode`                                                                                                                   | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:221`           |
-| `TypeormMigrationSqlExtractorService.migrationFiles`               | 4       | `TypeormMigrationSqlExtractorService.singleMigrationFile`, `TypeormMigrationSqlExtractorService.sortedMigrationEntries`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.latestMigrationEntry`                                                            | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:97`  |
-| `TypeormMigrationSqlExtractorService.projectJsonPathsForDirectory` | 4       | `TypeormMigrationSqlExtractorService.some(…)`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.filter(…)`, `TypeormMigrationSqlExtractorService.filter(…)`                                                                                                | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:192` |
-| `TypeormMigrationSqlExtractorService.synchronizeMigration`         | 4       | `TypeormMigrationSqlExtractorService.statementsFromMigrationFile`, `TypeormMigrationSqlExtractorService.renderSql`, `TypeormMigrationSqlExtractorService.writeExtractedSql`, `TypeormMigrationSqlExtractorService.checkExtractedSql`                                                         | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:357` |
-| `VscodeExtensionsCommand.synchronizeDevcontainer`                  | 4       | `VscodeExtensionsCommand.readDevcontainer`, `VscodeExtensionsCommand.isCurrent`, `VscodeExtensionsCommand.reportDrift`, `VscodeExtensionsCommand.write`                                                                                                                                      | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:139`                   |
-| `IssueLabelsCommand.run`                                           | 3       | `IssueLabelsCommand.resolvePlan`, `IssueLabelsGithubService.isAvailable`, `IssueLabelsCommand.addLabel`                                                                                                                                                                                      | `synchronization/src/modules/issue-labels/issue-labels.command.ts:158`                             |
-| `ConformetryGeneratorsCommand.synchronize`                         | 3       | `ConformetryGeneratorsCommand.readGenerators`, `ConformetryGeneratorsCommand.checkSync`, `ConformetryGeneratorsCommand.writeSync`                                                                                                                                                            | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:206`         |
-| `ConventionalConfigIoService.writeIssueTemplateSync`               | 3       | `ConventionalConfigIoService.writeIssueTemplateDropdown`, `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.map(…)`                                                                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:258`            |
-| `ConventionalConfigValidatorsService.checkMarkerSync`              | 3       | `ConventionalConfigValidatorsService.readMarkerValues`, `ConventionalConfigValidatorsService.getSourceValuesForMarker`, `ConventionalConfigValidatorsService.validateMarkerValues`                                                                                                           | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:41`     |
-| `ConventionalConfigValidatorsService.checkIssueTemplateSync`       | 3       | `ConventionalConfigValidatorsService.getSourceValuesForMarker`, `ConventionalConfigIoService.parseIssueTemplateDropdown`, `ConventionalConfigValidatorsService.validateMarkerValues`                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:185`    |
-| `DevcontainerConfigurationCommand.applySync`                       | 3       | `DevcontainerConfigurationCommand.syncVerbatimFields`, `DevcontainerConfigurationCommand.preserveRemoteEnvironment`, `DevcontainerConfigurationCommand.syncFeatures`                                                                                                                         | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:59`  |
-| `DevcontainerConfigurationCommand.synchronize`                     | 3       | `DevcontainerConfigurationCommand.applySync`, `DevcontainerConfigurationCommand.check`, `DevcontainerConfigurationCommand.writeWhenDrifted`                                                                                                                                                  | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:285` |
-| `InstalledSkillsService.findCleanSkillFolders`                     | 3       | `InstalledSkillsService.filter(…)`, `InstalledSkillsService.map(…)`, `InstalledSkillsService.readLockedSkillNames`                                                                                                                                                                           | `synchronization/src/modules/installed-skills/installed-skills.service.ts:54`                      |
-| `InstalledSkillsCommand.check`                                     | 3       | `InstalledSkillsService.findMissingSkills`, `InstalledSkillsCommand.print`, `InstalledSkillsCommand.isCloudAgent`                                                                                                                                                                            | `synchronization/src/modules/installed-skills/installed-skills.command.ts:87`                      |
-| `PackageManifestsService.writePackageManifest`                     | 3       | `PackageManifestsService.readPackageManifest`, `PackageManifestsService.deriveMetadata`, `PackageManifestsService.sortKeys`                                                                                                                                                                  | `synchronization/src/modules/package-manifests/package-manifests.service.ts:218`                   |
-| `PackageManifestsCommand.synchronize`                              | 3       | `PackageManifestsService.writeAll`, `PackageManifestsService.checkAll`, `PackageManifestsCommand.map(…)`                                                                                                                                                                                     | `synchronization/src/modules/package-manifests/package-manifests.command.ts:66`                    |
-| `PullRequestLabelsCommand.createLabels`                            | 3       | `PullRequestLabelsGithubService.run`, `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsGithubService.describeFailure`                                                                                                                                                            | `synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:85`                |
-| `PullRequestLabelsCommand.updateLabels`                            | 3       | `PullRequestLabelsGithubService.run`, `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsGithubService.describeFailure`                                                                                                                                                            | `synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:251`               |
-| `SkillExclusionsCommand.writeSync`                                 | 3       | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock`, `SkillExclusionsCommand.map(…)`                                                                                                                                                                            | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:144`                     |
-| `SkillExclusionsCommand.synchronize`                               | 3       | `SkillExclusionsCommand.readSkillNames`, `SkillExclusionsCommand.writeSync`, `SkillExclusionsCommand.findStaleFiles`                                                                                                                                                                         | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:180`                     |
-| `VscodeSettingsCommand.synchronize`                                | 3       | `VscodeSettingsCommand.readMachineSettings`, `VscodeSettingsCommand.findDrift`, `VscodeSettingsCommand.write`                                                                                                                                                                                | `synchronization/src/modules/vscode-settings/vscode-settings.command.ts:121`                       |
-| `SynchronizationCommand.synchronize`                               | 3       | `SynchronizationCommand.getCommands`, `SynchronizationCommand.reportResults`, `SynchronizationCommand.every(…)`                                                                                                                                                                              | `synchronization/src/modules/synchronization/synchronization.command.ts:154`                       |
-| `IssueLabelsService.missingLabels`                                 | 2       | `IssueLabelsService.filter(…)`, `IssueLabelsService.labelsFromAnswers`                                                                                                                                                                                                                       | `synchronization/src/modules/issue-labels/issue-labels.service.ts:77`                              |
-| `IssueLabelsCommand.addLabel`                                      | 2       | `IssueLabelsGithubService.run`, `IssueLabelsGithubService.describeFailure`                                                                                                                                                                                                                   | `synchronization/src/modules/issue-labels/issue-labels.command.ts:57`                              |
-| `IssueLabelsCommand.readLabelNames`                                | 2       | `IssueLabelsCommand.filter(…)`, `IssueLabelsCommand.map(…)`                                                                                                                                                                                                                                  | `synchronization/src/modules/issue-labels/issue-labels.command.ts:118`                             |
-| `SynchronizationService.resolveSynchronizationModeOrExit`          | 2       | `SynchronizationService.resolveModeValue`, `SynchronizationService.exitInvalidMode`                                                                                                                                                                                                          | `synchronization/src/modules/synchronization/synchronization.service.ts:59`                        |
-| `ConformetryGeneratorsCommand.checkSync`                           | 2       | `ConformetryGeneratorsCommand.generateGeneratorsTable`, `ConformetryGeneratorsCommand.filter(…)`                                                                                                                                                                                             | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:64`          |
-| `ConformetryGeneratorsCommand.readGenerators`                      | 2       | `ConfigurationService.loadConformetryConfiguration`, `ConformetryGeneratorsCommand.map(…)`                                                                                                                                                                                                   | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:111`         |
-| `ConformetryGeneratorsCommand.writeSync`                           | 2       | `ConformetryGeneratorsCommand.generateGeneratorsTable`, `ConformetryGeneratorsCommand.readMarkedFile`                                                                                                                                                                                        | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:166`         |
-| `ConformetryGeneratorsCommand.run`                                 | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `ConformetryGeneratorsCommand.synchronize`                                                                                                                                                                                        | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:188`         |
-| `ConventionalConfigIoService.map(…)`                               | 2       | `ConventionalConfigIoService.find(…)`, `ConventionalConfigIoService.capitalize`                                                                                                                                                                                                              | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:93`             |
-| `ConventionalConfigIoService.getReleaseRulesTypes`                 | 2       | `ConventionalConfigIoService.filter(…)`, `ConventionalConfigIoService.map(…)`                                                                                                                                                                                                                | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:184`            |
-| `ConventionalConfigValidatorsService.getSourceValuesForMarker`     | 2       | `ConventionalConfigValidatorsService.map(…)`, `ConventionalConfigValidatorsService.map(…)`                                                                                                                                                                                                   | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:64`     |
-| `ConventionalConfigValidatorsService.readMarkerValues`             | 2       | `ConventionalConfigIoService.extractMarkerContent`, `ConventionalConfigIoService.parseMarkdownTableValues`                                                                                                                                                                                   | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:76`     |
-| `ConventionalConfigCommand.run`                                    | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `ConventionalConfigCommand.synchronize`                                                                                                                                                                                           | `synchronization/src/modules/conventional-config/conventional-config.command.ts:51`                |
-| `DevcontainerConfigurationCommand.check`                           | 2       | `DevcontainerConfigurationCommand.isCurrent`, `DevcontainerConfigurationCommand.reportDifferences`                                                                                                                                                                                           | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:80`  |
-| `DevcontainerConfigurationCommand.writeWhenDrifted`                | 2       | `DevcontainerConfigurationCommand.isCurrent`, `DevcontainerConfigurationCommand.write`                                                                                                                                                                                                       | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:242` |
-| `DevcontainerConfigurationCommand.run`                             | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `DevcontainerConfigurationCommand.synchronize`                                                                                                                                                                                    | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:266` |
-| `InstalledSkillsService.revertTrackedChanges`                      | 2       | `InstalledSkillsService.hasChanges`, `InstalledSkillsService.git`                                                                                                                                                                                                                            | `synchronization/src/modules/installed-skills/installed-skills.service.ts:97`                      |
-| `InstalledSkillsService.findMissingSkills`                         | 2       | `InstalledSkillsService.filter(…)`, `InstalledSkillsService.readLockedSkillNames`                                                                                                                                                                                                            | `synchronization/src/modules/installed-skills/installed-skills.service.ts:173`                     |
-| `InstalledSkillsCommand.run`                                       | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `InstalledSkillsCommand.synchronize`                                                                                                                                                                                              | `synchronization/src/modules/installed-skills/installed-skills.command.ts:186`                     |
-| `InstalledSkillsCommand.synchronize`                               | 2       | `InstalledSkillsCommand.write`, `InstalledSkillsCommand.check`                                                                                                                                                                                                                               | `synchronization/src/modules/installed-skills/installed-skills.command.ts:201`                     |
-| `PackageManifestsService.writeAll`                                 | 2       | `PackageManifestsService.readRootManifest`, `PackageManifestsService.writePackageManifest`                                                                                                                                                                                                   | `synchronization/src/modules/package-manifests/package-manifests.service.ts:205`                   |
-| `PackageManifestsCommand.run`                                      | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `PackageManifestsCommand.synchronize`                                                                                                                                                                                             | `synchronization/src/modules/package-manifests/package-manifests.command.ts:50`                    |
-| `PullRequestLabelsService.readExpectedLabels`                      | 2       | `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.map(…)`                                                                                                                                                                                                                         | `synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:106`               |
-| `PullRequestLabelsCommand.run`                                     | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `PullRequestLabelsCommand.synchronize`                                                                                                                                                                                            | `synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:281`               |
-| `PullRequestTemplateCommand.checkTargetSync`                       | 2       | `PullRequestTemplateCommand.extractMarkerContent`, `PullRequestTemplateCommand.wrapInCodeBlock`                                                                                                                                                                                              | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:55`            |
-| `PullRequestTemplateCommand.handleWriteMode`                       | 2       | `PullRequestTemplateCommand.filter(…)`, `PullRequestTemplateCommand.writeTargetSync`                                                                                                                                                                                                         | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:129`           |
-| `PullRequestTemplateCommand.writeTargetSync`                       | 2       | `PullRequestTemplateCommand.wrapInCodeBlock`, `PullRequestTemplateCommand.replaceMarkerContent`                                                                                                                                                                                              | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:176`           |
-| `PullRequestTemplateCommand.run`                                   | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `PullRequestTemplateCommand.synchronize`                                                                                                                                                                                          | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:202`           |
-| `SkillExclusionsCommand.findStaleFiles`                            | 2       | `SkillExclusionsCommand.map(…)`, `SkillExclusionsCommand.filter(…)`                                                                                                                                                                                                                          | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:71`                      |
-| `SkillExclusionsCommand.filter(…)`                                 | 2       | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock`                                                                                                                                                                                                             | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:72`                      |
-| `SkillExclusionsCommand.readExclusionFile`                         | 2       | `SkillExclusionsCommand.renderStartMarker`, `SkillExclusionsCommand.renderEndMarker`                                                                                                                                                                                                         | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:82`                      |
-| `SkillExclusionsCommand.run`                                       | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `SkillExclusionsCommand.synchronize`                                                                                                                                                                                              | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:165`                     |
-| `TypeormMigrationSqlExtractorService.projectJsonPaths`             | 2       | `TypeormMigrationSqlExtractorService.filter(…)`, `TypeormMigrationSqlExtractorService.map(…)`                                                                                                                                                                                                | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:179` |
-| `TypeormMigrationSqlCommand.run`                                   | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `TypeormMigrationSqlCommand.synchronize`                                                                                                                                                                                          | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:114`           |
-| `VscodeExtensionsCommand.run`                                      | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `VscodeExtensionsCommand.synchronize`                                                                                                                                                                                             | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:187`                   |
-| `VscodeSettingsCommand.run`                                        | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `VscodeSettingsCommand.synchronize`                                                                                                                                                                                               | `synchronization/src/modules/vscode-settings/vscode-settings.command.ts:102`                       |
-| `SynchronizationCommand.run`                                       | 2       | `SynchronizationService.resolveSynchronizationModeOrExit`, `SynchronizationCommand.synchronize`                                                                                                                                                                                              | `synchronization/src/modules/synchronization/synchronization.command.ts:132`                       |
-| `run`                                                              | 2       | `answerGit`, `restore`                                                                                                                                                                                                                                                                       | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:69`           |
-| `SynchronizationMarkersService.locateMarkers`                      | 2       | `SynchronizationMarkersService.getStartMarker`, `SynchronizationMarkersService.getEndMarker`                                                                                                                                                                                                 | `synchronization/src/modules/synchronization/synchronization-markers.service.ts:24`                |
-| `IssueLabelsGithubService.describeFailure`                         | 1       | `IssueLabelsGithubService.filter(…)`                                                                                                                                                                                                                                                         | `synchronization/src/modules/issue-labels/issue-labels-github.service.ts:43`                       |
-| `IssueLabelsGithubService.isAvailable`                             | 1       | `IssueLabelsGithubService.run`                                                                                                                                                                                                                                                               | `synchronization/src/modules/issue-labels/issue-labels-github.service.ts:52`                       |
-| `IssueLabelsService.parseFormAnswers`                              | 1       | `IssueLabelsService.extractFormField`                                                                                                                                                                                                                                                        | `synchronization/src/modules/issue-labels/issue-labels.service.ts:90`                              |
-| `IssueLabelsCommand.nameOf`                                        | 1       | `IssueLabelsCommand.isRecord`                                                                                                                                                                                                                                                                | `synchronization/src/modules/issue-labels/issue-labels.command.ts:82`                              |
-| `IssueLabelsCommand.readExistingLabelNames`                        | 1       | `IssueLabelsCommand.readLabelNames`                                                                                                                                                                                                                                                          | `synchronization/src/modules/issue-labels/issue-labels.command.ts:94`                              |
-| `IssueLabelsCommand.map(…)`                                        | 1       | `IssueLabelsCommand.nameOf`                                                                                                                                                                                                                                                                  | `synchronization/src/modules/issue-labels/issue-labels.command.ts:120`                             |
-| `SynchronizationService.resolveModeValue`                          | 1       | `SynchronizationService.isSynchronizationMode`                                                                                                                                                                                                                                               | `synchronization/src/modules/synchronization/synchronization.service.ts:40`                        |
-| `ConformetryGeneratorsCommand.filter(…)`                           | 1       | `ConformetryGeneratorsCommand.readMarkedFile`                                                                                                                                                                                                                                                | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:66`          |
-| `ConformetryGeneratorsCommand.generateGeneratorsTable`             | 1       | `ConformetryGeneratorsCommand.map(…)`                                                                                                                                                                                                                                                        | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:98`          |
-| `ConventionalConfigIoService.writeIssueTemplateDropdown`           | 1       | `ConventionalConfigIoService.generateYamlDropdownOptions`                                                                                                                                                                                                                                    | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:62`             |
-| `ConventionalConfigIoService.appendToPresetTypes`                  | 1       | `ConventionalConfigIoService.map(…)`                                                                                                                                                                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:86`             |
-| `ConventionalConfigIoService.appendToReleaseRules`                 | 1       | `ConventionalConfigIoService.map(…)`                                                                                                                                                                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:110`            |
-| `ConventionalConfigIoService.formatScopesForSettings`              | 1       | `ConventionalConfigIoService.map(…)`                                                                                                                                                                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:141`            |
-| `ConventionalConfigIoService.generateYamlDropdownOptions`          | 1       | `ConventionalConfigIoService.map(…)`                                                                                                                                                                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:170`            |
-| `ConventionalConfigIoService.getPresetConfigTypes`                 | 1       | `ConventionalConfigIoService.map(…)`                                                                                                                                                                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:177`            |
-| `ConventionalConfigIoService.writeSettingsSync`                    | 1       | `ConventionalConfigIoService.formatScopesForSettings`                                                                                                                                                                                                                                        | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:327`            |
-| `ConventionalConfigValidatorsService.validateMarkerValues`         | 1       | `ConventionalConfigValidatorsService.showDifference`                                                                                                                                                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:123`    |
-| `ConventionalConfigValidatorsService.checkAllSkillsSync`           | 1       | `ConventionalConfigValidatorsService.checkSkillSync`                                                                                                                                                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:155`    |
-| `ConventionalConfigValidatorsService.checkAllTemplatesSync`        | 1       | `ConventionalConfigValidatorsService.checkIssueTemplateSync`                                                                                                                                                                                                                                 | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:169`    |
-| `ConventionalConfigValidatorsService.checkReleaseRulesSync`        | 1       | `ConventionalConfigValidatorsService.filter(…)`                                                                                                                                                                                                                                              | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:244`    |
-| `ConventionalConfigValidatorsService.checkSettingsSync`            | 1       | `ConventionalConfigValidatorsService.showDifference`                                                                                                                                                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:269`    |
-| `ConventionalConfigValidatorsService.checkSkillSync`               | 1       | `ConventionalConfigValidatorsService.checkMarkerSync`                                                                                                                                                                                                                                        | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:293`    |
-| `ConventionalConfigService.filter(…)`                              | 1       | `ConventionalConfigValidatorsService.checkSkillSync`                                                                                                                                                                                                                                         | `synchronization/src/modules/conventional-config/conventional-config.service.ts:190`               |
-| `ConventionalConfigService.filter(…)`                              | 1       | `ConventionalConfigValidatorsService.checkIssueTemplateSync`                                                                                                                                                                                                                                 | `synchronization/src/modules/conventional-config/conventional-config.service.ts:197`               |
-| `ConventionalConfigCommand.synchronize`                            | 1       | `ConventionalConfigService.runSynchronization`                                                                                                                                                                                                                                               | `synchronization/src/modules/conventional-config/conventional-config.command.ts:70`                |
-| `DevcontainerConfigurationCommand.syncFeatures`                    | 1       | `DevcontainerConfigurationCommand.isDockerFeatureKey`                                                                                                                                                                                                                                        | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:180` |
-| `InstalledSkillsService.filter(…)`                                 | 1       | `InstalledSkillsService.hasChanges`                                                                                                                                                                                                                                                          | `synchronization/src/modules/installed-skills/installed-skills.service.ts:58`                      |
-| `InstalledSkillsService.git`                                       | 1       | `InstalledSkillsProcessService.run`                                                                                                                                                                                                                                                          | `synchronization/src/modules/installed-skills/installed-skills.service.ts:65`                      |
-| `InstalledSkillsService.hasChanges`                                | 1       | `InstalledSkillsService.git`                                                                                                                                                                                                                                                                 | `synchronization/src/modules/installed-skills/installed-skills.service.ts:70`                      |
-| `InstalledSkillsService.runRestore`                                | 1       | `InstalledSkillsProcessService.run`                                                                                                                                                                                                                                                          | `synchronization/src/modules/installed-skills/installed-skills.service.ts:122`                     |
-| `InstalledSkillsService.verifyRestoration`                         | 1       | `InstalledSkillsService.findMissingSkills`                                                                                                                                                                                                                                                   | `synchronization/src/modules/installed-skills/installed-skills.service.ts:139`                     |
-| `PackageManifestsService.sortKeys`                                 | 1       | `PackageManifestsService.toSorted(…)`                                                                                                                                                                                                                                                        | `synchronization/src/modules/package-manifests/package-manifests.service.ts:83`                    |
-| `PackageManifestsService.map(…)`                                   | 1       | `PackageManifestsService.checkPackageManifest`                                                                                                                                                                                                                                               | `synchronization/src/modules/package-manifests/package-manifests.service.ts:102`                   |
-| `PullRequestLabelsGithubService.describeFailure`                   | 1       | `PullRequestLabelsGithubService.filter(…)`                                                                                                                                                                                                                                                   | `synchronization/src/modules/pull-request-labels/pull-request-labels-github.service.ts:42`         |
-| `PullRequestLabelsService.isTrackedLabel`                          | 1       | `PullRequestLabelsService.some(…)`                                                                                                                                                                                                                                                           | `synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:45`                |
-| `PullRequestLabelsService.filter(…)`                               | 1       | `PullRequestLabelsService.isTrackedLabel`                                                                                                                                                                                                                                                    | `synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:82`                |
-| `PullRequestLabelsCommand.describePlan`                            | 1       | `PullRequestLabelsCommand.appendToReport`                                                                                                                                                                                                                                                    | `synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:118`               |
-| `PullRequestLabelsCommand.reportStaleLabels`                       | 1       | `PullRequestLabelsCommand.appendToReport`                                                                                                                                                                                                                                                    | `synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:238`               |
-| `PullRequestTemplateCommand.handleCheckMode`                       | 1       | `PullRequestTemplateCommand.checkTargetSync`                                                                                                                                                                                                                                                 | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:106`           |
-| `PullRequestTemplateCommand.filter(…)`                             | 1       | `PullRequestTemplateCommand.checkTargetSync`                                                                                                                                                                                                                                                 | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:134`           |
-| `SkillExclusionsCommand.readSkillNames`                            | 1       | `SkillExclusionsCommand.toSorted(…)`                                                                                                                                                                                                                                                         | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:115`                     |
-| `SkillExclusionsCommand.renderBlock`                               | 1       | `SkillExclusionsCommand.map(…)`                                                                                                                                                                                                                                                              | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:127`                     |
-| `TypeormMigrationSqlExtractorService.checkExtractedSql`            | 1       | `TypeormMigrationSqlExtractorService.maybeFile`                                                                                                                                                                                                                                              | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:34`  |
-| `TypeormMigrationSqlExtractorService.explicitTarget`               | 1       | `TypeormMigrationSqlOptionsError.constructor`                                                                                                                                                                                                                                                | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:48`  |
-| `TypeormMigrationSqlExtractorService.maybeFile`                    | 1       | `TypeormMigrationSqlExtractorService.catch(…)`                                                                                                                                                                                                                                               | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:92`  |
-| `TypeormMigrationSqlExtractorService.projectJsonPath`              | 1       | `TypeormMigrationSqlExtractorService.some(…)`                                                                                                                                                                                                                                                | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:167` |
-| `TypeormMigrationSqlExtractorService.map(…)`                       | 1       | `TypeormMigrationSqlExtractorService.projectJsonPathsForDirectory`                                                                                                                                                                                                                           | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:184` |
-| `TypeormMigrationSqlExtractorService.map(…)`                       | 1       | `TypeormMigrationSqlExtractorService.projectJsonPath`                                                                                                                                                                                                                                        | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:204` |
-| `TypeormMigrationSqlExtractorService.sortedMigrationEntries`       | 1       | `TypeormMigrationSqlExtractorService.filter(…)`                                                                                                                                                                                                                                              | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:233` |
-| `TypeormMigrationSqlExtractorService.sqlFromQueryCall`             | 1       | `TypeormMigrationSqlExtractorService.sqlLiteral`                                                                                                                                                                                                                                             | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:245` |
-| `TypeormMigrationSqlExtractorService.statementsFromClass`          | 1       | `TypeormMigrationSqlExtractorService.statementsFromMethod`                                                                                                                                                                                                                                   | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:287` |
-| `TypeormMigrationSqlExtractorService.visit`                        | 1       | `TypeormMigrationSqlExtractorService.sqlFromQueryCall`                                                                                                                                                                                                                                       | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:318` |
-| `TypeormMigrationSqlExtractorService.visit`                        | 1       | `TypeormMigrationSqlExtractorService.statementsFromClass`                                                                                                                                                                                                                                    | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:340` |
-| `TypeormMigrationSqlExtractorService.map(…)`                       | 1       | `TypeormMigrationSqlExtractorService.parsedProjectTarget`                                                                                                                                                                                                                                    | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:488` |
-| `TypeormMigrationSqlCommand.synchronize`                           | 1       | `TypeormMigrationSqlExtractorService.synchronize`                                                                                                                                                                                                                                            | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:133`           |
-| `VscodeExtensionsCommand.isCurrent`                                | 1       | `VscodeExtensionsCommand.hasSameEntries`                                                                                                                                                                                                                                                     | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:67`                    |
-| `VscodeExtensionsCommand.reportDifferences`                        | 1       | `VscodeExtensionsCommand.hasSameEntries`                                                                                                                                                                                                                                                     | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:95`                    |
-| `VscodeExtensionsCommand.reportDrift`                              | 1       | `VscodeExtensionsCommand.reportDifferences`                                                                                                                                                                                                                                                  | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:109`                   |
-| `VscodeExtensionsCommand.synchronize`                              | 1       | `VscodeExtensionsCommand.map(…)`                                                                                                                                                                                                                                                             | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:206`                   |
-| `VscodeExtensionsCommand.map(…)`                                   | 1       | `VscodeExtensionsCommand.synchronizeDevcontainer`                                                                                                                                                                                                                                            | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:213`                   |
-| `restore`                                                          | 1       | `installSkill`                                                                                                                                                                                                                                                                               | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:25`           |
-| `isDirty`                                                          | 1       | `isLockfileDirty`                                                                                                                                                                                                                                                                            | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:46`           |
-| `answerGit`                                                        | 1       | `isDirty`                                                                                                                                                                                                                                                                                    | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:60`           |
-| `lockSkills`                                                       | 1       | `map(…)`                                                                                                                                                                                                                                                                                     | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:90`           |
-| `SynchronizationMarkersService.extractContent`                     | 1       | `SynchronizationMarkersService.locateMarkers`                                                                                                                                                                                                                                                | `synchronization/src/modules/synchronization/synchronization-markers.service.ts:44`                |
-| `SynchronizationMarkersService.replaceContent`                     | 1       | `SynchronizationMarkersService.locateMarkers`                                                                                                                                                                                                                                                | `synchronization/src/modules/synchronization/synchronization-markers.service.ts:65`                |
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `ConventionalConfigService.runSynchronization` | 6 | `ConventionalConfigService.loadConventionalConfig`, `ConventionalConfigService.map(…)`, `ConventionalConfigIoService.parseSettingsScopes`, `ConventionalConfigService.map(…)`, `ConventionalConfigService.handleCheckMode`, `ConventionalConfigService.handleWriteMode` | `synchronization/src/modules/conventional-config/conventional-config.service.ts:240` |
+| `InstalledSkillsService.restoreSkills` | 6 | `InstalledSkillsService.git`, `InstalledSkillsService.hasChanges`, `InstalledSkillsService.findCleanSkillFolders`, `InstalledSkillsService.runRestore`, `InstalledSkillsService.revertTrackedChanges`, `InstalledSkillsService.verifyRestoration` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:205` |
+| `PackageManifestsService.checkPackageManifest` | 6 | `PackageManifestsService.readPackageManifest`, `PackageManifestsService.deriveMetadata`, `PackageManifestsService.compareStringField`, `PackageManifestsService.compareBugsField`, `PackageManifestsService.compareRepositoryField`, `PackageManifestsService.filter(…)` | `synchronization/src/modules/package-manifests/package-manifests.service.ts:125` |
+| `ConventionalConfigService.syncReleaseConfigIfNeeded` | 5 | `ConventionalConfigService.loadReleaseConfig`, `ConventionalConfigService.filter(…)`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigIoService.getPresetConfigTypes`, `ConventionalConfigIoService.writeReleaseConfigSync` | `synchronization/src/modules/conventional-config/conventional-config.service.ts:93` |
+| `TypeormMigrationSqlExtractorService.synchronize` | 5 | `TypeormMigrationSqlExtractorService.targets`, `TypeormMigrationSqlExtractorService.migrationFiles`, `TypeormMigrationSqlExtractorService.migrationOption`, `TypeormMigrationSqlExtractorService.synchronizeMigration`, `TypeormMigrationSqlExtractorService.migrationSqlPaths` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:425` |
+| `TypeormMigrationSqlExtractorService.targets` | 5 | `TypeormMigrationSqlExtractorService.explicitTarget`, `TypeormMigrationSqlExtractorService.projectJsonPaths`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.filter(…)`, `TypeormMigrationSqlExtractorService.map(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:480` |
+| `SynchronizationCommand.reportResults` | 5 | `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)` | `synchronization/src/modules/synchronization/synchronization.command.ts:99` |
+| `ConventionalConfigIoService.writeSkillSync` | 4 | `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.generateMarkdownTable`, `ConventionalConfigIoService.replaceMarkerContent` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:353` |
+| `InstalledSkillsCommand.write` | 4 | `InstalledSkillsCommand.isSet`, `InstalledSkillsService.findMissingSkills`, `InstalledSkillsCommand.announceRestoration`, `InstalledSkillsService.restoreSkills` | `synchronization/src/modules/installed-skills/installed-skills.command.ts:146` |
+| `PackageManifestsService.checkAll` | 4 | `PackageManifestsService.readRootManifest`, `PackageManifestsService.map(…)`, `PackageManifestsService.filter(…)`, `PackageManifestsService.filter(…)` | `synchronization/src/modules/package-manifests/package-manifests.service.ts:100` |
+| `ProjectPortsCommand.findPortProjects` | 4 | `ProjectPortsCommand.filter(…)`, `ProjectPortsCommand.filter(…)`, `ProjectPortsCommand.map(…)`, `ProjectPortsCommand.flatMap(…)` | `synchronization/src/modules/project-ports/project-ports.command.ts:90` |
+| `PullRequestTemplateCommand.synchronize` | 4 | `PullRequestTemplateCommand.map(…)`, `PullRequestTemplateCommand.loadTemplate`, `PullRequestTemplateCommand.handleCheckMode`, `PullRequestTemplateCommand.handleWriteMode` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:221` |
+| `TypeormMigrationSqlExtractorService.migrationFiles` | 4 | `TypeormMigrationSqlExtractorService.singleMigrationFile`, `TypeormMigrationSqlExtractorService.sortedMigrationEntries`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.latestMigrationEntry` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:97` |
+| `TypeormMigrationSqlExtractorService.projectJsonPathsForDirectory` | 4 | `TypeormMigrationSqlExtractorService.some(…)`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.filter(…)`, `TypeormMigrationSqlExtractorService.filter(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:192` |
+| `TypeormMigrationSqlExtractorService.synchronizeMigration` | 4 | `TypeormMigrationSqlExtractorService.statementsFromMigrationFile`, `TypeormMigrationSqlExtractorService.renderSql`, `TypeormMigrationSqlExtractorService.writeExtractedSql`, `TypeormMigrationSqlExtractorService.checkExtractedSql` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:357` |
+| `VscodeExtensionsCommand.synchronizeDevcontainer` | 4 | `VscodeExtensionsCommand.readDevcontainer`, `VscodeExtensionsCommand.isCurrent`, `VscodeExtensionsCommand.reportDrift`, `VscodeExtensionsCommand.write` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:139` |
+| `ConformetryGeneratorsCommand.synchronize` | 3 | `ConformetryGeneratorsCommand.readGenerators`, `ConformetryGeneratorsCommand.checkSync`, `ConformetryGeneratorsCommand.writeSync` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:206` |
+| `ConventionalConfigIoService.writeIssueTemplateSync` | 3 | `ConventionalConfigIoService.writeIssueTemplateDropdown`, `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.map(…)` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:258` |
+| `ConventionalConfigValidatorsService.checkMarkerSync` | 3 | `ConventionalConfigValidatorsService.readMarkerValues`, `ConventionalConfigValidatorsService.getSourceValuesForMarker`, `ConventionalConfigValidatorsService.validateMarkerValues` | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:41` |
+| `ConventionalConfigValidatorsService.checkIssueTemplateSync` | 3 | `ConventionalConfigValidatorsService.getSourceValuesForMarker`, `ConventionalConfigIoService.parseIssueTemplateDropdown`, `ConventionalConfigValidatorsService.validateMarkerValues` | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:185` |
+| `DevcontainerConfigurationCommand.applySync` | 3 | `DevcontainerConfigurationCommand.syncVerbatimFields`, `DevcontainerConfigurationCommand.preserveRemoteEnvironment`, `DevcontainerConfigurationCommand.syncFeatures` | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:59` |
+| `DevcontainerConfigurationCommand.synchronize` | 3 | `DevcontainerConfigurationCommand.applySync`, `DevcontainerConfigurationCommand.check`, `DevcontainerConfigurationCommand.writeWhenDrifted` | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:285` |
+| `InstalledSkillsService.findCleanSkillFolders` | 3 | `InstalledSkillsService.filter(…)`, `InstalledSkillsService.map(…)`, `InstalledSkillsService.readLockedSkillNames` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:54` |
+| `InstalledSkillsCommand.check` | 3 | `InstalledSkillsService.findMissingSkills`, `InstalledSkillsCommand.print`, `InstalledSkillsCommand.isCloudAgent` | `synchronization/src/modules/installed-skills/installed-skills.command.ts:87` |
+| `PackageManifestsService.writePackageManifest` | 3 | `PackageManifestsService.readPackageManifest`, `PackageManifestsService.deriveMetadata`, `PackageManifestsService.sortKeys` | `synchronization/src/modules/package-manifests/package-manifests.service.ts:218` |
+| `PackageManifestsCommand.synchronize` | 3 | `PackageManifestsService.writeAll`, `PackageManifestsService.checkAll`, `PackageManifestsCommand.map(…)` | `synchronization/src/modules/package-manifests/package-manifests.command.ts:66` |
+| `ProjectPortsCommand.findProjectDirectories` | 3 | `ProjectPortsCommand.filter(…)`, `ProjectPortsCommand.map(…)`, `ProjectPortsCommand.filter(…)` | `synchronization/src/modules/project-ports/project-ports.command.ts:108` |
+| `ProjectPortsCommand.rewritePort` | 3 | `ProjectPortsCommand.filter(…)`, `ProjectPortsCommand.listFiles`, `ProjectPortsCommand.resolveScope` | `synchronization/src/modules/project-ports/project-ports.command.ts:163` |
+| `ProjectPortsCommand.synchronizeProject` | 3 | `ProjectPortsCommand.readCurrentPort`, `ProjectPortsCommand.map(…)`, `ProjectPortsCommand.rewritePort` | `synchronization/src/modules/project-ports/project-ports.command.ts:186` |
+| `ProjectPortsCommand.synchronize` | 3 | `ProjectPortsCommand.findPortProjects`, `ProjectPortsCommand.verifyDistinctPorts`, `ProjectPortsCommand.map(…)` | `synchronization/src/modules/project-ports/project-ports.command.ts:273` |
+| `SkillExclusionsCommand.writeSync` | 3 | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock`, `SkillExclusionsCommand.map(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:169` |
+| `SkillExclusionsCommand.synchronize` | 3 | `SkillExclusionsCommand.readInputs`, `SkillExclusionsCommand.writeSync`, `SkillExclusionsCommand.findStaleFiles` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:206` |
+| `VscodeSettingsCommand.synchronize` | 3 | `VscodeSettingsCommand.readMachineSettings`, `VscodeSettingsCommand.findDrift`, `VscodeSettingsCommand.write` | `synchronization/src/modules/vscode-settings/vscode-settings.command.ts:121` |
+| `SynchronizationCommand.synchronize` | 3 | `SynchronizationCommand.getCommands`, `SynchronizationCommand.reportResults`, `SynchronizationCommand.every(…)` | `synchronization/src/modules/synchronization/synchronization.command.ts:152` |
+| `SynchronizationService.resolveSynchronizationModeOrExit` | 2 | `SynchronizationService.resolveModeValue`, `SynchronizationService.exitInvalidMode` | `synchronization/src/modules/synchronization/synchronization.service.ts:59` |
+| `ConformetryGeneratorsCommand.checkSync` | 2 | `ConformetryGeneratorsCommand.generateGeneratorsTable`, `ConformetryGeneratorsCommand.filter(…)` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:64` |
+| `ConformetryGeneratorsCommand.readGenerators` | 2 | `ConfigurationService.loadConformetryConfiguration`, `ConformetryGeneratorsCommand.map(…)` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:111` |
+| `ConformetryGeneratorsCommand.writeSync` | 2 | `ConformetryGeneratorsCommand.generateGeneratorsTable`, `ConformetryGeneratorsCommand.readMarkedFile` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:166` |
+| `ConformetryGeneratorsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `ConformetryGeneratorsCommand.synchronize` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:188` |
+| `ConventionalConfigIoService.map(…)` | 2 | `ConventionalConfigIoService.find(…)`, `ConventionalConfigIoService.capitalize` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:93` |
+| `ConventionalConfigIoService.getReleaseRulesTypes` | 2 | `ConventionalConfigIoService.filter(…)`, `ConventionalConfigIoService.map(…)` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:184` |
+| `ConventionalConfigValidatorsService.getSourceValuesForMarker` | 2 | `ConventionalConfigValidatorsService.map(…)`, `ConventionalConfigValidatorsService.map(…)` | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:64` |
+| `ConventionalConfigValidatorsService.readMarkerValues` | 2 | `ConventionalConfigIoService.extractMarkerContent`, `ConventionalConfigIoService.parseMarkdownTableValues` | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:76` |
+| `ConventionalConfigCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `ConventionalConfigCommand.synchronize` | `synchronization/src/modules/conventional-config/conventional-config.command.ts:51` |
+| `DevcontainerConfigurationCommand.check` | 2 | `DevcontainerConfigurationCommand.isCurrent`, `DevcontainerConfigurationCommand.reportDifferences` | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:80` |
+| `DevcontainerConfigurationCommand.writeWhenDrifted` | 2 | `DevcontainerConfigurationCommand.isCurrent`, `DevcontainerConfigurationCommand.write` | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:242` |
+| `DevcontainerConfigurationCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `DevcontainerConfigurationCommand.synchronize` | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:266` |
+| `InstalledSkillsService.revertTrackedChanges` | 2 | `InstalledSkillsService.hasChanges`, `InstalledSkillsService.git` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:97` |
+| `InstalledSkillsService.findMissingSkills` | 2 | `InstalledSkillsService.filter(…)`, `InstalledSkillsService.readLockedSkillNames` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:173` |
+| `InstalledSkillsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `InstalledSkillsCommand.synchronize` | `synchronization/src/modules/installed-skills/installed-skills.command.ts:186` |
+| `InstalledSkillsCommand.synchronize` | 2 | `InstalledSkillsCommand.write`, `InstalledSkillsCommand.check` | `synchronization/src/modules/installed-skills/installed-skills.command.ts:201` |
+| `PackageManifestsService.writeAll` | 2 | `PackageManifestsService.readRootManifest`, `PackageManifestsService.writePackageManifest` | `synchronization/src/modules/package-manifests/package-manifests.service.ts:205` |
+| `PackageManifestsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `PackageManifestsCommand.synchronize` | `synchronization/src/modules/package-manifests/package-manifests.command.ts:50` |
+| `ProjectPortsCommand.describeProject` | 2 | `ProjectPortsCommand.find(…)`, `ProjectPortsService.textToPort` | `synchronization/src/modules/project-ports/project-ports.command.ts:67` |
+| `ProjectPortsCommand.flatMap(…)` | 2 | `ProjectPortsCommand.isProject`, `ProjectPortsCommand.findProjectDirectories` | `synchronization/src/modules/project-ports/project-ports.command.ts:96` |
+| `ProjectPortsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `ProjectPortsCommand.synchronize` | `synchronization/src/modules/project-ports/project-ports.command.ts:254` |
+| `PullRequestTemplateCommand.checkTargetSync` | 2 | `PullRequestTemplateCommand.extractMarkerContent`, `PullRequestTemplateCommand.wrapInCodeBlock` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:55` |
+| `PullRequestTemplateCommand.handleWriteMode` | 2 | `PullRequestTemplateCommand.filter(…)`, `PullRequestTemplateCommand.writeTargetSync` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:129` |
+| `PullRequestTemplateCommand.writeTargetSync` | 2 | `PullRequestTemplateCommand.wrapInCodeBlock`, `PullRequestTemplateCommand.replaceMarkerContent` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:176` |
+| `PullRequestTemplateCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `PullRequestTemplateCommand.synchronize` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:202` |
+| `SkillExclusionsCommand.findStaleFiles` | 2 | `SkillExclusionsCommand.map(…)`, `SkillExclusionsCommand.filter(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:81` |
+| `SkillExclusionsCommand.filter(…)` | 2 | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:82` |
+| `SkillExclusionsCommand.readExclusionFile` | 2 | `SkillExclusionsCommand.renderStartMarker`, `SkillExclusionsCommand.renderEndMarker` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:90` |
+| `SkillExclusionsCommand.readInputs` | 2 | `SkillExclusionsCommand.toSorted(…)`, `SkillExclusionsCommand.flatMap(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:123` |
+| `SkillExclusionsCommand.renderBlock` | 2 | `SkillExclusionsCommand.map(…)`, `SkillExclusionsCommand.map(…)` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:144` |
+| `SkillExclusionsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SkillExclusionsCommand.synchronize` | `synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:191` |
+| `TypeormMigrationSqlExtractorService.projectJsonPaths` | 2 | `TypeormMigrationSqlExtractorService.filter(…)`, `TypeormMigrationSqlExtractorService.map(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:179` |
+| `TypeormMigrationSqlCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `TypeormMigrationSqlCommand.synchronize` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:114` |
+| `VscodeExtensionsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `VscodeExtensionsCommand.synchronize` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:187` |
+| `VscodeSettingsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `VscodeSettingsCommand.synchronize` | `synchronization/src/modules/vscode-settings/vscode-settings.command.ts:102` |
+| `SynchronizationCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SynchronizationCommand.synchronize` | `synchronization/src/modules/synchronization/synchronization.command.ts:130` |
+| `run` | 2 | `answerGit`, `restore` | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:69` |
+| `SynchronizationMarkersService.locateMarkers` | 2 | `SynchronizationMarkersService.getStartMarker`, `SynchronizationMarkersService.getEndMarker` | `synchronization/src/modules/synchronization/synchronization-markers.service.ts:24` |
+| `SynchronizationService.resolveModeValue` | 1 | `SynchronizationService.isSynchronizationMode` | `synchronization/src/modules/synchronization/synchronization.service.ts:40` |
+| `ConformetryGeneratorsCommand.filter(…)` | 1 | `ConformetryGeneratorsCommand.readMarkedFile` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:66` |
+| `ConformetryGeneratorsCommand.generateGeneratorsTable` | 1 | `ConformetryGeneratorsCommand.map(…)` | `synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:98` |
+| `ConventionalConfigIoService.writeIssueTemplateDropdown` | 1 | `ConventionalConfigIoService.generateYamlDropdownOptions` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:62` |
+| `ConventionalConfigIoService.appendToPresetTypes` | 1 | `ConventionalConfigIoService.map(…)` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:86` |
+| `ConventionalConfigIoService.appendToReleaseRules` | 1 | `ConventionalConfigIoService.map(…)` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:110` |
+| `ConventionalConfigIoService.formatScopesForSettings` | 1 | `ConventionalConfigIoService.map(…)` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:141` |
+| `ConventionalConfigIoService.generateYamlDropdownOptions` | 1 | `ConventionalConfigIoService.map(…)` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:170` |
+| `ConventionalConfigIoService.getPresetConfigTypes` | 1 | `ConventionalConfigIoService.map(…)` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:177` |
+| `ConventionalConfigIoService.writeSettingsSync` | 1 | `ConventionalConfigIoService.formatScopesForSettings` | `synchronization/src/modules/conventional-config/conventional-config-io.service.ts:327` |
+| `ConventionalConfigValidatorsService.validateMarkerValues` | 1 | `ConventionalConfigValidatorsService.showDifference` | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:123` |
+| `ConventionalConfigValidatorsService.checkAllSkillsSync` | 1 | `ConventionalConfigValidatorsService.checkSkillSync` | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:155` |
+| `ConventionalConfigValidatorsService.checkAllTemplatesSync` | 1 | `ConventionalConfigValidatorsService.checkIssueTemplateSync` | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:169` |
+| `ConventionalConfigValidatorsService.checkReleaseRulesSync` | 1 | `ConventionalConfigValidatorsService.filter(…)` | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:244` |
+| `ConventionalConfigValidatorsService.checkSettingsSync` | 1 | `ConventionalConfigValidatorsService.showDifference` | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:269` |
+| `ConventionalConfigValidatorsService.checkSkillSync` | 1 | `ConventionalConfigValidatorsService.checkMarkerSync` | `synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:293` |
+| `ConventionalConfigService.filter(…)` | 1 | `ConventionalConfigValidatorsService.checkSkillSync` | `synchronization/src/modules/conventional-config/conventional-config.service.ts:190` |
+| `ConventionalConfigService.filter(…)` | 1 | `ConventionalConfigValidatorsService.checkIssueTemplateSync` | `synchronization/src/modules/conventional-config/conventional-config.service.ts:197` |
+| `ConventionalConfigCommand.synchronize` | 1 | `ConventionalConfigService.runSynchronization` | `synchronization/src/modules/conventional-config/conventional-config.command.ts:70` |
+| `DevcontainerConfigurationCommand.syncFeatures` | 1 | `DevcontainerConfigurationCommand.isDockerFeatureKey` | `synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.command.ts:180` |
+| `InstalledSkillsService.filter(…)` | 1 | `InstalledSkillsService.hasChanges` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:58` |
+| `InstalledSkillsService.git` | 1 | `InstalledSkillsProcessService.run` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:65` |
+| `InstalledSkillsService.hasChanges` | 1 | `InstalledSkillsService.git` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:70` |
+| `InstalledSkillsService.runRestore` | 1 | `InstalledSkillsProcessService.run` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:122` |
+| `InstalledSkillsService.verifyRestoration` | 1 | `InstalledSkillsService.findMissingSkills` | `synchronization/src/modules/installed-skills/installed-skills.service.ts:139` |
+| `PackageManifestsService.sortKeys` | 1 | `PackageManifestsService.toSorted(…)` | `synchronization/src/modules/package-manifests/package-manifests.service.ts:83` |
+| `PackageManifestsService.map(…)` | 1 | `PackageManifestsService.checkPackageManifest` | `synchronization/src/modules/package-manifests/package-manifests.service.ts:102` |
+| `ProjectPortsService.replacePort` | 1 | `ProjectPortsService.map(…)` | `synchronization/src/modules/project-ports/project-ports.service.ts:36` |
+| `ProjectPortsCommand.map(…)` | 1 | `ProjectPortsCommand.describeProject` | `synchronization/src/modules/project-ports/project-ports.command.ts:103` |
+| `ProjectPortsCommand.filter(…)` | 1 | `ProjectPortsCommand.isProject` | `synchronization/src/modules/project-ports/project-ports.command.ts:112` |
+| `ProjectPortsCommand.listFiles` | 1 | `ProjectPortsCommand.flatMap(…)` | `synchronization/src/modules/project-ports/project-ports.command.ts:121` |
+| `ProjectPortsCommand.flatMap(…)` | 1 | `ProjectPortsCommand.listFiles` | `synchronization/src/modules/project-ports/project-ports.command.ts:122` |
+| `ProjectPortsCommand.filter(…)` | 1 | `ProjectPortsService.replacePort` | `synchronization/src/modules/project-ports/project-ports.command.ts:169` |
+| `ProjectPortsCommand.verifyDistinctPorts` | 1 | `ProjectPortsCommand.filter(…)` | `synchronization/src/modules/project-ports/project-ports.command.ts:231` |
+| `ProjectPortsCommand.map(…)` | 1 | `ProjectPortsCommand.synchronizeProject` | `synchronization/src/modules/project-ports/project-ports.command.ts:281` |
+| `PullRequestTemplateCommand.handleCheckMode` | 1 | `PullRequestTemplateCommand.checkTargetSync` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:106` |
+| `PullRequestTemplateCommand.filter(…)` | 1 | `PullRequestTemplateCommand.checkTargetSync` | `synchronization/src/modules/pull-request-template/pull-request-template.command.ts:134` |
+| `TypeormMigrationSqlExtractorService.checkExtractedSql` | 1 | `TypeormMigrationSqlExtractorService.maybeFile` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:34` |
+| `TypeormMigrationSqlExtractorService.explicitTarget` | 1 | `TypeormMigrationSqlOptionsError.constructor` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:48` |
+| `TypeormMigrationSqlExtractorService.maybeFile` | 1 | `TypeormMigrationSqlExtractorService.catch(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:92` |
+| `TypeormMigrationSqlExtractorService.projectJsonPath` | 1 | `TypeormMigrationSqlExtractorService.some(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:167` |
+| `TypeormMigrationSqlExtractorService.map(…)` | 1 | `TypeormMigrationSqlExtractorService.projectJsonPathsForDirectory` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:184` |
+| `TypeormMigrationSqlExtractorService.map(…)` | 1 | `TypeormMigrationSqlExtractorService.projectJsonPath` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:204` |
+| `TypeormMigrationSqlExtractorService.sortedMigrationEntries` | 1 | `TypeormMigrationSqlExtractorService.filter(…)` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:233` |
+| `TypeormMigrationSqlExtractorService.sqlFromQueryCall` | 1 | `TypeormMigrationSqlExtractorService.sqlLiteral` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:245` |
+| `TypeormMigrationSqlExtractorService.statementsFromClass` | 1 | `TypeormMigrationSqlExtractorService.statementsFromMethod` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:287` |
+| `TypeormMigrationSqlExtractorService.visit` | 1 | `TypeormMigrationSqlExtractorService.sqlFromQueryCall` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:318` |
+| `TypeormMigrationSqlExtractorService.visit` | 1 | `TypeormMigrationSqlExtractorService.statementsFromClass` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:340` |
+| `TypeormMigrationSqlExtractorService.map(…)` | 1 | `TypeormMigrationSqlExtractorService.parsedProjectTarget` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:488` |
+| `TypeormMigrationSqlCommand.synchronize` | 1 | `TypeormMigrationSqlExtractorService.synchronize` | `synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:133` |
+| `VscodeExtensionsCommand.isCurrent` | 1 | `VscodeExtensionsCommand.hasSameEntries` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:67` |
+| `VscodeExtensionsCommand.reportDifferences` | 1 | `VscodeExtensionsCommand.hasSameEntries` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:95` |
+| `VscodeExtensionsCommand.reportDrift` | 1 | `VscodeExtensionsCommand.reportDifferences` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:109` |
+| `VscodeExtensionsCommand.synchronize` | 1 | `VscodeExtensionsCommand.map(…)` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:206` |
+| `VscodeExtensionsCommand.map(…)` | 1 | `VscodeExtensionsCommand.synchronizeDevcontainer` | `synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:213` |
+| `restore` | 1 | `installSkill` | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:25` |
+| `isDirty` | 1 | `isLockfileDirty` | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:46` |
+| `answerGit` | 1 | `isDirty` | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:60` |
+| `lockSkills` | 1 | `map(…)` | `synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts:90` |
+| `SynchronizationMarkersService.extractContent` | 1 | `SynchronizationMarkersService.locateMarkers` | `synchronization/src/modules/synchronization/synchronization-markers.service.ts:44` |
+| `SynchronizationMarkersService.replaceContent` | 1 | `SynchronizationMarkersService.locateMarkers` | `synchronization/src/modules/synchronization/synchronization-markers.service.ts:65` |
 
 </details>
 <!-- callidescope:end -->
@@ -704,11 +679,10 @@ flowchart LR
   InstalledSkillsModule
   InstanceDiscoveryModule
   InstanceGroupModule
-  IssueLabelsModule
   LoggerModule([LoggerModule])
   MainModule
   PackageManifestsModule
-  PullRequestLabelsModule
+  ProjectPortsModule
   PullRequestTemplateModule
   RenderingModule
   SkillExclusionsModule
@@ -727,14 +701,13 @@ flowchart LR
   InstanceDiscoveryModule --> RenderingModule
   InstanceDiscoveryModule --> TemplateDiscoveryModule
   MainModule --> DiscoveryModule
-  MainModule --> IssueLabelsModule
   MainModule --> SynchronizationModule
   SynchronizationModule --> ConformetryGeneratorsModule
   SynchronizationModule --> ConventionalConfigModule
   SynchronizationModule --> DevcontainerConfigurationModule
   SynchronizationModule --> InstalledSkillsModule
   SynchronizationModule --> PackageManifestsModule
-  SynchronizationModule --> PullRequestLabelsModule
+  SynchronizationModule --> ProjectPortsModule
   SynchronizationModule --> PullRequestTemplateModule
   SynchronizationModule --> SkillExclusionsModule
   SynchronizationModule --> TypeormMigrationSqlModule
@@ -787,16 +760,6 @@ graph LR
   file_src_modules_installed_skills_installed_skills_service_ts["src/modules/installed-skills/installed-skills.service.ts"]
   file_src_modules_installed_skills_installed_skills_service_unit_test_ts["src/modules/installed-skills/installed-skills.service.unit.test.ts"]
   file_src_modules_installed_skills_installed_skills_types_ts["src/modules/installed-skills/installed-skills.types.ts"]
-  file_src_modules_issue_labels_issue_labels_github_service_ts["src/modules/issue-labels/issue-labels-github.service.ts"]
-  file_src_modules_issue_labels_issue_labels_github_service_unit_test_ts["src/modules/issue-labels/issue-labels-github.service.unit.test.ts"]
-  file_src_modules_issue_labels_issue_labels_command_ts["src/modules/issue-labels/issue-labels.command.ts"]
-  file_src_modules_issue_labels_issue_labels_command_unit_test_ts["src/modules/issue-labels/issue-labels.command.unit.test.ts"]
-  file_src_modules_issue_labels_issue_labels_constants_ts["src/modules/issue-labels/issue-labels.constants.ts"]
-  file_src_modules_issue_labels_issue_labels_module_ts["src/modules/issue-labels/issue-labels.module.ts"]
-  file_src_modules_issue_labels_issue_labels_module_unit_test_ts["src/modules/issue-labels/issue-labels.module.unit.test.ts"]
-  file_src_modules_issue_labels_issue_labels_service_ts["src/modules/issue-labels/issue-labels.service.ts"]
-  file_src_modules_issue_labels_issue_labels_service_unit_test_ts["src/modules/issue-labels/issue-labels.service.unit.test.ts"]
-  file_src_modules_issue_labels_issue_labels_types_ts["src/modules/issue-labels/issue-labels.types.ts"]
   file_src_modules_package_manifests_package_manifests_command_ts["src/modules/package-manifests/package-manifests.command.ts"]
   file_src_modules_package_manifests_package_manifests_command_unit_test_ts["src/modules/package-manifests/package-manifests.command.unit.test.ts"]
   file_src_modules_package_manifests_package_manifests_constants_ts["src/modules/package-manifests/package-manifests.constants.ts"]
@@ -804,15 +767,13 @@ graph LR
   file_src_modules_package_manifests_package_manifests_service_ts["src/modules/package-manifests/package-manifests.service.ts"]
   file_src_modules_package_manifests_package_manifests_service_unit_test_ts["src/modules/package-manifests/package-manifests.service.unit.test.ts"]
   file_src_modules_package_manifests_package_manifests_types_ts["src/modules/package-manifests/package-manifests.types.ts"]
-  file_src_modules_pull_request_labels_pull_request_labels_github_service_ts["src/modules/pull-request-labels/pull-request-labels-github.service.ts"]
-  file_src_modules_pull_request_labels_pull_request_labels_github_service_unit_test_ts["src/modules/pull-request-labels/pull-request-labels-github.service.unit.test.ts"]
-  file_src_modules_pull_request_labels_pull_request_labels_command_ts["src/modules/pull-request-labels/pull-request-labels.command.ts"]
-  file_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts["src/modules/pull-request-labels/pull-request-labels.command.unit.test.ts"]
-  file_src_modules_pull_request_labels_pull_request_labels_constants_ts["src/modules/pull-request-labels/pull-request-labels.constants.ts"]
-  file_src_modules_pull_request_labels_pull_request_labels_module_ts["src/modules/pull-request-labels/pull-request-labels.module.ts"]
-  file_src_modules_pull_request_labels_pull_request_labels_service_ts["src/modules/pull-request-labels/pull-request-labels.service.ts"]
-  file_src_modules_pull_request_labels_pull_request_labels_service_unit_test_ts["src/modules/pull-request-labels/pull-request-labels.service.unit.test.ts"]
-  file_src_modules_pull_request_labels_pull_request_labels_types_ts["src/modules/pull-request-labels/pull-request-labels.types.ts"]
+  file_src_modules_project_ports_project_ports_command_ts["src/modules/project-ports/project-ports.command.ts"]
+  file_src_modules_project_ports_project_ports_command_unit_test_ts["src/modules/project-ports/project-ports.command.unit.test.ts"]
+  file_src_modules_project_ports_project_ports_constants_ts["src/modules/project-ports/project-ports.constants.ts"]
+  file_src_modules_project_ports_project_ports_module_ts["src/modules/project-ports/project-ports.module.ts"]
+  file_src_modules_project_ports_project_ports_service_ts["src/modules/project-ports/project-ports.service.ts"]
+  file_src_modules_project_ports_project_ports_service_unit_test_ts["src/modules/project-ports/project-ports.service.unit.test.ts"]
+  file_src_modules_project_ports_project_ports_types_ts["src/modules/project-ports/project-ports.types.ts"]
   file_src_modules_pull_request_template_pull_request_template_command_ts["src/modules/pull-request-template/pull-request-template.command.ts"]
   file_src_modules_pull_request_template_pull_request_template_command_unit_test_ts["src/modules/pull-request-template/pull-request-template.command.unit.test.ts"]
   file_src_modules_pull_request_template_pull_request_template_constants_ts["src/modules/pull-request-template/pull-request-template.constants.ts"]
@@ -932,27 +893,6 @@ graph LR
   file_src_modules_installed_skills_installed_skills_service_ts --> file_src_modules_installed_skills_installed_skills_types_ts
   file_src_modules_installed_skills_installed_skills_service_unit_test_ts --> file_src_modules_installed_skills_installed_skills_process_service_ts
   file_src_modules_installed_skills_installed_skills_service_unit_test_ts --> file_src_modules_installed_skills_installed_skills_service_ts
-  file_src_modules_issue_labels_issue_labels_github_service_ts --> file_src_modules_issue_labels_issue_labels_constants_ts
-  file_src_modules_issue_labels_issue_labels_github_service_ts --> file_src_modules_issue_labels_issue_labels_types_ts
-  file_src_modules_issue_labels_issue_labels_github_service_unit_test_ts --> file_src_modules_issue_labels_issue_labels_github_service_ts
-  file_src_modules_issue_labels_issue_labels_github_service_unit_test_ts --> file_src_modules_issue_labels_issue_labels_constants_ts
-  file_src_modules_issue_labels_issue_labels_command_ts --> file_src_modules_issue_labels_issue_labels_github_service_ts
-  file_src_modules_issue_labels_issue_labels_command_ts --> file_src_modules_issue_labels_issue_labels_constants_ts
-  file_src_modules_issue_labels_issue_labels_command_ts --> file_src_modules_issue_labels_issue_labels_service_ts
-  file_src_modules_issue_labels_issue_labels_command_unit_test_ts --> file_src_modules_issue_labels_issue_labels_github_service_ts
-  file_src_modules_issue_labels_issue_labels_command_unit_test_ts --> file_src_modules_issue_labels_issue_labels_command_ts
-  file_src_modules_issue_labels_issue_labels_command_unit_test_ts --> file_src_modules_issue_labels_issue_labels_service_ts
-  file_src_modules_issue_labels_issue_labels_command_unit_test_ts --> file_src_modules_issue_labels_issue_labels_types_ts
-  file_src_modules_issue_labels_issue_labels_module_ts --> file_src_modules_issue_labels_issue_labels_github_service_ts
-  file_src_modules_issue_labels_issue_labels_module_ts --> file_src_modules_issue_labels_issue_labels_command_ts
-  file_src_modules_issue_labels_issue_labels_module_ts --> file_src_modules_issue_labels_issue_labels_service_ts
-  file_src_modules_issue_labels_issue_labels_module_unit_test_ts --> file_src_modules_issue_labels_issue_labels_github_service_ts
-  file_src_modules_issue_labels_issue_labels_module_unit_test_ts --> file_src_modules_issue_labels_issue_labels_command_ts
-  file_src_modules_issue_labels_issue_labels_module_unit_test_ts --> file_src_modules_issue_labels_issue_labels_module_ts
-  file_src_modules_issue_labels_issue_labels_module_unit_test_ts --> file_src_modules_issue_labels_issue_labels_service_ts
-  file_src_modules_issue_labels_issue_labels_service_ts --> file_src_modules_issue_labels_issue_labels_constants_ts
-  file_src_modules_issue_labels_issue_labels_service_ts --> file_src_modules_issue_labels_issue_labels_types_ts
-  file_src_modules_issue_labels_issue_labels_service_unit_test_ts --> file_src_modules_issue_labels_issue_labels_service_ts
   file_src_modules_package_manifests_package_manifests_command_ts --> file_src_modules_package_manifests_package_manifests_service_ts
   file_src_modules_package_manifests_package_manifests_command_ts --> file_src_modules_synchronization_synchronization_service_ts
   file_src_modules_package_manifests_package_manifests_command_ts --> file_src_modules_synchronization_synchronization_types_ts
@@ -970,31 +910,21 @@ graph LR
   file_src_modules_package_manifests_package_manifests_service_unit_test_ts --> file_src_modules_package_manifests_package_manifests_service_ts
   file_src_modules_package_manifests_package_manifests_service_unit_test_ts --> file_src_modules_package_manifests_package_manifests_types_ts
   file_src_modules_package_manifests_package_manifests_types_ts --> file_src_modules_package_manifests_package_manifests_constants_ts
-  file_src_modules_pull_request_labels_pull_request_labels_github_service_ts --> file_src_modules_pull_request_labels_pull_request_labels_constants_ts
-  file_src_modules_pull_request_labels_pull_request_labels_github_service_ts --> file_src_modules_pull_request_labels_pull_request_labels_types_ts
-  file_src_modules_pull_request_labels_pull_request_labels_github_service_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_github_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_src_modules_pull_request_labels_pull_request_labels_github_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_src_modules_pull_request_labels_pull_request_labels_constants_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_src_modules_pull_request_labels_pull_request_labels_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_src_modules_pull_request_labels_pull_request_labels_types_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_src_modules_synchronization_synchronization_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_src_modules_synchronization_synchronization_types_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_github_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_command_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_constants_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_types_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_pull_request_labels_pull_request_labels_constants_ts --> file_src_modules_pull_request_labels_pull_request_labels_types_ts
-  file_src_modules_pull_request_labels_pull_request_labels_module_ts --> file_src_modules_pull_request_labels_pull_request_labels_github_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_module_ts --> file_src_modules_pull_request_labels_pull_request_labels_command_ts
-  file_src_modules_pull_request_labels_pull_request_labels_module_ts --> file_src_modules_pull_request_labels_pull_request_labels_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_module_ts --> file_src_modules_synchronization_synchronization_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_service_ts --> file_src_modules_pull_request_labels_pull_request_labels_constants_ts
-  file_src_modules_pull_request_labels_pull_request_labels_service_ts --> file_src_modules_pull_request_labels_pull_request_labels_types_ts
-  file_src_modules_pull_request_labels_pull_request_labels_service_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_service_ts
-  file_src_modules_pull_request_labels_pull_request_labels_service_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_types_ts
+  file_src_modules_project_ports_project_ports_command_ts --> file_src_modules_project_ports_project_ports_constants_ts
+  file_src_modules_project_ports_project_ports_command_ts --> file_src_modules_project_ports_project_ports_service_ts
+  file_src_modules_project_ports_project_ports_command_ts --> file_src_modules_project_ports_project_ports_types_ts
+  file_src_modules_project_ports_project_ports_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_project_ports_project_ports_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_project_ports_project_ports_command_unit_test_ts --> file_src_modules_project_ports_project_ports_command_ts
+  file_src_modules_project_ports_project_ports_command_unit_test_ts --> file_src_modules_project_ports_project_ports_service_ts
+  file_src_modules_project_ports_project_ports_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_project_ports_project_ports_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_project_ports_project_ports_constants_ts --> file_src_modules_project_ports_project_ports_types_ts
+  file_src_modules_project_ports_project_ports_module_ts --> file_src_modules_project_ports_project_ports_command_ts
+  file_src_modules_project_ports_project_ports_module_ts --> file_src_modules_project_ports_project_ports_service_ts
+  file_src_modules_project_ports_project_ports_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_project_ports_project_ports_service_ts --> file_src_modules_project_ports_project_ports_constants_ts
+  file_src_modules_project_ports_project_ports_service_unit_test_ts --> file_src_modules_project_ports_project_ports_service_ts
   file_src_modules_pull_request_template_pull_request_template_command_ts --> file_src_modules_pull_request_template_pull_request_template_constants_ts
   file_src_modules_pull_request_template_pull_request_template_command_ts --> file_src_modules_synchronization_synchronization_service_ts
   file_src_modules_pull_request_template_pull_request_template_command_ts --> file_src_modules_synchronization_synchronization_types_ts
@@ -1022,7 +952,6 @@ graph LR
   file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
   file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_installed_skills_installed_skills_command_ts
   file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_package_manifests_package_manifests_command_ts
-  file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_pull_request_labels_pull_request_labels_command_ts
   file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_pull_request_template_pull_request_template_command_ts
   file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_skill_exclusions_skill_exclusions_command_ts
   file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_synchronization_synchronization_service_ts
@@ -1034,7 +963,6 @@ graph LR
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_installed_skills_installed_skills_command_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_package_manifests_package_manifests_command_ts
-  file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_command_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_pull_request_template_pull_request_template_command_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_skill_exclusions_skill_exclusions_command_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_synchronization_synchronization_command_ts
@@ -1048,7 +976,7 @@ graph LR
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_installed_skills_installed_skills_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_package_manifests_package_manifests_module_ts
-  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_pull_request_labels_pull_request_labels_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_project_ports_project_ports_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_pull_request_template_pull_request_template_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_skill_exclusions_skill_exclusions_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_synchronization_command_ts
@@ -1060,7 +988,7 @@ graph LR
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_conventional_config_conventional_config_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_installed_skills_installed_skills_module_ts
-  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_project_ports_project_ports_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_pull_request_template_pull_request_template_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_skill_exclusions_skill_exclusions_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_synchronization_command_ts
@@ -1108,9 +1036,7 @@ graph LR
   file_src_modules_vscode_settings_vscode_settings_module_ts --> file_src_modules_vscode_settings_vscode_settings_command_ts
   file_src_synchronization_main_end_to_end_test_ts --> file_src_synchronization_constants_ts
   file_src_synchronization_main_ts --> file_src_synchronization_module_ts
-  file_src_synchronization_main_unit_test_ts --> file_src_modules_issue_labels_issue_labels_module_ts
   file_src_synchronization_main_unit_test_ts --> file_src_modules_synchronization_synchronization_module_ts
-  file_src_synchronization_module_ts --> file_src_modules_issue_labels_issue_labels_module_ts
   file_src_synchronization_module_ts --> file_src_modules_synchronization_synchronization_module_ts
   file_src_synchronization_module_ts --> file_src_synchronization_constants_ts
   file_src_synchronization_repl_ts --> file_src_synchronization_module_ts
@@ -1124,36 +1050,36 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-14091-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-464.92_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-16-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-109-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-12576-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-417.92_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-15-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-97-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-109-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-37-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-97-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-34-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-59-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-290-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-53-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-274-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-1-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-32-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-27-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-20-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-43-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-631-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-282-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-637-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-276-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-759-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-555-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-148-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-485-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-968-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-38-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-536-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-266-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-545-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-257-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-728-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-495-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-134-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-433-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-798-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -1175,15 +1101,15 @@ graph LR
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
 ![JSON Lines](https://img.shields.io/badge/JSON_Lines-372-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-91-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-16-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-229-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-171-16a34a?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-89-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-17-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-224-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-172-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-16-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-17-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-63-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-295-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-69-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-296-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML
@@ -1264,14 +1190,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-14-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-13-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-13-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-14-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-13-db2777?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-13-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-10-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-12-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-13-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-12-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-1-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-30-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-25-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-1-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-1-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -1309,7 +1235,7 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-295-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-297-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-7-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-14-a78bfa?style=flat-square)
@@ -1322,7 +1248,7 @@ graph LR
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-2-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-10-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-12-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-13-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-16-dc2626?style=flat-square)
 ![Inline Code](https://img.shields.io/badge/Inline_Code-89-ef4444?style=flat-square)

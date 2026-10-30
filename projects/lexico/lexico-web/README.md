@@ -381,9 +381,11 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   interface["interface"]
   lexico_web["lexico-web"]
   presentation["presentation"]
+  lexico_web --> configuration
   lexico_web --> interface
   lexico_web --> presentation
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px

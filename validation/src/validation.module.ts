@@ -4,14 +4,9 @@ import { DiscoveryModule } from "@nestjs/core";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { AuditGovernanceModule } from "./modules/audit-governance/audit-governance.module";
 import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
-import { IssueMetadataModule } from "./modules/issue-metadata/issue-metadata.module";
 import { LockfileModule } from "./modules/lockfile/lockfile.module";
 import { PublishablePackagesModule } from "./modules/publishable-packages/publishable-packages.module";
-import { PullRequestBodyModule } from "./modules/pull-request-body/pull-request-body.module";
-import { PullRequestMetadataModule } from "./modules/pull-request-metadata/pull-request-metadata.module";
-import { PullRequestReleaseSignificanceModule } from "./modules/pull-request-release-significance/pull-request-release-significance.module";
 import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
 import { SessionBranchNameModule } from "./modules/session-branch-name/session-branch-name.module";
 import { SessionWorktreeNameModule } from "./modules/session-worktree-name/session-worktree-name.module";
@@ -28,15 +23,10 @@ import { environmentSchema } from "./validation.constants";
       validate: (config: Record<string, unknown>) =>
         environmentSchema.parse(config),
     }),
-    AuditGovernanceModule,
     CatalogManifestsModule,
     DiscoveryModule,
-    IssueMetadataModule,
     LockfileModule,
     LoggerModule,
-    PullRequestBodyModule,
-    PullRequestMetadataModule,
-    PullRequestReleaseSignificanceModule,
     PublishablePackagesModule,
     ReadmeProjectsModule,
     SessionBranchNameModule,

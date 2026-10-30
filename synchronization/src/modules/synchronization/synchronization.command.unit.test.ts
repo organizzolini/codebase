@@ -10,7 +10,6 @@ import { ConventionalConfigCommand } from "../conventional-config/conventional-c
 import { DevcontainerConfigurationCommand } from "../devcontainer-configuration/devcontainer-configuration.command";
 import { InstalledSkillsCommand } from "../installed-skills/installed-skills.command";
 import { PackageManifestsCommand } from "../package-manifests/package-manifests.command";
-import { PullRequestLabelsCommand } from "../pull-request-labels/pull-request-labels.command";
 import { PullRequestTemplateCommand } from "../pull-request-template/pull-request-template.command";
 import { SkillExclusionsCommand } from "../skill-exclusions/skill-exclusions.command";
 import { TypeormMigrationSqlCommand } from "../typeorm-migration-sql/typeorm-migration-sql.command";
@@ -29,7 +28,6 @@ describe(SynchronizationCommand, () => {
   let installedSkills: InstalledSkillsCommand;
   let logger: LoggerService;
   let packageManifests: PackageManifestsCommand;
-  let pullRequestLabels: PullRequestLabelsCommand;
   let pullRequestTemplate: PullRequestTemplateCommand;
   let skillExclusions: SkillExclusionsCommand;
   let typeormMigrationSql: TypeormMigrationSqlCommand;
@@ -43,7 +41,6 @@ describe(SynchronizationCommand, () => {
       devcontainerConfiguration,
       installedSkills,
       packageManifests,
-      pullRequestLabels,
       pullRequestTemplate,
       skillExclusions,
       typeormMigrationSql,
@@ -98,12 +95,6 @@ describe(SynchronizationCommand, () => {
           }),
         },
         {
-          provide: PullRequestLabelsCommand,
-          useValue: createMock<PullRequestLabelsCommand>({
-            synchronizationLabel: "pull-request-labels",
-          }),
-        },
-        {
           provide: PullRequestTemplateCommand,
           useValue: createMock<PullRequestTemplateCommand>({
             synchronizationLabel: "pull-request-template",
@@ -139,7 +130,6 @@ describe(SynchronizationCommand, () => {
     installedSkills = await module.resolve(InstalledSkillsCommand);
     logger = await module.resolve(LoggerService);
     packageManifests = await module.resolve(PackageManifestsCommand);
-    pullRequestLabels = await module.resolve(PullRequestLabelsCommand);
     pullRequestTemplate = await module.resolve(PullRequestTemplateCommand);
     skillExclusions = await module.resolve(SkillExclusionsCommand);
     typeormMigrationSql = await module.resolve(TypeormMigrationSqlCommand);
@@ -182,10 +172,6 @@ describe(SynchronizationCommand, () => {
         {
           provide: PackageManifestsCommand,
           useValue: createMock<PackageManifestsCommand>(),
-        },
-        {
-          provide: PullRequestLabelsCommand,
-          useValue: createMock<PullRequestLabelsCommand>(),
         },
         {
           provide: PullRequestTemplateCommand,

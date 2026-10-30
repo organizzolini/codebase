@@ -64,9 +64,10 @@ suffixes do not push the queued commit subject over the header limit.
 | `affirmancy` | Python Jupyter notebook application for LangGraph affirmation generation |
 | `caelundas` | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris) |
 | `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
+| `compliance` | GitHub issue and pull request metadata, repository governance, and external resource policies |
 | `conformetry` | Code generator templates and validation tests for generated instances |
 | `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
-| `interface` | Shared GraphQL package: Relay connection helpers, entity-to-object types, client code generation, and test helpers |
+| `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
@@ -89,8 +90,8 @@ suffixes do not push the queued commit subject over the header limit.
 | `reporting` | Pull request change report generation and the packages that diff and render it |
 | `scripts` | Shell and TypeScript scripts in scripts/ (sync, setup, utilities) |
 | `testing` | Vitest configuration, shared test utilities, and coverage setup |
-| `synchronization` | Synchronization application and commands for automating workflows |
-| `validation` | Validation CLI and the checks it runs, such as pull request metadata |
+| `synchronization` | Commands that reconcile codebase files and generated repository configuration |
+| `validation` | Checks and gates for codebase and project invariants |
 
 <!-- scopes-end -->
 
@@ -219,7 +220,7 @@ Adds a user profile page where users can view and edit their information.
 EOF
 
 NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-  validation/src/validation.main.ts pull-request-body /tmp/pr_body.md
+  projects/compliance/src/compliance.main.ts pull-request-body /tmp/pr_body.md
 ````
 
 #### Using GitHub CLI (preferred)
@@ -268,8 +269,8 @@ All PRs must pass these checks before merging:
 | -------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | Branch Name          | `validate-branch-name`                                 | Branch follows naming conventions                                                                                                |
 | PR Title             | `commitlint`                                           | Title follows commit message format                                                                                              |
-| PR Body              | `validation pull-request-body`                         | Required sections: 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related, each in its shape and within its word limit                   |
-| Release Significance | `validation pull-request-release-significance`         | Title's type is at least as significant as the most significant commit, and the title shares at least one scope with each commit |
+| PR Body              | `compliance pull-request-body`                         | Required sections: 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related, each in its shape and within its word limit                   |
+| Release Significance | `compliance pull-request-release-significance`         | Title's type is at least as significant as the most significant commit, and the title shares at least one scope with each commit |
 | Lint                 | `nx affected --target=lint-code`                       | Every static check: ESLint, oxlint, oxfmt, typecheck, spell-check, knip, and more                                                |
 | Test                 | `nx affected --target=vitest --configuration=coverage` | Unit and integration tests against the coverage gates                                                                            |
 
@@ -367,7 +368,7 @@ This codebase uses **squash merging** by default:
 - All commits in the PR become a single commit on main
 - PR title becomes the commit message
 - Keep PR title clean and following conventions
-- **The title is the only thing semantic-release reads** — every commit's own type is discarded once squashed. Pick the title's type and scope overlap to match the branch's work, while keeping the title at least as significant as the most significant commit; see [commit-code's Release Significance section](../commit-code/SKILL.md#release-significance) for the type-to-bump mapping and the [pull-request-release-significance](../../../validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts) check that enforces it
+- **The title is the only thing semantic-release reads** — every commit's own type is discarded once squashed. Pick the title's type and scope overlap to match the branch's work, while keeping the title at least as significant as the most significant commit; see [commit-code's Release Significance section](../commit-code/SKILL.md#release-significance) for the type-to-bump mapping and the [pull-request-release-significance](../../../projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts) check that enforces it
 
 ### Scope Selection: Multi-Scope Title vs Split PR
 
