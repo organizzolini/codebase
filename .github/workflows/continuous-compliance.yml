@@ -113,19 +113,23 @@ jobs:
         run: |
           gh issue edit "$ISSUE_NUMBER" --add-assignee JimmyPaolini
 
-      # On scheduled or manual runs, sweep all open issues and assign any
-      # that are currently unassigned.
+      # On scheduled or manual runs, paginate through every open issue and
+      # assign any that are currently unassigned. The REST issues endpoint
+      # also returns pull requests, which are excluded before assignment.
       - name: 🧑‍💼 Ensure Open Issues Have Assignees
         if: github.event.issue == null
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          ISSUE_NUMBERS="$(gh api --paginate --slurp \
+            "repos/${GITHUB_REPOSITORY}/issues?state=open&per_page=100" \
+            --jq 'add[] | select(.pull_request == null) | select((.assignees | length) == 0) | .number')"
+
           while IFS= read -r issue_number; do
             if [ -n "$issue_number" ]; then
               gh issue edit "$issue_number" --add-assignee JimmyPaolini
             fi
-          done < <(gh issue list --state open --limit 500 --search "no:assignee" --json number \
-            --jq '.[].number')
+          done <<< "$ISSUE_NUMBERS"
 
       # Read live, by issue number, rather than out of this event's payload.
       - name: 🧾 Audit Single Issue Metadata
