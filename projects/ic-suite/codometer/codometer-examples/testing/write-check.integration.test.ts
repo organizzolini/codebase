@@ -3,10 +3,13 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { useTemporaryDirectory } from "@codebase/testing";
+
 import {
   type CodometerRun,
-  corpusDirectory,
+  createCorpusCopy,
   exampleConfiguration,
+  packageDirectory,
   runCodometer,
   withCorpusCopy,
 } from "./codometer.js";
@@ -31,6 +34,10 @@ interface MatrixWalk {
 
 describe("every example configuration this package ships", () => {
   describe("the output and check matrix", () => {
+    const getCorpusDirectory = useTemporaryDirectory(
+      "codometer-write-check",
+      packageDirectory,
+    );
     const runRow = (
       directory: string,
       ...flags: readonly string[]
@@ -55,30 +62,27 @@ describe("every example configuration this package ships", () => {
     let walk: MatrixWalk;
 
     beforeAll(() => {
-      walk = withCorpusCopy((directory): MatrixWalk => {
-        const reportPath = path.join(directory, "codometer-report.json");
-        const bare = runRow(directory);
-        const bareWroteReport = fs.existsSync(reportPath);
-        const gated = runRow(directory, "--check", "limits");
-        const gatedWroteReport = fs.existsSync(reportPath);
-        const written = runRow(directory, "--output-json", "--output-markdown");
+      const directory = getCorpusDirectory();
+      createCorpusCopy(directory);
 
-        return {
-          bare,
-          bareWroteReport,
-          checkedReports: runRow(directory, "--check", "reports"),
-          checkedReportsAndLimits: runRow(
-            directory,
-            "--check",
-            "reports,limits",
-          ),
-          gated,
-          gatedWroteReport,
-          written,
-          wroteMarkdown: fs.existsSync(path.join(directory, "statistics.md")),
-          wroteReport: fs.existsSync(reportPath),
-        };
-      });
+      const reportPath = path.join(directory, "codometer-report.json");
+      const bare = runRow(directory);
+      const bareWroteReport = fs.existsSync(reportPath);
+      const gated = runRow(directory, "--check", "limits");
+      const gatedWroteReport = fs.existsSync(reportPath);
+      const written = runRow(directory, "--output-json", "--output-markdown");
+
+      walk = {
+        bare,
+        bareWroteReport,
+        checkedReports: runRow(directory, "--check", "reports"),
+        checkedReportsAndLimits: runRow(directory, "--check", "reports,limits"),
+        gated,
+        gatedWroteReport,
+        written,
+        wroteMarkdown: fs.existsSync(path.join(directory, "statistics.md")),
+        wroteReport: fs.existsSync(reportPath),
+      };
     });
 
     it("writes only when asked, and gates only when asked", () => {
@@ -129,7 +133,7 @@ describe("every example configuration this package ships", () => {
     });
 
     it("refuses a --check value it does not know", () => {
-      const run = runRow(corpusDirectory, "--check", "everything");
+      const run = runRow(getCorpusDirectory(), "--check", "everything");
 
       expect(run.exitCode).toBe(1);
       expect(run.standardError).toContain("--check does not accept");

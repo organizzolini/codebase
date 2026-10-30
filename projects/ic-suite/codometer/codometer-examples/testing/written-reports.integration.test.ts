@@ -3,11 +3,15 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { useTemporaryDirectory } from "@codebase/testing";
+
 import {
   type CodometerReport,
   type CodometerRun,
+  createCorpusCopy,
   exampleConfiguration,
   measure,
+  packageDirectory,
   readMetric,
   readTarget,
   runCodometer,
@@ -23,6 +27,10 @@ import {
 
 describe("every example configuration this package ships", () => {
   describe("what codometer writes, it does not measure", () => {
+    const getCorpusDirectory = useTemporaryDirectory(
+      "codometer-written-reports",
+      packageDirectory,
+    );
     /**
      * One copy, walked in the order the guide describes it.
      *
@@ -37,29 +45,27 @@ describe("every example configuration this package ships", () => {
     let rewritten: CodometerReport;
 
     beforeAll(() => {
-      withCorpusCopy((directory) => {
-        const configuration = exampleConfiguration(
-          "output",
-          "self-excluded.config.ts",
-        );
-        const write = (): CodometerRun =>
-          runCodometer(
-            ["--config", configuration, "--output-json", "--output-markdown"],
-            directory,
-          );
+      const directory = getCorpusDirectory();
+      createCorpusCopy(directory);
 
-        firstWrite = write();
-        // Asking for the report on the console is `--format json`, which names
-        // no destination and so cannot drop the configured pair.
-        remeasured = measure(["--config", configuration], directory);
-        write();
-        rewritten = JSON.parse(
-          fs.readFileSync(
-            path.join(directory, "codometer-report.json"),
-            "utf8",
-          ),
-        ) as CodometerReport;
-      });
+      const configuration = exampleConfiguration(
+        "output",
+        "self-excluded.config.ts",
+      );
+      const write = (): CodometerRun =>
+        runCodometer(
+          ["--config", configuration, "--output-json", "--output-markdown"],
+          directory,
+        );
+
+      firstWrite = write();
+      // Asking for the report on the console is `--format json`, which names
+      // no destination and so cannot drop the configured pair.
+      remeasured = measure(["--config", configuration], directory);
+      write();
+      rewritten = JSON.parse(
+        fs.readFileSync(path.join(directory, "codometer-report.json"), "utf8"),
+      ) as CodometerReport;
     });
 
     it("leaves its own destinations out of the tree it measured", () => {
