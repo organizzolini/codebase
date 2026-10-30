@@ -2,8 +2,9 @@ import {
   InvalidConfigurationError,
   InvalidLimitValueError,
 } from "@codometer/core";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationResolverService } from "./configuration-resolver.service";
 
@@ -15,15 +16,14 @@ describe(ConfigurationResolverService, () => {
   let service: ConfigurationResolverService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ConfigurationResolverService],
-    }).compile();
-
-    service = await module.resolve(ConfigurationResolverService);
+    const { instance } = await buildTestingModule(ConfigurationResolverService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConfigurationResolverService);
+
+    expect(instance).toBeInstanceOf(ConfigurationResolverService);
   });
 
   it("refuses a configuration that names no format", () => {

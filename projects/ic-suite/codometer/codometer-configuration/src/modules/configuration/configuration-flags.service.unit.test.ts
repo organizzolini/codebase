@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationPathRequiredError } from "./configuration-flags.constants";
 import { ConfigurationFlagsService } from "./configuration-flags.service";
@@ -10,15 +11,14 @@ describe(ConfigurationFlagsService, () => {
   let service: ConfigurationFlagsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ConfigurationFlagsService],
-    }).compile();
-
-    service = await module.resolve(ConfigurationFlagsService);
+    const { instance } = await buildTestingModule(ConfigurationFlagsService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConfigurationFlagsService);
+
+    expect(instance).toBeInstanceOf(ConfigurationFlagsService);
   });
 
   // 🧭 Required configuration path
