@@ -19,8 +19,9 @@ nx run compliance:start
 ### Command Ownership
 
 This project owns issue assignment and metadata, pull request labels and
-metadata, release significance, pull request body validation, merge-group
-context resolution, and repository governance checks. Keep codebase-file
+metadata, release significance, non-closing parent references in pull
+request bodies, pull request body validation, merge-group context
+resolution, and repository governance checks. Keep codebase-file
 reconciliation in `synchronization` and codebase-only checks in `validation`.
 
 ## Architecture Overview

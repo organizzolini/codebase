@@ -3,7 +3,8 @@
 The Compliance CLI owns Continuous Compliance checks that read or update
 GitHub issues, pull requests, and repository governance metadata. It centralizes
 issue assignment and metadata, pull request labels and metadata, release
-significance, and governance checks from the former `validation` and
+significance, parent issue references in pull request bodies, and governance
+checks from the former `validation` and
 `synchronization` applications.
 
 ## Run a command
@@ -14,6 +15,7 @@ Run the CLI directly through Nx:
 nx run compliance:start:issue-assignees
 nx run compliance:start:audit-governance
 nx run compliance:start:pull-request-metadata
+nx run compliance:start:pull-request-parent-links
 ```
 
 Commands that need GitHub access use the `gh` CLI and the current repository

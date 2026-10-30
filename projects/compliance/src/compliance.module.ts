@@ -13,6 +13,7 @@ import { PullRequestBodyModule } from "./modules/pull-request-body/pull-request-
 import { PullRequestContextModule } from "./modules/pull-request-context/pull-request-context.module";
 import { PullRequestLabelsModule } from "./modules/pull-request-labels/pull-request-labels.module";
 import { PullRequestMetadataModule } from "./modules/pull-request-metadata/pull-request-metadata.module";
+import { PullRequestParentLinksModule } from "./modules/pull-request-parent-links/pull-request-parent-links.module";
 import { PullRequestReleaseSignificanceModule } from "./modules/pull-request-release-significance/pull-request-release-significance.module";
 
 /**
@@ -36,6 +37,7 @@ import { PullRequestReleaseSignificanceModule } from "./modules/pull-request-rel
     PullRequestContextModule,
     PullRequestLabelsModule,
     PullRequestMetadataModule,
+    PullRequestParentLinksModule,
     PullRequestReleaseSignificanceModule,
   ],
 })

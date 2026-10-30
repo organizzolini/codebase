@@ -49,6 +49,7 @@ describe("main end-to-end suite", () => {
       "pull-request-context",
       "pull-request-labels",
       "pull-request-metadata",
+      "pull-request-parent-links",
       "pull-request-release-significance",
     ]) {
       expect(result.stdout).toContain(command);

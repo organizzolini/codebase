@@ -225,6 +225,18 @@ jobs:
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
             projects/compliance/src/compliance.main.ts pull-request-context
 
+      # Adds non-closing references to every ancestor of a linked issue.
+      # Editing the PR body triggers this check again, where it is a no-op.
+      - name: 🔗 Add Parent Issue References
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+          PULL_REQUEST_BODY_FILE: pull_request_body.md
+        run: |
+          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+            projects/compliance/src/compliance.main.ts pull-request-parent-links
+
       # Only on pull request events — syncs labels from PR title. A merge group
       # check must not write to the pull request it is judging.
       - name: 🏷️ Reconcile Pull Request Labels

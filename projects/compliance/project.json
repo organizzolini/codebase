@@ -66,6 +66,9 @@
         "pull-request-metadata": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-metadata"
         },
+        "pull-request-parent-links": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-parent-links"
+        },
         "pull-request-release-significance": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-release-significance"
         }
