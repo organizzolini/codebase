@@ -1,22 +1,15 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MissingMarkdownPathError } from "./markdown.constants";
 import { MarkdownService } from "./markdown.service";
 
+import type { LoggerService } from "@codebase/observability";
 import type {
   ResolvedCodometerCustomStatistic,
   ResolvedCodometerMarkdownOutput,
@@ -70,24 +63,18 @@ function buildDestination(
 describe(MarkdownService, () => {
   let service: MarkdownService;
   let loggerService: DeepMocked<LoggerService>;
-  const temporaryDirectories: string[] = [];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MarkdownService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, logger } = await buildTestingModule(MarkdownService);
 
-    service = await module.resolve(MarkdownService);
-    loggerService = await module.resolve(LoggerService);
+    service = instance;
+    loggerService = logger;
   });
 
-  afterEach(() => {
-    for (const temporaryDirectory of temporaryDirectories.splice(0)) {
-      rmSync(temporaryDirectory, { force: true, recursive: true });
-    }
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MarkdownService);
+
+    expect(instance).toBeInstanceOf(MarkdownService);
   });
 
   const sampleStatistics: CodeStatisticsResult = {
@@ -282,10 +269,6 @@ describe(MarkdownService, () => {
       sequences: 101,
     },
   };
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
-  });
 
   it("heads each language group with a third-level heading", () => {
     const block = service.renderBadges({
@@ -618,8 +601,7 @@ describe(MarkdownService, () => {
   });
 
   it("replaces the badge block in an existing README", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const readmePath = path.join(temporaryDirectory, "README.md");
 
     writeFileSync(
@@ -652,8 +634,7 @@ describe(MarkdownService, () => {
   // The section heading sits inside the markers, so a second run has to
   // replace it rather than append another one above the block.
   it("leaves a project README byte-identical on a second write", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const readmePath = path.join(temporaryDirectory, "README.md");
 
     writeFileSync(readmePath, "# Project\n", "utf8");
@@ -686,8 +667,7 @@ describe(MarkdownService, () => {
   });
 
   it("appends the badge block when no markers exist", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const readmePath = path.join(temporaryDirectory, "README.md");
 
     writeFileSync(readmePath, "# Project\n", "utf8");
@@ -716,8 +696,7 @@ describe(MarkdownService, () => {
   });
 
   it("separates an appended block from the document with one blank line", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const readmePath = path.join(temporaryDirectory, "README.md");
 
     // Trailing newlines are the ordinary case — every markdown file this
@@ -739,8 +718,7 @@ describe(MarkdownService, () => {
   });
 
   it("writes only the block when the file did not exist", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const readmePath = path.join(temporaryDirectory, "README.md");
 
     service.sync({
@@ -806,8 +784,7 @@ describe(MarkdownService, () => {
   });
 
   it("returns false in check mode when no markers exist", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const readmePath = path.join(temporaryDirectory, "README.md");
 
     writeFileSync(readmePath, "# Project\n", "utf8");
@@ -830,8 +807,7 @@ describe(MarkdownService, () => {
       statistics: sampleStatistics,
       targets: [],
     });
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const readmePath = path.join(temporaryDirectory, "README.md");
 
     writeFileSync(
@@ -852,8 +828,7 @@ describe(MarkdownService, () => {
   });
 
   it("returns false when block is out of date in check mode", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const readmePath = path.join(temporaryDirectory, "README.md");
 
     writeFileSync(
@@ -874,8 +849,7 @@ describe(MarkdownService, () => {
   });
 
   it("creates a new README when the file does not exist", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const readmePath = path.join(temporaryDirectory, "README.md");
 
     expect(
@@ -894,8 +868,7 @@ describe(MarkdownService, () => {
   });
 
   it("splices the block between configured custom markers", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const markdownPath = path.join(temporaryDirectory, "METRICS.md");
     const destination = buildDestination(markdownPath, {
       endMarker: "<!-- stats:end -->",
@@ -933,8 +906,7 @@ describe(MarkdownService, () => {
   });
 
   it("writes through a configured write function that renders its own content", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const markdownPath = path.join(temporaryDirectory, "METRICS.md");
 
     service.sync({
@@ -968,8 +940,7 @@ describe(MarkdownService, () => {
       statistics: sampleStatistics,
       targets: [],
     });
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const markdownPath = path.join(temporaryDirectory, "METRICS.md");
 
     service.sync({
@@ -991,8 +962,7 @@ describe(MarkdownService, () => {
   });
 
   it("writes through a configured write function", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const chosenPath = path.join(temporaryDirectory, "chosen/report.md");
 
     const isCurrent = service.sync({
@@ -1020,8 +990,7 @@ describe(MarkdownService, () => {
   });
 
   it("lets a write function splice into a file it picks itself", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const chosenPath = path.join(temporaryDirectory, "DOCS.md");
 
     writeFileSync(chosenPath, "# Docs\n", "utf8");
@@ -1130,8 +1099,7 @@ describe(MarkdownService, () => {
   });
 
   it("appends the block into a file whose parent directory does not exist", () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("codometer-markdown-");
     const documentPath = path.join(temporaryDirectory, "docs/metrics.md");
 
     expect(

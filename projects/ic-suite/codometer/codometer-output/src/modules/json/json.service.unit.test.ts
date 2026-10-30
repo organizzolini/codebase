@@ -1,21 +1,14 @@
-import {
-  existsSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { JsonService } from "./json.service";
 
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 const sampleReport = {
@@ -41,36 +34,18 @@ const sampleReport = {
 describe(JsonService, () => {
   let service: JsonService;
   let loggerService: DeepMocked<LoggerService>;
-  const temporaryDirectories: string[] = [];
-
-  /** Creates a temp directory that is removed after the test. */
-  function createTemporaryDirectory(): string {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
-
-    return temporaryDirectory;
-  }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        JsonService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, logger } = await buildTestingModule(JsonService);
 
-    service = await module.resolve(JsonService);
-    loggerService = await module.resolve(LoggerService);
+    service = instance;
+    loggerService = logger;
   });
 
-  afterEach(() => {
-    for (const temporaryDirectory of temporaryDirectories.splice(0)) {
-      rmSync(temporaryDirectory, { force: true, recursive: true });
-    }
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(JsonService);
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(JsonService);
   });
 
   it("renders the report with the configured indentation", () => {
@@ -82,7 +57,7 @@ describe(JsonService, () => {
 
   it("writes the report, creating missing parent directories", () => {
     const reportPath = path.join(
-      createTemporaryDirectory(),
+      createTemporaryDirectory("codometer-json-"),
       "output/reports/codometer.json",
     );
 
@@ -106,7 +81,10 @@ describe(JsonService, () => {
   });
 
   it("returns true when checking a report that is current", () => {
-    const reportPath = path.join(createTemporaryDirectory(), "codometer.json");
+    const reportPath = path.join(
+      createTemporaryDirectory("codometer-json-"),
+      "codometer.json",
+    );
 
     service.sync({
       check: false,
@@ -126,7 +104,10 @@ describe(JsonService, () => {
   });
 
   it("returns false when checking a report that is stale", () => {
-    const reportPath = path.join(createTemporaryDirectory(), "codometer.json");
+    const reportPath = path.join(
+      createTemporaryDirectory("codometer-json-"),
+      "codometer.json",
+    );
 
     writeFileSync(reportPath, "{}\n", "utf8");
 
@@ -141,7 +122,10 @@ describe(JsonService, () => {
   });
 
   it("returns false when checking a report that is missing", () => {
-    const reportPath = path.join(createTemporaryDirectory(), "codometer.json");
+    const reportPath = path.join(
+      createTemporaryDirectory("codometer-json-"),
+      "codometer.json",
+    );
 
     expect(
       service.sync({
