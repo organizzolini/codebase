@@ -48,11 +48,13 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   interface["interface"]
   lexico_api["lexico-api"]
   lexico_entities["lexico-entities"]
   observability["observability"]
   persistence["persistence"]
+  lexico_api --> configuration
   lexico_api --> interface
   lexico_api --> lexico_entities
   lexico_api --> observability
@@ -769,44 +771,6 @@ graph LR
 <!-- codependix:end name="codependix-file-imports" -->
 
 <!-- callidescope:start -->
-
-### NestJS Module Graph
-
-<!-- codependix:start name="codependix-nestjs-modules" -->
-```mermaid
-flowchart LR
-  DatabaseModule
-  GraphQLModule
-  GraphQLSchemaBuilderModule
-  HealthModule
-  LexemesModule
-  LexicoApiModule
-  LiteratureModule
-  LoggerModule([LoggerModule])
-  MacronsModule
-  PostgresqlModule
-  SearchModule
-  TypeOrmModule
-  WordsModule
-  DatabaseModule --> PostgresqlModule
-  GraphQLModule --> GraphQLSchemaBuilderModule
-  LexemesModule --> TypeOrmModule
-  LexicoApiModule --> DatabaseModule
-  LexicoApiModule --> GraphQLModule
-  LexicoApiModule --> HealthModule
-  LexicoApiModule --> LexemesModule
-  LexicoApiModule --> LiteratureModule
-  LexicoApiModule --> SearchModule
-  LexicoApiModule --> WordsModule
-  LiteratureModule --> TypeOrmModule
-  PostgresqlModule --> TypeOrmModule
-  SearchModule --> MacronsModule
-  SearchModule --> TypeOrmModule
-  WordsModule --> TypeOrmModule
-```
-
-_Rounded modules are global: every module can inject them, so their edges are left out._
-<!-- codependix:end name="codependix-nestjs-modules" -->
 
 ## 🔭 Callidescope
 

@@ -8,7 +8,6 @@ import { DevcontainerConfigurationModule } from "../devcontainer-configuration/d
 import { InstalledSkillsModule } from "../installed-skills/installed-skills.module";
 import { PackageManifestsModule } from "../package-manifests/package-manifests.module";
 import { ProjectPortsModule } from "../project-ports/project-ports.module";
-import { PullRequestLabelsModule } from "../pull-request-labels/pull-request-labels.module";
 import { PullRequestTemplateModule } from "../pull-request-template/pull-request-template.module";
 import { SkillExclusionsModule } from "../skill-exclusions/skill-exclusions.module";
 import { TypeormMigrationSqlModule } from "../typeorm-migration-sql/typeorm-migration-sql.module";
@@ -38,7 +37,6 @@ import { SynchronizationService } from "./synchronization.service";
     InstalledSkillsModule,
     PackageManifestsModule,
     ProjectPortsModule,
-    PullRequestLabelsModule,
     PullRequestTemplateModule,
     SkillExclusionsModule,
     TypeormMigrationSqlModule,

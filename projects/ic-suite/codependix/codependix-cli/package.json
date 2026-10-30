@@ -7,6 +7,7 @@
     "url": "https://github.com/organizzolini/codebase/issues"
   },
   "dependencies": {
+    "@codebase/observability": "workspace:*",
     "@codependix/boundaries": "workspace:*",
     "@codependix/configuration": "workspace:*",
     "@codependix/core": "workspace:*",
@@ -22,7 +23,6 @@
   },
   "description": "Command-line tool for exporting and validating Nx, NestJS, and file-level dependency graphs and boundaries",
   "devDependencies": {
-    "@codebase/observability": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",

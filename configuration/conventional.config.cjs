@@ -115,6 +115,11 @@ const scopes = [
   },
   {
     description:
+      "GitHub issue and pull request metadata, repository governance, and external resource policies",
+    name: "compliance",
+  },
+  {
+    description:
       "Code generator templates and validation tests for generated instances",
     name: "conformetry",
   },
@@ -232,12 +237,12 @@ const scopes = [
   },
   {
     description:
-      "Synchronization application and commands for automating workflows",
+      "Commands that reconcile codebase files and generated repository configuration",
     name: "synchronization",
   },
   {
     description:
-      "Validation CLI and the checks it runs, such as pull request metadata",
+      "Checks and gates for codebase and project invariants",
     name: "validation",
   },
 ];

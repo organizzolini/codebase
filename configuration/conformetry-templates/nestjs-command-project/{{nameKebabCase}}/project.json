@@ -1,11 +1,13 @@
 {
   "$schema": "{{workspaceRelativePrefix}}node_modules/nx/schemas/project-schema.json",
+  "name": "{{nameKebabCase}}",
   "sourceRoot": "{{type}}/{{nameKebabCase}}",
   "tags": [
     "framework:nest-commander",
     "framework:nestjs",
     "generator:nestjs-command-project",
-    "language:typescript"
+    "language:typescript",
+    "type:package"
   ],
   "targets": {
     "codometer": {},

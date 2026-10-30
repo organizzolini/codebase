@@ -429,9 +429,10 @@ Read `configuration/commitlint.config.ts` for the full rule set before amending.
 | `affirmancy` | Python Jupyter notebook application for LangGraph affirmation generation |
 | `caelundas` | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris) |
 | `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
+| `compliance` | GitHub issue and pull request metadata, repository governance, and external resource policies |
 | `conformetry` | Code generator templates and validation tests for generated instances |
 | `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
-| `interface` | Shared GraphQL package: Relay connection helpers, entity-to-object types, client code generation, and test helpers |
+| `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
@@ -454,8 +455,8 @@ Read `configuration/commitlint.config.ts` for the full rule set before amending.
 | `reporting` | Pull request change report generation and the packages that diff and render it |
 | `scripts` | Shell and TypeScript scripts in scripts/ (sync, setup, utilities) |
 | `testing` | Vitest configuration, shared test utilities, and coverage setup |
-| `synchronization` | Synchronization application and commands for automating workflows |
-| `validation` | Validation CLI and the checks it runs, such as pull request metadata |
+| `synchronization` | Commands that reconcile codebase files and generated repository configuration |
+| `validation` | Checks and gates for codebase and project invariants |
 
 <!-- scopes-end -->
 

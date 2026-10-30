@@ -637,9 +637,9 @@ Call stacks traced through `projects/ic-suite/codometer/codometer-cli`, deepest 
 
 | Measure | Value |
 | --- | --- |
-| Callables | 40 |
+| Callables | 41 |
 | Files | 24 |
-| Calls traced | 45 |
+| Calls traced | 47 |
 | Call stacks | 11 |
 | Deepest stack | 15 |
 | Stacks through recursion | 0 |
@@ -659,7 +659,7 @@ What this project is judged against, as declared in its own `callidescope.config
 **1. `MeasureCommand.run`** — depth ≥ 15 · decorated-method
 
 ```text
-🚀 MeasureCommand.run(_passedParameters: string[], options: MeasureCommandOptions): Promise<void> [projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:398]
+🚀 MeasureCommand.run(_passedParameters: string[], options: MeasureCommandOptions): Promise<void> [projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:402]
    ↳ Measure the repository and produce every resolved output.
   └─> MeasureService.measure(args: MeasureArguments): MeasurementResult [projects/ic-suite/codometer/codometer-measurement/src/modules/measure/measure.service.ts:312]
      ↳ Measure every input the configuration declares.
@@ -691,17 +691,17 @@ What this project is judged against, as declared in its own `callidescope.config
 **2. `ConfigurationCommand.run`** — depth ≥ 12 · decorated-method
 
 ```text
-🚀 ConfigurationCommand.run(…): Promise<void> [projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:110]
+🚀 ConfigurationCommand.run(…): Promise<void> [projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:107]
    ↳ Lists what the tree beneath the given directory configures.
-  └─> ConfigurationListingService.describeConfigurations(args: DescribeConfigurationsArguments): Promise<ConfiguredTree> [projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:155]
+  └─> ConfigurationListingService.describeConfigurations(args: DescribeConfigurationsArguments): Promise<ConfiguredTree> [projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:146]
      ↳ Resolves the configuration each file in a tree answers with.
-    └─> ConfigurationListingService.findConfigurationFiles(args: DescribeConfigurationsArguments): Promise<DiscoveredConfigurationFiles> [projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:188]
+    └─> ConfigurationListingService.findConfigurationFiles(args: DescribeConfigurationsArguments): Promise<DiscoveredConfigurationFiles> [projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:179]
        ↳ Finds every configuration file beneath a directory.
-      └─> ConfigurationListingService.resolveWalkExclusions(args: DescribeConfigurationsArguments): Promise<WalkExclusions> [projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:120]
+      └─> ConfigurationListingService.resolveWalkExclusions(args: DescribeConfigurationsArguments): Promise<WalkExclusions> [projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:115]
          ↳ Resolves the exclusions the walk uses, reporting rather than throwing.
-        └─> ConfigurationService.loadConfigurationFile(args?: LoadConfigurationArguments): Promise<LoadedConfiguration> [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:85]
+        └─> ConfigurationService.loadConfigurationFile(args: LoadConfigurationArguments): Promise<LoadedConfiguration> [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:78]
            ↳ Loads a configuration and says which file answered.
-          └─> ConfigurationService.resolveConfiguration(configuration: CodometerConfiguration): ResolvedCodometerConfiguration [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:130]
+          └─> ConfigurationService.resolveConfiguration(configuration: CodometerConfiguration): ResolvedCodometerConfiguration [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:123]
              ↳ Fills in every field a configuration file may leave out.
             └─> ConfigurationResolverService.resolveConfiguration(configuration: CodometerConfiguration): ResolvedCodometerConfiguration [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:336]
                ↳ Fills in every field a configuration file may leave out.
@@ -746,41 +746,41 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 ChangesCommand.parseDirectory(value: unknown): string [projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:70]
    ↳ Parse the directory to look for codometer reports in.
-  └─> ConfigurationService.parseDirectoryOption(value: unknown): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:120]
+  └─> ConfigurationService.parseDirectoryOption(value: unknown): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:102]
      ↳ Reads a directory option, falling back to the working directory.
-    └─> ConfigurationFlagsService.parseDirectoryOption(value: unknown): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:126]
+    └─> ConfigurationFlagsService.parseDirectoryOption(value: unknown): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:127]
        ↳ Reads a directory option, falling back to the working directory.
-      └─> ConfigurationFlagsService.parseDefaultedOption(value: unknown, fallback: string): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:115]
+      └─> ConfigurationFlagsService.parseDefaultedOption(value: unknown, fallback: string): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:116]
          ↳ Reads an option that carries a default when it was left off.
-        └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:142]
+        └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:143]
            ↳ Reads an option that carries text, or nothing at all.
 ```
 
 **5. `ConfigurationCommand.parseDirectory`** — depth 5 · decorated-method
 
 ```text
-🚀 ConfigurationCommand.parseDirectory(value: unknown): string [projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:74]
+🚀 ConfigurationCommand.parseDirectory(value: unknown): string [projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:71]
    ↳ Parse the directory to look for configuration files beneath.
-  └─> ConfigurationService.parseDirectoryOption(value: unknown): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:120]
+  └─> ConfigurationService.parseDirectoryOption(value: unknown): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:102]
      ↳ Reads a directory option, falling back to the working directory.
-    └─> ConfigurationFlagsService.parseDirectoryOption(value: unknown): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:126]
+    └─> ConfigurationFlagsService.parseDirectoryOption(value: unknown): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:127]
        ↳ Reads a directory option, falling back to the working directory.
-      └─> ConfigurationFlagsService.parseDefaultedOption(value: unknown, fallback: string): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:115]
+      └─> ConfigurationFlagsService.parseDefaultedOption(value: unknown, fallback: string): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:116]
          ↳ Reads an option that carries a default when it was left off.
-        └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:142]
+        └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:143]
            ↳ Reads an option that carries text, or nothing at all.
 ```
 
 **6. `ConfigurationCommand.parseFormat`** — depth 4 · decorated-method
 
 ```text
-🚀 ConfigurationCommand.parseFormat(value: unknown): string [projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:83]
+🚀 ConfigurationCommand.parseFormat(value: unknown): string [projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:80]
    ↳ Parse the output format the listing is rendered in.
-  └─> ConfigurationService.parseDefaultedOption(value: unknown, fallback: string): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:115]
+  └─> ConfigurationService.parseDefaultedOption(value: unknown, fallback: string): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:97]
      ↳ Reads an option that carries a default when it was left off.
-    └─> ConfigurationFlagsService.parseDefaultedOption(value: unknown, fallback: string): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:115]
+    └─> ConfigurationFlagsService.parseDefaultedOption(value: unknown, fallback: string): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:116]
        ↳ Reads an option that carries a default when it was left off.
-      └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:142]
+      └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:143]
          ↳ Reads an option that carries text, or nothing at all.
 ```
 
@@ -789,9 +789,9 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 ChangesCommand.parseBaseline(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:52]
    ↳ Parse the baseline directory holding a snapshot of the reports.
-  └─> ConfigurationService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:125]
+  └─> ConfigurationService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:107]
      ↳ Reads an option that carries text, or nothing at all.
-    └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:142]
+    └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:143]
        ↳ Reads an option that carries text, or nothing at all.
 ```
 
@@ -800,9 +800,9 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 ChangesCommand.parseBaselineUrl(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:61]
    ↳ Parse the run URL the baseline came from, linked from the summary.
-  └─> ConfigurationService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:125]
+  └─> ConfigurationService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:107]
      ↳ Reads an option that carries text, or nothing at all.
-    └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:142]
+    └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:143]
        ↳ Reads an option that carries text, or nothing at all.
 ```
 
@@ -811,9 +811,9 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 ChangesCommand.parseMarkdown(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:79]
    ↳ Parse the markdown document the report is spliced into.
-  └─> ConfigurationService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:125]
+  └─> ConfigurationService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:107]
      ↳ Reads an option that carries text, or nothing at all.
-    └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:142]
+    └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:143]
        ↳ Reads an option that carries text, or nothing at all.
 ```
 
@@ -822,18 +822,18 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 ChangesCommand.parseOutput(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:88]
    ↳ Parse the file the report is written to on its own.
-  └─> ConfigurationService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:125]
+  └─> ConfigurationService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:107]
      ↳ Reads an option that carries text, or nothing at all.
-    └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:142]
+    └─> ConfigurationFlagsService.parseOptionalOption(value: unknown): string | undefined [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:143]
        ↳ Reads an option that carries text, or nothing at all.
 ```
 
 **11. `main`** — depth 2 · module-bootstrap
 
 ```text
-🚀 main(): Promise<void> [projects/ic-suite/codometer/codometer-cli/src/main.ts:26]
+🚀 main(): Promise<void> [projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts:26]
    ↳ Bootstraps the codometer CLI command application.
-  └─> withDefaultCommand(argv: readonly string[]): string[] [projects/ic-suite/codometer/codometer-cli/src/main.utilities.ts:14]
+  └─> withDefaultCommand(argv: readonly string[]): string[] [projects/ic-suite/codometer/codometer-cli/src/codometer-cli.utilities.ts:14]
      ↳ Inserts the default `measure` subcommand when the command line names no registered command.
 ```
 
@@ -843,8 +843,8 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `MeasureCommand.run` | 9 | `MeasureCommand.resolveWorkingDirectory`, `MeasureCommand.resolveRunPlan`, `DestinationsService.listOutputPaths`, `MeasureCommand.announceOutputPaths`, `MeasureService.measure`, `ReportService.build`, `DeliveryService.deliver`, `DestinationsService.selectScope`, `MeasureCommand.reportFindings` | `projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:398` |
-| `MeasureCommand.resolveRunPlan` | 7 | `ConfigurationService.selectMode`, `MeasureCommand.rejectCommandLine`, `MeasureCommand.readConfiguration`, `MeasureCommand.applyInputsOverride`, `ConfigurationService.resolveFormat`, `DestinationsService.resolveDestinations`, `DestinationsService.resolveConsoleMarkdown` | `projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:226` |
+| `MeasureCommand.run` | 9 | `MeasureCommand.resolveWorkingDirectory`, `MeasureCommand.resolveRunPlan`, `DestinationsService.listOutputPaths`, `MeasureCommand.announceOutputPaths`, `MeasureService.measure`, `ReportService.build`, `DeliveryService.deliver`, `DestinationsService.selectScope`, `MeasureCommand.reportFindings` | `projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:402` |
+| `MeasureCommand.resolveRunPlan` | 7 | `ConfigurationService.selectMode`, `MeasureCommand.rejectCommandLine`, `MeasureCommand.readConfiguration`, `MeasureCommand.applyInputsOverride`, `ConfigurationService.resolveFormat`, `DestinationsService.resolveDestinations`, `DestinationsService.resolveConsoleMarkdown` | `projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:229` |
 | `ChangesCommand.run` | 5 | `ConfigurationService.parseOptionalOption`, `ConfigurationService.parseDirectoryOption`, `ChangesService.collect`, `RenderService.renderSection`, `DocumentsService.emit` | `projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:97` |
 
 <details>
@@ -852,18 +852,18 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `ConfigurationCommand.run` | 4 | `ConfigurationListingService.describeConfigurations`, `ConfigurationCommand.filter(…)`, `RenderConfigurationService.render`, `ConfigurationListingService.toLimitRows` | `projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:110` |
-| `MeasureCommand.reportFindings` | 4 | `MeasureCommand.reportFailures`, `MeasureCommand.reportStaleness`, `MeasureCommand.reportBreaches`, `MeasureCommand.filter(…)` | `projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:189` |
-| `MeasureCommand.reportBreaches` | 3 | `MeasureCommand.filter(…)`, `MeasureCommand.filter(…)`, `MeasureCommand.filter(…)` | `projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:142` |
+| `ConfigurationCommand.run` | 5 | `ConfigurationService.requireConfigurationPath`, `ConfigurationListingService.describeConfigurations`, `ConfigurationCommand.filter(…)`, `RenderConfigurationService.render`, `ConfigurationListingService.toLimitRows` | `projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:107` |
+| `MeasureCommand.reportFindings` | 4 | `MeasureCommand.reportFailures`, `MeasureCommand.reportStaleness`, `MeasureCommand.reportBreaches`, `MeasureCommand.filter(…)` | `projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:192` |
+| `MeasureCommand.reportBreaches` | 3 | `MeasureCommand.filter(…)`, `MeasureCommand.filter(…)`, `MeasureCommand.filter(…)` | `projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:145` |
+| `MeasureCommand.readConfiguration` | 2 | `ConfigurationService.requireConfigurationPath`, `ConfigurationService.loadConfiguration` | `projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:110` |
 | `ChangesCommand.parseBaseline` | 1 | `ConfigurationService.parseOptionalOption` | `projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:52` |
 | `ChangesCommand.parseBaselineUrl` | 1 | `ConfigurationService.parseOptionalOption` | `projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:61` |
 | `ChangesCommand.parseDirectory` | 1 | `ConfigurationService.parseDirectoryOption` | `projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:70` |
 | `ChangesCommand.parseMarkdown` | 1 | `ConfigurationService.parseOptionalOption` | `projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:79` |
 | `ChangesCommand.parseOutput` | 1 | `ConfigurationService.parseOptionalOption` | `projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts:88` |
-| `ConfigurationCommand.parseDirectory` | 1 | `ConfigurationService.parseDirectoryOption` | `projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:74` |
-| `ConfigurationCommand.parseFormat` | 1 | `ConfigurationService.parseDefaultedOption` | `projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:83` |
-| `MeasureCommand.readConfiguration` | 1 | `ConfigurationService.loadConfiguration` | `projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts:111` |
-| `main` | 1 | `withDefaultCommand` | `projects/ic-suite/codometer/codometer-cli/src/main.ts:26` |
+| `ConfigurationCommand.parseDirectory` | 1 | `ConfigurationService.parseDirectoryOption` | `projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:71` |
+| `ConfigurationCommand.parseFormat` | 1 | `ConfigurationService.parseDefaultedOption` | `projects/ic-suite/codometer/codometer-cli/src/modules/configuration/configuration.command.ts:80` |
+| `main` | 1 | `withDefaultCommand` | `projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts:26` |
 
 </details>
 <!-- callidescope:end -->

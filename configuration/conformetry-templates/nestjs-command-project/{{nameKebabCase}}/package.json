@@ -1,5 +1,8 @@
 {
+  "name": "{{#packageName}}{{packageName}}{{/packageName}}{{^packageName}}{{nameKebabCase}}{{/packageName}}",
+  "version": "{{#packageVersion}}{{packageVersion}}{{/packageVersion}}{{^packageVersion}}0.0.1{{/packageVersion}}",
   "dependencies": {
+    "@codebase/observability": "workspace:*",
     "@nestjs/common": "catalog:ic-suite",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:ic-suite",
@@ -8,10 +11,11 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@codebase/observability": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
+    "@swc-node/register": "catalog:",
+    "@swc/core": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",

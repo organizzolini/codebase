@@ -1,0 +1,89 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "compliance",
+  "sourceRoot": "projects/compliance",
+  "tags": [
+    "framework:nest-commander",
+    "framework:nestjs",
+    "generator:nestjs-command-project",
+    "language:typescript",
+    "type:package"
+  ],
+  "targets": {
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "repl": {
+      "cache": false,
+      "configurations": {},
+      "description": "Start a Nest Commander application in REPL mode",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --import @swc-node/register/esm-register src/compliance.repl.ts",
+        "cwd": "projects/compliance"
+      },
+      "parallelism": true
+    },
+    "spell-check": {},
+    "start": {
+      "cache": false,
+      "configurations": {
+        "audit-governance": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts audit-governance"
+        },
+        "audit-issues": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue-metadata --all"
+        },
+        "issue-assignees": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue-assignees"
+        },
+        "issue-labels": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue-labels"
+        },
+        "issue-metadata": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue-metadata"
+        },
+        "pull-request-body": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-body"
+        },
+        "pull-request-context": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-context"
+        },
+        "pull-request-labels-check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-labels check"
+        },
+        "pull-request-labels-write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-labels write"
+        },
+        "pull-request-metadata": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-metadata"
+        },
+        "pull-request-parent-links": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-parent-links"
+        },
+        "pull-request-release-significance": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-release-significance"
+        }
+      },
+      "description": "Run one compliance command by name.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

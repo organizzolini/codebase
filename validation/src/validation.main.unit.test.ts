@@ -1,14 +1,9 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { AuditGovernanceModule } from "./modules/audit-governance/audit-governance.module";
 import type { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
-import type { IssueMetadataModule } from "./modules/issue-metadata/issue-metadata.module";
 import type { LockfileModule } from "./modules/lockfile/lockfile.module";
 import type { PublishablePackagesModule } from "./modules/publishable-packages/publishable-packages.module";
-import type { PullRequestBodyModule } from "./modules/pull-request-body/pull-request-body.module";
-import type { PullRequestMetadataModule } from "./modules/pull-request-metadata/pull-request-metadata.module";
-import type { PullRequestReleaseSignificanceModule } from "./modules/pull-request-release-significance/pull-request-release-significance.module";
 import type { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
 import type { SessionBranchNameModule } from "./modules/session-branch-name/session-branch-name.module";
 import type { SessionWorktreeNameModule } from "./modules/session-worktree-name/session-worktree-name.module";
@@ -26,14 +21,8 @@ type CommandFactoryRun = (
 const run = vi.fn<CommandFactoryRun>().mockResolvedValue(undefined);
 const loggerServiceMock = createMock<LoggerService>();
 const logToStandardError = vi.fn<() => void>();
-const auditGovernanceModuleMock = createMock<AuditGovernanceModule>();
 const catalogManifestsModuleMock = createMock<CatalogManifestsModule>();
-const issueMetadataModuleMock = createMock<IssueMetadataModule>();
 const lockfileModuleMock = createMock<LockfileModule>();
-const pullRequestBodyModuleMock = createMock<PullRequestBodyModule>();
-const pullRequestMetadataModuleMock = createMock<PullRequestMetadataModule>();
-const pullRequestReleaseSignificanceModuleMock =
-  createMock<PullRequestReleaseSignificanceModule>();
 const publishablePackagesModuleMock = createMock<PublishablePackagesModule>();
 const readmeProjectsModuleMock = createMock<ReadmeProjectsModule>();
 const sessionBranchNameModuleMock = createMock<SessionBranchNameModule>();
@@ -73,21 +62,9 @@ vi.mock("@codebase/observability", () => ({
 
 // Mocked so that bootstrapping never reaches the real commands, which extend a
 // `nest-commander` class this suite has replaced.
-vi.mock("./modules/audit-governance/audit-governance.module", () => ({
-  AuditGovernanceModule: function AuditGovernanceModule() {
-    return auditGovernanceModuleMock;
-  },
-}));
-
 vi.mock("./modules/catalog-manifests/catalog-manifests.module", () => ({
   CatalogManifestsModule: function CatalogManifestsModule() {
     return catalogManifestsModuleMock;
-  },
-}));
-
-vi.mock("./modules/issue-metadata/issue-metadata.module", () => ({
-  IssueMetadataModule: function IssueMetadataModule() {
-    return issueMetadataModuleMock;
   },
 }));
 
@@ -96,28 +73,6 @@ vi.mock("./modules/lockfile/lockfile.module", () => ({
     return lockfileModuleMock;
   },
 }));
-
-vi.mock("./modules/pull-request-body/pull-request-body.module", () => ({
-  PullRequestBodyModule: function PullRequestBodyModule() {
-    return pullRequestBodyModuleMock;
-  },
-}));
-
-vi.mock("./modules/pull-request-metadata/pull-request-metadata.module", () => ({
-  PullRequestMetadataModule: function PullRequestMetadataModule() {
-    return pullRequestMetadataModuleMock;
-  },
-}));
-
-vi.mock(
-  "./modules/pull-request-release-significance/pull-request-release-significance.module",
-  () => ({
-    PullRequestReleaseSignificanceModule:
-      function PullRequestReleaseSignificanceModule() {
-        return pullRequestReleaseSignificanceModuleMock;
-      },
-  }),
-);
 
 vi.mock("./modules/publishable-packages/publishable-packages.module", () => ({
   PublishablePackagesModule: function PublishablePackagesModule() {
