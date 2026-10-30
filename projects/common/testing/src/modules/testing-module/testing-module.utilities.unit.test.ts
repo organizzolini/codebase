@@ -1,3 +1,4 @@
+import { Injectable, Module } from "@nestjs/common";
 import { describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
@@ -5,6 +6,17 @@ import { LoggerService } from "@codebase/observability";
 import { SampleClockModule } from "../../../testing/fixtures/sample-clock.module";
 import { SampleClockService } from "../../../testing/fixtures/sample-clock.service";
 import { SampleGreeterService } from "../../../testing/fixtures/sample-greeter.service";
+
+@Injectable()
+class ImportedClockConsumer {
+  public constructor(public readonly clock: SampleClockService) {}
+}
+
+@Module({
+  exports: [ImportedClockConsumer],
+  providers: [ImportedClockConsumer, SampleClockService],
+})
+class ImportedClockConsumerModule {}
 
 import {
   buildTestingModule,
@@ -48,6 +60,15 @@ describe("testing modules", () => {
 
       expect(fromImports.instance.greet("Ovid")).toMatch(/salve, Ovid$/u);
       expect(fromProviders.instance.greet("Ovid")).toMatch(/salve, Ovid$/u);
+    });
+
+    it("resolves a class provided by an imported module", async () => {
+      const built = await buildTestingModule(ImportedClockConsumer, {
+        imports: [ImportedClockConsumerModule],
+        provideTarget: false,
+      });
+
+      expect(built.instance.clock).toBeInstanceOf(SampleClockService);
     });
 
     it("fails when the class under test has a dependency nothing provides", async () => {

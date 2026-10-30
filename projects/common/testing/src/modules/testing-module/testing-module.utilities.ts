@@ -28,12 +28,17 @@ export async function buildTestingModule<Target>(
   target: Type<Target>,
   options: TestingModuleOptions = {},
 ): Promise<BuiltTestingModule<Target>> {
-  const { imports = [], mocks = [], providers = [] } = options;
+  const {
+    imports = [],
+    mocks = [],
+    providers = [],
+    provideTarget = true,
+  } = options;
   const logger = createMock<LoggerService>();
   const module = await Test.createTestingModule({
     imports,
     providers: [
-      target,
+      ...(provideTarget ? [target] : []),
       { provide: LoggerService, useValue: logger },
       ...mocks.map((token) => ({ provide: token, useValue: createMock() })),
       ...providers,

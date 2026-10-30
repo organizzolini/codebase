@@ -37,6 +37,12 @@ describe("temporary directories", () => {
       );
     });
 
+    it("creates the directory under a custom parent", () => {
+      const directory = createTemporaryDirectory("workspace", process.cwd());
+
+      expect(path.dirname(directory)).toBe(fs.realpathSync(process.cwd()));
+    });
+
     describe("from a beforeEach hook", () => {
       let directory = "";
 
@@ -75,6 +81,14 @@ describe("temporary directories", () => {
       it("keeps the same directory, contents and all, across the suite's tests", () => {
         expect(directory()).toBe(suiteDirectory);
         expect(fs.readdirSync(suiteDirectory)).toStrictEqual(["kept.txt"]);
+      });
+    });
+
+    describe("inside a custom parent", () => {
+      const directory = useTemporaryDirectory("workspace", process.cwd());
+
+      it("creates the directory under the given parent", () => {
+        expect(path.dirname(directory())).toBe(fs.realpathSync(process.cwd()));
       });
     });
 

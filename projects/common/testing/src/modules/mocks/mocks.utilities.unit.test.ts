@@ -1,4 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
+import * as NodeFileSystem from "node:fs";
 
 import { describe, expect, it, vi } from "vitest";
 
@@ -11,6 +12,7 @@ import { promptsMock } from "./mocks.constants";
 import {
   answerPrompts,
   mockChildProcess,
+  mockFileSystem,
   mockPartially,
   stubFetch,
 } from "./mocks.utilities";
@@ -46,6 +48,26 @@ async function textOf(response: Promise<Response>): Promise<string> {
 }
 
 describe("mocks", () => {
+  describe(mockFileSystem, () => {
+    it("replaces selected reads and keeps other overloads real", () => {
+      const fileSystem = mockFileSystem(NodeFileSystem, {
+        buffer: () => Buffer.from("mocked bytes"),
+        utf8: () => "mocked source",
+      });
+      const sourcePath = new URL(import.meta.url);
+
+      expect(fileSystem.readFileSync("source.ts", "utf8")).toBe(
+        "mocked source",
+      );
+      expect(fileSystem.readFileSync("binary.bin")).toStrictEqual(
+        Buffer.from("mocked bytes"),
+      );
+      expect(fileSystem.readFileSync(sourcePath)).toStrictEqual(
+        NodeFileSystem.readFileSync(sourcePath),
+      );
+    });
+  });
+
   describe(mockChildProcess, () => {
     it("runs the real process until a test stages a result", () => {
       const script = "process.stdout.write('ran')";
