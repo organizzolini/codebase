@@ -779,19 +779,24 @@
     "vitest.config.base.ts": "vitest"
   },
   "material-icon-theme.folders.associations": {
-    ".nx": "tools",
+    "common": "core",
     "datasources": "database",
-    "dto": "connection",
     "entities": "bloc",
     "factories": "pipe",
     "infrastructure": "terraform",
+    "installation": "download",
     "instructions": "custom",
-    "nestjs-seeder": "seeders",
+    "integration": "link",
     "notepads": "toc",
+    "observability": "log",
+    "persistence": "backup",
     "planning": "tasks",
+    "presentation": "views",
     "processors": "queue",
+    "publication": "upload",
     "rbac": "guard",
-    "routing": "element"
+    "routing": "element",
+    "synchronization": "update"
   },
   "material-icon-theme.hidesExplorerArrows": true,
   "notebook.breadcrumbs.showCodeCells": true,
