@@ -8,13 +8,11 @@
     "@nestjs/common": "catalog:ic-suite",
     "jiti": "catalog:",
     "jsonc-parser": "catalog:",
-    "reflect-metadata": "catalog:",
     "zod": "catalog:"
   },
   "description": "Configuration loader, limit definitions, and counter resolution for Codometer",
   "devDependencies": {
-    "@golevelup/ts-vitest": "catalog:",
-    "@nestjs/testing": "catalog:",
+    "@codebase/testing": "workspace:*",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",

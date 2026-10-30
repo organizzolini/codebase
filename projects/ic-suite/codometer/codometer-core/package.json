@@ -4,13 +4,12 @@
     "url": "https://github.com/organizzolini/codebase/issues"
   },
   "dependencies": {
-    "@nestjs/common": "catalog:ic-suite",
-    "reflect-metadata": "catalog:"
+    "@nestjs/common": "catalog:ic-suite"
   },
   "description": "Core domain models, metrics contracts, and report shapes for the Codometer measurement toolchain",
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
-    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
