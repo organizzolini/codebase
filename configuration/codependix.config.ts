@@ -561,6 +561,89 @@ const codependixConfiguration: CodependixConfiguration = {
           ],
         },
       },
+      // 🪙 Coinagerie
+      {
+        from: { tags: ["name:coinagerie-core"] },
+        kind: "forbid",
+        message:
+          "The coinagerie chain is the ic-suite spine: `core <- configuration <- languages <- vocabulary <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, languages tokenize source into raw identifiers, vocabulary turns them into headwords, output owns every render target and the glossary comparison, and the command-line host composes all of them. No coinagerie package imports another toolchain; it re-implements what it needs.",
+        name: "coinagerie-core-is-a-leaf",
+        to: { id: ["!(configuration)"] },
+      },
+      {
+        from: { tags: ["name:coinagerie-configuration"] },
+        kind: "allow",
+        message:
+          "The coinagerie chain is the ic-suite spine: `core <- configuration <- languages <- vocabulary <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, languages tokenize source into raw identifiers, vocabulary turns them into headwords, output owns every render target and the glossary comparison, and the command-line host composes all of them. No coinagerie package imports another toolchain; it re-implements what it needs.",
+        name: "coinagerie-configuration-layer",
+        to: {
+          tags: ["name:configuration", "name:coinagerie-core"],
+        },
+      },
+      {
+        from: { tags: ["name:coinagerie-languages"] },
+        kind: "allow",
+        message:
+          "The coinagerie chain is the ic-suite spine: `core <- configuration <- languages <- vocabulary <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, languages tokenize source into raw identifiers, vocabulary turns them into headwords, output owns every render target and the glossary comparison, and the command-line host composes all of them. No coinagerie package imports another toolchain; it re-implements what it needs.",
+        name: "coinagerie-languages-layer",
+        to: {
+          tags: [
+            "name:configuration",
+            "name:coinagerie-configuration",
+            "name:coinagerie-core",
+            "name:observability",
+          ],
+        },
+      },
+      {
+        from: { tags: ["name:coinagerie-vocabulary"] },
+        kind: "allow",
+        message:
+          "The coinagerie chain is the ic-suite spine: `core <- configuration <- languages <- vocabulary <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, languages tokenize source into raw identifiers, vocabulary turns them into headwords, output owns every render target and the glossary comparison, and the command-line host composes all of them. No coinagerie package imports another toolchain; it re-implements what it needs.",
+        name: "coinagerie-vocabulary-layer",
+        to: {
+          tags: [
+            "name:configuration",
+            "name:coinagerie-configuration",
+            "name:coinagerie-core",
+            "name:coinagerie-languages",
+            "name:observability",
+          ],
+        },
+      },
+      {
+        from: { tags: ["name:coinagerie-output"] },
+        kind: "allow",
+        message:
+          "The coinagerie chain is the ic-suite spine: `core <- configuration <- languages <- vocabulary <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, languages tokenize source into raw identifiers, vocabulary turns them into headwords, output owns every render target and the glossary comparison, and the command-line host composes all of them. No coinagerie package imports another toolchain; it re-implements what it needs.",
+        name: "coinagerie-output-layer",
+        to: {
+          tags: [
+            "name:configuration",
+            "name:coinagerie-configuration",
+            "name:coinagerie-core",
+            "name:coinagerie-vocabulary",
+            "name:observability",
+          ],
+        },
+      },
+      {
+        from: { tags: ["name:coinagerie-cli"] },
+        kind: "allow",
+        message:
+          "The coinagerie chain is the ic-suite spine: `core <- configuration <- languages <- vocabulary <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, languages tokenize source into raw identifiers, vocabulary turns them into headwords, output owns every render target and the glossary comparison, and the command-line host composes all of them. No coinagerie package imports another toolchain; it re-implements what it needs.",
+        name: "coinagerie-cli-layer",
+        to: {
+          tags: [
+            "name:configuration",
+            "name:coinagerie-configuration",
+            "name:coinagerie-core",
+            "name:coinagerie-output",
+            "name:coinagerie-vocabulary",
+            "name:observability",
+          ],
+        },
+      },
       // 👔 Conformetry
       {
         from: { tags: ["name:conformetry-core"] },
@@ -777,6 +860,10 @@ const codependixConfiguration: CodependixConfiguration = {
       "codometer-cli": {
         export: "MainModule",
         file: "src/codometer-cli.module.ts",
+      },
+      "coinagerie-cli": {
+        export: "MainModule",
+        file: "src/coinagerie-cli.module.ts",
       },
       "conformetry-cli": {
         export: "MainModule",

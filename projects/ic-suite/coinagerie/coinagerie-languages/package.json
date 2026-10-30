@@ -1,0 +1,46 @@
+{
+  "author": "Jimmy Paolini",
+  "bugs": {
+    "url": "https://github.com/organizzolini/codebase/issues"
+  },
+  "dependencies": {
+    "reflect-metadata": "catalog:",
+    "tslib": "catalog:"
+  },
+  "description": "Per-language identifier tokenizers and keyword lists for the coinagerie vocabulary toolchain",
+  "devDependencies": {
+    "@golevelup/ts-vitest": "catalog:",
+    "@nx/eslint-plugin": "catalog:",
+    "@swc/helpers": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "homepage": "https://github.com/organizzolini/codebase/tree/main/projects/ic-suite/coinagerie/coinagerie-languages#readme",
+  "keywords": [
+    "coinagerie",
+    "glossary",
+    "tokenizers",
+    "vocabulary"
+  ],
+  "license": "MIT",
+  "main": "src/index.ts",
+  "name": "@coinagerie/languages",
+  "private": true,
+  "repository": {
+    "directory": "projects/ic-suite/coinagerie/coinagerie-languages",
+    "type": "git",
+    "url": "git+https://github.com/organizzolini/codebase.git"
+  },
+  "type": "module",
+  "typeCoverage": {
+    "atLeast": 100,
+    "strict": true
+  },
+  "types": "src/index.ts",
+  "version": "0.0.0"
+}

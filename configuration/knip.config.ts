@@ -407,6 +407,12 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // coinagerie packages: the vocabulary CLI, booted by its main and its repl
+    "projects/ic-suite/coinagerie/coinagerie-cli": {
+      entry: ["src/coinagerie-cli.main.ts", "src/coinagerie-cli.repl.ts"],
+      project: "src/**/*.ts",
+    },
+
     // codependix packages: the examples package, whose `examples/` directory
     // holds subjects to be graphed and the guides rendered from them, neither of
     // which anything imports.

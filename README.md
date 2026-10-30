@@ -180,6 +180,17 @@ Repository measurement toolchain that counts a codebase and reports what it foun
 **[codometer-measurement](projects/ic-suite/codometer/codometer-measurement)** - Finds the files a run measures, counts their size and whatever a configuration declares its own counters for, and holds every metric to its declared limit [![npm](https://img.shields.io/npm/v/@codometer/measurement?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/measurement)\
 **[codometer-output](projects/ic-suite/codometer/codometer-output)** - Every codometer output format - JSON reports, README badges, and the pull request change report - plus the destinations a run writes them to [![npm](https://img.shields.io/npm/v/@codometer/output?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/output)
 
+### 🪙 coinagerie
+
+Vocabulary toolchain that lists the words a codebase uses and keeps a glossary of them in step with the code
+
+**[coinagerie-cli](projects/ic-suite/coinagerie/coinagerie-cli)** - Command-line tool that lists the vocabulary of a codebase and keeps a glossary of it in step with the code\
+**[coinagerie-configuration](projects/ic-suite/coinagerie/coinagerie-configuration)** - Configuration schema, loader, and command-line flag resolution for the coinagerie vocabulary toolchain\
+**[coinagerie-core](projects/ic-suite/coinagerie/coinagerie-core)** - Contracts for the coinagerie vocabulary toolchain: the glossary, the vocabulary report, and shared constants\
+**[coinagerie-languages](projects/ic-suite/coinagerie/coinagerie-languages)** - Per-language identifier tokenizers and keyword lists for the coinagerie vocabulary toolchain\
+**[coinagerie-output](projects/ic-suite/coinagerie/coinagerie-output)** - Renders and parses the markdown and JSON glossaries and compares them with the vocabulary of a codebase\
+**[coinagerie-vocabulary](projects/ic-suite/coinagerie/coinagerie-vocabulary)** - File discovery, word splitting, folding, and exclusion that turn a codebase into a sorted list of headwords
+
 ### 👔 conformetry
 
 Template-driven code generation and conformance validation toolchain
