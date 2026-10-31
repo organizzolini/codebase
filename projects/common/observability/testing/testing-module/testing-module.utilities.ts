@@ -2,8 +2,9 @@ import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { expect } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { LoggerService } from "../../src/modules/logger/logger.service";
 
+import type { LoggerServiceContract } from "../../src/modules/logger/logger.types";
 import type {
   BuiltTestingModule,
   TestingModuleOptions,
@@ -29,7 +30,7 @@ export async function buildTestingModule<Target>(
   options: TestingModuleOptions = {},
 ): Promise<BuiltTestingModule<Target>> {
   const { imports = [], mocks = [], providers = [] } = options;
-  const logger = createMock<LoggerService>();
+  const logger = createMock<LoggerServiceContract>();
   const module = await Test.createTestingModule({
     imports,
     providers: [

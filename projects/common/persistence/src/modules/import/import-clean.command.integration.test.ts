@@ -5,7 +5,7 @@ import path from "node:path";
 import { DataSource } from "typeorm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { startPostgresContainer } from "@codebase/testing/postgres";
+import { startPostgresContainer } from "@codebase/persistence/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
@@ -15,7 +15,7 @@ import {
 } from "../../../testing/fixture-persistence";
 import { mockStandardInputTerminal } from "../../../testing/mocks";
 
-import type { StartedPostgresContainer } from "@codebase/testing/postgres";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 
 describe("import --clean --ddl", () => {
   const setStandardInputTerminal = mockStandardInputTerminal();

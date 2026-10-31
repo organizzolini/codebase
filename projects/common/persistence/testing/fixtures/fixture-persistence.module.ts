@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { PostgresqlModule } from "@codebase/persistence";
+import { PostgresqlModule } from "../../src/modules/postgresql/postgresql.module";
 
 import { Widget } from "./widget.entity";
 

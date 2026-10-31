@@ -1,10 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
-
-import { SampleClockModule } from "../../../testing/fixtures/sample-clock.module";
-import { SampleClockService } from "../../../testing/fixtures/sample-clock.service";
-import { SampleGreeterService } from "../../../testing/fixtures/sample-greeter.service";
+import { LoggerService } from "../../src/modules/logger/logger.service";
+import { SampleClockModule } from "../fixtures/sample-clock.module";
+import { SampleClockService } from "../fixtures/sample-clock.service";
+import { SampleGreeterService } from "../fixtures/sample-greeter.service";
 
 import {
   buildTestingModule,

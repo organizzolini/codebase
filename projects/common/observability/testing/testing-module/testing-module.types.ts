@@ -1,4 +1,4 @@
-import type { LoggerService } from "@codebase/observability";
+import type { LoggerServiceContract } from "../../src/modules/logger/logger.types";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { ModuleMetadata, Provider, Type } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
@@ -11,7 +11,7 @@ export interface BuiltTestingModule<Target> {
   readonly instance: Target;
 
   /** The logger mock injected in place of the real logger. */
-  readonly logger: DeepMocked<LoggerService>;
+  readonly logger: DeepMocked<LoggerServiceContract>;
 
   /** A mock the module was built with, typed for staging and asserting. */
   readonly mock: <Dependency>(

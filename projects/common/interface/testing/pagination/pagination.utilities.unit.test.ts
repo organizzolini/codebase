@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { toCursor } from "@codebase/interface";
+import { toCursor } from "../../src/modules/graphql-server/graphql-server.utilities";
 
 import {
   expectedPage,

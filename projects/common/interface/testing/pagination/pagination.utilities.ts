@@ -1,14 +1,20 @@
-import { createEdge, toCursor } from "@codebase/interface";
+import {
+  createEdge,
+  toCursor,
+} from "../../src/modules/graphql-server/graphql-server.utilities";
 
 import { FULL_LIMITS, QUICK_LIMITS } from "./pagination.constants";
 
+import type {
+  Connection,
+  Edge,
+} from "../../src/modules/graphql-server/graphql-server.types";
 import type {
   MatrixOptions,
   PageRequest,
   PageSummary,
   PaginationBoundsParameters,
 } from "./pagination.types";
-import type { Connection, Edge } from "@codebase/interface";
 
 /**
  * The page the original in-memory slicing produced for these arguments, used

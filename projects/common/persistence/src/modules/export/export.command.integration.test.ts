@@ -15,7 +15,7 @@ import {
   vi,
 } from "vitest";
 
-import { startPostgresContainer } from "@codebase/testing/postgres";
+import { startPostgresContainer } from "@codebase/persistence/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
@@ -28,7 +28,7 @@ import { postgresProcessEnvironment } from "../postgresql-utilities/postgresql-u
 import type { FixtureDatabase } from "../../../testing/fixture-persistence";
 import type { PostgresUriConnection } from "../postgresql-utilities/postgresql-utilities.types";
 import type { PostgresConnection } from "../postgresql/postgresql.types";
-import type { StartedPostgresContainer } from "@codebase/testing/postgres";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 
 // 🎯 The real execFile, wrapped so each test can read the arguments and
 // environment every client tool was started with.

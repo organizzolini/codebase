@@ -3,15 +3,14 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { postgresEnvironmentSchema } from "@codebase/persistence";
-
-import { FixtureDatabaseModule } from "../../../testing/fixtures/fixture-persistence.module";
-import { CreateWidgets1767225600000 } from "../../../testing/fixtures/migrations/1767225600000-create-widgets";
-import { SAMPLE_GREETING } from "../../../testing/fixtures/sample-greeting.constants";
-import { SampleGreetingModule } from "../../../testing/fixtures/sample-greeting.module";
-import { SampleWidgetsModule } from "../../../testing/fixtures/sample-widgets.module";
-import { SampleWidgetsService } from "../../../testing/fixtures/sample-widgets.service";
-import { Widget } from "../../../testing/fixtures/widget.entity";
+import { postgresEnvironmentSchema } from "../../src/modules/postgresql/postgresql.utilities";
+import { FixtureDatabaseModule } from "../fixtures/fixture-persistence.module";
+import { CreateWidgets1767225600000 } from "../fixtures/migrations/1767225600000-create-widgets";
+import { SAMPLE_GREETING } from "../fixtures/sample-greeting.constants";
+import { SampleGreetingModule } from "../fixtures/sample-greeting.module";
+import { SampleWidgetsModule } from "../fixtures/sample-widgets.module";
+import { SampleWidgetsService } from "../fixtures/sample-widgets.service";
+import { Widget } from "../fixtures/widget.entity";
 
 import { startDatabaseTestingModule } from "./database-testing.utilities";
 

@@ -5,18 +5,18 @@ import {
   postgresConnection,
   postgresDataSourceOptions,
   postgresEnvironment,
-} from "@codebase/persistence";
+} from "../../src/modules/postgresql/postgresql.utilities";
 
 import {
   POSTGRES_CONTAINER_IMAGES,
   POSTGRES_CONTAINER_INITIALIZATION_PATH,
 } from "./postgres-container.constants";
 
+import type { PostgresConnection } from "../../src/modules/postgresql/postgresql.types";
 import type {
   PostgresContainerOptions,
   StartedPostgresContainer,
 } from "./postgres-container.types";
-import type { PostgresConnection } from "@codebase/persistence";
 import type { StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 
 // 🌎 Utilities

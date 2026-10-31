@@ -278,15 +278,8 @@ const MODULE_BOUNDARIES = {
       ],
       sourceTag: "name:conformetry-examples",
     },
-    // The testing package wraps only the common packages, so the cycles
-    // `ignoredCircularDependencies` allows below stay among them.
     {
-      onlyDependOnLibsWithTags: [
-        "name:configuration",
-        "name:interface",
-        "name:observability",
-        "name:persistence",
-      ],
+      onlyDependOnLibsWithTags: ["name:configuration"],
       sourceTag: "name:testing",
     },
     {
@@ -307,15 +300,6 @@ const MODULE_BOUNDARIES = {
     },
   ],
   enforceBuildableLibDependency: true,
-  // The common packages may depend on each other in both directions: the
-  // testing package's adapters wrap observability, persistence, and
-  // interface, and each of those may use the testing package's helpers in
-  // its own tests and keep its old testing entry as a re-export of it.
-  ignoredCircularDependencies: [
-    ["interface", "testing"],
-    ["observability", "testing"],
-    ["persistence", "testing"],
-  ],
 };
 
 export default [

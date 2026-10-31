@@ -351,43 +351,60 @@ graph LR
   presentation["presentation"]
   publication["publication"]
   synchronization["synchronization"]
+  testing["testing"]
   validation["validation"]
+  affirmancy --> configuration
+  caelundas_cli --> configuration
   caelundas_cli --> observability
   caelundas_cli --> persistence
+  caelundas_web --> configuration
   caelundas_web --> presentation
+  callidescope_agents --> configuration
   callidescope_cli --> callidescope_configuration
   callidescope_cli --> callidescope_core
   callidescope_cli --> callidescope_graph
   callidescope_cli --> callidescope_output
+  callidescope_cli --> configuration
   callidescope_cli --> observability
   callidescope_configuration --> callidescope_core
+  callidescope_configuration --> configuration
+  callidescope_core --> configuration
   callidescope_examples -.-> callidescope_cli
   callidescope_examples --> callidescope_configuration
   callidescope_examples --> callidescope_core
+  callidescope_examples --> configuration
   callidescope_graph --> callidescope_configuration
   callidescope_graph --> callidescope_core
+  callidescope_graph --> configuration
   callidescope_graph --> observability
   callidescope_nx --> callidescope_cli
   callidescope_nx --> callidescope_configuration
   callidescope_nx --> callidescope_core
   callidescope_nx --> callidescope_graph
   callidescope_nx --> callidescope_output
+  callidescope_nx --> configuration
   callidescope_nx --> observability
   callidescope_output --> callidescope_configuration
   callidescope_output --> callidescope_core
   callidescope_output --> callidescope_graph
+  callidescope_output --> configuration
   callidescope_output --> observability
+  codependix_agents --> configuration
   codependix_boundaries --> codependix_configuration
   codependix_boundaries --> codependix_core
   codependix_boundaries --> codependix_file_imports
   codependix_boundaries --> codependix_nestjs_modules
   codependix_boundaries --> codependix_nx_projects
+  codependix_boundaries --> configuration
   codependix_cli --> codependix_boundaries
   codependix_cli --> codependix_configuration
   codependix_cli --> codependix_core
   codependix_cli --> codependix_output
+  codependix_cli --> configuration
   codependix_cli --> observability
   codependix_configuration --> codependix_core
+  codependix_configuration --> configuration
+  codependix_core --> configuration
   codependix_examples --> codependix_boundaries
   codependix_examples -.-> codependix_cli
   codependix_examples --> codependix_configuration
@@ -396,83 +413,125 @@ graph LR
   codependix_examples --> codependix_nestjs_modules
   codependix_examples --> codependix_nx_projects
   codependix_examples --> codependix_output
+  codependix_examples --> configuration
   codependix_examples --> observability
+  codependix_file_imports --> configuration
+  codependix_nestjs_modules --> configuration
   codependix_nestjs_modules --> observability
   codependix_nx --> codependix_cli
   codependix_nx --> codependix_configuration
+  codependix_nx --> configuration
+  codependix_nx_projects --> configuration
   codependix_output --> codependix_boundaries
   codependix_output --> codependix_configuration
   codependix_output --> codependix_core
   codependix_output --> codependix_file_imports
   codependix_output --> codependix_nestjs_modules
   codependix_output --> codependix_nx_projects
+  codependix_output --> configuration
   codependix_output --> observability
+  codometer_agents --> configuration
   codometer_cli --> codometer_configuration
   codometer_cli --> codometer_core
   codometer_cli --> codometer_measurement
   codometer_cli --> codometer_output
+  codometer_cli --> configuration
   codometer_cli --> observability
   codometer_configuration --> codometer_core
+  codometer_configuration --> configuration
+  codometer_core --> configuration
   codometer_examples -.-> codometer_cli
   codometer_examples --> codometer_configuration
   codometer_examples --> codometer_core
+  codometer_examples --> configuration
   codometer_languages --> codometer_configuration
   codometer_languages --> codometer_core
+  codometer_languages --> configuration
   codometer_languages --> observability
   codometer_measurement --> codometer_configuration
   codometer_measurement --> codometer_core
   codometer_measurement --> codometer_languages
+  codometer_measurement --> configuration
   codometer_measurement --> observability
   codometer_output --> codometer_configuration
   codometer_output --> codometer_core
   codometer_output --> codometer_measurement
+  codometer_output --> configuration
   codometer_output --> observability
+  conformetry_agents --> configuration
+  conformetry_cli --> configuration
   conformetry_cli --> conformetry_configuration
   conformetry_cli --> conformetry_core
   conformetry_cli --> conformetry_generation
   conformetry_cli --> conformetry_output
   conformetry_cli --> conformetry_validation
   conformetry_cli --> observability
+  conformetry_configuration --> configuration
   conformetry_configuration --> conformetry_core
+  conformetry_core --> configuration
+  conformetry_examples --> configuration
   conformetry_examples -.-> conformetry_cli
   conformetry_examples --> conformetry_configuration
   conformetry_examples --> conformetry_generation
   conformetry_examples --> conformetry_nx
   conformetry_examples --> conformetry_output
   conformetry_examples --> conformetry_validation
+  conformetry_generation --> configuration
   conformetry_generation --> conformetry_configuration
   conformetry_generation --> conformetry_core
+  conformetry_languages --> configuration
   conformetry_languages --> conformetry_configuration
   conformetry_languages --> conformetry_core
+  conformetry_nx --> configuration
   conformetry_nx --> conformetry_configuration
   conformetry_nx --> conformetry_generation
   conformetry_nx --> conformetry_output
   conformetry_nx --> conformetry_validation
   conformetry_nx --> observability
+  conformetry_output --> configuration
   conformetry_output --> conformetry_core
   conformetry_output --> conformetry_languages
+  conformetry_validation --> configuration
   conformetry_validation --> conformetry_configuration
   conformetry_validation --> conformetry_core
   conformetry_validation --> conformetry_languages
+  documentation --> configuration
   documentation --> observability
+  installation --> configuration
   installation --> observability
+  integration --> configuration
   integration --> observability
+  interface --> configuration
+  lexico_api --> configuration
   lexico_api --> interface
   lexico_api --> lexico_entities
   lexico_api --> observability
   lexico_api --> persistence
+  lexico_cli --> configuration
   lexico_cli --> lexico_entities
   lexico_cli --> observability
   lexico_cli --> persistence
+  lexico_entities --> configuration
   lexico_entities --> persistence
+  lexico_web --> configuration
   lexico_web --> interface
   lexico_web --> presentation
+  lexico_web --> testing
+  meanderaw_cli --> configuration
   meanderaw_cli --> observability
   meanderaw_cli --> persistence
+  meanderaw_web --> configuration
+  observability --> configuration
+  persistence --> configuration
   persistence --> observability
+  presentation --> configuration
+  publication --> configuration
   publication --> observability
+  synchronization --> configuration
   synchronization --> conformetry_configuration
   synchronization --> observability
+  testing --> configuration
+  validation --> configuration
   validation --> observability
 ```
 
@@ -4239,10 +4298,15 @@ graph LR
   file_interface_src_modules_graphql_server_graphql_server_types_ts["interface/src/modules/graphql-server/graphql-server.types.ts"]
   file_interface_src_modules_graphql_server_graphql_server_utilities_ts["interface/src/modules/graphql-server/graphql-server.utilities.ts"]
   file_interface_src_modules_graphql_server_graphql_server_utilities_unit_test_ts["interface/src/modules/graphql-server/graphql-server.utilities.unit.test.ts"]
-  file_interface_testing_graphql_mock_server_ts["interface/testing/graphql-mock-server.ts"]
+  file_interface_testing_graphql_mock_server_graphql_mock_server_constants_ts["interface/testing/graphql-mock-server/graphql-mock-server.constants.ts"]
+  file_interface_testing_graphql_mock_server_graphql_mock_server_utilities_ts["interface/testing/graphql-mock-server/graphql-mock-server.utilities.ts"]
+  file_interface_testing_graphql_mock_server_graphql_mock_server_utilities_unit_test_ts["interface/testing/graphql-mock-server/graphql-mock-server.utilities.unit.test.ts"]
   file_interface_testing_index_ts["interface/testing/index.ts"]
   file_interface_testing_mocks_ts["interface/testing/mocks.ts"]
-  file_interface_testing_pagination_ts["interface/testing/pagination.ts"]
+  file_interface_testing_pagination_pagination_constants_ts["interface/testing/pagination/pagination.constants.ts"]
+  file_interface_testing_pagination_pagination_types_ts["interface/testing/pagination/pagination.types.ts"]
+  file_interface_testing_pagination_pagination_utilities_ts["interface/testing/pagination/pagination.utilities.ts"]
+  file_interface_testing_pagination_pagination_utilities_unit_test_ts["interface/testing/pagination/pagination.utilities.unit.test.ts"]
   file_interface_testing_setup_ts["interface/testing/setup.ts"]
   file_interface_vitest_config_ts["interface/vitest.config.ts"]
   file_lexico_api_callidescope_config_ts["lexico-api/callidescope.config.ts"]
@@ -5155,8 +5219,16 @@ graph LR
   file_observability_src_modules_logger_logger_service_ts["observability/src/modules/logger/logger.service.ts"]
   file_observability_src_modules_logger_logger_service_unit_test_ts["observability/src/modules/logger/logger.service.unit.test.ts"]
   file_observability_src_modules_logger_logger_types_ts["observability/src/modules/logger/logger.types.ts"]
+  file_observability_testing_fixtures_sample_clock_module_ts["observability/testing/fixtures/sample-clock.module.ts"]
+  file_observability_testing_fixtures_sample_clock_service_ts["observability/testing/fixtures/sample-clock.service.ts"]
+  file_observability_testing_fixtures_sample_greeter_module_ts["observability/testing/fixtures/sample-greeter.module.ts"]
+  file_observability_testing_fixtures_sample_greeter_service_ts["observability/testing/fixtures/sample-greeter.service.ts"]
+  file_observability_testing_index_ts["observability/testing/index.ts"]
   file_observability_testing_mocks_ts["observability/testing/mocks.ts"]
   file_observability_testing_setup_ts["observability/testing/setup.ts"]
+  file_observability_testing_testing_module_testing_module_types_ts["observability/testing/testing-module/testing-module.types.ts"]
+  file_observability_testing_testing_module_testing_module_utilities_ts["observability/testing/testing-module/testing-module.utilities.ts"]
+  file_observability_testing_testing_module_testing_module_utilities_unit_test_ts["observability/testing/testing-module/testing-module.utilities.unit.test.ts"]
   file_observability_vitest_config_ts["observability/vitest.config.ts"]
   file_persistence_callidescope_config_ts["persistence/callidescope.config.ts"]
   file_persistence_codependix_config_ts["persistence/codependix.config.ts"]
@@ -5211,11 +5283,6 @@ graph LR
   file_persistence_src_modules_postgresql_entities_deletable_entity_ts["persistence/src/modules/postgresql/entities/deletable.entity.ts"]
   file_persistence_src_modules_postgresql_entities_identifiable_entity_ts["persistence/src/modules/postgresql/entities/identifiable.entity.ts"]
   file_persistence_src_modules_postgresql_entities_updatable_entity_ts["persistence/src/modules/postgresql/entities/updatable.entity.ts"]
-  file_persistence_src_modules_postgresql_postgresql_container_constants_ts["persistence/src/modules/postgresql/postgresql-container.constants.ts"]
-  file_persistence_src_modules_postgresql_postgresql_container_types_ts["persistence/src/modules/postgresql/postgresql-container.types.ts"]
-  file_persistence_src_modules_postgresql_postgresql_container_utilities_integration_test_ts["persistence/src/modules/postgresql/postgresql-container.utilities.integration.test.ts"]
-  file_persistence_src_modules_postgresql_postgresql_container_utilities_ts["persistence/src/modules/postgresql/postgresql-container.utilities.ts"]
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts["persistence/src/modules/postgresql/postgresql-testing.utilities.integration.test.ts"]
   file_persistence_src_modules_postgresql_postgresql_constants_ts["persistence/src/modules/postgresql/postgresql.constants.ts"]
   file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts["persistence/src/modules/postgresql/postgresql.module.integration.test.ts"]
   file_persistence_src_modules_postgresql_postgresql_module_ts["persistence/src/modules/postgresql/postgresql.module.ts"]
@@ -5238,6 +5305,9 @@ graph LR
   file_persistence_src_persistence_repl_ts["persistence/src/persistence.repl.ts"]
   file_persistence_src_persistence_repl_unit_test_ts["persistence/src/persistence.repl.unit.test.ts"]
   file_persistence_testing_command_line_runner_ts["persistence/testing/command-line-runner.ts"]
+  file_persistence_testing_database_testing_database_testing_types_ts["persistence/testing/database-testing/database-testing.types.ts"]
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts["persistence/testing/database-testing/database-testing.utilities.integration.test.ts"]
+  file_persistence_testing_database_testing_database_testing_utilities_ts["persistence/testing/database-testing/database-testing.utilities.ts"]
   file_persistence_testing_fixture_persistence_ts["persistence/testing/fixture-persistence.ts"]
   file_persistence_testing_fixtures_fixture_persistence_module_ts["persistence/testing/fixtures/fixture-persistence.module.ts"]
   file_persistence_testing_fixtures_gadget_entity_ts["persistence/testing/fixtures/gadget.entity.ts"]
@@ -5250,8 +5320,10 @@ graph LR
   file_persistence_testing_fixtures_widget_entity_ts["persistence/testing/fixtures/widget.entity.ts"]
   file_persistence_testing_index_ts["persistence/testing/index.ts"]
   file_persistence_testing_mocks_ts["persistence/testing/mocks.ts"]
-  file_persistence_testing_persistence_testing_types_ts["persistence/testing/persistence-testing.types.ts"]
-  file_persistence_testing_persistence_testing_utilities_ts["persistence/testing/persistence-testing.utilities.ts"]
+  file_persistence_testing_postgres_container_postgres_container_constants_ts["persistence/testing/postgres-container/postgres-container.constants.ts"]
+  file_persistence_testing_postgres_container_postgres_container_types_ts["persistence/testing/postgres-container/postgres-container.types.ts"]
+  file_persistence_testing_postgres_container_postgres_container_utilities_integration_test_ts["persistence/testing/postgres-container/postgres-container.utilities.integration.test.ts"]
+  file_persistence_testing_postgres_container_postgres_container_utilities_ts["persistence/testing/postgres-container/postgres-container.utilities.ts"]
   file_persistence_testing_setup_ts["persistence/testing/setup.ts"]
   file_persistence_vitest_config_ts["persistence/vitest.config.ts"]
   file_presentation_callidescope_config_ts["presentation/callidescope.config.ts"]
@@ -5603,6 +5675,45 @@ graph LR
   file_synchronization_testing_mocks_ts["synchronization/testing/mocks.ts"]
   file_synchronization_testing_setup_ts["synchronization/testing/setup.ts"]
   file_synchronization_vitest_config_ts["synchronization/vitest.config.ts"]
+  file_testing_callidescope_config_ts["testing/callidescope.config.ts"]
+  file_testing_codependix_config_ts["testing/codependix.config.ts"]
+  file_testing_codometer_config_ts["testing/codometer.config.ts"]
+  file_testing_eslint_config_ts["testing/eslint.config.ts"]
+  file_testing_src_index_ts["testing/src/index.ts"]
+  file_testing_src_modules_browser_stand_ins_browser_stand_ins_types_ts["testing/src/modules/browser-stand-ins/browser-stand-ins.types.ts"]
+  file_testing_src_modules_browser_stand_ins_browser_stand_ins_utilities_ts["testing/src/modules/browser-stand-ins/browser-stand-ins.utilities.ts"]
+  file_testing_src_modules_browser_stand_ins_browser_stand_ins_utilities_unit_test_ts["testing/src/modules/browser-stand-ins/browser-stand-ins.utilities.unit.test.ts"]
+  file_testing_src_modules_capture_capture_types_ts["testing/src/modules/capture/capture.types.ts"]
+  file_testing_src_modules_capture_capture_utilities_ts["testing/src/modules/capture/capture.utilities.ts"]
+  file_testing_src_modules_capture_capture_utilities_unit_test_ts["testing/src/modules/capture/capture.utilities.unit.test.ts"]
+  file_testing_src_modules_clock_clock_constants_ts["testing/src/modules/clock/clock.constants.ts"]
+  file_testing_src_modules_clock_clock_utilities_ts["testing/src/modules/clock/clock.utilities.ts"]
+  file_testing_src_modules_clock_clock_utilities_unit_test_ts["testing/src/modules/clock/clock.utilities.unit.test.ts"]
+  file_testing_src_modules_environment_environment_utilities_ts["testing/src/modules/environment/environment.utilities.ts"]
+  file_testing_src_modules_environment_environment_utilities_unit_test_ts["testing/src/modules/environment/environment.utilities.unit.test.ts"]
+  file_testing_src_modules_fixtures_fixtures_utilities_ts["testing/src/modules/fixtures/fixtures.utilities.ts"]
+  file_testing_src_modules_fixtures_fixtures_utilities_unit_test_ts["testing/src/modules/fixtures/fixtures.utilities.unit.test.ts"]
+  file_testing_src_modules_mocks_mocks_constants_ts["testing/src/modules/mocks/mocks.constants.ts"]
+  file_testing_src_modules_mocks_mocks_types_ts["testing/src/modules/mocks/mocks.types.ts"]
+  file_testing_src_modules_mocks_mocks_utilities_ts["testing/src/modules/mocks/mocks.utilities.ts"]
+  file_testing_src_modules_mocks_mocks_utilities_unit_test_ts["testing/src/modules/mocks/mocks.utilities.unit.test.ts"]
+  file_testing_src_modules_module_wiring_module_wiring_utilities_ts["testing/src/modules/module-wiring/module-wiring.utilities.ts"]
+  file_testing_src_modules_module_wiring_module_wiring_utilities_unit_test_ts["testing/src/modules/module-wiring/module-wiring.utilities.unit.test.ts"]
+  file_testing_src_modules_route_render_route_render_utilities_tsx["testing/src/modules/route-render/route-render.utilities.tsx"]
+  file_testing_src_modules_route_render_route_render_utilities_unit_test_tsx["testing/src/modules/route-render/route-render.utilities.unit.test.tsx"]
+  file_testing_src_modules_temporary_directory_temporary_directory_constants_ts["testing/src/modules/temporary-directory/temporary-directory.constants.ts"]
+  file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts["testing/src/modules/temporary-directory/temporary-directory.utilities.ts"]
+  file_testing_src_modules_temporary_directory_temporary_directory_utilities_unit_test_ts["testing/src/modules/temporary-directory/temporary-directory.utilities.unit.test.ts"]
+  file_testing_src_modules_workspace_tree_workspace_tree_utilities_ts["testing/src/modules/workspace-tree/workspace-tree.utilities.ts"]
+  file_testing_src_modules_workspace_tree_workspace_tree_utilities_unit_test_ts["testing/src/modules/workspace-tree/workspace-tree.utilities.unit.test.ts"]
+  file_testing_src_nestjs_ts["testing/src/nestjs.ts"]
+  file_testing_src_react_setup_ts["testing/src/react-setup.ts"]
+  file_testing_src_react_setup_unit_test_tsx["testing/src/react-setup.unit.test.tsx"]
+  file_testing_src_react_ts["testing/src/react.ts"]
+  file_testing_src_setup_ts["testing/src/setup.ts"]
+  file_testing_src_setup_unit_test_ts["testing/src/setup.unit.test.ts"]
+  file_testing_testing_setup_ts["testing/testing/setup.ts"]
+  file_testing_vitest_config_ts["testing/vitest.config.ts"]
   file_validation_callidescope_config_ts["validation/callidescope.config.ts"]
   file_validation_codependix_config_ts["validation/codependix.config.ts"]
   file_validation_codometer_config_ts["validation/codometer.config.ts"]
@@ -10182,9 +10293,16 @@ graph LR
   file_interface_src_modules_graphql_server_graphql_server_utilities_unit_test_ts --> file_interface_src_modules_graphql_server_graphql_server_entities_ts
   file_interface_src_modules_graphql_server_graphql_server_utilities_unit_test_ts --> file_interface_src_modules_graphql_server_graphql_server_types_ts
   file_interface_src_modules_graphql_server_graphql_server_utilities_unit_test_ts --> file_interface_src_modules_graphql_server_graphql_server_utilities_ts
-  file_interface_src_modules_graphql_server_graphql_server_utilities_unit_test_ts --> file_interface_testing_pagination_ts
-  file_interface_testing_pagination_ts --> file_interface_src_modules_graphql_server_graphql_server_types_ts
-  file_interface_testing_pagination_ts --> file_interface_src_modules_graphql_server_graphql_server_utilities_ts
+  file_interface_testing_graphql_mock_server_graphql_mock_server_utilities_ts --> file_interface_testing_graphql_mock_server_graphql_mock_server_constants_ts
+  file_interface_testing_graphql_mock_server_graphql_mock_server_utilities_unit_test_ts --> file_interface_testing_graphql_mock_server_graphql_mock_server_constants_ts
+  file_interface_testing_graphql_mock_server_graphql_mock_server_utilities_unit_test_ts --> file_interface_testing_graphql_mock_server_graphql_mock_server_utilities_ts
+  file_interface_testing_pagination_pagination_constants_ts --> file_interface_testing_pagination_pagination_types_ts
+  file_interface_testing_pagination_pagination_utilities_ts --> file_interface_src_modules_graphql_server_graphql_server_types_ts
+  file_interface_testing_pagination_pagination_utilities_ts --> file_interface_src_modules_graphql_server_graphql_server_utilities_ts
+  file_interface_testing_pagination_pagination_utilities_ts --> file_interface_testing_pagination_pagination_constants_ts
+  file_interface_testing_pagination_pagination_utilities_ts --> file_interface_testing_pagination_pagination_types_ts
+  file_interface_testing_pagination_pagination_utilities_unit_test_ts --> file_interface_src_modules_graphql_server_graphql_server_utilities_ts
+  file_interface_testing_pagination_pagination_utilities_unit_test_ts --> file_interface_testing_pagination_pagination_utilities_ts
   file_lexico_api_src_lexico_api_graphql_end_to_end_test_ts --> file_lexico_api_src_modules_lexemes_lexemes_module_ts
   file_lexico_api_src_lexico_api_graphql_end_to_end_test_ts --> file_lexico_api_src_modules_literature_literature_module_ts
   file_lexico_api_src_lexico_api_graphql_end_to_end_test_ts --> file_lexico_api_src_modules_search_search_module_ts
@@ -13077,6 +13195,20 @@ graph LR
   file_observability_src_modules_logger_logger_service_ts --> file_observability_src_modules_logger_logger_constants_ts
   file_observability_src_modules_logger_logger_service_ts --> file_observability_src_modules_logger_logger_types_ts
   file_observability_src_modules_logger_logger_service_unit_test_ts --> file_observability_src_modules_logger_logger_service_ts
+  file_observability_testing_fixtures_sample_clock_module_ts --> file_observability_testing_fixtures_sample_clock_service_ts
+  file_observability_testing_fixtures_sample_greeter_module_ts --> file_observability_testing_fixtures_sample_clock_module_ts
+  file_observability_testing_fixtures_sample_greeter_module_ts --> file_observability_testing_fixtures_sample_greeter_service_ts
+  file_observability_testing_fixtures_sample_greeter_service_ts --> file_observability_src_modules_logger_logger_service_ts
+  file_observability_testing_fixtures_sample_greeter_service_ts --> file_observability_testing_fixtures_sample_clock_service_ts
+  file_observability_testing_testing_module_testing_module_types_ts --> file_observability_src_modules_logger_logger_types_ts
+  file_observability_testing_testing_module_testing_module_utilities_ts --> file_observability_src_modules_logger_logger_service_ts
+  file_observability_testing_testing_module_testing_module_utilities_ts --> file_observability_src_modules_logger_logger_types_ts
+  file_observability_testing_testing_module_testing_module_utilities_ts --> file_observability_testing_testing_module_testing_module_types_ts
+  file_observability_testing_testing_module_testing_module_utilities_unit_test_ts --> file_observability_src_modules_logger_logger_service_ts
+  file_observability_testing_testing_module_testing_module_utilities_unit_test_ts --> file_observability_testing_fixtures_sample_clock_module_ts
+  file_observability_testing_testing_module_testing_module_utilities_unit_test_ts --> file_observability_testing_fixtures_sample_clock_service_ts
+  file_observability_testing_testing_module_testing_module_utilities_unit_test_ts --> file_observability_testing_fixtures_sample_greeter_service_ts
+  file_observability_testing_testing_module_testing_module_utilities_unit_test_ts --> file_observability_testing_testing_module_testing_module_utilities_ts
   file_persistence_src_modules_export_export_arguments_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_export_export_arguments_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
   file_persistence_src_modules_export_export_dry_run_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
@@ -13102,11 +13234,10 @@ graph LR
   file_persistence_src_modules_export_export_sqlite_command_unit_test_ts --> file_persistence_testing_mocks_ts
   file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
   file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
   file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
   file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_testing_index_ts
   file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_export_export_constants_ts
   file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_export_export_types_ts
   file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
@@ -13127,25 +13258,22 @@ graph LR
   file_persistence_src_modules_export_export_module_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_module_ts
   file_persistence_src_modules_export_export_module_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_module_ts
   file_persistence_src_modules_export_export_types_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
   file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_testing_index_ts
   file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
   file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
   file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
   file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_testing_index_ts
   file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_testing_mocks_ts
   file_persistence_src_modules_import_import_clean_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_import_import_clean_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
   file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_testing_index_ts
   file_persistence_src_modules_import_import_dry_run_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_import_import_dry_run_command_unit_test_ts --> file_persistence_testing_mocks_ts
   file_persistence_src_modules_import_import_preflight_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
@@ -13157,10 +13285,9 @@ graph LR
   file_persistence_src_modules_import_import_schema_command_unit_test_ts --> file_persistence_testing_mocks_ts
   file_persistence_src_modules_import_import_sqlite_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_import_import_sqlite_command_unit_test_ts --> file_persistence_testing_mocks_ts
-  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
   file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_testing_index_ts
   file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_import_import_constants_ts
   file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_import_import_types_ts
   file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
@@ -13206,31 +13333,12 @@ graph LR
   file_persistence_src_modules_postgresql_entities_creatable_entity_ts --> file_persistence_src_modules_postgresql_entities_identifiable_entity_ts
   file_persistence_src_modules_postgresql_entities_deletable_entity_ts --> file_persistence_src_modules_postgresql_entities_updatable_entity_ts
   file_persistence_src_modules_postgresql_entities_updatable_entity_ts --> file_persistence_src_modules_postgresql_entities_creatable_entity_ts
-  file_persistence_src_modules_postgresql_postgresql_container_types_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
-  file_persistence_src_modules_postgresql_postgresql_container_utilities_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_constants_ts
-  file_persistence_src_modules_postgresql_postgresql_container_utilities_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
-  file_persistence_src_modules_postgresql_postgresql_container_utilities_integration_test_ts --> file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts
-  file_persistence_src_modules_postgresql_postgresql_container_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_container_constants_ts
-  file_persistence_src_modules_postgresql_postgresql_container_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_postgresql_postgresql_container_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
-  file_persistence_src_modules_postgresql_postgresql_container_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_fixture_persistence_module_ts
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_greeting_constants_ts
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_greeting_module_ts
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_widgets_module_ts
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_widgets_service_ts
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_widget_entity_ts
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_persistence_testing_types_ts
-  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_persistence_testing_utilities_ts
-  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
   file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_module_ts
   file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
   file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_testing_fixtures_gadget_entity_ts
   file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts
   file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_testing_fixtures_widget_entity_ts
+  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_testing_index_ts
   file_persistence_src_modules_postgresql_postgresql_module_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
   file_persistence_src_modules_postgresql_postgresql_module_ts --> file_persistence_src_modules_postgresql_postgresql_service_ts
   file_persistence_src_modules_postgresql_postgresql_module_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
@@ -13264,10 +13372,25 @@ graph LR
   file_persistence_src_persistence_module_unit_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_persistence_repl_ts --> file_persistence_src_persistence_module_ts
   file_persistence_testing_command_line_runner_ts --> file_persistence_src_persistence_module_ts
-  file_persistence_testing_fixture_persistence_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_testing_database_testing_database_testing_types_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_testing_database_testing_database_testing_types_ts --> file_persistence_testing_postgres_container_postgres_container_types_ts
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts --> file_persistence_testing_database_testing_database_testing_types_ts
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts --> file_persistence_testing_database_testing_database_testing_utilities_ts
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_fixture_persistence_module_ts
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_greeting_constants_ts
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_greeting_module_ts
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_widgets_module_ts
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_widgets_service_ts
+  file_persistence_testing_database_testing_database_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_widget_entity_ts
+  file_persistence_testing_database_testing_database_testing_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_module_ts
+  file_persistence_testing_database_testing_database_testing_utilities_ts --> file_persistence_testing_database_testing_database_testing_types_ts
+  file_persistence_testing_database_testing_database_testing_utilities_ts --> file_persistence_testing_postgres_container_postgres_container_utilities_ts
   file_persistence_testing_fixture_persistence_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
   file_persistence_testing_fixture_persistence_ts --> file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts
   file_persistence_testing_fixture_persistence_ts --> file_persistence_testing_fixtures_migrations_1767225600001_create_parts_ts
+  file_persistence_testing_fixture_persistence_ts --> file_persistence_testing_index_ts
   file_persistence_testing_fixtures_fixture_persistence_module_ts --> file_persistence_src_modules_postgresql_postgresql_module_ts
   file_persistence_testing_fixtures_fixture_persistence_module_ts --> file_persistence_testing_fixtures_widget_entity_ts
   file_persistence_testing_fixtures_gadget_entity_ts --> file_persistence_src_modules_postgresql_entities_identifiable_entity_ts
@@ -13277,11 +13400,14 @@ graph LR
   file_persistence_testing_fixtures_sample_widgets_module_ts --> file_persistence_testing_fixtures_widget_entity_ts
   file_persistence_testing_fixtures_sample_widgets_service_ts --> file_persistence_testing_fixtures_widget_entity_ts
   file_persistence_testing_fixtures_widget_entity_ts --> file_persistence_src_modules_postgresql_entities_deletable_entity_ts
-  file_persistence_testing_persistence_testing_types_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
-  file_persistence_testing_persistence_testing_types_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
-  file_persistence_testing_persistence_testing_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
-  file_persistence_testing_persistence_testing_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_module_ts
-  file_persistence_testing_persistence_testing_utilities_ts --> file_persistence_testing_persistence_testing_types_ts
+  file_persistence_testing_postgres_container_postgres_container_types_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_testing_postgres_container_postgres_container_utilities_integration_test_ts --> file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts
+  file_persistence_testing_postgres_container_postgres_container_utilities_integration_test_ts --> file_persistence_testing_postgres_container_postgres_container_constants_ts
+  file_persistence_testing_postgres_container_postgres_container_utilities_integration_test_ts --> file_persistence_testing_postgres_container_postgres_container_utilities_ts
+  file_persistence_testing_postgres_container_postgres_container_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_testing_postgres_container_postgres_container_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
+  file_persistence_testing_postgres_container_postgres_container_utilities_ts --> file_persistence_testing_postgres_container_postgres_container_constants_ts
+  file_persistence_testing_postgres_container_postgres_container_utilities_ts --> file_persistence_testing_postgres_container_postgres_container_types_ts
   file_presentation_src_components_examples_c_sidebar_1_tsx --> file_presentation_src_components_ui_avatar_tsx
   file_presentation_src_components_examples_c_sidebar_1_tsx --> file_presentation_src_components_ui_breadcrumb_tsx
   file_presentation_src_components_examples_c_sidebar_1_tsx --> file_presentation_src_components_ui_button_tsx
@@ -14059,6 +14185,33 @@ graph LR
   file_synchronization_src_synchronization_module_ts --> file_synchronization_src_synchronization_constants_ts
   file_synchronization_src_synchronization_repl_ts --> file_synchronization_src_synchronization_module_ts
   file_synchronization_src_synchronization_repl_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
+  file_testing_src_modules_browser_stand_ins_browser_stand_ins_utilities_ts --> file_testing_src_modules_browser_stand_ins_browser_stand_ins_types_ts
+  file_testing_src_modules_browser_stand_ins_browser_stand_ins_utilities_unit_test_ts --> file_testing_src_modules_browser_stand_ins_browser_stand_ins_utilities_ts
+  file_testing_src_modules_capture_capture_utilities_ts --> file_testing_src_modules_capture_capture_types_ts
+  file_testing_src_modules_capture_capture_utilities_unit_test_ts --> file_testing_src_modules_capture_capture_utilities_ts
+  file_testing_src_modules_clock_clock_utilities_ts --> file_testing_src_modules_clock_clock_constants_ts
+  file_testing_src_modules_clock_clock_utilities_unit_test_ts --> file_testing_src_modules_clock_clock_constants_ts
+  file_testing_src_modules_clock_clock_utilities_unit_test_ts --> file_testing_src_modules_clock_clock_utilities_ts
+  file_testing_src_modules_environment_environment_utilities_unit_test_ts --> file_testing_src_modules_environment_environment_utilities_ts
+  file_testing_src_modules_fixtures_fixtures_utilities_unit_test_ts --> file_testing_src_modules_fixtures_fixtures_utilities_ts
+  file_testing_src_modules_fixtures_fixtures_utilities_unit_test_ts --> file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts
+  file_testing_src_modules_mocks_mocks_constants_ts --> file_testing_src_modules_mocks_mocks_types_ts
+  file_testing_src_modules_mocks_mocks_utilities_ts --> file_testing_src_modules_mocks_mocks_constants_ts
+  file_testing_src_modules_mocks_mocks_utilities_ts --> file_testing_src_modules_mocks_mocks_types_ts
+  file_testing_src_modules_mocks_mocks_utilities_unit_test_ts --> file_testing_src_modules_mocks_mocks_constants_ts
+  file_testing_src_modules_mocks_mocks_utilities_unit_test_ts --> file_testing_src_modules_mocks_mocks_utilities_ts
+  file_testing_src_modules_mocks_mocks_utilities_unit_test_ts --> file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts
+  file_testing_src_modules_module_wiring_module_wiring_utilities_unit_test_ts --> file_testing_src_modules_module_wiring_module_wiring_utilities_ts
+  file_testing_src_modules_route_render_route_render_utilities_unit_test_tsx --> file_testing_src_modules_route_render_route_render_utilities_tsx
+  file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts --> file_testing_src_modules_temporary_directory_temporary_directory_constants_ts
+  file_testing_src_modules_temporary_directory_temporary_directory_utilities_unit_test_ts --> file_testing_src_modules_temporary_directory_temporary_directory_constants_ts
+  file_testing_src_modules_temporary_directory_temporary_directory_utilities_unit_test_ts --> file_testing_src_modules_temporary_directory_temporary_directory_utilities_ts
+  file_testing_src_modules_workspace_tree_workspace_tree_utilities_unit_test_ts --> file_testing_src_modules_workspace_tree_workspace_tree_utilities_ts
+  file_testing_src_react_setup_ts --> file_testing_src_modules_browser_stand_ins_browser_stand_ins_utilities_ts
+  file_testing_src_react_setup_unit_test_tsx --> file_testing_src_react_setup_ts
+  file_testing_src_setup_ts --> file_testing_src_modules_mocks_mocks_constants_ts
+  file_testing_src_setup_unit_test_ts --> file_testing_src_modules_mocks_mocks_constants_ts
+  file_testing_testing_setup_ts --> file_testing_src_setup_ts
   file_validation_src_modules_audit_governance_audit_governance_command_ts --> file_validation_src_modules_audit_governance_audit_governance_service_ts
   file_validation_src_modules_audit_governance_audit_governance_command_ts --> file_validation_src_modules_audit_governance_audit_governance_types_ts
   file_validation_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_command_ts

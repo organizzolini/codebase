@@ -3,8 +3,7 @@ import { Test } from "@nestjs/testing";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
-import { PostgresqlModule } from "@codebase/persistence";
-
+import { PostgresqlModule } from "../../src/modules/postgresql/postgresql.module";
 import { startPostgresContainer } from "../postgres-container/postgres-container.utilities";
 
 import type {

@@ -5,7 +5,7 @@ import path from "node:path";
 import { DataSource } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { startPostgresContainer } from "@codebase/testing/postgres";
+import { startPostgresContainer } from "@codebase/persistence/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
@@ -14,7 +14,7 @@ import {
   postgresUri,
 } from "../../../testing/fixture-persistence";
 
-import type { StartedPostgresContainer } from "@codebase/testing/postgres";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 
 const PASSWORD = "hunter2-secret";
 

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/observability";
+import { LoggerService } from "../../src/modules/logger/logger.service";
 
 import { SampleClockService } from "./sample-clock.service";
 
