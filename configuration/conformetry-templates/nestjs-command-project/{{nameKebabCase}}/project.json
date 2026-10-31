@@ -6,8 +6,7 @@
     "framework:nest-commander",
     "framework:nestjs",
     "generator:nestjs-command-project",
-    "language:typescript",
-    "type:package"
+    "language:typescript"
   ],
   "targets": {
     "codometer": {},

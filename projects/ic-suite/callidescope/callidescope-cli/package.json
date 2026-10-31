@@ -11,7 +11,6 @@
     "@callidescope/core": "workspace:*",
     "@callidescope/graph": "workspace:*",
     "@callidescope/output": "workspace:*",
-    "@codebase/observability": "workspace:*",
     "@nestjs/common": "catalog:ic-suite",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:ic-suite",
@@ -23,6 +22,7 @@
   },
   "description": "Command-line tool for tracing call stacks across TypeScript monorepos and gating call depth",
   "devDependencies": {
+    "@codebase/observability": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
