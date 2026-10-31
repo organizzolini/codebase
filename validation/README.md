@@ -9,7 +9,7 @@ collects every failure rather than the first, and prints the command that fixes
 each one.
 
 ```bash
-nx run validation:start:pull-request-metadata     # labels and assignees against the title
+nx run compliance:start:pull-request-labels-assignees # labels and assignees against the title
 nx run validation:start:pull-request-body         # the four headings, each section's shape and length, and no unfilled template comment
 nx run validation:start:catalog-manifests         # catalog:/workspace:* in every manifest
 nx run validation:start:lockfile                  # pnpm-lock.yaml against the manifests
@@ -42,7 +42,7 @@ authentication checks stay in shell — see [AGENTS.md](AGENTS.md).
 
 | Check | Answers |
 | ----- | ------- |
-| `pull-request-metadata` | Do a pull request's labels and assignees agree with its title? |
+| `pull-request-labels-assignees` | Do a pull request's labels and assignees agree with its title? |
 | `pull-request-body` | Does a pull request description carry all four headings, each section non-empty, in its shape, and within its word limit, with no template comment left unfilled? |
 | `catalog-manifests` | Does every workspace manifest pin externals as `catalog:` and internals as `workspace:*`? |
 | `lockfile` | Is `pnpm-lock.yaml` in sync with the manifests? |
@@ -50,7 +50,7 @@ authentication checks stay in shell — see [AGENTS.md](AGENTS.md).
 | `session-branch-name` | Does the checked-out branch follow `<type>/<scope>-<description>`? |
 | `session-worktree-name` | Is the linked worktree named in kebab-case, and gitignored inside the main checkout? |
 
-### `pull-request-metadata`
+### `pull-request-labels-assignees`
 
 Checks five things about a pull request, all against its own title: exactly one
 `type:*` label equal to the title's type, exactly the `scope:*` labels named by

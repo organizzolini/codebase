@@ -30,7 +30,7 @@ import type {
  * title shares no scope overlap with a commit.
  *
  * Always run live, through `gh pr view <number> --json title,commits` —
- * unlike pull-request-metadata there is no workflow-mode env-var path,
+ * unlike pull-request-labels-assignees there is no workflow-mode env-var path,
  * because the `pull_request` webhook payload never carries a pull request's
  * full commit list, so a `gh` call is unavoidable either way.
  *
@@ -166,7 +166,7 @@ export class PullRequestReleaseSignificanceCommand extends CommandRunner {
    * The pull request number this run checks, from the argument or the
    * environment.
    *
-   * Required rather than defaulted: unlike pull-request-metadata's
+   * Required rather than defaulted: unlike pull-request-labels-assignees'
    * remediation labels, there is nothing this check can fall back to
    * printing without one.
    */

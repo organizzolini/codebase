@@ -9,10 +9,10 @@ import type { GithubCliResult } from "./pull-request-release-significance.types"
 /**
  * Runs the `gh` command-line client and reports what it produced.
  *
- * A near-identical helper lives beside the pull-request-metadata check in
+ * A near-identical helper lives beside the pull-request-labels-assignees check in
  * this same project, and a third beside the label synchronizer in
  * `synchronization`. That duplication is deliberate — see the comment
- * on `PullRequestMetadataGithubService` for why a shared abstraction is not
+ * on `PullRequestLabelsAssigneesGithubService` for why a shared abstraction is not
  * worth it for forty lines.
  *
  * Nothing here throws. This command reports on a pull request rather than

@@ -8,10 +8,10 @@ export const PULL_REQUEST_TITLE_FILE_VARIABLE = "PULL_REQUEST_TITLE_FILE";
 
 export const MERGE_GROUP_HEAD_REF_PATTERN = /(?:^|\/)pr-([1-9]\d*)-[0-9a-f]+$/u;
 
-export const PULL_REQUEST_CONTEXT_QUERY =
+export const PULL_REQUEST_TITLE_BODY_QUERY =
   "{number: .number, author: .user.login, title: .title, body: .body}";
 
-export const pullRequestContextSchema = z.object({
+export const pullRequestTitleBodySchema = z.object({
   author: z
     .string()
     .min(1)

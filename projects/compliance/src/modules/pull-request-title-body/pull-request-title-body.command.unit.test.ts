@@ -17,29 +17,29 @@ import {
 import { LoggerService } from "@codebase/observability";
 
 import { mockProcessExit } from "../../../testing/mocks";
-import { PullRequestMetadataGithubService } from "../pull-request-metadata/pull-request-metadata-github.service";
+import { PullRequestLabelsAssigneesGithubService } from "../pull-request-labels-assignees/pull-request-labels-assignees-github.service";
 
-import { PullRequestContextCommand } from "./pull-request-context.command";
+import { PullRequestTitleBodyCommand } from "./pull-request-title-body.command";
 
-const githubServiceMock = createMock<PullRequestMetadataGithubService>();
+const githubServiceMock = createMock<PullRequestLabelsAssigneesGithubService>();
 
-describe(PullRequestContextCommand, () => {
-  let command: PullRequestContextCommand;
+describe(PullRequestTitleBodyCommand, () => {
+  let command: PullRequestTitleBodyCommand;
   let outputDirectory: string;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        PullRequestContextCommand,
+        PullRequestTitleBodyCommand,
         { provide: LoggerService, useValue: createMock<LoggerService>() },
         {
-          provide: PullRequestMetadataGithubService,
+          provide: PullRequestLabelsAssigneesGithubService,
           useValue: githubServiceMock,
         },
       ],
     }).compile();
 
-    command = await module.resolve(PullRequestContextCommand);
+    command = await module.resolve(PullRequestTitleBodyCommand);
   });
 
   beforeEach(() => {
@@ -81,13 +81,13 @@ describe(PullRequestContextCommand, () => {
   it("sets logger context", async () => {
     const module = await Test.createTestingModule({
       providers: [
-        PullRequestContextCommand,
+        PullRequestTitleBodyCommand,
         {
           provide: LoggerService,
           useValue: createMock<LoggerService>(),
         },
         {
-          provide: PullRequestMetadataGithubService,
+          provide: PullRequestLabelsAssigneesGithubService,
           useValue: githubServiceMock,
         },
       ],
@@ -95,10 +95,12 @@ describe(PullRequestContextCommand, () => {
 
     const logger = await module.resolve(LoggerService);
 
-    expect(logger.setContext).toHaveBeenCalledWith("PullRequestContextCommand");
+    expect(logger.setContext).toHaveBeenCalledWith(
+      "PullRequestTitleBodyCommand",
+    );
   });
 
-  it("resolves and writes pull request context from a synthetic merge-group ref", async () => {
+  it("resolves and writes the title and body from a synthetic merge-group ref", async () => {
     await command.run([]);
 
     expect(githubServiceMock.run).toHaveBeenCalledWith([

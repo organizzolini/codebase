@@ -5,20 +5,20 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { PullRequestMetadataGithubService } from "./pull-request-metadata-github.service";
+import { PullRequestLabelsAssigneesGithubService } from "./pull-request-labels-assignees-github.service";
 import {
   PLACEHOLDER_PULL_REQUEST_NUMBER,
   PULL_REQUEST_NUMBER_PATTERN,
   STEP_SUMMARY_FAILURE_MESSAGE,
   STEP_SUMMARY_VARIABLE,
   USAGE_LINES,
-} from "./pull-request-metadata.constants";
-import { PullRequestMetadataService } from "./pull-request-metadata.service";
+} from "./pull-request-labels-assignees.constants";
+import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
 
 import type {
-  PullRequestMetadataResolution,
+  PullRequestLabelsAssigneesResolution,
   TitleConvention,
-} from "./pull-request-metadata.types";
+} from "./pull-request-labels-assignees.types";
 
 /**
  * CLI command that checks a pull request's labels and assignees against its
@@ -47,19 +47,19 @@ import type {
 @Command({
   description:
     "Check that a pull request's labels and assignees agree with its title",
-  name: "pull-request-metadata",
+  name: "pull-request-labels-assignees",
 })
 @Injectable()
-export class PullRequestMetadataCommand extends CommandRunner {
+export class PullRequestLabelsAssigneesCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
     private readonly logger: LoggerService,
-    private readonly pullRequestMetadataGithubService: PullRequestMetadataGithubService,
-    private readonly pullRequestMetadataService: PullRequestMetadataService,
+    private readonly pullRequestLabelsAssigneesGithubService: PullRequestLabelsAssigneesGithubService,
+    private readonly pullRequestLabelsAssigneesService: PullRequestLabelsAssigneesService,
   ) {
     super();
-    this.logger.setContext(PullRequestMetadataCommand.name);
+    this.logger.setContext(PullRequestLabelsAssigneesCommand.name);
   }
 
   // 🔐 Private Fields
@@ -131,7 +131,7 @@ export class PullRequestMetadataCommand extends CommandRunner {
    */
   private readEnvironmentMetadata(
     reportLines: string[],
-  ): PullRequestMetadataResolution {
+  ): PullRequestLabelsAssigneesResolution {
     const title = process.env["PULL_REQUEST_TITLE"] ?? "";
     const labelsDocument = process.env["PULL_REQUEST_LABELS"] ?? "";
     const assigneesDocument = process.env["PULL_REQUEST_ASSIGNEES"] ?? "";
@@ -143,7 +143,7 @@ export class PullRequestMetadataCommand extends CommandRunner {
       );
     }
 
-    return this.pullRequestMetadataService.resolveFromEnvironment({
+    return this.pullRequestLabelsAssigneesService.resolveFromEnvironment({
       assigneesDocument,
       labelsDocument,
       title,
@@ -154,15 +154,15 @@ export class PullRequestMetadataCommand extends CommandRunner {
   private readLiveMetadata(
     reportLines: string[],
     pullRequestNumber: string,
-  ): PullRequestMetadataResolution {
-    if (!this.pullRequestMetadataGithubService.isAvailable()) {
+  ): PullRequestLabelsAssigneesResolution {
+    if (!this.pullRequestLabelsAssigneesGithubService.isAvailable()) {
       this.failWithUsageError(
         reportLines,
         `❌ Unable to read pull request ${pullRequestNumber}: gh is not available`,
       );
     }
 
-    const view = this.pullRequestMetadataGithubService.run([
+    const view = this.pullRequestLabelsAssigneesGithubService.run([
       "pr",
       "view",
       pullRequestNumber,
@@ -173,11 +173,11 @@ export class PullRequestMetadataCommand extends CommandRunner {
     if (!view.succeeded) {
       this.failWithUsageError(
         reportLines,
-        `❌ Unable to read pull request ${pullRequestNumber}: gh pr view failed (${this.pullRequestMetadataGithubService.describeFailure(view)})`,
+        `❌ Unable to read pull request ${pullRequestNumber}: gh pr view failed (${this.pullRequestLabelsAssigneesGithubService.describeFailure(view)})`,
       );
     }
 
-    return this.pullRequestMetadataService.resolveFromDocument(
+    return this.pullRequestLabelsAssigneesService.resolveFromDocument(
       view.standardOutput,
     );
   }
@@ -214,7 +214,7 @@ export class PullRequestMetadataCommand extends CommandRunner {
   private resolveMetadata(
     reportLines: string[],
     passedParameters: string[],
-  ): PullRequestMetadataResolution {
+  ): PullRequestLabelsAssigneesResolution {
     if (passedParameters.length > 1) {
       this.failWithUsageError(
         reportLines,
@@ -273,7 +273,9 @@ export class PullRequestMetadataCommand extends CommandRunner {
     }
 
     const titleConvention: TitleConvention | undefined =
-      this.pullRequestMetadataService.parseTitle(resolution.metadata.title);
+      this.pullRequestLabelsAssigneesService.parseTitle(
+        resolution.metadata.title,
+      );
 
     if (titleConvention === undefined) {
       this.failWithMessage(
@@ -282,7 +284,7 @@ export class PullRequestMetadataCommand extends CommandRunner {
       );
     }
 
-    const verdict = this.pullRequestMetadataService.checkMetadata({
+    const verdict = this.pullRequestLabelsAssigneesService.checkMetadata({
       metadata: resolution.metadata,
       pullRequestNumber: this.resolvePullRequestNumber(passedParameters),
       titleConvention,

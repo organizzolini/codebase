@@ -14,7 +14,7 @@ Run the CLI directly through Nx:
 ```bash
 nx run compliance:start:issue-assignees
 nx run compliance:start:audit-governance
-nx run compliance:start:pull-request-metadata
+nx run compliance:start:pull-request-labels-assignees
 nx run compliance:start:pull-request-parent-links
 nx run compliance:start:organization-project
 ```
@@ -50,13 +50,13 @@ Call stacks traced through `projects/compliance`, deepest first. Each frame show
 
 | Measure | Value |
 | --- | --- |
-| Callables | 290 |
-| Files | 58 |
-| Calls traced | 375 |
-| Call stacks | 9 |
+| Callables | 323 |
+| Files | 67 |
+| Calls traced | 435 |
+| Call stacks | 11 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 21 |
+| Unfollowable calls | 23 |
 
 ### Limits
 
@@ -109,7 +109,30 @@ What this project is judged against, as declared in its own `callidescope.config
               └─> IssueMetadataService.find(…)(name: string): boolean [projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:264]
 ```
 
-**3. `PullRequestBodyCommand.run`** — depth 8 · decorated-method
+**3. `PullRequestLabelsAssigneesCommand.run`** — depth ≥ 8 · decorated-method
+
+```text
+🚀 PullRequestLabelsAssigneesCommand.run(passedParameters: string[]): Promise<void> [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.command.ts:264]
+   ↳ Checks the pull request's metadata and exits 0 or 1 on the verdict.
+  └─> PullRequestLabelsAssigneesCommand.resolveMetadata(…): PullRequestLabelsAssigneesResolution [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.command.ts:214]
+     ↳ Reads the metadata from wherever this invocation says it lives.
+    └─> PullRequestLabelsAssigneesCommand.readEnvironmentMetadata(reportLines: string[]): PullRequestLabelsAssigneesResolution [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.command.ts:132]
+       ↳ Reads the metadata from the environment, the workflow mode.
+      └─> PullRequestLabelsAssigneesService.resolveFromEnvironment(…): PullRequestLabelsAssigneesResolution [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:332]
+         ↳ Reads the metadata out of the three environment documents.
+        └─> PullRequestLabelsAssigneesService.readNames(entries: unknown[], propertyName: string): string[] [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:199]
+           ↳ Every entry's name, with the nameless ones dropped.
+          └─> PullRequestLabelsAssigneesService.map(…)(entry: unknown): string [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:201]
+            └─> PullRequestLabelsAssigneesService.nameOf(entry: unknown, propertyName: string): string [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:162]
+               ↳ Reads one label or assignee entry, whichever shape it arrived in.
+              └─> PullRequestLabelsAssigneesService.isRecord(value: unknown): value is Record<string, unknown> [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:157]
+                 ↳ Whether this value can be read by property name at all.
+```
+
+<details>
+<summary>8 more call stacks</summary>
+
+**4. `PullRequestBodyCommand.run`** — depth 8 · decorated-method
 
 ```text
 🚀 PullRequestBodyCommand.run(passedParameters: string[]): Promise<void> [projects/compliance/src/modules/pull-request-body/pull-request-body.command.ts:143]
@@ -128,44 +151,21 @@ What this project is judged against, as declared in its own `callidescope.config
                  ↳ The markdown a parsed node was read from, exactly as written.
 ```
 
-<details>
-<summary>6 more call stacks</summary>
-
-**4. `PullRequestMetadataCommand.run`** — depth ≥ 8 · decorated-method
-
-```text
-🚀 PullRequestMetadataCommand.run(passedParameters: string[]): Promise<void> [projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.command.ts:264]
-   ↳ Checks the pull request's metadata and exits 0 or 1 on the verdict.
-  └─> PullRequestMetadataCommand.resolveMetadata(…): PullRequestMetadataResolution [projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.command.ts:214]
-     ↳ Reads the metadata from wherever this invocation says it lives.
-    └─> PullRequestMetadataCommand.readEnvironmentMetadata(reportLines: string[]): PullRequestMetadataResolution [projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.command.ts:132]
-       ↳ Reads the metadata from the environment, the workflow mode.
-      └─> PullRequestMetadataService.resolveFromEnvironment(…): PullRequestMetadataResolution [projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:332]
-         ↳ Reads the metadata out of the three environment documents.
-        └─> PullRequestMetadataService.readNames(entries: unknown[], propertyName: string): string[] [projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:199]
-           ↳ Every entry's name, with the nameless ones dropped.
-          └─> PullRequestMetadataService.map(…)(entry: unknown): string [projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:201]
-            └─> PullRequestMetadataService.nameOf(entry: unknown, propertyName: string): string [projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:162]
-               ↳ Reads one label or assignee entry, whichever shape it arrived in.
-              └─> PullRequestMetadataService.isRecord(value: unknown): value is Record<string, unknown> [projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:157]
-                 ↳ Whether this value can be read by property name at all.
-```
-
 **5. `IssueLabelsCommand.run`** — depth 7 · decorated-method
 
 ```text
-🚀 IssueLabelsCommand.run(): Promise<void> [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:158]
+🚀 IssueLabelsCommand.run(): Promise<void> [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:155]
    ↳ Adds whichever type and scope labels the issue's body implies.
-  └─> IssueLabelsCommand.resolvePlan(): undefined | { issueNumber: string; missingLabels: string[]; } [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:130]
+  └─> IssueLabelsCommand.resolvePlan(): undefined | { issueNumber: string; missingLabels: string[]; } [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:127]
      ↳ What this run needs to do, or `undefined` when there is nothing to add.
-    └─> IssueLabelsCommand.readExistingLabelNames(): string[] [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:94]
+    └─> IssueLabelsCommand.readExistingLabelNames(): string[] [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:91]
        ↳ Reads the labels already on the issue, from `ISSUE_LABELS`.
-      └─> IssueLabelsCommand.readLabelNames(entries: unknown[]): string[] [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:118]
+      └─> IssueLabelsCommand.readLabelNames(entries: unknown[]): string[] [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:115]
          ↳ Every label name in this array, with the nameless entries dropped.
-        └─> IssueLabelsCommand.map(…)(entry: unknown): string [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:120]
-          └─> IssueLabelsCommand.nameOf(entry: unknown): string [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:82]
+        └─> IssueLabelsCommand.map(…)(entry: unknown): string [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:117]
+          └─> IssueLabelsCommand.nameOf(entry: unknown): string [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:79]
              ↳ Reads one label entry's name, whichever shape it arrived in.
-            └─> IssueLabelsCommand.isRecord(value: unknown): value is Record<string, unknown> [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:77]
+            └─> IssueLabelsCommand.isRecord(value: unknown): value is Record<string, unknown> [projects/compliance/src/modules/issue-labels/issue-labels.command.ts:74]
                ↳ Whether this value can be read by property name at all.
 ```
 
@@ -186,7 +186,25 @@ What this project is judged against, as declared in its own `callidescope.config
             └─> PullRequestLabelsService.some(…)(prefix: string): boolean [projects/compliance/src/modules/pull-request-labels/pull-request-labels.service.ts:46]
 ```
 
-**7. `PullRequestReleaseSignificanceCommand.run`** — depth 7 · decorated-method
+**7. `PullRequestParentLinksCommand.run`** — depth 7 · decorated-method
+
+```text
+🚀 PullRequestParentLinksCommand.run(passedParameters: string[]): Promise<void> [projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:315]
+   ↳ Runs the parent reference synchronization command.
+  └─> PullRequestParentLinksCommand.synchronizeParentReferences(context: PullRequestParentLinksContext): void [projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:250]
+     ↳ Reconciles the pull request body with every linked issue's parent chain.
+    └─> PullRequestParentLinksCommand.readAncestorIssueNumbers(linkedIssueNumbers: readonly number[]): number[] [projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:137]
+       ↳ Collects every ancestor once across all directly linked issues.
+      └─> PullRequestParentLinksCommand.addIssueAncestors(…): void [projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:65]
+         ↳ Adds the parent chain of one linked issue to the shared ancestor set.
+        └─> PullRequestParentLinksCommand.readParentIssueNumber(issueNumber: number): number | undefined [projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:194]
+           ↳ Reads an issue and returns its native or body-linked parent.
+          └─> PullRequestLabelsAssigneesGithubService.describeFailure(result: GithubCliResult): string [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees-github.service.ts:47]
+             ↳ Whatever `gh` said about why it could not do the thing.
+            └─> PullRequestLabelsAssigneesGithubService.filter(…)(part: string): boolean [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees-github.service.ts:49]
+```
+
+**8. `PullRequestReleaseSignificanceCommand.run`** — depth 7 · decorated-method
 
 ```text
 🚀 PullRequestReleaseSignificanceCommand.run(passedParameters: string[]): Promise<void> [projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:212]
@@ -203,7 +221,7 @@ What this project is judged against, as declared in its own `callidescope.config
             └─> PullRequestReleaseSignificanceService.filter(…)(scope: string): boolean [projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:276]
 ```
 
-**8. `IssueAssigneesCommand.run`** — depth 5 · decorated-method
+**9. `IssueAssigneesCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 IssueAssigneesCommand.run(…): Promise<void> [projects/compliance/src/modules/issue-assignees/issue-assignees.command.ts:89]
@@ -217,14 +235,28 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> IssueAssigneesGithubService.filter(…)(part: string): boolean [projects/compliance/src/modules/issue-assignees/issue-assignees-github.service.ts:47]
 ```
 
-**9. `PullRequestContextCommand.run`** — depth 3 · decorated-method
+**10. `OrganizationProjectCommand.run`** — depth 5 · decorated-method
 
 ```text
-🚀 PullRequestContextCommand.run(passedParameters: string[]): Promise<void> [projects/compliance/src/modules/pull-request-context/pull-request-context.command.ts:130]
+🚀 OrganizationProjectCommand.run(passedParameters: string[]): Promise<void> [projects/compliance/src/modules/organization-project/organization-project.command.ts:163]
+   ↳ Adds missing repository issues and pull requests, leaving existing items untouched.
+  └─> OrganizationProjectCommand.readRepositoryResourceUrls(resource: "issue" | "pr"): readonly string[] [projects/compliance/src/modules/organization-project/organization-project.command.ts:131]
+     ↳ Lists repository issue or pull request URLs.
+    └─> OrganizationProjectCommand.readJson(…): T [projects/compliance/src/modules/organization-project/organization-project.command.ts:101]
+       ↳ Validates JSON returned by a GitHub CLI read command.
+      └─> PullRequestLabelsAssigneesGithubService.describeFailure(result: GithubCliResult): string [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees-github.service.ts:47]
+         ↳ Whatever `gh` said about why it could not do the thing.
+        └─> PullRequestLabelsAssigneesGithubService.filter(…)(part: string): boolean [projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees-github.service.ts:49]
+```
+
+**11. `PullRequestTitleBodyCommand.run`** — depth 3 · decorated-method
+
+```text
+🚀 PullRequestTitleBodyCommand.run(passedParameters: string[]): Promise<void> [projects/compliance/src/modules/pull-request-title-body/pull-request-title-body.command.ts:130]
    ↳ Resolves live metadata and writes workflow outputs and files.
-  └─> PullRequestContextCommand.resolvePullRequestNumber(): string [projects/compliance/src/modules/pull-request-context/pull-request-context.command.ts:54]
+  └─> PullRequestTitleBodyCommand.resolvePullRequestNumber(): string [projects/compliance/src/modules/pull-request-title-body/pull-request-title-body.command.ts:54]
      ↳ Resolves the PR number from an event payload or the merge-queue ref.
-    └─> PullRequestContextCommand.fail(message: string): never [projects/compliance/src/modules/pull-request-context/pull-request-context.command.ts:47]
+    └─> PullRequestTitleBodyCommand.fail(message: string): never [projects/compliance/src/modules/pull-request-title-body/pull-request-title-body.command.ts:47]
        ↳ Exits with an actionable error instead of reporting a false success.
 ```
 
@@ -239,48 +271,58 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestReleaseSignificanceCommand.run` | 9 | `PullRequestReleaseSignificanceCommand.resolvePullRequestNumber`, `PullRequestReleaseSignificanceCommand.readLivePullRequest`, `PullRequestReleaseSignificanceCommand.failWithMessage`, `PullRequestReleaseSignificanceService.parseConventionalSubject`, `PullRequestReleaseSignificanceService.readReleaseRules`, `PullRequestReleaseSignificanceService.checkSignificance`, `PullRequestReleaseSignificanceCommand.reportFailures`, `PullRequestReleaseSignificanceCommand.appendToReport`, `PullRequestReleaseSignificanceCommand.mirrorToStepSummary` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:212` |
 
 <details>
-<summary>135 more callables</summary>
+<summary>155 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `PullRequestMetadataCommand.run` | 8 | `PullRequestMetadataCommand.resolveMetadata`, `PullRequestMetadataCommand.failWithMessage`, `PullRequestMetadataService.parseTitle`, `PullRequestMetadataService.checkMetadata`, `PullRequestMetadataCommand.resolvePullRequestNumber`, `PullRequestMetadataCommand.reportFailures`, `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.command.ts:264` |
+| `PullRequestLabelsAssigneesCommand.run` | 8 | `PullRequestLabelsAssigneesCommand.resolveMetadata`, `PullRequestLabelsAssigneesCommand.failWithMessage`, `PullRequestLabelsAssigneesService.parseTitle`, `PullRequestLabelsAssigneesService.checkMetadata`, `PullRequestLabelsAssigneesCommand.resolvePullRequestNumber`, `PullRequestLabelsAssigneesCommand.reportFailures`, `PullRequestLabelsAssigneesCommand.appendToReport`, `PullRequestLabelsAssigneesCommand.mirrorToStepSummary` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.command.ts:264` |
 | `IssueMetadataCommand.runBulkAudit` | 7 | `IssueMetadataGithubService.isAvailable`, `IssueMetadataCommand.failWithUsageError`, `IssueMetadataGithubService.listOpenIssues`, `IssueMetadataCommand.failWithMessage`, `IssueMetadataService.checkBulkIssues`, `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `projects/compliance/src/modules/issue-metadata/issue-metadata.command.ts:257` |
 | `PullRequestLabelsService.planReconciliation` | 6 | `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.filter(…)`, `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.filter(…)`, `PullRequestLabelsService.filter(…)` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.service.ts:66` |
 | `IssueMetadataService.checkBulkIssues` | 5 | `IssueMetadataService.parseFormAnswers`, `IssueMetadataService.checkMetadata`, `IssueMetadataTypeService.readFromSummary`, `IssueMetadataService.map(…)`, `IssueMetadataService.checkHierarchy` | `projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:282` |
 | `IssueMetadataService.checkMetadata` | 5 | `IssueMetadataService.groupLabels`, `IssueMetadataService.checkTypeLabel`, `IssueMetadataService.checkScopeLabels`, `IssueMetadataService.checkSourceLabel`, `IssueMetadataTypeService.check` | `projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:366` |
 | `IssueMetadataCommand.readLiveMetadata` | 5 | `IssueMetadataGithubService.isAvailable`, `IssueMetadataCommand.failWithUsageError`, `IssueMetadataGithubService.run`, `IssueMetadataGithubService.describeFailure`, `IssueMetadataService.resolveFromDocument` | `projects/compliance/src/modules/issue-metadata/issue-metadata.command.ts:153` |
+| `PullRequestLabelsAssigneesService.checkMetadata` | 5 | `PullRequestLabelsAssigneesService.groupLabels`, `PullRequestLabelsAssigneesService.checkTypeLabel`, `PullRequestLabelsAssigneesService.checkScopeLabels`, `PullRequestLabelsAssigneesService.record`, `PullRequestLabelsAssigneesService.checkSourceLabel` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:213` |
+| `PullRequestLabelsAssigneesCommand.readLiveMetadata` | 5 | `PullRequestLabelsAssigneesGithubService.isAvailable`, `PullRequestLabelsAssigneesCommand.failWithUsageError`, `PullRequestLabelsAssigneesGithubService.run`, `PullRequestLabelsAssigneesGithubService.describeFailure`, `PullRequestLabelsAssigneesService.resolveFromDocument` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.command.ts:154` |
+| `OrganizationProjectCommand.run` | 5 | `OrganizationProjectCommand.fail`, `OrganizationProjectCommand.readRepositoryResourceUrls`, `OrganizationProjectCommand.readExistingProjectResourceUrls`, `OrganizationProjectCommand.filter(…)`, `OrganizationProjectCommand.addProjectItem` | `projects/compliance/src/modules/organization-project/organization-project.command.ts:163` |
 | `PullRequestBodyService.checkBody` | 5 | `PullRequestBodyService.findEmptySections`, `PullRequestBodyService.findMalformedSections`, `PullRequestBodyService.findMissingHeadings`, `PullRequestBodyService.findOversizedSections`, `PullRequestBodyService.findUnfilledComments` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:204` |
 | `PullRequestBodyCommand.run` | 5 | `PullRequestBodyCommand.resolveBody`, `PullRequestBodyService.checkBody`, `PullRequestBodyService.extractTemplateComments`, `PullRequestBodyCommand.every(…)`, `PullRequestBodyCommand.reportVerdict` | `projects/compliance/src/modules/pull-request-body/pull-request-body.command.ts:143` |
-| `PullRequestMetadataService.checkMetadata` | 5 | `PullRequestMetadataService.groupLabels`, `PullRequestMetadataService.checkTypeLabel`, `PullRequestMetadataService.checkScopeLabels`, `PullRequestMetadataService.record`, `PullRequestMetadataService.checkSourceLabel` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:213` |
-| `PullRequestMetadataCommand.readLiveMetadata` | 5 | `PullRequestMetadataGithubService.isAvailable`, `PullRequestMetadataCommand.failWithUsageError`, `PullRequestMetadataGithubService.run`, `PullRequestMetadataGithubService.describeFailure`, `PullRequestMetadataService.resolveFromDocument` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.command.ts:154` |
-| `PullRequestContextCommand.run` | 5 | `PullRequestContextCommand.fail`, `PullRequestContextCommand.resolvePullRequestNumber`, `PullRequestMetadataGithubService.run`, `PullRequestMetadataGithubService.describeFailure`, `PullRequestContextCommand.writeContext` | `projects/compliance/src/modules/pull-request-context/pull-request-context.command.ts:130` |
+| `PullRequestParentLinksCommand.synchronizeParentReferences` | 5 | `PullRequestParentLinksCommand.readLinkedIssueNumbers`, `PullRequestParentLinksCommand.readPullRequestBody`, `PullRequestParentLinksCommand.readAncestorIssueNumbers`, `PullRequestParentLinksCommand.addAncestorReferences`, `PullRequestParentLinksCommand.updatePullRequestBody` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:250` |
 | `PullRequestReleaseSignificanceService.checkSignificance` | 5 | `PullRequestReleaseSignificanceService.significanceRank`, `PullRequestReleaseSignificanceService.findMostSignificantCommit`, `PullRequestReleaseSignificanceService.findMissingScopes`, `PullRequestReleaseSignificanceService.describeSignificanceFailure`, `PullRequestReleaseSignificanceService.describeMissingScopeFailures` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:215` |
 | `PullRequestReleaseSignificanceCommand.readLivePullRequest` | 5 | `PullRequestReleaseSignificanceGithubService.isAvailable`, `PullRequestReleaseSignificanceCommand.failWithUsageError`, `PullRequestReleaseSignificanceGithubService.run`, `PullRequestReleaseSignificanceGithubService.describeFailure`, `PullRequestReleaseSignificanceService.resolveFromDocument` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:114` |
+| `PullRequestTitleBodyCommand.run` | 5 | `PullRequestTitleBodyCommand.fail`, `PullRequestTitleBodyCommand.resolvePullRequestNumber`, `PullRequestLabelsAssigneesGithubService.run`, `PullRequestLabelsAssigneesGithubService.describeFailure`, `PullRequestTitleBodyCommand.writeContext` | `projects/compliance/src/modules/pull-request-title-body/pull-request-title-body.command.ts:130` |
 | `IssueAssigneesGithubService.listUnassignedOpenIssueNumbers` | 4 | `IssueAssigneesGithubService.run`, `IssueAssigneesGithubService.describeFailure`, `IssueAssigneesGithubService.map(…)`, `IssueAssigneesGithubService.filter(…)` | `projects/compliance/src/modules/issue-assignees/issue-assignees-github.service.ts:54` |
-| `IssueLabelsCommand.resolvePlan` | 4 | `IssueLabelsCommand.readIssueNumber`, `IssueLabelsService.parseFormAnswers`, `IssueLabelsCommand.readExistingLabelNames`, `IssueLabelsService.missingLabels` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:130` |
+| `IssueLabelsCommand.resolvePlan` | 4 | `IssueLabelsCommand.readIssueNumber`, `IssueLabelsService.parseFormAnswers`, `IssueLabelsCommand.readExistingLabelNames`, `IssueLabelsService.missingLabels` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:127` |
 | `IssueMetadataService.resolveFromDocument` | 4 | `IssueMetadataService.describeError`, `IssueMetadataService.isRecord`, `IssueMetadataTypeService.readFromDocument`, `IssueMetadataService.readLabelNames` | `projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:435` |
 | `PullRequestLabelsCommand.reportPlan` | 4 | `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsCommand.describePlan`, `PullRequestLabelsCommand.createLabels`, `PullRequestLabelsCommand.updateLabels` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.command.ts:204` |
 | `PullRequestLabelsCommand.synchronize` | 4 | `PullRequestLabelsCommand.reconcile`, `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsCommand.describeError`, `PullRequestLabelsCommand.mirrorToStepSummary` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.command.ts:298` |
+| `PullRequestParentLinksService.addRelatedIssueReferences` | 4 | `PullRequestParentLinksService.findIndex(…)`, `PullRequestParentLinksService.readExistingIssueNumbers`, `PullRequestParentLinksService.filter(…)`, `PullRequestParentLinksService.insertReferences` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.service.ts:61` |
+| `PullRequestParentLinksCommand.readParentIssueNumber` | 4 | `PullRequestLabelsAssigneesGithubService.run`, `PullRequestParentLinksCommand.fail`, `PullRequestLabelsAssigneesGithubService.describeFailure`, `PullRequestParentLinksCommand.parseParentIssueNumber` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:194` |
 | `AuditGovernanceService.auditWorkflowContent` | 3 | `AuditGovernanceService.some(…)`, `AuditGovernanceService.some(…)`, `AuditGovernanceService.collectWorkflowJobViolations` | `projects/compliance/src/modules/audit-governance/audit-governance.service.ts:57` |
 | `AuditGovernanceCommand.run` | 3 | `AuditGovernanceService.checkGovernance`, `AuditGovernanceCommand.reportCodeownersVerdict`, `AuditGovernanceCommand.reportWorkflowsVerdict` | `projects/compliance/src/modules/audit-governance/audit-governance.command.ts:77` |
 | `IssueAssigneesCommand.assignAll` | 3 | `IssueAssigneesGithubService.listUnassignedOpenIssueNumbers`, `IssueAssigneesCommand.fail`, `IssueAssigneesCommand.assignIssue` | `projects/compliance/src/modules/issue-assignees/issue-assignees.command.ts:36` |
 | `IssueAssigneesCommand.assignIssue` | 3 | `IssueAssigneesGithubService.assignIssue`, `IssueAssigneesCommand.fail`, `IssueAssigneesGithubService.describeFailure` | `projects/compliance/src/modules/issue-assignees/issue-assignees.command.ts:56` |
 | `IssueAssigneesCommand.run` | 3 | `IssueAssigneesCommand.fail`, `IssueAssigneesCommand.assignAll`, `IssueAssigneesCommand.assignIssue` | `projects/compliance/src/modules/issue-assignees/issue-assignees.command.ts:89` |
-| `IssueLabelsCommand.run` | 3 | `IssueLabelsCommand.resolvePlan`, `IssueLabelsGithubService.isAvailable`, `IssueLabelsCommand.addLabel` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:158` |
+| `IssueLabelsCommand.run` | 3 | `IssueLabelsCommand.resolvePlan`, `IssueLabelsGithubService.isAvailable`, `IssueLabelsCommand.addLabel` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:155` |
 | `IssueMetadataService.checkReleaseSignificanceViolation` | 3 | `IssueMetadataService.resolveIssueReleaseLevel`, `IssueMetadataService.map(…)`, `IssueMetadataService.map(…)` | `projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:47` |
 | `IssueMetadataService.checkTypeLabel` | 3 | `IssueMetadataService.checkTypeLabelPresence`, `IssueMetadataService.map(…)`, `IssueMetadataService.filter(…)` | `projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:131` |
 | `IssueMetadataService.checkHierarchy` | 3 | `IssueMetadataService.extractParentIssueNumber`, `IssueMetadataService.checkReleaseSignificanceViolation`, `IssueMetadataService.computeHierarchyDepth` | `projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:325` |
 | `IssueMetadataService.groupLabels` | 3 | `IssueMetadataService.filter(…)`, `IssueMetadataService.filter(…)`, `IssueMetadataService.filter(…)` | `projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:409` |
 | `IssueMetadataCommand.resolveMetadata` | 3 | `IssueMetadataCommand.failWithUsageError`, `IssueMetadataCommand.readEnvironmentMetadata`, `IssueMetadataCommand.readLiveMetadata` | `projects/compliance/src/modules/issue-metadata/issue-metadata.command.ts:229` |
+| `PullRequestLabelsAssigneesService.groupLabels` | 3 | `PullRequestLabelsAssigneesService.filter(…)`, `PullRequestLabelsAssigneesService.filter(…)`, `PullRequestLabelsAssigneesService.filter(…)` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:254` |
+| `PullRequestLabelsAssigneesService.resolveFromDocument` | 3 | `PullRequestLabelsAssigneesService.describeError`, `PullRequestLabelsAssigneesService.isRecord`, `PullRequestLabelsAssigneesService.readNames` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:297` |
+| `PullRequestLabelsAssigneesCommand.resolveMetadata` | 3 | `PullRequestLabelsAssigneesCommand.failWithUsageError`, `PullRequestLabelsAssigneesCommand.readEnvironmentMetadata`, `PullRequestLabelsAssigneesCommand.readLiveMetadata` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.command.ts:214` |
+| `OrganizationProjectCommand.addProjectItem` | 3 | `PullRequestLabelsAssigneesGithubService.run`, `OrganizationProjectCommand.fail`, `PullRequestLabelsAssigneesGithubService.describeFailure` | `projects/compliance/src/modules/organization-project/organization-project.command.ts:44` |
+| `OrganizationProjectCommand.readExistingProjectResourceUrls` | 3 | `OrganizationProjectCommand.readJson`, `OrganizationProjectCommand.fail`, `OrganizationProjectCommand.flatMap(…)` | `projects/compliance/src/modules/organization-project/organization-project.command.ts:70` |
+| `OrganizationProjectCommand.readJson` | 3 | `PullRequestLabelsAssigneesGithubService.run`, `OrganizationProjectCommand.fail`, `PullRequestLabelsAssigneesGithubService.describeFailure` | `projects/compliance/src/modules/organization-project/organization-project.command.ts:101` |
+| `OrganizationProjectCommand.readRepositoryResourceUrls` | 3 | `OrganizationProjectCommand.readJson`, `OrganizationProjectCommand.fail`, `OrganizationProjectCommand.map(…)` | `projects/compliance/src/modules/organization-project/organization-project.command.ts:131` |
 | `PullRequestBodyService.holdsShape` | 3 | `PullRequestBodyService.isDashList`, `PullRequestBodyService.filter(…)`, `PullRequestBodyService.bulletMarkersOf` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:100` |
 | `PullRequestBodyService.findMalformedSections` | 3 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.map(…)`, `PullRequestBodyService.filter(…)` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:241` |
 | `PullRequestBodyService.filter(…)` | 3 | `PullRequestBodyService.cleanSectionContent`, `PullRequestBodyService.holdsShape`, `PullRequestBodyService.parseBlocks` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:244` |
 | `PullRequestBodyCommand.reportVerdict` | 3 | `PullRequestBodyCommand.map(…)`, `PullRequestBodyCommand.map(…)`, `PullRequestBodyCommand.reportList` | `projects/compliance/src/modules/pull-request-body/pull-request-body.command.ts:91` |
-| `PullRequestMetadataService.groupLabels` | 3 | `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.filter(…)` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:254` |
-| `PullRequestMetadataService.resolveFromDocument` | 3 | `PullRequestMetadataService.describeError`, `PullRequestMetadataService.isRecord`, `PullRequestMetadataService.readNames` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:297` |
-| `PullRequestMetadataCommand.resolveMetadata` | 3 | `PullRequestMetadataCommand.failWithUsageError`, `PullRequestMetadataCommand.readEnvironmentMetadata`, `PullRequestMetadataCommand.readLiveMetadata` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.command.ts:214` |
 | `PullRequestLabelsCommand.createLabels` | 3 | `PullRequestLabelsGithubService.run`, `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsGithubService.describeFailure` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.command.ts:74` |
 | `PullRequestLabelsCommand.updateLabels` | 3 | `PullRequestLabelsGithubService.run`, `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsGithubService.describeFailure` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.command.ts:257` |
+| `PullRequestParentLinksCommand.readLinkedIssueNumbers` | 3 | `PullRequestLabelsAssigneesGithubService.run`, `PullRequestParentLinksCommand.fail`, `PullRequestLabelsAssigneesGithubService.describeFailure` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:155` |
+| `PullRequestParentLinksCommand.updatePullRequestBody` | 3 | `PullRequestParentLinksCommand.fail`, `PullRequestLabelsAssigneesGithubService.run`, `PullRequestLabelsAssigneesGithubService.describeFailure` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:280` |
 | `AuditGovernanceService.collectWorkflowJobViolations` | 2 | `AuditGovernanceService.extractJobBlocks`, `AuditGovernanceService.evaluateJob` | `projects/compliance/src/modules/audit-governance/audit-governance.service.ts:84` |
 | `AuditGovernanceService.extractJobBlocks` | 2 | `AuditGovernanceService.sliceJobsSection`, `AuditGovernanceService.applyJobLine` | `projects/compliance/src/modules/audit-governance/audit-governance.service.ts:142` |
 | `AuditGovernanceService.parseCodeownersRule` | 2 | `AuditGovernanceService.map(…)`, `AuditGovernanceService.filter(…)` | `projects/compliance/src/modules/audit-governance/audit-governance.service.ts:193` |
@@ -288,8 +330,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `AuditGovernanceService.checkGovernance` | 2 | `AuditGovernanceService.checkCodeowners`, `AuditGovernanceService.checkWorkflows` | `projects/compliance/src/modules/audit-governance/audit-governance.service.ts:272` |
 | `AuditGovernanceService.checkWorkflows` | 2 | `AuditGovernanceService.filter(…)`, `AuditGovernanceService.auditWorkflowContent` | `projects/compliance/src/modules/audit-governance/audit-governance.service.ts:286` |
 | `IssueLabelsService.missingLabels` | 2 | `IssueLabelsService.filter(…)`, `IssueLabelsService.labelsFromAnswers` | `projects/compliance/src/modules/issue-labels/issue-labels.service.ts:77` |
-| `IssueLabelsCommand.addLabel` | 2 | `IssueLabelsGithubService.run`, `IssueLabelsGithubService.describeFailure` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:57` |
-| `IssueLabelsCommand.readLabelNames` | 2 | `IssueLabelsCommand.filter(…)`, `IssueLabelsCommand.map(…)` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:118` |
+| `IssueLabelsCommand.addLabel` | 2 | `IssueLabelsGithubService.run`, `IssueLabelsGithubService.describeFailure` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:54` |
+| `IssueLabelsCommand.readLabelNames` | 2 | `IssueLabelsCommand.filter(…)`, `IssueLabelsCommand.map(…)` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:115` |
 | `IssueMetadataGithubService.listOpenIssues` | 2 | `IssueMetadataGithubService.run`, `IssueMetadataGithubService.describeFailure` | `projects/compliance/src/modules/issue-metadata/issue-metadata-github.service.ts:65` |
 | `IssueMetadataTypeService.check` | 2 | `IssueMetadataTypeService.checkSubIssue`, `IssueMetadataTypeService.checkRoot` | `projects/compliance/src/modules/issue-metadata/issue-metadata-type.service.ts:82` |
 | `IssueMetadataTypeService.readFromDocument` | 2 | `IssueMetadataTypeService.isRecord`, `IssueMetadataTypeService.hasBodyParent` | `projects/compliance/src/modules/issue-metadata/issue-metadata-type.service.ts:101` |
@@ -301,21 +343,26 @@ What this project is judged against, as declared in its own `callidescope.config
 | `IssueMetadataCommand.failWithUsageError` | 2 | `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `projects/compliance/src/modules/issue-metadata/issue-metadata.command.ts:87` |
 | `IssueMetadataCommand.readEnvironmentMetadata` | 2 | `IssueMetadataCommand.failWithUsageError`, `IssueMetadataService.resolveFromEnvironment` | `projects/compliance/src/modules/issue-metadata/issue-metadata.command.ts:133` |
 | `IssueMetadataCommand.reportFailures` | 2 | `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `projects/compliance/src/modules/issue-metadata/issue-metadata.command.ts:183` |
+| `PullRequestLabelsAssigneesService.checkSourceLabel` | 2 | `PullRequestLabelsAssigneesService.map(…)`, `PullRequestLabelsAssigneesService.map(…)` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:93` |
+| `PullRequestLabelsAssigneesService.checkTypeLabel` | 2 | `PullRequestLabelsAssigneesService.map(…)`, `PullRequestLabelsAssigneesService.filter(…)` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:124` |
+| `PullRequestLabelsAssigneesService.readNames` | 2 | `PullRequestLabelsAssigneesService.filter(…)`, `PullRequestLabelsAssigneesService.map(…)` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:199` |
+| `PullRequestLabelsAssigneesService.parseTitle` | 2 | `PullRequestLabelsAssigneesService.filter(…)`, `PullRequestLabelsAssigneesService.map(…)` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:276` |
+| `PullRequestLabelsAssigneesService.resolveFromEnvironment` | 2 | `PullRequestLabelsAssigneesService.parseJsonArray`, `PullRequestLabelsAssigneesService.readNames` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:332` |
+| `PullRequestLabelsAssigneesCommand.failWithMessage` | 2 | `PullRequestLabelsAssigneesCommand.appendToReport`, `PullRequestLabelsAssigneesCommand.mirrorToStepSummary` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.command.ts:78` |
+| `PullRequestLabelsAssigneesCommand.failWithUsageError` | 2 | `PullRequestLabelsAssigneesCommand.appendToReport`, `PullRequestLabelsAssigneesCommand.mirrorToStepSummary` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.command.ts:86` |
+| `PullRequestLabelsAssigneesCommand.readEnvironmentMetadata` | 2 | `PullRequestLabelsAssigneesCommand.failWithUsageError`, `PullRequestLabelsAssigneesService.resolveFromEnvironment` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.command.ts:132` |
+| `PullRequestLabelsAssigneesCommand.reportFailures` | 2 | `PullRequestLabelsAssigneesCommand.appendToReport`, `PullRequestLabelsAssigneesCommand.mirrorToStepSummary` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.command.ts:186` |
 | `PullRequestBodyService.cleanSectionContent` | 2 | `PullRequestBodyService.filter(…)`, `PullRequestBodyService.map(…)` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:74` |
 | `PullRequestBodyService.findEmptySections` | 2 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.filter(…)` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:225` |
 | `PullRequestBodyService.findMissingHeadings` | 2 | `PullRequestBodyService.map(…)`, `PullRequestBodyService.filter(…)` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:263` |
 | `PullRequestBodyService.findOversizedSections` | 2 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.flatMap(…)` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:270` |
-| `PullRequestMetadataService.checkSourceLabel` | 2 | `PullRequestMetadataService.map(…)`, `PullRequestMetadataService.map(…)` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:93` |
-| `PullRequestMetadataService.checkTypeLabel` | 2 | `PullRequestMetadataService.map(…)`, `PullRequestMetadataService.filter(…)` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:124` |
-| `PullRequestMetadataService.readNames` | 2 | `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.map(…)` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:199` |
-| `PullRequestMetadataService.parseTitle` | 2 | `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.map(…)` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:276` |
-| `PullRequestMetadataService.resolveFromEnvironment` | 2 | `PullRequestMetadataService.parseJsonArray`, `PullRequestMetadataService.readNames` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:332` |
-| `PullRequestMetadataCommand.failWithMessage` | 2 | `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.command.ts:78` |
-| `PullRequestMetadataCommand.failWithUsageError` | 2 | `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.command.ts:86` |
-| `PullRequestMetadataCommand.readEnvironmentMetadata` | 2 | `PullRequestMetadataCommand.failWithUsageError`, `PullRequestMetadataService.resolveFromEnvironment` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.command.ts:132` |
-| `PullRequestMetadataCommand.reportFailures` | 2 | `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.command.ts:186` |
 | `PullRequestLabelsService.readExpectedLabels` | 2 | `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.map(…)` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.service.ts:106` |
 | `PullRequestLabelsCommand.run` | 2 | `PullRequestLabelsCommand.synchronize`, `PullRequestLabelsCommand.resolveMode` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.command.ts:287` |
+| `PullRequestParentLinksCommand.addAncestorReferences` | 2 | `PullRequestParentLinksService.addRelatedIssueReferences`, `PullRequestParentLinksCommand.fail` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:48` |
+| `PullRequestParentLinksCommand.addIssueAncestors` | 2 | `PullRequestParentLinksCommand.readParentIssueNumber`, `PullRequestParentLinksCommand.fail` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:65` |
+| `PullRequestParentLinksCommand.parseParentIssueNumber` | 2 | `PullRequestParentLinksCommand.fail`, `IssueMetadataService.extractParentIssueNumber` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:108` |
+| `PullRequestParentLinksCommand.readAncestorIssueNumbers` | 2 | `PullRequestParentLinksCommand.addIssueAncestors`, `PullRequestParentLinksCommand.filter(…)` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:137` |
+| `PullRequestParentLinksCommand.run` | 2 | `PullRequestParentLinksCommand.synchronizeParentReferences`, `PullRequestParentLinksCommand.resolveContext` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:315` |
 | `PullRequestReleaseSignificanceService.describeSignificanceFailure` | 2 | `PullRequestReleaseSignificanceService.releaseLevelName`, `PullRequestReleaseSignificanceService.find(…)` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:61` |
 | `PullRequestReleaseSignificanceService.readRawCommit` | 2 | `PullRequestReleaseSignificanceService.isRecord`, `PullRequestReleaseSignificanceService.parseConventionalSubject` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:164` |
 | `PullRequestReleaseSignificanceService.parseConventionalSubject` | 2 | `PullRequestReleaseSignificanceService.filter(…)`, `PullRequestReleaseSignificanceService.map(…)` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:260` |
@@ -331,9 +378,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `IssueLabelsGithubService.describeFailure` | 1 | `IssueLabelsGithubService.filter(…)` | `projects/compliance/src/modules/issue-labels/issue-labels-github.service.ts:43` |
 | `IssueLabelsGithubService.isAvailable` | 1 | `IssueLabelsGithubService.run` | `projects/compliance/src/modules/issue-labels/issue-labels-github.service.ts:52` |
 | `IssueLabelsService.parseFormAnswers` | 1 | `IssueLabelsService.extractFormField` | `projects/compliance/src/modules/issue-labels/issue-labels.service.ts:90` |
-| `IssueLabelsCommand.nameOf` | 1 | `IssueLabelsCommand.isRecord` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:82` |
-| `IssueLabelsCommand.readExistingLabelNames` | 1 | `IssueLabelsCommand.readLabelNames` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:94` |
-| `IssueLabelsCommand.map(…)` | 1 | `IssueLabelsCommand.nameOf` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:120` |
+| `IssueLabelsCommand.nameOf` | 1 | `IssueLabelsCommand.isRecord` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:79` |
+| `IssueLabelsCommand.readExistingLabelNames` | 1 | `IssueLabelsCommand.readLabelNames` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:91` |
+| `IssueLabelsCommand.map(…)` | 1 | `IssueLabelsCommand.nameOf` | `projects/compliance/src/modules/issue-labels/issue-labels.command.ts:117` |
 | `IssueMetadataGithubService.describeFailure` | 1 | `IssueMetadataGithubService.filter(…)` | `projects/compliance/src/modules/issue-metadata/issue-metadata-github.service.ts:51` |
 | `IssueMetadataGithubService.isAvailable` | 1 | `IssueMetadataGithubService.run` | `projects/compliance/src/modules/issue-metadata/issue-metadata-github.service.ts:60` |
 | `IssueMetadataTypeService.checkRoot` | 1 | `IssueMetadataTypeService.map(…)` | `projects/compliance/src/modules/issue-metadata/issue-metadata-type.service.ts:32` |
@@ -343,6 +390,11 @@ What this project is judged against, as declared in its own `callidescope.config
 | `IssueMetadataService.map(…)` | 1 | `IssueMetadataService.isRecord` | `projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:246` |
 | `IssueMetadataService.resolveStandardReleaseLevel` | 1 | `IssueMetadataService.find(…)` | `projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:260` |
 | `IssueMetadataService.parseFormAnswers` | 1 | `IssueMetadataService.extractFormField` | `projects/compliance/src/modules/issue-metadata/issue-metadata.service.ts:424` |
+| `PullRequestLabelsAssigneesGithubService.describeFailure` | 1 | `PullRequestLabelsAssigneesGithubService.filter(…)` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees-github.service.ts:47` |
+| `PullRequestLabelsAssigneesGithubService.isAvailable` | 1 | `PullRequestLabelsAssigneesGithubService.run` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees-github.service.ts:56` |
+| `PullRequestLabelsAssigneesService.nameOf` | 1 | `PullRequestLabelsAssigneesService.isRecord` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:162` |
+| `PullRequestLabelsAssigneesService.parseJsonArray` | 1 | `PullRequestLabelsAssigneesService.describeError` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:177` |
+| `PullRequestLabelsAssigneesService.map(…)` | 1 | `PullRequestLabelsAssigneesService.nameOf` | `projects/compliance/src/modules/pull-request-labels-assignees/pull-request-labels-assignees.service.ts:201` |
 | `PullRequestBodyService.bulletMarkersOf` | 1 | `PullRequestBodyService.sourceOf` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:46` |
 | `PullRequestBodyService.countWords` | 1 | `PullRequestBodyService.filter(…)` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:86` |
 | `PullRequestBodyService.isDashList` | 1 | `PullRequestBodyService.every(…)` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:132` |
@@ -355,18 +407,16 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestBodyService.findUnfilledComments` | 1 | `PullRequestBodyService.filter(…)` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:291` |
 | `PullRequestBodyService.filter(…)` | 1 | `PullRequestBodyService.prefixOf` | `projects/compliance/src/modules/pull-request-body/pull-request-body.service.ts:297` |
 | `PullRequestBodyCommand.resolveBody` | 1 | `PullRequestBodyCommand.failWithUsageError` | `projects/compliance/src/modules/pull-request-body/pull-request-body.command.ts:118` |
-| `PullRequestMetadataGithubService.describeFailure` | 1 | `PullRequestMetadataGithubService.filter(…)` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata-github.service.ts:47` |
-| `PullRequestMetadataGithubService.isAvailable` | 1 | `PullRequestMetadataGithubService.run` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata-github.service.ts:56` |
-| `PullRequestMetadataService.nameOf` | 1 | `PullRequestMetadataService.isRecord` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:162` |
-| `PullRequestMetadataService.parseJsonArray` | 1 | `PullRequestMetadataService.describeError` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:177` |
-| `PullRequestMetadataService.map(…)` | 1 | `PullRequestMetadataService.nameOf` | `projects/compliance/src/modules/pull-request-metadata/pull-request-metadata.service.ts:201` |
-| `PullRequestContextCommand.resolvePullRequestNumber` | 1 | `PullRequestContextCommand.fail` | `projects/compliance/src/modules/pull-request-context/pull-request-context.command.ts:54` |
-| `PullRequestContextCommand.writeContext` | 1 | `PullRequestContextCommand.fail` | `projects/compliance/src/modules/pull-request-context/pull-request-context.command.ts:87` |
 | `PullRequestLabelsGithubService.describeFailure` | 1 | `PullRequestLabelsGithubService.filter(…)` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels-github.service.ts:42` |
 | `PullRequestLabelsService.isTrackedLabel` | 1 | `PullRequestLabelsService.some(…)` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.service.ts:45` |
 | `PullRequestLabelsService.filter(…)` | 1 | `PullRequestLabelsService.isTrackedLabel` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.service.ts:82` |
 | `PullRequestLabelsCommand.describePlan` | 1 | `PullRequestLabelsCommand.appendToReport` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.command.ts:107` |
 | `PullRequestLabelsCommand.reportStaleLabels` | 1 | `PullRequestLabelsCommand.appendToReport` | `projects/compliance/src/modules/pull-request-labels/pull-request-labels.command.ts:227` |
+| `PullRequestParentLinksService.insertReferences` | 1 | `PullRequestParentLinksService.map(…)` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.service.ts:22` |
+| `PullRequestParentLinksService.readExistingIssueNumbers` | 1 | `PullRequestParentLinksService.flatMap(…)` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.service.ts:42` |
+| `PullRequestParentLinksService.flatMap(…)` | 1 | `PullRequestParentLinksService.map(…)` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.service.ts:50` |
+| `PullRequestParentLinksCommand.readPullRequestBody` | 1 | `PullRequestParentLinksCommand.fail` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:215` |
+| `PullRequestParentLinksCommand.resolveContext` | 1 | `PullRequestParentLinksCommand.fail` | `projects/compliance/src/modules/pull-request-parent-links/pull-request-parent-links.command.ts:226` |
 | `PullRequestReleaseSignificanceGithubService.describeFailure` | 1 | `PullRequestReleaseSignificanceGithubService.filter(…)` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance-github.service.ts:42` |
 | `PullRequestReleaseSignificanceGithubService.isAvailable` | 1 | `PullRequestReleaseSignificanceGithubService.run` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance-github.service.ts:51` |
 | `PullRequestReleaseSignificanceService.describeMissingScopeFailures` | 1 | `PullRequestReleaseSignificanceService.map(…)` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:51` |
@@ -378,6 +428,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestReleaseSignificanceService.readReleaseRules` | 1 | `PullRequestReleaseSignificanceService.find(…)` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:294` |
 | `PullRequestReleaseSignificanceService.map(…)` | 1 | `PullRequestReleaseSignificanceService.readRawCommit` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:335` |
 | `PullRequestReleaseSignificanceCommand.resolvePullRequestNumber` | 1 | `PullRequestReleaseSignificanceCommand.failWithUsageError` | `projects/compliance/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:173` |
+| `PullRequestTitleBodyCommand.resolvePullRequestNumber` | 1 | `PullRequestTitleBodyCommand.fail` | `projects/compliance/src/modules/pull-request-title-body/pull-request-title-body.command.ts:54` |
+| `PullRequestTitleBodyCommand.writeContext` | 1 | `PullRequestTitleBodyCommand.fail` | `projects/compliance/src/modules/pull-request-title-body/pull-request-title-body.command.ts:87` |
 
 </details>
 <!-- callidescope:end -->

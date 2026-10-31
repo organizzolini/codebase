@@ -5,16 +5,16 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { PullRequestMetadataGithubService } from "../pull-request-metadata/pull-request-metadata-github.service";
+import { PullRequestLabelsAssigneesGithubService } from "../pull-request-labels-assignees/pull-request-labels-assignees-github.service";
 
 import {
   GITHUB_OUTPUT_VARIABLE,
   MERGE_GROUP_HEAD_REF_PATTERN,
   PULL_REQUEST_BODY_FILE_VARIABLE,
-  PULL_REQUEST_CONTEXT_QUERY,
+  PULL_REQUEST_TITLE_BODY_QUERY,
   PULL_REQUEST_TITLE_FILE_VARIABLE,
-  pullRequestContextSchema,
-} from "./pull-request-context.constants";
+  pullRequestTitleBodySchema,
+} from "./pull-request-title-body.constants";
 
 /**
  * Resolves the pull request under review and writes its metadata for workflow
@@ -22,19 +22,19 @@ import {
  * ref.
  */
 @Command({
-  description: "Resolve pull request context for workflow checks",
-  name: "pull-request-context",
+  description: "Resolve pull request title and body for workflow checks",
+  name: "pull-request-title-body",
 })
 @Injectable()
-export class PullRequestContextCommand extends CommandRunner {
+export class PullRequestTitleBodyCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
     private readonly logger: LoggerService,
-    private readonly githubService: PullRequestMetadataGithubService,
+    private readonly githubService: PullRequestLabelsAssigneesGithubService,
   ) {
     super();
-    this.logger.setContext(PullRequestContextCommand.name);
+    this.logger.setContext(PullRequestTitleBodyCommand.name);
   }
 
   // 🔐 Private Fields
@@ -131,7 +131,7 @@ export class PullRequestContextCommand extends CommandRunner {
     await Promise.resolve();
 
     if (passedParameters.length > 0) {
-      this.fail("❌ pull-request-context does not accept arguments");
+      this.fail("❌ pull-request-title-body does not accept arguments");
     }
 
     const pullRequestNumber = this.resolvePullRequestNumber();
@@ -139,7 +139,7 @@ export class PullRequestContextCommand extends CommandRunner {
       "api",
       `repos/{owner}/{repo}/pulls/${pullRequestNumber}`,
       "--jq",
-      PULL_REQUEST_CONTEXT_QUERY,
+      PULL_REQUEST_TITLE_BODY_QUERY,
     ]);
 
     if (!result.succeeded) {
@@ -158,7 +158,7 @@ export class PullRequestContextCommand extends CommandRunner {
       );
     }
 
-    const context = pullRequestContextSchema.safeParse(response);
+    const context = pullRequestTitleBodySchema.safeParse(response);
 
     if (!context.success) {
       this.fail(

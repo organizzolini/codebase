@@ -211,8 +211,8 @@ jobs:
       # A merge group carries no pull request payload, only a synthetic ref.
       # Resolve live metadata here so the merge-queue checks use the same
       # number, author, title, and body as pull-request events.
-      - name: 🚂 Resolve Pull Request Context
-        id: pull-request-context
+      - name: 🚂 Resolve Pull Request Title and Body
+        id: pull-request-title-body
         if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -223,7 +223,7 @@ jobs:
           PULL_REQUEST_BODY_FILE: pull_request_body.md
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/compliance/src/compliance.main.ts pull-request-context
+            projects/compliance/src/compliance.main.ts pull-request-title-body
 
       # Adds non-closing references to every ancestor of a linked issue.
       # Editing the PR body triggers this check again, where it is a no-op.
@@ -266,7 +266,7 @@ jobs:
         if: >-
           (github.event_name == 'pull_request' || github.event_name == 'merge_group') &&
           (github.event.pull_request.user.login ||
-          steps.pull-request-context.outputs.pull-request-author) != 'dependabot[bot]'
+          steps.pull-request-title-body.outputs.pull-request-author) != 'dependabot[bot]'
         env:
           PULL_REQUEST_TITLE_FILE: pull_request_title.txt
         run: |
@@ -281,7 +281,7 @@ jobs:
         if: >-
           (github.event_name == 'pull_request' || github.event_name == 'merge_group') &&
           (github.event.pull_request.user.login ||
-          steps.pull-request-context.outputs.pull-request-author) != 'dependabot[bot]'
+          steps.pull-request-title-body.outputs.pull-request-author) != 'dependabot[bot]'
         env:
           PULL_REQUEST_BODY_FILE: pull_request_body.md
         run: |
@@ -295,7 +295,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PULL_REQUEST_NUMBER: >-
-            ${{ github.event.pull_request.number || steps.pull-request-context.outputs.pull-request-number }}
+            ${{ github.event.pull_request.number || steps.pull-request-title-body.outputs.pull-request-number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
             projects/compliance/src/compliance.main.ts pull-request-release-significance \
@@ -318,7 +318,7 @@ jobs:
       - name: 🏷️ Validate Merge Group Commit Message
         if: >-
           github.event_name == 'merge_group' &&
-          steps.pull-request-context.outputs.pull-request-author != 'dependabot[bot]'
+          steps.pull-request-title-body.outputs.pull-request-author != 'dependabot[bot]'
         env:
           HEAD_SHA: ${{ github.event.merge_group.head_sha }}
         run: |

@@ -2,9 +2,9 @@ import { spawnSync } from "node:child_process";
 
 import { Injectable } from "@nestjs/common";
 
-import { GITHUB_CLI_BINARY } from "./pull-request-metadata.constants";
+import { GITHUB_CLI_BINARY } from "./pull-request-labels-assignees.constants";
 
-import type { GithubCliResult } from "./pull-request-metadata.types";
+import type { GithubCliResult } from "./pull-request-labels-assignees.types";
 
 /**
  * Runs the `gh` command-line client and reports what it produced.
@@ -25,7 +25,7 @@ import type { GithubCliResult } from "./pull-request-metadata.types";
  * fact to report, not an exception to propagate.
  */
 @Injectable()
-export class PullRequestMetadataGithubService {
+export class PullRequestLabelsAssigneesGithubService {
   // 🏗 Dependency Injection
 
   constructor() {}

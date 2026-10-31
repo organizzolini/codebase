@@ -1,6 +1,5 @@
 {
   "name": "{{#packageName}}{{packageName}}{{/packageName}}{{^packageName}}{{nameKebabCase}}{{/packageName}}",
-  "version": "{{#packageVersion}}{{packageVersion}}{{/packageVersion}}{{^packageVersion}}0.0.1{{/packageVersion}}",
   "dependencies": {
     "@nestjs/common": "catalog:ic-suite",
     "@nestjs/config": "catalog:",

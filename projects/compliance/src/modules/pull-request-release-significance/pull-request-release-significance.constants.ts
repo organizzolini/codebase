@@ -29,7 +29,7 @@ export const USAGE_LINES = [
 /**
  * How a conventional subject line is read, a commit's or the title's alike.
  *
- * Unlike the pull-request-metadata check's title pattern, the breaking marker
+ * Unlike the pull-request-labels-assignees check's title pattern, the breaking marker
  * is captured rather than discarded: whether a commit or the title itself
  * declares a breaking change is exactly what decides the required release
  * level here.

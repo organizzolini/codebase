@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 
 import { IssueMetadataModule } from "../issue-metadata/issue-metadata.module";
-import { PullRequestMetadataModule } from "../pull-request-metadata/pull-request-metadata.module";
+import { PullRequestLabelsAssigneesModule } from "../pull-request-labels-assignees/pull-request-labels-assignees.module";
 
 import { PullRequestParentLinksCommand } from "./pull-request-parent-links.command";
 import { PullRequestParentLinksService } from "./pull-request-parent-links.service";
@@ -10,7 +10,7 @@ import { PullRequestParentLinksService } from "./pull-request-parent-links.servi
 @Module({
   controllers: [],
   exports: [PullRequestParentLinksCommand, PullRequestParentLinksService],
-  imports: [IssueMetadataModule, PullRequestMetadataModule],
+  imports: [IssueMetadataModule, PullRequestLabelsAssigneesModule],
   providers: [PullRequestParentLinksCommand, PullRequestParentLinksService],
 })
 export class PullRequestParentLinksModule {}

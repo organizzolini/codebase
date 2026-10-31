@@ -57,8 +57,8 @@
         "pull-request-body": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-body"
         },
-        "pull-request-context": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-context"
+        "pull-request-labels-assignees": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-labels-assignees"
         },
         "pull-request-labels-check": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-labels check"
@@ -66,14 +66,14 @@
         "pull-request-labels-write": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-labels write"
         },
-        "pull-request-metadata": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-metadata"
-        },
         "pull-request-parent-links": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-parent-links"
         },
         "pull-request-release-significance": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-release-significance"
+        },
+        "pull-request-title-body": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-title-body"
         }
       },
       "description": "Run one compliance command by name.",

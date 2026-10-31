@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { PullRequestMetadataModule } from "../pull-request-metadata/pull-request-metadata.module";
+import { PullRequestLabelsAssigneesModule } from "../pull-request-labels-assignees/pull-request-labels-assignees.module";
 
 import { OrganizationProjectCommand } from "./organization-project.command";
 
@@ -8,7 +8,7 @@ import { OrganizationProjectCommand } from "./organization-project.command";
 @Module({
   controllers: [],
   exports: [OrganizationProjectCommand],
-  imports: [PullRequestMetadataModule],
+  imports: [PullRequestLabelsAssigneesModule],
   providers: [OrganizationProjectCommand],
 })
 export class OrganizationProjectModule {}

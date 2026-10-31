@@ -1,29 +1,29 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { PullRequestMetadataService } from "./pull-request-metadata.service";
+import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
 
 import type {
   MetadataVerdict,
-  PullRequestMetadata,
-} from "./pull-request-metadata.types";
+  PullRequestLabelsAssignees,
+} from "./pull-request-labels-assignees.types";
 
 /** A pull request whose metadata agrees with a `feat(lexico)` title. */
-const validMetadata: PullRequestMetadata = {
+const validMetadata: PullRequestLabelsAssignees = {
   assigneeLogins: ["JimmyPaolini"],
   labelNames: ["scope:lexico", "source:agent", "type:feat"],
   title: "feat(lexico): ✨ add a user profile page",
 };
 
-describe(PullRequestMetadataService, () => {
-  let service: PullRequestMetadataService;
+describe(PullRequestLabelsAssigneesService, () => {
+  let service: PullRequestLabelsAssigneesService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      providers: [PullRequestMetadataService],
+      providers: [PullRequestLabelsAssigneesService],
     }).compile();
 
-    service = await module.resolve(PullRequestMetadataService);
+    service = await module.resolve(PullRequestLabelsAssigneesService);
   });
 
   it("is defined", () => {
@@ -33,7 +33,7 @@ describe(PullRequestMetadataService, () => {
 
   /** Runs every check against one pull request's metadata. */
   const check = (
-    metadata: PullRequestMetadata,
+    metadata: PullRequestLabelsAssignees,
     pullRequestNumber = "7",
   ): MetadataVerdict => {
     const titleConvention = service.parseTitle(metadata.title);
@@ -435,7 +435,7 @@ function jsonErrorMessage(documentText: string): string {
 }
 
 /** The metadata every document fixture above resolves to. */
-function validMetadataFromDocument(): PullRequestMetadata {
+function validMetadataFromDocument(): PullRequestLabelsAssignees {
   return {
     assigneeLogins: ["JimmyPaolini"],
     labelNames: ["type:feat"],

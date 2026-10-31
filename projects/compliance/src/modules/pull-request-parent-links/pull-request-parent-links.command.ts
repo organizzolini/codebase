@@ -6,8 +6,8 @@ import { Command, CommandRunner } from "nest-commander";
 import { LoggerService } from "@codebase/observability";
 
 import { IssueMetadataService } from "../issue-metadata/issue-metadata.service";
-import { PULL_REQUEST_BODY_FILE_VARIABLE } from "../pull-request-context/pull-request-context.constants";
-import { PullRequestMetadataGithubService } from "../pull-request-metadata/pull-request-metadata-github.service";
+import { PullRequestLabelsAssigneesGithubService } from "../pull-request-labels-assignees/pull-request-labels-assignees-github.service";
+import { PULL_REQUEST_BODY_FILE_VARIABLE } from "../pull-request-title-body/pull-request-title-body.constants";
 
 import {
   issueParentSchema,
@@ -29,7 +29,7 @@ export class PullRequestParentLinksCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
-    private readonly githubService: PullRequestMetadataGithubService,
+    private readonly githubService: PullRequestLabelsAssigneesGithubService,
     private readonly issueMetadataService: IssueMetadataService,
     private readonly logger: LoggerService,
     private readonly pullRequestParentLinksService: PullRequestParentLinksService,

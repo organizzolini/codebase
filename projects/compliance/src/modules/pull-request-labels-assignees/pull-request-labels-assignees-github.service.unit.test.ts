@@ -3,8 +3,8 @@ import { spawnSync } from "node:child_process";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { PullRequestMetadataGithubService } from "./pull-request-metadata-github.service";
-import { GITHUB_CLI_BINARY } from "./pull-request-metadata.constants";
+import { PullRequestLabelsAssigneesGithubService } from "./pull-request-labels-assignees-github.service";
+import { GITHUB_CLI_BINARY } from "./pull-request-labels-assignees.constants";
 
 vi.mock("node:child_process", () => ({
   spawnSync: vi.fn<typeof spawnSync>(),
@@ -18,8 +18,8 @@ interface SpawnCompletion {
   stdout?: string;
 }
 
-describe(PullRequestMetadataGithubService, () => {
-  let service: PullRequestMetadataGithubService;
+describe(PullRequestLabelsAssigneesGithubService, () => {
+  let service: PullRequestLabelsAssigneesGithubService;
 
   /** Makes the next `spawnSync` call complete like this. */
   const completeWith = (completion: SpawnCompletion): void => {
@@ -36,10 +36,10 @@ describe(PullRequestMetadataGithubService, () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      providers: [PullRequestMetadataGithubService],
+      providers: [PullRequestLabelsAssigneesGithubService],
     }).compile();
 
-    service = await module.resolve(PullRequestMetadataGithubService);
+    service = await module.resolve(PullRequestLabelsAssigneesGithubService);
   });
 
   beforeEach(() => {

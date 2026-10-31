@@ -11,11 +11,11 @@ import { IssueLabelsModule } from "./modules/issue-labels/issue-labels.module";
 import { IssueMetadataModule } from "./modules/issue-metadata/issue-metadata.module";
 import { OrganizationProjectModule } from "./modules/organization-project/organization-project.module";
 import { PullRequestBodyModule } from "./modules/pull-request-body/pull-request-body.module";
-import { PullRequestContextModule } from "./modules/pull-request-context/pull-request-context.module";
+import { PullRequestLabelsAssigneesModule } from "./modules/pull-request-labels-assignees/pull-request-labels-assignees.module";
 import { PullRequestLabelsModule } from "./modules/pull-request-labels/pull-request-labels.module";
-import { PullRequestMetadataModule } from "./modules/pull-request-metadata/pull-request-metadata.module";
 import { PullRequestParentLinksModule } from "./modules/pull-request-parent-links/pull-request-parent-links.module";
 import { PullRequestReleaseSignificanceModule } from "./modules/pull-request-release-significance/pull-request-release-significance.module";
+import { PullRequestTitleBodyModule } from "./modules/pull-request-title-body/pull-request-title-body.module";
 
 /**
  * Root NestJS application module.
@@ -36,11 +36,11 @@ import { PullRequestReleaseSignificanceModule } from "./modules/pull-request-rel
     LoggerModule,
     OrganizationProjectModule,
     PullRequestBodyModule,
-    PullRequestContextModule,
+    PullRequestLabelsAssigneesModule,
     PullRequestLabelsModule,
-    PullRequestMetadataModule,
     PullRequestParentLinksModule,
     PullRequestReleaseSignificanceModule,
+    PullRequestTitleBodyModule,
   ],
 })
 export class MainModule {}

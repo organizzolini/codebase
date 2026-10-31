@@ -8,15 +8,15 @@ import {
   SOURCE_LABELS,
   TITLE_SCOPE_SEPARATOR_PATTERN,
   TYPE_LABEL_PREFIX,
-} from "./pull-request-metadata.constants";
+} from "./pull-request-labels-assignees.constants";
 
 import type {
   GroupedLabels,
   MetadataVerdict,
-  PullRequestMetadata,
-  PullRequestMetadataResolution,
+  PullRequestLabelsAssignees,
+  PullRequestLabelsAssigneesResolution,
   TitleConvention,
-} from "./pull-request-metadata.types";
+} from "./pull-request-labels-assignees.types";
 
 /**
  * Reads a pull request's metadata and says whether it agrees with its title.
@@ -26,7 +26,7 @@ import type {
  * Reading the metadata from GitHub is the command's job, not this one's.
  */
 @Injectable()
-export class PullRequestMetadataService {
+export class PullRequestLabelsAssigneesService {
   // 🏗 Dependency Injection
 
   constructor() {}
@@ -211,7 +211,7 @@ export class PullRequestMetadataService {
    * that has a fix contributes the `gh pr edit` command that applies it.
    */
   public checkMetadata(options: {
-    readonly metadata: PullRequestMetadata;
+    readonly metadata: PullRequestLabelsAssignees;
     readonly pullRequestNumber: string;
     readonly titleConvention: TitleConvention;
   }): MetadataVerdict {
@@ -296,7 +296,7 @@ export class PullRequestMetadataService {
   /** Reads the metadata out of a `gh pr view` document. */
   public resolveFromDocument(
     documentText: string,
-  ): PullRequestMetadataResolution {
+  ): PullRequestLabelsAssigneesResolution {
     let pullRequest: unknown;
 
     try {
@@ -333,7 +333,7 @@ export class PullRequestMetadataService {
     readonly assigneesDocument: string;
     readonly labelsDocument: string;
     readonly title: string;
-  }): PullRequestMetadataResolution {
+  }): PullRequestLabelsAssigneesResolution {
     const labels = this.parseJsonArray(
       options.labelsDocument,
       "PULL_REQUEST_LABELS",

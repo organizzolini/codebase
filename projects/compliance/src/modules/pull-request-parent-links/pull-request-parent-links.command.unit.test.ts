@@ -19,18 +19,18 @@ import { LoggerService } from "@codebase/observability";
 import { mockProcessExit } from "../../../testing/mocks";
 import { IssueMetadataTypeService } from "../issue-metadata/issue-metadata-type.service";
 import { IssueMetadataService } from "../issue-metadata/issue-metadata.service";
-import { PULL_REQUEST_BODY_FILE_VARIABLE } from "../pull-request-context/pull-request-context.constants";
-import { PullRequestMetadataGithubService } from "../pull-request-metadata/pull-request-metadata-github.service";
+import { PullRequestLabelsAssigneesGithubService } from "../pull-request-labels-assignees/pull-request-labels-assignees-github.service";
+import { PULL_REQUEST_BODY_FILE_VARIABLE } from "../pull-request-title-body/pull-request-title-body.constants";
 
 import { PullRequestParentLinksCommand } from "./pull-request-parent-links.command";
 import { PULL_REQUEST_NUMBER_VARIABLE } from "./pull-request-parent-links.constants";
 import { PullRequestParentLinksService } from "./pull-request-parent-links.service";
 
-import type { GithubCliResult } from "../pull-request-metadata/pull-request-metadata.types";
+import type { GithubCliResult } from "../pull-request-labels-assignees/pull-request-labels-assignees.types";
 
 describe(PullRequestParentLinksCommand, () => {
   let command: PullRequestParentLinksCommand;
-  let githubService: PullRequestMetadataGithubService;
+  let githubService: PullRequestLabelsAssigneesGithubService;
   let parentLinksService: PullRequestParentLinksService;
   let bodyPath: string;
 
@@ -46,14 +46,16 @@ describe(PullRequestParentLinksCommand, () => {
           useValue: createMock<LoggerService>(),
         },
         {
-          provide: PullRequestMetadataGithubService,
-          useValue: createMock<PullRequestMetadataGithubService>(),
+          provide: PullRequestLabelsAssigneesGithubService,
+          useValue: createMock<PullRequestLabelsAssigneesGithubService>(),
         },
       ],
     }).compile();
 
     command = await module.resolve(PullRequestParentLinksCommand);
-    githubService = await module.resolve(PullRequestMetadataGithubService);
+    githubService = await module.resolve(
+      PullRequestLabelsAssigneesGithubService,
+    );
     parentLinksService = await module.resolve(PullRequestParentLinksService);
   });
 
@@ -109,8 +111,8 @@ describe(PullRequestParentLinksCommand, () => {
         IssueMetadataService,
         IssueMetadataTypeService,
         {
-          provide: PullRequestMetadataGithubService,
-          useValue: createMock<PullRequestMetadataGithubService>(),
+          provide: PullRequestLabelsAssigneesGithubService,
+          useValue: createMock<PullRequestLabelsAssigneesGithubService>(),
         },
         {
           provide: LoggerService,

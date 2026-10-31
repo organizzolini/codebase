@@ -16,12 +16,12 @@ import { LoggerService } from "@codebase/observability";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
-import { PullRequestMetadataGithubService } from "./pull-request-metadata-github.service";
-import { PullRequestMetadataCommand } from "./pull-request-metadata.command";
-import { STEP_SUMMARY_VARIABLE } from "./pull-request-metadata.constants";
-import { PullRequestMetadataService } from "./pull-request-metadata.service";
+import { PullRequestLabelsAssigneesGithubService } from "./pull-request-labels-assignees-github.service";
+import { PullRequestLabelsAssigneesCommand } from "./pull-request-labels-assignees.command";
+import { STEP_SUMMARY_VARIABLE } from "./pull-request-labels-assignees.constants";
+import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
 
-import type { GithubCliResult } from "./pull-request-metadata.types";
+import type { GithubCliResult } from "./pull-request-labels-assignees.types";
 
 vi.mock("node:fs", () => ({
   appendFileSync: vi.fn<(filePath: string, content: string) => void>(),
@@ -43,26 +43,28 @@ const failed = (standardError: string): GithubCliResult => ({
   succeeded: false,
 });
 
-describe(PullRequestMetadataCommand, () => {
-  let command: PullRequestMetadataCommand;
-  let githubService: PullRequestMetadataGithubService;
+describe(PullRequestLabelsAssigneesCommand, () => {
+  let command: PullRequestLabelsAssigneesCommand;
+  let githubService: PullRequestLabelsAssigneesGithubService;
   let reportLines: string[];
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        PullRequestMetadataCommand,
-        PullRequestMetadataService,
+        PullRequestLabelsAssigneesCommand,
+        PullRequestLabelsAssigneesService,
         {
-          provide: PullRequestMetadataGithubService,
-          useValue: createMock<PullRequestMetadataGithubService>(),
+          provide: PullRequestLabelsAssigneesGithubService,
+          useValue: createMock<PullRequestLabelsAssigneesGithubService>(),
         },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
     }).compile();
 
-    command = await module.resolve(PullRequestMetadataCommand);
-    githubService = await module.resolve(PullRequestMetadataGithubService);
+    command = await module.resolve(PullRequestLabelsAssigneesCommand);
+    githubService = await module.resolve(
+      PullRequestLabelsAssigneesGithubService,
+    );
   });
 
   beforeEach(() => {
@@ -139,11 +141,11 @@ describe(PullRequestMetadataCommand, () => {
 
     const module = await Test.createTestingModule({
       providers: [
-        PullRequestMetadataCommand,
-        PullRequestMetadataService,
+        PullRequestLabelsAssigneesCommand,
+        PullRequestLabelsAssigneesService,
         {
-          provide: PullRequestMetadataGithubService,
-          useValue: createMock<PullRequestMetadataGithubService>(),
+          provide: PullRequestLabelsAssigneesGithubService,
+          useValue: createMock<PullRequestLabelsAssigneesGithubService>(),
         },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
@@ -151,7 +153,7 @@ describe(PullRequestMetadataCommand, () => {
     const logger = await module.resolve(LoggerService);
 
     expect(logger.setContext).toHaveBeenCalledWith(
-      "PullRequestMetadataCommand",
+      "PullRequestLabelsAssigneesCommand",
     );
   });
 
@@ -244,8 +246,8 @@ describe(PullRequestMetadataCommand, () => {
       expect(reportLines).toStrictEqual([
         "❌ Expected a pull request number, or PULL_REQUEST_TITLE, PULL_REQUEST_LABELS, and PULL_REQUEST_ASSIGNEES in the environment",
         "",
-        "Usage: compliance pull-request-metadata <pull-request-number>",
-        "   or: PULL_REQUEST_TITLE=… PULL_REQUEST_LABELS=… PULL_REQUEST_ASSIGNEES=… compliance pull-request-metadata",
+        "Usage: compliance pull-request-labels-assignees <pull-request-number>",
+        "   or: PULL_REQUEST_TITLE=… PULL_REQUEST_LABELS=… PULL_REQUEST_ASSIGNEES=… compliance pull-request-labels-assignees",
       ]);
     });
   });

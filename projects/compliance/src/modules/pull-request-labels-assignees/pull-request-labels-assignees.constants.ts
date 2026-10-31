@@ -56,6 +56,6 @@ export const PULL_REQUEST_NUMBER_PATTERN = /^\d+$/u;
 
 /** How to run this check, printed whenever the input could not be used. */
 export const USAGE_LINES = [
-  "Usage: compliance pull-request-metadata <pull-request-number>",
-  "   or: PULL_REQUEST_TITLE=… PULL_REQUEST_LABELS=… PULL_REQUEST_ASSIGNEES=… compliance pull-request-metadata",
+  "Usage: compliance pull-request-labels-assignees <pull-request-number>",
+  "   or: PULL_REQUEST_TITLE=… PULL_REQUEST_LABELS=… PULL_REQUEST_ASSIGNEES=… compliance pull-request-labels-assignees",
 ];

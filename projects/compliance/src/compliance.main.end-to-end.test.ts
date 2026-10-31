@@ -47,9 +47,9 @@ describe("main end-to-end suite", () => {
       "issue-metadata",
       "organization-project",
       "pull-request-body",
-      "pull-request-context",
+      "pull-request-title-body",
       "pull-request-labels",
-      "pull-request-metadata",
+      "pull-request-labels-assignees",
       "pull-request-parent-links",
       "pull-request-release-significance",
     ]) {

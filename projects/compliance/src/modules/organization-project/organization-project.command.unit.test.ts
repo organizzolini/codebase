@@ -13,16 +13,16 @@ import {
 import { LoggerService } from "@codebase/observability";
 
 import { mockProcessExit } from "../../../testing/mocks";
-import { PullRequestMetadataGithubService } from "../pull-request-metadata/pull-request-metadata-github.service";
+import { PullRequestLabelsAssigneesGithubService } from "../pull-request-labels-assignees/pull-request-labels-assignees-github.service";
 
 import { OrganizationProjectCommand } from "./organization-project.command";
 import { ORGANIZATION_PROJECT_ITEM_LIMIT } from "./organization-project.constants";
 
-import type { GithubCliResult } from "../pull-request-metadata/pull-request-metadata.types";
+import type { GithubCliResult } from "../pull-request-labels-assignees/pull-request-labels-assignees.types";
 
 describe(OrganizationProjectCommand, () => {
   let command: OrganizationProjectCommand;
-  let githubService: PullRequestMetadataGithubService;
+  let githubService: PullRequestLabelsAssigneesGithubService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -33,14 +33,16 @@ describe(OrganizationProjectCommand, () => {
           useValue: createMock<LoggerService>(),
         },
         {
-          provide: PullRequestMetadataGithubService,
-          useValue: createMock<PullRequestMetadataGithubService>(),
+          provide: PullRequestLabelsAssigneesGithubService,
+          useValue: createMock<PullRequestLabelsAssigneesGithubService>(),
         },
       ],
     }).compile();
 
     command = await module.resolve(OrganizationProjectCommand);
-    githubService = await module.resolve(PullRequestMetadataGithubService);
+    githubService = await module.resolve(
+      PullRequestLabelsAssigneesGithubService,
+    );
   });
 
   beforeEach(() => {
@@ -102,8 +104,8 @@ describe(OrganizationProjectCommand, () => {
           useValue: createMock<LoggerService>(),
         },
         {
-          provide: PullRequestMetadataGithubService,
-          useValue: createMock<PullRequestMetadataGithubService>(),
+          provide: PullRequestLabelsAssigneesGithubService,
+          useValue: createMock<PullRequestLabelsAssigneesGithubService>(),
         },
       ],
     }).compile();

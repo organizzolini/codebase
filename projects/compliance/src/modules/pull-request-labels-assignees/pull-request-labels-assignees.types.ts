@@ -43,7 +43,7 @@ export interface MetadataVerdict {
 }
 
 /** The metadata one pull request carries, whatever it was read from. */
-export interface PullRequestMetadata {
+export interface PullRequestLabelsAssignees {
   readonly assigneeLogins: readonly string[];
   readonly labelNames: readonly string[];
   readonly title: string;
@@ -55,9 +55,9 @@ export interface PullRequestMetadata {
  * A failure to read the input is reported the same way a failed check is, so
  * the command has one report path rather than two.
  */
-export type PullRequestMetadataResolution =
+export type PullRequestLabelsAssigneesResolution =
   | { readonly failure: string; readonly resolved: false }
-  | { readonly metadata: PullRequestMetadata; readonly resolved: true };
+  | { readonly metadata: PullRequestLabelsAssignees; readonly resolved: true };
 
 /** What a conventional title declares about itself. */
 export interface TitleConvention {
