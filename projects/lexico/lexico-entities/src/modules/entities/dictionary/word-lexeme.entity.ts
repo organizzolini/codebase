@@ -1,6 +1,6 @@
 import { Entity, Index, ManyToOne } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import type { Lexeme } from "./lexeme.entity";
 import type { Word } from "./word.entity";
@@ -17,7 +17,7 @@ import type { Relation } from "typeorm";
   name: "word_lexemes",
 })
 @Index(["word", "lexeme"], { unique: true })
-export class WordLexeme extends DeletableEntity {
+export class WordLexeme extends PostgresqlDeletableEntity {
   /** The dictionary entry side of the junction. */
   @Index()
   @ManyToOne("Lexeme", "wordLexemes", {

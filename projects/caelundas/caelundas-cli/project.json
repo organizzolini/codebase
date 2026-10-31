@@ -36,7 +36,7 @@
     "deprecate-code": {},
     "download-ephemeris": {
       "cache": true,
-      "description": "Download the Swiss Ephemeris data files to data/ephemeris/ (cached, so CI fetches them once per cache key). Runs its own entry point, which does not connect to Postgres.",
+      "description": "Download the Swiss Ephemeris data files to data/ephemeris/ (cached, so CI fetches them once per cache key). Runs its own entry point, which does not open the database.",
       "executor": "nx:run-commands",
       "inputs": [
         "!{projectRoot}/**/*.test.ts",
@@ -72,9 +72,16 @@
       }
     },
     "spell-check": {},
-    "sqlfluff-format": {},
-    "sqlfluff-lint": {},
-    "squawk": {},
+    "sqlfluff-format": {
+      "options": {
+        "command": "uv run --project configuration sqlfluff {args} --dialect sqlite --config configuration/pyproject.toml {projectRoot}"
+      }
+    },
+    "sqlfluff-lint": {
+      "options": {
+        "command": "uv run --project configuration sqlfluff {args} --dialect sqlite --config configuration/pyproject.toml {projectRoot}"
+      }
+    },
     "start": {
       "cache": false,
       "configurations": {

@@ -5,7 +5,7 @@ description: Explains the conformetry generator/template/instance model that gov
 tags: [conformetry, architecture, scaffolding, generation, validation]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-39c3295efc089133e87a9c80
     resource: repo://CONTEXT.md
@@ -21,7 +21,7 @@ sources:
     resource: repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.service.ts
   - id: openwiki-source-9c39b5d57dccbc31a8952ba4
     resource: repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 # Generator / Template / Instance Model
 
@@ -77,6 +77,25 @@ A **Template** is a directory of ordinary files containing Mustache placeholders
 
 Templates live under `configuration/conformetry-templates/` and are referenced by `templatePath` in the generator registry.
 
+Example template structure (`configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.module.ts`):
+
+```ts
+import { Module } from "@nestjs/common";
+
+import { {{namePascalCase}}Service } from "./{{nameKebabCase}}.service";
+
+/**
+ * TODO: Document the {{nameCamelCase}} module.
+ */
+@Module({
+  controllers: [],
+  exports: [{{namePascalCase}}Service],
+  imports: [],
+  providers: [{{namePascalCase}}Service],
+})
+export class {{namePascalCase}}Module {}
+```
+
 ---
 
 ## Generation
@@ -113,6 +132,15 @@ await generationService.runGenerator({
   instancePath: "packages/billing/src/modules",
 });
 ```
+
+**Two execution hosts** share the same generation runtime (`GenerationService`):
+
+| Host | Filesystem | Formatting | Use case |
+|------|------------|------------|----------|
+| **CLI** (`conformetry-cli`) | Direct disk I/O (`defaultFileSystem`) | No-op (workspace formatter runs separately) | Interactive scaffolding, one-off generation |
+| **Nx plugin** (`conformetry-nx`) | Nx `Tree` virtual filesystem (`AdapterService`) | `formatFiles` from `@nx/devkit` (enables `--dry-run` and change preview) | CI-integrated, `nx g` commands, affected projects |
+
+The `GenerationService` accepts `FileSystemAdapter` and `FormatterAdapter` interfaces, so the core logic is host-agnostic.
 
 ---
 
@@ -152,14 +180,39 @@ Instances are **discovered**, not recorded. The generator definition declares `i
 }
 ```
 
-**Instance matching** (performed during validation): validation does not record which template produced a file. Instead, every discovered instance is weighed against **every template** by the share of the template's files the instance already has, and the best fit wins. Two special outcomes are reported rather than skipped:
+Groups can be **workspace globs** (no tags) or **tag-scoped** (Nx plugin only):
+
+```ts
+// Module/file generator — instances found by tags on Nx projects
+{
+  name: "nestjs-service-module",
+  templatePath: "configuration/conformetry-templates/nestjs-service-module",
+  inputs: defineInputs({
+    name: z.string(),
+    project: z.string(),
+  }),
+  instances: [{ patterns: ["src/modules/*"], tags: ["framework:nestjs"] }],
+}
+```
+
+### Instance Matching Algorithm
+
+During validation, nothing records which template produced a file. Instead, every discovered instance is weighed against **every template** by the share of the template's files the instance already has, and the best fit wins.
+
+Logic lives in `InstanceDiscoveryMatchingService` (`conformetry-configuration/src/modules/instance-discovery/instance-discovery-matching.service.ts`):
+
+1. **Coverage ratio leads** — `matchRatio = matchedFileCount / template.filePaths.length` (prevents large templates from winning on weak partial matches)
+2. **Absolute count breaks ties** — `matchedFileCount` (a five-file module template beats a two-file service-file template when both match completely)
+3. **Name makes it deterministic** — `template.name.localeCompare`
+
+**Two special outcomes** are reported rather than skipped:
 
 | Reason | Meaning |
 |--------|---------|
-| `no-match` | No template explains this instance well enough |
-| `ambiguous` | Two or more templates tied, so they are indistinguishable here |
+| `no-match` | No template explains this instance well enough (`matchedFileCount === 0` or `matchRatio ≤ MINIMUM_MATCH_RATIO`) |
+| `ambiguous` | Two or more templates tied with equal `matchRatio` and `matchedFileCount`, but **not** a complete match (`matchRatio < COMPLETE_MATCH_RATIO`) |
 
-Matching logic lives in `InstanceDiscoveryMatchingService` (repo://projects/ic-suite/conformetry/conformetry-configuration/src/modules/instance-discovery/instance-discovery-matching.service.ts).
+A **complete tie** (`matchRatio === 1.0` for multiple templates) is **matched against all tied templates** — a module holding both a command and a service really is an instance of both `nestjs-command-module` and `nestjs-service-module`.
 
 ---
 
@@ -173,7 +226,7 @@ Validation closes the loop. For each matched instance:
 
 | Language | Comparison engine | What differs |
 |----------|-------------------|--------------|
-| **TypeScript** (`.ts`, `.tsx`) | TypeScript compiler syntax tree | Missing declarations, signatures, section comments |
+| **TypeScript** (`.ts`, `.tsx`) | TypeScript compiler syntax tree (`ts.SourceFile`) | Missing declarations, signatures, section comments |
 | **Markdown** (`.md`) | mdast (Markdown AST) | Missing headings, lists, links, table structure |
 | **Python** (`.py`) | Python `ast` module (via subprocess) | Missing classes, functions, decorators, docstrings |
 | **JSON** (`.json`, `.jsonc`) | JSON path comparison | Missing keys, required values |
@@ -184,17 +237,24 @@ Validation closes the loop. For each matched instance:
 
 **What DOES fail validation:** deleting a required export, dropping a declared file, losing a section comment, removing a required decorator.
 
+### Language Modules and Comparison Strategies
+
 The comparison is implemented per-language in `@conformetry/languages`:
 
-- TypeScript: `TypescriptTreeService.compareTree` (repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts#L127-L183) walks syntax trees in parallel
-- Markdown: `MarkdownTreeService.compareContainer` (repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts#L80-L150) walks mdast trees
-- Python: `PythonBridgeService.validatePythonSource` (repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts#L162-L185) spawns `python3` against a shipped `ast` module
+- **TypeScript**: `TypescriptTreeService.compareTree` walks syntax trees in parallel. The template is a **structural subset** requirement: every declaration it makes must exist somewhere in the instance, but the instance may add anything and order members freely. Weight = subtree node count (a missing class costs its whole subtree).
+- **Markdown**: `MarkdownTreeService.compareContainer` walks mdast trees. Order-preserving but not position-locked: each template node matches any instance sibling; the last match anchors the error location for what follows. Weight = subtree node count.
+- **Python**: `PythonBridgeService.validatePythonSource` spawns `python3` against a shipped `ast` module (`conformetry-languages/src/modules/python/python/`). Synchronous subprocess because callers are synchronous. Bridge failures are reported as conformance differences (file could not be checked).
+- **JSON**: `JsonService` compares by JSON path; missing keys and required values are reported.
+- **Jupyter**: `JupyterService` validates envelope as JSON, then delegates cells to Markdown/Python validators.
+- **Text**: `TextService` compares line-by-line with duplicate awareness (treats repeated identical lines as one requirement).
+
+Language validators implement `ConformetryLanguageValidator` (descriptor + `validateDocument`). The `LanguagesService` resolves validators for the extensions present in a run; unclaimed extensions fall back to text comparison.
 
 ---
 
 ## Generator Registry
 
-The generator registry is declared in `configuration/conformetry.config.ts`. Each entry binds a template directory, input definitions (as Zod schemas converted to JSON Schema), and instance groups with patterns and optional per-group substitutions.
+The generator registry is declared in `configuration/conformetry.config.ts`. Each entry binds a template directory, input definitions (Zod schemas converted to JSON Schema), and instance groups with patterns and optional per-group substitutions.
 
 ### Project-level generators (create new projects)
 
@@ -233,14 +293,30 @@ score = (totalWeight - failedWeight) / totalWeight
 
 - `totalWeight` — every requirement the template imposes (conforming documents included, so an instance is scored against all template requirements)
 - `failedWeight` — sum of weights of reported differences
-- **Weight** — a missing class is reported once but weighted for its whole subtree; a missing import is weighted only for itself (repo://projects/ic-suite/conformetry/conformetry-core/src/modules/conformetry-core/conformetry-core.types.ts#L42-L53)
+- **Weight** — a missing class is reported once but weighted for its whole subtree; a missing import is weighted only for itself (`ConformetryDifference.weight` defaults to `1`; subtree counting is in `TypescriptNodesService.countSubtree` and `MarkdownNodesService.countSubtree`)
 
 **Threshold resolution** (strictest wins): `instanceGroup.threshold` ?? `generator.threshold` ?? `runThreshold` ?? `1`. An instance passes when `score ≥ threshold`. An unmatched instance (`no-match` or `ambiguous`) always fails.
+
+Scoring arithmetic lives in `ScoringService.calculateScore` (edge cases: empty template scores `1`, negative scores clamped to `0`).
+
+---
+
+## Six-Step Conformance Loop
+
+The complete loop from generator declaration to continuous validation:
+
+1. **Declare** — Author adds a generator entry to `configuration/conformetry.config.ts` (template path, inputs, instance groups)
+2. **Generate** — Run `conformetry generate` (CLI) or `nx g` (Nx plugin) with inputs; template rendered to instance directory
+3. **Discover** — Validation finds instances via globs in `instances` groups (CLI) or per-project via tags (Nx plugin)
+4. **Match** — Each instance weighed against all templates; best fit wins (`no-match` / `ambiguous` reported explicitly)
+5. **Validate** — For each matched instance: capture substitutions → re-render → structural compare per language
+6. **Report** — Scores computed, thresholds applied, report printed (CLI) or target succeeds/fails (Nx executor); CI gates on `success: false`
 
 ---
 
 ## Related Pages
 
-- [Common Packages](../architecture/common-packages.md) — conformetry package graph
 - [IC Suite Architecture](../architecture/ic-suite.md) — workspace structure
+- [Common Packages](../architecture/common-packages.md) — conformetry package graph
 - [Scaffolding Workflow](../workflows/scaffolding.md) — end-to-end generation and validation
+- [Code Quality Workflow](../workflows/code-quality.md) — validation in CI

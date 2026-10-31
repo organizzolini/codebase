@@ -3,9 +3,6 @@ type: Reference
 title: Quickstart
 description: Entry point for the OpenWiki. Provides a task-oriented map routing readers to the right architecture, domain, workflow, or operations page based on what they need to understand or change.
 tags: [quickstart, overview, navigation]
-verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
 sources:
   - id: openwiki-source-7ce83b1fa051a437b5baffc6
     resource: repo://.devcontainer/cloud/devcontainer.json

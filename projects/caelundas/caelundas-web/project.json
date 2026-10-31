@@ -1,5 +1,17 @@
 {
   "name": "caelundas-web",
+  "namedInputs": {
+    "default": [
+      "!{projectRoot}/.cspell/**",
+      "!{projectRoot}/.eslintcache/**",
+      "!{projectRoot}/conformetry-templates/**",
+      "!{projectRoot}/cspell.config.yaml",
+      "{projectRoot}/**/*",
+      "{workspaceRoot}/projects/caelundas/caelundas-cli/data/*.sql",
+      "{workspaceRoot}/projects/caelundas/caelundas-cli/src/modules/database/migrations/*.sql",
+      "shared-globals"
+    ]
+  },
   "projectType": "application",
   "sourceRoot": "projects/caelundas/caelundas-web/src",
   "tags": [
@@ -13,7 +25,7 @@
   "targets": {
     "build": {
       "configurations": {
-        "export": {}
+        "ingested": {}
       },
       "dependsOn": ["build-database"],
       "description": "Build the application for production",
@@ -35,11 +47,11 @@
     "build-database": {
       "cache": false,
       "configurations": {
-        "export": {
-          "command": "node scripts/build-events-database.ts --export"
+        "ingested": {
+          "command": "node scripts/build-events-database.ts --ingested"
         }
       },
-      "description": "Write the SQLite file the static build bundles into output/, from the committed seed, or with the export configuration from the Postgres tables caelundas-cli ingested into",
+      "description": "Write the SQLite file the static build bundles into output/, from caelundas-cli's migration and committed seed rows, or with the ingested configuration by copying the output/database.sqlite a caelundas-cli run wrote",
       "executor": "nx:run-commands",
       "options": {
         "command": "node scripts/build-events-database.ts",
@@ -60,7 +72,7 @@
     "prettier": {},
     "preview": {
       "configurations": {
-        "export": {}
+        "ingested": {}
       },
       "dependsOn": ["build"],
       "description": "Serve the production build locally",
@@ -73,7 +85,7 @@
     "spell-check": {},
     "start": {
       "configurations": {
-        "export": {}
+        "ingested": {}
       },
       "dependsOn": ["build-database"],
       "description": "Start the development server with hot reload",
