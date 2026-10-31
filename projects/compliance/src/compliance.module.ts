@@ -9,6 +9,7 @@ import { AuditGovernanceModule } from "./modules/audit-governance/audit-governan
 import { IssueAssigneesModule } from "./modules/issue-assignees/issue-assignees.module";
 import { IssueLabelsModule } from "./modules/issue-labels/issue-labels.module";
 import { IssueMetadataModule } from "./modules/issue-metadata/issue-metadata.module";
+import { OrganizationProjectModule } from "./modules/organization-project/organization-project.module";
 import { PullRequestBodyModule } from "./modules/pull-request-body/pull-request-body.module";
 import { PullRequestContextModule } from "./modules/pull-request-context/pull-request-context.module";
 import { PullRequestLabelsModule } from "./modules/pull-request-labels/pull-request-labels.module";
@@ -33,6 +34,7 @@ import { PullRequestReleaseSignificanceModule } from "./modules/pull-request-rel
     IssueLabelsModule,
     IssueMetadataModule,
     LoggerModule,
+    OrganizationProjectModule,
     PullRequestBodyModule,
     PullRequestContextModule,
     PullRequestLabelsModule,

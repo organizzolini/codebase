@@ -16,10 +16,14 @@ nx run compliance:start:issue-assignees
 nx run compliance:start:audit-governance
 nx run compliance:start:pull-request-metadata
 nx run compliance:start:pull-request-parent-links
+nx run compliance:start:organization-project
 ```
 
 Commands that need GitHub access use the `gh` CLI and the current repository
-authentication. Workflow invocations provide event data and tokens through
+authentication. The organization-project command manually adds all issues and
+pull requests from `organizzolini/codebase` that are not already in the
+organization's `codebase` project. It requires project write access and can be
+rerun safely. Workflow invocations provide event data and tokens through
 environment variables.
 
 ## Start

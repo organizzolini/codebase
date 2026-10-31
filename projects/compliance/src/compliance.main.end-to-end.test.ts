@@ -45,6 +45,7 @@ describe("main end-to-end suite", () => {
       "issue-assignees",
       "issue-labels",
       "issue-metadata",
+      "organization-project",
       "pull-request-body",
       "pull-request-context",
       "pull-request-labels",

@@ -7,7 +7,7 @@
     "framework:nestjs",
     "generator:nestjs-command-project",
     "language:typescript",
-    "type:package"
+    "type:application"
   ],
   "targets": {
     "codometer": {},
@@ -50,6 +50,9 @@
         },
         "issue-metadata": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue-metadata"
+        },
+        "organization-project": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts organization-project"
         },
         "pull-request-body": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-body"

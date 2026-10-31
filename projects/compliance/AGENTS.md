@@ -21,7 +21,8 @@ nx run compliance:start
 This project owns issue assignment and metadata, pull request labels and
 metadata, release significance, non-closing parent references in pull
 request bodies, pull request body validation, merge-group context
-resolution, and repository governance checks. Keep codebase-file
+resolution, repository governance checks, and manual synchronization of
+repository issues and pull requests into the organization project. Keep codebase-file
 reconciliation in `synchronization` and codebase-only checks in `validation`.
 
 ## Architecture Overview
