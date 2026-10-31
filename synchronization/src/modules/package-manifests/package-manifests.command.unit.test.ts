@@ -177,5 +177,20 @@ describe(PackageManifestsCommand, () => {
         expect.stringContaining("boom"),
       );
     });
+
+    it("handles non-Error exceptions and returns false", async () => {
+      vi.mocked(packageManifestsService.checkAll).mockImplementation(() => {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw "not an error object";
+      });
+
+      const result = await command.synchronize("check");
+
+      expect(result).toBe(false);
+      expect(logger.error).toHaveBeenCalledWith(
+        "💥 Failed synchronizing package manifest metadata",
+        "not an error object",
+      );
+    });
   });
 });
