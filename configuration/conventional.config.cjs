@@ -95,7 +95,7 @@ const types = [
 
 const scopes = [
   {
-    description: "In-house code measurement and validation toolchains (Callidescope, Codependix, Codometer, Conformetry) and their shared conventions",
+    description: "In-house code measurement and validation toolchains and their shared conventions",
     name: "ic-suite",
   },
   {
@@ -151,13 +151,11 @@ const scopes = [
     name: "infrastructure",
   },
   {
-    description:
-      "Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software)",
+    description: "Developer-machine setup: environment files, dependencies, shell config, software",
     name: "installation",
   },
   {
-    description:
-      "Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database",
+    description: "CI plumbing: steps around a CI job (affected run, Nx task-cache database)",
     name: "integration",
   },
   {
@@ -187,23 +185,19 @@ const scopes = [
     name: "meanderaw",
   },
   {
-    description:
-      "Lexical gap discovery CLI that surveys English for morphological, phonotactic, and semantic gaps and coins words to fill them",
+    description: "Lexical gap discovery CLI for English morphological and phonotactic gaps",
     name: "sempientor",
   },
   {
-    description:
-      "Call stack tracing and linting CLI, the configuration package it reads, and the packages that build and render its call graph",
+    description: "Call stack tracing and linting CLI and its configuration and rendering packages",
     name: "callidescope",
   },
   {
-    description:
-      "Dependency graph export CLI, the configuration package it reads, and the package that judges the graphs against declared rules",
+    description: "Dependency graph export CLI and its configuration and boundary-checking packages",
     name: "codependix",
   },
   {
-    description:
-      "Code statistics measurement CLI, the configuration package it reads, and the packages that diff and render its pull request change report",
+    description: "Code statistics measurement CLI and its configuration, diff, and rendering packages",
     name: "codometer",
   },
   {
