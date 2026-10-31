@@ -3,7 +3,7 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { PullRequestLabelsAssigneesGithubService } from "../pull-request-labels-assignees/pull-request-labels-assignees-github.service";
+import { PullRequestGithubService } from "../pull-request/pull-request-github.service";
 
 import {
   COMPLIANCE_REPOSITORY,
@@ -27,7 +27,7 @@ export class OrganizationProjectCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
-    private readonly githubService: PullRequestLabelsAssigneesGithubService,
+    private readonly githubService: PullRequestGithubService,
     private readonly logger: LoggerService,
   ) {
     super();

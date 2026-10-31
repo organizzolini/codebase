@@ -101,12 +101,12 @@ Search for issues and documentation that may be related to this PR:
 
 Use appropriate linking keywords:
 
-| Keyword           | Effect                      |
-| ----------------- | --------------------------- |
-| `Closes #N`       | Closes issue when PR merges |
-| `Fixes #N`        | Closes issue when PR merges |
-| `Resolves #N`     | Closes issue when PR merges |
-| `Related to #N`   | Links without closing       |
+| Keyword         | Effect                      |
+| --------------- | --------------------------- |
+| `Closes #N`     | Closes issue when PR merges |
+| `Fixes #N`      | Closes issue when PR merges |
+| `Resolves #N`   | Closes issue when PR merges |
+| `Related to #N` | Links without closing       |
 
 If no related issues are found, link the relevant spec, files, or documentation instead — the Related section is never empty.
 
@@ -154,7 +154,7 @@ Fill each section based on **only facts derived from the diff**:
 - **Testing**: An ordered list only — `nx run <project>:<target>` commands for affected projects, plus manual steps; indent a code block under its step rather than leaving it beside the list
 - **Related**: Opens with a `-` list of discovered issue links and relevant documentation links, never empty; anything, such as an attribution line, may follow
 
-These shapes and limits are enforced by `compliance pull-request-body` — see the [create-pull-request skill](../create-pull-request/SKILL.md#description-guidelines).
+These shapes and limits are enforced by `compliance pull-request` — see the [create-pull-request skill](../create-pull-request/SKILL.md#description-guidelines).
 
 ### Step 7 — Update the Pull Request
 

@@ -13,16 +13,16 @@ import {
 import { LoggerService } from "@codebase/observability";
 
 import { mockProcessExit } from "../../../testing/mocks";
-import { PullRequestLabelsAssigneesGithubService } from "../pull-request-labels-assignees/pull-request-labels-assignees-github.service";
+import { PullRequestGithubService } from "../pull-request/pull-request-github.service";
 
 import { OrganizationProjectCommand } from "./organization-project.command";
 import { ORGANIZATION_PROJECT_ITEM_LIMIT } from "./organization-project.constants";
 
-import type { GithubCliResult } from "../pull-request-labels-assignees/pull-request-labels-assignees.types";
+import type { GithubCliResult } from "../pull-request/pull-request-github.types";
 
 describe(OrganizationProjectCommand, () => {
   let command: OrganizationProjectCommand;
-  let githubService: PullRequestLabelsAssigneesGithubService;
+  let githubService: PullRequestGithubService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -33,16 +33,14 @@ describe(OrganizationProjectCommand, () => {
           useValue: createMock<LoggerService>(),
         },
         {
-          provide: PullRequestLabelsAssigneesGithubService,
-          useValue: createMock<PullRequestLabelsAssigneesGithubService>(),
+          provide: PullRequestGithubService,
+          useValue: createMock<PullRequestGithubService>(),
         },
       ],
     }).compile();
 
     command = await module.resolve(OrganizationProjectCommand);
-    githubService = await module.resolve(
-      PullRequestLabelsAssigneesGithubService,
-    );
+    githubService = await module.resolve(PullRequestGithubService);
   });
 
   beforeEach(() => {
@@ -104,8 +102,8 @@ describe(OrganizationProjectCommand, () => {
           useValue: createMock<LoggerService>(),
         },
         {
-          provide: PullRequestLabelsAssigneesGithubService,
-          useValue: createMock<PullRequestLabelsAssigneesGithubService>(),
+          provide: PullRequestGithubService,
+          useValue: createMock<PullRequestGithubService>(),
         },
       ],
     }).compile();

@@ -42,16 +42,9 @@ describe("main end-to-end suite", () => {
 
     for (const command of [
       "audit-governance",
-      "issue-assignees",
-      "issue-labels",
-      "issue-metadata",
+      "issue",
       "organization-project",
-      "pull-request-body",
-      "pull-request-title-body",
-      "pull-request-labels",
-      "pull-request-labels-assignees",
-      "pull-request-parent-links",
-      "pull-request-release-significance",
+      "pull-request",
     ]) {
       expect(result.stdout).toContain(command);
     }

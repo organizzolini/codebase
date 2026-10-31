@@ -67,12 +67,12 @@ cd codebase && bash scripts/installation.sh
 
 The script is a bootstrap. It installs what the real setup needs in order to run, then hands over to the [installation](../installation/AGENTS.md) project's `setup` command, which is tested TypeScript. It runs four stages in order:
 
-| Stage | Step                                           | What it does                                                                                                                                   |
-| ----- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | `scripts/utilities.sh`                         | Validates the working directory, loads `.env`, enables `set -e`                                                                                |
-| 2     | Homebrew, `nvm`, Node, `pnpm`, `nx`           | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                                                                                    |
-| 3     | `pnpm install`                                 | Installs the packages the `setup` command is written in                                                                                        |
-| 4     | `installation setup`                           | Configures the shell, installs the remaining tools, creates `.env` files, then runs `pnpm install`, `nx reset`, `uv sync --project configuration`, and Terraform setup |
+| Stage | Step                                | What it does                                                                                                                                                           |
+| ----- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `scripts/utilities.sh`              | Validates the working directory, loads `.env`, enables `set -e`                                                                                                        |
+| 2     | Homebrew, `nvm`, Node, `pnpm`, `nx` | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                                                                                                           |
+| 3     | `pnpm install`                      | Installs the packages the `setup` command is written in                                                                                                                |
+| 4     | `installation setup`                | Configures the shell, installs the remaining tools, creates `.env` files, then runs `pnpm install`, `nx reset`, `uv sync --project configuration`, and Terraform setup |
 
 On Linux, which is what a Claude Code cloud session and the devcontainer run, the script takes a shorter path. It installs the Node version from `.nvmrc`, shims `node-gyp`, installs the packages, creates the `.env` files, runs the `software` step, which on Linux installs the tools a commit and the security gate need (Helm, kubectl, Terraform, gitleaks, Trivy, uv and Python, squawk, and the PostgreSQL 18 client), and then starts the Docker daemon, when the machine carries one and none is running, and the shared Postgres container. It skips Homebrew and the shell configuration, which are for a Mac. It also sets up the Husky init file, so git hooks find the tools in `~/.local/bin`, and the global `nx`. It is what a cloud environment's setup script should call.
 
@@ -113,15 +113,15 @@ Alternatively, use the included dev container for a fully configured environment
 
 **Included Tools:**
 
-| Tool         | Version                     | Purpose                                                      |
-| ------------ | --------------------------- | ------------------------------------------------------------ |
-| Node.js      | 24.16.0                     | JavaScript runtime                                           |
-| pnpm         | 11.2.2                      | Package manager                                              |
-| Terraform    | latest                      | Infrastructure provisioning (Linode)                         |
-| kubectl      | latest                      | Kubernetes cluster management                                |
-| Helm         | latest                      | Kubernetes package manager                                   |
-| GitHub CLI   | latest                      | Repository operations                                        |
-| Docker       | DooD (local) / DinD (cloud) | Docker-outside-of-Docker on local; Docker-in-Docker in cloud |
+| Tool       | Version                     | Purpose                                                      |
+| ---------- | --------------------------- | ------------------------------------------------------------ |
+| Node.js    | 24.16.0                     | JavaScript runtime                                           |
+| pnpm       | 11.2.2                      | Package manager                                              |
+| Terraform  | latest                      | Infrastructure provisioning (Linode)                         |
+| kubectl    | latest                      | Kubernetes cluster management                                |
+| Helm       | latest                      | Kubernetes package manager                                   |
+| GitHub CLI | latest                      | Repository operations                                        |
+| Docker     | DooD (local) / DinD (cloud) | Docker-outside-of-Docker on local; Docker-in-Docker in cloud |
 
 The repository pins Node through `.nvmrc`, and `package.json` declares `engines.node` to match. `.nvmrc` is declarative and only takes effect after running `nvm use`, or after enabling automatic `nvm` directory switching in your shell. Use the pinned version — newer Node majors have broken this repository's commit hooks in ways that are hard to read from the error output.
 
@@ -129,12 +129,12 @@ pnpm is pinned by `packageManager` in the root `package.json`, so Corepack selec
 
 **Port Forwarding:**
 
-| Port  | Service            | Auto-Forward |
-| ----- | ------------------ | ------------ |
-| 3000  | Lexico Dev Server  | Notify       |
-| 3001  | Open WebUI         | Notify       |
-| 8889  | SearxNG            | Notify       |
-| 11434 | Ollama API         | Silent       |
+| Port  | Service           | Auto-Forward |
+| ----- | ----------------- | ------------ |
+| 3000  | Lexico Dev Server | Notify       |
+| 3001  | Open WebUI        | Notify       |
+| 8889  | SearxNG           | Notify       |
+| 11434 | Ollama API        | Silent       |
 
 See [.devcontainer/README.md](../.devcontainer/README.md) for detailed configuration and troubleshooting.
 
@@ -349,11 +349,11 @@ Every configuration these four read lives in [configuration/](../configuration),
 
 Three Husky hooks enforce quality gates locally, from [configuration/.husky/](../configuration/.husky). **Never bypass them with `--no-verify`** — fix the underlying issue instead.
 
-| Hook         | Trigger      | What it runs                                                                                                       | Config                                                                   |
-| ------------ | ------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format, lint, typecheck, spelling, and more on staged files | [lint-staged.config.ts](../configuration/lint-staged.config.ts) |
-| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                          | [commitlint.config.ts](../configuration/commitlint.config.ts)   |
-| `pre-push`   | `git push`   | **validate-branch-name**, then a commit signature check over the pushed commits                                    | [validate-branch-name.config.cjs](../validate-branch-name.config.cjs)    |
+| Hook         | Trigger      | What it runs                                                                                                          | Config                                                                |
+| ------------ | ------------ | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format, lint, typecheck, spelling, and more on staged files | [lint-staged.config.ts](../configuration/lint-staged.config.ts)       |
+| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                             | [commitlint.config.ts](../configuration/commitlint.config.ts)         |
+| `pre-push`   | `git push`   | **validate-branch-name**, then a commit signature check over the pushed commits                                       | [validate-branch-name.config.cjs](../validate-branch-name.config.cjs) |
 
 If a hook fails, the git operation is blocked until you fix the error. `pre-commit` writes its full output to `last-lint-staged-output.log`, which is where to look when the terminal output is truncated.
 
@@ -417,19 +417,19 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 
 <!-- types-start -->
 
-| Type | Description |
-| ---- | ----------- |
-| `feat` | A new feature or capability that adds value for users |
-| `fix` | A bug fix that addresses a specific issue or problem |
-| `docs` | Documentation, AGENTS.md, SKILL.md, README, and planning files |
-| `test` | Adding or correcting unit, integration, or end-to-end tests |
-| `refactor` | Code restructuring that neither fixes a bug nor adds a feature |
-| `style` | Formatting, whitespace, or code structure changes with no semantic effect |
-| `perf` | A code change that improves performance (caching, query optimization, etc.) |
-| `chore` | Housekeeping that doesn't modify src or test files (gitignore, editor config, etc.) |
-| `ci` | GitHub Actions workflows, composite actions, and CI/CD scripts |
-| `build` | Build system, Vite/Docker/Helm config, or external dependency integration |
-| `revert` | Reverts a previous commit |
+| Type       | Description                                                                         |
+| ---------- | ----------------------------------------------------------------------------------- |
+| `feat`     | A new feature or capability that adds value for users                               |
+| `fix`      | A bug fix that addresses a specific issue or problem                                |
+| `docs`     | Documentation, AGENTS.md, SKILL.md, README, and planning files                      |
+| `test`     | Adding or correcting unit, integration, or end-to-end tests                         |
+| `refactor` | Code restructuring that neither fixes a bug nor adds a feature                      |
+| `style`    | Formatting, whitespace, or code structure changes with no semantic effect           |
+| `perf`     | A code change that improves performance (caching, query optimization, etc.)         |
+| `chore`    | Housekeeping that doesn't modify src or test files (gitignore, editor config, etc.) |
+| `ci`       | GitHub Actions workflows, composite actions, and CI/CD scripts                      |
+| `build`    | Build system, Vite/Docker/Helm config, or external dependency integration           |
+| `revert`   | Reverts a previous commit                                                           |
 
 <!-- types-end -->
 
@@ -437,40 +437,40 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 
 <!-- scopes-start -->
 
-| Scope | Description |
-| ----- | ----------- |
-| `ic-suite` | In-house code measurement and validation toolchains (Callidescope, Codependix, Codometer, Conformetry) and their shared conventions |
-| `affirmancy` | Python Jupyter notebook application for LangGraph affirmation generation |
-| `caelundas` | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris) |
-| `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
-| `compliance` | GitHub issue and pull request metadata, repository governance, and external resource policies |
-| `conformetry` | Code generator templates and validation tests for generated instances |
-| `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
-| `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
-| `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
-| `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
-| `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
-| `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources |
-| `installation` | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software) |
-| `integration` | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database |
-| `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
-| `lexico` | TanStack Start SSR Latin dictionary web app |
-| `presentation` | Shared React/shadcn component library |
-| `lexico-entities` | Shared TypeORM entities and GraphQL types |
-| `lexico-cli` | Data ingestion scripts for Lexico |
-| `meanderaw` | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads |
-| `sempientor` | Lexical gap discovery CLI that surveys English for morphological, phonotactic, and semantic gaps and coins words to fill them |
-| `callidescope` | Call stack tracing and linting CLI, the configuration package it reads, and the packages that build and render its call graph |
-| `codependix` | Dependency graph export CLI, the configuration package it reads, and the package that judges the graphs against declared rules |
-| `codometer` | Code statistics measurement CLI, the configuration package it reads, and the packages that diff and render its pull request change report |
-| `no-release` | Escape hatch: suppress semantic-release for any commit type |
-| `publication` | Publication CLI: the CI release steps and the publishable-packages gate |
-| `release` | Version bumps and release commits generated by semantic-release |
-| `reporting` | Pull request change report generation and the packages that diff and render it |
-| `scripts` | Shell and TypeScript scripts in scripts/ (sync, setup, utilities) |
-| `testing` | Vitest configuration, shared test utilities, and coverage setup |
-| `synchronization` | Commands that reconcile codebase files and generated repository configuration |
-| `validation` | Checks and gates for codebase and project invariants |
+| Scope             | Description                                                                                                                               |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `ic-suite`        | In-house code measurement and validation toolchains (Callidescope, Codependix, Codometer, Conformetry) and their shared conventions       |
+| `affirmancy`      | Python Jupyter notebook application for LangGraph affirmation generation                                                                  |
+| `caelundas`       | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris)                                                                     |
+| `configuration`   | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.)                                                                     |
+| `compliance`      | GitHub issue and pull request metadata, repository governance, and external resource policies                                             |
+| `conformetry`     | Code generator templates and validation tests for generated instances                                                                     |
+| `persistence`     | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations                                         |
+| `interface`       | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers                                           |
+| `dependencies`    | Dependency version changes (upgrades, additions, removals via pnpm)                                                                       |
+| `deployments`     | GitHub Actions workflows and CI/CD pipeline configuration                                                                                 |
+| `documentation`   | Markdown docs, skills, planning files, and AGENTS.md files                                                                                |
+| `infrastructure`  | Helm charts, Terraform configs, and Kubernetes resources                                                                                  |
+| `installation`    | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software)         |
+| `integration`     | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database              |
+| `JimmyPaolini`    | Static GitHub profile README project (markdown and assets)                                                                                |
+| `lexico`          | TanStack Start SSR Latin dictionary web app                                                                                               |
+| `presentation`    | Shared React/shadcn component library                                                                                                     |
+| `lexico-entities` | Shared TypeORM entities and GraphQL types                                                                                                 |
+| `lexico-cli`      | Data ingestion scripts for Lexico                                                                                                         |
+| `meanderaw`       | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads                                             |
+| `sempientor`      | Lexical gap discovery CLI that surveys English for morphological, phonotactic, and semantic gaps and coins words to fill them             |
+| `callidescope`    | Call stack tracing and linting CLI, the configuration package it reads, and the packages that build and render its call graph             |
+| `codependix`      | Dependency graph export CLI, the configuration package it reads, and the package that judges the graphs against declared rules            |
+| `codometer`       | Code statistics measurement CLI, the configuration package it reads, and the packages that diff and render its pull request change report |
+| `no-release`      | Escape hatch: suppress semantic-release for any commit type                                                                               |
+| `publication`     | Publication CLI: the CI release steps and the publishable-packages gate                                                                   |
+| `release`         | Version bumps and release commits generated by semantic-release                                                                           |
+| `reporting`       | Pull request change report generation and the packages that diff and render it                                                            |
+| `scripts`         | Shell and TypeScript scripts in scripts/ (sync, setup, utilities)                                                                         |
+| `testing`         | Vitest configuration, shared test utilities, and coverage setup                                                                           |
+| `synchronization` | Commands that reconcile codebase files and generated repository configuration                                                             |
+| `validation`      | Checks and gates for codebase and project invariants                                                                                      |
 
 <!-- scopes-end -->
 
@@ -517,7 +517,7 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 
 1. **Push and open**: `git push -u origin <branch>`, then `gh pr create` and fill in the template. Do not use `--fill` — it substitutes the commit message for the body and drops the four required headings
 2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies. The scope list must include every scope your commits use, since Comply Code's release-significance check compares title scopes to commit scopes.
-3. **Description** must contain all four headings from [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) verbatim — 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related — each in its shape: Summary only a single paragraph of at most 48 words, Details only a bulleted list with one marker throughout and at most 512 words, Testing only an ordered list (a step may hold a code block), and Related opening with a `-` list, after which anything may follow. Comply Code runs `compliance pull-request-body` and fails on a missing or empty section, a section in the wrong shape or over its limit, or a template comment left unfilled
+3. **Description** must contain all four headings from [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) verbatim — 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related — each in its shape: Summary only a single paragraph of at most 48 words, Details only a bulleted list with one marker throughout and at most 512 words, Testing only an ordered list (a step may hold a code block), and Related opening with a `-` list, after which anything may follow. Continuous Compliance runs `compliance pull-request` and fails on a missing or empty section, a section in the wrong shape or over its limit, or a template comment left unfilled
 4. **Labels and assignees** must agree with the title: exactly one `type:*` label matching the title's type, exactly the `scope:*` labels the title names and no extras, at least one assignee, and exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened it. The `do-not-merge` label blocks the pull request while present
 5. **Automated checks**: the five workflows in [The Gates](#the-gates) must pass
 6. **Code review**: requires `@JimmyPaolini` approval ([CODEOWNERS](.github/CODEOWNERS))

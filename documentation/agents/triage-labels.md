@@ -4,9 +4,9 @@ The skills speak in terms of five canonical triage roles. This file maps those
 roles onto the labels this repository's issue tracker actually carries.
 
 **The tracker is the source of truth for what exists.** Nothing creates a
-`status:*` label automatically — on an issue the `issue-labels` synchronizer
+`status:*` label automatically — on an issue the `compliance issue` command
 reconciles only the `type:` and `scope:` prefixes, and on a pull request
-`pull-request-labels` creates and reconciles `type:`, `scope:`, and `source:`.
+`compliance pull-request` creates and reconciles `type:`, `scope:`, and `source:`.
 So the family below is whatever has been created by hand, and the tables here
 are a reading of the tracker rather than a plan for it.
 
@@ -101,7 +101,7 @@ issue:
 The first two are reconciled onto an issue from its submitted form by the
 `issue-labels` synchronizer; `source:*` is applied by hand by whoever or
 whatever opens the issue. All three take their vocabulary from
-`configuration/conventional.config.cjs` and the `pull-request-labels` constants
+`configuration/conventional.config.cjs` and the `pull-request` constants
 beside it, never from a list written out here.
 
 Six `scope:*` labels in the tracker predate that vocabulary and no longer
@@ -116,15 +116,15 @@ than as available.
 Everything else the tracker carries. Triage reads none of them, and this table
 is here so a label met on an issue can be recognized rather than guessed at:
 
-| Label          | Meaning                                     | Applied by                    |
-| -------------- | ------------------------------------------- | ----------------------------- |
-| `do-not-merge` | Blocks a pull request while present         | A human, by hand              |
-| `automated`    | Opened by a scheduled workflow              | 🧑‍🚒 Upgrade Dependencies       |
-| `dependencies` | Pull requests that update a dependency file | 🧑‍🚒 Upgrade Dependencies       |
-| `javascript`   | Pull requests that update javascript code   | Nothing — a GitHub default    |
-| `duplicate`    | This issue or pull request already exists   | A human, by hand              |
-| `help wanted`  | Extra attention is needed                   | A human, by hand              |
-| `invalid`      | This doesn't seem right                     | A human, by hand              |
+| Label          | Meaning                                     | Applied by                 |
+| -------------- | ------------------------------------------- | -------------------------- |
+| `do-not-merge` | Blocks a pull request while present         | A human, by hand           |
+| `automated`    | Opened by a scheduled workflow              | 🧑‍🚒 Upgrade Dependencies    |
+| `dependencies` | Pull requests that update a dependency file | 🧑‍🚒 Upgrade Dependencies    |
+| `javascript`   | Pull requests that update javascript code   | Nothing — a GitHub default |
+| `duplicate`    | This issue or pull request already exists   | A human, by hand           |
+| `help wanted`  | Extra attention is needed                   | A human, by hand           |
+| `invalid`      | This doesn't seem right                     | A human, by hand           |
 
 `do-not-merge` is the only one with behavior attached: the pull request metadata
 check reads it and fails while it is present. `duplicate`, `help wanted`, and

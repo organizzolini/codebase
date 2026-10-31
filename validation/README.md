@@ -9,8 +9,6 @@ collects every failure rather than the first, and prints the command that fixes
 each one.
 
 ```bash
-nx run compliance:start:pull-request-labels-assignees # labels and assignees against the title
-nx run validation:start:pull-request-body         # the four headings, each section's shape and length, and no unfilled template comment
 nx run validation:start:catalog-manifests         # catalog:/workspace:* in every manifest
 nx run validation:start:lockfile                  # pnpm-lock.yaml against the manifests
 nx run validation:start:session-branch-name       # the checked-out branch against the naming convention
@@ -40,61 +38,13 @@ authentication checks stay in shell — see [AGENTS.md](AGENTS.md).
 
 ## Checks
 
-| Check | Answers |
-| ----- | ------- |
-| `pull-request-labels-assignees` | Do a pull request's labels and assignees agree with its title? |
-| `pull-request-body` | Does a pull request description carry all four headings, each section non-empty, in its shape, and within its word limit, with no template comment left unfilled? |
-| `catalog-manifests` | Does every workspace manifest pin externals as `catalog:` and internals as `workspace:*`? |
-| `lockfile` | Is `pnpm-lock.yaml` in sync with the manifests? |
-| `publishable-packages` | Do the packed ic-suite packages work when installed by someone else? |
-| `session-branch-name` | Does the checked-out branch follow `<type>/<scope>-<description>`? |
-| `session-worktree-name` | Is the linked worktree named in kebab-case, and gitignored inside the main checkout? |
-
-### `pull-request-labels-assignees`
-
-Checks five things about a pull request, all against its own title: exactly one
-`type:*` label equal to the title's type, exactly the `scope:*` labels named by
-the title's scopes, no `do-not-merge` label, at least one assignee, and exactly
-one `source:*` label declaring who opened it.
-
-Two input modes. Given a pull request number it reads the metadata live through
-`gh pr view`, which is the local mode. Given none it reads
-`PULL_REQUEST_TITLE`, `PULL_REQUEST_LABELS`, `PULL_REQUEST_ASSIGNEES`, and
-`PULL_REQUEST_NUMBER` from the environment, which is the workflow mode: a pure
-function of its inputs, needing no network, no token, and no write permission.
-
-The title's scope group is matched as optional even though the convention
-requires one. commitlint rejects a title with no scope first, so in a workflow
-run this check never sees one; run by hand ahead of any title check it still
-has to say something useful, and one collected failure naming the missing scope
-is more useful than a parse error.
-
-### `pull-request-body`
-
-Checks that all four template headings are present, that each section contains
-actual content, and that no `<!-- … -->` prompt from
-[.github/PULL_REQUEST_TEMPLATE.md](../../.github/PULL_REQUEST_TEMPLATE.md)
-survives unfilled. The comments are read from the template at runtime rather
-than listed here, so adding a prompt to the template starts it being checked
-with no code change.
-
-Each section is also parsed as CommonMark and held to one shape, with Summary
-and Details capped in words as `wc -w` counts them:
-
-| Section    | Holds                                           | Word limit |
-| ---------- | ----------------------------------------------- | ---------- |
-| 🌰 Summary | Only one paragraph                              | 48         |
-| 📝 Details | Only a bulleted list, one marker throughout     | 512        |
-| 🧪 Testing | Only an ordered list, whose items may hold code | —          |
-| 🔗 Related | A `-` list first, then anything                 | —          |
-
-Blocks that are nothing but comments are ignored. Details takes `-`, `*`, or
-`+` so long as one marker is used throughout, as markdownlint's MD004 does.
-Related is open-ended after its list so that an attribution line or any other
-trailer can close the description. The limits sit near the 75th percentile of
-past Summaries, to keep one readable at a glance, and between the 90th and 95th
-of past Details.
-The shapes and limits live in `SECTION_RULES`, not the template.
+| Check                   | Answers                                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `catalog-manifests`     | Does every workspace manifest pin externals as `catalog:` and internals as `workspace:*`? |
+| `lockfile`              | Is `pnpm-lock.yaml` in sync with the manifests?                                           |
+| `publishable-packages`  | Do the packed ic-suite packages work when installed by someone else?                      |
+| `session-branch-name`   | Does the checked-out branch follow `<type>/<scope>-<description>`?                        |
+| `session-worktree-name` | Is the linked worktree named in kebab-case, and gitignored inside the main checkout?      |
 
 ### `catalog-manifests`
 
@@ -190,24 +140,24 @@ This project was generated from the [nestjs-command-project](../configuration/co
 
 Call stacks traced through `validation`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 
-| Measure | Value |
-| --- | --- |
-| Callables | 96 |
-| Files | 46 |
-| Calls traced | 89 |
-| Call stacks | 6 |
-| Deepest stack | 8 |
-| Stacks through recursion | 0 |
-| Unfollowable calls | 6 |
+| Measure                  | Value |
+| ------------------------ | ----- |
+| Callables                | 96    |
+| Files                    | 46    |
+| Calls traced             | 89    |
+| Call stacks              | 6     |
+| Deepest stack            | 8     |
+| Stacks through recursion | 0     |
+| Unfollowable calls       | 6     |
 
 ### Limits
 
 What this project is judged against, as declared in its own `callidescope.config.ts`.
 
-| Limit | Value |
-| --- | --- |
-| `maximumDepth` | 8 |
-| `maximumBreadth` | 9 |
+| Limit            | Value |
+| ---------------- | ----- |
+| `maximumDepth`   | 8     |
+| `maximumBreadth` | 9     |
 
 ### Call stacks (depth)
 
@@ -301,54 +251,54 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Breadth
 
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `PublishablePackagesService.verifyPublishablePackages` | 8 | `PublishablePackagesService.resolvePublishablePackages`, `PublishablePackagesService.filter(…)`, `PublishablePackagesService.findMissingTarballs`, `formatMissingTarballsMessage`, `PublishablePackagesConsumerService.createConsumer`, `PublishablePackagesConsumerService.installConsumer`, `PublishablePackagesChecksService.verifyConsumer`, `PublishablePackagesConsumerService.removeConsumer` | `validation/src/modules/publishable-packages/publishable-packages.service.ts:178` |
-| `PublishablePackagesChecksService.verifyConsumer` | 5 | `PublishablePackagesChecksService.verifyTypecheck`, `PublishablePackagesChecksService.verifyBinaries`, `PublishablePackagesChecksService.verifyProjectGraph`, `PublishablePackagesChecksService.verifyGenerator`, `PublishablePackagesChecksService.verifyPluginTarget` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:238` |
-| `PublishablePackagesConsumerService.createConsumer` | 4 | `PublishablePackagesConsumerService.createTypecheckFiles`, `PublishablePackagesConsumerService.createManifest`, `PublishablePackagesConsumerService.createWorkspaceConfiguration`, `PublishablePackagesConsumerService.writeFiles` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:187` |
+| Callable                                               | Breadth | Calls directly                                                                                                                                                                                                                                                                                                                                                                                       | Location                                                                                   |
+| ------------------------------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `PublishablePackagesService.verifyPublishablePackages` | 8       | `PublishablePackagesService.resolvePublishablePackages`, `PublishablePackagesService.filter(…)`, `PublishablePackagesService.findMissingTarballs`, `formatMissingTarballsMessage`, `PublishablePackagesConsumerService.createConsumer`, `PublishablePackagesConsumerService.installConsumer`, `PublishablePackagesChecksService.verifyConsumer`, `PublishablePackagesConsumerService.removeConsumer` | `validation/src/modules/publishable-packages/publishable-packages.service.ts:178`          |
+| `PublishablePackagesChecksService.verifyConsumer`      | 5       | `PublishablePackagesChecksService.verifyTypecheck`, `PublishablePackagesChecksService.verifyBinaries`, `PublishablePackagesChecksService.verifyProjectGraph`, `PublishablePackagesChecksService.verifyGenerator`, `PublishablePackagesChecksService.verifyPluginTarget`                                                                                                                              | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:238`   |
+| `PublishablePackagesConsumerService.createConsumer`    | 4       | `PublishablePackagesConsumerService.createTypecheckFiles`, `PublishablePackagesConsumerService.createManifest`, `PublishablePackagesConsumerService.createWorkspaceConfiguration`, `PublishablePackagesConsumerService.writeFiles`                                                                                                                                                                   | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:187` |
 
 <details>
 <summary>37 more callables</summary>
 
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `SessionWorktreeNameService.findViolations` | 4 | `SessionWorktreeNameService.findLinkedWorktree`, `describeInvalidName`, `SessionWorktreeNameService.isIgnored`, `describeUnignoredWorktree` | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:95` |
-| `PublishablePackagesChecksService.verifyProjectGraph` | 3 | `PublishablePackagesChecksService.runBinary`, `PublishablePackagesChecksService.every(…)`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:179` |
-| `PublishablePackagesConsumerService.createManifest` | 3 | `PublishablePackagesConsumerService.resolveTarballs`, `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.readManifest` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:61` |
-| `PublishablePackagesConsumerService.createWorkspaceConfiguration` | 3 | `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.resolveTarballs` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:105` |
-| `ReadmeProjectsCommand.run` | 3 | `ReadmeProjectsService.resolveWorkspaceProjectPaths`, `ReadmeProjectsService.readRootReadme`, `ReadmeProjectsService.findUndocumentedProjectPaths` | `validation/src/modules/readme-projects/readme-projects.command.ts:43` |
-| `CatalogManifestsService.resolveWorkspaceManifestPaths` | 2 | `CatalogManifestsService.findRootManifestPaths`, `CatalogManifestsService.findManifestPaths` | `validation/src/modules/catalog-manifests/catalog-manifests.service.ts:110` |
-| `CatalogManifestsCommand.run` | 2 | `CatalogManifestsService.resolveWorkspaceManifestPaths`, `CatalogManifestsCommand.flatMap(…)` | `validation/src/modules/catalog-manifests/catalog-manifests.command.ts:44` |
-| `CatalogManifestsCommand.flatMap(…)` | 2 | `CatalogManifestsService.validateManifestDependencies`, `CatalogManifestsService.readManifest` | `validation/src/modules/catalog-manifests/catalog-manifests.command.ts:50` |
-| `PublishablePackagesProcessService.run` | 2 | `PublishablePackagesProcessService.createEnvironment`, `PublishablePackagesProcessService.filter(…)` | `validation/src/modules/publishable-packages/publishable-packages-process.service.ts:85` |
-| `PublishablePackagesChecksService.verifyBinaries` | 2 | `PublishablePackagesChecksService.flatMap(…)`, `PublishablePackagesChecksService.flatMap(…)` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:62` |
-| `PublishablePackagesChecksService.flatMap(…)` | 2 | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:70` |
-| `PublishablePackagesChecksService.verifyGenerator` | 2 | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:86` |
-| `PublishablePackagesChecksService.verifyPluginTarget` | 2 | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:138` |
-| `PublishablePackagesChecksService.verifyTypecheck` | 2 | `PublishablePackagesProcessService.run`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:205` |
-| `PublishablePackagesConsumerService.installConsumer` | 2 | `PublishablePackagesProcessService.run`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:219` |
-| `PublishablePackagesService.findMissingTarballs` | 2 | `PublishablePackagesService.filter(…)`, `PublishablePackagesService.map(…)` | `validation/src/modules/publishable-packages/publishable-packages.service.ts:46` |
-| `PublishablePackagesService.resolvePublishablePackages` | 2 | `PublishablePackagesService.resolveFamilyPackages`, `PublishablePackagesService.toSorted(…)` | `validation/src/modules/publishable-packages/publishable-packages.service.ts:138` |
-| `PublishablePackagesCommand.run` | 2 | `PublishablePackagesService.verifyPublishablePackages`, `formatPublishablePackagesSuccessMessage` | `validation/src/modules/publishable-packages/publishable-packages.command.ts:46` |
-| `ReadmeProjectsService.resolveWorkspaceProjectPaths` | 2 | `ReadmeProjectsService.findRootProjectPaths`, `ReadmeProjectsService.findProjectPaths` | `validation/src/modules/readme-projects/readme-projects.service.ts:115` |
-| `SessionBranchNameService.judgeCurrentBranch` | 2 | `SessionBranchNameService.readCurrentBranch`, `SessionBranchNameService.readBranchNameRules` | `validation/src/modules/session-branch-name/session-branch-name.service.ts:50` |
-| `CatalogManifestsService.isInternalWorkspaceDependency` | 1 | `CatalogManifestsService.some(…)` | `validation/src/modules/catalog-manifests/catalog-manifests.service.ts:96` |
-| `CatalogManifestsService.validateManifestDependencies` | 1 | `CatalogManifestsService.isInternalWorkspaceDependency` | `validation/src/modules/catalog-manifests/catalog-manifests.service.ts:130` |
-| `LockfileService.checkLockfile` | 1 | `LockfileService.runFrozenInstall` | `validation/src/modules/lockfile/lockfile.service.ts:60` |
-| `LockfileCommand.run` | 1 | `LockfileService.checkLockfile` | `validation/src/modules/lockfile/lockfile.command.ts:50` |
-| `PublishablePackagesChecksService.runBinary` | 1 | `PublishablePackagesProcessService.run` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:49` |
-| `PublishablePackagesConsumerService.map(…)` | 1 | `PublishablePackagesConsumerService.readToolVersion` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:63` |
-| `PublishablePackagesConsumerService.createTypecheckFiles` | 1 | `PublishablePackagesConsumerService.map(…)` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:83` |
-| `PublishablePackagesConsumerService.readToolVersion` | 1 | `PublishablePackagesConsumerService.readManifest` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:140` |
-| `PublishablePackagesConsumerService.resolveTarballs` | 1 | `PublishablePackagesConsumerService.map(…)` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:156` |
-| `PublishablePackagesService.resolveFamilyPackages` | 1 | `PublishablePackagesService.parsePackageCandidate` | `validation/src/modules/publishable-packages/publishable-packages.service.ts:112` |
-| `ReadmeProjectsService.findUndocumentedProjectPaths` | 1 | `ReadmeProjectsService.filter(…)` | `validation/src/modules/readme-projects/readme-projects.service.ts:100` |
-| `SessionBranchNameService.readCurrentBranch` | 1 | `SessionBranchNameGitService.run` | `validation/src/modules/session-branch-name/session-branch-name.service.ts:41` |
-| `SessionBranchNameCommand.run` | 1 | `SessionBranchNameService.judgeCurrentBranch` | `validation/src/modules/session-branch-name/session-branch-name.command.ts:50` |
-| `SessionWorktreeNameService.findLinkedWorktree` | 1 | `SessionWorktreeNameService.readGit` | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:44` |
-| `SessionWorktreeNameService.isIgnored` | 1 | `SessionWorktreeNameGitService.run` | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:69` |
-| `SessionWorktreeNameService.readGit` | 1 | `SessionWorktreeNameGitService.run` | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:82` |
-| `SessionWorktreeNameCommand.run` | 1 | `SessionWorktreeNameService.findViolations` | `validation/src/modules/session-worktree-name/session-worktree-name.command.ts:51` |
+| Callable                                                          | Breadth | Calls directly                                                                                                                                       | Location                                                                                   |
+| ----------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `SessionWorktreeNameService.findViolations`                       | 4       | `SessionWorktreeNameService.findLinkedWorktree`, `describeInvalidName`, `SessionWorktreeNameService.isIgnored`, `describeUnignoredWorktree`          | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:95`         |
+| `PublishablePackagesChecksService.verifyProjectGraph`             | 3       | `PublishablePackagesChecksService.runBinary`, `PublishablePackagesChecksService.every(…)`, `formatCommandFailure`                                    | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:179`   |
+| `PublishablePackagesConsumerService.createManifest`               | 3       | `PublishablePackagesConsumerService.resolveTarballs`, `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.readManifest` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:61`  |
+| `PublishablePackagesConsumerService.createWorkspaceConfiguration` | 3       | `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.resolveTarballs`       | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:105` |
+| `ReadmeProjectsCommand.run`                                       | 3       | `ReadmeProjectsService.resolveWorkspaceProjectPaths`, `ReadmeProjectsService.readRootReadme`, `ReadmeProjectsService.findUndocumentedProjectPaths`   | `validation/src/modules/readme-projects/readme-projects.command.ts:43`                     |
+| `CatalogManifestsService.resolveWorkspaceManifestPaths`           | 2       | `CatalogManifestsService.findRootManifestPaths`, `CatalogManifestsService.findManifestPaths`                                                         | `validation/src/modules/catalog-manifests/catalog-manifests.service.ts:110`                |
+| `CatalogManifestsCommand.run`                                     | 2       | `CatalogManifestsService.resolveWorkspaceManifestPaths`, `CatalogManifestsCommand.flatMap(…)`                                                        | `validation/src/modules/catalog-manifests/catalog-manifests.command.ts:44`                 |
+| `CatalogManifestsCommand.flatMap(…)`                              | 2       | `CatalogManifestsService.validateManifestDependencies`, `CatalogManifestsService.readManifest`                                                       | `validation/src/modules/catalog-manifests/catalog-manifests.command.ts:50`                 |
+| `PublishablePackagesProcessService.run`                           | 2       | `PublishablePackagesProcessService.createEnvironment`, `PublishablePackagesProcessService.filter(…)`                                                 | `validation/src/modules/publishable-packages/publishable-packages-process.service.ts:85`   |
+| `PublishablePackagesChecksService.verifyBinaries`                 | 2       | `PublishablePackagesChecksService.flatMap(…)`, `PublishablePackagesChecksService.flatMap(…)`                                                         | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:62`    |
+| `PublishablePackagesChecksService.flatMap(…)`                     | 2       | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure`                                                                                 | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:70`    |
+| `PublishablePackagesChecksService.verifyGenerator`                | 2       | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure`                                                                                 | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:86`    |
+| `PublishablePackagesChecksService.verifyPluginTarget`             | 2       | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure`                                                                                 | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:138`   |
+| `PublishablePackagesChecksService.verifyTypecheck`                | 2       | `PublishablePackagesProcessService.run`, `formatCommandFailure`                                                                                      | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:205`   |
+| `PublishablePackagesConsumerService.installConsumer`              | 2       | `PublishablePackagesProcessService.run`, `formatCommandFailure`                                                                                      | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:219` |
+| `PublishablePackagesService.findMissingTarballs`                  | 2       | `PublishablePackagesService.filter(…)`, `PublishablePackagesService.map(…)`                                                                          | `validation/src/modules/publishable-packages/publishable-packages.service.ts:46`           |
+| `PublishablePackagesService.resolvePublishablePackages`           | 2       | `PublishablePackagesService.resolveFamilyPackages`, `PublishablePackagesService.toSorted(…)`                                                         | `validation/src/modules/publishable-packages/publishable-packages.service.ts:138`          |
+| `PublishablePackagesCommand.run`                                  | 2       | `PublishablePackagesService.verifyPublishablePackages`, `formatPublishablePackagesSuccessMessage`                                                    | `validation/src/modules/publishable-packages/publishable-packages.command.ts:46`           |
+| `ReadmeProjectsService.resolveWorkspaceProjectPaths`              | 2       | `ReadmeProjectsService.findRootProjectPaths`, `ReadmeProjectsService.findProjectPaths`                                                               | `validation/src/modules/readme-projects/readme-projects.service.ts:115`                    |
+| `SessionBranchNameService.judgeCurrentBranch`                     | 2       | `SessionBranchNameService.readCurrentBranch`, `SessionBranchNameService.readBranchNameRules`                                                         | `validation/src/modules/session-branch-name/session-branch-name.service.ts:50`             |
+| `CatalogManifestsService.isInternalWorkspaceDependency`           | 1       | `CatalogManifestsService.some(…)`                                                                                                                    | `validation/src/modules/catalog-manifests/catalog-manifests.service.ts:96`                 |
+| `CatalogManifestsService.validateManifestDependencies`            | 1       | `CatalogManifestsService.isInternalWorkspaceDependency`                                                                                              | `validation/src/modules/catalog-manifests/catalog-manifests.service.ts:130`                |
+| `LockfileService.checkLockfile`                                   | 1       | `LockfileService.runFrozenInstall`                                                                                                                   | `validation/src/modules/lockfile/lockfile.service.ts:60`                                   |
+| `LockfileCommand.run`                                             | 1       | `LockfileService.checkLockfile`                                                                                                                      | `validation/src/modules/lockfile/lockfile.command.ts:50`                                   |
+| `PublishablePackagesChecksService.runBinary`                      | 1       | `PublishablePackagesProcessService.run`                                                                                                              | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:49`    |
+| `PublishablePackagesConsumerService.map(…)`                       | 1       | `PublishablePackagesConsumerService.readToolVersion`                                                                                                 | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:63`  |
+| `PublishablePackagesConsumerService.createTypecheckFiles`         | 1       | `PublishablePackagesConsumerService.map(…)`                                                                                                          | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:83`  |
+| `PublishablePackagesConsumerService.readToolVersion`              | 1       | `PublishablePackagesConsumerService.readManifest`                                                                                                    | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:140` |
+| `PublishablePackagesConsumerService.resolveTarballs`              | 1       | `PublishablePackagesConsumerService.map(…)`                                                                                                          | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:156` |
+| `PublishablePackagesService.resolveFamilyPackages`                | 1       | `PublishablePackagesService.parsePackageCandidate`                                                                                                   | `validation/src/modules/publishable-packages/publishable-packages.service.ts:112`          |
+| `ReadmeProjectsService.findUndocumentedProjectPaths`              | 1       | `ReadmeProjectsService.filter(…)`                                                                                                                    | `validation/src/modules/readme-projects/readme-projects.service.ts:100`                    |
+| `SessionBranchNameService.readCurrentBranch`                      | 1       | `SessionBranchNameGitService.run`                                                                                                                    | `validation/src/modules/session-branch-name/session-branch-name.service.ts:41`             |
+| `SessionBranchNameCommand.run`                                    | 1       | `SessionBranchNameService.judgeCurrentBranch`                                                                                                        | `validation/src/modules/session-branch-name/session-branch-name.command.ts:50`             |
+| `SessionWorktreeNameService.findLinkedWorktree`                   | 1       | `SessionWorktreeNameService.readGit`                                                                                                                 | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:44`         |
+| `SessionWorktreeNameService.isIgnored`                            | 1       | `SessionWorktreeNameGitService.run`                                                                                                                  | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:69`         |
+| `SessionWorktreeNameService.readGit`                              | 1       | `SessionWorktreeNameGitService.run`                                                                                                                  | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:82`         |
+| `SessionWorktreeNameCommand.run`                                  | 1       | `SessionWorktreeNameService.findViolations`                                                                                                          | `validation/src/modules/session-worktree-name/session-worktree-name.command.ts:51`         |
 
 </details>
 <!-- callidescope:end -->
@@ -360,6 +310,7 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ### Nx Neighborhood
 
 <!-- codependix:start name="codependix-nx-projects" -->
+
 ```mermaid
 graph LR
   configuration["configuration"]
@@ -370,11 +321,13 @@ graph LR
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class validation subject
 ```
+
 <!-- codependix:end name="codependix-nx-projects" -->
 
 ### NestJS Module Graph
 
 <!-- codependix:start name="codependix-nestjs-modules" -->
+
 ```mermaid
 flowchart LR
   CatalogManifestsModule
@@ -402,6 +355,7 @@ _Rounded modules are global: every module can inject them, so their edges are le
 ### File Imports
 
 <!-- codependix:start name="codependix-file-imports" -->
+
 ```mermaid
 graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
@@ -617,6 +571,7 @@ graph LR
   file_src_validation_module_ts --> file_src_validation_constants_ts
   file_src_validation_repl_ts --> file_src_validation_module_ts
 ```
+
 <!-- codependix:end name="codependix-file-imports" -->
 
 <!-- codometer:start -->

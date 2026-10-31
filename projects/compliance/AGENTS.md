@@ -18,12 +18,21 @@ nx run compliance:start
 
 ### Command Ownership
 
-This project owns issue assignment and metadata, pull request labels and
-metadata, release significance, non-closing parent references in pull
-request bodies, pull request body validation, merge-group context
-resolution, repository governance checks, and manual synchronization of
-repository issues and pull requests into the organization project. Keep codebase-file
-reconciliation in `synchronization` and codebase-only checks in `validation`.
+This project owns four commands, each backed by one service per concern:
+
+- `pull-request` (`src/modules/pull-request/`): merge-group context
+  resolution, non-closing parent references and label reconciliation (pull
+  request events only), then one aggregated validation of title, body,
+  labels/assignees, and release significance. Merge groups never write. Locally
+  it is read-only unless `write` is given.
+- `issue` (`src/modules/issue/`): labels and assigns a new issue, audits one
+  issue, or audits every open issue (`--all`), chosen by event or arguments.
+- `audit-governance`: repository governance checks.
+- `organization-project`: manual synchronization of repository issues and pull
+  requests into the organization project.
+
+Keep codebase-file reconciliation in `synchronization` and codebase-only checks
+in `validation`.
 
 ## Architecture Overview
 

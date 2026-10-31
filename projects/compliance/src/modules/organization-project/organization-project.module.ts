@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { PullRequestLabelsAssigneesModule } from "../pull-request-labels-assignees/pull-request-labels-assignees.module";
+import { PullRequestModule } from "../pull-request/pull-request.module";
 
 import { OrganizationProjectCommand } from "./organization-project.command";
 
@@ -8,7 +8,7 @@ import { OrganizationProjectCommand } from "./organization-project.command";
 @Module({
   controllers: [],
   exports: [OrganizationProjectCommand],
-  imports: [PullRequestLabelsAssigneesModule],
+  imports: [PullRequestModule],
   providers: [OrganizationProjectCommand],
 })
 export class OrganizationProjectModule {}

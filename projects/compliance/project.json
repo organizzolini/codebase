@@ -39,41 +39,17 @@
         "audit-governance": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts audit-governance"
         },
-        "audit-issues": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue-metadata --all"
+        "issue": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue"
         },
-        "issue-assignees": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue-assignees"
-        },
-        "issue-labels": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue-labels"
-        },
-        "issue-metadata": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue-metadata"
+        "issue-audit": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue --all"
         },
         "organization-project": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts organization-project"
         },
-        "pull-request-body": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-body"
-        },
-        "pull-request-labels-assignees": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-labels-assignees"
-        },
-        "pull-request-labels-check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-labels check"
-        },
-        "pull-request-labels-write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-labels write"
-        },
-        "pull-request-parent-links": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-parent-links"
-        },
-        "pull-request-release-significance": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-release-significance"
-        },
-        "pull-request-title-body": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-title-body"
+        "pull-request": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request"
         }
       },
       "description": "Run one compliance command by name.",

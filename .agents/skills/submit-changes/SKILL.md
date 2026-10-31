@@ -128,19 +128,16 @@ gh pr list --head <branch> --state open
    - **📝 Details**: Only a bulleted list of meaningful changes, one marker throughout, at most 512 words
    - **🧪 Testing**: Only an ordered list of `nx run <project>:<target>` commands and manual steps; indent any code block under its step
    - **🔗 Related**: Opens with a `-` list of issue links discovered from branch name, commits, `gh issue list --search`, or related files/documentation (never omit or leave empty); anything may follow the list
-3. Pre-flight validate the PR body locally before submission:
+3. Draft the body now; it is validated live once the pull request exists
+   (`compliance.main.ts pull-request <number>`, read-only). Fix any reported
+   issues (e.g. missing headings or leftover template comments) before
+   requesting review.
 
    ```bash
    cat << 'EOF' > /tmp/pr_body.md
    <generated body>
    EOF
-
-   NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-     projects/compliance/src/compliance.main.ts pull-request-body /tmp/pr_body.md
    ```
-
-   Fix any reported issues (e.g. missing headings or leftover template comments)
-   before proceeding.
 
 4. Pre-flight gate title scopes before creating the PR:
    - Read the commit subjects in this branch and list their scopes.
