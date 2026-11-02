@@ -343,6 +343,12 @@ overrides:
   - filename: "**/configuration/codebase-structure.json"
     ignoreRegExpList:
       - /\(\?![^)]*\)/g
+  # The IAU's three-letter constellation designations are data, and two of them
+  # are banned abbreviations: Columba is `Col` and Reticulum is `Ret`. Only the
+  # quoted designations of the night sky seed are let through.
+  - filename: "**/caelundas-cli/data/night-sky-seed.sql"
+    ignoreRegExpList:
+      - /'(?:Col|Ret)'/g
 # cspell:enable
 words:
   # The zsh function that loads bash-style completion, written into shell startup files.

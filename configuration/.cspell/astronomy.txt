@@ -16,7 +16,11 @@ Atciq
 Aticq
 atpress
 attemp
+Australe
+Austrina
+Austrinus
 azalt
+Berenices
 binovile
 biquintile
 biseptile
@@ -70,6 +74,7 @@ ostara
 periapsis
 perifocus
 pheno
+Piscis
 prograde
 quincunx
 sagitarius
@@ -101,5 +106,6 @@ undecile
 undecuple
 unrefracted
 USNO
+Venatici
 yods
 zodiac
