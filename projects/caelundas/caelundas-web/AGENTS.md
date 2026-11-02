@@ -164,8 +164,9 @@ height and the tree scrolls inside it. An absent `sky.constellations` is the
 zodiac everywhere, the tree included: `useNightSkySettings` reads the same keys through
 `readNightSkyOverrides` and writes them with `navigate({ replace: true })`, the
 `night-sky-menu.utilities.ts` mappings remove a key set back to its default
-and the footer's Default button removes them all but `sky.debug` while Full
-writes `toFullViewChange`'s pole view, the colors are the
+and the presets beside the sky's switch, a joined pill, are Default, which
+removes them all but `sky.debug`, and Full, which writes `toFullViewChange`'s
+slow pole view, the colors are the
 ReUI color picker, and the panel keeps arrow and letter keys from the menu
 around it so a slider keeps focus.
 
