@@ -1,8 +1,9 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
@@ -18,16 +19,11 @@ const PASSWORD = "hunter2-secret";
 const SOURCE_URI = `postgresql://fixture_username:${PASSWORD}@127.0.0.1:1/fixture_development`;
 
 describe("export --sqlite of a source that cannot be reached", () => {
-  let directory: string;
+  const directory = useTemporaryDirectory("export-sqlite-unit");
   let file: string;
 
   beforeAll(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "export-sqlite-unit-"));
-    file = path.join(directory, "fixture.sqlite");
-  });
-
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
+    file = path.join(directory(), "fixture.sqlite");
   });
 
   it("fails without a password in the message, starts no client tool, and leaves no file", async () => {
@@ -51,6 +47,6 @@ describe("export --sqlite of a source that cannot be reached", () => {
     expect(result.stderr).not.toBe("");
     expect(`${result.stderr}${result.logs.join("\n")}`).not.toContain(PASSWORD);
     expect(spawned).toStrictEqual([]);
-    expect(fs.readdirSync(directory)).toStrictEqual([]);
+    expect(fs.readdirSync(directory())).toStrictEqual([]);
   });
 });

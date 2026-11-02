@@ -1,9 +1,10 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
@@ -17,7 +18,7 @@ const TARGET_URI =
   "postgresql://fixture_username:hunter2-secret@127.0.0.1:1/fixture_development";
 
 describe("import --sqlite", () => {
-  let directory: string;
+  const directory = useTemporaryDirectory("import-sqlite-unit");
   let file: string;
 
   /** Runs `import` of `fixture.widgets` from `file`, plus `extra`. */
@@ -39,13 +40,8 @@ describe("import --sqlite", () => {
     });
 
   beforeAll(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-sqlite-unit-"));
-    file = path.join(directory, "fixture.sqlite");
+    file = path.join(directory(), "fixture.sqlite");
     fs.writeFileSync(file, "a SQLite file");
-  });
-
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
   it.each([

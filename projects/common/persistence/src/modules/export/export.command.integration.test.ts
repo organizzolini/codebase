@@ -1,6 +1,5 @@
 import { execFile } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
@@ -15,6 +14,7 @@ import {
   vi,
 } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
 import { startPostgresContainer } from "@codebase/testing/postgres";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
@@ -132,7 +132,7 @@ describe("export", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   beforeEach(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-export-"));
+    directory = createTemporaryDirectory("fixture-export");
     vi.mocked(execFile).mockClear();
     await targetDataSource.query(
       "DROP SCHEMA fixture CASCADE; CREATE SCHEMA fixture",

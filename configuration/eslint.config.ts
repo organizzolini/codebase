@@ -312,6 +312,9 @@ const MODULE_BOUNDARIES = {
   // interface, and each of those may use the testing package's helpers in
   // its own tests and keep its old testing entry as a re-export of it.
   ignoredCircularDependencies: [
+    // The conformetry templates import the testing package, and the common
+    // packages' own configuration files import the configuration project.
+    ["configuration", "testing"],
     ["interface", "testing"],
     ["observability", "testing"],
     ["persistence", "testing"],
@@ -1327,6 +1330,19 @@ export default [
       "vitest/consistent-vitest-vi": "error",
       "vitest/hoisted-apis-on-top": "error",
       "vitest/max-nested-describe": ["error", { max: 3 }],
+      "vitest/expect-expect": [
+        "error",
+        {
+          // The shared testing helpers assert for the test that calls them.
+          assertFunctionNames: [
+            "expect",
+            "expectLoggerContext",
+            "expectModuleExports",
+            "expectModuleImports",
+            "expectModuleProvides",
+          ],
+        },
+      ],
       "vitest/no-alias-methods": "error",
       "vitest/no-commented-out-tests": "error",
       "vitest/no-disabled-tests": "error",

@@ -1,8 +1,9 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
@@ -17,10 +18,7 @@ describe("import preflight, before any connection", () => {
   let directory: string;
 
   beforeEach(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-preflight-"));
-    return () => {
-      fs.rmSync(directory, { force: true, recursive: true });
-    };
+    directory = createTemporaryDirectory("fixture-preflight");
   });
 
   /**

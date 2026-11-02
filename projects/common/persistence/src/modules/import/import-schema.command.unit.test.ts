@@ -1,8 +1,9 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
@@ -39,7 +40,7 @@ function restoresOf(spawned: readonly SpawnedProcess[]): SpawnedProcess[] {
 }
 
 describe("import --schema", () => {
-  let directory: string;
+  const directory = useTemporaryDirectory("import-schema-unit");
   let file: string;
 
   /** Runs `import --data` of `tables` from the dump, plus `extra`. */
@@ -61,13 +62,8 @@ describe("import --schema", () => {
     });
 
   beforeAll(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-schema-unit-"));
-    file = path.join(directory, "fixture.dump");
+    file = path.join(directory(), "fixture.dump");
     fs.writeFileSync(file, "a dump");
-  });
-
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
   it.each([

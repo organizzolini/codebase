@@ -89,8 +89,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   integration: NEST_BASELINE,
   "projects/caelundas/caelundas-cli": NEST_BASELINE,
   "projects/caelundas/caelundas-web": WEB_BASELINE,
-  "projects/common/observability": NEST_BASELINE,
-  "projects/common/persistence": NEST_BASELINE,
   "projects/ic-suite/callidescope/callidescope-cli": {
     ...NEST_BASELINE,
     application: COMMAND_PROJECT_BASELINE,
