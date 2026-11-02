@@ -84,13 +84,14 @@ const MODULE_BOUNDARIES = {
     // the graph it renders; the CLI composes them, so the dependency
     // only ever points that way.
     {
-      onlyDependOnLibsWithTags: [],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:callidescope-core",
     },
     {
       onlyDependOnLibsWithTags: [
         "name:callidescope-core",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-configuration",
     },
@@ -99,6 +100,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-configuration",
         "name:callidescope-core",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-graph",
     },
@@ -108,6 +110,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-core",
         "name:callidescope-graph",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-output",
     },
@@ -118,6 +121,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-graph",
         "name:callidescope-output",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-cli",
     },
@@ -133,6 +137,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-graph",
         "name:callidescope-output",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-nx",
     },
@@ -1327,6 +1332,19 @@ export default [
       "vitest/consistent-vitest-vi": "error",
       "vitest/hoisted-apis-on-top": "error",
       "vitest/max-nested-describe": ["error", { max: 3 }],
+      "vitest/expect-expect": [
+        "error",
+        {
+          // The shared testing helpers assert for the test that calls them.
+          assertFunctionNames: [
+            "expect",
+            "expectLoggerContext",
+            "expectModuleExports",
+            "expectModuleImports",
+            "expectModuleProvides",
+          ],
+        },
+      ],
       "vitest/no-alias-methods": "error",
       "vitest/no-commented-out-tests": "error",
       "vitest/no-disabled-tests": "error",
