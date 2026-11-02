@@ -1,7 +1,8 @@
-import { Test } from "@nestjs/testing";
 import "reflect-metadata";
 import { DataSource, getMetadataArgsStorage } from "typeorm";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   assertEntityHasTableMetadata,
@@ -1111,18 +1112,10 @@ const ENTITY_INHERITANCE_EXPECTATIONS = {
 } satisfies Readonly<Record<string, EntityInheritanceExpectation>>;
 
 describe(EntitiesService, () => {
-  let service: EntitiesService;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EntitiesService);
 
-  beforeAll(async (): Promise<void> => {
-    const module = await Test.createTestingModule({
-      providers: [EntitiesService],
-    }).compile();
-
-    service = await module.resolve(EntitiesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(EntitiesService);
   });
 
   describe("eNTITY_EXPECTATIONS", () => {

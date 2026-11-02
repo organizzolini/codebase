@@ -1,6 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { postgresEnvironmentKeys } from "@codebase/persistence";
+import { overrideEnvironment } from "@codebase/testing";
 
 import { LexicoNamingStrategy } from "./database.constants";
 
@@ -37,19 +38,16 @@ describe("lexico data source", () => {
   beforeEach(() => {
     // 🎯 The root `.env`, which Nx loads into every task, names the shared
     // container's admin login under the unprefixed variables.
-    vi.stubEnv("POSTGRES_DB", "postgres");
-    vi.stubEnv("POSTGRES_HOST", "admin.internal");
-    vi.stubEnv("POSTGRES_PASSWORD", "postgres");
-    vi.stubEnv("POSTGRES_PORT", "6000");
-    vi.stubEnv("POSTGRES_USER", "postgres");
-
-    for (const key of postgresEnvironmentKeys("lexico")) {
-      vi.stubEnv(key, undefined);
-    }
-  });
-
-  afterEach(() => {
-    vi.unstubAllEnvs();
+    overrideEnvironment({
+      POSTGRES_DB: "postgres",
+      POSTGRES_HOST: "admin.internal",
+      POSTGRES_PASSWORD: "postgres",
+      POSTGRES_PORT: "6000",
+      POSTGRES_USER: "postgres",
+      ...Object.fromEntries(
+        postgresEnvironmentKeys("lexico").map((key) => [key, undefined]),
+      ),
+    });
   });
 
   it("defaults to lexico_development.lexico as lexico_username, ignoring the root's variables", async () => {
@@ -67,12 +65,14 @@ describe("lexico data source", () => {
   });
 
   it("reads the LEXICO_POSTGRES_* variables", async () => {
-    vi.stubEnv("LEXICO_POSTGRES_DATABASE", "lexico_testing");
-    vi.stubEnv("LEXICO_POSTGRES_HOST", "database.internal");
-    vi.stubEnv("LEXICO_POSTGRES_PASSWORD", "custom_password");
-    vi.stubEnv("LEXICO_POSTGRES_PORT", "6001");
-    vi.stubEnv("LEXICO_POSTGRES_SCHEMA", "lexico_custom");
-    vi.stubEnv("LEXICO_POSTGRES_USERNAME", "custom_user");
+    overrideEnvironment({
+      LEXICO_POSTGRES_DATABASE: "lexico_testing",
+      LEXICO_POSTGRES_HOST: "database.internal",
+      LEXICO_POSTGRES_PASSWORD: "custom_password",
+      LEXICO_POSTGRES_PORT: "6001",
+      LEXICO_POSTGRES_SCHEMA: "lexico_custom",
+      LEXICO_POSTGRES_USERNAME: "custom_user",
+    });
 
     const options = await loadDataSourceOptions();
 

@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import "reflect-metadata";
 
 import { createDataSource } from "@codebase/persistence";
-import { startPostgresContainer } from "@codebase/persistence/testing";
+import { startPostgresContainer } from "@codebase/testing/postgres";
 
 import {
   LEXICO_DATABASE_ENTITIES,
@@ -15,7 +15,7 @@ import { Line } from "./literature/line.entity";
 import { Text } from "./literature/text.entity";
 import { Token } from "./literature/token.entity";
 
-import type { StartedPostgresContainer } from "@codebase/persistence/testing";
+import type { StartedPostgresContainer } from "@codebase/testing/postgres";
 import type { DataSource } from "typeorm";
 
 interface EntityIntegrationExpectation {
