@@ -1,13 +1,13 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-
 import {
-  createCommandTestHarness,
-  resetCommandTestHarness,
-} from "../../../testing/command-harness";
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
+
+import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { CorpusScriptorumEcclesiasticorumLatinorumCommand } from "./corpus-scriptorum-ecclesiasticorum-latinorum.command";
 
@@ -44,20 +44,14 @@ describe(CorpusScriptorumEcclesiasticorumLatinorumCommand, () => {
   let logger: DeepMocked<LoggerService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CorpusScriptorumEcclesiasticorumLatinorumCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    command = await module.resolve(
+    const built = await buildTestingModule(
       CorpusScriptorumEcclesiasticorumLatinorumCommand,
     );
-    logger = module.get(LoggerService);
+
+    command = await built.module.resolve(
+      CorpusScriptorumEcclesiasticorumLatinorumCommand,
+    );
+    logger = built.logger;
   });
 
   beforeEach(() => {
@@ -92,26 +86,18 @@ describe(CorpusScriptorumEcclesiasticorumLatinorumCommand, () => {
       "/tmp/csel-errors.log";
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      CorpusScriptorumEcclesiasticorumLatinorumCommand,
+    );
+
+    expect(instance).toBeInstanceOf(
+      CorpusScriptorumEcclesiasticorumLatinorumCommand,
+    );
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CorpusScriptorumEcclesiasticorumLatinorumCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "CorpusScriptorumEcclesiasticorumLatinorumCommand",
-    );
+    await expectLoggerContext(CorpusScriptorumEcclesiasticorumLatinorumCommand);
   });
 
   it("should create output directory when it does not exist", async () => {
@@ -120,19 +106,14 @@ describe(CorpusScriptorumEcclesiasticorumLatinorumCommand, () => {
       "/tmp/csel-errors.log",
     );
 
-    const commandHarness = await createCommandTestHarness({
-      additionalProviders: [
+    await buildTestingModule(CorpusScriptorumEcclesiasticorumLatinorumCommand, {
+      providers: [
         {
           provide: LoggerService,
           useValue: bootstrapLogger,
         },
       ],
-      commandType: CorpusScriptorumEcclesiasticorumLatinorumCommand,
     });
-
-    await commandHarness.testingModule.resolve(
-      CorpusScriptorumEcclesiasticorumLatinorumCommand,
-    );
 
     expect(
       bootstrapLogger.createTimestampedOutputLogFilePath,

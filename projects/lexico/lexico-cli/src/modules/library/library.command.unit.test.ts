@@ -1,36 +1,33 @@
-import { existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
-import os from "node:os";
+import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory, promptsMock } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import {
   resetCommandTestHarness,
   runCommandLine,
 } from "../../../testing/command-harness";
-import {
-  mockStandardInputTerminal,
-  setPromptsMockResponse,
-} from "../../../testing/mocks";
+import { mockStandardInputTerminal } from "../../../testing/mocks";
 
 import { LibraryCommand } from "./library.command";
 import { LIBRARY_PROVIDERS_TOKEN } from "./library.constants";
 
 import type { LibrarySourceProvider } from "./library.types";
 import type { Author } from "@codebase/lexico-entities";
+import type { Provider } from "@nestjs/common";
 
 const { appendFileMock, mkdirMock, readdirMock } = vi.hoisted(() => ({
   appendFileMock: vi.fn<() => Promise<void>>(),
   mkdirMock: vi.fn<() => Promise<string | undefined>>(),
   readdirMock: vi.fn<() => Promise<unknown[]>>(),
-}));
-
-const { promptsMock } = vi.hoisted(() => ({
-  promptsMock: vi.fn<() => Promise<Record<string, unknown>>>(),
 }));
 
 vi.mock("node:fs/promises", () => ({
@@ -66,6 +63,13 @@ describe(LibraryCommand, () => {
   let providerPerseus: LibrarySourceProvider;
   let providers: LibrarySourceProvider[];
 
+  const createModuleProviders = (): Provider[] => [
+    {
+      provide: LIBRARY_PROVIDERS_TOKEN,
+      useValue: providers,
+    },
+  ];
+
   beforeAll(async () => {
     providers = createProviders();
     const perseusProvider = providers.find(
@@ -77,29 +81,19 @@ describe(LibraryCommand, () => {
 
     providerPerseus = perseusProvider;
 
-    const module = await Test.createTestingModule({
-      providers: [
-        LibraryCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: LIBRARY_PROVIDERS_TOKEN,
-          useValue: providers,
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(LibraryCommand, {
+      providers: createModuleProviders(),
+    });
 
-    command = await module.resolve(LibraryCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
     resetCommandTestHarness({ unstubGlobals: false });
     mkdirMock.mockResolvedValue(undefined);
     appendFileMock.mockResolvedValue(undefined);
-    setPromptsMockResponse(promptsMock, { provider: "ALL" });
+    promptsMock.mockResolvedValue({ provider: "ALL" });
 
     logger.buildErrorLogEntry.mockImplementation((context, error) => {
       const errorMessage =
@@ -111,29 +105,18 @@ describe(LibraryCommand, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LibraryCommand, {
+      providers: createModuleProviders(),
+    });
+
+    expect(instance).toBeInstanceOf(LibraryCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LibraryCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: LIBRARY_PROVIDERS_TOKEN,
-          useValue: [],
-        },
-      ],
-    }).compile();
-
-    await module.resolve(LibraryCommand);
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("LibraryCommand");
+    await expectLoggerContext(LibraryCommand, {
+      providers: createModuleProviders(),
+    });
   });
 
   it("should build ingest parameters with filtering", () => {
@@ -912,9 +895,7 @@ describe(LibraryCommand, () => {
 
   it("creates output directory when missing", () => {
     const previousWorkingDirectory = process.cwd();
-    const temporaryDirectory = mkdtempSync(
-      path.join(os.tmpdir(), "library-command-"),
-    );
+    const temporaryDirectory = createTemporaryDirectory("library-command");
 
     try {
       process.chdir(temporaryDirectory);
@@ -926,15 +907,12 @@ describe(LibraryCommand, () => {
       expect(existsSync(path.join(temporaryDirectory, "output"))).toBe(true);
     } finally {
       process.chdir(previousWorkingDirectory);
-      rmSync(temporaryDirectory, { force: true, recursive: true });
     }
   });
 
   it("initializes when output directory already exists", () => {
     const previousWorkingDirectory = process.cwd();
-    const temporaryDirectory = mkdtempSync(
-      path.join(os.tmpdir(), "library-command-"),
-    );
+    const temporaryDirectory = createTemporaryDirectory("library-command");
     const outputDirectory = path.join(temporaryDirectory, "output");
 
     try {
@@ -948,7 +926,6 @@ describe(LibraryCommand, () => {
       expect(existsSync(outputDirectory)).toBe(true);
     } finally {
       process.chdir(previousWorkingDirectory);
-      rmSync(temporaryDirectory, { force: true, recursive: true });
     }
   });
 
