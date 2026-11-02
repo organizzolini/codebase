@@ -1,8 +1,9 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -10,55 +11,28 @@ import { SynchronizationService } from "../synchronization/synchronization.servi
 import { ConventionalConfigCommand } from "./conventional-config.command";
 import { ConventionalConfigService } from "./conventional-config.service";
 
+import type { LoggerService } from "@codebase/observability";
+
+const moduleOptions = {
+  mocks: [ConventionalConfigService],
+  providers: [SynchronizationService],
+};
+
 describe(ConventionalConfigCommand, () => {
   let command: ConventionalConfigCommand;
   let logger: LoggerService;
 
-  const conventionalConfigService = createMock<ConventionalConfigService>();
+  let conventionalConfigService: DeepMocked<ConventionalConfigService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConventionalConfigCommand,
-        SynchronizationService,
-        {
-          provide: ConventionalConfigService,
-          useValue: conventionalConfigService,
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      ConventionalConfigCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(ConventionalConfigCommand);
-    logger = await module.resolve(LoggerService);
-  });
-
-  it("is defined", () => {
-    expect(command).toBeDefined();
-  });
-
-  it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConventionalConfigCommand,
-        SynchronizationService,
-        {
-          provide: ConventionalConfigService,
-          useValue: createMock<ConventionalConfigService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("ConventionalConfigCommand");
+    command = built.instance;
+    logger = built.logger;
+    conventionalConfigService = built.mock(ConventionalConfigService);
   });
 
   it.each([
@@ -78,6 +52,23 @@ describe(ConventionalConfigCommand, () => {
     expect(conventionalConfigService.runSynchronization).toHaveBeenCalledWith(
       expectedMode,
     );
+  });
+
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      ConventionalConfigCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(ConventionalConfigCommand);
+  });
+
+  it("sets logger context", async () => {
+    expect.hasAssertions();
+
+    await expectLoggerContext(ConventionalConfigCommand, moduleOptions);
   });
 
   it("exits for invalid mode", async () => {
@@ -106,3 +97,5 @@ describe(ConventionalConfigCommand, () => {
     await expect(command.run(["check"])).resolves.toBeUndefined();
   });
 });
+
+import type { DeepMocked } from "@golevelup/ts-vitest";

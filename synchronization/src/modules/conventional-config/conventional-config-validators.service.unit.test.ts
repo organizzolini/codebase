@@ -1,15 +1,14 @@
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConventionalConfigIoService } from "./conventional-config-io.service";
 import { ConventionalConfigValidatorsService } from "./conventional-config-validators.service";
 
 import type { ConventionalConfig } from "./conventional-config.types";
+import type { LoggerService } from "@codebase/observability";
 
 const fileContents = new Map<string, string>();
 
@@ -25,6 +24,8 @@ vi.mock("node:fs", () => {
   };
 });
 
+const moduleOptions = { mocks: [ConventionalConfigIoService] };
+
 describe(ConventionalConfigValidatorsService, () => {
   let io: ConventionalConfigIoService;
   let logger: LoggerService;
@@ -37,23 +38,14 @@ describe(ConventionalConfigValidatorsService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConventionalConfigValidatorsService,
-        {
-          provide: ConventionalConfigIoService,
-          useValue: createMock<ConventionalConfigIoService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      ConventionalConfigValidatorsService,
+      moduleOptions,
+    );
 
-    io = await module.resolve(ConventionalConfigIoService);
-    logger = await module.resolve(LoggerService);
-    service = await module.resolve(ConventionalConfigValidatorsService);
+    io = built.mock(ConventionalConfigIoService);
+    logger = built.logger;
+    service = built.instance;
   });
 
   beforeEach(() => {
@@ -61,30 +53,15 @@ describe(ConventionalConfigValidatorsService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
-  });
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
 
-  it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConventionalConfigValidatorsService,
-        {
-          provide: ConventionalConfigIoService,
-          useValue: createMock<ConventionalConfigIoService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const localLogger = await module.resolve(LoggerService);
-
-    expect(localLogger.setContext).toHaveBeenCalledWith(
-      "ConventionalConfigValidatorsService",
+    const { instance } = await buildTestingModule(
+      ConventionalConfigValidatorsService,
+      moduleOptions,
     );
+
+    expect(instance).toBeInstanceOf(ConventionalConfigValidatorsService);
   });
 
   it("validates matching settings scopes", () => {

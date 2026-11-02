@@ -2,16 +2,19 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { ConfigurationService } from "@conformetry/configuration";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne, mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
 import { ConformetryGeneratorsCommand } from "./conformetry-generators.command";
+
+import type { LoggerService } from "@codebase/observability";
 
 const fileContents = new Map<string, string>();
 type ConformetryTestConfiguration = {
@@ -53,6 +56,10 @@ vi.mock("node:fs", () => {
   };
 });
 
+const moduleOptions = {
+  providers: [ConfigurationService, SynchronizationService],
+};
+
 describe(ConformetryGeneratorsCommand, () => {
   let command: ConformetryGeneratorsCommand;
   let logger: LoggerService;
@@ -62,20 +69,13 @@ describe(ConformetryGeneratorsCommand, () => {
   const readmeFile = path.join(workspaceRoot, "README.md");
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConformetryGeneratorsCommand,
-        ConfigurationService,
-        SynchronizationService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      ConformetryGeneratorsCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(ConformetryGeneratorsCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
@@ -83,30 +83,6 @@ describe(ConformetryGeneratorsCommand, () => {
     vi.clearAllMocks();
     currentConformetryConfiguration = [];
     loadConformetryConfigurationError = undefined;
-  });
-
-  it("is defined", () => {
-    expect(command).toBeDefined();
-  });
-
-  it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConformetryGeneratorsCommand,
-        ConfigurationService,
-        SynchronizationService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "ConformetryGeneratorsCommand",
-    );
   });
 
   it.each([
@@ -183,6 +159,23 @@ describe(ConformetryGeneratorsCommand, () => {
       expect(writeFileSync).not.toHaveBeenCalled();
     },
   );
+
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      ConformetryGeneratorsCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(ConformetryGeneratorsCommand);
+  });
+
+  it("sets logger context", async () => {
+    expect.hasAssertions();
+
+    await expectLoggerContext(ConformetryGeneratorsCommand, moduleOptions);
+  });
 
   it("writes generated table to every target file in write mode", async () => {
     currentConformetryConfiguration = [{ description: "first", name: "alpha" }];

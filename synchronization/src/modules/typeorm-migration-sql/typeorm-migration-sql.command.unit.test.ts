@@ -1,12 +1,13 @@
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -14,52 +15,49 @@ import { SynchronizationService } from "../synchronization/synchronization.servi
 import { TypeormMigrationSqlExtractorService } from "./typeorm-migration-sql-extractor.service";
 import { TypeormMigrationSqlCommand } from "./typeorm-migration-sql.command";
 
+import type { LoggerService } from "@codebase/observability";
+
+const moduleOptions = {
+  providers: [SynchronizationService, TypeormMigrationSqlExtractorService],
+};
+
 describe(TypeormMigrationSqlCommand, () => {
   let command: TypeormMigrationSqlCommand;
   let extractorService: TypeormMigrationSqlExtractorService;
   let logger: LoggerService;
-  let tempDirectories: string[] = [];
-
-  async function makeTempDirectory(): Promise<string> {
-    const directory = await mkdtemp(
-      path.join(tmpdir(), "typeorm-migration-sql-command-"),
-    );
-    tempDirectories.push(directory);
-    return directory;
-  }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TypeormMigrationSqlCommand,
-        SynchronizationService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        TypeormMigrationSqlExtractorService,
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      TypeormMigrationSqlCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(TypeormMigrationSqlCommand);
-    extractorService = await module.resolve(
+    command = built.instance;
+    extractorService = await built.module.resolve(
       TypeormMigrationSqlExtractorService,
     );
-    logger = await module.resolve(LoggerService);
+    logger = built.logger;
   });
 
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.clearAllMocks();
-    await Promise.all(
-      tempDirectories.map(async (directory) =>
-        rm(directory, { force: true, recursive: true }),
-      ),
-    );
-    tempDirectories = [];
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      TypeormMigrationSqlCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TypeormMigrationSqlCommand);
+  });
+
+  it("sets logger context", async () => {
+    expect.hasAssertions();
+
+    await expectLoggerContext(TypeormMigrationSqlCommand, moduleOptions);
   });
 
   it("parses scalar command options unchanged", () => {
@@ -80,28 +78,8 @@ describe(TypeormMigrationSqlCommand, () => {
     expect(command.parseSelection("unknown")).toBe("latest");
   });
 
-  it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TypeormMigrationSqlCommand,
-        SynchronizationService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        TypeormMigrationSqlExtractorService,
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "TypeormMigrationSqlCommand",
-    );
-  });
-
   it("writes extracted up and down SQL files for a migration", async () => {
-    const directory = await makeTempDirectory();
+    const directory = createTemporaryDirectory("typeorm-migration-sql-command");
     const migrationFile = path.join(directory, "1791255787877-migration.ts");
     await writeFile(
       migrationFile,
@@ -141,7 +119,7 @@ describe(TypeormMigrationSqlCommand, () => {
   });
 
   it("exits with code 1 when check mode finds out-of-sync SQL files", async () => {
-    const directory = await makeTempDirectory();
+    const directory = createTemporaryDirectory("typeorm-migration-sql-command");
     const migrationFile = path.join(directory, "1791255787877-migration.ts");
     await writeFile(
       migrationFile,
