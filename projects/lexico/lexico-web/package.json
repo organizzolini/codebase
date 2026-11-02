@@ -58,8 +58,7 @@
       "src/graphql/generated/**",
       "src/router.tsx",
       "src/routeTree.gen.ts",
-      "testing/**",
-      "testing/render-route.tsx"
+      "testing/**"
     ],
     "strict": true
   },

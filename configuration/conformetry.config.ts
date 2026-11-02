@@ -124,7 +124,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/conformetry/conformetry-output": NEST_BASELINE,
   "projects/ic-suite/conformetry/conformetry-validation": NEST_BASELINE,
   "projects/lexico/lexico-cli": NEST_BASELINE,
-  "projects/lexico/lexico-web": { application: 717 / 738, routes: 131 / 145 },
   "projects/meanderaw/meanderaw-cli": NEST_BASELINE,
   "projects/meanderaw/meanderaw-web": WEB_BASELINE,
   publication: NEST_BASELINE,
