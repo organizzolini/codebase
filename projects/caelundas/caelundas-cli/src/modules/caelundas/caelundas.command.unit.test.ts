@@ -1,9 +1,11 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { CalendarEventsService } from "../calendar-events/calendar-events.service";
 import { CalendarService } from "../calendar/calendar.service";
@@ -58,23 +60,23 @@ describe(CaelundasCommand, () => {
   const progressiveService = createMock<ProgressiveService>();
   const inputService = createMock<InputService>();
   const ephemerisService = createMock<EphemerisService>();
+  const testingModuleOptions = {
+    providers: [
+      { provide: InputService, useValue: inputService },
+      { provide: PerfectiveService, useValue: perfectiveService },
+      { provide: ProgressiveService, useValue: progressiveService },
+      { provide: CalendarService, useValue: calendarService },
+      { provide: CalendarEventsService, useValue: calendarEventsService },
+      { provide: EphemerisService, useValue: ephemerisService },
+    ],
+  };
   let command: CaelundasCommand;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CaelundasCommand,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: InputService, useValue: inputService },
-        { provide: PerfectiveService, useValue: perfectiveService },
-        { provide: ProgressiveService, useValue: progressiveService },
-        { provide: CalendarService, useValue: calendarService },
-        { provide: CalendarEventsService, useValue: calendarEventsService },
-        { provide: EphemerisService, useValue: ephemerisService },
-      ],
-    }).compile();
-
-    command = await module.resolve(CaelundasCommand);
+    ({ instance: command } = await buildTestingModule(
+      CaelundasCommand,
+      testingModuleOptions,
+    ));
   });
 
   beforeEach(() => {
@@ -111,30 +113,17 @@ describe(CaelundasCommand, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      CaelundasCommand,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(CaelundasCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CaelundasCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        { provide: InputService, useValue: inputService },
-        { provide: PerfectiveService, useValue: perfectiveService },
-        { provide: ProgressiveService, useValue: progressiveService },
-        { provide: CalendarService, useValue: calendarService },
-        { provide: CalendarEventsService, useValue: calendarEventsService },
-        { provide: EphemerisService, useValue: ephemerisService },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("CaelundasCommand");
+    await expectLoggerContext(CaelundasCommand, testingModuleOptions);
   });
 
   describe("run", () => {
