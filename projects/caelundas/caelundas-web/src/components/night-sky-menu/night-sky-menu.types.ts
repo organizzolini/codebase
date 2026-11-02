@@ -4,6 +4,11 @@ import type { NightSkyOverrides } from "../../hooks/use-night-sky/use-night-sky.
 // 🏷️ Types
 
 /**
+ * Whether a folder's constellations all show, some do, or none.
+ */
+export type FolderState = "checked" | "partial" | "unchecked";
+
+/**
  * The settings a slider shows.
  */
 export type NumericSkySetting = {

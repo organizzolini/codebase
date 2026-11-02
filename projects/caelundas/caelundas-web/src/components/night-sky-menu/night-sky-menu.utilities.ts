@@ -8,6 +8,7 @@ import {
 
 import type { ConstellationListing } from "../../hooks/use-night-sky/night-sky.types";
 import type {
+  FolderState,
   SkyParameterKey,
   SkySearchChange,
   SkySliderControl,
@@ -73,6 +74,22 @@ export function listShownConstellations(
 }
 
 /**
+ * Whether a folder's constellations all show, some do, or none.
+ */
+export function readFolderState(
+  shown: ReadonlySet<string>,
+  names: readonly string[],
+): FolderState {
+  const count = names.filter((name) => shown.has(name)).length;
+
+  if (count === 0) {
+    return "unchecked";
+  }
+
+  return count === names.length ? "checked" : "partial";
+}
+
+/**
  * A slider's moved value, rounded to its step, or the value it had for
  * anything it cannot read.
  */
@@ -94,6 +111,23 @@ export function roundToStep(value: number, step: number): number {
   const decimals = String(step).split(".")[1]?.length ?? 0;
 
   return Number(value.toFixed(decimals));
+}
+
+/**
+ * The constellations filed in the picker's two folders: the zodiac's, then
+ * every other, each in name order.
+ */
+export function splitConstellations(
+  listing: readonly ConstellationListing[],
+): Record<"other" | "zodiac", ConstellationListing[]> {
+  const ordered = listing.toSorted((first, second) =>
+    first.name.localeCompare(second.name),
+  );
+
+  return {
+    other: ordered.filter((constellation) => !constellation.zodiac),
+    zodiac: ordered.filter((constellation) => constellation.zodiac),
+  };
 }
 
 /**
@@ -121,12 +155,27 @@ export function toggleConstellation(
   listing: readonly ConstellationListing[],
   name: string,
 ): string[] {
-  const shown = listShownConstellations(words, listing);
+  return toggleConstellations(words, listing, [name]);
+}
 
-  if (shown.has(name)) {
-    shown.delete(name);
-  } else {
-    shown.add(name);
+/**
+ * Shows every constellation of a folder when any is hidden, or hides them
+ * all when all show, naming the choice again in its fewest words.
+ */
+export function toggleConstellations(
+  words: readonly string[],
+  listing: readonly ConstellationListing[],
+  names: readonly string[],
+): string[] {
+  const shown = listShownConstellations(words, listing);
+  const hide = names.every((name) => shown.has(name));
+
+  for (const name of names) {
+    if (hide) {
+      shown.delete(name);
+    } else {
+      shown.add(name);
+    }
   }
 
   return toConstellationWords(shown, listing);

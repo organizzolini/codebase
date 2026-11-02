@@ -13,10 +13,9 @@ import type {
 // ♟️ Constants
 
 /**
- * The numbers the menu sets, in the order it lists them. The ranges are what
- * looks right facing north, inside the wider ones the link accepts.
+ * Where the observer stands and which part of the sky the window shows.
  */
-export const SKY_SLIDERS: readonly SkySliderControl[] = [
+export const VIEW_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "latitudeDegrees",
     key: "sky.lat",
@@ -53,6 +52,12 @@ export const SKY_SLIDERS: readonly SkySliderControl[] = [
     step: 1,
     unit: "°",
   },
+];
+
+/**
+ * How the stars drift, how faint they are drawn, and how large.
+ */
+export const STAR_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "pixelsPerSecond",
     key: "sky.pixelsPerSecond",
@@ -80,6 +85,12 @@ export const SKY_SLIDERS: readonly SkySliderControl[] = [
     step: 0.05,
     unit: "×",
   },
+];
+
+/**
+ * How the constellation figures' lines are stroked.
+ */
+export const LINE_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "lineOpacity",
     key: "sky.lineOpacity",
@@ -101,12 +112,38 @@ export const SKY_SLIDERS: readonly SkySliderControl[] = [
 ];
 
 /**
- * The colors the menu picks.
+ * Every number the menu sets. The ranges are what looks right facing north,
+ * inside the wider ones the link accepts.
  */
-export const SKY_COLORS: readonly SkyColorControl[] = [
+export const SKY_SLIDERS: readonly SkySliderControl[] = [
+  ...VIEW_SLIDERS,
+  ...STAR_SLIDERS,
+  ...LINE_SLIDERS,
+];
+
+/**
+ * The colors of the sky's gradient, top then bottom.
+ */
+export const BACKGROUND_COLORS: readonly SkyColorControl[] = [
   { field: "backgroundTopColor", key: "sky.top", label: "Sky top" },
   { field: "backgroundBottomColor", key: "sky.bottom", label: "Sky bottom" },
-  { field: "lineColor", key: "sky.lineColor", label: "Lines" },
+];
+
+/**
+ * The color of the constellation figures' lines.
+ */
+export const LINE_COLOR: SkyColorControl = {
+  field: "lineColor",
+  key: "sky.lineColor",
+  label: "Line color",
+};
+
+/**
+ * Every color the menu picks.
+ */
+export const SKY_COLORS: readonly SkyColorControl[] = [
+  ...BACKGROUND_COLORS,
+  LINE_COLOR,
 ];
 
 /**
@@ -170,6 +207,25 @@ export const MENU_KEYS: ReadonlySet<string> = new Set(["Escape", "Tab"]);
  * are drawn from here, with a thumb large enough to drag by touch.
  */
 export const SLIDER_CLASS_NAME =
-  "py-3 [&_[data-slot=slider-track]]:h-1.5 [&_[data-slot=slider-track]]:w-full " +
+  "py-2 [&_[data-slot=slider-track]]:h-1.5 [&_[data-slot=slider-track]]:w-full " +
   "[&_[data-slot=slider-track]]:bg-foreground/20 [&_[data-slot=slider-range]]:h-full " +
   "[&_[data-slot=slider-thumb]]:size-4";
+
+/**
+ * A section header: small, quiet, and a full-width target to open or close.
+ */
+export const SECTION_TRIGGER_CLASS_NAME =
+  "group text-muted-foreground hover:bg-accent flex w-full items-center justify-between rounded-md px-1 py-1 text-xs font-semibold tracking-wide uppercase";
+
+/**
+ * A constellation tree row: tall enough to tap, its checkbox and name in line.
+ */
+export const TREE_ROW_CLASS_NAME =
+  "hover:bg-accent flex min-h-7 cursor-pointer items-center gap-2 rounded px-1 text-xs";
+
+/**
+ * A folder's checkbox, which shows a dash when some of its constellations
+ * show and not all.
+ */
+export const FOLDER_CHECKBOX_CLASS_NAME =
+  "before:hidden before:h-0.5 before:w-2 before:rounded-full before:bg-primary data-indeterminate:border-primary data-indeterminate:before:block data-indeterminate:[&_svg]:hidden";

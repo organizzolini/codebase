@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import {
   listShownConstellations,
+  readFolderState,
   roundToStep,
+  splitConstellations,
   toConstellationsChange,
   toggleConstellation,
+  toggleConstellations,
   toResetChange,
   toSkyParameterChange,
   toVisibilityChange,
@@ -118,6 +121,48 @@ describe("night sky menu utilities", () => {
       expect(
         toggleConstellation(["ursa_major"], LISTING, "Ursa Major"),
       ).toStrictEqual([]);
+    });
+  });
+
+  describe(splitConstellations, () => {
+    it("files the zodiac's apart from the others, each in name order", () => {
+      expect(splitConstellations(LISTING)).toStrictEqual({
+        other: [
+          { name: "Orion", zodiac: false },
+          { name: "Ursa Major", zodiac: false },
+        ],
+        zodiac: [
+          { name: "Aries", zodiac: true },
+          { name: "Leo", zodiac: true },
+        ],
+      });
+    });
+  });
+
+  describe(readFolderState, () => {
+    it("reads a folder as checked, partly checked, or unchecked", () => {
+      const names = ["Aries", "Leo"];
+
+      expect(readFolderState(new Set(names), names)).toBe("checked");
+      expect(readFolderState(new Set(["Leo"]), names)).toBe("partial");
+      expect(readFolderState(new Set(["Orion"]), names)).toBe("unchecked");
+    });
+  });
+
+  describe(toggleConstellations, () => {
+    it("checks every child of a folder that is not all checked", () => {
+      expect(
+        toggleConstellations(["aries"], LISTING, ["Aries", "Leo"]),
+      ).toStrictEqual(["zodiac"]);
+      expect(toggleConstellations([], LISTING, ["Aries", "Leo"])).toStrictEqual(
+        ["zodiac"],
+      );
+    });
+
+    it("unchecks every child of a folder that is all checked", () => {
+      expect(
+        toggleConstellations(["zodiac", "orion"], LISTING, ["Aries", "Leo"]),
+      ).toStrictEqual(["orion"]);
     });
   });
 });

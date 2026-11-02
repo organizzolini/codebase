@@ -13,9 +13,12 @@ import { useNightSkySettings } from "../../hooks/use-night-sky/use-night-sky-set
 import { NightSkyColorField } from "./night-sky-color-field";
 import { NightSkyConstellationPicker } from "./night-sky-constellation-picker";
 import {
+  BACKGROUND_COLORS,
+  LINE_COLOR,
+  LINE_SLIDERS,
   PANEL_CLASS_NAME,
-  SKY_COLORS,
-  SKY_SLIDERS,
+  STAR_SLIDERS,
+  VIEW_SLIDERS,
 } from "./night-sky-menu.constants";
 import {
   keepKeysInPanel,
@@ -24,6 +27,7 @@ import {
   toSkyParameterChange,
   toVisibilityChange,
 } from "./night-sky-menu.utilities";
+import { NightSkySection } from "./night-sky-section";
 import { NightSkySlider } from "./night-sky-slider";
 
 import type { ReactNode } from "react";
@@ -42,8 +46,9 @@ export interface NightSkyMenuProperties {
 /**
  * Renders the View menu's Night sky submenu: every setting of the backdrop,
  * read from the link and written back to it as it changes, so the sky
- * follows a control live and a link reopens the same controls. It belongs
- * inside a dropdown menu.
+ * follows a control live and a link reopens the same controls. Its sections
+ * open, but for Constellations, whose picker is last and closed, so every
+ * other setting shows at once. It belongs inside a dropdown menu.
  */
 export function NightSkyMenu(
   properties: Readonly<NightSkyMenuProperties>,
@@ -77,42 +82,77 @@ export function NightSkyMenu(
         <DropdownMenuSubContent className={PANEL_CLASS_NAME}>
           <FieldSet
             aria-label="Night sky settings"
-            className="gap-3 p-2"
+            className="gap-1 p-2"
             onKeyDown={keepKeysInPanel}
           >
-            <Label className="justify-between text-xs">
-              Show the sky
-              <Switch
-                checked={!settings.off}
-                onCheckedChange={(checked: boolean) => {
-                  change(toVisibilityChange(checked));
-                }}
-              />
-            </Label>
-            <NightSkyConstellationPicker
-              constellations={constellations}
-              onWordsChange={(words) => {
-                change(toConstellationsChange(words));
-              }}
-              words={settings.constellations}
-            />
-            {SKY_SLIDERS.map((control) => (
-              <NightSkySlider
-                key={control.key}
-                control={control}
-                onValueChange={handleSettingChange}
-                value={settings[control.field]}
-              />
-            ))}
-            {SKY_COLORS.map((control) => (
+            <NightSkySection title="Sky">
+              <Label className="justify-between text-xs">
+                Show the sky
+                <Switch
+                  checked={!settings.off}
+                  onCheckedChange={(checked: boolean) => {
+                    change(toVisibilityChange(checked));
+                  }}
+                />
+              </Label>
+            </NightSkySection>
+            <NightSkySection title="View angles">
+              {VIEW_SLIDERS.map((control) => (
+                <NightSkySlider
+                  key={control.key}
+                  control={control}
+                  onValueChange={handleSettingChange}
+                  value={settings[control.field]}
+                />
+              ))}
+            </NightSkySection>
+            <NightSkySection title="Stars">
+              {STAR_SLIDERS.map((control) => (
+                <NightSkySlider
+                  key={control.key}
+                  control={control}
+                  onValueChange={handleSettingChange}
+                  value={settings[control.field]}
+                />
+              ))}
+            </NightSkySection>
+            <NightSkySection title="Colors">
+              {BACKGROUND_COLORS.map((control) => (
+                <NightSkyColorField
+                  key={control.key}
+                  control={control}
+                  onValueChange={handleSettingChange}
+                  value={settings[control.field]}
+                />
+              ))}
+            </NightSkySection>
+            <NightSkySection
+              defaultOpen={false}
+              title="Constellations"
+            >
+              {LINE_SLIDERS.map((control) => (
+                <NightSkySlider
+                  key={control.key}
+                  control={control}
+                  onValueChange={handleSettingChange}
+                  value={settings[control.field]}
+                />
+              ))}
               <NightSkyColorField
-                key={control.key}
-                control={control}
+                control={LINE_COLOR}
                 onValueChange={handleSettingChange}
-                value={settings[control.field]}
+                value={settings[LINE_COLOR.field]}
               />
-            ))}
+              <NightSkyConstellationPicker
+                constellations={constellations}
+                onWordsChange={(words) => {
+                  change(toConstellationsChange(words));
+                }}
+                words={settings.constellations}
+              />
+            </NightSkySection>
             <Button
+              className="mt-1"
               onClick={() => {
                 change(toResetChange());
               }}

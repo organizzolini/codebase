@@ -47,6 +47,16 @@ async function findSky(): Promise<SVGSVGElement> {
 }
 
 /**
+ * Opens the submenu's Constellations section, closed at first.
+ */
+async function openConstellations(): Promise<void> {
+  fireEvent.click(
+    await screen.findByRole("button", { name: "Constellations" }),
+  );
+  await screen.findByRole("group", { name: "Constellations to draw" });
+}
+
+/**
  * Opens the View menu, then its Night sky submenu.
  */
 async function openNightSkyMenu(): Promise<void> {
@@ -76,6 +86,7 @@ describe("night sky menu", () => {
       "/?date=2026-03-01&sky.constellations=all&sky.lat=51.5&sky=off",
     );
     await openNightSkyMenu();
+    await openConstellations();
 
     expect(screen.getByText("51.5°")).toBeDefined();
     expect(
@@ -90,6 +101,7 @@ describe("night sky menu", () => {
     await renderRoute("/?date=2026-03-01&sky.lat=75");
     await findSky();
     await openNightSkyMenu();
+    await openConstellations();
 
     fireEvent.click(screen.getByRole("button", { name: "None" }));
 
@@ -147,5 +159,39 @@ describe("night sky menu", () => {
 
     expect(readSearch()).not.toHaveProperty("sky.top");
     expect(readSearch()).toMatchObject({ "sky.debug": true });
+  });
+
+  it("toggles all twelve zodiac figures from their folder, dashed when some show", async () => {
+    await renderRoute("/?date=2026-03-01");
+    await openNightSkyMenu();
+    await openConstellations();
+
+    const folder = screen.getByRole("checkbox", { name: "Zodiac" });
+
+    expect(folder.getAttribute("aria-checked")).toBe("true");
+
+    fireEvent.click(folder);
+
+    await waitFor(() => {
+      expect(readSearch()).toMatchObject({ "sky.constellations": "none" });
+    });
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Leo" }));
+
+    await waitFor(() => {
+      expect(readSearch()).toMatchObject({ "sky.constellations": "leo" });
+    });
+
+    expect(
+      screen
+        .getByRole("checkbox", { name: "Zodiac" })
+        .getAttribute("aria-checked"),
+    ).toBe("mixed");
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Zodiac" }));
+
+    await waitFor(() => {
+      expect(readSearch()).not.toHaveProperty("sky.constellations");
+    });
   });
 });

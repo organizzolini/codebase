@@ -1,10 +1,12 @@
-import { Button, Checkbox } from "@codebase/presentation";
+import { Button } from "@codebase/presentation";
 
+import { NightSkyConstellationFolder } from "./night-sky-constellation-folder";
 import { CONSTELLATION_CHOICES } from "./night-sky-menu.constants";
 import {
   isChoiceActive,
   listShownConstellations,
-  toggleConstellation,
+  splitConstellations,
+  toggleConstellations,
 } from "./night-sky-menu.utilities";
 
 import type { ConstellationListing } from "../../hooks/use-night-sky/night-sky.types";
@@ -27,8 +29,9 @@ export interface NightSkyConstellationPickerProperties {
 
 /**
  * Renders which constellations' figures the sky draws: Zodiac, All and None
- * in one press, then every constellation the database lists to show or hide
- * one at a time, in a list that scrolls on its own.
+ * in one press, then a tree of two folders, the zodiac's twelve, open, and
+ * every other, closed, in a list that scrolls on its own so the menu around
+ * it keeps its height.
  */
 export function NightSkyConstellationPicker(
   properties: Readonly<NightSkyConstellationPickerProperties>,
@@ -39,8 +42,12 @@ export function NightSkyConstellationPicker(
 
   // 🏗 Setup
   const shown = listShownConstellations(words, constellations);
+  const { other, zodiac } = splitConstellations(constellations);
 
   // 💪 Handlers
+  const handleToggle = (names: readonly string[]): void => {
+    onWordsChange(toggleConstellations(words, constellations, names));
+  };
 
   // ♻️ Lifecycle
 
@@ -53,7 +60,8 @@ export function NightSkyConstellationPicker(
       data-testid="night-sky-constellation-picker"
     >
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-1 text-xs font-medium">Constellations</legend>
+        {/* The section header above already reads Constellations. */}
+        <legend className="sr-only">Constellations</legend>
         <div className="flex gap-1">
           {CONSTELLATION_CHOICES.map((choice) => (
             <Button
@@ -71,30 +79,25 @@ export function NightSkyConstellationPicker(
             </Button>
           ))}
         </div>
-        <ul
+        <div
           aria-label="Constellations to draw"
-          className="max-h-40 overflow-y-auto rounded-md border p-1"
+          className="max-h-64 overflow-y-auto overscroll-contain rounded-md border p-1"
+          role="group"
         >
-          {constellations.map((constellation) => (
-            <li key={constellation.name}>
-              <label className="flex min-h-8 cursor-pointer items-center gap-2 rounded px-1 text-xs hover:bg-accent">
-                <Checkbox
-                  checked={shown.has(constellation.name)}
-                  onCheckedChange={() => {
-                    onWordsChange(
-                      toggleConstellation(
-                        words,
-                        constellations,
-                        constellation.name,
-                      ),
-                    );
-                  }}
-                />
-                {constellation.name}
-              </label>
-            </li>
-          ))}
-        </ul>
+          <NightSkyConstellationFolder
+            constellations={zodiac}
+            label="Zodiac"
+            onToggle={handleToggle}
+            shown={shown}
+            defaultOpen
+          />
+          <NightSkyConstellationFolder
+            constellations={other}
+            label="Other constellations"
+            onToggle={handleToggle}
+            shown={shown}
+          />
+        </div>
       </fieldset>
     </div>
   );

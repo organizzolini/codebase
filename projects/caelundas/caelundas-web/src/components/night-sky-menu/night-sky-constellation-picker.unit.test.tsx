@@ -48,7 +48,7 @@ describe(NightSkyConstellationPicker, () => {
     ).toBe("true");
     expect(
       screen
-        .getByRole("checkbox", { name: "Orion" })
+        .getByRole("checkbox", { name: "Other constellations" })
         .getAttribute("aria-checked"),
     ).toBe("false");
   });
@@ -65,6 +65,9 @@ describe(NightSkyConstellationPicker, () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "None" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Expand Other constellations" }),
+    );
     fireEvent.click(screen.getByRole("checkbox", { name: "Orion" }));
 
     expect(onWordsChange.mock.calls).toStrictEqual([
