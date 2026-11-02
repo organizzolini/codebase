@@ -2,8 +2,9 @@ import {
   ConfigurationModule,
   ConfigurationPathRequiredError,
 } from "@conformetry/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   DEFAULT_VALIDATE_TARGET_NAME,
@@ -16,16 +17,19 @@ describe(OptionsService, () => {
   let service: OptionsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(OptionsService, {
       imports: [ConfigurationModule],
-      providers: [OptionsService],
-    }).compile();
+    });
 
-    service = await module.resolve(OptionsService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(OptionsService, {
+      imports: [ConfigurationModule],
+    });
+
+    expect(instance).toBeInstanceOf(OptionsService);
   });
 
   describe("resolvePluginOptions", () => {

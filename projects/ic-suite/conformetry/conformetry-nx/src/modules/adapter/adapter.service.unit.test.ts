@@ -1,11 +1,15 @@
-import { mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { formatFiles } from "@nx/devkit";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AdapterService } from "./adapter.service";
 
@@ -41,19 +45,20 @@ function createFakeTree(root: string): {
 
 describe(AdapterService, () => {
   let service: AdapterService;
+  const readWorkspaceRoot = useTemporaryDirectory("nx-tree");
   let workspaceRoot: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [AdapterService],
-    }).compile();
+    const built = await buildTestingModule(AdapterService);
 
-    service = await module.resolve(AdapterService);
-    workspaceRoot = await mkdtemp(path.join(tmpdir(), "conformetry-nx-tree-"));
+    service = built.instance;
+    workspaceRoot = readWorkspaceRoot();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(AdapterService);
+
+    expect(instance).toBeInstanceOf(AdapterService);
   });
 
   describe("createAdapters", () => {
@@ -84,9 +89,7 @@ describe(AdapterService, () => {
     });
 
     it("falls back to the filesystem for a path outside the workspace", async () => {
-      const outsideRoot = await mkdtemp(
-        path.join(tmpdir(), "conformetry-nx-outside-"),
-      );
+      const outsideRoot = createTemporaryDirectory("nx-outside");
       const outsideFilePath = path.join(outsideRoot, "template.txt");
 
       await writeFile(outsideFilePath, "on disk", "utf8");
@@ -123,9 +126,7 @@ describe(AdapterService, () => {
     });
 
     it("lists a directory through the filesystem when it sits outside", async () => {
-      const outsidePath = await mkdtemp(
-        path.join(tmpdir(), "conformetry-out-"),
-      );
+      const outsidePath = createTemporaryDirectory("out");
 
       await writeFile(path.join(outsidePath, "notes.md"), "# Notes\n", "utf8");
 
@@ -138,9 +139,7 @@ describe(AdapterService, () => {
     });
 
     it("writes an absolute path unchanged when it sits outside the workspace", async () => {
-      const outsidePath = await mkdtemp(
-        path.join(tmpdir(), "conformetry-out-"),
-      );
+      const outsidePath = createTemporaryDirectory("out");
       const filePath = path.join(outsidePath, "notes.md");
       const { tree, writes } = createFakeTree(workspaceRoot);
       const { filesystem } = service.createAdapters({ tree, workspaceRoot });
