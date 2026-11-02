@@ -7,8 +7,6 @@ import {
 
 import { useFilterQuery } from "../../hooks/use-filter-query/use-filter-query";
 import { CalendarCollectionPicker } from "../calendar-collection-picker/calendar-collection-picker";
-import { CalendarColorOptions } from "../calendar-color-options/calendar-color-options";
-import { CalendarViewMenu } from "../calendar-view-menu/calendar-view-menu";
 
 import { EDITORS, TABLET_QUERY } from "./calendar-filters.constants";
 import { renderFiltersButton } from "./calendar-filters.utilities";
@@ -17,8 +15,6 @@ import { countActiveEventFilterRules } from "./event-filter-tree.utilities";
 import { FilterChipRow } from "./filter-chip-row";
 import { FilterSurface } from "./filter-surface";
 
-import type { CalendarSymbols } from "../../hooks/use-calendar-search/calendar-symbols.types";
-import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
 import type { EventFacet } from "../events-calendar/events-database.types";
 import type {
   EventFilterField,
@@ -36,21 +32,6 @@ import type { ReactNode } from "react";
 export interface CalendarFiltersProperties {
   className?: string;
   /**
-   * Whether the views of hours merge events that run together, which the View
-   * menu turns on or off; on when absent.
-   */
-  clusters?: boolean;
-  /**
-   * What the events are colored by, which the View menu's Color by submenu
-   * changes; the type, kind by kind, when absent.
-   */
-  colorBy?: EventGroupLevel | undefined;
-  /**
-   * Whether events are colored by type, which the View menu turns on or off;
-   * on when absent.
-   */
-  colors?: boolean;
-  /**
    * The tags of the data, from which the collections the menu applies in one
    * step are resolved, and the default one the calendar opens on.
    */
@@ -58,41 +39,10 @@ export interface CalendarFiltersProperties {
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
   /**
-   * Called with the merging setting picked in the View menu.
-   */
-  onClustersChange?: (enabled: boolean) => void;
-  /**
-   * Called with what the events are colored by as picked in the View menu, or
-   * `undefined` for the default.
-   */
-  onColorByChange?: (level: EventGroupLevel | undefined) => void;
-  /**
-   * Called with the colors setting picked in the View menu; the menu offers
-   * no choice without it.
-   */
-  onColorsChange?: (enabled: boolean) => void;
-  /**
    * Called with every edit to write back to the link: the whole tree, empty
    * once nothing is left.
    */
   onFilterChange: (filter: EventFilterQuery) => void;
-  /**
-   * Called with the symbols setting picked in the View menu.
-   */
-  onSymbolsChange?: ((symbols: CalendarSymbols) => void) | undefined;
-  /**
-   * The Sky menu, drawn beside the View menu.
-   */
-  skyMenu?: ReactNode;
-  /**
-   * How symbols are drawn, which the View menu changes; icons when absent.
-   */
-  symbols?: CalendarSymbols | undefined;
-  /**
-   * What the view shown can be arranged by, which the View menu draws ahead of
-   * its own sections.
-   */
-  viewOptions?: ReactNode;
 }
 
 // 🧩 Component
@@ -109,23 +59,7 @@ export interface CalendarFiltersProperties {
 export function CalendarFilters(
   properties: Readonly<CalendarFiltersProperties>,
 ): ReactNode {
-  const {
-    className,
-    clusters = true,
-    colorBy,
-    colors = true,
-    facets = [],
-    fields,
-    filter,
-    onClustersChange = () => {},
-    onColorByChange = () => {},
-    onColorsChange = () => {},
-    onFilterChange,
-    onSymbolsChange,
-    skyMenu,
-    symbols,
-    viewOptions,
-  } = properties;
+  const { className, facets = [], fields, filter, onFilterChange } = properties;
 
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
@@ -147,24 +81,6 @@ export function CalendarFilters(
       className={className}
       data-testid="calendar-filters"
     >
-      <CalendarViewMenu
-        clusters={clusters}
-        colorOptions={
-          <CalendarColorOptions
-            colorBy={colorBy}
-            facets={facets}
-            onColorByChange={onColorByChange}
-          />
-        }
-        colors={colors}
-        onClustersChange={onClustersChange}
-        onColorsChange={onColorsChange}
-        onSymbolsChange={onSymbolsChange}
-        symbols={symbols}
-      >
-        {viewOptions}
-      </CalendarViewMenu>
-      {skyMenu}
       <ButtonGroup aria-label="Filter">
         <FilterSurface
           isTablet={isTablet}

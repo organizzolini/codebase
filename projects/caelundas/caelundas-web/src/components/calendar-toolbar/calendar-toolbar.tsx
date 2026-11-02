@@ -1,6 +1,9 @@
 import { CalendarNavigationGroup } from "../calendar-navigation-group/calendar-navigation-group";
 import { CalendarViewSelect } from "../calendar-view-select/calendar-view-select";
 
+import { ROW_CLASS_NAME } from "./calendar-toolbar.constants";
+import { hasContent } from "./calendar-toolbar.utilities";
+
 import type { CalendarNavigation } from "../calendar-navigation-group/calendar-navigation-group.types";
 import type { CalendarViewName } from "../events-calendar/calendar-views.types";
 import type { ReactNode } from "react";
@@ -8,8 +11,8 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The toolbar moves the view it sits over, and shows whatever filter
- * controls the page hands it and the view the page shows.
+ * The toolbar moves the view it sits over, and shows whatever menus and
+ * filter controls the page hands it and the view the page shows.
  */
 export interface CalendarToolbarProperties {
   className?: string;
@@ -18,9 +21,14 @@ export interface CalendarToolbarProperties {
    */
   compact?: boolean | undefined;
   /**
-   * Drawn from the left: the View and Filter buttons and the filters' chips.
+   * Drawn from the left of the second row: the Filter and Clear buttons and
+   * the filters' chips.
    */
   filters?: ReactNode;
+  /**
+   * Drawn from the left of the first row: the View, Color and Sky menus.
+   */
+  menus?: ReactNode;
   navigation: CalendarNavigation;
   /**
    * Called with the view picked; the selector is left out without it.
@@ -32,21 +40,21 @@ export interface CalendarToolbarProperties {
 // 🧩 Component
 
 /**
- * Renders the calendar's one toolbar row: the filter controls from the left,
- * and at the right the view selector and the date with its buttons, over
- * whichever view's navigation it is handed. A phone's row has the date and
- * the views' menu, with the filters on a row under them.
+ * Renders the calendar's toolbar in two rows over whichever view's navigation
+ * it is handed: the menus, then the date with its buttons at the right; the
+ * filter controls, then the view selector at the right. A phone's first row
+ * has the date and the views' menu, with the menus and filters under them.
  */
 export function CalendarToolbar(
   properties: Readonly<CalendarToolbarProperties>,
 ): ReactNode {
-  const { className, compact, filters, navigation, onViewChange, view } =
+  const { className, compact, filters, menus, navigation, onViewChange, view } =
     properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
-  const hasControls = filters !== undefined && filters !== null;
+  const hasControls = hasContent(filters) || hasContent(menus);
   const viewSelect =
     view === undefined || onViewChange === undefined ? null : (
       <CalendarViewSelect
@@ -82,20 +90,28 @@ export function CalendarToolbar(
           {viewSelect}
         </div>
       ) : (
-        // The views and the date sit apart at the right, the date holding one
-        // width so changing the view moves nothing; the View and Filter
-        // buttons and the filters' chips flow from the left and wrap under
-        // each other. Where the row is too narrow to hold both side by side,
-        // the views and the date take a row above the filters.
-        <div className="@container [&_[data-slot=button]]:active:translate-y-0!">
-          <div className="grid min-w-0 gap-2 px-2 py-2 @7xl:grid-cols-[minmax(0,1fr)_auto] @7xl:items-start">
+        // Two rows, each with its own end at the right: the menus and the
+        // date, then the filters and the views. A row too narrow for both
+        // ends wraps its right end under its left, and the views scroll
+        // sideways rather than overflow the page.
+        <div className="flex min-w-0 flex-col gap-2 px-2 py-2 [&_[data-slot=button]]:active:translate-y-0!">
+          <div
+            className={ROW_CLASS_NAME}
+            data-testid="calendar-toolbar-menus"
+          >
             <div className="flex min-w-0 flex-wrap items-start gap-2">
+              {menus}
+            </div>
+            <CalendarNavigationGroup navigation={navigation} />
+          </div>
+          <div
+            className={ROW_CLASS_NAME}
+            data-testid="calendar-toolbar-filters"
+          >
+            <div className="flex min-w-0 flex-1 flex-wrap items-start gap-2">
               {filters}
             </div>
-            <div className="order-first flex items-start justify-end gap-2 @7xl:order-none">
-              {viewSelect}
-              <CalendarNavigationGroup navigation={navigation} />
-            </div>
+            <div className="max-w-full overflow-x-auto">{viewSelect}</div>
           </div>
         </div>
       )}
@@ -106,6 +122,7 @@ export function CalendarToolbar(
           className="flex min-w-0 flex-wrap items-center gap-2 px-2 pb-2 [&_[data-slot=button]]:active:translate-y-0!"
           data-testid="calendar-toolbar-controls"
         >
+          {menus}
           {filters}
         </div>
       ) : null}

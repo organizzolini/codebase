@@ -10,6 +10,7 @@ import { CalendarError } from "../components/calendar-error/calendar-error";
 import { CalendarFilters } from "../components/calendar-filters/calendar-filters";
 import { createEventFilterFields } from "../components/calendar-filters/event-filter-fields.utilities";
 import { EMPTY_EVENT_FILTER } from "../components/calendar-filters/event-filter-tree.constants";
+import { CalendarMenus } from "../components/calendar-menus/calendar-menus";
 import { CalendarSkeleton } from "../components/calendar-skeleton/calendar-skeleton";
 import { CalendarViewOptions } from "../components/calendar-view-options/calendar-view-options";
 import { loadedKeys } from "../components/events-calendar/calendar-loader.constants";
@@ -27,7 +28,6 @@ import { getDefaultCalendarView } from "../components/events-calendar/calendar-v
 import { parseCalendarDate } from "../components/events-calendar/calendar-window.utilities";
 import { EventsCalendar } from "../components/events-calendar/events-calendar";
 import { readTimeZone } from "../components/events-calendar/events-calendar.utilities";
-import { NightSkyMenu } from "../components/night-sky-menu/night-sky-menu";
 import {
   getCalendarReloadKey,
   readCalendarSearch,
@@ -184,18 +184,24 @@ function IndexPage(): ReactNode {
           filters={
             <CalendarFilters
               className="contents"
+              facets={facets}
+              fields={fields}
+              filter={filter}
+              onFilterChange={handleFilterChange}
+            />
+          }
+          grouping={grouping}
+          menus={
+            <CalendarMenus
+              className="contents"
               clusters={search.clusters !== false}
               colorBy={colorBy}
               colors={search.colors !== false}
               facets={facets}
-              fields={fields}
-              filter={filter}
               onClustersChange={handleClustersChange}
               onColorByChange={handleColorByChange}
               onColorsChange={handleColorsChange}
-              onFilterChange={handleFilterChange}
               onSymbolsChange={handleSymbolsChange}
-              skyMenu={<NightSkyMenu />}
               symbols={search.symbols}
               viewOptions={
                 <CalendarViewOptions
@@ -209,7 +215,6 @@ function IndexPage(): ReactNode {
               }
             />
           }
-          grouping={grouping}
           onDateChange={handleDateChange}
           onShowLater={handleShowLater}
           onViewChange={handleViewChange}

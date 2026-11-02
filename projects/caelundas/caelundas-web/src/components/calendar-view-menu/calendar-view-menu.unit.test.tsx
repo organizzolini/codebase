@@ -7,22 +7,18 @@ function renderMenu(
   overrides: Partial<Parameters<typeof CalendarViewMenu>[0]> = {},
 ): {
   onClustersChange: ReturnType<typeof vi.fn<(enabled: boolean) => void>>;
-  onColorsChange: ReturnType<typeof vi.fn<(enabled: boolean) => void>>;
 } {
   const onClustersChange = vi.fn<(enabled: boolean) => void>();
-  const onColorsChange = vi.fn<(enabled: boolean) => void>();
 
   render(
     <CalendarViewMenu
       onClustersChange={onClustersChange}
-      onColorsChange={onColorsChange}
       clusters
-      colors
       {...overrides}
     />,
   );
 
-  return { onClustersChange, onColorsChange };
+  return { onClustersChange };
 }
 
 describe(CalendarViewMenu, () => {
@@ -31,9 +27,7 @@ describe(CalendarViewMenu, () => {
       <CalendarViewMenu
         className="calendar-view-menu"
         onClustersChange={vi.fn<(enabled: boolean) => void>()}
-        onColorsChange={vi.fn<(enabled: boolean) => void>()}
         clusters
-        colors
       />,
     );
 
@@ -42,46 +36,24 @@ describe(CalendarViewMenu, () => {
     );
   });
 
-  it("reads View", () => {
+  it("reads View, with no arrow", () => {
     renderMenu();
 
-    expect(screen.getByRole("button", { name: "View options" })).toBeDefined();
-    expect(screen.getByText("View")).toBeDefined();
+    const trigger = screen.getByRole("button", { name: "View options" });
+
+    expect(trigger.textContent).toBe("View");
+    expect(trigger.querySelectorAll("svg")).toHaveLength(1);
   });
 
-  it("has no collections, which belong to the filter panel", async () => {
+  it("has no collections or colors, which belong elsewhere", async () => {
     renderMenu();
     fireEvent.click(screen.getByRole("button", { name: "View options" }));
     await screen.findByRole("menuitemcheckbox", {
-      name: "Color events",
+      name: "Group similar events",
     });
 
     expect(screen.queryByText("Collections")).toBeNull();
-    expect(screen.queryByText("All events")).toBeNull();
-  });
-
-  it("turns colors off from the menu", async () => {
-    const { onColorsChange } = renderMenu();
-
-    fireEvent.click(screen.getByRole("button", { name: "View options" }));
-    fireEvent.click(
-      await screen.findByRole("menuitemcheckbox", {
-        name: "Color events",
-      }),
-    );
-
-    expect(onColorsChange).toHaveBeenCalledWith(false);
-  });
-
-  it("shows the colors' state in the checkbox", async () => {
-    renderMenu({ colors: false });
-    fireEvent.click(screen.getByRole("button", { name: "View options" }));
-
-    const checkbox = await screen.findByRole("menuitemcheckbox", {
-      name: "Color events",
-    });
-
-    expect(checkbox.getAttribute("aria-checked")).toBe("false");
+    expect(screen.queryByText("Color events")).toBeNull();
   });
 
   it("turns merging off from the menu", async () => {
@@ -95,13 +67,6 @@ describe(CalendarViewMenu, () => {
     );
 
     expect(onClustersChange).toHaveBeenCalledWith(false);
-  });
-
-  it("draws the Color by submenu it is given after the colors switch", async () => {
-    renderMenu({ colorOptions: <p>Color by: Planet</p> });
-    fireEvent.click(screen.getByRole("button", { name: "View options" }));
-
-    await expect(screen.findByText("Color by: Planet")).resolves.toBeDefined();
   });
 
   it("offers glyphs and emojis, glyphs by default, and reports the pick", async () => {

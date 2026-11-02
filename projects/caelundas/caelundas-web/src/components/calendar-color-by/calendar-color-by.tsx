@@ -6,7 +6,7 @@ import {
 } from "../calendar-group-by/event-group-fields.utilities";
 import { GroupLevelRow } from "../calendar-group-by/group-level-row";
 
-import { TITLE } from "./calendar-color-by.constants";
+import { PICKER_NAME } from "./calendar-color-by.constants";
 import { createColorScheme } from "./calendar-color-schemes.utilities";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
@@ -39,7 +39,7 @@ export interface CalendarColorByProperties {
  * is: any field the events can be filtered or grouped by, and for a tag root
  * the tags, or the depth of its tree, that each get a color, beside the
  * colors and what each stands for. The type is the default, drawn kind by
- * kind. The View menu holds it in its Color by submenu.
+ * kind. The Color menu shows it in its panel, under its switch.
  */
 export function CalendarColorBy(
   properties: Readonly<CalendarColorByProperties>,
@@ -70,14 +70,13 @@ export function CalendarColorBy(
       className={className}
       data-testid="calendar-color-by"
     >
-      <div className="flex w-80 max-w-[90vw] flex-col gap-2 p-1">
-        <h2 className="text-sm font-semibold">{TITLE}</h2>
+      <div className="flex flex-col gap-2">
         {level === undefined ? null : (
           <GroupLevelRow
             fields={fields}
             isOpen={isOpen}
             level={level}
-            name="Color"
+            name={PICKER_NAME}
             onChange={(next) => {
               // Picking the type with all of its tags is the default.
               const isDefault =

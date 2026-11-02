@@ -53,7 +53,7 @@ export interface EventsCalendarProperties {
    */
   facets: readonly EventFacet[];
   /**
-   * The filter controls the toolbar row carries.
+   * The filter controls the toolbar's second row carries.
    */
   filters?: ReactNode;
   /**
@@ -61,6 +61,10 @@ export interface EventsCalendarProperties {
    * read for.
    */
   grouping: readonly EventGroupLevel[];
+  /**
+   * The menus the toolbar's first row carries: View, Color and Sky.
+   */
+  menus?: ReactNode;
   /**
    * Called with the new day when the toolbar moves the calendar.
    */
@@ -106,6 +110,7 @@ export function EventsCalendar(
     facets,
     filters,
     grouping,
+    menus,
     onDateChange,
     onViewChange,
     scale = DEFAULT_TIMELINE_SCALE,
@@ -149,6 +154,7 @@ export function EventsCalendar(
         <CalendarToolbar
           compact={compact}
           filters={filters}
+          menus={menus}
           navigation={navigation}
           onViewChange={onViewChange}
           view={view}
