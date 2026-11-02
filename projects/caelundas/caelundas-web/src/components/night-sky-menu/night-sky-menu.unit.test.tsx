@@ -1,11 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { DropdownMenu, DropdownMenuContent } from "@codebase/presentation";
-
 import { NightSkyMenu } from "./night-sky-menu";
-
-import type { ReactNode } from "react";
 
 vi.mock(
   import("../../hooks/use-night-sky/use-night-sky-settings"),
@@ -23,24 +19,32 @@ vi.mock(
   },
 );
 
-/**
- * An open dropdown menu, which the submenu belongs inside.
- */
-function OpenMenu(properties: Readonly<{ children: ReactNode }>): ReactNode {
-  return (
-    <DropdownMenu open>
-      <DropdownMenuContent>{properties.children}</DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
 describe(NightSkyMenu, () => {
   it("applies its class name", () => {
-    render(<NightSkyMenu className="night-sky-menu" />, { wrapper: OpenMenu });
+    render(<NightSkyMenu className="night-sky-menu" />);
 
     expect(screen.getByTestId("night-sky-menu").className).toBe(
       "night-sky-menu",
     );
-    expect(screen.getByText("Night sky")).toBeDefined();
+  });
+
+  it("opens from its Sky button onto every section heading and its footer", async () => {
+    render(<NightSkyMenu />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Sky options" }));
+
+    await screen.findByRole("group", { name: "Night sky settings" });
+
+    for (const title of ["Sky", "Stars", "Angles", "Lines"]) {
+      expect(
+        screen.getByRole("heading", { level: 3, name: title }),
+      ).toBeDefined();
+    }
+
+    expect(
+      screen.getByRole("group", { name: "Constellations to draw" }),
+    ).toBeDefined();
+    expect(screen.getByRole("button", { name: "Full" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Default" })).toBeDefined();
   });
 });

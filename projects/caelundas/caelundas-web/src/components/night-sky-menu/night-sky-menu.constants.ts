@@ -15,12 +15,12 @@ import type {
 /**
  * Where the observer stands and which part of the sky the window shows.
  */
-export const VIEW_SLIDERS: readonly SkySliderControl[] = [
+export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "latitudeDegrees",
     key: "sky.lat",
     label: "Latitude",
-    maximum: 89,
+    maximum: 90,
     minimum: 1,
     step: 0.5,
     unit: "°",
@@ -94,7 +94,7 @@ export const LINE_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "lineOpacity",
     key: "sky.lineOpacity",
-    label: "Line opacity",
+    label: "Constellation line opacity",
     maximum: LINE_OPACITY_RANGE.maximum,
     minimum: LINE_OPACITY_RANGE.minimum,
     step: 0.01,
@@ -103,7 +103,31 @@ export const LINE_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "lineWidth",
     key: "sky.lineWidth",
-    label: "Line width",
+    label: "Constellation line width",
+    maximum: 4,
+    minimum: 0,
+    step: 0.1,
+    unit: " pixels",
+  },
+];
+
+/**
+ * How the ecliptic's dashed path is stroked.
+ */
+export const ECLIPTIC_SLIDERS: readonly SkySliderControl[] = [
+  {
+    field: "eclipticOpacity",
+    key: "sky.eclipticOpacity",
+    label: "Ecliptic opacity",
+    maximum: LINE_OPACITY_RANGE.maximum,
+    minimum: LINE_OPACITY_RANGE.minimum,
+    step: 0.01,
+    unit: "",
+  },
+  {
+    field: "eclipticWidth",
+    key: "sky.eclipticWidth",
+    label: "Ecliptic width",
     maximum: 4,
     minimum: 0,
     step: 0.1,
@@ -116,9 +140,10 @@ export const LINE_SLIDERS: readonly SkySliderControl[] = [
  * inside the wider ones the link accepts.
  */
 export const SKY_SLIDERS: readonly SkySliderControl[] = [
-  ...VIEW_SLIDERS,
+  ...ANGLE_SLIDERS,
   ...STAR_SLIDERS,
   ...LINE_SLIDERS,
+  ...ECLIPTIC_SLIDERS,
 ];
 
 /**
@@ -135,7 +160,16 @@ export const BACKGROUND_COLORS: readonly SkyColorControl[] = [
 export const LINE_COLOR: SkyColorControl = {
   field: "lineColor",
   key: "sky.lineColor",
-  label: "Line color",
+  label: "Constellation line color",
+};
+
+/**
+ * The color of the ecliptic's dashed path.
+ */
+export const ECLIPTIC_COLOR: SkyColorControl = {
+  field: "eclipticColor",
+  key: "sky.eclipticColor",
+  label: "Ecliptic color",
 };
 
 /**
@@ -144,6 +178,7 @@ export const LINE_COLOR: SkyColorControl = {
 export const SKY_COLORS: readonly SkyColorControl[] = [
   ...BACKGROUND_COLORS,
   LINE_COLOR,
+  ECLIPTIC_COLOR,
 ];
 
 /**
@@ -155,6 +190,9 @@ export const SKY_DEFAULTS: Readonly<
 > = {
   "sky.altBottom": DEFAULT_OPTIONS.bottomAltitudeDegrees,
   "sky.bottom": DEFAULT_OPTIONS.backgroundBottomColor,
+  "sky.eclipticColor": DEFAULT_OPTIONS.eclipticColor,
+  "sky.eclipticOpacity": DEFAULT_OPTIONS.eclipticOpacity,
+  "sky.eclipticWidth": DEFAULT_OPTIONS.eclipticWidth,
   "sky.lat": DEFAULT_OBSERVER.latitudeDegrees,
   "sky.lineColor": DEFAULT_OPTIONS.lineColor,
   "sky.lineOpacity": DEFAULT_OPTIONS.lineOpacity,
@@ -168,31 +206,41 @@ export const SKY_DEFAULTS: Readonly<
 };
 
 /**
- * The keys Reset to defaults removes: every key the menu sets. `sky.debug`
+ * The keys the Default button removes: every key the menu sets. `sky.debug`
  * stays, since only a link sets it.
  */
 export const RESET_SKY_KEYS: readonly SkyParameterKey[] = [
   "sky",
   "sky.constellations",
+  "sky.ecliptic",
   ...SKY_SLIDERS.map((slider) => slider.key),
   ...SKY_COLORS.map((color) => color.key),
 ];
 
 /**
- * The figure choices made in one press, and the words each writes.
- */
-export const CONSTELLATION_CHOICES = [
-  { label: "Zodiac", words: ["zodiac"] },
-  { label: "All", words: ["all"] },
-  { label: "None", words: [] },
-] as const;
-
-/**
- * The submenu's panel: as wide as a phone allows, and no taller than the
- * room the menu has on screen, scrolling on its own within it.
+ * The menu's panel: four columns wide on a wide screen and as wide as a
+ * phone allows on one, no taller than the room below the toolbar, scrolling
+ * on its own only when even that is too short, as on a phone.
  */
 export const PANEL_CLASS_NAME =
-  "w-[min(20rem,calc(100vw-1rem))] max-h-[min(var(--available-height),36rem)] overflow-y-auto";
+  "w-[min(20rem,calc(100vw-1rem))] md:w-[min(40rem,calc(100vw-1rem))] lg:w-[min(68rem,calc(100vw-1rem))] max-h-(--available-height) overflow-y-auto";
+
+/**
+ * The row of Full and Default at the panel's foot, kept in view while the
+ * panel scrolls on a phone.
+ */
+export const FOOTER_CLASS_NAME =
+  "sticky bottom-0 flex justify-end gap-2 border-t bg-popover p-2";
+
+/**
+ * The settings the Full button writes: the whole sky above the horizon, seen
+ * from the pole.
+ */
+export const FULL_VIEW: readonly (readonly [SkyParameterKey, number])[] = [
+  ["sky.altBottom", 0],
+  ["sky.lat", 90],
+  ["sky.vFov", 90],
+];
 
 /**
  * The keys the menu itself reads, which the panel's controls let reach it:
@@ -212,10 +260,18 @@ export const SLIDER_CLASS_NAME =
   "[&_[data-slot=slider-thumb]]:size-4";
 
 /**
- * A section header: small, quiet, and a full-width target to open or close.
+ * A section heading: small, quiet, and always above its controls.
  */
-export const SECTION_TRIGGER_CLASS_NAME =
-  "group text-muted-foreground hover:bg-accent flex w-full items-center justify-between rounded-md px-1 py-1 text-xs font-semibold tracking-wide uppercase";
+export const SECTION_HEADING_CLASS_NAME =
+  "text-muted-foreground px-1 py-1 text-xs font-semibold tracking-wide uppercase";
+
+/**
+ * The constellation tree's box: as tall as the panel's other columns on a
+ * wide screen, where its column takes no height of its own, and bounded on a
+ * phone; it scrolls inside either way.
+ */
+export const TREE_CLASS_NAME =
+  "max-h-80 min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-md border p-1 lg:max-h-none";
 
 /**
  * A constellation tree row: tall enough to tap, its checkbox and name in line.

@@ -42,10 +42,6 @@ export interface CalendarViewMenuProperties {
    */
   colorOptions?: ReactNode;
   colors: boolean;
-  /**
-   * The Night sky submenu, drawn last in its own section.
-   */
-  nightSky?: ReactNode;
   onClustersChange: (enabled: boolean) => void;
   onColorsChange: (enabled: boolean) => void;
   onSymbolsChange?: ((symbols: CalendarSymbols) => void) | undefined;
@@ -69,7 +65,6 @@ export function CalendarViewMenu(
     clusters,
     colorOptions,
     colors,
-    nightSky,
     onClustersChange,
     onColorsChange,
     onSymbolsChange = () => {},
@@ -157,15 +152,6 @@ export function CalendarViewMenu(
                 Group similar events
               </DropdownMenuCheckboxItem>
             </DropdownMenuGroup>
-            {nightSky === undefined ? null : (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel>Backdrop</DropdownMenuLabel>
-                  {nightSky}
-                </DropdownMenuGroup>
-              </>
-            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </ButtonGroup>

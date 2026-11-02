@@ -21,7 +21,11 @@ export type NumericSkySetting = {
  * One color the menu picks, the link key it writes and the setting it shows.
  */
 export interface SkyColorControl {
-  field: "backgroundBottomColor" | "backgroundTopColor" | "lineColor";
+  field:
+    | "backgroundBottomColor"
+    | "backgroundTopColor"
+    | "eclipticColor"
+    | "lineColor";
   key: SkyParameterKey;
   label: string;
 }

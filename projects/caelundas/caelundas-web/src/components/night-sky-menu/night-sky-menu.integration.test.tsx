@@ -47,23 +47,17 @@ async function findSky(): Promise<SVGSVGElement> {
 }
 
 /**
- * Opens the submenu's Constellations section, closed at first.
+ * Waits for the Constellations column's tree, open from the start.
  */
 async function openConstellations(): Promise<void> {
-  fireEvent.click(
-    await screen.findByRole("button", { name: "Constellations" }),
-  );
   await screen.findByRole("group", { name: "Constellations to draw" });
 }
 
 /**
- * Opens the View menu, then its Night sky submenu.
+ * Opens the toolbar's Sky menu.
  */
 async function openNightSkyMenu(): Promise<void> {
-  fireEvent.click(
-    await screen.findByRole("button", { name: /^View options/u }),
-  );
-  fireEvent.click(await screen.findByText("Night sky"));
+  fireEvent.click(await screen.findByRole("button", { name: "Sky options" }));
   await screen.findByRole("group", { name: "Night sky settings" });
 }
 
@@ -90,11 +84,15 @@ describe("night sky menu", () => {
 
     expect(screen.getByText("51.5°")).toBeDefined();
     expect(
-      screen.getByRole("button", { name: "All" }).getAttribute("aria-pressed"),
+      screen
+        .getByRole("checkbox", { name: "Other constellations" })
+        .getAttribute("aria-checked"),
     ).toBe("true");
-    expect(screen.getByRole("switch").getAttribute("aria-checked")).toBe(
-      "false",
-    );
+    expect(
+      screen
+        .getByRole("switch", { name: "Show the sky" })
+        .getAttribute("aria-checked"),
+    ).toBe("false");
   });
 
   it("writes a control to the link, and the sky follows it", async () => {
@@ -103,7 +101,7 @@ describe("night sky menu", () => {
     await openNightSkyMenu();
     await openConstellations();
 
-    fireEvent.click(screen.getByRole("button", { name: "None" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "Zodiac" }));
 
     await waitFor(() => {
       expect(readSearch()).toMatchObject({ "sky.constellations": "none" });
@@ -114,7 +112,7 @@ describe("night sky menu", () => {
       ).toBeNull();
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Zodiac" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "Zodiac" }));
 
     await waitFor(() => {
       expect(readSearch()).not.toHaveProperty("sky.constellations");
@@ -151,7 +149,7 @@ describe("night sky menu", () => {
     );
     await openNightSkyMenu();
 
-    fireEvent.click(screen.getByRole("button", { name: "Reset to defaults" }));
+    fireEvent.click(screen.getByRole("button", { name: "Default" }));
 
     await waitFor(() => {
       expect(readSearch()).not.toHaveProperty("sky.lat");
@@ -159,6 +157,75 @@ describe("night sky menu", () => {
 
     expect(readSearch()).not.toHaveProperty("sky.top");
     expect(readSearch()).toMatchObject({ "sky.debug": true });
+  });
+
+  it.each(["all", "none"])(
+    "resets sky.constellations=%s to the zodiac, which draws from the far north",
+    async (words) => {
+      await renderRoute(`/?date=2026-03-01&sky.constellations=${words}`);
+      await openNightSkyMenu();
+      await openConstellations();
+
+      fireEvent.click(screen.getByRole("button", { name: "Default" }));
+
+      await waitFor(() => {
+        expect(readSearch()).not.toHaveProperty("sky.constellations");
+      });
+
+      expect(
+        screen
+          .getByRole("checkbox", { name: "Zodiac" })
+          .getAttribute("aria-checked"),
+      ).toBe("true");
+      expect(
+        screen
+          .getByRole("checkbox", { name: "Other constellations" })
+          .getAttribute("aria-checked"),
+      ).toBe("false");
+      expect(
+        screen
+          .getAllByRole("checkbox")
+          .filter(
+            (checkbox) => checkbox.getAttribute("aria-checked") === "true",
+          ),
+      ).toHaveLength(13);
+
+      // New York, the default, sees no zodiac figure facing north; the pole does.
+      fireEvent.click(screen.getByRole("button", { name: "Full" }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("night-sky-backdrop").querySelector("polyline"),
+        ).not.toBeNull();
+      });
+
+      expect(readSearch()).not.toHaveProperty("sky.constellations");
+    },
+  );
+
+  it("shows the pole's whole sky from the Full button, keeping other settings", async () => {
+    await renderRoute(
+      "/?date=2026-03-01&sky.altBottom=10&sky.starScale=2&sky.debug=true",
+    );
+    await openNightSkyMenu();
+
+    fireEvent.click(screen.getByRole("button", { name: "Full" }));
+
+    await waitFor(() => {
+      expect(readSearch()).toMatchObject({ "sky.lat": 90, "sky.vFov": 90 });
+    });
+
+    expect(readSearch()).not.toHaveProperty("sky.altBottom");
+    expect(readSearch()).toMatchObject({
+      "sky.debug": true,
+      "sky.starScale": 2,
+    });
+
+    await findSky();
+
+    expect(screen.getByTestId("night-sky-backdrop").innerHTML).not.toMatch(
+      /NaN|Infinity/u,
+    );
   });
 
   it("toggles all twelve zodiac figures from their folder, dashed when some show", async () => {
@@ -192,6 +259,31 @@ describe("night sky menu", () => {
 
     await waitFor(() => {
       expect(readSearch()).not.toHaveProperty("sky.constellations");
+    });
+  });
+
+  it("draws the ecliptic from its switch, and the Default button removes it", async () => {
+    await renderRoute("/?date=2026-03-01&sky.lat=75");
+    await findSky();
+    await openNightSkyMenu();
+
+    fireEvent.click(screen.getByRole("switch", { name: "Show the ecliptic" }));
+
+    await waitFor(() => {
+      expect(readSearch()).toMatchObject({ "sky.ecliptic": true });
+    });
+    await waitFor(() => {
+      expect(
+        screen
+          .getByTestId("night-sky-backdrop")
+          .querySelector('[data-layer="ecliptic"] polyline'),
+      ).not.toBeNull();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Default" }));
+
+    await waitFor(() => {
+      expect(readSearch()).not.toHaveProperty("sky.ecliptic");
     });
   });
 });

@@ -1,9 +1,6 @@
-import { Button } from "@codebase/presentation";
-
 import { NightSkyConstellationFolder } from "./night-sky-constellation-folder";
-import { CONSTELLATION_CHOICES } from "./night-sky-menu.constants";
+import { TREE_CLASS_NAME } from "./night-sky-menu.constants";
 import {
-  isChoiceActive,
   listShownConstellations,
   splitConstellations,
   toggleConstellations,
@@ -28,10 +25,10 @@ export interface NightSkyConstellationPickerProperties {
 // 🧩 Component
 
 /**
- * Renders which constellations' figures the sky draws: Zodiac, All and None
- * in one press, then a tree of two folders, the zodiac's twelve, open, and
- * every other, closed, in a list that scrolls on its own so the menu around
- * it keeps its height.
+ * Renders which constellations' figures the sky draws: a tree of two folders,
+ * the zodiac's twelve, open, and every other, closed, whose folder checkboxes
+ * pick all or none, in a list that scrolls on its own so the menu around it
+ * keeps its height.
  */
 export function NightSkyConstellationPicker(
   properties: Readonly<NightSkyConstellationPickerProperties>,
@@ -59,29 +56,12 @@ export function NightSkyConstellationPicker(
       className={className}
       data-testid="night-sky-constellation-picker"
     >
-      <fieldset className="flex flex-col gap-2">
-        {/* The section header above already reads Constellations. */}
+      <fieldset className="flex h-full flex-col lg:absolute lg:inset-0">
+        {/* The column has no visible heading; the tree names itself. */}
         <legend className="sr-only">Constellations</legend>
-        <div className="flex gap-1">
-          {CONSTELLATION_CHOICES.map((choice) => (
-            <Button
-              key={choice.label}
-              aria-pressed={isChoiceActive(choice.words, words)}
-              onClick={() => {
-                onWordsChange([...choice.words]);
-              }}
-              size="sm"
-              variant={
-                isChoiceActive(choice.words, words) ? "secondary" : "outline"
-              }
-            >
-              {choice.label}
-            </Button>
-          ))}
-        </div>
         <div
           aria-label="Constellations to draw"
-          className="max-h-64 overflow-y-auto overscroll-contain rounded-md border p-1"
+          className={TREE_CLASS_NAME}
           role="group"
         >
           <NightSkyConstellationFolder

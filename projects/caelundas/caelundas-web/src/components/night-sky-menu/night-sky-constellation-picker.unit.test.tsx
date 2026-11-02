@@ -27,7 +27,7 @@ describe(NightSkyConstellationPicker, () => {
     );
   });
 
-  it("marks the choice the link holds and the constellations it shows", () => {
+  it("marks the constellations the link shows", () => {
     render(
       <NightSkyConstellationPicker
         constellations={LISTING}
@@ -36,11 +36,7 @@ describe(NightSkyConstellationPicker, () => {
       />,
     );
 
-    expect(
-      screen
-        .getByRole("button", { name: "Zodiac" })
-        .getAttribute("aria-pressed"),
-    ).toBe("true");
+    expect(screen.queryByRole("button", { name: "All" })).toBeNull();
     expect(
       screen
         .getByRole("checkbox", { name: "Aries" })
@@ -53,7 +49,7 @@ describe(NightSkyConstellationPicker, () => {
     ).toBe("false");
   });
 
-  it("sends a one-press choice, and a constellation added to the choice", () => {
+  it("picks every constellation and none from the folder checkboxes", () => {
     const onWordsChange = vi.fn<(words: string[]) => void>();
 
     render(
@@ -64,15 +60,30 @@ describe(NightSkyConstellationPicker, () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "None" }));
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: "Other constellations" }),
+    );
+    fireEvent.click(screen.getByRole("checkbox", { name: "Zodiac" }));
+
+    expect(onWordsChange.mock.calls).toStrictEqual([[["all"]], [[]]]);
+  });
+
+  it("adds one constellation to the zodiac", () => {
+    const onWordsChange = vi.fn<(words: string[]) => void>();
+
+    render(
+      <NightSkyConstellationPicker
+        constellations={LISTING}
+        onWordsChange={onWordsChange}
+        words={["zodiac"]}
+      />,
+    );
+
     fireEvent.click(
       screen.getByRole("button", { name: "Expand Other constellations" }),
     );
     fireEvent.click(screen.getByRole("checkbox", { name: "Orion" }));
 
-    expect(onWordsChange.mock.calls).toStrictEqual([
-      [[]],
-      [["zodiac", "orion"]],
-    ]);
+    expect(onWordsChange.mock.calls).toStrictEqual([[["zodiac", "orion"]]]);
   });
 });

@@ -58,10 +58,6 @@ export interface CalendarFiltersProperties {
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
   /**
-   * The Night sky submenu, which the View menu draws last.
-   */
-  nightSkyOptions?: ReactNode;
-  /**
    * Called with the merging setting picked in the View menu.
    */
   onClustersChange?: (enabled: boolean) => void;
@@ -84,6 +80,10 @@ export interface CalendarFiltersProperties {
    * Called with the symbols setting picked in the View menu.
    */
   onSymbolsChange?: ((symbols: CalendarSymbols) => void) | undefined;
+  /**
+   * The Sky menu, drawn beside the View menu.
+   */
+  skyMenu?: ReactNode;
   /**
    * How symbols are drawn, which the View menu changes; icons when absent.
    */
@@ -117,12 +117,12 @@ export function CalendarFilters(
     facets = [],
     fields,
     filter,
-    nightSkyOptions,
     onClustersChange = () => {},
     onColorByChange = () => {},
     onColorsChange = () => {},
     onFilterChange,
     onSymbolsChange,
+    skyMenu,
     symbols,
     viewOptions,
   } = properties;
@@ -157,7 +157,6 @@ export function CalendarFilters(
           />
         }
         colors={colors}
-        nightSky={nightSkyOptions}
         onClustersChange={onClustersChange}
         onColorsChange={onColorsChange}
         onSymbolsChange={onSymbolsChange}
@@ -165,6 +164,7 @@ export function CalendarFilters(
       >
         {viewOptions}
       </CalendarViewMenu>
+      {skyMenu}
       <ButtonGroup aria-label="Filter">
         <FilterSurface
           isTablet={isTablet}

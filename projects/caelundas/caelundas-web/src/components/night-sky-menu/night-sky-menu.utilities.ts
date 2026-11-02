@@ -1,6 +1,7 @@
 import { normalizeConstellationName } from "../../hooks/use-night-sky/use-night-sky.utilities";
 
 import {
+  FULL_VIEW,
   MENU_KEYS,
   RESET_SKY_KEYS,
   SKY_DEFAULTS,
@@ -25,19 +26,6 @@ export function formatSliderValue(
   control: SkySliderControl,
 ): string {
   return `${String(roundToStep(value, control.step))}${control.unit}`;
-}
-
-/**
- * Whether a one-press choice is the one the link holds.
- */
-export function isChoiceActive(
-  choice: readonly string[],
-  words: readonly string[],
-): boolean {
-  return (
-    choice.length === words.length &&
-    choice.every((word, index) => word === words[index])
-  );
 }
 
 // 🌎 Public Functions
@@ -147,6 +135,27 @@ export function toConstellationsChange(
 }
 
 /**
+ * The change that draws the ecliptic, with `sky.ecliptic=true`, or removes
+ * the key to leave it off, its default.
+ */
+export function toEclipticChange(visible: boolean): SkySearchChange {
+  return { "sky.ecliptic": visible ? true : undefined };
+}
+
+/**
+ * The change the Full button makes: the pole's whole sky, leaving every other
+ * setting, and naming only the keys that differ from their defaults.
+ */
+export function toFullViewChange(): SkySearchChange {
+  return Object.fromEntries(
+    FULL_VIEW.map(([key, value]) => [
+      key,
+      isDefault(key, value) ? undefined : value,
+    ]),
+  );
+}
+
+/**
  * Shows or hides one constellation's figure among those chosen, naming the
  * choice again in its fewest words.
  */
@@ -182,7 +191,7 @@ export function toggleConstellations(
 }
 
 /**
- * The change Reset to defaults makes: every key the menu sets, removed.
+ * The change the Default button makes: every key the menu sets, removed.
  */
 export function toResetChange(): SkySearchChange {
   return Object.fromEntries(RESET_SKY_KEYS.map((key) => [key, undefined]));

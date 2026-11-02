@@ -1,8 +1,11 @@
+import { Galaxy } from "lucide-react";
+
 import {
   Button,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
+  ButtonGroup,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
   FieldSet,
   Label,
   Switch,
@@ -12,30 +15,30 @@ import { useNightSkySettings } from "../../hooks/use-night-sky/use-night-sky-set
 
 import { NightSkyColorField } from "./night-sky-color-field";
 import { NightSkyConstellationPicker } from "./night-sky-constellation-picker";
+import { NightSkyLinesSection } from "./night-sky-lines-section";
+import { NightSkyMenuFooter } from "./night-sky-menu-footer";
 import {
+  ANGLE_SLIDERS,
   BACKGROUND_COLORS,
-  LINE_COLOR,
-  LINE_SLIDERS,
+  FOOTER_CLASS_NAME,
   PANEL_CLASS_NAME,
   STAR_SLIDERS,
-  VIEW_SLIDERS,
 } from "./night-sky-menu.constants";
 import {
   keepKeysInPanel,
   toConstellationsChange,
-  toResetChange,
   toSkyParameterChange,
   toVisibilityChange,
 } from "./night-sky-menu.utilities";
 import { NightSkySection } from "./night-sky-section";
-import { NightSkySlider } from "./night-sky-slider";
+import { NightSkySliders } from "./night-sky-sliders";
 
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * Where the Night sky submenu sits in the View menu.
+ * Where the Sky menu sits in the toolbar.
  */
 export interface NightSkyMenuProperties {
   className?: string;
@@ -44,11 +47,11 @@ export interface NightSkyMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the View menu's Night sky submenu: every setting of the backdrop,
- * read from the link and written back to it as it changes, so the sky
+ * Renders the toolbar's Sky menu: every setting of the night sky behind the
+ * page, read from the link and written back to it as it changes, so the sky
  * follows a control live and a link reopens the same controls. Its sections
- * open, but for Constellations, whose picker is last and closed, so every
- * other setting shows at once. It belongs inside a dropdown menu.
+ * sit in three columns on a wide screen, so the menu fits without scrolling,
+ * and in one on a phone; the constellation picker is last, closed at first.
  */
 export function NightSkyMenu(
   properties: Readonly<NightSkyMenuProperties>,
@@ -77,93 +80,85 @@ export function NightSkyMenu(
       className={className}
       data-testid="night-sky-menu"
     >
-      <DropdownMenuSub>
-        <DropdownMenuSubTrigger>Night sky</DropdownMenuSubTrigger>
-        <DropdownMenuSubContent className={PANEL_CLASS_NAME}>
-          <FieldSet
-            aria-label="Night sky settings"
-            className="gap-1 p-2"
-            onKeyDown={keepKeysInPanel}
+      <ButtonGroup aria-label="Sky menu">
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                aria-label="Sky options"
+                size="sm"
+                variant="outline"
+              />
+            }
           >
-            <NightSkySection title="Sky">
-              <Label className="justify-between text-xs">
-                Show the sky
-                <Switch
-                  checked={!settings.off}
-                  onCheckedChange={(checked: boolean) => {
-                    change(toVisibilityChange(checked));
-                  }}
-                />
-              </Label>
-            </NightSkySection>
-            <NightSkySection title="View angles">
-              {VIEW_SLIDERS.map((control) => (
-                <NightSkySlider
-                  key={control.key}
-                  control={control}
-                  onValueChange={handleSettingChange}
-                  value={settings[control.field]}
-                />
-              ))}
-            </NightSkySection>
-            <NightSkySection title="Stars">
-              {STAR_SLIDERS.map((control) => (
-                <NightSkySlider
-                  key={control.key}
-                  control={control}
-                  onValueChange={handleSettingChange}
-                  value={settings[control.field]}
-                />
-              ))}
-            </NightSkySection>
-            <NightSkySection title="Colors">
-              {BACKGROUND_COLORS.map((control) => (
-                <NightSkyColorField
-                  key={control.key}
-                  control={control}
-                  onValueChange={handleSettingChange}
-                  value={settings[control.field]}
-                />
-              ))}
-            </NightSkySection>
-            <NightSkySection
-              defaultOpen={false}
-              title="Constellations"
+            <Galaxy aria-hidden="true" />
+            Sky
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="start"
+            className={PANEL_CLASS_NAME}
+            sideOffset={8}
+          >
+            <FieldSet
+              aria-label="Night sky settings"
+              className="grid gap-x-5 gap-y-1 p-2 md:grid-cols-2 lg:grid-cols-4"
+              onKeyDown={keepKeysInPanel}
             >
-              {LINE_SLIDERS.map((control) => (
-                <NightSkySlider
-                  key={control.key}
-                  control={control}
+              <div>
+                <NightSkySection title="Sky">
+                  <Label className="justify-between text-xs">
+                    Show the sky
+                    <Switch
+                      checked={!settings.off}
+                      onCheckedChange={(checked: boolean) => {
+                        change(toVisibilityChange(checked));
+                      }}
+                    />
+                  </Label>
+                  {BACKGROUND_COLORS.map((control) => (
+                    <NightSkyColorField
+                      key={control.key}
+                      control={control}
+                      onValueChange={handleSettingChange}
+                      value={settings[control.field]}
+                    />
+                  ))}
+                </NightSkySection>
+                <NightSkySection title="Stars">
+                  <NightSkySliders
+                    controls={STAR_SLIDERS}
+                    onValueChange={handleSettingChange}
+                    settings={settings}
+                  />
+                </NightSkySection>
+              </div>
+              <NightSkySection title="Angles">
+                <NightSkySliders
+                  controls={ANGLE_SLIDERS}
                   onValueChange={handleSettingChange}
-                  value={settings[control.field]}
+                  settings={settings}
                 />
-              ))}
-              <NightSkyColorField
-                control={LINE_COLOR}
-                onValueChange={handleSettingChange}
-                value={settings[LINE_COLOR.field]}
+              </NightSkySection>
+              <NightSkyLinesSection
+                onChange={change}
+                settings={settings}
               />
               <NightSkyConstellationPicker
+                className="relative min-h-0"
                 constellations={constellations}
                 onWordsChange={(words) => {
                   change(toConstellationsChange(words));
                 }}
                 words={settings.constellations}
               />
-            </NightSkySection>
-            <Button
-              className="mt-1"
-              onClick={() => {
-                change(toResetChange());
-              }}
-              size="sm"
-              variant="outline"
-            >
-              Reset to defaults
-            </Button>
-          </FieldSet>
-        </DropdownMenuSubContent>
-      </DropdownMenuSub>
+            </FieldSet>
+            <NightSkyMenuFooter
+              className={FOOTER_CLASS_NAME}
+              onChange={change}
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </ButtonGroup>
     </div>
   );
 }

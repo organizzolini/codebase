@@ -1,3 +1,7 @@
+import { useId } from "react";
+
+import { ColorPicker } from "@codebase/presentation";
+
 import type { SkyColorControl, SkyParameterKey } from "./night-sky-menu.types";
 import type { ReactNode } from "react";
 
@@ -17,8 +21,9 @@ export interface NightSkyColorFieldProperties {
 // 🧩 Component
 
 /**
- * Renders one of the night sky's colors as a labeled color input, the
- * browser's own picker, which every platform makes touch and keyboard ready.
+ * Renders one of the night sky's colors as a labeled ReUI color picker: a
+ * swatch button whose popover picks by area, hue and hexadecimal field, each
+ * reachable by keyboard, written to the link as `#rrggbb` as it moves.
  */
 export function NightSkyColorField(
   properties: Readonly<NightSkyColorFieldProperties>,
@@ -26,6 +31,7 @@ export function NightSkyColorField(
   const { className, control, onValueChange, value } = properties;
 
   // 🪝 Hooks
+  const labelId = useId();
 
   // 🏗 Setup
 
@@ -41,17 +47,19 @@ export function NightSkyColorField(
       className={className}
       data-testid="night-sky-color-field"
     >
-      <label className="flex items-center justify-between gap-2 text-xs">
-        {control.label}
-        <input
-          className="border-input h-8 w-12 cursor-pointer rounded-md border bg-transparent p-0.5"
-          onChange={(event) => {
-            onValueChange(control.key, event.target.value);
+      <div className="flex items-center justify-between gap-2 text-xs">
+        <span id={labelId}>{control.label}</span>
+        <ColorPicker
+          aria-labelledby={labelId}
+          className="h-8 w-32 text-xs"
+          onValueChange={(next: null | string) => {
+            if (next !== null) {
+              onValueChange(control.key, next);
+            }
           }}
-          type="color"
           value={value}
         />
-      </label>
+      </div>
     </div>
   );
 }

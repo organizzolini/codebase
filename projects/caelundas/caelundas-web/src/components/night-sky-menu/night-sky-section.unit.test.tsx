@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { NightSkySection } from "./night-sky-section";
@@ -17,24 +17,17 @@ describe(NightSkySection, () => {
     );
   });
 
-  it("opens and closes on its header, starting as it is told", () => {
+  it("shows its heading and, always, its controls", () => {
     render(
-      <NightSkySection
-        defaultOpen={false}
-        title="Constellations"
-      >
-        <p>The picker</p>
+      <NightSkySection title="Stars">
+        <p>The sliders</p>
       </NightSkySection>,
     );
 
-    const header = screen.getByRole("button", { name: "Constellations" });
-
-    expect(header.getAttribute("aria-expanded")).toBe("false");
-    expect(screen.queryByText("The picker")).toBeNull();
-
-    fireEvent.click(header);
-
-    expect(header.getAttribute("aria-expanded")).toBe("true");
-    expect(screen.getByText("The picker")).toBeDefined();
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Stars" }),
+    ).toBeDefined();
+    expect(screen.getByText("The sliders")).toBeDefined();
+    expect(screen.queryByRole("button")).toBeNull();
   });
 });

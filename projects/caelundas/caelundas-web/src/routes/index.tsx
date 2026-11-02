@@ -190,12 +190,12 @@ function IndexPage(): ReactNode {
               facets={facets}
               fields={fields}
               filter={filter}
-              nightSkyOptions={<NightSkyMenu />}
               onClustersChange={handleClustersChange}
               onColorByChange={handleColorByChange}
               onColorsChange={handleColorsChange}
               onFilterChange={handleFilterChange}
               onSymbolsChange={handleSymbolsChange}
+              skyMenu={<NightSkyMenu />}
               symbols={search.symbols}
               viewOptions={
                 <CalendarViewOptions

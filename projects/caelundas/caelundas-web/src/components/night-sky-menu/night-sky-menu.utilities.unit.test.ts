@@ -6,6 +6,8 @@ import {
   roundToStep,
   splitConstellations,
   toConstellationsChange,
+  toEclipticChange,
+  toFullViewChange,
   toggleConstellation,
   toggleConstellations,
   toResetChange,
@@ -55,6 +57,16 @@ describe("night sky menu utilities", () => {
     it("writes sky=off to hide the sky and removes it to show it", () => {
       expect(toVisibilityChange(false)).toStrictEqual({ sky: "off" });
       expect(toVisibilityChange(true)).toStrictEqual({ sky: undefined });
+    });
+  });
+
+  describe(toFullViewChange, () => {
+    it("writes the pole's whole sky, leaving a default bottom altitude out", () => {
+      expect(toFullViewChange()).toStrictEqual({
+        "sky.altBottom": undefined,
+        "sky.lat": 90,
+        "sky.vFov": 90,
+      });
     });
   });
 
@@ -163,6 +175,15 @@ describe("night sky menu utilities", () => {
       expect(
         toggleConstellations(["zodiac", "orion"], LISTING, ["Aries", "Leo"]),
       ).toStrictEqual(["orion"]);
+    });
+  });
+
+  describe(toEclipticChange, () => {
+    it("writes sky.ecliptic=true to draw it and removes it to leave it off", () => {
+      expect(toEclipticChange(true)).toStrictEqual({ "sky.ecliptic": true });
+      expect(toEclipticChange(false)).toStrictEqual({
+        "sky.ecliptic": undefined,
+      });
     });
   });
 });

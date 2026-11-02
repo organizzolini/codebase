@@ -26,7 +26,7 @@ describe(NightSkyColorField, () => {
     );
   });
 
-  it("sends the color picked under its link key", () => {
+  it("sends the color typed into its picker under its link key", async () => {
     const onValueChange = vi.fn<(key: string, value: string) => void>();
 
     render(
@@ -37,9 +37,12 @@ describe(NightSkyColorField, () => {
       />,
     );
 
-    fireEvent.change(screen.getByLabelText("Sky top"), {
-      target: { value: "#102040" },
-    });
+    fireEvent.click(screen.getByRole("button", { name: /Sky top/u }));
+
+    const field = await screen.findByRole("textbox");
+
+    fireEvent.change(field, { target: { value: "#102040" } });
+    fireEvent.keyDown(field, { key: "Enter" });
 
     expect(onValueChange).toHaveBeenCalledWith("sky.top", "#102040");
   });
