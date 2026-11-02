@@ -1,9 +1,10 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InstanceDiscoveryLocatingService } from "./instance-discovery-locating.service";
 
@@ -11,11 +12,7 @@ import { InstanceDiscoveryLocatingService } from "./instance-discovery-locating.
  * Builds a workspace holding two module directories, so directory globs and
  * file globs can be exercised against the same tree.
  */
-async function createWorkspace(): Promise<string> {
-  const workingDirectory = await mkdtemp(
-    path.join(tmpdir(), "conformetry-workspace-"),
-  );
-
+async function populateWorkspace(workingDirectory: string): Promise<void> {
   for (const stem of ["differences", "logger"]) {
     const instancePath = path.join(
       workingDirectory,
@@ -33,25 +30,27 @@ async function createWorkspace(): Promise<string> {
       await writeFile(path.join(instancePath, `${stem}${suffix}`), "", "utf8");
     }
   }
-
-  return workingDirectory;
 }
 
 describe(InstanceDiscoveryLocatingService, () => {
   let service: InstanceDiscoveryLocatingService;
+  const readWorkspace = useTemporaryDirectory("workspace");
   let workingDirectory: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [InstanceDiscoveryLocatingService],
-    }).compile();
+    const built = await buildTestingModule(InstanceDiscoveryLocatingService);
 
-    service = await module.resolve(InstanceDiscoveryLocatingService);
-    workingDirectory = await createWorkspace();
+    service = built.instance;
+    workingDirectory = readWorkspace();
+    await populateWorkspace(workingDirectory);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      InstanceDiscoveryLocatingService,
+    );
+
+    expect(instance).toBeInstanceOf(InstanceDiscoveryLocatingService);
   });
 
   describe("findInstances", () => {

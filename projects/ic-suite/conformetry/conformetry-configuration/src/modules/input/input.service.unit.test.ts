@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import prompts from "prompts";
 import {
   afterEach,
@@ -9,6 +8,9 @@ import {
   it,
   vi,
 } from "vitest";
+
+import { overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputOptionsService } from "./input-options.service";
 import { InputPromptingService } from "./input-prompting.service";
@@ -30,16 +32,15 @@ describe(InputService, () => {
   let service: InputService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(InputService, {
       providers: [
         InputOptionsService,
         InputPromptingService,
         InputSchemaService,
-        InputService,
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(InputService);
+    service = built.instance;
   });
 
   const originalIsTty = process.stdin.isTTY;
@@ -55,8 +56,16 @@ describe(InputService, () => {
     process.stdin.isTTY = originalIsTty;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(InputService, {
+      providers: [
+        InputOptionsService,
+        InputPromptingService,
+        InputSchemaService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(InputService);
   });
 
   describe("option parsing", () => {
@@ -249,19 +258,15 @@ describe(InputService, () => {
     // so the terminal test already covers it.
     it("prompts in CI when a terminal is attached", async () => {
       process.stdin.isTTY = true;
-      process.env["CI"] = "true";
+      overrideEnvironment({ CI: "true" });
       promptRunner.mockResolvedValue({ value: "my-widget" });
 
-      try {
-        await expect(
-          service.resolveGeneratorInputs({
-            rawArguments: [],
-            schema: REQUIRED_NAME_SCHEMA,
-          }),
-        ).resolves.toStrictEqual({ name: "my-widget" });
-      } finally {
-        delete process.env["CI"];
-      }
+      await expect(
+        service.resolveGeneratorInputs({
+          rawArguments: [],
+          schema: REQUIRED_NAME_SCHEMA,
+        }),
+      ).resolves.toStrictEqual({ name: "my-widget" });
     });
   });
 });
