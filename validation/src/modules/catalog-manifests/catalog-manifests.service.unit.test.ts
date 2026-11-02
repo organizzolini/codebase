@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CatalogManifestsService } from "./catalog-manifests.service";
 
@@ -36,11 +37,9 @@ describe(CatalogManifestsService, () => {
   let service: CatalogManifestsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [CatalogManifestsService],
-    }).compile();
+    const built = await buildTestingModule(CatalogManifestsService);
 
-    service = await module.resolve(CatalogManifestsService);
+    service = built.instance;
   });
 
   beforeEach(() => {
@@ -51,9 +50,12 @@ describe(CatalogManifestsService, () => {
     manifestDocument = "{}";
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(CatalogManifestsService);
+
+    expect(instance).toBeInstanceOf(CatalogManifestsService);
   });
 
   describe("resolveWorkspaceManifestPaths", () => {

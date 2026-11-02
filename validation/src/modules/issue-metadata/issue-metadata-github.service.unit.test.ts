@@ -1,7 +1,8 @@
 import { spawnSync } from "node:child_process";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueMetadataGithubService } from "./issue-metadata-github.service";
 import { GITHUB_CLI_BINARY } from "./issue-metadata.constants";
@@ -35,20 +36,21 @@ describe(IssueMetadataGithubService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [IssueMetadataGithubService],
-    }).compile();
+    const built = await buildTestingModule(IssueMetadataGithubService);
 
-    service = await module.resolve(IssueMetadataGithubService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(IssueMetadataGithubService);
+
+    expect(instance).toBeInstanceOf(IssueMetadataGithubService);
   });
 
   describe("run", () => {

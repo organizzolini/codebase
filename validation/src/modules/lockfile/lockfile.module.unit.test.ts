@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
+import {
+  expectModuleImports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { LockfileCommand } from "./lockfile.command";
 import { LockfileModule } from "./lockfile.module";
@@ -10,15 +14,7 @@ describe(LockfileModule, () => {
   it("registers expected imports and providers", () => {
     expect.hasAssertions();
 
-    const imports = Reflect.getMetadata("imports", LockfileModule) as
-      | undefined
-      | unknown[];
-    const providers = Reflect.getMetadata("providers", LockfileModule) as
-      | undefined
-      | unknown[];
-
-    expect(imports).toContain(LoggerModule);
-    expect(providers).toContain(LockfileCommand);
-    expect(providers).toContain(LockfileService);
+    expectModuleImports(LockfileModule, LoggerModule);
+    expectModuleProvides(LockfileModule, LockfileCommand, LockfileService);
   });
 });

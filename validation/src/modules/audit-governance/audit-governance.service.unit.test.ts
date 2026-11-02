@@ -1,7 +1,8 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AuditGovernanceService } from "./audit-governance.service";
 
@@ -15,21 +16,21 @@ describe(AuditGovernanceService, () => {
   let service: AuditGovernanceService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [AuditGovernanceService],
-    }).compile();
+    const built = await buildTestingModule(AuditGovernanceService);
 
-    service = await module.resolve(AuditGovernanceService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
 
-    expect(service).toBeDefined();
+    const { instance } = await buildTestingModule(AuditGovernanceService);
+
+    expect(instance).toBeInstanceOf(AuditGovernanceService);
   });
 
   describe("checkCodeowners", () => {

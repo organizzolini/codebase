@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import { IssueMetadataService } from "./issue-metadata.service";
@@ -33,20 +34,15 @@ const validMetadata: IssueMetadata = {
   labelNames: ["scope:lexico", "source:human", "type:feat"],
 };
 
+const moduleOptions = { providers: [IssueMetadataTypeService] };
+
 describe(IssueMetadataService, () => {
   let service: IssueMetadataService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [IssueMetadataService, IssueMetadataTypeService],
-    }).compile();
+    const built = await buildTestingModule(IssueMetadataService, moduleOptions);
 
-    service = await module.resolve(IssueMetadataService);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+    service = built.instance;
   });
 
   /** Runs the check for one issue's metadata. */
@@ -56,6 +52,17 @@ describe(IssueMetadataService, () => {
       issueNumber,
       metadata,
     });
+
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      IssueMetadataService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(IssueMetadataService);
+  });
 
   describe("issue types", () => {
     const typed = (

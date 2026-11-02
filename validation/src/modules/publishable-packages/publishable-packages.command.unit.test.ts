@@ -1,8 +1,9 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
@@ -10,60 +11,41 @@ import { PublishablePackagesCommand } from "./publishable-packages.command";
 import { formatPublishablePackagesSuccessMessage } from "./publishable-packages.constants";
 import { PublishablePackagesService } from "./publishable-packages.service";
 
+const moduleOptions = { mocks: [PublishablePackagesService] };
+
 describe(PublishablePackagesCommand, () => {
   let command: PublishablePackagesCommand;
   let service: PublishablePackagesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishablePackagesCommand,
-        {
-          provide: PublishablePackagesService,
-          useValue: createMock<PublishablePackagesService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PublishablePackagesCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(PublishablePackagesCommand);
-    service = await module.resolve(PublishablePackagesService);
+    command = built.instance;
+    service = built.mock(PublishablePackagesService);
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PublishablePackagesCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PublishablePackagesCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishablePackagesCommand,
-        {
-          provide: PublishablePackagesService,
-          useValue: createMock<PublishablePackagesService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "PublishablePackagesCommand",
-    );
+    await expectLoggerContext(PublishablePackagesCommand, moduleOptions);
   });
 
   it("logs success message when verification succeeds", async () => {
