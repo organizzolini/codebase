@@ -10,7 +10,7 @@ import type {
 } from "./night-sky.types";
 
 const STYLE: LineStyle = {
-  lineColor: "#c8d4ff",
+  lineColor: "#ffffff",
   lineOpacity: 0.28,
   lineWidth: 0.8,
 };
@@ -102,7 +102,7 @@ describe(formatConstellationLines, () => {
       { ...STYLE, lineColor: '"/><script>' },
     );
 
-    expect(markup).toContain('stroke="#c8d4ff"');
+    expect(markup).toContain('stroke="#ffffff"');
     expect(markup).not.toContain("<script>");
   });
 

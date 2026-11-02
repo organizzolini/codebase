@@ -32,9 +32,13 @@ export const DEFAULT_OPTIONS = {
   backgroundTopColor: "#04060f",
   bottomAltitudeDegrees: 0,
   debug: false,
+  ecliptic: false,
+  eclipticColor: "#ffffff",
+  eclipticOpacity: 0.12,
+  eclipticWidth: 1,
   faintestMagnitude: 6.5,
-  lineColor: "#c8d4ff",
-  lineOpacity: 0.28,
+  lineColor: "#ffffff",
+  lineOpacity: 0.24,
   lineWidth: 0.8,
   pixelsPerSecond: 12,
   starScale: 1,
@@ -170,6 +174,28 @@ export const LINE_OPACITY_RANGE = { maximum: 1, minimum: 0 } as const;
 
 /** The widths, in on-screen pixels, `sky.lineWidth` is clamped to. */
 export const LINE_WIDTH_RANGE = { maximum: 10, minimum: 0 } as const;
+
+// ☀️ Ecliptic
+
+/**
+ * The tilt of the Earth's axis, the angle between the ecliptic and the
+ * celestial equator, at J2000.
+ */
+export const OBLIQUITY_DEGREES = 23.44;
+
+/**
+ * The degrees of ecliptic longitude between the points the ecliptic is drawn
+ * through, fine enough for its curve under the projection.
+ */
+export const ECLIPTIC_STEP_DEGREES = 5;
+
+/**
+ * How the ecliptic is drawn besides its color, opacity and width: dashed, so
+ * it reads as a path and not a figure, the same however far the tuning view
+ * zooms out.
+ */
+export const ECLIPTIC_ATTRIBUTES =
+  'fill="none" stroke-dasharray="6 4" stroke-linecap="round" vector-effect="non-scaling-stroke"';
 
 // 🖼 Markup
 

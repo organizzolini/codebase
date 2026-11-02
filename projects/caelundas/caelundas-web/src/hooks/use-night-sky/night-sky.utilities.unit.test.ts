@@ -142,6 +142,21 @@ describe("night sky", () => {
       expect(svg.indexOf("<polyline")).toBeLessThan(svg.indexOf("<circle"));
     });
 
+    it("draws the ecliptic only when asked, beneath the stars", () => {
+      const plain = buildNightSky({ ...baseOptions, latitudeDegrees: 75 });
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        ecliptic: true,
+        latitudeDegrees: 75,
+      });
+
+      expect(plain.svg).not.toContain('data-layer="ecliptic"');
+      expect(svg).toContain('data-layer="ecliptic"');
+      expect(svg.indexOf('data-layer="ecliptic"')).toBeLessThan(
+        svg.indexOf("<circle"),
+      );
+    });
+
     it("draws no figure unless it is given one", () => {
       const { measurements, svg } = buildNightSky(baseOptions);
 
@@ -216,6 +231,23 @@ describe("night sky", () => {
       expect(measurements.fieldOfViewClamped).toBe(true);
       expect(measurements.verticalFieldOfViewDegrees).toBe(19);
       expect(measurements.poleDistanceAboveScreen).toBeGreaterThan(0);
+    });
+
+    it("draws the full view from the pole, latitude 90, with finite numbers", () => {
+      const { measurements, svg } = buildNightSky({
+        ...baseOptions,
+        bottomAltitudeDegrees: 0,
+        ecliptic: true,
+        latitudeDegrees: 90,
+        verticalFieldOfViewDegrees: 90,
+      });
+
+      expect(measurements.verticalFieldOfViewDegrees).toBe(89);
+      expect(measurements.poleDistanceAboveScreen).toBeGreaterThan(0);
+      expect(Number.isFinite(measurements.periodSeconds)).toBe(true);
+      expect(measurements.starsDrawn).toBeGreaterThan(0);
+      expect(svg).toContain('data-layer="ecliptic"');
+      expect(svg).not.toMatch(/NaN|Infinity/u);
     });
 
     it("colors stars along the ramp and clamps out-of-range indexes", () => {

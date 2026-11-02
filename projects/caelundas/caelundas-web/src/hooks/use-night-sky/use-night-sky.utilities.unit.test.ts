@@ -101,8 +101,8 @@ describe("use-night-sky utilities", () => {
   describe("the figures' line style", () => {
     it("defaults to faint, thin, pale blue lines", () => {
       expect(readNightSkyOverrides({})).toMatchObject({
-        lineColor: "#c8d4ff",
-        lineOpacity: 0.28,
+        lineColor: "#ffffff",
+        lineOpacity: 0.24,
         lineWidth: 0.8,
         rejectedKeys: [],
       });
@@ -135,10 +135,52 @@ describe("use-night-sky utilities", () => {
           "sky.lineWidth": "thick",
         }),
       ).toMatchObject({
-        lineColor: "#c8d4ff",
-        lineOpacity: 0.28,
+        lineColor: "#ffffff",
+        lineOpacity: 0.24,
         lineWidth: 0.8,
         rejectedKeys: ["sky.lineColor", "sky.lineOpacity", "sky.lineWidth"],
+      });
+    });
+  });
+
+  describe("the ecliptic", () => {
+    it("is off by default, in a faint white dashed default style", () => {
+      expect(readNightSkyOverrides({})).toMatchObject({
+        ecliptic: false,
+        eclipticColor: "#ffffff",
+        eclipticOpacity: 0.12,
+        eclipticWidth: 1,
+      });
+    });
+
+    it("turns on for sky.ecliptic=true, and reads and clamps its style", () => {
+      expect(
+        readNightSkyOverrides({
+          "sky.ecliptic": true,
+          "sky.eclipticColor": "#abc",
+          "sky.eclipticOpacity": 2,
+          "sky.eclipticWidth": -1,
+        }),
+      ).toMatchObject({
+        ecliptic: true,
+        eclipticColor: "#aabbcc",
+        eclipticOpacity: 1,
+        eclipticWidth: 0,
+        rejectedKeys: [],
+      });
+    });
+
+    it("falls back for a style it cannot read, and names its key", () => {
+      expect(
+        readNightSkyOverrides({
+          "sky.ecliptic": "yes",
+          "sky.eclipticColor": "orange",
+          "sky.lineWidth": "thick",
+        }),
+      ).toMatchObject({
+        ecliptic: false,
+        eclipticColor: "#ffffff",
+        rejectedKeys: ["sky.lineWidth", "sky.eclipticColor"],
       });
     });
   });

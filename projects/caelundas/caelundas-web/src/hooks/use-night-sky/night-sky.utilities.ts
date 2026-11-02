@@ -9,6 +9,7 @@
 import { SiderealTime } from "astronomy-engine";
 
 import { formatSkyDefinitions } from "./night-sky-colors.utilities";
+import { formatEcliptic } from "./night-sky-ecliptic.utilities";
 import { formatConstellationLines } from "./night-sky-lines.utilities";
 import { resolveOptions } from "./night-sky-options.utilities";
 import {
@@ -77,7 +78,7 @@ export function buildNightSky(options: NightSkyOptions): NightSky {
   );
   const svg = assembleSvg({
     geometry,
-    lines: lines.markup,
+    lines: `${resolved.ecliptic ? formatEcliptic(geometry, resolved) : ""}${lines.markup}`,
     motion,
     options: resolved,
     rendered,

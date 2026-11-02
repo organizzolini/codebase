@@ -111,7 +111,7 @@ describe(useNightSky, () => {
       "sky.lineColor": "pink",
     });
 
-    expect(sky).toContain('stroke="#c8d4ff"');
+    expect(sky).toContain('stroke="#ffffff"');
     expect(
       warn.mock.calls.filter(([message]) =>
         String(message).includes("sky.lineColor"),

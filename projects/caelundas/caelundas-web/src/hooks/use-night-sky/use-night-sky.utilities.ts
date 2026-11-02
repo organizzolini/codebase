@@ -94,12 +94,16 @@ export function readNightSkyOverrides(
     ),
     constellations: readConstellationNames(search["sky.constellations"]),
     debug: z.boolean().catch(DEFAULT_OPTIONS.debug).parse(search["sky.debug"]),
+    ecliptic: z
+      .boolean()
+      .catch(DEFAULT_OPTIONS.ecliptic)
+      .parse(search["sky.ecliptic"]),
     faintestMagnitude: readNumber(
       search["sky.maxMag"],
       z.number().min(-2).max(12),
       DEFAULT_OPTIONS.faintestMagnitude,
     ),
-    ...readLineStyle(search),
+    ...readStrokes(search),
     latitudeDegrees: readNumber(
       search["sky.lat"],
       z.number().min(-90).max(90),
@@ -208,44 +212,6 @@ function readConstellationNames(value: unknown): readonly string[] {
 }
 
 /**
- * Reads how the figures are stroked: `sky.lineColor` like the background's
- * colors, and `sky.lineOpacity` and `sky.lineWidth` clamped to their ranges.
- * A key given a value it cannot read falls back, and is named as rejected.
- */
-function readLineStyle(
-  search: Readonly<Record<string, unknown>>,
-): Pick<
-  NightSkyOverrides,
-  "lineColor" | "lineOpacity" | "lineWidth" | "rejectedKeys"
-> {
-  const checks = [
-    ["sky.lineColor", isHexadecimalColor(search["sky.lineColor"])],
-    ["sky.lineOpacity", isFiniteNumber(search["sky.lineOpacity"])],
-    ["sky.lineWidth", isFiniteNumber(search["sky.lineWidth"])],
-  ] as const;
-
-  return {
-    lineColor: normalizeHexadecimalColor(
-      search["sky.lineColor"],
-      DEFAULT_OPTIONS.lineColor,
-    ),
-    lineOpacity: clampNumber(
-      search["sky.lineOpacity"],
-      LINE_OPACITY_RANGE,
-      DEFAULT_OPTIONS.lineOpacity,
-    ),
-    lineWidth: clampNumber(
-      search["sky.lineWidth"],
-      LINE_WIDTH_RANGE,
-      DEFAULT_OPTIONS.lineWidth,
-    ),
-    rejectedKeys: checks
-      .filter(([key, read]) => search[key] !== undefined && !read)
-      .map(([key]) => key),
-  };
-}
-
-/**
  * Reads a number the schema accepts, or the fallback.
  */
 function readNumber(
@@ -254,4 +220,77 @@ function readNumber(
   fallback: number,
 ): number {
   return schema.catch(fallback).parse(value);
+}
+
+/**
+ * Reads one stroke from the link: `<prefix>Color` like the background's
+ * colors, and `<prefix>Opacity` and `<prefix>Width` clamped to their ranges.
+ * A key given a value it cannot read falls back, and is named as rejected.
+ */
+function readStroke(
+  search: Readonly<Record<string, unknown>>,
+  prefix: "sky.ecliptic" | "sky.line",
+  fallback: { color: string; opacity: number; width: number },
+): { color: string; opacity: number; rejected: string[]; width: number } {
+  const [colorKey, opacityKey, widthKey] = [
+    `${prefix}Color`,
+    `${prefix}Opacity`,
+    `${prefix}Width`,
+  ];
+  const checks = [
+    [colorKey, isHexadecimalColor(search[colorKey])],
+    [opacityKey, isFiniteNumber(search[opacityKey])],
+    [widthKey, isFiniteNumber(search[widthKey])],
+  ] as const;
+
+  return {
+    color: normalizeHexadecimalColor(search[colorKey], fallback.color),
+    opacity: clampNumber(
+      search[opacityKey],
+      LINE_OPACITY_RANGE,
+      fallback.opacity,
+    ),
+    rejected: checks
+      .filter(([key, read]) => search[key] !== undefined && !read)
+      .map(([key]) => key),
+    width: clampNumber(search[widthKey], LINE_WIDTH_RANGE, fallback.width),
+  };
+}
+
+/**
+ * Reads how the figures and the ecliptic are stroked, naming every key the
+ * link gives a value it cannot read.
+ */
+function readStrokes(
+  search: Readonly<Record<string, unknown>>,
+): Pick<
+  NightSkyOverrides,
+  | "eclipticColor"
+  | "eclipticOpacity"
+  | "eclipticWidth"
+  | "lineColor"
+  | "lineOpacity"
+  | "lineWidth"
+  | "rejectedKeys"
+> {
+  const line = readStroke(search, "sky.line", {
+    color: DEFAULT_OPTIONS.lineColor,
+    opacity: DEFAULT_OPTIONS.lineOpacity,
+    width: DEFAULT_OPTIONS.lineWidth,
+  });
+  const ecliptic = readStroke(search, "sky.ecliptic", {
+    color: DEFAULT_OPTIONS.eclipticColor,
+    opacity: DEFAULT_OPTIONS.eclipticOpacity,
+    width: DEFAULT_OPTIONS.eclipticWidth,
+  });
+
+  return {
+    eclipticColor: ecliptic.color,
+    eclipticOpacity: ecliptic.opacity,
+    eclipticWidth: ecliptic.width,
+    lineColor: line.color,
+    lineOpacity: line.opacity,
+    lineWidth: line.width,
+    rejectedKeys: [...line.rejected, ...ecliptic.rejected],
+  };
 }

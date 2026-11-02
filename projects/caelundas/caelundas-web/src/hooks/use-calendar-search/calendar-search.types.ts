@@ -60,6 +60,10 @@ export interface CalendarSearch {
   "sky.bottom"?: SkySearchValue | undefined;
   "sky.constellations"?: SkySearchValue | undefined;
   "sky.debug"?: SkySearchValue | undefined;
+  "sky.ecliptic"?: SkySearchValue | undefined;
+  "sky.eclipticColor"?: SkySearchValue | undefined;
+  "sky.eclipticOpacity"?: SkySearchValue | undefined;
+  "sky.eclipticWidth"?: SkySearchValue | undefined;
   "sky.lat"?: SkySearchValue | undefined;
   "sky.lineColor"?: SkySearchValue | undefined;
   "sky.lineOpacity"?: SkySearchValue | undefined;

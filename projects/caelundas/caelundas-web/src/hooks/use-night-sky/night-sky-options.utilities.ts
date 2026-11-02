@@ -1,6 +1,7 @@
 import { DEFAULT_OPTIONS } from "./night-sky.constants";
 
 import type {
+  EclipticStyle,
   LineStyle,
   NightSkyOptions,
   ResolvedNightSkyOptions,
@@ -18,6 +19,7 @@ export function resolveOptions(
     ...resolveAppearance(options),
     ...resolveView(options),
     ...resolveLineStyle(options),
+    ...resolveEcliptic(options),
     constellationSegments: options.constellationSegments ?? [],
     height: options.height,
     latitudeDegrees: options.latitudeDegrees,
@@ -51,6 +53,20 @@ function resolveAppearance(
     faintestMagnitude:
       options.faintestMagnitude ?? DEFAULT_OPTIONS.faintestMagnitude,
     starScale: options.starScale ?? DEFAULT_OPTIONS.starScale,
+  };
+}
+
+/**
+ * Fills the options that draw the ecliptic, and how, with their defaults.
+ */
+function resolveEcliptic(
+  options: NightSkyOptions,
+): EclipticStyle & { ecliptic: boolean } {
+  return {
+    ecliptic: options.ecliptic ?? DEFAULT_OPTIONS.ecliptic,
+    eclipticColor: options.eclipticColor ?? DEFAULT_OPTIONS.eclipticColor,
+    eclipticOpacity: options.eclipticOpacity ?? DEFAULT_OPTIONS.eclipticOpacity,
+    eclipticWidth: options.eclipticWidth ?? DEFAULT_OPTIONS.eclipticWidth,
   };
 }
 

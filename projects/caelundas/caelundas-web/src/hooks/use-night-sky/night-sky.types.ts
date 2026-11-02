@@ -31,6 +31,18 @@ export interface ConstellationSegment {
 }
 
 /**
+ * How the ecliptic is stroked.
+ */
+export interface EclipticStyle {
+  /** Hexadecimal color. Defaults to #ffffff. */
+  eclipticColor: string;
+  /** From 0 to 1. Defaults to 0.12. */
+  eclipticOpacity: number;
+  /** In on-screen pixels. Defaults to 1. */
+  eclipticWidth: number;
+}
+
+/**
  * A field of view after clamping it so the pole stays above the top edge.
  */
 export interface FieldOfView {
@@ -43,9 +55,9 @@ export interface FieldOfView {
  * How the constellation figures are stroked.
  */
 export interface LineStyle {
-  /** Hexadecimal color. Defaults to #c8d4ff. */
+  /** Hexadecimal color. Defaults to #ffffff. */
   lineColor: string;
-  /** From 0 to 1. Defaults to 0.28. */
+  /** From 0 to 1. Defaults to 0.24. */
   lineOpacity: number;
   /** In on-screen pixels. Defaults to 0.8. */
   lineWidth: number;
@@ -112,15 +124,23 @@ export interface NightSkyOptions {
   constellationSegments?: readonly ConstellationSegment[];
   /** Draws the zoomed-out tuning view instead of the backdrop. */
   debug?: boolean;
+  /** Draws the ecliptic, the Sun's path, beneath the stars. Defaults to false. */
+  ecliptic?: boolean;
+  /** Hexadecimal color of the ecliptic. Defaults to #ffffff. */
+  eclipticColor?: string;
+  /** Opacity of the ecliptic, from 0 to 1. Defaults to 0.12. */
+  eclipticOpacity?: number;
+  /** Width of the ecliptic in on-screen pixels. Defaults to 1. */
+  eclipticWidth?: number;
   /** Faintest star drawn. Defaults to 6.5. */
   faintestMagnitude?: number;
   /** Pixel height of the area the SVG fills. */
   height: number;
   /** Observer latitude, north positive. The view faces north. */
   latitudeDegrees: number;
-  /** Hexadecimal color of the figures. Defaults to #c8d4ff. */
+  /** Hexadecimal color of the figures. Defaults to #ffffff. */
   lineColor?: string;
-  /** Opacity of the figures, from 0 to 1. Defaults to 0.28. */
+  /** Opacity of the figures, from 0 to 1. Defaults to 0.24. */
   lineOpacity?: number;
   /** Width of the figures in on-screen pixels. Defaults to 0.8. */
   lineWidth?: number;

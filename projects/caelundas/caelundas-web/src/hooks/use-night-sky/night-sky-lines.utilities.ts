@@ -1,7 +1,7 @@
 import { normalizeHexadecimalColor } from "./night-sky-colors.utilities";
 import {
-  isOnVisibleRing,
-  projectSkyPoint,
+  formatPolyline,
+  splitIntoRuns,
 } from "./night-sky-projection.utilities";
 import {
   CONSTELLATION_LINE_ATTRIBUTES,
@@ -14,7 +14,6 @@ import {
 import type {
   ConstellationSegment,
   LineStyle,
-  ProjectedPoint,
   SkyGeometry,
   SkyPoint,
   SkyVector,
@@ -51,17 +50,6 @@ export function formatConstellationLines(
 // 🔏 Private Functions
 
 /**
- * Draws one unbroken run of a segment as a polyline.
- */
-function formatPolyline(run: readonly ProjectedPoint[]): string {
-  const points = run
-    .map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`)
-    .join(" ");
-
-  return `<polyline points="${points}"/>`;
-}
-
-/**
  * The stroke's color, opacity and width. The color is read as hexadecimal
  * and written as `#rrggbb`, so nothing else can reach the markup.
  */
@@ -91,29 +79,6 @@ function interpolate(segment: ConstellationSegment): SkyPoint[] {
       from[2] + (to[2] - from[2]) * fraction,
     ]);
   });
-}
-
-/**
- * Splits a segment's points into the runs that stay on the visible ring,
- * leaving out a run too short to draw.
- */
-function splitIntoRuns(
-  geometry: SkyGeometry,
-  points: readonly SkyPoint[],
-): ProjectedPoint[][] {
-  const runs: ProjectedPoint[][] = [[]];
-
-  for (const point of points) {
-    const projected = projectSkyPoint(geometry, point);
-
-    if (isOnVisibleRing(geometry, projected.radius)) {
-      runs.at(-1)?.push(projected);
-    } else {
-      runs.push([]);
-    }
-  }
-
-  return runs.filter((run) => run.length > 1);
 }
 
 /**

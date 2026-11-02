@@ -14,6 +14,11 @@ export interface NightSkyOverrides {
    */
   constellations: readonly string[];
   debug: boolean;
+  /** `sky.ecliptic=true` draws the ecliptic. */
+  ecliptic: boolean;
+  eclipticColor: string;
+  eclipticOpacity: number;
+  eclipticWidth: number;
   faintestMagnitude: number;
   latitudeDegrees: number;
   lineColor: string;
