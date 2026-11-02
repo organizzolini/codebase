@@ -58,6 +58,7 @@ export interface CalendarSearch {
   sky?: SkySearchValue | undefined;
   "sky.altBottom"?: SkySearchValue | undefined;
   "sky.bottom"?: SkySearchValue | undefined;
+  "sky.constellations"?: SkySearchValue | undefined;
   "sky.debug"?: SkySearchValue | undefined;
   "sky.lat"?: SkySearchValue | undefined;
   "sky.lon"?: SkySearchValue | undefined;

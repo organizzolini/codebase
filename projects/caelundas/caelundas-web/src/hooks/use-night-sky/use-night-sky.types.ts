@@ -1,19 +1,4 @@
-import type { StarRow } from "./night-sky.types";
-import type {
-  buildNightSky,
-  computeStartingSiderealDegrees,
-} from "./night-sky.utilities";
-
 // 🏷️ Types
-
-/**
- * What a sky is built with: the catalog and the generator, loaded together.
- */
-export interface NightSkyEngine {
-  buildNightSky: typeof buildNightSky;
-  computeStartingSiderealDegrees: typeof computeStartingSiderealDegrees;
-  stars: readonly StarRow[];
-}
 
 /**
  * The backdrop's settings after the link's `sky.*` keys are applied over the
@@ -23,6 +8,11 @@ export interface NightSkyOverrides {
   backgroundBottomColor: string;
   backgroundTopColor: string;
   bottomAltitudeDegrees: number;
+  /**
+   * The normalized names `sky.constellations` lists, with `all` and `zodiac`;
+   * empty draws no figure.
+   */
+  constellations: readonly string[];
   debug: boolean;
   faintestMagnitude: number;
   latitudeDegrees: number;
@@ -43,12 +33,4 @@ export interface UseNightSkyResult {
    * The sky's SVG markup, or nothing while there is no sky to draw.
    */
   sky: string | undefined;
-}
-
-/**
- * The window's size in pixels.
- */
-export interface WindowSize {
-  height: number;
-  width: number;
 }

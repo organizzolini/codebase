@@ -1,25 +1,42 @@
 import { cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import {
+  createFailingEventsDatabase,
+  createTestEventsDatabase,
+  createTestSqlExecutor,
+} from "../../../testing/events-database";
 import { renderRoute } from "../../../testing/render-route";
+import { createEventsDatabase } from "../events-calendar/events-database.utilities";
 
 import { NightSkyBackdropMount } from "./night-sky-backdrop-mount";
 
-// What the catalog's chunk does when it loads: fails as a chunk does, answers
-// with rows the schema rejects, or answers well.
-const catalog = vi.hoisted(() => ({
-  mode: "failing",
-}));
+import type { EventsDatabase } from "../events-calendar/events-database.types";
 
-vi.mock(import("../../hooks/use-night-sky/use-night-sky.catalog.json"), () => ({
-  get default(): never[] {
-    if (catalog.mode === "failing") {
-      throw new Error("The chunk could not be loaded");
-    }
+/**
+ * The seeded database, except that its night sky read fails as an unreadable
+ * table does, or meets a star row the schema rejects.
+ */
+function createBrokenSkyDatabase(
+  mode: "failing" | "malformed",
+): EventsDatabase {
+  if (mode === "malformed") {
+    return createEventsDatabase(
+      createTestSqlExecutor({
+        extraSql: "insert into star values (1, 1, 1, 'bright', 0);",
+      }),
+    );
+  }
 
-    return [["not", "a", "row"]] as never[];
-  },
-}));
+  const failing = createFailingEventsDatabase(
+    new Error("The table could not be read"),
+  ).database;
+
+  return {
+    ...createTestEventsDatabase(),
+    findNightSky: async () => failing.findNightSky(),
+  };
+}
 
 vi.mock(import("../../router"), async (importOriginal) => {
   const original = await importOriginal();
@@ -51,13 +68,13 @@ describe("night sky backdrop load failures", () => {
   });
 
   it.each(["failing", "malformed"] as const)(
-    "draws nothing and reports a catalog that is %s",
+    "draws nothing and reports a night sky read that is %s",
     async (mode) => {
-      catalog.mode = mode;
-
       const report = vi.spyOn(console, "error").mockImplementation(() => {});
 
-      await renderRoute("/?date=2026-03-01");
+      await renderRoute("/?date=2026-03-01", {
+        eventsDatabase: createBrokenSkyDatabase(mode),
+      });
       await screen.findByRole("grid", { name: "March 2026" });
 
       await waitFor(() => {

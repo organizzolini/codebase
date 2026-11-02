@@ -55,6 +55,7 @@ describe(validateCalendarSearch, () => {
       sky: "off",
       "sky.altBottom": 5,
       "sky.bottom": "0d1533",
+      "sky.constellations": "zodiac,ursa_major",
       "sky.debug": true,
       "sky.lat": 51.5,
       "sky.lon": -0.1,

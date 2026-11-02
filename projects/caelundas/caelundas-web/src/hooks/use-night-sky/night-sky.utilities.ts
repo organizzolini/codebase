@@ -1,14 +1,21 @@
-// The night sky is drawn from `use-night-sky.catalog.json`, the HYG star
-// database v4.1 (https://github.com/astronexus/HYG-Database) trimmed to
-// magnitude 6.5 and declination -30 degrees or north. HYG is licensed
-// CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/); the trimmed
+// The night sky's stars are the HYG star database v4.1
+// (https://github.com/astronexus/HYG-Database), stored by caelundas-cli to
+// magnitude 6.5 and declination -45 degrees or north. HYG is licensed
+// CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/); the stored
 // catalog is a derived work and keeps that license and the credit to David
-// Nash and the HYG contributors.
+// Nash and the HYG contributors. The constellation figures are d3-celestial's
+// (https://github.com/ofrohn/d3-celestial), BSD-3-Clause, Olaf Frohn.
 
 import { SiderealTime } from "astronomy-engine";
 
 import { formatSkyDefinitions } from "./night-sky-colors.utilities";
+import { formatConstellationLines } from "./night-sky-lines.utilities";
 import { resolveOptions } from "./night-sky-options.utilities";
+import {
+  isOnVisibleRing,
+  projectSkyPoint,
+  tangentOfHalfAngle,
+} from "./night-sky-projection.utilities";
 import {
   COLOR_BUCKET_HIGHEST,
   COLOR_BUCKET_LOWEST,
@@ -29,7 +36,6 @@ import {
   MILLISECONDS_PER_DAY,
   MINIMUM_FIELD_OF_VIEW_DEGREES,
   POLE_MARGIN_DEGREES,
-  RADIANS_PER_DEGREE,
   RING_MARGIN,
   SIDEREAL_DAY_SECONDS,
   STAR_RADIUS_BASE,
@@ -64,8 +70,13 @@ export function buildNightSky(options: NightSkyOptions): NightSky {
   const { inCatalog, rendered } = selectStars(geometry, resolved);
   const motion = computeMotion(geometry, resolved);
   const viewport = buildViewport(geometry, resolved);
+  const lines = formatConstellationLines(
+    geometry,
+    resolved.constellationSegments,
+  );
   const svg = assembleSvg({
     geometry,
+    lines: lines.markup,
     motion,
     options: resolved,
     rendered,
@@ -80,6 +91,7 @@ export function buildNightSky(options: NightSkyOptions): NightSky {
       periodSeconds: motion.periodSeconds,
       poleDistanceAboveScreen: -geometry.poleY,
       realTimeMultiple: motion.realTimeMultiple,
+      segmentsDrawn: lines.segmentsDrawn,
       starsDrawn: rendered.length,
       starsInCatalog: inCatalog,
       svgLength: svg.length,
@@ -143,17 +155,19 @@ export function computeStartingSiderealDegrees(
  */
 function assembleSvg(parts: {
   geometry: SkyGeometry;
+  /** The figures, drawn beneath the stars. */
+  lines: string;
   motion: Motion;
   options: ResolvedNightSkyOptions;
   rendered: readonly RenderedStar[];
   viewport: Viewport;
 }): string {
-  const { geometry, motion, options, rendered, viewport } = parts;
+  const { geometry, lines, motion, options, rendered, viewport } = parts;
   const spin = options.still
     ? ""
     : formatSpin(options.localSiderealDegrees, motion.periodSeconds);
   const start = `rotate(${(-options.localSiderealDegrees).toFixed(3)})`;
-  const sky = `${spin}${formatGlowGroup(rendered)}${formatStarGroups(rendered)}`;
+  const sky = `${spin}${lines}${formatGlowGroup(rendered)}${formatStarGroups(rendered)}`;
 
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewport.viewBox}" ` +
@@ -404,7 +418,6 @@ function limitFieldOfView(options: ResolvedNightSkyOptions): FieldOfView {
 
 /**
  * Draws one star, or returns nothing when its ring never crosses the window.
- * Facing north, right ascension increases clockwise on screen.
  */
 function renderStar(
   geometry: SkyGeometry,
@@ -412,14 +425,16 @@ function renderStar(
   options: ResolvedNightSkyOptions,
 ): RenderedStar | undefined {
   const [rightAscensionHours, declinationDegrees, magnitude, colorIndex] = star;
-  const radius = geometry.scale * tangentOfHalfAngle(90 - declinationDegrees);
+  const { radius, x, y } = projectSkyPoint(geometry, [
+    rightAscensionHours,
+    declinationDegrees,
+  ]);
 
-  if (radius < geometry.innerRadius || radius > geometry.outerRadius) {
+  if (!isOnVisibleRing(geometry, radius)) {
     return undefined;
   }
 
-  const angle = rightAscensionHours * DEGREES_PER_HOUR * RADIANS_PER_DEGREE;
-  const center = `cx="${(radius * Math.sin(angle)).toFixed(1)}" cy="${(-radius * Math.cos(angle)).toFixed(1)}"`;
+  const center = `cx="${x.toFixed(1)}" cy="${y.toFixed(1)}"`;
   const size = starRadius(magnitude, options);
 
   return {
@@ -464,11 +479,4 @@ function starRadius(
     options.starScale *
     (options.debug ? DEBUG_STAR_FACTOR : 1)
   );
-}
-
-/**
- * The tangent of half an angle given in degrees, as the projection needs.
- */
-function tangentOfHalfAngle(degrees: number): number {
-  return Math.tan((degrees * RADIANS_PER_DEGREE) / 2);
 }

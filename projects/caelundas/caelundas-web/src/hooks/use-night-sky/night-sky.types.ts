@@ -9,6 +9,19 @@ export interface ColorSegment {
 }
 
 /**
+ * One segment of a constellation's figure, between two stars, with the
+ * constellation it belongs to.
+ */
+export interface ConstellationSegment {
+  from: SkyPoint;
+  /** The constellation's Latin name, such as `Ursa Major`. */
+  name: string;
+  to: SkyPoint;
+  /** Whether the constellation is one of the twelve of the zodiac. */
+  zodiac: boolean;
+}
+
+/**
  * A field of view after clamping it so the pole stays above the top edge.
  */
 export interface FieldOfView {
@@ -34,6 +47,15 @@ export interface NightSky {
 }
 
 /**
+ * What the database holds for the night sky: its stars, brightest first, and
+ * every constellation's figure as segments.
+ */
+export interface NightSkyCatalog {
+  segments: readonly ConstellationSegment[];
+  stars: readonly StarRow[];
+}
+
+/**
  * What a build measured, for display and for tuning.
  */
 export interface NightSkyMeasurements {
@@ -46,6 +68,8 @@ export interface NightSkyMeasurements {
   poleDistanceAboveScreen: number;
   /** How many times faster than the real sky the backdrop turns. */
   realTimeMultiple: number;
+  /** Figure segments with any part drawn. */
+  segmentsDrawn: number;
   starsDrawn: number;
   starsInCatalog: number;
   svgLength: number;
@@ -63,6 +87,8 @@ export interface NightSkyOptions {
   backgroundTopColor?: string;
   /** Altitude at the bottom edge of the window. Defaults to 0. */
   bottomAltitudeDegrees?: number;
+  /** Figure segments drawn beneath the stars. Defaults to none. */
+  constellationSegments?: readonly ConstellationSegment[];
   /** Draws the zoomed-out tuning view instead of the backdrop. */
   debug?: boolean;
   /** Faintest star drawn. Defaults to 6.5. */
@@ -88,6 +114,16 @@ export interface NightSkyOptions {
   verticalFieldOfViewDegrees?: number;
   /** Pixel width of the area the SVG fills. */
   width: number;
+}
+
+/**
+ * A point of the sky projected about the pole, in the rotating group's frame.
+ */
+export interface ProjectedPoint {
+  /** Distance from the pole, which says whether the window can show it. */
+  radius: number;
+  x: number;
+  y: number;
 }
 
 /**
@@ -123,6 +159,19 @@ export interface SkyGeometry {
   poleY: number;
   scale: number;
 }
+
+/**
+ * A point of the sky: right ascension in hours, then declination in degrees.
+ */
+export type SkyPoint = readonly [
+  rightAscensionHours: number,
+  declinationDegrees: number,
+];
+
+/**
+ * A direction in the sky as a vector from the Earth's center, any length.
+ */
+export type SkyVector = readonly [x: number, y: number, z: number];
 
 /**
  * One catalog row: right ascension in hours, declination in degrees, apparent

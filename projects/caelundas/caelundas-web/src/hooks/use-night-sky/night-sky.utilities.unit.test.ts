@@ -7,12 +7,21 @@ import {
   computeLocalSiderealDegrees,
   computeStartingSiderealDegrees,
 } from "./night-sky.utilities";
-import catalog from "./use-night-sky.catalog.json";
-import { starCatalogSchema } from "./use-night-sky.schemas";
 
 import type { StarRow } from "./night-sky.types";
 
-const stars = starCatalogSchema.parse(catalog);
+// A field of stars every half hour of right ascension and every four degrees
+// of declination, magnitudes 1 to 5 in turn, so every part of the sky the
+// window can show holds stars to check.
+const stars: readonly StarRow[] = Array.from(
+  { length: 48 * 33 },
+  (_, index) => [
+    (index % 48) / 2,
+    -40 + Math.floor(index / 48) * 4,
+    1 + (index % 5),
+    0.6,
+  ],
+);
 const LATITUDE = 40.73;
 const LONGITUDE = -74;
 const WIDTH = 1100;
@@ -115,6 +124,29 @@ describe("night sky", () => {
 
       expect(measurements.starsDrawn).toBe(crossing.length);
       expect(missing).toStrictEqual([]);
+    });
+
+    it("draws the figures it is given beneath the stars, turning with them", () => {
+      const { measurements, svg } = buildNightSky({
+        ...baseOptions,
+        constellationSegments: [
+          { from: [2, 50], name: "Test", to: [3, 45], zodiac: false },
+          { from: [2, -80], name: "Test", to: [3, -85], zodiac: false },
+        ],
+      });
+
+      expect(measurements.segmentsDrawn).toBe(1);
+      expect(svg.indexOf("<animateTransform")).toBeLessThan(
+        svg.indexOf("<polyline"),
+      );
+      expect(svg.indexOf("<polyline")).toBeLessThan(svg.indexOf("<circle"));
+    });
+
+    it("draws no figure unless it is given one", () => {
+      const { measurements, svg } = buildNightSky(baseOptions);
+
+      expect(measurements.segmentsDrawn).toBe(0);
+      expect(svg).not.toContain("<polyline");
     });
 
     it("starts at minus the sidereal angle and turns one full circle", () => {

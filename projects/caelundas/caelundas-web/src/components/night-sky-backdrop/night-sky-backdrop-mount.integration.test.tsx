@@ -58,7 +58,7 @@ function countStars(svg: SVGSVGElement): number {
 }
 
 /**
- * The backdrop's SVG once the catalog has loaded and the sky is built.
+ * The backdrop's SVG once its stars have loaded and the sky is built.
  */
 async function findSky(): Promise<SVGSVGElement> {
   return waitFor(() => {
@@ -105,7 +105,9 @@ describe("night sky backdrop", () => {
     expect(backdrop.getAttribute("aria-hidden")).toBe("true");
     expect(backdrop.className).toContain("pointer-events-none");
     expect(backdrop.className).toContain("fixed");
-    expect(countStars(svg)).toBeGreaterThan(100);
+    // The seed holds a sample of the sky, its brightest stars and a few
+    // figures, so a few dozen of them cross the window.
+    expect(countStars(svg)).toBeGreaterThan(20);
     expect(readPeriod(svg)).toBeGreaterThan(0);
     await expect(
       screen.findByRole("grid", { name: "March 2026" }),
@@ -138,6 +140,21 @@ describe("night sky backdrop", () => {
     const fewerSky = await findSky();
 
     expect(countStars(fewerSky)).toBeLessThan(normal);
+  });
+
+  it("draws the constellation figures the link names, and none without it", async () => {
+    await renderRoute("/?date=2026-03-01");
+
+    const plainSky = await findSky();
+
+    expect(plainSky.querySelector("polyline")).toBeNull();
+
+    cleanup();
+    await renderRoute("/?date=2026-03-01&sky.constellations=zodiac,ursa_major");
+
+    const figuredSky = await findSky();
+
+    expect(figuredSky.querySelectorAll("polyline").length).toBeGreaterThan(0);
   });
 
   it("draws the tuning view when asked", async () => {

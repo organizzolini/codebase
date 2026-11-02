@@ -71,6 +71,35 @@ export const DATASET_SQL = `
 `;
 
 /**
+ * The night sky's stars, brightest first, as caelundas-cli's `night-sky`
+ * command or the committed seed stored them.
+ */
+export const STARS_SQL = `
+  select s.right_ascension_hours, s.declination_degrees, s.magnitude, s.color_index
+  from star s
+  order by s.magnitude, s.hip
+`;
+
+/**
+ * Every segment of every constellation's figure, with its constellation's
+ * name and zodiac flag and both its stars' positions.
+ */
+export const CONSTELLATION_SEGMENTS_SQL = `
+  select
+    c."name",
+    c.zodiac,
+    a.right_ascension_hours as from_right_ascension_hours,
+    a.declination_degrees as from_declination_degrees,
+    b.right_ascension_hours as to_right_ascension_hours,
+    b.declination_degrees as to_declination_degrees
+  from constellation_line l
+  join constellation c on c.designation = l.constellation_designation
+  join star a on a.hip = l.from_hip
+  join star b on b.hip = l.to_hip
+  order by c."name", l.from_hip, l.to_hip
+`;
+
+/**
  * Every tag in the tree with its root, its path beneath that root, and the
  * number of events it matches among those that overlap a window, its
  * descendants' included, roots and their tags each in path order. Binds the

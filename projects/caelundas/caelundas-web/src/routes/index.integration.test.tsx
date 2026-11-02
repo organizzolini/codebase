@@ -170,6 +170,7 @@ describe("index", () => {
         describeDataset: async () => new Promise(() => {}),
         findEvents: async () => new Promise(() => {}),
         findFacets: async () => new Promise(() => {}),
+        findNightSky: async () => new Promise(() => {}),
       },
       waitForLoad: false,
     });

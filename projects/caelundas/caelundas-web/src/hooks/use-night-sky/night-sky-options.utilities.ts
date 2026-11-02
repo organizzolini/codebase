@@ -5,7 +5,7 @@ import type {
   ResolvedNightSkyOptions,
 } from "./night-sky.types";
 
-// 🔏 Private Functions
+// 🌎 Public Functions
 
 /**
  * Fills every option the caller left out with its default.
@@ -16,6 +16,7 @@ export function resolveOptions(
   return {
     ...resolveAppearance(options),
     ...resolveView(options),
+    constellationSegments: options.constellationSegments ?? [],
     height: options.height,
     latitudeDegrees: options.latitudeDegrees,
     localSiderealDegrees: options.localSiderealDegrees,
@@ -23,6 +24,8 @@ export function resolveOptions(
     width: options.width,
   };
 }
+
+// 🔏 Private Functions
 
 /**
  * Fills the options that set how the sky looks with their defaults.
@@ -48,8 +51,6 @@ function resolveAppearance(
     starScale: options.starScale ?? DEFAULT_OPTIONS.starScale,
   };
 }
-
-// 🌎 Public Functions
 
 /**
  * Fills the options that set what part of the sky shows, and how it moves,

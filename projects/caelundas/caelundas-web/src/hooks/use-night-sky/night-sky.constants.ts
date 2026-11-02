@@ -135,6 +135,28 @@ export const COLOR_INDEX_LOWEST = -0.4;
 
 export const COLOR_INDEX_HIGHEST = 2;
 
+// ✳️ Constellations
+
+/**
+ * The words `sky.constellations` takes besides names: every figure, or the
+ * twelve zodiac constellations'.
+ */
+export const CONSTELLATION_WORDS = ["all", "zodiac"] as const;
+
+/**
+ * The steps each figure segment is drawn in along its great circle, enough
+ * for the longest segment to bend smoothly with the projection.
+ */
+export const CONSTELLATION_SEGMENT_STEPS = 8;
+
+/**
+ * How the figures are drawn: thin, faint lines beneath the stars, the same
+ * width however far the tuning view zooms out.
+ */
+export const CONSTELLATION_LINE_ATTRIBUTES =
+  'fill="none" stroke="#c8d4ff" stroke-opacity=".28" stroke-width=".8" ' +
+  'stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"';
+
 // 🖼 Markup
 
 export const STAR_GLOW_DEFINITION =

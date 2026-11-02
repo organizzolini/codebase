@@ -70,6 +70,7 @@ export function validateCalendarSearch(
     sky: parseSkyValue(search["sky"]),
     "sky.altBottom": parseSkyValue(search["sky.altBottom"]),
     "sky.bottom": parseSkyValue(search["sky.bottom"]),
+    "sky.constellations": parseSkyValue(search["sky.constellations"]),
     "sky.debug": parseSkyValue(search["sky.debug"]),
     "sky.lat": parseSkyValue(search["sky.lat"]),
     "sky.lon": parseSkyValue(search["sky.lon"]),

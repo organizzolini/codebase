@@ -1,3 +1,5 @@
+import type { NightSkyCatalog } from "../../hooks/use-night-sky/night-sky.types";
+
 /**
  * One group an event falls in at one level of a grouping: a tag, with its
  * name and full path, or a value derived from the event's times, whose label
@@ -102,6 +104,11 @@ export interface EventsDatabase {
    * overlap the window, or every event without one.
    */
   findFacets(window?: EventsWindow): Promise<EventFacet[]>;
+  /**
+   * The night sky's stars and constellation figures, which caelundas-cli
+   * stores beside the events.
+   */
+  findNightSky(): Promise<NightSkyCatalog>;
 }
 
 /**

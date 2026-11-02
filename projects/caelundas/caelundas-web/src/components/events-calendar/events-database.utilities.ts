@@ -1,9 +1,16 @@
 import {
+  segmentRecordSchema,
+  starRecordSchema,
+} from "../../hooks/use-night-sky/use-night-sky.schemas";
+
+import {
+  CONSTELLATION_SEGMENTS_SQL,
   DATASET_SQL,
   EVENTS_IN_WINDOW_SQL,
   FACETS_SQL,
   GROUP_COLUMN_SQL,
   groupKeysSchema,
+  STARS_SQL,
   tagsSchema,
   WHOLE_DATASET_WINDOW,
 } from "./events-database.constants";
@@ -60,6 +67,18 @@ export function createEventsDatabase(executor: SqlExecutor): EventsDatabase {
           window.start.toISOString(),
         ]),
       );
+    },
+
+    async findNightSky() {
+      const [stars, segments] = await Promise.all([
+        executor.select(STARS_SQL, []),
+        executor.select(CONSTELLATION_SEGMENTS_SQL, []),
+      ]);
+
+      return {
+        segments: segments.map((row) => segmentRecordSchema.parse(row)),
+        stars: stars.map((row) => starRecordSchema.parse(row)),
+      };
     },
   };
 }
