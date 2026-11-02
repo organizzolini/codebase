@@ -1,9 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
@@ -43,21 +41,23 @@ describe(TripleAspectsDetectorService, () => {
     groupAspectsByType: (edges: AspectBodies[]) => Map<Aspect, AspectBodies[]>;
   };
 
+  const testingModuleOptions = {
+    providers: [
+      TripleAspectsComposerService,
+      AspectGraphService,
+      CompoundPhaseService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TripleAspectsDetectorService,
-        TripleAspectsComposerService,
-        AspectGraphService,
-        CompoundPhaseService,
-        ProgressiveUtilitiesService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      TripleAspectsDetectorService,
+      testingModuleOptions,
+    );
 
     compoundPhaseService = await module.resolve(CompoundPhaseService);
-    service = await module.resolve(TripleAspectsDetectorService);
-    await module.resolve(LoggerService);
+    service = instance;
     privateService = service as unknown as typeof privateService;
   });
 
@@ -65,8 +65,13 @@ describe(TripleAspectsDetectorService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      TripleAspectsDetectorService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TripleAspectsDetectorService);
   });
 
   describe("groupAspectsByType", () => {
