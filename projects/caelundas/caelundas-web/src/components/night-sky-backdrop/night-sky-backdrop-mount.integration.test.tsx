@@ -105,9 +105,9 @@ describe("night sky backdrop", () => {
     expect(backdrop.getAttribute("aria-hidden")).toBe("true");
     expect(backdrop.className).toContain("pointer-events-none");
     expect(backdrop.className).toContain("fixed");
-    // The seed holds a sample of the sky, its brightest stars and a few
-    // figures, so a few dozen of them cross the window.
-    expect(countStars(svg)).toBeGreaterThan(20);
+    // The seed holds the stars the constellation figures join and the
+    // brightest, not the whole catalog an ingest stores.
+    expect(countStars(svg)).toBeGreaterThan(50);
     expect(readPeriod(svg)).toBeGreaterThan(0);
     await expect(
       screen.findByRole("grid", { name: "March 2026" }),

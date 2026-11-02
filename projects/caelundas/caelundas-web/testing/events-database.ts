@@ -23,8 +23,8 @@ const MIGRATIONS_DIRECTORY = path.join(
   CLI_ROOT,
   "src/modules/database/migrations",
 );
-// The committed rows, the events and the sample of the night sky, in the
-// order the build applies them.
+// The committed rows, the events and the night sky's constellations with the
+// stars they join, in the order the build applies them.
 const SEED_FILES = ["events-seed.sql", "night-sky-seed.sql"];
 
 /**
