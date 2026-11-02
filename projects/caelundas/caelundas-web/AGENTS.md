@@ -153,9 +153,11 @@ constellation name is. `sky.ecliptic` and its three style keys draw the
 ecliptic through `night-sky-ecliptic.utilities.ts`, which turns ecliptic
 longitude into right ascension and declination by the obliquity and cuts the
 path with the same `splitIntoRuns` the figures use. `src/components/night-sky-menu/`
-is the toolbar's Sky menu: Sky (with the background colors) and Stars,
-Angles, and Lines under static headings, then the constellation tree, four
-columns on a wide screen and one on a phone. The tree's column has no visible
+is the toolbar's Sky menu, with no headings: each control's label says what
+it sets ("Sky top color", "Star drift speed", "Ecliptic line width"), and
+`NightSkySection` names its group with a hidden legend. Four columns on a wide
+screen, one on a phone: the sky and stars, the angles, the constellation
+lines over the ecliptic, then the constellation tree. The tree's column has no visible
 heading, its folder checkboxes picking all or none; it takes
 no height of its own on a wide screen, so the other columns set the panel's
 height and the tree scrolls inside it. An absent `sky.constellations` is the
@@ -241,10 +243,11 @@ test tiers.
 
 ## Layout
 
-The page is the calendar across the whole viewport under a single toolbar
-row: today, previous and next, the period's title, the active filters as
-chips, the Filters button with a count of the finished rules, and the view
-selector. Times render in the zone the dataset's events carry.
+The page is the calendar across the whole viewport under a toolbar of two
+rows: the View, Color and Sky menus, with today, previous and next and the
+period's title at the right; then the Filters button with a count of the
+finished rules, Clear and the active filters as chips, with the view selector
+at the right. The menus' triggers carry an icon and no arrow. Times render in the zone the dataset's events carry.
 
 - The views are month, week, three-day, day, agenda, and timeline, listed in
   `src/components/events-calendar/calendar-views.constants.ts`; the app owns that list, so a view is
@@ -256,7 +259,7 @@ selector. Times render in the zone the dataset's events carry.
   desktop the view selector is a menu, as six buttons do not fit beside the
   other controls. On a phone the week also scrolls sideways with a sticky
   hour column (the time grid in page scroll mode inside a scrolling content
-  area), the controls take a row of their own under the title, and the title
+  area), the menus and filter controls take a row of their own under the title, and the title
   wraps rather than being cut.
 - One toolbar sits above every view and is never remounted by a change of
   view, so the focus on its view selector survives it: each view reports how
@@ -297,7 +300,7 @@ selector. Times render in the zone the dataset's events carry.
 - Events are colored by a level picked the way a grouping's level is: the
   `color` search parameter holds one, a field and, for a tag root, the tags or
   the depth of its tree, from the same fields the filters and the grouping
-  offer, and the View menu's Color by submenu picks it with the same field
+  offer, and the Color menu's panel picks it, under its Color events switch, with the same field
   picker and tag tree. The loader reads it as one more level after the
   grouping's, so each event arrives with its keys for it in `groups`;
   `createColorScheme` (`src/components/calendar-color-by/calendar-color-schemes.utilities.ts`) turns
