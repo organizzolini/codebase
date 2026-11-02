@@ -28,7 +28,7 @@ describe(NightSkyMenu, () => {
     );
   });
 
-  it("opens from its Sky button onto every group, with no headings, and its footer", async () => {
+  it("opens from its Sky button onto every group, with no headings, and its presets", async () => {
     render(<NightSkyMenu />);
 
     fireEvent.click(screen.getByRole("button", { name: "Sky options" }));
@@ -50,6 +50,7 @@ describe(NightSkyMenu, () => {
     expect(
       screen.getByRole("group", { name: "Constellations to draw" }),
     ).toBeDefined();
+    expect(screen.getByRole("group", { name: "Sky presets" })).toBeDefined();
     expect(screen.getByRole("button", { name: "Full" })).toBeDefined();
     expect(screen.getByRole("button", { name: "Default" })).toBeDefined();
   });

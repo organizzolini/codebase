@@ -30,9 +30,9 @@ export const J2000_JULIAN_DAY = 2_451_545;
 export const DEFAULT_OPTIONS = {
   backgroundBottomColor: "#0d1533",
   backgroundTopColor: "#04060f",
-  bottomAltitudeDegrees: 0,
+  bottomAltitudeDegrees: -25,
   debug: false,
-  ecliptic: false,
+  ecliptic: true,
   eclipticColor: "#ffffff",
   eclipticOpacity: 0.12,
   eclipticWidth: 1,
@@ -43,15 +43,16 @@ export const DEFAULT_OPTIONS = {
   pixelsPerSecond: 12,
   starScale: 1,
   still: false,
-  verticalFieldOfViewDegrees: 20,
+  verticalFieldOfViewDegrees: 60,
 } as const;
 
 /**
- * The default observer, New York, whose sky the backdrop shows unless a link
- * names another place.
+ * The default observer, at the north pole, where altitude is declination and
+ * the default band, from -25° to +35°, holds the whole ecliptic and the
+ * zodiac's figures as they turn past; the longitude is New York's.
  */
 export const DEFAULT_OBSERVER = {
-  latitudeDegrees: 40.73,
+  latitudeDegrees: 90,
   longitudeDegrees: -74,
 } as const;
 
@@ -77,6 +78,13 @@ export const RING_MARGIN = 24;
  * The pole stays at least this many degrees beyond the top edge.
  */
 export const POLE_MARGIN_DEGREES = 1;
+
+/**
+ * The lowest bottom altitude `sky.altBottom` takes: below the horizon, so a
+ * view from the pole, where altitude is declination, reaches the southern
+ * half of the ecliptic and the zodiac.
+ */
+export const MINIMUM_BOTTOM_ALTITUDE_DEGREES = -45;
 
 export const MINIMUM_FIELD_OF_VIEW_DEGREES = 2;
 

@@ -70,13 +70,15 @@ describe(useNightSky, () => {
   });
 
   it("draws the zodiac's figures by default, and none when asked for none", async () => {
-    // Facing north, the zodiac rises into the window only from far north.
-    await expect(renderSky({ "sky.lat": 75 })).resolves.toContain("<polyline");
+    // The default view, from the pole, holds the zodiac's band.
+    await expect(renderSky({ "sky.ecliptic": false })).resolves.toContain(
+      "<polyline",
+    );
     await expect(
-      renderSky({ "sky.constellations": "none" }),
+      renderSky({ "sky.constellations": "none", "sky.ecliptic": false }),
     ).resolves.not.toContain("<polyline");
     await expect(
-      renderSky({ "sky.constellations": "" }),
+      renderSky({ "sky.constellations": "", "sky.ecliptic": false }),
     ).resolves.not.toContain("<polyline");
   });
 

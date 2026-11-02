@@ -96,7 +96,7 @@ describe("night sky menu", () => {
   });
 
   it("writes a control to the link, and the sky follows it", async () => {
-    await renderRoute("/?date=2026-03-01&sky.lat=75");
+    await renderRoute("/?date=2026-03-01&sky.ecliptic=false");
     await findSky();
     await openNightSkyMenu();
     await openConstellations();
@@ -136,10 +136,10 @@ describe("night sky menu", () => {
       throw new Error("No slider is labelled Latitude");
     }
 
-    fireEvent.keyDown(latitude, { key: "ArrowRight" });
+    fireEvent.keyDown(latitude, { key: "ArrowLeft" });
 
     await waitFor(() => {
-      expect(readSearch()).toMatchObject({ "sky.lat": 41 });
+      expect(readSearch()).toMatchObject({ "sky.lat": 89.5 });
     });
   });
 
@@ -160,7 +160,7 @@ describe("night sky menu", () => {
   });
 
   it.each(["all", "none"])(
-    "resets sky.constellations=%s to the zodiac, which draws from the far north",
+    "resets sky.constellations=%s to the zodiac, whose figures the default view draws",
     async (words) => {
       await renderRoute(`/?date=2026-03-01&sky.constellations=${words}`);
       await openNightSkyMenu();
@@ -190,32 +190,35 @@ describe("night sky menu", () => {
           ),
       ).toHaveLength(13);
 
-      // New York, the default, sees no zodiac figure facing north; the pole does.
-      fireEvent.click(screen.getByRole("button", { name: "Full" }));
-
       await waitFor(() => {
-        expect(
-          screen.getByTestId("night-sky-backdrop").querySelector("polyline"),
-        ).not.toBeNull();
-      });
+        const backdrop = screen.getByTestId("night-sky-backdrop");
 
-      expect(readSearch()).not.toHaveProperty("sky.constellations");
+        expect(
+          backdrop.querySelectorAll("polyline").length -
+            backdrop.querySelectorAll('[data-layer="ecliptic"] polyline')
+              .length,
+        ).toBeGreaterThan(0);
+      });
     },
   );
 
   it("shows the pole's whole sky from the Full button, keeping other settings", async () => {
     await renderRoute(
-      "/?date=2026-03-01&sky.altBottom=10&sky.starScale=2&sky.debug=true",
+      "/?date=2026-03-01&sky.lat=51.5&sky.starScale=2&sky.debug=true",
     );
     await openNightSkyMenu();
 
     fireEvent.click(screen.getByRole("button", { name: "Full" }));
 
     await waitFor(() => {
-      expect(readSearch()).toMatchObject({ "sky.lat": 90, "sky.vFov": 90 });
+      expect(readSearch()).toMatchObject({
+        "sky.altBottom": 0,
+        "sky.pixelsPerSecond": 3,
+        "sky.vFov": 90,
+      });
     });
 
-    expect(readSearch()).not.toHaveProperty("sky.altBottom");
+    expect(readSearch()).not.toHaveProperty("sky.lat");
     expect(readSearch()).toMatchObject({
       "sky.debug": true,
       "sky.starScale": 2,
@@ -262,15 +265,45 @@ describe("night sky menu", () => {
     });
   });
 
-  it("draws the ecliptic from its switch, and the Default button removes it", async () => {
-    await renderRoute("/?date=2026-03-01&sky.lat=75");
+  it("draws the ecliptic and the zodiac's figures at the defaults", async () => {
+    await renderRoute("/?date=2026-03-01");
+
+    const sky = await findSky();
+
+    await waitFor(() => {
+      expect(
+        sky.querySelector('[data-layer="ecliptic"] polyline'),
+      ).not.toBeNull();
+    });
+
+    expect(
+      sky.querySelectorAll("polyline").length -
+        sky.querySelectorAll('[data-layer="ecliptic"] polyline').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it("hides the ecliptic from its switch, and the Default button brings it back", async () => {
+    await renderRoute("/?date=2026-03-01");
     await findSky();
     await openNightSkyMenu();
 
     fireEvent.click(screen.getByRole("switch", { name: "Show the ecliptic" }));
 
     await waitFor(() => {
-      expect(readSearch()).toMatchObject({ "sky.ecliptic": true });
+      expect(readSearch()).toMatchObject({ "sky.ecliptic": false });
+    });
+    await waitFor(() => {
+      expect(
+        screen
+          .getByTestId("night-sky-backdrop")
+          .querySelector('[data-layer="ecliptic"]'),
+      ).toBeNull();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Default" }));
+
+    await waitFor(() => {
+      expect(readSearch()).not.toHaveProperty("sky.ecliptic");
     });
     await waitFor(() => {
       expect(
@@ -278,12 +311,6 @@ describe("night sky menu", () => {
           .getByTestId("night-sky-backdrop")
           .querySelector('[data-layer="ecliptic"] polyline'),
       ).not.toBeNull();
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Default" }));
-
-    await waitFor(() => {
-      expect(readSearch()).not.toHaveProperty("sky.ecliptic");
     });
   });
 });

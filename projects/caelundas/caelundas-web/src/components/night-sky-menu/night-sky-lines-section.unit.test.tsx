@@ -33,7 +33,7 @@ describe(NightSkyLinesSection, () => {
 
     fireEvent.click(screen.getByRole("switch", { name: "Show the ecliptic" }));
 
-    expect(onChange).toHaveBeenCalledWith({ "sky.ecliptic": true });
+    expect(onChange).toHaveBeenCalledWith({ "sky.ecliptic": false });
   });
 
   it("puts the figures' stroke above the ecliptic's, with no heading", () => {

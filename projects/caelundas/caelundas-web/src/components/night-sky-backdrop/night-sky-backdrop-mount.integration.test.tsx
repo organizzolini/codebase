@@ -143,15 +143,18 @@ describe("night sky backdrop", () => {
   });
 
   it("draws the zodiac's figures by default, and none for an empty list", async () => {
-    // Facing north, the zodiac rises into the window only from far north.
-    await renderRoute("/?date=2026-03-01&sky.lat=75");
+    // The default view, from the pole, holds the zodiac's band; the ecliptic
+    // is turned off so every polyline is a figure's.
+    await renderRoute("/?date=2026-03-01&sky.ecliptic=false");
 
     const zodiacSky = await findSky();
 
     expect(zodiacSky.querySelectorAll("polyline").length).toBeGreaterThan(0);
 
     cleanup();
-    await renderRoute("/?date=2026-03-01&sky.lat=75&sky.constellations=");
+    await renderRoute(
+      "/?date=2026-03-01&sky.ecliptic=false&sky.constellations=",
+    );
 
     const plainSky = await findSky();
 
@@ -168,7 +171,7 @@ describe("night sky backdrop", () => {
 
   it("strokes the figures in the color, opacity and width of the link", async () => {
     await renderRoute(
-      "/?date=2026-03-01&sky.constellations=all&sky.lineColor=%23ff8800&sky.lineOpacity=0.5&sky.lineWidth=2",
+      "/?date=2026-03-01&sky.ecliptic=false&sky.constellations=all&sky.lineColor=%23ff8800&sky.lineOpacity=0.5&sky.lineWidth=2",
     );
 
     const sky = await findSky();
@@ -295,7 +298,7 @@ describe("night sky backdrop", () => {
   it("says when it reduces a field of view that would put the pole on screen", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    await renderRoute("/?date=2026-03-01&sky.vFov=90");
+    await renderRoute("/?date=2026-03-01&sky.lat=40&sky.vFov=90");
     await findSky();
 
     await waitFor(() => {

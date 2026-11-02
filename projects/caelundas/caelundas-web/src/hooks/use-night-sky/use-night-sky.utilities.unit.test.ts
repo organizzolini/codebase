@@ -144,25 +144,25 @@ describe("use-night-sky utilities", () => {
   });
 
   describe("the ecliptic", () => {
-    it("is off by default, in a faint white dashed default style", () => {
+    it("is on by default, in a faint white dashed default style", () => {
       expect(readNightSkyOverrides({})).toMatchObject({
-        ecliptic: false,
+        ecliptic: true,
         eclipticColor: "#ffffff",
         eclipticOpacity: 0.12,
         eclipticWidth: 1,
       });
     });
 
-    it("turns on for sky.ecliptic=true, and reads and clamps its style", () => {
+    it("turns off for sky.ecliptic=false, and reads and clamps its style", () => {
       expect(
         readNightSkyOverrides({
-          "sky.ecliptic": true,
+          "sky.ecliptic": false,
           "sky.eclipticColor": "#abc",
           "sky.eclipticOpacity": 2,
           "sky.eclipticWidth": -1,
         }),
       ).toMatchObject({
-        ecliptic: true,
+        ecliptic: false,
         eclipticColor: "#aabbcc",
         eclipticOpacity: 1,
         eclipticWidth: 0,
@@ -178,7 +178,7 @@ describe("use-night-sky utilities", () => {
           "sky.lineWidth": "thick",
         }),
       ).toMatchObject({
-        ecliptic: false,
+        ecliptic: true,
         eclipticColor: "#ffffff",
         rejectedKeys: ["sky.lineWidth", "sky.eclipticColor"],
       });

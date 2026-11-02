@@ -9,6 +9,7 @@ import {
   DEFAULT_OPTIONS,
   LINE_OPACITY_RANGE,
   LINE_WIDTH_RANGE,
+  MINIMUM_BOTTOM_ALTITUDE_DEGREES,
   REDUCED_MOTION_QUERY,
 } from "./night-sky.constants";
 
@@ -89,7 +90,7 @@ export function readNightSkyOverrides(
     ),
     bottomAltitudeDegrees: readNumber(
       search["sky.altBottom"],
-      z.number().min(0).max(89),
+      z.number().min(MINIMUM_BOTTOM_ALTITUDE_DEGREES).max(89),
       DEFAULT_OPTIONS.bottomAltitudeDegrees,
     ),
     constellations: readConstellationNames(search["sky.constellations"]),

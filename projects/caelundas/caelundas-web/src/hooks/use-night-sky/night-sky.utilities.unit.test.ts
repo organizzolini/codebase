@@ -66,11 +66,15 @@ function ringRadius(star: StarRow): number {
   return scale * tangentOfHalf(90 - star[1]);
 }
 
+// New York's band facing north, the oracle's geometry, with no ecliptic.
 const baseOptions = {
+  bottomAltitudeDegrees: 0,
+  ecliptic: false,
   height: HEIGHT,
   latitudeDegrees: LATITUDE,
   localSiderealDegrees: 0,
   stars,
+  verticalFieldOfViewDegrees: FIELD_OF_VIEW,
   width: WIDTH,
 } as const;
 

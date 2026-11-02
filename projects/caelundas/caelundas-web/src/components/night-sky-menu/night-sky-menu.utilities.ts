@@ -135,11 +135,11 @@ export function toConstellationsChange(
 }
 
 /**
- * The change that draws the ecliptic, with `sky.ecliptic=true`, or removes
- * the key to leave it off, its default.
+ * The change that hides the ecliptic, with `sky.ecliptic=false`, or removes
+ * the key to draw it, its default.
  */
 export function toEclipticChange(visible: boolean): SkySearchChange {
-  return { "sky.ecliptic": visible ? true : undefined };
+  return { "sky.ecliptic": visible ? undefined : false };
 }
 
 /**

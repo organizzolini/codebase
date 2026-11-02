@@ -36,7 +36,7 @@ describe("night sky menu utilities", () => {
     });
 
     it("removes a value set back to its default, so the link stays short", () => {
-      expect(toSkyParameterChange("sky.lat", 40.73)).toStrictEqual({
+      expect(toSkyParameterChange("sky.lat", 90)).toStrictEqual({
         "sky.lat": undefined,
       });
       expect(toSkyParameterChange("sky.top", "#04060F")).toStrictEqual({
@@ -61,10 +61,11 @@ describe("night sky menu utilities", () => {
   });
 
   describe(toFullViewChange, () => {
-    it("writes the pole's whole sky, leaving a default bottom altitude out", () => {
+    it("writes the pole's whole sky above the horizon, slowed, leaving the default latitude out", () => {
       expect(toFullViewChange()).toStrictEqual({
-        "sky.altBottom": undefined,
-        "sky.lat": 90,
+        "sky.altBottom": 0,
+        "sky.lat": undefined,
+        "sky.pixelsPerSecond": 3,
         "sky.vFov": 90,
       });
     });
@@ -179,9 +180,9 @@ describe("night sky menu utilities", () => {
   });
 
   describe(toEclipticChange, () => {
-    it("writes sky.ecliptic=true to draw it and removes it to leave it off", () => {
-      expect(toEclipticChange(true)).toStrictEqual({ "sky.ecliptic": true });
-      expect(toEclipticChange(false)).toStrictEqual({
+    it("writes sky.ecliptic=false to hide it and removes it to draw it", () => {
+      expect(toEclipticChange(false)).toStrictEqual({ "sky.ecliptic": false });
+      expect(toEclipticChange(true)).toStrictEqual({
         "sky.ecliptic": undefined,
       });
     });

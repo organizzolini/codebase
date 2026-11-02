@@ -16,12 +16,10 @@ import { useNightSkySettings } from "../../hooks/use-night-sky/use-night-sky-set
 import { NightSkyColorField } from "./night-sky-color-field";
 import { NightSkyConstellationPicker } from "./night-sky-constellation-picker";
 import { NightSkyLinesSection } from "./night-sky-lines-section";
-import { NightSkyMenuFooter } from "./night-sky-menu-footer";
 import {
   ANGLE_SLIDERS,
   BACKGROUND_COLORS,
   COLUMN_CLASS_NAME,
-  FOOTER_CLASS_NAME,
   PANEL_CLASS_NAME,
   STAR_SLIDERS,
 } from "./night-sky-menu.constants";
@@ -31,6 +29,7 @@ import {
   toSkyParameterChange,
   toVisibilityChange,
 } from "./night-sky-menu.utilities";
+import { NightSkyPresets } from "./night-sky-presets";
 import { NightSkySection } from "./night-sky-section";
 import { NightSkySliders } from "./night-sky-sliders";
 
@@ -107,15 +106,18 @@ export function NightSkyMenu(
             >
               <div className={COLUMN_CLASS_NAME}>
                 <NightSkySection title="Sky">
-                  <Label className="justify-between text-xs">
-                    Show the sky
-                    <Switch
-                      checked={!settings.off}
-                      onCheckedChange={(checked: boolean) => {
-                        change(toVisibilityChange(checked));
-                      }}
-                    />
-                  </Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label className="gap-2 text-xs">
+                      Show the sky
+                      <Switch
+                        checked={!settings.off}
+                        onCheckedChange={(checked: boolean) => {
+                          change(toVisibilityChange(checked));
+                        }}
+                      />
+                    </Label>
+                    <NightSkyPresets onChange={change} />
+                  </div>
                   {BACKGROUND_COLORS.map((control) => (
                     <NightSkyColorField
                       key={control.key}
@@ -153,10 +155,6 @@ export function NightSkyMenu(
                 words={settings.constellations}
               />
             </FieldSet>
-            <NightSkyMenuFooter
-              className={FOOTER_CLASS_NAME}
-              onChange={change}
-            />
           </DropdownMenuContent>
         </DropdownMenu>
       </ButtonGroup>
