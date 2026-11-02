@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PronunciationPhonemesService } from "./pronunciation-phonemes.service";
 
@@ -7,15 +8,15 @@ describe(PronunciationPhonemesService, () => {
   let service: PronunciationPhonemesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PronunciationPhonemesService],
-    }).compile();
+    const built = await buildTestingModule(PronunciationPhonemesService);
 
-    service = await module.resolve(PronunciationPhonemesService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PronunciationPhonemesService);
+
+    expect(instance).toBeInstanceOf(PronunciationPhonemesService);
   });
 
   it("should return a string phoneme when key points to string value", () => {
