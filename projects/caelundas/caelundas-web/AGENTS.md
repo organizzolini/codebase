@@ -149,12 +149,23 @@ turning group, cut where they leave the ring the window can show, and
 `readNightSkyOverrides` reads the color like `sky.top` and clamps the opacity
 to 0–1 and the width to 0–10 pixels, and a value it cannot read falls back to
 the `DEFAULT_OPTIONS` default and is warned of once, as an unknown
-constellation name is. `src/components/night-sky-menu/` is the View menu's Night
-sky submenu: `useNightSkySettings` reads the same keys through
+constellation name is. `sky.ecliptic` and its three style keys draw the
+ecliptic through `night-sky-ecliptic.utilities.ts`, which turns ecliptic
+longitude into right ascension and declination by the obliquity and cuts the
+path with the same `splitIntoRuns` the figures use. `src/components/night-sky-menu/`
+is the toolbar's Sky menu: Sky (with the background colors) and Stars,
+Angles, and Lines under static headings, then the constellation tree, four
+columns on a wide screen and one on a phone. The tree's column has no visible
+heading, its folder checkboxes picking all or none; it takes
+no height of its own on a wide screen, so the other columns set the panel's
+height and the tree scrolls inside it. An absent `sky.constellations` is the
+zodiac everywhere, the tree included: `useNightSkySettings` reads the same keys through
 `readNightSkyOverrides` and writes them with `navigate({ replace: true })`, the
-`night-sky-menu.utilities.ts` mappings remove a key set back to its default,
-and the panel keeps arrow and letter keys from the menu around it so a slider
-keeps focus.
+`night-sky-menu.utilities.ts` mappings remove a key set back to its default
+and the footer's Default button removes them all but `sky.debug` while Full
+writes `toFullViewChange`'s pole view, the colors are the
+ReUI color picker, and the panel keeps arrow and letter keys from the menu
+around it so a slider keeps focus.
 
 ## Development
 

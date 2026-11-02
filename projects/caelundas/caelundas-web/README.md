@@ -44,9 +44,12 @@ nx run caelundas-web:vitest
 ## Night sky link parameters
 
 The backdrop reads these from the page link; a value that does not parse falls
-back to its default. The View menu's Night sky submenu sets every one of them
+back to its default. The toolbar's Sky menu sets every one of them
 but `sky.debug`, reading the link and writing it back as a control moves, and
-removes a key set back to its default. Colors are text of three or six
+removes a key set back to its default. Its Default button removes them all
+but `sky.debug`, which leaves the zodiac's figures, out of sight from New
+York, and its Full button shows the whole sky above the horizon
+from the pole: `sky.lat=90`, `sky.vFov=90` and `sky.altBottom=0`. Colors are text of three or six
 hexadecimal digits, with
 or without the `#`. Write the `#` as `%23`, for example `sky.top=%23102040`:
 the router reads an all-digit value such as `123456` or `1e5` as a number,
@@ -55,9 +58,10 @@ to the default.
 
 - `sky=off` removes the backdrop.
 - `sky.lat` and `sky.lon` move the observer, New York by default; a latitude of
-  0 or below draws nothing.
+  0 or below draws nothing, and 90 stands at the pole.
 - `sky.vFov` sets the degrees of altitude shown, and `sky.altBottom` the
-  altitude at the bottom edge.
+  altitude at the bottom edge. The pole stays a degree above the top edge, so a
+  field of view that would show it is cut to fit: 89° at `sky.lat=90`.
 - `sky.pixelsPerSecond` sets the drift speed in on-screen pixels per second.
 - `sky.maxMag` sets the faintest magnitude drawn, and `sky.starScale`
   multiplies the dot size.
@@ -73,10 +77,16 @@ to the default.
   the horizon from mid-northern latitudes, so its figures show from far north
   or with `all` and the circumpolar figures.
 - `sky.lineColor`, `sky.lineOpacity` and `sky.lineWidth` stroke the figures:
-  a color like `sky.top`'s, `c8d4ff` by default; an opacity from 0 to 1,
-  `0.28` by default; and a width in on-screen pixels from 0 to 10, `0.8` by
+  a color like `sky.top`'s, `ffffff` by default; an opacity from 0 to 1,
+  `0.24` by default; and a width in on-screen pixels from 0 to 10, `0.8` by
   default. A number out of range is clamped, and a value that does not parse
   falls back to the default with one console warning.
+- `sky.ecliptic=true` draws the ecliptic, the Sun's yearly path and the line
+  the zodiac lies along, as a dashed path beneath the stars; off by default.
+  `sky.eclipticColor`, `sky.eclipticOpacity` and `sky.eclipticWidth` stroke it
+  like the figures' keys, `ffffff`, `0.12` and `1` by default. Facing north it
+  never rises past declination +23.44°, so it shows only from about latitude
+  66°, the Arctic Circle, northward, for example `sky.lat=70`.
 - `sky.debug=true` draws the zoomed-out tuning view.
 
 ## Stars and constellations
