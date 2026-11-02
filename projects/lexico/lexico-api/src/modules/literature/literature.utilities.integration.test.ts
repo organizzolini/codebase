@@ -3,13 +3,13 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { toCursor } from "@codebase/interface";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
 import {
   expectedPage,
   type PageRequest,
   paginationMatrix,
   summarize,
-} from "@codebase/interface/testing";
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+} from "@codebase/testing/graphql";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
@@ -19,7 +19,7 @@ import {
 import { LiteratureService } from "./literature.service";
 
 import type { Connection } from "@codebase/interface";
-import type { DatabaseTestingModule } from "@codebase/persistence/testing";
+import type { DatabaseTestingModule } from "@codebase/testing/postgres";
 
 /** Each boundary matrix issues a few hundred queries, which a slow runner needs time for. */
 const MATRIX_TIMEOUT_MILLISECONDS = 120_000;

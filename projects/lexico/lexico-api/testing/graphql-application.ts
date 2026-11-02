@@ -6,13 +6,13 @@ import {
   LEXICO_DATABASE_MIGRATIONS,
   LexicoDatabaseModule,
 } from "@codebase/lexico-entities";
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
+import { startDatabaseTestingModule } from "@codebase/testing/postgres";
 
 import { environmentSchema } from "../src/lexico-api.constants";
 import { ORPHANED_GRAPHQL_TYPES } from "../src/modules/lexemes/lexemes.constants";
 
 import type { RepositoryOf } from "./word-lookups";
-import type { DatabaseTestingModule } from "@codebase/persistence/testing";
+import type { DatabaseTestingModule } from "@codebase/testing/postgres";
 import type { INestApplication, ModuleMetadata } from "@nestjs/common";
 import type { Server } from "node:http";
 

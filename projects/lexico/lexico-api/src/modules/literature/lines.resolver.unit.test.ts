@@ -1,8 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { Line, Token } from "@codebase/lexico-entities";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LinesResolver } from "./lines.resolver";
 import { LiteratureRelationsLoader } from "./literature-relations.loader";
@@ -14,28 +14,12 @@ import {
 } from "./literature.utilities";
 
 describe(LinesResolver, () => {
-  let resolver: LinesResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LinesResolver, {
+      mocks: [LiteratureService, LiteratureRelationsLoader],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LinesResolver,
-        {
-          provide: LiteratureService,
-          useValue: createMock<LiteratureService>(),
-        },
-        {
-          provide: LiteratureRelationsLoader,
-          useValue: createMock<LiteratureRelationsLoader>(),
-        },
-      ],
-    }).compile();
-
-    resolver = await module.resolve(LinesResolver);
-  });
-
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(LinesResolver);
   });
 
   it("returns a paginated connection for lines", async () => {

@@ -4,7 +4,7 @@ import { LiteratureRelationsLoader } from "../src/modules/literature/literature-
 import { LiteratureRelationsService } from "../src/modules/literature/literature-relations.service";
 import { LiteratureService } from "../src/modules/literature/literature.service";
 
-import type { DatabaseTestingModule } from "@codebase/persistence/testing";
+import type { DatabaseTestingModule } from "@codebase/testing/postgres";
 
 /** The literature services a resolver is handed, over a real database. */
 export interface LiteratureServices {

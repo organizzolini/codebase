@@ -21,7 +21,7 @@ import { toLineType } from "./literature.utilities";
 import type { LinesArguments } from "./line-arguments.entities";
 import type { LineType } from "./line.entities";
 import type { Connection } from "@codebase/interface";
-import type { DatabaseTestingModule } from "@codebase/persistence/testing";
+import type { DatabaseTestingModule } from "@codebase/testing/postgres";
 
 /** A page of lines, reduced to what a reader can observe of it. */
 interface LinesPage {

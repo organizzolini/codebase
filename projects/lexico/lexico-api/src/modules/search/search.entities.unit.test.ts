@@ -4,8 +4,9 @@ import {
   Query,
   Resolver,
 } from "@nestjs/graphql";
-import { Test } from "@nestjs/testing";
 import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LexemeType } from "../lexemes/lexeme.entities";
 import { ORPHANED_GRAPHQL_TYPES } from "../lexemes/lexemes.constants";
@@ -34,10 +35,9 @@ describe("search entities suite", () => {
   it("builds GraphQL schema for LexemeSearchResult", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(DummyResolver, {
       imports: [GraphQLSchemaBuilderModule],
-      providers: [DummyResolver],
-    }).compile();
+    });
 
     const schemaFactory = module.get(GraphQLSchemaFactory);
     const schema = await schemaFactory.create([DummyResolver], {
