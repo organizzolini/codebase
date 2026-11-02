@@ -1,14 +1,13 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-
-import { mockDates } from "../../../testing/mocks";
+import { mockDates } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CalendarService } from "./calendar.service";
 
@@ -26,19 +25,23 @@ describe(CalendarService, () => {
   };
   const logger = new LoggerService();
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        {
-          provide: LoggerService,
-          useValue: logger,
-        },
-        CalendarService,
-        { provide: ConfigService, useValue: configService },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [
+      {
+        provide: LoggerService,
+        useValue: logger,
+      },
+      { provide: ConfigService, useValue: configService },
+    ],
+  };
 
-    service = await module.resolve(CalendarService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      CalendarService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
   mockDates();
@@ -144,8 +147,13 @@ describe(CalendarService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      CalendarService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(CalendarService);
   });
 
   describe("buildFileContent", () => {
