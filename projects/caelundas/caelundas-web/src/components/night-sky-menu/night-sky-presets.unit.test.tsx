@@ -27,6 +27,7 @@ describe(NightSkyPresets, () => {
 
     const group = screen.getByRole("group", { name: "Sky presets" });
 
+    expect(group.dataset["slot"]).toBe("button-group");
     expect(
       [...group.querySelectorAll("button")].map((button) => button.textContent),
     ).toStrictEqual(["Full", "Default"]);

@@ -30,7 +30,7 @@ export const J2000_JULIAN_DAY = 2_451_545;
 export const DEFAULT_OPTIONS = {
   backgroundBottomColor: "#0d1533",
   backgroundTopColor: "#04060f",
-  bottomAltitudeDegrees: -25,
+  bottomAltitudeDegrees: 0,
   debug: false,
   ecliptic: true,
   eclipticColor: "#ffffff",
@@ -48,8 +48,9 @@ export const DEFAULT_OPTIONS = {
 
 /**
  * The default observer, at the north pole, where altitude is declination and
- * the default band, from -25° to +35°, holds the whole ecliptic and the
- * zodiac's figures as they turn past; the longitude is New York's.
+ * the default band, from the horizon to +60°, holds the northern half of the
+ * ecliptic and the northern zodiac's figures as they turn past; the
+ * longitude is New York's.
  */
 export const DEFAULT_OBSERVER = {
   latitudeDegrees: 90,

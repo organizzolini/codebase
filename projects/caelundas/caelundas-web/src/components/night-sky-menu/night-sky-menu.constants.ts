@@ -231,25 +231,12 @@ export const PANEL_CLASS_NAME =
   "w-[min(20rem,calc(100vw-1rem))] md:w-[min(40rem,calc(100vw-1rem))] lg:w-[min(68rem,calc(100vw-1rem))] max-h-(--available-height) overflow-y-auto";
 
 /**
- * The first of the presets' joined pill: round on the left, square where it
- * meets the next, and raised while focused so its ring shows whole.
- */
-export const PRESET_FIRST_CLASS_NAME =
-  "relative rounded-l-full rounded-r-none focus-visible:z-10";
-
-/**
- * The last of the presets' joined pill: round on the right, its left border
- * laid over the first's so the two share one.
- */
-export const PRESET_LAST_CLASS_NAME =
-  "relative -ml-0.25 rounded-l-none rounded-r-full focus-visible:z-10";
-
-/**
  * The settings the Full button writes: the whole sky above the horizon, seen
- * from the pole.
+ * from the pole, slowly, with the ecliptic at its default opacity.
  */
 export const FULL_VIEW: readonly (readonly [SkyParameterKey, number])[] = [
   ["sky.altBottom", 0],
+  ["sky.eclipticOpacity", 0.12],
   ["sky.lat", 90],
   ["sky.pixelsPerSecond", 3],
   ["sky.vFov", 90],

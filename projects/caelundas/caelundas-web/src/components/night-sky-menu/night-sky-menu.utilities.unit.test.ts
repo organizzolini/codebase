@@ -61,9 +61,10 @@ describe("night sky menu utilities", () => {
   });
 
   describe(toFullViewChange, () => {
-    it("writes the pole's whole sky above the horizon, slowed, leaving the default latitude out", () => {
+    it("writes the pole's whole sky above the horizon, slowed, putting the defaults it shares back", () => {
       expect(toFullViewChange()).toStrictEqual({
-        "sky.altBottom": 0,
+        "sky.altBottom": undefined,
+        "sky.eclipticOpacity": undefined,
         "sky.lat": undefined,
         "sky.pixelsPerSecond": 3,
         "sky.vFov": 90,
@@ -78,6 +79,7 @@ describe("night sky menu utilities", () => {
       expect(change).toMatchObject({
         sky: undefined,
         "sky.constellations": undefined,
+        "sky.eclipticOpacity": undefined,
         "sky.lat": undefined,
         "sky.lineColor": undefined,
         "sky.top": undefined,

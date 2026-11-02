@@ -145,7 +145,7 @@ describe("night sky menu", () => {
 
   it("resets every setting it holds, and keeps the tuning view", async () => {
     await renderRoute(
-      "/?date=2026-03-01&sky.lat=51.5&sky.top=%23102040&sky.debug=true",
+      "/?date=2026-03-01&sky.lat=51.5&sky.top=%23102040&sky.eclipticOpacity=0.5&sky.debug=true",
     );
     await openNightSkyMenu();
 
@@ -156,6 +156,7 @@ describe("night sky menu", () => {
     });
 
     expect(readSearch()).not.toHaveProperty("sky.top");
+    expect(readSearch()).not.toHaveProperty("sky.eclipticOpacity");
     expect(readSearch()).toMatchObject({ "sky.debug": true });
   });
 
@@ -204,7 +205,7 @@ describe("night sky menu", () => {
 
   it("shows the pole's whole sky from the Full button, keeping other settings", async () => {
     await renderRoute(
-      "/?date=2026-03-01&sky.lat=51.5&sky.starScale=2&sky.debug=true",
+      "/?date=2026-03-01&sky.lat=51.5&sky.altBottom=10&sky.eclipticOpacity=0.5&sky.starScale=2&sky.debug=true",
     );
     await openNightSkyMenu();
 
@@ -212,13 +213,23 @@ describe("night sky menu", () => {
 
     await waitFor(() => {
       expect(readSearch()).toMatchObject({
-        "sky.altBottom": 0,
         "sky.pixelsPerSecond": 3,
         "sky.vFov": 90,
       });
     });
 
-    expect(readSearch()).not.toHaveProperty("sky.lat");
+    for (const key of ["sky.lat", "sky.altBottom", "sky.eclipticOpacity"]) {
+      expect(readSearch()).not.toHaveProperty(key);
+    }
+    await waitFor(() => {
+      expect(
+        screen
+          .getByTestId("night-sky-backdrop")
+          .querySelector('[data-layer="ecliptic"]')
+          ?.getAttribute("stroke-opacity"),
+      ).toBe("0.12");
+    });
+
     expect(readSearch()).toMatchObject({
       "sky.debug": true,
       "sky.starScale": 2,

@@ -1,9 +1,5 @@
-import { Button } from "@codebase/presentation";
+import { Button, ButtonGroup } from "@codebase/presentation";
 
-import {
-  PRESET_FIRST_CLASS_NAME,
-  PRESET_LAST_CLASS_NAME,
-} from "./night-sky-menu.constants";
 import { toFullViewChange, toResetChange } from "./night-sky-menu.utilities";
 
 import type { SkySearchChange } from "./night-sky-menu.types";
@@ -22,7 +18,7 @@ export interface NightSkyPresetsProperties {
 // 🧩 Component
 
 /**
- * Renders the Sky menu's presets as one pill of two joined buttons: Full,
+ * Renders the Sky menu's presets as one button group: Full,
  * which shows the pole's whole sky above the horizon, slowly, and Default,
  * which removes every setting the menu holds but the tuning view.
  */
@@ -47,13 +43,8 @@ export function NightSkyPresets(
       className={className}
       data-testid="night-sky-presets"
     >
-      <div
-        aria-label="Sky presets"
-        className="flex"
-        role="group"
-      >
+      <ButtonGroup aria-label="Sky presets">
         <Button
-          className={PRESET_FIRST_CLASS_NAME}
           onClick={() => {
             onChange(toFullViewChange());
           }}
@@ -63,7 +54,6 @@ export function NightSkyPresets(
           Full
         </Button>
         <Button
-          className={PRESET_LAST_CLASS_NAME}
           onClick={() => {
             onChange(toResetChange());
           }}
@@ -72,7 +62,7 @@ export function NightSkyPresets(
         >
           Default
         </Button>
-      </div>
+      </ButtonGroup>
     </div>
   );
 }
