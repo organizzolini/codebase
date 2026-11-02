@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CalendarService } from "../calendar/calendar.service";
 
@@ -11,44 +10,46 @@ import { LunarApsidesService } from "./lunar-apsides.service";
 import type { DetectedCalendarEvent } from "../database/database.types";
 import type { DistanceEphemeris } from "../ephemeris/ephemeris.types";
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 describe(LunarApsidesService, () => {
   let service: LunarApsidesService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LoggerService,
-        {
-          provide: CalendarService,
-          useValue: {
-            buildInstantEvent: (args: {
-              date: Moment;
-              description: string;
-              summary: string;
-              tags: string[];
-            }): DetectedCalendarEvent => ({
-              description: args.description,
-              end: args.date,
-              start: args.date,
-              summary: args.summary,
-              tags: args.tags,
-            }),
-          },
+  const testingModuleOptions = {
+    providers: [
+      {
+        provide: CalendarService,
+        useValue: {
+          buildInstantEvent: (args: {
+            date: Moment;
+            description: string;
+            summary: string;
+            tags: string[];
+          }): DetectedCalendarEvent => ({
+            description: args.description,
+            end: args.date,
+            start: args.date,
+            summary: args.summary,
+            tags: args.tags,
+          }),
         },
-        LunarApsidesService,
-      ],
-    }).compile();
-    service = await module.resolve(LunarApsidesService);
+      },
+    ],
+  };
+
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      LunarApsidesService,
+      testingModuleOptions,
+    );
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      LunarApsidesService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(LunarApsidesService);
   });
 
   const start = moment.utc("2026-01-01T21:40:00.000Z");
