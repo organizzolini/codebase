@@ -36,7 +36,7 @@ describe(NightSkyLinesSection, () => {
     expect(onChange).toHaveBeenCalledWith({ "sky.ecliptic": true });
   });
 
-  it("holds the ecliptic and the figures' strokes under one Lines heading", () => {
+  it("puts the figures' stroke above the ecliptic's, with no heading", () => {
     render(
       <NightSkyLinesSection
         onChange={vi.fn<(change: SkySearchChange) => void>()}
@@ -44,10 +44,15 @@ describe(NightSkyLinesSection, () => {
       />,
     );
 
-    expect(
-      screen.getByRole("heading", { level: 3, name: "Lines" }),
-    ).toBeDefined();
-    expect(screen.getAllByRole("heading")).toHaveLength(1);
+    expect(screen.queryByRole("heading")).toBeNull();
     expect(screen.getAllByTestId("night-sky-slider")).toHaveLength(4);
+
+    const figures = screen.getByRole("group", { name: "Constellation lines" });
+    const ecliptic = screen.getByRole("group", { name: "Ecliptic" });
+
+    expect(
+      figures.compareDocumentPosition(ecliptic) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeGreaterThan(0);
   });
 });

@@ -28,18 +28,24 @@ describe(NightSkyMenu, () => {
     );
   });
 
-  it("opens from its Sky button onto every section heading and its footer", async () => {
+  it("opens from its Sky button onto every group, with no headings, and its footer", async () => {
     render(<NightSkyMenu />);
 
     fireEvent.click(screen.getByRole("button", { name: "Sky options" }));
 
     await screen.findByRole("group", { name: "Night sky settings" });
 
-    for (const title of ["Sky", "Stars", "Angles", "Lines"]) {
-      expect(
-        screen.getByRole("heading", { level: 3, name: title }),
-      ).toBeDefined();
+    for (const title of [
+      "Sky",
+      "Stars",
+      "Angles",
+      "Constellation lines",
+      "Ecliptic",
+    ]) {
+      expect(screen.getByRole("group", { name: title })).toBeDefined();
     }
+
+    expect(screen.queryByRole("heading")).toBeNull();
 
     expect(
       screen.getByRole("group", { name: "Constellations to draw" }),

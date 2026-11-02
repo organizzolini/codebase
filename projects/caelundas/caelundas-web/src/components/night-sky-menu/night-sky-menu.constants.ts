@@ -61,7 +61,7 @@ export const STAR_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "pixelsPerSecond",
     key: "sky.pixelsPerSecond",
-    label: "Drift speed",
+    label: "Star drift speed",
     maximum: 100,
     minimum: 1,
     step: 1,
@@ -118,7 +118,7 @@ export const ECLIPTIC_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "eclipticOpacity",
     key: "sky.eclipticOpacity",
-    label: "Ecliptic opacity",
+    label: "Ecliptic line opacity",
     maximum: LINE_OPACITY_RANGE.maximum,
     minimum: LINE_OPACITY_RANGE.minimum,
     step: 0.01,
@@ -127,7 +127,7 @@ export const ECLIPTIC_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "eclipticWidth",
     key: "sky.eclipticWidth",
-    label: "Ecliptic width",
+    label: "Ecliptic line width",
     maximum: 4,
     minimum: 0,
     step: 0.1,
@@ -150,8 +150,12 @@ export const SKY_SLIDERS: readonly SkySliderControl[] = [
  * The colors of the sky's gradient, top then bottom.
  */
 export const BACKGROUND_COLORS: readonly SkyColorControl[] = [
-  { field: "backgroundTopColor", key: "sky.top", label: "Sky top" },
-  { field: "backgroundBottomColor", key: "sky.bottom", label: "Sky bottom" },
+  { field: "backgroundTopColor", key: "sky.top", label: "Sky top color" },
+  {
+    field: "backgroundBottomColor",
+    key: "sky.bottom",
+    label: "Sky bottom color",
+  },
 ];
 
 /**
@@ -169,7 +173,7 @@ export const LINE_COLOR: SkyColorControl = {
 export const ECLIPTIC_COLOR: SkyColorControl = {
   field: "eclipticColor",
   key: "sky.eclipticColor",
-  label: "Ecliptic color",
+  label: "Ecliptic line color",
 };
 
 /**
@@ -260,10 +264,15 @@ export const SLIDER_CLASS_NAME =
   "[&_[data-slot=slider-thumb]]:size-4";
 
 /**
- * A section heading: small, quiet, and always above its controls.
+ * A group of controls: no heading, so each control's own label carries its
+ * meaning; a column divides its groups with a hairline.
  */
-export const SECTION_HEADING_CLASS_NAME =
-  "text-muted-foreground px-1 py-1 text-xs font-semibold tracking-wide uppercase";
+export const SECTION_CLASS_NAME = "flex flex-col gap-1 py-2";
+
+/**
+ * A column of the panel: its groups one under another, a hairline between.
+ */
+export const COLUMN_CLASS_NAME = "divide-y";
 
 /**
  * The constellation tree's box: as tall as the panel's other columns on a

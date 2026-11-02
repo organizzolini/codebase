@@ -1,11 +1,11 @@
-import { SECTION_HEADING_CLASS_NAME } from "./night-sky-menu.constants";
+import { SECTION_CLASS_NAME } from "./night-sky-menu.constants";
 
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * A section's heading and the controls it holds.
+ * A group's name, for assistive technology only, and the controls it holds.
  */
 export interface NightSkySectionProperties {
   children?: ReactNode;
@@ -16,8 +16,8 @@ export interface NightSkySectionProperties {
 // 🧩 Component
 
 /**
- * Renders one section of the Sky menu: a heading and, always shown, the
- * controls beneath it.
+ * Renders one group of the Sky menu's controls under a hidden legend, so a
+ * screen reader names the group while the eye reads each control's label.
  */
 export function NightSkySection(
   properties: Readonly<NightSkySectionProperties>,
@@ -40,8 +40,10 @@ export function NightSkySection(
       className={className}
       data-testid="night-sky-section"
     >
-      <h3 className={SECTION_HEADING_CLASS_NAME}>{title}</h3>
-      <div className="flex flex-1 flex-col gap-1 pt-1 pb-2">{children}</div>
+      <fieldset className={SECTION_CLASS_NAME}>
+        <legend className="sr-only">{title}</legend>
+        {children}
+      </fieldset>
     </div>
   );
 }

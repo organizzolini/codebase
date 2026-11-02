@@ -1,3 +1,0 @@
-// 🔏 Private Functions
-
-// 🌎 Public Functions

@@ -20,6 +20,7 @@ import { NightSkyMenuFooter } from "./night-sky-menu-footer";
 import {
   ANGLE_SLIDERS,
   BACKGROUND_COLORS,
+  COLUMN_CLASS_NAME,
   FOOTER_CLASS_NAME,
   PANEL_CLASS_NAME,
   STAR_SLIDERS,
@@ -104,7 +105,7 @@ export function NightSkyMenu(
               className="grid gap-x-5 gap-y-1 p-2 md:grid-cols-2 lg:grid-cols-4"
               onKeyDown={keepKeysInPanel}
             >
-              <div>
+              <div className={COLUMN_CLASS_NAME}>
                 <NightSkySection title="Sky">
                   <Label className="justify-between text-xs">
                     Show the sky

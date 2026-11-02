@@ -2,6 +2,7 @@ import { Label, Switch } from "@codebase/presentation";
 
 import { NightSkyColorField } from "./night-sky-color-field";
 import {
+  COLUMN_CLASS_NAME,
   ECLIPTIC_COLOR,
   ECLIPTIC_SLIDERS,
   LINE_COLOR,
@@ -21,7 +22,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The settings the Lines section shows and where to send a change to the
+ * The settings the line controls show and where to send a change to the
  * link.
  */
 export interface NightSkyLinesSectionProperties {
@@ -33,8 +34,8 @@ export interface NightSkyLinesSectionProperties {
 // 🧩 Component
 
 /**
- * Renders the Sky menu's Lines section: the ecliptic's switch and stroke,
- * then the constellation figures' stroke.
+ * Renders the Sky menu's line controls: the constellation figures' stroke,
+ * then the ecliptic's switch and stroke.
  */
 export function NightSkyLinesSection(
   properties: Readonly<NightSkyLinesSectionProperties>,
@@ -62,37 +63,41 @@ export function NightSkyLinesSection(
       className={className}
       data-testid="night-sky-lines-section"
     >
-      <NightSkySection title="Lines">
-        <Label className="justify-between text-xs">
-          Show the ecliptic
-          <Switch
-            checked={settings.ecliptic}
-            onCheckedChange={(checked: boolean) => {
-              onChange(toEclipticChange(checked));
-            }}
+      <div className={COLUMN_CLASS_NAME}>
+        <NightSkySection title="Constellation lines">
+          <NightSkySliders
+            controls={LINE_SLIDERS}
+            onValueChange={handleSettingChange}
+            settings={settings}
           />
-        </Label>
-        <NightSkySliders
-          controls={ECLIPTIC_SLIDERS}
-          onValueChange={handleSettingChange}
-          settings={settings}
-        />
-        <NightSkyColorField
-          control={ECLIPTIC_COLOR}
-          onValueChange={handleSettingChange}
-          value={settings[ECLIPTIC_COLOR.field]}
-        />
-        <NightSkySliders
-          controls={LINE_SLIDERS}
-          onValueChange={handleSettingChange}
-          settings={settings}
-        />
-        <NightSkyColorField
-          control={LINE_COLOR}
-          onValueChange={handleSettingChange}
-          value={settings[LINE_COLOR.field]}
-        />
-      </NightSkySection>
+          <NightSkyColorField
+            control={LINE_COLOR}
+            onValueChange={handleSettingChange}
+            value={settings[LINE_COLOR.field]}
+          />
+        </NightSkySection>
+        <NightSkySection title="Ecliptic">
+          <Label className="justify-between text-xs">
+            Show the ecliptic
+            <Switch
+              checked={settings.ecliptic}
+              onCheckedChange={(checked: boolean) => {
+                onChange(toEclipticChange(checked));
+              }}
+            />
+          </Label>
+          <NightSkySliders
+            controls={ECLIPTIC_SLIDERS}
+            onValueChange={handleSettingChange}
+            settings={settings}
+          />
+          <NightSkyColorField
+            control={ECLIPTIC_COLOR}
+            onValueChange={handleSettingChange}
+            value={settings[ECLIPTIC_COLOR.field]}
+          />
+        </NightSkySection>
+      </div>
     </div>
   );
 }

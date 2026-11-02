@@ -17,17 +17,15 @@ describe(NightSkySection, () => {
     );
   });
 
-  it("shows its heading and, always, its controls", () => {
+  it("names its group for a screen reader, with no heading on screen", () => {
     render(
       <NightSkySection title="Stars">
         <p>The sliders</p>
       </NightSkySection>,
     );
 
-    expect(
-      screen.getByRole("heading", { level: 3, name: "Stars" }),
-    ).toBeDefined();
+    expect(screen.getByRole("group", { name: "Stars" })).toBeDefined();
+    expect(screen.queryByRole("heading")).toBeNull();
     expect(screen.getByText("The sliders")).toBeDefined();
-    expect(screen.queryByRole("button")).toBeNull();
   });
 });
