@@ -168,6 +168,7 @@ describe("index", () => {
     await renderRoute("/?date=2026-03-01", {
       eventsDatabase: {
         describeDataset: async () => new Promise(() => {}),
+        findConstellations: async () => new Promise(() => {}),
         findEvents: async () => new Promise(() => {}),
         findFacets: async () => new Promise(() => {}),
         findNightSky: async () => new Promise(() => {}),

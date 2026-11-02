@@ -72,6 +72,8 @@ export function createFailingEventsDatabase(error: Error): {
     database: {
       describeDataset: async () =>
         failing ? Promise.reject(error) : seeded.describeDataset(),
+      findConstellations: async () =>
+        failing ? Promise.reject(error) : seeded.findConstellations(),
       findEvents: async (query) =>
         failing ? Promise.reject(error) : seeded.findEvents(query),
       findFacets: async (window) =>
@@ -100,6 +102,7 @@ export function createRecordingEventsDatabase(delay = 0): {
   return {
     database: {
       describeDataset: async () => seeded.describeDataset(),
+      findConstellations: async () => seeded.findConstellations(),
       findEvents: async (query) => {
         queries.push(query);
 

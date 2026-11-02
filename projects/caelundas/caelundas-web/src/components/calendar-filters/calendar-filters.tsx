@@ -58,6 +58,10 @@ export interface CalendarFiltersProperties {
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
   /**
+   * The Night sky submenu, which the View menu draws last.
+   */
+  nightSkyOptions?: ReactNode;
+  /**
    * Called with the merging setting picked in the View menu.
    */
   onClustersChange?: (enabled: boolean) => void;
@@ -113,6 +117,7 @@ export function CalendarFilters(
     facets = [],
     fields,
     filter,
+    nightSkyOptions,
     onClustersChange = () => {},
     onColorByChange = () => {},
     onColorsChange = () => {},
@@ -152,6 +157,7 @@ export function CalendarFilters(
           />
         }
         colors={colors}
+        nightSky={nightSkyOptions}
         onClustersChange={onClustersChange}
         onColorsChange={onColorsChange}
         onSymbolsChange={onSymbolsChange}

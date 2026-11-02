@@ -1,0 +1,123 @@
+import { describe, expect, it } from "vitest";
+
+import {
+  listShownConstellations,
+  roundToStep,
+  toConstellationsChange,
+  toggleConstellation,
+  toResetChange,
+  toSkyParameterChange,
+  toVisibilityChange,
+} from "./night-sky-menu.utilities";
+
+import type { ConstellationListing } from "../../hooks/use-night-sky/night-sky.types";
+
+const LISTING: readonly ConstellationListing[] = [
+  { name: "Aries", zodiac: true },
+  { name: "Leo", zodiac: true },
+  { name: "Orion", zodiac: false },
+  { name: "Ursa Major", zodiac: false },
+];
+
+describe("night sky menu utilities", () => {
+  describe(toSkyParameterChange, () => {
+    it("writes a value that differs from its default", () => {
+      expect(toSkyParameterChange("sky.lat", 51.5)).toStrictEqual({
+        "sky.lat": 51.5,
+      });
+      expect(toSkyParameterChange("sky.top", "#102040")).toStrictEqual({
+        "sky.top": "#102040",
+      });
+    });
+
+    it("removes a value set back to its default, so the link stays short", () => {
+      expect(toSkyParameterChange("sky.lat", 40.73)).toStrictEqual({
+        "sky.lat": undefined,
+      });
+      expect(toSkyParameterChange("sky.top", "#04060F")).toStrictEqual({
+        "sky.top": undefined,
+      });
+    });
+  });
+
+  describe(roundToStep, () => {
+    it("rounds a slider's value to its step's decimals", () => {
+      expect(roundToStep(0.1 * 3, 0.1)).toBe(0.3);
+      expect(roundToStep(0.284_999, 0.01)).toBe(0.28);
+      expect(roundToStep(12, 1)).toBe(12);
+    });
+  });
+
+  describe(toVisibilityChange, () => {
+    it("writes sky=off to hide the sky and removes it to show it", () => {
+      expect(toVisibilityChange(false)).toStrictEqual({ sky: "off" });
+      expect(toVisibilityChange(true)).toStrictEqual({ sky: undefined });
+    });
+  });
+
+  describe(toResetChange, () => {
+    it("removes every key the menu sets, and keeps the tuning view", () => {
+      const change = toResetChange();
+
+      expect(change).toMatchObject({
+        sky: undefined,
+        "sky.constellations": undefined,
+        "sky.lat": undefined,
+        "sky.lineColor": undefined,
+        "sky.top": undefined,
+      });
+      expect(change).not.toHaveProperty("sky.debug");
+    });
+  });
+
+  describe(toConstellationsChange, () => {
+    it("removes the zodiac, the default, writes none, and joins the rest", () => {
+      expect(toConstellationsChange(["zodiac"])).toStrictEqual({
+        "sky.constellations": undefined,
+      });
+      expect(toConstellationsChange([])).toStrictEqual({
+        "sky.constellations": "none",
+      });
+      expect(toConstellationsChange(["zodiac", "ursa_major"])).toStrictEqual({
+        "sky.constellations": "zodiac,ursa_major",
+      });
+    });
+  });
+
+  describe(listShownConstellations, () => {
+    it("lists the names a choice of figures shows", () => {
+      expect(listShownConstellations(["zodiac"], LISTING)).toStrictEqual(
+        new Set(["Aries", "Leo"]),
+      );
+      expect(listShownConstellations(["all"], LISTING)).toStrictEqual(
+        new Set(["Aries", "Leo", "Orion", "Ursa Major"]),
+      );
+      expect(listShownConstellations(["ursa_major"], LISTING)).toStrictEqual(
+        new Set(["Ursa Major"]),
+      );
+    });
+  });
+
+  describe(toggleConstellation, () => {
+    it("adds a constellation to the zodiac", () => {
+      expect(
+        toggleConstellation(["zodiac"], LISTING, "Ursa Major"),
+      ).toStrictEqual(["zodiac", "ursa_major"]);
+    });
+
+    it("takes one out of the zodiac by naming the rest", () => {
+      expect(toggleConstellation(["zodiac"], LISTING, "Leo")).toStrictEqual([
+        "aries",
+      ]);
+    });
+
+    it("folds a full choice back into all, or into nothing", () => {
+      expect(
+        toggleConstellation(["zodiac", "ursa_major"], LISTING, "Orion"),
+      ).toStrictEqual(["all"]);
+      expect(
+        toggleConstellation(["ursa_major"], LISTING, "Ursa Major"),
+      ).toStrictEqual([]);
+    });
+  });
+});

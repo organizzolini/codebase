@@ -52,4 +52,16 @@ describe("the events database", () => {
       createTestEventsDatabase({ empty: true }).findNightSky(),
     ).resolves.toStrictEqual({ segments: [], stars: [] });
   });
+
+  it("lists every constellation by name, the zodiac's marked", async () => {
+    const constellations =
+      await createTestEventsDatabase().findConstellations();
+
+    expect(constellations).toHaveLength(88);
+    expect(constellations).toContainEqual({ name: "Leo", zodiac: true });
+    expect(constellations).toContainEqual({
+      name: "Ursa Major",
+      zodiac: false,
+    });
+  });
 });

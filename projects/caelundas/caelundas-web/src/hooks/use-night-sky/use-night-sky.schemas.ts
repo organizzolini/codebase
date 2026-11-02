@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import type { ConstellationSegment, StarRow } from "./night-sky.types";
+import type {
+  ConstellationListing,
+  ConstellationSegment,
+  StarRow,
+} from "./night-sky.types";
 
 // 🔖 Schemas
 
@@ -29,6 +33,21 @@ export const starRecordSchema = z
   ]);
 
 /**
+ * SQLite's boolean, 0 or 1, or a boolean where a driver gives one.
+ */
+const zodiacSchema = z.union([z.boolean(), z.literal(0), z.literal(1)]);
+
+/**
+ * One row of the `constellation` table, as the figure picker lists it.
+ */
+export const constellationRecordSchema = z
+  .object({ name: z.string().min(1), zodiac: zodiacSchema })
+  .transform((record): ConstellationListing => ({
+    name: record.name,
+    zodiac: record.zodiac === true || record.zodiac === 1,
+  }));
+
+/**
  * One figure segment with both its stars' positions, read as the generator
  * draws it. SQLite answers a boolean as 0 or 1.
  */
@@ -39,7 +58,7 @@ export const segmentRecordSchema = z
     name: z.string().min(1),
     to_declination_degrees: declinationSchema,
     to_right_ascension_hours: rightAscensionSchema,
-    zodiac: z.union([z.boolean(), z.literal(0), z.literal(1)]),
+    zodiac: zodiacSchema,
   })
   .transform((record): ConstellationSegment => ({
     from: [record.from_right_ascension_hours, record.from_declination_degrees],

@@ -81,6 +81,15 @@ export const STARS_SQL = `
 `;
 
 /**
+ * Every constellation, by name, with whether it is of the zodiac.
+ */
+export const CONSTELLATIONS_SQL = `
+  select c."name", c.zodiac
+  from constellation c
+  order by c."name"
+`;
+
+/**
  * Every segment of every constellation's figure, with its constellation's
  * name and zodiac flag and both its stars' positions.
  */

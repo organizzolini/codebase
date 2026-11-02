@@ -27,6 +27,7 @@ import { getDefaultCalendarView } from "../components/events-calendar/calendar-v
 import { parseCalendarDate } from "../components/events-calendar/calendar-window.utilities";
 import { EventsCalendar } from "../components/events-calendar/events-calendar";
 import { readTimeZone } from "../components/events-calendar/events-calendar.utilities";
+import { NightSkyMenu } from "../components/night-sky-menu/night-sky-menu";
 import {
   getCalendarReloadKey,
   readCalendarSearch,
@@ -189,6 +190,7 @@ function IndexPage(): ReactNode {
               facets={facets}
               fields={fields}
               filter={filter}
+              nightSkyOptions={<NightSkyMenu />}
               onClustersChange={handleClustersChange}
               onColorByChange={handleColorByChange}
               onColorsChange={handleColorsChange}

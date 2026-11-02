@@ -9,6 +9,15 @@ export interface ColorSegment {
 }
 
 /**
+ * One constellation the database holds, as the figure picker lists it.
+ */
+export interface ConstellationListing {
+  /** The Latin name, such as `Ursa Major`. */
+  name: string;
+  zodiac: boolean;
+}
+
+/**
  * One segment of a constellation's figure, between two stars, with the
  * constellation it belongs to.
  */

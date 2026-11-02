@@ -1,4 +1,7 @@
-import type { NightSkyCatalog } from "../../hooks/use-night-sky/night-sky.types";
+import type {
+  ConstellationListing,
+  NightSkyCatalog,
+} from "../../hooks/use-night-sky/night-sky.types";
 
 /**
  * One group an event falls in at one level of a grouping: a tag, with its
@@ -98,11 +101,12 @@ export interface EventFacetValue {
  */
 export interface EventsDatabase {
   describeDataset(): Promise<EventsDataset | null>;
-  findEvents(query: EventsQuery): Promise<CalendarEventRecord[]>;
   /**
    * Every tag root and the tags beneath it, each counting the events that
    * overlap the window, or every event without one.
    */
+  findConstellations(): Promise<ConstellationListing[]>;
+  findEvents(query: EventsQuery): Promise<CalendarEventRecord[]>;
   findFacets(window?: EventsWindow): Promise<EventFacet[]>;
   /**
    * The night sky's stars and constellation figures, which caelundas-cli

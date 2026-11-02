@@ -1,10 +1,12 @@
 import {
+  constellationRecordSchema,
   segmentRecordSchema,
   starRecordSchema,
 } from "../../hooks/use-night-sky/use-night-sky.schemas";
 
 import {
   CONSTELLATION_SEGMENTS_SQL,
+  CONSTELLATIONS_SQL,
   DATASET_SQL,
   EVENTS_IN_WINDOW_SQL,
   FACETS_SQL,
@@ -58,6 +60,12 @@ export function createEventsDatabase(executor: SqlExecutor): EventsDatabase {
       );
 
       return rows.map((row) => toEventRecord(row, groups.length));
+    },
+
+    async findConstellations() {
+      const rows = await executor.select(CONSTELLATIONS_SQL, []);
+
+      return rows.map((row) => constellationRecordSchema.parse(row));
     },
 
     async findFacets(window = WHOLE_DATASET_WINDOW) {
