@@ -1,3 +1,4 @@
+import { normalizeHexadecimalColor } from "./night-sky-colors.utilities";
 import {
   isOnVisibleRing,
   projectSkyPoint,
@@ -5,12 +6,14 @@ import {
 import {
   CONSTELLATION_LINE_ATTRIBUTES,
   CONSTELLATION_SEGMENT_STEPS,
+  DEFAULT_OPTIONS,
   DEGREES_PER_HOUR,
   RADIANS_PER_DEGREE,
 } from "./night-sky.constants";
 
 import type {
   ConstellationSegment,
+  LineStyle,
   ProjectedPoint,
   SkyGeometry,
   SkyPoint,
@@ -20,13 +23,14 @@ import type {
 // 🌎 Public Functions
 
 /**
- * Draws the figures' segments, thin and faint, as one group of polylines
+ * Draws the figures' segments in the style given, as one group of polylines
  * cut where they leave the ring the window crosses, as stars beyond it are
  * left out. Answers nothing when no segment shows.
  */
 export function formatConstellationLines(
   geometry: SkyGeometry,
   segments: readonly ConstellationSegment[],
+  style: LineStyle,
 ): { markup: string; segmentsDrawn: number } {
   const drawn = segments
     .map((segment) => splitIntoRuns(geometry, interpolate(segment)))
@@ -35,7 +39,7 @@ export function formatConstellationLines(
   return {
     markup:
       drawn.length > 0
-        ? `<g ${CONSTELLATION_LINE_ATTRIBUTES}>${drawn
+        ? `<g ${formatStroke(style)} ${CONSTELLATION_LINE_ATTRIBUTES}>${drawn
             .flat()
             .map((run) => formatPolyline(run))
             .join("")}</g>`
@@ -55,6 +59,19 @@ function formatPolyline(run: readonly ProjectedPoint[]): string {
     .join(" ");
 
   return `<polyline points="${points}"/>`;
+}
+
+/**
+ * The stroke's color, opacity and width. The color is read as hexadecimal
+ * and written as `#rrggbb`, so nothing else can reach the markup.
+ */
+function formatStroke(style: LineStyle): string {
+  const color = normalizeHexadecimalColor(
+    style.lineColor,
+    DEFAULT_OPTIONS.lineColor,
+  );
+
+  return `stroke="${color}" stroke-opacity="${String(style.lineOpacity)}" stroke-width="${String(style.lineWidth)}"`;
 }
 
 /**

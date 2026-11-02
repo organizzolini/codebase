@@ -31,6 +31,18 @@ export interface FieldOfView {
 }
 
 /**
+ * How the constellation figures are stroked.
+ */
+export interface LineStyle {
+  /** Hexadecimal color. Defaults to #c8d4ff. */
+  lineColor: string;
+  /** From 0 to 1. Defaults to 0.28. */
+  lineOpacity: number;
+  /** In on-screen pixels. Defaults to 0.8. */
+  lineWidth: number;
+}
+
+/**
  * How fast the sky turns on screen.
  */
 export interface Motion {
@@ -97,6 +109,12 @@ export interface NightSkyOptions {
   height: number;
   /** Observer latitude, north positive. The view faces north. */
   latitudeDegrees: number;
+  /** Hexadecimal color of the figures. Defaults to #c8d4ff. */
+  lineColor?: string;
+  /** Opacity of the figures, from 0 to 1. Defaults to 0.28. */
+  lineOpacity?: number;
+  /** Width of the figures in on-screen pixels. Defaults to 0.8. */
+  lineWidth?: number;
   /** Local sidereal time in degrees, from `computeLocalSiderealDegrees`. */
   localSiderealDegrees: number;
   /** On-screen drift speed at the window center. Defaults to 12. */

@@ -95,4 +95,22 @@ describe(useNightSky, () => {
       warn.mock.calls.filter(([message]) => String(message).includes("narnia")),
     ).toHaveLength(1);
   });
+
+  it("warns once of a line style it cannot read, and draws the default", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const sky = await renderSky({
+      "sky.constellations": "all",
+      "sky.lineColor": "pink",
+    });
+
+    expect(sky).toContain('stroke="#c8d4ff"');
+    expect(
+      warn.mock.calls.filter(([message]) =>
+        String(message).includes("sky.lineColor"),
+      ),
+    ).toStrictEqual([
+      ["The night sky ignored sky.lineColor, whose value does not parse"],
+    ]);
+  });
 });

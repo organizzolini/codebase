@@ -1,6 +1,7 @@
 import { DEFAULT_OPTIONS } from "./night-sky.constants";
 
 import type {
+  LineStyle,
   NightSkyOptions,
   ResolvedNightSkyOptions,
 } from "./night-sky.types";
@@ -16,6 +17,7 @@ export function resolveOptions(
   return {
     ...resolveAppearance(options),
     ...resolveView(options),
+    ...resolveLineStyle(options),
     constellationSegments: options.constellationSegments ?? [],
     height: options.height,
     latitudeDegrees: options.latitudeDegrees,
@@ -49,6 +51,17 @@ function resolveAppearance(
     faintestMagnitude:
       options.faintestMagnitude ?? DEFAULT_OPTIONS.faintestMagnitude,
     starScale: options.starScale ?? DEFAULT_OPTIONS.starScale,
+  };
+}
+
+/**
+ * Fills the options that set how the figures are stroked with their defaults.
+ */
+function resolveLineStyle(options: NightSkyOptions): LineStyle {
+  return {
+    lineColor: options.lineColor ?? DEFAULT_OPTIONS.lineColor,
+    lineOpacity: options.lineOpacity ?? DEFAULT_OPTIONS.lineOpacity,
+    lineWidth: options.lineWidth ?? DEFAULT_OPTIONS.lineWidth,
   };
 }
 

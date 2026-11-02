@@ -3,7 +3,17 @@ import { describe, expect, it } from "vitest";
 import { formatConstellationLines } from "./night-sky-lines.utilities";
 import { projectSkyPoint } from "./night-sky-projection.utilities";
 
-import type { ConstellationSegment, SkyGeometry } from "./night-sky.types";
+import type {
+  ConstellationSegment,
+  LineStyle,
+  SkyGeometry,
+} from "./night-sky.types";
+
+const STYLE: LineStyle = {
+  lineColor: "#c8d4ff",
+  lineOpacity: 0.28,
+  lineWidth: 0.8,
+};
 
 const GEOMETRY: SkyGeometry = {
   fieldOfView: { clamped: false, degrees: 20, limitDegrees: 40 },
@@ -38,9 +48,11 @@ function readPolylines(markup: string): [number, number][][] {
 describe(formatConstellationLines, () => {
   it("draws a segment whose stars both show from one star to the other", () => {
     const segment = createSegment([2, 60], [3, 50]);
-    const { markup, segmentsDrawn } = formatConstellationLines(GEOMETRY, [
-      segment,
-    ]);
+    const { markup, segmentsDrawn } = formatConstellationLines(
+      GEOMETRY,
+      [segment],
+      STYLE,
+    );
     const [polyline] = readPolylines(markup);
     const from = projectSkyPoint(GEOMETRY, segment.from);
     const to = projectSkyPoint(GEOMETRY, segment.to);
@@ -58,9 +70,11 @@ describe(formatConstellationLines, () => {
   });
 
   it("cuts a segment where it leaves the ring the window can show", () => {
-    const { markup } = formatConstellationLines(GEOMETRY, [
-      createSegment([2, 40], [2, -80]),
-    ]);
+    const { markup } = formatConstellationLines(
+      GEOMETRY,
+      [createSegment([2, 40], [2, -80])],
+      STYLE,
+    );
     const radii = (readPolylines(markup)[0] ?? []).map(([x, y]) =>
       Math.hypot(x, y),
     );
@@ -69,16 +83,45 @@ describe(formatConstellationLines, () => {
     expect(Math.max(...radii)).toBeLessThanOrEqual(GEOMETRY.outerRadius);
   });
 
+  it("strokes the figures in the color, opacity and width it is given", () => {
+    const { markup } = formatConstellationLines(
+      GEOMETRY,
+      [createSegment([2, 60], [3, 50])],
+      { lineColor: "#FF8800", lineOpacity: 0.5, lineWidth: 2 },
+    );
+
+    expect(markup).toMatch(
+      /^<g [^>]*stroke="#ff8800" stroke-opacity="0.5" stroke-width="2"/u,
+    );
+  });
+
+  it("never lets a color that is not hexadecimal into the markup", () => {
+    const { markup } = formatConstellationLines(
+      GEOMETRY,
+      [createSegment([2, 60], [3, 50])],
+      { ...STYLE, lineColor: '"/><script>' },
+    );
+
+    expect(markup).toContain('stroke="#c8d4ff"');
+    expect(markup).not.toContain("<script>");
+  });
+
   it("draws nothing of a segment whose stars the window never shows", () => {
     expect(
-      formatConstellationLines(GEOMETRY, [createSegment([2, -70], [3, -75])]),
+      formatConstellationLines(
+        GEOMETRY,
+        [createSegment([2, -70], [3, -75])],
+        STYLE,
+      ),
     ).toStrictEqual({ markup: "", segmentsDrawn: 0 });
   });
 
   it("follows a segment across 0 hours rather than around the pole", () => {
-    const { markup } = formatConstellationLines(GEOMETRY, [
-      createSegment([23.9, 30], [0.1, 30]),
-    ]);
+    const { markup } = formatConstellationLines(
+      GEOMETRY,
+      [createSegment([23.9, 30], [0.1, 30])],
+      STYLE,
+    );
     const points = readPolylines(markup)[0] ?? [];
     const steps = points
       .slice(1)

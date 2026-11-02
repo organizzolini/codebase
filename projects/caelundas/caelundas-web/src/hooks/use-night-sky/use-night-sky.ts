@@ -8,6 +8,7 @@ import {
 
 import { useNightSkyEngine } from "./use-night-sky-engine";
 import {
+  describeNightSkyProblems,
   findUnknownConstellationNames,
   isReducedMotion,
   readNightSkyOverrides,
@@ -81,23 +82,27 @@ export function useNightSky(): UseNightSkyResult {
     }
   }, [built]);
 
-  // A constellation the link names that has no figure is left out, and said
-  // so once.
+  // A line style key the link gives a value it cannot read, and a
+  // constellation it names that has no figure, are left out, and said so once.
   useEffect(() => {
-    const unknown = findUnknownConstellationNames(
-      engine?.segments ?? [],
-      engine === undefined ? [] : overrides.constellations,
-    );
+    const unknownNames =
+      engine === undefined
+        ? []
+        : findUnknownConstellationNames(
+            engine.segments,
+            overrides.constellations,
+          );
 
-    for (const name of new Set(unknown)) {
-      if (warned.current.has(name)) {
-        continue;
+    for (const message of describeNightSkyProblems(
+      overrides.rejectedKeys,
+      unknownNames,
+    )) {
+      if (!warned.current.has(message)) {
+        warned.current.add(message);
+        console.warn(message);
       }
-
-      warned.current.add(name);
-      console.warn(`The night sky has no constellation named ${name}`);
     }
-  }, [engine, overrides.constellations]);
+  }, [engine, overrides]);
 
   // 🎁 Result
   return { sky: built?.svg };

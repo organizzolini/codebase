@@ -157,6 +157,19 @@ describe("night sky backdrop", () => {
     expect(figuredSky.querySelectorAll("polyline").length).toBeGreaterThan(0);
   });
 
+  it("strokes the figures in the color, opacity and width of the link", async () => {
+    await renderRoute(
+      "/?date=2026-03-01&sky.constellations=all&sky.lineColor=%23ff8800&sky.lineOpacity=0.5&sky.lineWidth=2",
+    );
+
+    const sky = await findSky();
+    const lines = sky.querySelector("polyline")?.parentElement;
+
+    expect(lines?.getAttribute("stroke")).toBe("#ff8800");
+    expect(lines?.getAttribute("stroke-opacity")).toBe("0.5");
+    expect(lines?.getAttribute("stroke-width")).toBe("2");
+  });
+
   it("draws the tuning view when asked", async () => {
     await renderRoute("/?date=2026-03-01");
 

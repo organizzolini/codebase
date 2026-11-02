@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  describeNightSkyProblems,
   findUnknownConstellationNames,
   normalizeConstellationName,
   readNightSkyOverrides,
@@ -79,6 +80,66 @@ describe("use-night-sky utilities", () => {
         readNightSkyOverrides({ "sky.constellations": 5 }).constellations,
       ).toStrictEqual([]);
       expect(readNightSkyOverrides({}).constellations).toStrictEqual([]);
+    });
+  });
+
+  describe("the figures' line style", () => {
+    it("defaults to faint, thin, pale blue lines", () => {
+      expect(readNightSkyOverrides({})).toMatchObject({
+        lineColor: "#c8d4ff",
+        lineOpacity: 0.28,
+        lineWidth: 0.8,
+        rejectedKeys: [],
+      });
+    });
+
+    it("reads the color like the background's, with or without the #", () => {
+      expect(readNightSkyOverrides({ "sky.lineColor": "#F80" })).toMatchObject({
+        lineColor: "#ff8800",
+        rejectedKeys: [],
+      });
+      expect(
+        readNightSkyOverrides({ "sky.lineColor": "102040" }).lineColor,
+      ).toBe("#102040");
+    });
+
+    it("clamps an opacity or a width out of range", () => {
+      expect(
+        readNightSkyOverrides({ "sky.lineOpacity": 3, "sky.lineWidth": 50 }),
+      ).toMatchObject({ lineOpacity: 1, lineWidth: 10, rejectedKeys: [] });
+      expect(
+        readNightSkyOverrides({ "sky.lineOpacity": -1, "sky.lineWidth": -2 }),
+      ).toMatchObject({ lineOpacity: 0, lineWidth: 0, rejectedKeys: [] });
+    });
+
+    it("falls back to the default for a value it cannot read, and names its key", () => {
+      expect(
+        readNightSkyOverrides({
+          "sky.lineColor": 123_456,
+          "sky.lineOpacity": "half",
+          "sky.lineWidth": "thick",
+        }),
+      ).toMatchObject({
+        lineColor: "#c8d4ff",
+        lineOpacity: 0.28,
+        lineWidth: 0.8,
+        rejectedKeys: ["sky.lineColor", "sky.lineOpacity", "sky.lineWidth"],
+      });
+    });
+  });
+
+  describe(describeNightSkyProblems, () => {
+    it("names each line style key it ignored, then each unknown constellation", () => {
+      expect(
+        describeNightSkyProblems(["sky.lineWidth"], ["narnia"]),
+      ).toStrictEqual([
+        "The night sky ignored sky.lineWidth, whose value does not parse",
+        "The night sky has no constellation named narnia",
+      ]);
+    });
+
+    it("names nothing when nothing was ignored", () => {
+      expect(describeNightSkyProblems([], [])).toStrictEqual([]);
     });
   });
 

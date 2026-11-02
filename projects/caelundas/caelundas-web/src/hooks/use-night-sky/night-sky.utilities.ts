@@ -73,6 +73,7 @@ export function buildNightSky(options: NightSkyOptions): NightSky {
   const lines = formatConstellationLines(
     geometry,
     resolved.constellationSegments,
+    resolved,
   );
   const svg = assembleSvg({
     geometry,

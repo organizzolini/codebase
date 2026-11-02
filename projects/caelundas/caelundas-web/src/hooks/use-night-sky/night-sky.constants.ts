@@ -33,6 +33,9 @@ export const DEFAULT_OPTIONS = {
   bottomAltitudeDegrees: 0,
   debug: false,
   faintestMagnitude: 6.5,
+  lineColor: "#c8d4ff",
+  lineOpacity: 0.28,
+  lineWidth: 0.8,
   pixelsPerSecond: 12,
   starScale: 1,
   still: false,
@@ -150,12 +153,17 @@ export const CONSTELLATION_WORDS = ["all", "zodiac"] as const;
 export const CONSTELLATION_SEGMENT_STEPS = 8;
 
 /**
- * How the figures are drawn: thin, faint lines beneath the stars, the same
- * width however far the tuning view zooms out.
+ * How the figures are drawn besides their color, opacity and width: unfilled
+ * round-ended lines, the same width however far the tuning view zooms out.
  */
 export const CONSTELLATION_LINE_ATTRIBUTES =
-  'fill="none" stroke="#c8d4ff" stroke-opacity=".28" stroke-width=".8" ' +
-  'stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"';
+  'fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"';
+
+/** The opacities `sky.lineOpacity` is clamped to. */
+export const LINE_OPACITY_RANGE = { maximum: 1, minimum: 0 } as const;
+
+/** The widths, in on-screen pixels, `sky.lineWidth` is clamped to. */
+export const LINE_WIDTH_RANGE = { maximum: 10, minimum: 0 } as const;
 
 // 🖼 Markup
 

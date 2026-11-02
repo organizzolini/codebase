@@ -2,9 +2,12 @@ import { z } from "zod";
 
 import { normalizeHexadecimalColor } from "./night-sky-colors.utilities";
 import {
+  COLOR_DIGITS_PATTERN,
   CONSTELLATION_WORDS,
   DEFAULT_OBSERVER,
   DEFAULT_OPTIONS,
+  LINE_OPACITY_RANGE,
+  LINE_WIDTH_RANGE,
   REDUCED_MOTION_QUERY,
 } from "./night-sky.constants";
 
@@ -12,6 +15,24 @@ import type { ConstellationSegment } from "./night-sky.types";
 import type { NightSkyOverrides } from "./use-night-sky.types";
 
 // 🔏 Private Functions
+
+/**
+ * What to warn of once about a link: each `sky.line*` key it ignored, then
+ * each constellation it names that has no figure.
+ */
+export function describeNightSkyProblems(
+  rejectedKeys: readonly string[],
+  unknownNames: readonly string[],
+): string[] {
+  return [
+    ...rejectedKeys.map(
+      (key) => `The night sky ignored ${key}, whose value does not parse`,
+    ),
+    ...unknownNames.map(
+      (name) => `The night sky has no constellation named ${name}`,
+    ),
+  ];
+}
 
 /**
  * The names a link asks for that are neither `all`, `zodiac`, nor the name of
@@ -77,6 +98,7 @@ export function readNightSkyOverrides(
       z.number().min(-2).max(12),
       DEFAULT_OPTIONS.faintestMagnitude,
     ),
+    ...readLineStyle(search),
     latitudeDegrees: readNumber(
       search["sky.lat"],
       z.number().min(-90).max(90),
@@ -139,6 +161,34 @@ export function subscribeToReducedMotion(onChange: () => void): () => void {
 }
 
 /**
+ * Reads a number clamped to a range, or the fallback for anything else.
+ */
+function clampNumber(
+  value: unknown,
+  range: { maximum: number; minimum: number },
+  fallback: number,
+): number {
+  return isFiniteNumber(value)
+    ? Math.min(range.maximum, Math.max(range.minimum, value))
+    : fallback;
+}
+
+/**
+ * Whether a value is a finite number, as the router reads `0.5` or `2`.
+ */
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+/**
+ * Whether a value is text of three or six hexadecimal digits, with or
+ * without the `#`, as `sky.top` and `sky.bottom` take.
+ */
+function isHexadecimalColor(value: unknown): boolean {
+  return typeof value === "string" && COLOR_DIGITS_PATTERN.test(value);
+}
+
+/**
  * Reads `sky.constellations`, a comma-separated list of names and the words
  * `all` and `zodiac`, each normalized. Anything but text is no list.
  */
@@ -149,6 +199,44 @@ function readConstellationNames(value: unknown): string[] {
         .map((name) => normalizeConstellationName(name))
         .filter((name) => name !== "")
     : [];
+}
+
+/**
+ * Reads how the figures are stroked: `sky.lineColor` like the background's
+ * colors, and `sky.lineOpacity` and `sky.lineWidth` clamped to their ranges.
+ * A key given a value it cannot read falls back, and is named as rejected.
+ */
+function readLineStyle(
+  search: Readonly<Record<string, unknown>>,
+): Pick<
+  NightSkyOverrides,
+  "lineColor" | "lineOpacity" | "lineWidth" | "rejectedKeys"
+> {
+  const checks = [
+    ["sky.lineColor", isHexadecimalColor(search["sky.lineColor"])],
+    ["sky.lineOpacity", isFiniteNumber(search["sky.lineOpacity"])],
+    ["sky.lineWidth", isFiniteNumber(search["sky.lineWidth"])],
+  ] as const;
+
+  return {
+    lineColor: normalizeHexadecimalColor(
+      search["sky.lineColor"],
+      DEFAULT_OPTIONS.lineColor,
+    ),
+    lineOpacity: clampNumber(
+      search["sky.lineOpacity"],
+      LINE_OPACITY_RANGE,
+      DEFAULT_OPTIONS.lineOpacity,
+    ),
+    lineWidth: clampNumber(
+      search["sky.lineWidth"],
+      LINE_WIDTH_RANGE,
+      DEFAULT_OPTIONS.lineWidth,
+    ),
+    rejectedKeys: checks
+      .filter(([key, read]) => search[key] !== undefined && !read)
+      .map(([key]) => key),
+  };
 }
 
 /**

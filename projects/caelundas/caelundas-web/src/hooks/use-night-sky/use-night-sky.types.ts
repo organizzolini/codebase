@@ -16,10 +16,18 @@ export interface NightSkyOverrides {
   debug: boolean;
   faintestMagnitude: number;
   latitudeDegrees: number;
+  lineColor: string;
+  lineOpacity: number;
+  lineWidth: number;
   longitudeDegrees: number;
   /** `sky=off` removes the backdrop. */
   off: boolean;
   pixelsPerSecond: number;
+  /**
+   * The `sky.line*` keys whose values could not be read, so they fell back
+   * to their defaults.
+   */
+  rejectedKeys: readonly string[];
   starScale: number;
   verticalFieldOfViewDegrees: number;
 }

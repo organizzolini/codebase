@@ -61,6 +61,9 @@ export interface CalendarSearch {
   "sky.constellations"?: SkySearchValue | undefined;
   "sky.debug"?: SkySearchValue | undefined;
   "sky.lat"?: SkySearchValue | undefined;
+  "sky.lineColor"?: SkySearchValue | undefined;
+  "sky.lineOpacity"?: SkySearchValue | undefined;
+  "sky.lineWidth"?: SkySearchValue | undefined;
   "sky.lon"?: SkySearchValue | undefined;
   "sky.maxMag"?: SkySearchValue | undefined;
   "sky.pixelsPerSecond"?: SkySearchValue | undefined;
