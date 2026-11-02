@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ScoringService } from "../scoring/scoring.service";
 
@@ -23,15 +24,19 @@ describe(JsonComparisonService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [JsonComparisonService, ScoringService],
-    }).compile();
+    const built = await buildTestingModule(JsonComparisonService, {
+      providers: [ScoringService],
+    });
 
-    service = await module.resolve(JsonComparisonService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(JsonComparisonService, {
+      providers: [ScoringService],
+    });
+
+    expect(instance).toBeInstanceOf(JsonComparisonService);
   });
 
   it("accepts an instance that adds keys the template does not declare", () => {
