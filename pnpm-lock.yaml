@@ -3384,6 +3384,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
