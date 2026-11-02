@@ -1,6 +1,8 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { renderRoute } from "@codebase/testing/react";
+
 import {
   BUILDER_TEST,
   BUILDER_WAIT,
@@ -18,11 +20,21 @@ import {
   createFailingEventsDatabase,
   createTestEventsDatabase,
 } from "../../testing/events-database";
-import { renderRoute } from "../../testing/render-route";
+import { renderCalendarRoute } from "../../testing/render-route";
 import { setViewportWidth } from "../../testing/viewport";
 import { UnsupportedBrowserError } from "../lib/events-database/events-database.errors";
+import { getRouter } from "../router";
 
 import { Route } from "./index";
+
+// The router starts with the database that runs in a browser's worker, which
+// jsdom is not, so the router a test builds gets the seeded one instead.
+vi.mock(import("../lib/events-database/events-database.browser"), async () => {
+  const { createTestEventsDatabase: createSeeded } =
+    await import("../../testing/events-database");
+
+  return { createBrowserEventsDatabase: createSeeded };
+});
 
 // Each click of the View menu re-renders the whole route, which a slow
 // continuous integration runner needs well past the default time for.
@@ -30,7 +42,7 @@ vi.setConfig({ testTimeout: 15_000 });
 
 describe("index", () => {
   it("renders its page", async () => {
-    await renderRoute("/");
+    await renderRoute(getRouter(), "/");
 
     await expect(
       screen.findByRole("heading", { level: 1 }),
@@ -39,7 +51,7 @@ describe("index", () => {
   });
 
   it("shows the requested month as a grid under one toolbar row", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const grid = await screen.findByRole("grid", { name: "March 2026" });
     const toolbar = screen.getByTestId("calendar-toolbar");
@@ -57,7 +69,7 @@ describe("index", () => {
   });
 
   it("shows each event at its time in the observer's zone", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const event = await screen.findByRole("button", {
       name: /^Mars Conjunct Venus, 10:20\sAM/u,
@@ -71,7 +83,7 @@ describe("index", () => {
   });
 
   it("tells a span apart from an instant by its derived duration", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const [span] = await screen.findAllByRole("button", {
       name: /^Mercury Retrograde/u,
@@ -86,7 +98,7 @@ describe("index", () => {
   });
 
   it("moves to the next month and reads its events", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const toolbar = await findToolbar();
 
@@ -101,7 +113,7 @@ describe("index", () => {
   });
 
   it("offers the covered dates for a month outside the data", async () => {
-    await renderRoute("/?date=2025-01-01");
+    await renderCalendarRoute("/?date=2025-01-01");
 
     await screen.findByRole("grid", { name: "January 2025" });
 
@@ -119,7 +131,7 @@ describe("index", () => {
   });
 
   it("offers the last covered day for a month after the data", async () => {
-    await renderRoute("/?date=2030-01-01");
+    await renderCalendarRoute("/?date=2030-01-01");
 
     await screen.findByRole("grid", { name: "January 2030" });
 
@@ -131,7 +143,7 @@ describe("index", () => {
   });
 
   it("says when a month inside the data holds no events", async () => {
-    await renderRoute("/?date=2026-05-01");
+    await renderCalendarRoute("/?date=2026-05-01");
 
     await screen.findByRole("grid", { name: "May 2026" });
 
@@ -140,7 +152,7 @@ describe("index", () => {
   });
 
   it("shows a skeleton while the database loads", async () => {
-    await renderRoute("/?date=2026-03-01", {
+    await renderCalendarRoute("/?date=2026-03-01", {
       eventsDatabase: {
         describeDataset: async () => new Promise(() => {}),
         findEvents: async () => new Promise(() => {}),
@@ -159,7 +171,9 @@ describe("index", () => {
       new Error("The events database answered 404"),
     );
 
-    await renderRoute("/?date=2026-03-01", { eventsDatabase: database });
+    await renderCalendarRoute("/?date=2026-03-01", {
+      eventsDatabase: database,
+    });
 
     await expect(
       screen.findByText("The events could not be loaded"),
@@ -178,7 +192,9 @@ describe("index", () => {
       new UnsupportedBrowserError(),
     );
 
-    await renderRoute("/?date=2026-03-01", { eventsDatabase: database });
+    await renderCalendarRoute("/?date=2026-03-01", {
+      eventsDatabase: database,
+    });
 
     await expect(
       screen.findByText("This browser cannot run the calendar"),
@@ -187,7 +203,7 @@ describe("index", () => {
   });
 
   it("opens on today when the date in the link is not a date", async () => {
-    await renderRoute("/?date=2026-02-30");
+    await renderCalendarRoute("/?date=2026-02-30");
 
     const today = new Date().toLocaleString("en-US", {
       month: "long",
@@ -200,7 +216,7 @@ describe("index", () => {
   });
 
   it("says when the database holds no events at all", async () => {
-    await renderRoute("/?date=2026-03-01", {
+    await renderCalendarRoute("/?date=2026-03-01", {
       eventsDatabase: createTestEventsDatabase({ empty: true }),
     });
 
@@ -213,7 +229,7 @@ describe("index", () => {
   });
 
   it("restores the filters a link holds", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
@@ -235,7 +251,7 @@ describe("index", () => {
   });
 
   it("keeps the filters when moving to another month", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup("and", tagRule("planet", "is_any_of", ["mercury"])),
@@ -257,7 +273,7 @@ describe("index", () => {
   });
 
   it("does not blame the filters for a month with no events at all", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-05-01",
         filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
@@ -271,7 +287,7 @@ describe("index", () => {
   });
 
   it("restores nested groups and negated rules from a link", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup(
@@ -295,7 +311,7 @@ describe("index", () => {
   });
 
   it("ignores a filter in the link that does not parse", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink("2026-03-01", { combinator: "xor", type: "group" }),
     );
 
@@ -305,7 +321,7 @@ describe("index", () => {
   });
 
   it("ignores the rules that are not finished", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup("and", tagRule("planet", "is_any_of", [])),
@@ -326,7 +342,7 @@ describe("index", () => {
     "opens the filter builder over the calendar on $size",
     async (viewport) => {
       setViewportWidth(viewport.width);
-      await renderRoute("/?date=2026-03-01");
+      await renderCalendarRoute("/?date=2026-03-01");
 
       const toolbar = await findToolbar();
 
@@ -347,7 +363,7 @@ describe("index", () => {
     "filters the calendar with a rule built in the builder",
     BUILDER_TEST,
     async () => {
-      await renderRoute("/?date=2026-03-01");
+      await renderCalendarRoute("/?date=2026-03-01");
       await startFilterRule(/^Planet(?!-)/u, "is any of");
       await pickOption(/^Mercury/u);
       fireEvent.keyDown(document.activeElement ?? document.body, {
@@ -370,7 +386,7 @@ describe("index", () => {
     "shows the active filters as chips beside a count",
     BUILDER_TEST,
     async () => {
-      await renderRoute(
+      await renderCalendarRoute(
         filterLink(
           "2026-03-01",
           filterGroup(
@@ -413,7 +429,7 @@ describe("index", () => {
 
   it("collapses the chips into the count on a phone", async () => {
     setViewportWidth(375);
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
@@ -429,7 +445,7 @@ describe("index", () => {
   });
 
   it("turns the colors and the grouping of crowded days off from the View menu", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("grid", { name: "March 2026" });
 
     const seen = new Set<string>();
@@ -460,7 +476,7 @@ describe("index", () => {
   });
 
   it("switches the symbols to emojis and back from the View menu", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("heading", { level: 1 });
 
     for (const name of ["Emojis", "Glyphs"]) {
@@ -483,7 +499,7 @@ describe("index", () => {
   });
 
   it("searches the events' text from a link", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup("and", fieldRule("text", "contains", "ingress")),
@@ -502,7 +518,7 @@ describe("index", () => {
     "filters by a date range picked in the builder",
     BUILDER_TEST,
     async () => {
-      await renderRoute("/?date=2026-03-01");
+      await renderCalendarRoute("/?date=2026-03-01");
       await startFilterRule(/^Date/u, "is between");
       fireEvent.change(
         await screen.findByLabelText("Date from", {}, BUILDER_WAIT),

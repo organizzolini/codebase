@@ -9,7 +9,7 @@ import { screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { openTestEventsDatabase } from "../../../testing/events-database";
-import { renderRoute } from "../../../testing/render-route";
+import { renderCalendarRoute } from "../../../testing/render-route";
 
 const PROJECT_ROOT = path.join(import.meta.dirname, "../../..");
 const DATA_DIRECTORY = path.join(PROJECT_ROOT, "data");
@@ -107,7 +107,7 @@ describe("the bundled events database", () => {
 
       expect(status).toBe(0);
 
-      await renderRoute("/?date=2026-03-04", {
+      await renderCalendarRoute("/?date=2026-03-04", {
         eventsDatabase: openTestEventsDatabase(bundled),
       });
 
