@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   BOOLEAN_CHARACTERISTIC_KEYS,
@@ -15,6 +16,8 @@ import { DrawingModule } from "../drawing/drawing.module";
 
 import { DrawRecordService } from "./draw-record.service";
 
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
 // 🧪 Tests
 
 /**
@@ -22,24 +25,31 @@ import { DrawRecordService } from "./draw-record.service";
  * mocks of it, because a row is the whole of what this produces and a
  * mocked collaborator would only assert that this service forwards calls.
  */
+/** What the class under test is built with. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  imports: [CharacteristicsModule, CodeModule, DrawingModule],
+};
+
 describe(DrawRecordService, () => {
   let service: DrawRecordService;
   let codeService: CodeService;
   let characteristicsService: CharacteristicsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CharacteristicsModule, CodeModule, DrawingModule],
-      providers: [DrawRecordService],
-    }).compile();
+    const built = await buildTestingModule(DrawRecordService, MODULE_OPTIONS);
 
-    service = await module.resolve(DrawRecordService);
-    codeService = module.get(CodeService);
-    characteristicsService = module.get(CharacteristicsService);
+    service = built.instance;
+    codeService = built.module.get(CodeService);
+    characteristicsService = built.module.get(CharacteristicsService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DrawRecordService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(DrawRecordService);
   });
 
   describe("record", () => {
