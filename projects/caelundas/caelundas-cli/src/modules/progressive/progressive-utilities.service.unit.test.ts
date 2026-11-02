@@ -1,13 +1,13 @@
-import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProgressiveUtilitiesService } from "./progressive-utilities.service";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
+import type { LoggerService } from "@codebase/observability";
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 describe(ProgressiveUtilitiesService, () => {
   let service: ProgressiveUtilitiesService;
@@ -22,23 +22,19 @@ describe(ProgressiveUtilitiesService, () => {
   });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ProgressiveUtilitiesService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(ProgressiveUtilitiesService);
-    logger = await module.resolve(LoggerService);
+    ({ instance: service, logger } = await buildTestingModule(
+      ProgressiveUtilitiesService,
+    ));
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ProgressiveUtilitiesService);
+
+    expect(instance).toBeInstanceOf(ProgressiveUtilitiesService);
   });
 
   it("pairs matching beginnings and endings", () => {

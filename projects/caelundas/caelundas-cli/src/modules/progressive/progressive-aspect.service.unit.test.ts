@@ -1,14 +1,13 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProgressiveAspectService } from "./progressive-aspect.service";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 describe(ProgressiveAspectService, () => {
@@ -16,23 +15,22 @@ describe(ProgressiveAspectService, () => {
   let mockLoggerService: DeepMocked<LoggerService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ProgressiveAspectService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, logger } = await buildTestingModule(
+      ProgressiveAspectService,
+    );
 
-    service = await module.resolve(ProgressiveAspectService);
-    mockLoggerService = module.get(LoggerService);
+    service = instance;
+    mockLoggerService = logger;
   });
 
   it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ProgressiveAspectService);
+
+    expect(instance).toBeInstanceOf(ProgressiveAspectService);
   });
 
   it("groups every event under a fixed key when one is supplied", () => {
