@@ -24,6 +24,7 @@ caelendars
 caelundae
 caelundas
 caelunday
+Capricornus
 coeli
 CSPICE
 Cyice
@@ -39,9 +40,12 @@ epimethean
 epimethian
 ERFA
 Espenak
+Frohn
 geopos
 hexadecan
 hexadecans
+Hipparcos
+hygdata
 illum
 imbolc
 imum
