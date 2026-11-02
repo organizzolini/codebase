@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MARGIN_MINUTES } from "../caelundas/caelundas.constants";
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
@@ -15,27 +14,21 @@ import type { RetrogradeBody } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 describe(RetrogradesService, () => {
   let service: RetrogradesService;
   let s: ServicePrivate;
 
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [MathService, ProgressiveUtilitiesService],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        LoggerService,
-        RetrogradesService,
-        MathService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
-    service = await module.resolve(RetrogradesService);
+    const { instance } = await buildTestingModule(
+      RetrogradesService,
+      testingModuleOptions,
+    );
+    service = instance;
     s = service as unknown as ServicePrivate;
   });
 
@@ -167,8 +160,13 @@ describe(RetrogradesService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      RetrogradesService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(RetrogradesService);
   });
 
   describe("getRetrogradeEvent", () => {
