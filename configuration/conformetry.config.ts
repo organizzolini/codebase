@@ -109,7 +109,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/codependix/codependix-nx": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-nx-projects": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-output": NEST_BASELINE,
-  "projects/ic-suite/codometer/codometer-cli": CLI_BASELINE,
   "projects/ic-suite/conformetry/conformetry-cli": CLI_BASELINE,
   "projects/ic-suite/conformetry/conformetry-configuration": NEST_BASELINE,
   "projects/ic-suite/conformetry/conformetry-core": NEST_BASELINE,
@@ -218,7 +217,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/codometer",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/conformetry/conformetry-cli"],

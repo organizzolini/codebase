@@ -3,53 +3,43 @@ import {
   ConfigurationListingService,
   RenderConfigurationService,
 } from "@codometer/output";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  type MockInstance,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { captureExitCode, captureOutput } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { ConfigurationCommand } from "./configuration.command";
 
+import type { CapturedOutput } from "@codebase/testing";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
 /** A configuration path every listing run must now name. */
 const CONFIG = "codometer.config.ts";
+
+/** What the ConfigurationCommand is built with. */
+const DEPENDENCIES = {
+  imports: [CodometerConfigurationModule],
+  mocks: [ConfigurationListingService, RenderConfigurationService],
+} satisfies TestingModuleOptions;
 
 describe(ConfigurationCommand, () => {
   let command: ConfigurationCommand;
   let configurationService: ConfigurationListingService;
   let renderConfigurationService: RenderConfigurationService;
   let logger: LoggerService;
-  let write: MockInstance<typeof process.stdout.write>;
+  let output: CapturedOutput;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CodometerConfigurationModule],
-      providers: [
-        ConfigurationCommand,
-        {
-          provide: ConfigurationListingService,
-          useValue: createMock<ConfigurationListingService>(),
-        },
-        {
-          provide: RenderConfigurationService,
-          useValue: createMock<RenderConfigurationService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      ConfigurationCommand,
+      DEPENDENCIES,
+    );
 
-    command = await module.resolve(ConfigurationCommand);
+    command = instance;
     configurationService = module.get(ConfigurationListingService);
     renderConfigurationService = module.get(RenderConfigurationService);
     logger = module.get(LoggerService);
@@ -62,42 +52,26 @@ describe(ConfigurationCommand, () => {
     });
     vi.mocked(configurationService.toLimitRows).mockReturnValue([]);
     vi.mocked(renderConfigurationService.render).mockReturnValue("rendered");
-    write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    output = captureOutput();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      ConfigurationCommand,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(ConfigurationCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      imports: [CodometerConfigurationModule],
-      providers: [
-        ConfigurationCommand,
-        {
-          provide: ConfigurationListingService,
-          useValue: createMock<ConfigurationListingService>(),
-        },
-        {
-          provide: RenderConfigurationService,
-          useValue: createMock<RenderConfigurationService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("ConfigurationCommand");
+    await expectLoggerContext(ConfigurationCommand, DEPENDENCIES);
   });
 
   it("writes the rendered listing to standard output", async () => {
     await command.run([], { config: CONFIG });
 
-    expect(write).toHaveBeenCalledWith("rendered\n");
+    expect(output.stdout()).toContain("rendered\n");
   });
 
   it("passes the limits flag through to the renderer", async () => {
@@ -167,24 +141,20 @@ describe(ConfigurationCommand, () => {
   });
 
   it("fails the run when nothing answers for the walk root, and still writes the listing", async () => {
-    const previousExitCode = process.exitCode;
+    const readExitCode = captureExitCode();
 
     vi.mocked(configurationService.describeConfigurations).mockResolvedValue({
       described: [],
       rootError: "needs a format",
     });
 
-    try {
-      await command.run([], { config: CONFIG });
+    await command.run([], { config: CONFIG });
 
-      // The listing is what the command exists to produce, so it is still
-      // written — but a zero exit code would claim the repository's own
-      // exclusions were read when they never were.
-      expect(write).toHaveBeenCalledWith("rendered\n");
-      expect(process.exitCode).toBe(1);
-    } finally {
-      process.exitCode = previousExitCode;
-    }
+    // The listing is what the command exists to produce, so it is still
+    // written — but a zero exit code would claim the repository's own
+    // exclusions were read when they never were.
+    expect(output.stdout()).toContain("rendered\n");
+    expect(readExitCode()).toBe(1);
   });
 
   it("refuses a format it does not know, naming the ones it takes", async () => {
