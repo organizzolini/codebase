@@ -1,51 +1,56 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 
 import { SpecialtyAspectsComposerService } from "./specialty-aspects-composer.service";
 
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 describe(SpecialtyAspectsComposerService, () => {
   let service: SpecialtyAspectsComposerService;
   let logger: DeepMocked<LoggerService>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SpecialtyAspectsComposerService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: EphemerisService,
-          useValue: createMock<EphemerisService>({
-            getLongitudesWindow: vi
-              .fn<EphemerisService["getLongitudesWindow"]>()
-              .mockReturnValue({
-                current: 72,
-                next: 73,
-                previous: 71,
-              }),
-          }),
-        },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [
+      {
+        provide: EphemerisService,
+        useValue: createMock<EphemerisService>({
+          getLongitudesWindow: vi
+            .fn<EphemerisService["getLongitudesWindow"]>()
+            .mockReturnValue({
+              current: 72,
+              next: 73,
+              previous: 71,
+            }),
+        }),
+      },
+    ],
+  };
 
-    service = await module.resolve(SpecialtyAspectsComposerService);
-    logger = await module.resolve(LoggerService);
+  beforeAll(async () => {
+    ({ instance: service, logger } = await buildTestingModule(
+      SpecialtyAspectsComposerService,
+      testingModuleOptions,
+    ));
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      SpecialtyAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SpecialtyAspectsComposerService);
   });
 
   it("assembles boundary events for every phase", () => {
