@@ -66,6 +66,11 @@ to the default.
   `zodiac` (the twelve zodiac constellations), combined as in
   `sky.constellations=zodiac,ursa_major`. A name it does not know is left out,
   with one console warning; without it, or empty, no figure is drawn.
+- `sky.lineColor`, `sky.lineOpacity` and `sky.lineWidth` stroke the figures:
+  a color like `sky.top`'s, `c8d4ff` by default; an opacity from 0 to 1,
+  `0.28` by default; and a width in on-screen pixels from 0 to 10, `0.8` by
+  default. A number out of range is clamped, and a value that does not parse
+  falls back to the default with one console warning.
 - `sky.debug=true` draws the zoomed-out tuning view.
 
 ## Stars and constellations

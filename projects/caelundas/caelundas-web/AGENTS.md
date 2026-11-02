@@ -144,7 +144,12 @@ the same license, so keep this credit wherever it is documented. The figures
 are d3-celestial's (BSD-3-Clause, Olaf Frohn,
 <https://github.com/ofrohn/d3-celestial>). `sky.constellations` selects which
 figures `night-sky-lines.utilities.ts` draws, beneath the stars inside the
-turning group, cut where they leave the ring the window can show.
+turning group, cut where they leave the ring the window can show, and
+`sky.lineColor`, `sky.lineOpacity` and `sky.lineWidth` set their stroke:
+`readNightSkyOverrides` reads the color like `sky.top` and clamps the opacity
+to 0–1 and the width to 0–10 pixels, and a value it cannot read falls back to
+the `DEFAULT_OPTIONS` default and is warned of once, as an unknown
+constellation name is.
 
 ## Development
 
