@@ -1,5 +1,9 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import {
+  buildTestingModule,
+  expectModuleExports,
+} from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -50,35 +54,17 @@ describe(LetterUtilitiesService, () => {
   let contextService: CharacteristicContextService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(LetterUtilitiesService, {
       imports: [CodeModule, MatrixModule],
-      providers: [
-        CharacteristicContextService,
-        LetterUtilitiesService,
-        SubmatrixUtilitiesService,
-      ],
-    }).compile();
+      providers: [CharacteristicContextService, SubmatrixUtilitiesService],
+    });
 
-    contextService = await module.resolve(CharacteristicContextService);
-    service = await module.resolve(LetterUtilitiesService);
+    contextService = await built.module.resolve(CharacteristicContextService);
+    service = built.instance;
   });
 
-  it("is exported by LetterCharacteristicsModule for letter services to inject", async () => {
-    const shared = Symbol("shared");
-    const module = await Test.createTestingModule({
-      imports: [LetterCharacteristicsModule],
-      providers: [
-        {
-          inject: [LetterUtilitiesService],
-          provide: shared,
-          useFactory: (
-            utilities: LetterUtilitiesService,
-          ): LetterUtilitiesService => utilities,
-        },
-      ],
-    }).compile();
-
-    expect(module.get(shared)).toBeInstanceOf(LetterUtilitiesService);
+  it("is exported by LetterCharacteristicsModule for letter services to inject", () => {
+    expectModuleExports(LetterCharacteristicsModule, LetterUtilitiesService);
   });
 
   it("mirrors a template east to west, swapping east and west arms", () => {

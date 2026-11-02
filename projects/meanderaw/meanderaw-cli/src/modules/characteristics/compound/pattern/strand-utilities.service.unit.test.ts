@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EndsOnBorderRulesCharacteristicService } from "../../path/end/ends-on-border-rules-characteristic.service";
 import { TileCrossingCountCharacteristicService } from "../../path/tile-crossing/tile-crossing-count-characteristic.service";
@@ -33,9 +34,8 @@ describe(StrandUtilitiesService, () => {
   let service: StrandUtilitiesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(StrandUtilitiesService, {
       providers: [
-        StrandUtilitiesService,
         {
           provide: BettiNumber0CountCharacteristicService,
           useValue: { compute: (): number => values.bettiNumber0Count },
@@ -67,17 +67,13 @@ describe(StrandUtilitiesService, () => {
           useValue: { compute: (): number => values.tileCrossingCount },
         },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(StrandUtilitiesService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     Object.assign(values, base);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
   });
 
   describe("hasStrandEnds", () => {

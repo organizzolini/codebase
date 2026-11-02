@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -20,25 +21,20 @@ describe(CornerCountCharacteristicService, () => {
     let service: CornerCountCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(CornerCountCharacteristicService, {
         imports: [CodeModule, MatrixModule],
         providers: [
           CharacteristicContextService,
           SubmatrixUtilitiesService,
-          CornerCountCharacteristicService,
           NorthEastCornerCountCharacteristicService,
           NorthWestCornerCountCharacteristicService,
           SouthEastCornerCountCharacteristicService,
           SouthWestCornerCountCharacteristicService,
         ],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(CornerCountCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = await built.module.resolve(CharacteristicContextService);
+      service = built.instance;
     });
 
     it("counts every corner orientation", () => {
@@ -60,9 +56,8 @@ describe(CornerCountCharacteristicService, () => {
     let service: CornerCountCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(CornerCountCharacteristicService, {
         providers: [
-          CornerCountCharacteristicService,
           {
             provide: NorthEastCornerCountCharacteristicService,
             useValue: { compute: (): number => 1 },
@@ -80,9 +75,9 @@ describe(CornerCountCharacteristicService, () => {
             useValue: { compute: (): number => 8 },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(CornerCountCharacteristicService);
+      service = built.instance;
     });
 
     it("sums the four directional corner counts", () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -20,25 +21,20 @@ describe(ForkCountCharacteristicService, () => {
     let service: ForkCountCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(ForkCountCharacteristicService, {
         imports: [CodeModule, MatrixModule],
         providers: [
           CharacteristicContextService,
           SubmatrixUtilitiesService,
-          ForkCountCharacteristicService,
           NorthForkCountCharacteristicService,
           SouthForkCountCharacteristicService,
           EastForkCountCharacteristicService,
           WestForkCountCharacteristicService,
         ],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(ForkCountCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = await built.module.resolve(CharacteristicContextService);
+      service = built.instance;
     });
 
     it("counts every fork orientation", () => {
@@ -60,9 +56,8 @@ describe(ForkCountCharacteristicService, () => {
     let service: ForkCountCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(ForkCountCharacteristicService, {
         providers: [
-          ForkCountCharacteristicService,
           {
             provide: NorthForkCountCharacteristicService,
             useValue: { compute: (): number => 1 },
@@ -80,9 +75,9 @@ describe(ForkCountCharacteristicService, () => {
             useValue: { compute: (): number => 8 },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(ForkCountCharacteristicService);
+      service = built.instance;
     });
 
     it("sums the four directional fork counts", () => {
