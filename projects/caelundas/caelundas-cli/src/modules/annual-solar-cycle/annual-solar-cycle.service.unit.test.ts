@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MARGIN_MINUTES } from "../caelundas/caelundas.constants";
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
@@ -17,26 +16,20 @@ import type {
   DistanceEphemeris,
 } from "../ephemeris/ephemeris.types";
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 describe(AnnualSolarCycleService, () => {
   let service: AnnualSolarCycleService;
 
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [AnnualSolarCycleEventsService, ProgressiveUtilitiesService],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        LoggerService,
-        AnnualSolarCycleService,
-        AnnualSolarCycleEventsService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
-    service = await module.resolve(AnnualSolarCycleService);
+    const { instance } = await buildTestingModule(
+      AnnualSolarCycleService,
+      testingModuleOptions,
+    );
+    service = instance;
   });
 
   function createCoordinateEphemeris(
@@ -136,8 +129,13 @@ describe(AnnualSolarCycleService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      AnnualSolarCycleService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(AnnualSolarCycleService);
   });
 
   describe("getSolarApsisEvents", () => {
