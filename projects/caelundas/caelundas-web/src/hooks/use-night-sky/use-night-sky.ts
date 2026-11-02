@@ -10,6 +10,7 @@ import { useNightSkyEngine } from "./use-night-sky-engine";
 import {
   describeNightSkyProblems,
   findUnknownConstellationNames,
+  isFieldOfViewCut,
   isReducedMotion,
   readNightSkyOverrides,
   selectConstellationSegments,
@@ -73,14 +74,18 @@ export function useNightSky(): UseNightSkyResult {
 
   // ♻️ Lifecycle
 
-  // A field of view that would put the pole on screen is reduced, and says so.
+  // A field of view that would put the pole on screen is reduced, and says
+  // so when the cut is more than the pole's own margin.
   useEffect(() => {
-    if (built?.measurements.fieldOfViewClamped) {
+    if (
+      built !== undefined &&
+      isFieldOfViewCut(built.measurements, overrides.verticalFieldOfViewDegrees)
+    ) {
       console.warn(
         `The night sky's field of view was reduced to ${built.measurements.fieldOfViewLimitDegrees.toFixed(1)} degrees to keep the pole off screen`,
       );
     }
-  }, [built]);
+  }, [built, overrides.verticalFieldOfViewDegrees]);
 
   // A line style key the link gives a value it cannot read, and a
   // constellation it names that has no figure, are left out, and said so once.

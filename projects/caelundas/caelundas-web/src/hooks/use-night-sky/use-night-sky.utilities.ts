@@ -10,10 +10,14 @@ import {
   LINE_OPACITY_RANGE,
   LINE_WIDTH_RANGE,
   MINIMUM_BOTTOM_ALTITUDE_DEGREES,
+  POLE_MARGIN_DEGREES,
   REDUCED_MOTION_QUERY,
 } from "./night-sky.constants";
 
-import type { ConstellationSegment } from "./night-sky.types";
+import type {
+  ConstellationSegment,
+  NightSkyMeasurements,
+} from "./night-sky.types";
 import type { NightSkyOverrides } from "./use-night-sky.types";
 
 // 🔏 Private Functions
@@ -50,6 +54,24 @@ export function findUnknownConstellationNames(
   ]);
 
   return names.filter((name) => !known.has(name));
+}
+
+/**
+ * Whether the window cut a field of view by more than the pole's own margin,
+ * which is worth saying; the whole sky from the pole, the default, is cut by
+ * only that degree.
+ */
+export function isFieldOfViewCut(
+  measurements: Readonly<
+    Pick<NightSkyMeasurements, "fieldOfViewClamped" | "fieldOfViewLimitDegrees">
+  >,
+  requestedDegrees: number,
+): boolean {
+  return (
+    measurements.fieldOfViewClamped &&
+    requestedDegrees - measurements.fieldOfViewLimitDegrees >
+      POLE_MARGIN_DEGREES
+  );
 }
 
 /**

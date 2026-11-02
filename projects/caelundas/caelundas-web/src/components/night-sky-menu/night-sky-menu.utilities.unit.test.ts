@@ -61,13 +61,13 @@ describe("night sky menu utilities", () => {
   });
 
   describe(toFullViewChange, () => {
-    it("writes the pole's whole sky above the horizon, slowed, putting the defaults it shares back", () => {
+    it("puts back the pole's whole sky above the horizon, slowed, now the defaults", () => {
       expect(toFullViewChange()).toStrictEqual({
         "sky.altBottom": undefined,
         "sky.eclipticOpacity": undefined,
         "sky.lat": undefined,
-        "sky.pixelsPerSecond": 3,
-        "sky.vFov": 90,
+        "sky.pixelsPerSecond": undefined,
+        "sky.vFov": undefined,
       });
     });
   });
@@ -89,9 +89,12 @@ describe("night sky menu utilities", () => {
   });
 
   describe(toConstellationsChange, () => {
-    it("removes the zodiac, the default, writes none, and joins the rest", () => {
-      expect(toConstellationsChange(["zodiac"])).toStrictEqual({
+    it("removes all, the default, writes zodiac and none, and joins the rest", () => {
+      expect(toConstellationsChange(["all"])).toStrictEqual({
         "sky.constellations": undefined,
+      });
+      expect(toConstellationsChange(["zodiac"])).toStrictEqual({
+        "sky.constellations": "zodiac",
       });
       expect(toConstellationsChange([])).toStrictEqual({
         "sky.constellations": "none",

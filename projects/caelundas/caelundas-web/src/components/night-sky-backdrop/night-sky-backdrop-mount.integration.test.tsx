@@ -115,7 +115,7 @@ describe("night sky backdrop", () => {
   });
 
   it("turns slower or faster with the speed the link sets", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderRoute("/?date=2026-03-01&sky.pixelsPerSecond=12");
 
     const normalSky = await findSky();
     const normal = readPeriod(normalSky);
@@ -293,6 +293,19 @@ describe("night sky backdrop", () => {
     });
 
     expect(vi.mocked(EventsCalendar)).toHaveBeenCalledTimes(rendered);
+  });
+
+  it("says nothing of the pole's own one-degree cut at the defaults", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    await renderRoute("/?date=2026-03-01");
+    await findSky();
+
+    expect(warn).not.toHaveBeenCalledWith(
+      expect.stringContaining("field of view was reduced"),
+    );
+
+    warn.mockRestore();
   });
 
   it("says when it reduces a field of view that would put the pole on screen", async () => {

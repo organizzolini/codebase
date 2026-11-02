@@ -40,17 +40,17 @@ export const DEFAULT_OPTIONS = {
   lineColor: "#ffffff",
   lineOpacity: 0.24,
   lineWidth: 0.8,
-  pixelsPerSecond: 12,
+  pixelsPerSecond: 3,
   starScale: 1,
   still: false,
-  verticalFieldOfViewDegrees: 60,
+  verticalFieldOfViewDegrees: 90,
 } as const;
 
 /**
  * The default observer, at the north pole, where altitude is declination and
- * the default band, from the horizon to +60°, holds the northern half of the
- * ecliptic and the northern zodiac's figures as they turn past; the
- * longitude is New York's.
+ * the default view, the whole sky above the horizon, holds the northern half
+ * of the ecliptic and every northern figure as it turns past; the longitude
+ * is New York's.
  */
 export const DEFAULT_OBSERVER = {
   latitudeDegrees: 90,
@@ -160,10 +160,10 @@ export const COLOR_INDEX_HIGHEST = 2;
 export const CONSTELLATION_WORDS = ["all", "none", "zodiac"] as const;
 
 /**
- * The figures drawn when the link names none: the zodiac's, faint enough to
- * sit behind the calendar and the twelve a calendar of astrology is about.
+ * The figures drawn when the link names none: all 88, faint enough to sit
+ * behind the calendar.
  */
-export const DEFAULT_CONSTELLATIONS: readonly string[] = ["zodiac"];
+export const DEFAULT_CONSTELLATIONS: readonly string[] = ["all"];
 
 /**
  * The steps each figure segment is drawn in along its great circle, enough

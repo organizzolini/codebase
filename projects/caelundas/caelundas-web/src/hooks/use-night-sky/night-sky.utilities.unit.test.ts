@@ -73,6 +73,7 @@ const baseOptions = {
   height: HEIGHT,
   latitudeDegrees: LATITUDE,
   localSiderealDegrees: 0,
+  pixelsPerSecond: 12,
   stars,
   verticalFieldOfViewDegrees: FIELD_OF_VIEW,
   width: WIDTH,

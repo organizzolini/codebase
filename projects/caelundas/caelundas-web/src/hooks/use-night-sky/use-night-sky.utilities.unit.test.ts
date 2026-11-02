@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   describeNightSkyProblems,
   findUnknownConstellationNames,
+  isFieldOfViewCut,
   normalizeConstellationName,
   readNightSkyOverrides,
   selectConstellationSegments,
@@ -78,13 +79,15 @@ describe("use-night-sky utilities", () => {
       ).toStrictEqual(["zodiac", "ursa_major", "canis_major"]);
       expect(
         readNightSkyOverrides({ "sky.constellations": 5 }).constellations,
-      ).toStrictEqual(["zodiac"]);
+      ).toStrictEqual(["all"]);
     });
 
-    it("draws the zodiac's figures by default, and none when asked for none", () => {
-      expect(readNightSkyOverrides({}).constellations).toStrictEqual([
-        "zodiac",
-      ]);
+    it("draws every figure by default, the zodiac's or none when asked", () => {
+      expect(readNightSkyOverrides({}).constellations).toStrictEqual(["all"]);
+      expect(
+        readNightSkyOverrides({ "sky.constellations": "zodiac" })
+          .constellations,
+      ).toStrictEqual(["zodiac"]);
       expect(
         readNightSkyOverrides({ "sky.constellations": "" }).constellations,
       ).toStrictEqual([]);
@@ -234,6 +237,21 @@ describe("use-night-sky utilities", () => {
           ["all", "zodiac", "ursa_major", "narnia"],
         ),
       ).toStrictEqual(["narnia"]);
+    });
+  });
+
+  describe(isFieldOfViewCut, () => {
+    it("says a cut only when it is more than the pole's own degree", () => {
+      const measurements = {
+        fieldOfViewClamped: true,
+        fieldOfViewLimitDegrees: 89,
+      };
+
+      expect(isFieldOfViewCut(measurements, 90)).toBe(false);
+      expect(isFieldOfViewCut(measurements, 91)).toBe(true);
+      expect(
+        isFieldOfViewCut({ ...measurements, fieldOfViewClamped: false }, 120),
+      ).toBe(false);
     });
   });
 });
