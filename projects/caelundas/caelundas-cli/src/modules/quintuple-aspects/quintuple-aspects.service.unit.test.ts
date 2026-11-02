@@ -1,9 +1,8 @@
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
@@ -15,6 +14,8 @@ import { QuintupleAspectsService } from "./quintuple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
+import type { LoggerService } from "@codebase/observability";
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 /** Builds one pentagram boundary event for the shared progressive-step tests. */
 function buildPentagramBoundary(
@@ -45,22 +46,28 @@ function buildPentagramBoundary(
 
 describe(QuintupleAspectsService, () => {
   let service: QuintupleAspectsService;
+  let logger: DeepMocked<LoggerService>;
   let compoundPhaseService: CompoundPhaseService;
 
+  const testingModuleOptions = {
+    providers: [
+      QuintupleAspectsComposerService,
+      CompoundPhaseService,
+      ProgressiveCompoundEventService,
+      MathService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        QuintupleAspectsService,
-        QuintupleAspectsComposerService,
-        CompoundPhaseService,
-        ProgressiveCompoundEventService,
-        MathService,
-        LoggerService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
+    const {
+      instance,
+      logger: builtLogger,
+      module,
+    } = await buildTestingModule(QuintupleAspectsService, testingModuleOptions);
+    logger = builtLogger;
     compoundPhaseService = await module.resolve(CompoundPhaseService);
-    service = await module.resolve(QuintupleAspectsService);
+    service = instance;
   });
 
   describe("detect", () => {
@@ -241,8 +248,13 @@ describe(QuintupleAspectsService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      QuintupleAspectsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(QuintupleAspectsService);
   });
 
   describe("detectProgressive", () => {
@@ -270,8 +282,6 @@ describe(QuintupleAspectsService, () => {
     });
 
     it("warns and skips an occurrence whose dissolving is missing", () => {
-      const warn = vi.spyOn(LoggerService.prototype, "warn");
-
       const spans = spansOf([
         buildPentagramBoundary("Forming", "2026-10-20T08:00:00.000Z"),
         buildPentagramBoundary("Forming", "2026-10-27T03:15:00.000Z"),
@@ -281,13 +291,11 @@ describe(QuintupleAspectsService, () => {
       expect(spans).toStrictEqual([
         ["2026-10-27T03:15:00.000Z", "2026-10-27T11:45:00.000Z"],
       ]);
-      expect(warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "🔀 Unpaired progressive events",
         undefined,
         expect.objectContaining({ unpairedBeginnings: 1 }),
       );
-
-      warn.mockRestore();
     });
 
     it("creates progressive events from forming and dissolving pairs", () => {
