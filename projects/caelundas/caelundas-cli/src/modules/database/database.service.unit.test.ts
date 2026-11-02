@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import { getDataSourceToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DatabaseService } from "./database.service";
 
@@ -8,19 +9,26 @@ describe(DatabaseService, () => {
   const dataSource = { isInitialized: true };
   let service: DatabaseService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DatabaseService,
-        { provide: getDataSourceToken(), useValue: dataSource },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [{ provide: getDataSourceToken(), useValue: dataSource }],
+  };
 
-    service = await module.resolve(DatabaseService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      DatabaseService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DatabaseService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(DatabaseService);
   });
 
   it("reports an initialized data source as connected", () => {
