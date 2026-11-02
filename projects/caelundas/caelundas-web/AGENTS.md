@@ -133,7 +133,9 @@ testing/
 The night sky reads the `star`, `constellation` and `constellation_line`
 tables through `EventsDatabase.findNightSky`, the same worker and SQL path the
 events take; `caelundas-cli`'s `night-sky` command fills them, and the seeded
-build and the tests load `caelundas-cli/data/night-sky-seed.sql`, a sample.
+build and the tests load `caelundas-cli/data/night-sky-seed.sql`: every
+constellation and figure, with only the stars the figures join and the
+brightest.
 `use-night-sky.schemas.ts` validates each row as it is read. The stars are the
 HYG star database v4.1 (CC BY-SA 4.0, David Nash and the HYG contributors,
 <https://github.com/astronexus/HYG-Database>), stored to magnitude 6.5 and

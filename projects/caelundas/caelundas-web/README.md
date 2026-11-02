@@ -73,8 +73,9 @@ to the default.
 The night sky reads its stars and constellation figures from the same SQLite
 file as the events: the `star`, `constellation` and `constellation_line` tables
 that `caelundas-cli`'s `night-sky` command fills. The default build loads the
-committed sample in `caelundas-cli/data/night-sky-seed.sql`, the brightest stars
-and sixteen figures; `build:ingested` copies the full catalog a `night-sky` run
+committed seed in `caelundas-cli/data/night-sky-seed.sql`: all 88
+constellations and their figures, with only the stars those figures join and
+the brightest; `build:ingested` copies the full catalog a `night-sky` run
 wrote.
 
 The stars are the [HYG star database](https://github.com/astronexus/HYG-Database)
