@@ -131,7 +131,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/lexico/lexico-cli": NEST_BASELINE,
   "projects/lexico/lexico-entities": NEST_BASELINE,
   "projects/lexico/lexico-web": { application: 717 / 738, routes: 131 / 145 },
-  "projects/meanderaw/meanderaw-cli": NEST_BASELINE,
   publication: NEST_BASELINE,
   synchronization: NEST_BASELINE,
   validation: NEST_BASELINE,
