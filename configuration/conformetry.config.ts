@@ -116,7 +116,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/codometer/codometer-measurement": NEST_BASELINE,
   "projects/ic-suite/codometer/codometer-output": NEST_BASELINE,
   "projects/ic-suite/conformetry/conformetry-cli": CLI_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-generation": NEST_BASELINE,
   "projects/ic-suite/conformetry/conformetry-languages": NEST_BASELINE,
   "projects/ic-suite/conformetry/conformetry-nx": NEST_BASELINE,
   "projects/ic-suite/conformetry/conformetry-output": NEST_BASELINE,
