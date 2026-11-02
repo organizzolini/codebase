@@ -141,10 +141,16 @@ export const COLOR_INDEX_HIGHEST = 2;
 // ✳️ Constellations
 
 /**
- * The words `sky.constellations` takes besides names: every figure, or the
- * twelve zodiac constellations'.
+ * The words `sky.constellations` takes besides names: every figure, the
+ * twelve zodiac constellations', or none.
  */
-export const CONSTELLATION_WORDS = ["all", "zodiac"] as const;
+export const CONSTELLATION_WORDS = ["all", "none", "zodiac"] as const;
+
+/**
+ * The figures drawn when the link names none: the zodiac's, faint enough to
+ * sit behind the calendar and the twelve a calendar of astrology is about.
+ */
+export const DEFAULT_CONSTELLATIONS: readonly string[] = ["zodiac"];
 
 /**
  * The steps each figure segment is drawn in along its great circle, enough

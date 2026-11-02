@@ -69,8 +69,15 @@ describe(useNightSky, () => {
     expect(result.current.sky).toBeUndefined();
   });
 
-  it("draws no figure unless the link asks for one", async () => {
-    await expect(renderSky({})).resolves.not.toContain("<polyline");
+  it("draws the zodiac's figures by default, and none when asked for none", async () => {
+    // Facing north, the zodiac rises into the window only from far north.
+    await expect(renderSky({ "sky.lat": 75 })).resolves.toContain("<polyline");
+    await expect(
+      renderSky({ "sky.constellations": "none" }),
+    ).resolves.not.toContain("<polyline");
+    await expect(
+      renderSky({ "sky.constellations": "" }),
+    ).resolves.not.toContain("<polyline");
   });
 
   it("draws the figures the link asks for beneath the stars", async () => {

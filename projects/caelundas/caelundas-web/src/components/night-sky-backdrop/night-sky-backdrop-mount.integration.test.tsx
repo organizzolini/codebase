@@ -142,15 +142,24 @@ describe("night sky backdrop", () => {
     expect(countStars(fewerSky)).toBeLessThan(normal);
   });
 
-  it("draws the constellation figures the link names, and none without it", async () => {
-    await renderRoute("/?date=2026-03-01");
+  it("draws the zodiac's figures by default, and none for an empty list", async () => {
+    // Facing north, the zodiac rises into the window only from far north.
+    await renderRoute("/?date=2026-03-01&sky.lat=75");
+
+    const zodiacSky = await findSky();
+
+    expect(zodiacSky.querySelectorAll("polyline").length).toBeGreaterThan(0);
+
+    cleanup();
+    await renderRoute("/?date=2026-03-01&sky.lat=75&sky.constellations=");
 
     const plainSky = await findSky();
 
     expect(plainSky.querySelector("polyline")).toBeNull();
+  });
 
-    cleanup();
-    await renderRoute("/?date=2026-03-01&sky.constellations=zodiac,ursa_major");
+  it("draws the constellation figures the link names", async () => {
+    await renderRoute("/?date=2026-03-01&sky.constellations=ursa_major");
 
     const figuredSky = await findSky();
 

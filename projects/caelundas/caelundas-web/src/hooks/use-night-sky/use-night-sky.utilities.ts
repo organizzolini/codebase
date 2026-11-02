@@ -4,6 +4,7 @@ import { normalizeHexadecimalColor } from "./night-sky-colors.utilities";
 import {
   COLOR_DIGITS_PATTERN,
   CONSTELLATION_WORDS,
+  DEFAULT_CONSTELLATIONS,
   DEFAULT_OBSERVER,
   DEFAULT_OPTIONS,
   LINE_OPACITY_RANGE,
@@ -190,15 +191,20 @@ function isHexadecimalColor(value: unknown): boolean {
 
 /**
  * Reads `sky.constellations`, a comma-separated list of names and the words
- * `all` and `zodiac`, each normalized. Anything but text is no list.
+ * `all`, `zodiac` and `none`, each normalized. Absent, or anything but text,
+ * is the zodiac; empty, or `none`, is no figure.
  */
-function readConstellationNames(value: unknown): string[] {
-  return typeof value === "string"
-    ? value
-        .split(",")
-        .map((name) => normalizeConstellationName(name))
-        .filter((name) => name !== "")
-    : [];
+function readConstellationNames(value: unknown): readonly string[] {
+  if (typeof value !== "string") {
+    return DEFAULT_CONSTELLATIONS;
+  }
+
+  const names = value
+    .split(",")
+    .map((name) => normalizeConstellationName(name))
+    .filter((name) => name !== "");
+
+  return names.includes("none") ? [] : names;
 }
 
 /**
