@@ -119,11 +119,10 @@ src/
     calendar-timeline/           # The timeline and its clusters, lanes, and window
     night-sky-backdrop/          # The night sky behind every page, and its mount
   hooks/
-    use-night-sky/               # The night sky's star catalog, schemas, generator,
-                                 # colors, and link overrides
+    use-night-sky/               # The night sky's stars and figures read, generator,
+                                 # colors, constellation lines, and link overrides
 scripts/
   build-events-database.ts       # Writes output/events.sqlite, from the seed or --ingested
-  build-star-catalog.ts          # Trims the HYG star CSV to the night sky's catalog JSON
 output/                          # Gitignored build artifact
 testing/
   events-database.ts             # node:sqlite EventsDatabase over caelundas-cli's SQL
@@ -131,14 +130,19 @@ testing/
 
 ### Night Sky Data
 
-The night sky's stars come from `src/hooks/use-night-sky/use-night-sky.catalog.json`,
-the HYG star database v4.1 (CC BY-SA 4.0, David Nash and the HYG
-contributors, <https://github.com/astronexus/HYG-Database>) trimmed to magnitude
-6.5 and declination -30 degrees or north. The trimmed catalog is a derived work
-under the same license, so keep this credit wherever it is documented. Rebuild
-it with `nx run caelundas-web:build-star-catalog -- <csv> <json>` from a downloaded CSV that is never
-committed, and check a newer release's column names (`id`, `ra`, `dec`, `mag`,
-`ci`) first. `use-night-sky.schemas.ts` validates the file on load.
+The night sky reads the `star`, `constellation` and `constellation_line`
+tables through `EventsDatabase.findNightSky`, the same worker and SQL path the
+events take; `caelundas-cli`'s `night-sky` command fills them, and the seeded
+build and the tests load `caelundas-cli/data/night-sky-seed.sql`, a sample.
+`use-night-sky.schemas.ts` validates each row as it is read. The stars are the
+HYG star database v4.1 (CC BY-SA 4.0, David Nash and the HYG contributors,
+<https://github.com/astronexus/HYG-Database>), stored to magnitude 6.5 and
+declination -45 degrees or north; the stored catalog is a derived work under
+the same license, so keep this credit wherever it is documented. The figures
+are d3-celestial's (BSD-3-Clause, Olaf Frohn,
+<https://github.com/ofrohn/d3-celestial>). `sky.constellations` selects which
+figures `night-sky-lines.utilities.ts` draws, beneath the stars inside the
+turning group, cut where they leave the ring the window can show.
 
 ## Development
 

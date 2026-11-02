@@ -60,23 +60,31 @@ to the default.
   multiplies the dot size.
 - `sky.top` and `sky.bottom` set the colors at the top and bottom of the
   background, `04060f` and `0d1533` by default.
+- `sky.constellations` draws constellation figures beneath the stars: a
+  comma-separated list of full names, lower case with spaces or hyphens as
+  underscores, such as `ursa_major` or `canis_major`, and the words `all` and
+  `zodiac` (the twelve zodiac constellations), combined as in
+  `sky.constellations=zodiac,ursa_major`. A name it does not know is left out,
+  with one console warning; without it, or empty, no figure is drawn.
 - `sky.debug=true` draws the zoomed-out tuning view.
 
-## Star catalog
+## Stars and constellations
 
-The night sky backdrop draws from `src/hooks/use-night-sky/use-night-sky.catalog.json`,
-the [HYG star database](https://github.com/astronexus/HYG-Database) v4.1
-trimmed to stars at or brighter than magnitude 6.5 at declination -30 degrees or
-north, brightest first. HYG is licensed
-[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) and the
-trimmed catalog is a derived work, so it carries the same license and credit
-to David Nash and the HYG contributors. To rebuild it from a downloaded copy of
-the CSV (never committed), check the columns `id`, `ra`, `dec`, `mag` and `ci`
-exist in the release first, then run:
+The night sky reads its stars and constellation figures from the same SQLite
+file as the events: the `star`, `constellation` and `constellation_line` tables
+that `caelundas-cli`'s `night-sky` command fills. The default build loads the
+committed sample in `caelundas-cli/data/night-sky-seed.sql`, the brightest stars
+and sixteen figures; `build:ingested` copies the full catalog a `night-sky` run
+wrote.
 
-```bash
-nx run caelundas-web:build-star-catalog -- hyg.csv src/hooks/use-night-sky/use-night-sky.catalog.json
-```
+The stars are the [HYG star database](https://github.com/astronexus/HYG-Database)
+v4.1, stored to magnitude 6.5 at declination -45 degrees or north, plus any
+fainter star a figure joins. HYG is licensed
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) and the stored
+catalog is a derived work, so it carries the same license and credit to David
+Nash and the HYG contributors. The constellations and their figures come from
+[d3-celestial](https://github.com/ofrohn/d3-celestial), BSD-3-Clause, Olaf
+Frohn, after the IAU's constellation charts.
 
 ## 👔 Conformetry
 

@@ -252,6 +252,36 @@ is no separate build step. Build the web application with
 SQLite takes one writer at a time, so run one ingestion against a file at a
 time; a second waits five seconds and then fails with `SQLITE_BUSY`.
 
+## Night sky
+
+The `night-sky` command fills the tables `caelundas-web`'s night sky reads,
+`star`, `constellation` and `constellation_line`, in the same file, replacing
+what an earlier run wrote. It reads three files downloaded beforehand, never
+committed:
+
+```bash
+curl -LO https://raw.githubusercontent.com/astronexus/HYG-Database/main/hyg/CURRENT/hygdata_v41.csv
+curl -LO https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/constellations.json
+curl -LO https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/constellations.lines.json
+nx run caelundas-cli:start:night-sky --stars hygdata_v41.csv \
+  --constellations constellations.json --lines constellations.lines.json
+```
+
+It stores the stars to magnitude 6.5 at declination -45 degrees or north,
+keyed by Hipparcos number, plus any fainter star a figure joins; the 88 IAU
+constellations, the twelve of the zodiac flagged; and each figure's segments
+between two stored stars. d3-celestial draws its figures by position, so each
+vertex is matched to the catalog star within 0.05 degrees of it, and a segment
+south of the stored sky is left out. `data/night-sky-seed.sql` is a sample of
+those rows for `caelundas-web`'s tests and seeded build.
+
+The stars are the [HYG star database](https://github.com/astronexus/HYG-Database)
+v4.1, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), David
+Nash and the HYG contributors; the stored catalog and the seed are derived
+works under the same license. The constellations and figures are
+[d3-celestial](https://github.com/ofrohn/d3-celestial)'s, BSD-3-Clause, Olaf
+Frohn, after the IAU's constellation charts.
+
 ## Structure
 
 ```text
@@ -265,6 +295,7 @@ src/
     ├── perfective/          # Exact-moment detection across every event service
     ├── progressive/         # Spans derived from those moments
     ├── database/            # SQLite connection, entities, migrations
+    ├── night-sky/           # Stars and constellation figures for the web's night sky
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── tags/                # Resolving raw tag strings to nodes of the tag tree
     ├── calendar/            # iCalendar and JSON rendering and output
