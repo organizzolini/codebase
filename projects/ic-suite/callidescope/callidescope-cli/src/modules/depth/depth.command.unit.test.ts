@@ -10,7 +10,6 @@ import {
 } from "@callidescope/graph";
 import { AddressReportService } from "@callidescope/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -21,7 +20,11 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { captureExitCode, captureOutput } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { AddressLookupService } from "../address-lookup/address-lookup.service";
 
@@ -30,6 +33,8 @@ import { DepthCommand } from "./depth.command";
 import type { LocatedWorkspace } from "../address-lookup/address-lookup.types";
 import type { LocateOutcome } from "../callidescope/callidescope.types";
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
+import type { LoggerService } from "@codebase/observability";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** The workspace configuration every run must be pointed at with `--config`. */
 const CONFIGURATION_PATH = "callidescope.config.ts";
@@ -74,36 +79,24 @@ function buildLocated(): LocateOutcome {
   };
 }
 
+/** What the command is built from in every test that builds it. */
+const COMMAND_MODULE: TestingModuleOptions = {
+  imports: [ConfigurationModule],
+  mocks: [AddressLookupService, AddressReportService, AddressDepthService],
+};
+
 describe(DepthCommand, () => {
   let addressLookupService: ReturnType<typeof createMock<AddressLookupService>>;
   let addressReportService: ReturnType<typeof createMock<AddressReportService>>;
   let addressDepthService: ReturnType<typeof createMock<AddressDepthService>>;
   let command: DepthCommand;
+  let exitCode: ReturnType<typeof captureExitCode>;
   let configurationService: ConfigurationService;
   let logger: ReturnType<typeof createMock<LoggerService>>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [
-        DepthCommand,
-        {
-          provide: AddressLookupService,
-          useValue: createMock<AddressLookupService>(),
-        },
-        {
-          provide: AddressReportService,
-          useValue: createMock<AddressReportService>(),
-        },
-        {
-          provide: AddressDepthService,
-          useValue: createMock<AddressDepthService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(DepthCommand, COMMAND_MODULE);
 
-    command = await module.resolve(DepthCommand);
     configurationService = await module.resolve(ConfigurationService);
   });
 
@@ -126,45 +119,22 @@ describe(DepthCommand, () => {
       logger,
     );
 
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
-    process.exitCode = undefined;
+    captureOutput();
+    exitCode = captureExitCode();
   });
 
   afterEach(() => {
-    process.exitCode = undefined;
     process.stdin.isTTY = originalIsTty;
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DepthCommand, COMMAND_MODULE);
+
+    expect(instance).toBeInstanceOf(DepthCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [
-        DepthCommand,
-        {
-          provide: AddressLookupService,
-          useValue: createMock<AddressLookupService>(),
-        },
-        {
-          provide: AddressReportService,
-          useValue: createMock<AddressReportService>(),
-        },
-        {
-          provide: AddressDepthService,
-          useValue: createMock<AddressDepthService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    await module.resolve(DepthCommand);
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("DepthCommand");
+    await expectLoggerContext(DepthCommand, COMMAND_MODULE);
   });
 
   // 🎛️ Option parsing
@@ -206,7 +176,7 @@ describe(DepthCommand, () => {
   it("rejects a run with no addresses it could ask for", async () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(addressLookupService.resolve).not.toHaveBeenCalled();
   });
 
@@ -215,7 +185,7 @@ describe(DepthCommand, () => {
   it("ignores a positional argument, asking for the flag instead", async () => {
     await command.run(["a.ts#Foo.bar"], { config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(addressLookupService.resolve).not.toHaveBeenCalled();
   });
 
@@ -236,7 +206,7 @@ describe(DepthCommand, () => {
       config: CONFIGURATION_PATH,
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(addressDepthService.buildDownwardStacks).not.toHaveBeenCalled();
   });
 
@@ -280,7 +250,7 @@ describe(DepthCommand, () => {
       startId: "a.ts#0",
     });
     expect(process.stdout.write).toHaveBeenCalledWith("rendered depth\n");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   // 🗣️ Prompting
@@ -446,7 +416,7 @@ describe(DepthCommand, () => {
       undefined,
       { reason: error.message },
     );
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(process.stdout.write).not.toHaveBeenCalled();
   });
 
@@ -472,7 +442,7 @@ describe(DepthCommand, () => {
       undefined,
       { reason: error.message },
     );
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(process.stdout.write).not.toHaveBeenCalled();
   });
 
@@ -499,7 +469,7 @@ describe(DepthCommand, () => {
       undefined,
       { reason: error.message },
     );
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(process.stdout.write).not.toHaveBeenCalled();
   });
 
@@ -544,7 +514,7 @@ describe(DepthCommand, () => {
       "b.ts#Bar.baz",
     ]);
     expect(process.stdout.write).toHaveBeenCalledWith("two reports\n");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   // All or nothing: half a report under an exit code that says the run
@@ -569,7 +539,7 @@ describe(DepthCommand, () => {
       format: "markdown",
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(process.stdout.write).not.toHaveBeenCalled();
     expect(addressReportService.renderDepthReports).not.toHaveBeenCalled();
   });
@@ -592,7 +562,7 @@ describe(DepthCommand, () => {
       format: "markdown",
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected a callable address",
       undefined,

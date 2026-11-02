@@ -1,8 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { captureExitCode } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   buildStackFrame,
@@ -12,6 +11,8 @@ import {
 import { ReportFindingsService } from "./report-findings.service";
 
 import type { ReportFindingsArguments } from "./report-findings.types";
+import type { LoggerService } from "@codebase/observability";
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 /** A run mode with every gate off, so a test opts into the one it checks. */
 const CLEAN_MODE: ReportFindingsArguments["mode"] = {
@@ -22,35 +23,28 @@ const CLEAN_MODE: ReportFindingsArguments["mode"] = {
 };
 
 describe(ReportFindingsService, () => {
-  let logger: ReturnType<typeof createMock<LoggerService>>;
+  let exitCode: ReturnType<typeof captureExitCode>;
+  let logger: DeepMocked<LoggerService>;
   let service: ReportFindingsService;
 
   beforeAll(async () => {
-    logger = createMock<LoggerService>();
+    const built = await buildTestingModule(ReportFindingsService);
 
-    const module = await Test.createTestingModule({
-      providers: [
-        ReportFindingsService,
-        { provide: LoggerService, useValue: logger },
-      ],
-    }).compile();
-
-    service = await module.resolve(ReportFindingsService);
+    service = built.instance;
+    logger = built.logger;
   });
 
   // The service holds no state of its own, so one instance serves the suite;
   // what each test needs fresh is the logger's record and the exit code.
   beforeEach(() => {
     logger.error.mockClear();
-    process.exitCode = undefined;
+    exitCode = captureExitCode();
   });
 
-  afterEach(() => {
-    process.exitCode = undefined;
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ReportFindingsService);
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(ReportFindingsService);
   });
 
   it("leaves the exit code alone when nothing was found", () => {
@@ -60,7 +54,7 @@ describe(ReportFindingsService, () => {
       stalePaths: [],
     });
 
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
     expect(logger.error).not.toHaveBeenCalled();
   });
 
@@ -81,7 +75,7 @@ describe(ReportFindingsService, () => {
       stalePaths: [],
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Found call stacks too deep",
       undefined,
@@ -106,7 +100,7 @@ describe(ReportFindingsService, () => {
       stalePaths: [],
     });
 
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Found call stacks too deep",
       undefined,
@@ -137,7 +131,7 @@ describe(ReportFindingsService, () => {
       stalePaths: [],
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Found callables calling too much directly",
       undefined,
@@ -171,7 +165,7 @@ describe(ReportFindingsService, () => {
     // Named as well as not fatal: a run that does not gate on breadth still
     // reports what it found, which is the half of "names a wide callable" an
     // exit code cannot show.
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Found callables calling too much directly",
       undefined,
@@ -186,7 +180,7 @@ describe(ReportFindingsService, () => {
       stalePaths: ["report.json"],
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Found stale reports",
       undefined,
@@ -214,7 +208,7 @@ describe(ReportFindingsService, () => {
       stalePaths: [],
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith("🔭 Traced nothing", undefined, {
       projectCount: 2,
     });

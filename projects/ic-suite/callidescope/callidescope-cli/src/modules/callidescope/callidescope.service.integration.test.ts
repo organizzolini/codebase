@@ -1,16 +1,17 @@
-import { mkdir, mkdtemp, realpath, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
   GraphAssemblyService,
   ProgramConfigurationError,
 } from "@callidescope/graph";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
@@ -18,6 +19,8 @@ import { CallidescopeService } from "./callidescope.service";
 
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 import type { CallGraphResult } from "@callidescope/core";
+import type { LoggerService } from "@codebase/observability";
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 /** A workspace file no traced project sits beside, so none is skipped as the run's own. */
 const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
@@ -106,7 +109,7 @@ function buildConfiguration(): ResolvedCallidescopeConfiguration {
 async function buildConfiguredWorkspace(
   libraryConfiguration: Record<string, unknown>,
 ): Promise<string> {
-  const workspaceRoot = await makeWorkspaceRoot("callidescope-project-");
+  const workspaceRoot = makeWorkspaceRoot("callidescope-project");
 
   await writeProject({
     name: "library",
@@ -151,9 +154,7 @@ async function buildConfiguredWorkspace(
  * into a dependency, not up into a dependent, and not sideways into a package
  * neither of them mentions.
  */
-async function buildLayeredWorkspace(): Promise<string> {
-  const workspaceRoot = await makeWorkspaceRoot("callidescope-closure-");
-
+async function buildLayeredWorkspace(workspaceRoot: string): Promise<string> {
   await writeProject({
     name: "library",
     sources: {
@@ -221,8 +222,9 @@ async function buildLayeredWorkspace(): Promise<string> {
  * Writes a workspace to disk holding a command that reaches a repository
  * through an injected service — the shape this tool exists to follow.
  */
-async function buildWorkspace(): Promise<string> {
-  const workspaceRoot = await makeWorkspaceRoot("callidescope-trace-");
+async function buildWorkspace(
+  workspaceRoot = makeWorkspaceRoot("callidescope-trace"),
+): Promise<string> {
   const root = path.join(workspaceRoot, "packages", "example");
 
   await mkdir(path.join(root, "src", "modules", "example"), {
@@ -278,8 +280,9 @@ async function buildWorkspace(): Promise<string> {
 /**
  * A temporary directory every fixture here roots its workspace at.
  *
- * Resolved through the symlink `mkdtemp` hands back on macOS, where the
- * temporary directory really lives under `/private`. A program's source files
+ * Resolved through the symlink the system hands back on macOS, where the
+ * temporary directory really lives under `/private`, as the testing package's
+ * helper does. A program's source files
  * come back under that real path, so an unresolved root leaves every
  * workspace-relative path a `../../…` climb out of the workspace — no project
  * root contains one, `resolveOwningProject` answers nothing, and a project's
@@ -291,8 +294,8 @@ async function buildWorkspace(): Promise<string> {
  * fixture added without them is that defect back, and it has been back three
  * times.
  */
-async function makeWorkspaceRoot(prefix: string): Promise<string> {
-  return realpath(await mkdtemp(path.join(tmpdir(), prefix)));
+function makeWorkspaceRoot(prefix: string): string {
+  return createTemporaryDirectory(prefix);
 }
 
 /** Reads the depth of the stack one project rooted at a named callable. */
@@ -407,26 +410,24 @@ async function writeTestFile(workspaceRoot: string): Promise<void> {
 describe(`${CallidescopeService.name} (integration)`, () => {
   let result: CallGraphResult;
   let frames: string[];
-  let logger: ReturnType<typeof createMock<LoggerService>>;
+  let logger: DeepMocked<LoggerService>;
   let service: CallidescopeService;
   let tracedWorkspaceRoot: string;
 
+  const getTracedRoot = useTemporaryDirectory("callidescope-traced");
+
   beforeAll(async () => {
-    const workspaceRoot = await buildWorkspace();
+    const workspaceRoot = await buildWorkspace(getTracedRoot());
 
     tracedWorkspaceRoot = workspaceRoot;
-    logger = createMock<LoggerService>();
 
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(CallidescopeService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [
-        CallidescopeService,
-        GraphAssemblyService,
-        { provide: LoggerService, useValue: logger },
-      ],
-    }).compile();
+      providers: [GraphAssemblyService],
+    });
 
-    service = await module.resolve(CallidescopeService);
+    service = built.instance;
+    logger = built.logger;
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
@@ -808,8 +809,10 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     let scoped: Awaited<ReturnType<CallidescopeService["trace"]>>;
     let unscoped: Awaited<ReturnType<CallidescopeService["trace"]>>;
 
+    const getLayeredRoot = useTemporaryDirectory("callidescope-closure");
+
     beforeAll(async () => {
-      layeredWorkspaceRoot = await buildLayeredWorkspace();
+      layeredWorkspaceRoot = await buildLayeredWorkspace(getLayeredRoot());
       scoped = await service.trace({
         configuration: buildConfiguration(),
         configurationPath: WORKSPACE_CONFIGURATION_PATH,

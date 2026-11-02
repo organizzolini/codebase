@@ -1,10 +1,11 @@
-import { mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import ts from "typescript";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
@@ -19,21 +20,22 @@ describe(CompilerHostService, () => {
   let service: CompilerHostService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(CompilerHostService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [CompilerHostService],
-    }).compile();
-
-    service = await module.resolve(CompilerHostService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CompilerHostService, {
+      imports: [...ANALYSIS_MODULES],
+    });
+
+    expect(instance).toBeInstanceOf(CompilerHostService);
   });
 
   /** Writes a source file and returns its path. */
   async function writeSource(text: string): Promise<string> {
-    const directory = await mkdtemp(path.join(tmpdir(), "callidescope-host-"));
+    const directory = createTemporaryDirectory("callidescope-host");
     const filePath = path.join(directory, "a.ts");
 
     await writeFile(filePath, text, "utf8");
@@ -94,8 +96,8 @@ describe(CompilerHostService, () => {
     ).toBeDefined();
   });
 
-  it("returns nothing for a file that does not exist", async () => {
-    const directory = await mkdtemp(path.join(tmpdir(), "callidescope-host-"));
+  it("returns nothing for a file that does not exist", () => {
+    const directory = createTemporaryDirectory("callidescope-host");
     const host = new CompilerHostService().createHost({
       options: OPTIONS,
       workspaceRoot: directory,

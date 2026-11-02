@@ -1,15 +1,13 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import {
-  existsSync,
-  mkdtempSync,
-  readdirSync,
-  readFileSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
+
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
 
 import callidescopeConfiguration from "../callidescope.workspace.config.js";
 
@@ -419,14 +417,12 @@ function runDocumented(command: string): { output: string; status: number } {
  * project configuration — which sets workspace-only fields and is refused.
  */
 function traceFixtures(
+  temporaryDirectory: string,
   overrides: {
     exclude?: readonly string[];
     limits?: Record<string, number>;
   } = {},
 ): CallGraphResult {
-  const temporaryDirectory = mkdtempSync(
-    path.join(tmpdir(), "callidescope-examples-"),
-  );
   const reportPath = path.join(temporaryDirectory, "report.json");
   const configurationPath = path.join(
     temporaryDirectory,
@@ -469,8 +465,10 @@ function traceFixtures(
 describe("callidescope examples (integration)", () => {
   let result: CallGraphResult;
 
+  const getTraceDirectory = useTemporaryDirectory("callidescope-examples");
+
   beforeAll(() => {
-    result = traceFixtures();
+    result = traceFixtures(getTraceDirectory());
   });
 
   describe("the examples target names every root", () => {
@@ -700,11 +698,14 @@ describe("callidescope examples (integration)", () => {
       // The closure can only be shown to do something by taking one project
       // out of it. The same fixture heads the same stack either way; what
       // changes is how far the stack goes, which is the whole claim.
-      const withoutDependency = traceFixtures({
-        exclude: [
-          "projects/ic-suite/callidescope/callidescope-configuration/**",
-        ],
-      });
+      const withoutDependency = traceFixtures(
+        createTemporaryDirectory("callidescope-examples"),
+        {
+          exclude: [
+            "projects/ic-suite/callidescope/callidescope-configuration/**",
+          ],
+        },
+      );
 
       expect(readClosureFrames(result)).toStrictEqual([
         {

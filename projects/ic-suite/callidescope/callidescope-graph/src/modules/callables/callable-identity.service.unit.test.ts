@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import {
@@ -46,16 +47,17 @@ describe(CallableIdentityService, () => {
   let service: CallableIdentityService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(CallableIdentityService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [CallableIdentityService],
-    }).compile();
-
-    service = await module.resolve(CallableIdentityService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CallableIdentityService, {
+      imports: [...ANALYSIS_MODULES],
+    });
+
+    expect(instance).toBeInstanceOf(CallableIdentityService);
   });
 
   // 🏷️ Naming and classification, one case per declaration shape.

@@ -8,10 +8,9 @@ import {
 } from "@callidescope/configuration";
 import { FileFilterService, WorkspaceService } from "@callidescope/graph";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LimitsService } from "./limits.service";
 
@@ -22,6 +21,7 @@ import type {
   LoadedCallidescopeConfiguration,
   ResolvedCallidescopeConfiguration,
 } from "@callidescope/configuration";
+import type { LoggerService } from "@codebase/observability";
 import type { MockInstance } from "vitest";
 
 /** The workspace configuration `--config` must name. */
@@ -170,26 +170,24 @@ describe(LimitsService, () => {
   // listing that resolved inheritance its own way could disagree with the gate
   // about the same number, so the suite asserts the one resolver's answer.
   beforeAll(async () => {
-    logger = createMock<LoggerService>();
     fileFilterService = createMock<FileFilterService>();
     workspaceService = createMock<WorkspaceService>();
 
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(LimitsService, {
       imports: [ConfigurationModule],
       providers: [
-        LimitsService,
-        { provide: LoggerService, useValue: logger },
         { provide: FileFilterService, useValue: fileFilterService },
         { provide: WorkspaceService, useValue: workspaceService },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(LimitsService);
+    service = built.instance;
+    logger = built.logger;
     // The real facade, with only its two file reads stubbed. The project
     // loader behind it reads through the facade it was handed, so stubbing
     // this one object is stubbing the whole layer's view of the disk — and
     // the resolver that decides the numbers stays the tool's own.
-    configurationService = await module.resolve(ConfigurationService);
+    configurationService = await built.module.resolve(ConfigurationService);
     findConfigurationFileAt = vi.spyOn(
       configurationService,
       "findConfigurationFileAt",
@@ -253,8 +251,13 @@ describe(LimitsService, () => {
     );
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LimitsService, {
+      imports: [ConfigurationModule],
+      mocks: [FileFilterService, WorkspaceService],
+    });
+
+    expect(instance).toBeInstanceOf(LimitsService);
   });
 
   it("names the workspace's own numbers, in the file they are written in", async () => {

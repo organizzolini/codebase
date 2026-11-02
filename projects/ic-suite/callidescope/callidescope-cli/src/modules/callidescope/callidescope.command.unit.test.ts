@@ -20,18 +20,13 @@ import {
   WriteDestinationsService,
 } from "@callidescope/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { captureExitCode, captureOutput } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { buildCallGraphResult, buildStackFrame } from "../../../testing/mocks";
 
@@ -50,6 +45,10 @@ import type {
 } from "@callidescope/configuration";
 import type { CallGraphResult, ProjectReport } from "@callidescope/core";
 import type { UnresolvedEntryPointAddress } from "@callidescope/graph";
+import type { LoggerService } from "@codebase/observability";
+import type { CapturedOutput } from "@codebase/testing";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+import type { Provider } from "@nestjs/common";
 import type { MockInstance } from "vitest";
 
 /** The workspace configuration every run must be pointed at with `--config`. */
@@ -113,6 +112,15 @@ function buildEmptySummary(): CallGraphResult["summary"] {
   };
 }
 
+/** The module the command resolves from when its services are plain mocks. */
+function buildModuleOptions(): TestingModuleOptions {
+  return {
+    imports: [ConfigurationModule],
+    mocks: [CallidescopeService, OutputJsonService, OutputMarkdownService],
+    providers: buildRealProviders(),
+  };
+}
+
 /** A project's own limits, taking the default depth and declaring no breadth. */
 function buildProjectLimits(
   overrides: Partial<ProjectLimits> = {},
@@ -151,6 +159,10 @@ function buildProjectReport(projectName: string): ProjectReport {
   };
 }
 
+// A deliberate misspelling: the example of a `--format` value nobody
+// recognizes, which is exactly what these tests are about.
+// cspell:ignore markdwon
+
 /** Builds what the "example" project declared about its own destinations. */
 function buildProjectWrite(
   destinations: Partial<ResolvedCallidescopeWriteConfiguration>,
@@ -168,12 +180,27 @@ function buildProjectWrite(
   ]);
 }
 
-// A deliberate misspelling: the example of a `--format` value nobody
-// recognizes, which is exactly what these tests are about.
-// cspell:ignore markdwon
+/** The real collaborators the command is built over, beside its mocked services. */
+function buildRealProviders(): Provider[] {
+  return [
+    {
+      provide: MarkdownReportService,
+      useValue: new MarkdownReportService(
+        new MermaidReportService(),
+        new ReportService(),
+        new WorkspaceReportService(),
+      ),
+    },
+    AddressService,
+    ReportFindingsService,
+    WriteDestinationsService,
+  ];
+}
 
 describe(CallidescopeCommand, () => {
   let command: CallidescopeCommand;
+  let exitCode: ReturnType<typeof captureExitCode>;
+  let output: CapturedOutput;
   let callidescopeService: ReturnType<typeof createMock<CallidescopeService>>;
   let configurationService: ConfigurationService;
   let loadConfigurationFile: MockInstance<
@@ -309,125 +336,50 @@ describe(CallidescopeCommand, () => {
     });
   }
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [
-        CallidescopeCommand,
-        {
-          provide: CallidescopeService,
-          useValue: createMock<CallidescopeService>(),
-        },
-        {
-          provide: OutputJsonService,
-          useValue: createMock<OutputJsonService>(),
-        },
-        {
-          provide: OutputMarkdownService,
-          useValue: createMock<OutputMarkdownService>(),
-        },
-        {
-          provide: MarkdownReportService,
-          useValue: new MarkdownReportService(
-            new MermaidReportService(),
-            new ReportService(),
-            new WorkspaceReportService(),
-          ),
-        },
-        AddressService,
-        ReportFindingsService,
-        WriteDestinationsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(CallidescopeCommand);
-
-    // Every write goes through the report service, and a real terminal would
-    // otherwise fill with output while these run.
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
-  });
-
   const originalIsTty = process.stdin.isTTY;
 
   beforeEach(async () => {
     callidescopeService = createMock<CallidescopeService>();
-    logger = createMock<LoggerService>();
     outputJsonService = createMock<OutputJsonService>();
     outputMarkdownService = createMock<OutputMarkdownService>();
     // Not a terminal by default, so a test that does not opt into prompting
     // exercises what a scripted run gets.
     process.stdin.isTTY = false;
 
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(CallidescopeCommand, {
       imports: [ConfigurationModule],
       providers: [
-        CallidescopeCommand,
         { provide: CallidescopeService, useValue: callidescopeService },
         { provide: OutputJsonService, useValue: outputJsonService },
         { provide: OutputMarkdownService, useValue: outputMarkdownService },
-        {
-          provide: MarkdownReportService,
-          useValue: new MarkdownReportService(
-            new MermaidReportService(),
-            new ReportService(),
-            new WorkspaceReportService(),
-          ),
-        },
-        AddressService,
-        ReportFindingsService,
-        WriteDestinationsService,
-        { provide: LoggerService, useValue: logger },
+        ...buildRealProviders(),
       ],
-    }).compile();
+    });
 
-    command = await module.resolve(CallidescopeCommand);
-    configurationService = await module.resolve(ConfigurationService);
+    command = built.instance;
+    logger = built.logger;
+    configurationService = await built.module.resolve(ConfigurationService);
     stubConfiguration(buildConfiguration());
     stubTrace();
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
-    process.exitCode = undefined;
+    output = captureOutput();
+    exitCode = captureExitCode();
   });
 
   afterEach(() => {
-    process.exitCode = undefined;
     process.stdin.isTTY = originalIsTty;
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      CallidescopeCommand,
+      buildModuleOptions(),
+    );
+
+    expect(instance).toBeInstanceOf(CallidescopeCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [
-        CallidescopeCommand,
-        { provide: CallidescopeService, useValue: callidescopeService },
-        { provide: OutputJsonService, useValue: outputJsonService },
-        { provide: OutputMarkdownService, useValue: outputMarkdownService },
-        {
-          provide: MarkdownReportService,
-          useValue: new MarkdownReportService(
-            new MermaidReportService(),
-            new ReportService(),
-            new WorkspaceReportService(),
-          ),
-        },
-        AddressService,
-        ReportFindingsService,
-        WriteDestinationsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    // Resolved first: the context is set by the constructor, so nothing has
-    // happened to the logger until the command itself exists.
-    await module.resolve(CallidescopeCommand);
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("CallidescopeCommand");
+    await expectLoggerContext(CallidescopeCommand, buildModuleOptions());
   });
 
   // 🎛️ Option parsing
@@ -526,7 +478,7 @@ describe(CallidescopeCommand, () => {
     await command.run(["deep"], { config: CONFIGURATION_PATH });
 
     expect(callidescopeService.trace).not.toHaveBeenCalled();
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected the command line",
       undefined,
@@ -557,11 +509,9 @@ describe(CallidescopeCommand, () => {
   });
 
   it("prints markdown by default", async () => {
-    const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
-
     await command.run([], { config: CONFIGURATION_PATH });
 
-    const printed = String(write.mock.calls[0]?.[0] ?? "");
+    const printed = output.stdout();
 
     expect(printed).toContain("# 🔭 Callidescope");
     expect(printed).toContain("| Measure | Value |");
@@ -589,12 +539,10 @@ describe(CallidescopeCommand, () => {
   });
 
   it("refuses a format nobody recognizes rather than printing markdown", async () => {
-    const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
-
     await command.run([], { config: CONFIGURATION_PATH, format: "markdwon" });
 
-    expect(process.exitCode).toBe(1);
-    expect(write).not.toHaveBeenCalled();
+    expect(exitCode()).toBe(1);
+    expect(output.stdout()).toBe("");
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected the command line",
       undefined,
@@ -624,11 +572,9 @@ describe(CallidescopeCommand, () => {
       }),
     );
 
-    const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
-
     await command.run([], { config: CONFIGURATION_PATH, format: "mermaid" });
 
-    const printed = String(write.mock.calls[0]?.[0] ?? "");
+    const printed = output.stdout();
 
     expect(printed).toContain("```mermaid");
     expect(printed).toContain("flowchart LR");
@@ -784,13 +730,13 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "reports", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("leaves the exit code alone when nothing was found", async () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("fails when a stack exceeded the limit", async () => {
@@ -798,7 +744,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("names a stack that is too deep as its own finding", async () => {
@@ -821,7 +767,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "reports", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   // 🌐 The breadth gate
@@ -831,7 +777,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "breadth", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("names a callable that calls too much directly as its own finding", async () => {
@@ -851,7 +797,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("does not let a project's own breadth limit gate a run that never asked for it", async () => {
@@ -873,7 +819,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(callidescopeService.trace).toHaveBeenCalledTimes(1);
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("gates breadth for a project that declared a limit alongside one that did not", async () => {
@@ -914,7 +860,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "breadth", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Found callables calling too much directly",
       undefined,
@@ -932,7 +878,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("names an empty trace as its own finding", async () => {
@@ -952,7 +898,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   // 🚧 A project that could not be read
@@ -972,7 +918,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("names the project it could not read", async () => {
@@ -1000,7 +946,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     expect(outputJsonService.sync).not.toHaveBeenCalled();
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   // 🚧 A project configuration that was refused
@@ -1031,7 +977,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("names the project configuration it could not read", async () => {
@@ -1056,7 +1002,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     expect(outputJsonService.sync).not.toHaveBeenCalled();
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("fails a run whose trace hit a project configuration setting a field it may not", async () => {
@@ -1064,7 +1010,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("names the project configuration field it may not set", async () => {
@@ -1095,7 +1041,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("names the project and the address of a declared entry point that resolves to nothing", async () => {
@@ -1265,7 +1211,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     expect(outputJsonService.sync).not.toHaveBeenCalled();
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("leaves a run whose declared addresses all resolve unaffected", async () => {
@@ -1273,7 +1219,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
     expect(logger.error).not.toHaveBeenCalled();
   });
 
@@ -1286,7 +1232,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(outputJsonService.sync).not.toHaveBeenCalled();
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   it("leaves every configured destination alone on a bare run", async () => {
@@ -1300,21 +1246,21 @@ describe(CallidescopeCommand, () => {
   it("refuses a check flag carrying no value", async () => {
     await command.run([], { check: true, config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(callidescopeService.trace).not.toHaveBeenCalled();
   });
 
   it("refuses an empty check set", async () => {
     await command.run([], { check: "", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(callidescopeService.trace).not.toHaveBeenCalled();
   });
 
   it("refuses a check name it does not accept, and says what it takes", async () => {
     await command.run([], { check: "limits", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected the command line",
       undefined,
@@ -1333,7 +1279,7 @@ describe(CallidescopeCommand, () => {
       write: true,
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(callidescopeService.trace).not.toHaveBeenCalled();
   });
 
@@ -1435,7 +1381,7 @@ describe(CallidescopeCommand, () => {
     async (flag, options, field) => {
       await command.run([], { ...options, config: CONFIGURATION_PATH });
 
-      expect(process.exitCode).toBe(1);
+      expect(exitCode()).toBe(1);
       expect(outputJsonService.sync).not.toHaveBeenCalled();
       expect(outputMarkdownService.sync).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledWith(
@@ -1472,7 +1418,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "reports", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("fails when a configured markdown block is stale in check mode", async () => {
@@ -1498,7 +1444,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "reports", config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
   });
 
   it("does not force check mode on a plain run", async () => {
@@ -1544,6 +1490,7 @@ describe(CallidescopeCommand, () => {
   it("prompts for a format when it was left off, at a terminal", async () => {
     process.stdin.isTTY = true;
     vi.spyOn(configurationService, "promptForSelect").mockResolvedValue("json");
+    outputJsonService.buildReport.mockReturnValue("{}");
 
     await command.run([], { config: CONFIGURATION_PATH });
 
@@ -1575,7 +1522,7 @@ describe(CallidescopeCommand, () => {
 
     expect(configurationService.promptForSelect).not.toHaveBeenCalled();
     expect(callidescopeService.trace).toHaveBeenCalledTimes(1);
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   // Escape at the prompt resolves it with nothing, which the input service
@@ -1588,7 +1535,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(callidescopeService.trace).not.toHaveBeenCalled();
   });
 
@@ -1599,7 +1546,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(callidescopeService.trace).not.toHaveBeenCalled();
   });
 

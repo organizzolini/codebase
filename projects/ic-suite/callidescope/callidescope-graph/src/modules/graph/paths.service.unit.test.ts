@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   buildDiscoveredCallable,
@@ -75,19 +76,12 @@ function edge(from: string, to: string): CallEdge {
 }
 
 describe(PathsService, () => {
-  let service: PathsService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PathsService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [PathsService],
-    }).compile();
+    });
 
-    service = await module.resolve(PathsService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(PathsService);
   });
 
   it("returns the entry point alone when nothing hangs below it", () => {
