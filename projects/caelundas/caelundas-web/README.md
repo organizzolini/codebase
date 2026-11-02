@@ -44,7 +44,10 @@ nx run caelundas-web:vitest
 ## Night sky link parameters
 
 The backdrop reads these from the page link; a value that does not parse falls
-back to its default. Colors are text of three or six hexadecimal digits, with
+back to its default. The View menu's Night sky submenu sets every one of them
+but `sky.debug`, reading the link and writing it back as a control moves, and
+removes a key set back to its default. Colors are text of three or six
+hexadecimal digits, with
 or without the `#`. Write the `#` as `%23`, for example `sky.top=%23102040`:
 the router reads an all-digit value such as `123456` or `1e5` as a number,
 which cannot be told from the color it was meant to be, so a number falls back
@@ -64,8 +67,11 @@ to the default.
   comma-separated list of full names, lower case with spaces or hyphens as
   underscores, such as `ursa_major` or `canis_major`, and the words `all` and
   `zodiac` (the twelve zodiac constellations), combined as in
-  `sky.constellations=zodiac,ursa_major`. A name it does not know is left out,
-  with one console warning; without it, or empty, no figure is drawn.
+  `sky.constellations=zodiac,ursa_major`. Absent, it draws the zodiac's; `none`,
+  or an empty value (`sky.constellations=`), draws none. A name it does not know
+  is left out, with one console warning. Facing north, the zodiac lies below
+  the horizon from mid-northern latitudes, so its figures show from far north
+  or with `all` and the circumpolar figures.
 - `sky.lineColor`, `sky.lineOpacity` and `sky.lineWidth` stroke the figures:
   a color like `sky.top`'s, `c8d4ff` by default; an opacity from 0 to 1,
   `0.28` by default; and a width in on-screen pixels from 0 to 10, `0.8` by

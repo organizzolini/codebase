@@ -142,14 +142,19 @@ HYG star database v4.1 (CC BY-SA 4.0, David Nash and the HYG contributors,
 declination -45 degrees or north; the stored catalog is a derived work under
 the same license, so keep this credit wherever it is documented. The figures
 are d3-celestial's (BSD-3-Clause, Olaf Frohn,
-<https://github.com/ofrohn/d3-celestial>). `sky.constellations` selects which
+<https://github.com/ofrohn/d3-celestial>). `sky.constellations` (the zodiac when absent, none for `none` or empty) selects which
 figures `night-sky-lines.utilities.ts` draws, beneath the stars inside the
 turning group, cut where they leave the ring the window can show, and
 `sky.lineColor`, `sky.lineOpacity` and `sky.lineWidth` set their stroke:
 `readNightSkyOverrides` reads the color like `sky.top` and clamps the opacity
 to 0–1 and the width to 0–10 pixels, and a value it cannot read falls back to
 the `DEFAULT_OPTIONS` default and is warned of once, as an unknown
-constellation name is.
+constellation name is. `src/components/night-sky-menu/` is the View menu's Night
+sky submenu: `useNightSkySettings` reads the same keys through
+`readNightSkyOverrides` and writes them with `navigate({ replace: true })`, the
+`night-sky-menu.utilities.ts` mappings remove a key set back to its default,
+and the panel keeps arrow and letter keys from the menu around it so a slider
+keeps focus.
 
 ## Development
 
