@@ -1,21 +1,16 @@
 import { ConfigurationService, InputError } from "@conformetry/configuration";
 import { GenerationService } from "@conformetry/generation";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { captureExitCode } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { GenerateCommand } from "./generate.command";
 
+import type { LoggerService } from "@codebase/observability";
 import type { ConformetryConfiguration } from "@conformetry/configuration";
 import type { GeneratorHook } from "@conformetry/core";
 
@@ -40,32 +35,23 @@ describe(GenerateCommand, () => {
   let generationService: GenerationService;
   let commandLogger: LoggerService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        GenerateCommand,
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        {
-          provide: GenerationService,
-          useValue: createMock<GenerationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+  let readExitCode: ReturnType<typeof captureExitCode>;
 
-    command = await module.resolve(GenerateCommand);
-    configurationService = await module.resolve(ConfigurationService);
-    generationService = await module.resolve(GenerationService);
-    commandLogger = await module.resolve(LoggerService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(GenerateCommand, {
+      mocks: [ConfigurationService, GenerationService],
+    });
+
+    command = built.instance;
+    configurationService = built.mock(ConfigurationService);
+    generationService = built.mock(GenerationService);
+    commandLogger = built.logger;
   });
 
   // The shared setup clears every mock before each test, so the return values
   // are re-applied here rather than alongside the module.
   beforeEach(() => {
-    process.exitCode = undefined;
+    readExitCode = captureExitCode();
     vi.mocked(configurationService.resolveConfigurationPath).mockImplementation(
       async (configurationPath: string) =>
         await Promise.resolve(`/workspace/${configurationPath}`),
@@ -83,34 +69,18 @@ describe(GenerateCommand, () => {
     vi.mocked(configurationService.isAtTerminal).mockReturnValue(false);
   });
 
-  afterEach(() => {
-    process.exitCode = undefined;
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(GenerateCommand, {
+      mocks: [ConfigurationService, GenerationService],
+    });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+    expect(instance).toBeInstanceOf(GenerateCommand);
   });
 
   it("sets logger context", async () => {
-    // Its own module: the shared setup clears mocks between tests, so a
-    // constructor call recorded during `beforeAll` is no longer observable.
-    const module = await Test.createTestingModule({
-      providers: [
-        GenerateCommand,
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        {
-          provide: GenerationService,
-          useValue: createMock<GenerationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("GenerateCommand");
+    await expectLoggerContext(GenerateCommand, {
+      mocks: [ConfigurationService, GenerationService],
+    });
   });
 
   describe("run", () => {
@@ -209,7 +179,7 @@ describe(GenerateCommand, () => {
     it("refuses a run that names no directory, before asking for inputs", async () => {
       await command.run([], { config: CONFIGURATION_PATH, template: "widget" });
 
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(generationService.runGenerator).not.toHaveBeenCalled();
       expect(
         configurationService.resolveGeneratorInputs,
@@ -296,7 +266,7 @@ describe(GenerateCommand, () => {
           template: "widget",
         }),
       ).resolves.toBeUndefined();
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(commandLogger.error).toHaveBeenCalledWith(
         "🚫 Rejected the command line",
         undefined,
@@ -368,7 +338,7 @@ describe(GenerateCommand, () => {
     it("names the available templates when nobody can be asked", async () => {
       await command.run([], { config: CONFIGURATION_PATH });
 
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(commandLogger.error).toHaveBeenCalledWith(
         "🚫 Rejected the command line",
         undefined,
@@ -411,7 +381,7 @@ describe(GenerateCommand, () => {
 
       await command.run([], { config: CONFIGURATION_PATH });
 
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(generationService.runGenerator).not.toHaveBeenCalled();
     });
   });

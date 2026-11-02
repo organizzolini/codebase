@@ -2995,6 +2995,9 @@ importers:
       '@codebase/observability':
         specifier: workspace:*
         version: link:../../../common/observability
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@conformetry/core':
         specifier: workspace:*
         version: link:../conformetry-core

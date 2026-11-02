@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureExitCode } from "@codebase/testing";
+
 interface CommandFactoryRunOptions {
   errorHandler: (error: Error) => void;
   serviceErrorHandler: (error: Error) => void;
@@ -68,12 +70,14 @@ async function importMainModule(): Promise<void> {
 }
 
 describe("main", () => {
+  let readExitCode: ReturnType<typeof captureExitCode>;
+
   beforeEach(() => {
+    readExitCode = captureExitCode();
     vi.resetModules();
     mockLoggerError.mockClear();
     mockLoggerSetContext.mockClear();
     mockCommandFactoryRun.mockClear();
-    process.exitCode = 0;
     process.argv = ["node", "conformetry"];
   });
 
@@ -112,7 +116,7 @@ describe("main", () => {
 
     runOptions.errorHandler(failure);
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(mockLoggerError).toHaveBeenCalledWith(failure, undefined);
   });
 
@@ -124,7 +128,7 @@ describe("main", () => {
 
     runOptions.serviceErrorHandler(failure);
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(mockLoggerError).toHaveBeenCalledWith(
       failure.message,
       failure.stack,
