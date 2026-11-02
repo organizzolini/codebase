@@ -10,6 +10,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@nx/eslint-plugin": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@testing-library/react": "catalog:",
