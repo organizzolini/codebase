@@ -223,7 +223,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/conformetry",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
     ],
     name: "nestjs-command-project",
