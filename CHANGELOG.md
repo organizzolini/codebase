@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.47.0](https://github.com/organizzolini/codebase/compare/v3.46.0...v3.47.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ read identifiers from python, sql, shell, css, hcl, toml, json, and yaml ([#1881](https://github.com/organizzolini/codebase/issues/1881)) ([6db570a](https://github.com/organizzolini/codebase/commit/6db570a18dde3d3f98405eb11becf478d740f3ab)), closes [#1770](https://github.com/organizzolini/codebase/issues/1770) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1771](https://github.com/organizzolini/codebase/issues/1771) [#1772](https://github.com/organizzolini/codebase/issues/1772) [#1773](https://github.com/organizzolini/codebase/issues/1773) [#1774](https://github.com/organizzolini/codebase/issues/1774) [#1880](https://github.com/organizzolini/codebase/issues/1880) [#1766](https://github.com/organizzolini/codebase/issues/1766) [#1882](https://github.com/organizzolini/codebase/issues/1882) [#1762](https://github.com/organizzolini/codebase/issues/1762) [#1875](https://github.com/organizzolini/codebase/issues/1875)
+
 ## [3.46.0](https://github.com/organizzolini/codebase/compare/v3.45.0...v3.46.0) (2026-11-03)
 
 ### ✨ Features

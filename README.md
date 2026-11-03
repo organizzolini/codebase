@@ -808,31 +808,57 @@ graph LR
   module_coinagerie_cli_ComparisonModule["coinagerie-cli/ComparisonModule"]
   module_coinagerie_cli_ConfigModule["coinagerie-cli/ConfigModule"]
   module_coinagerie_cli_ConfigurationModule["coinagerie-cli/ConfigurationModule"]
+  module_coinagerie_cli_CssModule["coinagerie-cli/CssModule"]
   module_coinagerie_cli_DeliveryModule["coinagerie-cli/DeliveryModule"]
   module_coinagerie_cli_DiscoveryModule["coinagerie-cli/DiscoveryModule"]
   module_coinagerie_cli_FoldingModule["coinagerie-cli/FoldingModule"]
+  module_coinagerie_cli_HclModule["coinagerie-cli/HclModule"]
   module_coinagerie_cli_JsonModule["coinagerie-cli/JsonModule"]
   module_coinagerie_cli_LanguagesModule["coinagerie-cli/LanguagesModule"]
   module_coinagerie_cli_LoggerModule["coinagerie-cli/LoggerModule"]
   module_coinagerie_cli_MainModule["coinagerie-cli/MainModule"]
   module_coinagerie_cli_MarkdownModule["coinagerie-cli/MarkdownModule"]
+  module_coinagerie_cli_PythonModule["coinagerie-cli/PythonModule"]
+  module_coinagerie_cli_ScannerModule["coinagerie-cli/ScannerModule"]
+  module_coinagerie_cli_ShellModule["coinagerie-cli/ShellModule"]
+  module_coinagerie_cli_SqlModule["coinagerie-cli/SqlModule"]
+  module_coinagerie_cli_TomlModule["coinagerie-cli/TomlModule"]
   module_coinagerie_cli_TypescriptModule["coinagerie-cli/TypescriptModule"]
   module_coinagerie_cli_VocabularyModule["coinagerie-cli/VocabularyModule"]
   module_coinagerie_cli_WordsModule["coinagerie-cli/WordsModule"]
+  module_coinagerie_cli_YamlModule["coinagerie-cli/YamlModule"]
   module_coinagerie_configuration_ConfigurationModule["coinagerie-configuration/ConfigurationModule"]
   module_coinagerie_core_CoinagerieCoreModule["coinagerie-core/CoinagerieCoreModule"]
+  module_coinagerie_languages_CssModule["coinagerie-languages/CssModule"]
+  module_coinagerie_languages_HclModule["coinagerie-languages/HclModule"]
+  module_coinagerie_languages_JsonModule["coinagerie-languages/JsonModule"]
   module_coinagerie_languages_LanguagesModule["coinagerie-languages/LanguagesModule"]
+  module_coinagerie_languages_PythonModule["coinagerie-languages/PythonModule"]
+  module_coinagerie_languages_ScannerModule["coinagerie-languages/ScannerModule"]
+  module_coinagerie_languages_ShellModule["coinagerie-languages/ShellModule"]
+  module_coinagerie_languages_SqlModule["coinagerie-languages/SqlModule"]
+  module_coinagerie_languages_TomlModule["coinagerie-languages/TomlModule"]
   module_coinagerie_languages_TypescriptModule["coinagerie-languages/TypescriptModule"]
+  module_coinagerie_languages_YamlModule["coinagerie-languages/YamlModule"]
   module_coinagerie_output_ComparisonModule["coinagerie-output/ComparisonModule"]
   module_coinagerie_output_DeliveryModule["coinagerie-output/DeliveryModule"]
   module_coinagerie_output_JsonModule["coinagerie-output/JsonModule"]
   module_coinagerie_output_MarkdownModule["coinagerie-output/MarkdownModule"]
+  module_coinagerie_vocabulary_CssModule["coinagerie-vocabulary/CssModule"]
   module_coinagerie_vocabulary_DiscoveryModule["coinagerie-vocabulary/DiscoveryModule"]
   module_coinagerie_vocabulary_FoldingModule["coinagerie-vocabulary/FoldingModule"]
+  module_coinagerie_vocabulary_HclModule["coinagerie-vocabulary/HclModule"]
+  module_coinagerie_vocabulary_JsonModule["coinagerie-vocabulary/JsonModule"]
   module_coinagerie_vocabulary_LanguagesModule["coinagerie-vocabulary/LanguagesModule"]
+  module_coinagerie_vocabulary_PythonModule["coinagerie-vocabulary/PythonModule"]
+  module_coinagerie_vocabulary_ScannerModule["coinagerie-vocabulary/ScannerModule"]
+  module_coinagerie_vocabulary_ShellModule["coinagerie-vocabulary/ShellModule"]
+  module_coinagerie_vocabulary_SqlModule["coinagerie-vocabulary/SqlModule"]
+  module_coinagerie_vocabulary_TomlModule["coinagerie-vocabulary/TomlModule"]
   module_coinagerie_vocabulary_TypescriptModule["coinagerie-vocabulary/TypescriptModule"]
   module_coinagerie_vocabulary_VocabularyModule["coinagerie-vocabulary/VocabularyModule"]
   module_coinagerie_vocabulary_WordsModule["coinagerie-vocabulary/WordsModule"]
+  module_coinagerie_vocabulary_YamlModule["coinagerie-vocabulary/YamlModule"]
   module_conformetry_cli_ConfigModule["conformetry-cli/ConfigModule"]
   module_conformetry_cli_ConfigurationModule["conformetry-cli/ConfigurationModule"]
   module_conformetry_cli_DifferencesModule["conformetry-cli/DifferencesModule"]
@@ -1584,21 +1610,66 @@ graph LR
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_JsonModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_MarkdownModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_VocabularyModule
+  module_coinagerie_cli_CssModule --> module_coinagerie_cli_ScannerModule
   module_coinagerie_cli_DeliveryModule --> module_coinagerie_cli_ComparisonModule
   module_coinagerie_cli_DeliveryModule --> module_coinagerie_cli_JsonModule
   module_coinagerie_cli_DeliveryModule --> module_coinagerie_cli_MarkdownModule
+  module_coinagerie_cli_HclModule --> module_coinagerie_cli_ScannerModule
+  module_coinagerie_cli_JsonModule --> module_coinagerie_cli_ScannerModule
+  module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_CssModule
+  module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_HclModule
+  module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_JsonModule
+  module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_PythonModule
+  module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_ShellModule
+  module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_SqlModule
+  module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_TomlModule
   module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_TypescriptModule
+  module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_YamlModule
   module_coinagerie_cli_MainModule --> module_coinagerie_cli_CollectModule
   module_coinagerie_cli_MainModule --> module_coinagerie_cli_DiscoveryModule
+  module_coinagerie_cli_PythonModule --> module_coinagerie_cli_ScannerModule
+  module_coinagerie_cli_ShellModule --> module_coinagerie_cli_ScannerModule
+  module_coinagerie_cli_SqlModule --> module_coinagerie_cli_ScannerModule
+  module_coinagerie_cli_TomlModule --> module_coinagerie_cli_ScannerModule
   module_coinagerie_cli_VocabularyModule --> module_coinagerie_cli_DiscoveryModule
   module_coinagerie_cli_VocabularyModule --> module_coinagerie_cli_FoldingModule
   module_coinagerie_cli_VocabularyModule --> module_coinagerie_cli_LanguagesModule
   module_coinagerie_cli_VocabularyModule --> module_coinagerie_cli_WordsModule
+  module_coinagerie_languages_CssModule --> module_coinagerie_languages_ScannerModule
+  module_coinagerie_languages_HclModule --> module_coinagerie_languages_ScannerModule
+  module_coinagerie_languages_JsonModule --> module_coinagerie_languages_ScannerModule
+  module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_CssModule
+  module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_HclModule
+  module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_JsonModule
+  module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_PythonModule
+  module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_ShellModule
+  module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_SqlModule
+  module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_TomlModule
   module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_TypescriptModule
+  module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_YamlModule
+  module_coinagerie_languages_PythonModule --> module_coinagerie_languages_ScannerModule
+  module_coinagerie_languages_ShellModule --> module_coinagerie_languages_ScannerModule
+  module_coinagerie_languages_SqlModule --> module_coinagerie_languages_ScannerModule
+  module_coinagerie_languages_TomlModule --> module_coinagerie_languages_ScannerModule
   module_coinagerie_output_DeliveryModule --> module_coinagerie_output_ComparisonModule
   module_coinagerie_output_DeliveryModule --> module_coinagerie_output_JsonModule
   module_coinagerie_output_DeliveryModule --> module_coinagerie_output_MarkdownModule
+  module_coinagerie_vocabulary_CssModule --> module_coinagerie_vocabulary_ScannerModule
+  module_coinagerie_vocabulary_HclModule --> module_coinagerie_vocabulary_ScannerModule
+  module_coinagerie_vocabulary_JsonModule --> module_coinagerie_vocabulary_ScannerModule
+  module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_CssModule
+  module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_HclModule
+  module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_JsonModule
+  module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_PythonModule
+  module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_ShellModule
+  module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_SqlModule
+  module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_TomlModule
   module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_TypescriptModule
+  module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_YamlModule
+  module_coinagerie_vocabulary_PythonModule --> module_coinagerie_vocabulary_ScannerModule
+  module_coinagerie_vocabulary_ShellModule --> module_coinagerie_vocabulary_ScannerModule
+  module_coinagerie_vocabulary_SqlModule --> module_coinagerie_vocabulary_ScannerModule
+  module_coinagerie_vocabulary_TomlModule --> module_coinagerie_vocabulary_ScannerModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_DiscoveryModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_FoldingModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_LanguagesModule
@@ -3911,17 +3982,62 @@ graph LR
   file_coinagerie_languages_eslint_config_ts["coinagerie-languages/eslint.config.ts"]
   file_coinagerie_languages_src_index_ts["coinagerie-languages/src/index.ts"]
   file_coinagerie_languages_src_index_unit_test_ts["coinagerie-languages/src/index.unit.test.ts"]
+  file_coinagerie_languages_src_modules_css_css_constants_ts["coinagerie-languages/src/modules/css/css.constants.ts"]
+  file_coinagerie_languages_src_modules_css_css_module_ts["coinagerie-languages/src/modules/css/css.module.ts"]
+  file_coinagerie_languages_src_modules_css_css_service_ts["coinagerie-languages/src/modules/css/css.service.ts"]
+  file_coinagerie_languages_src_modules_css_css_service_unit_test_ts["coinagerie-languages/src/modules/css/css.service.unit.test.ts"]
+  file_coinagerie_languages_src_modules_css_css_types_ts["coinagerie-languages/src/modules/css/css.types.ts"]
+  file_coinagerie_languages_src_modules_hcl_hcl_constants_ts["coinagerie-languages/src/modules/hcl/hcl.constants.ts"]
+  file_coinagerie_languages_src_modules_hcl_hcl_module_ts["coinagerie-languages/src/modules/hcl/hcl.module.ts"]
+  file_coinagerie_languages_src_modules_hcl_hcl_service_ts["coinagerie-languages/src/modules/hcl/hcl.service.ts"]
+  file_coinagerie_languages_src_modules_hcl_hcl_service_unit_test_ts["coinagerie-languages/src/modules/hcl/hcl.service.unit.test.ts"]
+  file_coinagerie_languages_src_modules_hcl_hcl_types_ts["coinagerie-languages/src/modules/hcl/hcl.types.ts"]
+  file_coinagerie_languages_src_modules_json_json_constants_ts["coinagerie-languages/src/modules/json/json.constants.ts"]
+  file_coinagerie_languages_src_modules_json_json_module_ts["coinagerie-languages/src/modules/json/json.module.ts"]
+  file_coinagerie_languages_src_modules_json_json_service_ts["coinagerie-languages/src/modules/json/json.service.ts"]
+  file_coinagerie_languages_src_modules_json_json_service_unit_test_ts["coinagerie-languages/src/modules/json/json.service.unit.test.ts"]
+  file_coinagerie_languages_src_modules_json_json_types_ts["coinagerie-languages/src/modules/json/json.types.ts"]
   file_coinagerie_languages_src_modules_languages_languages_constants_ts["coinagerie-languages/src/modules/languages/languages.constants.ts"]
   file_coinagerie_languages_src_modules_languages_languages_module_ts["coinagerie-languages/src/modules/languages/languages.module.ts"]
   file_coinagerie_languages_src_modules_languages_languages_service_ts["coinagerie-languages/src/modules/languages/languages.service.ts"]
   file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts["coinagerie-languages/src/modules/languages/languages.service.unit.test.ts"]
   file_coinagerie_languages_src_modules_languages_languages_types_ts["coinagerie-languages/src/modules/languages/languages.types.ts"]
+  file_coinagerie_languages_src_modules_python_python_constants_ts["coinagerie-languages/src/modules/python/python.constants.ts"]
+  file_coinagerie_languages_src_modules_python_python_module_ts["coinagerie-languages/src/modules/python/python.module.ts"]
+  file_coinagerie_languages_src_modules_python_python_service_ts["coinagerie-languages/src/modules/python/python.service.ts"]
+  file_coinagerie_languages_src_modules_python_python_service_unit_test_ts["coinagerie-languages/src/modules/python/python.service.unit.test.ts"]
+  file_coinagerie_languages_src_modules_python_python_types_ts["coinagerie-languages/src/modules/python/python.types.ts"]
+  file_coinagerie_languages_src_modules_scanner_scanner_constants_ts["coinagerie-languages/src/modules/scanner/scanner.constants.ts"]
+  file_coinagerie_languages_src_modules_scanner_scanner_module_ts["coinagerie-languages/src/modules/scanner/scanner.module.ts"]
+  file_coinagerie_languages_src_modules_scanner_scanner_service_ts["coinagerie-languages/src/modules/scanner/scanner.service.ts"]
+  file_coinagerie_languages_src_modules_scanner_scanner_service_unit_test_ts["coinagerie-languages/src/modules/scanner/scanner.service.unit.test.ts"]
+  file_coinagerie_languages_src_modules_scanner_scanner_types_ts["coinagerie-languages/src/modules/scanner/scanner.types.ts"]
+  file_coinagerie_languages_src_modules_shell_shell_constants_ts["coinagerie-languages/src/modules/shell/shell.constants.ts"]
+  file_coinagerie_languages_src_modules_shell_shell_module_ts["coinagerie-languages/src/modules/shell/shell.module.ts"]
+  file_coinagerie_languages_src_modules_shell_shell_service_ts["coinagerie-languages/src/modules/shell/shell.service.ts"]
+  file_coinagerie_languages_src_modules_shell_shell_service_unit_test_ts["coinagerie-languages/src/modules/shell/shell.service.unit.test.ts"]
+  file_coinagerie_languages_src_modules_shell_shell_types_ts["coinagerie-languages/src/modules/shell/shell.types.ts"]
+  file_coinagerie_languages_src_modules_sql_sql_constants_ts["coinagerie-languages/src/modules/sql/sql.constants.ts"]
+  file_coinagerie_languages_src_modules_sql_sql_module_ts["coinagerie-languages/src/modules/sql/sql.module.ts"]
+  file_coinagerie_languages_src_modules_sql_sql_service_ts["coinagerie-languages/src/modules/sql/sql.service.ts"]
+  file_coinagerie_languages_src_modules_sql_sql_service_unit_test_ts["coinagerie-languages/src/modules/sql/sql.service.unit.test.ts"]
+  file_coinagerie_languages_src_modules_sql_sql_types_ts["coinagerie-languages/src/modules/sql/sql.types.ts"]
+  file_coinagerie_languages_src_modules_toml_toml_constants_ts["coinagerie-languages/src/modules/toml/toml.constants.ts"]
+  file_coinagerie_languages_src_modules_toml_toml_module_ts["coinagerie-languages/src/modules/toml/toml.module.ts"]
+  file_coinagerie_languages_src_modules_toml_toml_service_ts["coinagerie-languages/src/modules/toml/toml.service.ts"]
+  file_coinagerie_languages_src_modules_toml_toml_service_unit_test_ts["coinagerie-languages/src/modules/toml/toml.service.unit.test.ts"]
+  file_coinagerie_languages_src_modules_toml_toml_types_ts["coinagerie-languages/src/modules/toml/toml.types.ts"]
   file_coinagerie_languages_src_modules_typescript_typescript_constants_ts["coinagerie-languages/src/modules/typescript/typescript.constants.ts"]
   file_coinagerie_languages_src_modules_typescript_typescript_constants_unit_test_ts["coinagerie-languages/src/modules/typescript/typescript.constants.unit.test.ts"]
   file_coinagerie_languages_src_modules_typescript_typescript_module_ts["coinagerie-languages/src/modules/typescript/typescript.module.ts"]
   file_coinagerie_languages_src_modules_typescript_typescript_service_ts["coinagerie-languages/src/modules/typescript/typescript.service.ts"]
   file_coinagerie_languages_src_modules_typescript_typescript_service_unit_test_ts["coinagerie-languages/src/modules/typescript/typescript.service.unit.test.ts"]
   file_coinagerie_languages_src_modules_typescript_typescript_types_ts["coinagerie-languages/src/modules/typescript/typescript.types.ts"]
+  file_coinagerie_languages_src_modules_yaml_yaml_constants_ts["coinagerie-languages/src/modules/yaml/yaml.constants.ts"]
+  file_coinagerie_languages_src_modules_yaml_yaml_module_ts["coinagerie-languages/src/modules/yaml/yaml.module.ts"]
+  file_coinagerie_languages_src_modules_yaml_yaml_service_ts["coinagerie-languages/src/modules/yaml/yaml.service.ts"]
+  file_coinagerie_languages_src_modules_yaml_yaml_service_unit_test_ts["coinagerie-languages/src/modules/yaml/yaml.service.unit.test.ts"]
+  file_coinagerie_languages_src_modules_yaml_yaml_types_ts["coinagerie-languages/src/modules/yaml/yaml.types.ts"]
   file_coinagerie_languages_testing_mocks_ts["coinagerie-languages/testing/mocks.ts"]
   file_coinagerie_languages_testing_setup_ts["coinagerie-languages/testing/setup.ts"]
   file_coinagerie_languages_vite_config_ts["coinagerie-languages/vite.config.ts"]
@@ -10075,17 +10191,115 @@ graph LR
   file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_module_ts --> file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_service_ts
   file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_service_unit_test_ts --> file_coinagerie_core_src_modules_coinagerie_core_coinagerie_core_service_ts
   file_coinagerie_languages_src_index_unit_test_ts --> file_coinagerie_languages_src_index_ts
+  file_coinagerie_languages_src_modules_css_css_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_constants_ts
+  file_coinagerie_languages_src_modules_css_css_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_types_ts
+  file_coinagerie_languages_src_modules_css_css_module_ts --> file_coinagerie_languages_src_modules_css_css_service_ts
+  file_coinagerie_languages_src_modules_css_css_module_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_css_css_service_ts --> file_coinagerie_languages_src_modules_css_css_constants_ts
+  file_coinagerie_languages_src_modules_css_css_service_ts --> file_coinagerie_languages_src_modules_languages_languages_types_ts
+  file_coinagerie_languages_src_modules_css_css_service_ts --> file_coinagerie_languages_src_modules_scanner_scanner_service_ts
+  file_coinagerie_languages_src_modules_css_css_service_unit_test_ts --> file_coinagerie_languages_src_modules_css_css_service_ts
+  file_coinagerie_languages_src_modules_css_css_service_unit_test_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_hcl_hcl_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_constants_ts
+  file_coinagerie_languages_src_modules_hcl_hcl_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_types_ts
+  file_coinagerie_languages_src_modules_hcl_hcl_module_ts --> file_coinagerie_languages_src_modules_hcl_hcl_service_ts
+  file_coinagerie_languages_src_modules_hcl_hcl_module_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_hcl_hcl_service_ts --> file_coinagerie_languages_src_modules_hcl_hcl_constants_ts
+  file_coinagerie_languages_src_modules_hcl_hcl_service_ts --> file_coinagerie_languages_src_modules_languages_languages_types_ts
+  file_coinagerie_languages_src_modules_hcl_hcl_service_ts --> file_coinagerie_languages_src_modules_scanner_scanner_service_ts
+  file_coinagerie_languages_src_modules_hcl_hcl_service_unit_test_ts --> file_coinagerie_languages_src_modules_hcl_hcl_service_ts
+  file_coinagerie_languages_src_modules_hcl_hcl_service_unit_test_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_json_json_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_types_ts
+  file_coinagerie_languages_src_modules_json_json_module_ts --> file_coinagerie_languages_src_modules_json_json_service_ts
+  file_coinagerie_languages_src_modules_json_json_module_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_json_json_service_ts --> file_coinagerie_languages_src_modules_json_json_constants_ts
+  file_coinagerie_languages_src_modules_json_json_service_ts --> file_coinagerie_languages_src_modules_languages_languages_types_ts
+  file_coinagerie_languages_src_modules_json_json_service_ts --> file_coinagerie_languages_src_modules_scanner_scanner_service_ts
+  file_coinagerie_languages_src_modules_json_json_service_unit_test_ts --> file_coinagerie_languages_src_modules_json_json_service_ts
+  file_coinagerie_languages_src_modules_json_json_service_unit_test_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_module_ts --> file_coinagerie_languages_src_modules_css_css_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_module_ts --> file_coinagerie_languages_src_modules_hcl_hcl_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_module_ts --> file_coinagerie_languages_src_modules_json_json_module_ts
   file_coinagerie_languages_src_modules_languages_languages_module_ts --> file_coinagerie_languages_src_modules_languages_languages_service_ts
+  file_coinagerie_languages_src_modules_languages_languages_module_ts --> file_coinagerie_languages_src_modules_python_python_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_module_ts --> file_coinagerie_languages_src_modules_shell_shell_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_module_ts --> file_coinagerie_languages_src_modules_sql_sql_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_module_ts --> file_coinagerie_languages_src_modules_toml_toml_module_ts
   file_coinagerie_languages_src_modules_languages_languages_module_ts --> file_coinagerie_languages_src_modules_typescript_typescript_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_module_ts --> file_coinagerie_languages_src_modules_yaml_yaml_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_css_css_service_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_hcl_hcl_service_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_json_json_service_ts
   file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_languages_languages_types_ts
-  file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_typescript_typescript_constants_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_python_python_service_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_shell_shell_service_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_sql_sql_service_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_toml_toml_service_ts
   file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_typescript_typescript_service_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_yaml_yaml_service_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_css_css_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_hcl_hcl_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_json_json_module_ts
   file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_languages_languages_service_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_python_python_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_shell_shell_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_sql_sql_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_toml_toml_module_ts
   file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_typescript_typescript_module_ts
+  file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_yaml_yaml_module_ts
+  file_coinagerie_languages_src_modules_python_python_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_constants_ts
+  file_coinagerie_languages_src_modules_python_python_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_types_ts
+  file_coinagerie_languages_src_modules_python_python_module_ts --> file_coinagerie_languages_src_modules_python_python_service_ts
+  file_coinagerie_languages_src_modules_python_python_module_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_python_python_service_ts --> file_coinagerie_languages_src_modules_languages_languages_types_ts
+  file_coinagerie_languages_src_modules_python_python_service_ts --> file_coinagerie_languages_src_modules_python_python_constants_ts
+  file_coinagerie_languages_src_modules_python_python_service_ts --> file_coinagerie_languages_src_modules_scanner_scanner_service_ts
+  file_coinagerie_languages_src_modules_python_python_service_unit_test_ts --> file_coinagerie_languages_src_modules_python_python_service_ts
+  file_coinagerie_languages_src_modules_python_python_service_unit_test_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_scanner_scanner_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_types_ts
+  file_coinagerie_languages_src_modules_scanner_scanner_module_ts --> file_coinagerie_languages_src_modules_scanner_scanner_service_ts
+  file_coinagerie_languages_src_modules_scanner_scanner_service_ts --> file_coinagerie_languages_src_modules_scanner_scanner_types_ts
+  file_coinagerie_languages_src_modules_scanner_scanner_service_unit_test_ts --> file_coinagerie_languages_src_modules_scanner_scanner_constants_ts
+  file_coinagerie_languages_src_modules_scanner_scanner_service_unit_test_ts --> file_coinagerie_languages_src_modules_scanner_scanner_service_ts
+  file_coinagerie_languages_src_modules_scanner_scanner_service_unit_test_ts --> file_coinagerie_languages_src_modules_scanner_scanner_types_ts
+  file_coinagerie_languages_src_modules_shell_shell_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_constants_ts
+  file_coinagerie_languages_src_modules_shell_shell_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_types_ts
+  file_coinagerie_languages_src_modules_shell_shell_module_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_shell_shell_module_ts --> file_coinagerie_languages_src_modules_shell_shell_service_ts
+  file_coinagerie_languages_src_modules_shell_shell_service_ts --> file_coinagerie_languages_src_modules_languages_languages_types_ts
+  file_coinagerie_languages_src_modules_shell_shell_service_ts --> file_coinagerie_languages_src_modules_scanner_scanner_service_ts
+  file_coinagerie_languages_src_modules_shell_shell_service_ts --> file_coinagerie_languages_src_modules_shell_shell_constants_ts
+  file_coinagerie_languages_src_modules_shell_shell_service_unit_test_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_shell_shell_service_unit_test_ts --> file_coinagerie_languages_src_modules_shell_shell_service_ts
+  file_coinagerie_languages_src_modules_sql_sql_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_constants_ts
+  file_coinagerie_languages_src_modules_sql_sql_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_types_ts
+  file_coinagerie_languages_src_modules_sql_sql_module_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_sql_sql_module_ts --> file_coinagerie_languages_src_modules_sql_sql_service_ts
+  file_coinagerie_languages_src_modules_sql_sql_service_ts --> file_coinagerie_languages_src_modules_languages_languages_types_ts
+  file_coinagerie_languages_src_modules_sql_sql_service_ts --> file_coinagerie_languages_src_modules_scanner_scanner_service_ts
+  file_coinagerie_languages_src_modules_sql_sql_service_ts --> file_coinagerie_languages_src_modules_sql_sql_constants_ts
+  file_coinagerie_languages_src_modules_sql_sql_service_unit_test_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_sql_sql_service_unit_test_ts --> file_coinagerie_languages_src_modules_sql_sql_service_ts
+  file_coinagerie_languages_src_modules_toml_toml_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_constants_ts
+  file_coinagerie_languages_src_modules_toml_toml_constants_ts --> file_coinagerie_languages_src_modules_scanner_scanner_types_ts
+  file_coinagerie_languages_src_modules_toml_toml_module_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_toml_toml_module_ts --> file_coinagerie_languages_src_modules_toml_toml_service_ts
+  file_coinagerie_languages_src_modules_toml_toml_service_ts --> file_coinagerie_languages_src_modules_languages_languages_types_ts
+  file_coinagerie_languages_src_modules_toml_toml_service_ts --> file_coinagerie_languages_src_modules_scanner_scanner_service_ts
+  file_coinagerie_languages_src_modules_toml_toml_service_ts --> file_coinagerie_languages_src_modules_toml_toml_constants_ts
+  file_coinagerie_languages_src_modules_toml_toml_service_unit_test_ts --> file_coinagerie_languages_src_modules_scanner_scanner_module_ts
+  file_coinagerie_languages_src_modules_toml_toml_service_unit_test_ts --> file_coinagerie_languages_src_modules_toml_toml_service_ts
   file_coinagerie_languages_src_modules_typescript_typescript_constants_unit_test_ts --> file_coinagerie_languages_src_modules_typescript_typescript_constants_ts
   file_coinagerie_languages_src_modules_typescript_typescript_module_ts --> file_coinagerie_languages_src_modules_typescript_typescript_service_ts
+  file_coinagerie_languages_src_modules_typescript_typescript_service_ts --> file_coinagerie_languages_src_modules_languages_languages_types_ts
   file_coinagerie_languages_src_modules_typescript_typescript_service_ts --> file_coinagerie_languages_src_modules_typescript_typescript_constants_ts
   file_coinagerie_languages_src_modules_typescript_typescript_service_unit_test_ts --> file_coinagerie_languages_src_modules_typescript_typescript_service_ts
+  file_coinagerie_languages_src_modules_yaml_yaml_constants_ts --> file_coinagerie_languages_src_modules_yaml_yaml_types_ts
+  file_coinagerie_languages_src_modules_yaml_yaml_module_ts --> file_coinagerie_languages_src_modules_yaml_yaml_service_ts
+  file_coinagerie_languages_src_modules_yaml_yaml_service_ts --> file_coinagerie_languages_src_modules_languages_languages_types_ts
+  file_coinagerie_languages_src_modules_yaml_yaml_service_ts --> file_coinagerie_languages_src_modules_yaml_yaml_constants_ts
+  file_coinagerie_languages_src_modules_yaml_yaml_service_ts --> file_coinagerie_languages_src_modules_yaml_yaml_types_ts
+  file_coinagerie_languages_src_modules_yaml_yaml_service_unit_test_ts --> file_coinagerie_languages_src_modules_yaml_yaml_service_ts
   file_coinagerie_output_src_index_unit_test_ts --> file_coinagerie_output_src_index_ts
   file_coinagerie_output_src_modules_comparison_comparison_module_ts --> file_coinagerie_output_src_modules_comparison_comparison_service_ts
   file_coinagerie_output_src_modules_comparison_comparison_service_ts --> file_coinagerie_output_src_modules_comparison_comparison_types_ts
@@ -15682,13 +15896,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7756 |
-| Files | 2512 |
-| Calls traced | 8469 |
-| Call stacks | 2157 |
+| Callables | 7784 |
+| Files | 2548 |
+| Calls traced | 8486 |
+| Call stacks | 2176 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
-| Unfollowable calls | 486 |
+| Unfollowable calls | 487 |
 
 ### Projects
 
@@ -15705,7 +15919,6 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
 | `projects/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
 | `projects/ic-suite/coinagerie/coinagerie-cli` | 13 | 13 | 0 | 5 |
-| `projects/ic-suite/coinagerie/coinagerie-languages` | 5 | 5 | 0 | 1 |
 | `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 9 |
 | `projects/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
 | `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
@@ -15720,6 +15933,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/coinagerie/coinagerie-configuration` | 2 | 3 | 1 | 3 |
 | `projects/ic-suite/coinagerie/coinagerie-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/coinagerie/coinagerie-languages` | 4 | 6 | 2 | 3 |
 | `documentation` | 3 | 6 | 3 | 2 |
 | `projects/common/presentation` | 0 | 3 | 3 | 0 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
@@ -15754,9 +15968,9 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 20 |
+| 0 — at limit | 19 |
 | 1 | 2 |
-| 2–3 | 4 |
+| 2–3 | 5 |
 | 4+ | 12 |
 | no stacks | 16 |
 
