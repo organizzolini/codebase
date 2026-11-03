@@ -216,7 +216,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "A contracts leaf declares types and reaches nothing at all. This is the ic-suite spine stated once for every toolchain rather than four times: core, then configuration, then analysis, then output, then cli, each layer reaching its own layer and every layer beneath it. A forbid because the configuration schema refuses a selector naming no nodes, so the allow that would say the same thing cannot be written.",
         name: "core-is-a-leaf",
-        to: { id: ["!(configuration|observability|testing)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["layer:configuration"] },
@@ -295,7 +295,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "The callidescope spine points one way: core is the contracts leaf, configuration resolves the file and the flags over it, the graph builder analyzes, the output renderer reads both, the command-line host composes them, and the Nx plugin sits on top so `@nx/devkit` never reaches a package that traces.",
         name: "callidescope-core-is-a-leaf",
-        to: { id: ["!(configuration|observability|testing)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["name:callidescope-configuration"] },

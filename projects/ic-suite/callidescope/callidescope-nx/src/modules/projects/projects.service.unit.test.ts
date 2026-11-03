@@ -1,7 +1,7 @@
 import { createProjectGraphAsync } from "@nx/devkit";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProjectsService } from "./projects.service";
 

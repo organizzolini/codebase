@@ -10,7 +10,7 @@ import { FileFilterService, WorkspaceService } from "@callidescope/graph";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LimitsService } from "./limits.service";
 
@@ -21,7 +21,7 @@ import type {
   LoadedCallidescopeConfiguration,
   ResolvedCallidescopeConfiguration,
 } from "@callidescope/configuration";
-import type { BuiltTestingModule } from "@codebase/observability/testing";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { MockInstance } from "vitest";
 
 /** The workspace configuration `--config` must name. */

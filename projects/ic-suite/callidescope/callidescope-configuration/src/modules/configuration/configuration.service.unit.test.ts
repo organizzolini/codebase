@@ -10,7 +10,7 @@ import {
   vi,
 } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputService } from "../input/input.service";
 import { RunPlanService } from "../run-plan/run-plan.service";

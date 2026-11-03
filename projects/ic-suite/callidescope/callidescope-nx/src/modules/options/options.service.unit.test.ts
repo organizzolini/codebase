@@ -2,7 +2,7 @@ import { ConfigurationService } from "@callidescope/configuration";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   EXECUTOR_CONFIGURATION_SURFACE,

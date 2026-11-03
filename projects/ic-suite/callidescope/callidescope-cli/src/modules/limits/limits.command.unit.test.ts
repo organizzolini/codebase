@@ -8,21 +8,19 @@ import {
 import { ProgramConfigurationError } from "@callidescope/graph";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/observability/testing";
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { captureExitCode, captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LimitsCommand } from "./limits.command";
 import { LimitsService } from "./limits.service";
 import { RenderLimitsService } from "./render-limits.service";
 
+import type { CapturedOutput } from "@codebase/testing";
 import type {
   BuiltTestingModule,
   TestingModuleOptions,
-} from "@codebase/observability/testing";
-import type { CapturedOutput } from "@codebase/testing";
+} from "@codebase/testing/nestjs";
 
 /** The workspace configuration every run must be pointed at with `--config`. */
 const CONFIGURATION_PATH = "callidescope.config.ts";

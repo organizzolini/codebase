@@ -3,8 +3,8 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "./configuration-file.service";
 import {

@@ -9,7 +9,6 @@
   },
   "description": "Domain vocabulary, call-graph representations, and limit contracts for the Callidescope toolchain",
   "devDependencies": {
-    "@codebase/observability": "workspace:*",
     "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",

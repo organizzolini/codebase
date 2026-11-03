@@ -22,11 +22,9 @@ import {
 import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/observability/testing";
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { captureExitCode, captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildCallGraphResult, buildStackFrame } from "../../../testing/mocks";
 
@@ -45,11 +43,11 @@ import type {
 } from "@callidescope/configuration";
 import type { CallGraphResult, ProjectReport } from "@callidescope/core";
 import type { UnresolvedEntryPointAddress } from "@callidescope/graph";
+import type { CapturedOutput } from "@codebase/testing";
 import type {
   BuiltTestingModule,
   TestingModuleOptions,
-} from "@codebase/observability/testing";
-import type { CapturedOutput } from "@codebase/testing";
+} from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 import type { MockInstance } from "vitest";
 

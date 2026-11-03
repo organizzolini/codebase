@@ -9,8 +9,8 @@ import {
   vi,
 } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
 import { overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationPathRequiredError } from "./input.constants";
 import { InputService } from "./input.service";

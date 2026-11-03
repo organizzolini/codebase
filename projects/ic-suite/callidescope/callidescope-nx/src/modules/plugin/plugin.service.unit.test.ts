@@ -10,7 +10,7 @@ import {
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { OptionsService } from "../options/options.service";
 import { ProjectsService } from "../projects/projects.service";

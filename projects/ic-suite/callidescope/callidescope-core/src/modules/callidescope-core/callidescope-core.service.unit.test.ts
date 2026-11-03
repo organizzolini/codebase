@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CallidescopeCoreService } from "./callidescope-core.service";
 

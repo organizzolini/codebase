@@ -1,7 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "../configuration/configuration-file.service";
 import { FlagResolutionService } from "../flag-resolution/flag-resolution.service";

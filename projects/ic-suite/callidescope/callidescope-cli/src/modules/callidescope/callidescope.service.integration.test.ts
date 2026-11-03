@@ -7,11 +7,11 @@ import {
 } from "@callidescope/graph";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
 import {
   createTemporaryDirectory,
   useTemporaryDirectory,
 } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
@@ -19,7 +19,7 @@ import { CallidescopeService } from "./callidescope.service";
 
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 import type { CallGraphResult } from "@callidescope/core";
-import type { BuiltTestingModule } from "@codebase/observability/testing";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 /** A workspace file no traced project sits beside, so none is skipped as the run's own. */
 const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";

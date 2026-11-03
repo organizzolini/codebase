@@ -84,7 +84,7 @@ const MODULE_BOUNDARIES = {
     // the graph it renders; the CLI composes them, so the dependency
     // only ever points that way.
     {
-      onlyDependOnLibsWithTags: ["name:observability", "name:testing"],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:callidescope-core",
     },
     {

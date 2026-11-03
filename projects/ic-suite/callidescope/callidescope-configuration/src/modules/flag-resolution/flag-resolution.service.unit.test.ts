@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "../configuration/configuration-file.service";
 import { DEFAULT_EXCLUDE_GLOBS } from "../configuration/configuration.constants";
