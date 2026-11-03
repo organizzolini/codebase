@@ -117,12 +117,26 @@ src/
     calendar-filters/            # The filter builder and the SQL it compiles to
     calendar-group-by/           # The grouping picker and the event groups it builds
     calendar-timeline/           # The timeline and its clusters, lanes, and window
+  hooks/
+    use-night-sky/               # The night sky's star catalog, schemas, and generator
 scripts/
   build-events-database.ts       # Writes output/events.sqlite, from the seed or --ingested
+  build-star-catalog.ts          # Trims the HYG star CSV to the night sky's catalog JSON
 output/                          # Gitignored build artifact
 testing/
   events-database.ts             # node:sqlite EventsDatabase over caelundas-cli's SQL
 ```
+
+### Night Sky Data
+
+The night sky's stars come from `src/hooks/use-night-sky/use-night-sky.catalog.json`,
+the HYG star database v4.1 (CC BY-SA 4.0, David Nash and the HYG
+contributors, <https://github.com/astronexus/HYG-Database>) trimmed to magnitude
+6.5 and declination -30 degrees or north. The trimmed catalog is a derived work
+under the same license, so keep this credit wherever it is documented. Rebuild
+it with `nx run caelundas-web:build-star-catalog -- <csv> <json>` from a downloaded CSV that is never
+committed, and check a newer release's column names (`id`, `ra`, `dec`, `mag`,
+`ci`) first. `use-night-sky.schemas.ts` validates the file on load.
 
 ## Development
 
