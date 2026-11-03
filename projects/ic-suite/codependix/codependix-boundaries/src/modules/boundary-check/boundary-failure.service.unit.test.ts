@@ -1,7 +1,7 @@
 import { NeighborhoodService } from "@codependix/nx-projects";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { BoundaryFailureService } from "./boundary-failure.service";
 

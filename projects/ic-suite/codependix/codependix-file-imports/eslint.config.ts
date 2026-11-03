@@ -16,7 +16,6 @@ export default [
           // vitest: referenced via tsconfig "types" array; it's a devDependency and
           // the @nx/dependency-checks rule misidentifies it as a production dependency.
           ignoredDependencies: [
-            "@codebase/observability",
             "@codebase/testing",
             "@golevelup/ts-vitest",
             "reflect-metadata",

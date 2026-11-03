@@ -9,7 +9,6 @@
   },
   "description": "Graph models, boundary rule definitions, and traversal contracts for the Codependix toolchain",
   "devDependencies": {
-    "@codebase/observability": "workspace:*",
     "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",

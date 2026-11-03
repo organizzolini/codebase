@@ -8,16 +8,14 @@ import {
 import { InputError } from "@codependix/configuration";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/observability/testing";
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { captureExitCode } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ReportingService } from "./reporting.service";
 
 import type { MapRunResult } from "../graph-run/graph-run.types";
-import type { BuiltTestingModule } from "@codebase/observability/testing";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { GraphRunOutcome } from "@codependix/core";
 
 const VIOLATION: JudgedBoundaryFinding<BoundaryViolation> = {

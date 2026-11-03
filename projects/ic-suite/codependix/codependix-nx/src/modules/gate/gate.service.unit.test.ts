@@ -7,8 +7,8 @@ import { pathToFileURL } from "node:url";
 import { ConfigurationModule } from "@codependix/configuration";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
 import { captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PluginService } from "../plugin/plugin.service";
 

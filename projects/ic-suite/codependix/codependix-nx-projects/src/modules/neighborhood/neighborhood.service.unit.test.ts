@@ -4,8 +4,8 @@ import path from "node:path";
 import { createProjectGraphAsync } from "@nx/devkit";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InvalidProjectGraphError } from "./neighborhood.constants";
 import { NeighborhoodService } from "./neighborhood.service";

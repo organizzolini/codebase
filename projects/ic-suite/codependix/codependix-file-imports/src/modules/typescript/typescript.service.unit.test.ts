@@ -1,7 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TypescriptImportGraphService } from "./typescript-import-graph.service";
 import { TypescriptProjectService } from "./typescript-project.service";

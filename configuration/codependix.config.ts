@@ -216,7 +216,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "A contracts leaf declares types and reaches nothing at all. This is the ic-suite spine stated once for every toolchain rather than four times: core, then configuration, then analysis, then output, then cli, each layer reaching its own layer and every layer beneath it. A forbid because the configuration schema refuses a selector naming no nodes, so the allow that would say the same thing cannot be written.",
         name: "core-is-a-leaf",
-        to: { id: ["!(configuration|observability|testing)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["layer:configuration"] },
@@ -389,7 +389,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "The codependix chain points one way: core is the contracts leaf, configuration resolves the config file and the command line over it, the four analyzers read both, the output renderer reads all of them, and the command-line host composes the lot.",
         name: "codependix-core-is-a-leaf",
-        to: { id: ["!(configuration|observability|testing)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["name:codependix-configuration"] },
@@ -398,12 +398,7 @@ const codependixConfiguration: CodependixConfiguration = {
           "The codependix chain points one way: core is the contracts leaf, configuration resolves the config file and the command line over it, the four analyzers read both, the output renderer reads all of them, and the command-line host composes the lot.",
         name: "codependix-configuration-layer",
         to: {
-          tags: [
-            "name:configuration",
-            "name:codependix-core",
-            "name:testing",
-            "name:observability",
-          ],
+          tags: ["name:configuration", "name:codependix-core", "name:testing"],
         },
       },
       {
@@ -443,7 +438,6 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codependix-nestjs-modules",
             "name:codependix-nx-projects",
             "name:testing",
-            "name:observability",
           ],
         },
       },
@@ -497,7 +491,6 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codependix-cli",
             "name:codependix-configuration",
             "name:testing",
-            "name:observability",
           ],
         },
       },

@@ -2,8 +2,8 @@ import { NeighborhoodService } from "@codependix/nx-projects";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProjectGraphsService } from "../project-graphs/project-graphs.service";
 import { PythonImportsService } from "../python-imports/python-imports.service";

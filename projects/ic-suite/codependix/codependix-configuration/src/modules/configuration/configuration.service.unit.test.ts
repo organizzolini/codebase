@@ -4,8 +4,8 @@ import path from "node:path";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { ZodError } from "zod";
 
-import { buildTestingModule } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputService } from "../input/input.service";
 import { OverrideResolutionService } from "../override-resolution/override-resolution.service";

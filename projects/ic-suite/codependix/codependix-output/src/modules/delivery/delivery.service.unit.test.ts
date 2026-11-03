@@ -3,8 +3,8 @@ import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnchorNotFoundError } from "../anchors/anchors.constants";
 import { AnchorsService } from "../anchors/anchors.service";

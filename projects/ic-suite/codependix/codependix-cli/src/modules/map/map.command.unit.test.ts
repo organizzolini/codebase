@@ -22,10 +22,8 @@ import {
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/observability/testing";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MapCommand } from "./map.command";
 
