@@ -441,6 +441,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **patch**:
 - **path**:
 - **pattern**:
+- **peer**:
 - **perf**:
 - **perfectionist**:
 - **permission**:

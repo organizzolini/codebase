@@ -2,6 +2,10 @@ import { coinagerieConfiguration } from "../../../../configuration/coinagerie.co
 
 export default {
   ...coinagerieConfiguration,
+  exclude: {
+    ...coinagerieConfiguration.exclude,
+    paths: ["examples/**"],
+  },
   outputs: [
     {
       description:
