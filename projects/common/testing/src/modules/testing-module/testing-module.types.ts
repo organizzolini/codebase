@@ -1,4 +1,4 @@
-import type { LoggerServiceContract } from "../../src/modules/logger/logger.types";
+import type { LoggerServiceContract } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { ModuleMetadata, Provider, Type } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
