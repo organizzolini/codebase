@@ -78,6 +78,10 @@ projects/ic-suite/codometer/codometer-examples/examples/corpus/
 .agents/skills/codometer-configure/
 .agents/skills/codometer-measure/
 .agents/skills/codometer-triage/
+.agents/skills/coinagerie-collect/
+.agents/skills/coinagerie-configure/
+.agents/skills/coinagerie-define/
+.agents/skills/coinagerie-triage/
 .agents/skills/conformetry-configure/
 .agents/skills/conformetry-generate/
 .agents/skills/conformetry-validate/
