@@ -1,14 +1,6 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -19,7 +11,11 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -27,8 +23,11 @@ import { SynchronizationService } from "../synchronization/synchronization.servi
 import { ProjectPortsCommand } from "./project-ports.command";
 import { ProjectPortsService } from "./project-ports.service";
 
-/** Where the fixture workspaces live: inside this project's gitignored `tmp`. */
-const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
+import type { LoggerService } from "@codebase/observability";
+
+const moduleOptions = {
+  providers: [ProjectPortsService, SynchronizationService],
+};
 
 describe(ProjectPortsCommand, () => {
   let command: ProjectPortsCommand;
@@ -69,49 +68,41 @@ describe(ProjectPortsCommand, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ProjectPortsCommand,
-        ProjectPortsService,
-        SynchronizationService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(ProjectPortsCommand, moduleOptions);
 
-    command = await module.resolve(ProjectPortsCommand);
-    sharedLogger = await module.resolve(LoggerService);
+    command = built.instance;
+    sharedLogger = built.logger;
   });
 
   beforeEach(() => {
-    mkdirSync(FIXTURE_ROOT, { recursive: true });
-    root = mkdtempSync(path.join(FIXTURE_ROOT, "project-ports-"));
+    root = createTemporaryDirectory("project-ports");
     vi.spyOn(process, "cwd").mockReturnValue(root);
     vi.clearAllMocks();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    rmSync(root, { force: true, recursive: true });
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
-    expect(command.synchronizationLabel).toBe("project-ports");
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      ProjectPortsCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(ProjectPortsCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ProjectPortsCommand,
-        ProjectPortsService,
-        SynchronizationService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    expect.hasAssertions();
 
-    const logger = await module.resolve(LoggerService);
+    await expectLoggerContext(ProjectPortsCommand, moduleOptions);
+  });
 
-    expect(logger.setContext).toHaveBeenCalledWith("ProjectPortsCommand");
+  it("labels its synchronization", () => {
+    expect(command.synchronizationLabel).toBe("project-ports");
   });
 
   it("passes when every port is the hashed one", async () => {

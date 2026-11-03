@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
+import {
+  expectModuleImports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { PullRequestReleaseSignificanceGithubService } from "./pull-request-release-significance-github.service";
 import { PullRequestReleaseSignificanceCommand } from "./pull-request-release-significance.command";
@@ -11,18 +15,12 @@ describe(PullRequestReleaseSignificanceModule, () => {
   it("registers expected imports and providers", () => {
     expect.hasAssertions();
 
-    const imports = Reflect.getMetadata(
-      "imports",
+    expectModuleImports(PullRequestReleaseSignificanceModule, LoggerModule);
+    expectModuleProvides(
       PullRequestReleaseSignificanceModule,
-    ) as undefined | unknown[];
-    const providers = Reflect.getMetadata(
-      "providers",
-      PullRequestReleaseSignificanceModule,
-    ) as undefined | unknown[];
-
-    expect(imports).toContain(LoggerModule);
-    expect(providers).toContain(PullRequestReleaseSignificanceCommand);
-    expect(providers).toContain(PullRequestReleaseSignificanceGithubService);
-    expect(providers).toContain(PullRequestReleaseSignificanceService);
+      PullRequestReleaseSignificanceCommand,
+      PullRequestReleaseSignificanceGithubService,
+      PullRequestReleaseSignificanceService,
+    );
   });
 });

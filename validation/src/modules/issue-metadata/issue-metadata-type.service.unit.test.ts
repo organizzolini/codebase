@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 
@@ -7,16 +8,17 @@ describe(IssueMetadataTypeService, () => {
   let service: IssueMetadataTypeService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [IssueMetadataTypeService],
-    }).compile();
+    const built = await buildTestingModule(IssueMetadataTypeService);
 
-    service = await module.resolve(IssueMetadataTypeService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(IssueMetadataTypeService);
+
+    expect(instance).toBeInstanceOf(IssueMetadataTypeService);
   });
 
   describe("check", () => {

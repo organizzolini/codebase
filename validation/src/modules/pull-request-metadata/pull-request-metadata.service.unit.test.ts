@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestMetadataService } from "./pull-request-metadata.service";
 
@@ -19,16 +20,9 @@ describe(PullRequestMetadataService, () => {
   let service: PullRequestMetadataService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PullRequestMetadataService],
-    }).compile();
+    const built = await buildTestingModule(PullRequestMetadataService);
 
-    service = await module.resolve(PullRequestMetadataService);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+    service = built.instance;
   });
 
   /** Runs every check against one pull request's metadata. */
@@ -48,6 +42,14 @@ describe(PullRequestMetadataService, () => {
       titleConvention,
     });
   };
+
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(PullRequestMetadataService);
+
+    expect(instance).toBeInstanceOf(PullRequestMetadataService);
+  });
 
   describe("parseTitle", () => {
     it("reads the type and the single scope", () => {

@@ -1,7 +1,5 @@
 import { appendFileSync } from "node:fs";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -12,7 +10,11 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { overrideEnvironment } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
@@ -44,40 +46,32 @@ const failed = (standardError: string): GithubCliResult => ({
   succeeded: false,
 });
 
+const moduleOptions = {
+  mocks: [IssueMetadataGithubService],
+  providers: [IssueMetadataService, IssueMetadataTypeService],
+};
+
 describe(IssueMetadataCommand, () => {
   let command: IssueMetadataCommand;
   let githubService: IssueMetadataGithubService;
   let reportLines: string[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        IssueMetadataCommand,
-        IssueMetadataService,
-        IssueMetadataTypeService,
-        {
-          provide: IssueMetadataGithubService,
-          useValue: createMock<IssueMetadataGithubService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(IssueMetadataCommand, moduleOptions);
 
-    command = await module.resolve(IssueMetadataCommand);
-    githubService = await module.resolve(IssueMetadataGithubService);
+    command = built.instance;
+    githubService = built.mock(IssueMetadataGithubService);
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
 
-    for (const variableName of [
-      "ISSUE_BODY",
-      "ISSUE_LABELS",
-      "ISSUE_NUMBER",
-      STEP_SUMMARY_VARIABLE,
-    ]) {
-      Reflect.deleteProperty(process.env, variableName);
-    }
+    overrideEnvironment({
+      ISSUE_BODY: undefined,
+      ISSUE_LABELS: undefined,
+      ISSUE_NUMBER: undefined,
+      [STEP_SUMMARY_VARIABLE]: undefined,
+    });
 
     reportLines = [];
     vi.spyOn(console, "info").mockImplementation((line: unknown): void => {
@@ -118,47 +112,43 @@ describe(IssueMetadataCommand, () => {
 
   /** Puts a valid, template-submitted issue in the environment. */
   const setValidEnvironment = (): void => {
-    process.env["ISSUE_BODY"] = [
-      "### Type",
-      "",
-      "feat",
-      "",
-      "### Scope",
-      "",
-      "lexico",
-      "",
-    ].join("\n");
-    process.env["ISSUE_LABELS"] = JSON.stringify([
-      { name: "scope:lexico" },
-      { name: "source:human" },
-      { name: "type:feat" },
-    ]);
-    process.env["ISSUE_NUMBER"] = "7";
+    overrideEnvironment({
+      ISSUE_BODY: [
+        "### Type",
+        "",
+        "feat",
+        "",
+        "### Scope",
+        "",
+        "lexico",
+        "",
+      ].join("\n"),
+    });
+    overrideEnvironment({
+      ISSUE_LABELS: JSON.stringify([
+        { name: "scope:lexico" },
+        { name: "source:human" },
+        { name: "type:feat" },
+      ]),
+    });
+    overrideEnvironment({ ISSUE_NUMBER: "7" });
   };
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      IssueMetadataCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(IssueMetadataCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        IssueMetadataCommand,
-        IssueMetadataService,
-        IssueMetadataTypeService,
-        {
-          provide: IssueMetadataGithubService,
-          useValue: createMock<IssueMetadataGithubService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("IssueMetadataCommand");
+    await expectLoggerContext(IssueMetadataCommand, moduleOptions);
   });
 
   describe("the environment input mode", () => {
@@ -175,9 +165,9 @@ describe(IssueMetadataCommand, () => {
     it("reports every failure and the commands that fix them", async () => {
       expect.hasAssertions();
 
-      process.env["ISSUE_BODY"] = "Plain issue, no template.";
-      process.env["ISSUE_LABELS"] = "[]";
-      process.env["ISSUE_NUMBER"] = "7";
+      overrideEnvironment({ ISSUE_BODY: "Plain issue, no template." });
+      overrideEnvironment({ ISSUE_LABELS: "[]" });
+      overrideEnvironment({ ISSUE_NUMBER: "7" });
 
       await expect(runCommand()).resolves.toBe(true);
       expect(reportLines).toStrictEqual([
@@ -198,8 +188,8 @@ describe(IssueMetadataCommand, () => {
     it("names a placeholder when no number was supplied", async () => {
       expect.hasAssertions();
 
-      process.env["ISSUE_BODY"] = "Plain issue, no template.";
-      process.env["ISSUE_LABELS"] = "[]";
+      overrideEnvironment({ ISSUE_BODY: "Plain issue, no template." });
+      overrideEnvironment({ ISSUE_LABELS: "[]" });
 
       await expect(runCommand()).resolves.toBe(true);
       expect(reportLines).toContain(
@@ -224,7 +214,7 @@ describe(IssueMetadataCommand, () => {
       expect.hasAssertions();
 
       setValidEnvironment();
-      process.env["ISSUE_LABELS"] = "not json";
+      overrideEnvironment({ ISSUE_LABELS: "not json" });
 
       await expect(runCommand()).resolves.toBe(true);
       expect(reportLines[0]).toContain(
@@ -263,7 +253,7 @@ describe(IssueMetadataCommand, () => {
     it("prefers the argument over ISSUE_NUMBER in remediation commands", async () => {
       expect.hasAssertions();
 
-      process.env["ISSUE_NUMBER"] = "99";
+      overrideEnvironment({ ISSUE_NUMBER: "99" });
       vi.mocked(githubService.run).mockReturnValue(
         succeeded(JSON.stringify({ body: "no template", labels: [] })),
       );
@@ -318,7 +308,7 @@ describe(IssueMetadataCommand, () => {
       expect.hasAssertions();
 
       setValidEnvironment();
-      process.env[STEP_SUMMARY_VARIABLE] = "/tmp/summary";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "/tmp/summary" });
 
       await expect(runCommand()).resolves.toBe(false);
       expect(appendFileSync).toHaveBeenCalledWith(
@@ -341,7 +331,7 @@ describe(IssueMetadataCommand, () => {
       expect.hasAssertions();
 
       setValidEnvironment();
-      process.env[STEP_SUMMARY_VARIABLE] = "/tmp/summary";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "/tmp/summary" });
       vi.mocked(appendFileSync).mockImplementationOnce(() => {
         throw new Error("EACCES");
       });
@@ -356,7 +346,7 @@ describe(IssueMetadataCommand, () => {
       expect.hasAssertions();
 
       setValidEnvironment();
-      process.env[STEP_SUMMARY_VARIABLE] = "";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "" });
 
       await expect(runCommand()).resolves.toBe(false);
       expect(appendFileSync).not.toHaveBeenCalled();
@@ -366,7 +356,7 @@ describe(IssueMetadataCommand, () => {
       expect.hasAssertions();
 
       setValidEnvironment();
-      process.env[STEP_SUMMARY_VARIABLE] = "/tmp/summary";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "/tmp/summary" });
       vi.mocked(appendFileSync).mockImplementation((): never => {
         throw new Error("no space left on device");
       });

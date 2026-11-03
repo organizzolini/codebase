@@ -1,8 +1,9 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   BUGS_URL,
@@ -46,11 +47,9 @@ describe(PackageManifestsService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PackageManifestsService],
-    }).compile();
+    const built = await buildTestingModule(PackageManifestsService);
 
-    service = await module.resolve(PackageManifestsService);
+    service = built.instance;
   });
 
   beforeEach(() => {
@@ -58,8 +57,12 @@ describe(PackageManifestsService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(PackageManifestsService);
+
+    expect(instance).toBeInstanceOf(PackageManifestsService);
   });
 
   describe("deriveMetadata", () => {

@@ -1,8 +1,10 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { overrideEnvironment } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
@@ -80,25 +82,24 @@ const guidanceLines = [
   "See: .github/PULL_REQUEST_TEMPLATE.md",
 ];
 
+const moduleOptions = { providers: [PullRequestBodyService] };
+
 describe(PullRequestBodyCommand, () => {
   let command: PullRequestBodyCommand;
   let reportLines: string[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestBodyCommand,
-        PullRequestBodyService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestBodyCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(PullRequestBodyCommand);
+    command = built.instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
-    Reflect.deleteProperty(process.env, PULL_REQUEST_BODY_VARIABLE);
+    overrideEnvironment({ [PULL_REQUEST_BODY_VARIABLE]: undefined });
     fileContents.clear();
     fileContents.set(PULL_REQUEST_TEMPLATE_PATH, templateBody);
     reportLines = [];
@@ -108,26 +109,6 @@ describe(PullRequestBodyCommand, () => {
     vi.spyOn(console, "error").mockImplementation((line: unknown): void => {
       reportLines.push(String(line));
     });
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(command).toBeDefined();
-  });
-
-  it("sets logger context", async () => {
-    expect.hasAssertions();
-
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestBodyCommand,
-        PullRequestBodyService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("PullRequestBodyCommand");
   });
 
   /** Runs the command and reports whether it exited non-zero. */
@@ -149,10 +130,27 @@ describe(PullRequestBodyCommand, () => {
     }
   };
 
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      PullRequestBodyCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestBodyCommand);
+  });
+
+  it("sets logger context", async () => {
+    expect.hasAssertions();
+
+    await expectLoggerContext(PullRequestBodyCommand, moduleOptions);
+  });
+
   it("passes a fully valid description", async () => {
     expect.hasAssertions();
 
-    process.env[PULL_REQUEST_BODY_VARIABLE] = validBody;
+    overrideEnvironment({ [PULL_REQUEST_BODY_VARIABLE]: validBody });
 
     await expect(runCommand()).resolves.toBe(false);
     expect(reportLines).toStrictEqual(["✅ All required sections present"]);
@@ -170,7 +168,7 @@ describe(PullRequestBodyCommand, () => {
   it("reports a description of nothing but whitespace", async () => {
     expect.hasAssertions();
 
-    process.env[PULL_REQUEST_BODY_VARIABLE] = "   \n  ";
+    overrideEnvironment({ [PULL_REQUEST_BODY_VARIABLE]: "   \n  " });
 
     await expect(runCommand()).resolves.toBe(true);
     expect(reportLines).toStrictEqual([
@@ -181,7 +179,7 @@ describe(PullRequestBodyCommand, () => {
   it("names every missing heading on one line", async () => {
     expect.hasAssertions();
 
-    process.env[PULL_REQUEST_BODY_VARIABLE] = "nothing at all";
+    overrideEnvironment({ [PULL_REQUEST_BODY_VARIABLE]: "nothing at all" });
 
     await expect(runCommand()).resolves.toBe(true);
     expect(reportLines[0]).toBe(
@@ -208,7 +206,7 @@ describe(PullRequestBodyCommand, () => {
       "- Issue 120",
     ].join("\n");
 
-    process.env[PULL_REQUEST_BODY_VARIABLE] = bodyWithEmptySection;
+    overrideEnvironment({ [PULL_REQUEST_BODY_VARIABLE]: bodyWithEmptySection });
 
     await expect(runCommand()).resolves.toBe(true);
     expect(reportLines).toStrictEqual([
@@ -221,8 +219,9 @@ describe(PullRequestBodyCommand, () => {
   it("reports a surviving prompt alone", async () => {
     expect.hasAssertions();
 
-    process.env[PULL_REQUEST_BODY_VARIABLE] =
-      `${validBody}\n- <!-- List of specific changes made -->`;
+    overrideEnvironment({
+      [PULL_REQUEST_BODY_VARIABLE]: `${validBody}\n- <!-- List of specific changes made -->`,
+    });
 
     await expect(runCommand()).resolves.toBe(true);
     expect(reportLines).toStrictEqual([
@@ -236,10 +235,12 @@ describe(PullRequestBodyCommand, () => {
   it("reports a malformed section alone", async () => {
     expect.hasAssertions();
 
-    process.env[PULL_REQUEST_BODY_VARIABLE] = validBody.replace(
-      "1. Run the suite",
-      "- Run the suite",
-    );
+    overrideEnvironment({
+      [PULL_REQUEST_BODY_VARIABLE]: validBody.replace(
+        "1. Run the suite",
+        "- Run the suite",
+      ),
+    });
 
     await expect(runCommand()).resolves.toBe(true);
     expect(reportLines).toStrictEqual([
@@ -253,10 +254,12 @@ describe(PullRequestBodyCommand, () => {
   it("reports an oversized section alone", async () => {
     expect.hasAssertions();
 
-    process.env[PULL_REQUEST_BODY_VARIABLE] = validBody.replace(
-      "Moves four checks into a validation application.",
-      "word ".repeat(200),
-    );
+    overrideEnvironment({
+      [PULL_REQUEST_BODY_VARIABLE]: validBody.replace(
+        "Moves four checks into a validation application.",
+        "word ".repeat(200),
+      ),
+    });
 
     await expect(runCommand()).resolves.toBe(true);
     expect(reportLines).toStrictEqual([
@@ -270,8 +273,9 @@ describe(PullRequestBodyCommand, () => {
   it("reports a missing heading and a surviving prompt together", async () => {
     expect.hasAssertions();
 
-    process.env[PULL_REQUEST_BODY_VARIABLE] =
-      `${validBody.replace("## 🔗 Related", "## Related")}\n- <!-- List of specific changes made -->`;
+    overrideEnvironment({
+      [PULL_REQUEST_BODY_VARIABLE]: `${validBody.replace("## 🔗 Related", "## Related")}\n- <!-- List of specific changes made -->`,
+    });
 
     await expect(runCommand()).resolves.toBe(true);
     expect(reportLines).toStrictEqual([
@@ -287,7 +291,7 @@ describe(PullRequestBodyCommand, () => {
   it("reports empty sections and all four prompts when handed the raw template", async () => {
     expect.hasAssertions();
 
-    process.env[PULL_REQUEST_BODY_VARIABLE] = templateBody;
+    overrideEnvironment({ [PULL_REQUEST_BODY_VARIABLE]: templateBody });
 
     await expect(runCommand()).resolves.toBe(true);
     expect(reportLines).toStrictEqual([
@@ -342,7 +346,7 @@ describe(PullRequestBodyCommand, () => {
   it("prefers the argument over the environment", async () => {
     expect.hasAssertions();
 
-    process.env[PULL_REQUEST_BODY_VARIABLE] = "nothing at all";
+    overrideEnvironment({ [PULL_REQUEST_BODY_VARIABLE]: "nothing at all" });
     fileContents.set("body.md", validBody);
 
     await expect(runCommand(["body.md"])).resolves.toBe(false);
@@ -356,8 +360,9 @@ describe(PullRequestBodyCommand, () => {
       PULL_REQUEST_TEMPLATE_PATH,
       `${templateBody}\n## 🧭 Rollout\n\n<!-- How this reaches production, and what to watch -->\n`,
     );
-    process.env[PULL_REQUEST_BODY_VARIABLE] =
-      `${validBody}\n<!-- How this reaches production, and what to watch -->`;
+    overrideEnvironment({
+      [PULL_REQUEST_BODY_VARIABLE]: `${validBody}\n<!-- How this reaches production, and what to watch -->`,
+    });
 
     await expect(runCommand()).resolves.toBe(true);
     expect(reportLines).toContain(

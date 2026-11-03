@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
+import {
+  expectModuleImports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { PullRequestBodyCommand } from "./pull-request-body.command";
 import { PullRequestBodyModule } from "./pull-request-body.module";
@@ -10,16 +14,11 @@ describe(PullRequestBodyModule, () => {
   it("registers expected imports and providers", () => {
     expect.hasAssertions();
 
-    const imports = Reflect.getMetadata("imports", PullRequestBodyModule) as
-      | undefined
-      | unknown[];
-    const providers = Reflect.getMetadata(
-      "providers",
+    expectModuleImports(PullRequestBodyModule, LoggerModule);
+    expectModuleProvides(
       PullRequestBodyModule,
-    ) as undefined | unknown[];
-
-    expect(imports).toContain(LoggerModule);
-    expect(providers).toContain(PullRequestBodyCommand);
-    expect(providers).toContain(PullRequestBodyService);
+      PullRequestBodyCommand,
+      PullRequestBodyService,
+    );
   });
 });

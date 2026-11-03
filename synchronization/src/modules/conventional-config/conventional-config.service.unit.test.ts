@@ -7,6 +7,7 @@ import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConventionalConfigIoService } from "./conventional-config-io.service";
 import { ConventionalConfigValidatorsService } from "./conventional-config-validators.service";
@@ -70,6 +71,10 @@ vi.mock("node:module", () => {
   };
 });
 
+const moduleOptions = {
+  mocks: [ConventionalConfigIoService, ConventionalConfigValidatorsService],
+};
+
 describe(ConventionalConfigService, () => {
   const workspaceRoot = resolveWorkspaceRoot();
 
@@ -116,28 +121,15 @@ describe(ConventionalConfigService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConventionalConfigService,
-        {
-          provide: ConventionalConfigIoService,
-          useValue: createMock<ConventionalConfigIoService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: ConventionalConfigValidatorsService,
-          useValue: createMock<ConventionalConfigValidatorsService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      ConventionalConfigService,
+      moduleOptions,
+    );
 
-    io = await module.resolve(ConventionalConfigIoService);
-    logger = await module.resolve(LoggerService);
-    service = await module.resolve(ConventionalConfigService);
-    validators = await module.resolve(ConventionalConfigValidatorsService);
+    io = built.mock(ConventionalConfigIoService);
+    logger = built.logger;
+    service = built.instance;
+    validators = built.mock(ConventionalConfigValidatorsService);
   });
 
   beforeEach(() => {
@@ -153,8 +145,15 @@ describe(ConventionalConfigService, () => {
     );
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      ConventionalConfigService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(ConventionalConfigService);
   });
 
   it("passes check mode when all validations succeed", () => {

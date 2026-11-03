@@ -1,8 +1,9 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -11,31 +12,29 @@ import { PackageManifestsCommand } from "./package-manifests.command";
 import { PackageManifestsService } from "./package-manifests.service";
 
 import type { PackageManifestsSummary } from "./package-manifests.types";
+import type { LoggerService } from "@codebase/observability";
+import type { DeepMocked } from "@golevelup/ts-vitest";
+
+const moduleOptions = {
+  mocks: [PackageManifestsService],
+  providers: [SynchronizationService],
+};
 
 describe(PackageManifestsCommand, () => {
   let command: PackageManifestsCommand;
   let logger: LoggerService;
 
-  const packageManifestsService = createMock<PackageManifestsService>();
+  let packageManifestsService: DeepMocked<PackageManifestsService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PackageManifestsCommand,
-        SynchronizationService,
-        {
-          provide: PackageManifestsService,
-          useValue: packageManifestsService,
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PackageManifestsCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(PackageManifestsCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
+    packageManifestsService = built.mock(PackageManifestsService);
   });
 
   beforeEach(() => {
@@ -47,29 +46,21 @@ describe(PackageManifestsCommand, () => {
     );
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      PackageManifestsCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PackageManifestsCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PackageManifestsCommand,
-        SynchronizationService,
-        {
-          provide: PackageManifestsService,
-          useValue: createMock<PackageManifestsService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    expect.hasAssertions();
 
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("PackageManifestsCommand");
+    await expectLoggerContext(PackageManifestsCommand, moduleOptions);
   });
 
   it("should have correct synchronizationLabel", () => {

@@ -1,18 +1,12 @@
 import { appendFileSync } from "node:fs";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { overrideEnvironment } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -47,6 +41,11 @@ interface RepositoryLabel {
   description: string;
   name: string;
 }
+
+const moduleOptions = {
+  mocks: [PullRequestLabelsGithubService],
+  providers: [PullRequestLabelsService, SynchronizationService],
+};
 
 describe(PullRequestLabelsCommand, () => {
   let command: PullRequestLabelsCommand;
@@ -90,21 +89,13 @@ describe(PullRequestLabelsCommand, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestLabelsCommand,
-        PullRequestLabelsService,
-        SynchronizationService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: PullRequestLabelsGithubService,
-          useValue: createMock<PullRequestLabelsGithubService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestLabelsCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(PullRequestLabelsCommand);
-    githubService = await module.resolve(PullRequestLabelsGithubService);
+    command = built.instance;
+    githubService = built.mock(PullRequestLabelsGithubService);
   });
 
   beforeEach(() => {
@@ -119,33 +110,24 @@ describe(PullRequestLabelsCommand, () => {
       types: [{ description: "A new feature", name: "feat" }],
     };
     setRepositoryLabels([]);
-    process.env[STEP_SUMMARY_VARIABLE] = "/tmp/step-summary.md";
+    overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "/tmp/step-summary.md" });
   });
 
-  afterEach(() => {
-    Reflect.deleteProperty(process.env, STEP_SUMMARY_VARIABLE);
-  });
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+    const { instance } = await buildTestingModule(
+      PullRequestLabelsCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestLabelsCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestLabelsCommand,
-        PullRequestLabelsService,
-        SynchronizationService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: PullRequestLabelsGithubService,
-          useValue: createMock<PullRequestLabelsGithubService>(),
-        },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
+    expect.hasAssertions();
 
-    expect(logger.setContext).toHaveBeenCalledWith("PullRequestLabelsCommand");
+    await expectLoggerContext(PullRequestLabelsCommand, moduleOptions);
   });
 
   it("declares its synchronization label", () => {
@@ -507,7 +489,7 @@ describe(PullRequestLabelsCommand, () => {
     // Outside a workflow the variable is unset, which is what keeps the
     // command runnable from a terminal unchanged.
     it("writes nothing when the variable is unset", async () => {
-      Reflect.deleteProperty(process.env, STEP_SUMMARY_VARIABLE);
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: undefined });
 
       await command.synchronize("check");
 
@@ -515,7 +497,7 @@ describe(PullRequestLabelsCommand, () => {
     });
 
     it("writes nothing when the variable is empty", async () => {
-      process.env[STEP_SUMMARY_VARIABLE] = "";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "" });
 
       await command.synchronize("check");
 

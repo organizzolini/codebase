@@ -1,11 +1,12 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne, mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -15,6 +16,8 @@ import {
   SYNC_PULL_REQUEST_TEMPLATE_MARKER,
   SYNC_PULL_REQUEST_TEMPLATE_TARGET_FILES,
 } from "./pull-request-template.constants";
+
+import type { LoggerService } from "@codebase/observability";
 
 const fileContents = new Map<string, string>();
 
@@ -34,6 +37,8 @@ vi.mock("node:fs", () => {
     ),
   };
 });
+
+const moduleOptions = { providers: [SynchronizationService] };
 
 describe(PullRequestTemplateCommand, () => {
   let command: PullRequestTemplateCommand;
@@ -67,47 +72,18 @@ describe(PullRequestTemplateCommand, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestTemplateCommand,
-        SynchronizationService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestTemplateCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(PullRequestTemplateCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
     fileContents.clear();
     vi.clearAllMocks();
-  });
-
-  it("is defined", () => {
-    expect(command).toBeDefined();
-  });
-
-  it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestTemplateCommand,
-        SynchronizationService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "PullRequestTemplateCommand",
-    );
   });
 
   it.each([
@@ -126,6 +102,23 @@ describe(PullRequestTemplateCommand, () => {
 
     expect(logger.info).toHaveBeenCalledWith("📄 Verified the PR template");
     expect(writeFileSync).not.toHaveBeenCalled();
+  });
+
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      PullRequestTemplateCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestTemplateCommand);
+  });
+
+  it("sets logger context", async () => {
+    expect.hasAssertions();
+
+    await expectLoggerContext(PullRequestTemplateCommand, moduleOptions);
   });
 
   it("writes only out-of-sync target files in write mode", async () => {

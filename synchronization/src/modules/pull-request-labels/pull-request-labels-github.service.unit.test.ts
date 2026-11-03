@@ -1,7 +1,8 @@
 import { spawnSync } from "node:child_process";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestLabelsGithubService } from "./pull-request-labels-github.service";
 
@@ -29,19 +30,23 @@ describe(PullRequestLabelsGithubService, () => {
   let service: PullRequestLabelsGithubService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PullRequestLabelsGithubService],
-    }).compile();
+    const built = await buildTestingModule(PullRequestLabelsGithubService);
 
-    service = await module.resolve(PullRequestLabelsGithubService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      PullRequestLabelsGithubService,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestLabelsGithubService);
   });
 
   describe("run", () => {
