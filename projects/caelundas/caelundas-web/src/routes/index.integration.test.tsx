@@ -47,8 +47,10 @@ function getRenderedRouter(): ReturnType<typeof getRouter> {
 }
 
 // Each click of the View menu re-renders the whole route, which a slow
-// continuous integration runner needs well past the default time for.
-vi.setConfig({ testTimeout: 15_000 });
+// continuous integration runner needs well past the default time for: a
+// loaded runner passed 15 seconds on the menus' test, so the limit is three
+// times that.
+vi.setConfig({ testTimeout: 45_000 });
 
 describe("index", () => {
   it("renders its page", async () => {

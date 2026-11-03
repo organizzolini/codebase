@@ -70,6 +70,11 @@ function readSearch(): Readonly<Record<string, unknown>> {
   return router?.state.location.search ?? {};
 }
 
+// Each test renders the whole route and builds the sky, then drives a menu;
+// a loaded continuous integration runner took past 5 seconds for most of them
+// (about 5.5 seconds each), so the limit is three times the slowest seen.
+vi.setConfig({ testTimeout: 30_000 });
+
 describe("night sky menu", () => {
   afterEach(() => {
     cleanup();

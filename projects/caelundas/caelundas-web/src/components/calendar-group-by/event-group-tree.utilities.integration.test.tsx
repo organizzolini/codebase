@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { findToolbar } from "../../../testing/calendar-page";
 import { createRecordingEventsDatabase } from "../../../testing/events-database";
@@ -47,6 +47,10 @@ async function openGroupBy(): Promise<HTMLElement> {
 
 // Grouping is tested through the `/` route, the way the page uses it; it
 // lives apart from the route's own tests only to keep each file short.
+// Each test renders the whole route and opens the View menu, which a loaded
+// continuous integration runner needs well past the default 5 seconds for.
+vi.setConfig({ testTimeout: 30_000 });
+
 describe("event grouping", () => {
   it("groups the agenda by type unless told otherwise", async () => {
     await renderRoute("/?view=agenda&date=2026-03-04");
