@@ -69,10 +69,11 @@ import {
  *
  * ## The projects traced by nothing
  *
- * Seven projects are not measured at all, rather than taking the number
+ * Eight projects are not measured at all, rather than taking the number
  * below — so they hold no configuration file either, being no project's file
- * to write. The four skill packages — `callidescope-agents`,
- * `codependix-agents`, `codometer-agents`, `conformetry-agents` — hold barely
+ * to write. The five skill packages — `callidescope-agents`,
+ * `codependix-agents`, `codometer-agents`, `coinagerie-agents`,
+ * `conformetry-agents` — hold barely
  * a callable between them, the same landmine a real project would avoid by
  * declaring its own number rather than being gated at zero, except these have
  * no real code underneath to ever grow into. And
@@ -85,7 +86,7 @@ import {
  * A project cannot exclude itself this way — discovery finds a project's
  * `tsconfig.json` before that project's own `callidescope.config.ts` is ever
  * read, so removing a project from tracing has to happen at the workspace's
- * own file. `configuration/.callidescopeignore` is where all seven are named,
+ * own file. `configuration/.callidescopeignore` is where all eight are named,
  * beside `projects/ic-suite/callidescope/callidescope-examples` and the other exclusions this
  * workspace declares.
  *
@@ -153,7 +154,7 @@ export const workspaceLimits = {
    * project now writes its own complete file, with its own boundary-tested
    * number beside the spread — the thirty-eight this section counts — so no
    * traced project reads this value as the number it is judged by any more.
-   * The seven projects with no stack to gate are the ones `## The projects
+   * The eight projects with no stack to gate are the ones `## The projects
    * traced by nothing` above names, and they hold no configuration file to
    * read a lowered number from either. What a number here still sets is the
    * starting point `projectDefaults` hands a project that has not yet
