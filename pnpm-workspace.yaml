@@ -36,8 +36,14 @@ allowBuilds:
 minimumReleaseAge: 1440
 catalogMode: strict
 cleanupUnusedCatalogs: true
+peerDependencyRules:
+  allowedVersions:
+    # typeorm declares better-sqlite3 ^12 only; drop once it widens its range.
+    typeorm>better-sqlite3: ^13.0.3
 overrides:
   axios@>=1.15.2 <1.18.0: ^1.18.0
+  # openwiki's langgraph checkpoint pulls ^12, which would split typeorm's peer context.
+  better-sqlite3: "catalog:"
   brace-expansion@>=3.0.0 <5.0.7: ^5.0.7
   conventional-changelog-conventionalcommits: ^9.3.1
   fast-uri@>=3.0.0 <3.1.6: ^3.1.6
