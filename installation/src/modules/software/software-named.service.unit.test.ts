@@ -5,6 +5,7 @@ import path from "node:path";
 import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
@@ -198,7 +199,7 @@ describe(SoftwareNamedService, () => {
   it("puts the install directory first on PATH, and in the file Actions reads", async () => {
     expect.hasAssertions();
 
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "software-"));
+    const directory = createTemporaryDirectory("software");
     const pathFile = path.join(directory, "github-path");
     const subject = await build({ GITHUB_PATH: pathFile });
 

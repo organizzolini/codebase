@@ -1,6 +1,5 @@
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { ConfigService } from "@nestjs/config";
@@ -14,6 +13,7 @@ import {
   vi,
 } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
@@ -81,7 +81,7 @@ describe(UpgradeDependenciesService, () => {
 
   beforeEach(async () => {
     originalDirectory = process.cwd();
-    temporary = fs.mkdtempSync(path.join(os.tmpdir(), "upgrade-test-"));
+    temporary = createTemporaryDirectory("upgrade");
     repository = path.join(temporary, "repository");
     fs.mkdirSync(repository);
     git("init", "-q");
@@ -112,7 +112,6 @@ describe(UpgradeDependenciesService, () => {
   afterEach(() => {
     process.chdir(originalDirectory);
     vi.unstubAllEnvs();
-    fs.rmSync(temporary, { force: true, recursive: true });
   });
 
   it("resolves with its dependencies", async () => {

@@ -1,6 +1,4 @@
 import fs from "node:fs";
-import os from "node:os";
-import path from "node:path";
 
 import {
   afterEach,
@@ -12,6 +10,7 @@ import {
   vi,
 } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PackageManifestService } from "../package-manifest/package-manifest.service";
@@ -49,7 +48,7 @@ describe(UpgradeNodeService, () => {
 
   beforeEach(() => {
     originalDirectory = process.cwd();
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "node-test-"));
+    directory = createTemporaryDirectory("node");
     process.chdir(directory);
     fs.writeFileSync(".nvmrc", "v24.16.0\n");
     vi.mocked(packageManifest.replace).mockReset();
@@ -58,7 +57,6 @@ describe(UpgradeNodeService, () => {
   afterEach(() => {
     process.chdir(originalDirectory);
     vi.unstubAllGlobals();
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
   it("resolves with its dependencies", async () => {

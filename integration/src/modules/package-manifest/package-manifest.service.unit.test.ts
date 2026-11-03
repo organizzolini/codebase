@@ -1,9 +1,8 @@
 import fs from "node:fs";
-import os from "node:os";
-import path from "node:path";
 
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PackageManifestService } from "./package-manifest.service";
@@ -32,14 +31,13 @@ describe(PackageManifestService, () => {
 
   beforeEach(() => {
     originalDirectory = process.cwd();
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "manifest-test-"));
+    directory = createTemporaryDirectory("manifest");
     process.chdir(directory);
     fs.writeFileSync("package.json", MANIFEST);
   });
 
   afterEach(() => {
     process.chdir(originalDirectory);
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
   it("resolves with its dependencies", async () => {

@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import {
@@ -12,6 +11,7 @@ import {
   vi,
 } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
@@ -58,7 +58,7 @@ describe(UpgradePythonService, () => {
 
   beforeEach(() => {
     originalDirectory = process.cwd();
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "python-test-"));
+    directory = createTemporaryDirectory("python");
     process.chdir(directory);
 
     for (const file of [
@@ -78,7 +78,6 @@ describe(UpgradePythonService, () => {
 
   afterEach(() => {
     process.chdir(originalDirectory);
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
   it("resolves with its dependencies", async () => {
