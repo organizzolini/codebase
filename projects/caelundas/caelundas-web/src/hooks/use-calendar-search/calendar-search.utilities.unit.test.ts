@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { validateCalendarSearch } from "./calendar-search.utilities";
+import {
+  getCalendarReloadKey,
+  validateCalendarSearch,
+} from "./calendar-search.utilities";
 
 describe(validateCalendarSearch, () => {
   it("reads colors turned off", () => {
@@ -45,5 +48,42 @@ describe(validateCalendarSearch, () => {
       field: "tag:type",
     });
     expect(validateCalendarSearch({ color: "nope" }).color).toBeUndefined();
+  });
+
+  it("passes the sky keys through untouched, for the backdrop to read", () => {
+    const sky = {
+      sky: "off",
+      "sky.altBottom": 5,
+      "sky.bottom": "0d1533",
+      "sky.constellations": "zodiac,ursa_major",
+      "sky.debug": true,
+      "sky.ecliptic": true,
+      "sky.eclipticColor": "ffb877",
+      "sky.eclipticOpacity": 0.4,
+      "sky.eclipticWidth": 1.5,
+      "sky.lat": 51.5,
+      "sky.lineColor": "ff8800",
+      "sky.lineOpacity": 0.5,
+      "sky.lineWidth": 2,
+      "sky.lon": -0.1,
+      "sky.maxMag": 5,
+      "sky.pixelsPerSecond": 20,
+      "sky.starScale": 1.5,
+      "sky.top": "04060f",
+      "sky.vFov": 30,
+    };
+
+    expect(validateCalendarSearch({ ...sky, view: "month" })).toMatchObject(
+      sky,
+    );
+  });
+
+  it("keeps the sky keys out of what decides a reload", () => {
+    expect(getCalendarReloadKey({ date: "2026-03-01", "sky.lat": 10 })).toBe(
+      getCalendarReloadKey({ date: "2026-03-01", "sky.lat": 20 }),
+    );
+    expect(getCalendarReloadKey({ date: "2026-03-01" })).not.toBe(
+      getCalendarReloadKey({ date: "2026-04-01" }),
+    );
   });
 });

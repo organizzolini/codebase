@@ -1,4 +1,4 @@
-import { ChevronDown, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 
 import {
   Button,
@@ -22,8 +22,8 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * Whether events are colored by type, whether crowded days merge their
- * events, how symbols are drawn, and where to send a change to either.
+ * Whether crowded days merge their events, how symbols are drawn, and where
+ * to send a change to either.
  */
 export interface CalendarViewMenuProperties {
   /**
@@ -36,14 +36,7 @@ export interface CalendarViewMenuProperties {
    * Whether the views of hours merge events that run together.
    */
   clusters: boolean;
-  /**
-   * What the events are colored by, drawn in the Colors section after its
-   * switch: the Color by submenu.
-   */
-  colorOptions?: ReactNode;
-  colors: boolean;
   onClustersChange: (enabled: boolean) => void;
-  onColorsChange: (enabled: boolean) => void;
   onSymbolsChange?: ((symbols: CalendarSymbols) => void) | undefined;
   symbols?: CalendarSymbols | undefined;
 }
@@ -52,9 +45,8 @@ export interface CalendarViewMenuProperties {
 
 /**
  * Renders the View menu: how the calendar looks. It arranges the view shown,
- * where that has anything to arrange, then turns the coloring of events by
- * type on or off, with a legend of the colors in a submenu, and the merging of
- * crowded days.
+ * where that has anything to arrange, then picks how symbols are drawn and
+ * turns the merging of crowded days on or off. Coloring is the Color menu's.
  */
 export function CalendarViewMenu(
   properties: Readonly<CalendarViewMenuProperties>,
@@ -63,10 +55,7 @@ export function CalendarViewMenu(
     children,
     className,
     clusters,
-    colorOptions,
-    colors,
     onClustersChange,
-    onColorsChange,
     onSymbolsChange = () => {},
     symbols = DEFAULT_CALENDAR_SYMBOLS,
   } = properties;
@@ -100,10 +89,6 @@ export function CalendarViewMenu(
           >
             <Eye aria-hidden="true" />
             View
-            <ChevronDown
-              aria-hidden="true"
-              className="opacity-60"
-            />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="start"
@@ -111,19 +96,6 @@ export function CalendarViewMenu(
             sideOffset={8}
           >
             {children}
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>Colors</DropdownMenuLabel>
-              <DropdownMenuCheckboxItem
-                checked={colors}
-                onCheckedChange={(checked) => {
-                  onColorsChange(checked);
-                }}
-              >
-                Color events
-              </DropdownMenuCheckboxItem>
-            </DropdownMenuGroup>
-            {colorOptions}
-            <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuLabel>Symbols</DropdownMenuLabel>
               <DropdownMenuRadioGroup

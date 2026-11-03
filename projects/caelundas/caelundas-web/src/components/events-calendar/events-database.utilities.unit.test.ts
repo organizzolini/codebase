@@ -32,4 +32,36 @@ describe("the events database", () => {
       "event-mars-square-saturn",
     ]);
   });
+
+  it("reads the night sky's stars, brightest first, and its figures", async () => {
+    const { segments, stars } = await createTestEventsDatabase().findNightSky();
+    const magnitudes = stars.map((star) => star[2]);
+
+    expect(stars.length).toBeGreaterThan(100);
+    expect(magnitudes).toStrictEqual(magnitudes.toSorted((a, b) => a - b));
+    expect(segments).toContainEqual(
+      expect.objectContaining({ name: "Ursa Major", zodiac: false }),
+    );
+    expect(
+      new Set(segments.filter((s) => s.zodiac).map((s) => s.name)).size,
+    ).toBe(12);
+  });
+
+  it("reads no night sky from tables that hold nothing", async () => {
+    await expect(
+      createTestEventsDatabase({ empty: true }).findNightSky(),
+    ).resolves.toStrictEqual({ segments: [], stars: [] });
+  });
+
+  it("lists every constellation by name, the zodiac's marked", async () => {
+    const constellations =
+      await createTestEventsDatabase().findConstellations();
+
+    expect(constellations).toHaveLength(88);
+    expect(constellations).toContainEqual({ name: "Leo", zodiac: true });
+    expect(constellations).toContainEqual({
+      name: "Ursa Major",
+      zodiac: false,
+    });
+  });
 });

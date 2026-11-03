@@ -28,13 +28,44 @@ export const J2000_JULIAN_DAY = 2_451_545;
 // 🔭 Defaults
 
 export const DEFAULT_OPTIONS = {
+  backgroundBottomColor: "#0d1533",
+  backgroundTopColor: "#04060f",
   bottomAltitudeDegrees: 0,
   debug: false,
+  ecliptic: true,
+  eclipticColor: "#ffffff",
+  eclipticOpacity: 0.12,
+  eclipticWidth: 1,
   faintestMagnitude: 6.5,
-  pixelsPerSecond: 12,
+  lineColor: "#ffffff",
+  lineOpacity: 0.24,
+  lineWidth: 0.8,
+  pixelsPerSecond: 3,
   starScale: 1,
-  verticalFieldOfViewDegrees: 20,
+  still: false,
+  verticalFieldOfViewDegrees: 90,
 } as const;
+
+/**
+ * The default observer, at the north pole, where altitude is declination and
+ * the default view, the whole sky above the horizon, holds the northern half
+ * of the ecliptic and the northern zodiac's figures as they turn past; the
+ * longitude is New York's.
+ */
+export const DEFAULT_OBSERVER = {
+  latitudeDegrees: 90,
+  longitudeDegrees: -74,
+} as const;
+
+// ⏱ Page
+
+/**
+ * How long the window must stay the same size before the sky is rebuilt to
+ * fit it.
+ */
+export const RESIZE_DEBOUNCE_MILLISECONDS = 250;
+
+export const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 // 📐 Geometry
 
@@ -48,6 +79,13 @@ export const RING_MARGIN = 24;
  * The pole stays at least this many degrees beyond the top edge.
  */
 export const POLE_MARGIN_DEGREES = 1;
+
+/**
+ * The lowest bottom altitude `sky.altBottom` takes: below the horizon, so a
+ * view from the pole, where altitude is declination, reaches the southern
+ * half of the ecliptic and the zodiac.
+ */
+export const MINIMUM_BOTTOM_ALTITUDE_DEGREES = -45;
 
 export const MINIMUM_FIELD_OF_VIEW_DEGREES = 2;
 
@@ -74,6 +112,10 @@ export const DEBUG_STAR_FACTOR = 2.4;
 export const DEBUG_MARGIN = 30;
 
 // 🎨 Color
+
+// Three or six hexadecimal digits, with or without the leading `#`, which a
+// link can only carry as `%23`.
+export const COLOR_DIGITS_PATTERN = /^#?(?:[\da-f]{3}|[\da-f]{6})$/iu;
 
 export const COLOR_BUCKETS_PER_UNIT = 10;
 
@@ -109,17 +151,68 @@ export const COLOR_INDEX_LOWEST = -0.4;
 
 export const COLOR_INDEX_HIGHEST = 2;
 
+// ✳️ Constellations
+
+/**
+ * The words `sky.constellations` takes besides names: every figure, the
+ * twelve zodiac constellations', or none.
+ */
+export const CONSTELLATION_WORDS = ["all", "none", "zodiac"] as const;
+
+/**
+ * The figures drawn when the link names none: the zodiac's, faint enough to
+ * sit behind the calendar and the twelve a calendar of astrology is about.
+ */
+export const DEFAULT_CONSTELLATIONS: readonly string[] = ["zodiac"];
+
+/**
+ * The steps each figure segment is drawn in along its great circle, enough
+ * for the longest segment to bend smoothly with the projection.
+ */
+export const CONSTELLATION_SEGMENT_STEPS = 8;
+
+/**
+ * How the figures are drawn besides their color, opacity and width: unfilled
+ * round-ended lines, the same width however far the tuning view zooms out.
+ */
+export const CONSTELLATION_LINE_ATTRIBUTES =
+  'fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"';
+
+/** The opacities `sky.lineOpacity` is clamped to. */
+export const LINE_OPACITY_RANGE = { maximum: 1, minimum: 0 } as const;
+
+/** The widths, in on-screen pixels, `sky.lineWidth` is clamped to. */
+export const LINE_WIDTH_RANGE = { maximum: 10, minimum: 0 } as const;
+
+// ☀️ Ecliptic
+
+/**
+ * The tilt of the Earth's axis, the angle between the ecliptic and the
+ * celestial equator, at J2000.
+ */
+export const OBLIQUITY_DEGREES = 23.44;
+
+/**
+ * The degrees of ecliptic longitude between the points the ecliptic is drawn
+ * through, fine enough for its curve under the projection.
+ */
+export const ECLIPTIC_STEP_DEGREES = 5;
+
+/**
+ * How the ecliptic is drawn besides its color, opacity and width: dashed, so
+ * it reads as a path and not a figure, the same however far the tuning view
+ * zooms out.
+ */
+export const ECLIPTIC_ATTRIBUTES =
+  'fill="none" stroke-dasharray="6 4" stroke-linecap="round" vector-effect="non-scaling-stroke"';
+
 // 🖼 Markup
 
-export const SKY_DEFINITIONS =
-  '<defs><linearGradient id="sky-background" x1="0" y1="0" x2="0" y2="1">' +
-  '<stop offset="0" stop-color="#04060f"/>' +
-  '<stop offset="1" stop-color="#0d1533"/>' +
-  "</linearGradient>" +
+export const STAR_GLOW_DEFINITION =
   '<radialGradient id="star-glow">' +
   '<stop offset="0" stop-color="#cfd9ff" stop-opacity=".42"/>' +
   '<stop offset="1" stop-color="#cfd9ff" stop-opacity="0"/>' +
-  "</radialGradient></defs>";
+  "</radialGradient>";
 
 export const DEBUG_LINE_ATTRIBUTES =
   'fill="none" stroke="#ffb877" vector-effect="non-scaling-stroke"';

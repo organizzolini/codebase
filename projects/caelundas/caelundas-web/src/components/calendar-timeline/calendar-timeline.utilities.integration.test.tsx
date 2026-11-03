@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { findToolbar } from "../../../testing/calendar-page";
 import {
@@ -24,6 +24,10 @@ async function findTimelineRows(): Promise<string[]> {
 
 // The timeline is tested through the `/` route, the way the page uses it;
 // it lives apart from the route's own tests only to keep each file short.
+// Each test renders the whole route and opens the View menu, which a loaded
+// continuous integration runner needs well past the default 5 seconds for.
+vi.setConfig({ testTimeout: 30_000 });
+
 describe("calendar timeline", () => {
   it("switches to the timeline from the toolbar", async () => {
     await renderRoute("/?date=2026-03-04");

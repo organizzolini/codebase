@@ -1,9 +1,15 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { createSqliteDataSource } from "@codebase/persistence";
 
-import { DATABASE_ENTITIES, DATABASE_PROJECT } from "./database.constants";
-import { Migration1793045891250 } from "./migrations/1793045891250-migration";
+import {
+  DATABASE_ENTITIES,
+  DATABASE_MIGRATIONS,
+  DATABASE_PROJECT,
+} from "./database.constants";
 
 import type { DataSource } from "typeorm";
 
@@ -26,7 +32,7 @@ describe("the caelundas schema", () => {
     dataSource = createSqliteDataSource(
       {
         entities: DATABASE_ENTITIES,
-        migrations: [Migration1793045891250],
+        migrations: DATABASE_MIGRATIONS,
         project: DATABASE_PROJECT,
       },
       { CAELUNDAS_SQLITE_DATABASE: ":memory:" },
@@ -68,5 +74,29 @@ describe("the caelundas schema", () => {
     }
 
     expect(created).toStrictEqual(described);
+  });
+
+  it("loads the committed night sky seed with every segment's stars", async () => {
+    const seed = readFileSync(
+      path.join(import.meta.dirname, "../../../data/night-sky-seed.sql"),
+      "utf8",
+    );
+
+    await dataSource.transaction(async (manager) => {
+      for (const statement of seed.split(/;\s*\n/u)) {
+        if (statement.trim() !== "") {
+          await manager.query<unknown>(statement);
+        }
+      }
+    });
+
+    await expect(
+      dataSource.query("pragma foreign_key_check"),
+    ).resolves.toStrictEqual([]);
+    await expect(
+      dataSource.query(
+        "select count(*) as count from constellation where zodiac = 1",
+      ),
+    ).resolves.toStrictEqual([{ count: 12 }]);
   });
 });

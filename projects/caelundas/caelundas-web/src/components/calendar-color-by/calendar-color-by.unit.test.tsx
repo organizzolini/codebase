@@ -64,12 +64,12 @@ describe(CalendarColorBy, () => {
   it("colors by type, kind by kind, unless told otherwise, and names each kind", () => {
     renderColorBy();
 
-    expect(screen.getByRole("button", { name: "Color by" }).textContent).toBe(
-      "Type",
-    );
-    expect(screen.getByRole("button", { name: "Color tags" }).textContent).toBe(
-      "By kind",
-    );
+    expect(
+      screen.getByRole("button", { name: "Color events by" }).textContent,
+    ).toBe("Type");
+    expect(
+      screen.getByRole("button", { name: "Color events tags" }).textContent,
+    ).toBe("By kind");
 
     for (const rule of EVENT_COLOR_RULES) {
       expect(screen.getByText(rule.label)).toBeDefined();
@@ -82,9 +82,9 @@ describe(CalendarColorBy, () => {
 
     renderColorBy({ depth: 1, field: planet?.id ?? "" });
 
-    expect(screen.getByRole("button", { name: "Color by" }).textContent).toBe(
-      "Planet",
-    );
+    expect(
+      screen.getByRole("button", { name: "Color events by" }).textContent,
+    ).toBe("Planet");
     expect(screen.getByText("Mars")).toBeDefined();
     expect(screen.getByText("Venus")).toBeDefined();
   });
@@ -100,7 +100,7 @@ describe(CalendarColorBy, () => {
   it("colors by another field when one is picked", async () => {
     const { onColorByChange } = renderColorBy();
 
-    fireEvent.click(screen.getByRole("button", { name: "Color by" }));
+    fireEvent.click(screen.getByRole("button", { name: "Color events by" }));
     fireEvent.click(await screen.findByRole("option", { name: /^Planet/u }));
 
     expect(onColorByChange).toHaveBeenCalledWith(
@@ -116,7 +116,7 @@ describe(CalendarColorBy, () => {
       field: planet?.id ?? "",
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Color by" }));
+    fireEvent.click(screen.getByRole("button", { name: "Color events by" }));
     fireEvent.click(await screen.findByRole("option", { name: /^Type/u }));
 
     expect(onColorByChange).toHaveBeenCalledWith(undefined);

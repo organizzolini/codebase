@@ -19,6 +19,27 @@ describe(CalendarFilters, () => {
     );
   });
 
+  it("joins Filter and Clear in one button group, square where they meet", () => {
+    render(
+      <CalendarFilters
+        fields={[]}
+        filter={undefined}
+        onFilterChange={vi.fn<(filter: unknown) => void>()}
+      />,
+    );
+
+    const group = screen.getByRole("group", { name: "Filter" });
+    const filter = screen.getByRole("button", { name: "Filter" });
+    const clear = screen.getByRole("button", { name: "Clear" });
+
+    expect(group.dataset["slot"]).toBe("button-group");
+    expect(group.contains(filter) && group.contains(clear)).toBe(true);
+    expect(filter.className).toContain(
+      "in-data-[slot=button-group]:rounded-r-none",
+    );
+    expect(group.lastElementChild).toBe(clear);
+  });
+
   describe("collections", () => {
     // The seed-like facets the collection is resolved from: one ingress tag.
     const FACETS = [

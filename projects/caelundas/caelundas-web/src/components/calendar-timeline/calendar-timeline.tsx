@@ -4,6 +4,7 @@ import { Gantt, GanttView } from "@codebase/presentation";
 
 import { useBarDialog } from "../../hooks/use-bar-dialog/use-bar-dialog";
 import { createEventGroupFields } from "../calendar-group-by/event-group-fields.utilities";
+import { VENDORED_SURFACE_CLASS_NAMES } from "../events-calendar/calendar-surfaces.constants";
 
 import { TIMELINE_DAY_INTERVAL } from "./calendar-timeline-clusters.constants";
 import { createTimelineLayout } from "./calendar-timeline-lanes.utilities";
@@ -178,7 +179,7 @@ export function CalendarTimeline(
     >
       <Gantt<TimelineBar>
         barLabel="auto"
-        className={`h-full ${LANE_ROWS}`}
+        className={`h-full ${LANE_ROWS} ${VENDORED_SURFACE_CLASS_NAMES.ganttHeaders} ${VENDORED_SURFACE_CLASS_NAMES.ganttScrollbars}`}
         columns={columns}
         date={anchor}
         events={shownBars}

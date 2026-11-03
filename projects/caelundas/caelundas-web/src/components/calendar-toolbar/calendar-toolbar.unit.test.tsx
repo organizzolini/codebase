@@ -49,17 +49,56 @@ describe(CalendarToolbar, () => {
     ).toBe(false);
   });
 
-  it("keeps one row when wide, and when a phone has no controls", () => {
-    const { rerender } = render(
+  it("gives a phone's menus and filters the row under the title", () => {
+    render(
       <CalendarToolbar
         filters={<button type="button">Filters</button>}
+        menus={<button type="button">View</button>}
         navigation={NAVIGATION}
+        compact
       />,
     );
 
-    expect(screen.queryByTestId("calendar-toolbar-controls")).toBeNull();
+    const controls = screen.getByTestId("calendar-toolbar-controls");
 
-    rerender(
+    for (const name of ["View", "Filters"]) {
+      expect(controls.contains(screen.getByRole("button", { name }))).toBe(
+        true,
+      );
+    }
+  });
+
+  it("splits a wide toolbar into menus with the date, then filters with the views", () => {
+    render(
+      <CalendarToolbar
+        filters={<button type="button">Filters</button>}
+        menus={<button type="button">View</button>}
+        navigation={NAVIGATION}
+        onViewChange={() => {}}
+        view="month"
+      />,
+    );
+
+    const menus = screen.getByTestId("calendar-toolbar-menus");
+    const filters = screen.getByTestId("calendar-toolbar-filters");
+
+    expect(menus.contains(screen.getByRole("button", { name: "View" }))).toBe(
+      true,
+    );
+    expect(
+      menus.contains(screen.getByRole("heading", { name: "March 2026" })),
+    ).toBe(true);
+    expect(
+      filters.contains(screen.getByRole("button", { name: "Filters" })),
+    ).toBe(true);
+    expect(
+      filters.contains(screen.getByRole("button", { name: "Month" })),
+    ).toBe(true);
+    expect(screen.queryByTestId("calendar-toolbar-controls")).toBeNull();
+  });
+
+  it("leaves a phone with no controls a single row", () => {
+    render(
       <CalendarToolbar
         navigation={NAVIGATION}
         compact
@@ -103,7 +142,7 @@ describe(CalendarToolbar, () => {
     );
   });
 
-  it("draws the filters from the left, then the views and the date at the right", () => {
+  it("draws the date above the filters, and the views after the filters", () => {
     render(
       <CalendarToolbar
         filters={<button type="button">Filter</button>}
@@ -118,11 +157,11 @@ describe(CalendarToolbar, () => {
     const navigate = screen.getByRole("group", { name: "Navigate" });
 
     expect(
-      filter.compareDocumentPosition(views) & Node.DOCUMENT_POSITION_FOLLOWING,
+      navigate.compareDocumentPosition(filter) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeGreaterThan(0);
     expect(
-      views.compareDocumentPosition(navigate) &
-        Node.DOCUMENT_POSITION_FOLLOWING,
+      filter.compareDocumentPosition(views) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeGreaterThan(0);
     expect(views.contains(filter)).toBe(false);
   });

@@ -7,11 +7,21 @@ import {
   computeLocalSiderealDegrees,
   computeStartingSiderealDegrees,
 } from "./night-sky.utilities";
-import catalog from "./use-night-sky.catalog.json";
 
 import type { StarRow } from "./night-sky.types";
 
-const stars = catalog as unknown as readonly StarRow[];
+// A field of stars every half hour of right ascension and every four degrees
+// of declination, magnitudes 1 to 5 in turn, so every part of the sky the
+// window can show holds stars to check.
+const stars: readonly StarRow[] = Array.from(
+  { length: 48 * 33 },
+  (_, index) => [
+    (index % 48) / 2,
+    -40 + Math.floor(index / 48) * 4,
+    1 + (index % 5),
+    0.6,
+  ],
+);
 const LATITUDE = 40.73;
 const LONGITUDE = -74;
 const WIDTH = 1100;
@@ -56,11 +66,16 @@ function ringRadius(star: StarRow): number {
   return scale * tangentOfHalf(90 - star[1]);
 }
 
+// New York's band facing north, the oracle's geometry, with no ecliptic.
 const baseOptions = {
+  bottomAltitudeDegrees: 0,
+  ecliptic: false,
   height: HEIGHT,
   latitudeDegrees: LATITUDE,
   localSiderealDegrees: 0,
+  pixelsPerSecond: 12,
   stars,
+  verticalFieldOfViewDegrees: FIELD_OF_VIEW,
   width: WIDTH,
 } as const;
 
@@ -116,6 +131,44 @@ describe("night sky", () => {
       expect(missing).toStrictEqual([]);
     });
 
+    it("draws the figures it is given beneath the stars, turning with them", () => {
+      const { measurements, svg } = buildNightSky({
+        ...baseOptions,
+        constellationSegments: [
+          { from: [2, 50], name: "Test", to: [3, 45], zodiac: false },
+          { from: [2, -80], name: "Test", to: [3, -85], zodiac: false },
+        ],
+      });
+
+      expect(measurements.segmentsDrawn).toBe(1);
+      expect(svg.indexOf("<animateTransform")).toBeLessThan(
+        svg.indexOf("<polyline"),
+      );
+      expect(svg.indexOf("<polyline")).toBeLessThan(svg.indexOf("<circle"));
+    });
+
+    it("draws the ecliptic only when asked, beneath the stars", () => {
+      const plain = buildNightSky({ ...baseOptions, latitudeDegrees: 75 });
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        ecliptic: true,
+        latitudeDegrees: 75,
+      });
+
+      expect(plain.svg).not.toContain('data-layer="ecliptic"');
+      expect(svg).toContain('data-layer="ecliptic"');
+      expect(svg.indexOf('data-layer="ecliptic"')).toBeLessThan(
+        svg.indexOf("<circle"),
+      );
+    });
+
+    it("draws no figure unless it is given one", () => {
+      const { measurements, svg } = buildNightSky(baseOptions);
+
+      expect(measurements.segmentsDrawn).toBe(0);
+      expect(svg).not.toContain("<polyline");
+    });
+
     it("starts at minus the sidereal angle and turns one full circle", () => {
       const { svg } = buildNightSky({
         ...baseOptions,
@@ -123,6 +176,41 @@ describe("night sky", () => {
       });
 
       expect(svg).toContain('from="-100.000" to="-460.000"');
+    });
+
+    it("stands still at minus the sidereal angle, the animation's starting angle", () => {
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        localSiderealDegrees: 100,
+        still: true,
+      });
+
+      expect(svg).toContain('<g transform="rotate(-100.000)">');
+      expect(svg).not.toContain("animateTransform");
+    });
+
+    it("draws the background gradient in the colors it is given", () => {
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        backgroundBottomColor: "#123",
+        backgroundTopColor: "A0B1C2",
+      });
+      const plain = buildNightSky(baseOptions).svg;
+
+      expect(svg).toContain('offset="0" stop-color="#a0b1c2"');
+      expect(svg).toContain('offset="1" stop-color="#112233"');
+      expect(plain).toContain('offset="0" stop-color="#04060f"');
+      expect(plain).toContain('offset="1" stop-color="#0d1533"');
+    });
+
+    it("keeps anything but a hexadecimal color out of the markup", () => {
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        backgroundTopColor: 'red"/><script>',
+      });
+
+      expect(svg).not.toContain("<script>");
+      expect(svg).toContain('offset="0" stop-color="#04060f"');
     });
 
     it("puts the pole above the top edge and sets the period from the speed", () => {
@@ -148,6 +236,23 @@ describe("night sky", () => {
       expect(measurements.fieldOfViewClamped).toBe(true);
       expect(measurements.verticalFieldOfViewDegrees).toBe(19);
       expect(measurements.poleDistanceAboveScreen).toBeGreaterThan(0);
+    });
+
+    it("draws the full view from the pole, latitude 90, with finite numbers", () => {
+      const { measurements, svg } = buildNightSky({
+        ...baseOptions,
+        bottomAltitudeDegrees: 0,
+        ecliptic: true,
+        latitudeDegrees: 90,
+        verticalFieldOfViewDegrees: 90,
+      });
+
+      expect(measurements.verticalFieldOfViewDegrees).toBe(89);
+      expect(measurements.poleDistanceAboveScreen).toBeGreaterThan(0);
+      expect(Number.isFinite(measurements.periodSeconds)).toBe(true);
+      expect(measurements.starsDrawn).toBeGreaterThan(0);
+      expect(svg).toContain('data-layer="ecliptic"');
+      expect(svg).not.toMatch(/NaN|Infinity/u);
     });
 
     it("colors stars along the ramp and clamps out-of-range indexes", () => {

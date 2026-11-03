@@ -3,7 +3,7 @@ import { createElement } from "react";
 
 import { Badge, Button } from "@codebase/presentation";
 
-import { TITLE } from "./calendar-filters.constants";
+import { FILTERS_BUTTON_CLASS_NAME, TITLE } from "./calendar-filters.constants";
 
 import type { ReactElement } from "react";
 
@@ -24,8 +24,10 @@ export function renderFiltersButton(activeCount: number): ReactElement {
       "aria-label":
         activeCount === 0 ? TITLE : `${TITLE}, ${String(activeCount)} active`,
       // The surface's root sits between the trigger and the button group,
-      // so the group's joining styles are applied to the trigger here.
-      className: "rounded-r-none focus-visible:relative focus-visible:z-10",
+      // so the group's joining styles are applied to the trigger here, under
+      // the same variant as the button's own rounding inside a group, which
+      // would otherwise win.
+      className: FILTERS_BUTTON_CLASS_NAME,
       size: "sm",
       variant: "outline",
     },

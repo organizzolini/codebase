@@ -1,5 +1,7 @@
 import { Button, ButtonGroup, ButtonGroupText } from "@codebase/presentation";
 
+import { SURFACE_CLASS_NAMES } from "../events-calendar/calendar-surfaces.constants";
+
 import type { CalendarNavigation } from "./calendar-navigation-group.types";
 import type { ReactNode } from "react";
 
@@ -68,7 +70,7 @@ export function CalendarNavigationGroup(
         </Button>
         <ButtonGroupText
           aria-level={2}
-          className={`h-7 justify-center bg-background font-semibold ${compact ? "min-w-0 grow truncate text-sm" : "w-60 truncate text-base"}`}
+          className={`h-7 justify-center ${SURFACE_CLASS_NAMES.navigationTitle} font-semibold ${compact ? "min-w-0 grow truncate text-sm" : "w-60 truncate text-base"}`}
           role="heading"
         >
           {navigation.title}

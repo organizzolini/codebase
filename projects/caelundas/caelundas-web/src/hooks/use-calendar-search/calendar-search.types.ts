@@ -50,6 +50,31 @@ export interface CalendarSearch {
    */
   scale?: TimelineScale | undefined;
   /**
+   * The night sky backdrop's overrides, `sky=off` and the `sky.*` keys. The
+   * calendar neither reads nor validates them: the backdrop does, and they
+   * are named here so validating the search does not drop them. Each is a number, a
+   * boolean or text, as the router read it.
+   */
+  sky?: SkySearchValue | undefined;
+  "sky.altBottom"?: SkySearchValue | undefined;
+  "sky.bottom"?: SkySearchValue | undefined;
+  "sky.constellations"?: SkySearchValue | undefined;
+  "sky.debug"?: SkySearchValue | undefined;
+  "sky.ecliptic"?: SkySearchValue | undefined;
+  "sky.eclipticColor"?: SkySearchValue | undefined;
+  "sky.eclipticOpacity"?: SkySearchValue | undefined;
+  "sky.eclipticWidth"?: SkySearchValue | undefined;
+  "sky.lat"?: SkySearchValue | undefined;
+  "sky.lineColor"?: SkySearchValue | undefined;
+  "sky.lineOpacity"?: SkySearchValue | undefined;
+  "sky.lineWidth"?: SkySearchValue | undefined;
+  "sky.lon"?: SkySearchValue | undefined;
+  "sky.maxMag"?: SkySearchValue | undefined;
+  "sky.pixelsPerSecond"?: SkySearchValue | undefined;
+  "sky.starScale"?: SkySearchValue | undefined;
+  "sky.top"?: SkySearchValue | undefined;
+  "sky.vFov"?: SkySearchValue | undefined;
+  /**
    * `emojis` when events are drawn with their emoji; their icons when absent.
    */
   symbols?: "emojis" | undefined;
@@ -58,3 +83,8 @@ export interface CalendarSearch {
    */
   view?: CalendarViewName | undefined;
 }
+
+/**
+ * What a sky key of the link holds, as the router read it.
+ */
+export type SkySearchValue = boolean | number | string;
