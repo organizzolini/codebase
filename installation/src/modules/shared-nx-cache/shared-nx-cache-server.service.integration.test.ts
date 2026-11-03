@@ -5,7 +5,15 @@ import path from "node:path";
 import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
@@ -235,7 +243,12 @@ describe(SharedNxCacheServerService, () => {
     );
 
     expect(reply).toMatch(/^HTTP\/1\.1 400/);
-    expect(listing()).toStrictEqual([]);
+
+    // Node answers a connection cut mid-body itself, so the reply can arrive
+    // before the upload's own cleanup has run.
+    await vi.waitFor(() => {
+      expect(listing()).toStrictEqual([]);
+    });
   });
 
   it("answers 404 for other paths and 405 for other methods", async () => {

@@ -25,10 +25,11 @@ permissions:
 # Nx Cloud's remote cache. Only a trusted run gets the read-write token: a run
 # for a pull request, or a manual run off `main`, gets the read-only one, whose
 # results stay in a cache of their own and cannot reach what `main` reads. The
-# secret is chosen by name, so a missing read-only secret leaves the token empty
-# rather than falling back to the read-write one.
+# token is the join of two expressions, one of them always empty, so a missing
+# read-only secret leaves it empty rather than falling back to the read-write one.
 env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets[format('NX_CLOUD_{0}_TOKEN', (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main') && 'READ_ONLY' || 'READ_WRITE')] }}
+  NX_CLOUD_ACCESS_TOKEN: >-
+    ${{ (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main') && secrets.NX_CLOUD_READ_ONLY_TOKEN || '' }}${{ !((github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && secrets.NX_CLOUD_READ_WRITE_TOKEN || '' }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
