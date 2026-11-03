@@ -3,11 +3,9 @@ import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -15,16 +13,16 @@ import { SynchronizationService } from "../synchronization/synchronization.servi
 import { TypeormMigrationSqlExtractorService } from "./typeorm-migration-sql-extractor.service";
 import { TypeormMigrationSqlCommand } from "./typeorm-migration-sql.command";
 
-import type { LoggerService } from "@codebase/observability";
-
 const moduleOptions = {
   providers: [SynchronizationService, TypeormMigrationSqlExtractorService],
 };
 
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+
 describe(TypeormMigrationSqlCommand, () => {
   let command: TypeormMigrationSqlCommand;
   let extractorService: TypeormMigrationSqlExtractorService;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   beforeAll(async () => {
     const built = await buildTestingModule(

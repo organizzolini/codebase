@@ -3,17 +3,15 @@ import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne, mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
 import { DevcontainerConfigurationCommand } from "./devcontainer-configuration.command";
 
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const fileContents = new Map<string, string>();
 
@@ -38,7 +36,7 @@ const moduleOptions = { providers: [SynchronizationService] };
 
 describe(DevcontainerConfigurationCommand, () => {
   let command: DevcontainerConfigurationCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   const workspaceRoot = process.cwd();
   const localConfigFile = path.join(
@@ -239,7 +237,9 @@ describe(DevcontainerConfigurationCommand, () => {
 
   it.each([
     {
-      assertLogs: (loggerService: LoggerService): void => {
+      assertLogs: (
+        loggerService: BuiltTestingModule<unknown>["logger"],
+      ): void => {
         expect(loggerService.info).toHaveBeenCalledWith(
           "📦 Detected out-of-sync common fields",
           undefined,
@@ -271,7 +271,9 @@ describe(DevcontainerConfigurationCommand, () => {
       },
     },
     {
-      assertLogs: (loggerService: LoggerService): void => {
+      assertLogs: (
+        loggerService: BuiltTestingModule<unknown>["logger"],
+      ): void => {
         expect(loggerService.info).not.toHaveBeenCalledWith(
           "🔀 Differing field",
           undefined,
@@ -299,7 +301,9 @@ describe(DevcontainerConfigurationCommand, () => {
       },
     },
     {
-      assertLogs: (loggerService: LoggerService): void => {
+      assertLogs: (
+        loggerService: BuiltTestingModule<unknown>["logger"],
+      ): void => {
         expect(loggerService.info).not.toHaveBeenCalledWith(
           "🔀 Differing field",
           undefined,

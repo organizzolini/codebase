@@ -1,23 +1,21 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
 import { AuditGovernanceCommand } from "./audit-governance.command";
 import { AuditGovernanceService } from "./audit-governance.service";
 
-import type { LoggerService } from "@codebase/observability";
-
 const moduleOptions = { mocks: [AuditGovernanceService] };
+
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 describe(AuditGovernanceCommand, () => {
   let command: AuditGovernanceCommand;
   let service: AuditGovernanceService;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   beforeAll(async () => {
     const built = await buildTestingModule(

@@ -4,17 +4,15 @@ import path from "node:path";
 import { ConfigurationService } from "@conformetry/configuration";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne, mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
 import { ConformetryGeneratorsCommand } from "./conformetry-generators.command";
 
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const fileContents = new Map<string, string>();
 type ConformetryTestConfiguration = {
@@ -62,7 +60,7 @@ const moduleOptions = {
 
 describe(ConformetryGeneratorsCommand, () => {
   let command: ConformetryGeneratorsCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   const workspaceRoot = process.cwd();
   const agentsFile = path.join(workspaceRoot, "AGENTS.md");
@@ -254,7 +252,9 @@ describe(ConformetryGeneratorsCommand, () => {
 
   it.each([
     {
-      assertLogs: (loggerService: LoggerService): void => {
+      assertLogs: (
+        loggerService: BuiltTestingModule<unknown>["logger"],
+      ): void => {
         expect(loggerService.error).toHaveBeenCalledWith(
           "💥 Failed synchronizing conformetry generators",
           expect.stringContaining("Markers not found in README.md"),
@@ -267,7 +267,9 @@ describe(ConformetryGeneratorsCommand, () => {
       },
     },
     {
-      assertLogs: (loggerService: LoggerService): void => {
+      assertLogs: (
+        loggerService: BuiltTestingModule<unknown>["logger"],
+      ): void => {
         expect(loggerService.info).toHaveBeenCalledWith(
           "📇 Detected an out-of-sync conformetry generators table",
           undefined,
@@ -295,7 +297,9 @@ describe(ConformetryGeneratorsCommand, () => {
       },
     },
     {
-      assertLogs: (loggerService: LoggerService): void => {
+      assertLogs: (
+        loggerService: BuiltTestingModule<unknown>["logger"],
+      ): void => {
         expect(loggerService.error).toHaveBeenCalledWith(
           "💥 Failed synchronizing conformetry generators",
           expect.stringContaining("configuration boom"),

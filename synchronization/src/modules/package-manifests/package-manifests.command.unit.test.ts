@@ -1,9 +1,15 @@
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-
 import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
+
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -12,7 +18,7 @@ import { PackageManifestsCommand } from "./package-manifests.command";
 import { PackageManifestsService } from "./package-manifests.service";
 
 import type { PackageManifestsSummary } from "./package-manifests.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 const moduleOptions = {
@@ -22,7 +28,7 @@ const moduleOptions = {
 
 describe(PackageManifestsCommand, () => {
   let command: PackageManifestsCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   let packageManifestsService: DeepMocked<PackageManifestsService>;
 
@@ -39,11 +45,10 @@ describe(PackageManifestsCommand, () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    command = new PackageManifestsCommand(
-      logger,
-      packageManifestsService,
-      new SynchronizationService(),
-    );
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("resolves with its dependencies", async () => {

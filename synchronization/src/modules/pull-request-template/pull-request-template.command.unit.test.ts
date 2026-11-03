@@ -3,10 +3,8 @@ import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne, mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -16,8 +14,6 @@ import {
   SYNC_PULL_REQUEST_TEMPLATE_MARKER,
   SYNC_PULL_REQUEST_TEMPLATE_TARGET_FILES,
 } from "./pull-request-template.constants";
-
-import type { LoggerService } from "@codebase/observability";
 
 const fileContents = new Map<string, string>();
 
@@ -40,9 +36,11 @@ vi.mock("node:fs", () => {
 
 const moduleOptions = { providers: [SynchronizationService] };
 
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+
 describe(PullRequestTemplateCommand, () => {
   let command: PullRequestTemplateCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   const workspaceRoot = process.cwd();
   const templateFile = path.join(
