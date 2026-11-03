@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { aspectBodies as sextupleAspectBodies } from "../caelundas/caelundas.constants";
 import { bodyDisplayName, groupByToMap } from "../caelundas/caelundas.types";
@@ -32,7 +32,6 @@ export class SextupleAspectsComposerService {
   // 🏗 Dependency Injection
 
   constructor(
-    private readonly aspectPhaseEmojiService: AspectPhaseEmojiService,
     private readonly progressiveCompoundEventService: ProgressiveCompoundEventService,
   ) {}
 
@@ -133,19 +132,17 @@ export class SextupleAspectsComposerService {
   }
 
   /**
-   * Formats summary as `phaseEmoji + aspectSymbol + symbolChain + description`.
+   * Formats summary as `aspectSymbol + symbolChain + description`, the description minus its phase word.
    */
   buildSextupleAspectSummary(args: {
     aspectSymbol: string;
     description: string;
-    phase: AspectPhase;
     symbols: string[];
   }): string {
-    const { aspectSymbol, description, phase, symbols } = args;
-    const phaseEmoji = this.getPhaseEmoji(phase);
-    const symbolChain = symbols.join("-");
+    const { aspectSymbol, description, symbols } = args;
+    const symbolChain = symbols.join("");
 
-    return `${phaseEmoji}${aspectSymbol} ${symbolChain} ${description}`;
+    return `${aspectSymbol}${symbolChain} ${description.replace(PHASE_WORD_PATTERN, "")}`;
   }
 
   /**
@@ -186,7 +183,6 @@ export class SextupleAspectsComposerService {
     const summary = this.buildSextupleAspectSummary({
       aspectSymbol,
       description,
-      phase,
       symbols,
     });
     const tags = this.buildSextupleAspectTags(
@@ -331,13 +327,6 @@ export class SextupleAspectsComposerService {
     return n0 && n1 && this.isValidGrandTrine(trineConnections, n0, n1)
       ? [n0, n1]
       : null;
-  }
-
-  /**
-   * Maps phase to the event-summary marker prefix.
-   */
-  getPhaseEmoji(phase: AspectPhase): string {
-    return this.aspectPhaseEmojiService.getPhaseEmoji(phase);
   }
 
   /**

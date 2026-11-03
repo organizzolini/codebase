@@ -1,37 +1,56 @@
-import { fireEvent, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { createTestEventsDatabase } from "../../testing/events-database";
+import {
+  BUILDER_TEST,
+  BUILDER_WAIT,
+  findToolbar,
+  pickOption,
+  startFilterRule,
+} from "../../testing/calendar-page";
+import {
+  fieldRule,
+  filterGroup,
+  filterLink,
+  tagRule,
+} from "../../testing/event-filters";
+import {
+  createFailingEventsDatabase,
+  createTestEventsDatabase,
+} from "../../testing/events-database";
 import { renderRoute } from "../../testing/render-route";
-import { UnsupportedBrowserError } from "../lib/events-database/events-database.errors";
+import { setViewportWidth } from "../../testing/viewport";
+import { UnsupportedBrowserError } from "../components/events-calendar/events-database.constants";
+import { getRouter } from "../router";
 
 import { Route } from "./index";
 
-import type { EventsDatabase } from "../lib/events-database/events-database.types";
+// The route helper builds its own router, so the one it built is kept for
+// a test that navigates it.
+vi.mock(import("../router"), async (importOriginal) => {
+  const original = await importOriginal();
+
+  return { ...original, getRouter: vi.fn(original.getRouter) };
+});
 
 /**
- * A database whose every read fails with the error given, until `recover`
- * hands reads back to the seeded database.
+ * The router the last render of a route was given.
  */
-function createFailingEventsDatabase(error: Error): {
-  database: EventsDatabase;
-  recover: () => void;
-} {
-  const seeded = createTestEventsDatabase();
-  let failing = true;
+function getRenderedRouter(): ReturnType<typeof getRouter> {
+  const router = vi.mocked(getRouter).mock.results.at(-1)?.value;
 
-  return {
-    database: {
-      describeDataset: async () =>
-        failing ? Promise.reject(error) : seeded.describeDataset(),
-      findEvents: async (query) =>
-        failing ? Promise.reject(error) : seeded.findEvents(query),
-    },
-    recover: () => {
-      failing = false;
-    },
-  };
+  if (router === undefined) {
+    throw new Error("No route has been rendered");
+  }
+
+  return router;
 }
+
+// Each click of the View menu re-renders the whole route, which a slow
+// continuous integration runner needs well past the default time for: a
+// loaded runner passed 15 seconds on the menus' test, so the limit is three
+// times that.
+vi.setConfig({ testTimeout: 45_000 });
 
 describe("index", () => {
   it("renders its page", async () => {
@@ -56,7 +75,10 @@ describe("index", () => {
     expect(
       within(within(toolbar).getByRole("group", { name: "View" })).getByRole(
         "button",
-        { name: "Month", pressed: true },
+        {
+          name: "Month",
+          pressed: true,
+        },
       ),
     ).toBeDefined();
   });
@@ -93,7 +115,7 @@ describe("index", () => {
   it("moves to the next month and reads its events", async () => {
     await renderRoute("/?date=2026-03-01");
 
-    const toolbar = await screen.findByTestId("calendar-toolbar");
+    const toolbar = await findToolbar();
 
     fireEvent.click(within(toolbar).getByRole("button", { name: /Next/u }));
 
@@ -148,7 +170,10 @@ describe("index", () => {
     await renderRoute("/?date=2026-03-01", {
       eventsDatabase: {
         describeDataset: async () => new Promise(() => {}),
+        findConstellations: async () => new Promise(() => {}),
         findEvents: async () => new Promise(() => {}),
+        findFacets: async () => new Promise(() => {}),
+        findNightSky: async () => new Promise(() => {}),
       },
       waitForLoad: false,
     });
@@ -214,5 +239,384 @@ describe("index", () => {
     expect(
       screen.queryAllByRole("button", { name: /Conjunct|Ingress/u }),
     ).toHaveLength(0);
+  });
+
+  it("restores the filters a link holds", async () => {
+    await renderRoute(
+      filterLink(
+        "2026-03-01",
+        filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
+      ),
+    );
+
+    await expect(
+      screen.findByRole("button", { name: /^Venus Ingress Aries/u }),
+    ).resolves.toBeDefined();
+    expect(
+      screen.getByRole("button", { name: /^Mars Conjunct Venus/u }),
+    ).toBeDefined();
+    expect(
+      screen.queryByRole("button", { name: /^Sun Ingress Aries/u }),
+    ).toBeNull();
+    expect(screen.queryAllByRole("button", { name: /^Mercury/u })).toHaveLength(
+      0,
+    );
+  });
+
+  it("keeps the filters when moving to another month", async () => {
+    await renderRoute(
+      filterLink(
+        "2026-03-01",
+        filterGroup("and", tagRule("planet", "is_any_of", ["mercury"])),
+      ),
+    );
+
+    const toolbar = await findToolbar();
+
+    fireEvent.click(within(toolbar).getByRole("button", { name: /Next/u }));
+
+    await screen.findByRole("grid", { name: "April 2026" });
+
+    await expect(
+      screen.findByText("No events match the filters"),
+    ).resolves.toBeDefined();
+    expect(
+      screen.queryByRole("button", { name: /^Mars Square Saturn/u }),
+    ).toBeNull();
+  });
+
+  it("does not blame the filters for a month with no events at all", async () => {
+    await renderRoute(
+      filterLink(
+        "2026-05-01",
+        filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
+      ),
+    );
+
+    await expect(
+      screen.findByText("No events this month"),
+    ).resolves.toBeDefined();
+    expect(screen.queryByText("No events match the filters")).toBeNull();
+  });
+
+  it("restores nested groups and negated rules from a link", async () => {
+    await renderRoute(
+      filterLink(
+        "2026-03-01",
+        filterGroup(
+          "and",
+          filterGroup(
+            "or",
+            tagRule("planet", "is_any_of", ["sun"]),
+            tagRule("planet", "is_any_of", ["venus"]),
+          ),
+          { ...tagRule("type", "is_any_of", ["aspect"]), negated: true },
+        ),
+      ),
+    );
+
+    await expect(
+      screen.findByRole("button", { name: /^Venus Ingress Aries/u }),
+    ).resolves.toBeDefined();
+    expect(
+      screen.queryByRole("button", { name: /^Mars Conjunct Venus/u }),
+    ).toBeNull();
+  });
+
+  it("ignores a filter in the link that does not parse", async () => {
+    await renderRoute(
+      filterLink("2026-03-01", { combinator: "xor", type: "group" }),
+    );
+
+    await expect(
+      screen.findByRole("button", { name: /^Sun Ingress Aries/u }),
+    ).resolves.toBeDefined();
+  });
+
+  it("ignores the rules that are not finished", async () => {
+    await renderRoute(
+      filterLink(
+        "2026-03-01",
+        filterGroup("and", tagRule("planet", "is_any_of", [])),
+      ),
+    );
+
+    await expect(
+      screen.findByRole("button", { name: /^Sun Ingress Aries/u }),
+    ).resolves.toBeDefined();
+    expect(screen.queryByText("No events match the filters")).toBeNull();
+  });
+
+  it.each([
+    { size: "a desktop", slot: "popover-content", width: 1280 },
+    { size: "a tablet", slot: "drawer-popup", width: 800 },
+    { size: "a phone", slot: "sheet-content", width: 375 },
+  ])(
+    "opens the filter builder over the calendar on $size",
+    async (viewport) => {
+      setViewportWidth(viewport.width);
+      await renderRoute("/?date=2026-03-01");
+
+      const toolbar = await findToolbar();
+
+      expect(screen.queryByText("No filters yet")).toBeNull();
+
+      fireEvent.click(
+        within(toolbar).getByRole("button", { name: /^Filter(,|$)/u }),
+      );
+
+      const builder = await screen.findByRole("dialog", { name: "Filter" });
+
+      expect(builder.closest(`[data-slot="${viewport.slot}"]`)).not.toBeNull();
+      expect(within(builder).getByText("No filters yet")).toBeDefined();
+    },
+  );
+
+  it(
+    "filters the calendar with a rule built in the builder",
+    BUILDER_TEST,
+    async () => {
+      await renderRoute("/?date=2026-03-01");
+      await startFilterRule(/^Planet(?!-)/u, "is any of");
+      await pickOption(/^Mercury/u);
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+
+      // Both at once, so the skeleton a slow reload shows cannot pass for it.
+      await waitFor(() => {
+        expect(
+          screen.getAllByRole("button", { name: /^Mercury Retrograde/u }),
+        ).not.toHaveLength(0);
+        expect(
+          screen.queryByRole("button", { name: /^Sun Ingress Aries/u }),
+        ).toBeNull();
+      }, BUILDER_WAIT);
+    },
+  );
+
+  it(
+    "shows the active filters as chips beside a count",
+    BUILDER_TEST,
+    async () => {
+      await renderRoute(
+        filterLink(
+          "2026-03-01",
+          filterGroup(
+            "and",
+            tagRule("planet", "is_any_of", ["venus"]),
+            tagRule("sign", "is_any_of", ["aries"]),
+            tagRule("type", "is_any_of", []),
+          ),
+        ),
+      );
+
+      const toolbar = await findToolbar();
+      const chips = within(toolbar).getByRole("toolbar", { name: "Filter" });
+
+      expect(
+        within(toolbar).getByRole("button", { name: "Filter, 2 active" }),
+      ).toBeDefined();
+      expect(within(chips).getAllByText(/^(Planet|Sign|Type)$/u)).toHaveLength(
+        3,
+      );
+
+      fireEvent.click(
+        within(chips).getByRole("button", { name: "Sign filter options" }),
+      );
+      fireEvent.click(
+        await screen.findByRole("menuitem", { name: "Remove" }, BUILDER_WAIT),
+      );
+
+      // Read afresh, since a slow reload may have drawn a new toolbar.
+      await waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: /^Mars Conjunct Venus/u }),
+        ).toBeDefined();
+        expect(
+          screen.getByRole("button", { name: "Filter, 1 active" }),
+        ).toBeDefined();
+      }, BUILDER_WAIT);
+    },
+  );
+
+  it("collapses the chips into the count on a phone", async () => {
+    setViewportWidth(375);
+    await renderRoute(
+      filterLink(
+        "2026-03-01",
+        filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
+      ),
+    );
+
+    const toolbar = await findToolbar();
+
+    expect(
+      within(toolbar).getByRole("button", { name: "Filter, 1 active" }),
+    ).toBeDefined();
+    expect(within(toolbar).queryByRole("toolbar")).toBeNull();
+  });
+
+  it("turns the colors off from the Color menu and the grouping of crowded days from the View menu", async () => {
+    await renderRoute("/?date=2026-03-01");
+    await screen.findByRole("grid", { name: "March 2026" });
+
+    const seen = new Set<string>();
+
+    for (const [menu, role, name] of [
+      ["Color options", "switch", "Color events"],
+      ["View options", "menuitemcheckbox", "Group similar events"],
+      ["Color options", "switch", "Color events"],
+      ["View options", "menuitemcheckbox", "Group similar events"],
+    ] as const) {
+      fireEvent.click(screen.getByRole("button", { name: menu }));
+      fireEvent.click(await screen.findByRole(role, { name }));
+      // A switch leaves its panel open, where a menu item closes its menu.
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+      await waitFor(() => {
+        expect(screen.queryByRole(role, { name })).toBeNull();
+      });
+
+      // The link now says so, and the menu reads back what it holds.
+      fireEvent.click(screen.getByRole("button", { name: menu }));
+      await waitFor(() => {
+        expect(
+          screen.getByRole(role, { name }).getAttribute("aria-checked"),
+        ).toBe(seen.has(name) ? "true" : "false");
+      });
+      seen.add(name);
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+    }
+  });
+
+  it("switches the symbols to emojis and back from the View menu", async () => {
+    await renderRoute("/?date=2026-03-01");
+    await screen.findByRole("heading", { level: 1 });
+
+    for (const name of ["Emojis", "Glyphs"]) {
+      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      fireEvent.click(await screen.findByRole("menuitemradio", { name }));
+
+      // The link now holds the pick, and the menu reads it back.
+      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      await waitFor(() => {
+        expect(
+          screen
+            .getByRole("menuitemradio", { name })
+            .getAttribute("aria-checked"),
+        ).toBe("true");
+      });
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+    }
+  });
+
+  it("searches the events' text from a link", async () => {
+    await renderRoute(
+      filterLink(
+        "2026-03-01",
+        filterGroup("and", fieldRule("text", "contains", "ingress")),
+      ),
+    );
+
+    await expect(
+      screen.findByRole("button", { name: /^Sun Ingress Aries/u }),
+    ).resolves.toBeDefined();
+    expect(
+      screen.queryByRole("button", { name: /^Mars Conjunct Venus/u }),
+    ).toBeNull();
+  });
+
+  it(
+    "filters by a date range picked in the builder",
+    BUILDER_TEST,
+    async () => {
+      await renderRoute("/?date=2026-03-01");
+      await startFilterRule(/^Date/u, "is between");
+      fireEvent.change(
+        await screen.findByLabelText("Date from", {}, BUILDER_WAIT),
+        {
+          target: { value: "2026-03-25" },
+        },
+      );
+      fireEvent.change(screen.getByLabelText("Date to"), {
+        target: { value: "2026-03-26" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "Apply" }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: /^Venus Ingress Aries/u }),
+        ).toBeDefined();
+        expect(
+          screen.queryByRole("button", { name: /^Sun Ingress Aries/u }),
+        ).toBeNull();
+      }, BUILDER_WAIT);
+    },
+  );
+
+  describe("sky link parameters", () => {
+    it("keeps them through the calendar's own navigation", async () => {
+      await renderRoute("/?date=2026-03-01&sky.lat=51.5");
+      const router = getRenderedRouter();
+      const toolbar = await findToolbar();
+
+      fireEvent.click(within(toolbar).getByRole("button", { name: /Next/u }));
+
+      await screen.findByRole("grid", { name: "April 2026" });
+
+      expect(router.state.location.search).toMatchObject({
+        date: "2026-04-01",
+        "sky.lat": 51.5,
+      });
+    });
+
+    it("does not run the loader again for a change to them alone", async () => {
+      const database = createTestEventsDatabase();
+      // The loader caches its event reads, so it is the dataset read, made on
+      // every load, that shows the loader ran.
+      const loads = vi.spyOn(database, "describeDataset");
+      await renderRoute("/?date=2026-03-01", { eventsDatabase: database });
+
+      const router = getRenderedRouter();
+
+      await screen.findByRole("grid", { name: "March 2026" });
+      loads.mockClear();
+      await router.navigate({
+        search: (previous) => ({ ...previous, "sky.lat": 51.5 }),
+        to: "/",
+      });
+
+      expect(loads).not.toHaveBeenCalled();
+      expect(router.state.location.search).toMatchObject({ "sky.lat": 51.5 });
+    });
+
+    it("still runs the loader for a change to the calendar", async () => {
+      const database = createTestEventsDatabase();
+      // The loader caches its event reads, so it is the dataset read, made on
+      // every load, that shows the loader ran.
+      const loads = vi.spyOn(database, "describeDataset");
+      await renderRoute("/?date=2026-03-01&sky.lat=51.5", {
+        eventsDatabase: database,
+      });
+
+      const router = getRenderedRouter();
+
+      await screen.findByRole("grid", { name: "March 2026" });
+      loads.mockClear();
+      await router.navigate({
+        search: (previous) => ({ ...previous, date: "2026-04-01" }),
+        to: "/",
+      });
+
+      await waitFor(() => {
+        expect(loads).toHaveBeenCalledWith();
+      });
+    });
   });
 });

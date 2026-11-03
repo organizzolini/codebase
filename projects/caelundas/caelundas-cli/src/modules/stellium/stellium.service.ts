@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { aspectBodies as stelliumBodies } from "../caelundas/caelundas.constants";
 import { bodyDisplayName } from "../caelundas/caelundas.types";
@@ -130,8 +131,7 @@ export class StelliumService {
     const stelliumSymbol = symbolByStellium[stelliumName];
 
     const description = `${_.sortBy([...bodiesCapitalized]).join(", ")} stellium ${phase}`;
-    const phaseEmoji = this.phaseEmojiFor(phase);
-    const summary = `${phaseEmoji}${stelliumSymbol} ${bodySymbols.join("-")} ${description}`;
+    const summary = `${stelliumSymbol}${bodySymbols.join("")} ${description.replace(PHASE_WORD_PATTERN, "")}`;
 
     return {
       description,
@@ -247,13 +247,6 @@ export class StelliumService {
     return [...stelliums]
       .filter(([key]) => !others.has(key))
       .map(([, bodies]) => bodies);
-  }
-
-  /**
-   * Handles phase emoji for.
-   */
-  private phaseEmojiFor(phase: StelliumPhase): string {
-    return phase === "forming" ? "➡️ " : "⬅️ ";
   }
 
   /**

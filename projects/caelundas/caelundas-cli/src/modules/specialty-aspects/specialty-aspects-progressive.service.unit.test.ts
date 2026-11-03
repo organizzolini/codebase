@@ -284,7 +284,7 @@ describe(SpecialtyAspectsProgressiveService, () => {
       expect.stringContaining("specialty aspect"),
     );
     expect(progressiveEvents).toHaveLength(1);
-    expect(progressiveEvents[0]?.description).toBe("Moon quintile Sun");
-    expect(progressiveEvents[0]?.summary).toContain("Moon quintile Sun");
+    expect(progressiveEvents[0]?.description).toBe("Sun quintile Moon");
+    expect(progressiveEvents[0]?.summary).toBe("⬠ Sun quintile Moon");
   });
 });

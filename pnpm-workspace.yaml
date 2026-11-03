@@ -58,8 +58,8 @@ catalog:
   "@microsoft/api-extractor": ^7.52.1
   "@golevelup/ts-vitest": ^4.0.0
   "@graphql-codegen/cli": ^7.4.6
-  "@graphql-codegen/typed-document-node": ^6.1.3
-  "@graphql-codegen/typescript": ^5.0.2
+  "@graphql-codegen/typed-document-node": ^7.2.0
+  "@graphql-codegen/typescript": ^6.1.2
   "@graphql-codegen/typescript-msw": ^4.0.2
   "@graphql-codegen/typescript-operations": ^6.1.10
   "@graphql-typed-document-node/core": ^3.2.0
@@ -138,7 +138,7 @@ catalog:
   graphql: ^16.11.0
   husky: ^9.1.7
   graphql-codegen-typescript-validation-schema: ^0.19.0
-  ignore: 7.0.13
+  ignore: 7.0.14
   input-otp: ^1.4.2
   jiti: ^2.7.0
   jsdom: ^30.0.1
@@ -162,7 +162,7 @@ catalog:
   next-themes: ^0.4.6
   number-to-words: ^1.2.4
   nx: ^24.0.0
-  oxfmt: ^0.74.0
+  oxfmt: ^0.75.0
   oxlint: ^1.66.0
   pg: ^8.21.0
   pino: ^10.3.1
@@ -198,7 +198,7 @@ catalog:
   typescript: ^6.0.3
   typescript-eslint: ^8.59.4
   validate-branch-name: ^1.3.2
-  verdaccio: ^6.3.2
+  verdaccio: ^7.0.1
   vite: 8.3.5
   vite-plugin-dts: ^5.0.1
   vite-plugin-static-copy: ^4.1.1
@@ -206,7 +206,7 @@ catalog:
   vitest: ^5.0.0
   yaml: ^2.9.0
   zod: ^4.4.3
-  openwiki: ^0.7.0
+  openwiki: ^0.7.2
   skills: ^1.5.20
   typescript-7: npm:typescript@7.0.2
   pino-pretty: ^13.1.3
@@ -225,6 +225,9 @@ catalog:
   '@date-fns/tz': ^1.5.0
   react-phone-number-input: ^3.4.18
   '@sqlite.org/sqlite-wasm': 3.53.4-build2
+  better-sqlite3: ^12.11.1
+  '@types/better-sqlite3': ^9.6.0
+  astronomy-engine: 2.1.19
 catalogs:
   # Only the ic-suite packages published to npm use this catalog
   # (`catalog:ic-suite`); everything else stays on the default one. Their

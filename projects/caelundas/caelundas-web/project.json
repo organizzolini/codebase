@@ -1,5 +1,17 @@
 {
   "name": "caelundas-web",
+  "namedInputs": {
+    "default": [
+      "!{projectRoot}/.cspell/**",
+      "!{projectRoot}/.eslintcache/**",
+      "!{projectRoot}/conformetry-templates/**",
+      "!{projectRoot}/cspell.config.yaml",
+      "{projectRoot}/**/*",
+      "{workspaceRoot}/projects/caelundas/caelundas-cli/data/*.sql",
+      "{workspaceRoot}/projects/caelundas/caelundas-cli/src/modules/database/migrations/*.sql",
+      "shared-globals"
+    ]
+  },
   "projectType": "application",
   "sourceRoot": "projects/caelundas/caelundas-web/src",
   "tags": [
@@ -12,9 +24,20 @@
   ],
   "targets": {
     "build": {
+      "configurations": {
+        "ingested": {}
+      },
       "dependsOn": ["build-database"],
       "description": "Build the application for production",
       "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "dependency-versions",
+        "production",
+        {
+          "dependentTasksOutputFiles": "**/events.sqlite"
+        }
+      ],
       "options": {
         "command": "vite build",
         "cwd": "{projectRoot}"
@@ -22,13 +45,14 @@
       "outputs": ["{projectRoot}/dist"]
     },
     "build-database": {
-      "cache": true,
-      "description": "Write the SQLite file the static build bundles into output/",
+      "cache": false,
+      "configurations": {
+        "ingested": {
+          "command": "node scripts/build-events-database.ts --ingested"
+        }
+      },
+      "description": "Write the SQLite file the static build bundles into output/, from caelundas-cli's migration and committed seed rows, or with the ingested configuration by copying the output/database.sqlite a caelundas-cli run wrote",
       "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/data/**/*.sql",
-        "{projectRoot}/scripts/build-events-database.ts"
-      ],
       "options": {
         "command": "node scripts/build-events-database.ts",
         "cwd": "{projectRoot}"
@@ -47,6 +71,9 @@
     "oxlint": {},
     "prettier": {},
     "preview": {
+      "configurations": {
+        "ingested": {}
+      },
       "dependsOn": ["build"],
       "description": "Serve the production build locally",
       "executor": "nx:run-commands",
@@ -57,6 +84,9 @@
     },
     "spell-check": {},
     "start": {
+      "configurations": {
+        "ingested": {}
+      },
       "dependsOn": ["build-database"],
       "description": "Start the development server with hot reload",
       "executor": "nx:run-commands",

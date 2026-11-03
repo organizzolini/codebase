@@ -184,6 +184,16 @@ describe(IngressesService, () => {
       expect(event.tags).toContain("Aries");
       expect(event.tags).toContain("Venus");
     });
+
+    it("leaves the plain ingress arrow out of its symbols", () => {
+      const event = service.buildDecanIngressEvent({
+        body: "venus",
+        date: moment.utc("2024-04-05T10:00:00.000Z"),
+        longitude: 10.5,
+      });
+
+      expect(event.summary).toBe("♀️♈2️⃣ Venus ingress decan 2 Aries");
+    });
   });
 
   describe("getDecanIngressEvents", () => {
@@ -264,6 +274,16 @@ describe(IngressesService, () => {
       expect(event.tags).toContain("Peak");
       expect(event.tags).toContain("Leo");
       expect(event.tags).toContain("Mars");
+    });
+
+    it("leaves the plain ingress arrow out of its symbols", () => {
+      const event = service.buildPeakIngressEvent({
+        body: "mars",
+        date: moment.utc("2024-06-15T16:00:00.000Z"),
+        longitude: 135,
+      });
+
+      expect(event.summary).toBe("♂️♌︎⛰️ Mars peak ingress Leo");
     });
   });
 

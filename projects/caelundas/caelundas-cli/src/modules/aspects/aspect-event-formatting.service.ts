@@ -4,6 +4,8 @@ import _ from "lodash";
 import { bodyDisplayName } from "../caelundas/caelundas.types";
 import { symbolByBody } from "../caelundas/symbol-caelundas.constants";
 
+import { PHASE_WORD_PATTERN } from "./aspects.constants";
+
 import type { AspectPhase, Body } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
 import type { LogData } from "@codebase/observability";
@@ -33,14 +35,13 @@ export class AspectEventFormattingService {
     body1Capitalized: string;
     body2Capitalized: string;
     phase: AspectPhase;
-  }): { description: string; phaseEmoji: string; tags: string[] } {
+  }): { description: string; tags: string[] } {
     const { aspectName, baseTags, body1Capitalized, body2Capitalized, phase } =
       args;
 
     if (phase === "perfective") {
       return {
         description: `${body1Capitalized} perfective ${aspectName} ${body2Capitalized}`,
-        phaseEmoji: "🎯",
         tags: [...baseTags, "Perfective"],
       };
     }
@@ -48,14 +49,12 @@ export class AspectEventFormattingService {
     if (phase === "forming") {
       return {
         description: `${body1Capitalized} forming ${aspectName} ${body2Capitalized}`,
-        phaseEmoji: "➡️",
         tags: [...baseTags, "Forming"],
       };
     }
 
     return {
       description: `${body1Capitalized} dissolving ${aspectName} ${body2Capitalized}`,
-      phaseEmoji: "⬅️",
       tags: [...baseTags, "Dissolving"],
     };
   }
@@ -97,14 +96,14 @@ export class AspectEventFormattingService {
       body2Capitalized,
       _.startCase(aspectName),
     ];
-    const { description, phaseEmoji, tags } = this.resolveAspectPhaseDetails({
+    const { description, tags } = this.resolveAspectPhaseDetails({
       aspectName,
       baseTags,
       body1Capitalized,
       body2Capitalized,
       phase,
     });
-    const summary = `${phaseEmoji} ${symbolByBody[body1]} ${aspectSymbol} ${symbolByBody[body2]} ${description}`;
+    const summary = `${symbolByBody[body1]}${aspectSymbol}${symbolByBody[body2]} ${description.replace(PHASE_WORD_PATTERN, "")}`;
     log("🗓️ Built a calendar event", {
       at: timestamp.toISOString(),
       summary,
@@ -163,27 +162,11 @@ export class AspectEventFormattingService {
   }
 
   /**
-   * Returns the summary prefix emoji for an aspect phase.
-   */
-  getPhaseEmoji(phase: AspectPhase): string {
-    if (phase === "forming") {
-      return "➡️ ";
-    }
-
-    if (phase === "perfective") {
-      return "🎯 ";
-    }
-
-    return "⬅️ ";
-  }
-
-  /**
-   * Turns a boundary title into its span's title by dropping the leading phase
-   * emoji and the phase word, which a span covering the whole occurrence has not got.
+   * Turns a boundary title into its span's title. A boundary title already
+   * lacks the phase word, so the two read the same; this only guards a title
+   * that still carries one.
    */
   spanTitle(boundarySummary: string): string {
-    return boundarySummary
-      .replace(/^(?:➡️|🎯|⬅️)\s/u, "")
-      .replace(/ (?:forming|exact|perfective|dissolving)(?= \(|$)/u, "");
+    return boundarySummary.replace(PHASE_WORD_PATTERN, "");
   }
 }
