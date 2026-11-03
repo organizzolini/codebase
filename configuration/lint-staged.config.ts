@@ -29,8 +29,8 @@ import path from "node:path";
  * In CI it is doubled, for the release commit, whose hook checks every bumped
  * package. v2.34.0's took 11m40s over 718 tasks with a critical path of 2m15s,
  * on a 4-CPU runner. The heaviest tasks then, `configuration:codependix` and
- * `callidescope-gate`, peaked near 1.6 GB, so 8 stay under the runner's 16 GB.
- * The per-project `codependix-gate` replaced the first and was measured on
+ * `callidescope-restrict`, peaked near 1.6 GB, so 8 stay under the runner's 16 GB.
+ * The per-project `codependix-bound` replaced the first and was measured on
  * macOS at up to 1.3 GB (`lexico-api`), under that figure.
  */
 const ANALYSIS_PARALLELISM = process.env["CI"] ? 8 : getLocalParallelism();
@@ -207,7 +207,7 @@ const config = {
   // forwards an explicit configuration down `dependsOn`, so an edge there
   // would let `lint-code --configuration=write` publish from a branch.
 
-  // `callidescope-gate` and `codependix-gate` reach a commit through
+  // `callidescope-restrict` and `codependix-bound` reach a commit through
   // `guard-code`'s `dependsOn` instead of being named here. Both are inferred
   // per project and have no configurations, so the `check` configuration below
   // falls through to their defaults. `nx affected` scopes each to the projects

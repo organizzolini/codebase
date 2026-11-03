@@ -35,7 +35,7 @@ import {
  * A project's file also carries no type annotation, and so no import of
  * `CallidescopeConfiguration`. An `import type` is still an Nx dependency
  * edge: it puts `@callidescope/configuration` into that project's graph, it
- * widens what the project's own `callidescope-gate` target has to trace, and it
+ * widens what the project's own `callidescope-restrict` target has to trace, and it
  * asks the manifest of a project like `logging` to declare a toolchain package
  * that project does not use. What it would buy is a second check of something
  * already checked: the four fields a project may set are validated when the
@@ -107,7 +107,7 @@ import {
  * workspace `write` run.
  *
  * `projects/JimmyPaolini` and `projects/affirmancy` have no
- * `callidescope-gate` target at all — a different fact from taking the default. Taking the default
+ * `callidescope-restrict` target at all — a different fact from taking the default. Taking the default
  * means a gate that runs and passes against the number below; these two have no
  * gate to pass. `JimmyPaolini` holds only a `package.json`, being the git
  * submodule this repository leaves deliberately uninitialized everywhere (see
@@ -292,7 +292,7 @@ export const projectDefaults = {
  *
  * So the two are split at the mechanism rather than by leaving the destination
  * unset. Depth — and, wherever a project declares `limits.maximumBreadth`,
- * breadth too — is gated by the inferred per-project `callidescope-gate`
+ * breadth too — is gated by the inferred per-project `callidescope-restrict`
  * target, an executor of its own rather than a flag on this one, scoped by
  * `nx affected` to whatever a change touched. It reads no destination at all,
  * so its exit code is purely the depth (and, where judged, breadth) verdict.

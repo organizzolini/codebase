@@ -102,7 +102,7 @@
     {
       "options": {
         "configurationPath": "configuration/codependix.config.ts",
-        "gateTargetName": "codependix-gate"
+        "gateTargetName": "codependix-bound"
       },
       "plugin": "@codependix/nx"
     },
@@ -679,16 +679,16 @@
       },
       "defaultConfiguration": "check",
       "dependsOn": [
-        "callidescope-gate",
+        "callidescope-restrict",
         "catalog-manifests",
-        "codependix-gate",
+        "codependix-bound",
         "conformetry-validate",
         "lockfile",
         "project-ports",
         "readme-projects",
         "vscode-extensions"
       ],
-      "description": "Aggregator for guard-code. `callidescope-gate` and `codependix-gate` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-gate` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
+      "description": "Aggregator for guard-code. `callidescope-restrict` and `codependix-bound` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-bound` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
       "executor": "nx:noop",
       "inputs": ["default"]
     },
