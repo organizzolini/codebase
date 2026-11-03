@@ -1,6 +1,6 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import { BIGINT_NUMBER_TRANSFORMER } from "../entities.constants";
 
@@ -20,7 +20,7 @@ import type { Relation } from "typeorm";
 })
 @Index(["line", "index"], { unique: true })
 @Index(["text", "index"])
-export class Token extends DeletableEntity {
+export class Token extends PostgresqlDeletableEntity {
   @Index()
   @ManyToOne("Author", { eager: false, onDelete: "CASCADE" })
   author!: Relation<Author>;

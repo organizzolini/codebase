@@ -1,6 +1,5 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
-import { expect } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
@@ -8,6 +7,7 @@ import type {
   BuiltTestingModule,
   TestingModuleOptions,
 } from "./testing-module.types";
+import type { LoggerServiceContract } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { Type } from "@nestjs/common";
 
@@ -29,7 +29,7 @@ export async function buildTestingModule<Target>(
   options: TestingModuleOptions = {},
 ): Promise<BuiltTestingModule<Target>> {
   const { imports = [], mocks = [], providers = [] } = options;
-  const logger = createMock<LoggerService>();
+  const logger = createMock<LoggerServiceContract>();
   const module = await Test.createTestingModule({
     imports,
     providers: [
@@ -47,20 +47,4 @@ export async function buildTestingModule<Target>(
       module.get<Dependency, DeepMocked<Dependency>>(token),
     module,
   };
-}
-
-/**
- * Builds the class under test as {@link buildTestingModule} does and asserts
- * that it set its logger's context to its own class name.
- */
-export async function expectLoggerContext(
-  target: Type<unknown>,
-  options: TestingModuleOptions = {},
-): Promise<void> {
-  const { logger } = await buildTestingModule(target, options);
-
-  expect(
-    logger.setContext.mock.calls,
-    `${target.name} should call setContext with its class name`,
-  ).toContainEqual([target.name]);
 }

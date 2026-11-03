@@ -5,7 +5,7 @@ import {
   resetGraphqlMockServer,
   startGraphqlMockServer,
   stopGraphqlMockServer,
-} from "@codebase/testing/graphql";
+} from "@codebase/interface/testing";
 import { matchMediaStandIn } from "@codebase/testing/react";
 
 // `createServerFn` only runs inside the Start server runtime, so a route that

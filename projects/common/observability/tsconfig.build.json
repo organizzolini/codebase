@@ -8,9 +8,8 @@
     "output",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
-    "src/lib/**",
-    "testing/**"
+    "src/lib/**"
   ],
   "extends": "./tsconfig.json",
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "testing/index.ts"]
 }
