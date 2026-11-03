@@ -514,7 +514,7 @@ Call stacks traced through `projects/ic-suite/callidescope/callidescope-examples
 | Measure | Value |
 | --- | --- |
 | Callables | 80 |
-| Files | 40 |
+| Files | 41 |
 | Calls traced | 53 |
 | Call stacks | 19 |
 | Deepest stack | 8 |

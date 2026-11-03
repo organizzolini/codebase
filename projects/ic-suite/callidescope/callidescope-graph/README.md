@@ -1005,7 +1005,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **parameter**:
 - **part**:
 - **partial**:
-- **peer**:
 - **pending**:
 - **permissive**:
 - **point**:

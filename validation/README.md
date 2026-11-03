@@ -1361,7 +1361,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **paragraph**:
 - **parameter**:
 - **part**:
-- **peer**:
 - **pending**:
 - **pick**:
 - **pid**:

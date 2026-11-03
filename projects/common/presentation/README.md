@@ -1921,7 +1921,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **payload**:
 - **pct**:
 - **pdf**:
-- **peer**:
 - **pending**:
 - **per**:
 - **percent**:

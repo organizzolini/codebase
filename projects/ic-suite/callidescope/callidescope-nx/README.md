@@ -1126,7 +1126,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **once**:
 - **own**:
 - **partial**:
-- **peer**:
 - **pending**:
 - **point**:
 - **posix**:

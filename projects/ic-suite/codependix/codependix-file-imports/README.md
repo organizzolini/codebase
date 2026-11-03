@@ -542,7 +542,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **original**:
 - **own**:
 - **part**:
-- **peer**:
 - **promise**:
 - **provide**:
 - **publish**:

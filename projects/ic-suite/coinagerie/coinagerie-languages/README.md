@@ -90,6 +90,7 @@ The words this package uses that the root glossary does not define, regenerated 
 - **quote**:
 - **real**:
 - **recursive**:
+- **reduce**:
 - **reg**:
 - **reload**:
 - **resolution**:
@@ -98,6 +99,7 @@ The words this package uses that the root glossary does not define, regenerated 
 - **second**:
 - **slice**:
 - **sort**:
+- **splice**:
 - **split**:
 - **spy**:
 - **strict**:

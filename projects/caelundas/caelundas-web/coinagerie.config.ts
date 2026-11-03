@@ -1,4 +1,4 @@
-import { coinagerieConfiguration } from "../../../configuration/coinagerie.config.js";
+import { coinagerieConfiguration } from "@codebase/configuration/coinagerie.config";
 
 export default {
   ...coinagerieConfiguration,
