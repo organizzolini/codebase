@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.48.0](https://github.com/organizzolini/codebase/compare/v3.47.0...v3.48.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ infer coinagerie check targets in nx ([#1879](https://github.com/organizzolini/codebase/issues/1879)) ([c6f42e7](https://github.com/organizzolini/codebase/commit/c6f42e7805b51ea12e94693a65ff44d07dca5f50)), closes [#1775](https://github.com/organizzolini/codebase/issues/1775) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1881](https://github.com/organizzolini/codebase/issues/1881) [#1770](https://github.com/organizzolini/codebase/issues/1770)
+
 ## [3.47.0](https://github.com/organizzolini/codebase/compare/v3.46.0...v3.47.0) (2026-11-03)
 
 ### ✨ Features

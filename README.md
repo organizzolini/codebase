@@ -341,6 +341,7 @@ graph LR
   coinagerie_configuration["coinagerie-configuration"]
   coinagerie_core["coinagerie-core"]
   coinagerie_languages["coinagerie-languages"]
+  coinagerie_nx["coinagerie-nx"]
   coinagerie_output["coinagerie-output"]
   coinagerie_vocabulary["coinagerie-vocabulary"]
   configuration["configuration"]
@@ -452,6 +453,7 @@ graph LR
   coinagerie_cli --> coinagerie_vocabulary
   coinagerie_cli --> observability
   coinagerie_configuration --> coinagerie_core
+  coinagerie_nx --> coinagerie_configuration
   coinagerie_output --> coinagerie_configuration
   coinagerie_output --> coinagerie_core
   coinagerie_vocabulary --> coinagerie_configuration
@@ -841,6 +843,9 @@ graph LR
   module_coinagerie_languages_TomlModule["coinagerie-languages/TomlModule"]
   module_coinagerie_languages_TypescriptModule["coinagerie-languages/TypescriptModule"]
   module_coinagerie_languages_YamlModule["coinagerie-languages/YamlModule"]
+  module_coinagerie_nx_MainModule["coinagerie-nx/MainModule"]
+  module_coinagerie_nx_OptionsModule["coinagerie-nx/OptionsModule"]
+  module_coinagerie_nx_PluginModule["coinagerie-nx/PluginModule"]
   module_coinagerie_output_ComparisonModule["coinagerie-output/ComparisonModule"]
   module_coinagerie_output_DeliveryModule["coinagerie-output/DeliveryModule"]
   module_coinagerie_output_JsonModule["coinagerie-output/JsonModule"]
@@ -1652,6 +1657,8 @@ graph LR
   module_coinagerie_languages_ShellModule --> module_coinagerie_languages_ScannerModule
   module_coinagerie_languages_SqlModule --> module_coinagerie_languages_ScannerModule
   module_coinagerie_languages_TomlModule --> module_coinagerie_languages_ScannerModule
+  module_coinagerie_nx_MainModule --> module_coinagerie_nx_PluginModule
+  module_coinagerie_nx_PluginModule --> module_coinagerie_nx_OptionsModule
   module_coinagerie_output_DeliveryModule --> module_coinagerie_output_ComparisonModule
   module_coinagerie_output_DeliveryModule --> module_coinagerie_output_JsonModule
   module_coinagerie_output_DeliveryModule --> module_coinagerie_output_MarkdownModule
@@ -4043,6 +4050,31 @@ graph LR
   file_coinagerie_languages_testing_setup_ts["coinagerie-languages/testing/setup.ts"]
   file_coinagerie_languages_vite_config_ts["coinagerie-languages/vite.config.ts"]
   file_coinagerie_languages_vitest_config_ts["coinagerie-languages/vitest.config.ts"]
+  file_coinagerie_nx_callidescope_config_ts["coinagerie-nx/callidescope.config.ts"]
+  file_coinagerie_nx_codependix_config_ts["coinagerie-nx/codependix.config.ts"]
+  file_coinagerie_nx_codometer_config_ts["coinagerie-nx/codometer.config.ts"]
+  file_coinagerie_nx_eslint_config_ts["coinagerie-nx/eslint.config.ts"]
+  file_coinagerie_nx_src_coinagerie_nx_module_ts["coinagerie-nx/src/coinagerie-nx.module.ts"]
+  file_coinagerie_nx_src_coinagerie_nx_module_unit_test_ts["coinagerie-nx/src/coinagerie-nx.module.unit.test.ts"]
+  file_coinagerie_nx_src_index_ts["coinagerie-nx/src/index.ts"]
+  file_coinagerie_nx_src_index_unit_test_ts["coinagerie-nx/src/index.unit.test.ts"]
+  file_coinagerie_nx_src_modules_options_options_constants_ts["coinagerie-nx/src/modules/options/options.constants.ts"]
+  file_coinagerie_nx_src_modules_options_options_module_ts["coinagerie-nx/src/modules/options/options.module.ts"]
+  file_coinagerie_nx_src_modules_options_options_service_ts["coinagerie-nx/src/modules/options/options.service.ts"]
+  file_coinagerie_nx_src_modules_options_options_service_unit_test_ts["coinagerie-nx/src/modules/options/options.service.unit.test.ts"]
+  file_coinagerie_nx_src_modules_options_options_types_ts["coinagerie-nx/src/modules/options/options.types.ts"]
+  file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_ts["coinagerie-nx/src/modules/plugin/plugin-context.utilities.ts"]
+  file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts["coinagerie-nx/src/modules/plugin/plugin-context.utilities.unit.test.ts"]
+  file_coinagerie_nx_src_modules_plugin_plugin_constants_ts["coinagerie-nx/src/modules/plugin/plugin.constants.ts"]
+  file_coinagerie_nx_src_modules_plugin_plugin_module_ts["coinagerie-nx/src/modules/plugin/plugin.module.ts"]
+  file_coinagerie_nx_src_modules_plugin_plugin_service_ts["coinagerie-nx/src/modules/plugin/plugin.service.ts"]
+  file_coinagerie_nx_src_modules_plugin_plugin_service_unit_test_ts["coinagerie-nx/src/modules/plugin/plugin.service.unit.test.ts"]
+  file_coinagerie_nx_src_modules_plugin_plugin_types_ts["coinagerie-nx/src/modules/plugin/plugin.types.ts"]
+  file_coinagerie_nx_testing_fake_workspace_ts["coinagerie-nx/testing/fake-workspace.ts"]
+  file_coinagerie_nx_testing_mocks_ts["coinagerie-nx/testing/mocks.ts"]
+  file_coinagerie_nx_testing_setup_ts["coinagerie-nx/testing/setup.ts"]
+  file_coinagerie_nx_vite_config_ts["coinagerie-nx/vite.config.ts"]
+  file_coinagerie_nx_vitest_config_ts["coinagerie-nx/vitest.config.ts"]
   file_coinagerie_output_callidescope_config_ts["coinagerie-output/callidescope.config.ts"]
   file_coinagerie_output_codependix_config_ts["coinagerie-output/codependix.config.ts"]
   file_coinagerie_output_codometer_config_ts["coinagerie-output/codometer.config.ts"]
@@ -10301,6 +10333,34 @@ graph LR
   file_coinagerie_languages_src_modules_yaml_yaml_service_ts --> file_coinagerie_languages_src_modules_yaml_yaml_constants_ts
   file_coinagerie_languages_src_modules_yaml_yaml_service_ts --> file_coinagerie_languages_src_modules_yaml_yaml_types_ts
   file_coinagerie_languages_src_modules_yaml_yaml_service_unit_test_ts --> file_coinagerie_languages_src_modules_yaml_yaml_service_ts
+  file_coinagerie_nx_src_coinagerie_nx_module_ts --> file_coinagerie_nx_src_modules_plugin_plugin_module_ts
+  file_coinagerie_nx_src_coinagerie_nx_module_unit_test_ts --> file_coinagerie_nx_src_coinagerie_nx_module_ts
+  file_coinagerie_nx_src_index_ts --> file_coinagerie_nx_src_modules_options_options_constants_ts
+  file_coinagerie_nx_src_index_ts --> file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_ts
+  file_coinagerie_nx_src_index_ts --> file_coinagerie_nx_src_modules_plugin_plugin_constants_ts
+  file_coinagerie_nx_src_index_unit_test_ts --> file_coinagerie_nx_src_index_ts
+  file_coinagerie_nx_src_index_unit_test_ts --> file_coinagerie_nx_testing_fake_workspace_ts
+  file_coinagerie_nx_src_modules_options_options_module_ts --> file_coinagerie_nx_src_modules_options_options_service_ts
+  file_coinagerie_nx_src_modules_options_options_service_ts --> file_coinagerie_nx_src_modules_options_options_constants_ts
+  file_coinagerie_nx_src_modules_options_options_service_ts --> file_coinagerie_nx_src_modules_options_options_types_ts
+  file_coinagerie_nx_src_modules_options_options_service_unit_test_ts --> file_coinagerie_nx_src_modules_options_options_service_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_ts --> file_coinagerie_nx_src_coinagerie_nx_module_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_ts --> file_coinagerie_nx_src_modules_plugin_plugin_constants_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_ts --> file_coinagerie_nx_src_modules_plugin_plugin_service_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_ts --> file_coinagerie_nx_src_modules_plugin_plugin_types_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts --> file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts --> file_coinagerie_nx_src_modules_plugin_plugin_service_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_module_ts --> file_coinagerie_nx_src_modules_options_options_module_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_module_ts --> file_coinagerie_nx_src_modules_plugin_plugin_service_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_service_ts --> file_coinagerie_nx_src_modules_options_options_service_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_service_ts --> file_coinagerie_nx_src_modules_options_options_types_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_service_ts --> file_coinagerie_nx_src_modules_plugin_plugin_constants_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_service_ts --> file_coinagerie_nx_src_modules_plugin_plugin_types_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_coinagerie_nx_src_modules_options_options_service_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_coinagerie_nx_src_modules_plugin_plugin_service_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_coinagerie_nx_testing_fake_workspace_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_types_ts --> file_coinagerie_nx_src_modules_options_options_types_ts
+  file_coinagerie_nx_src_modules_plugin_plugin_types_ts --> file_coinagerie_nx_src_modules_plugin_plugin_constants_ts
   file_coinagerie_output_src_index_unit_test_ts --> file_coinagerie_output_src_index_ts
   file_coinagerie_output_src_modules_comparison_comparison_module_ts --> file_coinagerie_output_src_modules_comparison_comparison_service_ts
   file_coinagerie_output_src_modules_comparison_comparison_service_ts --> file_coinagerie_output_src_modules_comparison_comparison_types_ts
@@ -15683,7 +15743,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-64566-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-64602-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-4.82_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-164-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-617-3178c6?style=flat-square)
@@ -15711,8 +15771,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Constants](https://img.shields.io/badge/Constants-3110-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-2888-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-834-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3103-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5907-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3106-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5910-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -15733,16 +15793,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-48-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7829-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7831-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-1233-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-450-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-2916-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2705-16a34a?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2707-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-42-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-194-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1667-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4624-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1669-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4626-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
@@ -15897,10 +15957,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7784 |
-| Files | 2548 |
-| Calls traced | 8486 |
-| Call stacks | 2176 |
+| Callables | 7801 |
+| Files | 2565 |
+| Calls traced | 8501 |
+| Call stacks | 2179 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
 | Unfollowable calls | 487 |
@@ -15920,6 +15980,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
 | `projects/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
 | `projects/ic-suite/coinagerie/coinagerie-cli` | 13 | 13 | 0 | 5 |
+| `projects/ic-suite/coinagerie/coinagerie-nx` | 6 | 6 | 0 | 3 |
 | `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 9 |
 | `projects/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
 | `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
@@ -15969,7 +16030,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 19 |
+| 0 — at limit | 20 |
 | 1 | 2 |
 | 2–3 | 5 |
 | 4+ | 12 |
