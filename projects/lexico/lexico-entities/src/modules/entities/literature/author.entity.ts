@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import type { Text } from "./text.entity";
 
@@ -11,7 +11,7 @@ import type { Text } from "./text.entity";
   comment: "An author of Latin literature",
   name: "authors",
 })
-export class Author extends DeletableEntity {
+export class Author extends PostgresqlDeletableEntity {
   @Column("jsonb", { comment: "Unstructured metadata", nullable: true })
   metadata?: null | Record<string, unknown>;
 

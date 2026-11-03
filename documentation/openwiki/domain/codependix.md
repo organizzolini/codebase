@@ -2,9 +2,6 @@
 type: "Reference"
 title: "Codependix — Dependency Graph Boundary Enforcement"
 openwiki_generated: true
-verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-24T21:02:40.299Z
 sources:
   - id: openwiki-source-3813a8d6b5fb514dbe957652
     resource: repo://configuration/codependix.config.ts
