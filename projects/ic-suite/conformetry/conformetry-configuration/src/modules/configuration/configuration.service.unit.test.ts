@@ -1,11 +1,11 @@
 import { existsSync } from "node:fs";
-import { mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputPromptingService } from "../input/input-prompting.service";
 import { InputService } from "../input/input.service";
@@ -29,7 +29,7 @@ function mockValue<T>(_unused?: T): T {
 
 /** Writes a JSON config holding whatever the caller passes. */
 async function writeConfiguration(configuration: unknown): Promise<string> {
-  const directory = await mkdtemp(path.join(tmpdir(), "conformetry-config-"));
+  const directory = createTemporaryDirectory("config");
   const configurationPath = path.join(directory, "conformetry.config.json");
 
   await writeFile(configurationPath, JSON.stringify(configuration), "utf8");
@@ -38,9 +38,7 @@ async function writeConfiguration(configuration: unknown): Promise<string> {
 }
 /** Writes a TypeScript config whose default export is the given source. */
 async function writeTypescriptConfiguration(source: string): Promise<string> {
-  const directory = await mkdtemp(
-    path.join(tmpdir(), "conformetry-config-ts-"),
-  );
+  const directory = createTemporaryDirectory("config-ts");
   const configurationPath = path.join(directory, "conformetry.config.ts");
 
   await writeFile(configurationPath, source, "utf8");
@@ -58,41 +56,39 @@ describe(ConfigurationService, () => {
   let templateDiscoveryService: TemplateDiscoveryService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConfigurationService,
-        {
-          provide: InputPromptingService,
-          useValue: createMock<InputPromptingService>(),
-        },
-        { provide: InputService, useValue: createMock<InputService>() },
-        {
-          provide: InstanceDiscoveryService,
-          useValue: createMock<InstanceDiscoveryService>(),
-        },
-        {
-          provide: InstanceGroupService,
-          useValue: createMock<InstanceGroupService>(),
-        },
-        { provide: RenderingService, useValue: createMock<RenderingService>() },
-        {
-          provide: TemplateDiscoveryService,
-          useValue: createMock<TemplateDiscoveryService>(),
-        },
+    const built = await buildTestingModule(ConfigurationService, {
+      mocks: [
+        InputPromptingService,
+        InputService,
+        InstanceDiscoveryService,
+        InstanceGroupService,
+        RenderingService,
+        TemplateDiscoveryService,
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(ConfigurationService);
-    inputPromptingService = await module.resolve(InputPromptingService);
-    inputService = await module.resolve(InputService);
-    instanceDiscoveryService = await module.resolve(InstanceDiscoveryService);
-    instanceGroupService = await module.resolve(InstanceGroupService);
-    renderingService = await module.resolve(RenderingService);
-    templateDiscoveryService = await module.resolve(TemplateDiscoveryService);
+    service = built.instance;
+    inputPromptingService = built.mock(InputPromptingService);
+    inputService = built.mock(InputService);
+    instanceDiscoveryService = built.mock(InstanceDiscoveryService);
+    instanceGroupService = built.mock(InstanceGroupService);
+    renderingService = built.mock(RenderingService);
+    templateDiscoveryService = built.mock(TemplateDiscoveryService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConfigurationService, {
+      mocks: [
+        InputPromptingService,
+        InputService,
+        InstanceDiscoveryService,
+        InstanceGroupService,
+        RenderingService,
+        TemplateDiscoveryService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(ConfigurationService);
   });
 
   describe("facade delegation", () => {
@@ -522,7 +518,7 @@ describe(ConfigurationService, () => {
 
   it("gives up on the workspace search outside any workspace", async () => {
     const originalCwd = process.cwd();
-    const outside = await mkdtemp(path.join(tmpdir(), "conformetry-outside-"));
+    const outside = createTemporaryDirectory("outside");
 
     process.chdir(outside);
 
@@ -537,7 +533,7 @@ describe(ConfigurationService, () => {
   });
 
   it("reads no generators from a module that exports nothing usable", async () => {
-    const directory = await mkdtemp(path.join(tmpdir(), "conformetry-config-"));
+    const directory = createTemporaryDirectory("config");
     const configurationPath = path.join(directory, "conformetry.config.mjs");
 
     await writeFile(configurationPath, "export default 42;\n", "utf8");
@@ -548,7 +544,7 @@ describe(ConfigurationService, () => {
   });
 
   it("reads a module whose default export holds the generators", async () => {
-    const directory = await mkdtemp(path.join(tmpdir(), "conformetry-config-"));
+    const directory = createTemporaryDirectory("config");
     const configurationPath = path.join(directory, "conformetry.config.mjs");
 
     await writeFile(
@@ -564,7 +560,7 @@ describe(ConfigurationService, () => {
   });
 
   it("unwraps a default export that is itself nested one level deeper", async () => {
-    const directory = await mkdtemp(path.join(tmpdir(), "conformetry-config-"));
+    const directory = createTemporaryDirectory("config");
     const configurationPath = path.join(directory, "conformetry.config.mjs");
 
     // Mirrors a CommonJS/ESM interop shape where the resolved default export
@@ -582,7 +578,7 @@ describe(ConfigurationService, () => {
   });
 
   it("reads a JSONC configuration, comments and all", async () => {
-    const directory = await mkdtemp(path.join(tmpdir(), "conformetry-config-"));
+    const directory = createTemporaryDirectory("config");
     const configurationPath = path.join(directory, "conformetry.config.jsonc");
 
     await writeFile(
@@ -744,7 +740,7 @@ describe(ConfigurationService, () => {
       definitions: unknown[],
     ): Promise<ConformetryConfiguration> {
       const configurationPath = path.join(
-        await mkdtemp(path.join(tmpdir(), "conformetry-collision-")),
+        createTemporaryDirectory("collision"),
         "conformetry.config.json",
       );
 

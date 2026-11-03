@@ -1,21 +1,16 @@
-import { MODULE_METADATA } from "@nestjs/common/constants";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
+
+import {
+  expectModuleExports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { MarkdownModule } from "./markdown.module";
 import { MarkdownService } from "./markdown.service";
 
 describe(MarkdownModule, () => {
   it("exports and provides MarkdownService", () => {
-    const exportsMetadata = Reflect.getMetadata(
-      MODULE_METADATA.EXPORTS,
-      MarkdownModule,
-    ) as undefined | unknown[];
-    const providersMetadata = Reflect.getMetadata(
-      MODULE_METADATA.PROVIDERS,
-      MarkdownModule,
-    ) as undefined | unknown[];
-
-    expect(exportsMetadata).toContain(MarkdownService);
-    expect(providersMetadata).toContain(MarkdownService);
+    expectModuleExports(MarkdownModule, MarkdownService);
+    expectModuleProvides(MarkdownModule, MarkdownService);
   });
 });

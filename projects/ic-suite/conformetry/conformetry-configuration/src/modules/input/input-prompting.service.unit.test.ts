@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import prompts from "prompts";
 import {
   afterEach,
@@ -9,6 +8,8 @@ import {
   it,
   vi,
 } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputPromptingService } from "./input-prompting.service";
 import { InputSchemaService } from "./input-schema.service";
@@ -23,11 +24,11 @@ describe(InputPromptingService, () => {
   let service: InputPromptingService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [InputPromptingService, InputSchemaService],
-    }).compile();
+    const built = await buildTestingModule(InputPromptingService, {
+      providers: [InputSchemaService],
+    });
 
-    service = await module.resolve(InputPromptingService);
+    service = built.instance;
   });
 
   const originalIsTty = process.stdin.isTTY;
@@ -43,8 +44,12 @@ describe(InputPromptingService, () => {
     process.stdin.isTTY = originalIsTty;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(InputPromptingService, {
+      providers: [InputSchemaService],
+    });
+
+    expect(instance).toBeInstanceOf(InputPromptingService);
   });
 
   describe("promptForInput", () => {

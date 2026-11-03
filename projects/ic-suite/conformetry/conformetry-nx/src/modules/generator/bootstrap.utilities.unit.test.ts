@@ -1,16 +1,16 @@
 import {
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { lstat, readlink } from "node:fs/promises";
-import { tmpdir } from "node:os";
 import path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import {
   resolveGeneratorService,
@@ -37,7 +37,7 @@ describe("bootstrap utilities", () => {
   let workspaceRoot: string;
 
   beforeEach(() => {
-    workspaceRoot = mkdtempSync(path.join(tmpdir(), "conformetry-bootstrap-"));
+    workspaceRoot = createTemporaryDirectory("bootstrap");
     emitPlugin.mockResolvedValue([
       {
         content: '{ "generators": {} }\n',

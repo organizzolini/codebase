@@ -68,11 +68,6 @@ interface TestTemplateBaseline {
 
 /** What each untouched project of a shape measures, shared to stay short. */
 const NEST_BASELINE = { modules: 89 / 121, services: 47 / 79 };
-const COMMAND_PROJECT_BASELINE = 769 / 772;
-const CLI_BASELINE = {
-  application: COMMAND_PROJECT_BASELINE,
-  modules: 149 / 187,
-};
 const WEB_BASELINE = { application: 716 / 738, routes: 131 / 145 };
 
 /**
@@ -89,14 +84,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   integration: NEST_BASELINE,
   "projects/caelundas/caelundas-cli": NEST_BASELINE,
   "projects/caelundas/caelundas-web": WEB_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-cli": CLI_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-configuration": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-core": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-generation": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-languages": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-nx": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-output": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-validation": NEST_BASELINE,
   "projects/lexico/lexico-api": {
     modules: 89 / 121,
     resolvers: 46 / 78,
@@ -202,7 +189,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/conformetry",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
     ],
     name: "nestjs-command-project",

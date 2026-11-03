@@ -1,7 +1,8 @@
 import { createPlaceholderValue } from "@conformetry/configuration";
-import { Test } from "@nestjs/testing";
 import ts from "typescript";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ScoringService } from "../scoring/scoring.service";
 
@@ -17,19 +18,19 @@ describe(TypescriptTreeService, () => {
   let service: TypescriptTreeService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ScoringService,
-        TypescriptNodesService,
-        TypescriptTreeService,
-      ],
-    }).compile();
+    const built = await buildTestingModule(TypescriptTreeService, {
+      providers: [ScoringService, TypescriptNodesService],
+    });
 
-    service = await module.resolve(TypescriptTreeService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TypescriptTreeService, {
+      providers: [ScoringService, TypescriptNodesService],
+    });
+
+    expect(instance).toBeInstanceOf(TypescriptTreeService);
   });
 
   describe("compareTree", () => {

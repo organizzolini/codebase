@@ -3,13 +3,17 @@ import path from "node:path";
 import { ConfigurationService } from "@conformetry/configuration";
 import { InventoryService } from "@conformetry/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { captureExitCode } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { TemplatesCommand } from "./templates.command";
 
+import type { LoggerService } from "@codebase/observability";
 import type { InventoriedTemplate } from "@conformetry/core";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
@@ -80,28 +84,23 @@ describe(TemplatesCommand, () => {
   let configurationService: DeepMocked<ConfigurationService>;
   let commandLogger: DeepMocked<LoggerService>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TemplatesCommand,
-        InventoryService,
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+  let readExitCode: ReturnType<typeof captureExitCode>;
 
-    command = await module.resolve(TemplatesCommand);
-    configurationService = await module.resolve(ConfigurationService);
-    commandLogger = await module.resolve(LoggerService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(TemplatesCommand, {
+      mocks: [ConfigurationService],
+      providers: [InventoryService],
+    });
+
+    command = built.instance;
+    configurationService = built.mock(ConfigurationService);
+    commandLogger = built.logger;
   });
 
   // The shared setup clears every mock before each test, so the return values
   // are re-applied here rather than alongside the module.
   beforeEach(() => {
-    process.exitCode = undefined;
+    readExitCode = captureExitCode();
     output.length = 0;
     vi.spyOn(console, "info").mockImplementation((...data: unknown[]) => {
       output.push(data.map(String).join(" "));
@@ -112,27 +111,20 @@ describe(TemplatesCommand, () => {
     ]);
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TemplatesCommand, {
+      mocks: [ConfigurationService],
+      providers: [InventoryService],
+    });
+
+    expect(instance).toBeInstanceOf(TemplatesCommand);
   });
 
   it("sets logger context", async () => {
-    // Its own module: the shared setup clears mocks between tests, so a
-    // constructor call recorded during `beforeAll` is no longer observable.
-    const module = await Test.createTestingModule({
-      providers: [
-        TemplatesCommand,
-        InventoryService,
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("TemplatesCommand");
+    await expectLoggerContext(TemplatesCommand, {
+      mocks: [ConfigurationService],
+      providers: [InventoryService],
+    });
   });
 
   describe("run", () => {
@@ -212,18 +204,16 @@ describe(TemplatesCommand, () => {
 
     it("reads the configuration path the caller named", async () => {
       const scopedConfigurationService = createMock<ConfigurationService>();
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(TemplatesCommand, {
         providers: [
-          TemplatesCommand,
           InventoryService,
           {
             provide: ConfigurationService,
             useValue: scopedConfigurationService,
           },
-          { provide: LoggerService, useValue: createMock<LoggerService>() },
         ],
-      }).compile();
-      const scoped = await module.resolve(TemplatesCommand);
+      });
+      const scoped = built.instance;
 
       await scoped.run([], { config: "custom/conformetry.config.ts" });
 
@@ -263,7 +253,7 @@ describe(TemplatesCommand, () => {
     it("does not fail the command", async () => {
       await command.run([], { config: CONFIGURATION_PATH });
 
-      expect(process.exitCode).toBeUndefined();
+      expect(readExitCode()).toBeUndefined();
     });
 
     it("logs a debug entry marker naming the instance filter", async () => {

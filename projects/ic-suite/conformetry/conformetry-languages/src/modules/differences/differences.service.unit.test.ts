@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DifferencesService } from "./differences.service";
 
@@ -7,15 +8,15 @@ describe(DifferencesService, () => {
   let service: DifferencesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [DifferencesService],
-    }).compile();
+    const built = await buildTestingModule(DifferencesService);
 
-    service = await module.resolve(DifferencesService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DifferencesService);
+
+    expect(instance).toBeInstanceOf(DifferencesService);
   });
 
   describe("buildMissingFileDifference", () => {
