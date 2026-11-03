@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.45.0](https://github.com/organizzolini/codebase/compare/v3.44.0...v3.45.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ fold word forms and exclude configured words ([#1882](https://github.com/organizzolini/codebase/issues/1882)) ([2760046](https://github.com/organizzolini/codebase/commit/27600466bf8213f6da8404fe739f0aae66c994df)), closes [#1762](https://github.com/organizzolini/codebase/issues/1762) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1875](https://github.com/organizzolini/codebase/issues/1875) [#1755](https://github.com/organizzolini/codebase/issues/1755)
+
 ## [3.44.0](https://github.com/organizzolini/codebase/compare/v3.43.0...v3.44.0) (2026-11-03)
 
 ### ✨ Features

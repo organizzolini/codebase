@@ -810,6 +810,7 @@ graph LR
   module_coinagerie_cli_ConfigurationModule["coinagerie-cli/ConfigurationModule"]
   module_coinagerie_cli_DeliveryModule["coinagerie-cli/DeliveryModule"]
   module_coinagerie_cli_DiscoveryModule["coinagerie-cli/DiscoveryModule"]
+  module_coinagerie_cli_FoldingModule["coinagerie-cli/FoldingModule"]
   module_coinagerie_cli_LanguagesModule["coinagerie-cli/LanguagesModule"]
   module_coinagerie_cli_LoggerModule["coinagerie-cli/LoggerModule"]
   module_coinagerie_cli_MainModule["coinagerie-cli/MainModule"]
@@ -825,6 +826,7 @@ graph LR
   module_coinagerie_output_DeliveryModule["coinagerie-output/DeliveryModule"]
   module_coinagerie_output_MarkdownModule["coinagerie-output/MarkdownModule"]
   module_coinagerie_vocabulary_DiscoveryModule["coinagerie-vocabulary/DiscoveryModule"]
+  module_coinagerie_vocabulary_FoldingModule["coinagerie-vocabulary/FoldingModule"]
   module_coinagerie_vocabulary_LanguagesModule["coinagerie-vocabulary/LanguagesModule"]
   module_coinagerie_vocabulary_TypescriptModule["coinagerie-vocabulary/TypescriptModule"]
   module_coinagerie_vocabulary_VocabularyModule["coinagerie-vocabulary/VocabularyModule"]
@@ -1585,6 +1587,7 @@ graph LR
   module_coinagerie_cli_MainModule --> module_coinagerie_cli_CollectModule
   module_coinagerie_cli_MainModule --> module_coinagerie_cli_DiscoveryModule
   module_coinagerie_cli_VocabularyModule --> module_coinagerie_cli_DiscoveryModule
+  module_coinagerie_cli_VocabularyModule --> module_coinagerie_cli_FoldingModule
   module_coinagerie_cli_VocabularyModule --> module_coinagerie_cli_LanguagesModule
   module_coinagerie_cli_VocabularyModule --> module_coinagerie_cli_WordsModule
   module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_TypescriptModule
@@ -1592,6 +1595,7 @@ graph LR
   module_coinagerie_output_DeliveryModule --> module_coinagerie_output_MarkdownModule
   module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_TypescriptModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_DiscoveryModule
+  module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_FoldingModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_LanguagesModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_WordsModule
   module_conformetry_cli_ConfigurationModule --> module_conformetry_cli_InputModule
@@ -3906,6 +3910,7 @@ graph LR
   file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts["coinagerie-languages/src/modules/languages/languages.service.unit.test.ts"]
   file_coinagerie_languages_src_modules_languages_languages_types_ts["coinagerie-languages/src/modules/languages/languages.types.ts"]
   file_coinagerie_languages_src_modules_typescript_typescript_constants_ts["coinagerie-languages/src/modules/typescript/typescript.constants.ts"]
+  file_coinagerie_languages_src_modules_typescript_typescript_constants_unit_test_ts["coinagerie-languages/src/modules/typescript/typescript.constants.unit.test.ts"]
   file_coinagerie_languages_src_modules_typescript_typescript_module_ts["coinagerie-languages/src/modules/typescript/typescript.module.ts"]
   file_coinagerie_languages_src_modules_typescript_typescript_service_ts["coinagerie-languages/src/modules/typescript/typescript.service.ts"]
   file_coinagerie_languages_src_modules_typescript_typescript_service_unit_test_ts["coinagerie-languages/src/modules/typescript/typescript.service.unit.test.ts"]
@@ -3952,6 +3957,11 @@ graph LR
   file_coinagerie_vocabulary_src_modules_discovery_discovery_types_ts["coinagerie-vocabulary/src/modules/discovery/discovery.types.ts"]
   file_coinagerie_vocabulary_src_modules_discovery_ignore_rules_service_ts["coinagerie-vocabulary/src/modules/discovery/ignore-rules.service.ts"]
   file_coinagerie_vocabulary_src_modules_discovery_ignore_rules_service_unit_test_ts["coinagerie-vocabulary/src/modules/discovery/ignore-rules.service.unit.test.ts"]
+  file_coinagerie_vocabulary_src_modules_folding_folding_constants_ts["coinagerie-vocabulary/src/modules/folding/folding.constants.ts"]
+  file_coinagerie_vocabulary_src_modules_folding_folding_module_ts["coinagerie-vocabulary/src/modules/folding/folding.module.ts"]
+  file_coinagerie_vocabulary_src_modules_folding_folding_service_ts["coinagerie-vocabulary/src/modules/folding/folding.service.ts"]
+  file_coinagerie_vocabulary_src_modules_folding_folding_service_unit_test_ts["coinagerie-vocabulary/src/modules/folding/folding.service.unit.test.ts"]
+  file_coinagerie_vocabulary_src_modules_folding_folding_types_ts["coinagerie-vocabulary/src/modules/folding/folding.types.ts"]
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_constants_ts["coinagerie-vocabulary/src/modules/vocabulary/vocabulary.constants.ts"]
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_module_ts["coinagerie-vocabulary/src/modules/vocabulary/vocabulary.module.ts"]
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_service_ts["coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.ts"]
@@ -10056,6 +10066,7 @@ graph LR
   file_coinagerie_languages_src_modules_languages_languages_service_ts --> file_coinagerie_languages_src_modules_typescript_typescript_service_ts
   file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_languages_languages_service_ts
   file_coinagerie_languages_src_modules_languages_languages_service_unit_test_ts --> file_coinagerie_languages_src_modules_typescript_typescript_module_ts
+  file_coinagerie_languages_src_modules_typescript_typescript_constants_unit_test_ts --> file_coinagerie_languages_src_modules_typescript_typescript_constants_ts
   file_coinagerie_languages_src_modules_typescript_typescript_module_ts --> file_coinagerie_languages_src_modules_typescript_typescript_service_ts
   file_coinagerie_languages_src_modules_typescript_typescript_service_ts --> file_coinagerie_languages_src_modules_typescript_typescript_constants_ts
   file_coinagerie_languages_src_modules_typescript_typescript_service_unit_test_ts --> file_coinagerie_languages_src_modules_typescript_typescript_service_ts
@@ -10088,12 +10099,18 @@ graph LR
   file_coinagerie_vocabulary_src_modules_discovery_ignore_rules_service_ts --> file_coinagerie_vocabulary_src_modules_discovery_discovery_types_ts
   file_coinagerie_vocabulary_src_modules_discovery_ignore_rules_service_unit_test_ts --> file_coinagerie_vocabulary_src_modules_discovery_discovery_types_ts
   file_coinagerie_vocabulary_src_modules_discovery_ignore_rules_service_unit_test_ts --> file_coinagerie_vocabulary_src_modules_discovery_ignore_rules_service_ts
+  file_coinagerie_vocabulary_src_modules_folding_folding_module_ts --> file_coinagerie_vocabulary_src_modules_folding_folding_service_ts
+  file_coinagerie_vocabulary_src_modules_folding_folding_service_ts --> file_coinagerie_vocabulary_src_modules_words_words_constants_ts
+  file_coinagerie_vocabulary_src_modules_folding_folding_service_unit_test_ts --> file_coinagerie_vocabulary_src_modules_folding_folding_service_ts
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_module_ts --> file_coinagerie_vocabulary_src_modules_discovery_discovery_module_ts
+  file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_module_ts --> file_coinagerie_vocabulary_src_modules_folding_folding_module_ts
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_module_ts --> file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_service_ts
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_module_ts --> file_coinagerie_vocabulary_src_modules_words_words_module_ts
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_service_ts --> file_coinagerie_vocabulary_src_modules_discovery_discovery_service_ts
+  file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_service_ts --> file_coinagerie_vocabulary_src_modules_folding_folding_service_ts
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_service_ts --> file_coinagerie_vocabulary_src_modules_words_words_service_ts
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_service_unit_test_ts --> file_coinagerie_vocabulary_src_modules_discovery_discovery_module_ts
+  file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_service_unit_test_ts --> file_coinagerie_vocabulary_src_modules_folding_folding_module_ts
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_service_unit_test_ts --> file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_service_ts
   file_coinagerie_vocabulary_src_modules_vocabulary_vocabulary_service_unit_test_ts --> file_coinagerie_vocabulary_src_modules_words_words_module_ts
   file_coinagerie_vocabulary_src_modules_words_words_module_ts --> file_coinagerie_vocabulary_src_modules_words_words_service_ts
@@ -15427,14 +15444,14 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-64557-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-64566-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-4.82_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-163-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-616-3178c6?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-164-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-617-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-609-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-610-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-147-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
@@ -15452,7 +15469,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Methods](https://img.shields.io/badge/Methods-902-15803d?style=flat-square)
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-2842-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-1008-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3109-dc2626?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3110-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-2888-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-834-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-3103-64748b?style=flat-square)
@@ -15477,7 +15494,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-48-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7823-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7829-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-1233-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-450-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-2916-0284c7?style=flat-square)
@@ -15492,15 +15509,15 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3498-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3501-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-471-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-91-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1673-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3354-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1674-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3357-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-658-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-659-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -15641,13 +15658,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7722 |
-| Files | 2504 |
-| Calls traced | 8429 |
-| Call stacks | 2147 |
+| Callables | 7732 |
+| Files | 2508 |
+| Calls traced | 8443 |
+| Call stacks | 2150 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
-| Unfollowable calls | 483 |
+| Unfollowable calls | 486 |
 
 ### Projects
 
@@ -15676,13 +15693,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
 | `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/coinagerie/coinagerie-configuration` | 2 | 3 | 1 | 3 |
 | `projects/ic-suite/coinagerie/coinagerie-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
 | `documentation` | 3 | 6 | 3 | 2 |
 | `projects/common/presentation` | 0 | 3 | 3 | 0 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
 | `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
-| `projects/ic-suite/coinagerie/coinagerie-configuration` | 0 | 3 | 3 | 3 |
 | `projects/lexico/lexico-entities` | 0 | 3 | 3 | 0 |
 | `projects/lexico/lexico-web` | 6 | 9 | 3 | 8 |
 | `installation` | 13 | 17 | 4 | 8 |
@@ -15714,10 +15731,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | --- | --- |
 | over limit | 0 |
 | 0 — at limit | 20 |
-| 1 | 1 |
+| 1 | 2 |
 | 2–3 | 4 |
 | 4+ | 12 |
-| no stacks | 17 |
+| no stacks | 16 |
 
 ### Call stacks over the depth limit (0)
 
