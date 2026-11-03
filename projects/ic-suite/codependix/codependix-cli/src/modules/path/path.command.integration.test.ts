@@ -4,7 +4,11 @@ import path from "node:path";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { captureOutput, useTemporaryDirectory } from "@codebase/testing";
+import {
+  captureExitCode,
+  captureOutput,
+  useTemporaryDirectory,
+} from "@codebase/testing";
 
 import { MainModule } from "../../codependix-cli.module";
 
@@ -56,7 +60,7 @@ describe("path command", () => {
       options: PathCommandOptions = {},
     ): Promise<{ exitCode: number; output: string }> {
       process.chdir(workingDirectory);
-      process.exitCode = 0;
+      const readExitCode = captureExitCode();
 
       const module = await Test.createTestingModule({
         imports: [MainModule],
@@ -68,10 +72,8 @@ describe("path command", () => {
         ...options,
       });
 
-      const exitCode =
-        typeof process.exitCode === "number" ? process.exitCode : 0;
+      const exitCode = readExitCode() ?? 0;
 
-      process.exitCode = 0;
       process.chdir(originalWorkingDirectory);
 
       return {

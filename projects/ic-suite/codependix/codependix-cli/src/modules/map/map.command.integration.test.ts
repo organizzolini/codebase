@@ -11,7 +11,11 @@ import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-import { captureOutput, useTemporaryDirectory } from "@codebase/testing";
+import {
+  captureExitCode,
+  captureOutput,
+  useTemporaryDirectory,
+} from "@codebase/testing";
 
 import { MainModule } from "../../codependix-cli.module";
 
@@ -60,7 +64,7 @@ describe("map command", () => {
       loggedWarns: unknown[][];
     }> {
       process.chdir(workingDirectory);
-      process.exitCode = 0;
+      const readExitCode = captureExitCode();
 
       const errorSpy = vi.spyOn(LoggerService.prototype, "error");
       const warnSpy = vi.spyOn(LoggerService.prototype, "warn");
@@ -72,14 +76,13 @@ describe("map command", () => {
 
       await command.run([], { config: "codependix.config.ts", ...options });
 
-      const exitCode = process.exitCode;
+      const exitCode = readExitCode() ?? 0;
       const loggedErrors = [...errorSpy.mock.calls];
       const loggedWarns = [...warnSpy.mock.calls];
 
       errorSpy.mockRestore();
       warnSpy.mockRestore();
 
-      process.exitCode = 0;
       process.chdir(originalWorkingDirectory);
 
       return {
@@ -291,7 +294,7 @@ describe("map command", () => {
       options: MapCommandOptions,
     ): Promise<{ exitCode: number; loggedWarns: unknown[][] }> {
       process.chdir(workingDirectory);
-      process.exitCode = 0;
+      const readExitCode = captureExitCode();
 
       const warnSpy = vi.spyOn(LoggerService.prototype, "warn");
 
@@ -302,12 +305,11 @@ describe("map command", () => {
 
       await command.run([], { config: "codependix.config.ts", ...options });
 
-      const exitCode = process.exitCode;
+      const exitCode = readExitCode() ?? 0;
       const loggedWarns = [...warnSpy.mock.calls];
 
       warnSpy.mockRestore();
 
-      process.exitCode = 0;
       process.chdir(originalWorkingDirectory);
 
       return {
@@ -459,7 +461,7 @@ describe("map command", () => {
       options: MapCommandOptions,
     ): Promise<{ exitCode: number; printed: string }> {
       process.chdir(workingDirectory);
-      process.exitCode = 0;
+      const readExitCode = captureExitCode();
 
       const module = await Test.createTestingModule({
         imports: [MainModule],
@@ -468,10 +470,9 @@ describe("map command", () => {
 
       await command.run([], { config: "codependix.config.ts", ...options });
 
-      const exitCode = process.exitCode;
+      const exitCode = readExitCode() ?? 0;
       const printed = output.stdout();
 
-      process.exitCode = 0;
       process.chdir(originalWorkingDirectory);
 
       return {
@@ -712,7 +713,7 @@ describe("map command", () => {
       printed: string;
     }> {
       process.chdir(workingDirectory);
-      process.exitCode = 0;
+      const readExitCode = captureExitCode();
 
       const errorSpy = vi.spyOn(LoggerService.prototype, "error");
       const warnSpy = vi.spyOn(LoggerService.prototype, "warn");
@@ -728,14 +729,13 @@ describe("map command", () => {
         ...options,
       });
 
-      const exitCode = process.exitCode;
+      const exitCode = readExitCode() ?? 0;
       const loggedErrors = [...errorSpy.mock.calls];
       const loggedWarns = [...warnSpy.mock.calls];
       const printed = output.stdout();
 
       errorSpy.mockRestore();
       warnSpy.mockRestore();
-      process.exitCode = 0;
       process.chdir(originalWorkingDirectory);
 
       return {

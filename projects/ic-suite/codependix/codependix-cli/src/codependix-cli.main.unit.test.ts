@@ -66,13 +66,15 @@ function getRunOptions(): CommandFactoryRunOptions {
 }
 
 describe("main", () => {
+  let readExitCode: () => typeof process.exitCode;
+
   beforeEach(() => {
     vi.resetModules();
     mockLoggerError.mockClear();
     mockLoggerSetContext.mockClear();
     mockLogToStandardError.mockClear();
     mockCommandFactoryRun.mockClear();
-    captureExitCode();
+    readExitCode = captureExitCode();
   });
 
   it("bootstraps the command factory with a buffered stderr logger", async () => {
@@ -100,7 +102,7 @@ describe("main", () => {
     const error = new Error("💥 command exploded");
     serviceErrorHandler(error);
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(mockLoggerError).toHaveBeenCalledWith(error.message, error.stack);
   });
 });

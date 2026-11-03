@@ -23,6 +23,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { captureExitCode } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MapCommand } from "./map.command";
@@ -66,6 +67,7 @@ const VIOLATION: JudgedBoundaryFinding<BoundaryViolation> = {
 };
 
 describe(MapCommand, () => {
+  let readExitCode: () => typeof process.exitCode;
   let boundaryCheckService: BoundaryCheckService;
   let codependixService: GraphRunService;
   let combinedOutputService: CombinedOutputService;
@@ -147,7 +149,7 @@ describe(MapCommand, () => {
   }
 
   beforeEach(() => {
-    process.exitCode = 0;
+    readExitCode = captureExitCode();
     boundaryCheckService = createMock<BoundaryCheckService>();
     codependixService = createMock<GraphRunService>();
     combinedOutputService = createMock<CombinedOutputService>();
@@ -281,7 +283,7 @@ describe(MapCommand, () => {
 
     await run({ check: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(codependixService.run).not.toHaveBeenCalled();
     expect(boundaryCheckService.run).not.toHaveBeenCalled();
     expect(loggerService.error).toHaveBeenCalledWith(
@@ -298,7 +300,7 @@ describe(MapCommand, () => {
 
     await run({});
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(codependixService.run).not.toHaveBeenCalled();
     expect(loggerService.error).toHaveBeenCalledWith(
       "🕸️ Rejected the command line",
@@ -317,7 +319,7 @@ describe(MapCommand, () => {
 
     await run({});
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -389,7 +391,7 @@ describe(MapCommand, () => {
 
     expect(codependixService.run).not.toHaveBeenCalled();
     expect(boundaryCheckService.run).toHaveBeenCalledTimes(1);
-    expect(process.exitCode).toBe(0);
+    expect(readExitCode() ?? 0).toBe(0);
     expect(loggerService.info).toHaveBeenCalledWith(
       "🕸️ Verified every declared codependix boundary holds",
     );
@@ -401,7 +403,7 @@ describe(MapCommand, () => {
     await run({ check: "reports" });
 
     expect(boundaryCheckService.run).not.toHaveBeenCalled();
-    expect(process.exitCode).toBe(0);
+    expect(readExitCode() ?? 0).toBe(0);
     expect(loggerService.info).toHaveBeenCalledWith(
       "🕸️ Verified every configured codependix export is current",
       undefined,
@@ -412,7 +414,7 @@ describe(MapCommand, () => {
   it("succeeds when every result is current and nothing failed", async () => {
     await run({ write: true });
 
-    expect(process.exitCode).toBe(0);
+    expect(readExitCode() ?? 0).toBe(0);
   });
 
   it("fails in check mode when a result is stale", async () => {
@@ -438,7 +440,7 @@ describe(MapCommand, () => {
 
     await run({ check: "reports" });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
   });
 
   it("fails and logs when a project fails, without a thrown error", async () => {
@@ -457,7 +459,7 @@ describe(MapCommand, () => {
 
     await run({ write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -488,7 +490,7 @@ describe(MapCommand, () => {
 
     await run({ check: "reports" });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -521,7 +523,7 @@ describe(MapCommand, () => {
 
     await run({ check: "boundaries" });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "🕸️ Found codependix boundary violations",
       undefined,
@@ -548,7 +550,7 @@ describe(MapCommand, () => {
 
     await run({ check: "boundaries" });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -584,7 +586,7 @@ describe(MapCommand, () => {
 
     await run({ check: "boundaries", write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "🕸️ Found stale codependix exports",
       undefined,
@@ -612,7 +614,7 @@ describe(MapCommand, () => {
 
     await run({ write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -625,7 +627,7 @@ describe(MapCommand, () => {
 
     await run({ write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -761,7 +763,7 @@ describe(MapCommand, () => {
           tags: ["scope:nothing"],
         },
       );
-      expect(process.exitCode).toBe(0);
+      expect(readExitCode() ?? 0).toBe(0);
     });
   });
 
@@ -774,7 +776,7 @@ describe(MapCommand, () => {
 
     await run({ include: ["applications/**"], write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(codependixService.run).not.toHaveBeenCalled();
     expect(loggerService.error).toHaveBeenCalledWith(
       "🕸️ Rejected the command line",
@@ -880,7 +882,7 @@ describe(MapCommand, () => {
 
     await run({ format: "yaml", write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(codependixService.run).not.toHaveBeenCalled();
     expect(loggerService.error).toHaveBeenCalledWith(
       "🕸️ Rejected the command line",
@@ -1005,7 +1007,7 @@ describe(MapCommand, () => {
       await run({ check: "boundaries", format: "json" });
 
       expect(combinedOutputService.run).toHaveBeenCalledTimes(1);
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it.each([
