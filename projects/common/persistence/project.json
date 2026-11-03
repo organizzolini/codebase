@@ -45,14 +45,14 @@
     "start": {
       "cache": false,
       "configurations": {
-        "export": {
-          "command": "node --import @swc-node/register/esm-register src/persistence.main.ts export {args}"
+        "postgresql-export": {
+          "command": "node --import @swc-node/register/esm-register src/persistence.main.ts postgresql-export {args}"
         },
-        "import": {
-          "command": "node --import @swc-node/register/esm-register src/persistence.main.ts import {args}"
+        "postgresql-import": {
+          "command": "node --import @swc-node/register/esm-register src/persistence.main.ts postgresql-import {args}"
         }
       },
-      "description": "Run the database command line: export or import selected tables",
+      "description": "Run the database command line: postgresql-export or postgresql-import selected tables",
       "executor": "nx:run-commands",
       "options": {
         "command": "node --import @swc-node/register/esm-register src/persistence.main.ts {args}",

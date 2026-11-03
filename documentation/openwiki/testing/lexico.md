@@ -3,17 +3,22 @@ type: testing
 title: Lexico Testing
 description: Documents lexico's testing strategy across its CLI, web, API, and entities packages using vitest, GraphQL mock servers, testcontainers for Postgres, and React Testing Library.
 tags: [testing, lexico, vitest, graphql, testcontainers, react-testing-library]
+verified:
+  - by: openwiki/0.7.0
+    at: 2026-10-29T03:39:46.432Z
 sources:
-  - id: openwiki-source-cffe8ea3d9a4c39bbbf89d4a
-    resource: repo://projects/common/interface/README.md
+  - id: openwiki-source-c226aa5c7f690262741b3f25
+    resource: repo://projects/common/interface/testing/graphql-mock-server.ts
+  - id: openwiki-source-4808dd4ba16cde901f5bc82f
+    resource: repo://projects/common/persistence/testing/persistence-testing.utilities.ts
   - id: openwiki-source-5941305f85850497c69b4b90
     resource: repo://projects/lexico/lexico-api/testing/author-text-application.ts
   - id: openwiki-source-e333ff138b80fb25ac5c837b
     resource: repo://projects/lexico/lexico-api/testing/author-text-catalog.ts
-  - id: openwiki-source-4c401cda8dafa7f504abdfae
-    resource: repo://projects/lexico/lexico-api/testing/database.ts
   - id: openwiki-source-53b69eb1c1be9d9e2e9908b9
     resource: repo://projects/lexico/lexico-api/testing/graphql-application.ts
+  - id: openwiki-source-931363c6f5149c0713ec1280
+    resource: repo://projects/lexico/lexico-api/testing/literature-search-pagination.ts
   - id: openwiki-source-aecc874db36a40857e6340f7
     resource: repo://projects/lexico/lexico-api/testing/literature-services.ts
   - id: openwiki-source-937e740fdf9044bd5840f532
@@ -26,12 +31,16 @@ sources:
     resource: repo://projects/lexico/lexico-api/testing/setup.ts
   - id: openwiki-source-a096d23536f18081c5f5e693
     resource: repo://projects/lexico/lexico-api/testing/word-lookups.ts
+  - id: openwiki-source-185c158beec1749f854032b9
+    resource: repo://projects/lexico/lexico-api/vitest.config.ts
   - id: openwiki-source-f8a91499153a8ad6af0a64a6
     resource: repo://projects/lexico/lexico-cli/testing/command-harness.ts
   - id: openwiki-source-f4137c6e39c9b2ae35ea6f43
     resource: repo://projects/lexico/lexico-cli/testing/mocks.ts
   - id: openwiki-source-10e0af1182e16146cc6e573c
     resource: repo://projects/lexico/lexico-cli/testing/setup.ts
+  - id: openwiki-source-6165f3a0d7eb09788d0cf5bd
+    resource: repo://projects/lexico/lexico-cli/vitest.config.ts
   - id: openwiki-source-f83e010925a0641b1e318a65
     resource: repo://projects/lexico/lexico-entities/src/modules/entities/entities.module.integration.test.ts
   - id: openwiki-source-e1bca19e105caebed53977d0
@@ -44,7 +53,9 @@ sources:
     resource: repo://projects/lexico/lexico-web/testing/render-route.tsx
   - id: openwiki-source-a57103ba766db49a188a1605
     resource: repo://projects/lexico/lexico-web/testing/setup.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-24T21:02:40.299Z" }
+  - id: openwiki-source-738b809e6d406b19e0524546
+    resource: repo://projects/lexico/lexico-web/vitest.config.ts
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
 # Lexico Testing
@@ -64,11 +75,11 @@ Lexico organizes its tests into four packages, each with a testing module that p
 
 ## API Testing: GraphQL Resolver Tests with `graphqlMockServer`
 
-The API package provides two testing approaches:
+The API package provides three testing approaches, ranging from full end-to-end to pure unit tests.
 
-### 1. Full Application Integration Tests
+### 1. Full Application End-to-End Tests
 
-`startLexicoGraphqlApplication` (and its specialized variants `startAuthorTextApplication` and `startReadingApplication`) boots a complete NestJS application with Apollo GraphQL over Express against a **real migrated Postgres container** started via testcontainers. This is used for end-to-end and integration tests that need the full request lifecycle.
+`startLexicoGraphqlApplication` boots a complete NestJS application with Apollo GraphQL over Express against a **real migrated Postgres container** started via testcontainers. This is used for end-to-end tests that need the full HTTP request lifecycle.
 
 ```typescript
 // From graphql-application.ts
@@ -79,7 +90,12 @@ export async function startLexicoGraphqlApplication(
     database: LexicoDatabaseModule,
     entities: [],
     imports: [
-      GraphQLModule.forRoot<ApolloDriverConfig>({ autoSchemaFile: true, ... }),
+      GraphQLModule.forRoot<ApolloDriverConfig>({
+        autoSchemaFile: true,
+        buildSchemaOptions: { orphanedTypes: [...ORPHANED_GRAPHQL_TYPES] },
+        driver: ApolloDriver,
+        playground: false,
+      }),
       ...modules,
     ],
     migrations: [...LEXICO_DATABASE_MIGRATIONS],
@@ -90,36 +106,74 @@ export async function startLexicoGraphqlApplication(
 }
 ```
 
-**Usage in tests** (e.g., `authors.resolver.integration.test.ts`):
+The returned `LexicoGraphqlApplication` exposes:
+- `query(document, variables)` — posts GraphQL operations to the running server
+- `repository` — direct TypeORM repository access for assertions
+- `stop()` — closes the HTTP server and database container
+
+### 2. Specialized Seeded Applications
+
+Two higher-level harnesses seed domain-specific data before booting the API:
+
+- **`startAuthorTextApplication`** — seeds a three-level author/text/line hierarchy (Vergil → Aeneid → Book I/II → Proem → Lines) plus flat-author bibliographies via `seedAuthorTextCatalog`, then boots the full `LexicoApiModule`
+- **`startReadingApplication`** — seeds a complete literature passage with tokens, lines, and text hierarchy via `seedReadingPassage`, then serves only the `LiteratureModule` under a minimal root module
+
+Both return an `execute` function for GraphQL operations plus the seeded catalog/passage for assertions.
+
+### 3. GraphQL Mock Server for Unit Tests
+
+For unit tests that don't need a database, the API uses `graphqlMockServer` from `@codebase/interface/testing`. This provides an MSW server that answers GraphQL requests with typed mocks. Tests add handlers via `graphqlMockServer.use()` using the generated mock helpers.
 
 ```typescript
-beforeAll(async () => {
-  database = await startLexicoDatabaseTestingModule([Author, Line, Text, Token, Word]);
-  catalog = await seedAuthorTextCatalog(database);
-  const { createLoader, service } = createLiteratureServices(database);
-  resolver = new AuthorsResolver(service, createLoader());
-}, DATABASE_TIMEOUT_MILLISECONDS);
-```
+// From interface/testing/graphql-mock-server.ts
+export const graphqlMockServer = setupServer();
 
-### 2. GraphQL Mock Server for Unit Tests
-
-For unit tests that don't need a database, the API uses `graphqlMockServer` from `@codebase/interface/testing` (documented in `projects/common/interface/README.md`). This provides MSW handlers that answer GraphQL requests with typed mocks.
-
-```typescript
-// From interface/testing (referenced in web tests)
-- For a client: `graphqlMockServer` with `startGraphqlMockServer`, `resetGraphqlMockServer`, and `stopGraphqlMockServer`
-- For a server: `paginateArray`, `paginationMatrix`, `expectedPage`, and `summarize`
+export function startGraphqlMockServer(): void {
+  graphqlMockServer.listen({ onUnhandledRequest: "error" });
+}
+export function resetGraphqlMockServer(): void {
+  graphqlMockServer.resetHandlers();
+}
+export function stopGraphqlMockServer(): void {
+  graphqlMockServer.close();
+}
 ```
 
 ### Test Fixtures and Seeding
 
 The API testing module includes rich seeding utilities:
 
-- **`author-text-catalog.ts`**: Seeds a three-level hierarchy (Vergil → Aeneid → Book I/II → Proem → Lines) plus flat-author bibliographies. Provides `AuthorTextCatalog` with typed references to seeded entities.
-- **`word-lookups.ts`**: Seeds ambiguous word forms (`rosae` = 3 forms of one noun; `est` = shared by two verbs) and a soft-deleted word.
-- **`reading-passage.ts`**: Seeds a full literature passage with tokens, lines, and text hierarchy.
-- **`literature-services.ts`**: Creates service and loader instances wired to the test database.
-- **`relay-connection-walk.ts`**: Helpers for walking Relay-style connections (`walkForward`, `walkBackward`, `nodesOf`).
+- **`author-text-catalog.ts`** — seeds a three-level hierarchy (Vergil → Aeneid → Book I/II → Proem → Lines) plus flat-author bibliographies. Provides `AuthorTextCatalog` with typed references to seeded entities.
+- **`word-lookups.ts`** — seeds ambiguous word forms (`rosae` = 3 forms of one noun; `est` = shared by two verbs) and a soft-deleted word.
+- **`reading-passage.ts`** — seeds a full literature passage with tokens, lines, and text hierarchy.
+- **`literature-services.ts`** — creates service and loader instances wired to the test database.
+- **`relay-connection-walk.ts`** — helpers for walking Relay-style connections (`walkForward`, `walkBackward`, `nodesOf`).
+
+### Relay Cursor Pagination Verification
+
+The `literature-search-pagination.ts` module provides an **oracle-based pagination test** that verifies SQL pagination matches in-memory array slicing:
+
+```typescript
+// From literature-search-pagination.ts
+export async function expectLiteratureSearchPagination(
+  fetchPage: FetchLiteratureSearchPage,
+  pageSize: number,
+): Promise<string[]> {
+  const everything = await fetchPage({});
+  const ids = pageIds(everything);
+
+  expect(everything.totalCount).toBe(ids.length);
+  expect(new Set(ids).size).toBe(ids.length);
+  expect(ids.length).toBeGreaterThan(pageSize);
+
+  await expect(walkForward(fetchPage, pageSize, ids.length)).resolves.toStrictEqual(ids);
+  await expect(walkBackward(fetchPage, pageSize, ids.length)).resolves.toStrictEqual(ids);
+
+  return ids;
+}
+```
+
+The `paginationMatrix` function from `@codebase/interface/testing` generates comprehensive cursor/count combinations (first, last, both, zero, negative, crossed pairs, non-canonical encodings) to stress-test boundary conditions.
 
 ---
 
@@ -157,30 +211,9 @@ export async function runCommandLine({ argv, providers }: RunCommandLineOptions)
 
 The CLI testing module provides extensive mocks for ingestion pipeline testing:
 
-- **TypeORM Repository Mocks**: `createRepositoryMock<Entity>()` with fully configured `createQueryBuilder` chain
+- **TypeORM Repository Mocks**: `createRepositoryMock<Entity>()` with a fully configured `createQueryBuilder` chain (all chainable methods return `this`, terminal methods left for per-test configuration)
 - **Prompts Mocking**: `mockDates()`, `mockStandardInputTerminal()`, `setPromptsMockResponse()`, `setPromptsMockResponseOnce()`
 - **Cheerio Helpers**: `loadCheerioElement()`, `loadCheerioWithRoot()`, `loadCheerioXmlElement()`, `loadCheerioXmlWithRoot()` for parsing HTML/XML test fixtures
-
-**Example** (from `lexico-ingestion.command.unit.test.ts`):
-
-```typescript
-const { promptsMock } = vi.hoisted(() => ({
-  promptsMock: vi.fn<() => Promise<Record<string, boolean>>>(),
-}));
-vi.mock("prompts", () => ({ default: promptsMock }));
-
-beforeAll(async () => {
-  setPromptsMockResponse(promptsMock, { value: true });
-  const module = await Test.createTestingModule({
-    providers: [
-      LexicoIngestionCommand,
-      { provide: LoggerService, useValue: createMock<LoggerService>() },
-      { provide: CorpusScriptorumEcclesiasticorumLatinorumCommand, useValue: createMock<...>() },
-      // ... other sub-commands mocked
-    ],
-  }).compile();
-});
-```
 
 ---
 
@@ -206,6 +239,8 @@ export function assertRelationOptions(
 ): void
 ```
 
+Helper functions include `getEntityRelationMetadata`, `getEntityRelations`, `getEntityTableMetadata` for querying TypeORM's metadata storage.
+
 ### Integration Tests with Testcontainers
 
 `entities.module.integration.test.ts` spins up a real Postgres container via `@codebase/persistence/testing` and verifies:
@@ -216,6 +251,23 @@ export function assertRelationOptions(
 
 ```typescript
 // From entities.module.integration.test.ts
+async function importInFreshProcess(modulePath: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    execFile(
+      process.execPath,
+      [
+        "--import",
+        "@swc-node/register/esm-register",
+        "--input-type=module",
+        "--eval",
+        `await import(${JSON.stringify(pathToFileURL(modulePath).href)});`,
+      ],
+      { cwd: WORKSPACE_ROOT, timeout: IMPORT_TIMEOUT_MILLISECONDS },
+      (error, _standardOutput, standardError) => { /* ... */ }
+    );
+  });
+}
+
 it.concurrent.each(ENTITY_FILES)(
   "evaluates %s as an entry point with decorator metadata",
   async (entityFile) => {
@@ -250,6 +302,8 @@ export async function renderRoute(path: string): Promise<void> {
   render(<RouterProvider router={router} />);
 }
 ```
+
+The real root renders a whole `<html>` document, which cannot mount inside a test's `<div>`, so routes are rendered under a bare root created by mocking `src/routes/__root`.
 
 ### Global Test Setup
 
@@ -304,6 +358,7 @@ Component unit tests (e.g., `lexeme-card.unit.test.tsx`, `search-bar.unit.test.t
 | **Console suppression** | All | `vi.spyOn(console, "log").mockImplementation(() => {})` in `beforeEach` |
 | **Mock cleanup** | All | `vi.clearAllMocks()` in `beforeEach` |
 | **Environment stubbing** | API, Entities | `vi.stubEnv("POSTGRES_DB", "postgres")` etc. in database setup |
+| **SWC decorator metadata** | Entities | Separate Node process with `@swc-node/register` for import tests |
 
 ### Running Tests
 

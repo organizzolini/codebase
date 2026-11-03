@@ -1,13 +1,13 @@
 {
-  "absent": ["☀️ 🔥 Solar Perihelion"],
+  "absent": ["☀️🔥 Solar Perihelion"],
   "counts": {
-    "☀️ ❄️ Solar Aphelion": 1
+    "☀️❄️ Solar Aphelion": 1
   },
   "events": [
     {
       "note": "USNO Earth's Seasons and Apsides, 2026: Aphelion, 6 July, 17:30 UT",
       "start": "2026-07-06T17:30:00Z",
-      "summary": "☀️ ❄️ Solar Aphelion"
+      "summary": "☀️❄️ Solar Aphelion"
     }
   ],
   "name": "The 2026 aphelion",

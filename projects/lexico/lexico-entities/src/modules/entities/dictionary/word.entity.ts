@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import { WordForm } from "./word-form.entity";
 import { WordLexeme } from "./word-lexeme.entity";
@@ -12,7 +12,7 @@ import { WordLexeme } from "./word-lexeme.entity";
   comment: "A Latin word string that maps to one or more dictionary entries",
   name: "words",
 })
-export class Word extends DeletableEntity {
+export class Word extends PostgresqlDeletableEntity {
   @Column({
     comment: "The Latin word as written",
     unique: true,

@@ -362,10 +362,7 @@ describe(SpecialtyAspectsService, () => {
         timestamp,
       });
 
-      expect(event.summary).toContain("🎯");
-      expect(event.summary).toContain("☀️");
-      expect(event.summary).toContain("🌙");
-      expect(event.summary).toContain("⬠");
+      expect(event.summary).toBe("☀️⬠🌙 Sun quintile Moon");
       expect(event.description).toBe("Sun perfective quintile Moon");
       expect(event.tags).toContain("Astronomy");
       expect(event.tags).toContain("Astrology");
@@ -387,7 +384,7 @@ describe(SpecialtyAspectsService, () => {
         timestamp,
       });
 
-      expect(event.summary).toContain("➡️");
+      expect(event.summary).toContain("");
       expect(event.summary).toContain("☀️");
       expect(event.summary).toContain("♀️");
       expect(event.summary).toContain("S");
@@ -406,7 +403,7 @@ describe(SpecialtyAspectsService, () => {
         timestamp,
       });
 
-      expect(event.summary).toContain("⬅️");
+      expect(event.summary).toContain("");
       expect(event.summary).toContain("☀️");
       expect(event.summary).toContain("♂️");
       expect(event.summary).toContain("±");
@@ -425,7 +422,7 @@ describe(SpecialtyAspectsService, () => {
         timestamp,
       });
 
-      expect(event.summary).toContain("🎯");
+      expect(event.summary).not.toContain("perfective");
       expect(event.summary).toContain("N");
       expect(event.description).toContain("novile");
     });
@@ -467,7 +464,7 @@ describe(SpecialtyAspectsService, () => {
         description: "Sun forming quintile Mercury",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "➡️ ☀️ ⬠ ☿ Sun forming quintile Mercury",
+        summary: "☀️⬠☿ Sun quintile Mercury",
         tags: [
           "Astronomy",
           "Astrology",
@@ -483,7 +480,7 @@ describe(SpecialtyAspectsService, () => {
         description: "Sun dissolving quintile Mercury",
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary: "⬅️ ☀️ ⬠ ☿ Sun dissolving quintile Mercury",
+        summary: "☀️⬠☿ Sun quintile Mercury",
         tags: [
           "Astronomy",
           "Astrology",
@@ -504,7 +501,8 @@ describe(SpecialtyAspectsService, () => {
       expect(progressiveEvents[0]).toBeDefined();
       expect(progressiveEvents[0]?.start).toStrictEqual(formingEvent.start);
       expect(progressiveEvents[0]?.end).toStrictEqual(dissolvingEvent.start);
-      expect(progressiveEvents[0]?.description).toBe("Mercury quintile Sun");
+      expect(progressiveEvents[0]?.description).toBe("Sun quintile Mercury");
+      expect(progressiveEvents[0]?.summary).toBe(formingEvent.summary);
       expect(progressiveEvents[0]?.tags).toContain("Simple Aspect");
       expect(progressiveEvents[0]?.tags).toContain("Specialty Aspect");
     });

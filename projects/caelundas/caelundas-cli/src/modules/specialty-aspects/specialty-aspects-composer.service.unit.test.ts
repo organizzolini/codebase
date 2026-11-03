@@ -55,16 +55,15 @@ describe(SpecialtyAspectsComposerService, () => {
       service.buildSpecialtyAspectEventFromParts({
         body1Symbol: "☀️",
         body2Symbol: "🌙",
-        description: "Sun quintile Moon",
-        phaseEmoji: "🎯",
+        description: "Sun perfective quintile Moon",
         specialtyAspectSymbol: "⬠",
         tags: ["Astronomy", "Astrology", "Specialty Aspect"],
         timestamp,
       }),
     ).toStrictEqual(
       expect.objectContaining({
-        description: "Sun quintile Moon",
-        summary: "🎯 ☀️ ⬠ 🌙 Sun quintile Moon",
+        description: "Sun perfective quintile Moon",
+        summary: "☀️⬠🌙 Sun quintile Moon",
       }),
     );
 
@@ -73,7 +72,7 @@ describe(SpecialtyAspectsComposerService, () => {
       undefined,
       {
         at: timestamp.toISOString(),
-        summary: "🎯 ☀️ ⬠ 🌙 Sun quintile Moon",
+        summary: "☀️⬠🌙 Sun quintile Moon",
       },
     );
   });
@@ -114,7 +113,7 @@ describe(SpecialtyAspectsComposerService, () => {
       description: "Sun forming quintile Moon",
       end: minute,
       start: minute,
-      summary: "➡️ ☀️⬠🌙 Sun forming quintile Moon",
+      summary: "☀️⬠🌙 Sun quintile Moon",
       tags: [
         "Astronomy",
         "Astrology",
@@ -131,7 +130,7 @@ describe(SpecialtyAspectsComposerService, () => {
       description: "Sun dissolving quintile Moon",
       end: minute.clone().add(1, "hour"),
       start: minute.clone().add(1, "hour"),
-      summary: "⬅️ ☀️⬠🌙 Sun dissolving quintile Moon",
+      summary: "☀️⬠🌙 Sun quintile Moon",
       tags: beginning.tags.map((tag) =>
         tag === "Forming" ? "Dissolving" : tag,
       ),
@@ -148,7 +147,6 @@ describe(SpecialtyAspectsComposerService, () => {
     ).toStrictEqual(
       expect.objectContaining({
         description: "Moon forming quintile Sun",
-        phaseEmoji: "➡️",
       }),
     );
     expect(
@@ -162,7 +160,6 @@ describe(SpecialtyAspectsComposerService, () => {
     ).toStrictEqual(
       expect.objectContaining({
         description: "Moon perfective quintile Sun",
-        phaseEmoji: "🎯",
       }),
     );
     expect(
@@ -176,7 +173,6 @@ describe(SpecialtyAspectsComposerService, () => {
     ).toStrictEqual(
       expect.objectContaining({
         description: "Moon dissolving quintile Sun",
-        phaseEmoji: "⬅️",
       }),
     );
 
@@ -194,8 +190,8 @@ describe(SpecialtyAspectsComposerService, () => {
       service.getSpecialtyAspectProgressiveEvent(beginning, ending),
     ).toStrictEqual(
       expect.objectContaining({
-        description: "Moon quintile Sun",
-        summary: "🌙⬠☀️ Moon quintile Sun",
+        description: "Sun quintile Moon",
+        summary: "☀️⬠🌙 Sun quintile Moon",
       }),
     );
 

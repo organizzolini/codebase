@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:cb8aabf5abf1b2efd7e77310994203f85964ca5029054c03ef9370ade4f4b573",
+  "pageVersion": "sha256:11703d912274a830c3a43057daa14fcfeecf11169d64fab8d887aad4c18ae1f2",
   "claims": [
     {
       "id": "claim_09a652282c6349a0972d10d166897671",
@@ -16,7 +16,7 @@
         },
         {
           "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/project.json",
-          "version": "repo-file-v1:sha256:47672882f130e2f804c6dbca4b8f9ccc02b0c95ed81a57d26166e8fa046cde20"
+          "version": "repo-file-v1:sha256:450c3c7c0775023765e420dda77f9cd5f3f4e565a53ca7ef4a074bc4a970b8d4"
         },
         {
           "resource": "repo://projects/lexico/lexico-web/project.json",
@@ -69,8 +69,8 @@
           "version": "repo-lines-v1:sha256:5952ccc9d7b0a6bf09d31223374ebdf4cb7c83261bd53c2a1791c86199cbb2d5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODkyMDNmOTkxNjE3YTQzYzJmYjQ5N2Q0MmIwM2Y4NmRlODYwY2ZhMDA2NzkxOWQ3NzRlNGRkZmJmYjI5NDE1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDIxOGYzY2JmZWY5OWY4MGM3MTYzYTBlM2FjYzFjMWU2ZTViMmY1NzZjNTVlZThmYmQ4NjBhNDRmZmRhNGJkMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGM5N2Y1YTFjYWZmMzc0Y2Q5MTU2MmY1MWYxNTBlZGU1MWMzMTJhNTIyNzZhYmQ3MWMwYjcwMDllMzAzYWQ2OSJ9"
         },
         {
-          "resource": "repo://projects/common/presentation/project.json#L10-L10",
-          "version": "repo-lines-v1:sha256:2846eebef4faefb3bd3e98e641a3ae48beca2d676df295761670a3be5dde6d6c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg0NmVlYmVmNGZhZWZiM2JkM2U5OGU2NDFhM2FlNDhiZWNhMmQ2NzZkZjI5NTc2MTY3MGEzYmU1ZGRlNmQ2YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg0NmVlYmVmNGZhZWZiM2JkM2U5OGU2NDFhM2FlNDhiZWNhMmQ2NzZkZjI5NTc2MTY3MGEzYmU1ZGRlNmQ2YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzllNmQwNjdiMWQxZmRmNGFjNzNkZTAwYzA1M2VmYjgwZGQ3ODI0MjFkMGE2ZWM2ZmFiNTMzNGUwN2E0ZjRmMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDQxZmZlNjViNTFkNjg5YmUxMmZjZTIzOTZlZmExZTk5MjJiZWZlYjlkNGY3ZWQ2MzYyOTg4MWE1MmFlNTVjYyJ9"
+          "resource": "repo://projects/common/presentation/project.json#L6-L6",
+          "version": "repo-lines-v1:sha256:d1fc4d9bf91dea8d288c11e00e8e72b2a6063ddd59abf54c5ed4f4790f2edfae:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDFmYzRkOWJmOTFkZWE4ZDI4OGMxMWUwMGU4ZTcyYjJhNjA2M2RkZDU5YWJmNTRjNWVkNGY0NzkwZjJlZGZhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDFmYzRkOWJmOTFkZWE4ZDI4OGMxMWUwMGU4ZTcyYjJhNjA2M2RkZDU5YWJmNTRjNWVkNGY0NzkwZjJlZGZhZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWNkNDM4NTg2Yzc2ZjA3MTIyNTgyMGVhZDJlMWJjMGU3ZWU4M2UwZWM5ZDJjN2UxNzE5NTg1ZDQwODRlYzEzNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTZjYzlkZDc1OGUyYmE2MzQ1NGZhMzUxMmMzZDMxOGVlNzQ0M2IyNDYwNWM0M2Q0MDVkOGNhYjI1OGNhN2NmMSJ9"
         },
         {
           "resource": "repo://projects/lexico/lexico-web/project.json#L12-L12",
@@ -161,7 +161,7 @@
       "statement": "Conformetry templates live in configuration/conformetry-templates/ and are synced from configuration/conformetry.config.ts by running nx run synchronization:conformetry-generators:write.",
       "evidence": [
         {
-          "resource": "repo://README.md#L239-L240",
+          "resource": "repo://README.md#L267-L268",
           "version": "repo-lines-v1:sha256:80abe6de87d22ca3d2541b69cbb13b6d8a95b7a3e2563f8e12ef833771861734:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjJjYTMyOWY3MzlmNGMzZmNjOTY5NmNjY2I2NWNhODk3NWI0MGJmMTc2ZDQxZDYxYThmOGRiMWExZTUyOTFiOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmE1YjliMDhkOTY3ZTI3ZTVjMTNhNjJjNDE1MjM1ZDI5MzZjZjY2NDJkNjYyOWFlZjIxMjI1ODNlMWNkMjYxYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDFmMWFiODY5OGYyZGQxNTQxOWI1ZjBlODFkNDg2ZTJkMjA1MTk4NjkzYWVkYjc0NzMzYzNkMTg0NjkxZGQ4OSJ9"
         },
         {
@@ -173,6 +173,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-26T01:23:39.729Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }

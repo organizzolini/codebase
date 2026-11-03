@@ -290,7 +290,7 @@ describe("tags utilities", () => {
       [["Retrogrades"], ["Type", "Retrograde Period"]],
       [
         ["Direction", "Retrograde"],
-        ["Type", "Station"],
+        ["Type", "Direction"],
       ],
       [
         ["Twilight", "Civil Dawn"],

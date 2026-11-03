@@ -86,7 +86,7 @@ describe(ProgressiveAspectService, () => {
       description: "Sun forming conjunct Moon",
       end: moment.utc("2024-03-21T12:00:00.000Z"),
       start: moment.utc("2024-03-21T12:00:00.000Z"),
-      summary: "Sun conjunct Moon",
+      summary: "☉☌☾ Sun conjunct Moon",
       tags: [
         "Astronomy",
         "Astrology",
@@ -122,14 +122,11 @@ describe(ProgressiveAspectService, () => {
       isAspect: (value): value is "conjunct" => value === "conjunct",
       isBody: (value): value is "moon" | "sun" =>
         value === "sun" || value === "moon",
-      symbolByAspect: { conjunct: "☌" },
-      symbolByBody: { moon: "☾", sun: "☉" },
     });
 
     expect(event.tags).toContain("Major Aspect");
-    expect(event.summary).toContain("☉");
-    expect(event.summary).toContain("☾");
-    expect(event.summary).toContain("☌");
+    expect(event.summary).toBe("☉☌☾ Sun conjunct Moon");
+    expect(event.description).toBe("Sun conjunct Moon");
   });
 
   it("should build progressive events from paired boundaries", () => {
@@ -137,7 +134,7 @@ describe(ProgressiveAspectService, () => {
       description: "Sun forming conjunct Moon",
       end: moment.utc("2024-03-21T12:00:00.000Z"),
       start: moment.utc("2024-03-21T12:00:00.000Z"),
-      summary: "Sun conjunct Moon",
+      summary: "☉☌☾ Sun conjunct Moon",
       tags: [
         "Astronomy",
         "Astrology",
@@ -183,8 +180,6 @@ describe(ProgressiveAspectService, () => {
           isAspect: (value): value is "conjunct" => value === "conjunct",
           isBody: (value): value is "moon" | "sun" =>
             value === "sun" || value === "moon",
-          symbolByAspect: { conjunct: "☌" },
-          symbolByBody: { moon: "☾", sun: "☉" },
         }),
       pairProgressiveEvents: (beginnings, endings) => {
         const pairs = _.zip(beginnings, endings).filter(

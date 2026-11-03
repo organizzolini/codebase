@@ -315,6 +315,7 @@
       "files": [
         "**/src/**/*.constants.ts",
         "**/src/**/*.types.ts",
+        "**/src/**/*.utilities.ts",
         "**/testing/mocks.ts",
       ],
       "rules": {
