@@ -2,10 +2,17 @@ import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
 
-import { TYPESCRIPT_SCRIPT_KINDS } from "../typescript/typescript.constants";
+import { CssService } from "../css/css.service";
+import { HclService } from "../hcl/hcl.service";
+import { JsonService } from "../json/json.service";
+import { PythonService } from "../python/python.service";
+import { ShellService } from "../shell/shell.service";
+import { SqlService } from "../sql/sql.service";
+import { TomlService } from "../toml/toml.service";
 import { TypescriptService } from "../typescript/typescript.service";
+import { YamlService } from "../yaml/yaml.service";
 
-import type { Tokenizer } from "./languages.types";
+import type { Language, Tokenizer } from "./languages.types";
 
 /**
  * Chooses the tokenizer for a file by its extension.
@@ -18,12 +25,35 @@ import type { Tokenizer } from "./languages.types";
 export class LanguagesService {
   // 🏗 Dependency Injection
 
-  constructor(private readonly typescriptService: TypescriptService) {
-    const typescriptTokenizer: Tokenizer = (content, filePath) =>
-      this.typescriptService.tokenize(content, filePath);
+  constructor(
+    typescriptService: TypescriptService,
+    pythonService: PythonService,
+    sqlService: SqlService,
+    shellService: ShellService,
+    cssService: CssService,
+    hclService: HclService,
+    tomlService: TomlService,
+    jsonService: JsonService,
+    yamlService: YamlService,
+  ) {
+    const languages: Language[] = [
+      typescriptService,
+      pythonService,
+      sqlService,
+      shellService,
+      cssService,
+      hclService,
+      tomlService,
+      jsonService,
+      yamlService,
+    ];
 
-    for (const extension of TYPESCRIPT_SCRIPT_KINDS.keys()) {
-      this.tokenizers.set(extension, typescriptTokenizer);
+    for (const language of languages) {
+      for (const extension of language.extensions) {
+        this.tokenizers.set(extension, (content, filePath) =>
+          language.tokenize(content, filePath),
+        );
+      }
     }
   }
 

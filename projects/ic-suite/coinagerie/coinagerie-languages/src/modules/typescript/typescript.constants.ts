@@ -39,95 +39,18 @@ export const QUOTABLE_NAME_OWNER_KINDS: ReadonlySet<ts.SyntaxKind> = new Set([
 ]);
 
 /**
- * Every word TypeScript treats as a keyword, reserved or contextual, sorted.
+ * Every keyword the TypeScript compiler reserves or treats as contextual,
+ * lowercased as the vocabulary compares words.
  *
- * A plain array, so a configuration can spread it into `exclude.words` to
- * leave the language's own vocabulary out of its glossary. Nothing is excluded
- * unless it is spread there. A test holds it equal to the compiler's own list.
+ * Read from the compiler's own keyword range rather than written out, so the
+ * list can never fall behind the language: `interface`, `readonly`, `of`, and
+ * every other word its scanner knows. A plain array, so a configuration
+ * spreads it into `exclude.words` and the tool excludes nothing it was not
+ * asked to.
  */
-export const typescriptKeywords: string[] = [
-  "abstract",
-  "accessor",
-  "any",
-  "as",
-  "assert",
-  "asserts",
-  "async",
-  "await",
-  "bigint",
-  "boolean",
-  "break",
-  "case",
-  "catch",
-  "class",
-  "const",
-  "constructor",
-  "continue",
-  "debugger",
-  "declare",
-  "default",
-  "defer",
-  "delete",
-  "do",
-  "else",
-  "enum",
-  "export",
-  "extends",
-  "false",
-  "finally",
-  "for",
-  "from",
-  "function",
-  "get",
-  "global",
-  "if",
-  "implements",
-  "import",
-  "in",
-  "infer",
-  "instanceof",
-  "interface",
-  "intrinsic",
-  "is",
-  "keyof",
-  "let",
-  "module",
-  "namespace",
-  "never",
-  "new",
-  "null",
-  "number",
-  "object",
-  "of",
-  "out",
-  "override",
-  "package",
-  "private",
-  "protected",
-  "public",
-  "readonly",
-  "require",
-  "return",
-  "satisfies",
-  "set",
-  "static",
-  "string",
-  "super",
-  "switch",
-  "symbol",
-  "this",
-  "throw",
-  "true",
-  "try",
-  "type",
-  "typeof",
-  "undefined",
-  "unique",
-  "unknown",
-  "using",
-  "var",
-  "void",
-  "while",
-  "with",
-  "yield",
-];
+export const TYPESCRIPT_KEYWORDS: string[] = Array.from(
+  { length: ts.SyntaxKind.LastKeyword - ts.SyntaxKind.FirstKeyword + 1 },
+  (_unused, offset) => ts.tokenToString(ts.SyntaxKind.FirstKeyword + offset),
+)
+  .filter((keyword): keyword is string => keyword !== undefined)
+  .toSorted();
