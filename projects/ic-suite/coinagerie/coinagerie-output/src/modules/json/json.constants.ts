@@ -8,4 +8,5 @@
  * which is what lets a duplicated key be found: `JSON.parse` keeps only the
  * last, whatever type the first one had.
  */
-export const TOKEN_PATTERN = /"(?:[^"\\]|\\.)*"|[[\]{},:]|[^\s[\]{},:"]+/gu;
+export const TOKEN_PATTERN =
+  /"[^"\\]*(?:\\.[^"\\]*)*"|[[\]{},:]|[^\s[\]{},:"]+/gu;
