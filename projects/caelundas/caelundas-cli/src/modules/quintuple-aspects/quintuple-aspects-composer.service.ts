@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { aspectBodies as quintupleAspectBodies } from "../caelundas/caelundas.constants";
@@ -35,7 +35,6 @@ export class QuintupleAspectsComposerService {
   constructor(
     private readonly mathService: MathService,
     private readonly compoundPhaseService: CompoundPhaseService,
-    private readonly aspectPhaseEmojiService: AspectPhaseEmojiService,
     private readonly progressiveCompoundEventService: ProgressiveCompoundEventService,
   ) {}
 
@@ -118,19 +117,17 @@ export class QuintupleAspectsComposerService {
   }
 
   /**
-   * Formats summary as `phaseEmoji + aspectSymbol + symbolChain + description`.
+   * Formats summary as `aspectSymbol + symbolChain + description`, the description minus its phase word.
    */
   buildQuintupleAspectSummary(args: {
     aspectSymbol: string;
     description: string;
-    phase: AspectPhase;
     symbols: string[];
   }): string {
-    const { aspectSymbol, description, phase, symbols } = args;
-    const phaseEmoji = this.getPhaseEmoji(phase);
-    const symbolChain = symbols.join("-");
+    const { aspectSymbol, description, symbols } = args;
+    const symbolChain = symbols.join("");
 
-    return `${phaseEmoji}${aspectSymbol} ${symbolChain} ${description}`;
+    return `${aspectSymbol}${symbolChain} ${description.replace(PHASE_WORD_PATTERN, "")}`;
   }
 
   /**
@@ -171,7 +168,6 @@ export class QuintupleAspectsComposerService {
     const summary = this.buildQuintupleAspectSummary({
       aspectSymbol,
       description,
-      phase,
       symbols,
     });
     const tags = this.buildQuintupleAspectTags(
@@ -275,13 +271,6 @@ export class QuintupleAspectsComposerService {
     }
 
     return orderedBodies;
-  }
-
-  /**
-   * Maps phase to the event-summary marker prefix.
-   */
-  getPhaseEmoji(phase: AspectPhase): string {
-    return this.aspectPhaseEmojiService.getPhaseEmoji(phase);
   }
 
   /** Creates one quintuple-aspect boundary event for the provided five bodies. */

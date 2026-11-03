@@ -3,7 +3,6 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { MathService } from "../math/math.service";
@@ -22,10 +21,6 @@ describe(QuintupleAspectsComposerService, () => {
         {
           provide: CompoundPhaseService,
           useValue: createMock<CompoundPhaseService>(),
-        },
-        {
-          provide: AspectPhaseEmojiService,
-          useValue: createMock<AspectPhaseEmojiService>(),
         },
         {
           provide: ProgressiveCompoundEventService,

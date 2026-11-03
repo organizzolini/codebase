@@ -22,23 +22,38 @@ nx run caelundas-web:start
 The app reads one SQLite file in the browser. Nothing is fetched from a server
 but that file:
 
-1. `database export --sqlite` will write the `caelundas` schema's tables to a
-   SQLite file. Until that lands, `build-database` stands in for it by loading
-   `data/events-schema.sql` and the text seed `data/events-seed.sql`.
-2. `data/events-views.sql` is applied over whatever wrote the tables. It owns
-   every view the app reads: `tag_nodes` (each tag's depth, root, and path),
-   `calendar_event_tags` (one row per event and tag, ancestors included,
-   `is_direct` marking the tags given), and `calendar_events_derived` (each
-   event with its duration, temporality, and UTC time parts).
+1. `caelundas-cli` owns the database and leaves it web-ready, so this project
+   holds no schema or seed. The migration there creates the read model this
+   app queries, and every ingestion run ends by rewriting it with
+   `caelundas-cli/data/events-read-model.sql`: `tag_nodes` (each tag's depth,
+   root, and path), `calendar_event_tag_nodes` (one row per event and tag,
+   ancestors included, `is_direct` marking the tags given), and the view
+   `calendar_events_derived` (each event with its duration, temporality, and
+   UTC time parts). The first two are stored tables rather than views, as every
+   grouping and tag filter recomputed the tree's depth, root, and path per tag
+   as views, which made a grouped read twenty to fifty times slower.
+2. `scripts/build-events-database.ts` writes `output/events.sqlite`. With the
+   `ingested` configuration (`build:ingested`, `start:ingested` and
+   `preview:ingested` pass it down) it copies
+   `caelundas-cli/output/database.sqlite`, and fails naming it when it is
+   missing. By default, which CI and `start` use, it creates a database from
+   the latest migration's generated `-up.sql`, the seed
+   `caelundas-cli/data/events-seed.sql` and the read-model SQL. The tests
+   build the same database in memory the same way, so the web application
+   cannot drift from the tables the CLI writes. This project's `namedInputs`
+   list those files so a change to them reruns its tests.
 3. `nx run caelundas-web:build-database` writes the result to
    `output/events.sqlite`, which is gitignored. `build` and `start` depend on
    it, and Vite emits it, the worker, and sqlite-wasm's `.wasm` file as
-   fingerprinted assets.
+   fingerprinted assets. `build-database` is never cached, since the ingested
+   configuration reads a file Nx cannot hash; `build` hashes the file it wrote through a
+   `dependentTasksOutputFiles` input, so a build from new data never restores
+   the build of the old.
 4. In the browser, `events-database.worker.ts` downloads the file, opens it
    read-only in memory with sqlite-wasm, and answers selects. No persistent
    storage is used, so no cross-origin isolation headers are needed.
 
-Every query lives in `src/lib/events-database/events-database.ts`, behind the
+Every query lives in `src/components/events-calendar/events-database.utilities.ts`, behind the
 `EventsDatabase` interface, over a `SqlExecutor`. The browser's executor posts
 each select to the worker; the tests' executor runs it on `node:sqlite` over
 the same three SQL files. The route reads the database from the router
@@ -68,11 +83,21 @@ src/
     <route>.tsx                  # One file per route, e.g. index.tsx, word.$id.tsx
     <route>.integration.test.tsx # Ignored by the route generator
   components/
-    <component>.tsx
-    <component>.unit.test.tsx
+    <component>/
+      <component>.tsx              # The folder's component and its Properties
+      <component>.unit.test.tsx
+      <component>.types.ts
+      <component>.constants.ts
+      <component>.utilities.ts
+      <part>.tsx                   # More components the folder's is built from
+      <module>.<kind>.ts           # Shared code the folder owns, tested beside it
   hooks/
-    use-<hook>.ts
-    use-<hook>.unit.test.ts
+    use-<hook>/
+      use-<hook>.ts                # The folder's hook
+      use-<hook>.unit.test.ts
+      use-<hook>.types.ts
+      use-<hook>.constants.ts
+      use-<hook>.utilities.ts
   modules/
     <feature>/                   # Server functions and the utilities behind them
   styles/
@@ -86,19 +111,63 @@ The calendar adds its data layer and the files that build its database:
 
 ```text
 src/
-  lib/
-    calendar/                    # Search parameters, windows, loader, formatting
-    events-database/             # EventsDatabase, its SQL, worker, and client
-data/
-  events-schema.sql              # The exported tables, for tests and the build
-  events-seed.sql                # Text seed standing in for exported rows
-  events-views.sql               # Views applied over the export
+  components/
+    events-calendar/             # The calendar, its views, windows, loader, and the
+                                 # events database with its worker and client
+    calendar-filters/            # The filter builder and the SQL it compiles to
+    calendar-group-by/           # The grouping picker and the event groups it builds
+    calendar-timeline/           # The timeline and its clusters, lanes, and window
+    night-sky-backdrop/          # The night sky behind every page, and its mount
+  hooks/
+    use-night-sky/               # The night sky's stars and figures read, generator,
+                                 # colors, constellation lines, and link overrides
 scripts/
-  build-events-database.ts       # Writes output/events.sqlite
+  build-events-database.ts       # Writes output/events.sqlite, from the seed or --ingested
 output/                          # Gitignored build artifact
 testing/
-  events-database.ts             # node:sqlite EventsDatabase over data/*.sql
+  events-database.ts             # node:sqlite EventsDatabase over caelundas-cli's SQL
 ```
+
+### Night Sky Data
+
+The night sky reads the `star`, `constellation` and `constellation_line`
+tables through `EventsDatabase.findNightSky`, the same worker and SQL path the
+events take; `caelundas-cli`'s `night-sky` command fills them, and the seeded
+build and the tests load `caelundas-cli/data/night-sky-seed.sql`: every
+constellation and figure, with only the stars the figures join and the
+brightest.
+`use-night-sky.schemas.ts` validates each row as it is read. The stars are the
+HYG star database v4.1 (CC BY-SA 4.0, David Nash and the HYG contributors,
+<https://github.com/astronexus/HYG-Database>), stored to magnitude 6.5 and
+declination -45 degrees or north; the stored catalog is a derived work under
+the same license, so keep this credit wherever it is documented. The figures
+are d3-celestial's (BSD-3-Clause, Olaf Frohn,
+<https://github.com/ofrohn/d3-celestial>). `sky.constellations` (the zodiac when absent, none for `none` or empty) selects which
+figures `night-sky-lines.utilities.ts` draws, beneath the stars inside the
+turning group, cut where they leave the ring the window can show, and
+`sky.lineColor`, `sky.lineOpacity` and `sky.lineWidth` set their stroke:
+`readNightSkyOverrides` reads the color like `sky.top` and clamps the opacity
+to 0–1 and the width to 0–10 pixels, and a value it cannot read falls back to
+the `DEFAULT_OPTIONS` default and is warned of once, as an unknown
+constellation name is. `sky.ecliptic` and its three style keys draw the
+ecliptic through `night-sky-ecliptic.utilities.ts`, which turns ecliptic
+longitude into right ascension and declination by the obliquity and cuts the
+path with the same `splitIntoRuns` the figures use. `src/components/night-sky-menu/`
+is the toolbar's Sky menu, with no headings: each control's label says what
+it sets ("Sky top color", "Star drift speed", "Ecliptic line width"), and
+`NightSkySection` names its group with a hidden legend. Four columns on a wide
+screen, one on a phone: the sky and stars, the angles, the constellation
+lines over the ecliptic, then the constellation tree. The tree's column has no visible
+heading, its folder checkboxes picking all or none; it takes
+no height of its own on a wide screen, so the other columns set the panel's
+height and the tree scrolls inside it. An absent `sky.constellations` is the
+zodiac everywhere, the tree included: `useNightSkySettings` reads the same keys through
+`readNightSkyOverrides` and writes them with `navigate({ replace: true })`, the
+`night-sky-menu.utilities.ts` mappings remove a key set back to its default
+and the Default button beside the sky's switch removes them all but
+`sky.debug`, the colors are the
+ReUI color picker, and the panel keeps arrow and letter keys from the menu
+around it so a slider keeps focus.
 
 ## Development
 
@@ -108,8 +177,10 @@ is also the standard its files are validated against:
 ```bash
 nx g conformetry:tanstack-route --name=<file-stem> --path=<url-path> --project=caelundas-web
 nx g conformetry:tanstack-server-function --name=<feature> --project=caelundas-web
-nx g conformetry:react-component --name=<component> --project=caelundas-web
-nx g conformetry:react-hook --name=use-<hook> --project=caelundas-web
+nx g conformetry:react-component-folder --name=<component> --project=caelundas-web
+nx g conformetry:react-component-file --name=<part> --module=<component> --project=caelundas-web
+nx g conformetry:react-hook-folder --name=use-<hook> --project=caelundas-web
+nx g conformetry:react-hook-file --name=use-<other> --module=use-<hook> --project=caelundas-web
 ```
 
 ### Routes
@@ -161,6 +232,10 @@ route's files apart from a component's when conformance is checked.
 `vitest.config.ts` deliberately leaves the TanStack Start plugin out, so route
 components are not code-split into lazy chunks under test.
 
+The views' route tests live in `src/components/events-calendar/calendar-views.utilities.integration.test.tsx`, beside
+the route's own, only to keep each file under the line limit; shared steps
+live in `testing/calendar-page.ts`.
+
 See the [write-react skill](/.agents/skills/write-react/SKILL.md) for
 component conventions and the
 [testing-strategy skill](/.agents/skills/testing-strategy/SKILL.md) for
@@ -168,18 +243,174 @@ test tiers.
 
 ## Layout
 
-The page is the month view across the whole viewport under a single toolbar
-row: today, previous and next, the month's title, and the view selector, which
-holds only Month so far. Times render in the zone the dataset's events carry.
+The page is the calendar across the whole viewport under a toolbar of two
+rows: the View, Color and Sky menus, with today, previous and next and the
+period's title at the right; then the Filters button with a count of the
+finished rules, Clear and the active filters as chips, with the view selector
+at the right. The menus' triggers carry an icon and no arrow. Times render in the zone the dataset's events carry.
 
-- While the database loads, `CalendarSkeleton` stands in for the page.
-- A failed load shows `CalendarError` with Retry; a browser without
-  WebAssembly or Web Workers gets an explanation and no retry.
-- A month with no events keeps the calendar and lays `CalendarEmpty` over it:
+- The views are month, week, three-day, day, agenda, and timeline, listed in
+  `src/components/events-calendar/calendar-views.constants.ts`; the app owns that list, so a view is
+  added or cut there. The `view` search parameter holds the one picked.
+  Without it, the view follows the width: the agenda below 768 pixels, the
+  month above, read synchronously so the first render is already right.
+- Three widths are told apart, in `src/components/events-calendar/calendar-viewport.utilities.ts`: a
+  phone below 768 pixels, a tablet from 768, and a desktop from 1024. Below a
+  desktop the view selector is a menu, as six buttons do not fit beside the
+  other controls. On a phone the week also scrolls sideways with a sticky
+  hour column (the time grid in page scroll mode inside a scrolling content
+  area), the menus and filter controls take a row of their own under the title, and the title
+  wraps rather than being cut.
+- One toolbar sits above every view and is never remounted by a change of
+  view, so the focus on its view selector survives it: each view reports how
+  it moves (`onNavigationChange`), because only a child of the vendored
+  calendar or Gantt can read that, and the toolbar calls the latest report.
+- The agenda and a month cell's "+N more" list are the app's own, windowed by
+  `VirtualList` over the pure functions in
+  `src/components/virtual-list/calendar-virtual-window.utilities.ts`. An event is listed once, on
+  the day it begins, or on the first day for one already under way.
+- Each load reads only the days the view shows plus a day either side
+  (`getViewWindows` in `src/components/events-calendar/calendar-window.utilities.ts`), through a cache
+  keyed by window and filter. The agenda lists 30 days and grows by 30, up to
+  366, when scrolled to its end or its last row's button is pressed; the
+  `days` search parameter holds how many.
+- The route reads its search from the location and reloads with
+  `shouldReload: true`, rather than through loader dependencies, so a later
+  load runs in the background and the page it replaces stays on screen.
+
+- The agenda and the timeline group their events, through the Group by
+  submenu of the View menu: an ordered list of up to three levels, each laid
+  out like a filter rule, a field and what to group it by. A tag root opens
+  the filter's own tag tree (`GroupTagPicker` over `FilterTagEditor`), and
+  each tag ticked becomes a group of the events under it, so several tags are
+  one pick; with none ticked it groups by the root's first level, and a link
+  from before tags could be picked still names a `depth`. A level may instead
+  be a year, quarter, month, week, day, weekday, hour, or duration bucket
+  read in each event's own zone.
+  `compileEventGrouping` in `src/components/calendar-group-by/` turns a grouping into one
+  SQL source of group keys per level, which `findEvents` reads into each
+  event's `groups`; `buildEventGroups` builds the tree from them. An event
+  falls in every group of a level it has a key for, so an event of two
+  planets is listed under both, and a group counts its distinct events. A
+  tag above the chosen depth stands for itself, and events with no key at a
+  level, or under none of the tags ticked, gather in a last "No …" group.
+- Without a `group` search parameter, the agenda groups by Type and the
+  timeline by Type, then Planet; an empty list groups by nothing. Levels that
+  do not parse or name a field the data lacks are dropped one by one.
+- Events are colored by a level picked the way a grouping's level is: the
+  `color` search parameter holds one, a field and, for a tag root, the tags or
+  the depth of its tree, from the same fields the filters and the grouping
+  offer, and the Color menu's panel picks it, under its Color events switch, with the same field
+  picker and tag tree. The loader reads it as one more level after the
+  grouping's, so each event arrives with its keys for it in `groups`;
+  `createColorScheme` (`src/components/calendar-color-by/calendar-color-schemes.utilities.ts`) turns
+  them into colors, handing out the palette in the tree's order, from the
+  weekdays, hours and durations known ahead, or from a key's own text for a
+  period. An event with several values, such as an aspect between two planets,
+  takes the first in the legend's order; one with none keeps the color the
+  data gave it. With no `color`, events are colored by type, kind by kind
+  (`EVENT_COLOR_RULES`); `colors=false` draws none.
+- The timeline is the vendored ReUI Gantt, composed in `CalendarTimeline`:
+  a row per group, nested and collapsible, a tag group grouped below its
+  root's children nested under each tag between, and a column counting each
+  row's events. The `scale` search parameter holds the span it shows, from a
+  day in fifteen-minute columns (zoomed up to fifteen times, so minutes read
+  apart) to a year in months, and a load reads only the span the scale shows.
+  Instants are drawn as circles, and a cluster of them as a circle holding its count, at their moment, spans as bars of their
+  true length, and markers closer than one marker's width at the scale and
+  zoom shown are clustered into a count
+  (`src/components/calendar-timeline/calendar-timeline-clusters.utilities.ts`). Bars that still overlap
+  are packed into lanes (`calendar-timeline-lanes.ts`): a row that needs more
+  than one gets a row without a title beneath it for each further lane, so
+  nothing is drawn over anything else. Lanes are packed over every bar of the
+  row, not only those on screen, so scrolling never moves a row.
+- The Gantt draws every row and bar it is handed, windowing neither, so the
+  timeline hands bars only to the rows scrolled into view and a few beyond
+  (`src/components/calendar-timeline/calendar-timeline-window.utilities.ts`). Rows keep one track
+  each, so a row's height stays put as its bars come and go; overlapping
+  bars in one row are drawn over each other rather than stacked.
+
+- The Filters button opens the vendored ReUI builder, nested AND/OR groups
+  included: as a popover from 1024 pixels wide, a drawer from the side from
+  768, and a bottom sheet below that. It never stays open over the calendar.
+- The chips wrap onto more rows, and are left out below 768 pixels, where
+  the count stands for them. `CalendarFilters` holds
+  the tree being edited, so an edit shows before the link catches up, and
+  writes it to the link only when the compiled query changes: an unfinished
+  rule does not reload the calendar. The facets are read once per database.
+- Collections are named sets of filters, applied in one step from the menu
+  beside the Filters button (`event-filter-collections.ts`). They are written
+  by tag names, such as `Type` and `Aspect / Simple Aspect / Major Aspect`,
+  and resolved against the data's facets, so a collection that names a tag
+  the data lacks applies to the ones it has, and an `and` that loses a
+  condition is dropped whole. A link with no `filter` opens on the default
+  collection, Highlights: major aspects and sign ingresses without the Moon,
+  plus stations, eclipses, and the long cycles. "No filter" is therefore
+  written to the link as an empty group, never left out.
+- A tag field's value editor (`filter-tag-editor.tsx`) is a searchable list of
+  checkboxes, one for each tag by its own name, indented by its depth, not a
+  list of paths. A tag with tags beneath it has a handle (or the right and
+  left arrows) that opens and closes them; the list opens folded to the first
+  level, showing the tags the rule holds, and a closed tag counts the picks
+  inside it. A search lists every match flat. Each tag's count is of the events in the days the view
+  shows (the facets are read for that window and cached per window), not of
+  the whole dataset.
+- The fields come from the data: one per tag root, offering every tag beneath
+  it, so a new root needs no code change. A root whose tags all end in a
+  number, such as Aspect Harmonic, offers comparisons (equals, greater and
+  less than, between) on that number instead of a pick list. Date range,
+  weekday, hour, duration bucket, duration in minutes, temporality, and text
+  search follow them; a tag root
+  named like one of those is left to the derived field.
+- Date, weekday, and hour are read in each event's own zone through the
+  `event_local_*` SQL functions in
+  `src/components/events-calendar/events-database-local-time.utilities.ts`, which the worker
+  and the tests' executor both register: SQLite itself knows no zones.
+
+- While the database loads, `CalendarSkeleton` stands in for the page: a
+  grid of days from a tablet's width, a list of rows on a phone, which opens
+  on the agenda.
+- A failed load shows `CalendarError`, announced as an alert, with Retry; a
+  browser without WebAssembly or Web Workers gets an explanation and no
+  retry.
+- Days with no events keep the calendar and lay `CalendarEmpty` over it:
   "No events yet" for an empty database, "Outside the data" with a jump to the
-  first covered day, or "No events this month" inside the covered dates.
-- The `date` search parameter (`YYYY-MM-DD`) holds the month; one that does
-  not parse falls back to today.
+  first covered day, or "No events this month" (or week, or day) inside the
+  covered dates. It is announced as a status. When the filters are what
+  emptied the period, "No events match the filters" offers Clear filters.
+  While a reload runs the page is marked busy and the notice waits.
+- The `date` search parameter (`YYYY-MM-DD`) holds the day the view opens on;
+  one that does not parse falls back to today.
+- The `filter` search parameter holds the ReUI filter tree as JSON, validated
+  by the schemas in `src/hooks/use-calendar-search/calendar-search.constants.ts`; one that does not parse is
+  dropped. `compileEventFilter` in `src/components/calendar-filters/` turns it into the
+  SQL condition `findEvents` applies, leaving out unfinished rules, and a
+  month the filters empty says so apart from one with no events at all.
+
+### Verified at each width
+
+Checked by hand in the browser against the seeded data, at 320 and 375 pixels
+(a phone), 768 and 800 (a tablet), and 1024 and 1280 (a desktop). At each,
+the toolbar's buttons sit inside the width, the page never scrolls sideways,
+and the title shows whole. The Filters button opens its popover on a desktop,
+a drawer on a tablet, and a bottom sheet on a phone.
+
+| View      | Phone (375)                                    | Tablet (800) | Desktop (1280) |
+| --------- | ---------------------------------------------- | ------------ | -------------- |
+| Month     | Works                                          | Works        | Works          |
+| Week      | Works; the grid scrolls sideways, hours fixed  | Works        | Works          |
+| Three-day | Works                                          | Works        | Works          |
+| Day       | Works                                          | Works        | Works          |
+| Agenda    | Works; it is the default                       | Works        | Works          |
+| Timeline  | Works, tight: about three days beside the rows | Works        | Works          |
+
+No view is withheld at any width. One that stops working at some width is
+cut by deleting it from `CALENDAR_VIEWS` and the records keyed by it in
+`src/components/events-calendar/calendar-views.constants.ts`, which the compiler then follows to
+every other place that names it. Not checked: the "+N more" list of a busy
+month, as the seed holds no busy day, and keyboard-only scrolling of the
+agenda and the timeline in browsers that do not make a scrollable region
+focusable by themselves.
 
 ## Key Files
 
@@ -187,7 +418,7 @@ holds only Month so far. Times render in the zone the dataset's events carry.
 - [src/routes/\_\_root.tsx](src/routes/__root.tsx): Document shell
 - [vite.config.mts](vite.config.mts): TanStack Start, Tailwind, and React plugins
 - [vitest.config.ts](vitest.config.ts): Test configuration
-- [src/lib/events-database/events-database.types.ts](src/lib/events-database/events-database.types.ts):
+- [src/components/events-calendar/events-database.types.ts](src/components/events-calendar/events-database.types.ts):
   The `EventsDatabase` interface
 - [src/routes/index.tsx](src/routes/index.tsx): The calendar page
-- [data/events-views.sql](data/events-views.sql): The post-export views
+- [events-read-model.sql](../caelundas-cli/data/events-read-model.sql): The SQL that rewrites the read-model tables

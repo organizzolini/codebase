@@ -16,7 +16,7 @@ import { ProgressiveService } from "../progressive/progressive.service";
  *
  * Reads observer coordinates and date range from environment variables,
  * runs perfective and progressive event detection in sequence, upserts the
- * detected events into Postgres, then reads the requested range and location
+ * detected events into the SQLite database, then reads the requested range and location
  * back and writes it to `.ics` and JSON files via {@link CalendarService}.
  */
 @Command({

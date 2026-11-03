@@ -135,15 +135,13 @@ export class RetrogradesService {
 
     const planetCapitalized = bodyDisplayName(planet);
 
-    // Extract planet symbol from beginning event summary (first non-whitespace character sequence)
-    const symbolMatch = /^(\S+)/.exec(beginningEvent.summary);
-    const symbol = symbolMatch ? symbolMatch[1] : "";
+    const symbol = symbolByBody[planet];
 
     return {
       description: `${planetCapitalized} Retrograde`,
       end,
       start,
-      summary: `${symbol} ↩️ ${planetCapitalized} Retrograde`,
+      summary: `${symbol}↩️ ${planetCapitalized} Retrograde`,
       tags: ["Astronomy", "Astrology", "Retrogrades", planetCapitalized],
     };
   }
@@ -219,8 +217,8 @@ export class RetrogradesService {
    *
    * @remarks
    * - Summary format: `[bodySymbol] [directionSymbol] [Body] Stationary [Direction]`
-   * - Example retrograde: "☿ ↩️ Mercury Stationary Retrograde"
-   * - Example direct: "☿ ➡️ Mercury Stationary Direct"
+   * - Example retrograde: "☿↩️ Mercury Stationary Retrograde"
+   * - Example direct: "☿➡️ Mercury Stationary Direct"
    * - Adds "Retrograde" or "Direct" tag based on direction
    * - Uses Unicode astronomical symbols: ☿ (Mercury), ♀ (Venus), ♂ (Mars), ♃ (Jupiter), etc.
    * - Direction symbols: ↩️ (retrograde), ➡️ (direct)
@@ -237,7 +235,7 @@ export class RetrogradesService {
    *   timestamp: new Date('2026-03-15T08:30:00Z'),
    *   direction: "retrograde"
    * });
-   * // Returns: { summary: "☿ ↩️ Mercury Stationary Retrograde", start: ..., ... }
+   * // Returns: { summary: "☿↩️ Mercury Stationary Retrograde", start: ..., ... }
    * ```
    */
   buildRetrogradeEvent(args: {
@@ -254,7 +252,7 @@ export class RetrogradesService {
     const orbitalDirectionSymbol = symbolByOrbitalDirection[direction];
 
     const description = `${bodyCapitalized} Stationary ${orbitalDirectionCapitalized}`;
-    const summary = `${retrogradeBodySymbol} ${orbitalDirectionSymbol} ${description}`;
+    const summary = `${retrogradeBodySymbol}${orbitalDirectionSymbol} ${description}`;
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: timestamp.toISOString(),
@@ -303,7 +301,7 @@ export class RetrogradesService {
    *   coordinateEphemerisByBody: ephemerides,
    *   currentMinute: moment('2026-03-15T08:30:00Z')
    * });
-   * // Returns: [{ summary: "☿ ↩️ Mercury Stationary Retrograde", start: ..., ... }]
+   * // Returns: [{ summary: "☿↩️ Mercury Stationary Retrograde", start: ..., ... }]
    * ```
    */
   detect(args: {
@@ -351,8 +349,8 @@ export class RetrogradesService {
    * ];
    * const durations = getRetrogradeProgressiveEvents(allEvents);
    * // Returns: [
-   * //   { summary: "☿ ↩️ Mercury Retrograde", start: Mar 15, end: Apr 8, ... },
-   * //   { summary: "♀ ↩️ Venus Retrograde", start: Jul 22, end: Sep 3, ... }
+   * //   { summary: "☿↩️ Mercury Retrograde", start: Mar 15, end: Apr 8, ... },
+   * //   { summary: "♀↩️ Venus Retrograde", start: Jul 22, end: Sep 3, ... }
    * // ]
    * ```
    */

@@ -1,10 +1,11 @@
 ---
 type: "Reference"
-title: "Callidescope"
-openwiki_generated: true
+title: "Callidescope Domain Model"
+description: "Domain model documentation for callidescope call stack tracing toolchain: call graph, stack, frame, finding vocabulary, depth/breadth measurement, gate semantics, findings charged to projects."
+tags: ["callidescope", "call-graph", "depth-gate", "breadth-gate", "nx-plugin", "typescript", "monorepo"]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-24T21:02:40.299Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-39c3295efc089133e87a9c80
     resource: repo://CONTEXT.md
@@ -50,33 +51,23 @@ sources:
     resource: repo://projects/ic-suite/callidescope/callidescope-output/src/modules/output-markdown/output-markdown.service.ts
   - id: openwiki-source-2d2a3413bebc1fa8e760d957
     resource: repo://projects/ic-suite/callidescope/callidescope-output/src/modules/report-findings/report-findings.service.ts
-  - id: openwiki-source-23775c3de52f3ab95a13cb8b
-    resource: repo://README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-24T21:02:40.299Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
-
 
 # Callidescope
 
 Callidescope is a call stack tracing toolchain that follows control flow through injected dependencies and reports where a stack got too deep or a callable reached too wide. It builds one call graph for the whole workspace, measures how deep a stack can get below each entry point, and how many distinct callables one callable calls directly — then flags the ones that exceed per-project limits.
 
-Published as 7 npm packages under the `@callidescope` scope:
-<!-- openwiki: broken internal link [projects/ic-suite/callidescope/callidescope-agents] file "projects/ic-suite/callidescope/callidescope-agents" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [`@callidescope/agents`](projects/ic-suite/callidescope/callidescope-agents) — Agent skills for the toolchain
-<!-- openwiki: broken internal link [projects/ic-suite/callidescope/callidescope-cli] file "projects/ic-suite/callidescope/callidescope-cli" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [`@callidescope/cli`](projects/ic-suite/callidescope/callidescope-cli) — Command-line host that builds the call graph with the TypeScript compiler API, resolves NestJS injected dependencies, and reports the deepest stack below every entry point
-<!-- openwiki: broken internal link [projects/ic-suite/callidescope/callidescope-configuration] file "projects/ic-suite/callidescope/callidescope-configuration" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [`@callidescope/configuration`](projects/ic-suite/callidescope/callidescope-configuration) — Reads `callidescope.config.ts` for entry-point rules, depth and breadth limits, exclusion globs, and output destinations
-<!-- openwiki: broken internal link [projects/ic-suite/callidescope/callidescope-core] file "projects/ic-suite/callidescope/callidescope-core" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [`@callidescope/core`](projects/ic-suite/callidescope/callidescope-core) — The contracts leaf: the call graph, stack, frame, and finding vocabulary every other package speaks
-<!-- openwiki: broken internal link [projects/ic-suite/callidescope/callidescope-examples] file "projects/ic-suite/callidescope/callidescope-examples" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [`@callidescope/examples`](projects/ic-suite/callidescope/callidescope-examples) — A small codebase built to be traced, carrying one worked example per rule, finding, and output
-<!-- openwiki: broken internal link [projects/ic-suite/callidescope/callidescope-graph] file "projects/ic-suite/callidescope/callidescope-graph" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [`@callidescope/graph`](projects/ic-suite/callidescope/callidescope-graph) — Builds the call graph from traced TypeScript source and measures its depth and breadth
-<!-- openwiki: broken internal link [projects/ic-suite/callidescope/callidescope-nx] file "projects/ic-suite/callidescope/callidescope-nx" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [`@callidescope/nx`](projects/ic-suite/callidescope/callidescope-nx) — Nx plugin inferring per-project `trace`, `depth`, `breadth`, and `gate` targets that follow the Nx dependency graph
-<!-- openwiki: broken internal link [projects/ic-suite/callidescope/callidescope-output] file "projects/ic-suite/callidescope/callidescope-output" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [`@callidescope/output`](projects/ic-suite/callidescope/callidescope-output) — Renders call-graph findings into markdown, mermaid, and JSON output formats
+Published as **8 npm packages** under the `@callidescope` scope:
+
+- [`@callidescope/agents`](repo://projects/ic-suite/callidescope/callidescope-agents) — Agent skills for the toolchain
+- [`@callidescope/cli`](repo://projects/ic-suite/callidescope/callidescope-cli) — Command-line host that builds the call graph with the TypeScript compiler API, resolves NestJS injected dependencies, and reports the deepest stack below every entry point
+- [`@callidescope/configuration`](repo://projects/ic-suite/callidescope/callidescope-configuration) — Reads `callidescope.config.ts` for entry-point rules, depth and breadth limits, exclusion globs, and output destinations
+- [`@callidescope/core`](repo://projects/ic-suite/callidescope/callidescope-core) — The contracts leaf: the call graph, stack, frame, and finding vocabulary every other package speaks
+- [`@callidescope/examples`](repo://projects/ic-suite/callidescope/callidescope-examples) — A small codebase built to be traced, carrying one worked example per rule, finding, and output
+- [`@callidescope/graph`](repo://projects/ic-suite/callidescope/callidescope-graph) — Builds the call graph from traced TypeScript source and measures its depth and breadth
+- [`@callidescope/nx`](repo://projects/ic-suite/callidescope/callidescope-nx) — Nx plugin inferring per-project `trace`, `depth`, `breadth`, and `gate` targets that follow the Nx dependency graph
+- [`@callidescope/output`](repo://projects/ic-suite/callidescope/callidescope-output) — Renders call-graph findings into markdown, mermaid, and JSON output formats
 
 ---
 
@@ -92,8 +83,8 @@ The toolchain uses precise vocabulary. The terms below are the ones the code, re
 | **Breadth** | Distinct callables one callable calls directly, and the other thing callidescope gates. Measured for every callable whether or not a limit exists to exceed. | Fan-out, width, spread |
 | **Entry Point** | A callable that roots a stack, because a framework, a runtime, or nothing at all calls it. `declared` is the only kind a person chose; every other kind is inferred from a decorator, a file name, an export, or from nothing having called it. | Root, caller, top-level |
 
-<!-- openwiki: broken internal link [documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md] file "documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-**Key distinction**: Callidescope has no notion of a **module** and measures no **cohesion**. It once derived a `<project>:<subtree>` module identifier to report module spread and misplaced callables against; both findings and the identifier were removed — see [ADR 0006](documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md). A callable belongs to a **project** and to a file, and to nothing between them.
+<!-- openwiki: broken internal link [../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md] file "../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+**Key distinction**: Callidescope has no notion of a **module** and measures no **cohesion**. It once derived a `<project>:<subtree>` module identifier to report module spread and misplaced callables against; both findings and the identifier were removed — see [ADR 0006](../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md). A callable belongs to a **project** and to a file, and to nothing between them.
 
 ---
 
@@ -222,8 +213,8 @@ Builds the call graph from traced TypeScript source and measures its depth and b
 
 **Breadth measurement**: Distinct direct callees per callable, measured on the raw graph (no condensation needed; breadth is well-defined even in cycles).
 
-<!-- openwiki: broken internal link [documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md] file "documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-**Implementation-candidate cap** (`MAXIMUM_IMPLEMENTATION_CANDIDATES = 8`): Where structural interface resolution stops guessing. Not a configuration field — it belongs with the resolution it governs. See [ADR 0006](documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md).
+<!-- openwiki: broken internal link [../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md] file "../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+**Implementation-candidate cap** (`MAXIMUM_IMPLEMENTATION_CANDIDATES = 8`): Where structural interface resolution stops guessing. Not a configuration field — it belongs with the resolution it governs. See [ADR 0006](../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md).
 
 Source: `repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/graph.service.ts`, `repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/graph-assembly.service.ts`, `repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/entries/entries.service.ts`
 
@@ -358,8 +349,8 @@ export default {
 };
 ```
 
-<!-- openwiki: broken internal link [documentation/adr/0007-complete-project-configurations.md] file "documentation/adr/0007-complete-project-configurations.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-**Every traced project has one, and every one is complete.** A traced project with no file at all is refused by name, as is a file that leaves a field out. `maximumBreadth: undefined` is a project saying outright it gates depth and not breadth — the one statement an absent field could never distinguish from a project that forgot. Nothing is inherited; the spread puts every number in the project's own file where a reader can see it. See [ADR 0007](documentation/adr/0007-complete-project-configurations.md).
+<!-- openwiki: broken internal link [../architecture/adr/0007-complete-project-configurations.md] file "../architecture/adr/0007-complete-project-configurations.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+**Every traced project has one, and every one is complete.** A traced project with no file at all is refused by name, as is a file that leaves a field out. `maximumBreadth: undefined` is a project saying outright it gates depth and not breadth — the one statement an absent field could never distinguish from a project that forgot. Nothing is inherited; the spread puts every number in the project's own file where a reader can see it. See [ADR 0007](../architecture/adr/0007-complete-project-configurations.md).
 
 ---
 
@@ -541,10 +532,10 @@ Machine-readable `CallGraphResult`:
 <!-- openwiki: broken internal link [../testing/callidescope.md] file "../testing/callidescope.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 - [Callidescope Testing](../testing/callidescope.md) — Testing strategies for callidescope
 - [Code Quality Workflows](../workflows/code-quality.md) — How callidescope integrates into quality gates
-<!-- openwiki: broken internal link [documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md] file "documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [ADR 0006](documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md) — Decision to narrow to depth and breadth only
-<!-- openwiki: broken internal link [documentation/adr/0007-complete-project-configurations.md] file "documentation/adr/0007-complete-project-configurations.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [ADR 0007](documentation/adr/0007-complete-project-configurations.md) — Decision for complete project configurations
+<!-- openwiki: broken internal link [../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md] file "../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+- [ADR 0006](../architecture/adr/0006-narrow-callidescope-to-depth-and-breadth.md) — Decision to narrow to depth and breadth only
+<!-- openwiki: broken internal link [../architecture/adr/0007-complete-project-configurations.md] file "../architecture/adr/0007-complete-project-configurations.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+- [ADR 0007](../architecture/adr/0007-complete-project-configurations.md) — Decision for complete project configurations
 
 ---
 

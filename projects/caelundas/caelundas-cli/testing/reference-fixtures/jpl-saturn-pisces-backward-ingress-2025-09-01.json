@@ -1,13 +1,13 @@
 {
-  "absent": ["♄ → ♓︎⛰️ Saturn peak ingress Pisces"],
+  "absent": ["♄→♓︎⛰️ Saturn peak ingress Pisces"],
   "counts": {
-    "♄ → ♓︎ Saturn ingress Pisces": 1
+    "♄→♓︎ Saturn ingress Pisces": 1
   },
   "events": [
     {
       "note": "Horizons ObsEcLon crosses 0 degrees backwards at 2025-09-01T08:06:00Z; the re-entry into Pisces is a sign ingress, not a peak",
       "start": "2025-09-01T08:06:00Z",
-      "summary": "♄ → ♓︎ Saturn ingress Pisces"
+      "summary": "♄→♓︎ Saturn ingress Pisces"
     }
   ],
   "name": "Saturn re-enters Pisces backwards across 0 degrees on 1 September 2025",

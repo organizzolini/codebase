@@ -1,6 +1,6 @@
 import { Column, Entity } from "typeorm";
 
-import { IdentifiableEntity } from "../../src/modules/postgresql/entities/identifiable.entity";
+import { PostgresqlIdentifiableEntity } from "../../src/modules/postgresql/entities/identifiable.entity";
 
 /**
  * A table no migration creates, with one generated column: what the
@@ -8,7 +8,7 @@ import { IdentifiableEntity } from "../../src/modules/postgresql/entities/identi
  * where TypeORM records the column's expression.
  */
 @Entity({ name: "gadgets" })
-export class Gadget extends IdentifiableEntity {
+export class Gadget extends PostgresqlIdentifiableEntity {
   @Column({ type: "text" })
   displayName!: string;
 

@@ -1,0 +1,25 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<path d="M7 8L7 20" stroke-linecap="round" stroke="black"/>
+<path d="M16.9995 8V20" stroke-linecap="round" stroke="black"/>
+<use xlink:href="#stroke0_601_11591" stroke="black"/>
+<use xlink:href="#stroke0_601_11591" stroke="black"/>
+<use xlink:href="#stroke0_601_11591" stroke="black"/>
+<use xlink:href="#stroke0_601_11591" stroke="black"/>
+<use xlink:href="#stroke1_601_11591" stroke="black"/>
+<use xlink:href="#stroke1_601_11591" stroke="black"/>
+<use xlink:href="#stroke1_601_11591" stroke="black"/>
+<use xlink:href="#stroke1_601_11591" stroke="black"/>
+<circle cx="19.9995" cy="20" r="3" stroke="black"/>
+<circle cx="19.9995" cy="20" r="3" stroke="black"/>
+<circle cx="19.9995" cy="20" r="3" stroke="black"/>
+<circle cx="19.9995" cy="20" r="3" stroke="black"/>
+<use xlink:href="#stroke2_601_11591" stroke="black"/>
+<use xlink:href="#stroke2_601_11591" stroke="black"/>
+<use xlink:href="#stroke2_601_11591" stroke="black"/>
+<use xlink:href="#stroke2_601_11591" stroke="black"/>
+<defs>
+<path id="stroke0_601_11591" d="M16.9995 8C16.9995 6.67392 16.4727 5.40215 15.535 4.46447C14.5974 3.52678 13.3256 3 11.9995 3C10.6734 3 9.40166 3.52678 8.46398 4.46447C7.5263 5.40215 6.99951 6.67392 6.99951 8" stroke-linecap="round"/>
+<path id="stroke1_601_11591" d="M7 8C7 7.34339 6.87067 6.69321 6.6194 6.08658C6.36812 5.47995 5.99983 4.92876 5.53553 4.46447C5.07124 4.00017 4.52004 3.63188 3.91342 3.3806C3.30679 3.12933 2.65661 3 2 3" stroke-linecap="round"/>
+<path id="stroke2_601_11591" d="M16.9995 20C16.9995 20.394 16.9219 20.7841 16.7712 21.1481C16.6204 21.512 16.3994 21.8427 16.1208 22.1213C15.8423 22.3999 15.5115 22.6209 15.1476 22.7716C14.7836 22.9224 14.3935 23 13.9995 23" stroke-linecap="round"/>
+</defs>
+</svg>

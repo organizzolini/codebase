@@ -1,5 +1,7 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { DATABASE_DEFAULT_FILE } from "../database/database.constants";
+
 type ConfigOptions =
   | undefined
   | {
@@ -41,8 +43,9 @@ describe("caelundas module", () => {
     expect(options.envFilePath).toBe(".env");
     expect(options.isGlobal).toBe(true);
     expect(typeof options.validate).toBe("function");
+
     expect(options.validate?.({})).toMatchObject({
-      CAELUNDAS_POSTGRES_DATABASE: "caelundas_development",
+      CAELUNDAS_SQLITE_DATABASE: DATABASE_DEFAULT_FILE,
       OUTPUT_DIRECTORY: "./output",
     });
   });

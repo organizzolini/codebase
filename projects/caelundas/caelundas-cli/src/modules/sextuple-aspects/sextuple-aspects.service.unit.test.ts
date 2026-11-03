@@ -5,7 +5,6 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { MathService } from "../math/math.service";
@@ -85,7 +84,6 @@ describe(SextupleAspectsService, () => {
         SextupleAspectsService,
         SextupleAspectsComposerService,
         CompoundPhaseService,
-        AspectPhaseEmojiService,
         ProgressiveCompoundEventService,
         MathService,
         LoggerService,
@@ -408,7 +406,7 @@ describe(SextupleAspectsService, () => {
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
         summary:
-          "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+          "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
         tags: [
           "Astronomy",
           "Astrology",
@@ -431,7 +429,7 @@ describe(SextupleAspectsService, () => {
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
         summary:
-          "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+          "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
         tags: [
           "Astronomy",
           "Astrology",
@@ -473,7 +471,7 @@ describe(SextupleAspectsService, () => {
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
         summary:
-          "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+          "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
         tags: [
           "Astronomy",
           "Astrology",
@@ -502,7 +500,7 @@ describe(SextupleAspectsService, () => {
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
         summary:
-          "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+          "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
         tags: [
           "Astronomy",
           "Astrology",
@@ -532,7 +530,7 @@ describe(SextupleAspectsService, () => {
           end: moment.utc("2024-03-21T10:00:00.000Z"),
           start: moment.utc("2024-03-21T10:00:00.000Z"),
           summary:
-            "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+            "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
           tags: [
             "Astronomy",
             "Astrology",
@@ -554,7 +552,7 @@ describe(SextupleAspectsService, () => {
           end: moment.utc("2024-03-21T14:00:00.000Z"),
           start: moment.utc("2024-03-21T14:00:00.000Z"),
           summary:
-            "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+            "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
           tags: [
             "Astronomy",
             "Astrology",
@@ -576,7 +574,7 @@ describe(SextupleAspectsService, () => {
           end: moment.utc("2024-03-22T10:00:00.000Z"),
           start: moment.utc("2024-03-22T10:00:00.000Z"),
           summary:
-            "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+            "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
           tags: [
             "Astronomy",
             "Astrology",
@@ -598,7 +596,7 @@ describe(SextupleAspectsService, () => {
           end: moment.utc("2024-03-22T14:00:00.000Z"),
           start: moment.utc("2024-03-22T14:00:00.000Z"),
           summary:
-            "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+            "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
           tags: [
             "Astronomy",
             "Astrology",
@@ -642,7 +640,7 @@ describe(SextupleAspectsService, () => {
           end: moment.utc("2024-03-21T10:00:00.000Z"),
           start: moment.utc("2024-03-21T10:00:00.000Z"),
           summary:
-            "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+            "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
           tags: [
             "Astronomy",
             "Astrology",
@@ -664,7 +662,7 @@ describe(SextupleAspectsService, () => {
           end: moment.utc("2024-03-21T14:00:00.000Z"),
           start: moment.utc("2024-03-21T14:00:00.000Z"),
           summary:
-            "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+            "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
           tags: [
             "Astronomy",
             "Astrology",
@@ -687,7 +685,7 @@ describe(SextupleAspectsService, () => {
           end: moment.utc("2024-03-21T11:00:00.000Z"),
           start: moment.utc("2024-03-21T11:00:00.000Z"),
           summary:
-            "➡️ ✡ ☉-☽-♂-♃-♆-♅ Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram forming",
+            "✡☉☽♂♃♆♅ Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram forming",
           tags: [
             "Astronomy",
             "Astrology",
@@ -709,7 +707,7 @@ describe(SextupleAspectsService, () => {
           end: moment.utc("2024-03-21T15:00:00.000Z"),
           start: moment.utc("2024-03-21T15:00:00.000Z"),
           summary:
-            "⬅️ ✡ ☉-☽-♂-♃-♆-♅ Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram dissolving",
+            "✡☉☽♂♃♆♅ Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram dissolving",
           tags: [
             "Astronomy",
             "Astrology",
@@ -931,10 +929,6 @@ describe(SextupleAspectsService, () => {
         expect(pattern).toBeNull();
 
         findGrandTrinePairsSpy.mockRestore();
-      });
-
-      it("returns perfective phase emoji", () => {
-        expect(composerService.getPhaseEmoji("perfective")).toBe("🎯 ");
       });
 
       it("returns false when hexagon sextile checks receive incomplete arrangements", () => {

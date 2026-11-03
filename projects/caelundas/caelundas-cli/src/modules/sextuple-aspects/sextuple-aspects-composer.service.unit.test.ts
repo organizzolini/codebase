@@ -1,7 +1,6 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 
 import { SextupleAspectsComposerService } from "./sextuple-aspects-composer.service";
@@ -14,7 +13,6 @@ describe(SextupleAspectsComposerService, () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        AspectPhaseEmojiService,
         ProgressiveCompoundEventService,
         SextupleAspectsComposerService,
       ],

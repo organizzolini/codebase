@@ -60,10 +60,7 @@ describe(MajorAspectEventService, () => {
         timestamp,
       });
 
-      expect(event.summary).toContain("🎯");
-      expect(event.summary).toContain("☀️");
-      expect(event.summary).toContain("🌙");
-      expect(event.summary).toContain("☌");
+      expect(event.summary).toBe("☀️☌🌙 Sun conjunct Moon");
       expect(event.description).toBe("Sun perfective conjunct Moon");
       expect(event.tags).toContain("Astronomy");
       expect(event.tags).toContain("Astrology");
@@ -87,7 +84,7 @@ describe(MajorAspectEventService, () => {
         timestamp,
       });
 
-      expect(event.summary).toContain("➡️");
+      expect(event.summary).toContain("");
       expect(event.summary).toContain("☀️");
       expect(event.summary).toContain("♂️");
       expect(event.summary).toContain("☍");
@@ -107,7 +104,7 @@ describe(MajorAspectEventService, () => {
         timestamp,
       });
 
-      expect(event.summary).toContain("⬅️");
+      expect(event.summary).toContain("");
       expect(event.summary).toContain("♀️");
       expect(event.summary).toContain("♃");
       expect(event.summary).toContain("△");
