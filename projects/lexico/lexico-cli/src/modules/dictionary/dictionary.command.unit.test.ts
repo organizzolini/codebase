@@ -1,21 +1,21 @@
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Lexeme, Translation } from "@codebase/lexico-entities";
 import { LoggerService } from "@codebase/observability";
+import { promptsMock } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import {
-  createCommandTestHarness,
   resetCommandTestHarness,
   runCommandLine,
 } from "../../../testing/command-harness";
-import {
-  mockStandardInputTerminal,
-  setPromptsMockResponse,
-} from "../../../testing/mocks";
+import { mockStandardInputTerminal } from "../../../testing/mocks";
 import { LexemesService } from "../lexemes/lexemes.service";
 import { ManualService } from "../manual/manual.service";
 import { TranslationsService } from "../translations/translations.service";
@@ -24,10 +24,7 @@ import { DictionaryCommand } from "./dictionary.command";
 
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
 import type { DeepMocked } from "@golevelup/ts-vitest";
-
-const { promptsMock } = vi.hoisted(() => ({
-  promptsMock: vi.fn<() => Promise<Record<string, null | string>>>(),
-}));
+import type { Provider } from "@nestjs/common";
 
 const {
   appendFileSyncMock,
@@ -79,31 +76,28 @@ describe(DictionaryCommand, () => {
   };
   let logger: DeepMocked<LoggerService>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DictionaryCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: LexemesService,
-          useValue: lexemesService,
-        },
-        {
-          provide: TranslationsService,
-          useValue: translationsService,
-        },
-        {
-          provide: ManualService,
-          useValue: manualService,
-        },
-      ],
-    }).compile();
+  const createProviders = (): Provider[] => [
+    {
+      provide: LexemesService,
+      useValue: lexemesService,
+    },
+    {
+      provide: TranslationsService,
+      useValue: translationsService,
+    },
+    {
+      provide: ManualService,
+      useValue: manualService,
+    },
+  ];
 
-    command = await module.resolve(DictionaryCommand);
-    logger = await module.resolve(LoggerService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(DictionaryCommand, {
+      providers: createProviders(),
+    });
+
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
@@ -126,7 +120,7 @@ describe(DictionaryCommand, () => {
       }),
     );
 
-    setPromptsMockResponse(promptsMock, { startLemma: null });
+    promptsMock.mockResolvedValue({ startLemma: null });
 
     lexemesService.existsByLemma.mockResolvedValue(true);
     lexemesService.findLexemesByLemmaWithTranslations.mockResolvedValue([]);
@@ -149,37 +143,18 @@ describe(DictionaryCommand, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DictionaryCommand, {
+      providers: createProviders(),
+    });
+
+    expect(instance).toBeInstanceOf(DictionaryCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DictionaryCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: LexemesService,
-          useValue: createMock<LexemesService>(),
-        },
-        {
-          provide: TranslationsService,
-          useValue: createMock<TranslationsService>(),
-        },
-        {
-          provide: ManualService,
-          useValue: createMock<ManualService>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(DictionaryCommand);
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("DictionaryCommand");
+    await expectLoggerContext(DictionaryCommand, {
+      providers: createProviders(),
+    });
   });
 
   it("should create output directory when it does not exist", async () => {
@@ -190,8 +165,8 @@ describe(DictionaryCommand, () => {
       return true;
     });
 
-    const commandHarness = await createCommandTestHarness({
-      additionalProviders: [
+    await buildTestingModule(DictionaryCommand, {
+      providers: [
         {
           provide: LexemesService,
           useValue: lexemesService,
@@ -205,10 +180,7 @@ describe(DictionaryCommand, () => {
           useValue: manualService,
         },
       ],
-      commandType: DictionaryCommand,
     });
-
-    await commandHarness.testingModule.resolve(DictionaryCommand);
 
     expect(mkdirSyncMock).toHaveBeenCalledWith(
       expect.stringContaining("output"),

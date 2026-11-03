@@ -1,8 +1,8 @@
-import { Test } from "@nestjs/testing";
 import * as cheerio from "cheerio";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { Lexeme, Translation } from "@codebase/lexico-entities";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EtymologyService } from "./etymology.service";
 
@@ -24,15 +24,15 @@ describe(EtymologyService, () => {
   let service: EtymologyService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [EtymologyService],
-    }).compile();
+    const built = await buildTestingModule(EtymologyService);
 
-    service = await module.resolve(EtymologyService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EtymologyService);
+
+    expect(instance).toBeInstanceOf(EtymologyService);
   });
 
   describe("parse", () => {

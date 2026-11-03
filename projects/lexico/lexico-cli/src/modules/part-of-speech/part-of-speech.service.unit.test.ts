@@ -10,6 +10,7 @@ import {
   UninflectedInflection,
   VerbInflection,
 } from "@codebase/lexico-entities";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PartOfSpeechFormsService } from "./part-of-speech-forms.service";
 import { PartOfSpeechModule } from "./part-of-speech.module";
@@ -121,15 +122,17 @@ describe(PartOfSpeechService, () => {
   });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PartOfSpeechFormsService, PartOfSpeechService],
-    }).compile();
-
-    service = await module.resolve(PartOfSpeechService);
+    ({ instance: service } = await buildTestingModule(PartOfSpeechService, {
+      providers: [PartOfSpeechFormsService],
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PartOfSpeechService, {
+      providers: [PartOfSpeechFormsService],
+    });
+
+    expect(instance).toBeInstanceOf(PartOfSpeechService);
   });
 
   describe("getPartOfSpeech", () => {

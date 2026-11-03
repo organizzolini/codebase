@@ -1,7 +1,7 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { Form } from "@codebase/lexico-entities";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { FormsTransientWordsService } from "./forms-transient-words.service";
 
@@ -9,15 +9,15 @@ describe(FormsTransientWordsService, () => {
   let service: FormsTransientWordsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [FormsTransientWordsService],
-    }).compile();
+    const built = await buildTestingModule(FormsTransientWordsService);
 
-    service = await module.resolve(FormsTransientWordsService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(FormsTransientWordsService);
+
+    expect(instance).toBeInstanceOf(FormsTransientWordsService);
   });
 
   it("should return empty words when none were set", () => {

@@ -84,7 +84,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   integration: NEST_BASELINE,
   "projects/caelundas/caelundas-cli": NEST_BASELINE,
   "projects/caelundas/caelundas-web": WEB_BASELINE,
-  "projects/lexico/lexico-cli": NEST_BASELINE,
   "projects/meanderaw/meanderaw-cli": NEST_BASELINE,
   "projects/meanderaw/meanderaw-web": WEB_BASELINE,
   publication: NEST_BASELINE,

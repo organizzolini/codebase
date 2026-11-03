@@ -1,26 +1,24 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { promptsMock } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import {
   resetCommandTestHarness,
   runCommandLine,
 } from "../../../testing/command-harness";
-import {
-  mockStandardInputTerminal,
-  setPromptsMockResponse,
-} from "../../../testing/mocks";
+import { mockStandardInputTerminal } from "../../../testing/mocks";
 
 import { LiteratureCommand } from "./literature.command";
 import { LiteratureService } from "./literature.service";
 
 import type { LibraryEntry } from "./literature.types";
-
-const { promptsMock } = vi.hoisted(() => ({
-  promptsMock: vi.fn<() => Promise<Record<string, unknown>>>(),
-}));
+import type { Provider } from "@nestjs/common";
 
 vi.mock("prompts", () => ({
   default: promptsMock,
@@ -62,53 +60,39 @@ describe(LiteratureCommand, () => {
     scanLibrary: vi.fn<() => Promise<LibraryEntry[]>>(),
   };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LiteratureCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: LiteratureService,
-          useValue: literatureService,
-        },
-      ],
-    }).compile();
+  const createProviders = (): Provider[] => [
+    {
+      provide: LiteratureService,
+      useValue: literatureService,
+    },
+  ];
 
-    command = await module.resolve(LiteratureCommand);
-    logger = await module.resolve(LoggerService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(LiteratureCommand, {
+      providers: createProviders(),
+    });
+
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
     resetCommandTestHarness({ unstubGlobals: false });
-    setPromptsMockResponse(promptsMock, { provider: "ALL" });
+    promptsMock.mockResolvedValue({ provider: "ALL" });
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LiteratureCommand, {
+      providers: createProviders(),
+    });
+
+    expect(instance).toBeInstanceOf(LiteratureCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LiteratureCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: LiteratureService,
-          useValue: createMock<LiteratureService>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(LiteratureCommand);
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("LiteratureCommand");
+    await expectLoggerContext(LiteratureCommand, {
+      providers: createProviders(),
+    });
   });
 
   it("should get text choices filtered by provider only", async () => {

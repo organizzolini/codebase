@@ -2,6 +2,8 @@ import { Test } from "@nestjs/testing";
 import * as cheerio from "cheerio";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { loadCheerioElement } from "../../../testing/mocks";
 
 import { PartOfSpeechFormsService } from "./part-of-speech-forms.service";
@@ -14,11 +16,9 @@ describe(PartOfSpeechFormsService, () => {
   let service: PartOfSpeechFormsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PartOfSpeechFormsService],
-    }).compile();
+    const built = await buildTestingModule(PartOfSpeechFormsService);
 
-    service = await module.resolve(PartOfSpeechFormsService);
+    service = built.instance;
   });
 
   // Re-resolved per test: the parser accumulates state across a parse, so a
@@ -31,8 +31,10 @@ describe(PartOfSpeechFormsService, () => {
     service = await module.resolve(PartOfSpeechFormsService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PartOfSpeechFormsService);
+
+    expect(instance).toBeInstanceOf(PartOfSpeechFormsService);
   });
 
   it("should initialize the service instance", () => {

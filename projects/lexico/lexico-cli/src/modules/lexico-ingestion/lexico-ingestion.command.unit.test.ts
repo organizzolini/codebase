@@ -1,10 +1,12 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { promptsMock } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
-import { setPromptsMockResponse } from "../../../testing/mocks";
 import { CorpusScriptorumEcclesiasticorumLatinorumCommand } from "../corpus-scriptorum-ecclesiasticorum-latinorum/corpus-scriptorum-ecclesiasticorum-latinorum.command";
 import { DictionaryCommand } from "../dictionary/dictionary.command";
 import { EpigraphikDatenbankClaussSlabyCommand } from "../epigraphik-datenbank-clauss-slaby/epigraphik-datenbank-clauss-slaby.command";
@@ -17,10 +19,8 @@ import { WiktionaryCommand } from "../wiktionary/wiktionary.command";
 import { LexicoIngestionCommand } from "./lexico-ingestion.command";
 
 import type { LexicoIngestionCommandOptions } from "./lexico-ingestion.types";
-
-const { promptsMock } = vi.hoisted(() => ({
-  promptsMock: vi.fn<() => Promise<Record<string, boolean>>>(),
-}));
+import type { LoggerService } from "@codebase/observability";
+import type { Provider } from "@nestjs/common";
 
 vi.mock("prompts", () => ({
   default: promptsMock,
@@ -38,118 +38,75 @@ describe(LexicoIngestionCommand, () => {
   let perseusCommand: DeepMocked<PerseusCommand>;
   let wiktionaryCommand: DeepMocked<WiktionaryCommand>;
 
+  const createProviders = (): Provider[] => [
+    {
+      provide: CorpusScriptorumEcclesiasticorumLatinorumCommand,
+      useValue: createMock<CorpusScriptorumEcclesiasticorumLatinorumCommand>(),
+    },
+    {
+      provide: DictionaryCommand,
+      useValue: createMock<DictionaryCommand>(),
+    },
+    {
+      provide: EpigraphikDatenbankClaussSlabyCommand,
+      useValue: createMock<EpigraphikDatenbankClaussSlabyCommand>(),
+    },
+    {
+      provide: LatinLibraryCommand,
+      useValue: createMock<LatinLibraryCommand>(),
+    },
+    { provide: LibraryCommand, useValue: createMock<LibraryCommand>() },
+    {
+      provide: LiteratureCommand,
+      useValue: createMock<LiteratureCommand>(),
+    },
+    { provide: PerseusCommand, useValue: createMock<PerseusCommand>() },
+    {
+      provide: WiktionaryCommand,
+      useValue: createMock<WiktionaryCommand>(),
+    },
+  ];
+
   beforeAll(async () => {
-    setPromptsMockResponse(promptsMock, { value: true });
+    promptsMock.mockResolvedValue({ value: true });
 
-    const module = await Test.createTestingModule({
-      providers: [
-        LexicoIngestionCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: CorpusScriptorumEcclesiasticorumLatinorumCommand,
-          useValue:
-            createMock<CorpusScriptorumEcclesiasticorumLatinorumCommand>(),
-        },
-        {
-          provide: DictionaryCommand,
-          useValue: createMock<DictionaryCommand>(),
-        },
-        {
-          provide: EpigraphikDatenbankClaussSlabyCommand,
-          useValue: createMock<EpigraphikDatenbankClaussSlabyCommand>(),
-        },
-        {
-          provide: LatinLibraryCommand,
-          useValue: createMock<LatinLibraryCommand>(),
-        },
-        { provide: LibraryCommand, useValue: createMock<LibraryCommand>() },
-        {
-          provide: LiteratureCommand,
-          useValue: createMock<LiteratureCommand>(),
-        },
-        { provide: PerseusCommand, useValue: createMock<PerseusCommand>() },
-        {
-          provide: WiktionaryCommand,
-          useValue: createMock<WiktionaryCommand>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(LexicoIngestionCommand, {
+      providers: createProviders(),
+    });
 
-    command = await module.resolve(LexicoIngestionCommand);
-    logger = await module.resolve(LoggerService);
-    corpusScriptorumEcclesiasticorumLatinorumCommand = module.get(
+    command = built.instance;
+    logger = built.logger;
+    corpusScriptorumEcclesiasticorumLatinorumCommand = built.module.get(
       CorpusScriptorumEcclesiasticorumLatinorumCommand,
     );
-    dictionaryCommand = module.get(DictionaryCommand);
-    epigraphikDatenbankClaussSlabyCommand = module.get(
+    dictionaryCommand = built.module.get(DictionaryCommand);
+    epigraphikDatenbankClaussSlabyCommand = built.module.get(
       EpigraphikDatenbankClaussSlabyCommand,
     );
-    latinLibraryCommand = module.get(LatinLibraryCommand);
-    libraryCommand = module.get(LibraryCommand);
-    literatureCommand = module.get(LiteratureCommand);
-    perseusCommand = module.get(PerseusCommand);
-    wiktionaryCommand = module.get(WiktionaryCommand);
+    latinLibraryCommand = built.module.get(LatinLibraryCommand);
+    libraryCommand = built.module.get(LibraryCommand);
+    literatureCommand = built.module.get(LiteratureCommand);
+    perseusCommand = built.module.get(PerseusCommand);
+    wiktionaryCommand = built.module.get(WiktionaryCommand);
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
-    setPromptsMockResponse(promptsMock, { value: true });
+    promptsMock.mockResolvedValue({ value: true });
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LexicoIngestionCommand, {
+      providers: createProviders(),
+    });
+
+    expect(instance).toBeInstanceOf(LexicoIngestionCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LexicoIngestionCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: CorpusScriptorumEcclesiasticorumLatinorumCommand,
-          useValue:
-            createMock<CorpusScriptorumEcclesiasticorumLatinorumCommand>(),
-        },
-        {
-          provide: DictionaryCommand,
-          useValue: createMock<DictionaryCommand>(),
-        },
-        {
-          provide: EpigraphikDatenbankClaussSlabyCommand,
-          useValue: createMock<EpigraphikDatenbankClaussSlabyCommand>(),
-        },
-        {
-          provide: LatinLibraryCommand,
-          useValue: createMock<LatinLibraryCommand>(),
-        },
-        {
-          provide: LibraryCommand,
-          useValue: createMock<LibraryCommand>(),
-        },
-        {
-          provide: LiteratureCommand,
-          useValue: createMock<LiteratureCommand>(),
-        },
-        {
-          provide: PerseusCommand,
-          useValue: createMock<PerseusCommand>(),
-        },
-        {
-          provide: WiktionaryCommand,
-          useValue: createMock<WiktionaryCommand>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("LexicoIngestionCommand");
+    await expectLoggerContext(LexicoIngestionCommand, {
+      providers: createProviders(),
+    });
   });
 
   it("should parse all boolean options", () => {
@@ -188,7 +145,7 @@ describe(LexicoIngestionCommand, () => {
   });
 
   it("should prompt when option value is missing", async () => {
-    setPromptsMockResponse(promptsMock, { wikipedia: false });
+    promptsMock.mockResolvedValue({ wikipedia: false });
 
     const result = await (
       command as unknown as {
@@ -278,7 +235,7 @@ describe(LexicoIngestionCommand, () => {
 
   it("should prompt for missing options and run only prompted stages", async () => {
     vi.restoreAllMocks();
-    setPromptsMockResponse(promptsMock, {
+    promptsMock.mockResolvedValue({
       dictionary: false,
       library: false,
       librarySources: true,
