@@ -811,6 +811,7 @@ graph LR
   module_coinagerie_cli_DeliveryModule["coinagerie-cli/DeliveryModule"]
   module_coinagerie_cli_DiscoveryModule["coinagerie-cli/DiscoveryModule"]
   module_coinagerie_cli_FoldingModule["coinagerie-cli/FoldingModule"]
+  module_coinagerie_cli_JsonModule["coinagerie-cli/JsonModule"]
   module_coinagerie_cli_LanguagesModule["coinagerie-cli/LanguagesModule"]
   module_coinagerie_cli_LoggerModule["coinagerie-cli/LoggerModule"]
   module_coinagerie_cli_MainModule["coinagerie-cli/MainModule"]
@@ -824,6 +825,7 @@ graph LR
   module_coinagerie_languages_TypescriptModule["coinagerie-languages/TypescriptModule"]
   module_coinagerie_output_ComparisonModule["coinagerie-output/ComparisonModule"]
   module_coinagerie_output_DeliveryModule["coinagerie-output/DeliveryModule"]
+  module_coinagerie_output_JsonModule["coinagerie-output/JsonModule"]
   module_coinagerie_output_MarkdownModule["coinagerie-output/MarkdownModule"]
   module_coinagerie_vocabulary_DiscoveryModule["coinagerie-vocabulary/DiscoveryModule"]
   module_coinagerie_vocabulary_FoldingModule["coinagerie-vocabulary/FoldingModule"]
@@ -1579,9 +1581,11 @@ graph LR
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_ComparisonModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_ConfigurationModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_DeliveryModule
+  module_coinagerie_cli_CollectModule --> module_coinagerie_cli_JsonModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_MarkdownModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_VocabularyModule
   module_coinagerie_cli_DeliveryModule --> module_coinagerie_cli_ComparisonModule
+  module_coinagerie_cli_DeliveryModule --> module_coinagerie_cli_JsonModule
   module_coinagerie_cli_DeliveryModule --> module_coinagerie_cli_MarkdownModule
   module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_TypescriptModule
   module_coinagerie_cli_MainModule --> module_coinagerie_cli_CollectModule
@@ -1592,6 +1596,7 @@ graph LR
   module_coinagerie_cli_VocabularyModule --> module_coinagerie_cli_WordsModule
   module_coinagerie_languages_LanguagesModule --> module_coinagerie_languages_TypescriptModule
   module_coinagerie_output_DeliveryModule --> module_coinagerie_output_ComparisonModule
+  module_coinagerie_output_DeliveryModule --> module_coinagerie_output_JsonModule
   module_coinagerie_output_DeliveryModule --> module_coinagerie_output_MarkdownModule
   module_coinagerie_vocabulary_LanguagesModule --> module_coinagerie_vocabulary_TypescriptModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_DiscoveryModule
@@ -3859,6 +3864,7 @@ graph LR
   file_coinagerie_cli_src_coinagerie_cli_repl_ts["coinagerie-cli/src/coinagerie-cli.repl.ts"]
   file_coinagerie_cli_src_coinagerie_cli_repl_unit_test_ts["coinagerie-cli/src/coinagerie-cli.repl.unit.test.ts"]
   file_coinagerie_cli_src_index_ts["coinagerie-cli/src/index.ts"]
+  file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts["coinagerie-cli/src/modules/collect/collect.command.end-to-end.test.ts"]
   file_coinagerie_cli_src_modules_collect_collect_command_ts["coinagerie-cli/src/modules/collect/collect.command.ts"]
   file_coinagerie_cli_src_modules_collect_collect_command_unit_test_ts["coinagerie-cli/src/modules/collect/collect.command.unit.test.ts"]
   file_coinagerie_cli_src_modules_collect_collect_constants_ts["coinagerie-cli/src/modules/collect/collect.constants.ts"]
@@ -3866,6 +3872,7 @@ graph LR
   file_coinagerie_cli_src_modules_collect_collect_types_ts["coinagerie-cli/src/modules/collect/collect.types.ts"]
   file_coinagerie_cli_testing_fixture_tree_ts["coinagerie-cli/testing/fixture-tree.ts"]
   file_coinagerie_cli_testing_mocks_ts["coinagerie-cli/testing/mocks.ts"]
+  file_coinagerie_cli_testing_run_command_ts["coinagerie-cli/testing/run-command.ts"]
   file_coinagerie_cli_testing_setup_ts["coinagerie-cli/testing/setup.ts"]
   file_coinagerie_cli_vitest_config_ts["coinagerie-cli/vitest.config.ts"]
   file_coinagerie_configuration_callidescope_config_ts["coinagerie-configuration/callidescope.config.ts"]
@@ -3935,6 +3942,11 @@ graph LR
   file_coinagerie_output_src_modules_delivery_delivery_service_ts["coinagerie-output/src/modules/delivery/delivery.service.ts"]
   file_coinagerie_output_src_modules_delivery_delivery_service_unit_test_ts["coinagerie-output/src/modules/delivery/delivery.service.unit.test.ts"]
   file_coinagerie_output_src_modules_delivery_delivery_types_ts["coinagerie-output/src/modules/delivery/delivery.types.ts"]
+  file_coinagerie_output_src_modules_json_json_constants_ts["coinagerie-output/src/modules/json/json.constants.ts"]
+  file_coinagerie_output_src_modules_json_json_module_ts["coinagerie-output/src/modules/json/json.module.ts"]
+  file_coinagerie_output_src_modules_json_json_service_ts["coinagerie-output/src/modules/json/json.service.ts"]
+  file_coinagerie_output_src_modules_json_json_service_unit_test_ts["coinagerie-output/src/modules/json/json.service.unit.test.ts"]
+  file_coinagerie_output_src_modules_json_json_types_ts["coinagerie-output/src/modules/json/json.types.ts"]
   file_coinagerie_output_src_modules_markdown_markdown_constants_ts["coinagerie-output/src/modules/markdown/markdown.constants.ts"]
   file_coinagerie_output_src_modules_markdown_markdown_module_ts["coinagerie-output/src/modules/markdown/markdown.module.ts"]
   file_coinagerie_output_src_modules_markdown_markdown_service_ts["coinagerie-output/src/modules/markdown/markdown.service.ts"]
@@ -10037,11 +10049,15 @@ graph LR
   file_codometer_output_src_modules_report_report_service_unit_test_ts --> file_codometer_output_src_modules_report_report_service_ts
   file_coinagerie_cli_src_coinagerie_cli_main_end_to_end_test_ts --> file_coinagerie_cli_src_coinagerie_cli_constants_ts
   file_coinagerie_cli_src_coinagerie_cli_main_end_to_end_test_ts --> file_coinagerie_cli_testing_fixture_tree_ts
+  file_coinagerie_cli_src_coinagerie_cli_main_end_to_end_test_ts --> file_coinagerie_cli_testing_run_command_ts
   file_coinagerie_cli_src_coinagerie_cli_main_ts --> file_coinagerie_cli_src_coinagerie_cli_module_ts
   file_coinagerie_cli_src_coinagerie_cli_module_ts --> file_coinagerie_cli_src_coinagerie_cli_constants_ts
   file_coinagerie_cli_src_coinagerie_cli_module_ts --> file_coinagerie_cli_src_modules_collect_collect_module_ts
   file_coinagerie_cli_src_coinagerie_cli_module_unit_test_ts --> file_coinagerie_cli_src_coinagerie_cli_module_ts
   file_coinagerie_cli_src_coinagerie_cli_repl_ts --> file_coinagerie_cli_src_coinagerie_cli_module_ts
+  file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts --> file_coinagerie_cli_testing_fixture_tree_ts
+  file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts --> file_coinagerie_cli_testing_run_command_ts
+  file_coinagerie_cli_src_modules_collect_collect_command_ts --> file_coinagerie_cli_src_modules_collect_collect_constants_ts
   file_coinagerie_cli_src_modules_collect_collect_command_ts --> file_coinagerie_cli_src_modules_collect_collect_types_ts
   file_coinagerie_cli_src_modules_collect_collect_command_unit_test_ts --> file_coinagerie_cli_src_modules_collect_collect_command_ts
   file_coinagerie_cli_src_modules_collect_collect_command_unit_test_ts --> file_coinagerie_cli_src_modules_collect_collect_types_ts
@@ -10076,13 +10092,21 @@ graph LR
   file_coinagerie_output_src_modules_comparison_comparison_service_unit_test_ts --> file_coinagerie_output_src_modules_comparison_comparison_service_ts
   file_coinagerie_output_src_modules_delivery_delivery_module_ts --> file_coinagerie_output_src_modules_comparison_comparison_module_ts
   file_coinagerie_output_src_modules_delivery_delivery_module_ts --> file_coinagerie_output_src_modules_delivery_delivery_service_ts
+  file_coinagerie_output_src_modules_delivery_delivery_module_ts --> file_coinagerie_output_src_modules_json_json_module_ts
   file_coinagerie_output_src_modules_delivery_delivery_module_ts --> file_coinagerie_output_src_modules_markdown_markdown_module_ts
   file_coinagerie_output_src_modules_delivery_delivery_service_ts --> file_coinagerie_output_src_modules_comparison_comparison_service_ts
   file_coinagerie_output_src_modules_delivery_delivery_service_ts --> file_coinagerie_output_src_modules_delivery_delivery_types_ts
+  file_coinagerie_output_src_modules_delivery_delivery_service_ts --> file_coinagerie_output_src_modules_json_json_service_ts
   file_coinagerie_output_src_modules_delivery_delivery_service_ts --> file_coinagerie_output_src_modules_markdown_markdown_service_ts
   file_coinagerie_output_src_modules_delivery_delivery_service_unit_test_ts --> file_coinagerie_output_src_modules_comparison_comparison_module_ts
   file_coinagerie_output_src_modules_delivery_delivery_service_unit_test_ts --> file_coinagerie_output_src_modules_delivery_delivery_service_ts
+  file_coinagerie_output_src_modules_delivery_delivery_service_unit_test_ts --> file_coinagerie_output_src_modules_json_json_module_ts
   file_coinagerie_output_src_modules_delivery_delivery_service_unit_test_ts --> file_coinagerie_output_src_modules_markdown_markdown_module_ts
+  file_coinagerie_output_src_modules_json_json_module_ts --> file_coinagerie_output_src_modules_json_json_service_ts
+  file_coinagerie_output_src_modules_json_json_service_ts --> file_coinagerie_output_src_modules_delivery_delivery_types_ts
+  file_coinagerie_output_src_modules_json_json_service_ts --> file_coinagerie_output_src_modules_json_json_constants_ts
+  file_coinagerie_output_src_modules_json_json_service_ts --> file_coinagerie_output_src_modules_json_json_types_ts
+  file_coinagerie_output_src_modules_json_json_service_unit_test_ts --> file_coinagerie_output_src_modules_json_json_service_ts
   file_coinagerie_output_src_modules_markdown_markdown_module_ts --> file_coinagerie_output_src_modules_markdown_markdown_service_ts
   file_coinagerie_output_src_modules_markdown_markdown_service_ts --> file_coinagerie_output_src_modules_delivery_delivery_types_ts
   file_coinagerie_output_src_modules_markdown_markdown_service_ts --> file_coinagerie_output_src_modules_markdown_markdown_constants_ts
@@ -15658,10 +15682,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7732 |
-| Files | 2508 |
-| Calls traced | 8443 |
-| Call stacks | 2150 |
+| Callables | 7756 |
+| Files | 2512 |
+| Calls traced | 8469 |
+| Call stacks | 2157 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
 | Unfollowable calls | 486 |
