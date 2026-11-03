@@ -3,8 +3,8 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/observability/testing";
 import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcesses, processFailure } from "../../../testing/mocks";
 
