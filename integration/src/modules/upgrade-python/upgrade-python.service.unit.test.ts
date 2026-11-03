@@ -2,8 +2,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -13,6 +11,8 @@ import {
   it,
   vi,
 } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
@@ -28,6 +28,7 @@ const TOOLS = `target-version = "py315"\npythonVersion = "3.15"\n`;
 const OK = { status: 0, stderr: "", stdout: "" };
 
 describe(UpgradePythonService, () => {
+  const moduleOptions = { mocks: [ProcessRunnerService] };
   let service: UpgradePythonService;
   let processRunner: ProcessRunnerService;
   let directory: string;
@@ -46,15 +47,10 @@ describe(UpgradePythonService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        UpgradePythonService,
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(
+      UpgradePythonService,
+      moduleOptions,
+    );
 
     service = await module.resolve(UpgradePythonService);
     processRunner = await module.resolve(ProcessRunnerService);
@@ -85,8 +81,15 @@ describe(UpgradePythonService, () => {
     fs.rmSync(directory, { force: true, recursive: true });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      UpgradePythonService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(UpgradePythonService);
   });
 
   it("moves every setting to a newer release and locks again", () => {

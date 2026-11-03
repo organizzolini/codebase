@@ -1,20 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import {
   failed,
@@ -30,26 +23,11 @@ import { BoundBaseToPushService } from "./bound-base-to-push.service";
 const IS_ANCESTOR = "git merge-base --is-ancestor before1 head1";
 
 describe(BoundBaseToPushCommand, () => {
+  const moduleOptions = { mocks: [BoundBaseToPushService] };
   const originalExitCode = process.exitCode;
   const makeDirectory = useTemporaryDirectories();
-  let command: BoundBaseToPushCommand;
   let printed: string[];
   let githubEnvironment: string;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        BoundBaseToPushCommand,
-        {
-          provide: BoundBaseToPushService,
-          useValue: createMock<BoundBaseToPushService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(BoundBaseToPushCommand);
-  });
 
   /** Runs the command over the real service and a scripted process runner. */
   const runCommand = async (
@@ -66,15 +44,13 @@ describe(BoundBaseToPushCommand, () => {
       vi.stubEnv(name, value);
     }
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(BoundBaseToPushCommand, {
       providers: [
-        BoundBaseToPushCommand,
         BoundBaseToPushService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
 
     const subject = await module.resolve(BoundBaseToPushCommand);
 
@@ -104,27 +80,21 @@ describe(BoundBaseToPushCommand, () => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      BoundBaseToPushCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(BoundBaseToPushCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        BoundBaseToPushCommand,
-        {
-          provide: BoundBaseToPushService,
-          useValue: createMock<BoundBaseToPushService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("BoundBaseToPushCommand");
+    await expectLoggerContext(BoundBaseToPushCommand, moduleOptions);
   });
 
   it("moves NX_BASE to the previous tip when it is an ancestor of the head", async () => {

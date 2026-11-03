@@ -1,20 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { createTaskDatabaseWorkspace } from "../../../testing/mocks";
 import { TaskDatabaseService } from "../task-database/task-database.service";
@@ -24,35 +17,18 @@ import { KeepTaskDatabaseCommand } from "./keep-task-database.command";
 import type { TaskDatabaseWorkspace } from "../../../testing/mocks";
 
 describe(KeepTaskDatabaseCommand, () => {
+  const moduleOptions = { mocks: [TaskDatabaseService] };
   let workspace: TaskDatabaseWorkspace;
-  let command: KeepTaskDatabaseCommand;
   let printed: string[];
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        KeepTaskDatabaseCommand,
-        {
-          provide: TaskDatabaseService,
-          useValue: createMock<TaskDatabaseService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(KeepTaskDatabaseCommand);
-  });
 
   /** Runs the command over the real service and a real directory. */
   const runCommand = async (): Promise<void> => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(KeepTaskDatabaseCommand, {
       providers: [
-        KeepTaskDatabaseCommand,
         TaskDatabaseService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     const subject = await module.resolve(KeepTaskDatabaseCommand);
 
@@ -74,27 +50,21 @@ describe(KeepTaskDatabaseCommand, () => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      KeepTaskDatabaseCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(KeepTaskDatabaseCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        KeepTaskDatabaseCommand,
-        {
-          provide: TaskDatabaseService,
-          useValue: createMock<TaskDatabaseService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("KeepTaskDatabaseCommand");
+    await expectLoggerContext(KeepTaskDatabaseCommand, moduleOptions);
   });
 
   it("says nothing and keeps the only database", async () => {

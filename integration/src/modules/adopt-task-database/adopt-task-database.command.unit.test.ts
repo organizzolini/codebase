@@ -1,20 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { createTaskDatabaseWorkspace } from "../../../testing/mocks";
 import { TaskDatabaseService } from "../task-database/task-database.service";
@@ -24,35 +17,18 @@ import { AdoptTaskDatabaseCommand } from "./adopt-task-database.command";
 import type { TaskDatabaseWorkspace } from "../../../testing/mocks";
 
 describe(AdoptTaskDatabaseCommand, () => {
+  const moduleOptions = { mocks: [TaskDatabaseService] };
   let workspace: TaskDatabaseWorkspace;
-  let command: AdoptTaskDatabaseCommand;
   let printed: string[];
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        AdoptTaskDatabaseCommand,
-        {
-          provide: TaskDatabaseService,
-          useValue: createMock<TaskDatabaseService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(AdoptTaskDatabaseCommand);
-  });
 
   /** Runs the command over the real service and a real directory. */
   const runCommand = async (): Promise<void> => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(AdoptTaskDatabaseCommand, {
       providers: [
-        AdoptTaskDatabaseCommand,
         TaskDatabaseService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     const subject = await module.resolve(AdoptTaskDatabaseCommand);
 
@@ -75,27 +51,21 @@ describe(AdoptTaskDatabaseCommand, () => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      AdoptTaskDatabaseCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(AdoptTaskDatabaseCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        AdoptTaskDatabaseCommand,
-        {
-          provide: TaskDatabaseService,
-          useValue: createMock<TaskDatabaseService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("AdoptTaskDatabaseCommand");
+    await expectLoggerContext(AdoptTaskDatabaseCommand, moduleOptions);
   });
 
   it("renames the newest database and its companions to the machine id and drops the rest", async () => {

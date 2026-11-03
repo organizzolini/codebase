@@ -1,26 +1,21 @@
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TaskDatabaseService } from "./task-database.service";
 
 describe(TaskDatabaseService, () => {
-  let service: TaskDatabaseService;
+  const moduleOptions = { mocks: [ConfigService] };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TaskDatabaseService,
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(TaskDatabaseService);
-  });
-
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      TaskDatabaseService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TaskDatabaseService);
   });
 });

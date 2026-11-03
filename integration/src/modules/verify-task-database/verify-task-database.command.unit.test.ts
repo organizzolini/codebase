@@ -1,17 +1,10 @@
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { createTaskDatabaseWorkspace } from "../../../testing/mocks";
 import { TaskDatabaseService } from "../task-database/task-database.service";
@@ -21,35 +14,18 @@ import { VerifyTaskDatabaseCommand } from "./verify-task-database.command";
 import type { TaskDatabaseWorkspace } from "../../../testing/mocks";
 
 describe(VerifyTaskDatabaseCommand, () => {
+  const moduleOptions = { mocks: [TaskDatabaseService] };
   let workspace: TaskDatabaseWorkspace;
-  let command: VerifyTaskDatabaseCommand;
   let printed: string[];
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        VerifyTaskDatabaseCommand,
-        {
-          provide: TaskDatabaseService,
-          useValue: createMock<TaskDatabaseService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(VerifyTaskDatabaseCommand);
-  });
 
   /** Runs the command over the real service and a real directory. */
   const runCommand = async (): Promise<void> => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(VerifyTaskDatabaseCommand, {
       providers: [
-        VerifyTaskDatabaseCommand,
         TaskDatabaseService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     const subject = await module.resolve(VerifyTaskDatabaseCommand);
 
@@ -72,27 +48,21 @@ describe(VerifyTaskDatabaseCommand, () => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      VerifyTaskDatabaseCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(VerifyTaskDatabaseCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        VerifyTaskDatabaseCommand,
-        {
-          provide: TaskDatabaseService,
-          useValue: createMock<TaskDatabaseService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("VerifyTaskDatabaseCommand");
+    await expectLoggerContext(VerifyTaskDatabaseCommand, moduleOptions);
   });
 
   it("keeps a database that passes its integrity check", async () => {

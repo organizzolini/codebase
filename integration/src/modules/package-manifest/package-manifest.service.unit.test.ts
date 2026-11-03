@@ -2,8 +2,9 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PackageManifestService } from "./package-manifest.service";
 
@@ -24,9 +25,7 @@ describe(PackageManifestService, () => {
   const read = (): string => fs.readFileSync("package.json", "utf8");
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PackageManifestService],
-    }).compile();
+    const { module } = await buildTestingModule(PackageManifestService);
 
     service = await module.resolve(PackageManifestService);
   });
@@ -43,8 +42,12 @@ describe(PackageManifestService, () => {
     fs.rmSync(directory, { force: true, recursive: true });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(PackageManifestService);
+
+    expect(instance).toBeInstanceOf(PackageManifestService);
   });
 
   it("replaces the package manager and returns the one it held", () => {
