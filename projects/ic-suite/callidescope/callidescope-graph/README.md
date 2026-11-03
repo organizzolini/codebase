@@ -862,6 +862,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **analysis**:
 - **ancestor**:
 - **anonymous**:
+- **answer**:
 - **append**:
 - **array**:
 - **arrow**:
@@ -965,6 +966,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **java**:
 - **kind**:
 - **last**:
+- **later**:
 - **leaf**:
 - **least**:
 - **length**:
@@ -986,6 +988,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **measurement**:
 - **member**:
 - **memo**:
+- **memoize**:
 - **meta**:
 - **method**:
 - **metric**:
