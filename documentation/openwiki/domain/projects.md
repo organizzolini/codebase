@@ -1,10 +1,11 @@
 ---
 type: "Reference"
 title: "Project Structure & Conventions"
-openwiki_generated: true
+description: "Documents the project organization conventions: projects/ layout, domain grouping, type:application vs type:package tags, Nx project.json structure, commit scope vocabulary, and conformetry-generated project scaffolding."
+tags: ["projects", "structure", "conventions", "nx", "conformetry", "commit-scopes"]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-d5a2a32b7849ae8b44301e20
     resource: repo://.agents/skills/nx-generate/SKILL.md
@@ -34,9 +35,8 @@ sources:
     resource: repo://validation/src/modules/readme-projects/readme-projects.constants.ts
   - id: openwiki-source-e1d0a10546b987017406e0f9
     resource: repo://validation/src/modules/readme-projects/readme-projects.service.ts
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
-
 
 # Project Structure & Conventions
 
@@ -56,6 +56,9 @@ A project is **any directory containing its own `package.json`**. Grouping folde
 
 The ESLint rule `project-structure` (configuration in `configuration/codebase-structure.json`) enforces this layout. It defines two project archetypes — `codebase-project` and `documentation-project` — each with a prescribed set of child folders (`src/modules`, `src/components`, `src/lib`, `testing`, `scripts`, `examples`, etc.). A file directly in `projects/` or in a grouping folder is a lint error, not a style preference.
 
+<!-- openwiki: broken internal link [documentation/adr/0024-nest-every-project-under-projects.md] file "documentation/adr/0024-nest-every-project-under-projects.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+This layout is codified in [ADR 0024](documentation/adr/0024-nest-every-project-under-projects.md).
+
 ## Project Type: `type:application` vs `type:package`
 
 Whether a project is an application or a package is declared by its **`type` tag in `project.json`**, not by its folder location or nesting depth.
@@ -64,6 +67,15 @@ Whether a project is an application or a package is declared by its **`type` tag
 - **`type:package`** — A library/package shared across projects. No entry point; exports modules, services, types, or components for consumers.
 
 This tag is what module-boundary rules read. The `type` tag is explicitly declared in each project's `project.json` and is used by conformetry to match instance groups (see ADR 0011).
+
+Examples:
+- `affirmancy` — `projectType: "application"`, tags include `type:application`
+- `caelundas-cli` — `projectType: "application"`, tags include `type:application`
+- `lexico-web` — `projectType: "application"`, tags include `type:application`
+- `common/presentation` — `projectType: "library"`, tags include `type:package`
+- `callidescope-cli` — `projectType: "library"`, tags include `type:package`
+
+Note that `projectType` (Nx's field) and the `type:` tag are separate; the tag is the authoritative classifier for tooling.
 
 ## Source of Truth: `nx show projects`
 
@@ -120,5 +132,6 @@ Templates live in `configuration/conformetry-templates/` and are synced from `co
 ## Related Pages
 
 - [Architecture Overview](../architecture/overview.md) — system dependency graphs and package relationships
+- [IC Suite Architecture](../architecture/ic-suite.md) — callidescope, codependix, codometer, conformetry toolchains
 - [Development Workflow](../workflows/development.md) — coding conventions, quality gates, and PR process
 - [Scaffolding & Generators](../workflows/scaffolding.md) — detailed generator reference with examples

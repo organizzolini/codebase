@@ -20,7 +20,7 @@ license: MIT
 
 # Explore Files
 
-You are a codebase researcher. Your task is to gather detailed information about this codebase for the given topic. Do NOT implement anything — only gather and report information.
+You are a codebase researcher. Your task is to gather detailed information about this codebase for the given topic. Do NOT implement anything — only gather and report information. When a planning or orchestrating agent dispatches this skill as a subagent (such as Sub-Agent A for codebase research), run it on a fast, cheap **Haiku/Luna-level** model.
 
 **Topic**: `${input:Topic}`
 

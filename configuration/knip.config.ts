@@ -60,6 +60,7 @@ const config: KnipConfig = {
     "@commitlint/config-conventional", // commitlint preset, referenced as string in extends array
     "@codebase/testing", // Imported by tests and testing/setup.ts, which knip leaves out of its scope
     "@golevelup/ts-vitest", // Conformance-scaffolded test mock utility — imported in testing/mocks.ts which is in ignoreFiles
+    "@nestjs/testing", // Conformance-scaffolded test dependency — the observability testing module builder imports it for the tests, so no project file does
     "@nx/eslint-plugin", // Loaded dynamically by Nx ESLint integration
     // Kept despite knip hinting it is redundant: the hint comes from a
     // full-workspace run, and the Nx target runs knip scoped to one workspace,
@@ -231,14 +232,20 @@ const config: KnipConfig = {
     // SQL extraction script is run by name from the `migration` target
     // defaults in nx.json rather than imported, and `start` and `repl` run
     // `src/persistence.main.ts` and `src/persistence.repl.ts` by path, so knip is
-    // told all three are entry points.
+    // told the command entry points are used. Knip discovers both package
+    // exports, including the public testing subpath, from package.json.
     "projects/common/persistence": {
       entry: [
         "scripts/**/*.ts",
         "src/persistence.main.ts",
         "src/persistence.repl.ts",
       ],
-      project: ["src/**/*.ts", "scripts/**/*.ts"],
+      project: [
+        "src/**/*.ts",
+        "scripts/**/*.ts",
+        "testing/database-testing/**/*.ts",
+        "testing/postgres-container/**/*.ts",
+      ],
     },
 
     // lexico-entities: Shared TypeORM entities
@@ -284,9 +291,7 @@ const config: KnipConfig = {
 
     // logger: Shared pino-backed NestJS LoggerService and LoggerModule
     "projects/common/observability": {
-      entry: ["src/index.ts"],
-      ignore: ["src/**/*.test.ts", "testing/**"],
-      project: "src/**/*.ts",
+      project: ["src/**/*.ts", "testing/testing-module/**/*.ts"],
     },
 
     // integration: NestJS CLI tool for the Continuous Integration plumbing steps

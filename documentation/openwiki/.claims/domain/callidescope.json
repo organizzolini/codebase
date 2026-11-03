@@ -1,49 +1,7 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:0279fbe754ca77d16d4bcad49d6d2ffcdb8d09dbca426400bebb5cfc7750adb6",
+  "pageVersion": "sha256:5571e4a83734ee51a695e33ab171ab5839eba4cfc23949b680cde1ab62c61087",
   "claims": [
-    {
-      "id": "claim_f56e52d7b6234feabba03751b3fe7c03",
-      "statement": "Callidescope is a call stack tracing toolchain published as 7 npm packages under the @callidescope scope: agents, cli, configuration, core, examples, graph, nx, and output.",
-      "evidence": [
-        {
-          "resource": "repo://README.md#L113-L124",
-          "version": "repo-lines-v1:sha256:e4092b96c133f9255b356afcefd6f976db03ed2c229585f3cd56fafe33dcca86:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlYzg4YWNmNWM1ZjllMjQ0YmVlYmNiNTNlMzAyMjZmYmUwNzkzYjVjNmU4MjhhYWZmMTA1MjgxMThlOWViNjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhZTJjNDZiOWY0ODhmOTA3Y2VmOThmYjMyZGY5YmVlZmEzMGMzZWRlYTcwODUzYWE0ZTgwYTNhNWM1Nzk0MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2NTQ4M2M4OThiOTVkYWU1ZDliM2Y1YzM4YTE0ZTI3MDY5NTlkZDFhZGY4YmQ0Yzc4OWYzZDY2YWExMjZlMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwZmU5YWJlMGZhZDEzMTkyZjRiZjU0ZjYxMDFhODc1M2Y2NzA4OWRmMzk3YjQ2YTQyMGFmNDQ1Y2E2NGU0ZDAifQ"
-        },
-        {
-          "resource": "repo://projects/ic-suite/callidescope/callidescope-agents/package.json",
-          "version": "repo-file-v1:sha256:22a6de0d820010c2fee85f650a545453990d3ac6d5cacde1aaeab27954c3e40a"
-        },
-        {
-          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/package.json",
-          "version": "repo-file-v1:sha256:1b5e88bc97867e2d256428d4c195dce42720543a725e2f81199d3ba941d93c41"
-        },
-        {
-          "resource": "repo://projects/ic-suite/callidescope/callidescope-configuration/package.json",
-          "version": "repo-file-v1:sha256:5a75dc27ac20194c6cda6d611df7ef118dafa47df1284678f4736a67aa817a94"
-        },
-        {
-          "resource": "repo://projects/ic-suite/callidescope/callidescope-core/package.json",
-          "version": "repo-file-v1:sha256:37aa5d2b93e56b2e725bc133709b9cf7c7c60256a253c7a0b619b0e200843a4c"
-        },
-        {
-          "resource": "repo://projects/ic-suite/callidescope/callidescope-examples/package.json",
-          "version": "repo-file-v1:sha256:00bb358767d03fb2894ff8054cc2bb8869b78cc63d57a48d81f2310146e6848c"
-        },
-        {
-          "resource": "repo://projects/ic-suite/callidescope/callidescope-graph/package.json",
-          "version": "repo-file-v1:sha256:a0ac6b9e5355e5fb029e2c8b6bca31aa4c09e2bbae3df73e8d46b60e2de30dbf"
-        },
-        {
-          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/package.json",
-          "version": "repo-file-v1:sha256:fdef3fd1c60b5b16c34022cf6072f6ebaa2326ea465d3d80b3e322c2faaf4420"
-        },
-        {
-          "resource": "repo://projects/ic-suite/callidescope/callidescope-output/package.json",
-          "version": "repo-file-v1:sha256:fb37b8046d36263d924a93267d0285e462fce6b0625c39fea24c431d877ccde4"
-        }
-      ]
-    },
     {
       "id": "claim_a660b607afe04249ba848bf8928152bf",
       "statement": "Callidescope defines five core concepts with precise vocabulary: Callable (function-like declaration traced by file and byte offset), Stack (entry point + deepest path, reports floor when path runs through unresolved call), Depth (frames on stack, entry point inclusive, one of two gated limits), Breadth (distinct direct callees, other gated limit), and Entry Point (callable rooting a stack, declared is only kind a person chose).",
@@ -197,10 +155,48 @@
           "version": "repo-lines-v1:sha256:96ac4117cab5612ae2b0d356c1ebd2bfb33009334446b9372a3b790b5b3643c1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0MzkxM2U1YjEzNWNkY2NlMDhjMzc0YWJlMjIzNmU3YTMyYzI2N2E1Zjg4NGZiMTYyOTk1ZDcyNTc3MWIwNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyM2Q3MWM5ZGU3ZTBhMTJkNGUxMDNiYmMzMjM3Mjg3ZTFiZjUxN2Y1NTgzMzNiYzJmMjBjOWVhYjU0NmQ2YzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5MmY0NDM1ZTg2ZmVmNDg3MzdkZWQxZjRkYWQ4ZjhjOGVkNGZjYWMxMzI2NTMwMmI5NjhjZDA2N2EwMGY1YTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViZjhjMTE1ZTRkZjZhNDJlY2Y0MTVlZWRjNTc3ZTMxMWIxYWQ3ZGM1OGFmODg3NGNhZjEyMTRjMTVhZTBhMGUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_af49392dc94d49619186972b49a27ba0",
+      "statement": "Callidescope is a call stack tracing toolchain published as 8 npm packages under the @callidescope scope: agents, cli, configuration, core, examples, graph, nx, and output.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-agents/package.json",
+          "version": "repo-file-v1:sha256:22a6de0d820010c2fee85f650a545453990d3ac6d5cacde1aaeab27954c3e40a"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/package.json",
+          "version": "repo-file-v1:sha256:f2138634fc82a0f839bbc7aaa7ce437eae5472e27aadd07394ebeb526c6e8d8b"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-configuration/package.json",
+          "version": "repo-file-v1:sha256:43c296db5b58a5db2652418e3a64fad00e0e8c7e0131e10cf2cb7fea489b9d65"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-core/package.json",
+          "version": "repo-file-v1:sha256:aec607a0b632e26470f015fac8766f46adb076db3438f4afaa0b782922dbef7d"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-examples/package.json",
+          "version": "repo-file-v1:sha256:00bb358767d03fb2894ff8054cc2bb8869b78cc63d57a48d81f2310146e6848c"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-graph/package.json",
+          "version": "repo-file-v1:sha256:16812f139cb2e470fb45f0229f5e5bc3b7acafdf2193bf82e7c5bf3031c8e990"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/package.json",
+          "version": "repo-file-v1:sha256:b9510446a7e8ca171efbb00d3da1676d9af0e1f03adae6f17f3a7eadcf8fe944"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-output/package.json",
+          "version": "repo-file-v1:sha256:c5d6188ba93f7ce2ed85b35b3b100bc97547f304ac954800f3dae0719e535034"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-24T21:02:40.299Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }

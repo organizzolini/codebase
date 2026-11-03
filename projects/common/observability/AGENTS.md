@@ -32,7 +32,11 @@ src/
       logger.module.ts              # @Global() LoggerModule (exports LoggerService)
       logger.constants.ts
       logger.types.ts
-testing/                            # Shared test utilities
+    testing/
+      testing-module/               # Logger-aware testing module builder
+testing/
+  index.ts                          # The @codebase/observability/testing entry
+  fixtures/                         # Fixtures for the builder's tests
 ```
 
 ## Consuming this package
@@ -92,6 +96,13 @@ re-deriving timestamps and output paths:
 | -------------------------------------------- | --------------------------------------------------------------- |
 | `buildErrorLogEntry(context, error)`         | `{ errorMessage, logLine }` — normalizes `unknown` errors       |
 | `createTimestampedOutputLogFilePath(prefix)` | `<cwd>/output/<prefix>-<ISO timestamp>.log`, creating `output/` |
+
+## Testing helpers
+
+`@codebase/observability/testing` exports `buildTestingModule` and
+`expectLoggerContext`. These helpers replace the injected `LoggerService`
+with a deep mock and stay inside this package, so observability remains a
+workspace graph leaf.
 
 ## Development
 

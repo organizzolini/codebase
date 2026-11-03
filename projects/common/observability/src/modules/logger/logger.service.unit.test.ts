@@ -10,8 +10,8 @@ import {
   vi,
 } from "vitest";
 
+import { buildTestingModule } from "@codebase/observability/testing";
 import { mockDates, overrideEnvironment } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LoggerService } from "./logger.service";
 

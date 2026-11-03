@@ -68,11 +68,13 @@ interface TestTemplateBaseline {
 
 /** What each untouched project of a shape measures, shared to stay short. */
 const NEST_BASELINE = { modules: 89 / 121, services: 47 / 79 };
+const CLI_BASELINE = { modules: 149 / 187 };
+/**
+ * What each ic-suite CLI measures as a `nestjs-command-project` instance. The
+ * one place a CLI's own threshold is set is its group in that generator, which
+ * already lists each CLI on its own; a migration deletes that `threshold` line.
+ */
 const COMMAND_PROJECT_BASELINE = 769 / 772;
-const CLI_BASELINE = {
-  application: COMMAND_PROJECT_BASELINE,
-  modules: 149 / 187,
-};
 const WEB_BASELINE = { application: 716 / 738, routes: 131 / 145 };
 
 /**
@@ -80,8 +82,9 @@ const WEB_BASELINE = { application: 716 / 738, routes: 131 / 145 };
  * requirements weighed, from when the test templates moved onto
  * `@codebase/testing` (#329). A kind holds the lowest score among the
  * project's instances of it, so validation passes before its tests migrate.
- * A project's migration deletes its entry, which raises it back to 1, and the
- * last migration deletes the table.
+ * A project's migration deletes its entry, and an ic-suite CLI's also deletes
+ * its `nestjs-command-project` threshold, which raises it back to 1. The last
+ * migration deletes the table.
  */
 const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   documentation: NEST_BASELINE,
@@ -89,10 +92,7 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   integration: NEST_BASELINE,
   "projects/caelundas/caelundas-cli": NEST_BASELINE,
   "projects/caelundas/caelundas-web": WEB_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-cli": {
-    ...NEST_BASELINE,
-    application: COMMAND_PROJECT_BASELINE,
-  },
+  "projects/ic-suite/callidescope/callidescope-cli": NEST_BASELINE,
   "projects/ic-suite/callidescope/callidescope-configuration": NEST_BASELINE,
   "projects/ic-suite/callidescope/callidescope-core": NEST_BASELINE,
   "projects/ic-suite/callidescope/callidescope-graph": NEST_BASELINE,

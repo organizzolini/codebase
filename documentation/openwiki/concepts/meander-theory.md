@@ -3,9 +3,6 @@ type: "Reference"
 title: "Meander Theory"
 description: "Documents the mathematical/mechanical model behind meanderaw's pattern generation: the lattice address system (Code, rows, columns), the crossing/interlace mechanics, the band/parallel/branch structure, and how characteristics are computed from the Code."
 tags: ["meanderaw", "theory", "lattice", "characteristics", "code", "canonical-phase"]
-verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
 sources:
   - id: openwiki-source-39c3295efc089133e87a9c80
     resource: repo://CONTEXT.md

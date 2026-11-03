@@ -84,13 +84,14 @@ const MODULE_BOUNDARIES = {
     // the graph it renders; the CLI composes them, so the dependency
     // only ever points that way.
     {
-      onlyDependOnLibsWithTags: [],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:callidescope-core",
     },
     {
       onlyDependOnLibsWithTags: [
         "name:callidescope-core",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-configuration",
     },
@@ -99,6 +100,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-configuration",
         "name:callidescope-core",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-graph",
     },
@@ -108,6 +110,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-core",
         "name:callidescope-graph",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-output",
     },
@@ -118,6 +121,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-graph",
         "name:callidescope-output",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-cli",
     },
@@ -133,6 +137,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-graph",
         "name:callidescope-output",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-nx",
     },
@@ -278,15 +283,8 @@ const MODULE_BOUNDARIES = {
       ],
       sourceTag: "name:conformetry-examples",
     },
-    // The testing package wraps only the common packages, so the cycles
-    // `ignoredCircularDependencies` allows below stay among them.
     {
-      onlyDependOnLibsWithTags: [
-        "name:configuration",
-        "name:interface",
-        "name:observability",
-        "name:persistence",
-      ],
+      onlyDependOnLibsWithTags: ["name:configuration"],
       sourceTag: "name:testing",
     },
     {
@@ -307,18 +305,6 @@ const MODULE_BOUNDARIES = {
     },
   ],
   enforceBuildableLibDependency: true,
-  // The common packages may depend on each other in both directions: the
-  // testing package's adapters wrap observability, persistence, and
-  // interface, and each of those may use the testing package's helpers in
-  // its own tests and keep its old testing entry as a re-export of it.
-  ignoredCircularDependencies: [
-    // The conformetry templates import the testing package, and the common
-    // packages' own configuration files import the configuration project.
-    ["configuration", "testing"],
-    ["interface", "testing"],
-    ["observability", "testing"],
-    ["persistence", "testing"],
-  ],
 };
 
 export default [
