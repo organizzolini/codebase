@@ -16,7 +16,7 @@ tests stop copying setup files, temporary directories, and capture code. See
 src/
   index.ts          # @codebase/testing: the core, no workspace dependencies
   setup.ts          # @codebase/testing/setup: the shared Vitest setup file
-  nestjs.ts         # @codebase/testing/nestjs: module assertions and Nx tree
+  nestjs.ts         # @codebase/testing/nestjs: module builder, module assertions, Nx tree
   react.ts          # @codebase/testing/react: route render and stand-ins
   react-setup.ts    # @codebase/testing/react/setup: the shared jsdom setup
   modules/          # One folder per helper, each with its unit test
@@ -26,9 +26,13 @@ src/
 
 ### Rules this package holds
 
-- **Keep the entire package free of workspace imports.** Owner-specific
-  adapters belong to their owning packages and are exported from those
-  packages' `/testing` entries.
+- **Import only `@codebase/observability` from the workspace, and only from
+  `/nestjs`.** The module builder needs its `LoggerService` token and
+  `LoggerServiceContract` type; every other entry stays free of workspace
+  imports. Owner-specific adapters belong to their owning packages and are
+  exported from those packages' `/testing` entries.
+- **Keep the `build` target's `dependsOn` empty.** Observability imports
+  `/nestjs` back, so a `^build` here would order a task cycle.
 - **Undo every global change when the test finishes.** Register the undo with
   `onTestFinished` (or a `beforeAll` teardown) inside the helper, never in the
   caller.

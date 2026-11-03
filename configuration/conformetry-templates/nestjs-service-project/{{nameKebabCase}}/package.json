@@ -4,7 +4,6 @@
     "tslib": "catalog:"
   },
   "devDependencies": {
-    "@codebase/observability": "workspace:*",
     "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nx/eslint-plugin": "catalog:",
