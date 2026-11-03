@@ -9,4 +9,4 @@
  * last, whatever type the first one had.
  */
 export const TOKEN_PATTERN =
-  /"[^"\\]*(?:\\.[^"\\]*)*"|[[\]{},:]|[^\s[\]{},:"]+/gu;
+  /"(?:[^"\\]|\\(?:["\\/bf]|[nrt]|u[\da-f]{4}))*"|[[\]{},:]|[^\s[\]{},:"]+/giu;
