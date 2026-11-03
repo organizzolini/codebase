@@ -7,8 +7,8 @@ import {
 } from "@codependix/boundaries";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/observability/testing";
 import { captureOutput, createTemporaryDirectory } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnchorsService } from "../anchors/anchors.service";
 

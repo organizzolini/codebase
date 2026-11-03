@@ -1,7 +1,7 @@
 import { ConfigurationModule } from "@codependix/configuration";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/observability/testing";
 
 import { PluginService } from "./plugin.service";
 

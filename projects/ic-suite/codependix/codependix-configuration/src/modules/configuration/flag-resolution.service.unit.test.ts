@@ -1,7 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/observability/testing";
 
 import { missingInputError } from "../input/input.constants";
 import { InputService } from "../input/input.service";

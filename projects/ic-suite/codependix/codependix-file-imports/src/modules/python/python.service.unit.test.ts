@@ -1,7 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/observability/testing";
 
 import { PythonImportGraphService } from "./python-import-graph.service";
 import { PythonProjectService } from "./python-project.service";

@@ -25,7 +25,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   buildTestingModule,
   expectLoggerContext,
-} from "@codebase/testing/nestjs";
+} from "@codebase/observability/testing";
 
 import { MapCommand } from "./map.command";
 

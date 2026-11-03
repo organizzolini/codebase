@@ -8,18 +8,17 @@ import {
 import { InputError } from "@codependix/configuration";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { captureExitCode } from "@codebase/testing";
 import {
   buildTestingModule,
   expectLoggerContext,
-} from "@codebase/testing/nestjs";
+} from "@codebase/observability/testing";
+import { captureExitCode } from "@codebase/testing";
 
 import { ReportingService } from "./reporting.service";
 
 import type { MapRunResult } from "../graph-run/graph-run.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/observability/testing";
 import type { GraphRunOutcome } from "@codependix/core";
-import type { DeepMocked } from "@golevelup/ts-vitest";
 
 const VIOLATION: JudgedBoundaryFinding<BoundaryViolation> = {
   cycle: undefined,
@@ -52,7 +51,7 @@ const OPTIONS = {
 
 describe(ReportingService, () => {
   let service: ReportingService;
-  let loggerService: DeepMocked<LoggerService>;
+  let loggerService: BuiltTestingModule<unknown>["logger"];
 
   beforeAll(async () => {
     ({ instance: service, logger: loggerService } = await buildTestingModule(

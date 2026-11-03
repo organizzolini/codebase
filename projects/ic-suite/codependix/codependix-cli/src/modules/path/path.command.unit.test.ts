@@ -10,7 +10,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   buildTestingModule,
   expectLoggerContext,
-} from "@codebase/testing/nestjs";
+} from "@codebase/observability/testing";
 
 import { PathCommand } from "./path.command";
 import { PATH_MISSING_ARGUMENTS_ERROR } from "./path.constants";

@@ -1,218 +1,230 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:435e5be18ec96df574196f153fc8a4722380bdb30de2a863b9b3b7289fdf35cf",
+  "pageVersion": "sha256:6be0e845fdb385407c5f382b0d17f1ae740609756bec105f84e092dc941cfae5",
   "claims": [
     {
-      "id": "claim_8ddecce587b44d1c8caaf82a463dc441",
-      "statement": "Lexico is a four-project suite comprising lexico-cli (ingestion), lexico-entities (schema), lexico-api (GraphQL API), and lexico-web (SSR web app).",
+      "id": "claim_7bc5653a8081476a9997c72836709c4f",
+      "statement": "Lexico is a four-project suite comprising lexico-entities (TypeORM schema), lexico-cli (NestJS ingestion pipeline), lexico-api (NestJS GraphQL API with Relay pagination), and lexico-web (TanStack Start SSR web app).",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-cli/README.md#L3-L6",
-          "version": "repo-lines-v1:sha256:7efa5334cba59c0ef220865fbd808dd23c3367432f9da68adbae624cf3759b7e:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmVkZmFmZDBhN2U3ODMxYjliZjBjNDkwM2E4OTliYjE0NmE0OTdmOTU4ZThhMjllYjNiMjY4MDdiMjIxY2YxNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTlhYzMxMzY4NjQxNmQwZTk5MzQzZDZjYjE5MTA1Njg4ZjAyOGVmMThmYWU0Y2Y2ZDJmN2UwZjRjNmMzYmJmMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWNmNjdmMGQyZTU3NTU1MWZlZDM4NWYyYjcxOWI5Y2QxZmY4ZTQ3YTZiMzZjZGQyOTIxYWU4NDcwMTA2MDNiZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWFiODhkOWY3MDVlNzc2MjVkZjk2OGUwNGM5ODYxNDhlOTM1NWNkNmI4OGMyOTgyOTU3MWE4ZmM3M2VkZjlkZSJ9"
+          "resource": "repo://projects/lexico/lexico-api/README.md",
+          "version": "repo-file-v1:sha256:2c147d6bcca95934938dd50a7b5ec0b7d193699b732dc4e17abe1761d19d6cbc"
         },
         {
-          "resource": "repo://projects/lexico/lexico-entities/README.md#L3-L9",
-          "version": "repo-lines-v1:sha256:95cd2c68ec15cd7a1f87ec23407c022bc5c111f5072d3e73a5d908f51a7c4a78:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzQ1MGY3YTBiMDYzYTg4NGFlMWJhNGQ5MzViODAxM2U0N2M5ZjJkODViYTYyMTViYzZmMjViNjI4ZGZmZTk0MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGViOWQwOTIwNDlhZDRhYTQ2NjlkNTI4ODNhMmMwNWQxNTYxNTUxOGUzMTkzMDQ1MmYzZTRlMzcwNjAzZTJjMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWY0NDUxNTE5ZWY2ZGM2ODIxZGE1NzAxMjVjNDI0MzNkNjcyZThlZjhlZjAxN2RjNWY2NmM4MmM1MTQyYWM1MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjllMWNhZjM3NDAxYmE1ODgwMDkwYWJlOWI4YWJmYTM2NmM0YWUxNzIyMjBhOTEzMGY3YjcyZTE0ZTJiMDMwMSJ9"
+          "resource": "repo://projects/lexico/lexico-cli/README.md",
+          "version": "repo-file-v1:sha256:41506bf246ddff7918d34bccabf2dae262e60257b50020d964ff2074aa96e7bf"
         },
         {
-          "resource": "repo://projects/lexico/lexico-web/README.md#L17-L25",
-          "version": "repo-lines-v1:sha256:f8e9629d57d87f76c5e457de53ccc988647181011d5c83c57c50d694cfb52a19:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzdhMDM1YzBmMDkwOTBmNTUyMjdlNDlmNTZhMGQ2NmE4MTIyZGJhMzFkNzVjMzg2OGJlODBhMDZkOGY5YWIwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTZkNTkyZGNkMjQ3MzU2MmZhZWE4OWE5Y2M3MTc1NzM5ZWZhYjBlNmViNmU3NWRmM2RiYjM3MDFmZjVjOTgwYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzg2MTc0YTcxMTE5MDdhOGRiN2RkYmQ1ZjExNzFlMzJkMTQwMjMwZGRmMWZmM2E2NGU2NGNhNTg5YjU3M2E0ZCJ9"
+          "resource": "repo://projects/lexico/lexico-entities/README.md",
+          "version": "repo-file-v1:sha256:a59d90643662c6bef565ef6c9f10d94b91a38df017dd49472cf707693184bf79"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/README.md",
+          "version": "repo-file-v1:sha256:46029e31f9fbb2cfc6f7e25a4a20414fc574af9524a2b1ffb29eab9d4662563f"
         }
       ]
     },
     {
-      "id": "claim_50561ed382f940078988b35743ce8c10",
-      "statement": "lexico-entities is the single source of truth for the database schema, providing TypeORM entities, PostgreSQL migrations, and shared grammatical enumerations that both lexico-cli and lexico-api depend on.",
+      "id": "claim_c9b66d4249db4cde99a89fa30a3012f8",
+      "statement": "All projects share the lexico PostgreSQL schema (database lexico_development, role lexico_username) defined solely in lexico-entities; both CLI (writer) and API (reader) depend on this package to prevent schema drift.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-cli/README.md#L87-L90",
-          "version": "repo-lines-v1:sha256:89b939e2bdfefd13b01b01ab8a14ba881a20717e48e1821ffb0ffb7c3eb14ae6:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzNlZjg1MTQ3Y2E5NjhiNzZhOTA3YjQwZWIzMDMxMDUwYjI4NzJkZTQzZTIwM2E4YWZmZGFmYzZkZTRmYjQxYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTMzNDgyMmYzMGExMzk2ZGIzYTQ2MWFlYzZlMTA5ZDgyYjFjZjBjODRhM2VmNzhlY2MyYThiYWNlMWQ5MmFhZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzg5ODEzMDFlNjNiYTBiOWM1NGY4ZWFkN2ExNTExNzg0NjVjYjNkYzNiMzhiNWVmYzNlODQ1MTllZTQ4MmQ1MCJ9"
+          "resource": "repo://projects/lexico/lexico-cli/README.md#L87-L89",
+          "version": "repo-lines-v1:sha256:007094b850747b95a02a357ce49b4bcb522e7703c07e9a7a3c70b475be4dca58:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzNlZjg1MTQ3Y2E5NjhiNzZhOTA3YjQwZWIzMDMxMDUwYjI4NzJkZTQzZTIwM2E4YWZmZGFmYzZkZTRmYjQxYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTQ5YjhiZjFiODgyOGEwNzM3MTVmZjVjM2FkOGVmNzIzNTY3ZjMyZDFhZWU3NmRiMTcwNWU5Y2QyNTNiM2IzMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTMzNDgyMmYzMGExMzk2ZGIzYTQ2MWFlYzZlMTA5ZDgyYjFjZjBjODRhM2VmNzhlY2MyYThiYWNlMWQ5MmFhZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzZjMGU0MmZjMjFhMTY5YTZiOGJlMGNkYjVkMzYyMzdjM2JjMjVjYWZiNjFhOTQxMzNmNzdmMzFhNmI5YzNlYSJ9"
         },
         {
-          "resource": "repo://projects/lexico/lexico-entities/README.md#L11-L14",
-          "version": "repo-lines-v1:sha256:0b505a4039ae870f7eb582fc6c12979585e16c541a42eb5ce7c99ca27b57c9f2:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjU3MWRiYjA3YThjY2RjYzdkOWU5ZDU3YzAyYjIwNTQ2ZTJmZDMzZjhhMTk1NjViOTdkNjAwNDlkMzZjOWQwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzA3NTI5NGY4OTkxOTNlMmEyMjJhOGE3OTM1Y2ZiYzI1YTMwMmRhNDU5ZTE5MWMzMjMyMzc0MDAyMTEyZmQ3NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2EyMDdiYTkyNDRjODZmNGY3OGJkMzUwZWNiOTM4MjJlNjRmMjIyZWYyZjNiNGU5YTc1ODlmZmVlZTAzODhjOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjUxOTBiYjE0NjhhMzE1MzhhMTlhODkxZDg0NTJlMzdhY2JiZDNmMDUxMWU0Mzg1ZWExMDA2ODE4YjUxZjVmOSJ9"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-entities/README.md#L3-L9",
-          "version": "repo-lines-v1:sha256:95cd2c68ec15cd7a1f87ec23407c022bc5c111f5072d3e73a5d908f51a7c4a78:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzQ1MGY3YTBiMDYzYTg4NGFlMWJhNGQ5MzViODAxM2U0N2M5ZjJkODViYTYyMTViYzZmMjViNjI4ZGZmZTk0MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGViOWQwOTIwNDlhZDRhYTQ2NjlkNTI4ODNhMmMwNWQxNTYxNTUxOGUzMTkzMDQ1MmYzZTRlMzcwNjAzZTJjMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWY0NDUxNTE5ZWY2ZGM2ODIxZGE1NzAxMjVjNDI0MzNkNjcyZThlZjhlZjAxN2RjNWY2NmM4MmM1MTQyYWM1MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjllMWNhZjM3NDAxYmE1ODgwMDkwYWJlOWI4YWJmYTM2NmM0YWUxNzIyMjBhOTEzMGY3YjcyZTE0ZTJiMDMwMSJ9"
+          "resource": "repo://projects/lexico/lexico-entities/README.md#L22-L33",
+          "version": "repo-lines-v1:sha256:dd1e3c2ccd4022444b348267669cf2abfc7ca2ac6f203432dc5eb7f81b708228:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkOGQxYjAzOGVmM2M3ZjJlYjU0NjY2ZTcyOWNiMGJkZDc2NzhjZmE2Yjk1NmI1MGE1MGMwOTk0NTIyOWEyNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMWQyMzQxN2NmZWM2NjQ1ZmE2ZGEzNWEwMmIyY2M0ZjQyNzEyYjVlYzAwZmFjMGJhZTI2NTlkYmE2ZmM0ZWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmMjNiMjMxM2MzYWY3ZGYxMjUxYTkyMzIyYmFjYWJiODNiYjExYTdiMGJkZTM3ZjlhZDRkN2VmMDAxYjdkMzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0NDIyOGJmMTY3ZWIzMzQwZjZlMmYwZjUxYjdkMmE4NjJmOGRhYmU5NGM4ZTEyOGQzOWIwZTVhY2M4ODg1ZjQifQ"
         }
       ]
     },
     {
-      "id": "claim_d05f330f5a21401ba70d230fb303331e",
-      "statement": "The dictionary schema defines Word, Lexeme, Form, Inflection, PrincipalPart, Translation, and Pronunciation entities, with Form and Inflection implemented as single-table hierarchies with multiple subtypes.",
+      "id": "claim_ac0a79f476a343c2a315d1d2230503a9",
+      "statement": "The dictionary schema uses single-table inheritance hierarchies for Form (8 subtypes: AdjectivalForm, AdverbForm, FiniteVerbForm, GerundForm, InfinitiveForm, NominalForm, ParticipleForm, SupineForm) and Inflection (6 subtypes: AdjectiveInflection, AdverbInflection, NounInflection, PrepositionInflection, VerbInflection, UninflectedInflection).",
       "evidence": [
-        {
-          "resource": "repo://projects/lexico/lexico-entities/README.md#L46-L63",
-          "version": "repo-lines-v1:sha256:634a9eed96027e55487087562126980fc752ab031d114a6c4e6eb9218fb2ca21:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxNmNlMjdlM2I2MDU0NDg2YWQ4YjE3ZDJmN2IwOGE0MzA5YTYwNjBhNjc3MTEwZjMxNTI0YTg3NDY3MTNkMzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ODFhZjQ2ZDYzNDA0MGZlMDQ2MDhmNzZiZjkzNTZmMjY3ZGYxMzFiNTcwZTE1NDc1YWQ5Njc2YmVhMjk0YTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkNzczYWU2NWNhMDYzYWE2OTIzZWJkYWYyY2M5ODllZTI3Zjc4MjA1NWZjM2M2ZjdkNWIxMDhjYWUyNjczNGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4N2E0MmVhZDIwNzI0MjE4NmEwNjc1ZDk4Y2I3MjZlZWUzNGYzODU5NzA3YTkxOGZmODA0ZTdkOGU1ZjdjMDIifQ"
-        },
         {
           "resource": "repo://projects/lexico/lexico-entities/README.md#L58-L63",
           "version": "repo-lines-v1:sha256:303a5c67b50f0142573ae5611648e6dfde520175056083d6b0957105ec954c0f:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWI5NmFjYjMzNjFjN2UyOWY2MmMxOGZjODI1ZmUwNmRhOGNjOWI5M2RiNTQ0YTQzODI4NGVlMzcwMjM0YTRlZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDU4MWFmNDZkNjM0MDQwZmUwNDYwOGY3NmJmOTM1NmYyNjdkZjEzMWI1NzBlMTU0NzVhZDk2NzZiZWEyOTRhNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWZkYjIxMjM0NzhiNTBlMmMxYTNhZDExY2ZmM2ExY2I3MTQ2NjFiMzlmNjJhMWU1NGEyZjAxNzM4NDQ3ZTMzNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzg3YTQyZWFkMjA3MjQyMTg2YTA2NzVkOThjYjcyNmVlZTM0ZjM4NTk3MDdhOTE4ZmY4MDRlN2Q4ZTVmN2MwMiJ9"
-        }
-      ]
-    },
-    {
-      "id": "claim_ed1cdb3535c54dba98b26cc2f9d1f784",
-      "statement": "The literature schema defines Author, Text, Line, and Token entities, with Token linking lines back to dictionary Word entities.",
-      "evidence": [
-        {
-          "resource": "repo://projects/lexico/lexico-entities/README.md#L65-L73",
-          "version": "repo-lines-v1:sha256:574452fabb219f965024e4348bd7e1b2ebc3dca35ce88152673e191eeabebb76:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmI5NTIyM2U4MTU3ZWNkYzY3NTNlMjVmOTRjNWFlMTdiOWMyZDRhYjU4MzgxZmYxOTcyNGQ3NzBhY2NjYzJmOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjU4MGQ5OWExYmVkNGQ0NTg3Y2YzMTcyNTk1MzNiY2FjNjExYmU2ZDhkNjk2ODlmMzcyYTQwY2IyNmM0Mjg1MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzkxMjk0ODA4NTZhNGUyMWM1ODE1ZmI1ZjBkZTMyYzU1YjMxNjA2NDMyNGZkNTgwN2MyNGQ5ODc3OTU0NDBhMSJ9"
-        }
-      ]
-    },
-    {
-      "id": "claim_4f52182a51fe475f92d80028ea8a4194",
-      "statement": "lexico-cli is a NestJS command-line application using nest-commander that scrapes and loads dictionary and literature sources into the lexico PostgreSQL schema.",
-      "evidence": [
-        {
-          "resource": "repo://projects/lexico/lexico-cli/AGENTS.md#L22-L27",
-          "version": "repo-lines-v1:sha256:e290a643b5b3b6dd9036f9fd824a552f338b4487792f89122f7b75b61ffc7f38:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWFkMTdiNmJhODRhMWYzMjQ3ZjQxMjFkZjk0ZDlhZTAwZjk0ZjRhMzVhNGJiYzhkYWJhYzVlN2E4NWU1ZmE1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGRlZDk4MjYyMWZmMDBhNDQ5MGYwY2Q5ZTFhNDc5MzMzOGEwMjY5NGFlYjg4MWJmYjc2MDk1N2I5MzVmNWI1NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzMwMjI0ZTg1ODA3MDFhNzI1YmFkMzYzM2U0NjZhYjA0OTFmYTU1NWVjZTM2OGJlNWZkODk3NTNiM2E1ODVhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzEyMDQxZmEyYzQ0MjU4NzM4YjBhZWM3MGVmZTI3YzJiNGI3M2RkZTkzMGM2YjlhODUzYjc2NzNjOWZlMmU2NiJ9"
         },
         {
-          "resource": "repo://projects/lexico/lexico-cli/AGENTS.md#L5-L7",
-          "version": "repo-lines-v1:sha256:3c9d306545d0f240b5b8c6528eda6eb4864e8c3f39205cc8d4d77df3b36044cd:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWM3ZWVhMjU3ZjYzYzMwN2ZlNjQwMzJmOTc4ZDcxMTYwNzk1ZTg3ZjQxNjMxNmEyY2RiY2ZjZDczNjhjZmM5YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTk0NjBkNmJkNTZhZWIwZGEyYWMwZWY3NTIzYzNiZmQyY2JmYWZkM2M0NDhiNTY2NzQ4MGRhODlkYjJmMDcwNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWFiODhkOWY3MDVlNzc2MjVkZjk2OGUwNGM5ODYxNDhlOTM1NWNkNmI4OGMyOTgyOTU3MWE4ZmM3M2VkZjlkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmI4NDFmNmQ4MGRmOTQ5ZTMzZDNhZjg3ZmFkMmVmN2ZiM2M5NDYzNzg1MDA0MDIzOTQ0OTMwNDliNmQ1M2E4MSJ9"
+          "resource": "repo://projects/lexico/lexico-entities/src/modules/entities/dictionary/form/adjectival-form.entity.ts",
+          "version": "repo-file-v1:sha256:48faeae410e23e42c8c46ce59fc1ce17bfe2207e5d6c76710c3fcd7477d1ee3a"
         },
         {
-          "resource": "repo://projects/lexico/lexico-cli/README.md#L3-L6",
-          "version": "repo-lines-v1:sha256:7efa5334cba59c0ef220865fbd808dd23c3367432f9da68adbae624cf3759b7e:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmVkZmFmZDBhN2U3ODMxYjliZjBjNDkwM2E4OTliYjE0NmE0OTdmOTU4ZThhMjllYjNiMjY4MDdiMjIxY2YxNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTlhYzMxMzY4NjQxNmQwZTk5MzQzZDZjYjE5MTA1Njg4ZjAyOGVmMThmYWU0Y2Y2ZDJmN2UwZjRjNmMzYmJmMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWNmNjdmMGQyZTU3NTU1MWZlZDM4NWYyYjcxOWI5Y2QxZmY4ZTQ3YTZiMzZjZGQyOTIxYWU4NDcwMTA2MDNiZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWFiODhkOWY3MDVlNzc2MjVkZjk2OGUwNGM5ODYxNDhlOTM1NWNkNmI4OGMyOTgyOTU3MWE4ZmM3M2VkZjlkZSJ9"
+          "resource": "repo://projects/lexico/lexico-entities/src/modules/entities/dictionary/inflection/adjective-inflection.entity.ts",
+          "version": "repo-file-v1:sha256:2b409c071a7cf29c9c12e74f834e7a2297bf71c97ff424cb9da5ae18bbc76eb4"
         }
       ]
     },
     {
-      "id": "claim_124b7155442c488c81d5c63c57b65eee",
-      "statement": "The CLI defines five ingestion stages (dictionary, library, library-sources, literature, wikipedia) plus a clear stage, each addressable as individual commands.",
+      "id": "claim_ca9e052fc79a4886aa9a082437f4500d",
+      "statement": "lexico-cli provides six ingestion stages (--wikipedia/wiktionary, --dictionary, --library-sources with four providers, --library, --literature, --clear) orchestrated by LexicoIngestionCommand which prompts for missing flags only on TTY stdin.",
       "evidence": [
         {
           "resource": "repo://projects/lexico/lexico-cli/README.md#L22-L30",
           "version": "repo-lines-v1:sha256:a1513376f326d09f4a9493916d0cc92a7335e0b93a6bd63e2ab4e443aff837d0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ4ZTVlMjUwZDZmYWU3OWJhYzA5MDBiZDI2NDVhMDJiMWE4OWYwOWVjMDUwYmM5NzQyZmRiNDBhN2ZiZWI4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg0YzBiNjEwYzFkYjkwMDA3Njc5NWI1YzYwYTlkMWU3OGRiNjJiNGFhZGIwNDcxNDlhMzEzM2MwMjQ5MzViYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmQwY2QyMDFiNjIxMzlmMzVjZTI4NzVjMGIyZTE5MDY4NGMyZTIwYTMwN2Q2NzkxNTEwZTYzNWE2ZGQ0ZGIxOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzdiMWExYmEzM2E0MmU5OTkwOWJlMGJhZmE0ZTQ2NmIwOTMzMWM5MmUxYTkzOWJjY2U3YmQ3MmExYzg0OTlkYiJ9"
         },
         {
-          "resource": "repo://projects/lexico/lexico-cli/README.md#L40-L50",
-          "version": "repo-lines-v1:sha256:c53df9378907372776e67b2a736111664c90d4fd9cfd117804d858c8378a7edb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyYTk2ODk0Mzc3ZjY3YzcwYzY3NmYzOTA5N2U0Njc1MmZlY2Q3OGE4MTFhN2YwMzViMjYwOWU2Mjc0YzE4ZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmYzhjNWFkNGE1MzM4NWEzMjMxOGJhZmI2ZWJhMzNkNGY5Y2M4NjNmNDY5MWM0NDE1NDUyNjljYmJhODZiYWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwZDJkZWY4ZjNkOGU5NTA0ZjJiODNhODAwMDgzOWMxNjdmNGU3NDhmNDg3MDM0ZTgzNGQ4OTFiNzQyYTUyYmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmYzIyMDBiM2M4YzA1ZWE4ZmE4YzE4YjljZThhY2Y3NzhiNmM0OGU0NWQ4NjI3ZTJhNGU3NTdmNGE4MjAwNjMifQ"
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/lexico-ingestion/lexico-ingestion.command.ts#L54-L91",
+          "version": "repo-lines-v1:sha256:e191c96d8b56428eaae4703a9194d973378f075f1e4188ec14e8b76c8fabd501:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExNDRhYzMwOGJjMTJmYmUxNTRiYzA1N2ZiNzgwNTVkMjkzM2ZkZjg0NDk4NTBlNmZiZGNkZjFlODY5MmU1MjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxNGMyMzMxNjg2M2U5NjdiMjhjNDBiNDc4OTA0ZDg2YWU2NzhhOWEzZWIyMTM1Mjc5NWY3NjAxN2IyNzhlMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzYzdmMGRhNzM2MjdhNWExYzQ0ZTFhZjBmZmU5YzI4MmJkNThjZWFjZmM5OWZmNTVlYmE2NjAyZTIzNjQyM2YifQ"
         }
       ]
     },
     {
-      "id": "claim_84ad70583a82443ca66b50f96d3800e1",
-      "statement": "The dictionary ingestion stage is resumable via --startLemma and --endLemma flags, allowing a run to resume from where it left off by processing cached Wiktionary JSON files within a lemma range.",
+      "id": "claim_e4dc2d8fe0b94096aee96ba55716dce9",
+      "statement": "The Wiktionary module scrapes Latin category pages with pagination, caches raw HTML as JSON files under data/wiktionary/, implements 500ms request delay with exponential backoff on HTTP 429, and skips already-cached words for resumability.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-cli/README.md#L160-L168",
-          "version": "repo-lines-v1:sha256:d59aaa5c31f53f424cf8003d78739bf1fe8b2ab1453e077f4d3636ae9f16631e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzU5NThmMDMyNDQ2NzA4ZDc4OTM3YjRkYWI1YTg3ZWIwMjFjNjFkOWVhYjhkODIzYmI1NzkxNWRlOGIzMDQxMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2E1YzYwZmYyMDZjMmE5YThjYTI3OTA5ZWI1ZWM4NWY4ZDlkNWVkODdjZDExMzdhYTExNjY4MjQ2YmVmNjc0NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjZjM2M3ZGYyMWMzM2VmOWJhNmFiODk2NTVmMTVjMGYyYzRjNGEwMDIxNTg1NmQxNDVkZjU0NzI2YmM2MDYwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2I3ZjI4ZDY3NGQ5MWQ0YjNmOWEwNzA3ZjQ5YjE4ZDVkZjMzODgxN2JmNjdiYjUwYTAxNmYzN2ZhYWQ5MzhhMiJ9"
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts#L147-L182",
+          "version": "repo-lines-v1:sha256:3ccdf213e0c295268381699a5e71e7683a4a32a1c6f73627df4c48bfd492b378:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxYjRhY2MwZjBmYzAxM2M2ZTgwZGRkZGI4ZTc3MDVjOTk2YjJhZWUzZmJmMTMyZjNiNDlkZDUzYWUwYTdjYmQifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-cli/README.md#L42-L43",
-          "version": "repo-lines-v1:sha256:0914c04de8cca9101085cc53cd22b0324c3b98e1402ca9ee423411bbbe6ce775:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjA3NWZhYTNlNWNiZGY2MGI2ZWMzMmY0ZWJlNWFjMjYyM2QxZWNjZTUxMjFlOTAwOGRmOGIzYzA0NjBlNzE1YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ3ZTFhZjI3ZmY3YWZmOWM4MzdlNTkxZTBmMjkxY2RiMThjYWExODM3MThjNWFkNmZjNDFmOTQ4ZGFhMDNkOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDc2ZGMyZDY2YTUyZGVlZGRjZmJhZDBhNTU2ZTYxZjEyZTk2MjllNjFmNjAwMWQyNjk2MGQ1OThiMWRhZjFlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDEzM2QyY2Q1MTllY2ExZTk0ZDMwYTZhNGU2YjhlNGI0NGE2MzY1MzljOWM3OGYwOTQ1NzIzZjIzYzE4ZTQ5OSJ9"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-cli/README.md#L52-L54",
-          "version": "repo-lines-v1:sha256:8e1d7a405c9eae5426f7bb0de6231e577c74936f4423053b3dd0a20b2e9c0699:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2UwMWI2ZmFjMDg1YzY4MTc5Mzg4NzAxMWMyOTExZmRlOWViNTg0OTkzNzQ4YmFkODg4NDhkMGMyNTBkYjAwYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzYxMmRhZmUzODBlZDA5MmQ5MzdkNmY3ZDBiNjViMjcxMjQxMjQ0ZGYxZGMxMzhkOTNjYTQwMTc0MTE2YzU3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjIyNGExZTU5ZGJhY2VmMzA2ODQ3ODk1ODg0NDNkMGM4ZDdmZDM2NTY4NmZkOWEwYWFmN2VkNTgyZGMwOWI0ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2ExNGY3ODNiYmJhMjFmNGFlZGRjYjE0OWE0OTQ3ZjNjZTM4ZDgxMTk4ZjRmNTgzZGRmOTA3NjlmZTZkOTM5ZiJ9"
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts#L246-L275",
+          "version": "repo-lines-v1:sha256:0b7942605e84dd4312eb60320dffa94dd785eaf707029a6853b330e35cf258c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzM2ZhNWZhYzljZWZmOWRhOGQwYjhkMGQ3MTNjYTUxOGI4NjNlN2M3NTcxZTEwZTQ3MjMxMGJmZjcxMjU5NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlM2EzNDRlNGM3M2M4YTk0ODZiY2NjMzcxMmRmMDFhZDg2YzkxMTZkODhjZTc0N2UyM2FlMWQxMjgyMjRkYWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhOTI5M2ZkODA1NGI2ZTQ3MjQ4MzczZjM5ZjRkZDc3ODAwMTA1ZWI3NTgzNDg2ODcyNTQyODVjZDEyODJiNzgifQ"
         }
       ]
     },
     {
-      "id": "claim_328caf7578384b089d0fe1b6cdea49fe",
-      "statement": "Each source has its own module under src/modules/ containing a fetcher, parser (cheerio for HTML, mdast for wiki markup), and entity mapper, isolating layout changes to a single module.",
+      "id": "claim_27352409efb8499b9a246ce9cacc914d",
+      "statement": "The Dictionary module processes cached Wiktionary JSON files in lemma range (--startLemma/--endLemma), parses HTML via cheerio targeting p:has(strong.Latn.headword), recursively resolves *{reference}* translation patterns, and logs errors to output/dictionary-<timestamp>.log.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-cli/README.md#L82-L85",
-          "version": "repo-lines-v1:sha256:77f50e84d3111459b3d2ce672d5bd5e1210553e72dc3cff2af5a95c66ef1cf18:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmRjYzkzMWVmZDRmNjU0N2UxOGY5YjZkMGFlYjlmYTIyNmMyODFiNzkwZjEwNTJhMWYyMzgxZWMxODVmYzcwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2E5Mjg0ZjNkZWMwNWJlNzc3OWQyNDkxZGY0ZmJiMTFmMWZiMGMzNzMzMDU2NWExMDkxNmE3ZDY5YzE0ZmQwYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTI1NDNlMDJhMjhmMzI4YmEwYjgwMzBlYjBmYzEyNjI4MTIyYzVmODM4Njk3NTNiZmE0MzQ4NjM0ZmZkMjJkNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDIyOGYyOWY2ZmMyODUyZmY4NWQxOWEzMTkxMDY3OGJjNThiOWI5MWIwNjFmODRkYTU3YTIwNjY2ODc4MWNjYyJ9"
-        }
-      ]
-    },
-    {
-      "id": "claim_06cdd56a1f7942f69ea93e65d706ed70",
-      "statement": "lexico-api is a NestJS GraphQL API using Apollo Server with code-first schema, Relay cursor pagination via nestjs-graphql-connection, and request-scoped DataLoaders to prevent N+1 queries.",
-      "evidence": [
-        {
-          "resource": "repo://projects/lexico/lexico-api/AGENTS.md#L188-L212",
-          "version": "repo-lines-v1:sha256:f2f5c14b847a413edabac1d760f6b874feb4e21c570faab170e71bbc7d9fd384:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllNjhlNDE0NzE3ZDM0ZjhjYzEzMzg3MTYzNjFkZThlMjFkMWUwZGNlMGJhNTkyZDQ1NDU0YmJjMjdkMjlmYmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg4MDkxOGFjNjQzMDcwNDAzMDA0MzI3OGFiYjE2NzAwMWM2ODM0M2ZjNWEzYWRmN2Y4MmI2MTY5NTI5Yjg0YWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUwMTIzOGM2NjBlODc3MWNlYTAyMzA0MDkxMDY3Yzk4YmU0ODI0YTdiNTM5OTYwM2UwMmJkYjMwZDlmNjg1ZDcifQ"
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/dictionary/dictionary.command.ts#L174-L197",
+          "version": "repo-lines-v1:sha256:5f2cb935e61106de3d49bd30bb5fa3d7985baca5b7054953262d934b6188aa38:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjODcxYTcyYjk0MWJlNTgzNDVkNTQyMDc0YjE1NjlkMTBiNDM3NTNmNGYzNzk5OGFiZjZlMTkwN2ZkMjk2MDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjZGM5ZTBiMDIyYWMwYjQ4YmE4ZDMwZTM5YTk5NzhmMjY0MzBkZWFkYTg5MTYzMzRhMDk0MTM0ZDRkNGZlZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3OGM1MDYxZTMyMmQ3YjQxMmFmODYxYTg5MTY0MTlkN2U1OGFlMWJjM2UyM2ViZWU2NTNlOTllOTg4NGRhN2MifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-api/AGENTS.md#L20-L24",
-          "version": "repo-lines-v1:sha256:8720423daf4ee6e2db0b7abf89a8c7973b84300013bad452ac1b1e1ae24f6ef5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWFkMTdiNmJhODRhMWYzMjQ3ZjQxMjFkZjk0ZDlhZTAwZjk0ZjRhMzVhNGJiYzhkYWJhYzVlN2E4NWU1ZmE1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZmYWI5ZmY3MzBlYjc2NWNmODYwYjQyNzRkMGM2NWJiZDU2ODJiZjFiYTBiZTY5NzFmZWVmMzQ5NDEzYmYyYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzMwMjI0ZTg1ODA3MDFhNzI1YmFkMzYzM2U0NjZhYjA0OTFmYTU1NWVjZTM2OGJlNWZkODk3NTNiM2E1ODVhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTNlNTY5MTViZjUwMWI4YWM4NmQ5MTk5NzVmYTM2MWRjNDcwY2FlMzkzZThiOTZkMmFmNGZlNDJmZGQ4ZTVhNiJ9"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-api/AGENTS.md#L5-L6",
-          "version": "repo-lines-v1:sha256:6b8e8989befd99711d77f50f0652efd2607f89fae69f8715c6d4a111ca079f0f:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODNmNGNjZjA4ZGY3ZWM5NGQ4NjIxMWNiNDJkMjM4NWJhM2QwYjdjMWY3MzRmNjBhMTZiMDUzODEyZDQzZjIwMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWFiODhkOWY3MDVlNzc2MjVkZjk2OGUwNGM5ODYxNDhlOTM1NWNkNmI4OGMyOTgyOTU3MWE4ZmM3M2VkZjlkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDhiNzdmNDU2NTM5ODgxOTVmZTRmZTg5MWUxMjJmZDc3Mjk2NDQ5NzY3NmMzNzkzYjExYWI3NThjNTVlMzlkMSJ9"
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/dictionary/dictionary.command.ts#L381-L456",
+          "version": "repo-lines-v1:sha256:a3b8c821d4707b2b8a17c771c587f0f3d8f3c09ce81696c62dbe96421f0c2235:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmZDJmYzRiYTEwZDNjYjAxYWVlYjhmMzIxNWEyODhmNjI5NDlhNDllNmQ3NzJiMmZkNTdjZGJlMjQ3ZGJjNDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1Y2NlZTFlNmI1NzdjZTE2YTU1ODE1NTAxY2U1MDdhNTRhY2IyMjc0ZWNlNGJjNDE2ZmNlYjJjNzU1YTg1N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyNTEwNmY1YzMyZDRiNjA5NWEzZGZhMmI5YzE1MGI2MjdlOGVkZDEzNWE3NzlmN2EwMzdkNTc1YWIxY2JkMGQifQ"
         }
       ]
     },
     {
-      "id": "claim_81d2d7a20c8e4f10bade32eaf899ce9d",
-      "statement": "The API defines its own GraphQL object types (not exposing TypeORM entities directly) that implement GraphQLObjectOf<Entity, Self, DatabaseOnlyField, RelationField>, which fails compilation if entity columns are undeclared, retyped, or relations don't preserve cardinality/nullability.",
+      "id": "claim_f94d3785cf0140779de24a4e26776ccd",
+      "statement": "Four library source providers (Perseus, Latin Library, CSEL, EDCS) implement LibrarySourceProvider interface, each downloading and normalizing texts to markdown under data/library/<provider>/<author>/<text>.md for the library stage.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-api/README.md#L13-L30",
-          "version": "repo-lines-v1:sha256:aa6ed7923e1cd669917b7bfc6b3c0add479a30cd099773d687017410d687c474:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2YjIyYmU0OTM5MGQ3NjRlNDc1OTdhMmNlMDcyMDMzZTg1M2NiOTI0NDFjYzA4MDU5NGJlYjAxNjc2ZDUwMjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNDBkMGUyN2I3OWUzZjFhZTVlOGM2MjExMjc1NDAwYmEyOWQxZDE5OGVmYzliNzMzNzA4Y2M5NDc5ZmQ1NTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxNWQ3NTU0MmUwZjk4ZThiNzdlZGE2MzgwNjkzNGU0MTZlYTFjOWMxN2EzYTIzNzA5NTNjYWQ5MTFhODE1OTgifQ"
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/library/library.command.ts#L180-L210",
+          "version": "repo-lines-v1:sha256:bbaacaf7d58ff4e3f5870f9d4d9a59070a1e9de96b581b2b637c5f313b3defe9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlNzExMjdmN2Y1ZjE3MTdiOTZlN2U5NzY5MGE3ZDE4MWE1MDcyMzdmY2FkMTg4NDBiYmIwOTM0MDIyYTkyMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhMDk5MzczNDBhMzdhMjdjYzYwNzlmNTQzZTdkMDQxMmRjMzhiZTU3ZmE0YjAzOTQ2OGM4MzYwNDg2NzNkYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkYTgyN2RlMTA2MDNlYjYzNjM2ZjY4NDQ3YmFiNjJjNzkzMDkyMTY2ZmNiYWMzNDcwN2Q4YzBiYmU5YmRjMjUifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/library/providers/corpus-scriptorum-ecclesiasticorum-latinorum-library.provider.ts",
+          "version": "repo-file-v1:sha256:081c4c9c6af30ddac5477566c4bbb12e821db7bd1b2da08d23f361c75a9bdf5d"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/library/providers/epigraphik-datenbank-clauss-slaby-library.provider.ts",
+          "version": "repo-file-v1:sha256:7f437f4a3620c815c25500d53a0e1e8c3680b8c3c32e5e5f4c9e4f5042da768d"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/library/providers/latin-library.provider.ts",
+          "version": "repo-file-v1:sha256:85c38f14facd4e1edbb7d3e78e924f41c44f65e25e04fd3bcaeddf72d5653c04"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/library/providers/perseus-library.provider.ts",
+          "version": "repo-file-v1:sha256:c23a6f8b64668e2937f91cd27762f2670a29dc5ae51333a14491ca1403f3ebd9"
         }
       ]
     },
     {
-      "id": "claim_e70da81b6b1e4a1ca4d2a3adabcaf2b9",
-      "statement": "Resolvers never return entities; module utilities map entities to GraphQL types copying only declared fields, with unjoined relations left unset.",
+      "id": "claim_49f94726e50945fcada223c8f1607ac2",
+      "statement": "The Literature stage ingests markdown from data/library into Author/Text/Line/Token entities with provider-priority deduplication (perseus > CSEL > thelatinlibrary > EDCS) and filters by --provider/--author/--text with terminal prompts.",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/literature/literature.command.ts#L155-L175",
+          "version": "repo-lines-v1:sha256:e8f885ef16e23000bd32af81c1e0b384f52ff0b5eb82d6f14be42ba355b3e237:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxNzk0NmM4OWZhZDBlOTdkN2Y2MTVhNGMwNjQ3YTc3MWM3OTM3NmYyZTc5MzBjOTI3ZTJhODY0ZjBiYjNjMDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkxMjNmMGRhMDI4OTMzMTQ1NGQzZjdhZDNiMjg4OGVhM2I4NzllNWNlNjU4YTEzZTc2NWFmYWQxMTlmODhkNzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/src/modules/literature/literature.command.ts#L47-L77",
+          "version": "repo-lines-v1:sha256:50e4162416b1982f86e9cf5e0fa882b12c6eb49dcc5ca6e229823394ddda8e00:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1M2NkZjlkNjE5ZTc2M2ZlZDM2OGJmODM1Nzc1NjJlM2Y5MjY3NDJjMmEwOTdhZGNhODViY2Y3MWVmMmQ2MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiM2U5ZmY4MTYyNGNhMmE5NWMzMjc0MWU1Yjc4ZDRiMDQ4OWJlMWY3MTYwYjk2OTcwZTExMDEwYWEyOTk3ODAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_400660f9731a44439628f3ef0449e44f",
+      "statement": "lexico-api uses Relay cursor connections via nestjs-graphql-connection with opaque Base64 cursors (toCursor/fromCursor/fromCursorSafe) and offset cursors (encodeOffsetCursor/decodeOffsetCursor) from @codebase/interface.",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-api/README.md#L13-L36",
+          "version": "repo-lines-v1:sha256:216faa2293048d9d86fc16ac4df26a9e6599229a3a48e941ce654061af830c2b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2YjIyYmU0OTM5MGQ3NjRlNDc1OTdhMmNlMDcyMDMzZTg1M2NiOTI0NDFjYzA4MDU5NGJlYjAxNjc2ZDUwMjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4MTVlNzQzNDFlZjM4ZTdhYWMzZjRhMWI3OGEyOWIzNThkOWU1NTdlNjVmMjJiZGE5N2ZmMzkxMzhjNGNiYzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNDBkMGUyN2I3OWUzZjFhZTVlOGM2MjExMjc1NDAwYmEyOWQxZDE5OGVmYzliNzMzNzA4Y2M5NDc5ZmQ1NTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJhNWI5YjA4ZDk2N2UyN2U1YzEzYTYyYzQxNTIzNWQyOTM2Y2Y2NjQyZDY2MjlhZWYyMTIyNTgzZTFjZDI2MWEifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/src/lexico-api.module.ts",
+          "version": "repo-file-v1:sha256:20a2c5dc1de220e1a00165d7784eaa48a0a4de1f5493147b925e91e5ea317237"
+        }
+      ]
+    },
+    {
+      "id": "claim_f2ba6463f7864f4aa7ca3a87a71041ba",
+      "statement": "GraphQL object types implement GraphQLObjectOf<Entity, Self, DatabaseOnlyField, RelationField> which fails compilation if entity columns are undeclared, types drift from columns, or relation cardinality/nullability is not preserved.",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-api/README.md#L15-L30",
+          "version": "repo-lines-v1:sha256:6b5d89acbdc525cf16eb59660d33d68c6da5079616ccaa855a44760a6d0330ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkOTJlY2U3OGE0MzU4NzU1MWE3NzRhZTY2MTgyN2M1ZmVhNjQwMDRkMTNiY2ZlODRhOTQ3MGVlNzEzYmYzYTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxZTIxNDdkZDg4N2RjMTk0MGJhNmY4OGM1ZjI2ZjM5MGYzOTg2MDY2OTFiYWIxNmJmZDFlNDRiZWJiMTVkOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxNWQ3NTU0MmUwZjk4ZThiNzdlZGE2MzgwNjkzNGU0MTZlYTFjOWMxN2EzYTIzNzA5NTNjYWQ5MTFhODE1OTgifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/src/modules/lexemes/lexeme.entities.ts",
+          "version": "repo-file-v1:sha256:04198d95208851fab6912833b7d50686b54c3c0cfbbaa4e30dd1e5cca4ba31c2"
+        }
+      ]
+    },
+    {
+      "id": "claim_04c12e8f26d148bfaeb92e819a85f8c3",
+      "statement": "Resolvers never return entities; module utilities (e.g., toLexemeType in lexemes.utilities.ts) map entity to GraphQL type copying only declared fields; Form and Inflection are GraphQL interfaces resolved by concrete class with types registered as ORPHANED_GRAPHQL_TYPES.",
       "evidence": [
         {
           "resource": "repo://projects/lexico/lexico-api/README.md#L31-L36",
           "version": "repo-lines-v1:sha256:7e744753809a7378f9d76f4ac232a285c0808eb7c562b8eb383f45af1f9c035f:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2E4Y2QxMjE2MDUzZjYwOGVkOThjODExNWI3NzU4YTJkNzI5ZDVlZmZhYjdlZmQyOGY4ZDBjODJlYzZlMjkyNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTgxNWU3NDM0MWVmMzhlN2FhYzNmNGExYjc4YTI5YjM1OGQ5ZTU1N2U2NWYyMmJkYTk3ZmYzOTEzOGM0Y2JjNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjQ2MzU2ODM5ZWUxMDBkYzAwN2E3ZDk0NTBkNmJlYjU0YWQ5Y2E4Mjg1NTA3MzNkMThkMTg5ZTNjZTJjYjQzZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmE1YjliMDhkOTY3ZTI3ZTVjMTNhNjJjNDE1MjM1ZDI5MzZjZjY2NDJkNjYyOWFlZjIxMjI1ODNlMWNkMjYxYSJ9"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts#L31-L36",
+          "version": "repo-lines-v1:sha256:13ed96f96e3da68513ca28229b2bec21721718cfc59e53ac048b47a83bdf1e36:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAzNWZiMWE1MmJjOTg3YTFiMzY5NmUzZTgwMjhmNDhhODUzMmQ1YTBiMzBhNmIwNDczYWU4Y2MxZDVkNGJmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmZlZjA1NDczMTBmMzRjMDMwMTBmY2FjN2ZlMGJhNmQ0NTdhZjk0NzQwMDNkMTA2ZjljNWM3MmYwMGFmYTY0MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzg1N2NiNWY3NGQxNDdmMzU0NTYxMTQ0ODQ5MjJmYzk5NTU3NGNlMmE4NDliMWVkZTY1ZTRiZDZhZTM4ZWM0OSJ9"
         }
       ]
     },
     {
-      "id": "claim_456543ab937c42e7a09c254a29cdf270",
-      "statement": "The API uses paginateQuery (in literature.utilities.ts) for SQL-backed Relay pagination with keyset bounds on sort key + id, and paginateQueryByParent for batching child connections across many parents.",
+      "id": "claim_c27b56097243452f93fd5810ca3a53f2",
+      "statement": "paginateQuery in literature.utilities.ts implements SQL-backed Relay pagination using CTEs to materialize filtered rows, read cursor-claimed rows, compute total count/window/hasRowBefore in one statement, and load entities in configurable chunks.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-api/README.md#L1090-L1103",
-          "version": "repo-lines-v1:sha256:0b5207fb65127ae5ee3229691829c058590bac9406636d3766397f11f93f073d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyYzFlZjMxZTlkZWEyZjAyZjkxZGJlZjFhZjc0ZWE0Yzc0M2ZiOTQzZjEwM2E5OWEwNWNiNmFmOWE3OTgxYjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxM2MyMzdiZTM3ZjM4ZTY3NGYwMTNkNjAzZmIzMGNjODFkZGI0YjA3ZjU5NmRkMDlkYTU2NmEwZDQ4NTdkNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2MmQ0MzU0MDZmNDYyYzlkYTA5NmNkMTY0YTI1NTZiODc4MTMxZmI4M2U0OGZkOGZjNDJhZTYzZTEyNGNiN2EifQ"
+          "resource": "repo://projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts#L248-L298",
+          "version": "repo-lines-v1:sha256:cb424fd47f2629735d8430ef1566e8167c969eb2a5453cd001e9008f8fb7b428:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjYzZjZTFjYTNmMjA1YTIxNWUzYjJhZTE1NDIzZDQzOTBlNzg0YzE3YTQwMzhjNzE2MWQ5YWIxMDk3ODg0NzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjYWI5YmU0MzlhNGVkYjM0NzRmODllYzJkZWMwYmVjNjE4MjRlNjQ0NjU3ZmM1ZTY5ODRiNTBiNjAxNjhjNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4ZjkzMjQ1YTZkOTM2Y2U4YzFjNDVlOTFhYWM5YmY3MDBmYjYyYzNjMzQxZDRkYzI4N2I1MTEwZWMzZDRjODYifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-api/README.md#L860-L874",
-          "version": "repo-lines-v1:sha256:db1b26ceee8749a65e00681498d2761f25c5a93083537d5ef4c2560d2956357b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMzA5NDNhYzkxZDIxNzBjZjc2YjZiMTQ3ZmQwODBmNWIzNTEwZmE2OTE4MjVjNzc5MTdlYzIwYmI5ZDgzZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3MzRiODEwOTUxYjZkYmRmN2NlOTYxYTEzZjU3NzIzYjRhYjRlNzQwMzMzOTY4YzU0MTkyYmQxOTdmMTdiYzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzOGQ0OWZiNjA4ZTA5MjE0OTQ1NjdhMjQwODVjZDAxNzRmYWI4MTc3ODNhYjM5ODA1M2UzODE1YjUzZmI0ZTUifQ"
+          "resource": "repo://projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts#L54-L87",
+          "version": "repo-lines-v1:sha256:387f6204eafa847406298630ca2c7c0a46e961fcdc65de1701cb1445108764b7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMzdkYTVjYjdlYTc5ODBmYTZhMjhiZmNmOWZlN2I1M2VhOTliMmVkYWQ0NjNiZTMzNDFmZjYyZTMzMWFhYTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0NjkzMjQ3NjMzODUxODI2NDU2YWNkYzk0YjAwNjJhZDdmZjRhOGJjZGYyMjBkYTM0YmVmNDU5ZjYwMDUwMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxM2Y0YzllN2E1NjUzNDJmZTRmMzU2MDExODc0NWRhNjBlMzc2ZjRhM2FhMGRmZjEyMDZkNDMwMDNmODA1NDMifQ"
         }
       ]
     },
     {
-      "id": "claim_fc7056ba60f940c3b4c735599c9200d1",
-      "statement": "lexico-web is a TanStack Start SSR application with file-based TanStack Router routes, React 19, Tailwind CSS 4, and UI components from the shared @codebase/presentation library.",
+      "id": "claim_cc8aa7212f8240389209e669210cf663",
+      "statement": "Search provides tiered Latin search (headword/word matches → enclitic decomposition → lemma pattern ranking → fuzzy fallback) and English full-text + substring search, both returning Relay connections via paginateRankedLexemes → paginateQuery.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-web/AGENTS.md#L19-L24",
-          "version": "repo-lines-v1:sha256:5a3a5cc66a377a5b89765f0c5a6373092d9d1de6235fe10b25c7e642ddec29b7:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmNlMTM4NjgzMzVjYzBmZjhmZmY0NjRmODgwZmI1ODgwMTQ3YWRjOTk1ZDFhMmVkNTZjMmE3NTBhMDVhYjEwNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzMwMjI0ZTg1ODA3MDFhNzI1YmFkMzYzM2U0NjZhYjA0OTFmYTU1NWVjZTM2OGJlNWZkODk3NTNiM2E1ODVhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2JhMDQ1ZTU0NmRiYTk0OGZjODc4MmMxMjBiMTNjMDlhZWNlNDI5MThjODQyNzUxZjlhZmVmZjU3MDc4YTI1ZSJ9"
+          "resource": "repo://projects/lexico/lexico-api/README.md",
+          "version": "repo-file-v1:sha256:2c147d6bcca95934938dd50a7b5ec0b7d193699b732dc4e17abe1761d19d6cbc"
         },
         {
-          "resource": "repo://projects/lexico/lexico-web/README.md#L10-L15",
-          "version": "repo-lines-v1:sha256:0f1ac1bc51b53f019ac90f87c45d366c4dcd4be251d70b047a7f06a67afd5391:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWY0YThlNTZmM2ViMmVkNWQwNzZjMjg3NzZjMjI3MDU3MTg1ZTkzYzE3YjUwZDg2NjViNjc5NmVmNzA5OGEzNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmVmNjE4ZDY2ZWQwNzhiNTdlM2NmOWYwOWFlYjZkNmNhMTM5NjE2YjUxYmExNWUyNDJlNjBiNDIzODdmMjNjOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmE2ZTlkY2I4M2UxNDdmODJlMjk4Nzg2MWY3Y2U4MmM4MTRlNmRiYTNhODY1N2UyM2JhNjAwZmRiMDkyNzg5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2RhZDVmMTYzYWViNjdlMzRhOTIwNWExMzg3Yjc5ZjQyMjllMjEwMDI4MWY3MjA2MzMyOWViYjYxNjYzNzRlOSJ9"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-web/README.md#L73-L78",
-          "version": "repo-lines-v1:sha256:e185cea6128b7e1a18a9c154d8ff0d9a069a0d3a07a92333fcf7af56727e1a77:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGQ5YjkzNzEyMzMzYWI3NmY4ZjNlMTliNmIxZmU2NTdmNDU3YTAzMjI3MWM2NmZlYWYyNjU4NjdmZGYwOTgyOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDI0NmYwZGFhMWI2YTI1MGY5OTQ4NmMyODcyNjdiNzA5OGZkZDY0ZmFjOGQyM2UyYzRjODIzMDQxOWNkOTViYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDEyYmIyZmM3YzFjZWFhMTk3NjA4NThlN2VkOWNmYWU1NTA0NjFjNjBjN2RlNzQ4NDFmMjIzMTU0MjVlMzZkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDk0NmI1MWI4NmE3ZTg4ZDA2ZDlkY2YwODA4OWFjYjZhYTg0NDYwNTA4ZTI4ODliMzU3YmYwNDY1ODdiMTFjMiJ9"
+          "resource": "repo://projects/lexico/lexico-api/src/modules/search/search.service.ts",
+          "version": "repo-file-v1:sha256:8a79fecec9ba7e66c948cdd53ada204e14c7fd08785d18341b4582bc480a63b6"
         }
       ]
     },
     {
-      "id": "claim_e47b1ffeb9534c3b8c660a902bd33997",
-      "statement": "The web app's search page uses a TanStack Start server function (type-safe RPC) called from the route loader to run searchLatin and searchEnglish GraphQL queries in parallel, merging results best-first for the initial SSR render.",
+      "id": "claim_bdbd193347544e6895998b08962d615c",
+      "statement": "lexico-web uses TanStack Start SSR with file-based routing (src/routes/search.tsx for /search), server functions run both searchLatin and searchEnglish GraphQL queries in parallel from route loader, merge results best-first, and SSR populates first render.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-web/AGENTS.md#L51-L56",
-          "version": "repo-lines-v1:sha256:e82ed6d423dae58a17cdb4e3eaa976c3077597ba3a727df2772549f5f3040acf:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmYyNGNlZWIzYjU5N2I5ZTEzYzY4YWIxNmY3MjliOTg4MTM4YmM3Zjc3M2Y5ZWE5ZGNkZWFiNzNjNWQ2ZjEwZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDhlNzI2YzQyZWQzZWJjOWE0M2RjYmFkYTAzMjIzMmJhMmVmYzQ1NTJhMDZhNzEwZTRlZmJjN2ZkNjk5OTI2NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2I5NDE0YjRkNDI5NzA3MWUyYzcwMmQyMDhkMmRjNGI4YmIzODhmNjg4Nzg3MGU2NDVmZjMxOWQ1MDE0YTE2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmI0MmY4NjljYWViZTNhNWU5ZGJjOGM4YjY3MTA2ZjIyYWE3YjE0ZmViMTUxOGRhYmIzMmJmNjJmYjJkMWE4MCJ9"
+          "resource": "repo://projects/lexico/lexico-web/src/routes/search.tsx#L245-L261",
+          "version": "repo-lines-v1:sha256:89096b8207146c2024374d3be5c48e1a8b0ca65be3105bad4405664b350a6d67:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyZWY0YjY5YWFhMmQ1OWU5ZGZmYzY5ODA3NTM3MWUzODY0ZjI4Zjk3ZjUxNTViNWYwMDZkNjFlNTI1OTM2NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRjZjQwMzgxZDMxNGFmZDRjYmE5ZTM3NzUyNzYxY2RhZDM4NDJlZWUwNjc3ZTkwNGFmM2Q5ZmQyYmUzYTAwM2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwZjk0OTg2M2IzYTQzZDgxMWM0ZmRjMWJmYTk0ODczOTNjN2I4NmM0YWE0OTUwNTM3MGQ0NDZkYzhkNWYzMjQifQ"
         },
         {
-          "resource": "repo://projects/lexico/lexico-web/AGENTS.md#L99-L106",
-          "version": "repo-lines-v1:sha256:c69db12c068296099ab7e7a62c74569bd1b296ac14d08fec90d316685bef31f1:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDk5ZjliM2RmNzNkN2E4NWMyYjIyZjg1NzBjODZiMTMzYjM4MGQwNzUxNDA5MTY3YjdkMjYzYjk1Y2EzYTI3MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODUwYzc0N2I3YWE1ZDgzZDE2OThjYzY2MjRlYjAwOTU3M2RhOTkzM2I4NGQzNjVmOWVjNTM5YmZlY2M2M2E5NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjBmNzFiOGY4YWY5MjRmZjU0NWMzZjNhZGQxNWIwYTJjZWFiNDJhNTllNGMxZjBlYzA5YjU5ZjNmYzFhNzJmOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWNjNzhjYjFmZmM4ZjBjZWY4ZTY0YzU3Njc3MTA4NmRjNjk0NzI1MzdlNTZiYzFkZmNhOGQ1ZGU3YWVhZDcwYiJ9"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-web/README.md#L62-L66",
-          "version": "repo-lines-v1:sha256:774662ce5f0c77147aaa2f99bc0caa197d8ba7c4562d637c9951abbdb16e4878:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODlkODAzNzFjZDgyNmU0MjI1ZjkzYTk3NWZjODZiZmQ4NWQzNzVmZjY0N2Y0MDc1YWI1YjVmMDQ3Y2JiYTY0NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU2NzJmZDU1MTZkNWNlYzg0ZDkzYTdjM2MzNGEwZTEyZTRiOGYxYzkxNWE4YzJiMWE1NThmN2Y3YTc1YzVkYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTBhYjRmOGEyYzcwNTk3M2IwNmZiYTNkYTEzMzhlNmI4NzY1NWM4OWViNGI5YzQxMmJiZWU5YTVmOTBmNTUyMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmYwYzA5NTczYTZkZmRkMmNlOGMwOWRiMzAyMDEyMGIzMzU3ZjNmZTEwZTBlZmRlNDYwNmQ4MTc2OTFmNmUyMiJ9"
+          "resource": "repo://projects/lexico/lexico-web/src/routes/search.tsx#L336-L341",
+          "version": "repo-lines-v1:sha256:6d10a9df5cc2192dbeff5e2268dbaa3edbaf5bbf4e8b4729e3a6adf64d4a2f82:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjA4ZDkwYWQ3ZGEyODA1NmQxY2U4M2YwYjMxZDc3NmJlN2QzMzJhMDVhYzFmYmQ0ZmJhMzQzOGMwMDRhZmQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTg2ZmViMWM5ZmU1N2JjMjA0NjQ2MzMyNDhkNTBkOGM1N2RkNGZlYmM2OWU2OGJlYTRiZmVhZWMxZDA3ZDM2OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODc1N2VhNTNmNjEyN2ZmNjI3OGIwZTM1ZjVjMTBjMDJmMjFmYTQ3NzdkYzJlOTc4MDA4YTg1YzYzM2I5NmQyOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTU1YjYyMDc0MjRlODZiMTdlMmU3ODQ5OTdkNzJmNDFmNzRhNDgzMzk4MzIyYjIyNTZkMGZlNTQwNTMzZTdlYyJ9"
         }
       ]
     },
     {
-      "id": "claim_68c5821e62fd46308280ceeafc1a1646",
-      "statement": "GraphQL operations live in src/graphql/operations/*.graphql and are compiled by GraphQL Code Generator into typed operations, Zod validators, and MSW handlers in src/graphql/generated/.",
+      "id": "claim_0a18f93d406141c28d03b41fa66ddd7e",
+      "statement": "GraphQL operations in src/graphql/operations/*.graphql are compiled by GraphQL Code Generator to src/graphql/generated/ emitting operation types, Zod validators, and MSW mock handlers.",
       "evidence": [
         {
           "resource": "repo://projects/lexico/lexico-web/README.md#L67-L69",
@@ -221,44 +233,32 @@
       ]
     },
     {
-      "id": "claim_7cb6f1fcba324860ba81322fbdeb442a",
-      "statement": "All projects share the lexico PostgreSQL schema (database lexico_development, role lexico_username) via LEXICO_POSTGRES_* environment variables validated by Zod schemas, never reading the root POSTGRES_* admin credentials.",
+      "id": "claim_5d4e79282f5640ee8b33ad776d56f03b",
+      "statement": "@codebase/interface provides shared GraphQL contract: server exports Relay primitives, cursors, entity-to-GraphQL mapping types, and pagination mixins; client exports createGraphqlCodegenConfig; testing exports MSW server helpers and SQL-backed pagination oracle.",
       "evidence": [
         {
-          "resource": "repo://projects/lexico/lexico-cli/AGENTS.md#L89-L100",
-          "version": "repo-lines-v1:sha256:debe59f50f601feec8b78cc862ddb9f3238ef1cf3ac705279421ed77dcab5c3d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0OWZlZjIwNGFjMWMyOGI4MzkwZDViYzE1NjMzMTZhZTNlOTllZDkzZjE1MDc5ZDg3ZWI5Y2RiZWE2M2M2M2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhYTQzOTdkYjU0M2NiMzZiY2ZiNTVmM2M2YWFmZjE4YmI5ZjA5YmFjNmEyYjQ5OWYxY2I4NjMyYzcwNGFhYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxYTcxNGU3MGMyNDc2ZjgyOTk2MWM5MjVhMWRlZTM4MmFiOTY5ZmQxZDIyOTViZTJmZDcxZTlkYjFiZGQ1Y2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2OTRhNjg3NzM3ZjVjZWQyNTAxNDk2NWUwYWI2ZTQ0NDIzZTE3YjFjM2E2YTY0ZTI4NmExMDJmODYzZTExNjYifQ"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-entities/README.md#L22-L33",
-          "version": "repo-lines-v1:sha256:dd1e3c2ccd4022444b348267669cf2abfc7ca2ac6f203432dc5eb7f81b708228:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkOGQxYjAzOGVmM2M3ZjJlYjU0NjY2ZTcyOWNiMGJkZDc2NzhjZmE2Yjk1NmI1MGE1MGMwOTk0NTIyOWEyNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMWQyMzQxN2NmZWM2NjQ1ZmE2ZGEzNWEwMmIyY2M0ZjQyNzEyYjVlYzAwZmFjMGJhZTI2NTlkYmE2ZmM0ZWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmMjNiMjMxM2MzYWY3ZGYxMjUxYTkyMzIyYmFjYWJiODNiYjExYTdiMGJkZTM3ZjlhZDRkN2VmMDAxYjdkMzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0NDIyOGJmMTY3ZWIzMzQwZjZlMmYwZjUxYjdkMmE4NjJmOGRhYmU5NGM4ZTEyOGQzOWIwZTVhY2M4ODg1ZjQifQ"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-entities/README.md#L35-L42",
-          "version": "repo-lines-v1:sha256:808b2731863256aebcd81efbbad9c832388140d07133c75453688cf6aec5842d:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDZhMzE5YWFkZTJiZjZjYTIyNTYxOTljMDdjMWU3NzMwYTczMWEyM2E2YjA2Yjc5MTVhNTkwYzgzMjNiOTVlNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGM3ZDJkNGMxY2M1ODNiOWE0MjdmNWRmOGE5YzY1OTQ1NTIwNzM3ZGZkMjA4MTI3MzE1NmVmMmExZjc2NjM2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzA0MDA1ZmRiMzkyMGNkYjk4ZDYzZDEzOWQ4YzE0YTYzNDdkYjA4NTQ3YzkxYTMyMTA1NWIzM2MwODFlYzkyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmQ3NzNhZTY1Y2EwNjNhYTY5MjNlYmRhZjJjYzk4OWVlMjdmNzgyMDU1ZmMzYzZmN2Q1YjEwOGNhZTI2NzM0ZCJ9"
+          "resource": "repo://projects/common/interface/README.md#L8-L36",
+          "version": "repo-lines-v1:sha256:6d71873c2137d83495a7b27974892ef931a3cd013826438a76343cf859a9bbf7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MDQyZTU2Yjc2NDg1NWU2MjA3Yjc1NjIzMTFlYzk0OWQyNWIxYzU4MTFlM2Y2ZjdkNzdlNzYwODBmZTQxZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxNGFjNzMxZjhlZGMzNTFiNDBjYmMwNTVkMjI0ODUwMmNhNGJiMGRhMmU4YjFhMGM2ZWNlNDgxMTZmODM0MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0NjE5YzMxNDFhZmRiNGE4NmRmYzkxMzc1MmQ5YWFmOWE0MDQwNDgxM2I1ZjNlYWJiYjlhN2MxZDJjZjI2ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmMTQ2YmM1YmM2NjQwOTFkYzc5ZmFlNTY4MGM1Njc2MDEzMzQ2Y2NhOWIxZjRhMTAyMmY3YzAyMTAxNGVlNjAifQ"
         }
       ]
     },
     {
-      "id": "claim_c003e26c8d1442888d8dbe5509ef3639",
-      "statement": "The @codebase/interface package provides shared GraphQL primitives (Relay connections, cursors, entity-to-GraphQL mapping), a shared GraphQL Code Generator config for clients, and testing utilities (MSW server for clients, pagination oracle for servers).",
+      "id": "claim_792e67e73e6b47c7b406682699a8363e",
+      "statement": "All projects read only LEXICO_POSTGRES_* environment variables (validated via Zod), never the root POSTGRES_* admin credentials; LEXICO_API_URL defaults to http://localhost:5003/graphql for lexico-web.",
       "evidence": [
         {
-          "resource": "repo://projects/common/interface/README.md#L21-L26",
-          "version": "repo-lines-v1:sha256:8e3fced9eaa7ddd13b6174cc104997eb3eff3f9a3e7cefa0264d0c09992db774:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzRkMzBlMmY2ZjEzYWU1MzA4ZWY5MTZiZDUyM2E5YTYwOTkwNTY3MWU4ODM2NmU3ODE3OThmMmY3N2IzYjk2NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjZmZjQ1NDBjZTk0N2I5MzRlNjI4ODI2ZDMwZmI2OTVmZWU3MmU1MTJiOTdkMWM1N2M0Yjg2MDQxNmRjZDFiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODVmOTc4YjFjMTc3ZWMwYjdkZWZmYzhiNGIxOGFmMmFhMjc4NzM4YjEwMTMyMWE0NThiM2M0NGZiMTdjM2IyZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWVkYWI3ZjkzNjgyMTg1MmQyMjA2NjNmMTU3MDEyMmNiOGI0NDcxMjg5MzY5ZjY5YjcwNjI0NWIxNDg5MzIzMSJ9"
+          "resource": "repo://projects/lexico/lexico-entities/README.md#L31-L33",
+          "version": "repo-lines-v1:sha256:77ee84bd9442832f09102ea9b0dac3e5b4ddbe8e6d2663a97d86031b9523b051:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODgwNjk0YTgxNTFlZTYwNDA4MjY4MTEzMzNhMzFmZjZjNTM1OTQwZTdiYTBhMTExMTg1OTM1Nzk5MGZmNTMyNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzMxZDIzNDE3Y2ZlYzY2NDVmYTZkYTM1YTAyYjJjYzRmNDI3MTJiNWVjMDBmYWMwYmFlMjY1OWRiYTZmYzRlYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTMzMGI4ZGQ5M2RhOTVkZmQ5ZTcxZDg2ZTIwNTIwNWU3NmFiNjEzZTE5MDI3MDZkODNjMGE5NmFiNGEyZjMzNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTQ0MjI4YmYxNjdlYjMzNDBmNmUyZjBmNTFiN2QyYTg2MmY4ZGFiZTk0YzhlMTI4ZDM5YjBlNWFjYzg4ODVmNCJ9"
         },
         {
-          "resource": "repo://projects/common/interface/README.md#L30-L36",
-          "version": "repo-lines-v1:sha256:41fb3b65ae26a3125a2abf87b2ce0807d8444c67e1d73d4d0af6e5518ff3d776:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmQ3Mjc3ZTJjMmNkYzVkZDVjOWU2MWIxNmE5YTI2NzFhZjc4YTYyYzBiNTJlOWQwYmEyZWFhMjFmZjg4ODA5NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjE0YWM3MzFmOGVkYzM1MWI0MGNiYzA1NWQyMjQ4NTAyY2E0YmIwZGEyZThiMWEwYzZlY2U0ODExNmY4MzQyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWVkYWI3ZjkzNjgyMTg1MmQyMjA2NjNmMTU3MDEyMmNiOGI0NDcxMjg5MzY5ZjY5YjcwNjI0NWIxNDg5MzIzMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmYxNDZiYzViYzY2NDA5MWRjNzlmYWU1NjgwYzU2NzYwMTMzNDZjY2E5YjFmNGExMDIyZjdjMDIxMDE0ZWU2MCJ9"
-        },
-        {
-          "resource": "repo://projects/common/interface/README.md#L8-L20",
-          "version": "repo-lines-v1:sha256:f7f4f5b45d2f6ab5f58abeee79675a512af3303ab8f7e700ddd509e48e85fd20:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MDQyZTU2Yjc2NDg1NWU2MjA3Yjc1NjIzMTFlYzk0OWQyNWIxYzU4MTFlM2Y2ZjdkNzdlNzYwODBmZTQxZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0NjE5YzMxNDFhZmRiNGE4NmRmYzkxMzc1MmQ5YWFmOWE0MDQwNDgxM2I1ZjNlYWJiYjlhN2MxZDJjZjI2ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3NjgyNmI0ODUyMGNiYzVhOWMxZTY4ZTc4MzI3ZDM3NjJkM2JmODNjODkwOGRiNmQxNDg1N2I0M2MzMzQ3ZWUifQ"
+          "resource": "repo://projects/lexico/lexico-web/README.md#L66-L66",
+          "version": "repo-lines-v1:sha256:5e672fd5516d5cec84d93a7c3c34a0e12e4b8f1c915a8c2b1a558f7f7a75c5da:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU2NzJmZDU1MTZkNWNlYzg0ZDkzYTdjM2MzNGEwZTEyZTRiOGYxYzkxNWE4YzJiMWE1NThmN2Y3YTc1YzVkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU2NzJmZDU1MTZkNWNlYzg0ZDkzYTdjM2MzNGEwZTEyZTRiOGYxYzkxNWE4YzJiMWE1NThmN2Y3YTc1YzVkYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWI2ZTExOTZlMThhZDEzZTg4NmZjMGNiYzkxMzFlZDNlOGFmMTg3NGIwMjZmMzY1NjExNDdlZDA3MWU4NTdlYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmYwYzA5NTczYTZkZmRkMmNlOGMwOWRiMzAyMDEyMGIzMzU3ZjNmZTEwZTBlZmRlNDYwNmQ4MTc2OTFmNmUyMiJ9"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-24T21:02:40.299Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }

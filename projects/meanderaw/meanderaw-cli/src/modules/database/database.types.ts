@@ -2,7 +2,7 @@
 
 import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
 import type { Meander } from "./entities/meander.entity";
-import type { UpdatableEntity } from "@codebase/persistence";
+import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 /** How many rows one pattern characteristic holds for at one shape. */
 export interface MeanderPatternShapeCount {
@@ -16,7 +16,7 @@ export interface MeanderPatternShapeCount {
  * The fields needed to persist one meander row — everything but the
  * columns the database fills itself: the `id` and the audit columns.
  */
-export type MeanderRecord = Omit<Meander, keyof UpdatableEntity>;
+export type MeanderRecord = Omit<Meander, keyof PostgresqlUpdatableEntity>;
 
 /** How wide and how deep one repeat is. */
 export interface MeanderShape {

@@ -8,12 +8,12 @@ import {
   vi,
 } from "vitest";
 
+import { buildTestingModule } from "@codebase/observability/testing";
 import {
   answerPrompts,
   overrideEnvironment,
   promptsMock,
 } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { missingInputError, promptCancelledError } from "./input.constants";
 import { InputService } from "./input.service";

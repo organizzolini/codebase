@@ -6,8 +6,8 @@ import { PythonService } from "@codependix/file-imports";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { buildTestingModule } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnchorsService } from "../anchors/anchors.service";
 import { DeliveryService } from "../delivery/delivery.service";
