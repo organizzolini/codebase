@@ -21,11 +21,12 @@ const config: KnipConfig = {
     "notepads/**",
   ],
 
-  // Blank constants/types files are conformance placeholders; keep them out of unused-file checks only.
+  // Blank constants/types/utilities files are conformance placeholders; keep them out of unused-file checks only.
   // testing/mocks.ts files are conformance placeholders for project-level test utilities (used by future tests).
   ignoreFiles: [
     "**/src/**/*.constants.ts",
     "**/src/**/*.types.ts",
+    "**/src/**/*.utilities.ts",
     "**/src/graphql/generated/**",
     "**/testing/mocks.ts",
   ],

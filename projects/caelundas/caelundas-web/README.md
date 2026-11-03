@@ -53,9 +53,9 @@ Call stacks traced through `projects/caelundas/caelundas-web`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 492 |
-| Files | 90 |
-| Calls traced | 463 |
+| Callables | 506 |
+| Files | 249 |
+| Calls traced | 479 |
 | Call stacks | 80 |
 | Deepest stack | 6 |
 | Stacks through recursion | 0 |
@@ -75,786 +75,792 @@ What this project is judged against, as declared in its own `callidescope.config
 **1. `toggle`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 toggle(): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:149]
-  └─> handleToggle(id: string): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:86]
-    └─> toggleTag(…): string[] [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:139]
+🚀 toggle(): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:122]
+  └─> handleToggle(id: string): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:59]
+    └─> toggleTag(…): string[] [projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:94]
        ↳ Toggles a tag with everything beneath it: a checked or partly picked tag is checked, and a checked one cleared, then…
-      └─> measureTags(items: readonly FilterOption[]): TagShape [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:310]
+      └─> measureTags(items: readonly FilterOption[]): TagShape [projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:242]
          ↳ Finds where each tag's own tags end in the depth-first list, and which tags have none.
-        └─> readDepth(item: FilterOption): number [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:129]
+        └─> readDepth(item: FilterOption): number [projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:84]
            ↳ Reads how deep a tag option sits, 0 for one with no depth.
-          └─> readData(item: FilterOption): TagOptionData | undefined [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:347]
+          └─> readData(item: FilterOption): TagOptionData | undefined [projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:279]
              ↳ Reads what a tag option carries beyond its label, or nothing for an option of another kind.
 ```
 
 **2. `FilterTagEditor`** — depth 6 · orphan-root
 
 ```text
-🚀 FilterTagEditor(properties: Readonly<FilterTagEditorProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/filter-tag-editor.tsx:45]
+🚀 FilterTagEditor(properties: Readonly<FilterTagEditorProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/filter-tag-editor/filter-tag-editor.tsx:38]
    ↳ Renders the value editor of a tag field: a search box over the tag tree, each tag a checkbox by its own name with the…
-  └─> useTagPicker(…): TagPicker [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:51]
+  └─> useTagPicker(properties: Readonly<UseTagPickerProperties>): UseTagPickerResult [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:29]
      ↳ Holds what the tag picker needs from the builder's editor properties: the tags the rule holds, which tags are open, and…
-    └─> useState(…)(): Set<string> [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:78]
-      └─> findAncestors(items: readonly FilterOption[], ids: readonly unknown[]): Set<string> [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:60]
+    └─> useState(…)(): Set<string> [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:47]
+      └─> findAncestors(items: readonly FilterOption[], ids: readonly unknown[]): Set<string> [projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:15]
          ↳ Finds every tag above any of the given tags, so a list opens already showing the tags a rule holds.
-        └─> readDepth(item: FilterOption): number [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:129]
+        └─> readDepth(item: FilterOption): number [projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:84]
            ↳ Reads how deep a tag option sits, 0 for one with no depth.
-          └─> readData(item: FilterOption): TagOptionData | undefined [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:347]
+          └─> readData(item: FilterOption): TagOptionData | undefined [projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:279]
              ↳ Reads what a tag option carries beyond its label, or nothing for an option of another kind.
 ```
 
 **3. `CalendarFilters`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 CalendarFilters(properties: Readonly<CalendarFiltersProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:136]
+🚀 CalendarFilters(properties: Readonly<CalendarFiltersProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-filters/calendar-filters.tsx:105]
    ↳ Renders the active filters as chips, then the Filters button with a count of the finished rules, which opens the nested…
-  └─> useFilterQuery(…): FilterQueryState [projects/caelundas/caelundas-web/src/components/use-filter-query.ts:41]
+  └─> useFilterQuery(…): UseFilterQueryResult [projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.ts:27]
      ↳ Holds the filter tree the builder edits and the collections it can be replaced with.
-    └─> useMemo(…)(): ResolvedEventFilterCollection[] [projects/caelundas/caelundas-web/src/components/use-filter-query.ts:48]
-      └─> resolveEventFilterCollections(facets: readonly EventFacet[]): ResolvedEventFilterCollection[] [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-collections.ts:253]
+    └─> useMemo(…)(): ResolvedEventFilterCollection[] [projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.ts:34]
+      └─> resolveEventFilterCollections(facets: readonly EventFacet[]): ResolvedEventFilterCollection[] [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-collections.utilities.ts:43]
          ↳ Resolves every collection the database's tags can serve, in menu order.
-        └─> resolveGroup(group: CollectionGroup, context: ResolveContext): EventFilterQuery | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-collections.ts:285]
+        └─> resolveGroup(group: CollectionGroup, context: ResolveContext): EventFilterQuery | null [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-collections.utilities.ts:75]
            ↳ Resolves a group's rules and nested groups, leaving out any that name no tag the data has and any group left with…
-          └─> resolveRule(…): EventFilterNode | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-collections.ts:332]
+          └─> resolveRule(…): EventFilterNode | null [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-collections.utilities.ts:122]
              ↳ Resolves one rule to the tags of the data that its paths name, or `null` when the data has no such root or none of the…
 ```
 
 <details>
 <summary>77 more call stacks</summary>
 
-**4. `CalendarAgenda`** — depth 6 · orphan-root
+**4. `CalendarTimeline`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 CalendarAgenda(properties: Readonly<CalendarAgendaProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:74]
-   ↳ Renders the agenda: each day that has events as a heading over its events in order, in a list that draws only the rows…
-  └─> useMemo(…)(): AgendaListRow[] [projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:90]
-    └─> toGroupedAgendaRows(…): AgendaRow[] [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:152]
-       ↳ Lays events out as agenda rows in the groups of a grouping: each group's heading, counting the distinct events listed…
-      └─> toAgendaRows(…): AgendaRow[] [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:121]
-         ↳ Lays events out as agenda rows, a heading for each day that has any and the day's events beneath it in order.
-        └─> getAgendaListing(…): { day: string; ongoing: boolean; } | null [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:205]
-           ↳ The day the agenda lists an event under, and whether it was already under way then, or `null` when none of its days…
-          └─> formatCalendarDate(date: Date, timeZone: string): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:62]
-             ↳ Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search parameter, the way the calendar's navigation…
-```
-
-**5. `CalendarTimeline`** — depth ≥ 6 · orphan-root
-
-```text
-🚀 CalendarTimeline(properties: Readonly<CalendarTimelineProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:131]
+🚀 CalendarTimeline(properties: Readonly<CalendarTimelineProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:91]
    ↳ Renders the events as a Gantt timeline: a row per group, nested and collapsible as the grouping nests, each counting…
-  └─> useMemo(…)(): TimelineRows [projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:162]
-    └─> toTimelineRows(…): TimelineRows [projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:69]
+  └─> useMemo(…)(): TimelineRows [projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:122]
+    └─> toTimelineRows(…): TimelineRows [projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:59]
        ↳ Lays events out as Gantt rows by a grouping.
-      └─> map(…)(record: CalendarEventRecord): GanttEvent<TimelineBar> [projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:77]
-        └─> toGanttEvent(record: CalendarEventRecord, rowId: string): GanttEvent<TimelineBar> [projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:154]
+      └─> map(…)(record: CalendarEventRecord): GanttEvent<TimelineBar> [projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:67]
+        └─> toGanttEvent(record: CalendarEventRecord, rowId: string): GanttEvent<TimelineBar> [projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:235]
            ↳ One event drawn in one row: read-only, colored as the data colors it, and carrying its record for the bar to render.
-          └─> getEventLabel(event: CalendarEventRecord): EventLabel [projects/caelundas/caelundas-web/src/lib/calendar/calendar-glyphs.ts:49]
+          └─> getEventLabel(event: CalendarEventRecord): EventLabel [projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-glyphs.utilities.ts:17]
              ↳ Splits an event's summary, which an ingested event writes as its symbols followed by its name in English, into the two.
 ```
 
-**6. `EventsCalendar`** — depth ≥ 6 · orphan-root
+**5. `CalendarAgenda`** — depth 6 · orphan-root
 
 ```text
-🚀 EventsCalendar(properties: Readonly<EventsCalendarProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:139]
-   ↳ Renders a single toolbar row over the view the page picked, filling its container: the timeline as a Gantt, every other…
-  └─> useCalendarNavigation(…): CalendarNavigationState [projects/caelundas/caelundas-web/src/components/use-calendar-navigation.ts:32]
-     ↳ Holds the navigation the toolbar draws, in one place above every view, so switching views keeps the toolbar, and the…
-    └─> isDayShown(…): boolean [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:117]
-       ↳ Whether a day, as `YYYY-MM-DD`, is among those a view shows around the day it opens on.
-      └─> getViewWindows(…): ViewWindows [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:84]
+🚀 CalendarAgenda(properties: Readonly<CalendarAgendaProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.tsx:57]
+   ↳ Renders the agenda: each day that has events as a heading over its events in order, in a list that draws only the rows…
+  └─> useMemo(…)(): AgendaListRow[] [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.tsx:73]
+    └─> toGroupedAgendaRows(…): AgendaRow[] [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:155]
+       ↳ Lays events out as agenda rows in the groups of a grouping: each group's heading, counting the distinct events listed…
+      └─> toAgendaRows(…): AgendaRow[] [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:124]
+         ↳ Lays events out as agenda rows, a heading for each day that has any and the day's events beneath it in order.
+        └─> getAgendaListing(…): { day: string; ongoing: boolean; } | null [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:208]
+           ↳ The day the agenda lists an event under, and whether it was already under way then, or `null` when none of its days…
+          └─> formatCalendarDate(date: Date, timeZone: string): string [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:36]
+             ↳ Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search parameter, the way the calendar's navigation…
+```
+
+**6. `CalendarGrid`** — depth ≥ 6 · orphan-root
+
+```text
+🚀 CalendarGrid(properties: Readonly<CalendarGridProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid.tsx:61]
+   ↳ Renders every view but the timeline in the vendored event calendar, under the toolbar it is handed.
+  └─> useCalendarClusters(properties: Readonly<UseCalendarClustersProperties>): UseCalendarClustersResult [projects/caelundas/caelundas-web/src/hooks/use-calendar-clusters/use-calendar-clusters.ts:26]
+     ↳ Merges the events of one kind that run together in a week, three days or a day, for the days that view shows, when…
+    └─> useMemo(…)(): ClusteredEvents [projects/caelundas/caelundas-web/src/hooks/use-calendar-clusters/use-calendar-clusters.ts:40]
+      └─> getViewWindows(…): ViewWindows [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:58]
          ↳ The days a view shows around the day it opens on, as UTC midnights, and the window read for them, a day wider either…
-        └─> getTimelineDays(scale: TimelineScale, anchor: Date): EventsWindow [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:162]
+        └─> getTimelineDays(scale: TimelineScale, anchor: Date): EventsWindow [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:136]
            ↳ The days the timeline's axis spans at a scale, as the Gantt lays them out: the day, the week from Sunday, the month,…
-          └─> shiftDays(date: Date, days: number): Date [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:255]
+          └─> shiftDays(date: Date, days: number): Date [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:229]
              ↳ An instant a number of whole days later, or earlier for a negative one.
 ```
 
-**7. `CalendarGrid`** — depth ≥ 6 · orphan-root
+**7. `EventsCalendar`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 CalendarGrid(…): ReactNode [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:231]
-   ↳ Renders every view but the timeline in the vendored event calendar, under the toolbar it is handed.
-  └─> useCalendarClusters(…): CalendarClusters [projects/caelundas/caelundas-web/src/components/use-calendar-clusters.ts:55]
-     ↳ Merges the events of one kind that run together in a week, three days or a day, for the days that view shows, when…
-    └─> useMemo(…)(): ClusteredEvents [projects/caelundas/caelundas-web/src/components/use-calendar-clusters.ts:74]
-      └─> getViewWindows(…): ViewWindows [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:84]
+🚀 EventsCalendar(properties: Readonly<EventsCalendarProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/events-calendar/events-calendar.tsx:95]
+   ↳ Renders a single toolbar row over the view the page picked, filling its container: the timeline as a Gantt, every other…
+  └─> useCalendarNavigation(…): UseCalendarNavigationResult [projects/caelundas/caelundas-web/src/hooks/use-calendar-navigation/use-calendar-navigation.ts:23]
+     ↳ Holds the navigation the toolbar draws, in one place above every view, so switching views keeps the toolbar, and the…
+    └─> isDayShown(…): boolean [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:91]
+       ↳ Whether a day, as `YYYY-MM-DD`, is among those a view shows around the day it opens on.
+      └─> getViewWindows(…): ViewWindows [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:58]
          ↳ The days a view shows around the day it opens on, as UTC midnights, and the window read for them, a day wider either…
-        └─> getTimelineDays(scale: TimelineScale, anchor: Date): EventsWindow [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:162]
+        └─> getTimelineDays(scale: TimelineScale, anchor: Date): EventsWindow [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:136]
            ↳ The days the timeline's axis spans at a scale, as the Gantt lays them out: the day, the week from Sunday, the month,…
-          └─> shiftDays(date: Date, days: number): Date [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:255]
+          └─> shiftDays(date: Date, days: number): Date [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:229]
              ↳ An instant a number of whole days later, or earlier for a negative one.
 ```
 
 **8. `loader`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 loader(…): Promise<CalendarData> [projects/caelundas/caelundas-web/src/routes/index.tsx:63]
-  └─> loadCalendar(database: EventsDatabase, search: CalendarSearch): Promise<CalendarData> [projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:106]
+🚀 loader(…): Promise<CalendarData> [projects/caelundas/caelundas-web/src/routes/index.tsx:64]
+  └─> loadCalendar(database: EventsDatabase, search: CalendarSearch): Promise<CalendarData> [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:41]
      ↳ Reads the events in the window the search parameters' view and day show, plus a buffer, that pass their filter,…
-    └─> resolveWindows(…): { anchor: Date; visible: EventsWindow; window: EventsWindow; } [projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:354]
+    └─> resolveWindows(…): { anchor: Date; visible: EventsWindow; window: EventsWindow; } [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:289]
        ↳ The day the search anchors on, today without one, and the window the view shows around it, with the buffer read beyond…
-      └─> getViewWindows(…): ViewWindows [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:84]
+      └─> getViewWindows(…): ViewWindows [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:58]
          ↳ The days a view shows around the day it opens on, as UTC midnights, and the window read for them, a day wider either…
-        └─> getTimelineDays(scale: TimelineScale, anchor: Date): EventsWindow [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:162]
+        └─> getTimelineDays(scale: TimelineScale, anchor: Date): EventsWindow [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:136]
            ↳ The days the timeline's axis spans at a scale, as the Gantt lays them out: the day, the week from Sunday, the month,…
-          └─> shiftDays(date: Date, days: number): Date [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:255]
+          └─> shiftDays(date: Date, days: number): Date [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:229]
              ↳ An instant a number of whole days later, or earlier for a negative one.
 ```
 
 **9. `IndexPage`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 IndexPage(): ReactNode [projects/caelundas/caelundas-web/src/routes/index.tsx:99]
+🚀 IndexPage(): ReactNode [projects/caelundas/caelundas-web/src/routes/index.tsx:100]
    ↳ Renders the landing page's heading.
-  └─> useMemo(…)(): EventFilterField[] [projects/caelundas/caelundas-web/src/routes/index.tsx:104]
-    └─> createEventFilterFields(facets: readonly EventFacet[]): EventFilterField[] [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:219]
+  └─> useMemo(…)(): EventFilterField[] [projects/caelundas/caelundas-web/src/routes/index.tsx:105]
+    └─> createEventFilterFields(facets: readonly EventFacet[]): EventFilterField[] [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts:28]
        ↳ Builds the filter builder's fields: one per tag root in the database's facets, offering every tag beneath it, then the…
-      └─> toTagField(facet: EventFacet): EventFilterField [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:289]
+      └─> toTagField(facet: EventFacet): EventFilterField [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts:98]
          ↳ Builds the field for one tag root.
-        └─> isNumericFacet(facet: EventFacet): boolean [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:281]
+        └─> isNumericFacet(facet: EventFacet): boolean [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts:90]
            ↳ Whether every tag beneath a root is named for a number it ends in, such as "Harmonic 6", so the root reads as a number…
-          └─> every(…)(value: EventFacetValue): boolean [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:282]
+          └─> every(…)(value: EventFacetValue): boolean [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts:91]
 ```
 
-**10. `CalendarCollectionPicker`** — depth 5 · orphan-root
+**10. `handleQueryChange`** — depth ≥ 5 · orphan-root
 
 ```text
-🚀 CalendarCollectionPicker(properties: Readonly<CalendarCollectionPickerProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-collection-picker.tsx:40]
-   ↳ Renders the collection the filters below come from, as a dropdown to pick another from.
-  └─> compileEventFilter(node: EventFilterNode | undefined): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:28]
+🚀 handleQueryChange(next: EventFilterQuery): void [projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.ts:51]
+  └─> compileEventFilter(node: EventFilterNode | undefined): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-compiler.utilities.ts:28]
      ↳ Compiles the ReUI filter tree to one parameterized boolean expression over the derived events view, aliased `e`.
-    └─> compileRule(rule: EventFilterRule): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:75]
+    └─> compileRule(rule: EventFilterRule): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-compiler.utilities.ts:75]
        ↳ Compiles one rule by its field, flipping it when the rule is negated.
-      └─> compileTagNumberRule(…): SqlCondition | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-numbers.ts:131]
+      └─> compileTagNumberRule(…): SqlCondition | null [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-numbers.utilities.ts:93]
          ↳ Compiles a numeric rule on a tag root whose tags are named for numbers: events with a tag beneath the root whose number…
-        └─> compileNumberCondition(…): (SqlCondition & { negated: boolean; }) | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-numbers.ts:64]
-           ↳ Compiles a numeric comparison over a SQL expression for the events whose number meets it. `neq` and "is not between"…
+        └─> isRangeOperator(operator: string): boolean [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-numbers.utilities.ts:150]
+           ↳ Whether an operator compares a number with a range of two.
 ```
 
-**11. `CalendarColorBy`** — depth 5 · orphan-root
+**11. `CalendarCollectionPicker`** — depth 5 · orphan-root
 
 ```text
-🚀 CalendarColorBy(properties: Readonly<CalendarColorByProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-color-by.tsx:45]
+🚀 CalendarCollectionPicker(properties: Readonly<CalendarCollectionPickerProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-collection-picker/calendar-collection-picker.tsx:42]
+   ↳ Renders the collection the filters below come from, as a dropdown to pick another from.
+  └─> compileEventFilter(node: EventFilterNode | undefined): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-compiler.utilities.ts:28]
+     ↳ Compiles the ReUI filter tree to one parameterized boolean expression over the derived events view, aliased `e`.
+    └─> compileRule(rule: EventFilterRule): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-compiler.utilities.ts:75]
+       ↳ Compiles one rule by its field, flipping it when the rule is negated.
+      └─> compileTagNumberRule(…): SqlCondition | null [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-numbers.utilities.ts:93]
+         ↳ Compiles a numeric rule on a tag root whose tags are named for numbers: events with a tag beneath the root whose number…
+        └─> isRangeOperator(operator: string): boolean [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-numbers.utilities.ts:150]
+           ↳ Whether an operator compares a number with a range of two.
+```
+
+**12. `CalendarColorBy`** — depth 5 · orphan-root
+
+```text
+🚀 CalendarColorBy(properties: Readonly<CalendarColorByProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-by.tsx:44]
    ↳ Renders what the events are colored by, picked the way a grouping's level is: any field the events can be filtered or…
-  └─> createColorScheme(…): ColorScheme [projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:76]
+  └─> createColorScheme(…): ColorScheme [projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:32]
      ↳ Builds how events are colored for a level: the way events are grouped, a field and, for a tag root, the tags or the…
-    └─> listTags(field: EventGroupField, level: EventGroupLevel): ColorLegendEntry[] [projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:139]
+    └─> listTags(field: EventGroupField, level: EventGroupLevel): ColorLegendEntry[] [projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:95]
        ↳ The tags a tag root's level makes a color of, each with the next color: those picked, or those at its depth beneath the…
-      └─> readDepth(item: FilterOption): number [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:129]
+      └─> readDepth(item: FilterOption): number [projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:84]
          ↳ Reads how deep a tag option sits, 0 for one with no depth.
-        └─> readData(item: FilterOption): TagOptionData | undefined [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:347]
+        └─> readData(item: FilterOption): TagOptionData | undefined [projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:279]
            ↳ Reads what a tag option carries beyond its label, or nothing for an option of another kind.
 ```
 
-**12. `handleQueryChange`** — depth ≥ 5 · orphan-root
+**13. `EventGlyphs`** — depth 5 · orphan-root
 
 ```text
-🚀 handleQueryChange(next: EventFilterQuery): void [projects/caelundas/caelundas-web/src/components/use-filter-query.ts:65]
-  └─> compileEventFilter(node: EventFilterNode | undefined): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:28]
-     ↳ Compiles the ReUI filter tree to one parameterized boolean expression over the derived events view, aliased `e`.
-    └─> compileRule(rule: EventFilterRule): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:75]
-       ↳ Compiles one rule by its field, flipping it when the rule is negated.
-      └─> compileTagNumberRule(…): SqlCondition | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-numbers.ts:131]
-         ↳ Compiles a numeric rule on a tag root whose tags are named for numbers: events with a tag beneath the root whose number…
-        └─> compileNumberCondition(…): (SqlCondition & { negated: boolean; }) | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-numbers.ts:64]
-           ↳ Compiles a numeric comparison over a SQL expression for the events whose number meets it. `neq` and "is not between"…
+🚀 EventGlyphs(properties: Readonly<EventGlyphsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/event-glyphs/event-glyphs.tsx:26]
+   ↳ Draws an event's symbols as icons, one for each symbol and in its order, so that they read as the emoji they stand for…
+  └─> toGlyphParts(glyphs: string, name?: string): GlyphPart[] [projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-icons.utilities.ts:22]
+     ↳ Splits an event's symbols into the icons that stand for them and the text of what has no icon, one icon for each symbol…
+    └─> appendSymbol(parts: GlyphPart[], chars: readonly string[], index: number): number [projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-icons.utilities.ts:43]
+       ↳ Adds the symbol at an index to the parts, as its icons or as text, and answers how many characters it took.
+      └─> readSymbol(…): { icons: { file: string; url: string; }[]; length: number; } | undefined [projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-icons.utilities.ts:128]
+         ↳ Reads the symbol at an index: the icons it is drawn as and how many characters it takes, or `undefined` when it has no…
+        └─> findSymbolFiles(…): { files: readonly (string | undefined)[]; length: number; } [projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-icons.utilities.ts:81]
+           ↳ The files the symbol at an index is drawn with, and how many characters it takes: a decan's digit with its keycap, or…
 ```
 
-**13. `CalendarOverflowList`** — depth 5 · orphan-root
+**14. `CalendarOverflowList`** — depth 5 · orphan-root
 
 ```text
-🚀 CalendarOverflowList(properties: Readonly<CalendarOverflowListProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:37]
+🚀 CalendarOverflowList(properties: Readonly<CalendarOverflowListProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-overflow-list/calendar-overflow-list.tsx:40]
    ↳ Renders the whole of a month cell's "+N more" day as a list that draws only the rows on screen, so a day with hundreds…
-  └─> useMemo(…)(…): { group?: string | undefined; kind: "event"; ongoing: boolean; record: CalendarEventRecord; }[] [projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:46]
-    └─> toAgendaRows(…): AgendaRow[] [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:121]
+  └─> useMemo(…)(…): { group?: string | undefined; kind: "event"; ongoing: boolean; record: CalendarEventRecord; }[] [projects/caelundas/caelundas-web/src/components/calendar-overflow-list/calendar-overflow-list.tsx:49]
+    └─> toAgendaRows(…): AgendaRow[] [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:124]
        ↳ Lays events out as agenda rows, a heading for each day that has any and the day's events beneath it in order.
-      └─> getAgendaListing(…): { day: string; ongoing: boolean; } | null [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:205]
+      └─> getAgendaListing(…): { day: string; ongoing: boolean; } | null [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:208]
          ↳ The day the agenda lists an event under, and whether it was already under way then, or `null` when none of its days…
-        └─> formatCalendarDate(date: Date, timeZone: string): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:62]
+        └─> formatCalendarDate(date: Date, timeZone: string): string [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:36]
            ↳ Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search parameter, the way the calendar's navigation…
 ```
 
-**14. `describeDataset`** — depth ≥ 5 · orphan-root
+**15. `describeDataset`** — depth ≥ 5 · orphan-root
 
 ```text
-🚀 describeDataset(): Promise<EventsDataset | null> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:53]
-  └─> map(…)(row: Readonly<Record<string, unknown>>): EventsDataset [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:56]
-    └─> toDataset(row: SqlRow): EventsDataset [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:118]
+🚀 describeDataset(): Promise<EventsDataset | null> [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:28]
+  └─> map(…)(row: Readonly<Record<string, unknown>>): EventsDataset [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:31]
+    └─> toDataset(row: SqlRow): EventsDataset [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:93]
        ↳ Maps the dataset summary row.
-      └─> readDate(row: SqlRow, column: string): Date [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:95]
+      └─> readDate(row: SqlRow, column: string): Date [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:70]
          ↳ Reads an ISO 8601 text column as an instant.
-        └─> readRequiredText(row: SqlRow, column: string): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:102]
+        └─> readRequiredText(row: SqlRow, column: string): string [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:77]
            ↳ Reads a column the schema declares `not null` as text.
 ```
 
-**15. `findEvents`** — depth ≥ 5 · orphan-root
+**16. `findEvents`** — depth ≥ 5 · orphan-root
 
 ```text
-🚀 findEvents(query: EventsQuery): Promise<CalendarEventRecord[]> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:59]
-  └─> replace(…)(): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:65]
-    └─> toGroupColumns(groups: readonly SqlGroupSource[]): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:183]
+🚀 findEvents(query: EventsQuery): Promise<CalendarEventRecord[]> [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:34]
+  └─> replace(…)(): string [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:40]
+    └─> toGroupColumns(groups: readonly SqlGroupSource[]): string [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:158]
        ↳ The select list's extra columns, one JSON array of group keys per level, named `group_0` onward.
-      └─> map(…)(group: SqlGroupSource, level: number): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:185]
-        └─> replace(…)(): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:186]
+      └─> map(…)(group: SqlGroupSource, level: number): string [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:160]
+        └─> replace(…)(): string [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:161]
 ```
 
-**16. `GroupLevelRow`** — depth 4 · orphan-root
+**17. `GroupLevelRow`** — depth 4 · orphan-root
 
 ```text
-🚀 GroupLevelRow(properties: Readonly<GroupLevelRowProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/group-level-row.tsx:52]
+🚀 GroupLevelRow(properties: Readonly<GroupLevelRowProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-level-row.tsx:46]
    ↳ Draws one level like a filter: its field, what it goes by, and a button that removes it, with the tag tree open beneath…
-  └─> describeTags(field: EventGroupField, level: EventGroupLevel): string [projects/caelundas/caelundas-web/src/components/group-level-row.tsx:145]
+  └─> describeTags(field: EventGroupField, level: EventGroupLevel): string [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-level-row.utilities.ts:9]
      ↳ Names what a level goes by: the tags picked, or the level of the root's tree it goes by, the first unless an older link…
-    └─> flatMap(…)(this: undefined, tag: string): string[] [projects/caelundas/caelundas-web/src/components/group-level-row.tsx:154]
-      └─> find(…)(candidate: FilterOption<unknown>): boolean [projects/caelundas/caelundas-web/src/components/group-level-row.tsx:155]
+    └─> flatMap(…)(this: undefined, tag: string): string[] [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-level-row.utilities.ts:21]
+      └─> find(…)(candidate: FilterOption<unknown>): boolean [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-level-row.utilities.ts:22]
 ```
 
-**17. `CalendarGroupBy`** — depth 4 · orphan-root
+**18. `CalendarGroupBy`** — depth 4 · orphan-root
 
 ```text
-🚀 CalendarGroupBy(properties: Readonly<CalendarGroupByProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:42]
+🚀 CalendarGroupBy(properties: Readonly<CalendarGroupByProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:40]
    ↳ Renders the list of the grouping's levels, each shaped like a filter: a field, the same ones the filter offers, and…
-  └─> useMemo(…)(): EventGroupField[] [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:48]
-    └─> createEventGroupFields(facets: readonly EventFacet[]): EventGroupField[] [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:35]
+  └─> useMemo(…)(): EventGroupField[] [projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:46]
+    └─> createEventGroupFields(facets: readonly EventFacet[]): EventGroupField[] [projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-fields.utilities.ts:27]
        ↳ The fields the events can be grouped by: one per tag root, in the facets' order, then the periods and the duration…
-      └─> describeRoot(facet: EventFacet): string [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:269]
+      └─> describeRoot(facet: EventFacet): string [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts:78]
          ↳ What a tag root means, for the list of attributes: its own description, or a plain one from its name for a root added…
-```
-
-**18. `EventGlyphs`** — depth 4 · orphan-root
-
-```text
-🚀 EventGlyphs(properties: Readonly<EventGlyphsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/event-glyphs.tsx:26]
-   ↳ Draws an event's symbols as icons, one for each symbol and in its order, so that they read as the emoji they stand for…
-  └─> toGlyphParts(glyphs: string, name?: string): GlyphPart[] [projects/caelundas/caelundas-web/src/lib/calendar/calendar-icons.ts:216]
-     ↳ Splits an event's symbols into the icons that stand for them and the text of what has no icon, one icon for each symbol…
-    └─> readNamedIcon(…): { file: string; url: string; } | undefined [projects/caelundas/caelundas-web/src/lib/calendar/calendar-icons.ts:263]
-       ↳ The icon of an event named in `FILE_BY_EVENT_NAME` whose symbols are one symbol, or `undefined` for any other.
-      └─> filter(…)(character: string): boolean [projects/caelundas/caelundas-web/src/lib/calendar/calendar-icons.ts:270]
 ```
 
 **19. `measure`** — depth ≥ 4 · orphan-root
 
 ```text
-🚀 measure(): void [projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:453]
-  └─> getVisibleTimelineRows(…): ReadonlySet<string> | null [projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-window.ts:33]
+🚀 measure(): void [projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:117]
+  └─> getVisibleTimelineRows(…): ReadonlySet<string> | null [projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline-window.utilities.ts:19]
      ↳ The ids of the rows on screen, and a few beyond each edge, or `null` while the body has not been laid out and so every…
-    └─> getVirtualWindow(input: VirtualWindowInput): VirtualWindow [projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:48]
+    └─> getVirtualWindow(input: VirtualWindowInput): VirtualWindow [projects/caelundas/caelundas-web/src/components/virtual-list/calendar-virtual-window.utilities.ts:27]
        ↳ Picks the rows a viewport scrolled to `scrollTop` shows, plus the overscan on each side, so a list of any length…
-      └─> findFirstRowEndingAfter(offsets: readonly number[], pixel: number): number [projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:77]
+      └─> findFirstRowEndingAfter(offsets: readonly number[], pixel: number): number [projects/caelundas/caelundas-web/src/components/virtual-list/calendar-virtual-window.utilities.ts:56]
          ↳ The first row whose bottom edge lies below a pixel, or the row count when none does.
 ```
 
-**20. `colorOf`** — depth 3 · orphan-root
+**20. `addEventListener(…)`** — depth 4 · orphan-root
 
 ```text
-🚀 colorOf(event: CalendarEventRecord): string | null [projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:98]
-  └─> hashColor(key: string): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:123]
-     ↳ The color of a key from its own text, for a value with no place in a legend.
-    └─> pickColor(position: number): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:206]
-       ↳ The color at a position in the palette, which starts over after its last.
+🚀 addEventListener(…)(event: MessageEvent<WorkerRequest>): void [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.worker.ts:83]
+  └─> select(request: WorkerRequest): Promise<SqlRow[]> [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.worker.ts:62]
+     ↳ Runs one select against the opened database.
+    └─> openDatabase(url: string): Promise<Database> [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.worker.ts:22]
+       ↳ Downloads the bundled database file and opens it read-only in memory, so no persistent storage and no cross-origin…
+      └─> listLocalTimeFunctions(): Readonly<Record<string, LocalTimeFunction>> [projects/caelundas/caelundas-web/src/components/events-calendar/events-database-local-time.utilities.ts:11]
+         ↳ Every local-time function by the name SQL calls it.
 ```
 
 **21. `close`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 close(): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:139]
-  └─> handleOpen(id: string, open: boolean): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:96]
-    └─> setExpanded(…)(previous: Set<string>): Set<string> [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:97]
+🚀 close(): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:112]
+  └─> handleOpen(id: string, open: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:69]
+    └─> setExpanded(…)(previous: Set<string>): Set<string> [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:70]
 ```
 
 **22. `open`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 open(): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:146]
-  └─> handleOpen(id: string, open: boolean): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:96]
-    └─> setExpanded(…)(previous: Set<string>): Set<string> [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:97]
+🚀 open(): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:119]
+  └─> handleOpen(id: string, open: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:69]
+    └─> setExpanded(…)(previous: Set<string>): Set<string> [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:70]
 ```
 
-**23. `CalendarColorOptions`** — depth 3 · orphan-root
+**23. `colorOf`** — depth 3 · orphan-root
 
 ```text
-🚀 CalendarColorOptions(properties: Readonly<CalendarColorOptionsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-color-options.tsx:34]
+🚀 colorOf(event: CalendarEventRecord): string | null [projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:54]
+  └─> hashColor(key: string): string [projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:79]
+     ↳ The color of a key from its own text, for a value with no place in a legend.
+    └─> pickColor(position: number): string [projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:162]
+       ↳ The color at a position in the palette, which starts over after its last.
+```
+
+**24. `CalendarColorOptions`** — depth 3 · orphan-root
+
+```text
+🚀 CalendarColorOptions(properties: Readonly<CalendarColorOptionsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-color-options/calendar-color-options.tsx:33]
    ↳ Renders the View menu's Color by submenu, which says what the events are colored by and opens the picker for it.
-  └─> createEventGroupFields(facets: readonly EventFacet[]): EventGroupField[] [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:35]
+  └─> createEventGroupFields(facets: readonly EventFacet[]): EventGroupField[] [projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-fields.utilities.ts:27]
      ↳ The fields the events can be grouped by: one per tag root, in the facets' order, then the periods and the duration…
-    └─> describeRoot(facet: EventFacet): string [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:269]
+    └─> describeRoot(facet: EventFacet): string [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts:78]
        ↳ What a tag root means, for the list of attributes: its own description, or a plain one from its name for a root added…
 ```
 
-**24. `SkeletonBody`** — depth 3 · orphan-root
+**25. `SkeletonBody`** — depth 3 · orphan-root
 
 ```text
-🚀 SkeletonBody(properties: Readonly<{ view: CalendarViewName; }>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:133]
+🚀 SkeletonBody(properties: Readonly<SkeletonBodyProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-skeleton/skeleton-body.tsx:29]
    ↳ Draws the body of the skeleton for one view.
-  └─> from(…)(_: unknown, column: number): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:185]
-    └─> map(…)(height: "h-8" | "h-12" | "h-16", index: number): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:191]
+  └─> from(…)(_: unknown, column: number): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-skeleton/skeleton-body.tsx:93]
+    └─> map(…)(height: "h-8" | "h-12" | "h-16", index: number): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-skeleton/skeleton-body.tsx:99]
 ```
 
-**25. `anonymous`** — depth ≥ 3 · orphan-root
+**26. `anonymous`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 anonymous(next: EventGroupLevel | null): void [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:94]
-  └─> replaceLevel(index: number, level: EventGroupLevel | null): void [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:58]
-    └─> flatMap(…)(this: undefined, current: EventGroupLevel, position: number): EventGroupLevel[] [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:60]
+🚀 anonymous(next: EventGroupLevel | null): void [projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:92]
+  └─> replaceLevel(index: number, level: EventGroupLevel | null): void [projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:56]
+    └─> flatMap(…)(this: undefined, current: EventGroupLevel, position: number): EventGroupLevel[] [projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:58]
 ```
 
-**26. `CalendarViewOptions`** — depth 3 · orphan-root
+**27. `CalendarViewOptions`** — depth 3 · orphan-root
 
 ```text
-🚀 CalendarViewOptions(properties: Readonly<CalendarViewOptionsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-view-options.tsx:48]
+🚀 CalendarViewOptions(properties: Readonly<CalendarViewOptionsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-view-options/calendar-view-options.tsx:47]
    ↳ Renders the View menu's arrangement of the view: a Group by submenu for the agenda and the timeline, which group their…
-  └─> createEventGroupFields(facets: readonly EventFacet[]): EventGroupField[] [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:35]
+  └─> createEventGroupFields(facets: readonly EventFacet[]): EventGroupField[] [projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-fields.utilities.ts:27]
      ↳ The fields the events can be grouped by: one per tag root, in the facets' order, then the periods and the duration…
-    └─> describeRoot(facet: EventFacet): string [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:269]
+    └─> describeRoot(facet: EventFacet): string [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts:78]
        ↳ What a tag root means, for the list of attributes: its own description, or a plain one from its name for a root added…
 ```
 
-**27. `EventTagPills`** — depth 3 · orphan-root
+**28. `EventTagPills`** — depth 3 · orphan-root
 
 ```text
-🚀 EventTagPills(properties: Readonly<EventTagPillsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/event-tag-pills.tsx:23]
+🚀 EventTagPills(properties: Readonly<EventTagPillsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/event-tag-pills/event-tag-pills.tsx:23]
    ↳ Draws each tag as a pill, tinted in the color of its tree so that tags of a kind read alike wherever they are shown.
-  └─> map(…)(tag: CalendarEventTag): React.JSX.Element [projects/caelundas/caelundas-web/src/components/event-tag-pills.tsx:48]
-    └─> getTagColor(tag: CalendarEventTag): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-tag-colors.ts:44]
+  └─> map(…)(tag: CalendarEventTag): React.JSX.Element [projects/caelundas/caelundas-web/src/components/event-tag-pills/event-tag-pills.tsx:48]
+    └─> getTagColor(tag: CalendarEventTag): string [projects/caelundas/caelundas-web/src/components/event-tag-pills/calendar-tag-colors.utilities.ts:17]
        ↳ The color of a tag's tree: one for each tag root, so every tag beneath a root shares it.
 ```
 
-**28. `CalendarEventRow`** — depth 3 · orphan-root
+**29. `CalendarEventRow`** — depth 3 · orphan-root
 
 ```text
-🚀 CalendarEventRow(properties: Readonly<CalendarEventRowProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-event-row.tsx:40]
+🚀 CalendarEventRow(properties: Readonly<CalendarEventRowProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-event-row/calendar-event-row.tsx:39]
    ↳ Renders one event as a list row: its time in the data's zone, its color, its symbols, drawn as the symbols setting…
-  └─> formatDuration(minutes: number): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:60]
+  └─> formatDuration(minutes: number): string [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-format.utilities.ts:38]
      ↳ Names a duration in days, hours, and minutes, leaving out any unit that is zero, or "Instant" for an event with no…
-    └─> map(…)([count, unit]: [number, DurationUnit]): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:73]
+    └─> map(…)([count, unit]: [number, DurationUnit]): string [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-format.utilities.ts:51]
 ```
 
-**29. `VirtualList`** — depth ≥ 3 · orphan-root
+**30. `VirtualList`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 VirtualList<Row>(properties: Readonly<VirtualListProperties<Row>>): ReactNode [projects/caelundas/caelundas-web/src/components/virtual-list.tsx:58]
+🚀 VirtualList<Row>(properties: Readonly<VirtualListProperties<Row>>): ReactNode [projects/caelundas/caelundas-web/src/components/virtual-list/virtual-list.tsx:54]
    ↳ Renders a vertically scrolling list that draws only the rows in view, plus a few on each side, however long the list…
-  └─> useMemo(…)(): number[] [projects/caelundas/caelundas-web/src/components/virtual-list.tsx:78]
-    └─> getRowOffsets(heights: readonly number[]): number[] [projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:31]
+  └─> useMemo(…)(): number[] [projects/caelundas/caelundas-web/src/components/virtual-list/virtual-list.tsx:74]
+    └─> getRowOffsets(heights: readonly number[]): number[] [projects/caelundas/caelundas-web/src/components/virtual-list/calendar-virtual-window.utilities.ts:10]
        ↳ Lays rows of the given heights end to end, returning each row's top and, last, the height of them all.
 ```
 
-**30. `handleScroll`** — depth ≥ 3 · orphan-root
+**31. `handleScroll`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 handleScroll(event: UIEvent<HTMLDivElement>): void [projects/caelundas/caelundas-web/src/components/virtual-list.tsx:96]
-  └─> getVirtualWindow(input: VirtualWindowInput): VirtualWindow [projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:48]
+🚀 handleScroll(event: UIEvent<HTMLDivElement>): void [projects/caelundas/caelundas-web/src/components/virtual-list/virtual-list.tsx:92]
+  └─> getVirtualWindow(input: VirtualWindowInput): VirtualWindow [projects/caelundas/caelundas-web/src/components/virtual-list/calendar-virtual-window.utilities.ts:27]
      ↳ Picks the rows a viewport scrolled to `scrollTop` shows, plus the overscan on each side, so a list of any length…
-    └─> findFirstRowEndingAfter(offsets: readonly number[], pixel: number): number [projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:77]
+    └─> findFirstRowEndingAfter(offsets: readonly number[], pixel: number): number [projects/caelundas/caelundas-web/src/components/virtual-list/calendar-virtual-window.utilities.ts:56]
        ↳ The first row whose bottom edge lies below a pixel, or the row count when none does.
 ```
 
-**31. `handleEventClick`** — depth ≥ 3 · orphan-root
+**32. `handleEventClick`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 handleEventClick(occurrence: GanttOccurrence<TimelineBar>): void [projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:435]
-  └─> describeBar(…): { records: readonly CalendarEventRecord[]; title: string; } | undefined [projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:264]
+🚀 handleEventClick(occurrence: GanttOccurrence<TimelineBar>): void [projects/caelundas/caelundas-web/src/hooks/use-bar-dialog/use-bar-dialog.ts:35]
+  └─> describeBar(bar: TimelineBar | undefined): OpenedBar | undefined [projects/caelundas/caelundas-web/src/hooks/use-bar-dialog/use-bar-dialog.utilities.ts:14]
      ↳ What opens when a marker is clicked: the events it holds, titled by their count, or by the name of the one event.
-    └─> getEventLabel(event: CalendarEventRecord): EventLabel [projects/caelundas/caelundas-web/src/lib/calendar/calendar-glyphs.ts:49]
+    └─> getEventLabel(event: CalendarEventRecord): EventLabel [projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-glyphs.utilities.ts:17]
        ↳ Splits an event's summary, which an ingested event writes as its symbols followed by its name in English, into the two.
 ```
 
-**32. `anonymous`** — depth ≥ 3 · orphan-root
+**33. `anonymous`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 anonymous(next: unknown): void [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:119]
-  └─> handleValueChange(values: readonly unknown[]): void [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:86]
-    └─> parseCalendarView(value: unknown): CalendarViewName | undefined [projects/caelundas/caelundas-web/src/lib/calendar/calendar-views.ts:108]
+🚀 anonymous(next: unknown): void [projects/caelundas/caelundas-web/src/components/calendar-view-select/calendar-view-select.tsx:103]
+  └─> handleValueChange(values: readonly unknown[]): void [projects/caelundas/caelundas-web/src/components/calendar-view-select/calendar-view-select.tsx:70]
+    └─> parseCalendarView(value: unknown): CalendarViewName | undefined [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-views.utilities.ts:22]
        ↳ Reads a value as a view, or nothing when it names none, such as a stale link's or an unpressed toggle's.
 ```
 
-**33. `findFacets`** — depth ≥ 3 · orphan-root
+**34. `findFacets`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 findFacets(window?: EventsWindow | undefined): Promise<EventFacet[]> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:81]
-  └─> toFacets(rows: readonly SqlRow[]): EventFacet[] [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:154]
+🚀 findFacets(window?: EventsWindow | undefined): Promise<EventFacet[]> [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:56]
+  └─> toFacets(rows: readonly SqlRow[]): EventFacet[] [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:129]
      ↳ Gathers the tag rows, roots first in path order, into one facet per root.
-    └─> readRequiredText(row: SqlRow, column: string): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:102]
+    └─> readRequiredText(row: SqlRow, column: string): string [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:77]
        ↳ Reads a column the schema declares `not null` as text.
 ```
 
-**34. `select`** — depth ≥ 3 · orphan-root
+**35. `select`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 select(…): Promise<Readonly<Record<string, unknown>>[]> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:49]
-  └─> startWorker(): Worker [projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:111]
+🚀 select(…): Promise<Readonly<Record<string, unknown>>[]> [projects/caelundas/caelundas-web/src/components/events-calendar/events-database-browser.utilities.ts:34]
+  └─> startWorker(): Worker [projects/caelundas/caelundas-web/src/components/events-calendar/events-database-browser.utilities.ts:96]
      ↳ Starts the worker that owns the sqlite-wasm database.
-    └─> UnsupportedBrowserError.constructor(): UnsupportedBrowserError [projects/caelundas/caelundas-web/src/lib/events-database/events-database.errors.ts:7]
+    └─> UnsupportedBrowserError.constructor(): UnsupportedBrowserError [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.constants.ts:131]
 ```
 
-**35. `getRouter`** — depth 3 · orphan-root
+**36. `getRouter`** — depth 3 · orphan-root
 
 ```text
 🚀 getRouter(): Router<typeof routeTree> [projects/caelundas/caelundas-web/src/router.tsx:10]
    ↳ Creates the application router, which TanStack Start calls once per request on the server and once on the client.
-  └─> createBrowserEventsDatabase(): EventsDatabase [projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:35]
+  └─> createBrowserEventsDatabase(): EventsDatabase [projects/caelundas/caelundas-web/src/components/events-calendar/events-database-browser.utilities.ts:20]
      ↳ The events database the browser reads, served by a sqlite-wasm worker.
-    └─> createEventsDatabase(executor: SqlExecutor): EventsDatabase [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:51]
+    └─> createEventsDatabase(executor: SqlExecutor): EventsDatabase [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:26]
        ↳ Builds the events database over any executor.
-```
-
-**36. `addEventListener(…)`** — depth 3 · orphan-root
-
-```text
-🚀 addEventListener(…)(event: MessageEvent<WorkerRequest>): void [projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:83]
-  └─> then(…)(rows: Readonly<Record<string, unknown>>[]): void [projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:87]
-    └─> respond(response: WorkerResponse): void [projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:55]
-       ↳ Answers the page.
 ```
 
 **37. `OutsideDataset`** — depth 2 · orphan-root
 
 ```text
-🚀 OutsideDataset(…): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-empty.tsx:138]
+🚀 OutsideDataset(properties: Readonly<OutsideDatasetProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-empty/outside-dataset.tsx:30]
    ↳ Names the dates the data covers and offers to jump to the nearest of them.
-  └─> format(date: Date): string [projects/caelundas/caelundas-web/src/components/calendar-empty.tsx:146]
+  └─> format(date: Date): string [projects/caelundas/caelundas-web/src/components/calendar-empty/outside-dataset.tsx:38]
 ```
 
-**38. `handleChange`** — depth ≥ 2 · orphan-root
+**38. `transform(…)`** — depth 2 · orphan-root
 
 ```text
-🚀 handleChange(picked: unknown): void [projects/caelundas/caelundas-web/src/components/calendar-collection-picker.tsx:68]
-  └─> find(…)(candidate: ResolvedEventFilterCollection): boolean [projects/caelundas/caelundas-web/src/components/calendar-collection-picker.tsx:69]
+🚀 transform(…)(…): { key: string; label: string | null; path: string | null; }[] [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.constants.ts:157]
+  └─> flatMap(…)(…): { key: string; label: string | null; path: string | null; }[] [projects/caelundas/caelundas-web/src/components/events-calendar/events-database.constants.ts:158]
 ```
 
-**39. `duration`** — depth 2 · orphan-root
+**39. `handleCollectionSelect`** — depth ≥ 2 · orphan-root
 
 ```text
-🚀 duration(key: string): string [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:18]
-  └─> find(…)(…): boolean [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:19]
-```
-
-**40. `week`** — depth 2 · orphan-root
-
-```text
-🚀 week(key: string): string [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:37]
-  └─> formatCalendarDay(day: string): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:45]
-     ↳ Writes a `YYYY-MM-DD` day in full, such as "Wednesday, March 4, 2026".
-```
-
-**41. `getEventColor`** — depth 2 · orphan-root
-
-```text
-🚀 getEventColor(event: CalendarEventRecord): null | string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-colors.ts:108]
-   ↳ The color of an event's kind: that of its kind's rule, or its own color from the data when it has none.
-  └─> getEventKind(event: CalendarEventRecord): EventColorRule | null [projects/caelundas/caelundas-web/src/lib/calendar/calendar-colors.ts:116]
-     ↳ The kind of an event: the most specific rule any of its tags falls under, or none when no rule does.
-```
-
-**42. `GroupFieldPicker`** — depth 2 · orphan-root
-
-```text
-🚀 GroupFieldPicker(properties: Readonly<GroupFieldPickerProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/group-field-picker.tsx:62]
-   ↳ Renders the field of a level of a grouping as the filter renders its attributes: a button that opens a searchable list,…
-  └─> find(…)(field: EventGroupField): boolean [projects/caelundas/caelundas-web/src/components/group-field-picker.tsx:84]
-```
-
-**43. `handleSelect`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 handleSelect(picked: string): void [projects/caelundas/caelundas-web/src/components/group-field-picker.tsx:87]
-  └─> find(…)(field: EventGroupField): boolean [projects/caelundas/caelundas-web/src/components/group-field-picker.tsx:88]
-```
-
-**44. `handleSearchKeyDown`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:109]
-  └─> focusSibling(element: HTMLElement, step: number): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:173]
-     ↳ Moves focus to the row a number of rows from an element, among the rows of its list; from the search box, where the…
-```
-
-**45. `down`** — depth 2 · orphan-root
-
-```text
-🚀 down(): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:142]
-  └─> focusSibling(element: HTMLElement, step: number): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:173]
-     ↳ Moves focus to the row a number of rows from an element, among the rows of its list; from the search box, where the…
-```
-
-**46. `up`** — depth 2 · orphan-root
-
-```text
-🚀 up(): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:152]
-  └─> focusSibling(element: HTMLElement, step: number): void [projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:173]
-     ↳ Moves focus to the row a number of rows from an element, among the rows of its list; from the search box, where the…
-```
-
-**47. `GroupTagPicker`** — depth 2 · orphan-root
-
-```text
-🚀 GroupTagPicker(properties: Readonly<GroupTagPickerProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/group-tag-picker.tsx:39]
-   ↳ Renders the tag tree a level of a grouping picks its groups from: the same tree, with the same search, folding and…
-  └─> filter(…)(option: FilterOption<unknown>): boolean [projects/caelundas/caelundas-web/src/components/group-tag-picker.tsx:52]
-```
-
-**48. `anonymous`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 anonymous(next: EventGroupField): void [projects/caelundas/caelundas-web/src/components/group-level-row.tsx:89]
-  └─> toGroupLevel(field: EventGroupField): EventGroupLevel [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:136]
-     ↳ A field's first level: a tag root's children, or the derived value.
-```
-
-**49. `anonymous`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 anonymous(event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:80]
-  └─> handleChange(index: 0 | 1, day: string): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:46]
-```
-
-**50. `anonymous`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 anonymous(event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:92]
-  └─> handleChange(index: 0 | 1, day: string): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:46]
-```
-
-**51. `handleCollectionSelect`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 handleCollectionSelect(next: EventFilterQuery): void [projects/caelundas/caelundas-web/src/components/use-filter-query.ts:75]
-  └─> toLinkedEventFilter(query: EventFilterQuery): EventFilterQuery [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tree.ts:106]
+🚀 handleCollectionSelect(next: EventFilterQuery): void [projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.ts:61]
+  └─> toLinkedEventFilter(query: EventFilterQuery): EventFilterQuery [projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-tree.utilities.ts:70]
      ↳ The filter a link should hold for a tree.
 ```
 
-**52. `FilterChipRow`** — depth 2 · orphan-root
+**40. `handleChange`** — depth ≥ 2 · orphan-root
 
 ```text
-🚀 FilterChipRow(): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:246]
-   ↳ Draws one chip per rule of the tree in the surrounding `Filters`, nested ones included, in a row that wraps onto more…
-  └─> map(…)(rule: FilterRule<EventFilterValue>, index: number): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:260]
+🚀 handleChange(picked: unknown): void [projects/caelundas/caelundas-web/src/components/calendar-collection-picker/calendar-collection-picker.tsx:70]
+  └─> find(…)(candidate: ResolvedEventFilterCollection): boolean [projects/caelundas/caelundas-web/src/components/calendar-collection-picker/calendar-collection-picker.tsx:71]
 ```
 
-**53. `subscribeToDesktopViewport`** — depth 2 · orphan-root
+**41. `GroupFieldPicker`** — depth 2 · orphan-root
 
 ```text
-🚀 subscribeToDesktopViewport(onChange: () => void): () => void [projects/caelundas/caelundas-web/src/lib/calendar/calendar-viewport.ts:28]
-   ↳ Calls back whenever the page crosses the desktop width, and returns how to stop, in the shape `useSyncExternalStore`…
-  └─> subscribeToQuery(query: string, onChange: () => void): () => void [projects/caelundas/caelundas-web/src/lib/calendar/calendar-viewport.ts:43]
-     ↳ Watches a media query, returning how to stop.
+🚀 GroupFieldPicker(properties: Readonly<GroupFieldPickerProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-field-picker.tsx:50]
+   ↳ Renders the field of a level of a grouping as the filter renders its attributes: a button that opens a searchable list,…
+  └─> find(…)(field: EventGroupField): boolean [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-field-picker.tsx:72]
 ```
 
-**54. `subscribeToViewport`** — depth 2 · orphan-root
+**42. `handleSelect`** — depth ≥ 2 · orphan-root
 
 ```text
-🚀 subscribeToViewport(onChange: () => void): () => void [projects/caelundas/caelundas-web/src/lib/calendar/calendar-viewport.ts:36]
-   ↳ Calls back whenever the page crosses the tablet width, and returns how to stop, in the shape `useSyncExternalStore`…
-  └─> subscribeToQuery(query: string, onChange: () => void): () => void [projects/caelundas/caelundas-web/src/lib/calendar/calendar-viewport.ts:43]
-     ↳ Watches a media query, returning how to stop.
+🚀 handleSelect(picked: string): void [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-field-picker.tsx:75]
+  └─> find(…)(field: EventGroupField): boolean [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-field-picker.tsx:76]
 ```
 
-**55. `CalendarSkeleton`** — depth 2 · orphan-root
+**43. `handleSearchKeyDown`** — depth ≥ 2 · orphan-root
 
 ```text
-🚀 CalendarSkeleton(properties: Readonly<CalendarSkeletonProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:58]
-   ↳ Renders the shape of the view the page opens on, a toolbar row over that view's layout: a grid of days for the month,…
-  └─> getDefaultCalendarView(isWide: boolean): CalendarViewName [projects/caelundas/caelundas-web/src/lib/calendar/calendar-views.ts:100]
-     ↳ The view to show when the link names none: the agenda, which reads at a phone's width, or the whole month on anything…
+🚀 handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:82]
+  └─> focusSibling(element: HTMLElement, step: number): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.utilities.ts:9]
+     ↳ Moves focus to the row a number of rows from an element, among the rows of its list; from the search box, where the…
 ```
 
-**56. `anonymous`** — depth ≥ 2 · orphan-root
+**44. `down`** — depth 2 · orphan-root
 
 ```text
-🚀 anonymous(): void [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:105]
-  └─> toGroupLevel(field: EventGroupField): EventGroupLevel [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:136]
+🚀 down(): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:115]
+  └─> focusSibling(element: HTMLElement, step: number): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.utilities.ts:9]
+     ↳ Moves focus to the row a number of rows from an element, among the rows of its list; from the search box, where the…
+```
+
+**45. `up`** — depth 2 · orphan-root
+
+```text
+🚀 up(): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:125]
+  └─> focusSibling(element: HTMLElement, step: number): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.utilities.ts:9]
+     ↳ Moves focus to the row a number of rows from an element, among the rows of its list; from the search box, where the…
+```
+
+**46. `GroupTagPicker`** — depth 2 · orphan-root
+
+```text
+🚀 GroupTagPicker(properties: Readonly<GroupTagPickerProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-tag-picker.tsx:35]
+   ↳ Renders the tag tree a level of a grouping picks its groups from: the same tree, with the same search, folding and…
+  └─> filter(…)(option: FilterOption<unknown>): boolean [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-tag-picker.tsx:48]
+```
+
+**47. `anonymous`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 anonymous(next: EventGroupField): void [projects/caelundas/caelundas-web/src/components/calendar-group-by/group-level-row.tsx:83]
+  └─> toGroupLevel(field: EventGroupField): EventGroupLevel [projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-fields.utilities.ts:128]
      ↳ A field's first level: a tag root's children, or the derived value.
 ```
 
-**57. `CalendarScaleSelect`** — depth 2 · orphan-root
+**48. `duration`** — depth 2 · orphan-root
 
 ```text
-🚀 CalendarScaleSelect(properties: Readonly<CalendarScaleSelectProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-scale-select.tsx:29]
-   ↳ Renders one button for each of the timeline's scales, from a day of minutes to a year of months, the one shown pressed.
-  └─> map(…)(option: "day" | "month" | "quarter" | "week" | "year"): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-scale-select.tsx:51]
+🚀 duration(key: string): string [projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-labels.constants.ts:18]
+  └─> find(…)(…): boolean [projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-labels.constants.ts:19]
 ```
 
-**58. `AgendaRowContent`** — depth 2 · orphan-root
+**49. `week`** — depth 2 · orphan-root
 
 ```text
-🚀 AgendaRowContent(…): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:136]
-   ↳ Draws one agenda row: a day's heading, an event, or the button that lists later days.
-  └─> formatEventCount(count: number): string [projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:202]
-     ↳ Counts a group's events, such as "1 event" or "12 events".
+🚀 week(key: string): string [projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-labels.constants.ts:37]
+  └─> formatCalendarDay(day: string): string [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-format.utilities.ts:23]
+     ↳ Writes a `YYYY-MM-DD` day in full, such as "Wednesday, March 4, 2026".
+```
+
+**50. `getEventColor`** — depth 2 · orphan-root
+
+```text
+🚀 getEventColor(event: CalendarEventRecord): null | string [projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-colors.utilities.ts:32]
+   ↳ The color of an event's kind: that of its kind's rule, or its own color from the data when it has none.
+  └─> getEventKind(event: CalendarEventRecord): EventColorRule | null [projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-colors.utilities.ts:40]
+     ↳ The kind of an event: the most specific rule any of its tags falls under, or none when no rule does.
+```
+
+**51. `anonymous`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 anonymous(event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor/filter-date-range-editor.tsx:80]
+  └─> handleChange(index: 0 | 1, day: string): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor/filter-date-range-editor.tsx:46]
+```
+
+**52. `anonymous`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 anonymous(event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor/filter-date-range-editor.tsx:92]
+  └─> handleChange(index: 0 | 1, day: string): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor/filter-date-range-editor.tsx:46]
+```
+
+**53. `FilterChipRow`** — depth 2 · orphan-root
+
+```text
+🚀 FilterChipRow(properties: Readonly<FilterChipRowProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-filters/filter-chip-row.tsx:30]
+   ↳ Draws one chip per rule of the tree in the surrounding `Filters`, nested ones included, in a row that wraps onto more…
+  └─> map(…)(rule: FilterRule<EventFilterValue>, index: number): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-filters/filter-chip-row.tsx:59]
+```
+
+**54. `subscribeToDesktopViewport`** — depth 2 · orphan-root
+
+```text
+🚀 subscribeToDesktopViewport(onChange: () => void): () => void [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-viewport.utilities.ts:22]
+   ↳ Calls back whenever the page crosses the desktop width, and returns how to stop, in the shape `useSyncExternalStore`…
+  └─> subscribeToQuery(query: string, onChange: () => void): () => void [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-viewport.utilities.ts:37]
+     ↳ Watches a media query, returning how to stop.
+```
+
+**55. `subscribeToViewport`** — depth 2 · orphan-root
+
+```text
+🚀 subscribeToViewport(onChange: () => void): () => void [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-viewport.utilities.ts:30]
+   ↳ Calls back whenever the page crosses the tablet width, and returns how to stop, in the shape `useSyncExternalStore`…
+  └─> subscribeToQuery(query: string, onChange: () => void): () => void [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-viewport.utilities.ts:37]
+     ↳ Watches a media query, returning how to stop.
+```
+
+**56. `CalendarSkeleton`** — depth 2 · orphan-root
+
+```text
+🚀 CalendarSkeleton(properties: Readonly<CalendarSkeletonProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-skeleton/calendar-skeleton.tsx:37]
+   ↳ Renders the shape of the view the page opens on, a toolbar row over that view's layout: a grid of days for the month,…
+  └─> getDefaultCalendarView(isWide: boolean): CalendarViewName [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-views.utilities.ts:14]
+     ↳ The view to show when the link names none: the agenda, which reads at a phone's width, or the whole month on anything…
+```
+
+**57. `anonymous`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 anonymous(): void [projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:103]
+  └─> toGroupLevel(field: EventGroupField): EventGroupLevel [projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-fields.utilities.ts:128]
+     ↳ A field's first level: a tag root's children, or the derived value.
+```
+
+**58. `CalendarScaleSelect`** — depth 2 · orphan-root
+
+```text
+🚀 CalendarScaleSelect(properties: Readonly<CalendarScaleSelectProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-scale-select/calendar-scale-select.tsx:29]
+   ↳ Renders one button for each of the timeline's scales, from a day of minutes to a year of months, the one shown pressed.
+  └─> map(…)(option: "day" | "month" | "quarter" | "week" | "year"): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-scale-select/calendar-scale-select.tsx:51]
 ```
 
 **59. `getAgendaRowHeight`** — depth 2 · orphan-root
 
 ```text
-🚀 getAgendaRowHeight(row: AgendaListRow, width: number): number [projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:211]
+🚀 getAgendaRowHeight(row: AgendaListRow, width: number): number [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:60]
    ↳ How tall an agenda row is drawn: a heading is shorter than an event, an event is as tall as its tags need, and the…
-  └─> getEventRowHeight(tags: readonly CalendarEventTag[], width: number): number [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:90]
+  └─> getEventRowHeight(tags: readonly CalendarEventTag[], width: number): number [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:93]
      ↳ How tall an event row is drawn in a list `width` pixels wide: as tall as its name and duration, and a line for every…
 ```
 
-**60. `CalendarEventTooltip`** — depth 2 · orphan-root
+**60. `getRowHeight`** — depth 2 · orphan-root
 
 ```text
-🚀 CalendarEventTooltip(properties: Readonly<CalendarEventTooltipProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-event-tooltip.tsx:41]
+🚀 getRowHeight(record: CalendarEventRecord, width: number): number [projects/caelundas/caelundas-web/src/components/calendar-cluster-dialog/calendar-cluster-dialog.utilities.ts:19]
+   ↳ Every row of the list is one event's, as tall as its tags need.
+  └─> getEventRowHeight(tags: readonly CalendarEventTag[], width: number): number [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:93]
+     ↳ How tall an event row is drawn in a list `width` pixels wide: as tall as its name and duration, and a line for every…
+```
+
+**61. `CalendarEventTooltip`** — depth 2 · orphan-root
+
+```text
+🚀 CalendarEventTooltip(properties: Readonly<CalendarEventTooltipProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-event-tooltip/calendar-event-tooltip.tsx:40]
    ↳ Wraps what is drawn for an event, its glyphs, in a tooltip that follows the pointer, with the event's name in English,…
-  └─> getEventLabel(event: CalendarEventRecord): EventLabel [projects/caelundas/caelundas-web/src/lib/calendar/calendar-glyphs.ts:49]
+  └─> getEventLabel(event: CalendarEventRecord): EventLabel [projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-glyphs.utilities.ts:17]
      ↳ Splits an event's summary, which an ingested event writes as its symbols followed by its name in English, into the two.
 ```
 
-**61. `CalendarEventChip`** — depth 2 · orphan-root
+**62. `CalendarEventChip`** — depth 2 · orphan-root
 
 ```text
-🚀 CalendarEventChip(properties: Readonly<CalendarEventChipProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-event-chip.tsx:34]
+🚀 CalendarEventChip(properties: Readonly<CalendarEventChipProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-event-chip/calendar-event-chip.tsx:33]
    ↳ Draws an event as its glyphs alone, with a tooltip of its name in English and what the database says of it, and for a…
-  └─> getEventLabel(event: CalendarEventRecord): EventLabel [projects/caelundas/caelundas-web/src/lib/calendar/calendar-glyphs.ts:49]
+  └─> getEventLabel(event: CalendarEventRecord): EventLabel [projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-glyphs.utilities.ts:17]
      ↳ Splits an event's summary, which an ingested event writes as its symbols followed by its name in English, into the two.
 ```
 
-**62. `getRowHeight`** — depth 2 · orphan-root
+**63. `TimelineNavigation`** — depth ≥ 2 · orphan-root
 
 ```text
-🚀 getRowHeight(row: Readonly<{ record: CalendarEventRecord; }>, width: number): number [projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:101]
-   ↳ Every row of the list is one event's, as tall as its tags need.
-  └─> getEventRowHeight(tags: readonly CalendarEventTag[], width: number): number [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:90]
-     ↳ How tall an event row is drawn in a list `width` pixels wide: as tall as its name and duration, and a line for every…
-```
-
-**63. `getRowHeight`** — depth 2 · orphan-root
-
-```text
-🚀 getRowHeight(record: CalendarEventRecord, width: number): number [projects/caelundas/caelundas-web/src/components/calendar-cluster-dialog.tsx:109]
-   ↳ Every row of the list is one event's, as tall as its tags need.
-  └─> getEventRowHeight(tags: readonly CalendarEventTag[], width: number): number [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:90]
-     ↳ How tall an event row is drawn in a list `width` pixels wide: as tall as its name and duration, and a line for every…
-```
-
-**64. `TimelineNavigation`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 TimelineNavigation(…): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:379]
+🚀 TimelineNavigation(properties: Readonly<TimelineNavigationProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-timeline/timeline-navigation.tsx:24]
    ↳ Reports the timeline's own navigation, which only a child of the Gantt can read, to the toolbar above it, and draws…
-  └─> useLayoutEffect(…)(): void [projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:390]
+  └─> useLayoutEffect(…)(): void [projects/caelundas/caelundas-web/src/components/calendar-timeline/timeline-navigation.tsx:40]
 ```
 
-**65. `CalendarViewSelect`** — depth 2 · orphan-root
+**64. `CalendarViewSelect`** — depth 2 · orphan-root
 
 ```text
-🚀 CalendarViewSelect(properties: Readonly<CalendarViewSelectProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:67]
+🚀 CalendarViewSelect(properties: Readonly<CalendarViewSelectProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-view-select/calendar-view-select.tsx:51]
    ↳ Renders one pressed button per view on a desktop, or on a narrower row, a tablet's included, a menu button naming the…
-  └─> map(…)(…): Element [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:124]
+  └─> map(…)(…): Element [projects/caelundas/caelundas-web/src/components/calendar-view-select/calendar-view-select.tsx:108]
 ```
 
-**66. `CalendarGridNavigation`** — depth ≥ 2 · orphan-root
+**65. `AgendaRowContent`** — depth 2 · orphan-root
 
 ```text
-🚀 CalendarGridNavigation(…): ReactNode [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:359]
+🚀 AgendaRowContent(properties: Readonly<AgendaRowContentProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-agenda/agenda-row-content.tsx:35]
+   ↳ Draws one agenda row: a group's or a day's heading, an event, or the button that lists later days.
+  └─> formatCalendarDay(day: string): string [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-format.utilities.ts:23]
+     ↳ Writes a `YYYY-MM-DD` day in full, such as "Wednesday, March 4, 2026".
+```
+
+**66. `getRowHeight`** — depth 2 · orphan-root
+
+```text
+🚀 getRowHeight(row: Readonly<{ record: CalendarEventRecord; }>, width: number): number [projects/caelundas/caelundas-web/src/components/calendar-overflow-list/calendar-overflow-list.utilities.ts:19]
+   ↳ Every row of the list is one event's, as tall as its tags need.
+  └─> getEventRowHeight(tags: readonly CalendarEventTag[], width: number): number [projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:93]
+     ↳ How tall an event row is drawn in a list `width` pixels wide: as tall as its name and duration, and a line for every…
+```
+
+**67. `CalendarGridNavigation`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 CalendarGridNavigation(properties: Readonly<CalendarGridNavigationProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid-navigation.tsx:24]
    ↳ Reports the event calendar's own navigation, which only a child of the calendar can read, to the toolbar above it, and…
-  └─> useLayoutEffect(…)(): void [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:370]
+  └─> useLayoutEffect(…)(): void [projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid-navigation.tsx:40]
 ```
 
-**67. `anonymous`** — depth 2 · orphan-root
+**68. `anonymous`** — depth 2 · orphan-root
 
 ```text
-🚀 anonymous(): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:66]
-  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:53]
+🚀 anonymous(): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:42]
+  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**68. `handleClustersChange`** — depth 2 · orphan-root
+**69. `handleClustersChange`** — depth 2 · orphan-root
 
 ```text
-🚀 handleClustersChange(enabled: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:78]
-  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:53]
+🚀 handleClustersChange(enabled: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:54]
+  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**69. `handleColorByChange`** — depth 2 · orphan-root
+**70. `handleColorByChange`** — depth 2 · orphan-root
 
 ```text
-🚀 handleColorByChange(color: EventGroupLevel | undefined): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:81]
-  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:53]
+🚀 handleColorByChange(color: EventGroupLevel | undefined): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:57]
+  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**70. `handleColorsChange`** — depth 2 · orphan-root
+**71. `handleColorsChange`** — depth 2 · orphan-root
 
 ```text
-🚀 handleColorsChange(enabled: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:84]
-  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:53]
+🚀 handleColorsChange(enabled: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:60]
+  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**71. `handleDateChange`** — depth 2 · orphan-root
+**72. `handleDateChange`** — depth 2 · orphan-root
 
 ```text
-🚀 handleDateChange(date: Date): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:87]
-  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:53]
+🚀 handleDateChange(date: Date): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:63]
+  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**72. `handleFilterChange`** — depth 2 · orphan-root
+**73. `handleFilterChange`** — depth 2 · orphan-root
 
 ```text
-🚀 handleFilterChange(filter: EventFilterQuery): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:90]
-  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:53]
+🚀 handleFilterChange(filter: EventFilterQuery): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:66]
+  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**73. `handleGroupingChange`** — depth 2 · orphan-root
+**74. `handleGroupingChange`** — depth 2 · orphan-root
 
 ```text
-🚀 handleGroupingChange(group: EventGrouping): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:93]
-  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:53]
+🚀 handleGroupingChange(group: EventGrouping): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:69]
+  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**74. `handleScaleChange`** — depth 2 · orphan-root
+**75. `handleScaleChange`** — depth 2 · orphan-root
 
 ```text
-🚀 handleScaleChange(scale: "day" | "month" | "quarter" | "week" | "year"): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:96]
-  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:53]
+🚀 handleScaleChange(scale: "day" | "month" | "quarter" | "week" | "year"): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:72]
+  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**75. `handleSymbolsChange`** — depth 2 · orphan-root
+**76. `handleSymbolsChange`** — depth 2 · orphan-root
 
 ```text
-🚀 handleSymbolsChange(symbols: CalendarSymbols): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:99]
-  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:53]
+🚀 handleSymbolsChange(symbols: CalendarSymbols): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:75]
+  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**76. `handleViewChange`** — depth 2 · orphan-root
+**77. `handleViewChange`** — depth 2 · orphan-root
 
 ```text
-🚀 handleViewChange(view: "day" | "month" | "week" | "three-day" | "agenda" | "timeline"): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:105]
-  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:53]
-```
-
-**77. `transform(…)`** — depth 2 · orphan-root
-
-```text
-🚀 transform(…)(…): { key: string; label: string | null; path: string | null; }[] [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:41]
-  └─> flatMap(…)(…): { key: string; label: string | null; path: string | null; }[] [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:42]
+🚀 handleViewChange(view: "day" | "month" | "week" | "three-day" | "agenda" | "timeline"): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:81]
+  └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
 **78. `localDate`** — depth 2 · orphan-root
 
 ```text
-🚀 localDate(instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:63]
+🚀 localDate(instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/components/events-calendar/events-database-local-time.utilities.ts:24]
    ↳ The calendar day an instant falls on in a zone, as `YYYY-MM-DD`.
-  └─> formatLocalPart(part: LocalPart, instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:34]
+  └─> formatLocalPart(part: LocalPart, instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/components/events-calendar/events-database-local-time.utilities.ts:55]
      ↳ Writes one part of an instant in a zone, keeping one formatter per part and zone, or `null` when the instant or the…
 ```
 
 **79. `localHour`** — depth 2 · orphan-root
 
 ```text
-🚀 localHour(instant: unknown, timeZone: unknown): null | number [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:70]
+🚀 localHour(instant: unknown, timeZone: unknown): null | number [projects/caelundas/caelundas-web/src/components/events-calendar/events-database-local-time.utilities.ts:31]
    ↳ The hour of the day an instant falls in in a zone, from 0 to 23.
-  └─> formatLocalPart(part: LocalPart, instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:34]
+  └─> formatLocalPart(part: LocalPart, instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/components/events-calendar/events-database-local-time.utilities.ts:55]
      ↳ Writes one part of an instant in a zone, keeping one formatter per part and zone, or `null` when the instant or the…
 ```
 
 **80. `localWeekday`** — depth 2 · orphan-root
 
 ```text
-🚀 localWeekday(instant: unknown, timeZone: unknown): null | number [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:80]
+🚀 localWeekday(instant: unknown, timeZone: unknown): null | number [projects/caelundas/caelundas-web/src/components/events-calendar/events-database-local-time.utilities.ts:41]
    ↳ The day of the week an instant falls on in a zone, 0 for Sunday, the way SQLite's `%w` numbers it: the weekday of its…
-  └─> formatLocalPart(part: LocalPart, instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:34]
+  └─> formatLocalPart(part: LocalPart, instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/components/events-calendar/events-database-local-time.utilities.ts:55]
      ↳ Writes one part of an instant in a zone, keeping one formatter per part and zone, or `null` when the instant or the…
 ```
 
@@ -864,238 +870,243 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `compileDerivedRule` | 8 | `compileRange`, `readDateRange`, `compileDurationRule`, `readTexts`, `readIntegerRange`, `compileSetRule`, `compileTextRule`, `readIntegers` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-derived.ts:33` |
-| `CalendarTimeline` | 8 | `useBarDialog`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `useCallback(…)`, `useMemo(…)`, `useEffect(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:131` |
-| `CalendarGrid` | 8 | `useCalendarClusters`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `toEventCalendarView`, `getViewLayout`, `useCallback(…)`, `useCallback(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:231` |
+| `compileDerivedRule` | 8 | `compileRange`, `readDateRange`, `compileDurationRule`, `readTexts`, `readIntegerRange`, `compileSetRule`, `compileTextRule`, `readIntegers` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-derived.utilities.ts:30` |
+| `CalendarTimeline` | 8 | `useBarDialog`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `useCallback(…)`, `useMemo(…)`, `useEffect(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:91` |
+| `CalendarGrid` | 8 | `useCalendarClusters`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `toEventCalendarView`, `getViewLayout`, `useCallback(…)`, `useCallback(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid.tsx:61` |
 
 <details>
-<summary>223 more callables</summary>
+<summary>228 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `compileRule` | 7 | `isNumberOperator`, `compileTagNumberRule`, `compileTagRule`, `readTexts`, `isDerivedNumberRule`, `compileDerivedNumberRule`, `compileDerivedRule` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:75` |
-| `loadCalendar` | 7 | `resolveWindows`, `findFacetsCached`, `resolveDefaultFilter`, `compileEventFilter`, `resolveGroups`, `findEventsCached`, `describeEmptiness` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:106` |
-| `toTimelineRows` | 7 | `map(…)`, `map(…)`, `buildEventGroups`, `placeGroupRows`, `map(…)`, `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:69` |
-| `toggleTag` | 6 | `findIndex(…)`, `measureTags`, `filter(…)`, `coverLeaves`, `fillFromLeaves`, `numberAt` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:139` |
-| `validateCalendarSearch` | 5 | `normalizeEventFilter`, `parseGrouping`, `parseTimelineScale`, `parseCalendarSymbols`, `parseCalendarView` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-search.ts:129` |
-| `CalendarColorBy` | 5 | `useMemo(…)`, `find(…)`, `toGroupLevel`, `createColorScheme`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-color-by.tsx:45` |
-| `buildEventGroups` | 5 | `find(…)`, `collectGroups`, `describeGroup`, `map(…)`, `toSorted(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-tree.ts:58` |
-| `createEventGroupFields` | 4 | `describeRoot`, `map(…)`, `createTagOptions`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:35` |
-| `getViewWindows` | 4 | `joinWindows`, `getTimelineDays`, `getVisibleDays`, `shiftDays` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:84` |
-| `getTagStates` | 4 | `measureTags`, `coverLeaves`, `fillFromLeaves`, `numberAt` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:94` |
-| `createColorScheme` | 4 | `find(…)`, `map(…)`, `listTags`, `listValues` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:76` |
-| `useFilterQuery` | 4 | `useMemo(…)`, `getDefaultFilter`, `isSameEventFilter`, `toLinkedEventFilter` | `projects/caelundas/caelundas-web/src/components/use-filter-query.ts:41` |
-| `SkeletonBody` | 4 | `map(…)`, `map(…)`, `map(…)`, `from(…)` | `projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:133` |
-| `clusterEvents` | 4 | `toSorted(…)`, `getRunKey`, `mergeRuns`, `toSorted(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-clusters.ts:88` |
-| `toGlyphParts` | 4 | `toCharacters`, `readNamedIcon`, `readSymbol`, `appendText` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-icons.ts:216` |
-| `CalendarEventRow` | 4 | `getEventLabel`, `formatEventTime`, `formatDuration`, `formatEventSpan` | `projects/caelundas/caelundas-web/src/components/calendar-event-row.tsx:40` |
-| `VirtualList` | 4 | `useMemo(…)`, `getVirtualWindow`, `useEffect(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/virtual-list.tsx:58` |
-| `getVisibleTimelineRows` | 4 | `getVirtualWindow`, `getRowOffsets`, `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-window.ts:33` |
-| `useCalendarNavigation` | 4 | `isDayShown`, `formatCalendarDate`, `useMemo(…)`, `useCallback(…)` | `projects/caelundas/caelundas-web/src/components/use-calendar-navigation.ts:32` |
-| `EventsCalendar` | 4 | `useCalendarNavigation`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:139` |
-| `IndexPage` | 4 | `useMemo(…)`, `useMemo(…)`, `getDefaultCalendarView`, `useCalendarSearch` | `projects/caelundas/caelundas-web/src/routes/index.tsx:99` |
-| `findEvents` | 4 | `replace(…)`, `replace(…)`, `flatMap(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:59` |
-| `toEventRecord` | 4 | `readText`, `readRequiredText`, `readDate`, `from(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:131` |
-| `select` | 4 | `startWorker`, `listen`, `addEventListener(…)`, `anonymous` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:49` |
-| `toTagField` | 3 | `isNumericFacet`, `describeRoot`, `createTagOptions` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:289` |
-| `resolveEventGrouping` | 3 | `find(…)`, `some(…)`, `resolveLevel` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:112` |
-| `resolveGrouping` | 3 | `createEventGroupFields`, `resolveEventGrouping`, `getDefaultGrouping` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:308` |
-| `resolveGroups` | 3 | `resolveGrouping`, `resolveColorBy`, `compileEventGrouping` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:330` |
-| `CalendarCollectionPicker` | 3 | `compileEventFilter`, `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-collection-picker.tsx:40` |
-| `toTagTreeRows` | 3 | `readDepth`, `readName`, `countSelectedBelow` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:178` |
-| `useTagPicker` | 3 | `useState(…)`, `toTagTreeRows`, `getTagStates` | `projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:51` |
-| `CalendarFilters` | 3 | `useFilterQuery`, `countActiveEventFilterRules`, `renderFiltersButton` | `projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:136` |
-| `CalendarGroupBy` | 3 | `useMemo(…)`, `filter(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:42` |
-| `toAgendaRows` | 3 | `getAgendaListing`, `flatMap(…)`, `toSorted(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:121` |
-| `toGroupedAgendaRows` | 3 | `toAgendaRows`, `filter(…)`, `buildEventGroups` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:152` |
-| `mergeRuns` | 3 | `splitRuns`, `getEventKind`, `createStandIn` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-clusters.ts:206` |
-| `useMemo(…)` | 3 | `filter(…)`, `toAgendaRows`, `getAgendaRange` | `projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:46` |
-| `clusterRow` | 3 | `toSorted(…)`, `toCluster`, `previewEvents` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-clusters.ts:96` |
-| `createTimelineLayout` | 3 | `getClusterSpan`, `packTimelineLanes`, `clusterTimelineBars` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-lanes.ts:39` |
-| `measure` | 3 | `getVisibleTimelineRows`, `readRowBoxes`, `readViewport` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:453` |
-| `useCalendarClusters` | 3 | `useMemo(…)`, `useCallback(…)`, `find(…)` | `projects/caelundas/caelundas-web/src/components/use-calendar-clusters.ts:55` |
-| `addEventListener(…)` | 3 | `then(…)`, `then(…)`, `select` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:83` |
-| `compileTagNumberRule` | 2 | `compileNumberCondition`, `replace(…)` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-numbers.ts:131` |
-| `compileEventFilter` | 2 | `compileRule`, `combine` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:28` |
-| `combine` | 2 | `flatMap(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:58` |
-| `compileGroupLevel` | 2 | `from(…)`, `isDerivedGroupId` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-compiler.ts:57` |
-| `resolveColorBy` | 2 | `resolveEventGrouping`, `createEventGroupFields` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:278` |
-| `resolveDefaultFilter` | 2 | `find(…)`, `resolveEventFilterCollection` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:291` |
-| `resolveWindows` | 2 | `parseCalendarDate`, `getViewWindows` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:354` |
-| `measureTags` | 2 | `readDepth`, `numberAt` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:310` |
-| `describeEvent` | 2 | `map(…)`, `formatDuration` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:36` |
-| `formatDuration` | 2 | `map(…)`, `filter(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:60` |
-| `colorOf` | 2 | `some(…)`, `hashColor` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:98` |
-| `listTags` | 2 | `readDepth`, `pickColor` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:139` |
-| `listValues` | 2 | `formatDerivedKey`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:169` |
-| `handleToggle` | 2 | `toggleTag`, `filter(…)` | `projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:86` |
-| `FilterTagEditor` | 2 | `useTagPicker`, `map(…)` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor.tsx:45` |
-| `GroupLevelRow` | 2 | `find(…)`, `describeTags` | `projects/caelundas/caelundas-web/src/components/group-level-row.tsx:52` |
-| `CalendarColorOptions` | 2 | `createEventGroupFields`, `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-color-options.tsx:34` |
-| `handleQueryChange` | 2 | `compileEventFilter`, `toLinkedEventFilter` | `projects/caelundas/caelundas-web/src/components/use-filter-query.ts:65` |
-| `CalendarViewOptions` | 2 | `createEventGroupFields`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-view-options.tsx:48` |
-| `describeGroup` | 2 | `formatDerivedKey`, `findIndex(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-tree.ts:154` |
-| `getRunKey` | 2 | `getEventKind`, `formatCalendarDate` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-clusters.ts:177` |
-| `EventGlyphs` | 2 | `toGlyphParts`, `map(…)` | `projects/caelundas/caelundas-web/src/components/event-glyphs.tsx:26` |
-| `useMemo(…)` | 2 | `getRowOffsets`, `map(…)` | `projects/caelundas/caelundas-web/src/components/virtual-list.tsx:78` |
-| `handleScroll` | 2 | `getVirtualWindow`, `setAnswered(…)` | `projects/caelundas/caelundas-web/src/components/virtual-list.tsx:96` |
-| `CalendarAgenda` | 2 | `useMemo(…)`, `useMemo(…)` | `projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:74` |
-| `AgendaRowContent` | 2 | `formatEventCount`, `formatCalendarDay` | `projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:136` |
-| `CalendarOverflowList` | 2 | `useMemo(…)`, `formatCalendarDay` | `projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:37` |
-| `packTimelineLanes` | 2 | `assignLanes`, `addLaneRows` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-lanes.ts:62` |
-| `assignLanes` | 2 | `toSorted(…)`, `findIndex(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-lanes.ts:131` |
-| `useEffect(…)` | 2 | `watchVisibleRows(…)`, `watchVisibleRows` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:196` |
-| `CalendarViewSelect` | 2 | `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:67` |
-| `useMemo(…)` | 2 | `getViewWindows`, `clusterEvents` | `projects/caelundas/caelundas-web/src/components/use-calendar-clusters.ts:74` |
-| `useMemo(…)` | 2 | `getAgendaRange`, `formatCalendarDate` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:275` |
-| `handleDateChange` | 2 | `updateSearch`, `formatCalendarDate` | `projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:87` |
-| `loader` | 2 | `loadCalendar`, `validateCalendarSearch` | `projects/caelundas/caelundas-web/src/routes/index.tsx:63` |
-| `toDataset` | 2 | `readDate`, `readRequiredText` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:118` |
-| `createBrowserEventsDatabase` | 2 | `createEventsDatabase`, `createWorkerSqlExecutor` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:35` |
-| `select` | 2 | `catch(…)`, `openDatabase` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:62` |
-| `resolveEventFilterCollection` | 1 | `resolveGroup` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-collections.ts:228` |
-| `resolveEventFilterCollections` | 1 | `resolveGroup` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-collections.ts:253` |
-| `resolveGroup` | 1 | `resolveRule` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-collections.ts:285` |
-| `compileDerivedNumberRule` | 1 | `compileNumberCondition` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-numbers.ts:35` |
-| `compileTagRule` | 1 | `replace(…)` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:107` |
-| `createEventFilterFields` | 1 | `toTagField` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:219` |
-| `isNumericFacet` | 1 | `every(…)` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:281` |
-| `compileEventGrouping` | 1 | `compileGroupLevel` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-compiler.ts:41` |
-| `isDayShown` | 1 | `getViewWindows` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:117` |
-| `parseCalendarDate` | 1 | `anchorDay` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:139` |
-| `getTimelineDays` | 1 | `shiftDays` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:162` |
-| `getVisibleDays` | 1 | `shiftDays` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:203` |
-| `countActiveEventFilterRules` | 1 | `compileEventFilter` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tree.ts:46` |
-| `isSameEventFilter` | 1 | `normalizeEventFilter` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tree.ts:64` |
-| `parseGrouping` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-search.ts:160` |
-| `describeEmptiness` | 1 | `some(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:153` |
-| `findEventsCached` | 1 | `catch(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:189` |
-| `findFacetsCached` | 1 | `catch(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:237` |
-| `OutsideDataset` | 1 | `format` | `projects/caelundas/caelundas-web/src/components/calendar-empty.tsx:138` |
-| `handleChange` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-collection-picker.tsx:68` |
-| `findAncestors` | 1 | `readDepth` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:60` |
-| `readDepth` | 1 | `readData` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:129` |
-| `countSelectedBelow` | 1 | `readDepth` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:232` |
-| `coverLeaves` | 1 | `numberAt` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:257` |
-| `fillFromLeaves` | 1 | `numberAt` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:282` |
-| `readName` | 1 | `readData` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tag-tree.ts:368` |
-| `formatEventSpan` | 1 | `write` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:81` |
-| `duration` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:18` |
-| `week` | 1 | `formatCalendarDay` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:37` |
-| `getEventColor` | 1 | `getEventKind` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-colors.ts:108` |
-| `hashColor` | 1 | `pickColor` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:123` |
-| `map(…)` | 1 | `pickColor` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-color-schemes.ts:197` |
-| `GroupFieldPicker` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/group-field-picker.tsx:62` |
-| `handleSelect` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/group-field-picker.tsx:87` |
-| `useState(…)` | 1 | `findAncestors` | `projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:78` |
-| `handleOpen` | 1 | `setExpanded(…)` | `projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:96` |
-| `handleSearchKeyDown` | 1 | `focusSibling` | `projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:109` |
-| `close` | 1 | `handleOpen` | `projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:139` |
-| `down` | 1 | `focusSibling` | `projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:142` |
-| `open` | 1 | `handleOpen` | `projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:146` |
-| `toggle` | 1 | `handleToggle` | `projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:149` |
-| `up` | 1 | `focusSibling` | `projects/caelundas/caelundas-web/src/components/use-tag-picker.ts:152` |
-| `GroupTagPicker` | 1 | `filter(…)` | `projects/caelundas/caelundas-web/src/components/group-tag-picker.tsx:39` |
-| `anonymous` | 1 | `toGroupLevel` | `projects/caelundas/caelundas-web/src/components/group-level-row.tsx:89` |
-| `describeTags` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/components/group-level-row.tsx:145` |
-| `flatMap(…)` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/group-level-row.tsx:154` |
-| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-color-by.tsx:51` |
-| `anonymous` | 1 | `handleChange` | `projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:80` |
-| `anonymous` | 1 | `handleChange` | `projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:92` |
-| `useMemo(…)` | 1 | `resolveEventFilterCollections` | `projects/caelundas/caelundas-web/src/components/use-filter-query.ts:48` |
-| `handleCollectionSelect` | 1 | `toLinkedEventFilter` | `projects/caelundas/caelundas-web/src/components/use-filter-query.ts:75` |
-| `getDefaultFilter` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/use-filter-query.ts:92` |
-| `FilterChipRow` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:246` |
-| `subscribeToDesktopViewport` | 1 | `subscribeToQuery` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-viewport.ts:28` |
-| `subscribeToViewport` | 1 | `subscribeToQuery` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-viewport.ts:36` |
-| `CalendarSkeleton` | 1 | `getDefaultCalendarView` | `projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:58` |
-| `from(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:185` |
-| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:48` |
-| `filter(…)` | 1 | `some(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:53` |
-| `replaceLevel` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:58` |
-| `map(…)` | 1 | `filter(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:85` |
-| `anonymous` | 1 | `replaceLevel` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:94` |
-| `anonymous` | 1 | `toGroupLevel` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:105` |
-| `CalendarScaleSelect` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-scale-select.tsx:29` |
-| `map(…)` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-view-options.tsx:67` |
-| `toSorted(…)` | 1 | `compareText` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-tree.ts:100` |
-| `getAgendaRange` | 1 | `addCalendarDays` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:77` |
-| `filter(…)` | 1 | `getAgendaListing` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:165` |
-| `getAgendaListing` | 1 | `formatCalendarDate` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:205` |
-| `toCalendarEvent` | 1 | `getEventLabel` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-events.ts:14` |
-| `readNamedIcon` | 1 | `filter(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-icons.ts:263` |
-| `EventTagPills` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/event-tag-pills.tsx:23` |
-| `map(…)` | 1 | `getTagColor` | `projects/caelundas/caelundas-web/src/components/event-tag-pills.tsx:48` |
-| `getVirtualWindow` | 1 | `findFirstRowEndingAfter` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:48` |
-| `useEffect(…)` | 1 | `anonymous` | `projects/caelundas/caelundas-web/src/components/virtual-list.tsx:116` |
-| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:88` |
-| `useMemo(…)` | 1 | `toGroupedAgendaRows` | `projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:90` |
-| `getAgendaRowHeight` | 1 | `getEventRowHeight` | `projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:211` |
-| `CalendarEventTooltip` | 1 | `getEventLabel` | `projects/caelundas/caelundas-web/src/components/calendar-event-tooltip.tsx:41` |
-| `CalendarEventChip` | 1 | `getEventLabel` | `projects/caelundas/caelundas-web/src/components/calendar-event-chip.tsx:34` |
-| `getRowHeight` | 1 | `getEventRowHeight` | `projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:101` |
-| `map(…)` | 1 | `toGanttEvent` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:77` |
-| `map(…)` | 1 | `toGanttEvent` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:95` |
-| `toGanttEvent` | 1 | `getEventLabel` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:154` |
-| `clusterTimelineBars` | 1 | `clusterRow` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-clusters.ts:54` |
-| `isSameRowSet` | 1 | `every(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-window.ts:55` |
-| `windowTimelineBars` | 1 | `filter(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-window.ts:70` |
-| `getRowHeight` | 1 | `getEventRowHeight` | `projects/caelundas/caelundas-web/src/components/calendar-cluster-dialog.tsx:109` |
-| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:160` |
-| `useMemo(…)` | 1 | `toTimelineRows` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:162` |
-| `useMemo(…)` | 1 | `createTimelineLayout` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:167` |
-| `useMemo(…)` | 1 | `windowTimelineBars` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:174` |
-| `useMemo(…)` | 1 | `toCountColumns` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:183` |
-| `watchVisibleRows(…)` | 1 | `setMeasured(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:199` |
-| `setMeasured(…)` | 1 | `isSameRowSet` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:200` |
-| `describeBar` | 1 | `getEventLabel` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:264` |
-| `readRowBoxes` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:286` |
-| `TimelineNavigation` | 1 | `useLayoutEffect(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:379` |
-| `handleEventClick` | 1 | `describeBar` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:435` |
-| `watchVisibleRows` | 1 | `attach` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:447` |
-| `attach` | 1 | `schedule` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:466` |
-| `handleValueChange` | 1 | `parseCalendarView` | `projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:86` |
-| `anonymous` | 1 | `handleValueChange` | `projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:119` |
-| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:168` |
-| `useMemo(…)` | 1 | `createColorScheme` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:170` |
-| `useMemo(…)` | 1 | `colorEvents` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:174` |
-| `useMemo(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:267` |
-| `map(…)` | 1 | `toCalendarEvent` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:267` |
-| `useMemo(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:271` |
-| `map(…)` | 1 | `describeEvent` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:271` |
-| `useCallback(…)` | 1 | `formatCalendarDate` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:306` |
-| `CalendarGridNavigation` | 1 | `useLayoutEffect(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:359` |
-| `anonymous` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:66` |
-| `handleClustersChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:78` |
-| `handleColorByChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:81` |
-| `handleColorsChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:84` |
-| `handleFilterChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:90` |
-| `handleGroupingChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:93` |
-| `handleScaleChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:96` |
-| `handleSymbolsChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:99` |
-| `handleViewChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/components/use-calendar-search.ts:105` |
-| `useMemo(…)` | 1 | `createEventFilterFields` | `projects/caelundas/caelundas-web/src/routes/index.tsx:104` |
-| `useMemo(…)` | 1 | `parseCalendarDate` | `projects/caelundas/caelundas-web/src/routes/index.tsx:114` |
-| `transform(…)` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:41` |
-| `describeDataset` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:53` |
-| `map(…)` | 1 | `toDataset` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:56` |
-| `replace(…)` | 1 | `toGroupColumns` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:65` |
-| `map(…)` | 1 | `toEventRecord` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:78` |
-| `findFacets` | 1 | `toFacets` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:81` |
-| `readDate` | 1 | `readRequiredText` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:95` |
-| `from(…)` | 1 | `readRequiredText` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:137` |
-| `toFacets` | 1 | `readRequiredText` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:154` |
-| `toGroupColumns` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:183` |
-| `map(…)` | 1 | `replace(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:185` |
-| `addEventListener(…)` | 1 | `rejectAll` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:53` |
-| `listen` | 1 | `addEventListener(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:79` |
-| `startWorker` | 1 | `UnsupportedBrowserError.constructor` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:111` |
+| `compileRule` | 7 | `isNumberOperator`, `compileTagNumberRule`, `compileTagRule`, `readTexts`, `isDerivedNumberRule`, `compileDerivedNumberRule`, `compileDerivedRule` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-compiler.utilities.ts:75` |
+| `toggleTag` | 7 | `findIndex(…)`, `measureTags`, `filter(…)`, `coverLeaves`, `fillFromLeaves`, `numberAt`, `readPicks` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:94` |
+| `loadCalendar` | 7 | `resolveWindows`, `findFacetsCached`, `resolveDefaultFilter`, `compileEventFilter`, `resolveGroups`, `findEventsCached`, `describeEmptiness` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:41` |
+| `toTimelineRows` | 7 | `map(…)`, `map(…)`, `buildEventGroups`, `placeGroupRows`, `map(…)`, `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:59` |
+| `buildEventGroups` | 6 | `find(…)`, `collectGroups`, `describeGroup`, `map(…)`, `toSorted(…)`, `toGroupNodes` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-tree.utilities.ts:29` |
+| `compileTagNumberRule` | 5 | `isRangeOperator`, `readNumberRange`, `readSingleNumber`, `compileNumberCondition`, `replace(…)` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-numbers.utilities.ts:93` |
+| `CalendarColorBy` | 5 | `useMemo(…)`, `find(…)`, `toGroupLevel`, `createColorScheme`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-by.tsx:44` |
+| `validateCalendarSearch` | 5 | `normalizeEventFilter`, `parseGrouping`, `parseTimelineScale`, `parseCalendarSymbols`, `parseCalendarView` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/calendar-search.utilities.ts:24` |
+| `IndexPage` | 5 | `useMemo(…)`, `useMemo(…)`, `getDefaultCalendarView`, `readTimeZone`, `useCalendarSearch` | `projects/caelundas/caelundas-web/src/routes/index.tsx:100` |
+| `compileDerivedNumberRule` | 4 | `isRangeOperator`, `readNumberRange`, `readSingleNumber`, `compileNumberCondition` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-numbers.utilities.ts:28` |
+| `useFilterQuery` | 4 | `useMemo(…)`, `getDefaultFilter`, `isSameEventFilter`, `toLinkedEventFilter` | `projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.ts:27` |
+| `createEventGroupFields` | 4 | `describeRoot`, `map(…)`, `createTagOptions`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-fields.utilities.ts:27` |
+| `getTagStates` | 4 | `measureTags`, `coverLeaves`, `fillFromLeaves`, `numberAt` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:49` |
+| `createColorScheme` | 4 | `find(…)`, `map(…)`, `listTags`, `listValues` | `projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:32` |
+| `SkeletonBody` | 4 | `map(…)`, `map(…)`, `map(…)`, `from(…)` | `projects/caelundas/caelundas-web/src/components/calendar-skeleton/skeleton-body.tsx:29` |
+| `getViewWindows` | 4 | `joinWindows`, `getTimelineDays`, `getVisibleDays`, `shiftDays` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:58` |
+| `useCalendarNavigation` | 4 | `isDayShown`, `formatCalendarDate`, `useMemo(…)`, `useCallback(…)` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-navigation/use-calendar-navigation.ts:23` |
+| `CalendarEventRow` | 4 | `getEventLabel`, `formatEventTime`, `formatDuration`, `formatEventSpan` | `projects/caelundas/caelundas-web/src/components/calendar-event-row/calendar-event-row.tsx:39` |
+| `VirtualList` | 4 | `useMemo(…)`, `getVirtualWindow`, `useEffect(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/virtual-list/virtual-list.tsx:54` |
+| `clusterRow` | 4 | `toSorted(…)`, `collectRun`, `toCluster`, `previewEvents` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline-clusters.utilities.ts:63` |
+| `getVisibleTimelineRows` | 4 | `getVirtualWindow`, `getRowOffsets`, `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline-window.utilities.ts:19` |
+| `clusterEvents` | 4 | `toSorted(…)`, `getRunKey`, `mergeRuns`, `toSorted(…)` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-clusters/calendar-clusters.utilities.ts:29` |
+| `EventsCalendar` | 4 | `useCalendarNavigation`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-calendar.tsx:95` |
+| `findEvents` | 4 | `replace(…)`, `replace(…)`, `flatMap(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:34` |
+| `toEventRecord` | 4 | `readText`, `readRequiredText`, `readDate`, `from(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:106` |
+| `select` | 4 | `startWorker`, `listen`, `addEventListener(…)`, `anonymous` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database-browser.utilities.ts:34` |
+| `CalendarCollectionPicker` | 3 | `compileEventFilter`, `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-collection-picker/calendar-collection-picker.tsx:42` |
+| `toTagField` | 3 | `isNumericFacet`, `describeRoot`, `createTagOptions` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts:98` |
+| `resolveEventGrouping` | 3 | `find(…)`, `some(…)`, `resolveLevel` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-fields.utilities.ts:104` |
+| `toTagTreeRows` | 3 | `readDepth`, `toTagTreeRow`, `countSelectedBelow` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:121` |
+| `useTagPicker` | 3 | `useState(…)`, `toTagTreeRows`, `getTagStates` | `projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:29` |
+| `GroupLevelRow` | 3 | `find(…)`, `hasTagOptions`, `describeTags` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/group-level-row.tsx:46` |
+| `CalendarFilters` | 3 | `useFilterQuery`, `countActiveEventFilterRules`, `renderFiltersButton` | `projects/caelundas/caelundas-web/src/components/calendar-filters/calendar-filters.tsx:105` |
+| `CalendarGroupBy` | 3 | `useMemo(…)`, `filter(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:40` |
+| `resolveGrouping` | 3 | `createEventGroupFields`, `resolveEventGrouping`, `getDefaultGrouping` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:243` |
+| `resolveGroups` | 3 | `resolveGrouping`, `resolveColorBy`, `compileEventGrouping` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:265` |
+| `toGlyphParts` | 3 | `toCharacters`, `readNamedIcon`, `appendSymbol` | `projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-icons.utilities.ts:22` |
+| `toAgendaRows` | 3 | `getAgendaListing`, `flatMap(…)`, `toSorted(…)` | `projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:124` |
+| `toGroupedAgendaRows` | 3 | `toAgendaRows`, `filter(…)`, `buildEventGroups` | `projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:155` |
+| `createTimelineLayout` | 3 | `getClusterSpan`, `packTimelineLanes`, `clusterTimelineBars` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline-lanes.utilities.ts:22` |
+| `measure` | 3 | `getVisibleTimelineRows`, `readRowBoxes`, `readViewport` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:117` |
+| `mergeRuns` | 3 | `splitRuns`, `getEventKind`, `createStandIn` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-clusters/calendar-clusters.utilities.ts:147` |
+| `useCalendarClusters` | 3 | `useMemo(…)`, `useCallback(…)`, `find(…)` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-clusters/use-calendar-clusters.ts:26` |
+| `useMemo(…)` | 3 | `filter(…)`, `toAgendaRows`, `getAgendaRange` | `projects/caelundas/caelundas-web/src/components/calendar-overflow-list/calendar-overflow-list.tsx:49` |
+| `addEventListener(…)` | 3 | `then(…)`, `then(…)`, `select` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.worker.ts:83` |
+| `compileEventFilter` | 2 | `compileRule`, `combine` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-compiler.utilities.ts:28` |
+| `combine` | 2 | `flatMap(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-compiler.utilities.ts:58` |
+| `handleQueryChange` | 2 | `compileEventFilter`, `toLinkedEventFilter` | `projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.ts:51` |
+| `measureTags` | 2 | `readDepth`, `numberAt` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:242` |
+| `toTagTreeRow` | 2 | `readDepth`, `readName` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:331` |
+| `handleToggle` | 2 | `toggleTag`, `filter(…)` | `projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:59` |
+| `FilterTagEditor` | 2 | `useTagPicker`, `map(…)` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/filter-tag-editor.tsx:38` |
+| `describeEvent` | 2 | `map(…)`, `formatDuration` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-format.utilities.ts:14` |
+| `formatDuration` | 2 | `map(…)`, `filter(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-format.utilities.ts:38` |
+| `colorOf` | 2 | `some(…)`, `hashColor` | `projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:54` |
+| `listTags` | 2 | `readDepth`, `pickColor` | `projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:95` |
+| `listValues` | 2 | `formatDerivedKey`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:125` |
+| `CalendarColorOptions` | 2 | `createEventGroupFields`, `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-color-options/calendar-color-options.tsx:33` |
+| `CalendarViewOptions` | 2 | `createEventGroupFields`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-view-options/calendar-view-options.tsx:47` |
+| `compileGroupLevel` | 2 | `from(…)`, `isDerivedGroupId` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-compiler.utilities.ts:41` |
+| `resolveColorBy` | 2 | `resolveEventGrouping`, `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:213` |
+| `resolveDefaultFilter` | 2 | `find(…)`, `resolveEventFilterCollection` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:226` |
+| `resolveWindows` | 2 | `parseCalendarDate`, `getViewWindows` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:289` |
+| `appendSymbol` | 2 | `readSymbol`, `appendText` | `projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-icons.utilities.ts:43` |
+| `readSymbol` | 2 | `findSymbolFiles`, `toIcons` | `projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-icons.utilities.ts:128` |
+| `EventGlyphs` | 2 | `toGlyphParts`, `map(…)` | `projects/caelundas/caelundas-web/src/components/event-glyphs/event-glyphs.tsx:26` |
+| `useMemo(…)` | 2 | `getRowOffsets`, `map(…)` | `projects/caelundas/caelundas-web/src/components/virtual-list/virtual-list.tsx:74` |
+| `handleScroll` | 2 | `getVirtualWindow`, `setAnswered(…)` | `projects/caelundas/caelundas-web/src/components/virtual-list/virtual-list.tsx:92` |
+| `describeGroup` | 2 | `formatDerivedKey`, `findIndex(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-tree.utilities.ts:112` |
+| `packTimelineLanes` | 2 | `assignLanes`, `addLaneRows` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline-lanes.utilities.ts:45` |
+| `assignLanes` | 2 | `toSorted(…)`, `findIndex(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline-lanes.utilities.ts:114` |
+| `useEffect(…)` | 2 | `watchVisibleRows(…)`, `watchVisibleRows` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:156` |
+| `CalendarViewSelect` | 2 | `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-view-select/calendar-view-select.tsx:51` |
+| `getRunKey` | 2 | `getEventKind`, `formatCalendarDate` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-clusters/calendar-clusters.utilities.ts:118` |
+| `useMemo(…)` | 2 | `getViewWindows`, `clusterEvents` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-clusters/use-calendar-clusters.ts:40` |
+| `AgendaRowContent` | 2 | `formatCalendarDay`, `formatEventCount` | `projects/caelundas/caelundas-web/src/components/calendar-agenda/agenda-row-content.tsx:35` |
+| `CalendarAgenda` | 2 | `useMemo(…)`, `useMemo(…)` | `projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.tsx:57` |
+| `CalendarOverflowList` | 2 | `useMemo(…)`, `formatCalendarDay` | `projects/caelundas/caelundas-web/src/components/calendar-overflow-list/calendar-overflow-list.tsx:40` |
+| `useMemo(…)` | 2 | `getAgendaRange`, `formatCalendarDate` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid.tsx:99` |
+| `handleDateChange` | 2 | `updateSearch`, `formatCalendarDate` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:63` |
+| `loader` | 2 | `loadCalendar`, `validateCalendarSearch` | `projects/caelundas/caelundas-web/src/routes/index.tsx:64` |
+| `toDataset` | 2 | `readDate`, `readRequiredText` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:93` |
+| `createBrowserEventsDatabase` | 2 | `createEventsDatabase`, `createWorkerSqlExecutor` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database-browser.utilities.ts:20` |
+| `select` | 2 | `catch(…)`, `openDatabase` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.worker.ts:62` |
+| `OutsideDataset` | 1 | `format` | `projects/caelundas/caelundas-web/src/components/calendar-empty/outside-dataset.tsx:30` |
+| `transform(…)` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.constants.ts:157` |
+| `resolveEventFilterCollection` | 1 | `resolveGroup` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-collections.utilities.ts:18` |
+| `resolveEventFilterCollections` | 1 | `resolveGroup` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-collections.utilities.ts:43` |
+| `resolveGroup` | 1 | `resolveRule` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-collections.utilities.ts:75` |
+| `compileTagRule` | 1 | `replace(…)` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-compiler.utilities.ts:107` |
+| `countActiveEventFilterRules` | 1 | `compileEventFilter` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-tree.utilities.ts:10` |
+| `isSameEventFilter` | 1 | `normalizeEventFilter` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-tree.utilities.ts:28` |
+| `getDefaultFilter` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.utilities.ts:15` |
+| `useMemo(…)` | 1 | `resolveEventFilterCollections` | `projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.ts:34` |
+| `handleCollectionSelect` | 1 | `toLinkedEventFilter` | `projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.ts:61` |
+| `handleChange` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-collection-picker/calendar-collection-picker.tsx:70` |
+| `createEventFilterFields` | 1 | `toTagField` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts:28` |
+| `isNumericFacet` | 1 | `every(…)` | `projects/caelundas/caelundas-web/src/components/calendar-filters/event-filter-fields.utilities.ts:90` |
+| `GroupFieldPicker` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/group-field-picker.tsx:50` |
+| `handleSelect` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/group-field-picker.tsx:75` |
+| `describeTags` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/group-level-row.utilities.ts:9` |
+| `flatMap(…)` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/group-level-row.utilities.ts:21` |
+| `findAncestors` | 1 | `readDepth` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:15` |
+| `readDepth` | 1 | `readData` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:84` |
+| `countSelectedBelow` | 1 | `readDepth` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:164` |
+| `coverLeaves` | 1 | `numberAt` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:189` |
+| `fillFromLeaves` | 1 | `numberAt` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:214` |
+| `readName` | 1 | `readData` | `projects/caelundas/caelundas-web/src/components/filter-tag-editor/event-filter-tag-tree.utilities.ts:300` |
+| `useState(…)` | 1 | `findAncestors` | `projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:47` |
+| `handleOpen` | 1 | `setExpanded(…)` | `projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:69` |
+| `handleSearchKeyDown` | 1 | `focusSibling` | `projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:82` |
+| `close` | 1 | `handleOpen` | `projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:112` |
+| `down` | 1 | `focusSibling` | `projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:115` |
+| `open` | 1 | `handleOpen` | `projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:119` |
+| `toggle` | 1 | `handleToggle` | `projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:122` |
+| `up` | 1 | `focusSibling` | `projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:125` |
+| `GroupTagPicker` | 1 | `filter(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/group-tag-picker.tsx:35` |
+| `anonymous` | 1 | `toGroupLevel` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/group-level-row.tsx:83` |
+| `formatEventSpan` | 1 | `write` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-format.utilities.ts:59` |
+| `duration` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-labels.constants.ts:18` |
+| `week` | 1 | `formatCalendarDay` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-labels.constants.ts:37` |
+| `getEventColor` | 1 | `getEventKind` | `projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-colors.utilities.ts:32` |
+| `hashColor` | 1 | `pickColor` | `projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:79` |
+| `map(…)` | 1 | `pickColor` | `projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-schemes.utilities.ts:153` |
+| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-color-by/calendar-color-by.tsx:50` |
+| `anonymous` | 1 | `handleChange` | `projects/caelundas/caelundas-web/src/components/filter-date-range-editor/filter-date-range-editor.tsx:80` |
+| `anonymous` | 1 | `handleChange` | `projects/caelundas/caelundas-web/src/components/filter-date-range-editor/filter-date-range-editor.tsx:92` |
+| `FilterChipRow` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-filters/filter-chip-row.tsx:30` |
+| `subscribeToDesktopViewport` | 1 | `subscribeToQuery` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-viewport.utilities.ts:22` |
+| `subscribeToViewport` | 1 | `subscribeToQuery` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-viewport.utilities.ts:30` |
+| `from(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-skeleton/skeleton-body.tsx:93` |
+| `CalendarSkeleton` | 1 | `getDefaultCalendarView` | `projects/caelundas/caelundas-web/src/components/calendar-skeleton/calendar-skeleton.tsx:37` |
+| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:46` |
+| `filter(…)` | 1 | `some(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:51` |
+| `replaceLevel` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:56` |
+| `map(…)` | 1 | `filter(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:83` |
+| `anonymous` | 1 | `replaceLevel` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:92` |
+| `anonymous` | 1 | `toGroupLevel` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/calendar-group-by.tsx:103` |
+| `CalendarScaleSelect` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-scale-select/calendar-scale-select.tsx:29` |
+| `map(…)` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-view-options/calendar-view-options.tsx:66` |
+| `compileEventGrouping` | 1 | `compileGroupLevel` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-compiler.utilities.ts:25` |
+| `isDayShown` | 1 | `getViewWindows` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:91` |
+| `parseCalendarDate` | 1 | `anchorDay` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:113` |
+| `getTimelineDays` | 1 | `shiftDays` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:136` |
+| `getVisibleDays` | 1 | `shiftDays` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-window.utilities.ts:177` |
+| `describeEmptiness` | 1 | `some(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:88` |
+| `findEventsCached` | 1 | `catch(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:124` |
+| `findFacetsCached` | 1 | `catch(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts:172` |
+| `readNamedIcon` | 1 | `filter(…)` | `projects/caelundas/caelundas-web/src/components/event-glyphs/calendar-icons.utilities.ts:108` |
+| `EventTagPills` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/event-tag-pills/event-tag-pills.tsx:23` |
+| `map(…)` | 1 | `getTagColor` | `projects/caelundas/caelundas-web/src/components/event-tag-pills/event-tag-pills.tsx:48` |
+| `getVirtualWindow` | 1 | `findFirstRowEndingAfter` | `projects/caelundas/caelundas-web/src/components/virtual-list/calendar-virtual-window.utilities.ts:27` |
+| `useEffect(…)` | 1 | `anonymous` | `projects/caelundas/caelundas-web/src/components/virtual-list/virtual-list.tsx:112` |
+| `toSorted(…)` | 1 | `compareText` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-tree.utilities.ts:60` |
+| `collectGroups` | 1 | `readGroupKeys` | `projects/caelundas/caelundas-web/src/components/calendar-group-by/event-group-tree.utilities.ts:76` |
+| `getAgendaRange` | 1 | `addCalendarDays` | `projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:47` |
+| `getAgendaRowHeight` | 1 | `getEventRowHeight` | `projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:60` |
+| `filter(…)` | 1 | `getAgendaListing` | `projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:168` |
+| `getAgendaListing` | 1 | `formatCalendarDate` | `projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.utilities.ts:208` |
+| `getRowHeight` | 1 | `getEventRowHeight` | `projects/caelundas/caelundas-web/src/components/calendar-cluster-dialog/calendar-cluster-dialog.utilities.ts:19` |
+| `describeBar` | 1 | `getEventLabel` | `projects/caelundas/caelundas-web/src/hooks/use-bar-dialog/use-bar-dialog.utilities.ts:14` |
+| `handleEventClick` | 1 | `describeBar` | `projects/caelundas/caelundas-web/src/hooks/use-bar-dialog/use-bar-dialog.ts:35` |
+| `clusterTimelineBars` | 1 | `clusterRow` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline-clusters.utilities.ts:21` |
+| `isSameRowSet` | 1 | `every(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline-window.utilities.ts:41` |
+| `windowTimelineBars` | 1 | `filter(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline-window.utilities.ts:56` |
+| `map(…)` | 1 | `toGanttEvent` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:67` |
+| `map(…)` | 1 | `toGanttEvent` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:85` |
+| `watchVisibleRows` | 1 | `attach` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:111` |
+| `attach` | 1 | `schedule` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:130` |
+| `readRowBoxes` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:205` |
+| `toGanttEvent` | 1 | `getEventLabel` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.utilities.ts:235` |
+| `CalendarEventTooltip` | 1 | `getEventLabel` | `projects/caelundas/caelundas-web/src/components/calendar-event-tooltip/calendar-event-tooltip.tsx:40` |
+| `CalendarEventChip` | 1 | `getEventLabel` | `projects/caelundas/caelundas-web/src/components/calendar-event-chip/calendar-event-chip.tsx:33` |
+| `TimelineNavigation` | 1 | `useLayoutEffect(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/timeline-navigation.tsx:24` |
+| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:120` |
+| `useMemo(…)` | 1 | `toTimelineRows` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:122` |
+| `useMemo(…)` | 1 | `createTimelineLayout` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:127` |
+| `useMemo(…)` | 1 | `windowTimelineBars` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:134` |
+| `useMemo(…)` | 1 | `toCountColumns` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:143` |
+| `watchVisibleRows(…)` | 1 | `setMeasured(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:159` |
+| `setMeasured(…)` | 1 | `isSameRowSet` | `projects/caelundas/caelundas-web/src/components/calendar-timeline/calendar-timeline.tsx:160` |
+| `handleValueChange` | 1 | `parseCalendarView` | `projects/caelundas/caelundas-web/src/components/calendar-view-select/calendar-view-select.tsx:70` |
+| `anonymous` | 1 | `handleValueChange` | `projects/caelundas/caelundas-web/src/components/calendar-view-select/calendar-view-select.tsx:103` |
+| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.tsx:71` |
+| `useMemo(…)` | 1 | `toGroupedAgendaRows` | `projects/caelundas/caelundas-web/src/components/calendar-agenda/calendar-agenda.tsx:73` |
+| `getRowHeight` | 1 | `getEventRowHeight` | `projects/caelundas/caelundas-web/src/components/calendar-overflow-list/calendar-overflow-list.utilities.ts:19` |
+| `toCalendarEvent` | 1 | `getEventLabel` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-events.utilities.ts:14` |
+| `CalendarGridNavigation` | 1 | `useLayoutEffect(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid-navigation.tsx:24` |
+| `useMemo(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid.tsx:91` |
+| `map(…)` | 1 | `toCalendarEvent` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid.tsx:91` |
+| `useMemo(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid.tsx:95` |
+| `map(…)` | 1 | `describeEvent` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid.tsx:95` |
+| `useCallback(…)` | 1 | `formatCalendarDate` | `projects/caelundas/caelundas-web/src/components/events-calendar/calendar-grid.tsx:132` |
+| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-calendar.tsx:124` |
+| `useMemo(…)` | 1 | `createColorScheme` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-calendar.tsx:126` |
+| `useMemo(…)` | 1 | `colorEvents` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-calendar.tsx:130` |
+| `parseGrouping` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/calendar-search.utilities.ts:55` |
+| `anonymous` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:42` |
+| `handleClustersChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:54` |
+| `handleColorByChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:57` |
+| `handleColorsChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:60` |
+| `handleFilterChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:66` |
+| `handleGroupingChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:69` |
+| `handleScaleChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:72` |
+| `handleSymbolsChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:75` |
+| `handleViewChange` | 1 | `updateSearch` | `projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:81` |
+| `useMemo(…)` | 1 | `createEventFilterFields` | `projects/caelundas/caelundas-web/src/routes/index.tsx:105` |
+| `useMemo(…)` | 1 | `parseCalendarDate` | `projects/caelundas/caelundas-web/src/routes/index.tsx:115` |
+| `describeDataset` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:28` |
+| `map(…)` | 1 | `toDataset` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:31` |
+| `replace(…)` | 1 | `toGroupColumns` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:40` |
+| `map(…)` | 1 | `toEventRecord` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:53` |
+| `findFacets` | 1 | `toFacets` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:56` |
+| `readDate` | 1 | `readRequiredText` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:70` |
+| `from(…)` | 1 | `readRequiredText` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:112` |
+| `toFacets` | 1 | `readRequiredText` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:129` |
+| `toGroupColumns` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:158` |
+| `map(…)` | 1 | `replace(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.utilities.ts:160` |
+| `addEventListener(…)` | 1 | `rejectAll` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database-browser.utilities.ts:38` |
+| `listen` | 1 | `addEventListener(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database-browser.utilities.ts:64` |
+| `startWorker` | 1 | `UnsupportedBrowserError.constructor` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database-browser.utilities.ts:96` |
 | `getRouter` | 1 | `createBrowserEventsDatabase` | `projects/caelundas/caelundas-web/src/router.tsx:10` |
-| `localDate` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:63` |
-| `localHour` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:70` |
-| `localWeekday` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:80` |
-| `then(…)` | 1 | `respond` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:87` |
-| `then(…)` | 1 | `respond` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:90` |
+| `localDate` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database-local-time.utilities.ts:24` |
+| `localHour` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database-local-time.utilities.ts:31` |
+| `localWeekday` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database-local-time.utilities.ts:41` |
+| `openDatabase` | 1 | `listLocalTimeFunctions` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.worker.ts:22` |
+| `then(…)` | 1 | `respond` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.worker.ts:87` |
+| `then(…)` | 1 | `respond` | `projects/caelundas/caelundas-web/src/components/events-calendar/events-database.worker.ts:90` |
 
 </details>
 <!-- callidescope:end -->
