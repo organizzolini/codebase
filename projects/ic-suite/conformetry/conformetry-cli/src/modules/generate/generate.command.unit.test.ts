@@ -2,15 +2,13 @@ import { ConfigurationService, InputError } from "@conformetry/configuration";
 import { GenerationService } from "@conformetry/generation";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { captureExitCode } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GenerateCommand } from "./generate.command";
 
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { ConformetryConfiguration } from "@conformetry/configuration";
 import type { GeneratorHook } from "@conformetry/core";
 
@@ -33,7 +31,7 @@ describe(GenerateCommand, () => {
   let command: GenerateCommand;
   let configurationService: ConfigurationService;
   let generationService: GenerationService;
-  let commandLogger: LoggerService;
+  let commandLogger: BuiltTestingModule<GenerateCommand>["logger"];
 
   let readExitCode: ReturnType<typeof captureExitCode>;
 

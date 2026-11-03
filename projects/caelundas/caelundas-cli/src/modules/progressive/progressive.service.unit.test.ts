@@ -16,9 +16,7 @@ import { ProgressiveUtilitiesService } from "./progressive-utilities.service";
 import { ProgressiveService } from "./progressive.service";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
-import type { LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
-
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 function makeEvent(summary: string): DetectedCalendarEvent {
   return {
     description: summary,
@@ -31,7 +29,7 @@ function makeEvent(summary: string): DetectedCalendarEvent {
 
 describe(ProgressiveService, () => {
   let service: ProgressiveService;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<ProgressiveService>["logger"];
   let utilitiesService: ProgressiveUtilitiesService;
 
   const annualSolarCycleMock = {

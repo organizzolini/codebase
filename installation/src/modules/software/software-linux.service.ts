@@ -75,6 +75,9 @@ export class SoftwareLinuxService {
         UV_WORKSPACE_PROJECT_PATH,
       ]);
     });
+    this.attempt("linode-cli", () => {
+      this.processRunner.runOrThrow("uv", ["tool", "install", "linode-cli"]);
+    });
     this.attempt("squawk", () => {
       this.softwareDatabaseService.installSquawk();
     });

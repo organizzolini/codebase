@@ -3,10 +3,8 @@ import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne, mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -20,7 +18,7 @@ import {
 } from "./skill-exclusions.constants";
 
 import type { SkillExclusionFile } from "./skill-exclusions.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const fileContents = new Map<string, string>();
 
@@ -45,7 +43,7 @@ const moduleOptions = { providers: [SynchronizationService] };
 
 describe(SkillExclusionsCommand, () => {
   let command: SkillExclusionsCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   const workspaceRoot = process.cwd();
   const lockfile = path.join(workspaceRoot, "skills-lock.json");

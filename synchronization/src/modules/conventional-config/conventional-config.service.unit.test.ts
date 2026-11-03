@@ -22,6 +22,7 @@ import type {
   ReleaseConfig,
   SyncContext,
 } from "./conventional-config.types";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 function resolveWorkspaceRoot(): string {
   const currentFilePath = fileURLToPath(import.meta.url);
@@ -79,7 +80,7 @@ describe(ConventionalConfigService, () => {
   const workspaceRoot = resolveWorkspaceRoot();
 
   let io: ConventionalConfigIoService;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let service: ConventionalConfigService;
   let validators: ConventionalConfigValidatorsService;
 

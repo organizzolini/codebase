@@ -1,11 +1,11 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { LoggerService } from "@codebase/observability";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LiteratureLibraryScanService } from "./literature-library-scan.service";
 
-import type { LoggerService } from "@codebase/observability";
 import type { Dirent } from "node:fs";
 
 vi.mock("node:fs/promises", () => ({
@@ -37,7 +37,7 @@ describe(LiteratureLibraryScanService, () => {
     const built = await buildTestingModule(LiteratureLibraryScanService);
 
     service = built.instance;
-    logger = built.logger;
+    logger = built.mock(LoggerService);
   });
 
   beforeEach(async () => {

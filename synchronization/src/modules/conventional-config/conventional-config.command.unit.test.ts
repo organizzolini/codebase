@@ -1,9 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -11,16 +9,16 @@ import { SynchronizationService } from "../synchronization/synchronization.servi
 import { ConventionalConfigCommand } from "./conventional-config.command";
 import { ConventionalConfigService } from "./conventional-config.service";
 
-import type { LoggerService } from "@codebase/observability";
-
 const moduleOptions = {
   mocks: [ConventionalConfigService],
   providers: [SynchronizationService],
 };
 
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+
 describe(ConventionalConfigCommand, () => {
   let command: ConventionalConfigCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   let conventionalConfigService: DeepMocked<ConventionalConfigService>;
 

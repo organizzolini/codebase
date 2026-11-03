@@ -294,15 +294,11 @@ const MODULE_BOUNDARIES = {
       ],
       sourceTag: "name:conformetry-examples",
     },
-    // The testing package wraps only the common packages, so the cycles
-    // `ignoredCircularDependencies` allows below stay among them.
+    // The testing package reaches only `observability`, for the logger token
+    // its Nest module builder mocks; the cycle that closes with observability's
+    // own testing entry is allowed below and nowhere else.
     {
-      onlyDependOnLibsWithTags: [
-        "name:configuration",
-        "name:interface",
-        "name:observability",
-        "name:persistence",
-      ],
+      onlyDependOnLibsWithTags: ["name:configuration", "name:observability"],
       sourceTag: "name:testing",
     },
     {
@@ -323,18 +319,11 @@ const MODULE_BOUNDARIES = {
     },
   ],
   enforceBuildableLibDependency: true,
-  // The common packages may depend on each other in both directions: the
-  // testing package's adapters wrap observability, persistence, and
-  // interface, and each of those may use the testing package's helpers in
-  // its own tests and keep its old testing entry as a re-export of it.
-  ignoredCircularDependencies: [
-    // The conformetry templates import the testing package, and the common
-    // packages' own configuration files import the configuration project.
-    ["configuration", "testing"],
-    ["interface", "testing"],
-    ["observability", "testing"],
-    ["persistence", "testing"],
-  ],
+  // `@codebase/observability/testing` builds its logger-context assertion on
+  // the testing package's module builder, which mocks observability's logger.
+  // `observability`'s `implicitDependencies: ["!testing"]` keeps the edge out
+  // of the task graph, so the cycle never orders a build.
+  ignoredCircularDependencies: [["observability", "testing"]],
 };
 
 export default [

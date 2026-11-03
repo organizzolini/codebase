@@ -16,8 +16,8 @@ import { MonthlyLunarCycleService } from "./monthly-lunar-cycle.service";
 import type { LunarPhase } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
-import type { LogData, LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { LogData } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 interface ServicePrivate {
   detectProgressive: (
@@ -35,7 +35,7 @@ interface ServicePrivate {
 
 describe(MonthlyLunarCycleService, () => {
   let service: MonthlyLunarCycleService;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<MonthlyLunarCycleService>["logger"];
   let s: ServicePrivate;
 
   const testingModuleOptions = {

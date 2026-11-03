@@ -25,13 +25,13 @@ import { WordsService } from "../words/words.service";
 import { LexemesService } from "./lexemes.service";
 
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 import type { Repository } from "typeorm";
 
 describe(LexemesService, () => {
   let service: LexemesService;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<LexemesService>["logger"];
   let etymologyService: DeepMocked<EtymologyService>;
   let formsBuilderService: DeepMocked<FormsBuilderService>;
   let formsService: DeepMocked<FormsService>;

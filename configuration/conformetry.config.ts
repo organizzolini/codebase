@@ -74,8 +74,9 @@ const NEST_BASELINE = { modules: 89 / 121, services: 47 / 79 };
  * requirements weighed, from when the test templates moved onto
  * `@codebase/testing` (#329). A kind holds the lowest score among the
  * project's instances of it, so validation passes before its tests migrate.
- * A project's migration deletes its entry, which raises it back to 1, and the
- * last migration deletes the table.
+ * A project's migration deletes its entry, and an ic-suite CLI's also deletes
+ * its `nestjs-command-project` threshold, which raises it back to 1. The last
+ * migration deletes the table.
  */
 const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   documentation: NEST_BASELINE,

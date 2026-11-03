@@ -7,12 +7,11 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { ProgressiveAspectService } from "./progressive-aspect.service";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
-import type { LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 describe(ProgressiveAspectService, () => {
   let service: ProgressiveAspectService;
-  let mockLoggerService: DeepMocked<LoggerService>;
+  let mockLoggerService: BuiltTestingModule<ProgressiveAspectService>["logger"];
 
   beforeAll(async () => {
     const { instance, logger } = await buildTestingModule(

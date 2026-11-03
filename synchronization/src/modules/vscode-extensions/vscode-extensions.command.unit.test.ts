@@ -3,10 +3,8 @@ import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -16,8 +14,6 @@ import {
   VSCODE_EXTENSIONS_DEVCONTAINER_FILES,
   VSCODE_EXTENSIONS_FILE,
 } from "./vscode-extensions.constants";
-
-import type { LoggerService } from "@codebase/observability";
 
 const fileContents = new Map<string, string>();
 
@@ -40,9 +36,11 @@ vi.mock("node:fs", () => {
 
 const moduleOptions = { providers: [SynchronizationService] };
 
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+
 describe(VscodeExtensionsCommand, () => {
   let command: VscodeExtensionsCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   const workspaceRoot = process.cwd();
   const extensionsFile = path.join(workspaceRoot, VSCODE_EXTENSIONS_FILE);

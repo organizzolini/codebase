@@ -1,23 +1,25 @@
 {
   "dependencies": {
     "@codebase/testing": "workspace:*",
+    "@golevelup/ts-vitest": "catalog:",
     "@nestjs/common": "catalog:",
     "pino": "catalog:",
     "pino-pretty": "catalog:",
-    "tslib": "catalog:"
+    "tslib": "catalog:",
+    "vitest": "catalog:"
   },
   "devDependencies": {
-    "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "eslint": "catalog:",
-    "vitest": "catalog:"
+    "eslint": "catalog:"
   },
   "exports": {
     ".": "./src/index.ts",
     "./eslint": "./src/lib/conventional-log-message.eslint-rule.ts",
+    "./testing": "./testing/index.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -37,6 +39,10 @@
       "./eslint": {
         "default": "./dist/src/lib/conventional-log-message.eslint-rule.js",
         "types": "./dist/src/lib/conventional-log-message.eslint-rule.d.ts"
+      },
+      "./testing": {
+        "default": "./dist/testing/index.js",
+        "types": "./dist/testing/index.d.ts"
       },
       "./package.json": "./package.json"
     },

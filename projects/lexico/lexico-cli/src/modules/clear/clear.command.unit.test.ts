@@ -10,11 +10,9 @@ import {
   Translation,
   Word,
 } from "@codebase/lexico-entities";
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { promptsMock } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 import { createRepositoryMock } from "../../../testing/mocks";

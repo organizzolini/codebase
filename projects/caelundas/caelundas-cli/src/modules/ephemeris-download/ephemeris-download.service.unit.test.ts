@@ -11,11 +11,9 @@ import {
   vi,
 } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { createTemporaryDirectory, stubFetch } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   EPHEMERIS_BASE_URL,

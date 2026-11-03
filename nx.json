@@ -696,9 +696,11 @@
         "ruff-lint",
         "shellcheck",
         "sqlfluff-lint",
-        "stylelint"
+        "stylelint",
+        "terraform-format",
+        "terraform-validate"
       ],
-      "description": "Aggregator for lint-code. `helm-lint` and `compose-config` are defined only by the infrastructure project, so Nx skips them everywhere else. They shell out to helm and docker compose, which the GitHub-hosted ubuntu runners and the devcontainer ship; compose-config creates the gitignored root .env from .env.default when it is missing.",
+      "description": "Aggregator for lint-code. `helm-lint`, `compose-config`, `terraform-format`, and `terraform-validate` are defined only by the infrastructure project, so Nx skips them everywhere else. They shell out to helm and docker compose, which the GitHub-hosted ubuntu runners and the devcontainer ship; compose-config creates the gitignored root .env from .env.default when it is missing.",
       "executor": "nx:noop",
       "inputs": ["default"]
     },

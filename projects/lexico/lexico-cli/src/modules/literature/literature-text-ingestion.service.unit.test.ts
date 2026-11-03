@@ -3,12 +3,12 @@ import { appendFile } from "node:fs/promises";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Author, Text } from "@codebase/lexico-entities";
+import { LoggerService } from "@codebase/observability";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LiteratureTextIngestionService } from "./literature-text-ingestion.service";
 
 import type { IngestTextArguments, LibraryEntry } from "./literature.types";
-import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 vi.mock("node:fs/promises", () => ({
@@ -23,7 +23,7 @@ describe(LiteratureTextIngestionService, () => {
     const built = await buildTestingModule(LiteratureTextIngestionService);
 
     service = built.instance;
-    logger = built.logger;
+    logger = built.mock(LoggerService);
   });
 
   beforeEach(() => {
