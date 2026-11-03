@@ -83,3 +83,106 @@ nx run coinagerie-examples:vitest
 ## License
 
 MIT — see [LICENSE](../../../../LICENSE).
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run coinagerie-examples:coinagerie-check:write`.
+
+- **absolute**:
+- **after**:
+- **angle**:
+- **aspect**:
+- **bad**:
+- **bill**:
+- **book**:
+- **bug**:
+- **clear**:
+- **color**:
+- **compiler**:
+- **configure**:
+- **console**:
+- **cover**:
+- **define**:
+- **degree**:
+- **describe**:
+- **destination**:
+- **disk**:
+- **dome**:
+- **due**:
+- **each**:
+- **elevation**:
+- **empty**:
+- **encode**:
+- **entry**:
+- **equal**:
+- **example**:
+- **failure**:
+- **flat**:
+- **force**:
+- **gap**:
+- **glossary**:
+- **guide**:
+- **harbor**:
+- **high**:
+- **homepage**:
+- **identifier**:
+- **implicit**:
+- **invoice**:
+- **kilometer**:
+- **lead**:
+- **least**:
+- **ledger**:
+- **leftover**:
+- **length**:
+- **location**:
+- **lunar**:
+- **magnitude**:
+- **meta**:
+- **meter**:
+- **mirror**:
+- **miss**:
+- **mkdtemp**:
+- **mock**:
+- **motor**:
+- **move**:
+- **night**:
+- **observer**:
+- **orbit**:
+- **park**:
+- **perigee**:
+- **phase**:
+- **plan**:
+- **planner**:
+- **readdir**:
+- **recursive**:
+- **red**:
+- **relative**:
+- **remove**:
+- **replace**:
+- **reserve**:
+- **resolution**:
+- **roster**:
+- **rotate**:
+- **scratch**:
+- **second**:
+- **sentence**:
+- **site**:
+- **slot**:
+- **some**:
+- **sort**:
+- **spawn**:
+- **speed**:
+- **stale**:
+- **star**:
+- **stdout**:
+- **strict**:
+- **telescope**:
+- **tide**:
+- **trim**:
+- **unparsable**:
+- **vi**:
+- **water**:
+
+<!-- coinagerie:end -->

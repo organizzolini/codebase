@@ -565,3 +565,74 @@ graph LR
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-generation:coinagerie-check:write`.
+
+- **adapter**:
+- **after**:
+- **alpha**:
+- **beta**:
+- **breadth**:
+- **bug**:
+- **call**:
+- **camel**:
+- **clear**:
+- **compile**:
+- **compiler**:
+- **console**:
+- **constant**:
+- **controller**:
+- **decorator**:
+- **define**:
+- **definition**:
+- **describe**:
+- **each**:
+- **entry**:
+- **equal**:
+- **experimental**:
+- **fake**:
+- **filesystem**:
+- **force**:
+- **formatter**:
+- **gamma**:
+- **generation**:
+- **gitkeep**:
+- **homepage**:
+- **implementation**:
+- **injectable**:
+- **instance**:
+- **java**:
+- **kebab**:
+- **least**:
+- **make**:
+- **maximum**:
+- **meta**:
+- **metric**:
+- **mkdtemp**:
+- **mock**:
+- **normalize**:
+- **pascal**:
+- **promise**:
+- **publish**:
+- **readdir**:
+- **real**:
+- **receive**:
+- **recursive**:
+- **reject**:
+- **resolution**:
+- **seed**:
+- **snake**:
+- **sort**:
+- **spy**:
+- **strict**:
+- **substitution**:
+- **synthetic**:
+- **timer**:
+- **tmpdir**:
+- **vi**:
+
+<!-- coinagerie:end -->

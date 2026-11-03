@@ -1041,3 +1041,137 @@ What this project is judged against, as declared in its own `callidescope.config
 
 </details>
 <!-- callidescope:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-nx:coinagerie-check:write`.
+
+- **abort**:
+- **address**:
+- **after**:
+- **alpha**:
+- **array**:
+- **assertion**:
+- **basename**:
+- **beta**:
+- **breach**:
+- **breadth**:
+- **bug**:
+- **call**:
+- **callable**:
+- **callback**:
+- **chunk**:
+- **clear**:
+- **closure**:
+- **compare**:
+- **compile**:
+- **compiler**:
+- **console**:
+- **constant**:
+- **controller**:
+- **count**:
+- **decorator**:
+- **deep**:
+- **define**:
+- **describe**:
+- **direct**:
+- **discover**:
+- **display**:
+- **downward**:
+- **each**:
+- **empty**:
+- **entry**:
+- **equal**:
+- **exp**:
+- **experimental**:
+- **explain**:
+- **explanation**:
+- **factory**:
+- **fake**:
+- **field**:
+- **filename**:
+- **flat**:
+- **force**:
+- **gamma**:
+- **gitkeep**:
+- **hold**:
+- **homepage**:
+- **identify**:
+- **implementation**:
+- **injectable**:
+- **instance**:
+- **item**:
+- **java**:
+- **judge**:
+- **kind**:
+- **know**:
+- **least**:
+- **length**:
+- **load**:
+- **locale**:
+- **locate**:
+- **location**:
+- **logger**:
+- **manifest**:
+- **maximum**:
+- **meta**:
+- **metric**:
+- **mkdtemp**:
+- **mock**:
+- **normalize**:
+- **ok**:
+- **omit**:
+- **once**:
+- **own**:
+- **partial**:
+- **peer**:
+- **pending**:
+- **point**:
+- **posix**:
+- **preview**:
+- **promise**:
+- **prototype**:
+- **provide**:
+- **publish**:
+- **reach**:
+- **real**:
+- **realpath**:
+- **reason**:
+- **recursive**:
+- **refuse**:
+- **reg**:
+- **reject**:
+- **resolution**:
+- **second**:
+- **selection**:
+- **slice**:
+- **some**:
+- **sort**:
+- **split**:
+- **spy**:
+- **stack**:
+- **stdout**:
+- **strict**:
+- **stringify**:
+- **stub**:
+- **subpath**:
+- **success**:
+- **summary**:
+- **surface**:
+- **synthetic**:
+- **timer**:
+- **tmpdir**:
+- **trace**:
+- **trim**:
+- **unmatched**:
+- **unread**:
+- **untagged**:
+- **upward**:
+- **verdict**:
+- **vi**:
+- **wide**:
+- **wildcard**:
+
+<!-- coinagerie:end -->

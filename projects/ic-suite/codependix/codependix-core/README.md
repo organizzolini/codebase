@@ -105,3 +105,57 @@ None.
 
 None.
 <!-- callidescope:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run codependix-core:coinagerie-check:write`.
+
+- **after**:
+- **anchor**:
+- **boundary**:
+- **breadth**:
+- **bug**:
+- **clear**:
+- **compile**:
+- **compiler**:
+- **console**:
+- **constant**:
+- **controller**:
+- **decorator**:
+- **define**:
+- **describe**:
+- **difference**:
+- **each**:
+- **equal**:
+- **experimental**:
+- **failure**:
+- **fake**:
+- **fresh**:
+- **gitkeep**:
+- **homepage**:
+- **implementation**:
+- **injectable**:
+- **intro**:
+- **java**:
+- **least**:
+- **maximum**:
+- **meta**:
+- **metric**:
+- **mock**:
+- **publish**:
+- **real**:
+- **recursive**:
+- **resolution**:
+- **section**:
+- **selection**:
+- **spy**:
+- **stale**:
+- **strict**:
+- **subheading**:
+- **synthetic**:
+- **timer**:
+- **vi**:
+
+<!-- coinagerie:end -->

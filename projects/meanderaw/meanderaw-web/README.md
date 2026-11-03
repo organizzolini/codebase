@@ -259,3 +259,52 @@ None.
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run meanderaw-web:coinagerie-check:write`.
+
+- **after**:
+- **breadth**:
+- **character**:
+- **child**:
+- **compiler**:
+- **css**:
+- **define**:
+- **describe**:
+- **each**:
+- **entry**:
+- **gen**:
+- **h1**:
+- **history**:
+- **href**:
+- **html**:
+- **hydrate**:
+- **lang**:
+- **least**:
+- **level**:
+- **link**:
+- **load**:
+- **loader**:
+- **maximum**:
+- **meta**:
+- **mock**:
+- **preload**:
+- **preview**:
+- **promise**:
+- **rel**:
+- **resolution**:
+- **restoration**:
+- **role**:
+- **route**:
+- **screen**:
+- **scroll**:
+- **section**:
+- **ssr**:
+- **strict**:
+- **transition**:
+- **vi**:
+
+<!-- coinagerie:end -->

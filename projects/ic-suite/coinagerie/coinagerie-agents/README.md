@@ -63,3 +63,48 @@ corpus test in `testing/skills.unit.test.ts` and the portability test in
 ## License
 
 MIT — see [LICENSE](../../../../LICENSE).
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run coinagerie-agents:coinagerie-check:write`.
+
+- **clear**:
+- **compiler**:
+- **configure**:
+- **define**:
+- **describe**:
+- **each**:
+- **entry**:
+- **equal**:
+- **exp**:
+- **field**:
+- **front**:
+- **least**:
+- **length**:
+- **less**:
+- **link**:
+- **matter**:
+- **maximum**:
+- **meta**:
+- **mock**:
+- **portability**:
+- **prose**:
+- **readdir**:
+- **recursive**:
+- **reg**:
+- **relative**:
+- **replace**:
+- **resolution**:
+- **ship**:
+- **sort**:
+- **specific**:
+- **split**:
+- **strict**:
+- **than**:
+- **triage**:
+- **under**:
+- **vi**:
+
+<!-- coinagerie:end -->
