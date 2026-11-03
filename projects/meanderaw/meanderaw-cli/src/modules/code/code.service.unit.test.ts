@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildTile } from "../../../testing/tiles";
 import { SymmetryService } from "../symmetry/symmetry.service";
@@ -13,6 +14,7 @@ import {
 import { CodeService } from "./code.service";
 
 import type { Tile } from "../tile/tile.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🔧 Configuration
 
@@ -20,6 +22,11 @@ import type { Tile } from "../tile/tile.types";
 const BARE = { east: false, north: false, south: false, west: false };
 
 // 🧪 Tests
+
+/** What the class under test is built with. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  providers: [SymmetryService, TileService],
+};
 
 describe(CodeService, () => {
   let service: CodeService;
@@ -31,16 +38,16 @@ describe(CodeService, () => {
   const singleColumn = buildTile(["s", ".", ".", "e", "."]);
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [CodeService, SymmetryService, TileService],
-    }).compile();
+    const built = await buildTestingModule(CodeService, MODULE_OPTIONS);
 
-    service = await module.resolve(CodeService);
-    symmetryService = await module.resolve(SymmetryService);
+    service = built.instance;
+    symmetryService = await built.module.resolve(SymmetryService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CodeService, MODULE_OPTIONS);
+
+    expect(instance).toBeInstanceOf(CodeService);
   });
 
   describe("directionsAt", () => {

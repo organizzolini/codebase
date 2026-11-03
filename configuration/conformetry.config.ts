@@ -68,7 +68,6 @@ interface TestTemplateBaseline {
 
 /** What each untouched project of a shape measures, shared to stay short. */
 const NEST_BASELINE = { modules: 89 / 121, services: 47 / 79 };
-const WEB_BASELINE = { application: 716 / 738, routes: 131 / 145 };
 
 /**
  * Each project's measured conformance score, written as requirements met over
@@ -82,8 +81,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   documentation: NEST_BASELINE,
   installation: NEST_BASELINE,
   integration: NEST_BASELINE,
-  "projects/meanderaw/meanderaw-cli": NEST_BASELINE,
-  "projects/meanderaw/meanderaw-web": WEB_BASELINE,
   publication: NEST_BASELINE,
   synchronization: NEST_BASELINE,
 };

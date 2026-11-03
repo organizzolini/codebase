@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -13,21 +14,16 @@ describe(SouthForkCountCharacteristicService, () => {
   let service: SouthForkCountCharacteristicService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CodeModule, MatrixModule],
-      providers: [
-        CharacteristicContextService,
-        SouthForkCountCharacteristicService,
-        SubmatrixUtilitiesService,
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      SouthForkCountCharacteristicService,
+      {
+        imports: [CodeModule, MatrixModule],
+        providers: [CharacteristicContextService, SubmatrixUtilitiesService],
+      },
+    );
 
-    contextService = await module.resolve(CharacteristicContextService);
-    service = await module.resolve(SouthForkCountCharacteristicService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    contextService = await built.module.resolve(CharacteristicContextService);
+    service = built.instance;
   });
 
   it("counts forks whose ink leaves by south, east, and west only", () => {

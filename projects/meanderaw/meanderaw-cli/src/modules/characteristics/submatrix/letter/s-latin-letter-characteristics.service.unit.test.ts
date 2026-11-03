@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -39,10 +38,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(SLatinLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    SLatinLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(SLatinLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();
