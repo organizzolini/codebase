@@ -1,7 +1,45 @@
 // ReUI Components
+export {
+  Cascader,
+  CascaderEmpty,
+  CascaderList,
+  CascaderPanel,
+  CascaderStatus,
+} from "./components/reui/cascader/cascader";
+export { CascaderFooter } from "./components/reui/cascader/cascader-footer";
+export {
+  CascaderBreadcrumb,
+  CascaderInput,
+  CascaderNav,
+} from "./components/reui/cascader/cascader-nav";
+export type {
+  CascaderLabels,
+  CascaderNode,
+} from "./components/reui/cascader/cascader-types";
+export { CascaderVirtualItems } from "./components/reui/cascader/cascader-virtual";
+// The color picker's helpers (parseColor, formatColor and the rest) would
+// crowd the package's names, so only the composed picker is exported.
+export {
+  ColorPicker,
+  ColorPickerContent,
+  type ColorPickerProps,
+  ColorPickerTrigger,
+} from "./components/reui/color-picker";
 export * from "./components/reui/event-calendar/event-calendar";
 export * from "./components/reui/event-calendar/event-calendar-content";
 export type * from "./components/reui/event-calendar/event-calendar-types";
+export * from "./components/reui/filters/filters";
+// The Gantt's own default view configuration would collide with the event
+// calendar's by name, so only what an application composes is exported.
+export {
+  Gantt,
+  type GanttColumn,
+  type GanttProps,
+  type GanttRenderEventProps,
+  useGanttNavigation,
+} from "./components/reui/gantt/gantt";
+export type * from "./components/reui/gantt/gantt-types";
+export * from "./components/reui/gantt/gantt-view";
 
 // UI Components
 export * from "./components/ui/accordion";

@@ -1,13 +1,13 @@
 # 🐘 Persistence
 
-The shared Postgres package every database-backed project connects through, and a command line that moves tables between databases.
+The shared package every database-backed project connects through, to Postgres or to a SQLite file, and a command line that moves tables between Postgres databases.
 
 ## Purpose
 
-Lexico, meanderaw, and caelundas each keep their tables in Postgres. This
-package holds the one way they do it, so the environment variables, the
-connection options, and the naming of each project's database, schema, and
-role are written once:
+Lexico and meanderaw each keep their tables in Postgres, and caelundas writes
+a SQLite file, [below](#sqlite). This package holds the one way they connect,
+so the environment variables, the connection options, and the naming of each
+Postgres project's database, schema, and role are written once:
 
 | Context        | Database                | Schema      | Role                                        |
 | -------------- | ----------------------- | ----------- | ------------------------------------------- |
@@ -29,8 +29,14 @@ Key exports and responsibilities:
   variables through `ConfigService`
 - `createDataSource`: The `DataSource` a project's TypeORM command-line entry
   exports, from the same options
-- `IdentifiableEntity` …: Base entities: a `uuidv7()` id, then created,
+- `PostgresqlIdentifiableEntity` …: Base entities: a `uuidv7()` id, then created,
   updated, and soft-deleted columns
+- `SqliteModule.forRoot`: The same for a SQLite file, from one
+  `<PROJECT>_SQLITE_DATABASE` variable; see [SQLite](#sqlite)
+- `createSqliteDataSource`, `sqliteEnvironmentSchema`: The SQLite twins of
+  `createDataSource` and `postgresEnvironmentSchema`
+- `SqliteIdentifiableEntity` …: The SQLite base entities: a `uuid` id the
+  application generates, and `datetime` columns
 - `startPostgresContainer`: From `@codebase/persistence/testing`: a migrated
   Postgres 18 container laid out like local Docker
 - `startDatabaseTestingModule`: From `@codebase/persistence/testing`: a Nest
@@ -105,12 +111,12 @@ snake case, as lexico does with its pluralizing strategy.
 Each table's entity extends the narrowest base it needs, so a table without
 soft deletion carries no `deletedAt`:
 
-| Base                 | Adds                                                                |
-| -------------------- | ------------------------------------------------------------------- |
-| `IdentifiableEntity` | `id`, a `uuid` the database assigns with Postgres 18's `uuidv7()`   |
-| `CreatableEntity`    | `createdAt` (`timestamptz`) and a nullable `createdBy` (`uuid`)     |
-| `UpdatableEntity`    | `updatedAt` (`timestamptz`) and a nullable `updatedBy` (`uuid`)     |
-| `DeletableEntity`    | `deletedAt` (`timestamptz`, soft delete) and a nullable `deletedBy` |
+| Base                           | Adds                                                                |
+| ------------------------------ | ------------------------------------------------------------------- |
+| `PostgresqlIdentifiableEntity` | `id`, a `uuid` the database assigns with Postgres 18's `uuidv7()`   |
+| `PostgresqlCreatableEntity`    | `createdAt` (`timestamptz`) and a nullable `createdBy` (`uuid`)     |
+| `PostgresqlUpdatableEntity`    | `updatedAt` (`timestamptz`) and a nullable `updatedBy` (`uuid`)     |
+| `PostgresqlDeletableEntity`    | `deletedAt` (`timestamptz`, soft delete) and a nullable `deletedBy` |
 
 They are plain TypeORM, with no GraphQL; a project that exposes them over
 GraphQL adds its `@Field` decorators in a thin layer of its own. Nothing
@@ -268,6 +274,68 @@ Docker must be running.
 A project name must be lowercase letters, digits, and underscores, starting
 with a letter, so it can prefix a variable and name a database unquoted.
 
+## SQLite
+
+`SqliteModule.forRoot` connects a project to its own SQLite file through
+TypeORM's `better-sqlite3` driver, the way `PostgresqlModule.forRoot` connects
+one to Postgres: the options name the entities, and the file comes from the
+project's prefixed variable through `ConfigService`.
+
+```ts
+SqliteModule.forRoot({
+  entities: [CalendarEvent],
+  migrations: [CreateCalendarEvents1767225600000],
+  project: "caelundas",
+});
+```
+
+| Variable                    | Default            | Meaning                          |
+| --------------------------- | ------------------ | -------------------------------- |
+| `<PROJECT>_SQLITE_DATABASE` | `<project>.sqlite` | The database file, or `:memory:` |
+
+An unprefixed `SQLITE_DATABASE` is never read. Spread
+`sqliteEnvironmentSchema({ project })` into the application's environment
+schema, and export `createSqliteDataSource({ entities, migrations, project })`
+from a `data-source.constants.ts` for the TypeORM command line.
+
+### How SQLite differs from Postgres
+
+The options are shared (snake case, `synchronize` off, no logging); these are
+not:
+
+- **The folder is created on start**: `SqliteModule` and `createSqliteDataSource` make a file database's missing folders, so `output/database.sqlite` needs no `output/` first.
+- **Migrations run on start** when `forRoot` is given any. Postgres runs them
+  as their own step because several processes starting together would race on
+  one schema; a SQLite file has one writer. `createSqliteDataSource` still
+  never runs them.
+- **One writer.** better-sqlite3 is synchronous and holds one connection, so
+  keep a project's writes on the module's connection; a second one writing
+  waits `timeout` (5 s) and then fails with `SQLITE_BUSY`. Write-ahead logging
+  stays off, so a finished database is one file rather than three.
+- **No schema, role, or host.** The path is the whole connection, so there is
+  no search path to pin and no credentials to mask. TypeORM's driver turns
+  `PRAGMA foreign_keys` on itself.
+- **No native `uuid`, `timestamptz`, or `numeric`**, and TypeORM refuses
+  those column types at connect time. The Postgres base entities therefore
+  cannot be shared; the SQLite ones sit beside them. Store a decimal that must
+  survive exactly, such as a latitude or longitude, as `text`.
+- **No column comments**, so the SQLite entities carry none.
+- **Ids are version 4, not `uuidv7()`.** TypeORM reads a database-generated
+  key back only from `rowid`, so a text key with a SQL default throws on
+  `insert`. `SqliteIdentifiableEntity` uses `@PrimaryGeneratedColumn("uuid")`,
+  which TypeORM fills in the application on `save`, bulk `insert`, and
+  `upsert` alike, but which does not sort by insertion time. Without
+  `RETURNING`, TypeORM reads the new keys back with a select that answers in
+  key order, so a bulk `insert`'s `identifiers` are the new ids but not in the
+  order the rows were given: match rows by a natural key, never by position.
+- **Timestamps are `datetime`**: UTC text in `YYYY-MM-DD HH:MM:SS[.SSS]`
+  form, which is ISO 8601 with a space for the `T`, sorts as text, and is what
+  SQLite's date functions and TypeORM's own `CURRENT_TIMESTAMP` updates write.
+  An ISO string with `T` and `Z` would mix two formats in one column.
+  Properties stay `Date`.
+- **Partial indexes** take the same `WHERE` as Postgres, but write it as
+  SQLite does: no `::` casts, no `now()`, `1` and `0` for booleans.
+
 ## Moving data between databases
 
 The package is also a command line, `database`, that copies selected tables
@@ -278,23 +346,23 @@ with the working directory at `projects/common/persistence`, so a relative `--fi
 resolves from there, and `*.dump` is gitignored there:
 
 ```bash
-pnpm exec nx run persistence:start:export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
-pnpm exec nx run persistence:start:import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
+pnpm exec nx run persistence:start:postgresql-export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
+pnpm exec nx run persistence:start:postgresql-import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
 ```
 
 ### Options
 
-| Option               | Command | Does                                                                              |
-| -------------------- | ------- | --------------------------------------------------------------------------------- |
-| `--source-uri <uri>` | export  | Required. The database to dump                                                    |
-| `--target-uri <uri>` | import  | Required. The database to restore into                                            |
-| `--table <name>`     | both    | Required, repeatable. A table to move                                             |
-| `--schema <name>`    | both    | The schema unqualified `--table` names resolve in, like `pg_dump --schema`        |
-| `--data`, `--ddl`    | both    | Rows, table definitions (DDL), or both; at least one is required                  |
-| `--file <path>`      | both    | Required. The dump to write or read                                               |
-| `--overwrite`        | export  | Replace `--file` when it exists                                                   |
-| `--clean`            | import  | Clear the selected tables before restoring, with no confirmation                  |
-| `--dry-run`          | both    | Validate and print the plan without connecting to a database or changing anything |
+| Option               | Command           | Does                                                                              |
+| -------------------- | ----------------- | --------------------------------------------------------------------------------- |
+| `--source-uri <uri>` | postgresql-export | Required. The database to dump                                                    |
+| `--target-uri <uri>` | postgresql-import | Required. The database to restore into                                            |
+| `--table <name>`     | both              | Required, repeatable. A table to move                                             |
+| `--schema <name>`    | both              | The schema unqualified `--table` names resolve in, like `pg_dump --schema`        |
+| `--data`, `--ddl`    | both              | Rows, table definitions (DDL), or both; at least one is required                  |
+| `--file <path>`      | both              | Required. The dump to write or read                                               |
+| `--overwrite`        | postgresql-export | Replace `--file` when it exists                                                   |
+| `--clean`            | postgresql-import | Clear the selected tables before restoring, with no confirmation                  |
+| `--dry-run`          | both              | Validate and print the plan without connecting to a database or changing anything |
 
 Qualified names (`schema.table`) are used as written. There is no default
 schema: without `--schema`, an unqualified `--table` fails before anything
@@ -302,7 +370,7 @@ runs, naming it. Naming one table twice moves it once.
 
 ### Export
 
-`export` writes a custom-format dump, the only format it produces. It passes
+`postgresql-export` writes a custom-format dump. It passes
 `--strict-names` to `pg_dump`, so a table that does not exist fails the run
 with a message naming it and the source, never a smaller dump. An existing
 `--file` is refused unless `--overwrite` is given.
@@ -315,7 +383,7 @@ whether `--file` would be created or overwritten.
 
 ### Import
 
-`import` restores the selected tables in one transaction that stops at the
+`postgresql-import` restores the selected tables in one transaction that stops at the
 first error, so by default it deletes nothing and a conflict leaves the target
 as it was. Before any connection opens it lists the dump and fails when it
 lacks the rows or definitions `--data` and `--ddl` ask for. Owners and
@@ -326,8 +394,8 @@ target.
 `--clean` would drop or truncate.
 
 `--clean` empties the selected tables first and never asks for confirmation,
-in a terminal or out of one. Run `import --dry-run` with the same options
-before `import --clean` to see the tables, database, and host it would clear:
+in a terminal or out of one. Run `postgresql-import --dry-run` with the same options
+before `postgresql-import --clean` to see the tables, database, and host it would clear:
 
 - With `--ddl`, `pg_restore --clean --if-exists` drops and recreates them.
 - With `--data` alone, a `TRUNCATE` on exactly the selected tables empties

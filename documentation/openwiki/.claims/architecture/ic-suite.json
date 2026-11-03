@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:ee1c5e524b6768f7fb72d3fa0afc54ca0e19ca3da7086fa213d4592e08bfd4c3",
+  "pageVersion": "sha256:df4dbc82ea178ec0d569e81e1bfc5440063ba01f8a39a534bc51fb50c7c55660",
   "claims": [
     {
       "id": "claim_0d5836ccb1294a0187993a301209a081",
@@ -11,19 +11,19 @@
           "version": "repo-lines-v1:sha256:a19db1d055fc223100bbd52a515dd6add29f032b85ce070655bbc031a3a13fa0:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmY1NjcxZjI0N2EzZjc2YmM2NmQ1ODkxZTVhNjk1MDU4ZjM2NDQwZWI3NjY0OGUxOWE4YTcyYzFjZGEzMTdhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWY4YzQwZGEyN2JhM2JlNmYxOTg2YjZmZWQxMjE1ZmEyMmI4ZTcxYzBkYzQ0OTc3Njc2YjJmNjU3YzE1ZWFiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzFlODU2MTE2MWEwZDEzZTUwM2I0M2YzNmIxMTg5ZTMyMDg4OGMzMzExNzliYmI1MDlkMmVkNGE0OWI2YTA4ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTQ1MmZmZDE2MzIyZWExN2JmZTRmMjBhODhkYjVlMzg3Zjk0ZWJmMzZmNGU4ODRiYWU0NTY1MTEzZGExMDliMyJ9"
         },
         {
-          "resource": "repo://README.md#L113-L124",
+          "resource": "repo://README.md#L141-L152",
           "version": "repo-lines-v1:sha256:e4092b96c133f9255b356afcefd6f976db03ed2c229585f3cd56fafe33dcca86:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlYzg4YWNmNWM1ZjllMjQ0YmVlYmNiNTNlMzAyMjZmYmUwNzkzYjVjNmU4MjhhYWZmMTA1MjgxMThlOWViNjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhZTJjNDZiOWY0ODhmOTA3Y2VmOThmYjMyZGY5YmVlZmEzMGMzZWRlYTcwODUzYWE0ZTgwYTNhNWM1Nzk0MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2NTQ4M2M4OThiOTVkYWU1ZDliM2Y1YzM4YTE0ZTI3MDY5NTlkZDFhZGY4YmQ0Yzc4OWYzZDY2YWExMjZlMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwZmU5YWJlMGZhZDEzMTkyZjRiZjU0ZjYxMDFhODc1M2Y2NzA4OWRmMzk3YjQ2YTQyMGFmNDQ1Y2E2NGU0ZDAifQ"
         },
         {
-          "resource": "repo://README.md#L126-L140",
+          "resource": "repo://README.md#L154-L168",
           "version": "repo-lines-v1:sha256:60bccdc338f35f5b6d8e67086592b0cca80deba839a2519a529d780eeaa2d457:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwOGZiY2E1OTIxYzdmZDMxZWRhYzRhYjVjNWFiMDA5MmM3OTc4YmVkNGY4NmJhYWUyZDVlMTEyYTNjNWNjOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyOWJjNjYwZjI3MDhkMTczNzZkNWE1YTk5YjdiNzlhNjk0YjNlZGVjNTFjYWQxZWQ0OGJmMTg2ZGVlNDM4YTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2YmM2NTIwZjVmZTZiZWM0MzJjZDQ4MGRhM2UwYjViYmNmYWI3MTVhMGQzYzQzYzYyNTFlNjZiZTQ1YjU4NWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3NTVhZDA1ZTk0YTk2YjEyZjViMjU1NjdlYzQzMDhhMTA0OWQyNGZlY2I3MWY5NDhiNzYxNWNiNTZlYWZmNzQifQ"
         },
         {
-          "resource": "repo://README.md#L142-L153",
+          "resource": "repo://README.md#L170-L181",
           "version": "repo-lines-v1:sha256:1d88fa669eaab96b2ce6f6aa06350575bd82b772ae447a70257c25e7f08a5989:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MzkzYTgzMmVhNGIwYWYwMGU2ZTMwNTE0ZDUzODA0MzdjMTk5MjdmYjc1OTY3ZmQ3NTViMjExMjgzNTY3M2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZWY3YTNjNjdmOTBhNTU3YWM5MGViZDBmOTg3MjMxMWQ5NTI3ZmRkZjNlM2NjMzc5MGZmODJiMjU1ZDdiM2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0YTJmZGZlMmJjYTk1YmFhZTM4NzkyOTY3OGU4M2IyZWE2YjdiOTQyMzk3NzMwNmQ0MTEwNmUzNTY2OTJjMzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiMTE5ZTQyNmQyNzk3N2I5OGNhOTRhZWYyYjBkNmYzNDc3MzRlOTVkYjM5MTg5OTZmY2IzYjBhMzZiZmQ4ODUifQ"
         },
         {
-          "resource": "repo://README.md#L155-L168",
+          "resource": "repo://README.md#L183-L196",
           "version": "repo-lines-v1:sha256:ae5a8381ae33b4077da1187d6d0ee889c06b66922c486eb1feaf180ebed6430b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZjgwZWZmZDdlNGRjOWY5MWY0ZTIyOTc4MDA4NzEwZTc1MzVkNjkyMTI3MTk1ZTQwODkxMzhmZDIwNDEzZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YjBhYmNlYzM0OGY0YTEwYTNhM2Q2ZjNlZmVlMDI5MDdmMjM1N2E2ZTE0OTQxYmQ1OGQ3Mjc3NzczNGJkMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhZWJlODdlYWM3OTIzMjZmYjkzMjBiZDM1N2Q0MGI2MjE1Zjg5MWY1YjdlNDc3NWQ3Yzk2NzlmMWUxMGVlYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmOTQ0YzdhYWQwOThjM2M3OTcwYmY1ZjFjMjc5ZDBjNzI1ZDM4ZDQyMjMwYmY2ODNhOWE0Yjk1OGQxOTNlZjEifQ"
         }
       ]
@@ -181,19 +181,19 @@
       "statement": "Each suite's analysis layer packages are named per-suite: callidescope-graph; codependix-boundaries, file-imports, nestjs-modules, nx-projects; codometer-languages, measurement; conformetry-generation, languages, validation.",
       "evidence": [
         {
-          "resource": "repo://README.md#L117-L124",
+          "resource": "repo://README.md#L145-L152",
           "version": "repo-lines-v1:sha256:a0577c14bb01ccac422fb69551a49b13939e96e05a89af7522bb8b14ad44dcc4:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTc4NjFkMmViOTM4YjJmYjk5ODk3NTYwNWIxMzFmMjZjNzRiZDhjZGY0NTM3ZTNhMzAxZDE1ODc2ODk5OWUyMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGFlMmM0NmI5ZjQ4OGY5MDdjZWY5OGZiMzJkZjliZWVmYTMwYzNlZGVhNzA4NTNhYTRlODBhM2E1YzU3OTQyYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTc1OGYzZjYwNWQ4Yjk1YWYzODRkYWRiOWI4ZDIxNWNjM2I4MWMwNTVhMmQwOTkxNGNjYTdiMmRlMGM3M2NhMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTBmZTlhYmUwZmFkMTMxOTJmNGJmNTRmNjEwMWE4NzUzZjY3MDg5ZGYzOTdiNDZhNDIwYWY0NDVjYTY0ZTRkMCJ9"
         },
         {
-          "resource": "repo://README.md#L130-L140",
+          "resource": "repo://README.md#L158-L168",
           "version": "repo-lines-v1:sha256:740c9ee4bafe217ecaee4d19c6298e29af70636544a4c94443e5e19eeecf903f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5NTZhOGUxZDljY2YxOGQ2YzUyNzEwMGI4MWJjMzM5YTk1YzBlNTM5YjcxZmMwNmIwMGRmOTYwM2IyMzFhMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyOWJjNjYwZjI3MDhkMTczNzZkNWE1YTk5YjdiNzlhNjk0YjNlZGVjNTFjYWQxZWQ0OGJmMTg2ZGVlNDM4YTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI0NzYyOTVjODY0OWVkNTMyMzRhYjljYmYwZDJkYjliNTkyMmM5Njk4ZGY4ZmU0OGJhYzM0NGNkOTdkYjQwMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3NTVhZDA1ZTk0YTk2YjEyZjViMjU1NjdlYzQzMDhhMTA0OWQyNGZlY2I3MWY5NDhiNzYxNWNiNTZlYWZmNzQifQ"
         },
         {
-          "resource": "repo://README.md#L146-L153",
+          "resource": "repo://README.md#L174-L181",
           "version": "repo-lines-v1:sha256:075c7713685458537df12a912ace6f6deb05022a8bcedb1ce0a55d1dab5e022b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzE3NzlhZjZhYzM2OTgyNzlmYTEwYjdkZDUwYmFlODkxMjNlODRiOTEzYjU4NjhlODQyNzUxMmU5Y2VlMTAzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWFlZjdhM2M2N2Y5MGE1NTdhYzkwZWJkMGY5ODcyMzExZDk1MjdmZGRmM2UzY2MzNzkwZmY4MmIyNTVkN2IzYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTg2ZDc0MmI3MjBlMjMxM2FjY2VjYzMzM2Q2NjlkMjliN2E5YWFkODAxODRlOWE3ZGExMDY0NTUyM2ZhNzRkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2IxMTllNDI2ZDI3OTc3Yjk4Y2E5NGFlZjJiMGQ2ZjM0NzczNGU5NWRiMzkxODk5NmZjYjNiMGEzNmJmZDg4NSJ9"
         },
         {
-          "resource": "repo://README.md#L159-L168",
+          "resource": "repo://README.md#L187-L196",
           "version": "repo-lines-v1:sha256:1c5ab0bbcedb9df756c14c13ca036f2eec74f268b7aadbbf2bada9efc06e06d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2NWMxZTIxNDljZGYwYTA0NzIyMzA4YWM2ZWU4MDkzYmExZGViYWFjMDk5MTBhMDJmYzcxZmFlZjZkZjI0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YjBhYmNlYzM0OGY0YTEwYTNhM2Q2ZjNlZmVlMDI5MDdmMjM1N2E2ZTE0OTQxYmQ1OGQ3Mjc3NzczNGJkMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2ODg3OWUzM2Y2NzNjMmJkZTQ0NWFkNmVhZDJlOGVlYjMwMmM5ODc2ZTJhNmQ2NjE4NmY0ZGM5NzFlOTBjYmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmOTQ0YzdhYWQwOThjM2M3OTcwYmY1ZjFjMjc5ZDBjNzI1ZDM4ZDQyMjMwYmY2ODNhOWE0Yjk1OGQxOTNlZjEifQ"
         },
         {
@@ -336,7 +336,7 @@
         },
         {
           "resource": "repo://projects/ic-suite/codependix/codependix-nx/src/executors/gate/executor.ts",
-          "version": "repo-file-v1:sha256:e48c9649b9018872400aed73b5580da01e1bfbb2488ab7fad7a324680d02af64"
+          "version": "repo-file-v1:sha256:f6a13452d08e7371250f3ee7b610aa2a838896bcbc597d3d057b8242c9670ce4"
         }
       ]
     },
@@ -417,24 +417,6 @@
       ]
     },
     {
-      "id": "claim_b96371237d1e49138c787f18d5b9f060",
-      "statement": "CI gate flow runs nx affected -t guard-code which executes all four toolchain gates in parallel per affected project: callidescope --check depth,breadth, codependix map --check boundaries, codometer measure --check limits, conformetry validate --check; findings are charged per-project and aggregated into GitHub status checks.",
-      "evidence": [
-        {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L167-L195",
-          "version": "repo-lines-v1:sha256:a53a38484ddcb8a5bf21e0393f3366141168129434c2158d55c40fb1047b9b02:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ODc5YjFmNGEwN2MzOTBlZmY2ZTQ1NzJkZmRlMjBmNWNkYzVlMDZlZDJhMmI4NDFmNzk0NTBmNDY2ODQ4NTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2OTVkYzE5OTY2NTM5MDVkMGZlMzU0MjEzOGE2NTU3MDEwM2VkOTYxYjM3YWM5ZGZjYTA2MTJmZTdkOWQ1Y2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjZTlmZTYwMzhlNDU5NmFmMDljMTU0ODU3ZTJiZTgzMzRiZmQxZWJhZTJkY2ZiNmE3YjAyMDEyYmM1ZThkNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjZjY4ZGIxMTI3ODYxN2FjNWU2NmYyNzI4MDE2ODk1MjEzOWE3ZjRkZTM1ZWM4MGQ3YzkwOTYxNjkxYWE5ZWEifQ"
-        },
-        {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L186-L200",
-          "version": "repo-lines-v1:sha256:52b73ce64d177681ebbdc51f18a5903ab4edce258cde3e88378fca8d655b64e2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ODc5YjFmNGEwN2MzOTBlZmY2ZTQ1NzJkZmRlMjBmNWNkYzVlMDZlZDJhMmI4NDFmNzk0NTBmNDY2ODQ4NTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyM2RkZTc1ZjcyMGMyNzkwNmFlYTgwM2I5OWY3NjcwZmQwZWEwY2I0OTdhODNmYmMyM2QxYzhhZDQ0ZTlkMWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFiN2Q2NjVjMWYyNDRhNWRkYWVhNmQyNDg1NzRjMjlkOTYxZjQ1ZTJmYTc1Njc1OWQ3MThmNTQyNDc4ZTAzYmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5ZWViYTZmNDcwYTJhMmY4YzU1N2M5MWYwYmY4NmUwYzBkZDgxOGQ1OWNlN2E5YTIwMWNkMWI4MDk2MTAxY2YifQ"
-        },
-        {
-          "resource": "repo://configuration/project.json",
-          "version": "repo-file-v1:sha256:b650b5bb201906094c86f8479c6b271c99fb1f118b107255836e136e3ebfddd0"
-        }
-      ]
-    },
-    {
       "id": "claim_d3ff51ce96cd4544a0ff2d8a47b4e852",
       "statement": "guard-code aggregator target in nx.json depends on callidescope-gate, codependix-gate, conformetry-validate, and other checks; build-projects aggregator depends on build and codometer so size limits gate packaging.",
       "evidence": [
@@ -443,10 +425,36 @@
           "version": "repo-file-v1:sha256:b650b5bb201906094c86f8479c6b271c99fb1f118b107255836e136e3ebfddd0"
         }
       ]
+    },
+    {
+      "id": "claim_a96038a1448044a6b8e72211822f7c24",
+      "statement": "CI gate flow runs two separate paths: (1) nx affected -t guard-code executes callidescope-gate, codependix-gate, and conformetry-validate in parallel per affected project plus workspace integrity checks (catalog-manifests, lockfile, project-ports, readme-projects, vscode-extensions); (2) nx affected -t build-projects executes build and codometer:check (codometer measure --check limits) so size limits gate packaging. Findings are charged per-project and aggregated into GitHub status checks.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/continuous-integration.yml#L62-L65",
+          "version": "repo-lines-v1:sha256:5e539012c22fc2c354b1bab294bd8ee15d0b84df4312ee1597ad013c6e05ebbe:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU2NTRhOWExMmIzYjI3Yjg2ODRhMDJmZTc3YjAzZjEwODFkY2U5Yjk5YTI2MmI2NjBiMjkyNmE0NDA4NTFlNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NmMzMzOGEzZjNhM2FhZjc2YzczYjBmMGZjNWRmN2Q4YmNiYTcwMmEyMjRiNWIwYjFlMTg3ZDg3YTgwZTRmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2JmYWFkMDM1N2YyNTc4MDA1YjEwODAxYWE3M2M4ZmJlYWRlYWFhYzI0ZGEzNTZmNzIxZDc2MmJmNTMyNTI5YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDNjNjVkMzM5N2VlMjgwNzJkZDY2YjIyMjMxOTQ5MWFiOWYxOGFmZDg1NjdhYjZhYTYwMDc2MmNhZGE4MzJiNyJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/continuous-integration.yml#L98-L100",
+          "version": "repo-lines-v1:sha256:41363ac7eb04ed19e62b31a98a1f299f4b2fd7288f7ebf1f71909ccff325ae26:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGQyOTM1ZWMxZGUyZjEzNjM0MzczZmIzOTM1NGE2YjAyNmRkODM0NTNkN2VjYWU3M2NmNDEyNTcwNzdhZjM4ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWEyZjkyYTE3YWI5YjIxNzA5Mzc0NzAxYjQ1ZGRmMDRkZDllYjI4NWExOTY1MTU4MmY0MWNiZDhjZjUwNTU0YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmM0ODI4Y2Q3ZTAwMzA4ODAyNTc3MGFhODc5YzlmYmMwNzRhMjg3ODI3NTAwYjgxODllMjNhN2JkODhkZWM5NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTI4MDI3NWQxZWFhYTY3MmVhNTEzNjQ5Njk5NTBiMTU1MWI3NjQ1MThmOGRkYTE5OWFiMjRiZWIwZTFmYzAwYiJ9"
+        },
+        {
+          "resource": "repo://configuration/project.json#L90-L94",
+          "version": "repo-lines-v1:sha256:463d4cd5eeabccd69f27c06513d30bd03d06ea1c59506d085151432414669b5a:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc4OWZiYTZmN2E5ZGU4ZmI1YThiNjlmOWNiYTQzNmM2ZTc5YjRmOTUwYTBkOWMxNzM1NzcxOWJjODdlOTU4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjhhODllNmY3NzFkZWY1YWJmZmUwNGQ1MDcxMWQyYThlZjJlNGNhOWY1NWY2YWM1NDZiZWNhODI4NjU1NjhhOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjMyZWJlODg2NWYwZGVhOTM2MDU3NDg5YmJjNTE5NWZjMDdhYzMwYzg1N2IyZDZiYWZkYTZiMDk4ZjBkMmQyYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGU1ZjFhOGI5ODA2OTY0N2Y5ODhiNzk2NzE5ZWQwNDVhMTRjOTg0MjUxMjhiZWU4OWI0ZWIyOGNkN2VlYzExMiJ9"
+        },
+        {
+          "resource": "repo://nx.json#L245-L250",
+          "version": "repo-lines-v1:sha256:2ce6765179b036866eb73736f26478ff121dc9dff9b867adc2f3d804f904d864:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODhmNGU1OTc0MWMwNzU4OWZjMWQ1NTY0MzQzYmQyODRhZjM3ODBiYjk2Zjc2ZWNjNDE0ZDE0OGVkYTAwODYzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjA2ZjEyOTVkMGZiOWM3ZTBmODIwMzFlYjNhM2Q0MDFhYjE2NTlkZTk2NDViYWIxYzQwNjZmOTM1MWQ2NTA1YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGE1ZWI1ZTUyYzVhNTE4ZGJmNTlmZWI1ZTNiN2UzYWI4MWQxNjFkY2IxMDA2ZmVhMzFiMjhjODJmNDA5MDk4NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzY4NWU3MWRkNWQxNGYxZTQwNzk3YmVlMjUxZGMzMjE2MGJlN2IxOThiYmVkYmYyYjVkNjM3ZmY4MGYxNThjZiJ9"
+        },
+        {
+          "resource": "repo://nx.json#L634-L653",
+          "version": "repo-lines-v1:sha256:ebb50ee6fd6986a6c5a8de5ac44fe5625a5e769f03806d56403aa41c1cf6c269:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMTZlZDQ0ODUyMzhlZWIzZjVlODZkZDAxYWM3ZmNiZmRmZTA3NmM2MzQzMGQ3Nzc4ZjllOTE1MDZmOGQ2ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiYTRlMDg5YzYzMDQ0YzFhYzMwNTRlYzk4OTYyMGZlNWZlMDYzOTg2NGM3MTNhMGRiZDU2NzQyOThhMDVhMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmYzVkMDIxMWRjNjQ2NDYyNmQ3Y2ZhODk3MTNiNGU1ZDU3NTJjNTNlYmViMDdkMTEzZjU2MDJkNDVmODVjNWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFlMDU3MzM3OTNlYTY3MjIxNWZlMWQwMzk3NmE2NjVmYjQ4NjFmZDhkY2Q5NzAxZjViNTlhZGM3OGE2OGU4ODMifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-26T01:23:39.729Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }

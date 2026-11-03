@@ -1,3 +1,58 @@
+## 0.0.58 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.58
+- Updated conformetry-core to 0.0.56
+
+## 0.0.57 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.57
+- Updated conformetry-core to 0.0.55
+
+## 0.0.56 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.56
+- Updated conformetry-core to 0.0.54
+
+## 0.0.55 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.55
+
+## 0.0.54 (2026-10-27)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.54
+- Updated conformetry-core to 0.0.53
+
+## 0.0.53 (2026-10-27)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.53
+- Updated conformetry-core to 0.0.52
+
+## 0.0.52 (2026-10-26)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.52
+- Updated conformetry-core to 0.0.51
+
+## 0.0.51 (2026-10-26)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.51
+- Updated conformetry-core to 0.0.50
+
 ## 0.0.50 (2026-10-24)
 
 ### 📦 Build

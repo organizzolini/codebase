@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 
 import { Tag } from "../database/entities/tag.entity";
 
-import { TAGS_LOCK_SQL } from "./tags.constants";
 import { tagNodeKey, tagPathKey } from "./tags.utilities";
 
 import type { TagPath } from "./tags.types";
@@ -64,17 +63,14 @@ export class TagsService {
    * Maps each distinct path, by its {@link tagPathKey}, to the id of its last
    * node, through `manager`, so the nodes it inserts belong to the caller's
    * transaction. An event classified under the path is linked to that node.
-   * The caller's transaction locks the `tags` table first, so concurrent
-   * runs resolve one at a time.
+   * SQLite takes one writer at a time, so no lock is needed to keep two runs
+   * from inserting the same missing node: the second waits for the first's
+   * transaction to end.
    */
   async resolve(
     manager: EntityManager,
     paths: readonly TagPath[],
   ): Promise<Map<string, string>> {
-    // 🔒 Held until the caller's transaction ends, so two runs never both
-    // insert the same missing node and fail on its unique index.
-    await manager.query<unknown>(TAGS_LOCK_SQL);
-
     const stored = await manager.getRepository(Tag).find({
       select: { id: true, name: true, parentId: true },
     });

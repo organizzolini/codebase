@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:1b5671e6ddb46358c29f4a62f59568861a78bb95d455daeaae41a73f2925086e",
+  "pageVersion": "sha256:c28dca9902da163c1c9589dbdcb8c91fad1e2fa1fbbdb22b9e0c27c8cc785270",
   "claims": [
     {
       "id": "claim_ff5540c9dcf54d78959182fda4d52e17",
@@ -8,15 +8,15 @@
       "evidence": [
         {
           "resource": "repo://infrastructure/AGENTS.md",
-          "version": "repo-file-v1:sha256:4e94af9ce0f784fcd6e107d006e4074370a0c122f141c4b09a300429bae9c6ef"
+          "version": "repo-file-v1:sha256:36b513af3a0089df5a9703bfb7a2ae5467538dc160aa8155aee58d9333713c74"
         },
         {
           "resource": "repo://infrastructure/README.md",
-          "version": "repo-file-v1:sha256:dee74176cc97ae85248dec07d221f41c70df9ba841bfd582a6e61f1b2095eef3"
+          "version": "repo-file-v1:sha256:cf8383119539e231f9b91c40f61247d38ac8f18777490399dfa39e264158af88"
         },
         {
           "resource": "repo://infrastructure/project.json",
-          "version": "repo-file-v1:sha256:0fcfe448d99107f1da7a79ba6ec594b21a84ee026341eaa2707db59dcd32acea"
+          "version": "repo-file-v1:sha256:9a3c184e7184752ce32efc8609e108547012b2a89a4d5eeeb44ad258a2564294"
         }
       ]
     },
@@ -26,7 +26,7 @@
       "evidence": [
         {
           "resource": "repo://infrastructure/docker/docker-compose.yml",
-          "version": "repo-file-v1:sha256:245c8158a30df7ee6d76df4bec7b79cc3802ed53912e9f2fc5119865c38eabfe"
+          "version": "repo-file-v1:sha256:e242ca799db420d17b7643c353309d547b1f7242407b65cbbda93ba5f9192734"
         },
         {
           "resource": "repo://infrastructure/project.json#L56-L93",
@@ -36,15 +36,15 @@
     },
     {
       "id": "claim_ca69ae54f21b4b4085cee212c0cdb03c",
-      "statement": "The PostgreSQL Compose service uses a Compose config (postgres-databases) that installs an executable init script at /docker-entrypoint-initdb.d/databases.sh, which runs only on an empty volume and creates a role, database, and schema for each project listed in POSTGRES_PROJECTS (currently caelundas, lexico, meanderaw).",
+      "statement": "The PostgreSQL Compose service uses a Compose config (postgres-databases) that installs an executable init script at /docker-entrypoint-initdb.d/databases.sh, which runs only on an empty volume and creates a role, database, and schema for each project listed in POSTGRES_PROJECTS (currently lexico, meanderaw).",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L40-L58",
+          "resource": "repo://infrastructure/README.md#L56-L74",
           "version": "repo-lines-v1:sha256:72971f4a7d574e3e60e7d12603c1525c29cc44cb2270c97cf5d7cd3b2967f40c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MDdiNGU5NDI4ODdmODkxZDhiNGFkZGUxOThjMjNlYmEwZDllMTVmNmJjNzAxNDk1YjJjMDMyYmY0MzU1NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
         },
         {
           "resource": "repo://infrastructure/docker/docker-compose.yml#L26-L100",
-          "version": "repo-lines-v1:sha256:df3975b0ef4dd75ff69fbd9edc7e072c12f1aff03a8cdf8b69b36056e6491ce4:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMTdjYTY2MTcxMDZkNmNmNmNlYzhkZjA3MGYzZWQwNzIwNzlmY2ZjOGZhMWFiMDhjZWU5OTkxMjUyMTA1MTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNjgwNjVjN2IzOGFlOWNlMmJiNGNhNWEzZDY2ZDliZjJhOTY2MTQxOWU1YTY1YjM0ZmFhODRhYjBhNWNkODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxZTg1MDkyNjA4ZThjMmE2MDkyNGMyOGIzNTFmNjEyOTcwOWM5NmZkY2QxZDE2YWEzYTFlMDY2ZGM2N2U4ZjAifQ"
+          "version": "repo-lines-v1:sha256:92a51342e736d87045f7ffc0d2db0984fc18424bbb296d6ebf779fea78709829:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMTdjYTY2MTcxMDZkNmNmNmNlYzhkZjA3MGYzZWQwNzIwNzlmY2ZjOGZhMWFiMDhjZWU5OTkxMjUyMTA1MTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNjgwNjVjN2IzOGFlOWNlMmJiNGNhNWEzZDY2ZDliZjJhOTY2MTQxOWU1YTY1YjM0ZmFhODRhYjBhNWNkODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxZTg1MDkyNjA4ZThjMmE2MDkyNGMyOGIzNTFmNjEyOTcwOWM5NmZkY2QxZDE2YWEzYTFlMDY2ZGM2N2U4ZjAifQ"
         }
       ]
     },
@@ -57,7 +57,7 @@
           "version": "repo-lines-v1:sha256:b7307d63c162366b9efd4523159615432abe03e03f4788e190e865a5962a3eef:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyNzhlYWU4N2JkYjU2NDYzZDk2ZmQzMjE0MTJiNTdiYjg4M2ZkOGYzYTFlMmVjY2ZhZmY3YjhhMDY3ZDdkYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MWE0ZjlmYTQ5ZjY4ODBiMWQyMTU0OTVlNTg1NzE1ODRlNjFkNjdmMTcxMjkyZDM2Y2Q1MzY2MjlmZDMwMWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkMDZhN2E5NTliYWU5NWQyZDRkZjQxY2QyMzIyZTJiZWMwMzBlYjBlMTEyYzVkNzUwNjFiZDgyM2YxZDBmY2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlZmExMTdjNzZlYjkwYWJjZGU4NWJkYzEzMTM0Mjk0ZDgxMTA3OWY3NjhhNDM1NjNhNGQ2MTI2YWVkYzdlMjQifQ"
         },
         {
-          "resource": "repo://infrastructure/README.md#L40-L58",
+          "resource": "repo://infrastructure/README.md#L56-L74",
           "version": "repo-lines-v1:sha256:72971f4a7d574e3e60e7d12603c1525c29cc44cb2270c97cf5d7cd3b2967f40c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MDdiNGU5NDI4ODdmODkxZDhiNGFkZGUxOThjMjNlYmEwZDllMTVmNmJjNzAxNDk1YjJjMDMyYmY0MzU1NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
         }
       ]
@@ -67,7 +67,7 @@
       "statement": "The kubernetes-job Helm chart (infrastructure/helm/kubernetes-job/) deploys batch Jobs with optional PVC storage; values/base.yaml provides defaults including a placeholder image (my-application) that must be overridden at deploy time via --set image.repository and --set image.tag.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L18-L23",
+          "resource": "repo://infrastructure/README.md#L21-L26",
           "version": "repo-lines-v1:sha256:be6fc2c147b3722f6876caca9bb1c1653b3fc401179daadac6089a51d7171463:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmM5ZGFmYmFlYjRlMzkzZTQ5YTI2MDRjMmVkZWMwMDYzMzMwOTEyN2JmN2M0YzFkNzAyMDU0MGZhNzIyYTgxMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGM1NTc2NzBmYTBmZWY1YzQxYjMxODlkMDU1ODFjMjkyOWQ0ZTk5NWJkODk3OGNiNWZjOWY4NmUzMjc2Y2ZjOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjEwMjMwMWM3MzUyYzY2NGMxMzI2ZmE5MTBkYzA5NjEwMmQ2ODM0MDYxMTYyYmE5OTY2NWQ4ODI1MGZjOTUyNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjMxYjhmYjhkZGNjOWJjN2E2MGZmYmRkN2I5N2Y0NDVjNjlmY2Q0MDM4Njc1ZmQ1N2IyYWIxMjQwYmU5Yjg4ZSJ9"
         },
         {
@@ -85,7 +85,7 @@
       "statement": "The kubernetes-job chart's PVC is conditionally created (when persistence.enabled=true), named after the Job via the kubernetes-job.fullname helper, uses storageClassName standard by default with 1Gi size and ReadWriteOnce access, mounts at /app/output, and is never automatically deleted when the Job completes — it must be manually removed with kubectl delete pvc.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/AGENTS.md#L57-L59",
+          "resource": "repo://infrastructure/AGENTS.md#L60-L62",
           "version": "repo-lines-v1:sha256:24a0d43f03ff0cec571f893958af8a07879f3c3b36c4d0d6ff81a38e16ebae0d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjU3MGYxMzkzZWUwYzQ3ZjY1MWE4ODU3NTI5ZTE0NzE3ZGE2MDRlNWYyMmEyOTFhZTc2MjNiYzY3MjQwMjUzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjVkYWIzZGFmZWIxYTVlOTdmMTYyMmZjMTc2ZWYxZDQ1YmQ2YzFlYjA4OTlkNjg5NmY3ZmI2MWRmMjc1MjVhOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzQ5NDZiNDE2ZmUxNGZiM2NmYzAyZGE1NjhjZDg4YWFiMjBiNDk4Y2ZjYzQxZmM1MDgxOGE0Y2JjMzc5NzY5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmU0MWQzNGFiOTgyZjdiMjJmMzJhMWRiMjg5MDBmZTM2NGM0OWY3MzhjYmE3ODQ2NDNjMjgwYjFmOTAxZTUzMSJ9"
         },
         {
@@ -104,7 +104,7 @@
       "evidence": [
         {
           "resource": "repo://infrastructure/terraform/main.tf",
-          "version": "repo-file-v1:sha256:ca51cd4238cf06f2f9d26939a1e9daf8371c66f1d21d1d038441ab21dff635b4"
+          "version": "repo-file-v1:sha256:0dcf20fea7844922f56c82cd544594a0f376d210c528b48b64f834c3b8c8557a"
         },
         {
           "resource": "repo://infrastructure/terraform/variables.tf",
@@ -117,7 +117,7 @@
       "statement": "Nx targets helm-lint and compose-config run in CI as part of lint-code (the Lint leg of .github/workflows/continuous-integration.yml); helm-lint validates the kubernetes-job chart against base.yaml, compose-config validates docker-compose.yml and creates .env from .env.default if missing.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L81-L82",
+          "resource": "repo://infrastructure/README.md#L97-L98",
           "version": "repo-lines-v1:sha256:1aa3023e2227a68144bf07355a6ff4ff7bdb28b3c7fc5b1100b42e1257ddc434:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWUxNWYyNTQ2MDJkNWZlOTUwNTRmMWJiNTRmMWRhNmIwOThlMDFjNzZmMTg3NzBlNTFkZGRjNDZlN2MwODllMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDhhYWMzNmNiOWEzYjZiZmVmMGEyOTZjNTgxYTA1N2FkYjc0ZWJhNTk5NjdkODMxNjkzM2IyZmJjOGNkYmE2MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDE2NjU4NzEyMmNkMTU2YzQ1MmVlNjYwOGJkZTM3YTljM2MyMzYwMmU2OTFiMzcxYzhhYWRjMTM1MjEyYzU1MyJ9"
         },
         {
@@ -147,6 +147,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-26T01:23:39.729Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }

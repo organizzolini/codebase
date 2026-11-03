@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "preToolUse": [
+      {
+        "bash": "scripts/git/validate-subagent-model.sh",
+        "cwd": ".",
+        "matcher": "Agent|task",
+        "timeoutSec": 5,
+        "type": "command"
+      }
+    ]
+  },
+  "version": 1
+}

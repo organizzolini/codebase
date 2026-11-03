@@ -1,6 +1,6 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import type { Lexeme } from "./lexeme.entity";
 
@@ -29,7 +29,7 @@ export const pronunciationVariants = Object.values(
   name: "pronunciations",
 })
 @Unique(["lexeme", "variant"])
-export class Pronunciation extends DeletableEntity {
+export class Pronunciation extends PostgresqlDeletableEntity {
   @Index()
   @JoinColumn()
   @ManyToOne("Lexeme", "pronunciations", {

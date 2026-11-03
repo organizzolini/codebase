@@ -1,6 +1,6 @@
 import { Column, Entity, Index, OneToMany, OneToOne, Unique } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import { Form } from "./form/form.entity";
 import { Inflection } from "./inflection/inflection.entity";
@@ -19,7 +19,7 @@ import { WordLexeme } from "./word-lexeme.entity";
   name: "lexemes",
 })
 @Unique(["lemma", "disambiguator"])
-export class Lexeme extends DeletableEntity {
+export class Lexeme extends PostgresqlDeletableEntity {
   @Column("bigint", {
     comment:
       "Disambiguation index when multiple entries share the same lemma (0-based)",
