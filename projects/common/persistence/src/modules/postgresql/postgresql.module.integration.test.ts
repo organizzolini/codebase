@@ -5,7 +5,7 @@ import { DataSource } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
-import { startPostgresContainer } from "@codebase/testing/postgres";
+import { startPostgresContainer } from "@codebase/persistence/testing";
 
 import { Gadget } from "../../../testing/fixtures/gadget.entity";
 import { CreateWidgets1767225600000 } from "../../../testing/fixtures/migrations/1767225600000-create-widgets";
@@ -17,7 +17,7 @@ import {
   postgresEnvironmentSchema,
 } from "./postgresql.utilities";
 
-import type { StartedPostgresContainer } from "@codebase/testing/postgres";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 import type { TestingModule } from "@nestjs/testing";
 import type { Repository } from "typeorm";
 

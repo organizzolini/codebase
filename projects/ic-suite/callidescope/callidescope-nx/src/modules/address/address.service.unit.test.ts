@@ -4,7 +4,7 @@ import { AddressReportService } from "@callidescope/output";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/observability/testing";
 
 import { AddressService } from "./address.service";
 

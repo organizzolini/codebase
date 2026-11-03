@@ -3,6 +3,9 @@ type: integration
 title: Ollama & SearxNG Integration (Affirmancy)
 description: Documents the Affirmancy-specific integration where a LangGraph StateGraph pipeline uses SearxNG for metasearch research and Ollama (gemma4:e2b) for generation, with context budget management, model keepalive, and Pydantic validation.
 tags: [affirmancy, ollama, searxng, langgraph, state-graph, metasearch, context-budget, keepalive, pydantic-validation]
+verified:
+  - by: openwiki/0.7.0
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-834d9e55d27cecb197701e79
     resource: repo://projects/affirmancy/AGENTS.md
@@ -14,10 +17,7 @@ sources:
     resource: repo://projects/affirmancy/src/affirmancy.ipynb
   - id: openwiki-source-52fc6fd40a69feb907bfd8d5
     resource: repo://projects/affirmancy/src/services.py
-verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
 # Ollama & SearxNG Integration (Affirmancy)
@@ -39,9 +39,9 @@ flowchart TD
     I --> J[Subject Validation]
     J --> K[Output JSON/Markdown]
 
-    B -.->|12 results, 135+ engines| L[SearxNG Config]
-    C -.->|include_tables=True| M[Trafilatura Config]
-    D -.->|MAX_CHARS_PER_SOURCE=32000| N[Context Budget]
+    B -.->|12 results, 12 explicit engines + SearxNG defaults| L[SearxNG Config]
+    C -.->|include_tables=True, include_comments=False| M[Trafilatura Config]
+    D -.->|MAX_CHARS_PER_SOURCE=32_000| N[Context Budget]
     E -->|llm_analytical 0.12| O[Ollama]
     F -->|llm_generative 0.24| O
     G -->|llm_analytical 0.12| O
@@ -67,6 +67,7 @@ flowchart TD
         O3[keep_alive: 12m]
         O4[Temperatures: 0.06/0.12/0.24/0.48]
         O5[reasoning: False]
+        O6[Token callback tracking]
     end
 ```
 
@@ -76,9 +77,9 @@ flowchart TD
 
 ## SearxNG Configuration
 
-The SearxNG instance is configured via `searxng.settings.yml`, mounted into the container at `/etc/searxng/settings.yml:ro` and layered on top of SearxNG's built-in defaults (`use_default_settings: true`). Only keys specified here override the defaults; everything else inherits upstream values.
+The SearxNG instance is configured via `searxng.settings.yml`, mounted into the container at `/etc/searxng/settings.yml:ro` and layered on top of SearxNG's built-in defaults (`use_default_settings: true`). Only keys specified here override the defaults; everything else inherits upstream values. This means the full SearxNG engine catalog (135+ engines) remains available, with the 12 explicit engines below taking deduplication priority.
 
-### Engine Configuration — 135+ Engines
+### Engine Configuration — 12 Explicit Engines (4 Tiers)
 
 Engines are organized in four tiers by weight, determining deduplication priority when multiple engines return the same URL:
 
@@ -176,6 +177,7 @@ Shared settings:
 - `keep_alive="12m"` — Keeps model loaded in VRAM/RAM between calls to avoid reload latency
 - `reasoning=False` — Disables reasoning mode (faster, adequate for this use case)
 - `base_url` from `OLLAMA_HOST` env var (default: `http://localhost:11434`)
+- `callbacks=[token_counts_callback_handler]` — Tracks input/output/total tokens per call
 
 **Source**: `repo://projects/affirmancy/src/affirmancy.ipynb#L57-L71`
 
@@ -246,6 +248,15 @@ def attempts() -> Retrying:
 ```
 
 **Source**: `repo://projects/affirmancy/src/affirmancy.ipynb#L247-L261`
+
+### Structured Output & JSON5 Parsing
+
+The `generate_affirmations` and validation nodes use `llm.bind(format=...)` with a custom `Json5PydanticOutputParser` that:
+- Strips markdown code fences (` ```json ... ``` `)
+- Parses lenient JSON5 (trailing commas, comments)
+- Validates against Pydantic models (`GeneratedAffirmations`, `ValidationResult`)
+
+**Source**: `repo://projects/affirmancy/src/affirmancy.ipynb#L361-L379`
 
 ---
 

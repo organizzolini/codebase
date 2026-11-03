@@ -20,11 +20,11 @@ import {
   vi,
 } from "vitest";
 
-import { captureExitCode, captureOutput } from "@codebase/testing";
 import {
   buildTestingModule,
   expectLoggerContext,
-} from "@codebase/testing/nestjs";
+} from "@codebase/observability/testing";
+import { captureExitCode, captureOutput } from "@codebase/testing";
 
 import { AddressLookupService } from "../address-lookup/address-lookup.service";
 
@@ -34,7 +34,7 @@ import type { LocatedWorkspace } from "../address-lookup/address-lookup.types";
 import type { LocateOutcome } from "../callidescope/callidescope.types";
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 import type { LoggerService } from "@codebase/observability";
-import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+import type { TestingModuleOptions } from "@codebase/observability/testing";
 
 /** The workspace configuration every run must be pointed at with `--config`. */
 const CONFIGURATION_PATH = "callidescope.config.ts";

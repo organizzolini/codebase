@@ -22,11 +22,11 @@ import {
 import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { captureExitCode, captureOutput } from "@codebase/testing";
 import {
   buildTestingModule,
   expectLoggerContext,
-} from "@codebase/testing/nestjs";
+} from "@codebase/observability/testing";
+import { captureExitCode, captureOutput } from "@codebase/testing";
 
 import { buildCallGraphResult, buildStackFrame } from "../../../testing/mocks";
 
@@ -45,9 +45,11 @@ import type {
 } from "@callidescope/configuration";
 import type { CallGraphResult, ProjectReport } from "@callidescope/core";
 import type { UnresolvedEntryPointAddress } from "@callidescope/graph";
-import type { LoggerService } from "@codebase/observability";
+import type {
+  BuiltTestingModule,
+  TestingModuleOptions,
+} from "@codebase/observability/testing";
 import type { CapturedOutput } from "@codebase/testing";
-import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 import type { MockInstance } from "vitest";
 
@@ -208,7 +210,7 @@ describe(CallidescopeCommand, () => {
       args?: LoadConfigurationArguments,
     ) => Promise<LoadedCallidescopeConfiguration>
   >;
-  let logger: ReturnType<typeof createMock<LoggerService>>;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let outputJsonService: ReturnType<typeof createMock<OutputJsonService>>;
   let outputMarkdownService: ReturnType<
     typeof createMock<OutputMarkdownService>

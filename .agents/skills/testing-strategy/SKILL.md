@@ -36,21 +36,25 @@ nx affected --target=vitest --base=main
 
 ## Shared Helpers: `@codebase/testing`
 
-Reach for the shared package before writing setup by hand. Its subpaths are
-layered so each one depends only on what it wraps, which is what keeps the
-common packages out of a dependency cycle:
+Reach for the shared helpers before writing setup by hand. `@codebase/testing`
+imports nothing from the workspace, so any project may depend on it, the common
+packages included. Helpers that wrap a common package live with that package
+and are exported from its `/testing` entry:
 
 | Import | Use it for | Depends on |
 | ------ | ---------- | ---------- |
 | `@codebase/testing` | `createTemporaryDirectory` / `useTemporaryDirectory`, `captureOutput`, `captureExitCode`, `overrideEnvironment`, `mockDates`, `loadFixture`, `mockChildProcess`, `mockPartially`, `stubFetch`, `answerPrompts` | nothing in the workspace |
 | `@codebase/testing/setup` | The shared Vitest setup file a project's `testing/setup.ts` imports | nothing in the workspace |
-| `@codebase/testing/nestjs` | `buildTestingModule`, `expectLoggerContext`, `expectModuleProvides` / `Exports` / `Imports`, `createWorkspaceTree` | `@codebase/observability` |
-| `@codebase/testing/graphql` | The MSW GraphQL mock server and the pagination oracle | `@codebase/interface` |
-| `@codebase/testing/postgres` | The Postgres container and the database testing module | `@codebase/persistence` |
+| `@codebase/testing/nestjs` | `expectModuleProvides` / `Exports` / `Imports`, `createWorkspaceTree` | nothing in the workspace |
 | `@codebase/testing/react` | `renderRoute`, `createServerFunctionStandIn`, `matchMediaStandIn` | TanStack Router |
 | `@codebase/testing/react/setup` | The shared jsdom setup a web app's `testing/setup.ts` imports | Testing Library |
+| `@codebase/observability/testing` | `buildTestingModule`, `expectLoggerContext` | `@codebase/observability` |
+| `@codebase/interface/testing` | The MSW GraphQL mock server and the pagination oracle | `@codebase/interface` |
+| `@codebase/persistence/testing` | The Postgres container and the database testing module | `@codebase/persistence` |
 
-`observability`, `persistence`, and `interface` use the core entries only.
+A project lists each package it imports in tests as a development dependency.
+`observability`, `persistence`, and `interface` may list `@codebase/testing`
+too, because it has no workspace dependencies to close a cycle with.
 Every helper that changes global state undoes it after the test, so nothing
 leaks into the next one. The [package README](../../../projects/common/testing/README.md)
 has an example per subpath.
@@ -63,7 +67,7 @@ instance typed. A dependency nothing provides fails the build, so resolving is
 the wiring check; do not add an `"is defined"` test.
 
 ```ts
-import { buildTestingModule, expectLoggerContext } from "@codebase/testing/nestjs";
+import { buildTestingModule, expectLoggerContext } from "@codebase/observability/testing";
 
 const { instance, mock } = await buildTestingModule(ExportCommand, {
   mocks: [PostgresqlUtilitiesService],
@@ -114,7 +118,10 @@ table only ever shrinks:
 
 1. Migrate one project, or one small group, per pull request.
 2. Delete its entry from `TEST_TEMPLATE_BASELINES`, which raises its threshold
-   back to 1.
+   back to 1. For an ic-suite CLI, also delete the `threshold:
+   COMMAND_PROJECT_BASELINE` line on its own group in the
+   `nestjs-command-project` generator: that line, not the table, holds the
+   CLI's project-level threshold.
 3. Run `nx run <project>:conformetry-validate` and the coverage gate; both
    must pass without lowering anything.
 

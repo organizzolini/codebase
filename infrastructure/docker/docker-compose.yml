@@ -29,7 +29,7 @@ services:
     env_file: ../../.env
     environment:
       # Every database-backed project: adding one is adding its name here.
-      POSTGRES_PROJECTS: caelundas lexico meanderaw
+      POSTGRES_PROJECTS: lexico meanderaw
     ports:
       - 5432:5432
     volumes:

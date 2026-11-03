@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildTestingModule,
   expectLoggerContext,
-} from "@codebase/testing/nestjs";
+} from "@codebase/observability/testing";
 
 import { {{namePascalCase}}Command } from "./{{nameKebabCase}}.command";
 

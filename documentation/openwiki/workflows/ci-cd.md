@@ -2,9 +2,6 @@
 type: "Reference"
 title: "CI/CD Pipelines"
 openwiki_generated: true
-verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
 sources:
   - id: openwiki-source-021f568adb8078955fd1aacf
     resource: repo://.github/actions/cleanup-codebase/action.yml

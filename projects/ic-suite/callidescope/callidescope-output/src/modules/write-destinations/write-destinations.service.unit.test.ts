@@ -3,7 +3,7 @@ import path from "node:path";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/observability/testing";
 
 import { buildEmptyCallGraphResult } from "../../../testing/mocks";
 import { OutputJsonService } from "../output-json/output-json.service";

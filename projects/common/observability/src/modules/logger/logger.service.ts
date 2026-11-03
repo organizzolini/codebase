@@ -13,7 +13,11 @@ import {
   UNVALIDATED_LOG_CONTEXTS,
 } from "./logger.constants";
 
-import type { LogData, ParsedLogMessage } from "./logger.types";
+import type {
+  LogData,
+  LoggerServiceContract,
+  ParsedLogMessage,
+} from "./logger.types";
 
 /**
  * Transient-scoped logger so each injecting class gets its own instance.
@@ -32,7 +36,10 @@ import type { LogData, ParsedLogMessage } from "./logger.types";
  * ```
  */
 @Injectable({ scope: Scope.TRANSIENT })
-export class LoggerService extends ConsoleLogger {
+export class LoggerService
+  extends ConsoleLogger
+  implements LoggerServiceContract
+{
   // 🏗 Dependency Injection
 
   constructor() {

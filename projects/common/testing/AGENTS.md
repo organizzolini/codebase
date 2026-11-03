@@ -5,8 +5,8 @@
 **Type**: TypeScript library package (`@codebase/testing`)
 
 **Purpose**: The test boilerplate and utilities every project shares, so
-tests stop copying setup files, Nest testing modules, temporary directories,
-and capture code. See [README.md](README.md) for each entry's API.
+tests stop copying setup files, temporary directories, and capture code. See
+[README.md](README.md) for each entry's API.
 
 ## Architecture Overview
 
@@ -16,29 +16,19 @@ and capture code. See [README.md](README.md) for each entry's API.
 src/
   index.ts          # @codebase/testing: the core, no workspace dependencies
   setup.ts          # @codebase/testing/setup: the shared Vitest setup file
-  nestjs.ts         # @codebase/testing/nestjs: module builder, assertions, Nx tree
-  graphql.ts        # @codebase/testing/graphql: the pagination oracle
-  postgres.ts       # @codebase/testing/postgres: container and database testing module
+  nestjs.ts         # @codebase/testing/nestjs: module assertions and Nx tree
   react.ts          # @codebase/testing/react: route render and stand-ins
   react-setup.ts    # @codebase/testing/react/setup: the shared jsdom setup
   modules/          # One folder per helper, each with its unit test
-testing/
-  fixtures/         # Sample Nest classes and Postgres fixtures the tests build on
 ```
 
 ## Development
 
 ### Rules this package holds
 
-- **Keep the core free of workspace imports.** `src/index.ts` and
-  `src/setup.ts` must reach nothing under `projects/`, so every project can
-  use them.
-- **Each adapter depends only on what it wraps.** The Nest entry on
-  `observability`, GraphQL on `interface`, Postgres on `persistence`.
-- **Depend only on the common packages.** `observability`, `persistence`, and
-  `interface` may import this package back, and the cycles that closes are
-  allowed only among them: the `name:testing` boundary rule keeps every other
-  project out of reach.
+- **Keep the entire package free of workspace imports.** Owner-specific
+  adapters belong to their owning packages and are exported from those
+  packages' `/testing` entries.
 - **Undo every global change when the test finishes.** Register the undo with
   `onTestFinished` (or a `beforeAll` teardown) inside the helper, never in the
   caller.
@@ -53,7 +43,6 @@ testing/
 ```bash
 nx run testing:typecheck-code,lint-code,format-code,deprecate-code,guard-code
 nx run testing:vitest:unit
-nx run testing:vitest:integration   # Docker must be running
 nx run testing:type-coverage
 ```
 

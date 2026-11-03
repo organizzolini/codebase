@@ -216,7 +216,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "A contracts leaf declares types and reaches nothing at all. This is the ic-suite spine stated once for every toolchain rather than four times: core, then configuration, then analysis, then output, then cli, each layer reaching its own layer and every layer beneath it. A forbid because the configuration schema refuses a selector naming no nodes, so the allow that would say the same thing cannot be written.",
         name: "core-is-a-leaf",
-        to: { id: ["!(configuration|testing)"] },
+        to: { id: ["!(configuration|observability|testing)"] },
       },
       {
         from: { tags: ["layer:configuration"] },
@@ -295,7 +295,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "The callidescope spine points one way: core is the contracts leaf, configuration resolves the file and the flags over it, the graph builder analyzes, the output renderer reads both, the command-line host composes them, and the Nx plugin sits on top so `@nx/devkit` never reaches a package that traces.",
         name: "callidescope-core-is-a-leaf",
-        to: { id: ["!(configuration|testing)"] },
+        to: { id: ["!(configuration|observability|testing)"] },
       },
       {
         from: { tags: ["name:callidescope-configuration"] },
@@ -389,7 +389,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "The codependix chain points one way: core is the contracts leaf, configuration resolves the config file and the command line over it, the four analyzers read both, the output renderer reads all of them, and the command-line host composes the lot.",
         name: "codependix-core-is-a-leaf",
-        to: { id: ["!(configuration)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["name:codependix-configuration"] },
@@ -397,7 +397,9 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "The codependix chain points one way: core is the contracts leaf, configuration resolves the config file and the command line over it, the four analyzers read both, the output renderer reads all of them, and the command-line host composes the lot.",
         name: "codependix-configuration-layer",
-        to: { tags: ["name:configuration", "name:codependix-core"] },
+        to: {
+          tags: ["name:configuration", "name:codependix-core", "name:testing"],
+        },
       },
       {
         from: {
@@ -417,6 +419,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codependix-configuration",
             "name:codependix-core",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -434,6 +437,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codependix-file-imports",
             "name:codependix-nestjs-modules",
             "name:codependix-nx-projects",
+            "name:testing",
           ],
         },
       },
@@ -453,6 +457,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codependix-nestjs-modules",
             "name:codependix-nx-projects",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -470,6 +475,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codependix-core",
             "name:codependix-output",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -484,6 +490,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:configuration",
             "name:codependix-cli",
             "name:codependix-configuration",
+            "name:testing",
           ],
         },
       },
@@ -733,26 +740,10 @@ const codependixConfiguration: CodependixConfiguration = {
         to: { tags: ["domain:caelundas"] },
       },
       {
-        from: { tags: ["name:testing"] },
-        kind: "allow",
-        message:
-          "The testing package wraps only the common packages, so the cycles it is allowed to close with them stay among the common packages.",
-        name: "testing-wraps-only-common-packages",
-        to: {
-          tags: [
-            "name:configuration",
-            "name:interface",
-            "name:observability",
-            "name:persistence",
-          ],
-        },
-      },
-      {
         kind: "acyclic",
         message:
-          "Two projects that depend on each other cannot be built, released, or reasoned about apart. Stated here rather than left to Nx because an implicit edge closes a cycle just as a real import does, and `@nx/enforce-module-boundaries` has no import statement to flag for one. The testing package is left out: observability, persistence, and interface may use it in their own tests while its adapters wrap them, and the rule above keeps those cycles among the common packages.",
+          "Two projects that depend on each other cannot be built, released, or reasoned about apart. Stated here rather than left to Nx because an implicit edge closes a cycle just as a real import does, and `@nx/enforce-module-boundaries` has no import statement to flag for one.",
         name: "no-project-cycles",
-        nodes: { id: ["!(testing)"] },
       },
     ],
   },

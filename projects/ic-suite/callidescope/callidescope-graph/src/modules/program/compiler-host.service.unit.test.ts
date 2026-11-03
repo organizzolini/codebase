@@ -4,8 +4,8 @@ import path from "node:path";
 import ts from "typescript";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 

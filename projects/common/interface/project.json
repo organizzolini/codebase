@@ -1,6 +1,5 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "implicitDependencies": ["!testing"],
   "name": "interface",
   "projectType": "library",
   "sourceRoot": "projects/common/interface",

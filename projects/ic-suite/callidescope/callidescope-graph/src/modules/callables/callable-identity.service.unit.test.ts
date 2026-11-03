@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/observability/testing";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import {

@@ -4,8 +4,8 @@ import path from "node:path";
 import { createMock } from "@golevelup/ts-vitest";
 import { describe, expect, it, vi } from "vitest";
 
+import { buildTestingModule } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildEmptyCallGraphResult } from "../../../testing/mocks";
 import { ANALYSIS_MODULES } from "../../../testing/modules";
