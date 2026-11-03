@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 
 import { ComparisonModule } from "../comparison/comparison.module";
+import { JsonModule } from "../json/json.module";
 import { MarkdownModule } from "../markdown/markdown.module";
 
 import { DeliveryService } from "./delivery.service";
@@ -12,7 +13,7 @@ import { DeliveryService } from "./delivery.service";
 @Module({
   controllers: [],
   exports: [DeliveryService],
-  imports: [ComparisonModule, MarkdownModule],
+  imports: [ComparisonModule, JsonModule, MarkdownModule],
   providers: [DeliveryService],
 })
 export class DeliveryModule {}

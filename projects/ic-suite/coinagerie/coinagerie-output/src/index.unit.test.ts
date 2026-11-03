@@ -10,6 +10,8 @@ describe("coinagerie-output index", () => {
         "ComparisonService",
         "DeliveryModule",
         "DeliveryService",
+        "JsonModule",
+        "JsonService",
         "MarkdownModule",
         "MarkdownService",
       ].toSorted(),

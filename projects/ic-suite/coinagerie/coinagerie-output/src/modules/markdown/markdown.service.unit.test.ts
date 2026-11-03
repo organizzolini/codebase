@@ -265,6 +265,16 @@ describe(MarkdownService, () => {
       ).toContain("\nConfigured.\n\n- **gate**:");
     });
 
+    it("keeps the prose when the destination can carry no description", () => {
+      expect(
+        service.write({
+          content: handWritten,
+          destination: { path: "/repo/glossary.json", type: "json" },
+          glossary: new Map([["gate", ""]]),
+        }),
+      ).toBe(handWritten);
+    });
+
     it("writes a new file with no description at all", () => {
       expect(
         service.write({

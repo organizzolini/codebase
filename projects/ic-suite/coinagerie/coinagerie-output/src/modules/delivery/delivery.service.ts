@@ -4,6 +4,7 @@ import path from "node:path";
 import { Injectable } from "@nestjs/common";
 
 import { ComparisonService } from "../comparison/comparison.service";
+import { JsonService } from "../json/json.service";
 import { MarkdownService } from "../markdown/markdown.service";
 
 import type {
@@ -29,9 +30,10 @@ export class DeliveryService {
 
   constructor(
     private readonly comparisonService: ComparisonService,
+    jsonService: JsonService,
     markdownService: MarkdownService,
   ) {
-    this.handlers = { markdown: markdownService };
+    this.handlers = { json: jsonService, markdown: markdownService };
   }
 
   // 🔐 Private Fields
@@ -48,6 +50,15 @@ export class DeliveryService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /** What a destination's file holds once written with exactly the words. */
+  private contentFor(read: ReadDestination, words: string[]): string {
+    return this.handlerFor(read.destination).write({
+      content: read.content,
+      destination: read.destination,
+      glossary: this.comparisonService.reconcile(words, read.glossary),
+    });
+  }
 
   /** How one read destination differs from the vocabulary. */
   private differenceOf(
@@ -101,11 +112,7 @@ export class DeliveryService {
    */
   write(args: DeliverArguments): DeliveryResult[] {
     return this.readAll(args.destinations).map((read) => {
-      const content = this.handlerFor(read.destination).write({
-        content: read.content,
-        destination: read.destination,
-        glossary: this.comparisonService.reconcile(args.words, read.glossary),
-      });
+      const content = this.contentFor(read, args.words);
       const written = content !== read.content;
 
       if (written) {
