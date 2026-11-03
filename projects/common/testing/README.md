@@ -5,18 +5,15 @@ The shared test code every project's tests can import.
 ## Purpose
 
 Tests across the workspace repeated the same boilerplate: a Vitest setup file
-copied into every project, hand-built Nest testing modules, hand-rolled
-temporary directories, output capture, and environment edits. This package
-holds that code once, laid out as subpath exports so each layer depends only
-on what it wraps.
+copied into every project, hand-rolled temporary directories, output capture,
+and environment edits. This package holds that code once, laid out as
+subpath exports.
 
 | Entry                           | Holds                                                                                                        | Depends on                |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------- |
 | `@codebase/testing`             | Temporary directories, output and exit-code capture, environment overrides, the fixed clock, fixtures, mocks | nothing in the workspace  |
 | `@codebase/testing/setup`       | The shared Vitest setup file                                                                                 | nothing in the workspace  |
-| `@codebase/testing/nestjs`      | The testing-module builder, the logger-context and module-wiring assertions, the Nx workspace tree           | `@codebase/observability` |
-| `@codebase/testing/graphql`     | The MSW GraphQL mock server, and the pagination oracle a SQL-backed page is checked against                  | `@codebase/interface`     |
-| `@codebase/testing/postgres`    | The Postgres container and the database testing module                                                       | `@codebase/persistence`   |
+| `@codebase/testing/nestjs`      | The testing-module builder, module-wiring assertions, and the Nx workspace tree                              | `@codebase/observability` |
 | `@codebase/testing/react`       | The route-render helper and the `createServerFn` and `matchMedia` stand-ins                                  | TanStack Router           |
 | `@codebase/testing/react/setup` | The shared jsdom setup                                                                                       | Testing Library           |
 
@@ -29,9 +26,8 @@ Add the package as a development dependency:
 "devDependencies": { "@codebase/testing": "workspace:*" }
 ```
 
-A project whose `testing/` folder imports it lists it under `dependencies`
-instead, because the dependency check counts `testing/` files as shipped code;
-`interface` and `persistence` do.
+A project whose shipped `testing/` files import it lists it under
+`dependencies` instead.
 
 ### Core
 
@@ -74,33 +70,30 @@ queues answers for the `promptsMock` stand-in of the `prompts` package.
 ### Nest
 
 ```ts
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 const { instance, mock } = await buildTestingModule(ExportCommand, {
   mocks: [PostgresqlUtilitiesService],
 });
 mock(PostgresqlUtilitiesService).dump.mockResolvedValue(undefined);
-
-await expectLoggerContext(ExportCommand, {
-  mocks: [PostgresqlUtilitiesService],
-});
 ```
 
-The builder always provides a logger mock, and a dependency nothing provides
-fails the build, so resolving the class is itself the wiring check an "is
-defined" test used to stand in for. `expectModuleProvides`,
-`expectModuleExports`, and `expectModuleImports` assert a module's
-`@Module` metadata without reading it by hand.
+`buildTestingModule` always provides a deep mock of observability's
+`LoggerService`, and a dependency nothing provides fails the build, so
+resolving the class is itself the wiring check an "is defined" test used to
+stand in for. `@codebase/testing/nestjs` also exports `expectModuleProvides`,
+`expectModuleExports`, and `expectModuleImports` to assert a module's
+`@Module` metadata without reading it by hand. `expectLoggerContext`, which
+builds the class the same way and asserts its logger context, comes from
+[`@codebase/observability/testing`](../observability/README.md#testing-helpers).
 
 ### Postgres
 
 `startDatabaseTestingModule` starts a migrated throwaway Postgres and compiles
 a Nest testing module connected to it; `startPostgresContainer` starts the
-container alone. See the [persistence README](../persistence/README.md#integration-tests)
-for the options. Docker must be running.
+container alone. Both are exported by `@codebase/persistence/testing`. See
+the [persistence README](../persistence/README.md#integration-tests) for the
+options. Docker must be running.
 
 ### React
 
@@ -116,17 +109,17 @@ page alone, so no test has to mock `__root`. A web application points
 
 ## Dependency rules
 
-- The core entries import nothing from the workspace, so any project can use
-  them.
-- This package depends only on the common packages: `observability`,
-  `persistence`, `interface`, and `configuration`. Those may import it back,
-  as `@codebase/persistence/testing` and `@codebase/interface/testing` do to
-  re-export what moved here; the module-boundary and codependix rules allow
-  those cycles and no others.
+- The core, `/setup`, and `/react` entries import nothing from the
+  workspace. `/nestjs` imports `@codebase/observability`, for the
+  `LoggerService` token and `LoggerServiceContract` type its module builder
+  mocks; it is the package's only workspace dependency.
+- `@codebase/observability/testing` imports `/nestjs` back. The module-boundary
+  rule allows that one cycle, and observability's `implicitDependencies:
+["!testing"]` keeps it out of the task graph, so no build waits on another.
+- Adapters that need `interface`, `persistence`, or `observability` live with
+  those packages and are exported from their `/testing` entries.
 - A project tagged `framework:react` may import this package from its tests
-  and `testing/` harnesses only: the Nest and Postgres adapters reach
-  packages tagged `framework:nestjs`, which a React project's own code still
-  may not.
+  and `testing/` harnesses only.
 
 ## Test
 
@@ -137,3 +130,100 @@ nx run testing:vitest
 ## 👔 Conformetry
 
 This project was generated from the [nestjs-service-project](../../../configuration/conformetry-templates/nestjs-service-project) conformetry template.
+
+## 🕸️ Codependix
+
+Dependency graphs exported by [codependix](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-cli), regenerated by `nx run configuration:codependix:write`.
+
+### Nx Neighborhood
+
+<!-- codependix:start name="codependix-nx-projects" -->
+
+```mermaid
+graph LR
+  configuration["configuration"]
+  lexico_web["lexico-web"]
+  testing["testing"]
+  lexico_web --> testing
+  testing --> configuration
+  classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
+  class testing subject
+```
+
+<!-- codependix:end name="codependix-nx-projects" -->
+
+### File Imports
+
+<!-- codependix:start name="codependix-file-imports" -->
+
+```mermaid
+graph LR
+  file_callidescope_config_ts["callidescope.config.ts"]
+  file_codependix_config_ts["codependix.config.ts"]
+  file_codometer_config_ts["codometer.config.ts"]
+  file_eslint_config_ts["eslint.config.ts"]
+  file_src_index_ts["src/index.ts"]
+  file_src_modules_browser_stand_ins_browser_stand_ins_types_ts["src/modules/browser-stand-ins/browser-stand-ins.types.ts"]
+  file_src_modules_browser_stand_ins_browser_stand_ins_utilities_ts["src/modules/browser-stand-ins/browser-stand-ins.utilities.ts"]
+  file_src_modules_browser_stand_ins_browser_stand_ins_utilities_unit_test_ts["src/modules/browser-stand-ins/browser-stand-ins.utilities.unit.test.ts"]
+  file_src_modules_capture_capture_types_ts["src/modules/capture/capture.types.ts"]
+  file_src_modules_capture_capture_utilities_ts["src/modules/capture/capture.utilities.ts"]
+  file_src_modules_capture_capture_utilities_unit_test_ts["src/modules/capture/capture.utilities.unit.test.ts"]
+  file_src_modules_clock_clock_constants_ts["src/modules/clock/clock.constants.ts"]
+  file_src_modules_clock_clock_utilities_ts["src/modules/clock/clock.utilities.ts"]
+  file_src_modules_clock_clock_utilities_unit_test_ts["src/modules/clock/clock.utilities.unit.test.ts"]
+  file_src_modules_environment_environment_utilities_ts["src/modules/environment/environment.utilities.ts"]
+  file_src_modules_environment_environment_utilities_unit_test_ts["src/modules/environment/environment.utilities.unit.test.ts"]
+  file_src_modules_fixtures_fixtures_utilities_ts["src/modules/fixtures/fixtures.utilities.ts"]
+  file_src_modules_fixtures_fixtures_utilities_unit_test_ts["src/modules/fixtures/fixtures.utilities.unit.test.ts"]
+  file_src_modules_mocks_mocks_constants_ts["src/modules/mocks/mocks.constants.ts"]
+  file_src_modules_mocks_mocks_types_ts["src/modules/mocks/mocks.types.ts"]
+  file_src_modules_mocks_mocks_utilities_ts["src/modules/mocks/mocks.utilities.ts"]
+  file_src_modules_mocks_mocks_utilities_unit_test_ts["src/modules/mocks/mocks.utilities.unit.test.ts"]
+  file_src_modules_module_wiring_module_wiring_utilities_ts["src/modules/module-wiring/module-wiring.utilities.ts"]
+  file_src_modules_module_wiring_module_wiring_utilities_unit_test_ts["src/modules/module-wiring/module-wiring.utilities.unit.test.ts"]
+  file_src_modules_route_render_route_render_utilities_tsx["src/modules/route-render/route-render.utilities.tsx"]
+  file_src_modules_route_render_route_render_utilities_unit_test_tsx["src/modules/route-render/route-render.utilities.unit.test.tsx"]
+  file_src_modules_temporary_directory_temporary_directory_constants_ts["src/modules/temporary-directory/temporary-directory.constants.ts"]
+  file_src_modules_temporary_directory_temporary_directory_utilities_ts["src/modules/temporary-directory/temporary-directory.utilities.ts"]
+  file_src_modules_temporary_directory_temporary_directory_utilities_unit_test_ts["src/modules/temporary-directory/temporary-directory.utilities.unit.test.ts"]
+  file_src_modules_workspace_tree_workspace_tree_utilities_ts["src/modules/workspace-tree/workspace-tree.utilities.ts"]
+  file_src_modules_workspace_tree_workspace_tree_utilities_unit_test_ts["src/modules/workspace-tree/workspace-tree.utilities.unit.test.ts"]
+  file_src_nestjs_ts["src/nestjs.ts"]
+  file_src_react_setup_ts["src/react-setup.ts"]
+  file_src_react_setup_unit_test_tsx["src/react-setup.unit.test.tsx"]
+  file_src_react_ts["src/react.ts"]
+  file_src_setup_ts["src/setup.ts"]
+  file_src_setup_unit_test_ts["src/setup.unit.test.ts"]
+  file_testing_setup_ts["testing/setup.ts"]
+  file_vitest_config_ts["vitest.config.ts"]
+  file_src_modules_browser_stand_ins_browser_stand_ins_utilities_ts --> file_src_modules_browser_stand_ins_browser_stand_ins_types_ts
+  file_src_modules_browser_stand_ins_browser_stand_ins_utilities_unit_test_ts --> file_src_modules_browser_stand_ins_browser_stand_ins_utilities_ts
+  file_src_modules_capture_capture_utilities_ts --> file_src_modules_capture_capture_types_ts
+  file_src_modules_capture_capture_utilities_unit_test_ts --> file_src_modules_capture_capture_utilities_ts
+  file_src_modules_clock_clock_utilities_ts --> file_src_modules_clock_clock_constants_ts
+  file_src_modules_clock_clock_utilities_unit_test_ts --> file_src_modules_clock_clock_constants_ts
+  file_src_modules_clock_clock_utilities_unit_test_ts --> file_src_modules_clock_clock_utilities_ts
+  file_src_modules_environment_environment_utilities_unit_test_ts --> file_src_modules_environment_environment_utilities_ts
+  file_src_modules_fixtures_fixtures_utilities_unit_test_ts --> file_src_modules_fixtures_fixtures_utilities_ts
+  file_src_modules_fixtures_fixtures_utilities_unit_test_ts --> file_src_modules_temporary_directory_temporary_directory_utilities_ts
+  file_src_modules_mocks_mocks_constants_ts --> file_src_modules_mocks_mocks_types_ts
+  file_src_modules_mocks_mocks_utilities_ts --> file_src_modules_mocks_mocks_constants_ts
+  file_src_modules_mocks_mocks_utilities_ts --> file_src_modules_mocks_mocks_types_ts
+  file_src_modules_mocks_mocks_utilities_unit_test_ts --> file_src_modules_mocks_mocks_constants_ts
+  file_src_modules_mocks_mocks_utilities_unit_test_ts --> file_src_modules_mocks_mocks_utilities_ts
+  file_src_modules_mocks_mocks_utilities_unit_test_ts --> file_src_modules_temporary_directory_temporary_directory_utilities_ts
+  file_src_modules_module_wiring_module_wiring_utilities_unit_test_ts --> file_src_modules_module_wiring_module_wiring_utilities_ts
+  file_src_modules_route_render_route_render_utilities_unit_test_tsx --> file_src_modules_route_render_route_render_utilities_tsx
+  file_src_modules_temporary_directory_temporary_directory_utilities_ts --> file_src_modules_temporary_directory_temporary_directory_constants_ts
+  file_src_modules_temporary_directory_temporary_directory_utilities_unit_test_ts --> file_src_modules_temporary_directory_temporary_directory_constants_ts
+  file_src_modules_temporary_directory_temporary_directory_utilities_unit_test_ts --> file_src_modules_temporary_directory_temporary_directory_utilities_ts
+  file_src_modules_workspace_tree_workspace_tree_utilities_unit_test_ts --> file_src_modules_workspace_tree_workspace_tree_utilities_ts
+  file_src_react_setup_ts --> file_src_modules_browser_stand_ins_browser_stand_ins_utilities_ts
+  file_src_react_setup_unit_test_tsx --> file_src_react_setup_ts
+  file_src_setup_ts --> file_src_modules_mocks_mocks_constants_ts
+  file_src_setup_unit_test_ts --> file_src_modules_mocks_mocks_constants_ts
+  file_testing_setup_ts --> file_src_setup_ts
+```
+
+<!-- codependix:end name="codependix-file-imports" -->

@@ -19,7 +19,7 @@ const sweeps = new Map<string, Promise<PipelineWindow>>();
  * Runs the real perfective pass, then the real progressive pass, over a short
  * window of Swiss Ephemeris data, and returns what they detected.
  *
- * It stops where `CaelundasCommand` stores events: no Postgres, no calendar
+ * It stops where `CaelundasCommand` stores events: no database, no calendar
  * file, and no network. The ephemeris files must already be on disk, which
  * `nx run caelundas-cli:download-ephemeris` puts there.
  *

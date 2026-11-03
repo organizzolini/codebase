@@ -3,15 +3,13 @@ import { ReportingService } from "@conformetry/output";
 import { ValidationService } from "@conformetry/validation";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { captureExitCode } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ValidateCommand } from "./validate.command";
 
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type {
   ConformetryConfiguration,
   Instance,
@@ -69,7 +67,7 @@ const TWO_TEMPLATES: ConformetryConfiguration = [
 describe(ValidateCommand, () => {
   let command: ValidateCommand;
   let configurationService: ConfigurationService;
-  let commandLogger: LoggerService;
+  let commandLogger: BuiltTestingModule<ValidateCommand>["logger"];
   let reportingService: ReportingService;
   let validationService: ValidationService;
 

@@ -1,9 +1,5 @@
+import { Module } from "@nestjs/common";
 import { describe, expect, it } from "vitest";
-
-import { SampleClockModule } from "../../../testing/fixtures/sample-clock.module";
-import { SampleClockService } from "../../../testing/fixtures/sample-clock.service";
-import { SampleGreeterModule } from "../../../testing/fixtures/sample-greeter.module";
-import { SampleGreeterService } from "../../../testing/fixtures/sample-greeter.service";
 
 import {
   expectModuleExports,
@@ -13,46 +9,68 @@ import {
 
 // 🧪 Tests
 
+class ClockDependency {
+  public now(): string {
+    return "";
+  }
+}
+
+@Module({ exports: [ClockDependency], providers: [ClockDependency] })
+class ClockModule {}
+
+class GreeterDependency {
+  public greet(): string {
+    return "";
+  }
+}
+
+@Module({
+  exports: [GreeterDependency],
+  imports: [ClockModule],
+  providers: [GreeterDependency],
+})
+class GreeterModule {}
+
 describe("module wiring", () => {
   describe(expectModuleProvides, () => {
     it("passes for providers the module declares", () => {
       expect(() => {
-        expectModuleProvides(SampleGreeterModule, SampleGreeterService);
+        expectModuleProvides(GreeterModule, GreeterDependency);
       }).not.toThrow();
     });
 
     it("fails for a provider the module does not declare", () => {
       expect(() => {
-        expectModuleProvides(SampleGreeterModule, SampleClockService);
-      }).toThrow(/SampleClockService/u);
+        expectModuleProvides(GreeterModule, ClockDependency);
+      }).toThrow(/ClockDependency/u);
     });
   });
 
   describe(expectModuleExports, () => {
     it("passes for providers the module exports", () => {
       expect(() => {
-        expectModuleExports(SampleClockModule, SampleClockService);
+        expectModuleExports(ClockModule, ClockDependency);
       }).not.toThrow();
     });
 
     it("fails for a provider the module does not export", () => {
       expect(() => {
-        expectModuleExports(SampleGreeterModule, SampleClockService);
-      }).toThrow(/SampleClockService/u);
+        expectModuleExports(GreeterModule, ClockDependency);
+      }).toThrow(/ClockDependency/u);
     });
   });
 
   describe(expectModuleImports, () => {
     it("passes for modules the module imports", () => {
       expect(() => {
-        expectModuleImports(SampleGreeterModule, SampleClockModule);
+        expectModuleImports(GreeterModule, ClockModule);
       }).not.toThrow();
     });
 
     it("fails for a module that declares no imports at all", () => {
       expect(() => {
-        expectModuleImports(SampleClockModule, SampleGreeterModule);
-      }).toThrow(/SampleGreeterModule/u);
+        expectModuleImports(ClockModule, GreeterModule);
+      }).toThrow(/GreeterModule/u);
     });
   });
 });
