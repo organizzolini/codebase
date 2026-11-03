@@ -4,10 +4,10 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { IssueMetadataService } from "../issue/issue-metadata.service";
 
-import { PullRequestChildIssuesService } from "./pull-request-child-issues.service";
+import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
+import { PullRequestAncestorLinksService } from "./pull-request-ancestor-links.service";
+import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
-import { PullRequestParentIssuesService } from "./pull-request-parent-issues.service";
-import { PullRequestParentLinksService } from "./pull-request-parent-links.service";
 
 import type { PullRequestContext } from "./pull-request-context.types";
 import type { GithubCliResult } from "./pull-request-github.types";
@@ -37,40 +37,40 @@ const failed: GithubCliResult = {
   succeeded: false,
 };
 
-describe(PullRequestParentIssuesService, () => {
-  let service: PullRequestParentIssuesService;
+describe(PullRequestAncestorIssuesService, () => {
+  let service: PullRequestAncestorIssuesService;
   let github: PullRequestGithubService;
-  let children: PullRequestChildIssuesService;
-  let links: PullRequestParentLinksService;
+  let children: PullRequestDescendantIssuesService;
+  let links: PullRequestAncestorLinksService;
   let metadata: IssueMetadataService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        PullRequestParentIssuesService,
+        PullRequestAncestorIssuesService,
         {
           provide: IssueMetadataService,
           useValue: createMock<IssueMetadataService>(),
         },
         {
-          provide: PullRequestChildIssuesService,
-          useValue: createMock<PullRequestChildIssuesService>(),
+          provide: PullRequestDescendantIssuesService,
+          useValue: createMock<PullRequestDescendantIssuesService>(),
         },
         {
           provide: PullRequestGithubService,
           useValue: createMock<PullRequestGithubService>(),
         },
         {
-          provide: PullRequestParentLinksService,
-          useValue: createMock<PullRequestParentLinksService>(),
+          provide: PullRequestAncestorLinksService,
+          useValue: createMock<PullRequestAncestorLinksService>(),
         },
       ],
     }).compile();
 
-    service = await module.resolve(PullRequestParentIssuesService);
+    service = await module.resolve(PullRequestAncestorIssuesService);
     github = await module.resolve(PullRequestGithubService);
-    children = await module.resolve(PullRequestChildIssuesService);
-    links = await module.resolve(PullRequestParentLinksService);
+    children = await module.resolve(PullRequestDescendantIssuesService);
+    links = await module.resolve(PullRequestAncestorLinksService);
     metadata = await module.resolve(IssueMetadataService);
   });
 
@@ -132,7 +132,7 @@ describe(PullRequestParentIssuesService, () => {
 
     expect(service.link(context).outcome).toStrictEqual({
       failures: [],
-      lines: ["ℹ️ No linked issues; no parent references to add"],
+      lines: ["ℹ️ No linked issues; no ancestor references to add"],
     });
   });
 
@@ -163,8 +163,8 @@ describe(PullRequestParentIssuesService, () => {
       "Closes",
     );
     expect(result.outcome.lines).toStrictEqual([
-      "✅ Added parent issue references: #3",
-      "✅ Added closing child issue references: #8, #9",
+      "✅ Added ancestor issue references: #3",
+      "✅ Added closing descendant issue references: #8, #9",
     ]);
   });
 
@@ -198,7 +198,7 @@ describe(PullRequestParentIssuesService, () => {
     vi.mocked(links.addRelatedIssueReferences).mockReturnValue("Closes #5");
 
     expect(service.link(context).outcome.lines).toStrictEqual([
-      "✅ Parent issue references are already present",
+      "✅ Ancestor issue references are already present",
     ]);
   });
 

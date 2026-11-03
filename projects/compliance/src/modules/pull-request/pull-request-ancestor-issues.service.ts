@@ -2,13 +2,13 @@ import { Injectable } from "@nestjs/common";
 
 import { IssueMetadataService } from "../issue/issue-metadata.service";
 
-import { PullRequestChildIssuesService } from "./pull-request-child-issues.service";
-import { PullRequestGithubService } from "./pull-request-github.service";
 import {
-  issueParentSchema,
+  issueAncestorSchema,
   linkedIssueNumbersSchema,
-} from "./pull-request-parent-links.constants";
-import { PullRequestParentLinksService } from "./pull-request-parent-links.service";
+} from "./pull-request-ancestor-links.constants";
+import { PullRequestAncestorLinksService } from "./pull-request-ancestor-links.service";
+import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
+import { PullRequestGithubService } from "./pull-request-github.service";
 
 import type { PullRequestContext } from "./pull-request-context.types";
 import type { LinkResult, PullRequestResult } from "./pull-request.types";
@@ -20,14 +20,14 @@ import type { LinkResult, PullRequestResult } from "./pull-request.types";
  * entire subtree.
  */
 @Injectable()
-export class PullRequestParentIssuesService {
+export class PullRequestAncestorIssuesService {
   // 🏗 Dependency Injection
 
   constructor(
     private readonly issueMetadataService: IssueMetadataService,
-    private readonly pullRequestChildIssuesService: PullRequestChildIssuesService,
+    private readonly pullRequestDescendantIssuesService: PullRequestDescendantIssuesService,
     private readonly pullRequestGithubService: PullRequestGithubService,
-    private readonly pullRequestParentLinksService: PullRequestParentLinksService,
+    private readonly pullRequestAncestorLinksService: PullRequestAncestorLinksService,
   ) {}
 
   // 🔐 Private Fields
@@ -141,7 +141,7 @@ export class PullRequestParentIssuesService {
         "{body: .body, parent: .parent}",
       ],
       (document) => {
-        const issue = issueParentSchema.parse(document);
+        const issue = issueAncestorSchema.parse(document);
 
         return (
           issue.parent?.number ??
@@ -170,13 +170,13 @@ export class PullRequestParentIssuesService {
     let body: string;
 
     try {
-      body = this.pullRequestParentLinksService.addRelatedIssueReferences(
+      body = this.pullRequestAncestorLinksService.addRelatedIssueReferences(
         context.body,
         ancestors,
       );
 
       if (descendants.length > 0) {
-        body = this.pullRequestParentLinksService.addRelatedIssueReferences(
+        body = this.pullRequestAncestorLinksService.addRelatedIssueReferences(
           body,
           descendants,
           "Closes",
@@ -187,14 +187,14 @@ export class PullRequestParentIssuesService {
         context,
         [],
         [
-          `❌ Unable to add parent references: ${error instanceof Error ? error.message : String(error)}`,
+          `❌ Unable to add ancestor references: ${error instanceof Error ? error.message : String(error)}`,
         ],
       );
     }
 
     if (body === context.body) {
       return this.unchanged(context, [
-        "✅ Parent issue references are already present",
+        "✅ Ancestor issue references are already present",
       ]);
     }
 
@@ -223,11 +223,11 @@ export class PullRequestParentIssuesService {
         failures: [],
         lines: [
           ...(ancestors.length > 0
-            ? [`✅ Added parent issue references: ${this.format(ancestors)}`]
+            ? [`✅ Added ancestor issue references: ${this.format(ancestors)}`]
             : []),
           ...(descendants.length > 0
             ? [
-                `✅ Added closing child issue references: ${this.format(descendants)}`,
+                `✅ Added closing descendant issue references: ${this.format(descendants)}`,
               ]
             : []),
         ],
@@ -259,7 +259,7 @@ export class PullRequestParentIssuesService {
 
     if (linked.value.length === 0) {
       return this.unchanged(context, [
-        "ℹ️ No linked issues; no parent references to add",
+        "ℹ️ No linked issues; no ancestor references to add",
       ]);
     }
 
@@ -269,7 +269,7 @@ export class PullRequestParentIssuesService {
       return this.unchanged(context, [], [ancestors.failure]);
     }
 
-    const descendants = this.pullRequestChildIssuesService.collect(
+    const descendants = this.pullRequestDescendantIssuesService.collect(
       linked.value,
     );
 

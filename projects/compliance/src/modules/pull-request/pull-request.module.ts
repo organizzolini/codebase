@@ -4,15 +4,15 @@ import { LoggerModule } from "@codebase/observability";
 
 import { IssueModule } from "../issue/issue.module";
 
+import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
+import { PullRequestAncestorLinksService } from "./pull-request-ancestor-links.service";
 import { PullRequestBodyService } from "./pull-request-body.service";
-import { PullRequestChildIssuesService } from "./pull-request-child-issues.service";
 import { PullRequestContextService } from "./pull-request-context.service";
+import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 import { PullRequestLabelVocabularyService } from "./pull-request-label-vocabulary.service";
 import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
 import { PullRequestLabelsService } from "./pull-request-labels.service";
-import { PullRequestParentIssuesService } from "./pull-request-parent-issues.service";
-import { PullRequestParentLinksService } from "./pull-request-parent-links.service";
 import { PullRequestReleaseSignificanceService } from "./pull-request-release-significance.service";
 import { PullRequestReportService } from "./pull-request-report.service";
 import { PullRequestTitleService } from "./pull-request-title.service";
@@ -32,9 +32,9 @@ import { PullRequestCommand } from "./pull-request.command";
     PullRequestLabelsAssigneesService,
     PullRequestLabelsService,
     PullRequestLabelVocabularyService,
-    PullRequestParentIssuesService,
-    PullRequestChildIssuesService,
-    PullRequestParentLinksService,
+    PullRequestAncestorIssuesService,
+    PullRequestDescendantIssuesService,
+    PullRequestAncestorLinksService,
     PullRequestReleaseSignificanceService,
     PullRequestReportService,
     PullRequestTitleService,

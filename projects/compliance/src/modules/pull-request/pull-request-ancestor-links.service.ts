@@ -3,11 +3,11 @@ import { Injectable } from "@nestjs/common";
 import {
   ISSUE_REFERENCE_PATTERN,
   PULL_REQUEST_RELATED_HEADING,
-} from "./pull-request-parent-links.constants";
+} from "./pull-request-ancestor-links.constants";
 
 /** Adds non-closing ancestor references to a pull request body. */
 @Injectable()
-export class PullRequestParentLinksService {
+export class PullRequestAncestorLinksService {
   // 🏗 Dependency Injection
 
   constructor() {}

@@ -8,7 +8,7 @@ export interface CheckOutcome {
   readonly successMessage: string;
 }
 
-/** The description after linking parents, and what the step did. */
+/** The description after linking ancestors and descendants, and what the step did. */
 export interface LinkResult {
   readonly body: string;
   readonly outcome: WriteOutcome;

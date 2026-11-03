@@ -6,7 +6,7 @@ import type { PullRequestResult } from "./pull-request.types";
 
 /** Finds the open descendants of the issues a pull request closes. */
 @Injectable()
-export class PullRequestChildIssuesService {
+export class PullRequestDescendantIssuesService {
   // 🏗 Dependency Injection
 
   constructor(

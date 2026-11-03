@@ -2,7 +2,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { PullRequestChildIssuesService } from "./pull-request-child-issues.service";
+import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 
 import type { GithubCliResult } from "./pull-request-github.types";
@@ -16,14 +16,14 @@ function output(standardOutput: string): GithubCliResult {
   };
 }
 
-describe(PullRequestChildIssuesService, () => {
-  let service: PullRequestChildIssuesService;
+describe(PullRequestDescendantIssuesService, () => {
+  let service: PullRequestDescendantIssuesService;
   let github: PullRequestGithubService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        PullRequestChildIssuesService,
+        PullRequestDescendantIssuesService,
         {
           provide: PullRequestGithubService,
           useValue: createMock<PullRequestGithubService>(),
@@ -31,7 +31,7 @@ describe(PullRequestChildIssuesService, () => {
       ],
     }).compile();
 
-    service = await module.resolve(PullRequestChildIssuesService);
+    service = await module.resolve(PullRequestDescendantIssuesService);
     github = await module.resolve(PullRequestGithubService);
   });
 

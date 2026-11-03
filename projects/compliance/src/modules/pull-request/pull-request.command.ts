@@ -3,9 +3,9 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
+import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
 import { PullRequestContextService } from "./pull-request-context.service";
 import { PullRequestLabelVocabularyService } from "./pull-request-label-vocabulary.service";
-import { PullRequestParentIssuesService } from "./pull-request-parent-issues.service";
 import { PullRequestReportService } from "./pull-request-report.service";
 import { PullRequestValidationService } from "./pull-request-validation.service";
 
@@ -23,7 +23,7 @@ import type { PullRequestContext } from "./pull-request-context.types";
 @Command({
   arguments: "[number] [write]",
   description:
-    "Write parent references and labels (pull_request events or `write` only), then validate a pull request's title, body, metadata, and release significance",
+    "Write ancestor and descendant references and labels (pull_request events or `write` only), then validate a pull request's title, body, metadata, and release significance",
   name: "pull-request",
 })
 @Injectable()
@@ -34,7 +34,7 @@ export class PullRequestCommand extends CommandRunner {
     private readonly logger: LoggerService,
     private readonly pullRequestContextService: PullRequestContextService,
     private readonly pullRequestLabelVocabularyService: PullRequestLabelVocabularyService,
-    private readonly pullRequestParentIssuesService: PullRequestParentIssuesService,
+    private readonly pullRequestAncestorIssuesService: PullRequestAncestorIssuesService,
     private readonly pullRequestReportService: PullRequestReportService,
     private readonly pullRequestValidationService: PullRequestValidationService,
   ) {
@@ -99,7 +99,7 @@ export class PullRequestCommand extends CommandRunner {
     const { initial, writable } = this.begin(passedParameters);
     const written = writable
       ? [
-          this.pullRequestParentIssuesService.link(initial).outcome,
+          this.pullRequestAncestorIssuesService.link(initial).outcome,
           this.pullRequestLabelVocabularyService.reconcile({
             write: true,
             writeHint: `compliance pull-request ${String(initial.number)} write`,

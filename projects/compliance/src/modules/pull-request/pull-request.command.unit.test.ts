@@ -14,9 +14,9 @@ import { LoggerService } from "@codebase/observability";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
+import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
 import { PullRequestContextService } from "./pull-request-context.service";
 import { PullRequestLabelVocabularyService } from "./pull-request-label-vocabulary.service";
-import { PullRequestParentIssuesService } from "./pull-request-parent-issues.service";
 import { PullRequestReportService } from "./pull-request-report.service";
 import { PullRequestValidationService } from "./pull-request-validation.service";
 import { PullRequestCommand } from "./pull-request.command";
@@ -36,7 +36,7 @@ describe(PullRequestCommand, () => {
   let command: PullRequestCommand;
   let contextService: PullRequestContextService;
   let vocabulary: PullRequestLabelVocabularyService;
-  let parents: PullRequestParentIssuesService;
+  let parents: PullRequestAncestorIssuesService;
   let report: PullRequestReportService;
   let validation: PullRequestValidationService;
 
@@ -54,8 +54,8 @@ describe(PullRequestCommand, () => {
           useValue: createMock<PullRequestLabelVocabularyService>(),
         },
         {
-          provide: PullRequestParentIssuesService,
-          useValue: createMock<PullRequestParentIssuesService>(),
+          provide: PullRequestAncestorIssuesService,
+          useValue: createMock<PullRequestAncestorIssuesService>(),
         },
         {
           provide: PullRequestReportService,
@@ -71,7 +71,7 @@ describe(PullRequestCommand, () => {
     command = await module.resolve(PullRequestCommand);
     contextService = await module.resolve(PullRequestContextService);
     vocabulary = await module.resolve(PullRequestLabelVocabularyService);
-    parents = await module.resolve(PullRequestParentIssuesService);
+    parents = await module.resolve(PullRequestAncestorIssuesService);
     report = await module.resolve(PullRequestReportService);
     validation = await module.resolve(PullRequestValidationService);
   });
@@ -120,8 +120,8 @@ describe(PullRequestCommand, () => {
           useValue: createMock<PullRequestLabelVocabularyService>(),
         },
         {
-          provide: PullRequestParentIssuesService,
-          useValue: createMock<PullRequestParentIssuesService>(),
+          provide: PullRequestAncestorIssuesService,
+          useValue: createMock<PullRequestAncestorIssuesService>(),
         },
         {
           provide: PullRequestReportService,
