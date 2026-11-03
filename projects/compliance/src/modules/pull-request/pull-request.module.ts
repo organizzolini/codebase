@@ -5,6 +5,7 @@ import { LoggerModule } from "@codebase/observability";
 import { IssueModule } from "../issue/issue.module";
 
 import { PullRequestBodyService } from "./pull-request-body.service";
+import { PullRequestChildIssuesService } from "./pull-request-child-issues.service";
 import { PullRequestContextService } from "./pull-request-context.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 import { PullRequestLabelVocabularyService } from "./pull-request-label-vocabulary.service";
@@ -32,6 +33,7 @@ import { PullRequestCommand } from "./pull-request.command";
     PullRequestLabelsService,
     PullRequestLabelVocabularyService,
     PullRequestParentIssuesService,
+    PullRequestChildIssuesService,
     PullRequestParentLinksService,
     PullRequestReleaseSignificanceService,
     PullRequestReportService,

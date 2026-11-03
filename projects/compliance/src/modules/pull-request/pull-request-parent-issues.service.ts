@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { IssueMetadataService } from "../issue/issue-metadata.service";
 
+import { PullRequestChildIssuesService } from "./pull-request-child-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 import {
   issueParentSchema,
@@ -13,8 +14,10 @@ import type { PullRequestContext } from "./pull-request-context.types";
 import type { LinkResult, PullRequestResult } from "./pull-request.types";
 
 /**
- * Adds a `Related to #N` reference for every ancestor of an issue the pull
- * request closes, so the whole parent chain is linked from the description.
+ * Links the whole issue hierarchy from a pull request description: a
+ * `Related to #N` line for every ancestor of an issue the pull request closes
+ * and a `Closes #N` line for every open descendant, so merging closes the
+ * entire subtree.
  */
 @Injectable()
 export class PullRequestParentIssuesService {
@@ -22,6 +25,7 @@ export class PullRequestParentIssuesService {
 
   constructor(
     private readonly issueMetadataService: IssueMetadataService,
+    private readonly pullRequestChildIssuesService: PullRequestChildIssuesService,
     private readonly pullRequestGithubService: PullRequestGithubService,
     private readonly pullRequestParentLinksService: PullRequestParentLinksService,
   ) {}
@@ -87,6 +91,11 @@ export class PullRequestParentIssuesService {
     }
 
     return { ok: true, value: ancestors };
+  }
+
+  /** Renders issue numbers as `#1, #2`. */
+  private format(numbers: readonly number[]): string {
+    return numbers.map((number) => `#${String(number)}`).join(", ");
   }
 
   /** Runs `gh`, parses its JSON output, and says why when it cannot. */
@@ -156,6 +165,7 @@ export class PullRequestParentIssuesService {
   private writeReferences(
     context: PullRequestContext,
     ancestors: readonly number[],
+    descendants: readonly number[],
   ): LinkResult {
     let body: string;
 
@@ -164,6 +174,14 @@ export class PullRequestParentIssuesService {
         context.body,
         ancestors,
       );
+
+      if (descendants.length > 0) {
+        body = this.pullRequestParentLinksService.addRelatedIssueReferences(
+          body,
+          descendants,
+          "Closes",
+        );
+      }
     } catch (error) {
       return this.unchanged(
         context,
@@ -204,7 +222,14 @@ export class PullRequestParentIssuesService {
       outcome: {
         failures: [],
         lines: [
-          `✅ Added parent issue references: ${ancestors.map((number) => `#${String(number)}`).join(", ")}`,
+          ...(ancestors.length > 0
+            ? [`✅ Added parent issue references: ${this.format(ancestors)}`]
+            : []),
+          ...(descendants.length > 0
+            ? [
+                `✅ Added closing child issue references: ${this.format(descendants)}`,
+              ]
+            : []),
         ],
       },
     };
@@ -240,8 +265,22 @@ export class PullRequestParentIssuesService {
 
     const ancestors = this.collectAncestors(linked.value);
 
-    return ancestors.ok
-      ? this.writeReferences(context, ancestors.value)
-      : this.unchanged(context, [], [ancestors.failure]);
+    if (!ancestors.ok) {
+      return this.unchanged(context, [], [ancestors.failure]);
+    }
+
+    const descendants = this.pullRequestChildIssuesService.collect(
+      linked.value,
+    );
+
+    if (!descendants.ok) {
+      return this.unchanged(context, [], [descendants.failure]);
+    }
+
+    return this.writeReferences(
+      context,
+      ancestors.value,
+      descendants.value.filter((number) => !ancestors.value.includes(number)),
+    );
   }
 }

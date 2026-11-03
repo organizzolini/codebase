@@ -22,7 +22,7 @@ export class PullRequestParentLinksService {
   private insertReferences(
     lines: string[],
     sectionEndIndex: number,
-    missingNumbers: readonly number[],
+    references: readonly string[],
   ): void {
     const headingIndex = lines.indexOf(PULL_REQUEST_RELATED_HEADING);
     let insertIndex = sectionEndIndex;
@@ -31,11 +31,7 @@ export class PullRequestParentLinksService {
       insertIndex -= 1;
     }
 
-    lines.splice(
-      insertIndex,
-      0,
-      ...missingNumbers.map((number) => `- Related to #${String(number)}`),
-    );
+    lines.splice(insertIndex, 0, ...references);
   }
 
   /** Returns issue numbers referenced in the pull request's Related section. */
@@ -57,10 +53,14 @@ export class PullRequestParentLinksService {
 
   // 🌎 Public Methods
 
-  /** Adds one Related-list bullet for each ancestor not already referenced. */
+  /**
+   * Adds one Related-list bullet for each issue not already referenced, led by
+   * `Related to` for ancestors or `Closes` for descendants.
+   */
   public addRelatedIssueReferences(
     body: string,
     ancestorNumbers: readonly number[],
+    keyword = "Related to",
   ): string {
     if (ancestorNumbers.length === 0) {
       return body;
@@ -96,7 +96,11 @@ export class PullRequestParentLinksService {
       return body;
     }
 
-    this.insertReferences(lines, sectionEndIndex, missingNumbers);
+    this.insertReferences(
+      lines,
+      sectionEndIndex,
+      missingNumbers.map((number) => `- ${keyword} #${String(number)}`),
+    );
 
     return lines.join(lineEnding);
   }

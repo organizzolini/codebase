@@ -4,6 +4,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { IssueMetadataService } from "../issue/issue-metadata.service";
 
+import { PullRequestChildIssuesService } from "./pull-request-child-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 import { PullRequestParentIssuesService } from "./pull-request-parent-issues.service";
 import { PullRequestParentLinksService } from "./pull-request-parent-links.service";
@@ -39,6 +40,7 @@ const failed: GithubCliResult = {
 describe(PullRequestParentIssuesService, () => {
   let service: PullRequestParentIssuesService;
   let github: PullRequestGithubService;
+  let children: PullRequestChildIssuesService;
   let links: PullRequestParentLinksService;
   let metadata: IssueMetadataService;
 
@@ -49,6 +51,10 @@ describe(PullRequestParentIssuesService, () => {
         {
           provide: IssueMetadataService,
           useValue: createMock<IssueMetadataService>(),
+        },
+        {
+          provide: PullRequestChildIssuesService,
+          useValue: createMock<PullRequestChildIssuesService>(),
         },
         {
           provide: PullRequestGithubService,
@@ -63,6 +69,7 @@ describe(PullRequestParentIssuesService, () => {
 
     service = await module.resolve(PullRequestParentIssuesService);
     github = await module.resolve(PullRequestGithubService);
+    children = await module.resolve(PullRequestChildIssuesService);
     links = await module.resolve(PullRequestParentLinksService);
     metadata = await module.resolve(IssueMetadataService);
   });
@@ -71,6 +78,7 @@ describe(PullRequestParentIssuesService, () => {
     vi.clearAllMocks();
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 500");
     vi.mocked(metadata.extractParentIssueNumber).mockReturnValue(undefined);
+    vi.mocked(children.collect).mockReturnValue({ ok: true, value: [] });
   });
 
   /** Answers `gh pr view` with the linked issues and `gh api` by issue. */
@@ -140,6 +148,34 @@ describe(PullRequestParentIssuesService, () => {
     );
     expect(result.body).toBe("new body");
     expect(result.outcome.lines[0]).toContain("#3, #1");
+  });
+
+  it("closes the open descendants of the linked issues", () => {
+    stubGithub({ linked: "[5]", parents: { "5": 3 } });
+    vi.mocked(children.collect).mockReturnValue({ ok: true, value: [8, 9] });
+    vi.mocked(links.addRelatedIssueReferences).mockReturnValue("new body");
+
+    const result = service.link(context);
+
+    expect(links.addRelatedIssueReferences).toHaveBeenLastCalledWith(
+      "new body",
+      [8, 9],
+      "Closes",
+    );
+    expect(result.outcome.lines).toStrictEqual([
+      "✅ Added parent issue references: #3",
+      "✅ Added closing child issue references: #8, #9",
+    ]);
+  });
+
+  it("fails when the descendants cannot be read", () => {
+    stubGithub({ linked: "[5]" });
+    vi.mocked(children.collect).mockReturnValue({
+      failure: "❌ nope",
+      ok: false,
+    });
+
+    expect(service.link(context).outcome.failures).toStrictEqual(["❌ nope"]);
   });
 
   it("falls back to the parent named in the issue body", () => {

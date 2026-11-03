@@ -93,6 +93,16 @@ describe(PullRequestParentLinksService, () => {
     expect(service.addRelatedIssueReferences("A body", [])).toBe("A body");
   });
 
+  it("leads each reference with the given closing keyword", () => {
+    expect(
+      service.addRelatedIssueReferences(
+        "## 🔗 Related\n\n- Closes #1\n",
+        [7],
+        "Closes",
+      ),
+    ).toBe("## 🔗 Related\n\n- Closes #1\n- Closes #7\n");
+  });
+
   it("adds references to an empty Related section", () => {
     expect(service.addRelatedIssueReferences("## 🔗 Related\n", [7])).toBe(
       "## 🔗 Related\n- Related to #7\n",
