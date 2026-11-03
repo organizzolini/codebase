@@ -48,8 +48,7 @@ start_server() {
 			>>"${LOG_FILE}" 2>&1 </dev/null &
 	)
 
-	local attempt
-	for attempt in 1 2 3 4 5 6 7 8 9 10; do
+	for _ in 1 2 3 4 5 6 7 8 9 10; do
 		is_serving && return 0
 		sleep 0.5
 	done

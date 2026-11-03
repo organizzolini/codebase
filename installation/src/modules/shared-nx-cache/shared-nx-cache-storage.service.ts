@@ -166,6 +166,7 @@ export class SharedNxCacheStorageService {
   public async write(upload: Upload): Promise<WriteOutcome> {
     const { body, directory, hash, length } = upload;
     const temporary = await this.prepare(directory);
+    const sink = fs.createWriteStream(temporary);
     let received = 0;
 
     body.on("data", (chunk: Buffer) => {
@@ -173,7 +174,7 @@ export class SharedNxCacheStorageService {
     });
 
     try {
-      await pipeline(body, fs.createWriteStream(temporary));
+      await pipeline(body, sink);
 
       if (received !== length) {
         return "length-mismatch";
@@ -197,6 +198,14 @@ export class SharedNxCacheStorageService {
 
       throw error;
     } finally {
+      // A stream destroyed before its file opened still creates the file, so
+      // removing it first can leave the temporary behind.
+      if (!sink.closed) {
+        await new Promise<void>((resolve) => {
+          sink.once("close", resolve);
+        });
+      }
+
       await fs.promises.rm(temporary, { force: true });
     }
   }
