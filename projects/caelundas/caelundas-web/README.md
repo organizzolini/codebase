@@ -47,10 +47,7 @@ The backdrop reads these from the page link; a value that does not parse falls
 back to its default. The toolbar's Sky menu sets every one of them
 but `sky.debug`, reading the link and writing it back as a control moves, and
 removes a key set back to its default. Its Default button removes them all
-but `sky.debug`. Its Full button puts back the whole sky above the horizon
-from the pole, slowly: `sky.lat`, `sky.vFov`, `sky.altBottom`,
-`sky.pixelsPerSecond` and `sky.eclipticOpacity`, which are now the defaults,
-so it removes those keys and leaves the rest. Colors are text of three or six hexadecimal digits,
+but `sky.debug`. Colors are text of three or six hexadecimal digits,
 with or without the `#`. Write the `#` as `%23`, for example `sky.top=%23102040`:
 the router reads an all-digit value such as `123456` or `1e5` as a number,
 which cannot be told from the color it was meant to be, so a number falls back
