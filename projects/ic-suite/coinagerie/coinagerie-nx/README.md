@@ -5,7 +5,7 @@
 An Nx plugin that infers a coinagerie check target for every project that holds a `coinagerie.config.ts`.
 
 ```bash
-npm install --save-dev @coinagerie/nx
+npm install --save-dev @coinagerie/nx @coinagerie/cli
 ```
 
 ## Usage

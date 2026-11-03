@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/@coinagerie/core?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/core)
 
-The contracts leaf of the coinagerie toolchain: the glossary and vocabulary-report shapes and the constants every other coinagerie package shares. Nothing here runs.
+The contracts leaf of the coinagerie toolchain: the glossary and vocabulary-report shapes and the constants every other coinagerie package shares. It holds no behavior.
 
 ```bash
 npm install @coinagerie/core
