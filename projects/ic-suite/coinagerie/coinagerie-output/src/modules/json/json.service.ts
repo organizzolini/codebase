@@ -1,7 +1,7 @@
 import { MalformedGlossaryError } from "@coinagerie/core";
 import { Injectable } from "@nestjs/common";
 
-import { TOKEN_PATTERN } from "./json.constants";
+import { STRUCTURAL_CHARACTERS } from "./json.constants";
 
 import type {
   GlossaryFormatHandler,
@@ -31,6 +31,38 @@ export class JsonService implements GlossaryFormatHandler {
 
   // 🔏 Private Methods
 
+  /** Where the string opening at `start` ends, past its closing quote. */
+  private endOfString(content: string, start: number): number {
+    let end = start + 1;
+
+    while (end < content.length && content.charAt(end) !== '"') {
+      end += content.charAt(end) === "\\" ? 2 : 1;
+    }
+
+    return end + 1;
+  }
+
+  /** Where the token starting at `start` ends. */
+  private endOfToken(content: string, start: number): number {
+    const character = content.charAt(start);
+
+    if (character === '"') {
+      return this.endOfString(content, start);
+    }
+
+    if (STRUCTURAL_CHARACTERS.includes(character)) {
+      return start + 1;
+    }
+
+    let end = start + 1;
+
+    while (end < content.length && !this.isBoundary(content.charAt(end))) {
+      end += 1;
+    }
+
+    return end;
+  }
+
   /** Fails a parse, naming the file and, when known, the one-indexed line. */
   private fail(
     context: Pick<JsonParseContext, "filePath">,
@@ -38,6 +70,15 @@ export class JsonService implements GlossaryFormatHandler {
     line?: number,
   ): never {
     throw new MalformedGlossaryError({ line, path: context.filePath, reason });
+  }
+
+  /** Whether a character ends a run of literal characters. */
+  private isBoundary(character: string): boolean {
+    return (
+      character === '"' ||
+      STRUCTURAL_CHARACTERS.includes(character) ||
+      /\s/u.test(character)
+    );
   }
 
   /** Whether a parsed value is an object, as opposed to an array or `null`. */
@@ -69,8 +110,8 @@ export class JsonService implements GlossaryFormatHandler {
     let depth = 0;
     let previous = "";
 
-    for (const token of context.content.matchAll(TOKEN_PATTERN)) {
-      const text = token[0];
+    for (const token of this.tokenize(context.content)) {
+      const { text } = token;
       const isKey =
         depth === 1 &&
         text.startsWith('"') &&
@@ -94,6 +135,34 @@ export class JsonService implements GlossaryFormatHandler {
       depth -= "}]".includes(text) ? 1 : 0;
       previous = text;
     }
+  }
+
+  /**
+   * The tokens of content already known to be valid JSON: a string with its
+   * quotes and escapes, a bracket, comma, or colon, or any other run of
+   * literal characters. Whitespace is skipped.
+   *
+   * Enough to walk an object's top level and tell its keys from its values,
+   * which is what lets a duplicated key be found: `JSON.parse` keeps only the
+   * last, whatever type the first one had. Scanned by hand in one pass, since
+   * a regular expression for strings backtracks on input it cannot finish.
+   */
+  private tokenize(content: string): { index: number; text: string }[] {
+    const tokens: { index: number; text: string }[] = [];
+    let index = 0;
+
+    while (index < content.length) {
+      if (/\s/u.test(content.charAt(index))) {
+        index += 1;
+      } else {
+        const end = this.endOfToken(content, index);
+
+        tokens.push({ index, text: content.slice(index, end) });
+        index = end;
+      }
+    }
+
+    return tokens;
   }
 
   // 🌎 Public Methods
