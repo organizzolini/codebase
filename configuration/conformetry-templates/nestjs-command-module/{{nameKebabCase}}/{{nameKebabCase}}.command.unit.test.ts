@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/observability/testing";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { {{namePascalCase}}Command } from "./{{nameKebabCase}}.command";
 
