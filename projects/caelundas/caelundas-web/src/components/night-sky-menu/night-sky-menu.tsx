@@ -26,10 +26,10 @@ import {
 import {
   keepKeysInPanel,
   toConstellationsChange,
+  toResetChange,
   toSkyParameterChange,
   toVisibilityChange,
 } from "./night-sky-menu.utilities";
-import { NightSkyPresets } from "./night-sky-presets";
 import { NightSkySection } from "./night-sky-section";
 import { NightSkySliders } from "./night-sky-sliders";
 
@@ -116,7 +116,15 @@ export function NightSkyMenu(
                         }}
                       />
                     </Label>
-                    <NightSkyPresets onChange={change} />
+                    <Button
+                      onClick={() => {
+                        change(toResetChange());
+                      }}
+                      size="sm"
+                      variant="outline"
+                    >
+                      Default
+                    </Button>
                   </div>
                   {BACKGROUND_COLORS.map((control) => (
                     <NightSkyColorField

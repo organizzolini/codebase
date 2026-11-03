@@ -7,7 +7,6 @@ import {
   splitConstellations,
   toConstellationsChange,
   toEclipticChange,
-  toFullViewChange,
   toggleConstellation,
   toggleConstellations,
   toResetChange,
@@ -57,18 +56,6 @@ describe("night sky menu utilities", () => {
     it("writes sky=off to hide the sky and removes it to show it", () => {
       expect(toVisibilityChange(false)).toStrictEqual({ sky: "off" });
       expect(toVisibilityChange(true)).toStrictEqual({ sky: undefined });
-    });
-  });
-
-  describe(toFullViewChange, () => {
-    it("puts back the pole's whole sky above the horizon, slowed, now the defaults", () => {
-      expect(toFullViewChange()).toStrictEqual({
-        "sky.altBottom": undefined,
-        "sky.eclipticOpacity": undefined,
-        "sky.lat": undefined,
-        "sky.pixelsPerSecond": undefined,
-        "sky.vFov": undefined,
-      });
     });
   });
 

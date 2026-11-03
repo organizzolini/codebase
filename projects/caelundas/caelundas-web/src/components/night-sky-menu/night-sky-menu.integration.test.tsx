@@ -201,47 +201,6 @@ describe("night sky menu", () => {
     },
   );
 
-  it("puts back the pole's whole sky from the Full button, keeping other settings", async () => {
-    await renderRoute(
-      "/?date=2026-03-01&sky.lat=51.5&sky.altBottom=10&sky.vFov=30&sky.pixelsPerSecond=24&sky.eclipticOpacity=0.5&sky.starScale=2&sky.debug=true",
-    );
-    await openNightSkyMenu();
-
-    fireEvent.click(screen.getByRole("button", { name: "Full" }));
-
-    await waitFor(() => {
-      expect(readSearch()).not.toHaveProperty("sky.lat");
-    });
-
-    for (const key of [
-      "sky.altBottom",
-      "sky.vFov",
-      "sky.pixelsPerSecond",
-      "sky.eclipticOpacity",
-    ]) {
-      expect(readSearch()).not.toHaveProperty(key);
-    }
-    await waitFor(() => {
-      expect(
-        screen
-          .getByTestId("night-sky-backdrop")
-          .querySelector('[data-layer="ecliptic"]')
-          ?.getAttribute("stroke-opacity"),
-      ).toBe("0.12");
-    });
-
-    expect(readSearch()).toMatchObject({
-      "sky.debug": true,
-      "sky.starScale": 2,
-    });
-
-    await findSky();
-
-    expect(screen.getByTestId("night-sky-backdrop").innerHTML).not.toMatch(
-      /NaN|Infinity/u,
-    );
-  });
-
   it("toggles all twelve zodiac figures from their folder, dashed when some show", async () => {
     await renderRoute("/?date=2026-03-01&sky.constellations=zodiac");
     await openNightSkyMenu();

@@ -231,18 +231,6 @@ export const PANEL_CLASS_NAME =
   "w-[min(20rem,calc(100vw-1rem))] md:w-[min(40rem,calc(100vw-1rem))] lg:w-[min(68rem,calc(100vw-1rem))] max-h-(--available-height) overflow-y-auto";
 
 /**
- * The settings the Full button writes: the whole sky above the horizon, seen
- * from the pole, slowly, with the ecliptic at its default opacity.
- */
-export const FULL_VIEW: readonly (readonly [SkyParameterKey, number])[] = [
-  ["sky.altBottom", 0],
-  ["sky.eclipticOpacity", 0.12],
-  ["sky.lat", 90],
-  ["sky.pixelsPerSecond", 3],
-  ["sky.vFov", 90],
-];
-
-/**
  * The keys the menu itself reads, which the panel's controls let reach it:
  * Escape closes the menu and Tab leaves the panel. Every other key stays
  * with the slider, switch or list that has focus.

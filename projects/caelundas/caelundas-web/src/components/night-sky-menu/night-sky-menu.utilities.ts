@@ -1,7 +1,6 @@
 import { normalizeConstellationName } from "../../hooks/use-night-sky/use-night-sky.utilities";
 
 import {
-  FULL_VIEW,
   MENU_KEYS,
   RESET_SKY_KEYS,
   SKY_DEFAULTS,
@@ -140,19 +139,6 @@ export function toConstellationsChange(
  */
 export function toEclipticChange(visible: boolean): SkySearchChange {
   return { "sky.ecliptic": visible ? undefined : false };
-}
-
-/**
- * The change the Full button makes: the pole's whole sky, leaving every other
- * setting, and naming only the keys that differ from their defaults.
- */
-export function toFullViewChange(): SkySearchChange {
-  return Object.fromEntries(
-    FULL_VIEW.map(([key, value]) => [
-      key,
-      isDefault(key, value) ? undefined : value,
-    ]),
-  );
 }
 
 /**
