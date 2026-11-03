@@ -4,14 +4,14 @@ import { projectDefaults } from "../../../configuration/callidescope.config.js";
  * What database is held to, re-measured when it became a command line as
  * well as a package, and set at what was measured.
  *
- * Seven deep: `ImportCommand.run` lists a dump through
+ * Seven deep: `PostgresqlImportCommand.run` lists a dump through
  * `PostgresClientService.run`, whose `execFile` callback raises a
  * `PostgresClientError`. The frames below that callback run inside Node,
- * which the trace does not follow. `ExportCommand.run` reaches six down the
+ * which the trace does not follow. `PostgresqlExportCommand.run` reaches six down the
  * same path.
  *
- * Seven direct callees at the widest, where `ExportCommand.plan` and
- * `ImportCommand.plan` tie: each checks every option, parses the URI,
+ * Seven direct callees at the widest, where `PostgresqlExportCommand.plan` and
+ * `PostgresqlImportCommand.plan` tie: each checks every option, parses the URI,
  * guards the file, qualifies the tables, and masks the URI, so nothing
  * runs against a half-specified command line.
  *

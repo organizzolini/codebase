@@ -45,6 +45,24 @@ export class MyService {
 }
 ```
 
+## Testing helpers
+
+`@codebase/observability/testing` exports `buildTestingModule` and
+`expectLoggerContext`. The builder provides a deep-mocked `LoggerService`,
+resolves the class under test, and returns the compiled module and mock access:
+
+```ts
+import { buildTestingModule } from "@codebase/observability/testing";
+
+const { instance, mock } = await buildTestingModule(MyService, {
+  mocks: [MyDependency],
+});
+mock(MyDependency).run.mockResolvedValue(undefined);
+```
+
+`expectLoggerContext` builds the same module and asserts that the class sets
+its logger context to its own class name.
+
 ## Output modes
 
 | `NODE_ENV`    | Output                                               |
@@ -220,8 +238,16 @@ graph LR
   file_src_modules_logger_logger_service_ts["src/modules/logger/logger.service.ts"]
   file_src_modules_logger_logger_service_unit_test_ts["src/modules/logger/logger.service.unit.test.ts"]
   file_src_modules_logger_logger_types_ts["src/modules/logger/logger.types.ts"]
+  file_testing_fixtures_sample_clock_module_ts["testing/fixtures/sample-clock.module.ts"]
+  file_testing_fixtures_sample_clock_service_ts["testing/fixtures/sample-clock.service.ts"]
+  file_testing_fixtures_sample_greeter_module_ts["testing/fixtures/sample-greeter.module.ts"]
+  file_testing_fixtures_sample_greeter_service_ts["testing/fixtures/sample-greeter.service.ts"]
+  file_testing_index_ts["testing/index.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
+  file_testing_testing_module_testing_module_types_ts["testing/testing-module/testing-module.types.ts"]
+  file_testing_testing_module_testing_module_utilities_ts["testing/testing-module/testing-module.utilities.ts"]
+  file_testing_testing_module_testing_module_utilities_unit_test_ts["testing/testing-module/testing-module.utilities.unit.test.ts"]
   file_vitest_config_ts["vitest.config.ts"]
   file_src_lib_conventional_log_message_eslint_rule_ts --> file_src_modules_logger_logger_constants_ts
   file_src_lib_conventional_log_message_eslint_rule_unit_test_ts --> file_src_lib_conventional_log_message_eslint_rule_ts
@@ -231,6 +257,20 @@ graph LR
   file_src_modules_logger_logger_service_ts --> file_src_modules_logger_logger_constants_ts
   file_src_modules_logger_logger_service_ts --> file_src_modules_logger_logger_types_ts
   file_src_modules_logger_logger_service_unit_test_ts --> file_src_modules_logger_logger_service_ts
+  file_testing_fixtures_sample_clock_module_ts --> file_testing_fixtures_sample_clock_service_ts
+  file_testing_fixtures_sample_greeter_module_ts --> file_testing_fixtures_sample_clock_module_ts
+  file_testing_fixtures_sample_greeter_module_ts --> file_testing_fixtures_sample_greeter_service_ts
+  file_testing_fixtures_sample_greeter_service_ts --> file_src_modules_logger_logger_service_ts
+  file_testing_fixtures_sample_greeter_service_ts --> file_testing_fixtures_sample_clock_service_ts
+  file_testing_testing_module_testing_module_types_ts --> file_src_modules_logger_logger_types_ts
+  file_testing_testing_module_testing_module_utilities_ts --> file_src_modules_logger_logger_service_ts
+  file_testing_testing_module_testing_module_utilities_ts --> file_src_modules_logger_logger_types_ts
+  file_testing_testing_module_testing_module_utilities_ts --> file_testing_testing_module_testing_module_types_ts
+  file_testing_testing_module_testing_module_utilities_unit_test_ts --> file_src_modules_logger_logger_service_ts
+  file_testing_testing_module_testing_module_utilities_unit_test_ts --> file_testing_fixtures_sample_clock_module_ts
+  file_testing_testing_module_testing_module_utilities_unit_test_ts --> file_testing_fixtures_sample_clock_service_ts
+  file_testing_testing_module_testing_module_utilities_unit_test_ts --> file_testing_fixtures_sample_greeter_service_ts
+  file_testing_testing_module_testing_module_utilities_unit_test_ts --> file_testing_testing_module_testing_module_utilities_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 

@@ -36,7 +36,7 @@ src/
       graphql-client.types.ts       # GraphqlCodegenOptions
       graphql-client.utilities.ts   # createGraphqlCodegenConfig, the @codebase/interface/client entry
 testing/
-  index.ts                          # The @codebase/interface/testing entry, re-exporting @codebase/testing/graphql
+  index.ts                          # The @codebase/interface/testing entry
   setup.ts, mocks.ts                # Vitest setup and mocks
 ```
 
@@ -50,14 +50,10 @@ that API.
 
 ### Test Helpers
 
-The MSW mock server and the pagination oracle moved to
-`@codebase/testing/graphql`, along with the tests that pin them, and
-`testing/index.ts` re-exports them until every consumer imports the new
-entry. The testing package depends on this one, so importing it from here
-closes a cycle; the module-boundary and codependix rules allow that cycle
-among the common packages only, and `implicitDependencies: ["!testing"]` in
-`project.json` drops the edge back to `testing` from the Nx graph, so
-`build` has no task cycle.
+The MSW mock server and pagination oracle live in
+`src/modules/testing/`, with their tests. Export them from
+`@codebase/interface/testing`; do not make this package depend on the shared
+testing package to host owner-specific helpers.
 
 ### Code Generation
 

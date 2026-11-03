@@ -52,8 +52,8 @@ describe("main end-to-end suite", () => {
       const { output, status } = runMain(["--help"]);
 
       expect(status).toBe(0);
-      expect(output).toMatch(/^\s+export\b/mu);
-      expect(output).toMatch(/^\s+import\b/mu);
+      expect(output).toMatch(/^\s+postgresql-export\b/mu);
+      expect(output).toMatch(/^\s+postgresql-import\b/mu);
     },
     SPAWN_TIMEOUT_MILLISECONDS,
   );
@@ -62,7 +62,7 @@ describe("main end-to-end suite", () => {
     "prints why a command failed and exits non-zero, needing no Postgres environment",
     () => {
       const { output, status } = runMain([
-        "export",
+        "postgresql-export",
         "--source-uri",
         "postgresql://fixture_username:hunter2-secret@127.0.0.1:1/fixture_development",
         "--table",
@@ -91,7 +91,7 @@ describe("main end-to-end suite", () => {
 
       try {
         const { output, status } = runMain([
-          "export",
+          "postgresql-export",
           "--source-uri",
           "postgresql://fixture_username:hunter2-secret@127.0.0.1:1/fixture_development",
           "--table",
