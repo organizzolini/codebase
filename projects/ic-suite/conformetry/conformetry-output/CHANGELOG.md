@@ -1,3 +1,13 @@
+## 0.0.54 (2026-11-03)
+
+### 💅 Refactors
+
+- **configuration,caelundas,lexico,meanderaw,documentation,conformetry:** ♻️ hold every web app to one file shape ([#1951](https://github.com/organizzolini/codebase/pull/1951))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.54
+
 ## 0.0.53 (2026-10-27)
 
 ### 🧱 Updated Dependencies

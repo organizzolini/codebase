@@ -410,38 +410,105 @@ graph LR
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_client_tsx["src/client.tsx"]
-  file_src_components_adjective_forms_tsx["src/components/adjective-forms.tsx"]
-  file_src_components_adjective_forms_unit_test_tsx["src/components/adjective-forms.unit.test.tsx"]
-  file_src_components_forms_table_tsx["src/components/forms-table.tsx"]
-  file_src_components_forms_table_unit_test_tsx["src/components/forms-table.unit.test.tsx"]
-  file_src_components_layout_index_ts["src/components/layout/index.ts"]
-  file_src_components_layout_logo_tsx["src/components/layout/logo.tsx"]
-  file_src_components_lexeme_card_tsx["src/components/lexeme-card.tsx"]
-  file_src_components_lexeme_card_unit_test_tsx["src/components/lexeme-card.unit.test.tsx"]
-  file_src_components_lexeme_etymology_tsx["src/components/lexeme-etymology.tsx"]
-  file_src_components_lexeme_etymology_unit_test_tsx["src/components/lexeme-etymology.unit.test.tsx"]
-  file_src_components_lexeme_forms_tsx["src/components/lexeme-forms.tsx"]
-  file_src_components_lexeme_forms_unit_test_tsx["src/components/lexeme-forms.unit.test.tsx"]
-  file_src_components_lexeme_header_tsx["src/components/lexeme-header.tsx"]
-  file_src_components_lexeme_header_unit_test_tsx["src/components/lexeme-header.unit.test.tsx"]
-  file_src_components_lexeme_identifiers_tsx["src/components/lexeme-identifiers.tsx"]
-  file_src_components_lexeme_identifiers_unit_test_tsx["src/components/lexeme-identifiers.unit.test.tsx"]
-  file_src_components_lexeme_match_tsx["src/components/lexeme-match.tsx"]
-  file_src_components_lexeme_match_unit_test_tsx["src/components/lexeme-match.unit.test.tsx"]
-  file_src_components_lexeme_pronunciations_tsx["src/components/lexeme-pronunciations.tsx"]
-  file_src_components_lexeme_pronunciations_unit_test_tsx["src/components/lexeme-pronunciations.unit.test.tsx"]
-  file_src_components_lexeme_translations_tsx["src/components/lexeme-translations.tsx"]
-  file_src_components_lexeme_translations_unit_test_tsx["src/components/lexeme-translations.unit.test.tsx"]
-  file_src_components_noun_forms_tsx["src/components/noun-forms.tsx"]
-  file_src_components_noun_forms_unit_test_tsx["src/components/noun-forms.unit.test.tsx"]
-  file_src_components_search_bar_tsx["src/components/search-bar.tsx"]
-  file_src_components_search_bar_unit_test_tsx["src/components/search-bar.unit.test.tsx"]
-  file_src_components_search_landing_tsx["src/components/search-landing.tsx"]
-  file_src_components_search_landing_unit_test_tsx["src/components/search-landing.unit.test.tsx"]
-  file_src_components_search_results_tsx["src/components/search-results.tsx"]
-  file_src_components_search_results_unit_test_tsx["src/components/search-results.unit.test.tsx"]
-  file_src_components_verb_forms_tsx["src/components/verb-forms.tsx"]
-  file_src_components_verb_forms_unit_test_tsx["src/components/verb-forms.unit.test.tsx"]
+  file_src_components_adjective_forms_adjective_forms_constants_ts["src/components/adjective-forms/adjective-forms.constants.ts"]
+  file_src_components_adjective_forms_adjective_forms_tsx["src/components/adjective-forms/adjective-forms.tsx"]
+  file_src_components_adjective_forms_adjective_forms_types_ts["src/components/adjective-forms/adjective-forms.types.ts"]
+  file_src_components_adjective_forms_adjective_forms_unit_test_tsx["src/components/adjective-forms/adjective-forms.unit.test.tsx"]
+  file_src_components_adjective_forms_adjective_forms_utilities_ts["src/components/adjective-forms/adjective-forms.utilities.ts"]
+  file_src_components_application_sidebar_application_sidebar_constants_ts["src/components/application-sidebar/application-sidebar.constants.ts"]
+  file_src_components_application_sidebar_application_sidebar_tsx["src/components/application-sidebar/application-sidebar.tsx"]
+  file_src_components_application_sidebar_application_sidebar_types_ts["src/components/application-sidebar/application-sidebar.types.ts"]
+  file_src_components_application_sidebar_application_sidebar_unit_test_tsx["src/components/application-sidebar/application-sidebar.unit.test.tsx"]
+  file_src_components_application_sidebar_application_sidebar_utilities_ts["src/components/application-sidebar/application-sidebar.utilities.ts"]
+  file_src_components_application_sidebar_navigation_link_tsx["src/components/application-sidebar/navigation-link.tsx"]
+  file_src_components_application_sidebar_navigation_link_unit_test_tsx["src/components/application-sidebar/navigation-link.unit.test.tsx"]
+  file_src_components_forms_table_forms_table_constants_ts["src/components/forms-table/forms-table.constants.ts"]
+  file_src_components_forms_table_forms_table_tsx["src/components/forms-table/forms-table.tsx"]
+  file_src_components_forms_table_forms_table_types_ts["src/components/forms-table/forms-table.types.ts"]
+  file_src_components_forms_table_forms_table_unit_test_tsx["src/components/forms-table/forms-table.unit.test.tsx"]
+  file_src_components_forms_table_forms_table_utilities_ts["src/components/forms-table/forms-table.utilities.ts"]
+  file_src_components_lexeme_card_lexeme_card_constants_ts["src/components/lexeme-card/lexeme-card.constants.ts"]
+  file_src_components_lexeme_card_lexeme_card_tsx["src/components/lexeme-card/lexeme-card.tsx"]
+  file_src_components_lexeme_card_lexeme_card_types_ts["src/components/lexeme-card/lexeme-card.types.ts"]
+  file_src_components_lexeme_card_lexeme_card_unit_test_tsx["src/components/lexeme-card/lexeme-card.unit.test.tsx"]
+  file_src_components_lexeme_card_lexeme_card_utilities_ts["src/components/lexeme-card/lexeme-card.utilities.ts"]
+  file_src_components_lexeme_etymology_lexeme_etymology_constants_ts["src/components/lexeme-etymology/lexeme-etymology.constants.ts"]
+  file_src_components_lexeme_etymology_lexeme_etymology_tsx["src/components/lexeme-etymology/lexeme-etymology.tsx"]
+  file_src_components_lexeme_etymology_lexeme_etymology_types_ts["src/components/lexeme-etymology/lexeme-etymology.types.ts"]
+  file_src_components_lexeme_etymology_lexeme_etymology_unit_test_tsx["src/components/lexeme-etymology/lexeme-etymology.unit.test.tsx"]
+  file_src_components_lexeme_etymology_lexeme_etymology_utilities_ts["src/components/lexeme-etymology/lexeme-etymology.utilities.ts"]
+  file_src_components_lexeme_forms_forms_of_kind_tsx["src/components/lexeme-forms/forms-of-kind.tsx"]
+  file_src_components_lexeme_forms_forms_of_kind_unit_test_tsx["src/components/lexeme-forms/forms-of-kind.unit.test.tsx"]
+  file_src_components_lexeme_forms_lexeme_forms_constants_ts["src/components/lexeme-forms/lexeme-forms.constants.ts"]
+  file_src_components_lexeme_forms_lexeme_forms_tsx["src/components/lexeme-forms/lexeme-forms.tsx"]
+  file_src_components_lexeme_forms_lexeme_forms_types_ts["src/components/lexeme-forms/lexeme-forms.types.ts"]
+  file_src_components_lexeme_forms_lexeme_forms_unit_test_tsx["src/components/lexeme-forms/lexeme-forms.unit.test.tsx"]
+  file_src_components_lexeme_forms_lexeme_forms_utilities_ts["src/components/lexeme-forms/lexeme-forms.utilities.ts"]
+  file_src_components_lexeme_forms_no_forms_tsx["src/components/lexeme-forms/no-forms.tsx"]
+  file_src_components_lexeme_forms_no_forms_unit_test_tsx["src/components/lexeme-forms/no-forms.unit.test.tsx"]
+  file_src_components_lexeme_header_lexeme_header_constants_ts["src/components/lexeme-header/lexeme-header.constants.ts"]
+  file_src_components_lexeme_header_lexeme_header_tsx["src/components/lexeme-header/lexeme-header.tsx"]
+  file_src_components_lexeme_header_lexeme_header_types_ts["src/components/lexeme-header/lexeme-header.types.ts"]
+  file_src_components_lexeme_header_lexeme_header_unit_test_tsx["src/components/lexeme-header/lexeme-header.unit.test.tsx"]
+  file_src_components_lexeme_header_lexeme_header_utilities_ts["src/components/lexeme-header/lexeme-header.utilities.ts"]
+  file_src_components_lexeme_identifiers_lexeme_identifiers_constants_ts["src/components/lexeme-identifiers/lexeme-identifiers.constants.ts"]
+  file_src_components_lexeme_identifiers_lexeme_identifiers_tsx["src/components/lexeme-identifiers/lexeme-identifiers.tsx"]
+  file_src_components_lexeme_identifiers_lexeme_identifiers_types_ts["src/components/lexeme-identifiers/lexeme-identifiers.types.ts"]
+  file_src_components_lexeme_identifiers_lexeme_identifiers_unit_test_tsx["src/components/lexeme-identifiers/lexeme-identifiers.unit.test.tsx"]
+  file_src_components_lexeme_identifiers_lexeme_identifiers_utilities_ts["src/components/lexeme-identifiers/lexeme-identifiers.utilities.ts"]
+  file_src_components_lexeme_match_lexeme_match_constants_ts["src/components/lexeme-match/lexeme-match.constants.ts"]
+  file_src_components_lexeme_match_lexeme_match_tsx["src/components/lexeme-match/lexeme-match.tsx"]
+  file_src_components_lexeme_match_lexeme_match_types_ts["src/components/lexeme-match/lexeme-match.types.ts"]
+  file_src_components_lexeme_match_lexeme_match_unit_test_tsx["src/components/lexeme-match/lexeme-match.unit.test.tsx"]
+  file_src_components_lexeme_match_lexeme_match_utilities_ts["src/components/lexeme-match/lexeme-match.utilities.ts"]
+  file_src_components_lexeme_pronunciations_lexeme_pronunciations_constants_ts["src/components/lexeme-pronunciations/lexeme-pronunciations.constants.ts"]
+  file_src_components_lexeme_pronunciations_lexeme_pronunciations_tsx["src/components/lexeme-pronunciations/lexeme-pronunciations.tsx"]
+  file_src_components_lexeme_pronunciations_lexeme_pronunciations_types_ts["src/components/lexeme-pronunciations/lexeme-pronunciations.types.ts"]
+  file_src_components_lexeme_pronunciations_lexeme_pronunciations_unit_test_tsx["src/components/lexeme-pronunciations/lexeme-pronunciations.unit.test.tsx"]
+  file_src_components_lexeme_pronunciations_lexeme_pronunciations_utilities_ts["src/components/lexeme-pronunciations/lexeme-pronunciations.utilities.ts"]
+  file_src_components_lexeme_translations_lexeme_translations_constants_ts["src/components/lexeme-translations/lexeme-translations.constants.ts"]
+  file_src_components_lexeme_translations_lexeme_translations_tsx["src/components/lexeme-translations/lexeme-translations.tsx"]
+  file_src_components_lexeme_translations_lexeme_translations_types_ts["src/components/lexeme-translations/lexeme-translations.types.ts"]
+  file_src_components_lexeme_translations_lexeme_translations_unit_test_tsx["src/components/lexeme-translations/lexeme-translations.unit.test.tsx"]
+  file_src_components_lexeme_translations_lexeme_translations_utilities_ts["src/components/lexeme-translations/lexeme-translations.utilities.ts"]
+  file_src_components_logo_logo_constants_ts["src/components/logo/logo.constants.ts"]
+  file_src_components_logo_logo_tsx["src/components/logo/logo.tsx"]
+  file_src_components_logo_logo_types_ts["src/components/logo/logo.types.ts"]
+  file_src_components_logo_logo_unit_test_tsx["src/components/logo/logo.unit.test.tsx"]
+  file_src_components_logo_logo_utilities_ts["src/components/logo/logo.utilities.ts"]
+  file_src_components_noun_forms_noun_forms_constants_ts["src/components/noun-forms/noun-forms.constants.ts"]
+  file_src_components_noun_forms_noun_forms_tsx["src/components/noun-forms/noun-forms.tsx"]
+  file_src_components_noun_forms_noun_forms_types_ts["src/components/noun-forms/noun-forms.types.ts"]
+  file_src_components_noun_forms_noun_forms_unit_test_tsx["src/components/noun-forms/noun-forms.unit.test.tsx"]
+  file_src_components_noun_forms_noun_forms_utilities_ts["src/components/noun-forms/noun-forms.utilities.ts"]
+  file_src_components_search_bar_search_bar_constants_ts["src/components/search-bar/search-bar.constants.ts"]
+  file_src_components_search_bar_search_bar_tsx["src/components/search-bar/search-bar.tsx"]
+  file_src_components_search_bar_search_bar_types_ts["src/components/search-bar/search-bar.types.ts"]
+  file_src_components_search_bar_search_bar_unit_test_tsx["src/components/search-bar/search-bar.unit.test.tsx"]
+  file_src_components_search_bar_search_bar_utilities_ts["src/components/search-bar/search-bar.utilities.ts"]
+  file_src_components_search_landing_search_landing_constants_ts["src/components/search-landing/search-landing.constants.ts"]
+  file_src_components_search_landing_search_landing_tsx["src/components/search-landing/search-landing.tsx"]
+  file_src_components_search_landing_search_landing_types_ts["src/components/search-landing/search-landing.types.ts"]
+  file_src_components_search_landing_search_landing_unit_test_tsx["src/components/search-landing/search-landing.unit.test.tsx"]
+  file_src_components_search_landing_search_landing_utilities_ts["src/components/search-landing/search-landing.utilities.ts"]
+  file_src_components_search_results_search_api_constants_ts["src/components/search-results/search-api.constants.ts"]
+  file_src_components_search_results_search_results_constants_ts["src/components/search-results/search-results.constants.ts"]
+  file_src_components_search_results_search_results_tsx["src/components/search-results/search-results.tsx"]
+  file_src_components_search_results_search_results_types_ts["src/components/search-results/search-results.types.ts"]
+  file_src_components_search_results_search_results_unit_test_tsx["src/components/search-results/search-results.unit.test.tsx"]
+  file_src_components_search_results_search_results_utilities_ts["src/components/search-results/search-results.utilities.ts"]
+  file_src_components_search_results_search_constants_ts["src/components/search-results/search.constants.ts"]
+  file_src_components_search_results_search_types_ts["src/components/search-results/search.types.ts"]
+  file_src_components_search_results_search_utilities_ts["src/components/search-results/search.utilities.ts"]
+  file_src_components_verb_forms_axis_tabs_tsx["src/components/verb-forms/axis-tabs.tsx"]
+  file_src_components_verb_forms_axis_tabs_unit_test_tsx["src/components/verb-forms/axis-tabs.unit.test.tsx"]
+  file_src_components_verb_forms_non_finite_forms_tsx["src/components/verb-forms/non-finite-forms.tsx"]
+  file_src_components_verb_forms_non_finite_forms_unit_test_tsx["src/components/verb-forms/non-finite-forms.unit.test.tsx"]
+  file_src_components_verb_forms_verb_forms_constants_ts["src/components/verb-forms/verb-forms.constants.ts"]
+  file_src_components_verb_forms_verb_forms_tsx["src/components/verb-forms/verb-forms.tsx"]
+  file_src_components_verb_forms_verb_forms_types_ts["src/components/verb-forms/verb-forms.types.ts"]
+  file_src_components_verb_forms_verb_forms_unit_test_tsx["src/components/verb-forms/verb-forms.unit.test.tsx"]
+  file_src_components_verb_forms_verb_forms_utilities_ts["src/components/verb-forms/verb-forms.utilities.ts"]
   file_src_graphql_generated_mocks_ts["src/graphql/generated/mocks.ts"]
   file_src_graphql_generated_operations_ts["src/graphql/generated/operations.ts"]
   file_src_graphql_generated_validation_ts["src/graphql/generated/validation.ts"]
@@ -456,58 +523,125 @@ graph LR
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_mts["vite.config.mts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_components_adjective_forms_tsx --> file_src_components_forms_table_tsx
-  file_src_components_adjective_forms_unit_test_tsx --> file_src_components_adjective_forms_tsx
-  file_src_components_forms_table_tsx --> file_src_components_lexeme_identifiers_tsx
-  file_src_components_forms_table_unit_test_tsx --> file_src_components_forms_table_tsx
-  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_etymology_tsx
-  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_forms_tsx
-  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_header_tsx
-  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_identifiers_tsx
-  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_match_tsx
-  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_pronunciations_tsx
-  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_translations_tsx
-  file_src_components_lexeme_card_unit_test_tsx --> file_src_components_lexeme_card_tsx
-  file_src_components_lexeme_card_unit_test_tsx --> file_src_components_lexeme_forms_tsx
-  file_src_components_lexeme_etymology_unit_test_tsx --> file_src_components_lexeme_etymology_tsx
-  file_src_components_lexeme_forms_tsx --> file_src_components_adjective_forms_tsx
-  file_src_components_lexeme_forms_tsx --> file_src_components_noun_forms_tsx
-  file_src_components_lexeme_forms_tsx --> file_src_components_verb_forms_tsx
-  file_src_components_lexeme_forms_unit_test_tsx --> file_src_components_lexeme_forms_tsx
-  file_src_components_lexeme_header_unit_test_tsx --> file_src_components_lexeme_header_tsx
-  file_src_components_lexeme_identifiers_unit_test_tsx --> file_src_components_lexeme_identifiers_tsx
-  file_src_components_lexeme_match_unit_test_tsx --> file_src_components_lexeme_match_tsx
-  file_src_components_lexeme_pronunciations_unit_test_tsx --> file_src_components_lexeme_pronunciations_tsx
-  file_src_components_lexeme_translations_unit_test_tsx --> file_src_components_lexeme_translations_tsx
-  file_src_components_noun_forms_tsx --> file_src_components_forms_table_tsx
-  file_src_components_noun_forms_unit_test_tsx --> file_src_components_noun_forms_tsx
-  file_src_components_search_bar_unit_test_tsx --> file_src_components_search_bar_tsx
-  file_src_components_search_landing_tsx --> file_src_components_layout_index_ts
-  file_src_components_search_landing_unit_test_tsx --> file_src_components_search_landing_tsx
-  file_src_components_search_results_tsx --> file_src_components_lexeme_card_tsx
-  file_src_components_search_results_tsx --> file_src_components_lexeme_forms_tsx
-  file_src_components_search_results_unit_test_tsx --> file_src_components_lexeme_card_tsx
-  file_src_components_search_results_unit_test_tsx --> file_src_components_lexeme_forms_tsx
-  file_src_components_search_results_unit_test_tsx --> file_src_components_search_results_tsx
-  file_src_components_verb_forms_tsx --> file_src_components_forms_table_tsx
-  file_src_components_verb_forms_tsx --> file_src_components_lexeme_identifiers_tsx
-  file_src_components_verb_forms_unit_test_tsx --> file_src_components_verb_forms_tsx
+  file_src_components_adjective_forms_adjective_forms_tsx --> file_src_components_adjective_forms_adjective_forms_constants_ts
+  file_src_components_adjective_forms_adjective_forms_tsx --> file_src_components_adjective_forms_adjective_forms_types_ts
+  file_src_components_adjective_forms_adjective_forms_tsx --> file_src_components_forms_table_forms_table_tsx
+  file_src_components_adjective_forms_adjective_forms_unit_test_tsx --> file_src_components_adjective_forms_adjective_forms_tsx
+  file_src_components_application_sidebar_application_sidebar_constants_ts --> file_src_components_application_sidebar_application_sidebar_types_ts
+  file_src_components_application_sidebar_application_sidebar_tsx --> file_src_components_application_sidebar_application_sidebar_constants_ts
+  file_src_components_application_sidebar_application_sidebar_tsx --> file_src_components_application_sidebar_navigation_link_tsx
+  file_src_components_application_sidebar_application_sidebar_tsx --> file_src_components_logo_logo_tsx
+  file_src_components_application_sidebar_application_sidebar_unit_test_tsx --> file_src_components_application_sidebar_application_sidebar_tsx
+  file_src_components_application_sidebar_navigation_link_tsx --> file_src_components_application_sidebar_application_sidebar_types_ts
+  file_src_components_application_sidebar_navigation_link_unit_test_tsx --> file_src_components_application_sidebar_navigation_link_tsx
+  file_src_components_forms_table_forms_table_tsx --> file_src_components_forms_table_forms_table_types_ts
+  file_src_components_forms_table_forms_table_tsx --> file_src_components_lexeme_identifiers_lexeme_identifiers_constants_ts
+  file_src_components_forms_table_forms_table_unit_test_tsx --> file_src_components_forms_table_forms_table_tsx
+  file_src_components_lexeme_card_lexeme_card_tsx --> file_src_components_lexeme_card_lexeme_card_constants_ts
+  file_src_components_lexeme_card_lexeme_card_tsx --> file_src_components_lexeme_card_lexeme_card_types_ts
+  file_src_components_lexeme_card_lexeme_card_tsx --> file_src_components_lexeme_etymology_lexeme_etymology_tsx
+  file_src_components_lexeme_card_lexeme_card_tsx --> file_src_components_lexeme_forms_lexeme_forms_tsx
+  file_src_components_lexeme_card_lexeme_card_tsx --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_components_lexeme_card_lexeme_card_tsx --> file_src_components_lexeme_header_lexeme_header_tsx
+  file_src_components_lexeme_card_lexeme_card_tsx --> file_src_components_lexeme_identifiers_lexeme_identifiers_tsx
+  file_src_components_lexeme_card_lexeme_card_tsx --> file_src_components_lexeme_match_lexeme_match_tsx
+  file_src_components_lexeme_card_lexeme_card_tsx --> file_src_components_lexeme_pronunciations_lexeme_pronunciations_tsx
+  file_src_components_lexeme_card_lexeme_card_tsx --> file_src_components_lexeme_translations_lexeme_translations_tsx
+  file_src_components_lexeme_card_lexeme_card_types_ts --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_components_lexeme_card_lexeme_card_types_ts --> file_src_components_lexeme_header_lexeme_header_types_ts
+  file_src_components_lexeme_card_lexeme_card_types_ts --> file_src_components_lexeme_match_lexeme_match_types_ts
+  file_src_components_lexeme_card_lexeme_card_types_ts --> file_src_components_lexeme_pronunciations_lexeme_pronunciations_types_ts
+  file_src_components_lexeme_card_lexeme_card_unit_test_tsx --> file_src_components_lexeme_card_lexeme_card_tsx
+  file_src_components_lexeme_card_lexeme_card_unit_test_tsx --> file_src_components_lexeme_card_lexeme_card_types_ts
+  file_src_components_lexeme_card_lexeme_card_unit_test_tsx --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_components_lexeme_etymology_lexeme_etymology_unit_test_tsx --> file_src_components_lexeme_etymology_lexeme_etymology_tsx
+  file_src_components_lexeme_forms_forms_of_kind_tsx --> file_src_components_adjective_forms_adjective_forms_tsx
+  file_src_components_lexeme_forms_forms_of_kind_tsx --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_components_lexeme_forms_forms_of_kind_tsx --> file_src_components_lexeme_forms_no_forms_tsx
+  file_src_components_lexeme_forms_forms_of_kind_tsx --> file_src_components_noun_forms_noun_forms_tsx
+  file_src_components_lexeme_forms_forms_of_kind_tsx --> file_src_components_verb_forms_verb_forms_tsx
+  file_src_components_lexeme_forms_forms_of_kind_unit_test_tsx --> file_src_components_lexeme_forms_forms_of_kind_tsx
+  file_src_components_lexeme_forms_lexeme_forms_tsx --> file_src_components_lexeme_forms_forms_of_kind_tsx
+  file_src_components_lexeme_forms_lexeme_forms_tsx --> file_src_components_lexeme_forms_lexeme_forms_constants_ts
+  file_src_components_lexeme_forms_lexeme_forms_tsx --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_components_lexeme_forms_lexeme_forms_unit_test_tsx --> file_src_components_lexeme_forms_lexeme_forms_tsx
+  file_src_components_lexeme_forms_lexeme_forms_unit_test_tsx --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_components_lexeme_forms_no_forms_unit_test_tsx --> file_src_components_lexeme_forms_no_forms_tsx
+  file_src_components_lexeme_header_lexeme_header_tsx --> file_src_components_lexeme_header_lexeme_header_types_ts
+  file_src_components_lexeme_header_lexeme_header_tsx --> file_src_components_lexeme_header_lexeme_header_utilities_ts
+  file_src_components_lexeme_header_lexeme_header_unit_test_tsx --> file_src_components_lexeme_header_lexeme_header_tsx
+  file_src_components_lexeme_header_lexeme_header_utilities_ts --> file_src_components_lexeme_header_lexeme_header_constants_ts
+  file_src_components_lexeme_header_lexeme_header_utilities_ts --> file_src_components_lexeme_header_lexeme_header_types_ts
+  file_src_components_lexeme_identifiers_lexeme_identifiers_tsx --> file_src_components_lexeme_identifiers_lexeme_identifiers_constants_ts
+  file_src_components_lexeme_identifiers_lexeme_identifiers_unit_test_tsx --> file_src_components_lexeme_identifiers_lexeme_identifiers_tsx
+  file_src_components_lexeme_match_lexeme_match_constants_ts --> file_src_components_lexeme_match_lexeme_match_types_ts
+  file_src_components_lexeme_match_lexeme_match_tsx --> file_src_components_lexeme_match_lexeme_match_constants_ts
+  file_src_components_lexeme_match_lexeme_match_tsx --> file_src_components_lexeme_match_lexeme_match_types_ts
+  file_src_components_lexeme_match_lexeme_match_tsx --> file_src_components_lexeme_match_lexeme_match_utilities_ts
+  file_src_components_lexeme_match_lexeme_match_unit_test_tsx --> file_src_components_lexeme_match_lexeme_match_tsx
+  file_src_components_lexeme_match_lexeme_match_utilities_ts --> file_src_components_lexeme_match_lexeme_match_types_ts
+  file_src_components_lexeme_pronunciations_lexeme_pronunciations_tsx --> file_src_components_lexeme_pronunciations_lexeme_pronunciations_types_ts
+  file_src_components_lexeme_pronunciations_lexeme_pronunciations_unit_test_tsx --> file_src_components_lexeme_pronunciations_lexeme_pronunciations_tsx
+  file_src_components_lexeme_translations_lexeme_translations_tsx --> file_src_components_lexeme_translations_lexeme_translations_constants_ts
+  file_src_components_lexeme_translations_lexeme_translations_unit_test_tsx --> file_src_components_lexeme_translations_lexeme_translations_tsx
+  file_src_components_logo_logo_unit_test_tsx --> file_src_components_logo_logo_tsx
+  file_src_components_noun_forms_noun_forms_tsx --> file_src_components_forms_table_forms_table_tsx
+  file_src_components_noun_forms_noun_forms_tsx --> file_src_components_noun_forms_noun_forms_constants_ts
+  file_src_components_noun_forms_noun_forms_tsx --> file_src_components_noun_forms_noun_forms_types_ts
+  file_src_components_noun_forms_noun_forms_unit_test_tsx --> file_src_components_noun_forms_noun_forms_tsx
+  file_src_components_search_bar_search_bar_tsx --> file_src_components_search_bar_search_bar_constants_ts
+  file_src_components_search_bar_search_bar_unit_test_tsx --> file_src_components_search_bar_search_bar_tsx
+  file_src_components_search_landing_search_landing_tsx --> file_src_components_logo_logo_tsx
+  file_src_components_search_landing_search_landing_unit_test_tsx --> file_src_components_search_landing_search_landing_tsx
+  file_src_components_search_results_search_api_constants_ts --> file_src_components_lexeme_match_lexeme_match_types_ts
+  file_src_components_search_results_search_api_constants_ts --> file_src_components_search_results_search_types_ts
+  file_src_components_search_results_search_results_tsx --> file_src_components_lexeme_card_lexeme_card_tsx
+  file_src_components_search_results_search_results_tsx --> file_src_components_lexeme_card_lexeme_card_types_ts
+  file_src_components_search_results_search_results_tsx --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_components_search_results_search_results_unit_test_tsx --> file_src_components_lexeme_card_lexeme_card_types_ts
+  file_src_components_search_results_search_results_unit_test_tsx --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_components_search_results_search_results_unit_test_tsx --> file_src_components_search_results_search_results_tsx
+  file_src_components_search_results_search_constants_ts --> file_src_components_lexeme_card_lexeme_card_types_ts
+  file_src_components_search_results_search_constants_ts --> file_src_components_search_results_search_utilities_ts
+  file_src_components_search_results_search_types_ts --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_components_search_results_search_types_ts --> file_src_components_lexeme_header_lexeme_header_types_ts
+  file_src_components_search_results_search_utilities_ts --> file_src_components_lexeme_card_lexeme_card_types_ts
+  file_src_components_search_results_search_utilities_ts --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_components_search_results_search_utilities_ts --> file_src_components_lexeme_header_lexeme_header_types_ts
+  file_src_components_search_results_search_utilities_ts --> file_src_components_lexeme_match_lexeme_match_types_ts
+  file_src_components_search_results_search_utilities_ts --> file_src_components_search_results_search_api_constants_ts
+  file_src_components_search_results_search_utilities_ts --> file_src_components_search_results_search_types_ts
+  file_src_components_search_results_search_utilities_ts --> file_src_graphql_generated_operations_ts
+  file_src_components_verb_forms_axis_tabs_tsx --> file_src_components_lexeme_identifiers_lexeme_identifiers_constants_ts
+  file_src_components_verb_forms_axis_tabs_tsx --> file_src_components_verb_forms_verb_forms_constants_ts
+  file_src_components_verb_forms_axis_tabs_unit_test_tsx --> file_src_components_verb_forms_axis_tabs_tsx
+  file_src_components_verb_forms_non_finite_forms_tsx --> file_src_components_verb_forms_verb_forms_constants_ts
+  file_src_components_verb_forms_non_finite_forms_tsx --> file_src_components_verb_forms_verb_forms_types_ts
+  file_src_components_verb_forms_non_finite_forms_unit_test_tsx --> file_src_components_verb_forms_non_finite_forms_tsx
+  file_src_components_verb_forms_verb_forms_tsx --> file_src_components_forms_table_forms_table_tsx
+  file_src_components_verb_forms_verb_forms_tsx --> file_src_components_verb_forms_axis_tabs_tsx
+  file_src_components_verb_forms_verb_forms_tsx --> file_src_components_verb_forms_non_finite_forms_tsx
+  file_src_components_verb_forms_verb_forms_tsx --> file_src_components_verb_forms_verb_forms_constants_ts
+  file_src_components_verb_forms_verb_forms_tsx --> file_src_components_verb_forms_verb_forms_types_ts
+  file_src_components_verb_forms_verb_forms_tsx --> file_src_components_verb_forms_verb_forms_utilities_ts
+  file_src_components_verb_forms_verb_forms_unit_test_tsx --> file_src_components_verb_forms_verb_forms_tsx
+  file_src_components_verb_forms_verb_forms_unit_test_tsx --> file_src_components_verb_forms_verb_forms_types_ts
+  file_src_components_verb_forms_verb_forms_utilities_ts --> file_src_components_verb_forms_verb_forms_constants_ts
+  file_src_components_verb_forms_verb_forms_utilities_ts --> file_src_components_verb_forms_verb_forms_types_ts
   file_src_graphql_generated_validation_ts --> file_src_graphql_generated_operations_ts
   file_src_router_tsx --> file_src_routeTree_gen_ts
-  file_src_routes___root_tsx --> file_src_components_layout_index_ts
+  file_src_routes___root_tsx --> file_src_components_application_sidebar_application_sidebar_tsx
   file_src_routes_index_integration_test_tsx --> file_src_routes_index_tsx
   file_src_routes_index_integration_test_tsx --> file_testing_render_route_tsx
   file_src_routes_search_integration_test_tsx --> file_src_graphql_generated_mocks_ts
   file_src_routes_search_integration_test_tsx --> file_src_routes_search_tsx
   file_src_routes_search_integration_test_tsx --> file_testing_render_route_tsx
-  file_src_routes_search_tsx --> file_src_components_lexeme_card_tsx
-  file_src_routes_search_tsx --> file_src_components_lexeme_forms_tsx
-  file_src_routes_search_tsx --> file_src_components_lexeme_header_tsx
-  file_src_routes_search_tsx --> file_src_components_lexeme_match_tsx
-  file_src_routes_search_tsx --> file_src_components_search_bar_tsx
-  file_src_routes_search_tsx --> file_src_components_search_landing_tsx
-  file_src_routes_search_tsx --> file_src_components_search_results_tsx
-  file_src_routes_search_tsx --> file_src_graphql_generated_operations_ts
+  file_src_routes_search_tsx --> file_src_components_lexeme_forms_lexeme_forms_types_ts
+  file_src_routes_search_tsx --> file_src_components_search_bar_search_bar_tsx
+  file_src_routes_search_tsx --> file_src_components_search_landing_search_landing_tsx
+  file_src_routes_search_tsx --> file_src_components_search_results_search_results_tsx
+  file_src_routes_search_tsx --> file_src_components_search_results_search_constants_ts
+  file_src_routes_search_tsx --> file_src_components_search_results_search_types_ts
   file_src_routeTree_gen_ts --> file_src_router_tsx
   file_src_routeTree_gen_ts --> file_src_routes___root_tsx
   file_src_routeTree_gen_ts --> file_src_routes_index_tsx
@@ -522,43 +656,43 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6490-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-230.50_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-54-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-7276-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-249.00_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-27-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-121-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-193.88_kB_gzip-6b7280?style=flat-square)
-![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-43.52_kB_gzip-6b7280?style=flat-square)
+![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-185.74_kB_gzip-6b7280?style=flat-square)
+![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-51.95_kB_gzip-6b7280?style=flat-square)
 ![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.92_kB_gzip-6b7280?style=flat-square)
-![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-202.44_kB_gzip-6b7280?style=flat-square)
+![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-201.86_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-52-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-41-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-119-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-47-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-17-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-2-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-278-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-304-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-2-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-17-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-24-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-21-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-0-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-264-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-298-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-0-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-244-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-20-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-172-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-195-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-250-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-483-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-688-475569?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-273-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-25-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-183-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-290-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-314-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-627-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-880-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -672,9 +806,9 @@ graph LR
 ![Module Files](https://img.shields.io/badge/Module_Files-0-7c3aed?style=flat-square)
 ![Service Files](https://img.shields.io/badge/Service_Files-0-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-0-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-0-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-0-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-19-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-18-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-18-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
 ![Unit Tests](https://img.shields.io/badge/Unit_Tests-0-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
@@ -714,7 +848,7 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-151-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-163-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-5-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-9-a78bfa?style=flat-square)

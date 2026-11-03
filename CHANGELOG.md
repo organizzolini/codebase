@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.41.9](https://github.com/organizzolini/codebase/compare/v3.41.8...v3.41.9) (2026-11-03)
+
+### ♻️ Code Refactoring
+
+* **configuration,caelundas,lexico,meanderaw,documentation,conformetry:** ♻️ hold every web app to one file shape ([#1951](https://github.com/organizzolini/codebase/issues/1951)) ([5c92134](https://github.com/organizzolini/codebase/commit/5c9213414614db7290247a531c766635e4e81833))
+
 ## [3.41.8](https://github.com/organizzolini/codebase/compare/v3.41.7...v3.41.8) (2026-10-30)
 
 ### 📝 Documentation
