@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.43.0](https://github.com/organizzolini/codebase/compare/v3.42.0...v3.43.0) (2026-11-03)
+
+### ✨ Features
+
+* **caelundas,presentation:** ✨ show a tunable night sky behind the web calendar ([#1884](https://github.com/organizzolini/codebase/issues/1884)) ([beba8a2](https://github.com/organizzolini/codebase/commit/beba8a2261afdeadd4259a2074e8a391cf6b7ce2)), closes [#1878](https://github.com/organizzolini/codebase/issues/1878) [#1951](https://github.com/organizzolini/codebase/issues/1951) [#1867](https://github.com/organizzolini/codebase/issues/1867) [#1868](https://github.com/organizzolini/codebase/issues/1868) [#1869](https://github.com/organizzolini/codebase/issues/1869) [#1870](https://github.com/organizzolini/codebase/issues/1870) [#1871](https://github.com/organizzolini/codebase/issues/1871) [#1872](https://github.com/organizzolini/codebase/issues/1872) [#1873](https://github.com/organizzolini/codebase/issues/1873) [#1861](https://github.com/organizzolini/codebase/issues/1861) [#1878](https://github.com/organizzolini/codebase/issues/1878) [#1951](https://github.com/organizzolini/codebase/issues/1951)
+
 ## [3.42.0](https://github.com/organizzolini/codebase/compare/v3.41.9...v3.42.0) (2026-11-03)
 
 ### ✨ Features

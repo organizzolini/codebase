@@ -506,6 +506,7 @@ graph LR
   module_caelundas_cli_MathModule["caelundas-cli/MathModule"]
   module_caelundas_cli_MinorAspectsModule["caelundas-cli/MinorAspectsModule"]
   module_caelundas_cli_MonthlyLunarCycleModule["caelundas-cli/MonthlyLunarCycleModule"]
+  module_caelundas_cli_NightSkyModule["caelundas-cli/NightSkyModule"]
   module_caelundas_cli_PerfectiveModule["caelundas-cli/PerfectiveModule"]
   module_caelundas_cli_PhasesModule["caelundas-cli/PhasesModule"]
   module_caelundas_cli_ProgressiveModule["caelundas-cli/ProgressiveModule"]
@@ -1117,6 +1118,7 @@ graph LR
   module_caelundas_cli_IngressesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_MainModule --> module_caelundas_cli_CaelundasModule
   module_caelundas_cli_MainModule --> module_caelundas_cli_DiscoveryModule
+  module_caelundas_cli_MainModule --> module_caelundas_cli_NightSkyModule
   module_caelundas_cli_MajorAspectsModule --> module_caelundas_cli_AspectsUtilitiesModule
   module_caelundas_cli_MajorAspectsModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_MajorAspectsModule --> module_caelundas_cli_ProgressiveUtilitiesModule
@@ -1125,6 +1127,7 @@ graph LR
   module_caelundas_cli_MinorAspectsModule --> module_caelundas_cli_ProgressiveUtilitiesModule
   module_caelundas_cli_MonthlyLunarCycleModule --> module_caelundas_cli_CalendarModule
   module_caelundas_cli_MonthlyLunarCycleModule --> module_caelundas_cli_EphemerisModule
+  module_caelundas_cli_NightSkyModule --> module_caelundas_cli_DatabaseModule
   module_caelundas_cli_PerfectiveModule --> module_caelundas_cli_AnnualSolarCycleModule
   module_caelundas_cli_PerfectiveModule --> module_caelundas_cli_AspectsModule
   module_caelundas_cli_PerfectiveModule --> module_caelundas_cli_DailyCyclesModule
@@ -2068,8 +2071,12 @@ graph LR
   file_caelundas_cli_src_modules_database_database_utilities_unit_test_ts["caelundas-cli/src/modules/database/database.utilities.unit.test.ts"]
   file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts["caelundas-cli/src/modules/database/entities/calendar-event-tag.entity.ts"]
   file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts["caelundas-cli/src/modules/database/entities/calendar-event.entity.ts"]
+  file_caelundas_cli_src_modules_database_entities_constellation_line_entity_ts["caelundas-cli/src/modules/database/entities/constellation-line.entity.ts"]
+  file_caelundas_cli_src_modules_database_entities_constellation_entity_ts["caelundas-cli/src/modules/database/entities/constellation.entity.ts"]
+  file_caelundas_cli_src_modules_database_entities_star_entity_ts["caelundas-cli/src/modules/database/entities/star.entity.ts"]
   file_caelundas_cli_src_modules_database_entities_tag_entity_ts["caelundas-cli/src/modules/database/entities/tag.entity.ts"]
   file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts["caelundas-cli/src/modules/database/migrations/1793045891250-migration.ts"]
+  file_caelundas_cli_src_modules_database_migrations_1793628422000_migration_ts["caelundas-cli/src/modules/database/migrations/1793628422000-migration.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_constants_ts["caelundas-cli/src/modules/datetime/datetime.constants.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_module_ts["caelundas-cli/src/modules/datetime/datetime.module.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_service_ts["caelundas-cli/src/modules/datetime/datetime.service.ts"]
@@ -2170,6 +2177,15 @@ graph LR
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts["caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts"]
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts["caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.unit.test.ts"]
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_types_ts["caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.types.ts"]
+  file_caelundas_cli_src_modules_night_sky_night_sky_command_ts["caelundas-cli/src/modules/night-sky/night-sky.command.ts"]
+  file_caelundas_cli_src_modules_night_sky_night_sky_command_unit_test_ts["caelundas-cli/src/modules/night-sky/night-sky.command.unit.test.ts"]
+  file_caelundas_cli_src_modules_night_sky_night_sky_constants_ts["caelundas-cli/src/modules/night-sky/night-sky.constants.ts"]
+  file_caelundas_cli_src_modules_night_sky_night_sky_module_ts["caelundas-cli/src/modules/night-sky/night-sky.module.ts"]
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_ts["caelundas-cli/src/modules/night-sky/night-sky.service.ts"]
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_unit_test_ts["caelundas-cli/src/modules/night-sky/night-sky.service.unit.test.ts"]
+  file_caelundas_cli_src_modules_night_sky_night_sky_types_ts["caelundas-cli/src/modules/night-sky/night-sky.types.ts"]
+  file_caelundas_cli_src_modules_night_sky_night_sky_utilities_ts["caelundas-cli/src/modules/night-sky/night-sky.utilities.ts"]
+  file_caelundas_cli_src_modules_night_sky_night_sky_utilities_unit_test_ts["caelundas-cli/src/modules/night-sky/night-sky.utilities.unit.test.ts"]
   file_caelundas_cli_src_modules_perfective_perfective_constants_ts["caelundas-cli/src/modules/perfective/perfective.constants.ts"]
   file_caelundas_cli_src_modules_perfective_perfective_module_ts["caelundas-cli/src/modules/perfective/perfective.module.ts"]
   file_caelundas_cli_src_modules_perfective_perfective_service_ts["caelundas-cli/src/modules/perfective/perfective.service.ts"]
@@ -2320,7 +2336,6 @@ graph LR
   file_caelundas_web_codometer_config_ts["caelundas-web/codometer.config.ts"]
   file_caelundas_web_eslint_config_ts["caelundas-web/eslint.config.ts"]
   file_caelundas_web_scripts_build_events_database_ts["caelundas-web/scripts/build-events-database.ts"]
-  file_caelundas_web_scripts_build_star_catalog_ts["caelundas-web/scripts/build-star-catalog.ts"]
   file_caelundas_web_src_client_tsx["caelundas-web/src/client.tsx"]
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx["caelundas-web/src/components/calendar-agenda/agenda-row-content.tsx"]
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_unit_test_tsx["caelundas-web/src/components/calendar-agenda/agenda-row-content.unit.test.tsx"]
@@ -2353,11 +2368,11 @@ graph LR
   file_caelundas_web_src_components_calendar_color_by_calendar_colors_types_ts["caelundas-web/src/components/calendar-color-by/calendar-colors.types.ts"]
   file_caelundas_web_src_components_calendar_color_by_calendar_colors_utilities_ts["caelundas-web/src/components/calendar-color-by/calendar-colors.utilities.ts"]
   file_caelundas_web_src_components_calendar_color_by_calendar_colors_utilities_unit_test_ts["caelundas-web/src/components/calendar-color-by/calendar-colors.utilities.unit.test.ts"]
-  file_caelundas_web_src_components_calendar_color_options_calendar_color_options_constants_ts["caelundas-web/src/components/calendar-color-options/calendar-color-options.constants.ts"]
-  file_caelundas_web_src_components_calendar_color_options_calendar_color_options_tsx["caelundas-web/src/components/calendar-color-options/calendar-color-options.tsx"]
-  file_caelundas_web_src_components_calendar_color_options_calendar_color_options_types_ts["caelundas-web/src/components/calendar-color-options/calendar-color-options.types.ts"]
-  file_caelundas_web_src_components_calendar_color_options_calendar_color_options_unit_test_tsx["caelundas-web/src/components/calendar-color-options/calendar-color-options.unit.test.tsx"]
-  file_caelundas_web_src_components_calendar_color_options_calendar_color_options_utilities_ts["caelundas-web/src/components/calendar-color-options/calendar-color-options.utilities.ts"]
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_constants_ts["caelundas-web/src/components/calendar-color-menu/calendar-color-menu.constants.ts"]
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_tsx["caelundas-web/src/components/calendar-color-menu/calendar-color-menu.tsx"]
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_types_ts["caelundas-web/src/components/calendar-color-menu/calendar-color-menu.types.ts"]
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_unit_test_tsx["caelundas-web/src/components/calendar-color-menu/calendar-color-menu.unit.test.tsx"]
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_utilities_ts["caelundas-web/src/components/calendar-color-menu/calendar-color-menu.utilities.ts"]
   file_caelundas_web_src_components_calendar_empty_calendar_empty_constants_ts["caelundas-web/src/components/calendar-empty/calendar-empty.constants.ts"]
   file_caelundas_web_src_components_calendar_empty_calendar_empty_tsx["caelundas-web/src/components/calendar-empty/calendar-empty.tsx"]
   file_caelundas_web_src_components_calendar_empty_calendar_empty_types_ts["caelundas-web/src/components/calendar-empty/calendar-empty.types.ts"]
@@ -2446,6 +2461,11 @@ graph LR
   file_caelundas_web_src_components_calendar_group_by_group_tag_picker_constants_ts["caelundas-web/src/components/calendar-group-by/group-tag-picker.constants.ts"]
   file_caelundas_web_src_components_calendar_group_by_group_tag_picker_tsx["caelundas-web/src/components/calendar-group-by/group-tag-picker.tsx"]
   file_caelundas_web_src_components_calendar_group_by_group_tag_picker_unit_test_tsx["caelundas-web/src/components/calendar-group-by/group-tag-picker.unit.test.tsx"]
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_constants_ts["caelundas-web/src/components/calendar-menus/calendar-menus.constants.ts"]
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_tsx["caelundas-web/src/components/calendar-menus/calendar-menus.tsx"]
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_types_ts["caelundas-web/src/components/calendar-menus/calendar-menus.types.ts"]
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_unit_test_tsx["caelundas-web/src/components/calendar-menus/calendar-menus.unit.test.tsx"]
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_utilities_ts["caelundas-web/src/components/calendar-menus/calendar-menus.utilities.ts"]
   file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_constants_ts["caelundas-web/src/components/calendar-navigation-group/calendar-navigation-group.constants.ts"]
   file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_tsx["caelundas-web/src/components/calendar-navigation-group/calendar-navigation-group.tsx"]
   file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_types_ts["caelundas-web/src/components/calendar-navigation-group/calendar-navigation-group.types.ts"]
@@ -2544,6 +2564,7 @@ graph LR
   file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_integration_test_tsx["caelundas-web/src/components/events-calendar/calendar-loader.utilities.integration.test.tsx"]
   file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts["caelundas-web/src/components/events-calendar/calendar-loader.utilities.ts"]
   file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_unit_test_ts["caelundas-web/src/components/events-calendar/calendar-loader.utilities.unit.test.ts"]
+  file_caelundas_web_src_components_events_calendar_calendar_surfaces_constants_ts["caelundas-web/src/components/events-calendar/calendar-surfaces.constants.ts"]
   file_caelundas_web_src_components_events_calendar_calendar_viewport_constants_ts["caelundas-web/src/components/events-calendar/calendar-viewport.constants.ts"]
   file_caelundas_web_src_components_events_calendar_calendar_viewport_utilities_ts["caelundas-web/src/components/events-calendar/calendar-viewport.utilities.ts"]
   file_caelundas_web_src_components_events_calendar_calendar_views_constants_ts["caelundas-web/src/components/events-calendar/calendar-views.constants.ts"]
@@ -2585,6 +2606,36 @@ graph LR
   file_caelundas_web_src_components_filter_tag_editor_filter_tag_editor_utilities_ts["caelundas-web/src/components/filter-tag-editor/filter-tag-editor.utilities.ts"]
   file_caelundas_web_src_components_filter_tag_editor_tag_row_tsx["caelundas-web/src/components/filter-tag-editor/tag-row.tsx"]
   file_caelundas_web_src_components_filter_tag_editor_tag_row_unit_test_tsx["caelundas-web/src/components/filter-tag-editor/tag-row.unit.test.tsx"]
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_failures_integration_test_tsx["caelundas-web/src/components/night-sky-backdrop/night-sky-backdrop-mount-failures.integration.test.tsx"]
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_integration_test_tsx["caelundas-web/src/components/night-sky-backdrop/night-sky-backdrop-mount.integration.test.tsx"]
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx["caelundas-web/src/components/night-sky-backdrop/night-sky-backdrop-mount.tsx"]
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_unit_test_tsx["caelundas-web/src/components/night-sky-backdrop/night-sky-backdrop-mount.unit.test.tsx"]
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_constants_ts["caelundas-web/src/components/night-sky-backdrop/night-sky-backdrop.constants.ts"]
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_tsx["caelundas-web/src/components/night-sky-backdrop/night-sky-backdrop.tsx"]
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_types_ts["caelundas-web/src/components/night-sky-backdrop/night-sky-backdrop.types.ts"]
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_unit_test_tsx["caelundas-web/src/components/night-sky-backdrop/night-sky-backdrop.unit.test.tsx"]
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_utilities_ts["caelundas-web/src/components/night-sky-backdrop/night-sky-backdrop.utilities.ts"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_color_field_tsx["caelundas-web/src/components/night-sky-menu/night-sky-color-field.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_color_field_unit_test_tsx["caelundas-web/src/components/night-sky-menu/night-sky-color-field.unit.test.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_folder_tsx["caelundas-web/src/components/night-sky-menu/night-sky-constellation-folder.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_folder_unit_test_tsx["caelundas-web/src/components/night-sky-menu/night-sky-constellation-folder.unit.test.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_picker_tsx["caelundas-web/src/components/night-sky-menu/night-sky-constellation-picker.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_picker_unit_test_tsx["caelundas-web/src/components/night-sky-menu/night-sky-constellation-picker.unit.test.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_tsx["caelundas-web/src/components/night-sky-menu/night-sky-lines-section.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_unit_test_tsx["caelundas-web/src/components/night-sky-menu/night-sky-lines-section.unit.test.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts["caelundas-web/src/components/night-sky-menu/night-sky-menu.constants.ts"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_integration_test_tsx["caelundas-web/src/components/night-sky-menu/night-sky-menu.integration.test.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx["caelundas-web/src/components/night-sky-menu/night-sky-menu.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_types_ts["caelundas-web/src/components/night-sky-menu/night-sky-menu.types.ts"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_unit_test_tsx["caelundas-web/src/components/night-sky-menu/night-sky-menu.unit.test.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts["caelundas-web/src/components/night-sky-menu/night-sky-menu.utilities.ts"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_unit_test_ts["caelundas-web/src/components/night-sky-menu/night-sky-menu.utilities.unit.test.ts"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_section_tsx["caelundas-web/src/components/night-sky-menu/night-sky-section.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_section_unit_test_tsx["caelundas-web/src/components/night-sky-menu/night-sky-section.unit.test.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_slider_tsx["caelundas-web/src/components/night-sky-menu/night-sky-slider.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_slider_unit_test_tsx["caelundas-web/src/components/night-sky-menu/night-sky-slider.unit.test.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_tsx["caelundas-web/src/components/night-sky-menu/night-sky-sliders.tsx"]
+  file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_unit_test_tsx["caelundas-web/src/components/night-sky-menu/night-sky-sliders.unit.test.tsx"]
   file_caelundas_web_src_components_virtual_list_calendar_virtual_window_types_ts["caelundas-web/src/components/virtual-list/calendar-virtual-window.types.ts"]
   file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_ts["caelundas-web/src/components/virtual-list/calendar-virtual-window.utilities.ts"]
   file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_unit_test_ts["caelundas-web/src/components/virtual-list/calendar-virtual-window.utilities.unit.test.ts"]
@@ -2632,10 +2683,23 @@ graph LR
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_unit_test_ts["caelundas-web/src/hooks/use-filter-query/use-filter-query.unit.test.ts"]
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts["caelundas-web/src/hooks/use-filter-query/use-filter-query.utilities.ts"]
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts["caelundas-web/src/hooks/use-filter-query/use-filter-query.utilities.unit.test.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_colors_utilities_ts["caelundas-web/src/hooks/use-night-sky/night-sky-colors.utilities.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_ecliptic_utilities_ts["caelundas-web/src/hooks/use-night-sky/night-sky-ecliptic.utilities.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_ecliptic_utilities_unit_test_ts["caelundas-web/src/hooks/use-night-sky/night-sky-ecliptic.utilities.unit.test.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_ts["caelundas-web/src/hooks/use-night-sky/night-sky-lines.utilities.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_unit_test_ts["caelundas-web/src/hooks/use-night-sky/night-sky-lines.utilities.unit.test.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_options_utilities_ts["caelundas-web/src/hooks/use-night-sky/night-sky-options.utilities.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_projection_utilities_ts["caelundas-web/src/hooks/use-night-sky/night-sky-projection.utilities.ts"]
   file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts["caelundas-web/src/hooks/use-night-sky/night-sky.constants.ts"]
   file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts["caelundas-web/src/hooks/use-night-sky/night-sky.types.ts"]
   file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts["caelundas-web/src/hooks/use-night-sky/night-sky.utilities.ts"]
   file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_unit_test_ts["caelundas-web/src/hooks/use-night-sky/night-sky.utilities.unit.test.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-engine.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_types_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-engine.types.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_unit_test_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-engine.unit.test.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-settings.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_types_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-settings.types.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_unit_test_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky-settings.unit.test.ts"]
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_constants_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.constants.ts"]
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_schemas_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.schemas.ts"]
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_schemas_unit_test_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.schemas.unit.test.ts"]
@@ -2643,6 +2707,10 @@ graph LR
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_types_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.types.ts"]
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_unit_test_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.unit.test.ts"]
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.utilities.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_unit_test_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.utilities.unit.test.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_window_size_ts["caelundas-web/src/hooks/use-night-sky/use-window-size.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_window_size_types_ts["caelundas-web/src/hooks/use-night-sky/use-window-size.types.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_window_size_unit_test_ts["caelundas-web/src/hooks/use-night-sky/use-window-size.unit.test.ts"]
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_constants_ts["caelundas-web/src/hooks/use-tag-picker/use-tag-picker.constants.ts"]
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_ts["caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts"]
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_types_ts["caelundas-web/src/hooks/use-tag-picker/use-tag-picker.types.ts"]
@@ -6029,6 +6097,7 @@ graph LR
   file_caelundas_cli_src_caelundas_cli_main_unit_test_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
   file_caelundas_cli_src_caelundas_cli_module_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
   file_caelundas_cli_src_caelundas_cli_module_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_module_ts
+  file_caelundas_cli_src_caelundas_cli_module_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_module_ts
   file_caelundas_cli_src_caelundas_cli_repl_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
   file_caelundas_cli_src_ephemeris_download_cli_main_ts --> file_caelundas_cli_src_ephemeris_download_cli_module_ts
   file_caelundas_cli_src_ephemeris_download_cli_module_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_module_ts
@@ -6281,13 +6350,16 @@ graph LR
   file_caelundas_cli_src_modules_database_data_source_constants_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_modules_database_data_source_constants_unit_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_modules_database_database_constants_integration_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
-  file_caelundas_cli_src_modules_database_database_constants_integration_test_ts --> file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts
   file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts
   file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
+  file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_constellation_line_entity_ts
+  file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_constellation_entity_ts
+  file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_star_entity_ts
   file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_tag_entity_ts
+  file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts
+  file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_migrations_1793628422000_migration_ts
   file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_database_service_ts
-  file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts
   file_caelundas_cli_src_modules_database_database_service_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_modules_database_database_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_service_ts
   file_caelundas_cli_src_modules_database_database_types_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
@@ -6295,6 +6367,8 @@ graph LR
   file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts --> file_caelundas_cli_src_modules_database_entities_tag_entity_ts
   file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts --> file_caelundas_cli_src_modules_database_database_utilities_ts
+  file_caelundas_cli_src_modules_database_entities_constellation_line_entity_ts --> file_caelundas_cli_src_modules_database_entities_constellation_entity_ts
+  file_caelundas_cli_src_modules_database_entities_constellation_line_entity_ts --> file_caelundas_cli_src_modules_database_entities_star_entity_ts
   file_caelundas_cli_src_modules_datetime_datetime_module_ts --> file_caelundas_cli_src_modules_datetime_datetime_service_ts
   file_caelundas_cli_src_modules_datetime_datetime_service_unit_test_ts --> file_caelundas_cli_src_modules_datetime_datetime_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
@@ -6724,6 +6798,29 @@ graph LR
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_types_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_command_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_command_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_service_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_command_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_command_unit_test_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_command_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_command_unit_test_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_command_unit_test_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_service_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_module_ts --> file_caelundas_cli_src_modules_database_database_module_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_module_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_command_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_module_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_service_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_ts --> file_caelundas_cli_src_modules_database_entities_constellation_line_entity_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_ts --> file_caelundas_cli_src_modules_database_entities_constellation_entity_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_ts --> file_caelundas_cli_src_modules_database_entities_star_entity_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_utilities_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_service_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_service_unit_test_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_utilities_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_utilities_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_utilities_unit_test_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_constants_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_utilities_unit_test_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_types_ts
+  file_caelundas_cli_src_modules_night_sky_night_sky_utilities_unit_test_ts --> file_caelundas_cli_src_modules_night_sky_night_sky_utilities_ts
   file_caelundas_cli_src_modules_perfective_perfective_module_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_module_ts
   file_caelundas_cli_src_modules_perfective_perfective_module_ts --> file_caelundas_cli_src_modules_aspects_aspects_module_ts
   file_caelundas_cli_src_modules_perfective_perfective_module_ts --> file_caelundas_cli_src_modules_daily_cycles_daily_cycles_module_ts
@@ -7388,13 +7485,13 @@ graph LR
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_stellium_stellium_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_testing_reference_longitudes_constants_ts
   file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
-  file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts
   file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_testing_temporary_database_types_ts
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx --> file_caelundas_web_src_components_calendar_agenda_calendar_agenda_constants_ts
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx --> file_caelundas_web_src_components_calendar_agenda_calendar_agenda_types_ts
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx --> file_caelundas_web_src_components_calendar_agenda_calendar_agenda_utilities_ts
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx --> file_caelundas_web_src_components_calendar_event_row_calendar_event_row_tsx
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx --> file_caelundas_web_src_components_events_calendar_calendar_format_utilities_ts
+  file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx --> file_caelundas_web_src_components_events_calendar_calendar_surfaces_constants_ts
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_unit_test_tsx --> file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx
   file_caelundas_web_src_components_calendar_agenda_calendar_agenda_constants_ts --> file_caelundas_web_src_components_calendar_agenda_calendar_agenda_types_ts
   file_caelundas_web_src_components_calendar_agenda_calendar_agenda_constants_ts --> file_caelundas_web_src_components_calendar_group_by_event_groups_types_ts
@@ -7467,17 +7564,21 @@ graph LR
   file_caelundas_web_src_components_calendar_color_by_calendar_colors_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_color_by_calendar_colors_constants_ts
   file_caelundas_web_src_components_calendar_color_by_calendar_colors_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_color_by_calendar_colors_utilities_ts
   file_caelundas_web_src_components_calendar_color_by_calendar_colors_utilities_unit_test_ts --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
-  file_caelundas_web_src_components_calendar_color_options_calendar_color_options_tsx --> file_caelundas_web_src_components_calendar_color_by_calendar_color_by_tsx
-  file_caelundas_web_src_components_calendar_color_options_calendar_color_options_tsx --> file_caelundas_web_src_components_calendar_group_by_event_group_fields_utilities_ts
-  file_caelundas_web_src_components_calendar_color_options_calendar_color_options_tsx --> file_caelundas_web_src_components_calendar_group_by_event_groups_types_ts
-  file_caelundas_web_src_components_calendar_color_options_calendar_color_options_tsx --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
-  file_caelundas_web_src_components_calendar_color_options_calendar_color_options_unit_test_tsx --> file_caelundas_web_src_components_calendar_color_options_calendar_color_options_tsx
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_tsx --> file_caelundas_web_src_components_calendar_color_by_calendar_color_by_tsx
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_tsx --> file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_constants_ts
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_tsx --> file_caelundas_web_src_components_calendar_group_by_event_groups_types_ts
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_tsx --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_unit_test_tsx --> file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_tsx
+  file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_unit_test_tsx --> file_caelundas_web_src_components_calendar_group_by_event_groups_types_ts
   file_caelundas_web_src_components_calendar_empty_calendar_empty_constants_ts --> file_caelundas_web_src_components_calendar_empty_calendar_empty_types_ts
   file_caelundas_web_src_components_calendar_empty_calendar_empty_tsx --> file_caelundas_web_src_components_calendar_empty_calendar_empty_constants_ts
   file_caelundas_web_src_components_calendar_empty_calendar_empty_tsx --> file_caelundas_web_src_components_calendar_empty_outside_dataset_tsx
   file_caelundas_web_src_components_calendar_empty_calendar_empty_tsx --> file_caelundas_web_src_components_events_calendar_calendar_loader_types_ts
+  file_caelundas_web_src_components_calendar_empty_calendar_empty_tsx --> file_caelundas_web_src_components_events_calendar_calendar_surfaces_constants_ts
   file_caelundas_web_src_components_calendar_empty_calendar_empty_types_ts --> file_caelundas_web_src_components_events_calendar_calendar_loader_types_ts
   file_caelundas_web_src_components_calendar_empty_calendar_empty_unit_test_tsx --> file_caelundas_web_src_components_calendar_empty_calendar_empty_tsx
+  file_caelundas_web_src_components_calendar_empty_outside_dataset_tsx --> file_caelundas_web_src_components_events_calendar_calendar_surfaces_constants_ts
   file_caelundas_web_src_components_calendar_empty_outside_dataset_tsx --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
   file_caelundas_web_src_components_calendar_empty_outside_dataset_unit_test_tsx --> file_caelundas_web_src_components_calendar_empty_outside_dataset_tsx
   file_caelundas_web_src_components_calendar_empty_outside_dataset_unit_test_tsx --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
@@ -7510,7 +7611,6 @@ graph LR
   file_caelundas_web_src_components_calendar_filters_calendar_filters_constants_ts --> file_caelundas_web_src_components_filter_date_range_editor_filter_date_range_editor_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_constants_ts --> file_caelundas_web_src_components_filter_tag_editor_filter_tag_editor_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_collection_picker_calendar_collection_picker_tsx
-  file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_color_options_calendar_color_options_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_calendar_filters_constants_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_calendar_filters_utilities_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
@@ -7518,10 +7618,7 @@ graph LR
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_event_filters_types_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_filter_chip_row_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_filters_filter_surface_tsx
-  file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_group_by_event_groups_types_ts
-  file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_calendar_view_menu_calendar_view_menu_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
-  file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_hooks_use_calendar_search_calendar_symbols_types_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx --> file_caelundas_web_src_hooks_use_filter_query_use_filter_query_ts
   file_caelundas_web_src_components_calendar_filters_calendar_filters_unit_test_tsx --> file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx
   file_caelundas_web_src_components_calendar_filters_calendar_filters_utilities_ts --> file_caelundas_web_src_components_calendar_filters_calendar_filters_constants_ts
@@ -7657,7 +7754,15 @@ graph LR
   file_caelundas_web_src_components_calendar_group_by_group_tag_picker_tsx --> file_caelundas_web_src_components_filter_tag_editor_filter_tag_editor_tsx
   file_caelundas_web_src_components_calendar_group_by_group_tag_picker_unit_test_tsx --> file_caelundas_web_src_components_calendar_group_by_event_group_fields_utilities_ts
   file_caelundas_web_src_components_calendar_group_by_group_tag_picker_unit_test_tsx --> file_caelundas_web_src_components_calendar_group_by_group_tag_picker_tsx
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_tsx --> file_caelundas_web_src_components_calendar_color_menu_calendar_color_menu_tsx
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_tsx --> file_caelundas_web_src_components_calendar_group_by_event_groups_types_ts
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_tsx --> file_caelundas_web_src_components_calendar_view_menu_calendar_view_menu_tsx
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_tsx --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_tsx --> file_caelundas_web_src_hooks_use_calendar_search_calendar_symbols_types_ts
+  file_caelundas_web_src_components_calendar_menus_calendar_menus_unit_test_tsx --> file_caelundas_web_src_components_calendar_menus_calendar_menus_tsx
   file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_tsx --> file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_types_ts
+  file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_tsx --> file_caelundas_web_src_components_events_calendar_calendar_surfaces_constants_ts
   file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_unit_test_tsx --> file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_tsx
   file_caelundas_web_src_components_calendar_overflow_list_calendar_overflow_list_tsx --> file_caelundas_web_src_components_calendar_agenda_calendar_agenda_utilities_ts
   file_caelundas_web_src_components_calendar_overflow_list_calendar_overflow_list_tsx --> file_caelundas_web_src_components_calendar_event_row_calendar_event_row_tsx
@@ -7714,6 +7819,7 @@ graph LR
   file_caelundas_web_src_components_calendar_timeline_calendar_timeline_tsx --> file_caelundas_web_src_components_calendar_timeline_calendar_timeline_utilities_ts
   file_caelundas_web_src_components_calendar_timeline_calendar_timeline_tsx --> file_caelundas_web_src_components_calendar_timeline_timeline_bar_content_tsx
   file_caelundas_web_src_components_calendar_timeline_calendar_timeline_tsx --> file_caelundas_web_src_components_calendar_timeline_timeline_navigation_tsx
+  file_caelundas_web_src_components_calendar_timeline_calendar_timeline_tsx --> file_caelundas_web_src_components_events_calendar_calendar_surfaces_constants_ts
   file_caelundas_web_src_components_calendar_timeline_calendar_timeline_tsx --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
   file_caelundas_web_src_components_calendar_timeline_calendar_timeline_tsx --> file_caelundas_web_src_hooks_use_bar_dialog_use_bar_dialog_ts
   file_caelundas_web_src_components_calendar_timeline_calendar_timeline_types_ts --> file_caelundas_web_src_components_calendar_group_by_event_groups_types_ts
@@ -7739,6 +7845,8 @@ graph LR
   file_caelundas_web_src_components_calendar_timeline_timeline_navigation_unit_test_tsx --> file_caelundas_web_src_components_calendar_timeline_timeline_navigation_tsx
   file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_tsx --> file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_tsx
   file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_tsx --> file_caelundas_web_src_components_calendar_navigation_group_calendar_navigation_group_types_ts
+  file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_tsx --> file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_constants_ts
+  file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_tsx --> file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_utilities_ts
   file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_tsx --> file_caelundas_web_src_components_calendar_view_select_calendar_view_select_tsx
   file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_tsx --> file_caelundas_web_src_components_events_calendar_calendar_views_types_ts
   file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_unit_test_tsx --> file_caelundas_web_src_components_calendar_toolbar_calendar_toolbar_tsx
@@ -7847,6 +7955,7 @@ graph LR
   file_caelundas_web_src_components_events_calendar_calendar_window_utilities_ts --> file_caelundas_web_src_components_events_calendar_calendar_window_types_ts
   file_caelundas_web_src_components_events_calendar_calendar_window_utilities_ts --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
   file_caelundas_web_src_components_events_calendar_calendar_window_utilities_unit_test_ts --> file_caelundas_web_src_components_events_calendar_calendar_window_utilities_ts
+  file_caelundas_web_src_components_events_calendar_events_calendar_constants_ts --> file_caelundas_web_src_components_events_calendar_calendar_surfaces_constants_ts
   file_caelundas_web_src_components_events_calendar_events_calendar_tsx --> file_caelundas_web_src_components_calendar_color_by_calendar_color_schemes_utilities_ts
   file_caelundas_web_src_components_events_calendar_events_calendar_tsx --> file_caelundas_web_src_components_calendar_color_by_calendar_colors_utilities_ts
   file_caelundas_web_src_components_events_calendar_events_calendar_tsx --> file_caelundas_web_src_components_calendar_group_by_event_group_fields_utilities_ts
@@ -7871,8 +7980,10 @@ graph LR
   file_caelundas_web_src_components_events_calendar_events_database_local_time_constants_ts --> file_caelundas_web_src_components_events_calendar_events_database_local_time_types_ts
   file_caelundas_web_src_components_events_calendar_events_database_local_time_utilities_ts --> file_caelundas_web_src_components_events_calendar_events_database_local_time_constants_ts
   file_caelundas_web_src_components_events_calendar_events_database_local_time_utilities_ts --> file_caelundas_web_src_components_events_calendar_events_database_local_time_types_ts
+  file_caelundas_web_src_components_events_calendar_events_database_types_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
   file_caelundas_web_src_components_events_calendar_events_database_utilities_ts --> file_caelundas_web_src_components_events_calendar_events_database_constants_ts
   file_caelundas_web_src_components_events_calendar_events_database_utilities_ts --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
+  file_caelundas_web_src_components_events_calendar_events_database_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_schemas_ts
   file_caelundas_web_src_components_events_calendar_events_database_utilities_unit_test_ts --> file_caelundas_web_testing_events_database_ts
   file_caelundas_web_src_components_events_calendar_events_database_worker_ts --> file_caelundas_web_src_components_events_calendar_events_database_browser_types_ts
   file_caelundas_web_src_components_events_calendar_events_database_worker_ts --> file_caelundas_web_src_components_events_calendar_events_database_local_time_utilities_ts
@@ -7887,6 +7998,81 @@ graph LR
   file_caelundas_web_src_components_filter_tag_editor_tag_row_tsx --> file_caelundas_web_src_components_filter_tag_editor_filter_tag_editor_constants_ts
   file_caelundas_web_src_components_filter_tag_editor_tag_row_unit_test_tsx --> file_caelundas_web_src_components_filter_tag_editor_event_filter_tag_tree_types_ts
   file_caelundas_web_src_components_filter_tag_editor_tag_row_unit_test_tsx --> file_caelundas_web_src_components_filter_tag_editor_tag_row_tsx
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_failures_integration_test_tsx --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_failures_integration_test_tsx --> file_caelundas_web_src_components_events_calendar_events_database_utilities_ts
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_failures_integration_test_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_failures_integration_test_tsx --> file_caelundas_web_testing_events_database_ts
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_failures_integration_test_tsx --> file_caelundas_web_testing_render_route_tsx
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_integration_test_tsx --> file_caelundas_web_src_components_events_calendar_events_calendar_tsx
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_integration_test_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_integration_test_tsx --> file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_integration_test_tsx --> file_caelundas_web_src_router_tsx
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_integration_test_tsx --> file_caelundas_web_testing_render_route_tsx
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_integration_test_tsx --> file_caelundas_web_testing_viewport_ts
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_constants_ts
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_tsx
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_ts
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_unit_test_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx
+  file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_unit_test_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_color_field_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_color_field_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_color_field_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_color_field_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_folder_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_folder_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_folder_tsx --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_folder_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_folder_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_folder_unit_test_tsx --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_picker_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_folder_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_picker_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_picker_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_picker_tsx --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_picker_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_picker_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_picker_unit_test_tsx --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_color_field_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_section_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_tsx --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_unit_test_tsx --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_integration_test_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_integration_test_tsx --> file_caelundas_web_src_router_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_integration_test_tsx --> file_caelundas_web_testing_render_route_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_color_field_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_constellation_picker_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_lines_section_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_section_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_types_ts --> file_caelundas_web_src_hooks_use_calendar_search_calendar_search_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_types_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_unit_test_ts --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_section_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_section_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_section_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_slider_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_slider_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_slider_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_utilities_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_slider_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_slider_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_slider_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_slider_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_tsx --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_types_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_menu_constants_ts
+  file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_unit_test_tsx --> file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_tsx
+  file_caelundas_web_src_components_night_sky_menu_night_sky_sliders_unit_test_tsx --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts
   file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_ts --> file_caelundas_web_src_components_virtual_list_calendar_virtual_window_types_ts
   file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_unit_test_ts --> file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_ts
   file_caelundas_web_src_components_virtual_list_virtual_list_tsx --> file_caelundas_web_src_components_virtual_list_calendar_virtual_window_utilities_ts
@@ -7981,14 +8167,69 @@ graph LR
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_testing_event_filters_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_colors_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_ecliptic_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_colors_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_ecliptic_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_projection_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_ecliptic_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_ecliptic_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_ecliptic_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_ecliptic_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_ecliptic_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_colors_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_projection_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_projection_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_options_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_options_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_projection_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_projection_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
   file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_colors_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_ecliptic_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_lines_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_options_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_projection_utilities_ts
   file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
   file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
   file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
   file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_types_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_types_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_unit_test_ts --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_unit_test_ts --> file_caelundas_web_testing_events_database_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts --> file_caelundas_web_src_hooks_use_calendar_search_calendar_search_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_types_ts --> file_caelundas_web_src_hooks_use_calendar_search_calendar_search_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_types_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_types_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_unit_test_ts --> file_caelundas_web_src_hooks_use_calendar_search_calendar_search_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_settings_unit_test_ts --> file_caelundas_web_testing_events_database_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_schemas_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_schemas_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_schemas_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_engine_ts
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_ts --> file_caelundas_web_src_hooks_use_night_sky_use_window_size_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_unit_test_ts --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
   file_caelundas_web_src_hooks_use_night_sky_use_night_sky_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_unit_test_ts --> file_caelundas_web_testing_events_database_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_colors_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_window_size_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_window_size_ts --> file_caelundas_web_src_hooks_use_night_sky_use_window_size_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_window_size_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_window_size_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_use_window_size_ts
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_ts --> file_caelundas_web_src_components_filter_tag_editor_event_filter_tag_tree_types_ts
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_ts --> file_caelundas_web_src_components_filter_tag_editor_event_filter_tag_tree_utilities_ts
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_ts --> file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_constants_ts
@@ -8001,8 +8242,10 @@ graph LR
   file_caelundas_web_src_router_tsx --> file_caelundas_web_src_components_events_calendar_events_database_browser_utilities_ts
   file_caelundas_web_src_router_tsx --> file_caelundas_web_src_routeTree_gen_ts
   file_caelundas_web_src_router_types_ts --> file_caelundas_web_src_components_events_calendar_events_database_types_ts
+  file_caelundas_web_src_routes___root_tsx --> file_caelundas_web_src_components_night_sky_backdrop_night_sky_backdrop_mount_tsx
   file_caelundas_web_src_routes___root_tsx --> file_caelundas_web_src_router_types_ts
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_components_events_calendar_events_database_constants_ts
+  file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_router_tsx
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_routes_index_tsx
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_testing_calendar_page_ts
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_testing_event_filters_ts
@@ -8014,8 +8257,10 @@ graph LR
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_filters_calendar_filters_tsx
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_fields_utilities_ts
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_menus_calendar_menus_tsx
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_skeleton_calendar_skeleton_tsx
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_view_options_calendar_view_options_tsx
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_events_calendar_calendar_loader_constants_ts
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_events_calendar_calendar_loader_utilities_ts
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_events_calendar_calendar_viewport_utilities_ts
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_events_calendar_calendar_views_constants_ts
@@ -14913,7 +15158,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-64406-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-64403-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-4.81_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-163-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-616-3178c6?style=flat-square)
@@ -14941,8 +15186,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Constants](https://img.shields.io/badge/Constants-3109-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-2888-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-834-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3100-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5904-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3098-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5902-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -14978,15 +15223,15 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3490-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3496-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-470-7c3aed?style=flat-square)
-![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-90-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1671-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3348-16a34a?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-471-7c3aed?style=flat-square)
+![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-91-8b5cf6?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1673-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3352-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-655-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-658-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -15127,13 +15372,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7434 |
-| Files | 2373 |
-| Calls traced | 8126 |
-| Call stacks | 2079 |
+| Callables | 7611 |
+| Files | 2414 |
+| Calls traced | 8311 |
+| Call stacks | 2125 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
-| Unfollowable calls | 455 |
+| Unfollowable calls | 479 |
 
 ### Projects
 
