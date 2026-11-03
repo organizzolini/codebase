@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import type { Author } from "./author.entity";
 import type { Line } from "./line.entity";
@@ -20,7 +20,7 @@ import type { Relation } from "typeorm";
   comment: "A hierarchical literary work (corpus, book, text, poem, etc.)",
   name: "texts",
 })
-export class Text extends DeletableEntity {
+export class Text extends PostgresqlDeletableEntity {
   @Index()
   @JoinColumn({ name: "author_id" })
   @ManyToOne("Author", "texts", { eager: true, onDelete: "CASCADE" })

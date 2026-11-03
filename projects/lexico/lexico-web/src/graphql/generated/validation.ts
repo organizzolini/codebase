@@ -40,6 +40,7 @@ export function SearchEnglishQuerySchema(): z.ZodType<SearchEnglishQuery> {
     searchEnglish: z.object({
     edges: z.array(z.object({
     node: z.object({
+    distance: z.number().nullable(),
     enclitic: z.string().nullable(),
     identifiers: z.array(z.string()),
     score: z.number(),
@@ -158,6 +159,7 @@ export function SearchLatinQuerySchema(): z.ZodType<SearchLatinQuery> {
     searchLatin: z.object({
     edges: z.array(z.object({
     node: z.object({
+    distance: z.number().nullable(),
     enclitic: z.string().nullable(),
     identifiers: z.array(z.string()),
     score: z.number(),

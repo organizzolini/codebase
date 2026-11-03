@@ -1,13 +1,13 @@
 {
-  "absent": ["☀️ ❄️ Solar Aphelion"],
+  "absent": ["☀️❄️ Solar Aphelion"],
   "counts": {
-    "☀️ 🔥 Solar Perihelion": 1
+    "☀️🔥 Solar Perihelion": 1
   },
   "events": [
     {
       "note": "USNO Earth's Seasons and Apsides, 2026: Perihelion, 3 January, 17:15 UT",
       "start": "2026-01-03T17:15:00Z",
-      "summary": "☀️ 🔥 Solar Perihelion"
+      "summary": "☀️🔥 Solar Perihelion"
     }
   ],
   "name": "The 2026 perihelion",

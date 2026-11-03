@@ -3,6 +3,7 @@ import _ from "lodash";
 
 import { LoggerService } from "@codebase/observability";
 
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import {
   aspectBodies as specialtyAspectBodies,
   specialtyAspects,
@@ -12,10 +13,6 @@ import {
   isBody,
   isSpecialtyAspect,
 } from "../caelundas/caelundas.types";
-import {
-  symbolByBody,
-  symbolBySpecialtyAspect,
-} from "../caelundas/symbol-caelundas.constants";
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 
 import type {
@@ -57,7 +54,6 @@ export class SpecialtyAspectsComposerService {
     body1Symbol: string;
     body2Symbol: string;
     description: string;
-    phaseEmoji: string;
     specialtyAspectSymbol: SpecialtyAspectSymbol;
     tags: string[];
     timestamp: Moment;
@@ -66,12 +62,11 @@ export class SpecialtyAspectsComposerService {
       body1Symbol,
       body2Symbol,
       description,
-      phaseEmoji,
       specialtyAspectSymbol,
       tags,
       timestamp,
     } = args;
-    const summary = `${phaseEmoji} ${body1Symbol} ${specialtyAspectSymbol} ${body2Symbol} ${description}`;
+    const summary = `${body1Symbol}${specialtyAspectSymbol}${body2Symbol} ${description.replace(PHASE_WORD_PATTERN, "")}`;
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: timestamp.toISOString(),
       summary,
@@ -166,20 +161,17 @@ export class SpecialtyAspectsComposerService {
   ): DetectedCalendarEvent {
     const { aspectCapitalized, body1Capitalized, body2Capitalized } =
       this.extractAspectBodiesFromTags(beginning.tags);
-    const { aspect, body1, body2 } = this.extractTypedAspectValues({
+    this.extractTypedAspectValues({
       aspectCapitalized,
       body1Capitalized,
       body2Capitalized,
       tags: beginning.tags,
     });
-    const body1Symbol = symbolByBody[body1];
-    const body2Symbol = symbolByBody[body2];
-    const aspectSymbol = symbolBySpecialtyAspect[aspect];
     return {
-      description: `${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      description: beginning.description.replace(PHASE_WORD_PATTERN, ""),
       end: ending.start,
       start: beginning.start,
-      summary: `${body1Symbol}${aspectSymbol}${body2Symbol} ${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      summary: beginning.summary.replace(PHASE_WORD_PATTERN, ""),
       tags: [
         "Astronomy",
         "Astrology",
@@ -201,7 +193,7 @@ export class SpecialtyAspectsComposerService {
     body2Capitalized: string;
     phase: AspectPhase;
     specialtyAspect: SpecialtyAspect;
-  }): { description: string; phaseEmoji: string; tags: string[] } {
+  }): { description: string; tags: string[] } {
     const {
       baseTags,
       body1Capitalized,
@@ -212,20 +204,17 @@ export class SpecialtyAspectsComposerService {
     if (phase === "perfective") {
       return {
         description: `${body1Capitalized} perfective ${specialtyAspect} ${body2Capitalized}`,
-        phaseEmoji: "🎯",
         tags: [...baseTags, "Perfective"],
       };
     }
     if (phase === "forming") {
       return {
         description: `${body1Capitalized} forming ${specialtyAspect} ${body2Capitalized}`,
-        phaseEmoji: "➡️",
         tags: [...baseTags, "Forming"],
       };
     }
     return {
       description: `${body1Capitalized} dissolving ${specialtyAspect} ${body2Capitalized}`,
-      phaseEmoji: "⬅️",
       tags: [...baseTags, "Dissolving"],
     };
   }

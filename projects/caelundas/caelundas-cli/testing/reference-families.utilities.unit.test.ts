@@ -34,8 +34,8 @@ describe(detectorFamiliesFor, () => {
     const families = detectorFamiliesFor(
       fixtureWith([
         "🌄 Civil Dawn",
-        "☀️ 🔼 Sunrise",
-        "📍 ☀️🐉 Partial Solar Eclipse",
+        "☀️🔼 Sunrise",
+        "📍☀️🐉 Partial Solar Eclipse",
       ]),
     );
 
@@ -50,9 +50,9 @@ describe(detectorFamiliesFor, () => {
     expect.hasAssertions();
 
     const families = detectorFamiliesFor(
-      fixtureWith(["♀️ 🔆 Venus Eastern Brightest"], {
-        absent: ["🎯 ☿ ☌ ♀️ Mercury perfective conjunct Venus"],
-        counts: { "☀️ → ♈ Sun ingress Aries": 1 },
+      fixtureWith(["♀️🔆 Venus Eastern Brightest"], {
+        absent: ["🎯☿☌♀️ Mercury perfective conjunct Venus"],
+        counts: { "☀️→♈ Sun ingress Aries": 1 },
       }),
     );
 

@@ -458,7 +458,7 @@ describe(AspectsService, () => {
         description: "Jupiter, Mars, Moon, Venus kite forming (Venus focal)",
         end: minute,
         start: minute,
-        summary: `➡️ 🪁 ${order.join("-")} kite forming`,
+        summary: ` 🪁 ${order.join("-")} kite forming`,
         tags: [
           "Astronomy",
           "Astrology",

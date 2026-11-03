@@ -1,3 +1,52 @@
+## 0.0.43 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.56
+- Updated codependix-cli to 0.0.57
+
+## 0.0.42 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.55
+- Updated codependix-cli to 0.0.56
+
+## 0.0.41 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.54
+- Updated codependix-cli to 0.0.55
+
+## 0.0.40 (2026-10-27)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.53
+- Updated codependix-cli to 0.0.54
+
+## 0.0.39 (2026-10-27)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.52
+- Updated codependix-cli to 0.0.53
+
+## 0.0.38 (2026-10-26)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.51
+- Updated codependix-cli to 0.0.52
+
+## 0.0.37 (2026-10-26)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.50
+- Updated codependix-cli to 0.0.51
+
 ## 0.0.36 (2026-10-24)
 
 ### 📦 Build

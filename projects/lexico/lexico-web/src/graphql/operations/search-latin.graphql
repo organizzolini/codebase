@@ -2,6 +2,7 @@ query SearchLatin($query: String!, $first: Int!) {
   searchLatin(query: $query, first: $first) {
     edges {
       node {
+        distance
         enclitic
         identifiers
         score
