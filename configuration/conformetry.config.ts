@@ -68,7 +68,7 @@ interface TestTemplateBaseline {
 
 /** What each untouched project of a shape measures, shared to stay short. */
 const NEST_BASELINE = { modules: 89 / 121, services: 47 / 79 };
-const CLI_BASELINE = { modules: 149 / 187 };
+const CLI_BASELINE = { modules: 149 / 191 };
 /**
  * What each ic-suite CLI measures as a `nestjs-command-project` instance. The
  * one place a CLI's own threshold is set is its group in that generator, which

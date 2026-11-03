@@ -10,8 +10,10 @@ injects. Seventeen projects each carried an identical copy of
 times. This package owns that code; consumers import it and declare nothing
 about `pino`.
 
-This package is a graph leaf — it must never import another workspace package,
-or every consumer inherits that edge.
+This package's own code is a graph leaf — `src/` must never import another
+workspace package, or every consumer inherits that edge. Only the
+`@codebase/observability/testing` entry imports `@codebase/testing/nestjs`,
+and `implicitDependencies: ["!testing"]` keeps that edge out of the Nx graph.
 
 ## Architecture Overview
 
@@ -32,11 +34,9 @@ src/
       logger.module.ts              # @Global() LoggerModule (exports LoggerService)
       logger.constants.ts
       logger.types.ts
-    testing/
-      testing-module/               # Logger-aware testing module builder
 testing/
   index.ts                          # The @codebase/observability/testing entry
-  fixtures/                         # Fixtures for the builder's tests
+  testing-module/                   # expectLoggerContext, on @codebase/testing/nestjs's builder
 ```
 
 ## Consuming this package
@@ -99,10 +99,12 @@ re-deriving timestamps and output paths:
 
 ## Testing helpers
 
-`@codebase/observability/testing` exports `buildTestingModule` and
-`expectLoggerContext`. These helpers replace the injected `LoggerService`
-with a deep mock and stay inside this package, so observability remains a
-workspace graph leaf.
+`@codebase/observability/testing` exports `expectLoggerContext`, built on
+`buildTestingModule` from `@codebase/testing/nestjs`, which mocks this
+package's `LoggerService`. That closes a cycle with `testing`, allowed by the
+module-boundary rule; `implicitDependencies: ["!testing"]` in `project.json`
+keeps observability's build from waiting on testing's, so `build` has no task
+cycle.
 
 ## Development
 
