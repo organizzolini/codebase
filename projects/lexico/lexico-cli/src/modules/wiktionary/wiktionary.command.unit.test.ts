@@ -4,16 +4,14 @@ import * as cheerio from "cheerio";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { WiktionaryCommand } from "./wiktionary.command";
 
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { AnyNode, Element } from "domhandler";
 
 const { appendFileSyncMock, existsSyncMock, mkdirSyncMock, writeFileSyncMock } =
@@ -35,7 +33,7 @@ vi.mock("node:fs", () => ({
 
 describe(WiktionaryCommand, () => {
   let command: WiktionaryCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<WiktionaryCommand>["logger"];
 
   beforeAll(async () => {
     const built = await buildTestingModule(WiktionaryCommand);

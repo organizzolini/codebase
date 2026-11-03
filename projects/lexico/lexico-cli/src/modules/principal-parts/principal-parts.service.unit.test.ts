@@ -3,13 +3,13 @@ import * as cheerio from "cheerio";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Lexeme, PrincipalPart } from "@codebase/lexico-entities";
+import { LoggerService } from "@codebase/observability";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 
 import { PrincipalPartsService } from "./principal-parts.service";
 
-import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { AnyNode } from "domhandler";
 import type { Repository } from "typeorm";
@@ -42,7 +42,7 @@ describe(PrincipalPartsService, () => {
     });
 
     service = built.instance;
-    logger = built.logger;
+    logger = built.mock(LoggerService);
     lexemeRepository = built.module.get(getRepositoryToken(Lexeme));
   });
 

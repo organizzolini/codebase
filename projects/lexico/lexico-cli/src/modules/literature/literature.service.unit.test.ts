@@ -131,7 +131,7 @@ describe(LiteratureService, () => {
     });
 
     service = built.instance;
-    logger = built.logger;
+    logger = built.mock(LoggerService);
     authorRepository = built.module.get(getRepositoryToken(Author));
     lineRepository = built.module.get(getRepositoryToken(Line));
     textRepository = built.module.get(getRepositoryToken(Text));

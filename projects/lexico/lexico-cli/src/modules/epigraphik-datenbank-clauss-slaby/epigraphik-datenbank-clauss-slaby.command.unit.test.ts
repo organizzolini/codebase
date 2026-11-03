@@ -1,15 +1,15 @@
-import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
+import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { EpigraphikDatenbankClaussSlabyCommand } from "./epigraphik-datenbank-clauss-slaby.command";
+
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const {
   accessMock,
@@ -41,7 +41,7 @@ vi.mock("node:fs/promises", () => ({
 
 describe(EpigraphikDatenbankClaussSlabyCommand, () => {
   let command: EpigraphikDatenbankClaussSlabyCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<EpigraphikDatenbankClaussSlabyCommand>["logger"];
 
   beforeAll(async () => {
     const built = await buildTestingModule(

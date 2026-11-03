@@ -3,10 +3,8 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Lexeme, Word, WordForm, WordLexeme } from "@codebase/lexico-entities";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { NumeralsService } from "../numerals/numerals.service";
@@ -17,7 +15,7 @@ import { ManualService } from "./manual.service";
 import * as manualUtilities from "./manual.utilities";
 
 import type { ManualDeletionLexeme } from "./manual.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 import type { Repository } from "typeorm";
 import type { Mocked } from "vitest";
@@ -28,7 +26,7 @@ describe(ManualService, () => {
   let lexemesRepository: DeepMocked<Repository<Lexeme>>;
   let wordsService: Mocked<WordsService>;
   let numeralsService: Mocked<NumeralsService>;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<ManualService>["logger"];
 
   const createProviders = (): Provider[] => [
     {

@@ -1,12 +1,10 @@
-import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
+import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { promptsMock } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   resetCommandTestHarness,
@@ -18,6 +16,7 @@ import { LiteratureCommand } from "./literature.command";
 import { LiteratureService } from "./literature.service";
 
 import type { LibraryEntry } from "./literature.types";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 
 vi.mock("prompts", () => ({
@@ -26,7 +25,7 @@ vi.mock("prompts", () => ({
 
 describe(LiteratureCommand, () => {
   let command: LiteratureCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<LiteratureCommand>["logger"];
 
   const library: LibraryEntry[] = [
     {

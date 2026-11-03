@@ -9,16 +9,15 @@ import {
   vi,
 } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { LatinLibraryCommand } from "./latin-library.command";
 
 import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const { appendFileMock, mkdirMock, readFileMock, writeFileMock } = vi.hoisted(
   () => ({
@@ -38,7 +37,7 @@ vi.mock("node:fs/promises", () => ({
 
 describe(LatinLibraryCommand, () => {
   let command: LatinLibraryCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<LatinLibraryCommand>["logger"];
 
   beforeAll(async () => {
     const built = await buildTestingModule(LatinLibraryCommand);
