@@ -22,7 +22,9 @@ export default [
           // the @nx/dependency-checks rule misidentifies it as a production dependency.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "@golevelup/ts-vitest",
+            "reflect-metadata",
             "pino",
             "pino-pretty",
             "vitest",

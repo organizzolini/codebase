@@ -1,13 +1,14 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DiscoveryService } from "./discovery.service";
 import { IgnoreRulesService } from "./ignore-rules.service";
 
 import type { DiscoveryResult } from "./discovery.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { Dirent } from "node:fs";
 
@@ -86,6 +87,11 @@ function createEntry(name: string, kind: EntryKind): Dirent {
   });
 }
 
+/** What the DiscoveryService is built with. */
+const DEPENDENCIES = {
+  providers: [IgnoreRulesService],
+} satisfies TestingModuleOptions;
+
 describe(DiscoveryService, () => {
   let service: DiscoveryService;
   let loggerService: DeepMocked<LoggerService>;
@@ -100,14 +106,11 @@ describe(DiscoveryService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DiscoveryService,
-        IgnoreRulesService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    service = await module.resolve(DiscoveryService);
+    const { instance, module } = await buildTestingModule(
+      DiscoveryService,
+      DEPENDENCIES,
+    );
+    service = instance;
     loggerService = await module.resolve(LoggerService);
   });
 
@@ -127,9 +130,13 @@ describe(DiscoveryService, () => {
     );
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DiscoveryService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(DiscoveryService);
   });
 
   it("discovers every measurable file, sorted, and nothing else", () => {

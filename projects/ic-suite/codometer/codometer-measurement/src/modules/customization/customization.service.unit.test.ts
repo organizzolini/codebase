@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CustomizationService } from "./customization.service";
 
@@ -33,15 +34,15 @@ describe(CustomizationService, () => {
   let service: CustomizationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [CustomizationService],
-    }).compile();
+    const { instance } = await buildTestingModule(CustomizationService);
 
-    service = await module.resolve(CustomizationService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CustomizationService);
+
+    expect(instance).toBeInstanceOf(CustomizationService);
   });
 
   it("counts the files each configured glob claims", () => {

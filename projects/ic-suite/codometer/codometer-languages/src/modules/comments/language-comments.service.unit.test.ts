@@ -1,12 +1,11 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CommentsService } from "./comments.service";
 import { CssCommentsService } from "./css-comments.service";
@@ -18,12 +17,25 @@ import { TypescriptCommentsService } from "./typescript-comments.service";
 import { YamlCommentsService } from "./yaml-comments.service";
 
 import type { CommentBudget, LanguageCommentFiles } from "./comments.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { DeepMocked } from "@golevelup/ts-vitest";
+
+/** What the LanguageCommentsService is built with. */
+const DEPENDENCIES = {
+  providers: [
+    CommentsService,
+    CssCommentsService,
+    HashCommentsService,
+    HclCommentsService,
+    SqlCommentsService,
+    TypescriptCommentsService,
+    YamlCommentsService,
+  ],
+} satisfies TestingModuleOptions;
 
 describe(LanguageCommentsService, () => {
   let service: LanguageCommentsService;
   let loggerService: DeepMocked<LoggerService>;
-  const temporaryDirectories: string[] = [];
 
   const budget: CommentBudget = {
     maximumCharacters: undefined,
@@ -50,8 +62,7 @@ describe(LanguageCommentsService, () => {
 
   /** Writes files into a fresh directory and returns where they landed. */
   function writeFiles(files: Record<string, string>): string {
-    const workingDirectory = mkdtempSync(path.join(tmpdir(), "codometer-cm-"));
-    temporaryDirectories.push(workingDirectory);
+    const workingDirectory = createTemporaryDirectory("cm");
 
     for (const [name, content] of Object.entries(files)) {
       writeFileSync(path.join(workingDirectory, name), content, "utf8");
@@ -61,32 +72,22 @@ describe(LanguageCommentsService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CommentsService,
-        CssCommentsService,
-        HashCommentsService,
-        HclCommentsService,
-        LanguageCommentsService,
-        SqlCommentsService,
-        TypescriptCommentsService,
-        YamlCommentsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      LanguageCommentsService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(LanguageCommentsService);
+    service = instance;
     loggerService = await module.resolve(LoggerService);
   });
 
-  afterEach(() => {
-    for (const directory of temporaryDirectories.splice(0)) {
-      rmSync(directory, { force: true, recursive: true });
-    }
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      LanguageCommentsService,
+      DEPENDENCIES,
+    );
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(LanguageCommentsService);
   });
 
   it("measures nothing when no counter was declared", () => {
