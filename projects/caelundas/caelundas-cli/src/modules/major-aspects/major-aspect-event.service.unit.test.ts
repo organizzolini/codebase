@@ -1,35 +1,28 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
 import { MathService } from "../math/math.service";
 
 import { MajorAspectEventService } from "./major-aspect-event.service";
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 describe(MajorAspectEventService, () => {
   let service: MajorAspectEventService;
   let aspectsUtilitiesService: AspectsUtilitiesService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LoggerService,
-        MajorAspectEventService,
-        AspectsUtilitiesService,
-        MathService,
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [AspectsUtilitiesService, MathService],
+  };
 
-    service = await module.resolve(MajorAspectEventService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      MajorAspectEventService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     aspectsUtilitiesService = await module.resolve(AspectsUtilitiesService);
   });
 
@@ -181,8 +174,13 @@ describe(MajorAspectEventService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MajorAspectEventService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MajorAspectEventService);
   });
 
   describe("isAspect", () => {

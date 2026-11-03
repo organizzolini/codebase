@@ -1,57 +1,41 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { EphemerisDownloadCommand } from "./ephemeris-download.command";
 import { EphemerisDownloadService } from "./ephemeris-download.service";
 
+import type { DeepMocked } from "@golevelup/ts-vitest";
+
 describe(EphemerisDownloadCommand, () => {
+  const testingModuleOptions = { mocks: [EphemerisDownloadService] };
   let command: EphemerisDownloadCommand;
-  let service: EphemerisDownloadService;
+  let service: DeepMocked<EphemerisDownloadService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EphemerisDownloadCommand,
-        {
-          provide: EphemerisDownloadService,
-          useValue: createMock<EphemerisDownloadService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      EphemerisDownloadCommand,
+      testingModuleOptions,
+    );
 
-    command = await module.resolve(EphemerisDownloadCommand);
-    service = await module.resolve(EphemerisDownloadService);
+    command = built.instance;
+    service = built.mock(EphemerisDownloadService);
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EphemerisDownloadCommand,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EphemerisDownloadCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EphemerisDownloadCommand,
-        {
-          provide: EphemerisDownloadService,
-          useValue: createMock<EphemerisDownloadService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("EphemerisDownloadCommand");
+    await expectLoggerContext(EphemerisDownloadCommand, testingModuleOptions);
   });
 
   it("downloads the ephemeris files", async () => {

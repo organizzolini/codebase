@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
@@ -14,20 +15,26 @@ import type { DetectedCalendarEvent } from "../database/database.types";
 describe(QuadrupleAspectsBaseService, () => {
   let service: QuadrupleAspectsBaseService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        QuadrupleAspectsBaseService,
-        AspectGraphService,
-        AspectPhaseEmojiService,
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [AspectGraphService, AspectPhaseEmojiService],
+  };
 
-    service = await module.resolve(QuadrupleAspectsBaseService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      QuadrupleAspectsBaseService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      QuadrupleAspectsBaseService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(QuadrupleAspectsBaseService);
   });
 
   it("returns false when opposite body is missing while verifying grand-cross squares", () => {

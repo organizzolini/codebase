@@ -1,5 +1,5 @@
-import { cleanup } from "@testing-library/react";
-import { afterEach, beforeEach } from "vitest";
+import "@codebase/testing/react/setup";
+import { beforeEach } from "vitest";
 
 import { installViewport } from "./viewport";
 
@@ -38,8 +38,4 @@ globalThis.ResizeObserver = class {
 
 beforeEach(() => {
   installViewport();
-});
-
-afterEach(() => {
-  cleanup();
 });

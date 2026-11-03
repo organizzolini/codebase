@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectEventFormattingService } from "../aspects/aspect-event-formatting.service";
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
@@ -20,31 +19,28 @@ import type { Body } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 describe(SpecialtyAspectsService, () => {
   let service: SpecialtyAspectsService;
 
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [
+      SpecialtyAspectsEventService,
+      SpecialtyAspectsProgressiveService,
+      AspectsUtilitiesService,
+      AspectEventFormattingService,
+      MathService,
+      ProgressiveAspectService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        LoggerService,
-        SpecialtyAspectsService,
-        SpecialtyAspectsEventService,
-        SpecialtyAspectsProgressiveService,
-        AspectsUtilitiesService,
-        AspectEventFormattingService,
-        MathService,
-        ProgressiveAspectService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
-    service = await module.resolve(SpecialtyAspectsService);
+    const { instance } = await buildTestingModule(
+      SpecialtyAspectsService,
+      testingModuleOptions,
+    );
+    service = instance;
   });
 
   describe("detect", () => {
@@ -689,8 +685,13 @@ describe(SpecialtyAspectsService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      SpecialtyAspectsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SpecialtyAspectsService);
   });
 
   describe("getSpecialtyAspect", () => {

@@ -1,9 +1,6 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -14,7 +11,11 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory, stubFetch } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import {
   EPHEMERIS_BASE_URL,
@@ -44,44 +45,29 @@ describe(EphemerisDownloadService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EphemerisDownloadService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(EphemerisDownloadService);
+    ({ instance: service } = await buildTestingModule(
+      EphemerisDownloadService,
+    ));
   });
 
   beforeEach(() => {
-    workingDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "download-"));
+    workingDirectory = createTemporaryDirectory("download");
     vi.spyOn(process, "cwd").mockReturnValue(workingDirectory);
-    fetchMock = vi.fn<typeof fetch>();
-    vi.stubGlobal("fetch", fetchMock);
+    fetchMock = stubFetch();
   });
 
   afterEach(() => {
-    fs.rmSync(workingDirectory, { force: true, recursive: true });
-    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EphemerisDownloadService);
+
+    expect(instance).toBeInstanceOf(EphemerisDownloadService);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EphemerisDownloadService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("EphemerisDownloadService");
+    await expectLoggerContext(EphemerisDownloadService);
   });
 
   it("downloads every file into the data directory", async () => {

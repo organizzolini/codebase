@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnnualSolarCycleService } from "../annual-solar-cycle/annual-solar-cycle.service";
 import { AspectsService } from "../aspects/aspects.service";
@@ -17,6 +16,8 @@ import { ProgressiveUtilitiesService } from "./progressive-utilities.service";
 import { ProgressiveService } from "./progressive.service";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
+import type { LoggerService } from "@codebase/observability";
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 function makeEvent(summary: string): DetectedCalendarEvent {
   return {
@@ -30,6 +31,7 @@ function makeEvent(summary: string): DetectedCalendarEvent {
 
 describe(ProgressiveService, () => {
   let service: ProgressiveService;
+  let logger: DeepMocked<LoggerService>;
   let utilitiesService: ProgressiveUtilitiesService;
 
   const annualSolarCycleMock = {
@@ -57,24 +59,29 @@ describe(ProgressiveService, () => {
     detectProgressive: vi.fn<TwilightsService["detectProgressive"]>(),
   };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LoggerService,
-        ProgressiveService,
-        { provide: AnnualSolarCycleService, useValue: annualSolarCycleMock },
-        { provide: AspectsService, useValue: aspectsMock },
-        { provide: EclipsesService, useValue: eclipsesMock },
-        { provide: IngressesService, useValue: ingressesMock },
-        { provide: MonthlyLunarCycleService, useValue: monthlyLunarCycleMock },
-        { provide: PhasesService, useValue: phasesMock },
-        { provide: RetrogradesService, useValue: retrogradesMock },
-        { provide: TwilightsService, useValue: twilightsMock },
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [
+      { provide: AnnualSolarCycleService, useValue: annualSolarCycleMock },
+      { provide: AspectsService, useValue: aspectsMock },
+      { provide: EclipsesService, useValue: eclipsesMock },
+      { provide: IngressesService, useValue: ingressesMock },
+      { provide: MonthlyLunarCycleService, useValue: monthlyLunarCycleMock },
+      { provide: PhasesService, useValue: phasesMock },
+      { provide: RetrogradesService, useValue: retrogradesMock },
+      { provide: TwilightsService, useValue: twilightsMock },
+      ProgressiveUtilitiesService,
+    ],
+  };
 
-    service = await module.resolve(ProgressiveService);
+  beforeAll(async () => {
+    const {
+      instance,
+      logger: builtLogger,
+      module,
+    } = await buildTestingModule(ProgressiveService, testingModuleOptions);
+    logger = builtLogger;
+
+    service = instance;
     utilitiesService = await module.resolve(ProgressiveUtilitiesService);
   });
 
@@ -159,8 +166,13 @@ describe(ProgressiveService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      ProgressiveService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(ProgressiveService);
   });
 
   describe("pairProgressiveEvents", () => {
@@ -204,9 +216,7 @@ describe(ProgressiveService, () => {
     });
 
     it("emits a warning when an event is left unpaired", () => {
-      const warnSpy = vi
-        .spyOn(LoggerService.prototype, "warn")
-        .mockReturnValue(undefined);
+      const warnSpy = logger.warn.mockReturnValue(undefined);
 
       utilitiesService.pairProgressiveEvents(
         [makeEvent("a"), makeEvent("b")],
@@ -229,9 +239,7 @@ describe(ProgressiveService, () => {
     });
 
     it("does not warn when counts are equal", () => {
-      const warnSpy = vi
-        .spyOn(LoggerService.prototype, "warn")
-        .mockReturnValue(undefined);
+      const warnSpy = logger.warn.mockReturnValue(undefined);
 
       utilitiesService.pairProgressiveEvents(
         [makeEvent("a")],

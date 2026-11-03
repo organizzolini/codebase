@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CalendarEvent } from "../database/entities/calendar-event.entity";
 import { TagsService } from "../tags/tags.service";
@@ -10,22 +9,19 @@ import { TagsService } from "../tags/tags.service";
 import { CalendarEventsService } from "./calendar-events.service";
 
 describe(CalendarEventsService, () => {
-  let service: CalendarEventsService;
+  const testingModuleOptions = {
+    providers: [
+      TagsService,
+      { provide: getRepositoryToken(CalendarEvent), useValue: {} },
+    ],
+  };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CalendarEventsService,
-        LoggerService,
-        TagsService,
-        { provide: getRepositoryToken(CalendarEvent), useValue: {} },
-      ],
-    }).compile();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      CalendarEventsService,
+      testingModuleOptions,
+    );
 
-    service = await module.resolve(CalendarEventsService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(CalendarEventsService);
   });
 });

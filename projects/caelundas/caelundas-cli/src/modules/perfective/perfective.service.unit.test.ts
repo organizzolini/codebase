@@ -1,9 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnnualSolarCycleService } from "../annual-solar-cycle/annual-solar-cycle.service";
 import { AspectsService } from "../aspects/aspects.service";
@@ -27,14 +25,9 @@ import type {
   MercurianPhaseEventArguments,
   VenusianPhaseEventArguments,
 } from "../phases/phases.types";
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { Moment } from "moment-timezone";
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
 
 const baseInput: Input = {
   end: moment.tz("2025-06-16", "America/New_York"),
@@ -96,35 +89,43 @@ describe(PerfectiveService, () => {
     >(() => []),
   };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PerfectiveService,
-        { provide: DatetimeService, useValue: datetimeMock },
-        { provide: EphemerisService, useValue: ephemerisAggMock },
-        { provide: AspectsService, useValue: aspectsMock },
-        { provide: EclipsesService, useValue: eclipsesMock },
-        { provide: RetrogradesService, useValue: retrogradesMock },
-        { provide: IngressesService, useValue: ingressesMock },
-        { provide: DailyCyclesService, useValue: dailyCyclesMock },
-        { provide: MonthlyLunarCycleService, useValue: monthlyLunarCycleMock },
-        { provide: AnnualSolarCycleService, useValue: annualSolarCycleMock },
-        { provide: TwilightsService, useValue: twilightsMock },
-        { provide: PhasesService, useValue: phasesMock },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [
+      { provide: DatetimeService, useValue: datetimeMock },
+      { provide: EphemerisService, useValue: ephemerisAggMock },
+      { provide: AspectsService, useValue: aspectsMock },
+      { provide: EclipsesService, useValue: eclipsesMock },
+      { provide: RetrogradesService, useValue: retrogradesMock },
+      { provide: IngressesService, useValue: ingressesMock },
+      { provide: DailyCyclesService, useValue: dailyCyclesMock },
+      { provide: MonthlyLunarCycleService, useValue: monthlyLunarCycleMock },
+      { provide: AnnualSolarCycleService, useValue: annualSolarCycleMock },
+      { provide: TwilightsService, useValue: twilightsMock },
+      { provide: PhasesService, useValue: phasesMock },
+    ],
+  };
 
-    service = await module.resolve(PerfectiveService);
-    mockLoggerService = module.get(LoggerService);
+  beforeAll(async () => {
+    const { instance, logger } = await buildTestingModule(
+      PerfectiveService,
+      testingModuleOptions,
+    );
+
+    service = instance;
+    mockLoggerService = logger;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PerfectiveService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PerfectiveService);
   });
 
   describe("detect", () => {
