@@ -188,6 +188,7 @@ Vocabulary toolchain that lists the words a codebase uses and keeps a glossary o
 **[coinagerie-configuration](projects/ic-suite/coinagerie/coinagerie-configuration)** - Configuration schema, loader, and command-line flag resolution for the coinagerie vocabulary toolchain\
 **[coinagerie-core](projects/ic-suite/coinagerie/coinagerie-core)** - Contracts for the coinagerie vocabulary toolchain: the glossary, the vocabulary report, and shared constants\
 **[coinagerie-languages](projects/ic-suite/coinagerie/coinagerie-languages)** - Per-language identifier tokenizers and keyword lists for the coinagerie vocabulary toolchain\
+**[coinagerie-nx](projects/ic-suite/coinagerie/coinagerie-nx)** - Nx plugin that infers a coinagerie check target for every project with a coinagerie configuration\
 **[coinagerie-output](projects/ic-suite/coinagerie/coinagerie-output)** - Renders and parses the markdown and JSON glossaries and compares them with the vocabulary of a codebase\
 **[coinagerie-vocabulary](projects/ic-suite/coinagerie/coinagerie-vocabulary)** - File discovery, word splitting, folding, and exclusion that turn a codebase into a sorted list of headwords
 
