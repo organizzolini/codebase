@@ -49,17 +49,14 @@ function getLocalParallelism(): number {
 }
 
 /**
- * The targets a local commit runs: formatting, lint, and typecheck, which
- * catch what an edit loop breaks and replay from the cache when nothing
- * changed. Every other gate is left to the pull request's CI run and to the
- * `validate-code` skill, which agents run before submitting.
- *
- * In CI the release commit's hook still checks every bumped package against
- * the full set, so a published version is gated as it always was.
+ * The targets every commit runs, local or CI: formatting, lint, and typecheck,
+ * which catch what an edit loop breaks and replay from the cache when nothing
+ * changed. Every other gate runs in the continuous integration, deployment, and
+ * compliance workflows and in the `validate-code` skill, which agents run
+ * before submitting. The release commit made in CI runs this same set, so the
+ * hook means one thing wherever it fires.
  */
-const ANALYSIS_TARGETS = process.env["CI"]
-  ? "typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate"
-  : "typecheck,oxlint,oxfmt";
+const ANALYSIS_TARGETS = "typecheck,oxlint,oxfmt";
 
 /**
  * Renders staged paths as one workspace-relative `--files=` flag each.
