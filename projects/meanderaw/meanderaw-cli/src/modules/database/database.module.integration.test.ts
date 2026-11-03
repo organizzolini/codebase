@@ -4,7 +4,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
-} from "@codebase/persistence/testing";
+} from "@codebase/testing/postgres";
 
 import { meanderRecord } from "../../../testing/meanders";
 import { environmentSchema } from "../../meanderaw-cli.constants";

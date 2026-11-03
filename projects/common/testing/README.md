@@ -120,9 +120,8 @@ page alone, so no test has to mock `__root`. A web application points
   them.
 - This package depends only on the common packages: `observability`,
   `persistence`, `interface`, and `configuration`. Those may import it back,
-  as `@codebase/persistence/testing` and `@codebase/interface/testing` do to
-  re-export what moved here; the module-boundary and codependix rules allow
-  those cycles and no others.
+  in their own tests; the module-boundary and codependix rules allow those
+  cycles and no others.
 - A project tagged `framework:react` may import this package from its tests
   and `testing/` harnesses only: the Nest and Postgres adapters reach
   packages tagged `framework:nestjs`, which a React project's own code still

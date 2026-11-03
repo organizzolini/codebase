@@ -209,7 +209,7 @@ nx run lexico-entities:vitest:integration   # Against a Testcontainers PostgreSQ
 ```
 
 Integration tests start a throwaway Postgres 18 through
-[`@codebase/persistence/testing`](../../common/persistence/README.md), laid out like local
+[`@codebase/testing/postgres`](../../common/testing/README.md), laid out like local
 Docker: `lexico_username` owning `lexico_testing` with a `lexico` schema. The
 schema is built by running the real migrations, never by synchronizing, and
 the suite asserts the entities have nothing left to change, so entity mappings

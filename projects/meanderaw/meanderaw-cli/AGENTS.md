@@ -249,7 +249,7 @@ data source `src/modules/database/data-source.constants.ts` exports, and the
 A draw run commits nothing: the HTML pages it writes stay in the gitignored `output/` — see
 [ADR 0021](../../../documentation/adr/0021-stop-committing-the-meander-pages.md). Integration suites start
 their own throwaway `postgres:18-alpine` container, migrated by the real migrations, through
-`startDatabaseTestingModule` from `@codebase/persistence/testing` against `meanderaw_testing`, so Docker
+`startDatabaseTestingModule` from `@codebase/testing/postgres` against `meanderaw_testing`, so Docker
 must be running to test them. `DatabaseModule` is the project's own database module and
 is passed to that helper as `database`.
 

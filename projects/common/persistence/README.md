@@ -261,8 +261,7 @@ and `environment` is the same connection as `<PROJECT>_POSTGRES_*` variables.
 Both helpers, and their types, come from the common testing package's
 `@codebase/testing/postgres` entry, so a consuming suite imports them from
 there rather than redeclaring them, as this package's own integration suites
-do; `@codebase/persistence/testing` re-exports them until every consumer has
-moved. Docker must be running.
+do. Docker must be running.
 
 A project name must be lowercase letters, digits, and underscores, starting
 with a letter, so it can prefix a variable and name a database unquoted.

@@ -48,7 +48,6 @@ src/
     postgres-client/                # pg_dump, pg_restore, and truncate behind one service
     sqlite-export/                  # export --sqlite: node:sqlite writer, column type mapping, no client tools
 testing/
-  index.ts                          # The @codebase/persistence/testing entry, re-exporting @codebase/testing/postgres
   command-line-runner.ts            # runCliCommandLine: argv through the real nest-commander runner
   fixture-persistence.ts            # A migrated container for the command line's integration tests
   fixtures/                         # Entities, modules, and the widgets and parts migrations
@@ -66,19 +65,17 @@ testing/
 - **Never name a schema in code.** It comes from `<PROJECT>_POSTGRES_SCHEMA`.
 - **Never run migrations from `PostgresqlModule.forRoot`.** It takes none;
   `createDataSource` and `startPostgresContainer` do.
-- **Keep `@codebase/persistence/testing` a re-export.** The Postgres test
-  helpers live in `@codebase/testing/postgres`, which depends on this
-  package; the cycle that closes is allowed among the common packages only.
-  Keep it out of `src/`, and remove it once every consumer imports the new
-  entry. This package's integration suites import the container from there
-  too. `implicitDependencies: ["!testing"]` in `project.json` drops the edge
+- **Import the Postgres test helpers from `@codebase/testing/postgres`.**
+  They live there, and that package depends on this one; the cycle that
+  closes is allowed among the common packages only. Keep it out of `src/`.
+  This package's integration suites import the container from there too. `implicitDependencies: ["!testing"]` in `project.json` drops the edge
   back to `testing` from the Nx graph, so `build` has no task cycle.
 - **Never name a real project in this package's tests.** Use `fixture`, and
   `sample` where a second is needed.
 - **Keep the command line connectionless.** `MainModule` holds no
   `PostgresqlModule`, TypeORM, or `ConfigModule`, so it needs no
   `<PROJECT>_POSTGRES_*` variable and opens no connection at startup. Never
-  export `MainModule` from `src/index.ts` or `testing/index.ts`.
+  export `MainModule` from `src/index.ts`.
 - **Pass credentials to client tools only through `PG*` environment
   variables,** never argv, and mask every URI and password that reaches a log
   line or an error.

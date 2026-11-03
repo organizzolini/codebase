@@ -7,7 +7,7 @@ import moment from "moment-timezone";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
+import { startDatabaseTestingModule } from "@codebase/testing/postgres";
 
 import {
   detectable,
@@ -28,7 +28,7 @@ import { ProgressiveUtilitiesService } from "./modules/progressive/progressive-u
 import type { CalendarCommandOutput } from "../testing/calendar-command.types";
 import type { EphemerisService } from "./modules/ephemeris/ephemeris.service";
 import type { Environment } from "./modules/input/input.types";
-import type { DatabaseTestingModule } from "@codebase/persistence/testing";
+import type { DatabaseTestingModule } from "@codebase/testing/postgres";
 import type { ConfigService } from "@nestjs/config";
 import type { Repository } from "typeorm";
 

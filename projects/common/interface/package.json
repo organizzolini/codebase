@@ -17,7 +17,6 @@
   "exports": {
     ".": "./src/index.ts",
     "./client": "./src/modules/graphql-client/graphql-client.utilities.ts",
-    "./testing": "./testing/index.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -37,10 +36,6 @@
       "./client": {
         "default": "./dist/src/modules/graphql-client/graphql-client.utilities.js",
         "types": "./dist/src/modules/graphql-client/graphql-client.utilities.d.ts"
-      },
-      "./testing": {
-        "default": "./dist/testing/index.js",
-        "types": "./dist/testing/index.d.ts"
       },
       "./package.json": "./package.json"
     },

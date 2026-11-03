@@ -1,4 +1,4 @@
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
+import { startDatabaseTestingModule } from "@codebase/testing/postgres";
 
 import { environmentSchema } from "../src/meanderaw-cli.constants";
 import { CharacteristicsModule } from "../src/modules/characteristics/characteristics.module";

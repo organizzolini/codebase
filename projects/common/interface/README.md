@@ -33,8 +33,6 @@ The GraphQL test helpers live in the common testing package as
 `stopGraphqlMockServer`, the MSW server its tests answer GraphQL requests
 with; for a server, `paginateArray`, `paginationMatrix`, `expectedPage`, and
 `summarize`, the oracle a SQL-backed page is checked against.
-`@codebase/interface/testing` re-exports them until every consumer imports
-the new entry.
 
 ## Test
 

@@ -3,7 +3,7 @@ import { In } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
+import { startDatabaseTestingModule } from "@codebase/testing/postgres";
 
 import { environmentSchema } from "../../caelundas-cli.constants";
 import { DATABASE_ENTITIES } from "../database/database.constants";
@@ -17,7 +17,7 @@ import { CalendarEventsModule } from "./calendar-events.module";
 import { CalendarEventsService } from "./calendar-events.service";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
-import type { DatabaseTestingModule } from "@codebase/persistence/testing";
+import type { DatabaseTestingModule } from "@codebase/testing/postgres";
 import type { Repository, TreeRepository } from "typeorm";
 
 const philadelphia = {
