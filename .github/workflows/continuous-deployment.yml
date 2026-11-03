@@ -416,7 +416,14 @@ jobs:
           TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_openrouter_api_key: ${{ secrets.OPENROUTER_API_KEY }}
           TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
-        run: pnpm exec nx run infrastructure:terraform-apply
+          TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
+          TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
+          TF_VAR_linode_token: ${{ secrets.LINODE_TOKEN }}
+        # OpenRouter first: the GitHub root reads its outputs.
+        run: |
+          pnpm exec nx run infrastructure:terraform-apply:openrouter
+          pnpm exec nx run infrastructure:terraform-apply:github
+          pnpm exec nx run infrastructure:terraform-apply:linode
 
       # The only save of this workflow's Nx cache, which the next release
       # restores. Every project is built above, at the versions the release

@@ -42,5 +42,5 @@ variable "refresh_documentation_limit_usd" {
 variable "preset_slug" {
   description = "Slug of the preset the workflow calls as @preset/<slug>."
   type        = string
-  default     = "docs-refresh"
+  default     = "refresh-documentation"
 }

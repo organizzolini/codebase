@@ -103,7 +103,10 @@ describe(SoftwareLinuxService, () => {
     }
 
     expect(steps.python.installPythonThroughUv).toHaveBeenCalledWith();
-    expect(steps.commands).toStrictEqual(["uv sync --project configuration"]);
+    expect(steps.commands).toStrictEqual([
+      "uv sync --project configuration",
+      "uv tool install linode-cli",
+    ]);
     expect(steps.database.installSquawk).toHaveBeenCalledWith();
     expect(steps.database.installPostgres).toHaveBeenCalledWith();
     expect(steps.reporter.print).not.toHaveBeenCalled();

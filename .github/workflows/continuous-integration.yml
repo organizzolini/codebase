@@ -50,7 +50,7 @@ jobs:
             emoji: 🧑‍🎨
           - target: lint-code
             name: Lint
-            emoji: 🧑‍🔧
+            emoji: 🧑‍⚕️
           - target: deprecate-code
             name: Deprecate
             emoji: 🧟
@@ -63,35 +63,45 @@ jobs:
             name: Guard
             emoji: 💂
             timeout-minutes: 20
-          # Tests run in four legs that together cover every project once, so
-          # none waits for a free `--parallel` slot behind the slow ones.
-          # Meanderaw alone took over seven minutes uncached beside the rest,
-          # and about three alone. ic-suite's 37 packages were most of what
-          # remained. Caelundas's command line cannot start until its
-          # ephemeris download finishes, so it ran last and alone for four more
-          # minutes. Its leg takes the whole folder, so a new project joins it.
-          # The fourth leg, everything else, keeps the `Test` name branch
-          # protection has always required. A leg with nothing affected runs
-          # nothing.
+          # New projects stay in Test Codebase until they are explicitly split
+          # into their own suite here.
           - target: test-code
-            name: Test
+            name: Test Codebase
             emoji: 🧑‍🔬
-            exclude: meanderaw-cli,projects/caelundas/**,projects/ic-suite/**
+            exclude: projects/affirmancy/**,projects/caelundas/**,projects/ic-suite/**,projects/lexico/**,projects/meanderaw/**,projects/common/**
+            shard: codebase
+          - target: test-code
+            name: Test Common
+            emoji: 🧑‍🔬
+            exclude: "*,!projects/common/**"
+            shard: common
+            postgres-client: true
+          - target: test-code
+            name: Test Affirmancy
+            emoji: 🧑‍🔬
+            exclude: "*,!projects/affirmancy/**"
+            shard: affirmancy
           - target: test-code
             name: Test Caelundas
             emoji: 🧑‍🔬
             exclude: "*,!projects/caelundas/**"
             shard: caelundas
           - target: test-code
-            name: Test Meanderaw
-            emoji: 🧑‍🔬
-            exclude: "*,!meanderaw-cli"
-            shard: meanderaw-cli
-          - target: test-code
             name: Test IC Suite
             emoji: 🧑‍🔬
             exclude: "*,!projects/ic-suite/**"
             shard: ic-suite
+          - target: test-code
+            name: Test Lexico
+            emoji: 🧑‍🔬
+            exclude: "*,!projects/lexico/**"
+            shard: lexico
+            postgres-client: true
+          - target: test-code
+            name: Test Meanderaw
+            emoji: 🧑‍🔬
+            exclude: "*,!projects/meanderaw/**"
+            shard: meanderaw
           - target: secure-code
             name: Secure
             emoji: 🕵️
@@ -110,7 +120,7 @@ jobs:
           # times slower.
           - target: verify-publishable-packages
             name: Publishable Packages
-            emoji: 📦
+            emoji: 🤵
             timeout-minutes: 15
           # Plans the OpenRouter Terraform when a pull request changes it, and
           # comments what the plan would create, update, replace, and delete. It
@@ -122,7 +132,7 @@ jobs:
           # is not given the secrets the plan needs.
           - target: plan-terraform
             name: Infrastructure
-            emoji: 🏗️
+            emoji: 🧑‍🚀
             timeout-minutes: 15
           # Builds and tests the devcontainer image when a pull request changes
           # a file the image or its test reads, without publishing it:
@@ -131,7 +141,7 @@ jobs:
           # when the change calls for it. It needs none of the Node setup.
           - target: build-devcontainer
             name: Devcontainer
-            emoji: 🐋
+            emoji: 🧑‍🏭
             timeout-minutes: 20
 
     steps:
@@ -224,8 +234,7 @@ jobs:
             matrix.check.target != 'verify-publishable-packages' &&
             matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
           postgres-client: >-
-            ${{ matrix.check.target == 'test-code' && !matrix.check.shard &&
-            'true' || 'false' }}
+            ${{ matrix.check['postgres-client'] && 'true' || 'false' }}
           uv: ${{ matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
           # The infrastructure project's `terraform-format` and
           # `terraform-validate` run as part of lint-code, and the runner image
@@ -253,20 +262,48 @@ jobs:
           TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_openrouter_api_key: ${{ secrets.OPENROUTER_API_KEY }}
           TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
-        run: pnpm exec nx run infrastructure:terraform-plan
+          TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
+          TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
+          TF_VAR_linode_token: ${{ secrets.LINODE_TOKEN }}
+        run: |
+          pnpm exec nx run infrastructure:terraform-plan:openrouter
+          pnpm exec nx run infrastructure:terraform-plan:github
+          pnpm exec nx run infrastructure:terraform-plan:linode
 
-      # Posts the plan as one comment that each push updates. A failed plan
-      # fails the leg above and shows in its log instead.
-      - name: 📊 Report Plan
+      # Posts each root's plan as one comment that every push updates. A
+      # failed plan fails the leg above and shows in its log instead.
+      - name: 📊 Report OpenRouter Plan
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@v2
+        uses: borchero/terraform-plan-comment@v3
         with:
           token: ${{ github.token }}
           working-directory: infrastructure/terraform/openrouter
           planfile: plan.tfplan
-          header: 🏗️ Terraform Plan
+          header: 🏗️ Terraform Plan (OpenRouter)
+
+      - name: 📊 Report GitHub Plan
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
+        uses: borchero/terraform-plan-comment@v3
+        with:
+          token: ${{ github.token }}
+          working-directory: infrastructure/terraform/github
+          planfile: plan.tfplan
+          header: 🏗️ Terraform Plan (GitHub)
+
+      - name: 📊 Report Linode Plan
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
+        uses: borchero/terraform-plan-comment@v3
+        with:
+          token: ${{ github.token }}
+          working-directory: infrastructure/terraform/linode
+          planfile: plan.tfplan
+          header: 🏗️ Terraform Plan (Linode)
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-

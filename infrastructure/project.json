@@ -113,61 +113,104 @@
     },
     "terraform-apply": {
       "cache": false,
-      "dependsOn": ["terraform-init"],
-      "description": "Apply the OpenRouter Terraform, creating, updating, and deleting what a fresh plan finds. Needs the terraform-plan variables. Run by the Continuous Deployment workflow on main; run it locally only on purpose.",
+      "configurations": {
+        "github": {
+          "cwd": "{projectRoot}/terraform/github"
+        },
+        "linode": {
+          "cwd": "{projectRoot}/terraform/linode"
+        },
+        "openrouter": {
+          "cwd": "{projectRoot}/terraform/openrouter"
+        }
+      },
+      "defaultConfiguration": "openrouter",
+      "dependsOn": [
+        {
+          "params": "forward",
+          "target": "terraform-init"
+        }
+      ],
+      "description": "Apply a Terraform root (--configuration=openrouter, github, or linode), creating, updating, and deleting what a fresh plan finds. Needs the terraform-plan variables. Run by the Continuous Deployment workflow on main; run it locally only on purpose.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "terraform apply -input=false -auto-approve",
-        "cwd": "{projectRoot}/terraform/openrouter"
+        "command": "terraform apply -input=false -auto-approve"
       }
     },
     "terraform-format": {
       "cache": true,
-      "description": "Check that the OpenRouter Terraform is formatted. Part of lint-code. Requires terraform on PATH (the devcontainer installs it; CI uses hashicorp/setup-terraform).",
+      "description": "Check that the OpenRouter, GitHub, and Linode Terraform is formatted. Part of lint-code. Requires terraform on PATH (the devcontainer installs it; CI uses hashicorp/setup-terraform).",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/terraform/openrouter/**/*.tf",
+        "{projectRoot}/terraform/{openrouter,github,linode}/**/*.tf",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "terraform fmt -check -diff -recursive",
-        "cwd": "{projectRoot}/terraform/openrouter"
+        "command": "terraform fmt -check -diff -recursive openrouter github linode",
+        "cwd": "{projectRoot}/terraform"
       }
     },
     "terraform-init": {
       "cache": false,
-      "description": "Initialize the OpenRouter Terraform against its Linode Object Storage backend. Needs TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY.",
+      "configurations": {
+        "github": {
+          "cwd": "{projectRoot}/terraform/github"
+        },
+        "linode": {
+          "cwd": "{projectRoot}/terraform/linode"
+        },
+        "openrouter": {
+          "cwd": "{projectRoot}/terraform/openrouter"
+        }
+      },
+      "defaultConfiguration": "openrouter",
+      "description": "Initialize a Terraform root (--configuration=openrouter, github, or linode) against its Linode Object Storage backend. Needs TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "terraform init -input=false -reconfigure -backend-config=\"bucket=$TF_STATE_BUCKET\"",
-        "cwd": "{projectRoot}/terraform/openrouter"
+        "command": "terraform init -input=false -reconfigure -backend-config=\"bucket=$TF_STATE_BUCKET\""
       }
     },
     "terraform-plan": {
       "cache": false,
-      "dependsOn": ["terraform-init"],
-      "description": "Plan the OpenRouter Terraform and write plan.tfplan beside it, without changing anything. Needs the terraform-init variables plus TF_VAR_openrouter_management_key.",
+      "configurations": {
+        "github": {
+          "cwd": "{projectRoot}/terraform/github"
+        },
+        "linode": {
+          "cwd": "{projectRoot}/terraform/linode"
+        },
+        "openrouter": {
+          "cwd": "{projectRoot}/terraform/openrouter"
+        }
+      },
+      "defaultConfiguration": "openrouter",
+      "dependsOn": [
+        {
+          "params": "forward",
+          "target": "terraform-init"
+        }
+      ],
+      "description": "Plan a Terraform root (--configuration=openrouter, github, or linode) and write plan.tfplan beside it, without changing anything. Needs the terraform-init variables plus TF_VAR_openrouter_management_key.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "terraform plan -input=false -lock=false -out=plan.tfplan",
-        "cwd": "{projectRoot}/terraform/openrouter"
+        "command": "terraform plan -input=false -lock=false -out=plan.tfplan"
       }
     },
     "terraform-validate": {
       "cache": true,
-      "description": "Validate the OpenRouter Terraform without a backend or credentials. Part of lint-code. Requires terraform on PATH and downloads the provider, so it needs network access.",
+      "description": "Validate the OpenRouter, GitHub, and Linode Terraform without a backend or credentials. Part of lint-code. Requires terraform on PATH and downloads the provider, so it needs network access.",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/terraform/openrouter/**/*.tf",
+        "{projectRoot}/terraform/{openrouter,github,linode}/**/*.tf",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "terraform init -input=false -backend=false && terraform validate",
-        "cwd": "{projectRoot}/terraform/openrouter"
+        "command": "for module in openrouter github linode; do (cd $module && terraform init -input=false -backend=false && terraform validate) || exit 1; done",
+        "cwd": "{projectRoot}/terraform"
       }
     },
     "trivy-config": {

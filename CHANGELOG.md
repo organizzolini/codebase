@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.41.8](https://github.com/organizzolini/codebase/compare/v3.41.7...v3.41.8) (2026-10-30)
+
+### 📝 Documentation
+
+* **documentation,scripts:** 📝 specify model tiers for planning and subagent execution ([#2054](https://github.com/organizzolini/codebase/issues/2054)) ([e279ce0](https://github.com/organizzolini/codebase/commit/e279ce0d16798eea961fb6b43da6baad2dfee3c9))
+
+## [3.41.7](https://github.com/organizzolini/codebase/compare/v3.41.6...v3.41.7) (2026-10-29)
+
+## [3.41.6](https://github.com/organizzolini/codebase/compare/v3.41.5...v3.41.6) (2026-10-29)
+
+## [3.41.5](https://github.com/organizzolini/codebase/compare/v3.41.4...v3.41.5) (2026-10-29)
+
+## [3.41.4](https://github.com/organizzolini/codebase/compare/v3.41.3...v3.41.4) (2026-10-29)
+
+### 📝 Documentation
+
+* **documentation:** 📝 refresh OpenWiki ([#2031](https://github.com/organizzolini/codebase/issues/2031)) ([09f661c](https://github.com/organizzolini/codebase/commit/09f661c6e918e9cbdbf30841bc0e3f31fa63c917))
+
+## [3.41.3](https://github.com/organizzolini/codebase/compare/v3.41.2...v3.41.3) (2026-10-29)
+
+## [3.41.2](https://github.com/organizzolini/codebase/compare/v3.41.1...v3.41.2) (2026-10-29)
+
+### ♻️ Code Refactoring
+
+* **infrastructure:** ♻️ rename the openrouter preset to refresh-documentation ([#2030](https://github.com/organizzolini/codebase/issues/2030)) ([206fdd4](https://github.com/organizzolini/codebase/commit/206fdd4cdc05487b700c306541ce4b1db7c410f1))
+
+## [3.41.1](https://github.com/organizzolini/codebase/compare/v3.41.0...v3.41.1) (2026-10-29)
+
+## [3.41.0](https://github.com/organizzolini/codebase/compare/v3.40.0...v3.41.0) (2026-10-29)
+
+### ✨ Features
+
+* **infrastructure,installation:** ✨ manage github and linode with terraform ([#1979](https://github.com/organizzolini/codebase/issues/1979)) ([0c9d11d](https://github.com/organizzolini/codebase/commit/0c9d11d10f53564b2130b6154dc24a968e029365))
+
 ## [3.40.0](https://github.com/organizzolini/codebase/compare/v3.39.0...v3.40.0) (2026-10-27)
 
 ### ✨ Features

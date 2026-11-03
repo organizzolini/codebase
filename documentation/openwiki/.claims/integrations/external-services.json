@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:87ea837b40569e66c943630de819e81e4f2e321c997fad4f891646a0c10576b9",
+  "pageVersion": "sha256:6aec1e67acffae478f9159d54fb9c6f2106a7d98a1626d0728629ac396654759",
   "claims": [
     {
       "id": "claim_100e4b8c2f8247e5a4e55130e066ce86",
@@ -31,7 +31,7 @@
       "statement": "Open WebUI provides a browser-based chat interface for Ollama on port 3001, connecting via OLLAMA_BASE_URL=http://host.docker.internal:11434.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L36-L38",
+          "resource": "repo://infrastructure/README.md#L52-L54",
           "version": "repo-lines-v1:sha256:335ae8b843e2c21a2cb8f308299eb3102f7eff918cfb4e6f0179d1c22b271d0e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGU4YmVjODE3MzQ5ZjdiZmI5YmQ4NjA0NjJjMDU5ZjY2YTlhNWY4NDIwYzg3YzA5YTU2ZmM1YjU2Mzc5NmIwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjc1OTY5MzMyYzRjNWIwNTljODQzNzg3YzZmNDU0NjU5YzI3N2I3ZDYzMGFkYTZhODViMTI4ZDNhM2E4OWQyMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQxOTM4OGVlMjFjY2RkMmNkOTcyN2E3ZTk2OTM0YTExYmY1NDE3ZTkxNzdlYzBjNjRkYTZkZjU2YmI5N2I1MyJ9"
         },
         {
@@ -83,7 +83,7 @@
       "statement": "Swiss Ephemeris provides JPL DE431 astronomical data for caelundas, downloaded to data/ephemeris/ via nx run caelundas-cli:download-ephemeris with no network calls at runtime.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L55-L63",
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L50-L58",
           "version": "repo-lines-v1:sha256:a9f28055e000fd3ec4e77825af63ddb651504c7c40bad95a5dfda2aeda9368b5:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTY1NzIzYzUyMjBjMWRjN2ZjMThkOTliNmNlNjMwZjAwZDQxMDMzZmRlNzc2ZTY4NjVlYmI2MGU0ZDhiNjg2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjU1ZDAzNjAxNzYwYmIyZjlhNDU5YTQyMTMzNWQxZjQ3ZmIwMTZiMDg1ZTU4MzkwMjA5ZDY2OTNkODc3MDRkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTVkNzkyNTM1MWNmYzJhN2E2NTY2NWJkNTRkNWZlY2U0YjVhNDk2YzZkOWIwZDViYTliZDFiOTljZjRjMzZhYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGZmNDIxMjgwYmNhOWQ0Y2ZkNWRkMThmNTliYjY3NmQ1MzI4OTk2YWVhMjUyNmE1OTcwOGFjYTZlYjI2ZWI1NiJ9"
         }
       ]
@@ -104,15 +104,11 @@
     },
     {
       "id": "claim_04dc00de7be3498ab617c4abf8262ddf",
-      "statement": "PostgreSQL runs as a shared Docker container on port 5432 providing isolated databases, schemas, and roles for caelundas, lexico, and meanderaw projects via POSTGRES_PROJECTS list.",
+      "statement": "PostgreSQL runs as a shared Docker container on port 5432 providing isolated databases, schemas, and roles for lexico and meanderaw projects via POSTGRES_PROJECTS list.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L40-L52",
-          "version": "repo-lines-v1:sha256:470c46a0dc1fbf2c2cce24cd62faff6ff615b5a3d2f205e4ab881fa53e6e8217:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1MDYxNmViMDdlNjdkZjBmZjlhNjAwNmNjMzhiNTI5YmJiMjlhOWM4MjQyNDdjOWI1YTUyY2M4NDUwYjdjZjYifQ"
-        },
-        {
           "resource": "repo://infrastructure/docker/docker-compose.yml#L26-L48",
-          "version": "repo-lines-v1:sha256:ee4aed3afbddd73bd6536928bd435e4e3b9e4b78abdceb62717c6ced30176e41:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MzFlMjYwMzk4YWQ2MTA5MTRkZmMyOGYwNDhkMzkyNjRiYTdkNTAzMjc4ZGQyZjhiYjFjNGMxNGI0OTlkOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNjgwNjVjN2IzOGFlOWNlMmJiNGNhNWEzZDY2ZDliZjJhOTY2MTQxOWU1YTY1YjM0ZmFhODRhYjBhNWNkODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhZDU2ODRmYmRmMmRjMjQ3ZTNlMjNjNDM5ZWY0ZGYyNWU5OGIxYjBiZTEyZjg5YzUyNWYzODBhMmFlMzAwNjMifQ"
+          "version": "repo-lines-v1:sha256:5dd38894a9cefd947b855853010c1f5599b6c460f5a3290bc661b7b1ef06dc45:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MzFlMjYwMzk4YWQ2MTA5MTRkZmMyOGYwNDhkMzkyNjRiYTdkNTAzMjc4ZGQyZjhiYjFjNGMxNGI0OTlkOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNjgwNjVjN2IzOGFlOWNlMmJiNGNhNWEzZDY2ZDliZjJhOTY2MTQxOWU1YTY1YjM0ZmFhODRhYjBhNWNkODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhZDU2ODRmYmRmMmRjMjQ3ZTNlMjNjNDM5ZWY0ZGYyNWU5OGIxYjBiZTEyZjg5YzUyNWYzODBhMmFlMzAwNjMifQ"
         },
         {
           "resource": "repo://infrastructure/docker/docker-compose.yml#L87-L100",
@@ -123,6 +119,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-26T01:23:39.729Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }

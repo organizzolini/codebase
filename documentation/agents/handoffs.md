@@ -27,8 +27,9 @@ implementation run legitimate. Five repository rules override
   [implement](../../.agents/skills/implement/SKILL.md) and
   [tdd](../../.agents/skills/tdd/SKILL.md), with subagent-driven-development invoked
   again at task granularity if that ticket itself splits into several tasks,
-  then steps 6–8 of the [Agent Workflow](../../AGENTS.md#agent-workflow). Say plainly that this session is the orchestrator: it
-  dispatches tickets and reads their reports back, and implements a ticket in
+  then steps 6–8 of the [Agent Workflow](../../AGENTS.md#agent-workflow). Say plainly that this session is the orchestrator (on a Sonnet/Terra-level model): it
+  dispatches tickets to Haiku/Luna-level subagents (or Sonnet/Terra-level only
+  when really necessary) and reads their reports back, and implements a ticket in
   its own context only when the spec holds exactly one.
 - **Answer the two questions those skills otherwise stop and ask.**
   `subagent-driven-development` keys its workspace and ledger off a **plan file
@@ -50,7 +51,21 @@ implementation run legitimate. Five repository rules override
   without stating that the session owns **all** of them is a brief that
   returns one pull request and nothing else, so write the exit condition
   out — every ticket merged or open — and point at that same section.
-- **Assign a model and thinking level per role.** Orchestrating a ticket set,
-  implementing one ticket, and reviewing a diff are different problems and should
-  not draw the same reasoning budget. No table of model names lives here on
-  purpose — it would be stale within a release or two.
+- **Assign a model and thinking level per role.** Planning, orchestrating a
+  ticket set, implementing a ticket or task, and reviewing a diff are different
+  problems and should not draw the same reasoning budget (this overrides
+  `subagent-driven-development`'s default model floor):
+  - **Planning (steps 1–4)**: **Opus/Sol-level** model for clarifying,
+    specifying, decomposing into tickets, and authoring the handoff.
+  - **Implementation orchestration**: **Sonnet/Terra-level** model for the
+    session that reads the handoff, coordinates worktrees and stacks, dispatches
+    subagents, and reads their reports.
+  - **Implementation tasks and subagents**: **Haiku/Luna-level** model by
+    default for dispatched ticket and task subagents, escalating to a
+    **Sonnet/Terra-level** model only when really necessary (such as complex
+    cross-file integration, non-trivial design judgment, or fix-loop escalation
+    after repeated failures).
+  - **Review subagents**: **Haiku/Luna-level** or **Sonnet/Terra-level** model
+    scaled to the diff's size and risk. Never spawn any subagent on an
+    Opus/Sol-level model or higher — Opus/Sol is selectable only by humans for
+    main sessions.
