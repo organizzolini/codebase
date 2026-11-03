@@ -5,12 +5,6 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { toCursor } from "@codebase/interface";
 import {
-  expectedPage,
-  type PageRequest,
-  paginationMatrix,
-  summarize,
-} from "@codebase/interface/testing";
-import {
   AdjectivalForm,
   FiniteVerbForm,
   type Form,
@@ -22,6 +16,12 @@ import {
   WordForm,
   WordLexeme,
 } from "@codebase/lexico-entities";
+import {
+  expectedPage,
+  type PageRequest,
+  paginationMatrix,
+  summarize,
+} from "@codebase/testing/graphql";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
@@ -35,7 +35,7 @@ import { SearchService } from "./search.service";
 import type { LexemeSearchMatch } from "./search.types";
 import type { Connection } from "@codebase/interface";
 import type { LoggerService } from "@codebase/observability";
-import type { DatabaseTestingModule } from "@codebase/persistence/testing";
+import type { DatabaseTestingModule } from "@codebase/testing/postgres";
 
 /** One headword to seed, with the English senses it translates to. */
 interface SeededLexeme {

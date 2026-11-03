@@ -6,6 +6,7 @@
     "@codebase/lexico-entities": "workspace:*",
     "@codebase/observability": "workspace:*",
     "@codebase/persistence": "workspace:*",
+    "@codebase/testing": "workspace:*",
     "@nestjs/apollo": "catalog:",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",

@@ -4,14 +4,14 @@ import {
   LEXICO_DATABASE_MIGRATIONS,
   LexicoDatabaseModule,
 } from "@codebase/lexico-entities";
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
+import { startDatabaseTestingModule } from "@codebase/testing/postgres";
 
 import { environmentSchema } from "../src/lexico-api.constants";
 
 import type {
   DatabaseTestingModule,
   DatabaseTestingModuleOptions,
-} from "@codebase/persistence/testing";
+} from "@codebase/testing/postgres";
 
 /** Starting Postgres and running every migration takes longer than a test. */
 export const DATABASE_TIMEOUT_MILLISECONDS = 120_000;

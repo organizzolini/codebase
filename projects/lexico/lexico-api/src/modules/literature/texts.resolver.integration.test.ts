@@ -28,7 +28,7 @@ import { TextsResolver } from "./texts.resolver";
 import type { LineType } from "./line.entities";
 import type { TextType } from "./text.entities";
 import type { Connection } from "@codebase/interface";
-import type { DatabaseTestingModule } from "@codebase/persistence/testing";
+import type { DatabaseTestingModule } from "@codebase/testing/postgres";
 
 /** The nodes of a connection, in page order. */
 function nodesIn<Node>(connection: Connection<Node>): Node[] {

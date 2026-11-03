@@ -3519,6 +3519,9 @@ importers:
       '@codebase/persistence':
         specifier: workspace:*
         version: link:../../common/persistence
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../common/testing
       '@nestjs/apollo':
         specifier: 'catalog:'
         version: 14.0.2(@apollo/server@5.5.1(graphql@16.14.2)(supports-color@10.2.2))(@as-integrations/express5@1.1.2(@apollo/server@5.5.1(graphql@16.14.2)(supports-color@10.2.2))(express@5.2.1(supports-color@10.2.2)))(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/graphql@14.0.2(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(graphql@16.14.2)(reflect-metadata@0.2.2)(typescript@6.0.3))(graphql@16.14.2)
@@ -3719,15 +3722,15 @@ importers:
       '@codebase/persistence':
         specifier: workspace:*
         version: link:../../common/persistence
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../common/testing
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
       '@nestjs/typeorm':
         specifier: 'catalog:'
         version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@12.11.1)(pg@8.23.0)(supports-color@10.2.2))
-      lodash:
-        specifier: 'catalog:'
-        version: 4.18.1
       pg:
         specifier: 'catalog:'
         version: 8.23.0
