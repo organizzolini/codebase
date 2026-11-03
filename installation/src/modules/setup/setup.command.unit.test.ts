@@ -1,19 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { enterWorkspace } from "../../../testing/environment";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
@@ -44,19 +35,7 @@ import type { FakeMachine } from "../../../testing/fake-process-runner";
 import type { TemporaryWorkspace } from "../../../testing/temporary-workspace";
 
 describe(SetupCommand, () => {
-  let command: SetupCommand;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SetupCommand,
-        { provide: SetupService, useValue: createMock<SetupService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(SetupCommand);
-  });
+  const moduleOptions = { mocks: [SetupService] };
 
   let workspace: TemporaryWorkspace;
   let report: string[];
@@ -66,13 +45,12 @@ describe(SetupCommand, () => {
     machine: FakeMachine = {},
   ): Promise<{ command: SetupCommand; commands: string[] }> => {
     const { commands, runner } = createFakeProcessRunner(machine);
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SetupCommand, {
       providers: [
         DependenciesService,
         EnvironmentFilesService,
         ReleaseArchivesService,
         LocalServicesService,
-        SetupCommand,
         SetupService,
         ShellConfigurationService,
         SoftwareBrewService,
@@ -87,9 +65,8 @@ describe(SetupCommand, () => {
         SshSigningService,
         ReporterService,
         { provide: ProcessRunnerService, useValue: runner },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     return { command: await module.resolve(SetupCommand), commands };
   };
@@ -105,24 +82,18 @@ describe(SetupCommand, () => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(SetupCommand, moduleOptions);
+
+    expect(instance).toBeInstanceOf(SetupCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        SetupCommand,
-        { provide: SetupService, useValue: createMock<SetupService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("SetupCommand");
+    await expectLoggerContext(SetupCommand, moduleOptions);
   });
 
   it("runs shell configuration, software, environment files, then dependencies", async () => {

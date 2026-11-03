@@ -6,8 +6,9 @@ import {
 } from "node:child_process";
 import { Readable } from "node:stream";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProcessRunnerService } from "./process-runner.service";
 
@@ -52,9 +53,7 @@ describe(ProcessRunnerService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ProcessRunnerService],
-    }).compile();
+    const { module } = await buildTestingModule(ProcessRunnerService);
 
     service = await module.resolve(ProcessRunnerService);
   });
@@ -63,9 +62,12 @@ describe(ProcessRunnerService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(ProcessRunnerService);
+
+    expect(instance).toBeInstanceOf(ProcessRunnerService);
   });
 
   describe("captureSequence", () => {

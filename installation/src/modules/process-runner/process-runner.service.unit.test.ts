@@ -1,11 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
 
@@ -15,19 +13,17 @@ describe(ProcessRunnerService, () => {
   let service: ProcessRunnerService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ProcessRunnerService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(ProcessRunnerService);
 
     service = await module.resolve(ProcessRunnerService);
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(ProcessRunnerService);
+
+    expect(instance).toBeInstanceOf(ProcessRunnerService);
   });
 
   describe("run", () => {

@@ -2,20 +2,11 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
@@ -30,10 +21,17 @@ import type { ReleaseArchiveTool } from "../release-archives/release-archives.ty
 const BINARY_DIRECTORY = path.join(os.homedir(), ".local", "bin");
 
 describe(SoftwareNamedService, () => {
+  const moduleOptions = {
+    mocks: [
+      ConfigService,
+      ReleaseArchivesService,
+      SoftwareDatabaseService,
+      ProcessRunnerService,
+    ],
+  };
   const originalPath = process.env["PATH"];
   const install = vi.fn<ReleaseArchivesService["install"]>();
   const installPostgres = vi.fn<SoftwareDatabaseService["installPostgres"]>();
-  let service: SoftwareNamedService;
 
   /** Builds the service over a fake machine, with only the path file variable set. */
   const build = async (
@@ -50,16 +48,14 @@ describe(SoftwareNamedService, () => {
       platform: "linux",
       ...machine,
     });
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SoftwareNamedService, {
       providers: [
-        SoftwareNamedService,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: ReleaseArchivesService, useValue: { install } },
         { provide: SoftwareDatabaseService, useValue: { installPostgres } },
         { provide: ProcessRunnerService, useValue: runner },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     return module.resolve(SoftwareNamedService);
   };
@@ -67,30 +63,6 @@ describe(SoftwareNamedService, () => {
   /** The names of the archive tools `install` was asked for, in order. */
   const installedNames = (): string[] =>
     install.mock.calls.map(([tool]: [ReleaseArchiveTool]) => tool.name);
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SoftwareNamedService,
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
-        {
-          provide: ReleaseArchivesService,
-          useValue: createMock<ReleaseArchivesService>(),
-        },
-        {
-          provide: SoftwareDatabaseService,
-          useValue: createMock<SoftwareDatabaseService>(),
-        },
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(SoftwareNamedService);
-  });
 
   beforeEach(() => {
     install.mockReset();
@@ -102,9 +74,15 @@ describe(SoftwareNamedService, () => {
     process.env["PATH"] = originalPath;
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      SoftwareNamedService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SoftwareNamedService);
   });
 
   it("fails on a name that is not software, before installing any", async () => {
@@ -221,7 +199,7 @@ describe(SoftwareNamedService, () => {
   it("puts the install directory first on PATH, and in the file Actions reads", async () => {
     expect.hasAssertions();
 
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "software-"));
+    const directory = createTemporaryDirectory("software");
     const pathFile = path.join(directory, "github-path");
     const subject = await build({ GITHUB_PATH: pathFile });
 

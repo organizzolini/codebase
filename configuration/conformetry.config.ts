@@ -1,12 +1,7 @@
-import path from "node:path";
-
 import { z } from "zod";
 
 import type { ConformetryGeneratorInputDefinition } from "@conformetry/configuration";
-import type {
-  ConformetryNxConfiguration,
-  ConformetryNxInstanceGroup,
-} from "@conformetry/nx";
+import type { ConformetryNxConfiguration } from "@conformetry/nx";
 
 export const CONFORMETRY_PATTERNS = [
   "configuration/conformetry.config.ts",
@@ -51,70 +46,6 @@ const SHADCN_GENERATED_PATTERNS = [
   "projects/common/presentation/src/hooks/**",
   "projects/common/presentation/src/lib/**",
 ];
-
-/**
- * A project's baseline per kind of instance: the project itself, its
- * `src/modules/*` directories, and its resolver, route, and service files. The
- * module directories are one kind whichever module template fits them, since
- * the first group to locate a path sets its threshold.
- */
-interface TestTemplateBaseline {
-  readonly application?: number;
-  readonly modules?: number;
-  readonly resolvers?: number;
-  readonly routes?: number;
-  readonly services?: number;
-}
-
-/** What each untouched project of a shape measures, shared to stay short. */
-const NEST_BASELINE = { modules: 89 / 121, services: 47 / 79 };
-
-/**
- * Each project's measured conformance score, written as requirements met over
- * requirements weighed, from when the test templates moved onto
- * `@codebase/testing` (#329). A kind holds the lowest score among the
- * project's instances of it, so validation passes before its tests migrate.
- * A project's migration deletes its entry, and an ic-suite CLI's also deletes
- * its `nestjs-command-project` threshold, which raises it back to 1. The last
- * migration deletes the table.
- */
-const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
-  documentation: NEST_BASELINE,
-  installation: NEST_BASELINE,
-  integration: NEST_BASELINE,
-  publication: NEST_BASELINE,
-  synchronization: NEST_BASELINE,
-};
-
-/**
- * Splits one generator's instance group into a group per project in
- * `TEST_TEMPLATE_BASELINES`, each held to that project's measured score. Listed
- * ahead of the tagged group they are cut from, they locate those projects'
- * instances first, which is what makes their threshold the one that applies.
- */
-function baselineGroups(
-  kind: keyof TestTemplateBaseline,
-  patterns: string[],
-): ConformetryNxInstanceGroup[] {
-  return Object.entries(TEST_TEMPLATE_BASELINES).flatMap(
-    ([projectRoot, baseline]) => {
-      const threshold = baseline[kind];
-
-      if (threshold === undefined) {
-        return [];
-      }
-
-      return [
-        {
-          patterns: patterns.map((pattern) => {
-            return path.posix.join(projectRoot, pattern);
-          }),
-          threshold,
-        },
-      ];
-    },
-  );
-}
 
 const conformetryConfiguration: ConformetryNxConfiguration = [
   // Groups without tags are plain workspace globs — the form a host with no
@@ -222,7 +153,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     // generated. The template reaches the shared configuration by package name,
     // so it states no climb back to the workspace root and no group has to.
     instances: [
-      ...baselineGroups("application", ["."]),
       {
         // The `node_modules` links would otherwise be followed back to the
         // packages they point at.
@@ -245,7 +175,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       project: z.string().describe("Parent project name in kebab-case"),
     }),
     instances: [
-      ...baselineGroups("modules", ["src/modules/*"]),
       { patterns: ["src/modules/*"], tags: ["framework:nest-commander"] },
     ],
     name: "nestjs-command-module",
@@ -259,7 +188,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       project: z.string().describe("Parent project name in kebab-case"),
     }),
     instances: [
-      ...baselineGroups("modules", ["src/modules/*"]),
       {
         patterns: ["src/modules/*"],
         tags: ["framework:nestjs", "language:graphql"],
@@ -277,7 +205,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       project: z.string().describe("Parent project name in kebab-case"),
     }),
     instances: [
-      ...baselineGroups("modules", ["src/modules/*"]),
       {
         patterns: ["src/modules/*"],
         tags: ["framework:nestjs", "language:graphql"],
@@ -295,10 +222,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       project: z.string().describe("Parent project name in kebab-case"),
     }),
     instances: [
-      ...baselineGroups("services", [
-        "src/modules/*/*.service.ts",
-        "src/modules/*/*.service.unit.test.ts",
-      ]),
       {
         patterns: [
           "src/modules/*/*.service.ts",
@@ -319,10 +242,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       project: z.string().describe("Parent project name in kebab-case"),
     }),
     instances: [
-      ...baselineGroups("resolvers", [
-        "src/modules/*/*.resolver.ts",
-        "src/modules/*/*.resolver.unit.test.ts",
-      ]),
       {
         patterns: [
           "src/modules/*/*.resolver.ts",
@@ -341,10 +260,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       name: z.string().describe("Module name in kebab-case"),
       project: z.string().describe("Parent project name in kebab-case"),
     }),
-    instances: [
-      ...baselineGroups("modules", ["src/modules/*"]),
-      { patterns: ["src/modules/*"], tags: ["framework:nestjs"] },
-    ],
+    instances: [{ patterns: ["src/modules/*"], tags: ["framework:nestjs"] }],
     name: "nestjs-service-module",
     templatePath: "configuration/conformetry-templates/nestjs-service-module",
   },
@@ -411,10 +327,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
         .describe("URL path the route serves, e.g. /, /search, or /word/$id"),
     }),
     instances: [
-      ...baselineGroups("routes", [
-        "src/routes/!(__root|*.integration.test).tsx",
-        "src/routes/*.integration.test.tsx",
-      ]),
       {
         patterns: [
           "src/routes/!(__root|*.integration.test).tsx",

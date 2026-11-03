@@ -1,19 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { enterWorkspace } from "../../../testing/environment";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
@@ -35,23 +25,7 @@ const PROBE =
   "git commit-tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904 -m allowed-signers-probe -S";
 
 describe(SshSigningService, () => {
-  let service: SshSigningService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SshSigningService,
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-        { provide: ReporterService, useValue: createMock<ReporterService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(SshSigningService);
-  });
+  const moduleOptions = { mocks: [ProcessRunnerService, ReporterService] };
 
   let workspace: TemporaryWorkspace;
   let report: string[];
@@ -72,14 +46,12 @@ describe(SshSigningService, () => {
         ...machine.responses,
       },
     });
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SshSigningService, {
       providers: [
-        SshSigningService,
         ReporterService,
         { provide: ProcessRunnerService, useValue: fake.runner },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     return { fake, subject: await module.resolve(SshSigningService) };
   };
@@ -100,9 +72,15 @@ describe(SshSigningService, () => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      SshSigningService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SshSigningService);
   });
 
   it("does nothing when git does not sign with SSH", async () => {

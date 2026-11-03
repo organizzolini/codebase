@@ -1,5 +1,3 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -10,13 +8,15 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { UpgradeDependenciesCommand } from "./upgrade-dependencies.command";
 import { UPGRADE_STEPS } from "./upgrade-dependencies.constants";
 import { UpgradeDependenciesService } from "./upgrade-dependencies.service";
 
 describe(UpgradeDependenciesCommand, () => {
+  const moduleOptions = { mocks: [UpgradeDependenciesService] };
   let command: UpgradeDependenciesCommand;
   let service: UpgradeDependenciesService;
   let printed: string[];
@@ -24,19 +24,10 @@ describe(UpgradeDependenciesCommand, () => {
   const done = { changes: "", label: "Step", warnings: [] };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        UpgradeDependenciesCommand,
-        {
-          provide: UpgradeDependenciesService,
-          useValue: createMock<UpgradeDependenciesService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(
+      UpgradeDependenciesCommand,
+      moduleOptions,
+    );
 
     command = await module.resolve(UpgradeDependenciesCommand);
     service = await module.resolve(UpgradeDependenciesService);
@@ -61,30 +52,21 @@ describe(UpgradeDependenciesCommand, () => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      UpgradeDependenciesCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(UpgradeDependenciesCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        UpgradeDependenciesCommand,
-        {
-          provide: UpgradeDependenciesService,
-          useValue: createMock<UpgradeDependenciesService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    expect.hasAssertions();
 
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "UpgradeDependenciesCommand",
-    );
+    await expectLoggerContext(UpgradeDependenciesCommand, moduleOptions);
   });
 
   it("runs every step, in a log group each, and exits 0 when all succeed", async () => {

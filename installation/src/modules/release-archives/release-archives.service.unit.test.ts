@@ -1,11 +1,9 @@
 import os from "node:os";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
@@ -75,14 +73,10 @@ async function build(
       ...machine.responses,
     },
   });
-  const module = await Test.createTestingModule({
-    providers: [
-      ReleaseArchivesService,
-      { provide: ProcessRunnerService, useValue: runner },
-      { provide: ReporterService, useValue: createMock<ReporterService>() },
-      { provide: LoggerService, useValue: createMock<LoggerService>() },
-    ],
-  }).compile();
+  const { module } = await buildTestingModule(ReleaseArchivesService, {
+    mocks: [ReporterService],
+    providers: [{ provide: ProcessRunnerService, useValue: runner }],
+  });
 
   return {
     commands,
@@ -92,30 +86,24 @@ async function build(
 }
 
 describe(ReleaseArchivesService, () => {
-  let service: ReleaseArchivesService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ReleaseArchivesService,
-        {
-          provide: ProcessRunnerService,
-          useValue: createFakeProcessRunner().runner,
-        },
-        { provide: ReporterService, useValue: createMock<ReporterService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(ReleaseArchivesService);
-  });
-
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(ReleaseArchivesService, {
+      mocks: [ReporterService],
+      providers: [
+        {
+          provide: ProcessRunnerService,
+          useValue: createFakeProcessRunner().runner,
+        },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(ReleaseArchivesService);
   });
 
   it("leaves an installed tool alone", async () => {

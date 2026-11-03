@@ -1,19 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { enterWorkspace } from "../../../testing/environment";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
@@ -42,22 +33,7 @@ const CREDENTIALS = [
 ].join("\n");
 
 describe(DependenciesCommand, () => {
-  let command: DependenciesCommand;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DependenciesCommand,
-        {
-          provide: DependenciesService,
-          useValue: createMock<DependenciesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(DependenciesCommand);
-  });
+  const moduleOptions = { mocks: [DependenciesService] };
 
   let workspace: TemporaryWorkspace;
   let report: string[];
@@ -71,15 +47,13 @@ describe(DependenciesCommand, () => {
     options: Map<string, ProcessOptions>;
   }> => {
     const { commands, options, runner } = createFakeProcessRunner(machine);
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(DependenciesCommand, {
       providers: [
-        DependenciesCommand,
         DependenciesService,
         ReporterService,
         { provide: ProcessRunnerService, useValue: runner },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     return {
       command: await module.resolve(DependenciesCommand),
@@ -100,27 +74,21 @@ describe(DependenciesCommand, () => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      DependenciesCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(DependenciesCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        DependenciesCommand,
-        {
-          provide: DependenciesService,
-          useValue: createMock<DependenciesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("DependenciesCommand");
+    await expectLoggerContext(DependenciesCommand, moduleOptions);
   });
 
   it("installs in order and skips kubeconfig without credentials", async () => {
