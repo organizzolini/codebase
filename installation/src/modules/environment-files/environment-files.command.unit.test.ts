@@ -1,19 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { enterWorkspace } from "../../../testing/environment";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
@@ -31,22 +24,7 @@ const LISTING_LINE =
   "git ls-files --cached --others --exclude-standard -- .env.default */.env.default :!:configuration/conformetry-templates/**";
 
 describe(EnvironmentFilesCommand, () => {
-  let command: EnvironmentFilesCommand;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EnvironmentFilesCommand,
-        {
-          provide: EnvironmentFilesService,
-          useValue: createMock<EnvironmentFilesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(EnvironmentFilesCommand);
-  });
+  const moduleOptions = { mocks: [EnvironmentFilesService] };
 
   let workspace: TemporaryWorkspace;
   let report: string[];
@@ -58,15 +36,13 @@ describe(EnvironmentFilesCommand, () => {
     const { runner } = createFakeProcessRunner({
       responses: { [LISTING_LINE]: { stdout: `${listedFiles.join("\n")}\n` } },
     });
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(EnvironmentFilesCommand, {
       providers: [
-        EnvironmentFilesCommand,
         EnvironmentFilesService,
         ReporterService,
         { provide: ProcessRunnerService, useValue: runner },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     return module.resolve(EnvironmentFilesCommand);
   };
@@ -90,27 +66,21 @@ describe(EnvironmentFilesCommand, () => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      EnvironmentFilesCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EnvironmentFilesCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        EnvironmentFilesCommand,
-        {
-          provide: EnvironmentFilesService,
-          useValue: createMock<EnvironmentFilesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("EnvironmentFilesCommand");
+    await expectLoggerContext(EnvironmentFilesCommand, moduleOptions);
   });
 
   it("creates a missing .env from its default and reports each directory", async () => {

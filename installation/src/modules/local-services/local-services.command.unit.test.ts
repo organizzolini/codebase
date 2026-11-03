@@ -1,57 +1,43 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { LocalServicesCommand } from "./local-services.command";
 import { LocalServicesService } from "./local-services.service";
 
 describe(LocalServicesCommand, () => {
+  const moduleOptions = { mocks: [LocalServicesService] };
   let command: LocalServicesCommand;
   let service: LocalServicesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LocalServicesCommand,
-        {
-          provide: LocalServicesService,
-          useValue: createMock<LocalServicesService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(
+      LocalServicesCommand,
+      moduleOptions,
+    );
 
     command = await module.resolve(LocalServicesCommand);
     service = await module.resolve(LocalServicesService);
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      LocalServicesCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(LocalServicesCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LocalServicesCommand,
-        {
-          provide: LocalServicesService,
-          useValue: createMock<LocalServicesService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    expect.hasAssertions();
 
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("LocalServicesCommand");
+    await expectLoggerContext(LocalServicesCommand, moduleOptions);
   });
 
   it("starts the local services", async () => {

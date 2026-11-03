@@ -1,19 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { enterWorkspace } from "../../../testing/environment";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
@@ -30,22 +23,7 @@ import type { TemporaryWorkspace } from "../../../testing/temporary-workspace";
 const NVM_PREFIX = "/opt/homebrew/opt/nvm";
 
 describe(ShellConfigurationCommand, () => {
-  let command: ShellConfigurationCommand;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ShellConfigurationCommand,
-        {
-          provide: ShellConfigurationService,
-          useValue: createMock<ShellConfigurationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(ShellConfigurationCommand);
-  });
+  const moduleOptions = { mocks: [ShellConfigurationService] };
 
   let workspace: TemporaryWorkspace;
   let report: string[];
@@ -58,15 +36,13 @@ describe(ShellConfigurationCommand, () => {
       installed,
       responses: { "brew --prefix nvm": { stdout: `${NVM_PREFIX}\n` } },
     });
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(ShellConfigurationCommand, {
       providers: [
-        ShellConfigurationCommand,
         ShellConfigurationService,
         ReporterService,
         { provide: ProcessRunnerService, useValue: runner },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     return module.resolve(ShellConfigurationCommand);
   };
@@ -86,27 +62,21 @@ describe(ShellConfigurationCommand, () => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      ShellConfigurationCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(ShellConfigurationCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        ShellConfigurationCommand,
-        {
-          provide: ShellConfigurationService,
-          useValue: createMock<ShellConfigurationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("ShellConfigurationCommand");
+    await expectLoggerContext(ShellConfigurationCommand, moduleOptions);
   });
 
   it("writes every block to .zshrc, with completions only for installed tools", async () => {
@@ -289,15 +259,13 @@ describe(ShellConfigurationCommand, () => {
     const { runner } = createFakeProcessRunner({
       responses: { "brew --prefix nvm": { status: 1 } },
     });
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(ShellConfigurationCommand, {
       providers: [
-        ShellConfigurationCommand,
         ShellConfigurationService,
         ReporterService,
         { provide: ProcessRunnerService, useValue: runner },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
     const subject = await module.resolve(ShellConfigurationCommand);
 
     await expect(subject.run()).rejects.toThrow("`brew --prefix nvm` failed");

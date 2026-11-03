@@ -1,8 +1,6 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ReporterService } from "./reporter.service";
 
@@ -10,19 +8,17 @@ describe(ReporterService, () => {
   let service: ReporterService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ReporterService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(ReporterService);
 
     service = await module.resolve(ReporterService);
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(ReporterService);
+
+    expect(instance).toBeInstanceOf(ReporterService);
   });
 
   it("prints a line to the terminal", () => {
