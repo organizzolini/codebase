@@ -8,6 +8,7 @@
 #     CLAUDE_ENV_FILE, so every `nx` call this session makes shares the cache
 #   - `env` as the first argument prints those exports instead, for a git hook
 #     to `eval`; nothing is printed while the server cannot be reached
+#   - Does nothing when nx.json names an `nxCloudId`: Nx Cloud is the cache then
 #   - Always exits 0 and prints nothing else: a missing cache only makes Nx
 #     slower, and must never block a session or a commit
 #
@@ -56,6 +57,11 @@ start_server() {
 }
 
 # 📋 Output
+
+# 🌩 Nx Cloud
+# A workspace connected to Nx Cloud already has a remote cache, and Nx runs one
+# remote at a time, so the local server stays out of its way.
+grep -q '"nxCloudId"' "${REPOSITORY_ROOT}/nx.json" 2>/dev/null && exit 0
 
 is_serving || start_server || exit 0
 
