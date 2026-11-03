@@ -14,9 +14,7 @@ import { QuintupleAspectsService } from "./quintuple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
-import type { LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
-
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 /** Builds one pentagram boundary event for the shared progressive-step tests. */
 function buildPentagramBoundary(
   phase: "Dissolving" | "Forming",
@@ -46,7 +44,7 @@ function buildPentagramBoundary(
 
 describe(QuintupleAspectsService, () => {
   let service: QuintupleAspectsService;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<QuintupleAspectsService>["logger"];
   let compoundPhaseService: CompoundPhaseService;
 
   const testingModuleOptions = {

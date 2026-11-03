@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:5100425b556d5d7109c3a3a3d6b6cf6c715791a708e2e026420052a93da64e27",
+  "pageVersion": "sha256:99f664205fb8fc00cc9e5d37d981d4d44f0207bdf64546e189661c8eaf5941b5",
   "claims": [
     {
       "id": "claim_a93fe81f330c4f9d88d7f2357150dd9d",
@@ -205,7 +205,7 @@
       "statement": "GitHub Actions CI shards test execution into four legs (Test, Test Caelundas, Test Meanderaw, Test IC Suite) with meanderaw-cli running alone in its own shard because its exhaustive enumeration with real Postgres containers takes ~7 minutes uncached (~3 minutes warm) and would block other projects.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L64-L92",
+          "resource": "repo://.github/workflows/continuous-integration.yml#L66-L94",
           "version": "repo-lines-v1:sha256:573d183bc962cdc30776e2bae4e02ebc9f1ce50ad7525e543019d57bc8e71a4f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NWM3MGU4NDgxNWNkMGYyZGYxYTAzNzg1YjM3ODdkY2Y0NzEwZWZiMzg1M2U4OTYzNjNlZDRlMjJhNDIyMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3OTAxYWI2MDNiNTgwODM3NDJjMjc2YWUwZjBlN2Q3M2NiY2NhYjk0NDBiNTY4ZDNhMDUwYjFmMTc1Y2YxMGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyYjdjNGQyMGJhNmQzOWU3Yjk2NmZhNzFhOGFiZTljMGY2Njk4MmQwN2ViNmYyYTZlZmMxNzRiOTQyNjZkOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjNDgyOGNkN2UwMDMwODgwMjU3NzBhYTg3OWM5ZmJjMDc0YTI4NzgyNzUwMGI4MTg5ZTIzYTdiZDg4ZGVjOTYifQ"
         }
       ]
@@ -213,6 +213,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-26T01:23:39.729Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }

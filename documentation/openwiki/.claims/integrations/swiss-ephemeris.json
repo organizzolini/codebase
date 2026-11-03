@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:875032d9eee31b696896310ac91ac917d761c1493246a69c8b994de443cb3736",
+  "pageVersion": "sha256:efe3de6c423869207d28666b1ac29f07320ee88e04faf63bbcc5bccf8ebb2dab",
   "claims": [
     {
       "id": "claim_2a3ca15c9b8e4701adcf0fe8cf0f57ba",
       "statement": "Caelundas uses the Swiss Ephemeris library (sweph npm package) to compute planetary positions locally from JPL DE431 data files with no network calls, API keys, or rate limits.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/AGENTS.md#L107-L107",
+          "resource": "repo://projects/caelundas/caelundas-cli/AGENTS.md#L108-L108",
           "version": "repo-lines-v1:sha256:72e3f3cbb57bcff12e05af8137fbb8eb104e54ef5a87338f60e62beb0bb911be:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzJlM2YzY2JiNTdiY2ZmMTJlMDVhZjgxMzdmYmI4ZWIxMDRlNTRlZjVhODczMzhmNjBlNjJiZWIwYmI5MTFiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzJlM2YzY2JiNTdiY2ZmMTJlMDVhZjgxMzdmYmI4ZWIxMDRlNTRlZjVhODczMzhmNjBlNjJiZWIwYmI5MTFiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjhjYjMwZTFkNDVjZGRkOTI1YWZjZWQzYjYzYzg2MDI4NWEwZDU0ZDUxYWRmMDEzZmRiMmQyMjZlMTMxYzYwOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTU1ZjEzZjI0ODU5MjQyNjdjZWYxN2M4MDU5NTM0MjU5ZjU2OTcwODVjMDk1YzQ3Mjc1ZTFmMmU2YWZiZDc2NyJ9"
         },
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L57-L63",
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L52-L58",
           "version": "repo-lines-v1:sha256:e5b01f6058d159688dd6fe984a3cd9843b1c3faee8893cb5dc41e2e08b753e77:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTNlMzQ4MzIyYjUwNmIwMjVhYTY5YmU5MzVmNDQ3ZTlkZWViOThhMjI4NGE1MDA4MzM3YjI1NWUwZGFlNjlkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjU1ZDAzNjAxNzYwYmIyZjlhNDU5YTQyMTMzNWQxZjQ3ZmIwMTZiMDg1ZTU4MzkwMjA5ZDY2OTNkODc3MDRkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDU3MTU4NTFjZTg3NThiZTA1MmFiNTQxYzhmNmUyOWExNzBjOWQ3ZjRkODY3NGI4NzUyYjQ0ZTU2ZDA0NTQzNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGZmNDIxMjgwYmNhOWQ0Y2ZkNWRkMThmNTliYjY3NmQ1MzI4OTk2YWVhMjUyNmE1OTcwOGFjYTZlYjI2ZWI1NiJ9"
         }
       ]
@@ -21,7 +21,7 @@
       "statement": "Three binary data files (seas_18.se1, sepl_18.se1, semo_18.se1) covering years 1800-2399 are required and downloaded via 'nx run caelundas-cli:download-ephemeris' into data/ephemeris/.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L59-L60",
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L54-L55",
           "version": "repo-lines-v1:sha256:b775b23c28d25e720494b824889e476763f295ea0869137587676c2992232532:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODU1MmQ2MDEwYWNiZmIyZjY0YjJlMjI2ZWYwYTIzODA3Y2IzNDM1ODFlMWU5OGI0MWE3OGRjNjc3YThhNGQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjQ3Yzg0OWUyNjgxNDcwNTRiNmRiNTczNGIwMjU4ZDE5ZWRlMTcxNWEyNjEwYzBjZjhmZTkxYmZlYWQwZmFhZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2U3YjYyNTljZTU1NGZmYjNmYjA0MGU4ZTBmYjYyMzU0ZDVlMjJhOGExODIzOGM5N2JhZjM5NmYyOGRhNDY0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTQyM2IwNDgxMTQ4NzdkZjgyZTk1MzVmMWMyZmU0YmZhYzU2ZjEyMDA5ZTlmMWRlODY2ZmMzYjYyZjFkYjQ3ZSJ9"
         },
         {
@@ -40,7 +40,7 @@
       "evidence": [
         {
           "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.ts#L12-L14",
-          "version": "repo-lines-v1:sha256:c96d80a02a851ba6210739c23fb18dee17ba2e69c0b183a110e34729db7ac2e5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhlOTRlZGQyNWVkMzEzNTUxM2VmYzM2NWQ5N2MwY2RjMzMwNGI5MTQ2ZjAwNWU5MGQwYzdkY2E4YjNiY2UyMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE0YTRhODg1ZmFmMGUwZDE4NTU4MDVlNWQyY2ZiMDM0NGYyMzk4YmU5MDU4NGQ5MWU5YjA4YWUwOTUzYjI4OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDhhZWI0ZmRmZjE3YmNiODZkNjhiOGVhNTQyZTg2OWUzN2I1YTNmODc1OTk2NTAzOTBiN2UyOWUyMWFhMzIxZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzVlMDZiZDAyNGY4ZTE0NzA0MjdlMWQ5ZDIxMjI5ZTU4NGFiOWU2NjU3NzkwZDU4YjFjYzA4MWI5OTY1ZTkyYiJ9"
+          "version": "repo-lines-v1:sha256:1dfa2b72a272c072939f40a5ac2ddb40037ddfdd45ec761b1ca1d11729b27527:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhlOTRlZGQyNWVkMzEzNTUxM2VmYzM2NWQ5N2MwY2RjMzMwNGI5MTQ2ZjAwNWU5MGQwYzdkY2E4YjNiY2UyMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE0YTRhODg1ZmFmMGUwZDE4NTU4MDVlNWQyY2ZiMDM0NGYyMzk4YmU5MDU4NGQ5MWU5YjA4YWUwOTUzYjI4OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDhhZWI0ZmRmZjE3YmNiODZkNjhiOGVhNTQyZTg2OWUzN2I1YTNmODc1OTk2NTAzOTBiN2UyOWUyMWFhMzIxZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzVlMDZiZDAyNGY4ZTE0NzA0MjdlMWQ5ZDIxMjI5ZTU4NGFiOWU2NjU3NzkwZDU4YjFjYzA4MWI5OTY1ZTkyYiJ9"
         },
         {
           "resource": "repo://projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts#L39-L68",
@@ -105,7 +105,7 @@
       "statement": "Supported date range for user-facing operations is 1900-01-01 to 2100-12-31, validated at the input layer, while data files cover 1800-2399.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L52-L53",
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L47-L48",
           "version": "repo-lines-v1:sha256:d99d8834c420961676da05a4db82cfa73d628e333c54a011f796da5de740cb2a:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODE4ZTFlMTZjMmViOGYzZWM3YTcyZTk1Yzc5N2ZmNDA5ZTE5OWM4ZTUzNTk3Y2QwMzJkNzY0MWUwYTc4ZGRjNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzdmMWM3YTQzYzMyYWY2NzhkMjNhZmY4NWIyYjlkZjUwZTg0MzYwZTAxMTVlOGZmNzk3N2IyZTI0Y2JkYzIwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmU3NWRlOWU0MWQwOGEzZGQ5MmNlNzI4YWJmZmRiNThiNTc4ODFkYTY2YzI3YTM3YjkzZmY3NTIyOTA4NjMyZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDU3MTU4NTFjZTg3NThiZTA1MmFiNTQxYzhmNmUyOWExNzBjOWQ3ZjRkODY3NGI4NzUyYjQ0ZTU2ZDA0NTQzNSJ9"
         },
         {
@@ -137,6 +137,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-26T01:23:39.729Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }

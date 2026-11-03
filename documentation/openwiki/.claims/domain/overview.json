@@ -1,106 +1,214 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:6e08dd0a7297509c68bbe8b5cff7c98dcedfb0ca330b5763132e4a04c6b973d5",
+  "pageVersion": "sha256:f4dc1d07fc741b2c0ab8081f70773229871cf10a999872177dad1ef3ad906fca",
   "claims": [
     {
-      "id": "claim_2323e6c9c74349b7a506df7bf1e0dad1",
-      "statement": "The repository contains four independent application domains: affirmancy, caelundas, lexico, and meanderaw, which share common infrastructure but are otherwise decoupled with no cross-domain imports.",
+      "id": "claim_6bbbc02c97d043bcb9c92633b73e7cdd",
+      "statement": "The repository contains four independent application domains: affirmancy (Python/Jupyter), caelundas (NestJS CLI + TanStack Start), lexico (NestJS CLI + GraphQL API + TanStack Start), and meanderaw (NestJS CLI + TanStack Start).",
       "evidence": [
         {
-          "resource": "repo://README.md#L102-L185",
-          "version": "repo-lines-v1:sha256:06c1745d0104744f43d9dd5eb92762ac51b35078a759489fff0b648f5c2d402c:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlNGFiNmQwN2FiMTg0ZTg0MDE0OGNiZGIwNDFiZjcxZjE3NzE3N2VhOTE0ZmE3ZDc2ODE5MjU4ZjcyNzIyYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzNzdjMDk2ZmU0MGZhN2IzYTUzNDk5OGVjNmU2YjhmY2Q4NGVjMDFiMGM0MDBhMmE0ZDEwY2JlYTBhNzhmOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNjNjg0MWRmYzg4OGNiMjE3MGFmOTk0NjE3ZjBiMjYwY2RhMjY5MGIzZDQzZjczZTRjOGUzMTk3MTQ1MTAzZjYifQ"
-        },
-        {
-          "resource": "repo://projects/affirmancy/README.md#L1-L70",
-          "version": "repo-lines-v1:sha256:d42df5518ad25fad5a160896fa7cf4a8b9914af09302c1c9e1be9e4820cda643:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNDA1ZWU2MjRmODVhNjQ1MmIyMTI3YWExYmNjYjMzYjFjOGNiYjRhMTFiMWYxNDM4NTAzNGM4YzRlNDYwNGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyZDI1YjNmM2I5NTJhMDZhZTExNzdlYTAxYWVmYmM0ZWRjOWMwZGEyZTg5MTE1ZWJiYmQ0ZWIyYTk0MzM2YzgifQ"
-        },
-        {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L1-L100",
-          "version": "repo-lines-v1:sha256:fff6f3dbaa870f7fa884e4f20f90877822cd1efbfea1292e50fce7aeaac8c2c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhOTJiODg5OTYzMjhkNTBkMjgyYzk5ZDQ3YzY1NjVlOWQwZTJjNDJjYTgwNjU0YTQ1MTNiYWRjMGI0NzE4NTM1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiNDA4MTNiN2JlNWUwZmQwNjIyZTQyZGI0MDIxNzVkZmExYTk0NmFhMjMzZGFiZmY4NTIzOWY5YWNmOWNkOTRiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmODY2ZDkzOGQ4NTUyMzc3NzVmMzE4MjQzZmUwYWZhZjE3YmI1OGQ1NzJlZmNlMjk2Y2JhYjczYTRjNWEyMGNiIn0"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-cli/README.md#L1-L100",
-          "version": "repo-lines-v1:sha256:df894a90066faa9d88383620b1de864ebb75b7e2ecdf2d9a9ab54db04febeb45:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkOTViNjg2NmRiOTMwNjQ3YTBmZTZkOTA2YTA5NTI1YTA5NDVjY2FmZTM3NTdhNmM1ZDI5OWI2NTA5NzY4NzE2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTBjYThmMTkwMDVlMmJkMzQyNmFiMGFlNDg0MzVlOWM0YmU0ZGY0YzEwYTQwYWY5YzJlMzg2YzQzY2YzN2VhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI2NGFlYTczZDkyZmMxNGZiM2RjM2JlNTZiMTM4NTNiNmM5ZmVjOTY2NWM2ZGZkYjcyNGM5MmVlOWY2M2ZkOTBiIn0"
-        },
-        {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L1-L100",
-          "version": "repo-lines-v1:sha256:e8c721457ef97f4d9b1631fa1b5229867994b7971cb4f502f9a9b27f2d286995:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkYjRhYzI1ZDg5MjJlMmIxMmI2YjIwNjQ5ZGNkYjRiMjBmZDE3NGFkZDM0MDY2YmFlNmNhNzNlN2FkYTBhOTRkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNGNkNjNlNGY2OWE2M2ZhNDIxZWIyZGRjMDlkZTExZGI5ODc3MzM2NzEwNWI1N2YzYTY1MjU4ODgxNjY0MjU4IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzNTIzZWI5MWRjMmYzNzVmMWJkNDVmZGVkOTE3ZWEwYTVmZmRjYTk5M2VmZmJlYWQyMzMxNWQ3NTlkYWVhZjQ4In0"
+          "resource": "repo://README.md#L130-L212",
+          "version": "repo-lines-v1:sha256:b9707bdcd5de3aaa7a64bf86980424e3f2e698dd5d1195c5f2a882a7aa507524:eyJzZWxlY3RlZExpbmVDb3VudCI6ODMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlNGFiNmQwN2FiMTg0ZTg0MDE0OGNiZGIwNDFiZjcxZjE3NzE3N2VhOTE0ZmE3ZDc2ODE5MjU4ZjcyNzIyYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiYzBiMjI5ZmM0ZTc1ZWE0NzViZTM0MzZlZWIyYzllYjRlMzBmMTI4OTc0MjE0OWFiNTAyY2RiYTA5MzgwNmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzNzdjMDk2ZmU0MGZhN2IzYTUzNDk5OGVjNmU2YjhmY2Q4NGVjMDFiMGM0MDBhMmE0ZDEwY2JlYTBhNzhmOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQzMzJjMTlmYzQ3NDZhZWEwMTA3ZjExMmYyMzI3ODIzOWExYzQ5MjU2MGNjNzIyNWI2OTYxOGI3MjhmMDE5NzEifQ"
         }
       ]
     },
     {
-      "id": "claim_c3cc5272917341558591b266e20be6e4",
-      "statement": "affirmancy is a Python/Jupyter application using LangChain, LangGraph, and Ollama (gemma4:e2b) with SearxNG metasearch to generate structured affirmations across grammatical moods, voices, tenses, aspects, persons, numbers, polarities, and deixis, outputting JSON and Markdown.",
+      "id": "claim_3d52ae2f1f4847acbeca7da6a31457b5",
+      "statement": "Three TypeScript domains (caelundas, lexico, meanderaw) share common infrastructure via @codebase/* packages (persistence, interface, presentation, observability), while affirmancy is a Python application with its own uv workspace and local LLM stack (Ollama, SearxNG).",
       "evidence": [
         {
-          "resource": "repo://projects/affirmancy/README.md#L1-L70",
-          "version": "repo-lines-v1:sha256:d42df5518ad25fad5a160896fa7cf4a8b9914af09302c1c9e1be9e4820cda643:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNDA1ZWU2MjRmODVhNjQ1MmIyMTI3YWExYmNjYjMzYjFjOGNiYjRhMTFiMWYxNDM4NTAzNGM4YzRlNDYwNGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyZDI1YjNmM2I5NTJhMDZhZTExNzdlYTAxYWVmYmM0ZWRjOWMwZGEyZTg5MTE1ZWJiYmQ0ZWIyYTk0MzM2YzgifQ"
-        },
-        {
-          "resource": "repo://projects/affirmancy/README.md#L72-L99",
-          "version": "repo-lines-v1:sha256:bb52eca941fa0b6e0284979e3d4428c735d8d39541181ae9b217fdbd2ede6ad0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiNzQ3MGY5MmJlNzJlZTFlNWMxYTUyNGM0MGUzZDM2M2JlOWY1MzI1ZjJjZjgxODk5NGFlNzMxNzdmZDZhZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5MzNlM2I5ODRjNDY5YmJhYWE4YmRiMWZhYzllMWRhY2IxYzQwNGQ0ODk5YTllMjU0ZDRmZDJkZTk1YjQ0OGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwZGFmOTVhMzNhMDMwZTJlY2Y5ZTc2NzkxZTg4NDk2ODhhNTE3ZDAyYTM2YTk3ZGYzODAyYjhjN2VkODQ5Y2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1OWQ4MTU4OGEzNGE0MTljMTVjOGZhZWQyYjQxNzc2NmQyN2M1NzNlNWUwYjBiYzJmNjNkZTkzNjY0OWIyNjAifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_00d0eeec83bc4458b5951581f5c064d7",
-      "statement": "caelundas is a TypeScript NestJS CLI + TanStack Start web application that computes planetary positions via Swiss Ephemeris (JPL DE431), detects astronomical events in two passes (perfective and progressive), stores them in Postgres, and renders .ics calendar and JSON output.",
-      "evidence": [
-        {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L1-L90",
-          "version": "repo-lines-v1:sha256:66a688371c60b879633e0e674e791800c98990dfd77f7fbbead25ed1735a4ef0:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5MmI4ODk5NjMyOGQ1MGQyODJjOTlkNDdjNjU2NWU5ZDBlMmM0MmNhODA2NTRhNDUxM2JhZGMwYjQ3MTg1MzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3ZWJhYzNmZTM1ZjE1ZmEyZmJhOTk0NWM4MjJkYWE4NDk0YWVmYzkzM2ZjYmM2OGFhMmMwN2UxZTFjNWJkMTYifQ"
-        },
-        {
-          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L90-L200",
-          "version": "repo-lines-v1:sha256:6cc58a00cd4624194aaef8ba1708eb765cb5ae4071b6260b0975a847ce86a162:eyJzZWxlY3RlZExpbmVDb3VudCI6MTExLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzMDJiZmQwMjliNTEyMTUzYmYyNzg5MzAwNGFiMWM4NmYyMzI0YWZjNjhkZTcxMmEyYmViNjNjZDBjMjM2NzdkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4NjFlZDQ1NjhlYWU3NDAzYjQwMjYwMWM0MzhiYTg1MGRhODg1ZTQ0NTQwMTY3OTQ5NjNiN2YzYWFlZWE5ZDEzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5YjllMmVkOTExZDBiY2MyM2UxNTM1Yzk3NGIyNjg3ZTZkNWU5Nzk1YzA4ZTg0Y2I4YzQ3OTllODAyNmZkMjMyIn0"
-        }
-      ]
-    },
-    {
-      "id": "claim_42941c9ca99d4d7f8d42a81a466f7a61",
-      "statement": "lexico is a TypeScript Latin-English dictionary suite with three components: lexico-cli (NestJS CLI for multi-source ingestion from Lewis & Short, Perseus, Latin Library, CSEL, EDCS, Wiktionary), lexico-api (NestJS GraphQL API with Relay cursor-based search), and lexico-web (TanStack Start SSR), all sharing a Postgres schema defined by lexico-entities.",
-      "evidence": [
-        {
-          "resource": "repo://README.md#L170-L178",
-          "version": "repo-lines-v1:sha256:b333d4a3f8f71c5772d932e9dbdb0b2291a3bc2c62265216ff670160898d14f6:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmFlYTA1NjllMmI3NWFmYTQ4NWEwNjFlYTg5OTU0MzdlZjhlNzdmNzQ2NzQ3ZmY3MWI4MTBhZGQyYTgyYjdkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzBkNWUwMTg5MjhhZGNhNjM0NDFkMzU3Yjc0NWEyODc0OGQxYzMzZTZkMzUyMDAwNDU3MjAzY2ZlMjUxMGQyMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZThhYjE5MWJjNGE5ZjAxN2IzYmYyNjRiNGI2ZmZhN2M0YjMxNjRiMWFjMjM1ZTcyNjczYWMxNzNiMjViZjU1NCJ9"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-cli/README.md#L1-L90",
-          "version": "repo-lines-v1:sha256:67291bbd14ced308b72932858a1cb457af88f9aa132dab6d882da9f42f3a35f3:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NWI2ODY2ZGI5MzA2NDdhMGZlNmQ5MDZhMDk1MjVhMDk0NWNjYWZlMzc1N2E2YzVkMjk5YjY1MDk3Njg3MTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4OTgxMzAxZTYzYmEwYjljNTRmOGVhZDdhMTUxMTc4NDY1Y2IzZGMzYjM4YjVlZmMzZTg0NTE5ZWU0ODJkNTAifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_a476e63cf0b24c069f3bd6619d4ea5af",
-      "statement": "meanderaw is a TypeScript NestJS CLI + TanStack Start web application that enumerates Greek meander patterns via lattice-based enumeration (30,279 enumerated meanders), measures topological characteristics in a sparse JSONB column, preserves 965 historical corpus meanders beyond the edge budget, and renders HTML pattern pages from reproducible Code-addressed rows.",
-      "evidence": [
-        {
-          "resource": "repo://README.md#L179-L185",
-          "version": "repo-lines-v1:sha256:d9d20ad2781a4f1b12183484d03ebd957c95a0a9a32c79467a0911645038c8b1:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2FhZjI0Mzk0MjdkYThiOGI5NTA5Yjc5NTc0NTU5ZWUyNmE3YjQ0MGQyYjA3YTY3MTNkZWY2OTkzOWU1MTdjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzNjZDZkYmE4ZmZiYTI1NTQ2YmU1MGE5Zjc4ZGUxNTA3Y2VlNDk3MjQ0MGRiOTg5Y2RkZTg0NDBkOGEyY2ZkNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2M2ODQxZGZjODg4Y2IyMTcwYWY5OTQ2MTdmMGIyNjBjZGEyNjkwYjNkNDNmNzNlNGM4ZTMxOTcxNDUxMDNmNiJ9"
-        },
-        {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L1-L100",
-          "version": "repo-lines-v1:sha256:e8c721457ef97f4d9b1631fa1b5229867994b7971cb4f502f9a9b27f2d286995:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkYjRhYzI1ZDg5MjJlMmIxMmI2YjIwNjQ5ZGNkYjRiMjBmZDE3NGFkZDM0MDY2YmFlNmNhNzNlN2FkYTBhOTRkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNGNkNjNlNGY2OWE2M2ZhNDIxZWIyZGRjMDlkZTExZGI5ODc3MzM2NzEwNWI1N2YzYTY1MjU4ODgxNjY0MjU4IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzNTIzZWI5MWRjMmYzNzVmMWJkNDVmZGVkOTE3ZWEwYTVmZmRjYTk5M2VmZmJlYWQyMzMxNWQ3NTlkYWVhZjQ4In0"
-        },
-        {
-          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L100-L200",
-          "version": "repo-lines-v1:sha256:c8f8a77a713e9ae46a4c9717dac710aa2ede7f6a6b211addd9cb17092c79ba36:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmNGNkNjNlNGY2OWE2M2ZhNDIxZWIyZGRjMDlkZTExZGI5ODc3MzM2NzEwNWI1N2YzYTY1MjU4ODgxNjY0MjU4IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIyODEyNjkxMjEwMDQ0OTBlZjUyNjlhNTExYTk1OWU5ODZlODFhYmEzYzg5NWQ4MWNhYTQwZmY4NDJmNWIxYTA0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI5ZTgzMDZhNGU1MzM1MDUwYjQ3YWI2Mzg1NzJkZDU3NDkwMTBjOTEzNzJkODhmYzcwZTVjMzBhYTM4ODg0Zjg0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJjZDJhZmE0OWRiYjBjYzM5ZWJlOTgxOWU2MzczNjYzYjgwM2FkMDBkMzMyYWVkN2U2NjQyMzJhZDI3MDI0NjNmIn0"
-        }
-      ]
-    },
-    {
-      "id": "claim_b7a7c7879df4447d9a564b7b7635d1ec",
-      "statement": "All four domains share common infrastructure packages: @codebase/persistence (Postgres connection fragments, TypeORM, migrations, export/import), @codebase/interface (GraphQL Relay types, entity-to-GraphQL contract), @codebase/presentation (React components with shadcn/ui), and @codebase/observability (pino-backed NestJS logging).",
-      "evidence": [
-        {
-          "resource": "repo://README.md#L186-L193",
+          "resource": "repo://README.md#L214-L221",
           "version": "repo-lines-v1:sha256:f95648a8be0917cfa27759a6e41d9c2a8b93dac6a32ca006f3077ff67187736a:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODc4Y2M3NGVhYjQ5Y2VlNGUwYjhiMzIwMWI1OWFkZTRjZGU4YmFiYWY0MTU2Y2JmMmRhMWY3M2I1YzBkYjUxZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODA0ODJiZmY0NmYxYTg5ZWZhODAzY2ZiYjc3ZTI3MWZlYTA4Y2JkYWRiMGRlNjcxZGI0M2NjMmUxODRlNDk3ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDQxN2Y2MmEyZjFhM2U5MWNhYTg1OGI4MThlZmQ0NzY5MzA0MmQ0MjRhMDYzNmFiYjhjMDY1ZTNhYjhmYjI3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDQyNjQ2MGIyYWNiNGU4N2E1YWI2NzAyMDM1ZGEwODlkY2M2NmIwNWUwZDY0NGMxMDg3OTA0M2QwODI1ZTI2ZCJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/README.md#L26-L33",
+          "version": "repo-lines-v1:sha256:14fd5c8f4a118dd7fe9e10921a3f8c210524d33e8388f3a6c44e979c2abb6292:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjI1ZGE0OTVjMzhmNDkwNmEwODI1NzNmMjQ5OTFlYjZmNmQ0YjgyNjIxYTYxN2E0ZGQwM2UzMDQyMWVjYTZkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTY4MTczMjY0YTFiODZjMmUxZWZjZmIxNmE1OTY5NGI0Yjg5ZTE1YmE4YmQ4OGY5MjQ2YzNlNTVlN2Y1MzlkZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzIxMDZkYThkNTg1YmJjNjcxNmViMWUzMTU3NWRjZjcwMmMxZDYyZGNhMjRlNWQzYmU2ZGJhOTdmZTk3ZDc5NiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_152fd03a784d40f89302953d40cc7a1e",
+      "statement": "affirmancy generates structured affirmations using a LangGraph ReAct agent that researches via SearxNG and writes with a local Ollama model (gemma4:e2b), validated against Pydantic models and saved as JSON/Markdown.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/README.md#L35-L49",
+          "version": "repo-lines-v1:sha256:b71098e5ced017daf542f1a863735b3902309fdde2351510e3d92ad1801b440a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhYjRmODE0ZjU1YjUwOWY0M2I4ZDBjYzg0OWRlZDk5OTcxMTE0NzMxMzRjZmUyYzg2YjE2ZmYxZjc3ZTVlNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZTI0NzdmZjVkY2EzMzMzNDJkNjhmYTUxMTZhMjU0N2ZhOTEzMGI4M2QzNDUwZjFmNjYwOTY4YzIzMDVhMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwMjRmNTQ4Y2RmZjBjMTM3MWZkMTcyYWRkYjFkZTI4MzkyMzNkYjQwY2Y2MWM2ZWU0ZTAzMzY2YjljZjIzYzIifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/README.md#L5-L9",
+          "version": "repo-lines-v1:sha256:02b794708b75e83b88d3780bc3e372537197883f84a6733a612b8974cc50722c:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2RjODFhM2VmMDI2MzYzNTI1MWVmZDBlNGZlYTAwZjhhYmU2MjE2OGUxZDIyYjgyMTEzYjAyYjI1YzZmYzVmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODNhZTAyMzhmZjRkNDQwNDY2MTBhOTRjMjFhYWY1OTQxOTc2OWFmMDgxN2Q5ZGNhOTMxMzIxYjcyNWY1NzZlNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzU0YmNmYzNhYjIzNDc3YTQyZGE0OWNkOTFjYzc0MGE2ZmExMTkwZWU2M2U3MmYwODJkNjMyNzJkNjUwOTgzNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMThlNTQ5YzQ3MjUzNzIzZWFiN2UzNjI1MjZlYjcwNTIzZjM3ZTBiODk4ZDRiNzE5NDQ2NTU2ZTBhNWU5ZDA1MiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b2ca28adca5246109aaaacd16b427d85",
+      "statement": "affirmancy's grammar-first pipeline enumerates moods, voices, tenses, aspects, persons, numbers, polarities, and deixis across subject categories spanning tarot, Lenormand, astrology, chakras, runes, sephiroth, Hebrew letters, kabbalistic worlds, solfeggio frequencies, weekdays, and elements.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/README.md#L11-L14",
+          "version": "repo-lines-v1:sha256:28046c941c8ae9a5ce6fe1ea8f15e06f02cdb398d72adcf982090fbdde4ac223:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIzOTkzNjc0MDNjZjcxMzdhNjhiMjZhZTM5ZjUwMzNiNDI1MTA0ZTExZTE1YWNhYTM4ZDU1MTUxOTFkMTlhMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2EwOGNkYTc1MGJkNjRmOThmYTdmY2MwMTU2MGU5YWQ3ZjQxYjcyNzc1NDY0NDhlNzVmZjQ3OWVlM2MzZDI1YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDZmYTQ0MmFhNTMwNWQzNWNmMDg5MTE2ZmUxNWM5M2Y1NmYxZTI5MWM4MDYwM2QxYjJmMWU0YjFkOTlkYzIxNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmIxMzQ4NmM1NGMwZjdiMGVjOGMxNzdjOWY0NzdhNmE3Y2YyYzJmZDBmNzU0MmViYmFjNmEzNzMwZGRjNDc2ZCJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/README.md#L72-L79",
+          "version": "repo-lines-v1:sha256:e37bf9f080a240f24ad3bdd8fcf172a376222531d49b5858c1a644b38ec49dd6:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2I3NDcwZjkyYmU3MmVlMWU1YzFhNTI0YzQwZTNkMzYzYmU5ZjUzMjVmMmNmODE4OTk0YWU3MzE3N2ZkNmFlZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTBkYWY5NWEzM2EwMzBlMmVjZjllNzY3OTFlODg0OTY4OGE1MTdkMDJhMzZhOTdkZjM4MDJiOGM3ZWQ4NDljYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjRlZjdmZjFlODhjODQ5ODk5OGNiNWVlZGNkZmQ2MjVmZjUxYmQ5NDJiMGMyMmE4MjgwYzA0MjU1ZTI5NzMyZCJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/README.md#L85-L99",
+          "version": "repo-lines-v1:sha256:71cbf11a00368fda941ce4a3a370c14c068932cf23e14c48fb9ed67b6bb8582b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwOWE1OWM4NDA2NjkxMjAwYTJlMzJlMzc1ZTdmOGJkZDI5OTU1OTU3NDJiNDE4YTU1OTY2NTY5MmFiODg1NzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5MzNlM2I5ODRjNDY5YmJhYWE4YmRiMWZhYzllMWRhY2IxYzQwNGQ0ODk5YTllMjU0ZDRmZDJkZTk1YjQ0OGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxMTU0ZjVlMjA3YzFhZmRmZDc0OTRjYmVhYTgxMjBiOTM5MzQ2Y2QyMzk4MmIwMGVjYWViZTc3MzY0NDFlYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1OWQ4MTU4OGEzNGE0MTljMTVjOGZhZWQyYjQxNzc2NmQyN2M1NzNlNWUwYjBiYzJmNjNkZTkzNjY0OWIyNjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_daa8bc4024794d5baf89fcbdc41a1215",
+      "statement": "caelundas computes planetary positions minute-by-minute using Swiss Ephemeris (JPL DE431), detects events via perfective (exact moments) and progressive (spans) passes, stores in SQLite, and renders .ics and JSON.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L5-L10",
+          "version": "repo-lines-v1:sha256:62e646dd1d50946d5d24d8a096bcb3c29fc6ded821fbf323289b8df59855c0ae:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODAyYThkYzFlNWY1NDhlZmU4MzZiMTQzMDE0ODJhNmQwZWYxODk0M2FhNzE5YzMzNTA3MDdjMDZmMzY3MzgwNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQ3YTQyMmQ1ZTA2ZDVlZTQ1ZDA1OGFkNDkwNmE1ZTU3ODAzOTRmMTJjMDUxMDc5MzBiZmJmNTg4MjZhNTFhMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDcyNzQwYTA3ZTE1ZDEwMTQ3NzMyNjYzYTZmODBmZWE5MGZlZjcxNWUzYmZmOThjYzhkYjllZTk0YzBkNmIyYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWFiODhkOWY3MDVlNzc2MjVkZjk2OGUwNGM5ODYxNDhlOTM1NWNkNmI4OGMyOTgyOTU3MWE4ZmM3M2VkZjlkZSJ9"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L62-L71",
+          "version": "repo-lines-v1:sha256:8e3750ee3acac2d122aa002e69922bc4b4d8e537fd6aa41b896f53145f080289:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyZWNhNjhlMGU2MDFhYzFiZDlkMjg1NjQzNTBiYmY2ZGIyOWViNzFjMmExMmM1YmUzNDM0M2U1MzRiZDBjMmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmZjQyMTI4MGJjYTlkNGNmZDVkZDE4ZjU5YmI2NzZkNTMyODk5NmFlYTI1MjZhNTk3MDhhY2E2ZWIyNmViNTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0NDZlZGNhYzc3Njg5MjI2ZGEzNjY3YjhmODA4YWI5OGEyYWE1MTUyNzFhYWY0YTYxNTgyNGMxMzRlZmY1YjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a0f1c81fdf81473ba65a952fdd17834d",
+      "statement": "caelundas derives timezone automatically from observer coordinates, supports comprehensive event families (aspects, lunar phases, planetary phases, eclipses, retrogrades, ingresses, solar cycle, lunar apsides, daily cycles, twilights), and uses idempotent upserts on (summary, start, latitude, longitude).",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L169-L193",
+          "version": "repo-lines-v1:sha256:48dbb395246798b86d4c8e681ffeb9443e8213abca240def01348110c7b67477:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZGYzNzFhZjMxNTE5MTE5ODZjM2ZiYWVmNGIyNWJlMWVjZTVhNWM2OGU1MmU1YmVmZWUzODMxMDdiMTQwNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ZjZjMWYyZjc3NjYxNWRjOWUyNWM3MmE1MGY5NzdlYTJjODUzZTI1YWI5MDdkZGYzZDg2YTM0Zjg2MmEyOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3MzZiNjcwMWI3OTMzODQ3NWQ4ZGQxZTZkZjNjYzM5NGQ5ZTc2Y2ZiMjFiZmYyZTYzN2I4MTY1N2RlOGUzNzYifQ"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L45-L48",
+          "version": "repo-lines-v1:sha256:aa1fee3809a997d553b1e751068de997d4f113ea319cad8b2fb8e49ea35ab018:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmQyMTEzNDY4NjU1OTk0ODVlYTdhZGI0ZWE0NThkNWJmMzE3MThjYjg0Y2JkYWM2OGJmOGQ2OTY2NTgwOWRmMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzdmMWM3YTQzYzMyYWY2NzhkMjNhZmY4NWIyYjlkZjUwZTg0MzYwZTAxMTVlOGZmNzk3N2IyZTI0Y2JkYzIwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2U1MTFjMGQ5YTYyMDhjMjdjMDdhOWIwZjY5MDZjZjE0M2U4OTk3YWIxNGI0MjFiNDlkM2I3MjQyYzg3Yjk4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDU3MTU4NTFjZTg3NThiZTA1MmFiNTQxYzhmNmUyOWExNzBjOWQ3ZjRkODY3NGI4NzUyYjQ0ZTU2ZDA0NTQzNSJ9"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L72-L85",
+          "version": "repo-lines-v1:sha256:bebebba568c1e79653ae4933b8be466f1ee71cd4025acc1bd1cf3e1fe7750b79:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3MzcyNGE4ODIwZTQyOTRhZGQ5OTJhMmU1ZjRmMWZlMTZlYWFlNzBhN2NkMDZlMTE1NTUyNGE3ZmQ0ZjNiZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkOWJjMjk1YWJmNzc3YWYzODFkMTY2NDU3MDUwMjBkYmM3YTNlYzNhNmQyYjczMDM2YjE3MGU0YzlmYmViNDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3ZWJhYzNmZTM1ZjE1ZmEyZmJhOTk0NWM4MjJkYWE4NDk0YWVmYzkzM2ZjYmM2OGFhMmMwN2UxZTFjNWJkMTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_934011787da74cadb785d950f0ab4aa1",
+      "statement": "lexico ingests from multiple Latin sources (Lewis & Short, Perseus, Latin Library, CSEL, EDCS, Wiktionary) via resumable stages with --startLemma/--endLemma flags, shares schema via @codebase/lexico-entities, and exposes data through a GraphQL API with Relay cursor-based search.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L202-L205",
+          "version": "repo-lines-v1:sha256:dc1dd35bc9e824903e485a836a1a85f4e965e5d1a976bd4264c3578548e9ad47:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODBhYWM5NjMxMDllZTlmMDZlYzFiZmJlMTNhY2YwZmIxN2RmMWEwYTRjZTI0YjQ2YjI0MDA5MzhjZjlmMjliMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTAyZGQyMmY2NjU4M2E4N2M2ZjViOThiMTA0ZjUxZTE4MTI5YzY1YjlmYTQzOTc3NDMxMmU0MmQ3NjAyYjEwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWYxYmNjNzRiZTNjZWE3NjcxMzc4YjYwMTJhZGQ3OGNhZDhlNDY4YzE5ZTBjOGM2MmEzNTVlMDQyMmFmZDViNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzNmNDY2Y2NmMWZmYjlmZWVkNjlkYTY2NDEwNzRhZDg0Nzk0Nzg3OWVhYzA3NDQ4ZGJmMjdiNjkyOGEyMDMwZiJ9"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/README.md#L52-L54",
+          "version": "repo-lines-v1:sha256:8e1d7a405c9eae5426f7bb0de6231e577c74936f4423053b3dd0a20b2e9c0699:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2UwMWI2ZmFjMDg1YzY4MTc5Mzg4NzAxMWMyOTExZmRlOWViNTg0OTkzNzQ4YmFkODg4NDhkMGMyNTBkYjAwYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzYxMmRhZmUzODBlZDA5MmQ5MzdkNmY3ZDBiNjViMjcxMjQxMjQ0ZGYxZGMxMzhkOTNjYTQwMTc0MTE2YzU3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjIyNGExZTU5ZGJhY2VmMzA2ODQ3ODk1ODg0NDNkMGM4ZDdmZDM2NTY4NmZkOWEwYWFmN2VkNTgyZGMwOWI0ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2ExNGY3ODNiYmJhMjFmNGFlZGRjYjE0OWE0OTQ3ZjNjZTM4ZDgxMTk4ZjRmNTgzZGRmOTA3NjlmZTZkOTM5ZiJ9"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/README.md#L81-L90",
+          "version": "repo-lines-v1:sha256:63590fc7a45a3b97078a4e1ae30fd5cc2829784dc9683887d84e5b90b7b82bd0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4MTk2NGQ2NTZjNjMyZTRlNzQ3Y2NkNmFjZGIwYzhkN2I5ZmEyOTIwYjQ0MmVkMGJjNTM1ODViOTRkN2ZhOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4OTgxMzAxZTYzYmEwYjljNTRmOGVhZDdhMTUxMTc4NDY1Y2IzZGMzYjM4YjVlZmMzZTg0NTE5ZWU0ODJkNTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0f5dc763fe4a4313bee719bc317a262f",
+      "statement": "meanderaw enumerates structurally distinct meanders via lattice-based direction-bit assignment (30,279 at 14 shapes), preserves 965 historical corpus meanders beyond the edge budget, stores sparse JSON characteristics in a single jsonb column, and renders HTML pattern pages from reproducible Code-addressed rows.",
+      "evidence": [
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L105-L113",
+          "version": "repo-lines-v1:sha256:70b36cc6108b6557dc22b9c9b00057733e9df6e702ea96dde14a6da2096a9187:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGE3ODFjNjA2MmI5ZjEyNmFmYWI2MjhiMTgwOTIyNzEzYThmYTdmNDIxYmVmZjFhYWZhODkwZmQwNWE2ZTY5NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTI4NjUxYmIwNjk4OWIzNDI3YjBiNTljODliYzVjMjA3ZDJlMzEzNDIxOGNiNGNlMzcxZWNkNDVjZjIwNzgxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjk2ZGI5YjgyMTcwODMwZmNlZGM5NWRmZWE3MGU5YzU2ZTYzMzQ1NDVmYmQ1NWU5MDc2OTU4M2E3NmM1N2MzMCJ9"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L113-L118",
+          "version": "repo-lines-v1:sha256:378787a67149fbe117f2a8f5cc705c1d213f434f616690712a1719f2a5d42a10:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTYwNmVhMWRhMDM3Y2RkN2ViMTIxM2VjMmNmOGQ5NWZhMjBjNTM3NjU2NGM2ZTFkM2IyYzQzMTkwMzdkYjc1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTUzOWZhNDJkOTE4NDQ4ZTc4NGRkMGU4MGYwYTZkZGE3NTBiODEzYTA0OWRlMTIwMzI3M2QyNDUwMTkwZWZmYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWUwMDc1MWM0ZjYwNTVmNjJlYWNjNWJmN2MzNjUyZGQ3MTA0MGE2NjBmYzFhYTY3MGM4NTY2YTVmZWFhZTNiZiJ9"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L136-L152",
+          "version": "repo-lines-v1:sha256:a6eb768a0423abf7b200ad58ccffd88be1acba7247e36d7eefbb0d83dedbd11b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyOWVkZWI3OGI5YWU1M2I3Mzg2OTZhMTA4MjMxM2Q0MmIxNWQ2ZjA1MjU2YTQ4OWQwMWFhM2NiNTU5ZmY2MTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmMTZlNzE0ZGJiMjAxODdhNmZmYjdkMjliYzEyNmY5OGYzMjhhNTNjNjNiODk5Njc0Njg5ZTQ3MmJlZDdjMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzMTYxNmZmZTI1ZjRlZTFhMWUwYjY1MTJkMDZmMDVjMjU2Yjc4NzJiYjM3NWY4MjBkNWJlZjFhY2YxMWQ5ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlODU4ZGQyYWZjYjk1NjczNmM1YTQ5YzRkY2QwYjY5OTdkMWNhZmQ0NjllNzYxMDlmOTVkMzAzMzVlNmMzYTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_15a4a372b74b4f9aa9cd525b033d9470",
+      "statement": "The @codebase/persistence package provides Postgres environment schemas (<PROJECT>_POSTGRES_*), TypeORM modules, base entities (uuidv7, timestamps, soft delete), Testcontainers harness, and migration targets; it also provides SQLite equivalents for caelundas.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L22-L33",
+          "version": "repo-lines-v1:sha256:760d5faae19c80b9dfb9bf7a68b6bc2a564508587fddbd2499a25b51effa6d25:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZGI3YjgxZTZmNjAzN2E3NGI5NWJlYmU4YzUzYWU2NWQ0NGE4ZmZmNDY1NzljMGVhYWJiMTM5ZTQzODBkNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiNTEyZTc3YzY5Njk4OTdhMWZkZDRmNGVlMmFlNTM4M2YwNTZhODBiMjNiY2U0NjQzYjg1Zjg3NjA0YjEyYmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3NTBjOGM3MDBhNTM5ZTg4OWYyZWNlNzM4OTQ1ODQxODA2M2Y3N2E4ZmE3MzhlZTAwYmViZGNhMmY2OGJhNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzMTYxMzMwMDllMmZjMjI1ZGViMDVlMGIwOTdlYjM4Yzg3OTc0YjU5M2FjYmUxMmMzNDc5ZGY3YjIzYmYxYmIifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/README.md#L34-L43",
+          "version": "repo-lines-v1:sha256:cd1386f774dc9e2997365da2393ef18a891fa9992aae6e8af1efc03fcbb3f5b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwMzI2ODlhNDM1MzdkM2VjZDBkYmJmZTE2YTcyODBhNDU4OTMxZDYzMTYzMjQyOWVjZWFlNzA5NjRiNjI1ZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwMDgwYzIxNjA1NDY3N2UwMDlkOGMzNWYzYWFiZjk0YWE2YmVhZWViMmE1ZWYwMmRiZmVmMjE3YWUwMjZmMzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4M2M1YzczMzk1Njk0ZGJiMjY2MDFiZGRkNzY2ZGUxNmU4YTc5ZTEyMzIwZjcyM2UwYjRiNDBkMGZjOTNkMmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1MTkwYmIxNDY4YTMxNTM4YTE5YTg5MWQ4NDUyZTM3YWNiYmQzZjA1MTFlNDM4NWVhMTAwNjgxOGI1MWY1ZjkifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/README.md#L46-L53",
+          "version": "repo-lines-v1:sha256:f661b08df0a38ad88a431efec89af26ebc837445098717a4e638fe66f2daf336:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDc2MjU0ZmFkMWE2Y2FkZTI1YzcxZjMwZWM3MjUzMjI1NjNjZjE2OWQ1MGQzYmIzNTdmMzRhZGJhZDUzYWZlYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWFjNTM0MDk3YWVkMjFjNzYxNzc1NTE2MmVkMTkwZDQ1NWE2NzdhODE1MjQ3NzhhYmQ0MGI1NzI2NzA2MzljZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8e6de97606144639bc1370ddbf9d3fcd",
+      "statement": "PostgreSQL naming convention: local Docker uses <project>_development database, <project> schema, <project>_username role; Testcontainers uses <project>_testing database with same schema and role.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L46-L53",
+          "version": "repo-lines-v1:sha256:f661b08df0a38ad88a431efec89af26ebc837445098717a4e638fe66f2daf336:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDc2MjU0ZmFkMWE2Y2FkZTI1YzcxZjMwZWM3MjUzMjI1NjNjZjE2OWQ1MGQzYmIzNTdmMzRhZGJhZDUzYWZlYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWFjNTM0MDk3YWVkMjFjNzYxNzc1NTE2MmVkMTkwZDQ1NWE2NzdhODE1MjQ3NzhhYmQ0MGI1NzI2NzA2MzljZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e31e95ee1fc148b9b56d8164148a06f4",
+      "statement": "affirmancy entry points: nx run affirmancy:ollama --configuration=start (Ollama), nx run infrastructure:searxng:up (SearxNG), nx run infrastructure:open-webui:up (Open WebUI), src/affirmancy.ipynb (main pipeline).",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/README.md#L35-L49",
+          "version": "repo-lines-v1:sha256:b71098e5ced017daf542f1a863735b3902309fdde2351510e3d92ad1801b440a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhYjRmODE0ZjU1YjUwOWY0M2I4ZDBjYzg0OWRlZDk5OTcxMTE0NzMxMzRjZmUyYzg2YjE2ZmYxZjc3ZTVlNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZTI0NzdmZjVkY2EzMzMzNDJkNjhmYTUxMTZhMjU0N2ZhOTEzMGI4M2QzNDUwZjFmNjYwOTY4YzIzMDVhMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwMjRmNTQ4Y2RmZjBjMTM3MWZkMTcyYWRkYjFkZTI4MzkyMzNkYjQwY2Y2MWM2ZWU0ZTAzMzY2YjljZjIzYzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2713a8a394864eb6aed95284669b7d96",
+      "statement": "caelundas entry points: nx run caelundas-cli:download-ephemeris (ephemeris data), nx run caelundas-cli:start (calendar generation via .env config).",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L14-L23",
+          "version": "repo-lines-v1:sha256:47c4cfb391961672ed64c174ef13fd9b10d7a1734d94045f222cbff5f988a5da:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkZTJmNTMyOGVlNmU4MDUwZThhYWZkOGRjODY5YTA2OWNkOTU4NGVkYWFmNTRmZTU4OWQ3M2MzYjdkY2Q3OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhYjg4ZDlmNzA1ZTc3NjI1ZGY5NjhlMDRjOTg2MTQ4ZTkzNTVjZDZiODhjMjk4Mjk1NzFhOGZjNzNlZGY5ZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxNTYwNDI2NjVmMmFlOGVmMWQzYWI0ZDU1N2MwYjVhYjQyYzYxYzM2OThmNzhlZGRiZGYzOTNhODgyYzI2NzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_466347fddffe40d684ab5edcf5640d50",
+      "statement": "lexico entry points: nx run lexico-cli:start (root pipeline), nx run lexico-cli:start:dictionary (with lemma range), nx run lexico-cli:start:wiktionary, nx run lexico-api:start (GraphQL API), nx run lexico-web:dev (web app).",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-cli/README.md#L101-L102",
+          "version": "repo-lines-v1:sha256:3b5cd21038973cc1a32a3d49edd4f32edaa7e6830f8a71b0b95575153db87be6:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGRjZjJjYTE4ZmI4OTE2MDU3YWJmN2YxOTNlY2EyMTQyOTEyMTdiYzI4NGRkYWQzMzUzMTAxNDI2ZTA2ODc4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjYwZmVhOWIwMmUxYmQ1YzE2YThjMDAxYjk2YjFkNTY3YjBiODU5MGVjYzFkOTk3NGYyMTY4NDg1NWExYzIxZCJ9"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/README.md#L32-L50",
+          "version": "repo-lines-v1:sha256:465835699fb11bc6394ae98e3fdf7a5696725e64ad397132027c8bdb05fb1c20:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjYjJkMTk4YTEwNjI2NGFlNDM2Mjc0YTc2OWJhMjIzNTU1ZmE0ODU1ODFkNWEwYzkzNDk0NGE0ZWM5NmZjNjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmYzhjNWFkNGE1MzM4NWEzMjMxOGJhZmI2ZWJhMzNkNGY5Y2M4NjNmNDY5MWM0NDE1NDUyNjljYmJhODZiYWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyOTNlNDQ0YTU3OWY3YjI5YjliYjc3OTBhN2I5OTQxNDdjY2QxNmFmMjVjODA0Y2U2YjUyYzg5ZWEyNjhjYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmYzIyMDBiM2M4YzA1ZWE4ZmE4YzE4YjljZThhY2Y3NzhiNmM0OGU0NWQ4NjI3ZTJhNGU3NTdmNGE4MjAwNjMifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/README.md#L8-L13",
+          "version": "repo-lines-v1:sha256:81118239b9c460a0558bf78c177d1d890e6b36c3a6382896b53dfd864abfa04a:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjI5YTQ5MDBlMjkyYzQ1NTRhNDA1OWI5ZGQxOGY5NjVjODFjMmYxZTEyZmM0OGU4NjgyYWUzMjYzMDI5Y2JiNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGNhOWM3ZDA2MmM4NGQ1ZTQyY2YxMTg3M2UzOWRhM2Q5YzhkYjE4MDI5OWQwMWU1MzFkYjg5YzYwNTFiOTAwYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmY0NDRhMDk2YjA2OWYyNmFjMzJkZjY4NDI5MzcwOWM3ZTE2MjU1ZWY1MzU1NWY5ODBjYzlmNTliODk3MjEyZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_081aba3f87f4405e864723d75011e21b",
+      "statement": "meanderaw entry points: nx run meanderaw-cli:migration:run (builds meanders table), nx run meanderaw-cli:start (full enumeration), nx run meanderaw-cli:start --args=\"--rows <n> --columns <n> --code <code>\" (single meander).",
+      "evidence": [
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L1-L7",
+          "version": "repo-lines-v1:sha256:1567a6555563e05a221f2cff6efe64b7f6c8316b1f7e31551bbd25d9e79b1667:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI0YWMyNWQ4OTIyZTJiMTJiNmIyMDY0OWRjZGI0YjIwZmQxNzRhZGQzNDA2NmJhZTZjYTczZTdhZGEwYTk0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWQ0YTY1OTA3MTY2MmM4YjM2NzEzYjMwNjZiYWU4ZmRkOGE0ZWY4OWQ2M2FhZGVlZWFmNDQ4OWYwMWRmYjg2MyJ9"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L34-L45",
+          "version": "repo-lines-v1:sha256:a6baa713d3184003031fc5bbe060b827708a317d690e2e5fe87641f294bb6201:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlZjkwMTY5YzE5NDgxYmU2ZTJiMTFjMWYyODM1MDNkNTFiZGZmMGY1ZDU1YTI3YjllNjkwNDdmZWM2MmI2NjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyMWFiYzZhMmFlMTljOTg2ZTYwZGM0Yjg3MjhmYzcxOGM3ODUyMGJhYmRjMGM0MDg4ZGY1MjQyNTJkMzc4MDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkYzQ1NDM1NTUyZjMwZmU1NjEyMjc4OWVmMjExODk4YWNhYmRlOTQzZTA5NDM0NjJiNDljNGE1ZmU1YWU2N2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUyZThlN2RmMGY3YTFhMjliNzRiNjdiNmU1NjQxMDgyOTY3OWMxZjZjNzMyMDlmOTY5NDFlOThmNDgxNzdjNGMifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-24T21:02:40.299Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }

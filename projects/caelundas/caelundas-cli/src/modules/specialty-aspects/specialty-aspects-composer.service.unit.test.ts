@@ -9,12 +9,11 @@ import { EphemerisService } from "../ephemeris/ephemeris.service";
 
 import { SpecialtyAspectsComposerService } from "./specialty-aspects-composer.service";
 
-import type { LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 describe(SpecialtyAspectsComposerService, () => {
   let service: SpecialtyAspectsComposerService;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<SpecialtyAspectsComposerService>["logger"];
 
   const testingModuleOptions = {
     providers: [

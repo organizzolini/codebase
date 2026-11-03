@@ -1,12 +1,12 @@
 import type { DeletableType } from "./deletable.entities";
 import type { GraphQLFields } from "@codebase/interface";
-import type { DeletableEntity } from "@codebase/persistence";
+import type { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 /**
  * Copies the shared base columns every soft-deletable entity exposes.
  */
 export function toDeletableFields(
-  entity: DeletableEntity,
+  entity: PostgresqlDeletableEntity,
 ): GraphQLFields<DeletableType> {
   return {
     createdAt: entity.createdAt,
