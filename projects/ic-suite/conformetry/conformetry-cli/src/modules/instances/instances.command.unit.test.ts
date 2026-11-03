@@ -5,15 +5,13 @@ import { InventoryService } from "@conformetry/output";
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { captureExitCode } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InstancesCommand } from "./instances.command";
 
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { InventoriedInstance } from "@conformetry/core";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
@@ -67,7 +65,7 @@ const written = (): string => output.join("\n");
 describe(InstancesCommand, () => {
   let command: InstancesCommand;
   let configurationService: DeepMocked<ConfigurationService>;
-  let commandLogger: DeepMocked<LoggerService>;
+  let commandLogger: BuiltTestingModule<InstancesCommand>["logger"];
 
   let readExitCode: ReturnType<typeof captureExitCode>;
 

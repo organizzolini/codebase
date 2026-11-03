@@ -1,6 +1,6 @@
 import { Column, Entity, Index } from "typeorm";
 
-import { UpdatableEntity } from "@codebase/persistence";
+import { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 import { BIGINT_NUMBER_TRANSFORMER } from "../database.constants";
 
@@ -11,7 +11,7 @@ import type { StoredCharacteristics } from "../../characteristics/characteristic
  * `MEANDERAW_POSTGRES_SCHEMA` names (`meanderaw` unless set): a single
  * meander addressed by its Code, decoded and rendered by the generic
  * pipeline. Its `id`, which the database assigns as a
- * `uuidv7()`, and its audit columns come from {@link UpdatableEntity}.
+ * `uuidv7()`, and its audit columns come from {@link PostgresqlUpdatableEntity}.
  *
  * `code` is unbounded text, because the widest full Codes outgrow
  * the 255-byte filesystem path component a file per Code once needed.
@@ -35,7 +35,7 @@ import type { StoredCharacteristics } from "../../characteristics/characteristic
 @Entity({ name: "meanders" })
 @Index(["code"], { unique: true })
 @Index(["rows", "columns", "code"])
-export class Meander extends UpdatableEntity {
+export class Meander extends PostgresqlUpdatableEntity {
   /**
    * Every Characteristic the meander has, as one sparse JSON object: see
    * {@link StoredCharacteristics}. A numeric key holds its nonzero value, and

@@ -2,10 +2,8 @@ import { createMock } from "@golevelup/ts-vitest";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CalendarEventsService } from "../calendar-events/calendar-events.service";
 import { CalendarService } from "../calendar/calendar.service";

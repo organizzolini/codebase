@@ -11,11 +11,9 @@ import {
   vi,
 } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -23,7 +21,7 @@ import { SynchronizationService } from "../synchronization/synchronization.servi
 import { ProjectPortsCommand } from "./project-ports.command";
 import { ProjectPortsService } from "./project-ports.service";
 
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const moduleOptions = {
   providers: [ProjectPortsService, SynchronizationService],
@@ -31,7 +29,7 @@ const moduleOptions = {
 
 describe(ProjectPortsCommand, () => {
   let command: ProjectPortsCommand;
-  let sharedLogger: LoggerService;
+  let sharedLogger: BuiltTestingModule<unknown>["logger"];
   let root: string;
 
   /** Writes a file under the fixture workspace, creating its directories. */

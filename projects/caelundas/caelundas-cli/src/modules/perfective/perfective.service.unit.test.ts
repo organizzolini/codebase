@@ -25,8 +25,7 @@ import type {
   MercurianPhaseEventArguments,
   VenusianPhaseEventArguments,
 } from "../phases/phases.types";
-import type { LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Moment } from "moment-timezone";
 
 const baseInput: Input = {
@@ -46,7 +45,7 @@ const emptyEphemerides = {
 
 describe(PerfectiveService, () => {
   let service: PerfectiveService;
-  let mockLoggerService: DeepMocked<LoggerService>;
+  let mockLoggerService: BuiltTestingModule<PerfectiveService>["logger"];
 
   const datetimeMock = {
     generateDates:

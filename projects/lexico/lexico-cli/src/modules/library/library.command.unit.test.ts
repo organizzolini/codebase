@@ -5,11 +5,9 @@ import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { createTemporaryDirectory, promptsMock } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   resetCommandTestHarness,
@@ -22,6 +20,7 @@ import { LIBRARY_PROVIDERS_TOKEN } from "./library.constants";
 
 import type { LibrarySourceProvider } from "./library.types";
 import type { Author } from "@codebase/lexico-entities";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 
 const { appendFileMock, mkdirMock, readdirMock } = vi.hoisted(() => ({
@@ -59,7 +58,7 @@ function createProviders(): LibrarySourceProvider[] {
 
 describe(LibraryCommand, () => {
   let command: LibraryCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<LibraryCommand>["logger"];
   let providerPerseus: LibrarySourceProvider;
   let providers: LibrarySourceProvider[];
 

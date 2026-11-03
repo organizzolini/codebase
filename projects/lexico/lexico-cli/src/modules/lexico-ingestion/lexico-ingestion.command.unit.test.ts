@@ -1,11 +1,9 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { promptsMock } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CorpusScriptorumEcclesiasticorumLatinorumCommand } from "../corpus-scriptorum-ecclesiasticorum-latinorum/corpus-scriptorum-ecclesiasticorum-latinorum.command";
 import { DictionaryCommand } from "../dictionary/dictionary.command";
@@ -19,7 +17,7 @@ import { WiktionaryCommand } from "../wiktionary/wiktionary.command";
 import { LexicoIngestionCommand } from "./lexico-ingestion.command";
 
 import type { LexicoIngestionCommandOptions } from "./lexico-ingestion.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 
 vi.mock("prompts", () => ({
@@ -28,7 +26,7 @@ vi.mock("prompts", () => ({
 
 describe(LexicoIngestionCommand, () => {
   let command: LexicoIngestionCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<LexicoIngestionCommand>["logger"];
   let corpusScriptorumEcclesiasticorumLatinorumCommand: DeepMocked<CorpusScriptorumEcclesiasticorumLatinorumCommand>;
   let dictionaryCommand: DeepMocked<DictionaryCommand>;
   let epigraphikDatenbankClaussSlabyCommand: DeepMocked<EpigraphikDatenbankClaussSlabyCommand>;

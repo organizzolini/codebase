@@ -1,10 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { ConformetryGeneratorsCommand } from "../conformetry-generators/conformetry-generators.command";
@@ -22,7 +20,7 @@ import { SynchronizationCommand } from "./synchronization.command";
 import { SynchronizationService } from "./synchronization.service";
 
 import type { SynchronizableCommand } from "./synchronization.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const moduleOptions = {
   providers: [
@@ -96,7 +94,7 @@ describe(SynchronizationCommand, () => {
   let conventionalConfig: ConventionalConfigCommand;
   let devcontainerConfiguration: DevcontainerConfigurationCommand;
   let installedSkills: InstalledSkillsCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let packageManifests: PackageManifestsCommand;
   let pullRequestLabels: PullRequestLabelsCommand;
   let pullRequestTemplate: PullRequestTemplateCommand;

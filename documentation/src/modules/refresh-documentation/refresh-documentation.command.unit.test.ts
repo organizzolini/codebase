@@ -1,10 +1,8 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RefreshDocumentationCommand } from "./refresh-documentation.command";
 import { RefreshDocumentationService } from "./refresh-documentation.service";

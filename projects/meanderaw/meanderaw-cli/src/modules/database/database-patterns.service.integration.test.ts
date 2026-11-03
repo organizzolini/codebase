@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
-} from "@codebase/testing/postgres";
+} from "@codebase/persistence/testing";
 
 import { meanderRecord } from "../../../testing/meanders";
 

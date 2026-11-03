@@ -17,11 +17,9 @@ import {
   vi,
 } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { captureExitCode, captureOutput } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildDiscoveredCallable } from "../../../testing/mocks";
 import { AddressLookupService } from "../address-lookup/address-lookup.service";

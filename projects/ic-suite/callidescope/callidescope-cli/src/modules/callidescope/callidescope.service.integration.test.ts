@@ -19,8 +19,7 @@ import { CallidescopeService } from "./callidescope.service";
 
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 import type { CallGraphResult } from "@callidescope/core";
-import type { LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 /** A workspace file no traced project sits beside, so none is skipped as the run's own. */
 const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
@@ -410,7 +409,7 @@ async function writeTestFile(workspaceRoot: string): Promise<void> {
 describe(`${CallidescopeService.name} (integration)`, () => {
   let result: CallGraphResult;
   let frames: string[];
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let service: CallidescopeService;
   let tracedWorkspaceRoot: string;
 

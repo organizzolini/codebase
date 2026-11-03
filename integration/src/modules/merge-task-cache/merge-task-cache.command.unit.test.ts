@@ -5,10 +5,8 @@ import { DatabaseSync } from "node:sqlite";
 import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   createTaskDatabaseWorkspace,

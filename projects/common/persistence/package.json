@@ -5,7 +5,10 @@
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
+    "@nestjs/testing": "catalog:",
     "@nestjs/typeorm": "catalog:",
+    "@testcontainers/postgresql": "catalog:",
+    "better-sqlite3": "catalog:",
     "nest-commander": "catalog:",
     "pg": "catalog:",
     "reflect-metadata": "catalog:",
@@ -16,11 +19,11 @@
   },
   "devDependencies": {
     "@golevelup/ts-vitest": "catalog:",
-    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc-node/register": "catalog:",
     "@swc/core": "catalog:",
     "@swc/helpers": "catalog:",
+    "@types/better-sqlite3": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "typescript": "catalog:",
@@ -28,6 +31,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./testing": "./testing/index.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -43,6 +47,10 @@
       ".": {
         "default": "./dist/src/index.js",
         "types": "./dist/src/index.d.ts"
+      },
+      "./testing": {
+        "default": "./dist/testing/index.js",
+        "types": "./dist/testing/index.d.ts"
       },
       "./package.json": "./package.json"
     },

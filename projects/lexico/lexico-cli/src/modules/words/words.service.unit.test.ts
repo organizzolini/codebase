@@ -9,17 +9,15 @@ import {
   WordForm,
   WordLexeme,
 } from "@codebase/lexico-entities";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { LEXICO_INGESTION_BY_ID } from "../lexico-ingestion/lexico-ingestion.constants";
 
 import { WordsService } from "./words.service";
 
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { Provider } from "@nestjs/common";
 import type { InsertResult, Repository } from "typeorm";
@@ -29,7 +27,7 @@ describe(WordsService, () => {
   let wordRepository: DeepMocked<Repository<Word>>;
   let wordLexemeRepository: DeepMocked<Repository<WordLexeme>>;
   let wordFormRepository: DeepMocked<Repository<WordForm>>;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<WordsService>["logger"];
 
   const mockInsertResult: InsertResult = {
     generatedMaps: [],

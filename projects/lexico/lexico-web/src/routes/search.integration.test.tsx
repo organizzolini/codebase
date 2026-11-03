@@ -4,7 +4,7 @@ import { fireEvent, screen } from "@testing-library/react";
 import { HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { graphqlMockServer } from "@codebase/testing/graphql";
+import { graphqlMockServer } from "@codebase/interface/testing";
 import { renderRoute } from "@codebase/testing/react";
 
 import {

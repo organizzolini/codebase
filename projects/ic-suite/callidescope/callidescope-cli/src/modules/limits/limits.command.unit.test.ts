@@ -8,19 +8,19 @@ import {
 import { ProgramConfigurationError } from "@callidescope/graph";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { captureExitCode, captureOutput } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LimitsCommand } from "./limits.command";
 import { LimitsService } from "./limits.service";
 import { RenderLimitsService } from "./render-limits.service";
 
-import type { LoggerService } from "@codebase/observability";
 import type { CapturedOutput } from "@codebase/testing";
-import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+import type {
+  BuiltTestingModule,
+  TestingModuleOptions,
+} from "@codebase/testing/nestjs";
 
 /** The workspace configuration every run must be pointed at with `--config`. */
 const CONFIGURATION_PATH = "callidescope.config.ts";
@@ -36,7 +36,7 @@ describe(LimitsCommand, () => {
   let exitCode: ReturnType<typeof captureExitCode>;
   let output: CapturedOutput;
   let limitsService: LimitsService;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let renderLimitsService: RenderLimitsService;
 
   beforeAll(async () => {

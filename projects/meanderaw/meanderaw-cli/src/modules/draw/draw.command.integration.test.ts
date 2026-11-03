@@ -13,7 +13,7 @@ import { LoggerService } from "@codebase/observability";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
-} from "@codebase/testing/postgres";
+} from "@codebase/persistence/testing";
 
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CodeModule } from "../code/code.module";

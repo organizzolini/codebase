@@ -12,15 +12,13 @@ import {
   vi,
 } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import {
   captureOutput,
   createTemporaryDirectory,
   overrideEnvironment,
 } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -38,7 +36,7 @@ import type {
   FakeProcessBehavior,
   FakeProcessRunner,
 } from "./installed-skills.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 /** The command's real services, over a mocked process runner. */
 const moduleOptions = {
@@ -67,7 +65,7 @@ describe(InstalledSkillsCommand, () => {
     behavior: FakeProcessBehavior = {},
   ): Promise<{
     command: InstalledSkillsCommand;
-    logger: LoggerService;
+    logger: BuiltTestingModule<unknown>["logger"];
     runner: FakeProcessRunner;
   }> => {
     const runner = createFakeProcessRunner(workspace, behavior);

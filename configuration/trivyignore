@@ -2,3 +2,8 @@
 # Add Trivy CVE IDs for known false positives (one per line)
 # Format: CVE-YYYY-NNNNN or GHSA-xxxx-xxxx-xxxx
 # Use with caution: only ignore verified false positives after investigation
+
+# AVD IDs for misconfigurations that are intentional
+# GIT-0001: the codebase repository is public on purpose, and
+# infrastructure/terraform/github declares it as such
+GIT-0001

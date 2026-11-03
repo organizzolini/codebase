@@ -9,10 +9,8 @@ import {
   vi,
 } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TaskDatabaseService } from "../task-database/task-database.service";
 

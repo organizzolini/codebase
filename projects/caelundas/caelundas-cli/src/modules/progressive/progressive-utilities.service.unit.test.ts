@@ -6,12 +6,11 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { ProgressiveUtilitiesService } from "./progressive-utilities.service";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
-import type { LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 describe(ProgressiveUtilitiesService, () => {
   let service: ProgressiveUtilitiesService;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<ProgressiveUtilitiesService>["logger"];
 
   const createEvent = (iso: string): DetectedCalendarEvent => ({
     description: "Event",

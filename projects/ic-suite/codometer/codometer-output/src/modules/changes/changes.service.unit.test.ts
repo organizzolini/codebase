@@ -4,11 +4,9 @@ import path from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { createTemporaryDirectory } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ChangesService } from "./changes.service";
 

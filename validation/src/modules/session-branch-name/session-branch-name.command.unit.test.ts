@@ -3,15 +3,13 @@ import path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import {
   captureExitCode,
   captureOutput,
   createTemporaryDirectory,
 } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SessionBranchNameGitService } from "./session-branch-name-git.service";
 import { SessionBranchNameCommand } from "./session-branch-name.command";

@@ -1,17 +1,15 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { overrideEnvironment } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueLabelsGithubService } from "./issue-labels-github.service";
 import { IssueLabelsCommand } from "./issue-labels.command";
 import { IssueLabelsService } from "./issue-labels.service";
 
 import type { GithubCliResult } from "./issue-labels.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 /** A `gh` call that ran and worked. */
 const succeeded: GithubCliResult = {
@@ -37,7 +35,7 @@ const moduleOptions = {
 describe(IssueLabelsCommand, () => {
   let command: IssueLabelsCommand;
   let githubService: IssueLabelsGithubService;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   beforeAll(async () => {
     const built = await buildTestingModule(IssueLabelsCommand, moduleOptions);

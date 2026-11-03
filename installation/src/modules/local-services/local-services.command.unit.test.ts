@@ -1,9 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LocalServicesCommand } from "./local-services.command";
 import { LocalServicesService } from "./local-services.service";

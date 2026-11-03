@@ -3,10 +3,8 @@ import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -17,8 +15,6 @@ import {
   VSCODE_MACHINE_SETTINGS_FILE,
   VSCODE_WORKSPACE_SETTINGS_FILE,
 } from "./vscode-settings.constants";
-
-import type { LoggerService } from "@codebase/observability";
 
 const fileContents = new Map<string, string>();
 
@@ -45,9 +41,11 @@ vi.mock("node:fs", () => {
 
 const moduleOptions = { providers: [SynchronizationService] };
 
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+
 describe(VscodeSettingsCommand, () => {
   let command: VscodeSettingsCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   const workspaceFile = path.join(
     process.cwd(),

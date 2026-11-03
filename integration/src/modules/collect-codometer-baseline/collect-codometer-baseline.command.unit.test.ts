@@ -1,9 +1,7 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CollectCodometerBaselineCommand } from "./collect-codometer-baseline.command";
 import { CollectCodometerBaselineService } from "./collect-codometer-baseline.service";

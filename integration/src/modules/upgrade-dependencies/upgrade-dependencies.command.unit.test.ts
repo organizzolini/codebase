@@ -8,10 +8,8 @@ import {
   vi,
 } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { UpgradeDependenciesCommand } from "./upgrade-dependencies.command";
 import { UPGRADE_STEPS } from "./upgrade-dependencies.constants";

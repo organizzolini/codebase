@@ -5,13 +5,13 @@ import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { toCursor } from "@codebase/interface";
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
 import {
   expectedPage,
   type PageRequest,
   paginationMatrix,
   summarize,
-} from "@codebase/testing/graphql";
+} from "@codebase/interface/testing";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
@@ -22,7 +22,7 @@ import { LiteratureRelationsService } from "./literature-relations.service";
 import { createEmptyConnection } from "./literature.utilities";
 
 import type { Connection } from "@codebase/interface";
-import type { DatabaseTestingModule } from "@codebase/testing/postgres";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** Each boundary matrix issues a few hundred statements, which a slow runner needs time for. */
 const MATRIX_TIMEOUT_MILLISECONDS = 120_000;

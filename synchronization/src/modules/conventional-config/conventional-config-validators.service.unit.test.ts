@@ -8,7 +8,7 @@ import { ConventionalConfigIoService } from "./conventional-config-io.service";
 import { ConventionalConfigValidatorsService } from "./conventional-config-validators.service";
 
 import type { ConventionalConfig } from "./conventional-config.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const fileContents = new Map<string, string>();
 
@@ -28,7 +28,7 @@ const moduleOptions = { mocks: [ConventionalConfigIoService] };
 
 describe(ConventionalConfigValidatorsService, () => {
   let io: ConventionalConfigIoService;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let service: ConventionalConfigValidatorsService;
 
   const workspaceRoot = process.cwd();

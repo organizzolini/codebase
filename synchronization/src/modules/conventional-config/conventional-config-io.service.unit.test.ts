@@ -8,7 +8,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { ConventionalConfigIoService } from "./conventional-config-io.service";
 
 import type { ReleaseConfig, Type } from "./conventional-config.types";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const fileContents = new Map<string, string>();
 const requiredModules = new Map<string, unknown>();
@@ -45,7 +45,7 @@ vi.mock("node:module", () => {
 });
 
 describe(ConventionalConfigIoService, () => {
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let service: ConventionalConfigIoService;
 
   const workspaceRoot = process.cwd();

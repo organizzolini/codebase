@@ -3,9 +3,6 @@ type: Reference
 title: Development Workflow
 description: End-to-end development workflow covering the 8-step agent process, project-scoped work rules, Nx commands, code validation gates, pull request compliance, and integration procedures.
 tags: [workflow, agent, nx, validation, pull-request, testing, ci-cd]
-verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
 sources:
   - id: openwiki-source-328f959db511ad93fac4d300
     resource: repo://.agents/skills/brainstorming/SKILL.md

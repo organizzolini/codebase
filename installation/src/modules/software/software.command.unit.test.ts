@@ -4,10 +4,8 @@ import path from "node:path";
 import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { enterWorkspace } from "../../../testing/environment";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
@@ -46,6 +44,7 @@ const EVERY_COMMAND = [
   "gh",
   "helm",
   "kubectl",
+  "linode-cli",
   "squawk",
   "pg_dump",
 ];
@@ -213,6 +212,7 @@ describe(SoftwareCommand, () => {
         "brew install gh",
         "brew install helm",
         "brew install kubernetes-cli",
+        "brew install linode-cli",
         "pnpm add -g squawk-cli",
         "brew install postgresql@18",
         "brew link --force --overwrite postgresql@18",

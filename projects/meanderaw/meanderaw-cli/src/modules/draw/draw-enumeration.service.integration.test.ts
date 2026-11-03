@@ -4,7 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
-} from "@codebase/testing/postgres";
+} from "@codebase/persistence/testing";
 
 import {
   DRAW_TEST_EDGE_BUDGET,

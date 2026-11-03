@@ -5,11 +5,9 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Lexeme, Translation } from "@codebase/lexico-entities";
 import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { promptsMock } from "@codebase/testing";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   resetCommandTestHarness,
@@ -23,7 +21,7 @@ import { TranslationsService } from "../translations/translations.service";
 import { DictionaryCommand } from "./dictionary.command";
 
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { Provider } from "@nestjs/common";
 
 const {
@@ -74,7 +72,7 @@ describe(DictionaryCommand, () => {
   const manualService = {
     ingestManual: vi.fn<() => Promise<void>>(),
   };
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<DictionaryCommand>["logger"];
 
   const createProviders = (): Provider[] => [
     {

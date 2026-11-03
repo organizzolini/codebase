@@ -11,8 +11,7 @@ import {
 import { ReportFindingsService } from "./report-findings.service";
 
 import type { ReportFindingsArguments } from "./report-findings.types";
-import type { LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 /** A run mode with every gate off, so a test opts into the one it checks. */
 const CLEAN_MODE: ReportFindingsArguments["mode"] = {
@@ -24,7 +23,7 @@ const CLEAN_MODE: ReportFindingsArguments["mode"] = {
 
 describe(ReportFindingsService, () => {
   let exitCode: ReturnType<typeof captureExitCode>;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let service: ReportFindingsService;
 
   beforeAll(async () => {

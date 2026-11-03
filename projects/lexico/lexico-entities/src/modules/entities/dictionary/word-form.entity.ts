@@ -1,6 +1,6 @@
 import { Entity, Index, ManyToOne } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import { Form } from "./form/form.entity";
 
@@ -21,7 +21,7 @@ import type { Relation } from "typeorm";
   name: "word_forms",
 })
 @Index(["word", "form"], { unique: true })
-export class WordForm extends DeletableEntity {
+export class WordForm extends PostgresqlDeletableEntity {
   /** The morphological form side of the junction. Cascade-deletes with the Form. */
   @Index()
   @ManyToOne("Form", "wordForms", {

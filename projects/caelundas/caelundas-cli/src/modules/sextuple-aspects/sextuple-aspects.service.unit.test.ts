@@ -15,9 +15,7 @@ import { SextupleAspectsService } from "./sextuple-aspects.service";
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { Body } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
-import type { LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
-
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 /** Builds one hexagram boundary event for the shared progressive-step tests. */
 function buildHexagramBoundary(
   phase: "Dissolving" | "Forming",
@@ -76,7 +74,7 @@ const hexagram: Body[] = ["sun", "mars", "saturn", "moon", "venus", "jupiter"];
 
 describe(SextupleAspectsService, () => {
   let service: SextupleAspectsService;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<SextupleAspectsService>["logger"];
   let composerService: SextupleAspectsComposerService;
   let compoundPhaseService: CompoundPhaseService;
 

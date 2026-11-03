@@ -21,7 +21,7 @@ import type {
   LoadedCallidescopeConfiguration,
   ResolvedCallidescopeConfiguration,
 } from "@callidescope/configuration";
-import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { MockInstance } from "vitest";
 
 /** The workspace configuration `--config` must name. */
@@ -149,7 +149,7 @@ describe(LimitsService, () => {
       args: LoadConfigurationArguments,
     ) => Promise<LoadedCallidescopeConfiguration>
   >;
-  let logger: ReturnType<typeof createMock<LoggerService>>;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let service: LimitsService;
   let fileFilterService: ReturnType<typeof createMock<FileFilterService>>;
   let workspaceService: ReturnType<typeof createMock<WorkspaceService>>;

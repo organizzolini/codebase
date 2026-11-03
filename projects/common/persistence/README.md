@@ -1,13 +1,13 @@
 # 🐘 Persistence
 
-The shared Postgres package every database-backed project connects through, and a command line that moves tables between databases.
+The shared package every database-backed project connects through, to Postgres or to a SQLite file, and a command line that moves tables between Postgres databases.
 
 ## Purpose
 
-Lexico, meanderaw, and caelundas each keep their tables in Postgres. This
-package holds the one way they do it, so the environment variables, the
-connection options, and the naming of each project's database, schema, and
-role are written once:
+Lexico and meanderaw each keep their tables in Postgres, and caelundas writes
+a SQLite file, [below](#sqlite). This package holds the one way they connect,
+so the environment variables, the connection options, and the naming of each
+Postgres project's database, schema, and role are written once:
 
 | Context        | Database                | Schema      | Role                                        |
 | -------------- | ----------------------- | ----------- | ------------------------------------------- |
@@ -29,11 +29,17 @@ Key exports and responsibilities:
   variables through `ConfigService`
 - `createDataSource`: The `DataSource` a project's TypeORM command-line entry
   exports, from the same options
-- `IdentifiableEntity` …: Base entities: a `uuidv7()` id, then created,
+- `PostgresqlIdentifiableEntity` …: Base entities: a `uuidv7()` id, then created,
   updated, and soft-deleted columns
-- `startPostgresContainer`: From `@codebase/testing/postgres`: a migrated
+- `SqliteModule.forRoot`: The same for a SQLite file, from one
+  `<PROJECT>_SQLITE_DATABASE` variable; see [SQLite](#sqlite)
+- `createSqliteDataSource`, `sqliteEnvironmentSchema`: The SQLite twins of
+  `createDataSource` and `postgresEnvironmentSchema`
+- `SqliteIdentifiableEntity` …: The SQLite base entities: a `uuid` id the
+  application generates, and `datetime` columns
+- `startPostgresContainer`: From `@codebase/persistence/testing`: a migrated
   Postgres 18 container laid out like local Docker
-- `startDatabaseTestingModule`: From `@codebase/testing/postgres`: a Nest
+- `startDatabaseTestingModule`: From `@codebase/persistence/testing`: a Nest
   testing module connected to such a container
 
 ## Usage
@@ -105,12 +111,12 @@ snake case, as lexico does with its pluralizing strategy.
 Each table's entity extends the narrowest base it needs, so a table without
 soft deletion carries no `deletedAt`:
 
-| Base                 | Adds                                                                |
-| -------------------- | ------------------------------------------------------------------- |
-| `IdentifiableEntity` | `id`, a `uuid` the database assigns with Postgres 18's `uuidv7()`   |
-| `CreatableEntity`    | `createdAt` (`timestamptz`) and a nullable `createdBy` (`uuid`)     |
-| `UpdatableEntity`    | `updatedAt` (`timestamptz`) and a nullable `updatedBy` (`uuid`)     |
-| `DeletableEntity`    | `deletedAt` (`timestamptz`, soft delete) and a nullable `deletedBy` |
+| Base                           | Adds                                                                |
+| ------------------------------ | ------------------------------------------------------------------- |
+| `PostgresqlIdentifiableEntity` | `id`, a `uuid` the database assigns with Postgres 18's `uuidv7()`   |
+| `PostgresqlCreatableEntity`    | `createdAt` (`timestamptz`) and a nullable `createdBy` (`uuid`)     |
+| `PostgresqlUpdatableEntity`    | `updatedAt` (`timestamptz`) and a nullable `updatedBy` (`uuid`)     |
+| `PostgresqlDeletableEntity`    | `deletedAt` (`timestamptz`, soft delete) and a nullable `deletedBy` |
 
 They are plain TypeORM, with no GraphQL; a project that exposes them over
 GraphQL adds its `@Field` decorators in a thin layer of its own. Nothing
@@ -201,7 +207,7 @@ connected to it, the container's `<PROJECT>_POSTGRES_*` set on `process.env`
 over any already there:
 
 ```ts
-import { startDatabaseTestingModule } from "@codebase/testing/postgres";
+import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 const database = await startDatabaseTestingModule({
   entities: [Meander],
@@ -244,7 +250,7 @@ it as `database` too, or the testing module connects twice; `database` and
 `startPostgresContainer` alone suits a suite that needs no Nest module:
 
 ```ts
-import { startPostgresContainer } from "@codebase/testing/postgres";
+import { startPostgresContainer } from "@codebase/persistence/testing";
 
 const container = await startPostgresContainer({
   migrations: [InitialMigration1767225600000],
@@ -258,13 +264,73 @@ await container.stop();
 
 `connection` is the project's own role, never the container's admin login,
 and `environment` is the same connection as `<PROJECT>_POSTGRES_*` variables.
-Both helpers, and their types, come from the common testing package's
-`@codebase/testing/postgres` entry, so a consuming suite imports them from
-there rather than redeclaring them, as this package's own integration suites
-do. Docker must be running.
+Both helpers and their types are exported from
+`@codebase/persistence/testing`. Docker must be running.
 
 A project name must be lowercase letters, digits, and underscores, starting
 with a letter, so it can prefix a variable and name a database unquoted.
+
+## SQLite
+
+`SqliteModule.forRoot` connects a project to its own SQLite file through
+TypeORM's `better-sqlite3` driver, the way `PostgresqlModule.forRoot` connects
+one to Postgres: the options name the entities, and the file comes from the
+project's prefixed variable through `ConfigService`.
+
+```ts
+SqliteModule.forRoot({
+  entities: [CalendarEvent],
+  migrations: [CreateCalendarEvents1767225600000],
+  project: "caelundas",
+});
+```
+
+| Variable                    | Default            | Meaning                          |
+| --------------------------- | ------------------ | -------------------------------- |
+| `<PROJECT>_SQLITE_DATABASE` | `<project>.sqlite` | The database file, or `:memory:` |
+
+An unprefixed `SQLITE_DATABASE` is never read. Spread
+`sqliteEnvironmentSchema({ project })` into the application's environment
+schema, and export `createSqliteDataSource({ entities, migrations, project })`
+from a `data-source.constants.ts` for the TypeORM command line.
+
+### How SQLite differs from Postgres
+
+The options are shared (snake case, `synchronize` off, no logging); these are
+not:
+
+- **The folder is created on start**: `SqliteModule` and `createSqliteDataSource` make a file database's missing folders, so `output/database.sqlite` needs no `output/` first.
+- **Migrations run on start** when `forRoot` is given any. Postgres runs them
+  as their own step because several processes starting together would race on
+  one schema; a SQLite file has one writer. `createSqliteDataSource` still
+  never runs them.
+- **One writer.** better-sqlite3 is synchronous and holds one connection, so
+  keep a project's writes on the module's connection; a second one writing
+  waits `timeout` (5 s) and then fails with `SQLITE_BUSY`. Write-ahead logging
+  stays off, so a finished database is one file rather than three.
+- **No schema, role, or host.** The path is the whole connection, so there is
+  no search path to pin and no credentials to mask. TypeORM's driver turns
+  `PRAGMA foreign_keys` on itself.
+- **No native `uuid`, `timestamptz`, or `numeric`**, and TypeORM refuses
+  those column types at connect time. The Postgres base entities therefore
+  cannot be shared; the SQLite ones sit beside them. Store a decimal that must
+  survive exactly, such as a latitude or longitude, as `text`.
+- **No column comments**, so the SQLite entities carry none.
+- **Ids are version 4, not `uuidv7()`.** TypeORM reads a database-generated
+  key back only from `rowid`, so a text key with a SQL default throws on
+  `insert`. `SqliteIdentifiableEntity` uses `@PrimaryGeneratedColumn("uuid")`,
+  which TypeORM fills in the application on `save`, bulk `insert`, and
+  `upsert` alike, but which does not sort by insertion time. Without
+  `RETURNING`, TypeORM reads the new keys back with a select that answers in
+  key order, so a bulk `insert`'s `identifiers` are the new ids but not in the
+  order the rows were given: match rows by a natural key, never by position.
+- **Timestamps are `datetime`**: UTC text in `YYYY-MM-DD HH:MM:SS[.SSS]`
+  form, which is ISO 8601 with a space for the `T`, sorts as text, and is what
+  SQLite's date functions and TypeORM's own `CURRENT_TIMESTAMP` updates write.
+  An ISO string with `T` and `Z` would mix two formats in one column.
+  Properties stay `Date`.
+- **Partial indexes** take the same `WHERE` as Postgres, but write it as
+  SQLite does: no `::` casts, no `now()`, `1` and `0` for booleans.
 
 ## Moving data between databases
 
@@ -276,24 +342,23 @@ with the working directory at `projects/common/persistence`, so a relative `--fi
 resolves from there, and `*.dump` is gitignored there:
 
 ```bash
-pnpm exec nx run persistence:start:export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
-pnpm exec nx run persistence:start:import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
+pnpm exec nx run persistence:start:postgresql-export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
+pnpm exec nx run persistence:start:postgresql-import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
 ```
 
 ### Options
 
-| Option               | Command | Does                                                                              |
-| -------------------- | ------- | --------------------------------------------------------------------------------- |
-| `--source-uri <uri>` | export  | Required. The database to dump                                                    |
-| `--target-uri <uri>` | import  | Required. The database to restore into                                            |
-| `--table <name>`     | both    | Required, repeatable. A table to move                                             |
-| `--schema <name>`    | both    | The schema unqualified `--table` names resolve in, like `pg_dump --schema`        |
-| `--data`, `--ddl`    | both    | Rows, table definitions (DDL), or both; at least one is required                  |
-| `--file <path>`      | both    | Required. The dump to write or read                                               |
-| `--sqlite`           | export  | Write a SQLite file instead of a dump; `import` rejects it                        |
-| `--overwrite`        | export  | Replace `--file` when it exists                                                   |
-| `--clean`            | import  | Clear the selected tables before restoring, with no confirmation                  |
-| `--dry-run`          | both    | Validate and print the plan without connecting to a database or changing anything |
+| Option               | Command           | Does                                                                              |
+| -------------------- | ----------------- | --------------------------------------------------------------------------------- |
+| `--source-uri <uri>` | postgresql-export | Required. The database to dump                                                    |
+| `--target-uri <uri>` | postgresql-import | Required. The database to restore into                                            |
+| `--table <name>`     | both              | Required, repeatable. A table to move                                             |
+| `--schema <name>`    | both              | The schema unqualified `--table` names resolve in, like `pg_dump --schema`        |
+| `--data`, `--ddl`    | both              | Rows, table definitions (DDL), or both; at least one is required                  |
+| `--file <path>`      | both              | Required. The dump to write or read                                               |
+| `--overwrite`        | postgresql-export | Replace `--file` when it exists                                                   |
+| `--clean`            | postgresql-import | Clear the selected tables before restoring, with no confirmation                  |
+| `--dry-run`          | both              | Validate and print the plan without connecting to a database or changing anything |
 
 Qualified names (`schema.table`) are used as written. There is no default
 schema: without `--schema`, an unqualified `--table` fails before anything
@@ -301,8 +366,7 @@ runs, naming it. Naming one table twice moves it once.
 
 ### Export
 
-`export` writes a custom-format dump, or with `--sqlite` a SQLite file (see
-[Export to SQLite](#export-to-sqlite)). It passes
+`postgresql-export` writes a custom-format dump. It passes
 `--strict-names` to `pg_dump`, so a table that does not exist fails the run
 with a message naming it and the source, never a smaller dump. An existing
 `--file` is refused unless `--overwrite` is given.
@@ -313,58 +377,9 @@ and the partial file is removed. `--dry-run` still checks that `pg_dump` is
 installed, then prints the source database, what each table would export, and
 whether `--file` would be created or overwritten.
 
-### Export to SQLite
-
-`export --sqlite` writes the selected tables to a SQLite file through a
-separate service, `SqliteExportService`, that reads rows through the `pg`
-driver and writes them with `node:sqlite`. It never starts `pg_dump`, needs
-none of the PostgreSQL client tools, and adds no native SQLite dependency, so
-it runs anywhere Node 24 runs. `--source-uri`, `--table`, `--schema`,
-`--file`, `--overwrite`, and `--dry-run` mean what they mean for the default
-export, and the overwrite guard and the missing-table error behave as they do
-there; only `--dry-run` differs, in checking no client tool. The service
-names no table of its own, so any table in any schema can be exported:
-
-```bash
-pnpm exec nx run persistence:start:export --args="--sqlite --source-uri postgresql://user:password@localhost:5432/source --schema caelundas --table calendar_events --data --ddl --file events.sqlite"
-```
-
-`--ddl` writes each table's definition: its columns, `NOT NULL` where the
-source forbids null, and its primary key, which Postgres shows only for a
-table the role owns or can write to, so a read-only role gets none. `--data`
-writes its rows. A SQLite
-file cannot hold rows without their table, so `--data` alone still creates the
-tables, with the same definition. Indexes, foreign keys, defaults, and
-comments are not carried over; create what a reader needs afterwards. Each
-table takes its name without its schema, and two tables that would share a
-name fail the export. Every table is read from one snapshot, as `pg_dump`
-reads, through a cursor a thousand rows at a time, and written in one SQLite
-transaction, to a `.partial` file that replaces
-`--file` only once the export succeeds.
-
-Postgres column types become SQLite types a browser can query:
-
-| Postgres                                         | SQLite    | Stored as                           |
-| ------------------------------------------------ | --------- | ----------------------------------- |
-| `timestamptz`                                    | `TEXT`    | ISO 8601 in UTC, to the millisecond |
-| `date`                                           | `TEXT`    | `YYYY-MM-DD`                        |
-| `numeric`, `real`, `double precision`            | `REAL`    | A real number                       |
-| `smallint`, `integer`, `bigint`                  | `INTEGER` | The number, exactly                 |
-| `boolean`                                        | `INTEGER` | 0 or 1                              |
-| `text`, `character`, `character varying`, `uuid` | `TEXT`    | The text                            |
-| any array such as `text[]`, `json`, `jsonb`      | `TEXT`    | JSON text                           |
-
-A null stays null. A column of any other type fails the export before it
-writes anything, naming the column, its Postgres type, and the table, so
-nothing is silently dropped.
-
-`import` rejects `--sqlite` with a message that names the option, before any
-process starts or connection opens: nothing imports a SQLite file into
-Postgres, and the file extension is never checked.
-
 ### Import
 
-`import` restores the selected tables in one transaction that stops at the
+`postgresql-import` restores the selected tables in one transaction that stops at the
 first error, so by default it deletes nothing and a conflict leaves the target
 as it was. Before any connection opens it lists the dump and fails when it
 lacks the rows or definitions `--data` and `--ddl` ask for. Owners and
@@ -375,8 +390,8 @@ target.
 `--clean` would drop or truncate.
 
 `--clean` empties the selected tables first and never asks for confirmation,
-in a terminal or out of one. Run `import --dry-run` with the same options
-before `import --clean` to see the tables, database, and host it would clear:
+in a terminal or out of one. Run `postgresql-import --dry-run` with the same options
+before `postgresql-import --clean` to see the tables, database, and host it would clear:
 
 - With `--ddl`, `pg_restore --clean --if-exists` drops and recreates them.
 - With `--data` alone, a `TRUNCATE` on exactly the selected tables empties
@@ -392,8 +407,7 @@ sequences behind them.
 ### Requirements
 
 Both commands need the PostgreSQL 18 client tools, `pg_dump` for export and
-`pg_restore` for import, and check their version before any database work.
-The exception is `export --sqlite`, which needs none. A
+`pg_restore` for import, and check their version before any database work. A
 missing tool or another major version fails with the setup script to run:
 `scripts/local/software/persistence.sh` installs them with Homebrew, and the
 devcontainer installs them too.
@@ -453,17 +467,18 @@ graph LR
 ```mermaid
 flowchart LR
   DiscoveryModule
-  ExportModule
-  ImportModule
   LoggerModule([LoggerModule])
   MainModule
+  PostgresqlExportModule
+  PostgresqlImportModule
   PostgresqlModule
   PostgresqlUtilitiesModule
-  ExportModule --> PostgresqlUtilitiesModule
-  ImportModule --> PostgresqlUtilitiesModule
+  SqliteModule
   MainModule --> DiscoveryModule
-  MainModule --> ExportModule
-  MainModule --> ImportModule
+  MainModule --> PostgresqlExportModule
+  MainModule --> PostgresqlImportModule
+  PostgresqlExportModule --> PostgresqlUtilitiesModule
+  PostgresqlImportModule --> PostgresqlUtilitiesModule
 ```
 
 _Rounded modules are global: every module can inject them, so their edges are left out._
@@ -479,35 +494,35 @@ graph LR
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_index_ts["src/index.ts"]
-  file_src_modules_export_export_arguments_command_integration_test_ts["src/modules/export/export-arguments.command.integration.test.ts"]
-  file_src_modules_export_export_dry_run_command_integration_test_ts["src/modules/export/export-dry-run.command.integration.test.ts"]
-  file_src_modules_export_export_dry_run_command_unit_test_ts["src/modules/export/export-dry-run.command.unit.test.ts"]
-  file_src_modules_export_export_log_convention_command_unit_test_ts["src/modules/export/export-log-convention.command.unit.test.ts"]
-  file_src_modules_export_export_missing_table_command_integration_test_ts["src/modules/export/export-missing-table.command.integration.test.ts"]
-  file_src_modules_export_export_missing_table_command_unit_test_ts["src/modules/export/export-missing-table.command.unit.test.ts"]
-  file_src_modules_export_export_preflight_command_integration_test_ts["src/modules/export/export-preflight.command.integration.test.ts"]
-  file_src_modules_export_export_schema_command_unit_test_ts["src/modules/export/export-schema.command.unit.test.ts"]
-  file_src_modules_export_export_command_integration_test_ts["src/modules/export/export.command.integration.test.ts"]
-  file_src_modules_export_export_command_ts["src/modules/export/export.command.ts"]
-  file_src_modules_export_export_command_unit_test_ts["src/modules/export/export.command.unit.test.ts"]
-  file_src_modules_export_export_constants_ts["src/modules/export/export.constants.ts"]
-  file_src_modules_export_export_module_ts["src/modules/export/export.module.ts"]
-  file_src_modules_export_export_types_ts["src/modules/export/export.types.ts"]
-  file_src_modules_import_import_clean_data_command_integration_test_ts["src/modules/import/import-clean-data.command.integration.test.ts"]
-  file_src_modules_import_import_clean_data_command_unit_test_ts["src/modules/import/import-clean-data.command.unit.test.ts"]
-  file_src_modules_import_import_clean_command_integration_test_ts["src/modules/import/import-clean.command.integration.test.ts"]
-  file_src_modules_import_import_clean_command_unit_test_ts["src/modules/import/import-clean.command.unit.test.ts"]
-  file_src_modules_import_import_dry_run_command_integration_test_ts["src/modules/import/import-dry-run.command.integration.test.ts"]
-  file_src_modules_import_import_dry_run_command_unit_test_ts["src/modules/import/import-dry-run.command.unit.test.ts"]
-  file_src_modules_import_import_preflight_command_integration_test_ts["src/modules/import/import-preflight.command.integration.test.ts"]
-  file_src_modules_import_import_schema_command_integration_test_ts["src/modules/import/import-schema.command.integration.test.ts"]
-  file_src_modules_import_import_schema_command_unit_test_ts["src/modules/import/import-schema.command.unit.test.ts"]
-  file_src_modules_import_import_command_integration_test_ts["src/modules/import/import.command.integration.test.ts"]
-  file_src_modules_import_import_command_ts["src/modules/import/import.command.ts"]
-  file_src_modules_import_import_command_unit_test_ts["src/modules/import/import.command.unit.test.ts"]
-  file_src_modules_import_import_constants_ts["src/modules/import/import.constants.ts"]
-  file_src_modules_import_import_module_ts["src/modules/import/import.module.ts"]
-  file_src_modules_import_import_types_ts["src/modules/import/import.types.ts"]
+  file_src_modules_postgresql_export_postgresql_export_arguments_command_integration_test_ts["src/modules/postgresql-export/postgresql-export-arguments.command.integration.test.ts"]
+  file_src_modules_postgresql_export_postgresql_export_dry_run_command_integration_test_ts["src/modules/postgresql-export/postgresql-export-dry-run.command.integration.test.ts"]
+  file_src_modules_postgresql_export_postgresql_export_dry_run_command_unit_test_ts["src/modules/postgresql-export/postgresql-export-dry-run.command.unit.test.ts"]
+  file_src_modules_postgresql_export_postgresql_export_log_convention_command_unit_test_ts["src/modules/postgresql-export/postgresql-export-log-convention.command.unit.test.ts"]
+  file_src_modules_postgresql_export_postgresql_export_missing_table_command_integration_test_ts["src/modules/postgresql-export/postgresql-export-missing-table.command.integration.test.ts"]
+  file_src_modules_postgresql_export_postgresql_export_missing_table_command_unit_test_ts["src/modules/postgresql-export/postgresql-export-missing-table.command.unit.test.ts"]
+  file_src_modules_postgresql_export_postgresql_export_preflight_command_integration_test_ts["src/modules/postgresql-export/postgresql-export-preflight.command.integration.test.ts"]
+  file_src_modules_postgresql_export_postgresql_export_schema_command_unit_test_ts["src/modules/postgresql-export/postgresql-export-schema.command.unit.test.ts"]
+  file_src_modules_postgresql_export_postgresql_export_command_integration_test_ts["src/modules/postgresql-export/postgresql-export.command.integration.test.ts"]
+  file_src_modules_postgresql_export_postgresql_export_command_ts["src/modules/postgresql-export/postgresql-export.command.ts"]
+  file_src_modules_postgresql_export_postgresql_export_command_unit_test_ts["src/modules/postgresql-export/postgresql-export.command.unit.test.ts"]
+  file_src_modules_postgresql_export_postgresql_export_constants_ts["src/modules/postgresql-export/postgresql-export.constants.ts"]
+  file_src_modules_postgresql_export_postgresql_export_module_ts["src/modules/postgresql-export/postgresql-export.module.ts"]
+  file_src_modules_postgresql_export_postgresql_export_types_ts["src/modules/postgresql-export/postgresql-export.types.ts"]
+  file_src_modules_postgresql_import_postgresql_import_clean_data_command_integration_test_ts["src/modules/postgresql-import/postgresql-import-clean-data.command.integration.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_clean_data_command_unit_test_ts["src/modules/postgresql-import/postgresql-import-clean-data.command.unit.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts["src/modules/postgresql-import/postgresql-import-clean.command.integration.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_clean_command_unit_test_ts["src/modules/postgresql-import/postgresql-import-clean.command.unit.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_dry_run_command_integration_test_ts["src/modules/postgresql-import/postgresql-import-dry-run.command.integration.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_dry_run_command_unit_test_ts["src/modules/postgresql-import/postgresql-import-dry-run.command.unit.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_preflight_command_integration_test_ts["src/modules/postgresql-import/postgresql-import-preflight.command.integration.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_schema_command_integration_test_ts["src/modules/postgresql-import/postgresql-import-schema.command.integration.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_schema_command_unit_test_ts["src/modules/postgresql-import/postgresql-import-schema.command.unit.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_command_integration_test_ts["src/modules/postgresql-import/postgresql-import.command.integration.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_command_ts["src/modules/postgresql-import/postgresql-import.command.ts"]
+  file_src_modules_postgresql_import_postgresql_import_command_unit_test_ts["src/modules/postgresql-import/postgresql-import.command.unit.test.ts"]
+  file_src_modules_postgresql_import_postgresql_import_constants_ts["src/modules/postgresql-import/postgresql-import.constants.ts"]
+  file_src_modules_postgresql_import_postgresql_import_module_ts["src/modules/postgresql-import/postgresql-import.module.ts"]
+  file_src_modules_postgresql_import_postgresql_import_types_ts["src/modules/postgresql-import/postgresql-import.types.ts"]
   file_src_modules_postgresql_utilities_postgresql_dump_utilities_ts["src/modules/postgresql-utilities/postgresql-dump.utilities.ts"]
   file_src_modules_postgresql_utilities_postgresql_dump_utilities_unit_test_ts["src/modules/postgresql-utilities/postgresql-dump.utilities.unit.test.ts"]
   file_src_modules_postgresql_utilities_postgresql_truncate_utilities_ts["src/modules/postgresql-utilities/postgresql-truncate.utilities.ts"]
@@ -523,11 +538,6 @@ graph LR
   file_src_modules_postgresql_entities_deletable_entity_ts["src/modules/postgresql/entities/deletable.entity.ts"]
   file_src_modules_postgresql_entities_identifiable_entity_ts["src/modules/postgresql/entities/identifiable.entity.ts"]
   file_src_modules_postgresql_entities_updatable_entity_ts["src/modules/postgresql/entities/updatable.entity.ts"]
-  file_src_modules_postgresql_postgresql_container_constants_ts["src/modules/postgresql/postgresql-container.constants.ts"]
-  file_src_modules_postgresql_postgresql_container_types_ts["src/modules/postgresql/postgresql-container.types.ts"]
-  file_src_modules_postgresql_postgresql_container_utilities_integration_test_ts["src/modules/postgresql/postgresql-container.utilities.integration.test.ts"]
-  file_src_modules_postgresql_postgresql_container_utilities_ts["src/modules/postgresql/postgresql-container.utilities.ts"]
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts["src/modules/postgresql/postgresql-testing.utilities.integration.test.ts"]
   file_src_modules_postgresql_postgresql_constants_ts["src/modules/postgresql/postgresql.constants.ts"]
   file_src_modules_postgresql_postgresql_module_integration_test_ts["src/modules/postgresql/postgresql.module.integration.test.ts"]
   file_src_modules_postgresql_postgresql_module_ts["src/modules/postgresql/postgresql.module.ts"]
@@ -536,6 +546,18 @@ graph LR
   file_src_modules_postgresql_postgresql_types_ts["src/modules/postgresql/postgresql.types.ts"]
   file_src_modules_postgresql_postgresql_utilities_ts["src/modules/postgresql/postgresql.utilities.ts"]
   file_src_modules_postgresql_postgresql_utilities_unit_test_ts["src/modules/postgresql/postgresql.utilities.unit.test.ts"]
+  file_src_modules_sqlite_entities_creatable_entity_ts["src/modules/sqlite/entities/creatable.entity.ts"]
+  file_src_modules_sqlite_entities_deletable_entity_ts["src/modules/sqlite/entities/deletable.entity.ts"]
+  file_src_modules_sqlite_entities_identifiable_entity_ts["src/modules/sqlite/entities/identifiable.entity.ts"]
+  file_src_modules_sqlite_entities_updatable_entity_ts["src/modules/sqlite/entities/updatable.entity.ts"]
+  file_src_modules_sqlite_sqlite_constants_ts["src/modules/sqlite/sqlite.constants.ts"]
+  file_src_modules_sqlite_sqlite_module_integration_test_ts["src/modules/sqlite/sqlite.module.integration.test.ts"]
+  file_src_modules_sqlite_sqlite_module_ts["src/modules/sqlite/sqlite.module.ts"]
+  file_src_modules_sqlite_sqlite_service_ts["src/modules/sqlite/sqlite.service.ts"]
+  file_src_modules_sqlite_sqlite_service_unit_test_ts["src/modules/sqlite/sqlite.service.unit.test.ts"]
+  file_src_modules_sqlite_sqlite_types_ts["src/modules/sqlite/sqlite.types.ts"]
+  file_src_modules_sqlite_sqlite_utilities_ts["src/modules/sqlite/sqlite.utilities.ts"]
+  file_src_modules_sqlite_sqlite_utilities_unit_test_ts["src/modules/sqlite/sqlite.utilities.unit.test.ts"]
   file_src_persistence_main_end_to_end_test_ts["src/persistence.main.end-to-end.test.ts"]
   file_src_persistence_main_ts["src/persistence.main.ts"]
   file_src_persistence_main_unit_test_ts["src/persistence.main.unit.test.ts"]
@@ -544,111 +566,113 @@ graph LR
   file_src_persistence_repl_ts["src/persistence.repl.ts"]
   file_src_persistence_repl_unit_test_ts["src/persistence.repl.unit.test.ts"]
   file_testing_command_line_runner_ts["testing/command-line-runner.ts"]
+  file_testing_database_testing_database_testing_types_ts["testing/database-testing/database-testing.types.ts"]
+  file_testing_database_testing_database_testing_utilities_integration_test_ts["testing/database-testing/database-testing.utilities.integration.test.ts"]
+  file_testing_database_testing_database_testing_utilities_ts["testing/database-testing/database-testing.utilities.ts"]
   file_testing_fixture_persistence_ts["testing/fixture-persistence.ts"]
   file_testing_fixtures_fixture_persistence_module_ts["testing/fixtures/fixture-persistence.module.ts"]
   file_testing_fixtures_gadget_entity_ts["testing/fixtures/gadget.entity.ts"]
   file_testing_fixtures_migrations_1767225600000_create_widgets_ts["testing/fixtures/migrations/1767225600000-create-widgets.ts"]
   file_testing_fixtures_migrations_1767225600001_create_parts_ts["testing/fixtures/migrations/1767225600001-create-parts.ts"]
+  file_testing_fixtures_migrations_1767225600002_create_sprockets_ts["testing/fixtures/migrations/1767225600002-create-sprockets.ts"]
   file_testing_fixtures_sample_greeting_constants_ts["testing/fixtures/sample-greeting.constants.ts"]
   file_testing_fixtures_sample_greeting_module_ts["testing/fixtures/sample-greeting.module.ts"]
   file_testing_fixtures_sample_widgets_module_ts["testing/fixtures/sample-widgets.module.ts"]
   file_testing_fixtures_sample_widgets_service_ts["testing/fixtures/sample-widgets.service.ts"]
+  file_testing_fixtures_sprocket_entity_ts["testing/fixtures/sprocket.entity.ts"]
   file_testing_fixtures_widget_entity_ts["testing/fixtures/widget.entity.ts"]
   file_testing_index_ts["testing/index.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_persistence_testing_types_ts["testing/persistence-testing.types.ts"]
-  file_testing_persistence_testing_utilities_ts["testing/persistence-testing.utilities.ts"]
+  file_testing_postgres_container_postgres_container_constants_ts["testing/postgres-container/postgres-container.constants.ts"]
+  file_testing_postgres_container_postgres_container_types_ts["testing/postgres-container/postgres-container.types.ts"]
+  file_testing_postgres_container_postgres_container_utilities_integration_test_ts["testing/postgres-container/postgres-container.utilities.integration.test.ts"]
+  file_testing_postgres_container_postgres_container_utilities_ts["testing/postgres-container/postgres-container.utilities.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_modules_export_export_arguments_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_export_export_arguments_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_export_export_dry_run_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_export_export_dry_run_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_export_export_dry_run_command_unit_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_export_export_dry_run_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_export_export_log_convention_command_unit_test_ts --> file_src_modules_export_export_constants_ts
-  file_src_modules_export_export_log_convention_command_unit_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_export_export_log_convention_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_export_export_missing_table_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_export_export_missing_table_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_export_export_missing_table_command_unit_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_export_export_missing_table_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_export_export_preflight_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_export_export_preflight_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_export_export_schema_command_unit_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_export_export_schema_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_export_export_command_integration_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_src_modules_export_export_command_integration_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_src_modules_export_export_command_integration_test_ts --> file_src_modules_postgresql_postgresql_container_types_ts
-  file_src_modules_export_export_command_integration_test_ts --> file_src_modules_postgresql_postgresql_container_utilities_ts
-  file_src_modules_export_export_command_integration_test_ts --> file_src_modules_postgresql_postgresql_types_ts
-  file_src_modules_export_export_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_export_export_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_export_export_command_ts --> file_src_modules_export_export_constants_ts
-  file_src_modules_export_export_command_ts --> file_src_modules_export_export_types_ts
-  file_src_modules_export_export_command_ts --> file_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
-  file_src_modules_export_export_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
-  file_src_modules_export_export_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_src_modules_export_export_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_src_modules_export_export_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_src_modules_export_export_command_unit_test_ts --> file_src_modules_export_export_command_ts
-  file_src_modules_export_export_command_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_src_modules_export_export_command_unit_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_export_export_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_export_export_constants_ts --> file_src_modules_export_export_types_ts
-  file_src_modules_export_export_constants_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_src_modules_export_export_module_ts --> file_src_modules_export_export_command_ts
-  file_src_modules_export_export_module_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_module_ts
-  file_src_modules_export_export_types_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_src_modules_import_import_clean_data_command_integration_test_ts --> file_src_modules_postgresql_postgresql_container_types_ts
-  file_src_modules_import_import_clean_data_command_integration_test_ts --> file_src_modules_postgresql_postgresql_container_utilities_ts
-  file_src_modules_import_import_clean_data_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_clean_data_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_import_import_clean_data_command_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
-  file_src_modules_import_import_clean_data_command_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_src_modules_import_import_clean_data_command_unit_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_clean_data_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_import_import_clean_command_integration_test_ts --> file_src_modules_postgresql_postgresql_container_types_ts
-  file_src_modules_import_import_clean_command_integration_test_ts --> file_src_modules_postgresql_postgresql_container_utilities_ts
-  file_src_modules_import_import_clean_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_clean_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_import_import_clean_command_integration_test_ts --> file_testing_mocks_ts
-  file_src_modules_import_import_clean_command_unit_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_clean_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_import_import_dry_run_command_integration_test_ts --> file_src_modules_postgresql_postgresql_container_types_ts
-  file_src_modules_import_import_dry_run_command_integration_test_ts --> file_src_modules_postgresql_postgresql_container_utilities_ts
-  file_src_modules_import_import_dry_run_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_dry_run_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_import_import_dry_run_command_unit_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_dry_run_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_import_import_preflight_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_preflight_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_import_import_schema_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_schema_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_import_import_schema_command_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_src_modules_import_import_schema_command_unit_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_schema_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_import_import_command_integration_test_ts --> file_src_modules_postgresql_postgresql_container_types_ts
-  file_src_modules_import_import_command_integration_test_ts --> file_src_modules_postgresql_postgresql_container_utilities_ts
-  file_src_modules_import_import_command_integration_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_command_integration_test_ts --> file_testing_fixture_persistence_ts
-  file_src_modules_import_import_command_ts --> file_src_modules_import_import_constants_ts
-  file_src_modules_import_import_command_ts --> file_src_modules_import_import_types_ts
-  file_src_modules_import_import_command_ts --> file_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
-  file_src_modules_import_import_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
-  file_src_modules_import_import_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_src_modules_import_import_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_src_modules_import_import_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_src_modules_import_import_command_unit_test_ts --> file_src_modules_import_import_command_ts
-  file_src_modules_import_import_command_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
-  file_src_modules_import_import_command_unit_test_ts --> file_testing_command_line_runner_ts
-  file_src_modules_import_import_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_import_import_constants_ts --> file_src_modules_import_import_types_ts
-  file_src_modules_import_import_constants_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
-  file_src_modules_import_import_constants_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
-  file_src_modules_import_import_module_ts --> file_src_modules_import_import_command_ts
-  file_src_modules_import_import_module_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_module_ts
-  file_src_modules_import_import_types_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_src_modules_postgresql_export_postgresql_export_arguments_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_export_postgresql_export_arguments_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_export_postgresql_export_dry_run_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_export_postgresql_export_dry_run_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_export_postgresql_export_dry_run_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_export_postgresql_export_dry_run_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_export_postgresql_export_log_convention_command_unit_test_ts --> file_src_modules_postgresql_export_postgresql_export_constants_ts
+  file_src_modules_postgresql_export_postgresql_export_log_convention_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_export_postgresql_export_log_convention_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_export_postgresql_export_missing_table_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_export_postgresql_export_missing_table_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_export_postgresql_export_missing_table_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_export_postgresql_export_missing_table_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_export_postgresql_export_preflight_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_export_postgresql_export_preflight_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_export_postgresql_export_schema_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_export_postgresql_export_schema_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_src_modules_postgresql_postgresql_types_ts
+  file_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_export_postgresql_export_command_integration_test_ts --> file_testing_index_ts
+  file_src_modules_postgresql_export_postgresql_export_command_ts --> file_src_modules_postgresql_export_postgresql_export_constants_ts
+  file_src_modules_postgresql_export_postgresql_export_command_ts --> file_src_modules_postgresql_export_postgresql_export_types_ts
+  file_src_modules_postgresql_export_postgresql_export_command_ts --> file_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
+  file_src_modules_postgresql_export_postgresql_export_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_src_modules_postgresql_export_postgresql_export_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_src_modules_postgresql_export_postgresql_export_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_src_modules_postgresql_export_postgresql_export_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_src_modules_postgresql_export_postgresql_export_command_unit_test_ts --> file_src_modules_postgresql_export_postgresql_export_command_ts
+  file_src_modules_postgresql_export_postgresql_export_command_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_src_modules_postgresql_export_postgresql_export_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_export_postgresql_export_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_export_postgresql_export_constants_ts --> file_src_modules_postgresql_export_postgresql_export_types_ts
+  file_src_modules_postgresql_export_postgresql_export_constants_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_src_modules_postgresql_export_postgresql_export_module_ts --> file_src_modules_postgresql_export_postgresql_export_command_ts
+  file_src_modules_postgresql_export_postgresql_export_module_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_module_ts
+  file_src_modules_postgresql_export_postgresql_export_types_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_data_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_data_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_data_command_integration_test_ts --> file_testing_index_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_data_command_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_data_command_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_data_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_data_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts --> file_testing_index_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_command_integration_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_clean_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_import_postgresql_import_dry_run_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_dry_run_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_import_postgresql_import_dry_run_command_integration_test_ts --> file_testing_index_ts
+  file_src_modules_postgresql_import_postgresql_import_dry_run_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_dry_run_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_import_postgresql_import_preflight_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_preflight_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_import_postgresql_import_schema_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_schema_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_import_postgresql_import_schema_command_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_src_modules_postgresql_import_postgresql_import_schema_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_schema_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_import_postgresql_import_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_command_integration_test_ts --> file_testing_fixture_persistence_ts
+  file_src_modules_postgresql_import_postgresql_import_command_integration_test_ts --> file_testing_index_ts
+  file_src_modules_postgresql_import_postgresql_import_command_ts --> file_src_modules_postgresql_import_postgresql_import_constants_ts
+  file_src_modules_postgresql_import_postgresql_import_command_ts --> file_src_modules_postgresql_import_postgresql_import_types_ts
+  file_src_modules_postgresql_import_postgresql_import_command_ts --> file_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
+  file_src_modules_postgresql_import_postgresql_import_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_src_modules_postgresql_import_postgresql_import_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_src_modules_postgresql_import_postgresql_import_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_src_modules_postgresql_import_postgresql_import_command_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_src_modules_postgresql_import_postgresql_import_command_unit_test_ts --> file_src_modules_postgresql_import_postgresql_import_command_ts
+  file_src_modules_postgresql_import_postgresql_import_command_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_src_modules_postgresql_import_postgresql_import_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_postgresql_import_postgresql_import_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgresql_import_postgresql_import_constants_ts --> file_src_modules_postgresql_import_postgresql_import_types_ts
+  file_src_modules_postgresql_import_postgresql_import_constants_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_src_modules_postgresql_import_postgresql_import_constants_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_src_modules_postgresql_import_postgresql_import_module_ts --> file_src_modules_postgresql_import_postgresql_import_command_ts
+  file_src_modules_postgresql_import_postgresql_import_module_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_module_ts
+  file_src_modules_postgresql_import_postgresql_import_types_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
   file_src_modules_postgresql_utilities_postgresql_dump_utilities_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
   file_src_modules_postgresql_utilities_postgresql_dump_utilities_ts --> file_src_modules_postgresql_utilities_postgresql_utilities_types_ts
   file_src_modules_postgresql_utilities_postgresql_dump_utilities_unit_test_ts --> file_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
@@ -677,31 +701,12 @@ graph LR
   file_src_modules_postgresql_entities_creatable_entity_ts --> file_src_modules_postgresql_entities_identifiable_entity_ts
   file_src_modules_postgresql_entities_deletable_entity_ts --> file_src_modules_postgresql_entities_updatable_entity_ts
   file_src_modules_postgresql_entities_updatable_entity_ts --> file_src_modules_postgresql_entities_creatable_entity_ts
-  file_src_modules_postgresql_postgresql_container_types_ts --> file_src_modules_postgresql_postgresql_types_ts
-  file_src_modules_postgresql_postgresql_container_utilities_integration_test_ts --> file_src_modules_postgresql_postgresql_container_constants_ts
-  file_src_modules_postgresql_postgresql_container_utilities_integration_test_ts --> file_src_modules_postgresql_postgresql_container_utilities_ts
-  file_src_modules_postgresql_postgresql_container_utilities_integration_test_ts --> file_testing_fixtures_migrations_1767225600000_create_widgets_ts
-  file_src_modules_postgresql_postgresql_container_utilities_ts --> file_src_modules_postgresql_postgresql_container_constants_ts
-  file_src_modules_postgresql_postgresql_container_utilities_ts --> file_src_modules_postgresql_postgresql_container_types_ts
-  file_src_modules_postgresql_postgresql_container_utilities_ts --> file_src_modules_postgresql_postgresql_types_ts
-  file_src_modules_postgresql_postgresql_container_utilities_ts --> file_src_modules_postgresql_postgresql_utilities_ts
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_src_modules_postgresql_postgresql_utilities_ts
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_fixtures_fixture_persistence_module_ts
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_fixtures_migrations_1767225600000_create_widgets_ts
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_fixtures_sample_greeting_constants_ts
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_fixtures_sample_greeting_module_ts
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_fixtures_sample_widgets_module_ts
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_fixtures_sample_widgets_service_ts
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_fixtures_widget_entity_ts
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_persistence_testing_types_ts
-  file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_persistence_testing_utilities_ts
-  file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_src_modules_postgresql_postgresql_container_types_ts
-  file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_src_modules_postgresql_postgresql_container_utilities_ts
   file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_src_modules_postgresql_postgresql_module_ts
   file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_src_modules_postgresql_postgresql_utilities_ts
   file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_testing_fixtures_gadget_entity_ts
   file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_testing_fixtures_migrations_1767225600000_create_widgets_ts
   file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_testing_fixtures_widget_entity_ts
+  file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_testing_index_ts
   file_src_modules_postgresql_postgresql_module_ts --> file_src_modules_postgresql_postgresql_constants_ts
   file_src_modules_postgresql_postgresql_module_ts --> file_src_modules_postgresql_postgresql_service_ts
   file_src_modules_postgresql_postgresql_module_ts --> file_src_modules_postgresql_postgresql_types_ts
@@ -715,17 +720,53 @@ graph LR
   file_src_modules_postgresql_postgresql_utilities_ts --> file_src_modules_postgresql_postgresql_types_ts
   file_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_src_modules_postgresql_postgresql_types_ts
   file_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_src_modules_postgresql_postgresql_utilities_ts
+  file_src_modules_sqlite_entities_creatable_entity_ts --> file_src_modules_sqlite_entities_identifiable_entity_ts
+  file_src_modules_sqlite_entities_deletable_entity_ts --> file_src_modules_sqlite_entities_updatable_entity_ts
+  file_src_modules_sqlite_entities_updatable_entity_ts --> file_src_modules_sqlite_entities_creatable_entity_ts
+  file_src_modules_sqlite_sqlite_module_integration_test_ts --> file_src_modules_sqlite_sqlite_module_ts
+  file_src_modules_sqlite_sqlite_module_integration_test_ts --> file_src_modules_sqlite_sqlite_utilities_ts
+  file_src_modules_sqlite_sqlite_module_integration_test_ts --> file_testing_fixtures_migrations_1767225600002_create_sprockets_ts
+  file_src_modules_sqlite_sqlite_module_integration_test_ts --> file_testing_fixtures_sprocket_entity_ts
+  file_src_modules_sqlite_sqlite_module_ts --> file_src_modules_sqlite_sqlite_constants_ts
+  file_src_modules_sqlite_sqlite_module_ts --> file_src_modules_sqlite_sqlite_service_ts
+  file_src_modules_sqlite_sqlite_module_ts --> file_src_modules_sqlite_sqlite_types_ts
+  file_src_modules_sqlite_sqlite_service_ts --> file_src_modules_sqlite_sqlite_constants_ts
+  file_src_modules_sqlite_sqlite_service_ts --> file_src_modules_sqlite_sqlite_types_ts
+  file_src_modules_sqlite_sqlite_service_ts --> file_src_modules_sqlite_sqlite_utilities_ts
+  file_src_modules_sqlite_sqlite_service_unit_test_ts --> file_src_modules_sqlite_sqlite_constants_ts
+  file_src_modules_sqlite_sqlite_service_unit_test_ts --> file_src_modules_sqlite_sqlite_service_ts
+  file_src_modules_sqlite_sqlite_service_unit_test_ts --> file_testing_fixtures_migrations_1767225600002_create_sprockets_ts
+  file_src_modules_sqlite_sqlite_types_ts --> file_src_modules_sqlite_sqlite_constants_ts
+  file_src_modules_sqlite_sqlite_utilities_ts --> file_src_modules_postgresql_postgresql_constants_ts
+  file_src_modules_sqlite_sqlite_utilities_ts --> file_src_modules_sqlite_sqlite_constants_ts
+  file_src_modules_sqlite_sqlite_utilities_ts --> file_src_modules_sqlite_sqlite_types_ts
+  file_src_modules_sqlite_sqlite_utilities_unit_test_ts --> file_src_modules_sqlite_sqlite_utilities_ts
   file_src_persistence_main_ts --> file_src_persistence_module_ts
-  file_src_persistence_module_ts --> file_src_modules_export_export_module_ts
-  file_src_persistence_module_ts --> file_src_modules_import_import_module_ts
+  file_src_persistence_module_ts --> file_src_modules_postgresql_export_postgresql_export_module_ts
+  file_src_persistence_module_ts --> file_src_modules_postgresql_import_postgresql_import_module_ts
   file_src_persistence_module_unit_test_ts --> file_src_persistence_module_ts
   file_src_persistence_module_unit_test_ts --> file_testing_command_line_runner_ts
   file_src_persistence_repl_ts --> file_src_persistence_module_ts
   file_testing_command_line_runner_ts --> file_src_persistence_module_ts
-  file_testing_fixture_persistence_ts --> file_src_modules_postgresql_postgresql_container_utilities_ts
+  file_testing_database_testing_database_testing_types_ts --> file_src_modules_postgresql_postgresql_types_ts
+  file_testing_database_testing_database_testing_types_ts --> file_testing_postgres_container_postgres_container_types_ts
+  file_testing_database_testing_database_testing_utilities_integration_test_ts --> file_src_modules_postgresql_postgresql_utilities_ts
+  file_testing_database_testing_database_testing_utilities_integration_test_ts --> file_testing_database_testing_database_testing_types_ts
+  file_testing_database_testing_database_testing_utilities_integration_test_ts --> file_testing_database_testing_database_testing_utilities_ts
+  file_testing_database_testing_database_testing_utilities_integration_test_ts --> file_testing_fixtures_fixture_persistence_module_ts
+  file_testing_database_testing_database_testing_utilities_integration_test_ts --> file_testing_fixtures_migrations_1767225600000_create_widgets_ts
+  file_testing_database_testing_database_testing_utilities_integration_test_ts --> file_testing_fixtures_sample_greeting_constants_ts
+  file_testing_database_testing_database_testing_utilities_integration_test_ts --> file_testing_fixtures_sample_greeting_module_ts
+  file_testing_database_testing_database_testing_utilities_integration_test_ts --> file_testing_fixtures_sample_widgets_module_ts
+  file_testing_database_testing_database_testing_utilities_integration_test_ts --> file_testing_fixtures_sample_widgets_service_ts
+  file_testing_database_testing_database_testing_utilities_integration_test_ts --> file_testing_fixtures_widget_entity_ts
+  file_testing_database_testing_database_testing_utilities_ts --> file_src_modules_postgresql_postgresql_module_ts
+  file_testing_database_testing_database_testing_utilities_ts --> file_testing_database_testing_database_testing_types_ts
+  file_testing_database_testing_database_testing_utilities_ts --> file_testing_postgres_container_postgres_container_utilities_ts
   file_testing_fixture_persistence_ts --> file_src_modules_postgresql_postgresql_types_ts
   file_testing_fixture_persistence_ts --> file_testing_fixtures_migrations_1767225600000_create_widgets_ts
   file_testing_fixture_persistence_ts --> file_testing_fixtures_migrations_1767225600001_create_parts_ts
+  file_testing_fixture_persistence_ts --> file_testing_index_ts
   file_testing_fixtures_fixture_persistence_module_ts --> file_src_modules_postgresql_postgresql_module_ts
   file_testing_fixtures_fixture_persistence_module_ts --> file_testing_fixtures_widget_entity_ts
   file_testing_fixtures_gadget_entity_ts --> file_src_modules_postgresql_entities_identifiable_entity_ts
@@ -734,12 +775,16 @@ graph LR
   file_testing_fixtures_sample_widgets_module_ts --> file_testing_fixtures_sample_widgets_service_ts
   file_testing_fixtures_sample_widgets_module_ts --> file_testing_fixtures_widget_entity_ts
   file_testing_fixtures_sample_widgets_service_ts --> file_testing_fixtures_widget_entity_ts
+  file_testing_fixtures_sprocket_entity_ts --> file_src_modules_sqlite_entities_deletable_entity_ts
   file_testing_fixtures_widget_entity_ts --> file_src_modules_postgresql_entities_deletable_entity_ts
-  file_testing_persistence_testing_types_ts --> file_src_modules_postgresql_postgresql_container_types_ts
-  file_testing_persistence_testing_types_ts --> file_src_modules_postgresql_postgresql_types_ts
-  file_testing_persistence_testing_utilities_ts --> file_src_modules_postgresql_postgresql_container_utilities_ts
-  file_testing_persistence_testing_utilities_ts --> file_src_modules_postgresql_postgresql_module_ts
-  file_testing_persistence_testing_utilities_ts --> file_testing_persistence_testing_types_ts
+  file_testing_postgres_container_postgres_container_types_ts --> file_src_modules_postgresql_postgresql_types_ts
+  file_testing_postgres_container_postgres_container_utilities_integration_test_ts --> file_testing_fixtures_migrations_1767225600000_create_widgets_ts
+  file_testing_postgres_container_postgres_container_utilities_integration_test_ts --> file_testing_postgres_container_postgres_container_constants_ts
+  file_testing_postgres_container_postgres_container_utilities_integration_test_ts --> file_testing_postgres_container_postgres_container_utilities_ts
+  file_testing_postgres_container_postgres_container_utilities_ts --> file_src_modules_postgresql_postgresql_types_ts
+  file_testing_postgres_container_postgres_container_utilities_ts --> file_src_modules_postgresql_postgresql_utilities_ts
+  file_testing_postgres_container_postgres_container_utilities_ts --> file_testing_postgres_container_postgres_container_constants_ts
+  file_testing_postgres_container_postgres_container_utilities_ts --> file_testing_postgres_container_postgres_container_types_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 

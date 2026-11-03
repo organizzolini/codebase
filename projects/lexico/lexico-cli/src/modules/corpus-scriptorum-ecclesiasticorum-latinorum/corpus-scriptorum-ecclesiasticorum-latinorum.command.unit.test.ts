@@ -1,15 +1,15 @@
-import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
+import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { CorpusScriptorumEcclesiasticorumLatinorumCommand } from "./corpus-scriptorum-ecclesiasticorum-latinorum.command";
+
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const {
   accessMock,
@@ -41,7 +41,7 @@ vi.mock("node:fs/promises", () => ({
 
 describe(CorpusScriptorumEcclesiasticorumLatinorumCommand, () => {
   let command: CorpusScriptorumEcclesiasticorumLatinorumCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<CorpusScriptorumEcclesiasticorumLatinorumCommand>["logger"];
 
   beforeAll(async () => {
     const built = await buildTestingModule(

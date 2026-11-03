@@ -13,11 +13,11 @@ import { InputService } from "./input.service";
 
 import type { Environment } from "./input.types";
 import type { LoggerService } from "@codebase/observability";
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 describe(InputService, () => {
   let service: InputService;
-  let mockLoggerService: DeepMocked<LoggerService>;
+  let mockLoggerService: BuiltTestingModule<InputService>["logger"];
 
   const testingModuleOptions = {
     providers: [

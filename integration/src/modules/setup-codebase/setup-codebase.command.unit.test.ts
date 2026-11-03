@@ -9,10 +9,8 @@ import {
   vi,
 } from "vitest";
 
-import {
-  buildTestingModule,
-  expectLoggerContext,
-} from "@codebase/testing/nestjs";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { BoundBaseToPushService } from "../bound-base-to-push/bound-base-to-push.service";
 import { ImportPrTaskCacheService } from "../import-pr-task-cache/import-pr-task-cache.service";

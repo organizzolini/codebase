@@ -1,24 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:e85128865830290b82f9bddad195b7a17ea712a3e2e589ce7e905a387b44ed01",
+  "pageVersion": "sha256:59f3a36e6ee46d5c574e912024d675af37ef2b56f4e441e3fc8ff0daee3a66f0",
   "claims": [
     {
       "id": "claim_356fc8a2a59d41c4a391947e95843215",
       "statement": "The codebase maintains four shared packages under projects/common/ (persistence, interface, presentation, observability) that application domains depend on via workspace protocol imports like @codebase/persistence.",
       "evidence": [
         {
-          "resource": "repo://README.md#L186-L193",
+          "resource": "repo://README.md#L214-L221",
           "version": "repo-lines-v1:sha256:f95648a8be0917cfa27759a6e41d9c2a8b93dac6a32ca006f3077ff67187736a:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODc4Y2M3NGVhYjQ5Y2VlNGUwYjhiMzIwMWI1OWFkZTRjZGU4YmFiYWY0MTU2Y2JmMmRhMWY3M2I1YzBkYjUxZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODA0ODJiZmY0NmYxYTg5ZWZhODAzY2ZiYjc3ZTI3MWZlYTA4Y2JkYWRiMGRlNjcxZGI0M2NjMmUxODRlNDk3ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDQxN2Y2MmEyZjFhM2U5MWNhYTg1OGI4MThlZmQ0NzY5MzA0MmQ0MjRhMDYzNmFiYjhjMDY1ZTNhYjhmYjI3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDQyNjQ2MGIyYWNiNGU4N2E1YWI2NzAyMDM1ZGEwODlkY2M2NmIwNWUwZDY0NGMxMDg3OTA0M2QwODI1ZTI2ZCJ9"
-        }
-      ]
-    },
-    {
-      "id": "claim_e8ef689d27b5478f8c4140c21b01065f",
-      "statement": "The persistence package exports postgresEnvironmentSchema (Zod fragment for <PROJECT>_POSTGRES_* variables), postgresConnection, postgresDataSourceOptions, PostgresqlModule.forRoot, createDataSource, base entities (IdentifiableEntity, CreatableEntity, UpdatableEntity, DeletableEntity), and testing helpers startPostgresContainer and startDatabaseTestingModule.",
-      "evidence": [
-        {
-          "resource": "repo://projects/common/persistence/README.md#L20-L37",
-          "version": "repo-lines-v1:sha256:de5e5bfb0ed151e9ea02b9b395323c827f4d39d85f9ca8d516bcbeb3e15bd43c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlMmQyZDRiNjlkYTY5ODc4YTE3YTI3ZDQ0MDE5YzRiODY3YzMxYTU4Nzg5YjNhMzhkZGM5MGYzMmQ0Y2VjMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwMDgwYzIxNjA1NDY3N2UwMDlkOGMzNWYzYWFiZjk0YWE2YmVhZWViMmE1ZWYwMmRiZmVmMjE3YWUwMjZmMzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ5M2FkYTc0MDJmN2Y3NWE2OTdhZGJhMTBlYWFhZGJlN2ZhMGE1ZGEyZjY3YmNiMmE4ZTIzMWZiMTk1NTNiYWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1MTkwYmIxNDY4YTMxNTM4YTE5YTg5MWQ4NDUyZTM3YWNiYmQzZjA1MTFlNDM4NWVhMTAwNjgxOGI1MWY1ZjkifQ"
         }
       ]
     },
@@ -37,7 +27,7 @@
       "statement": "Applications consume persistence by spreading postgresEnvironmentSchema into their Zod environment schema with a project name, creating a database module that imports PostgresqlModule.forRoot with entities and project name, and exporting a CLI DataSource via createDataSource with migrations.",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/README.md#L40-L97",
+          "resource": "repo://projects/common/persistence/README.md#L46-L103",
           "version": "repo-lines-v1:sha256:e213d891a2e2e69a14e1a6cd4fd617bb082b87647370702fd1409ce452343278:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3NjI1NGZhZDFhNmNhZGUyNWM3MWYzMGVjNzI1MzIyNTYzY2YxNjlkNTBkM2JiMzU3ZjM0YWRiYWQ1M2FmZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiNGRkOWZhOWI2ZGNmMjQxZTQ4Y2M5YTIxZDI2NTIyMWRkMzUxYTY2NGIxOTE5OGIxZTEyNGE1NTdkMzA5YTAifQ"
         }
       ]
@@ -47,11 +37,11 @@
       "statement": "The persistence package never synchronizes or runs migrations on application start; synchronize and migrationsRun are both false, and migrations run only via the migration Nx target as a separate step.",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/README.md#L149-L150",
+          "resource": "repo://projects/common/persistence/README.md#L155-L156",
           "version": "repo-lines-v1:sha256:a4dbef1bcdaf9487b987ff9c5e89e39f8f96b2974600c3f948ac18f3dfbef45a:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODM4YTNiZjBkNzlmM2UwNzE0MTY2ZWU4ZTRmOTAyYWI2ZGJkMjAwNTYyZTlmOGM5NzRjZDc1MGVjZTZiY2MyOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTUxYjNhMzVmY2I1YzUyNjRlYTg3YzBjMWMwZDM3YjI4ZGI3MmEzOTFiYzU3YjE4MDg3ODdmN2UwZmM2MDQ0ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWJjMmQxMzdkOWE4YjY5OGQyN2JjNzExZDJjYjg4MjZhMGQ1MzRlZjM4NThhM2VkODAxMDE2ZDk2ZDM2ZDdhNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWFlZmFmODI0NGU2ZDA3ZTVhNWZiMmE2OGU4ZTA1OGMyNzNlNjcxODQ5ODFiMjM0NGQ4MWVhODU4NWRmYTU5YSJ9"
         },
         {
-          "resource": "repo://projects/common/persistence/README.md#L99-L100",
+          "resource": "repo://projects/common/persistence/README.md#L105-L106",
           "version": "repo-lines-v1:sha256:a8d2972a0c8fa58f445526877d2a9e98b35fd572d83f0cbc6f05a718b4c042f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjI1MWExMmIzNmQ0N2MzNzQxNGQyMmI3OTVhODUyY2Y4ZDVjNjZkODQ0ZWNkZmYwMDUwOGU0Y2NkOTM2OWFiNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDM3Y2M1N2VlM2Y4YWYyNWM1MzQ2NWQyYzU1MDYxMjViZDZjYmVlM2IwY2RiMGI2NDQ4YzYwYTRlYjlkMjk4YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGEwYmUzOTFkNWEwOTI0NDM2MDU0OTQ1MDgxMzM5YzBmZGYzYTc1NDcwZmVhN2Q0OTNkYzFiNjllMzMzMDNlZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDY2NzUxMjc5MTA5ZmZjOGZlMGE3MTE1MzkyZGM4ZDRlZTRiNjRkMGQ2ZGMwYjQ3NzYxMzA4YzBmNWRlODBlMyJ9"
         }
       ]
@@ -93,7 +83,7 @@
           "version": "repo-lines-v1:sha256:1f3aebfe5fbe6e032d4fa0bb02ee8c7f2003edfbb3551e470b405644058a3278:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWM0ZDEyNGI0YzUwMmUxZDc3NzcwNzVjN2IxYmY0NGIzZWEzZDRhMDM4NzUxM2U5NDg1N2I5N2NlODY2NjhmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjlhN2ViMmU0YWVmMmUxMjA5NjNmNDA1MzYxMGJiZmNiMzlhNDdjYTAxZWRlNDkwNjAyMzQ3MTY5MzE5ZTdkMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2E1NzBkYTMxZGZjNzEzNjA1NWE4Y2VkMGRlZDZmMGE1YWJmZGVjZjZjYzcyNTkxNWZkMGJjMzY3NWViMmI4NyJ9"
         },
         {
-          "resource": "repo://projects/common/presentation/src/index.ts#L1-L60",
+          "resource": "repo://projects/common/presentation/src/index.ts#L36-L95",
           "version": "repo-lines-v1:sha256:50774f6f46872869c4eee4ca52db8141885beda45a1bc97d88b4f04ad519eb71:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0MzQ1YjhjNGMzYWQ3YzJlNmYxOGI3MDk0ZmEyZjAyYWEwNzk5YWM2NDIxZGNkM2UxNmE4MTRiODQwY2EyODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNGNjMjljZTBlYjhmNzE1YjhkYzY0ODhkZjQ4YjhmMWRlNDM3MGRjY2FmZTU1OWViOTU0YTJjODBjNGIzNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
@@ -141,10 +131,70 @@
           "version": "repo-lines-v1:sha256:d1b34f4a77a14e1e6b68a365467fd7421fad421e16d8907cee81f0fed5352cdd:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTMxYjY3ZWIwNDE5YjJhOWYyNmM1YmM3MzllMTQ5YzMwOWJiOTVlN2E2MWM4NzU4YWNhY2EyZTE4MWY1YTM2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWUzZDVkYTY4MmU0YjBlMzJkN2I1ZWQ4NGI5YzI4N2E0MjEzNDRjZWRmOTQzMDVkZWY4NDNlMjY2YWZlNjkxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODgwOTE4YWM2NDMwNzA0MDMwMDQzMjc4YWJiMTY3MDAxYzY4MzQzZmM1YTNhZGY3ZjgyYjYxNjk1MjliODRhZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmU2ZWFmYTZkMjdmMTMxYzYzNzI1ODU5ZTg0MTZlMTc5NGFmYjcwM2IzODg3OGE1NDBhNGE5NzRmMWY4NTI4NyJ9"
         }
       ]
+    },
+    {
+      "id": "claim_d7ac85a2ce1b4600940a3495c0edc7fd",
+      "statement": "The persistence package exports PostgreSQL environment schema (postgresEnvironmentSchema), connection utilities (postgresConnection, postgresDataSourceOptions), NestJS module (PostgresqlModule.forRoot), CLI DataSource factory (createDataSource), PostgreSQL base entities (PostgresqlIdentifiableEntity, PostgresqlCreatableEntity, PostgresqlUpdatableEntity, PostgresqlDeletableEntity), SQLite equivalents (sqliteEnvironmentSchema, sqliteConnection, sqliteDataSourceOptions, SqliteModule.forRoot, createSqliteDataSource, SqliteIdentifiableEntity, SqliteCreatableEntity, SqliteUpdatableEntity, SqliteDeletableEntity), and testing helpers (startPostgresContainer, startDatabaseTestingModule).",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L20-L44",
+          "version": "repo-lines-v1:sha256:723c5ca89d6a65c5ce7a242470eb3fdb96d909b2d985ba3ff7a1a66d28671440:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlMmQyZDRiNjlkYTY5ODc4YTE3YTI3ZDQ0MDE5YzRiODY3YzMxYTU4Nzg5YjNhMzhkZGM5MGYzMmQ0Y2VjMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ5M2FkYTc0MDJmN2Y3NWE2OTdhZGJhMTBlYWFhZGJlN2ZhMGE1ZGEyZjY3YmNiMmE4ZTIzMWZiMTk1NTNiYWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmYmRmNzZiODQ5ZTY0OTMxYTViNTMwMDYzODA4NTYyYTEyNGZhN2Q1YzEyNzhiMjU1NGZlMTI2MDU3NGQyZDAifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/src/index.ts#L1-L74",
+          "version": "repo-lines-v1:sha256:5c1b3165586451906cbb76e55cd419e1718122cdacd908870488336555bc2c2f:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhZWZkZWFlOGMzZjkyY2YwNmNmNDJmYzllNGE1ODI3YzFmY2Y5NDE2ZGVjYWY2YmUzZGE4YjA4MzdjZTBlZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0YTBjZjRlMDk0YjRmNzc1ZDJkOTgzYTQxY2VmY2IyNWNmOTI5NGU5MTMzNDgwZGY4N2M1MmU4NmY4Nzg2NzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e904b53810e5449abd1ec30d269c5440",
+      "statement": "The interface package provides GraphQL server utilities (Relay connection types, pagination cursors, relation mapping) via @codebase/interface, GraphQL client codegen config via @codebase/interface/client, and testing helpers (MSW mock server for clients, pagination oracle for servers) via @codebase/interface/testing.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/README.md#L8-L37",
+          "version": "repo-lines-v1:sha256:52ca86df2c9c1ddcb2f3d0e8608f109691870469bd5b1e82d4dc383fd1b01073:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MDQyZTU2Yjc2NDg1NWU2MjA3Yjc1NjIzMTFlYzk0OWQyNWIxYzU4MTFlM2Y2ZjdkNzdlNzYwODBmZTQxZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0NjE5YzMxNDFhZmRiNGE4NmRmYzkxMzc1MmQ5YWFmOWE0MDQwNDgxM2I1ZjNlYWJiYjlhN2MxZDJjZjI2ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkYTU4ZTMxYzgxMTIyZTNmMDUyZDNlYzg4OGUzNzc3NzFkYzAzZDg2ODJhMjJkNjljZDE4ZjE0YTlmNDNjOGYifQ"
+        },
+        {
+          "resource": "repo://projects/common/interface/src/index.ts#L1-L31",
+          "version": "repo-lines-v1:sha256:23fbb1d249e87771eeb313e221b7e3f11eca42ac8b6c4a73c8a89b30aa0d82ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNWYwYjg5MzMyN2E1ZGE1N2ZkNjY5YmZmYzE0ZTgyZjFiMTVmMjVkY2RlZTU0NTYyZTAxNjExM2FlYzc3NzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1ZTIxODUyY2EwYjllOTBjNmEyMzcxMmUyMjFhNGMzNTU4ZjA4MTc0Yjg3ZWE3NGJlZmQ2YzQ5MzQyNTNiNWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://projects/common/interface/testing/index.ts#L1-L13",
+          "version": "repo-lines-v1:sha256:d220511d4c9b6c739a119b70acea5494b7c05a00331a6297da40f9a1e507c6c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExNzQ0MjkwOTg3MDNlNjM0Y2M2NjRlNDk3NWQxNGFjNDkxMjc0OWU1MTYyNGFiMWEzNTNiZTI0NzNmOWMxMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5MzA2OGYzMzM5MzE3NjQ5ZmJkMDkzM2YyZDNkOWRmNjNmNWFlMmY0NmZkODI1ZjZjYjdjNzExNzk2ZWYwMGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_075d1f8d7eb246f68fd9652897863d7f",
+      "statement": "The presentation package exports 50+ React components built on shadcn/ui and Base UI primitives, organized into layout (Accordion, Card, Sidebar, etc.), form controls (Input, Select, Checkbox, etc.), buttons/navigation (Button, NavigationMenu, Command, etc.), feedback (Alert, Toast, Dialog, etc.), ReUI advanced components (Cascader, EventCalendar, Gantt, Filters), hooks (useMediaQuery, useMobile, etc.), and utilities (cn).",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/presentation/README.md#L16-L108",
+          "version": "repo-lines-v1:sha256:d367ca6a5b8e7b1a6a702941848ef72c389e1edfd2d1eaabf87a713758ac68ca:eyJzZWxlY3RlZExpbmVDb3VudCI6OTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5ZmVkNzRkOThiMGI5ZDFkMDIwOWU3YmYzYmM1M2MzNzI2YjUzMmQ1ZjFkOWJmMzAzZTkwNmJmMjFhZGE5ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmNGY5ODBhOGY1MzhmYzM1OGM0NmE2NWFlNWZjYzExNWY3ODk1MGJlMWM2ODkyYzhkYjcyNTBjZDE2YTA2MjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4OTRkOTc3MGQ5NWU2MzNhY2M3ZmQ4NTk5ZTBkOGVmYzU4OTU2YzI1NzNkMjY3NzJmZDEwNGVhMGIzZTYwZDEifQ"
+        },
+        {
+          "resource": "repo://projects/common/presentation/src/index.ts#L1-L95",
+          "version": "repo-lines-v1:sha256:bd2815879e9f23ea48f133b40b62863baeaf2c8e96cd4a871dad27604a0512d0:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyY2IzYjFhY2U3NGRjZmQzNDI0YTUxYWJkZDQ3NGQ5OTYxYjI2MjBlNmRmNGJiNjcxODJmN2RjMGRlOWE4ZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNGNjMjljZTBlYjhmNzE1YjhkYzY0ODhkZjQ4YjhmMWRlNDM3MGRjY2FmZTU1OWViOTU0YTJjODBjNGIzNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_49fe2821965f45a6b84995777aaca61c",
+      "statement": "The observability package exports a transient-scoped pino-backed LoggerService and a @Global() LoggerModule, plus file logging helpers (buildErrorLogEntry, createTimestampedOutputLogFilePath), with output modes of structured JSON in production and pino-pretty colorized lines otherwise.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/observability/README.md#L12-L60",
+          "version": "repo-lines-v1:sha256:44b1509b97348065e4e8fe332d7e73ca8134619d5545f51df5a87e094d97cba2:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkZTIwNmRkNjk2MTU0NzNjNzZmYzQ3YWQ2NTQwMWY1MGJlZGFmMmRmY2JlNDEyNTFkYjVjYjI2MTM5OGQzMjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0ZDBkMTE2ODUyZmJhZWFhYWRiZWFmZWVkNDhiNTgyYTM4MDYzOTU4NWI5YmQxZWRiNjAwODZkNjBjNjAwYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlMDJjNDc1MDYwMTBiZTRhZDBiNGQwOWEwZmNhZTczNzc0NTc4ODY1YTE0MWIwOWJiY2U1MDE4Zjk0NDUwMmMifQ"
+        },
+        {
+          "resource": "repo://projects/common/observability/src/index.ts#L1-L4",
+          "version": "repo-lines-v1:sha256:415d745792ff5891ffa5293b98fd955ecf89c285d3290238622a5fe012abdfdc:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGNiNzczYmM1MzBkM2NlMTlkMWRmMzg5M2VmY2E2ZThmMjU4Yzk4NWJlNzliYjhlMjIwMTIwMTZjY2E1NjZjMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWRhNzE0YjQ5ZmJkZTExNjNiMDRkOTExMTZjYTA3MzMwODk4MDY4ODU2YjgxNDVmNGU5MTk3ZTY0YmMzZTg4MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.0",
-    "at": "2026-10-26T01:23:39.729Z"
+    "at": "2026-10-29T03:39:46.432Z"
   }
 }
