@@ -142,7 +142,7 @@ HYG star database v4.1 (CC BY-SA 4.0, David Nash and the HYG contributors,
 declination -45 degrees or north; the stored catalog is a derived work under
 the same license, so keep this credit wherever it is documented. The figures
 are d3-celestial's (BSD-3-Clause, Olaf Frohn,
-<https://github.com/ofrohn/d3-celestial>). `sky.constellations` (all 88 when absent, none for `none` or empty) selects which
+<https://github.com/ofrohn/d3-celestial>). `sky.constellations` (the zodiac when absent, none for `none` or empty) selects which
 figures `night-sky-lines.utilities.ts` draws, beneath the stars inside the
 turning group, cut where they leave the ring the window can show, and
 `sky.lineColor`, `sky.lineOpacity` and `sky.lineWidth` set their stroke:
@@ -161,7 +161,7 @@ lines over the ecliptic, then the constellation tree. The tree's column has no v
 heading, its folder checkboxes picking all or none; it takes
 no height of its own on a wide screen, so the other columns set the panel's
 height and the tree scrolls inside it. An absent `sky.constellations` is the
-whole set everywhere, the tree included: `useNightSkySettings` reads the same keys through
+zodiac everywhere, the tree included: `useNightSkySettings` reads the same keys through
 `readNightSkyOverrides` and writes them with `navigate({ replace: true })`, the
 `night-sky-menu.utilities.ts` mappings remove a key set back to its default
 and the Default button beside the sky's switch removes them all but

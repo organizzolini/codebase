@@ -60,8 +60,8 @@ to the default.
 - `sky.vFov` sets the degrees of altitude shown, 90 by default, and
   `sky.altBottom` the altitude at the bottom edge, from -45 to 89 and 0 by
   default, so the default view, the whole sky above the horizon from the
-  pole, holds the northern half of the ecliptic and every northern figure as
-  it turns past; a bottom below the horizon reaches further south. The pole
+  pole, holds the northern half of the ecliptic and the northern zodiac's
+  figures as they turn past; a bottom below the horizon reaches further south. The pole
   stays a degree above the top edge, so a field of view that would show it is
   cut to fit, 89° at the defaults, and a cut of more than that degree is
   warned of once.
@@ -75,7 +75,8 @@ to the default.
   comma-separated list of full names, lower case with spaces or hyphens as
   underscores, such as `ursa_major` or `canis_major`, and the words `all` and
   `zodiac` (the twelve zodiac constellations), combined as in
-  `sky.constellations=zodiac,ursa_major`. Absent, it draws all 88; `none`,
+  `sky.constellations=zodiac,ursa_major`. Absent, it draws the zodiac's; `all`
+  draws all 88, and `none`,
   or an empty value (`sky.constellations=`), draws none. A name it does not know
   is left out, with one console warning. Facing north from mid-northern
   latitudes the zodiac lies below the window, so its figures show there only
