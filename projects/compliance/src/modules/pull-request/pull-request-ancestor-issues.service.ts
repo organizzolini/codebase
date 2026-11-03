@@ -5,8 +5,8 @@ import { IssueMetadataService } from "../issue/issue-metadata.service";
 import {
   issueAncestorSchema,
   linkedIssueNumbersSchema,
-} from "./pull-request-ancestor-links.constants";
-import { PullRequestAncestorLinksService } from "./pull-request-ancestor-links.service";
+} from "./pull-request-body-links.constants";
+import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
 import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 
@@ -27,7 +27,7 @@ export class PullRequestAncestorIssuesService {
     private readonly issueMetadataService: IssueMetadataService,
     private readonly pullRequestDescendantIssuesService: PullRequestDescendantIssuesService,
     private readonly pullRequestGithubService: PullRequestGithubService,
-    private readonly pullRequestAncestorLinksService: PullRequestAncestorLinksService,
+    private readonly pullRequestBodyLinksService: PullRequestBodyLinksService,
   ) {}
 
   // 🔐 Private Fields
@@ -170,13 +170,13 @@ export class PullRequestAncestorIssuesService {
     let body: string;
 
     try {
-      body = this.pullRequestAncestorLinksService.addRelatedIssueReferences(
+      body = this.pullRequestBodyLinksService.addRelatedIssueReferences(
         context.body,
         ancestors,
       );
 
       if (descendants.length > 0) {
-        body = this.pullRequestAncestorLinksService.addRelatedIssueReferences(
+        body = this.pullRequestBodyLinksService.addRelatedIssueReferences(
           body,
           descendants,
           "Closes",

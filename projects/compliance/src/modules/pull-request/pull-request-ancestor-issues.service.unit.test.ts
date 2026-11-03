@@ -5,7 +5,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { IssueMetadataService } from "../issue/issue-metadata.service";
 
 import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
-import { PullRequestAncestorLinksService } from "./pull-request-ancestor-links.service";
+import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
 import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 
@@ -41,7 +41,7 @@ describe(PullRequestAncestorIssuesService, () => {
   let service: PullRequestAncestorIssuesService;
   let github: PullRequestGithubService;
   let children: PullRequestDescendantIssuesService;
-  let links: PullRequestAncestorLinksService;
+  let links: PullRequestBodyLinksService;
   let metadata: IssueMetadataService;
 
   beforeAll(async () => {
@@ -61,8 +61,8 @@ describe(PullRequestAncestorIssuesService, () => {
           useValue: createMock<PullRequestGithubService>(),
         },
         {
-          provide: PullRequestAncestorLinksService,
-          useValue: createMock<PullRequestAncestorLinksService>(),
+          provide: PullRequestBodyLinksService,
+          useValue: createMock<PullRequestBodyLinksService>(),
         },
       ],
     }).compile();
@@ -70,7 +70,7 @@ describe(PullRequestAncestorIssuesService, () => {
     service = await module.resolve(PullRequestAncestorIssuesService);
     github = await module.resolve(PullRequestGithubService);
     children = await module.resolve(PullRequestDescendantIssuesService);
-    links = await module.resolve(PullRequestAncestorLinksService);
+    links = await module.resolve(PullRequestBodyLinksService);
     metadata = await module.resolve(IssueMetadataService);
   });
 

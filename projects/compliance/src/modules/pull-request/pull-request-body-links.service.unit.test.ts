@@ -1,17 +1,17 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { PullRequestAncestorLinksService } from "./pull-request-ancestor-links.service";
+import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
 
-describe(PullRequestAncestorLinksService, () => {
-  let service: PullRequestAncestorLinksService;
+describe(PullRequestBodyLinksService, () => {
+  let service: PullRequestBodyLinksService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      providers: [PullRequestAncestorLinksService],
+      providers: [PullRequestBodyLinksService],
     }).compile();
 
-    service = await module.resolve(PullRequestAncestorLinksService);
+    service = await module.resolve(PullRequestBodyLinksService);
   });
 
   it("is defined", () => {
