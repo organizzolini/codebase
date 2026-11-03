@@ -2,20 +2,13 @@ import { hash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import {
   failed,
@@ -58,9 +51,9 @@ const recordsLine = (project: string): string =>
   `gh api orgs/owner/artifacts/sha256:${checksumOf(project)}/metadata/storage-records`;
 
 describe(LinkPackagesCommand, () => {
+  const moduleOptions = { mocks: [LinkPackagesService] };
   const originalExitCode = process.exitCode;
   const makeDirectory = useTemporaryDirectories();
-  let command: LinkPackagesCommand;
   let recordBodies: unknown[];
   let outputFile: string;
   let reportLines: string[];
@@ -125,35 +118,18 @@ describe(LinkPackagesCommand, () => {
         ?.groups?.["project"];
       fs.writeFileSync(output, tarballOf(String(project)));
     };
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(LinkPackagesCommand, {
       providers: [
-        LinkPackagesCommand,
         LinkPackagesService,
         ReleaseGroupService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
     const subject = await module.resolve(LinkPackagesCommand);
 
     await subject.run();
   };
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LinkPackagesCommand,
-        {
-          provide: LinkPackagesService,
-          useValue: createMock<LinkPackagesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(LinkPackagesCommand);
-  });
 
   beforeEach(() => {
     process.exitCode = undefined;
@@ -198,27 +174,21 @@ describe(LinkPackagesCommand, () => {
     process.exitCode = originalExitCode;
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      LinkPackagesCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(LinkPackagesCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        LinkPackagesCommand,
-        {
-          provide: LinkPackagesService,
-          useValue: createMock<LinkPackagesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("LinkPackagesCommand");
+    await expectLoggerContext(LinkPackagesCommand, moduleOptions);
   });
 
   it("links what has no record and lists only this run's packages to attest", async () => {

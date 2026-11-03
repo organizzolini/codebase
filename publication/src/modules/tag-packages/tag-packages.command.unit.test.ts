@@ -1,20 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import {
   failed,
@@ -45,8 +38,8 @@ const SHOW_PREFIX = "pnpm exec nx show projects --projects";
 const PUSH_LEFTOVERS = "env HUSKY=0 git push origin HEAD:refs/heads/main";
 
 describe(TagPackagesCommand, () => {
+  const moduleOptions = { mocks: [TagPackagesService] };
   const originalExitCode = process.exitCode;
-  let command: TagPackagesCommand;
   const makeDirectory = useTemporaryDirectories();
   let environmentFile: string;
   let reportLines: string[];
@@ -103,17 +96,15 @@ describe(TagPackagesCommand, () => {
         String(args.at(-1)).replace("--file=", ""),
       );
     };
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(TagPackagesCommand, {
       providers: [
         MainTipService,
         ReleaseGroupService,
-        TagPackagesCommand,
         TagPackagesService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
 
     const subject = await module.resolve(TagPackagesCommand);
 
@@ -125,21 +116,6 @@ describe(TagPackagesCommand, () => {
     runner.streamed
       .map(({ args, executable }) => [executable, ...args].join(" "))
       .filter((line) => !line.startsWith("git add"));
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TagPackagesCommand,
-        {
-          provide: TagPackagesService,
-          useValue: createMock<TagPackagesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(TagPackagesCommand);
-  });
 
   beforeEach(() => {
     process.exitCode = undefined;
@@ -169,27 +145,21 @@ describe(TagPackagesCommand, () => {
     process.exitCode = originalExitCode;
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      TagPackagesCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TagPackagesCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        TagPackagesCommand,
-        {
-          provide: TagPackagesService,
-          useValue: createMock<TagPackagesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("TagPackagesCommand");
+    await expectLoggerContext(TagPackagesCommand, moduleOptions);
   });
 
   it("tags new versions and baselines, skipping what is already tagged", async () => {

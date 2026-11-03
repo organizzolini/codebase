@@ -1,20 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import {
   failed,
@@ -44,9 +37,9 @@ const PACKAGES: Readonly<Record<string, string>> = {
 };
 
 describe(PublishPackagesCommand, () => {
+  const moduleOptions = { mocks: [PublishPackagesService] };
   const originalExitCode = process.exitCode;
   const makeDirectory = useTemporaryDirectories();
-  let command: PublishPackagesCommand;
   let home: string;
   let reportLines: string[];
   let runnerTemp: string;
@@ -107,35 +100,18 @@ describe(PublishPackagesCommand, () => {
         }),
       );
     };
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(PublishPackagesCommand, {
       providers: [
-        PublishPackagesCommand,
         PublishPackagesService,
         ReleaseGroupService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
     const subject = await module.resolve(PublishPackagesCommand);
 
     await subject.run();
   };
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishPackagesCommand,
-        {
-          provide: PublishPackagesService,
-          useValue: createMock<PublishPackagesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(PublishPackagesCommand);
-  });
 
   beforeEach(() => {
     process.exitCode = undefined;
@@ -177,27 +153,21 @@ describe(PublishPackagesCommand, () => {
     process.exitCode = originalExitCode;
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PublishPackagesCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PublishPackagesCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishPackagesCommand,
-        {
-          provide: PublishPackagesService,
-          useValue: createMock<PublishPackagesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("PublishPackagesCommand");
+    await expectLoggerContext(PublishPackagesCommand, moduleOptions);
   });
 
   it("publishes to npm, records what pnpm published, then mirrors", async () => {
