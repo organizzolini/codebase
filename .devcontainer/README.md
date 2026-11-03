@@ -178,7 +178,7 @@ Exit code is `0` if all tests pass, `1` if any fail.
 
 ### Run tests in CI
 
-The `🧑‍🏭 Devcontainer` target in [`.github/workflows/continuous-deployment.yml`](../.github/workflows/continuous-deployment.yml) builds the container image and executes the test script inside it. It runs on pull requests and on pushes to `main` that change a file the image or its test reads: `.devcontainer/**`, `.env.default`, `infrastructure/docker/docker-compose.yml`, the workflow itself, or the `packageManager` pin in `package.json`. Only pushes to `main` publish the image.
+On a pull request, the `🐋 Devcontainer` leg of [`.github/workflows/continuous-integration.yml`](../.github/workflows/continuous-integration.yml) builds the container image and executes the test script inside it, without publishing it. It runs when the change touches `.devcontainer/**`, `.env.default`, `infrastructure/docker/docker-compose.yml`, `package.json`, or the continuous deployment workflow. After the merge, the `🧑‍🏭 Devcontainer` target in [`.github/workflows/continuous-deployment.yml`](../.github/workflows/continuous-deployment.yml) does the same on pushes to `main` that change a file the image or its test reads, and only it publishes the image.
 
 Pushes to `main` publish `ghcr.io/organizzolini/codebase-devcontainer:latest`, and that image is both the usable image and the build cache. This configuration is compose-based, and for compose configurations the devcontainer CLI bakes `BUILDKIT_INLINE_CACHE=1` into the feature build, so the published image carries its own layer metadata and the next run's `cacheFrom` resolves against it. Pull the image to run the devcontainer without building it.
 

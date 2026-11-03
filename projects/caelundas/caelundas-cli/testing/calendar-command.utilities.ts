@@ -41,9 +41,9 @@ export function detectable(
 }
 
 /**
- * Runs the real `CaelundasCommand` once, against the Postgres the caller
- * has already pointed the `CAELUNDAS_POSTGRES_*` variables at, and reads
- * back the ICS and JSON files it wrote.
+ * Runs the real `CaelundasCommand` once, against the SQLite file the caller
+ * has already pointed `CAELUNDAS_SQLITE_DATABASE` at, and reads back the ICS
+ * and JSON files it wrote.
  *
  * Only the two detectors are replaced, because Swiss Ephemeris detection is
  * minutes of computation, and the ephemeris is stood in for, because nothing

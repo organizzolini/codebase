@@ -53,6 +53,7 @@ const EVERY_COMMAND = [
   "gh",
   "helm",
   "kubectl",
+  "linode-cli",
   "squawk",
   "pg_dump",
 ];
@@ -245,6 +246,7 @@ describe(SoftwareCommand, () => {
         "brew install gh",
         "brew install helm",
         "brew install kubernetes-cli",
+        "brew install linode-cli",
         "pnpm add -g squawk-cli",
         "brew install postgresql@18",
         "brew link --force --overwrite postgresql@18",
