@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.49.0](https://github.com/organizzolini/codebase/compare/v3.48.0...v3.49.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ add coinagerie agent skills ([#1887](https://github.com/organizzolini/codebase/issues/1887)) ([1babeae](https://github.com/organizzolini/codebase/commit/1babeae40373a91ba49cf9257dc1e931487e82ca)), closes [#1782](https://github.com/organizzolini/codebase/issues/1782) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1885](https://github.com/organizzolini/codebase/issues/1885) [#1778](https://github.com/organizzolini/codebase/issues/1778) [#1879](https://github.com/organizzolini/codebase/issues/1879) [#1775](https://github.com/organizzolini/codebase/issues/1775)
+
+### 📝 Documentation
+
+* **coinagerie:** 📝 add coinagerie examples and guided tour ([#1885](https://github.com/organizzolini/codebase/issues/1885)) ([da5227a](https://github.com/organizzolini/codebase/commit/da5227a0c383c468ae6d2cbe8530eb405f4c62e6)), closes [#1879](https://github.com/organizzolini/codebase/issues/1879) [#1778](https://github.com/organizzolini/codebase/issues/1778) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1779](https://github.com/organizzolini/codebase/issues/1779) [#1780](https://github.com/organizzolini/codebase/issues/1780) [#1781](https://github.com/organizzolini/codebase/issues/1781)
+
 ## [3.48.0](https://github.com/organizzolini/codebase/compare/v3.47.0...v3.48.0) (2026-11-03)
 
 ### ✨ Features
