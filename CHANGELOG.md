@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.42.0](https://github.com/organizzolini/codebase/compare/v3.41.9...v3.42.0) (2026-11-03)
+
+### ✨ Features
+
+* **caelundas:** ✨ generate a real-star night sky SVG ([#1878](https://github.com/organizzolini/codebase/issues/1878)) ([4a2dca4](https://github.com/organizzolini/codebase/commit/4a2dca48368c3b5f1e9631e1f52c978b7a982514)), closes [#1951](https://github.com/organizzolini/codebase/issues/1951) [#1951](https://github.com/organizzolini/codebase/issues/1951) [#1884](https://github.com/organizzolini/codebase/issues/1884) [#1862](https://github.com/organizzolini/codebase/issues/1862) [#1863](https://github.com/organizzolini/codebase/issues/1863) [#1864](https://github.com/organizzolini/codebase/issues/1864) [#1865](https://github.com/organizzolini/codebase/issues/1865) [#1866](https://github.com/organizzolini/codebase/issues/1866) [#1861](https://github.com/organizzolini/codebase/issues/1861) [#1951](https://github.com/organizzolini/codebase/issues/1951)
+
 ## [3.41.9](https://github.com/organizzolini/codebase/compare/v3.41.8...v3.41.9) (2026-11-03)
 
 ### ♻️ Code Refactoring

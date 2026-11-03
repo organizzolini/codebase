@@ -2320,6 +2320,7 @@ graph LR
   file_caelundas_web_codometer_config_ts["caelundas-web/codometer.config.ts"]
   file_caelundas_web_eslint_config_ts["caelundas-web/eslint.config.ts"]
   file_caelundas_web_scripts_build_events_database_ts["caelundas-web/scripts/build-events-database.ts"]
+  file_caelundas_web_scripts_build_star_catalog_ts["caelundas-web/scripts/build-star-catalog.ts"]
   file_caelundas_web_src_client_tsx["caelundas-web/src/client.tsx"]
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx["caelundas-web/src/components/calendar-agenda/agenda-row-content.tsx"]
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_unit_test_tsx["caelundas-web/src/components/calendar-agenda/agenda-row-content.unit.test.tsx"]
@@ -2631,6 +2632,17 @@ graph LR
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_unit_test_ts["caelundas-web/src/hooks/use-filter-query/use-filter-query.unit.test.ts"]
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts["caelundas-web/src/hooks/use-filter-query/use-filter-query.utilities.ts"]
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts["caelundas-web/src/hooks/use-filter-query/use-filter-query.utilities.unit.test.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts["caelundas-web/src/hooks/use-night-sky/night-sky.constants.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts["caelundas-web/src/hooks/use-night-sky/night-sky.types.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts["caelundas-web/src/hooks/use-night-sky/night-sky.utilities.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_unit_test_ts["caelundas-web/src/hooks/use-night-sky/night-sky.utilities.unit.test.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_constants_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.constants.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_schemas_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.schemas.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_schemas_unit_test_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.schemas.unit.test.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_types_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.types.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_unit_test_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.unit.test.ts"]
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_utilities_ts["caelundas-web/src/hooks/use-night-sky/use-night-sky.utilities.ts"]
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_constants_ts["caelundas-web/src/hooks/use-tag-picker/use-tag-picker.constants.ts"]
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_ts["caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts"]
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_types_ts["caelundas-web/src/hooks/use-tag-picker/use-tag-picker.types.ts"]
@@ -7969,6 +7981,14 @@ graph LR
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_src_components_calendar_filters_event_filter_tree_constants_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_ts
   file_caelundas_web_src_hooks_use_filter_query_use_filter_query_utilities_unit_test_ts --> file_caelundas_web_testing_event_filters_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_constants_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_night_sky_utilities_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_schemas_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_schemas_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_types_ts
+  file_caelundas_web_src_hooks_use_night_sky_use_night_sky_unit_test_ts --> file_caelundas_web_src_hooks_use_night_sky_use_night_sky_ts
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_ts --> file_caelundas_web_src_components_filter_tag_editor_event_filter_tag_tree_types_ts
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_ts --> file_caelundas_web_src_components_filter_tag_editor_event_filter_tag_tree_utilities_ts
   file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_ts --> file_caelundas_web_src_hooks_use_tag_picker_use_tag_picker_constants_ts
@@ -14893,7 +14913,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-64403-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-64406-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-4.81_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-163-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-616-3178c6?style=flat-square)
@@ -14921,8 +14941,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Constants](https://img.shields.io/badge/Constants-3109-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-2888-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-834-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3098-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5902-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3100-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5904-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -14958,12 +14978,12 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3489-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3490-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-470-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-90-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1670-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3346-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1671-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3348-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
 ![YAML Comments](https://img.shields.io/badge/YAML_Comments-655-64748b?style=flat-square)
@@ -15107,10 +15127,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7396 |
-| Files | 2364 |
-| Calls traced | 8094 |
-| Call stacks | 2069 |
+| Callables | 7434 |
+| Files | 2373 |
+| Calls traced | 8126 |
+| Call stacks | 2079 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
 | Unfollowable calls | 455 |
