@@ -88,6 +88,13 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
         },
       },
       {
+        patterns: ["projects/ic-suite/coinagerie/coinagerie-cli"],
+        substitutions: {
+          type: "projects/ic-suite/coinagerie",
+          workspaceRelativePrefix: "../../../../",
+        },
+      },
+      {
         patterns: ["projects/ic-suite/conformetry/conformetry-cli"],
         substitutions: {
           type: "projects/ic-suite/conformetry",
