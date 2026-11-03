@@ -32,7 +32,7 @@ Register it in `nx.json`:
       "plugin": "@codependix/nx",
       "options": {
         "configurationPath": "configuration/codependix.config.ts",
-        "gateTargetName": "codependix-gate"
+        "gateTargetName": "codependix-bound"
       }
     }
   ]
@@ -42,7 +42,7 @@ Register it in `nx.json`:
 | Option | Meaning |
 | ------ | ------- |
 | `configurationPath` | **Required.** Where the codependix configuration lives. Registering the plugin without it fails inference, naming the option; there is no default path |
-| `gateTargetName` | Name of the inferred gate target. `codependix-gate` when omitted |
+| `gateTargetName` | Name of the inferred gate target. `codependix-bound` when omitted |
 
 The gate runs the command line under the `@swc-node/register` hooks, which
 this plugin depends on and registers itself — the workspace does not need to
@@ -59,9 +59,9 @@ project Nx infers from a `package.json` alone gets no gate until it is given
 a `project.json` as well.
 
 ```bash
-nx run lexico-entities:codependix-gate          # one project
-nx run-many -t codependix-gate                  # every project
-nx affected -t codependix-gate                  # only what changed
+nx run lexico-entities:codependix-bound          # one project
+nx run-many -t codependix-bound                  # every project
+nx affected -t codependix-bound                  # only what changed
 ```
 
 ### The gate
@@ -169,8 +169,8 @@ stays cached.
 ### Executor options
 
 ```bash
-nx run lexico-api:codependix-gate --projects=lexico-entities,lexico-api
-nx run logging:codependix-gate --tags=type:package --dependencies=false
+nx run lexico-api:codependix-bound --projects=lexico-entities,lexico-api
+nx run logging:codependix-bound --tags=type:package --dependencies=false
 ```
 
 | Option | Meaning |

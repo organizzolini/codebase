@@ -321,7 +321,7 @@ owner.
 
 ## The per-project gate
 
-In an Nx workspace the `@codependix/nx` plugin infers a `codependix-gate` target
+In an Nx workspace the `@codependix/nx` plugin infers a `codependix-bound` target
 for every project described by a `project.json`, except the workspace root. It
 runs `--check boundaries --projects <project>` over that project and its
 dependencies. A project Nx infers from a `package.json` alone gets no gate until
@@ -334,7 +334,7 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
       "plugin": "@codependix/nx",
       "options": {
         "configurationPath": "configuration/codependix.config.ts",
-        "gateTargetName": "codependix-gate"
+        "gateTargetName": "codependix-bound"
       }
     }
   ]
