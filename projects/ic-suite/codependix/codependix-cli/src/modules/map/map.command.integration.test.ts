@@ -1,34 +1,24 @@
 import {
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
 import path from "node:path";
 
 import { Test } from "@nestjs/testing";
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { captureOutput, useTemporaryDirectory } from "@codebase/testing";
 
 import { MainModule } from "../../codependix-cli.module";
 
 import { MapCommand } from "./map.command";
 
+import type { CapturedOutput } from "@codebase/testing";
 import type { MapCommandOptions } from "@codependix/configuration";
-import type { MockInstance } from "vitest";
 
 /**
  * A fixture Nx project graph, standing in for `nx graph --file=graph.json` —
@@ -60,6 +50,7 @@ const PROJECT_GRAPH = {
 describe("map command", () => {
   describe("over a fixture tree", () => {
     let workingDirectory: string;
+    const getWorkingDirectory = useTemporaryDirectory("codependix-map");
     let originalWorkingDirectory: string;
 
     /** Runs the map command with the process rooted at the fixture tree. */
@@ -100,7 +91,7 @@ describe("map command", () => {
 
     beforeAll(() => {
       originalWorkingDirectory = process.cwd();
-      workingDirectory = mkdtempSync(path.join(tmpdir(), "codependix-map-"));
+      workingDirectory = getWorkingDirectory();
 
       mkdirSync(path.join(workingDirectory, "packages/project-with-own-file"), {
         recursive: true,
@@ -181,10 +172,6 @@ describe("map command", () => {
 
       // `packages/project-without-a-file/` deliberately carries no
       // `codependix.config.ts` of its own — the "project with no file" case.
-    });
-
-    afterAll(() => {
-      rmSync(workingDirectory, { force: true, recursive: true });
     });
 
     it("writes a project's own file's export, spreading and then overriding projectDefaults", async () => {
@@ -295,6 +282,7 @@ describe("map command", () => {
 
   describe("cli overrides and graph-type toggles", () => {
     let workingDirectory: string;
+    const getWorkingDirectory = useTemporaryDirectory("codependix-flags");
     let originalWorkingDirectory: string;
     let widgetGraphPath: string;
 
@@ -330,7 +318,7 @@ describe("map command", () => {
 
     beforeAll(() => {
       originalWorkingDirectory = process.cwd();
-      workingDirectory = mkdtempSync(path.join(tmpdir(), "codependix-flags-"));
+      workingDirectory = getWorkingDirectory();
       widgetGraphPath = path.join(workingDirectory, "widget-neighborhood.json");
 
       mkdirSync(path.join(workingDirectory, "packages/widget"), {
@@ -374,10 +362,6 @@ describe("map command", () => {
           "",
         ].join("\n"),
       );
-    });
-
-    afterAll(() => {
-      rmSync(workingDirectory, { force: true, recursive: true });
     });
 
     it("still writes every graph type's export when no flag overrides or toggles anything", async () => {
@@ -464,8 +448,11 @@ describe("map command", () => {
 
   describe("combined output and format flags", () => {
     let workingDirectory: string;
+    const getWorkingDirectory = useTemporaryDirectory(
+      "codependix-combined-output",
+    );
     let originalWorkingDirectory: string;
-    let stdoutSpy: MockInstance<typeof process.stdout.write>;
+    let output: CapturedOutput;
 
     /** Runs the map command with the process rooted at the fixture tree. */
     async function run(
@@ -473,7 +460,6 @@ describe("map command", () => {
     ): Promise<{ exitCode: number; printed: string }> {
       process.chdir(workingDirectory);
       process.exitCode = 0;
-      stdoutSpy.mockClear();
 
       const module = await Test.createTestingModule({
         imports: [MainModule],
@@ -483,9 +469,7 @@ describe("map command", () => {
       await command.run([], { config: "codependix.config.ts", ...options });
 
       const exitCode = process.exitCode;
-      const printed = stdoutSpy.mock.calls
-        .map((call: unknown[]) => String(call[0]))
-        .join("");
+      const printed = output.stdout();
 
       process.exitCode = 0;
       process.chdir(originalWorkingDirectory);
@@ -498,9 +482,7 @@ describe("map command", () => {
 
     beforeAll(() => {
       originalWorkingDirectory = process.cwd();
-      workingDirectory = mkdtempSync(
-        path.join(tmpdir(), "codependix-combined-output-"),
-      );
+      workingDirectory = getWorkingDirectory();
 
       mkdirSync(path.join(workingDirectory, "packages/widget/src"), {
         recursive: true,
@@ -559,15 +541,7 @@ describe("map command", () => {
     });
 
     beforeEach(() => {
-      stdoutSpy = vi.spyOn(process.stdout, "write").mockReturnValue(true);
-    });
-
-    afterEach(() => {
-      stdoutSpy.mockRestore();
-    });
-
-    afterAll(() => {
-      rmSync(workingDirectory, { force: true, recursive: true });
+      output = captureOutput();
     });
 
     it("writes every active graph type's data combined into one JSON file, keyed by graph type", async () => {
@@ -676,7 +650,8 @@ describe("map command", () => {
 
   describe("boundary checks charged to projects", () => {
     let originalWorkingDirectory: string;
-    const workingDirectories: string[] = [];
+    const getFixtureRoot = useTemporaryDirectory("codependix-charge");
+    let fixtureCount = 0;
 
     /**
      * Writes a fixture workspace whose Nx graph draws the given edges between
@@ -687,11 +662,12 @@ describe("map command", () => {
       projects: string[];
       rules: string;
     }): string {
-      const workingDirectory = mkdtempSync(
-        path.join(tmpdir(), "codependix-charge-"),
+      const workingDirectory = path.join(
+        getFixtureRoot(),
+        `workspace-${String((fixtureCount += 1))}`,
       );
 
-      workingDirectories.push(workingDirectory);
+      mkdirSync(workingDirectory);
       writeFileSync(
         path.join(workingDirectory, "codependix-graph.json"),
         JSON.stringify({
@@ -740,7 +716,7 @@ describe("map command", () => {
 
       const errorSpy = vi.spyOn(LoggerService.prototype, "error");
       const warnSpy = vi.spyOn(LoggerService.prototype, "warn");
-      const printSpy = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+      const output = captureOutput();
       const module = await Test.createTestingModule({
         imports: [MainModule],
       }).compile();
@@ -755,13 +731,10 @@ describe("map command", () => {
       const exitCode = process.exitCode;
       const loggedErrors = [...errorSpy.mock.calls];
       const loggedWarns = [...warnSpy.mock.calls];
-      const printed = printSpy.mock.calls
-        .map(([chunk]) => String(chunk))
-        .join("");
+      const printed = output.stdout();
 
       errorSpy.mockRestore();
       warnSpy.mockRestore();
-      printSpy.mockRestore();
       process.exitCode = 0;
       process.chdir(originalWorkingDirectory);
 
@@ -801,12 +774,6 @@ describe("map command", () => {
         projects: ["a", "b", "c"],
         rules: FORBID_A_TO_B,
       });
-    });
-
-    afterAll(() => {
-      for (const workingDirectory of workingDirectories) {
-        rmSync(workingDirectory, { force: true, recursive: true });
-      }
     });
 
     it("fails a cross-project cycle for a named project, naming both", async () => {

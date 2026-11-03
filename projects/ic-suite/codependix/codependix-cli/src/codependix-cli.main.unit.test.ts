@@ -1,4 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { captureExitCode } from "@codebase/testing";
 
 interface CommandFactoryRunOptions {
   readonly bufferLogs?: boolean;
@@ -64,19 +66,13 @@ function getRunOptions(): CommandFactoryRunOptions {
 }
 
 describe("main", () => {
-  const originalExitCode = process.exitCode;
-
   beforeEach(() => {
     vi.resetModules();
     mockLoggerError.mockClear();
     mockLoggerSetContext.mockClear();
     mockLogToStandardError.mockClear();
     mockCommandFactoryRun.mockClear();
-    process.exitCode = undefined;
-  });
-
-  afterEach(() => {
-    process.exitCode = originalExitCode;
+    captureExitCode();
   });
 
   it("bootstraps the command factory with a buffered stderr logger", async () => {

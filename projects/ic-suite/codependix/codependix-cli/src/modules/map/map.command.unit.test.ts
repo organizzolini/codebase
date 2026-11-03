@@ -20,13 +20,16 @@ import {
   ReportingService,
 } from "@codependix/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { MapCommand } from "./map.command";
 
+import type { LoggerService } from "@codebase/observability";
 import type { MapCommandOptions } from "@codependix/configuration";
 import type { GraphRunOutcome, RunMode } from "@codependix/core";
 import type { CombinedGraphExports } from "@codependix/output";
@@ -65,7 +68,6 @@ const VIOLATION: JudgedBoundaryFinding<BoundaryViolation> = {
 };
 
 describe(MapCommand, () => {
-  let command: MapCommand;
   let boundaryCheckService: BoundaryCheckService;
   let codependixService: GraphRunService;
   let combinedOutputService: CombinedOutputService;
@@ -146,38 +148,6 @@ describe(MapCommand, () => {
     return mode;
   }
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MapCommand,
-        {
-          provide: BoundaryCheckService,
-          useValue: createMock<BoundaryCheckService>(),
-        },
-        { provide: GraphRunService, useValue: createMock<GraphRunService>() },
-        {
-          provide: CombinedOutputService,
-          useValue: createMock<CombinedOutputService>(),
-        },
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: ReportingService,
-          useValue: createMock<ReportingService>(),
-        },
-        {
-          provide: RunContextService,
-          useValue: createMock<RunContextService>(),
-        },
-      ],
-    }).compile();
-
-    command = await module.resolve(MapCommand);
-  });
-
   beforeEach(() => {
     process.exitCode = 0;
     boundaryCheckService = createMock<BoundaryCheckService>();
@@ -226,8 +196,19 @@ describe(MapCommand, () => {
     selectMode();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MapCommand, {
+      mocks: [
+        BoundaryCheckService,
+        GraphRunService,
+        CombinedOutputService,
+        ConfigurationService,
+        ReportingService,
+        RunContextService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(MapCommand);
   });
 
   describe("an empty project selection", () => {
@@ -282,37 +263,16 @@ describe(MapCommand, () => {
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MapCommand,
-        {
-          provide: BoundaryCheckService,
-          useValue: createMock<BoundaryCheckService>(),
-        },
-        { provide: GraphRunService, useValue: createMock<GraphRunService>() },
-        {
-          provide: CombinedOutputService,
-          useValue: createMock<CombinedOutputService>(),
-        },
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: ReportingService,
-          useValue: createMock<ReportingService>(),
-        },
-        {
-          provide: RunContextService,
-          useValue: createMock<RunContextService>(),
-        },
+    await expectLoggerContext(MapCommand, {
+      mocks: [
+        BoundaryCheckService,
+        GraphRunService,
+        CombinedOutputService,
+        ConfigurationService,
+        ReportingService,
+        RunContextService,
       ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("MapCommand");
+    });
   });
 
   it("reports a rejected command line without attempting anything", async () => {
