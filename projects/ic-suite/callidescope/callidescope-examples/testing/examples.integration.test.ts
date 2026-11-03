@@ -622,7 +622,7 @@ describe("callidescope examples (integration)", () => {
       // Every `*-core` here arrives behind the `configuration` package above
       // it: each toolchain moved its result vocabulary down into a contracts
       // leaf. Neither refusal above is weakened. The coinagerie trio arrives
-      // the same way, through the scaffold's `coinagerie.config.ts`.
+      // the same way, via `coinagerie.config.ts`.
       expect(
         result.projects.map((project) => project.projectName),
       ).toStrictEqual([
