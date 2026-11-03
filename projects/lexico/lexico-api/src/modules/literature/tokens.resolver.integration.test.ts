@@ -21,7 +21,7 @@ import { TokensResolver } from "./tokens.resolver";
 import type { TokenType } from "./token.entities";
 import type { TokensArguments } from "./tokens-arguments.entities";
 import type { Connection } from "@codebase/interface";
-import type { DatabaseTestingModule } from "@codebase/testing/postgres";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** A page of tokens, reduced to what a reader can observe of it. */
 interface TokensPage {

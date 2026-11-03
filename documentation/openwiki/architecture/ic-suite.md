@@ -1,10 +1,11 @@
 ---
 type: "Reference"
 title: "IC Suite Toolchains"
-openwiki_generated: true
+description: "Documents the four independently versioned IC-Suite toolchains (callidescope, codependix, codometer, conformetry) following the five-layer spine architecture. Covers package structure, CLI usage, Nx targets, CI gate flow, and integration patterns."
+tags: ["architecture", "ic-suite", "toolchains", "nx", "ci"]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-6315af249215d8768fb68811
     resource: repo://.github/workflows/continuous-integration.yml
@@ -24,6 +25,8 @@ sources:
     resource: repo://documentation/adr/0013-name-the-ic-suite-layers.md
   - id: openwiki-source-b42e459b34f258e0cbfab07f
     resource: repo://documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md
+  - id: openwiki-source-6ba748254f38112b13d529da
+    resource: repo://nx.json
   - id: openwiki-source-f45834e39c42c6991e4c7485
     resource: repo://projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.command.ts
   - id: openwiki-source-acc120b5d24d8b674e327cbe
@@ -42,9 +45,8 @@ sources:
     resource: repo://projects/ic-suite/conformetry/conformetry-nx/src/executors/validate/executor.ts
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
-
 
 # IC Suite Toolchains
 
@@ -58,8 +60,8 @@ core → configuration → analysis → output → cli
                                      └─ nx (optional plugin layer, tagged layer:cli)
 ```
 
-<!-- openwiki: broken internal link [documentation/adr/0013-name-the-ic-suite-layers.md] file "documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-This convergence was deliberately landed as vocabulary first ([ADR 0013](documentation/adr/0013-name-the-ic-suite-layers.md)), with `layer:*` tags applied in follow-up pull requests per toolchain.
+<!-- openwiki: broken internal link [../documentation/adr/0013-name-the-ic-suite-layers.md] file "../documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+This convergence was deliberately landed as vocabulary first ([ADR 0013](../documentation/adr/0013-name-the-ic-suite-layers.md)), with `layer:*` tags applied in follow-up pull requests per toolchain.
 
 ## Five-Layer Spine
 
@@ -131,8 +133,8 @@ Reads what each project depends on, renders graphs as JSON/Markdown/mermaid, gat
 | `@codependix/agents` | *(none)* | ❌ | Agent skills, travel via `skills-lock.json` |
 | `@codependix/examples` | *(none)* | ❌ | 21 subjects built to be graphed, each carrying rendered guide |
 
-<!-- openwiki: broken internal link [documentation/adr/0013-name-the-ic-suite-layers.md#the-accepted-codependix-nx-projects-wart] file "documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-> **Note on `codependix-nx-projects`**: It keeps its name even though it collides with the `nx` plugin layer. It is an **analysis-layer** graph builder that *reads* the Nx project graph, not a plugin registered in `nx.json`. This is a documented, deliberate exception ([ADR 0013](documentation/adr/0013-name-the-ic-suite-layers.md#the-accepted-codependix-nx-projects-wart)).
+<!-- openwiki: broken internal link [../documentation/adr/0013-name-the-ic-suite-layers.md#the-accepted-codependix-nx-projects-wart] file "../documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+> **Note on `codependix-nx-projects`**: It keeps its name even though it collides with the `nx` plugin layer. It is an **analysis-layer** graph builder that *reads* the Nx project graph, not a plugin registered in `nx.json`. This is a documented, deliberate exception ([ADR 0013](../documentation/adr/0013-name-the-ic-suite-layers.md#the-accepted-codependix-nx-projects-wart)).
 
 ### codometer — Repository measurement toolchain
 
@@ -184,8 +186,8 @@ A package outside the publishable set is held by the first two, never by only on
 
 ## Independent Versioning with Cascading Dependents
 
-<!-- openwiki: broken internal link [documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md] file "documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-The 29 publishable packages across the four suites version independently using **Nx Release** (`nx release`) with `projectsRelationship: "independent"` ([ADR 0017](documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md)).
+<!-- openwiki: broken internal link [../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md] file "../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+The 29 publishable packages across the four suites version independently using **Nx Release** (`nx release`) with `projectsRelationship: "independent"` ([ADR 0017](../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md)).
 
 - **Conventional commits** determine semver bump specifiers for every package a commit affects.
 - **Cascade**: When a dependency package is bumped, Nx Release automatically cascades a **patch version bump** (`updateDependents: "auto"`) and updates manifest dependency constraints across all internal dependents.
@@ -361,7 +363,10 @@ conformetry generate --config <path> [--template <name>] [--inputs <json>]
 
 ## CI Gate Flow
 
-The following sequence diagram shows how the four toolchains gate a pull request in CI via the `guard-code` aggregator target.
+The following sequence diagram shows how the toolchains gate a pull request in CI. There are **two separate gate paths**:
+
+1. **`guard-code`** — Runs callidescope, codependix, and conformetry gates per affected project (plus other workspace integrity checks)
+2. **`build-projects`** — Runs codometer measurement as part of every build
 
 ```mermaid
 sequenceDiagram
@@ -371,47 +376,76 @@ sequenceDiagram
     participant NX as Nx Affected
     participant CAL as callidescope-gate
     participant DEP as codependix-gate
-    participant COD as codometer:check
     participant CON as conformetry-validate
+    participant CAT as catalog-manifests
+    participant LCK as lockfile
+    participant PRT as project-ports
+    participant RDP as readme-projects
+    participant VSC as vscode-extensions
+    participant BLD as build-projects
+    participant COD as codometer:check
     participant GH as GitHub Checks
 
     Dev->>PR: Push branch
     PR->>NX: nx affected -t guard-code
-    NX->>CAL: callidescope --check depth,breadth
-    CAL-->>NX: depth/breadth findings per project
-    NX->>DEP: codependix map --check boundaries
-    DEP-->>NX: boundary violations per project
-    NX->>COD: codometer measure --check limits
-    COD-->>NX: limit breaches per project
-    NX->>CON: conformetry validate --check
-    CON-->>NX: conformance scores per project
-    NX-->>GH: Aggregated pass/fail
+    par Parallel per affected project
+        NX->>CAL: callidescope --check depth,breadth
+        CAL-->>NX: depth/breadth findings per project
+        NX->>DEP: codependix map --check boundaries
+        DEP-->>NX: boundary violations per project
+        NX->>CON: conformetry validate --check
+        CON-->>NX: conformance scores per project
+    end
+    NX->>CAT: Validate catalog manifests
+    NX->>LCK: Validate lockfile integrity
+    NX->>PRT: Validate project ports
+    NX->>RDP: Validate README projects
+    NX->>VSC: Validate VS Code extensions
+    NX-->>GH: Aggregated pass/fail (guard-code)
+    GH-->>PR: Status checks (green/red)
+
+    Note over Dev,BLD: Separate gate path for codometer
+    PR->>NX: nx affected -t build-projects
+    NX->>BLD: build + codometer
+    par Parallel per affected project
+        BLD->>COD: codometer measure --check limits
+        COD-->>NX: limit breaches per project
+    end
+    NX-->>GH: Aggregated pass/fail (build-projects)
     GH-->>PR: Status checks (green/red)
 ```
 
-**Caption**: CI gate sequence. `nx affected -t guard-code` runs all four toolchain gates in parallel per affected project. Each toolchain runs its `--check` variant, reports findings charged to each project, and Nx aggregates results into GitHub status checks.
+**Caption**: CI gate sequence. `nx affected -t guard-code` runs callidescope, codependix, and conformetry gates plus workspace integrity checks in parallel per affected project. Separately, `nx affected -t build-projects` runs the build plus codometer measurement. Each toolchain reports findings charged to each project, and Nx aggregates results into GitHub status checks.
 
 ### The `guard-code` Aggregator
 
-Defined in `nx.json` under `targetDefaults.guard-code`, this `nx:noop` target depends on the per-project gates:
+Defined in `nx.json` under `targetDefaults.guard-code`, this `nx:noop` target depends on the per-project gates plus workspace integrity checks:
 
 ```json
 "guard-code": {
+  "cache": false,
+  "configurations": {
+    "check": {},
+    "write": {}
+  },
+  "defaultConfiguration": "check",
   "dependsOn": [
     "callidescope-gate",
+    "catalog-manifests",
     "codependix-gate",
     "conformetry-validate",
-    "catalog-manifests",
     "lockfile",
     "project-ports",
     "readme-projects",
     "vscode-extensions"
   ],
-  "executor": "nx:noop"
+  "description": "Aggregator for guard-code. `callidescope-gate` and `codependix-gate` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-gate` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
+  "executor": "nx:noop",
+  "inputs": ["default"]
 }
 ```
 
-Running `nx run <project>:guard-code` (or `nx affected -t guard-code`) executes all four IC-Suite gates for the affected projects. Neither `callidescope-gate` nor `codependix-gate` has configurations, so the configuration passed to `guard-code` falls through to their defaults.
+Running `nx run <project>:guard-code` (or `nx affected -t guard-code`) executes all three IC-Suite gates plus workspace integrity checks for the affected projects. Neither `callidescope-gate` nor `codependix-gate` has configurations, so the configuration passed to `guard-code` falls through to their defaults.
 
 ### The `build-projects` Aggregator
 
@@ -429,10 +463,10 @@ Every build is measured by codometer; a size-limit breach fails the build.
 `lint-staged` (configured in `configuration/lint-staged.config.ts`) runs on every staged file:
 
 ```bash
-nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --parallel=4 --base=HEAD --head=<staged-commit>
+nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate --configuration=check --parallel=4 --base=HEAD --head=<staged-commit>
 ```
 
-This runs the full quality suite including `guard-code` (hence all four IC-Suite gates) before commit.
+This runs the full quality suite including `guard-code` (hence callidescope, codependix, conformetry gates) before commit. Note: `conformetry-validate` is invoked separately (not through `guard-code`) and `codometer` is not part of the pre-commit gate — it runs in `build-projects` during CI.
 
 ### CI Workflow
 
@@ -447,8 +481,8 @@ All checks must pass before proceeding. Failures are triaged with the `triage-in
 
 ## No-Shared-Package Constraint
 
-<!-- openwiki: broken internal link [documentation/adr/0013-name-the-ic-suite-layers.md#the-no-shared-package-constraint] file "documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-The four toolchains share nothing today but a logger, and the layer vocabulary **must not change that**. No cross-toolchain `@ic-suite/*` package is created. The common `ConfigurationService` shape is a **convention, not an imported type** — each toolchain's `core` declares its own structurally identical shape, and no toolchain imports that shape from anywhere else. A later session that "simplifies" the four toolchains onto a shared dependency is undoing this decision, not completing it ([ADR 0013](documentation/adr/0013-name-the-ic-suite-layers.md#the-no-shared-package-constraint)).
+<!-- openwiki: broken internal link [../documentation/adr/0013-name-the-ic-suite-layers.md#the-no-shared-package-constraint] file "../documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+The four toolchains share nothing today but a logger, and the layer vocabulary **must not change that**. No cross-toolchain `@ic-suite/*` package is created. The common `ConfigurationService` shape is a **convention, not an imported type** — each toolchain's `core` declares its own structurally identical shape, and no toolchain imports that shape from anywhere else. A later session that "simplifies" the four toolchains onto a shared dependency is undoing this decision, not completing it ([ADR 0013](../documentation/adr/0013-name-the-ic-suite-layers.md#the-no-shared-package-constraint)).
 
 ## Integration with Workspace
 
@@ -544,7 +578,7 @@ flowchart TD
 - [Conformetry Domain](../domain/conformetry.md) — Template generation and conformance domain model
 - [Code Quality Gates](../workflows/code-quality.md) — Four IC-Suite quality gates and their integration into CI via Nx targets
 - [Release Workflow](../workflows/release.md) — Independent versioning and cascading dependents in practice
-<!-- openwiki: broken internal link [documentation/adr/0013-name-the-ic-suite-layers.md] file "documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [ADR 0013: Name the ic-suite layers](documentation/adr/0013-name-the-ic-suite-layers.md) — Layer vocabulary, core-vs-configuration test, analysis layer rule
-<!-- openwiki: broken internal link [documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md] file "documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [ADR 0017: Independent package versioning with cascading dependents](documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md) — Nx Release configuration, cascade mechanics, two-tier releases
+<!-- openwiki: broken internal link [../documentation/adr/0013-name-the-ic-suite-layers.md] file "../documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+- [ADR 0013: Name the ic-suite layers](../documentation/adr/0013-name-the-ic-suite-layers.md) — Layer vocabulary, core-vs-configuration test, analysis layer rule
+<!-- openwiki: broken internal link [../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md] file "../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+- [ADR 0017: Independent package versioning with cascading dependents](../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md) — Nx Release configuration, cascade mechanics, two-tier releases

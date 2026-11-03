@@ -1,6 +1,6 @@
 import { Column, Entity, Index, ManyToOne } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import type { Lexeme } from "./lexeme.entity";
 
@@ -12,7 +12,7 @@ import type { Lexeme } from "./lexeme.entity";
     "A named principal part (e.g. first, infinitive) of a Latin dictionary entry",
   name: "principal_parts",
 })
-export class PrincipalPart extends DeletableEntity {
+export class PrincipalPart extends PostgresqlDeletableEntity {
   @Index()
   @ManyToOne("Lexeme", "principalParts", {
     onDelete: "CASCADE",

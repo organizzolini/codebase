@@ -1,11 +1,11 @@
 ---
 type: "Reference"
 title: "External Service Integrations"
-description: "Overview of all external service integrations: Ollama (local LLM for Affirmancy), SearxNG (metasearch for Affirmancy), Swiss Ephemeris (astronomical data for Caelundas), and the shared Postgres container."
-tags: ["integrations", "external-services", "ollama", "searxng", "postgres", "swiss-ephemeris"]
+description: "Overview of all external service integrations: Ollama (local LLM for Affirmancy), SearxNG (metasearch for Affirmancy), Swiss Ephemeris (astronomical data for Caelundas), PostgreSQL (shared container for Lexico and Meanderaw), and Open WebUI (chat interface for Ollama)."
+tags: ["integrations", "external-services", "ollama", "searxng", "postgres", "swiss-ephemeris", "open-webui"]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-b1fbe7ba8fb86efe70b945c0
     resource: repo://documentation/planning/2026-02-27-feature-affirmations-application-1.plan.md
@@ -21,7 +21,7 @@ sources:
     resource: repo://projects/affirmancy/searxng.settings.yml
   - id: openwiki-source-365913b525ddd217ee2335b6
     resource: repo://projects/caelundas/caelundas-cli/README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
 # External Service Integrations
@@ -32,10 +32,11 @@ This page documents the external services that the codebase integrates with, inc
 
 | Service | Purpose | Used By | Local Port | Configuration |
 |---------|---------|---------|------------|---------------|
-| **Ollama** | Local LLM inference (gemma4:e2b) | Affirmancy | 11434 | `nx run affirmancy:ollama` (host-managed) |
-| **PostgreSQL** | Primary datastore | Lexico, Meanderaw, Caelundas | 5432 | `nx run infrastructure:postgres:up` |
-| **SearxNG** | Metasearch (135+ engines) | Affirmancy | 8889 | `nx run infrastructure:searxng:up` + `projects/affirmancy/searxng.settings.yml` |
+| **Ollama** | Local LLM inference (`gemma4:e2b`) | Affirmancy | 11434 | `nx run affirmancy:ollama` (host-managed) |
+| **PostgreSQL** | Primary datastore | Lexico, Meanderaw | 5432 | `nx run infrastructure:postgres:up` |
+| **SearxNG** | Metasearch (curated engines) | Affirmancy | 8889 | `nx run infrastructure:searxng:up` + `projects/affirmancy/searxng.settings.yml` |
 | **Swiss Ephemeris** | JPL DE431 astronomical data | Caelundas | N/A (local files) | `nx run caelundas-cli:download-ephemeris` |
+| **Open WebUI** | Browser chat interface for Ollama | Affirmancy (manual use) | 3001 | `nx run infrastructure:open-webui:up` |
 
 ---
 
@@ -99,13 +100,13 @@ Returns the list of locally available models.
 | **Image** | `postgres:18-alpine` |
 | **Container name** | `postgres` |
 | **Volume** | `postgres_data:/var/lib/postgresql` |
-| **Projects** | `caelundas`, `lexico`, `meanderaw` |
+| **Projects** | `lexico`, `meanderaw` |
 
 ### Configuration
 
 Defined in `infrastructure/docker/docker-compose.yml`:
 
-- **POSTGRES_PROJECTS**: `caelundas lexico meanderaw` — each project gets a `<project>_username` role, `<project>_development` database, and `<project>` schema
+- **POSTGRES_PROJECTS**: `lexico meanderaw` — each project gets a `<project>_username` role, `<project>_development` database, and `<project>` schema
 - **env_file**: `../../.env` — admin credentials (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`)
 - **Init script**: Inline config `postgres-databases` creates roles/databases/schemas when volume is empty
 
@@ -116,7 +117,8 @@ Each project in `POSTGRES_PROJECTS` receives:
 - Database: `<project>_development` (owned by role)
 - Schema: `<project>` (owned by role, inside the database)
 
-The Meanderaw project is an exception — see [ADR 0022](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md) for details.
+<!-- openwiki: broken internal link [../architecture/adr/0022-give-every-database-project-its-own-database-schema-and-role.md] file "../architecture/adr/0022-give-every-database-project-its-own-database-schema-and-role.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+The Meanderaw project follows the same pattern. See [ADR 0022](../architecture/adr/0022-give-every-database-project-its-own-database-schema-and-role.md) for the architectural decision.
 
 ### Adding a Project to an Existing Volume
 
@@ -133,11 +135,19 @@ The script stops at the first object that already exists, so name only the proje
 - `nx run infrastructure:postgres:down` — Stop PostgreSQL
 - `nx run infrastructure:postgres:recreate` — Remove volume and restart (destructive)
 
+### Health Check
+
+```bash
+pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+```
+
+Runs every 10s with 5s timeout, 5 retries.
+
 ---
 
 ## SearxNG — Self-Hosted Metasearch
 
-**Purpose**: Aggregates results from 135+ search engines for the Affirmancy research agent. No API keys required; runs entirely self-hosted.
+**Purpose**: Aggregates results from curated search engines for the Affirmancy research agent. No API keys required; runs entirely self-hosted.
 
 | Property | Value |
 |----------|-------|
@@ -200,6 +210,14 @@ Higher timeouts accommodate slow engines; LLM tolerates latency better than huma
 - `nx run infrastructure:searxng:down` — Stop SearxNG
 - `nx run infrastructure:searxng:open` — Open in browser
 
+### Health Check
+
+```bash
+wget -qO- http://localhost:8080/
+```
+
+Runs every 30s with 10s timeout, 3 retries, 15s start period.
+
 ---
 
 ## Swiss Ephemeris — Astronomical Data
@@ -245,6 +263,33 @@ This places files in `projects/caelundas/caelundas-cli/data/ephemeris/`.
 
 ---
 
+## Open WebUI — Browser Chat Interface
+
+**Purpose**: Provides a browser-based chat interface for interacting with the local Ollama server. Useful for manual testing, prompt iteration, and exploring model capabilities outside the Affirmancy pipeline.
+
+| Property | Value |
+|----------|-------|
+| **Port** | 3001 (maps to container port 8080) |
+| **Image** | `ghcr.io/open-webui/open-webui:main` |
+| **Container name** | `open-webui` |
+| **Volume** | `open-webui_data:/app/backend/data` |
+
+### Configuration
+
+Defined in `infrastructure/docker/docker-compose.yml`:
+
+- **OLLAMA_BASE_URL**: `http://host.docker.internal:11434` — connects to host-managed Ollama
+- **ENABLE_WEBSOCKET_SUPPORT**: `false`
+- **Health check**: `curl -f http://localhost:8080/health` every 30s, 10s timeout, 5 retries, 60s start period
+
+### Nx Targets
+
+- `nx run infrastructure:open-webui:up` — Start Open WebUI
+- `nx run infrastructure:open-webui:down` — Stop Open WebUI
+- `nx run infrastructure:open-webui:open` — Open in browser at `http://localhost:3001`
+
+---
+
 ## Operational Notes
 
 ### Local Development
@@ -286,3 +331,5 @@ nx run affirmancy:ollama --configuration=start
 - [Affirmancy Domain](../domain/affirmancy.md) — Affirmation generation application
 - [Caelundas Domain](../domain/caelundas.md) — Astrological calendar/ephemeris
 - [Release Workflow](../workflows/release.md) — Automated release process
+- [Database Management](../operations/database-management.md) — Migration and export/import workflows
+- [Local Development](../operations/local-development.md) — Development environment setup

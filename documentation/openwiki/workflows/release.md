@@ -3,9 +3,6 @@ type: "Reference"
 title: "Release Process"
 description: "Documents the fully automated release pipeline on merge to main: Nx release determines ic-suite package versions from conventional commits, semantic-release bumps root version and creates GitHub release, packages are tagged and published to npm with provenance, then mirrored to GitHub Packages. Explains the dual versioning scheme (per-package + root)."
 tags: ["release", "workflow", "nx-release", "semantic-release", "npm", "github-packages"]
-verified:
-  - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
 sources:
   - id: openwiki-source-57b81e54d1113287ebfdf6f8
     resource: repo://.github/CONTRIBUTING.md

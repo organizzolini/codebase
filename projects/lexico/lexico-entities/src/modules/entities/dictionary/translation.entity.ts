@@ -1,6 +1,6 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import type { Lexeme } from "./lexeme.entity";
 
@@ -11,7 +11,7 @@ import type { Lexeme } from "./lexeme.entity";
   comment: "An English translation of a Latin dictionary entry",
   name: "translations",
 })
-export class Translation extends DeletableEntity {
+export class Translation extends PostgresqlDeletableEntity {
   constructor(data: string, lexeme?: Lexeme) {
     super();
     this.data = data;
