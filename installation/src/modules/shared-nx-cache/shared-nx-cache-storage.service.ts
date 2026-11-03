@@ -41,6 +41,44 @@ export class SharedNxCacheStorageService {
 
   // 🔏 Private Methods
 
+  /**
+   * Removes an upload's temporary file once its write stream has closed.
+   *
+   * A stream destroyed before its file opened still creates the file, so
+   * removing it first can leave the temporary behind.
+   */
+  private async discard(
+    sink: fs.WriteStream,
+    temporary: string,
+  ): Promise<void> {
+    if (!sink.closed) {
+      await new Promise<void>((resolve) => {
+        sink.once("close", resolve);
+      });
+    }
+
+    await fs.promises.rm(temporary, { force: true });
+  }
+
+  /**
+   * Maps a failed upload to its outcome, or rethrows what is not one.
+   *
+   * A link that finds the entry already there lost the race to another upload
+   * of the same hash, and a body of the wrong length is the caller's to
+   * answer; anything else is a fault.
+   */
+  private explainFailure(error: unknown, lengthMatches: boolean): WriteOutcome {
+    if (error instanceof Error && "code" in error && error.code === "EEXIST") {
+      return "exists";
+    }
+
+    if (!lengthMatches) {
+      return "length-mismatch";
+    }
+
+    throw error;
+  }
+
   /** Lists the entries and the unfinished uploads, with the age of each. */
   private async measure(directory: string): Promise<{
     entries: Entry[];
@@ -184,29 +222,9 @@ export class SharedNxCacheStorageService {
 
       return "created";
     } catch (error) {
-      if (
-        error instanceof Error &&
-        "code" in error &&
-        error.code === "EEXIST"
-      ) {
-        return "exists";
-      }
-
-      if (received !== length) {
-        return "length-mismatch";
-      }
-
-      throw error;
+      return this.explainFailure(error, received === length);
     } finally {
-      // A stream destroyed before its file opened still creates the file, so
-      // removing it first can leave the temporary behind.
-      if (!sink.closed) {
-        await new Promise<void>((resolve) => {
-          sink.once("close", resolve);
-        });
-      }
-
-      await fs.promises.rm(temporary, { force: true });
+      await this.discard(sink, temporary);
     }
   }
 }
