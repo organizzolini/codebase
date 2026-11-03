@@ -118,13 +118,13 @@ export function splitConstellations(
 }
 
 /**
- * The change that writes a choice of figures: removed for all of them, the
+ * The change that writes a choice of figures: removed for the zodiac, the
  * default, `none` for no figure, and the words joined otherwise.
  */
 export function toConstellationsChange(
   words: readonly string[],
 ): SkySearchChange {
-  if (words.length === 1 && words[0] === "all") {
+  if (words.length === 1 && words[0] === "zodiac") {
     return { "sky.constellations": undefined };
   }
 

@@ -44,7 +44,7 @@ describe(useNightSkySettings, () => {
       constellations: [],
       settings: expect.objectContaining({ latitudeDegrees: 51.5 }),
     });
-    expect(result.current.settings.constellations).toStrictEqual(["all"]);
+    expect(result.current.settings.constellations).toStrictEqual(["zodiac"]);
 
     await waitFor(() => {
       expect(result.current.constellations).toHaveLength(88);

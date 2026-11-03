@@ -79,15 +79,16 @@ describe("use-night-sky utilities", () => {
       ).toStrictEqual(["zodiac", "ursa_major", "canis_major"]);
       expect(
         readNightSkyOverrides({ "sky.constellations": 5 }).constellations,
-      ).toStrictEqual(["all"]);
+      ).toStrictEqual(["zodiac"]);
     });
 
-    it("draws every figure by default, the zodiac's or none when asked", () => {
-      expect(readNightSkyOverrides({}).constellations).toStrictEqual(["all"]);
+    it("draws the zodiac's figures by default, every one or none when asked", () => {
+      expect(readNightSkyOverrides({}).constellations).toStrictEqual([
+        "zodiac",
+      ]);
       expect(
-        readNightSkyOverrides({ "sky.constellations": "zodiac" })
-          .constellations,
-      ).toStrictEqual(["zodiac"]);
+        readNightSkyOverrides({ "sky.constellations": "all" }).constellations,
+      ).toStrictEqual(["all"]);
       expect(
         readNightSkyOverrides({ "sky.constellations": "" }).constellations,
       ).toStrictEqual([]);

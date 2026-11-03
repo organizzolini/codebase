@@ -76,12 +76,12 @@ describe("night sky menu utilities", () => {
   });
 
   describe(toConstellationsChange, () => {
-    it("removes all, the default, writes zodiac and none, and joins the rest", () => {
-      expect(toConstellationsChange(["all"])).toStrictEqual({
+    it("removes the zodiac, the default, writes all and none, and joins the rest", () => {
+      expect(toConstellationsChange(["zodiac"])).toStrictEqual({
         "sky.constellations": undefined,
       });
-      expect(toConstellationsChange(["zodiac"])).toStrictEqual({
-        "sky.constellations": "zodiac",
+      expect(toConstellationsChange(["all"])).toStrictEqual({
+        "sky.constellations": "all",
       });
       expect(toConstellationsChange([])).toStrictEqual({
         "sky.constellations": "none",
