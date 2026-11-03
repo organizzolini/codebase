@@ -1,3 +1,13 @@
+# @coinagerie/core
+
+[![npm](https://img.shields.io/npm/v/@coinagerie/core?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/core)
+
+The contracts leaf of the coinagerie toolchain: the glossary and vocabulary-report shapes and the constants every other coinagerie package shares. Nothing here runs.
+
+```bash
+npm install @coinagerie/core
+```
+
 ## Test
 
 ```bash
@@ -47,6 +57,7 @@ The words this package uses that the root glossary does not define, regenerated 
 - **meta**:
 - **miss**:
 - **mock**:
+- **publish**:
 - **real**:
 - **reason**:
 - **recursive**:
