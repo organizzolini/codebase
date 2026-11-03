@@ -1,6 +1,9 @@
 {
   "dependencies": {
+    "@codebase/observability": "workspace:*",
+    "@golevelup/ts-vitest": "catalog:",
     "@nestjs/common": "catalog:",
+    "@nestjs/testing": "catalog:",
     "@nx/devkit": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@testing-library/react": "catalog:",

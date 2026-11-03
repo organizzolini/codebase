@@ -1,8 +1,8 @@
 {
   "dependencies": {
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/common": "catalog:",
-    "@nestjs/testing": "catalog:",
     "pino": "catalog:",
     "pino-pretty": "catalog:",
     "reflect-metadata": "catalog:",
@@ -10,6 +10,7 @@
     "vitest": "catalog:"
   },
   "devDependencies": {
+    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",

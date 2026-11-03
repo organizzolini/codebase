@@ -13,7 +13,7 @@ subpath exports.
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------- |
 | `@codebase/testing`             | Temporary directories, output and exit-code capture, environment overrides, the fixed clock, fixtures, mocks | nothing in the workspace  |
 | `@codebase/testing/setup`       | The shared Vitest setup file                                                                                 | nothing in the workspace  |
-| `@codebase/testing/nestjs`      | Module-wiring assertions and the Nx workspace tree                                                           | nothing in the workspace  |
+| `@codebase/testing/nestjs`      | The testing-module builder, module-wiring assertions, and the Nx workspace tree                              | `@codebase/observability` |
 | `@codebase/testing/react`       | The route-render helper and the `createServerFn` and `matchMedia` stand-ins                                  | TanStack Router           |
 | `@codebase/testing/react/setup` | The shared jsdom setup                                                                                       | Testing Library           |
 
@@ -69,10 +69,22 @@ queues answers for the `promptsMock` stand-in of the `prompts` package.
 
 ### Nest
 
-`@codebase/testing/nestjs` exports `expectModuleProvides`,
+```ts
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+const { instance, mock } = await buildTestingModule(ExportCommand, {
+  mocks: [PostgresqlUtilitiesService],
+});
+mock(PostgresqlUtilitiesService).dump.mockResolvedValue(undefined);
+```
+
+`buildTestingModule` always provides a deep mock of observability's
+`LoggerService`, and a dependency nothing provides fails the build, so
+resolving the class is itself the wiring check an "is defined" test used to
+stand in for. `@codebase/testing/nestjs` also exports `expectModuleProvides`,
 `expectModuleExports`, and `expectModuleImports` to assert a module's
-`@Module` metadata without reading it by hand. The LoggerService-aware
-testing-module builder lives in
+`@Module` metadata without reading it by hand. `expectLoggerContext`, which
+builds the class the same way and asserts its logger context, comes from
 [`@codebase/observability/testing`](../observability/README.md#testing-helpers).
 
 ### Postgres
@@ -97,8 +109,13 @@ page alone, so no test has to mock `__root`. A web application points
 
 ## Dependency rules
 
-- This package imports nothing from the workspace, so any project can use
-  it without inheriting a dependency edge.
+- The core, `/setup`, and `/react` entries import nothing from the
+  workspace. `/nestjs` imports `@codebase/observability`, for the
+  `LoggerService` token and `LoggerServiceContract` type its module builder
+  mocks; it is the package's only workspace dependency.
+- `@codebase/observability/testing` imports `/nestjs` back. The module-boundary
+  rule allows that one cycle, and observability's `implicitDependencies:
+["!testing"]` keeps it out of the task graph, so no build waits on another.
 - Adapters that need `interface`, `persistence`, or `observability` live with
   those packages and are exported from their `/testing` entries.
 - A project tagged `framework:react` may import this package from its tests
@@ -121,6 +138,7 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ### Nx Neighborhood
 
 <!-- codependix:start name="codependix-nx-projects" -->
+
 ```mermaid
 graph LR
   configuration["configuration"]
@@ -131,11 +149,13 @@ graph LR
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class testing subject
 ```
+
 <!-- codependix:end name="codependix-nx-projects" -->
 
 ### File Imports
 
 <!-- codependix:start name="codependix-file-imports" -->
+
 ```mermaid
 graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
@@ -205,4 +225,5 @@ graph LR
   file_src_setup_unit_test_ts --> file_src_modules_mocks_mocks_constants_ts
   file_testing_setup_ts --> file_src_setup_ts
 ```
+
 <!-- codependix:end name="codependix-file-imports" -->
