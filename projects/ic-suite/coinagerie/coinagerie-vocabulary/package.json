@@ -8,8 +8,10 @@
     "@coinagerie/languages": "workspace:*",
     "@nestjs/common": "catalog:ic-suite",
     "ignore": "catalog:",
+    "pluralize": "catalog:",
     "reflect-metadata": "catalog:",
-    "tslib": "catalog:"
+    "tslib": "catalog:",
+    "wink-lemmatizer": "catalog:"
   },
   "description": "File discovery, word splitting, folding, and exclusion that turn a codebase into a sorted list of headwords",
   "devDependencies": {
@@ -18,6 +20,7 @@
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
+    "@types/pluralize": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
   },

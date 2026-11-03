@@ -13,6 +13,8 @@ export type {
   CoinagerieExclusions,
   CoinagerieMarkdownOutput,
   CoinagerieOutput,
+  ExcludedWords,
+  FoldWord,
   LoadConfigurationArguments,
   ResolvedCoinagerieConfiguration,
   ResolvedCoinagerieMarkdownOutput,

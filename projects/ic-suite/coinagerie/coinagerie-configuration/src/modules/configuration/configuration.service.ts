@@ -14,11 +14,15 @@ import {
   CONFIGURATION_FILE_NAMES,
   CONFIGURATION_SCHEMA,
   DEFAULT_INCLUDE,
+  FOLDED_WORD_SCHEMA,
+  WORD_LIST_SCHEMA,
 } from "./configuration.constants";
 
 import type {
-  CoinagerieConfiguration,
+  ExcludedWords,
+  FoldWord,
   LoadConfigurationArguments,
+  LoadedConfiguration,
   ResolvedCoinagerieConfiguration,
 } from "./configuration.types";
 
@@ -40,6 +44,44 @@ export class ConfigurationService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /** A caught value as text, whether or not it is an `Error`. */
+  private describe(error: unknown): string {
+    return error instanceof Error ? error.message : String(error);
+  }
+
+  /**
+   * Wraps the configured fold so that its faults name the file.
+   *
+   * The function is the configuration's own code, and it runs once per word
+   * long after the file was read; wrapping it here keeps every check of what
+   * it did in the one place that knows the file's path.
+   */
+  private guardFold(fold: FoldWord, location: string): FoldWord {
+    return (word) => {
+      let folded: unknown;
+
+      try {
+        folded = fold(word);
+      } catch (error: unknown) {
+        throw new InvalidConfigurationError(
+          location,
+          `fold threw on "${word}": ${this.describe(error)}`,
+        );
+      }
+
+      const parsed = FOLDED_WORD_SCHEMA.safeParse(folded);
+
+      if (!parsed.success) {
+        throw new InvalidConfigurationError(
+          location,
+          `fold must return a non-empty string without whitespace or "*", but returned ${typeof folded === "string" ? JSON.stringify(folded) : `a value of type ${typeof folded}`} for "${word}"; it must be synchronous`,
+        );
+      }
+
+      return parsed.data;
+    };
+  }
 
   /**
    * The configuration file a run reads, or `undefined` when it uses defaults.
@@ -68,15 +110,15 @@ export class ConfigurationService {
   }
 
   /**
-   * Imports a configuration file and validates its default export.
+   * Imports a configuration file, validates its default export, and calls
+   * its `exclude.words` function when it has one.
    *
    * Any failure — the file throwing, a syntax error, an export of the wrong
-   * shape — is reported with the file's path, which is the one thing a reader
-   * needs to find the fault.
+   * shape, a function that throws or returns something else — is reported
+   * with the file's path, which is the one thing a reader needs to find the
+   * fault.
    */
-  private async read(
-    configurationPath: string,
-  ): Promise<CoinagerieConfiguration> {
+  private async read(configurationPath: string): Promise<LoadedConfiguration> {
     let exported: unknown;
 
     try {
@@ -85,7 +127,7 @@ export class ConfigurationService {
     } catch (error: unknown) {
       throw new InvalidConfigurationError(
         configurationPath,
-        error instanceof Error ? error.message : String(error),
+        this.describe(error),
       );
     }
 
@@ -98,21 +140,37 @@ export class ConfigurationService {
       );
     }
 
-    return parsed.data;
+    try {
+      return {
+        configuration: parsed.data,
+        words: await this.resolveWords(parsed.data.exclude?.words),
+      };
+    } catch (error: unknown) {
+      throw new InvalidConfigurationError(
+        configurationPath,
+        `exclude.words ${this.describe(error)}`,
+      );
+    }
   }
 
   /** Fills in every default and makes every path absolute. */
   private resolve(args: {
-    configuration: CoinagerieConfiguration;
     configurationPath: string | undefined;
     directory: string;
+    loaded: LoadedConfiguration;
+    location: string;
   }): ResolvedCoinagerieConfiguration {
-    const { configuration, directory } = args;
+    const { configuration, words } = args.loaded;
+    const { directory, location } = args;
 
     return {
       configurationPath: args.configurationPath,
       directory,
-      exclude: { paths: configuration.exclude?.paths ?? [] },
+      exclude: { paths: configuration.exclude?.paths ?? [], words },
+      fold:
+        configuration.fold === undefined
+          ? undefined
+          : this.guardFold(configuration.fold, location),
       include: configuration.include ?? [...DEFAULT_INCLUDE],
       outputs: (configuration.outputs ?? []).map((output) => ({
         description: output.description,
@@ -120,6 +178,26 @@ export class ConfigurationService {
         type: output.type,
       })),
     };
+  }
+
+  /**
+   * The words a configuration excludes, calling its function when it has one.
+   *
+   * Throws a plain error for the caller to name the file in, so that no frame
+   * is spent on building the report here.
+   */
+  private async resolveWords(
+    words: ExcludedWords | undefined,
+  ): Promise<string[]> {
+    const resolved: unknown =
+      typeof words === "function" ? await words() : (words ?? []);
+    const parsed = WORD_LIST_SCHEMA.safeParse(resolved);
+
+    if (!parsed.success) {
+      throw new Error("must be a list of strings, or a function returning one");
+    }
+
+    return parsed.data;
   }
 
   // 🌎 Public Methods
@@ -137,16 +215,18 @@ export class ConfigurationService {
 
     if (configurationPath === undefined) {
       return this.resolve({
-        configuration: {},
         configurationPath: undefined,
         directory: args.workingDirectory,
+        loaded: { configuration: {}, words: [] },
+        location: args.workingDirectory,
       });
     }
 
     return this.resolve({
-      configuration: await this.read(configurationPath),
       configurationPath,
       directory: path.dirname(configurationPath),
+      loaded: await this.read(configurationPath),
+      location: configurationPath,
     });
   }
 }
