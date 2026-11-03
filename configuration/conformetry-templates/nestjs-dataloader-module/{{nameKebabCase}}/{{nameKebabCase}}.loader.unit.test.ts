@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildTestingModule } from "@codebase/testing/nestjs";
+import { buildTestingModule } from "@codebase/observability/testing";
 
 import { {{namePascalCase}}Loader } from "./{{nameKebabCase}}.loader";
 import { {{namePascalCase}}Service } from "./{{nameKebabCase}}.service";
