@@ -6,7 +6,8 @@
     "!codometer-configuration",
     "!conformetry-configuration",
     "!conformetry-nx",
-    "!observability"
+    "!observability",
+    "!testing"
   ],
   "name": "configuration",
   "namedInputs": {

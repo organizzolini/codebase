@@ -62,14 +62,14 @@ input is a terminal; otherwise the command takes its default of no bound or
 ## Moving data between databases
 
 This application does not copy tables between databases. The database
-package's command line does, with `nx run persistence:start:export` and
-`nx run persistence:start:import`. It has no default schema, so name the Lexico
+package's command line does, with `nx run persistence:start:postgresql-export` and
+`nx run persistence:start:postgresql-import`. It has no default schema, so name the Lexico
 schema with `--schema lexico`, or qualify each table as `lexico.words`.
 A relative `--file` resolves from `projects/common/persistence`, so this keeps the dump
 in this project's `data/` directory, where `*.dump` is gitignored:
 
 ```bash
-nx run persistence:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --schema lexico --table words --data --ddl --file ../lexico/lexico-cli/data/lexico.dump"
+nx run persistence:start:postgresql-export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --schema lexico --table words --data --ddl --file ../lexico/lexico-cli/data/lexico.dump"
 ```
 
 `import --clean` runs without asking, so run `import --dry-run` with the same
@@ -854,10 +854,12 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
   observability["observability"]
   persistence["persistence"]
+  lexico_cli --> configuration
   lexico_cli --> lexico_entities
   lexico_cli --> observability
   lexico_cli --> persistence

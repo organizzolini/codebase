@@ -65,12 +65,16 @@ graph LR
   file_src_documentation_constants_ts["src/documentation.constants.ts"]
   file_src_documentation_main_end_to_end_test_ts["src/documentation.main.end-to-end.test.ts"]
   file_src_documentation_main_ts["src/documentation.main.ts"]
+  file_src_documentation_main_unit_test_ts["src/documentation.main.unit.test.ts"]
   file_src_documentation_module_ts["src/documentation.module.ts"]
+  file_src_documentation_module_unit_test_ts["src/documentation.module.unit.test.ts"]
   file_src_documentation_repl_ts["src/documentation.repl.ts"]
+  file_src_documentation_repl_unit_test_ts["src/documentation.repl.unit.test.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_command_ts["src/modules/refresh-documentation/refresh-documentation.command.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_command_unit_test_ts["src/modules/refresh-documentation/refresh-documentation.command.unit.test.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_constants_ts["src/modules/refresh-documentation/refresh-documentation.constants.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_module_ts["src/modules/refresh-documentation/refresh-documentation.module.ts"]
+  file_src_modules_refresh_documentation_refresh_documentation_module_unit_test_ts["src/modules/refresh-documentation/refresh-documentation.module.unit.test.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_service_ts["src/modules/refresh-documentation/refresh-documentation.service.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_service_unit_test_ts["src/modules/refresh-documentation/refresh-documentation.service.unit.test.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_types_ts["src/modules/refresh-documentation/refresh-documentation.types.ts"]
@@ -79,14 +83,21 @@ graph LR
   file_vitest_config_ts["vitest.config.ts"]
   file_src_documentation_main_end_to_end_test_ts --> file_src_documentation_constants_ts
   file_src_documentation_main_ts --> file_src_documentation_module_ts
+  file_src_documentation_main_unit_test_ts --> file_src_documentation_module_ts
   file_src_documentation_module_ts --> file_src_documentation_constants_ts
   file_src_documentation_module_ts --> file_src_modules_refresh_documentation_refresh_documentation_module_ts
+  file_src_documentation_module_unit_test_ts --> file_src_documentation_module_ts
+  file_src_documentation_module_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_module_ts
   file_src_documentation_repl_ts --> file_src_documentation_module_ts
+  file_src_documentation_repl_unit_test_ts --> file_src_documentation_module_ts
   file_src_modules_refresh_documentation_refresh_documentation_command_ts --> file_src_modules_refresh_documentation_refresh_documentation_service_ts
   file_src_modules_refresh_documentation_refresh_documentation_command_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_command_ts
   file_src_modules_refresh_documentation_refresh_documentation_command_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_service_ts
   file_src_modules_refresh_documentation_refresh_documentation_module_ts --> file_src_modules_refresh_documentation_refresh_documentation_command_ts
   file_src_modules_refresh_documentation_refresh_documentation_module_ts --> file_src_modules_refresh_documentation_refresh_documentation_service_ts
+  file_src_modules_refresh_documentation_refresh_documentation_module_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_command_ts
+  file_src_modules_refresh_documentation_refresh_documentation_module_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_module_ts
+  file_src_modules_refresh_documentation_refresh_documentation_module_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_service_ts
   file_src_modules_refresh_documentation_refresh_documentation_service_ts --> file_src_modules_refresh_documentation_refresh_documentation_constants_ts
   file_src_modules_refresh_documentation_refresh_documentation_service_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_service_ts
 ```

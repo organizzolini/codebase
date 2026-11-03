@@ -5,7 +5,7 @@ description: "High-level testing strategy: test targets (vitest:unit, vitest:int
 tags: ["testing", "strategy", "ci", "vitest", "coverage", "testcontainers", "graphql", "msw"]
 verified:
   - by: openwiki/0.7.0
-    at: 2026-10-26T01:23:39.729Z
+    at: 2026-10-29T03:39:46.432Z
 sources:
   - id: openwiki-source-ab09db9d0408f67f5441bda9
     resource: repo://.agents/skills/test-driven-development/SKILL.md
@@ -35,7 +35,7 @@ sources:
     resource: repo://projects/lexico/lexico-web/codegen.ts
   - id: openwiki-source-cbca90a5ed54cecf99d6ea3f
     resource: repo://projects/lexico/lexico-web/README.md
-generated: { by: "openwiki/0.7.0", at: "2026-10-26T01:23:39.729Z" }
+generated: { by: "openwiki/0.7.0", at: "2026-10-29T03:39:46.432Z" }
 ---
 
 # Testing Strategy Overview
@@ -50,8 +50,8 @@ This document summarizes the workspace's testing philosophy, conventions, and to
 - **GREEN** – Write the minimal implementation to make the test pass. Verify the test passes and the full project suite stays green.
 - **REFACTOR** – Clean up duplication, improve names, extract helpers. **Refactoring is a separate step** after green; never add behavior during refactor.
 
-<!-- openwiki: broken internal link [../.agents/skills/test-driven-development/SKILL.md] file "../.agents/skills/test-driven-development/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-The TDD cycle is non-negotiable for new features, bug fixes, refactoring, and behavior changes. Exceptions (throwaway prototypes, generated code, configuration files) require explicit human partner approval. See the [test-driven-development skill](../.agents/skills/test-driven-development/SKILL.md) for the complete rules and common rationalizations to avoid.
+<!-- openwiki: broken internal link [.agents/skills/test-driven-development/SKILL.md] file ".agents/skills/test-driven-development/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+The TDD cycle is non-negotiable for new features, bug fixes, refactoring, and behavior changes. Exceptions (throwaway prototypes, generated code, configuration files) require explicit human partner approval. See the [test-driven-development skill](.agents/skills/test-driven-development/SKILL.md) for the complete rules and common rationalizations to avoid.
 
 ## Test Types and Naming
 
@@ -105,8 +105,8 @@ Key practices:
 - Keep project Vitest configs thin and inherit shared defaults using `mergeConfig(...)` from `configuration/vitest.config.ts` so threshold changes stay centralized.
 - Before opening or updating a coverage-focused PR, run the CI-shaped command locally: `nx affected --target=vitest --configuration=coverage --base=main`.
 
-<!-- openwiki: broken internal link [../.agents/skills/testing-strategy/SKILL.md] file "../.agents/skills/testing-strategy/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-See the [testing-strategy skill](../.agents/skills/testing-strategy/SKILL.md) for the full gate table and coverage practices.
+<!-- openwiki: broken internal link [.agents/skills/testing-strategy/SKILL.md] file ".agents/skills/testing-strategy/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+See the [testing-strategy skill](.agents/skills/testing-strategy/SKILL.md) for the full gate table and coverage practices.
 
 ## Mocking Conventions
 
@@ -128,8 +128,8 @@ const mockService = createMock<MyService>();
 - Configure mock return values per test using `mockResolvedValue()`, `mockRejectedValue()`, `mockReturnValue()`.
 - Reset mocks with `mockClear()` if test contamination occurs.
 
-<!-- openwiki: broken internal link [../.agents/skills/testing-mocks/SKILL.md] file "../.agents/skills/testing-mocks/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-See the [testing-mocks skill](../.agents/skills/testing-mocks/SKILL.md) for complete patterns, anti-patterns, and NestJS DI integration examples.
+<!-- openwiki: broken internal link [.agents/skills/testing-mocks/SKILL.md] file ".agents/skills/testing-mocks/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+See the [testing-mocks skill](.agents/skills/testing-mocks/SKILL.md) for complete patterns, anti-patterns, and NestJS DI integration examples.
 
 ## Shared Test Helpers
 
@@ -266,15 +266,14 @@ Each shard runs `nx affected --target=vitest --configuration=coverage` with its 
 
 ## References
 
-<!-- openwiki: broken internal link [../.agents/skills/testing-strategy/SKILL.md] file "../.agents/skills/testing-strategy/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [Testing Strategy Skill](../.agents/skills/testing-strategy/SKILL.md) — test types, naming, Nx commands, coverage gates, mocking patterns
-<!-- openwiki: broken internal link [../.agents/skills/test-driven-development/SKILL.md] file "../.agents/skills/test-driven-development/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [Test-Driven Development Skill](../.agents/skills/test-driven-development/SKILL.md) — TDD rules, red-green-refactor cycle, verification checklist, common rationalizations
-<!-- openwiki: broken internal link [../.agents/skills/testing-mocks/SKILL.md] file "../.agents/skills/testing-mocks/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [Testing Mocks Skill](../.agents/skills/testing-mocks/SKILL.md) — `createMock<T>()` patterns, NestJS DI integration, anti-patterns
+<!-- openwiki: broken internal link [.agents/skills/testing-strategy/SKILL.md] file ".agents/skills/testing-strategy/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+- [Testing Strategy Skill](.agents/skills/testing-strategy/SKILL.md) — test types, naming, Nx commands, coverage gates, mocking patterns
+<!-- openwiki: broken internal link [.agents/skills/test-driven-development/SKILL.md] file ".agents/skills/test-driven-development/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+- [Test-Driven Development Skill](.agents/skills/test-driven-development/SKILL.md) — TDD rules, red-green-refactor cycle, verification checklist, common rationalizations
+<!-- openwiki: broken internal link [.agents/skills/testing-mocks/SKILL.md] file ".agents/skills/testing-mocks/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+- [Testing Mocks Skill](.agents/skills/testing-mocks/SKILL.md) — `createMock<T>()` patterns, NestJS DI integration, anti-patterns
 - [Integration Testing Patterns](integration.md) — detailed Testcontainers and GraphQL mock server usage
 - [Affirmancy Testing](affirmancy.md)
-<!-- openwiki: broken internal link [caelundas.md] file "caelundas.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 - [Caelundas Testing](caelundas.md)
 - [Lexico Testing](lexico.md)
 - [Meanderaw Testing](meanderaw.md)
