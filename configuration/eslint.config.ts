@@ -278,8 +278,11 @@ const MODULE_BOUNDARIES = {
       ],
       sourceTag: "name:conformetry-examples",
     },
+    // The testing package reaches only `observability`, for the logger token
+    // its Nest module builder mocks; the cycle that closes with observability's
+    // own testing entry is allowed below and nowhere else.
     {
-      onlyDependOnLibsWithTags: ["name:configuration"],
+      onlyDependOnLibsWithTags: ["name:configuration", "name:observability"],
       sourceTag: "name:testing",
     },
     {
@@ -300,6 +303,11 @@ const MODULE_BOUNDARIES = {
     },
   ],
   enforceBuildableLibDependency: true,
+  // `@codebase/observability/testing` builds its logger-context assertion on
+  // the testing package's module builder, which mocks observability's logger.
+  // `observability`'s `implicitDependencies: ["!testing"]` keeps the edge out
+  // of the task graph, so the cycle never orders a build.
+  ignoredCircularDependencies: [["observability", "testing"]],
 };
 
 export default [

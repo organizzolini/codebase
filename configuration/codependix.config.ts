@@ -724,6 +724,14 @@ const codependixConfiguration: CodependixConfiguration = {
         to: { tags: ["domain:caelundas"] },
       },
       {
+        from: { tags: ["name:testing"] },
+        kind: "allow",
+        message:
+          "The testing package depends on observability alone, for the logger token its Nest module builder mocks, so every project can use it without inheriting another package.",
+        name: "testing-reaches-only-observability",
+        to: { tags: ["name:configuration", "name:observability"] },
+      },
+      {
         kind: "acyclic",
         message:
           "Two projects that depend on each other cannot be built, released, or reasoned about apart. Stated here rather than left to Nx because an implicit edge closes a cycle just as a real import does, and `@nx/enforce-module-boundaries` has no import statement to flag for one.",
