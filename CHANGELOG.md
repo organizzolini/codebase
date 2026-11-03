@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.51.0](https://github.com/organizzolini/codebase/compare/v3.50.0...v3.51.0) (2026-11-03)
+
+### ✨ Features
+
+* **nx-cloud:** set up nx cloud workspace ([#2099](https://github.com/organizzolini/codebase/issues/2099)) ([fb5ddcc](https://github.com/organizzolini/codebase/commit/fb5ddcc40346394b11975c23e4ac7aad7d8d59b2))
+
+### ⚡ Performance Improvements
+
+* **callidescope:** ⚡️ cache file-system probes across a run's programs ([#2098](https://github.com/organizzolini/codebase/issues/2098)) ([3bc4484](https://github.com/organizzolini/codebase/commit/3bc4484539482ead12ed46f2aa39a0852fcb7471))
+
 ## [3.50.0](https://github.com/organizzolini/codebase/compare/v3.49.0...v3.50.0) (2026-11-03)
 
 ### ✨ Features

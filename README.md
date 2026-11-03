@@ -15829,16 +15829,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-48-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7909-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7910-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-1246-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-456-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-2949-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2744-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-2950-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2745-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-42-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-195-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-1693-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4683-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4684-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
@@ -15993,13 +15993,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7805 |
+| Callables | 7807 |
 | Files | 2573 |
-| Calls traced | 8503 |
-| Call stacks | 2181 |
+| Calls traced | 8507 |
+| Call stacks | 2182 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
-| Unfollowable calls | 487 |
+| Unfollowable calls | 488 |
 
 ### Projects
 
