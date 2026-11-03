@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.51.0](https://github.com/organizzolini/codebase/compare/v3.50.0...v3.51.0) (2026-11-03)
+
+### ✨ Features
+
+* **nx-cloud:** set up nx cloud workspace ([#2099](https://github.com/organizzolini/codebase/issues/2099)) ([fb5ddcc](https://github.com/organizzolini/codebase/commit/fb5ddcc40346394b11975c23e4ac7aad7d8d59b2))
+
+### ⚡ Performance Improvements
+
+* **callidescope:** ⚡️ cache file-system probes across a run's programs ([#2098](https://github.com/organizzolini/codebase/issues/2098)) ([3bc4484](https://github.com/organizzolini/codebase/commit/3bc4484539482ead12ed46f2aa39a0852fcb7471))
+
+## [3.50.0](https://github.com/organizzolini/codebase/compare/v3.49.0...v3.50.0) (2026-11-03)
+
+### ✨ Features
+
+* **configuration,coinagerie:** ✨ adopt coinagerie with a root glossary ([#1888](https://github.com/organizzolini/codebase/issues/1888)) ([ba65ac8](https://github.com/organizzolini/codebase/commit/ba65ac83439a781420a4760eead1eb7547761db6)), closes [#1785](https://github.com/organizzolini/codebase/issues/1785) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1786](https://github.com/organizzolini/codebase/issues/1786) [#1787](https://github.com/organizzolini/codebase/issues/1787) [#1788](https://github.com/organizzolini/codebase/issues/1788) [#1887](https://github.com/organizzolini/codebase/issues/1887) [#1885](https://github.com/organizzolini/codebase/issues/1885) [#1879](https://github.com/organizzolini/codebase/issues/1879) [#1789](https://github.com/organizzolini/codebase/issues/1789)
+
 ## [3.49.0](https://github.com/organizzolini/codebase/compare/v3.48.0...v3.49.0) (2026-11-03)
 
 ### ✨ Features
