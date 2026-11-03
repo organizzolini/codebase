@@ -693,7 +693,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **pr**:
 - **preserve**:
 - **previous**:
-- **probe**:
 - **promise**:
 - **provide**:
 - **pyproject**:

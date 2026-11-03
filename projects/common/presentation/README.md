@@ -1979,7 +1979,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **previous**:
 - **primitive**:
 - **priority**:
-- **probe**:
 - **produce**:
 - **promise**:
 - **prop**:
@@ -2098,7 +2097,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **second**:
 - **secondary**:
 - **section**:
-- **seed**:
 - **seg**:
 - **segment**:
 - **selectable**:

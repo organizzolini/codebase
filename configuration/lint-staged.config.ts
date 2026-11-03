@@ -37,17 +37,26 @@ const ANALYSIS_PARALLELISM = process.env["CI"] ? 8 : getLocalParallelism();
 
 /**
  * How many tasks a local run may execute at once: two fewer than the CPU
- * count, so the machine stays usable, within a floor of 4 and a ceiling of 12.
- * A cold run of every target at 4 measured 31m24s against a critical path of
- * 1m24s and used 140% of an 18-core machine, so the fixed 4 left the cores
- * idle. Memory bounds it from the other side: the heaviest tasks peak near
- * 1.6 GB, so each slot is budgeted 3 GB of the machine's total memory.
+ * count, within a floor of 4 and a ceiling of 6. The local hook runs only the
+ * fast tier below, which a warm cache mostly replays, so extra slots sat idle
+ * on a hit and starved the machine on a miss. Memory bounds it too: the
+ * heaviest tasks peak near 1.6 GB, so each slot is budgeted 3 GB.
  */
 function getLocalParallelism(): number {
   const byCpu = os.availableParallelism() - 2;
   const byMemory = Math.floor(os.totalmem() / 3 / 1024 ** 3);
-  return Math.max(4, Math.min(byCpu, byMemory, 12));
+  return Math.max(4, Math.min(byCpu, byMemory, 6));
 }
+
+/**
+ * The targets every commit runs, local or CI: formatting, lint, and typecheck,
+ * which catch what an edit loop breaks and replay from the cache when nothing
+ * changed. Every other gate runs in the continuous integration, deployment, and
+ * compliance workflows and in the `validate-code` skill, which agents run
+ * before submitting. The release commit made in CI runs this same set, so the
+ * hook means one thing wherever it fires.
+ */
+const ANALYSIS_TARGETS = "typecheck,oxlint,oxfmt";
 
 /**
  * Renders staged paths as one workspace-relative `--files=` flag each.
@@ -171,8 +180,8 @@ const config = {
   // `configuration`, which owns those two, has to run whether or not
   // `affected` selected it.
   "**/package.json": (): string[] => [
-    "pnpm exec nx run-many --projects=validation --targets=catalog-manifests --outputStyle=static",
-    "pnpm exec nx run-many --projects=configuration --targets=sherif,syncpack --outputStyle=static",
+    "nx run-many --projects=validation --targets=catalog-manifests --outputStyle=static",
+    "nx run-many --projects=configuration --targets=sherif,syncpack --outputStyle=static",
   ],
 
   // 🔬 Static analysis and conformetry validation
@@ -221,7 +230,7 @@ const config = {
   // without a shell, so `NX_DAEMON=false nx ...` would be parsed as the
   // executable name.
   "*": (files: string[]): string[] => [
-    `pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedChangeFlags(files)}`,
+    `nx affected --target=${ANALYSIS_TARGETS} --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedChangeFlags(files)}`,
   ],
 };
 

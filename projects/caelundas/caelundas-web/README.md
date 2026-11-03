@@ -2278,7 +2278,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **second**:
 - **section**:
 - **sedna**:
-- **seed**:
 - **segment**:
 - **selector**:
 - **semisextile**:

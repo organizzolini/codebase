@@ -2160,7 +2160,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **score**:
 - **search**:
 - **second**:
-- **seed**:
 - **seneca**:
 - **si**:
 - **signal**:

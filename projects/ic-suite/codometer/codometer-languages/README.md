@@ -1159,7 +1159,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **scan**:
 - **scanner**:
 - **second**:
-- **seed**:
 - **selector**:
 - **separator**:
 - **seq**:

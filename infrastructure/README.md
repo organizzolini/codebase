@@ -166,6 +166,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **period**:
 - **persistence**:
 - **persistent**:
+- **plaintext**:
 - **plan**:
 - **pod**:
 - **policy**:

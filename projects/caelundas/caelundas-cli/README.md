@@ -5103,7 +5103,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **se**:
 - **season**:
 - **second**:
-- **seed**:
 - **seflg**:
 - **segment**:
 - **semidiameter**:
