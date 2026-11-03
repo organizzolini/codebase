@@ -7,6 +7,10 @@
     "url": "https://github.com/organizzolini/codebase/issues"
   },
   "dependencies": {
+    "@coinagerie/configuration": "workspace:*",
+    "@coinagerie/core": "workspace:*",
+    "@coinagerie/output": "workspace:*",
+    "@coinagerie/vocabulary": "workspace:*",
     "@nestjs/common": "catalog:ic-suite",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:ic-suite",

@@ -1,11 +1,16 @@
 import { projectDefaults } from "../../../../configuration/callidescope.config.js";
 
 /**
- * What coinagerie-output is held to.
+ * What coinagerie-output is held to, measured rather than assumed.
  *
- * One, because the package is empty: it exports nothing and calls nothing yet.
- * The first ticket that adds behavior measures it and raises these numbers to
- * what that code does, set **at** the measurement rather than above it.
+ * Ten frames from `DeliveryService.check` and `write` down through reading
+ * every destination, the markdown parser's line reader, and the error it
+ * throws on a malformed block; four callees in the callback `write` maps each
+ * destination through.
+ *
+ * Set **at** what the gate measured rather than above it: a stack at the
+ * limit passes, so the number is a starting point to ratchet down from rather
+ * than a target to grow into.
  *
  * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
@@ -13,7 +18,7 @@ import { projectDefaults } from "../../../../configuration/callidescope.config.j
 export default {
   ...projectDefaults,
   limits: {
-    maximumBreadth: 1,
-    maximumDepth: 1,
+    maximumBreadth: 4,
+    maximumDepth: 10,
   },
 };

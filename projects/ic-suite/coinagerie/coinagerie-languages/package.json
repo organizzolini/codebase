@@ -4,12 +4,15 @@
     "url": "https://github.com/organizzolini/codebase/issues"
   },
   "dependencies": {
+    "@nestjs/common": "catalog:ic-suite",
     "reflect-metadata": "catalog:",
-    "tslib": "catalog:"
+    "tslib": "catalog:",
+    "typescript": "catalog:"
   },
   "description": "Per-language identifier tokenizers and keyword lists for the coinagerie vocabulary toolchain",
   "devDependencies": {
     "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",

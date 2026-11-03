@@ -4,12 +4,14 @@
     "url": "https://github.com/organizzolini/codebase/issues"
   },
   "dependencies": {
+    "@nestjs/common": "catalog:ic-suite",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:"
   },
   "description": "Contracts for the coinagerie vocabulary toolchain: the glossary, the vocabulary report, and shared constants",
   "devDependencies": {
     "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",

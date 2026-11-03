@@ -4,12 +4,17 @@
     "url": "https://github.com/organizzolini/codebase/issues"
   },
   "dependencies": {
+    "@coinagerie/configuration": "workspace:*",
+    "@coinagerie/languages": "workspace:*",
+    "@nestjs/common": "catalog:ic-suite",
+    "ignore": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:"
   },
   "description": "File discovery, word splitting, folding, and exclusion that turn a codebase into a sorted list of headwords",
   "devDependencies": {
     "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
