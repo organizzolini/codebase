@@ -338,7 +338,7 @@ describe(MeasureCommand, () => {
     it("prints the badges when the run touches no file", async () => {
       await run();
 
-      expect(output.stdout()).toContain("block\n");
+      expect(output.stdout()).toBe("block\n");
     });
 
     it("falls back to the resolved configuration's format when omitted", async () => {
@@ -363,7 +363,7 @@ describe(MeasureCommand, () => {
 
       await run({ format: "markdown" });
 
-      expect(output.stdout()).toContain("block\n");
+      expect(output.stdout()).toBe("block\n");
       expect(jsonService.render).not.toHaveBeenCalled();
     });
   });
@@ -409,7 +409,7 @@ describe(MeasureCommand, () => {
 
       await run({ format: "json", outputJson: true });
 
-      expect(output.stdout()).toContain("{}\n");
+      expect(output.stdout()).toBe("{}\n");
       expect(jsonService.sync).toHaveBeenCalledExactlyOnceWith(
         expect.objectContaining({ indentation: 2 }),
       );

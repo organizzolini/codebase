@@ -69,7 +69,7 @@ describe(ConfigurationCommand, () => {
   it("writes the rendered listing to standard output", async () => {
     await command.run([], { config: CONFIG });
 
-    expect(output.stdout()).toContain("rendered\n");
+    expect(output.stdout()).toBe("rendered\n");
   });
 
   it("passes the limits flag through to the renderer", async () => {
@@ -151,7 +151,7 @@ describe(ConfigurationCommand, () => {
     // The listing is what the command exists to produce, so it is still
     // written — but a zero exit code would claim the repository's own
     // exclusions were read when they never were.
-    expect(output.stdout()).toContain("rendered\n");
+    expect(output.stdout()).toBe("rendered\n");
     expect(readExitCode()).toBe(1);
   });
 
