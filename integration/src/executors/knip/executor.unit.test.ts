@@ -79,6 +79,17 @@ describe(knipExecutor, () => {
     expect(captureAsync.mock.lastCall?.[1]).toContain("--fix");
   });
 
+  it("refuses a project the graph does not know", async () => {
+    expect.hasAssertions();
+
+    await expect(
+      knipExecutor(
+        { configuration: "configuration/knip.config.ts" },
+        { ...CONTEXT, projectName: "missing" },
+      ),
+    ).rejects.toThrow("no project named missing");
+  });
+
   it("refuses a run against no project", async () => {
     expect.hasAssertions();
 

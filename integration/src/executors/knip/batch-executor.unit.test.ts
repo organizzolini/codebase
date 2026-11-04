@@ -155,6 +155,31 @@ describe(knipBatchExecutor, () => {
     expect(results["a:knip"]?.terminalOutput).toContain("not json");
   });
 
+  it("says so when a failed task's own run does not reproduce the failure", async () => {
+    expect.hasAssertions();
+
+    captureAsync
+      .mockResolvedValueOnce(reportOf(["projects/a/src/unused.ts"]))
+      .mockResolvedValueOnce({ status: 0, stderr: "", stdout: "" });
+
+    const results = await knipBatchExecutor(...buildArguments(["a"]));
+
+    expect(results["a:knip"]?.success).toBe(false);
+    expect(results["a:knip"]?.terminalOutput).toContain("did not reproduce");
+  });
+
+  it("falls back to the shared overrides for a task with no options of its own", async () => {
+    expect.hasAssertions();
+
+    captureAsync.mockResolvedValue(reportOf([]));
+
+    const [taskGraph, , overrides, context] = buildArguments(["a"]);
+    const results = await knipBatchExecutor(taskGraph, {}, overrides, context);
+
+    expect(results["a:knip"]?.success).toBe(true);
+    expect(captureAsync.mock.lastCall?.[1]).toContain(CONFIGURATION);
+  });
+
   it("fails every task when knip failed but charged none of them", async () => {
     expect.hasAssertions();
 

@@ -105,6 +105,8 @@ describe("knip utilities", () => {
       ["text that is not JSON", "not json"],
       ["JSON with no issues list", "{}"],
       ["an issue with no file", '{"issues":[{"files":[]}]}'],
+      ["JSON that is a list rather than a report", "[]"],
+      ["an issue that is not an object", '{"issues":[5]}'],
     ])("refuses %s rather than reading it as clean", (_name, output) => {
       expect(attributeIssues(output, ["projects/a"])).toBeUndefined();
     });
