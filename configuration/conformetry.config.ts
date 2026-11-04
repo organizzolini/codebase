@@ -134,7 +134,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/meanderaw/meanderaw-cli": NEST_BASELINE,
   "projects/meanderaw/meanderaw-web": WEB_BASELINE,
   publication: NEST_BASELINE,
-  synchronization: NEST_BASELINE,
 };
 
 /**
