@@ -214,6 +214,8 @@ const config = {
   // a commit touched, so a commit that deepens one project's call stacks or
   // breaks one project's boundary fails that project's own task.
   // `configuration:codependix` is write-only and is not reached from here.
+  // No glossary target is reached from here either: the release workflow
+  // writes every glossary on the default branch, and nothing judges one.
 
   // There is no aggregate `synchronize` target to name instead: each
   // synchronization is its own Nx target on the `synchronization` project, run
