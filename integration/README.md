@@ -577,6 +577,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **bound**:
 - **breadth**:
 - **bullet**:
+- **charge**:
 - **chdir**:
 - **collator**:
 - **companion**:
