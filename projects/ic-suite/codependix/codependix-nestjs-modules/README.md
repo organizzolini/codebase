@@ -400,3 +400,96 @@ None.
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nestjs-modules:coinagerie-check:write`.
+
+- **abort**:
+- **absolute**:
+- **after**:
+- **ambient**:
+- **anything**:
+- **basename**:
+- **breadth**:
+- **bug**:
+- **call**:
+- **clear**:
+- **close**:
+- **compare**:
+- **compile**:
+- **compiler**:
+- **connect**:
+- **console**:
+- **constant**:
+- **controller**:
+- **count**:
+- **debug**:
+- **decorator**:
+- **define**:
+- **derive**:
+- **describe**:
+- **diagram**:
+- **discover**:
+- **dynamic**:
+- **each**:
+- **edge**:
+- **entry**:
+- **equal**:
+- **exp**:
+- **experimental**:
+- **explore**:
+- **factory**:
+- **fake**:
+- **flat**:
+- **gitkeep**:
+- **homepage**:
+- **href**:
+- **identifier**:
+- **implementation**:
+- **inbound**:
+- **injectable**:
+- **isolate**:
+- **java**:
+- **least**:
+- **legend**:
+- **length**:
+- **load**:
+- **locale**:
+- **logger**:
+- **maximum**:
+- **mermaid**:
+- **meta**:
+- **metric**:
+- **mock**:
+- **original**:
+- **posix**:
+- **preview**:
+- **promise**:
+- **provide**:
+- **publish**:
+- **qualifier**:
+- **qualify**:
+- **readdir**:
+- **real**:
+- **recursive**:
+- **reg**:
+- **reject**:
+- **relative**:
+- **replace**:
+- **resolution**:
+- **restrict**:
+- **second**:
+- **separator**:
+- **some**:
+- **sort**:
+- **spy**:
+- **strict**:
+- **synthetic**:
+- **timer**:
+- **unconnected**:
+- **vi**:
+
+<!-- coinagerie:end -->

@@ -24,6 +24,7 @@
   "include": [
     "callidescope.config.ts",
     "codometer.config.ts",
+    "coinagerie.config.ts",
     "eslint.config.ts",
     "scripts/**/*.ts",
     "src/**/*.ts",

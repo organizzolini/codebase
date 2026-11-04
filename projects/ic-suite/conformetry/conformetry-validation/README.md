@@ -528,3 +528,103 @@ graph LR
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-validation:coinagerie-check:write`.
+
+- **after**:
+- **array**:
+- **bind**:
+- **breadth**:
+- **bug**:
+- **calculate**:
+- **capture**:
+- **claim**:
+- **clean**:
+- **clear**:
+- **compare**:
+- **compile**:
+- **compiler**:
+- **console**:
+- **constant**:
+- **controller**:
+- **count**:
+- **decorator**:
+- **deduplicate**:
+- **deduplication**:
+- **define**:
+- **definition**:
+- **describe**:
+- **descriptor**:
+- **difference**:
+- **each**:
+- **entry**:
+- **equal**:
+- **experimental**:
+- **extname**:
+- **fake**:
+- **filename**:
+- **flat**:
+- **gear**:
+- **gitkeep**:
+- **homepage**:
+- **implementation**:
+- **inference**:
+- **injectable**:
+- **instance**:
+- **java**:
+- **kebab**:
+- **least**:
+- **length**:
+- **lenient**:
+- **less**:
+- **locale**:
+- **maximum**:
+- **meta**:
+- **metric**:
+- **miss**:
+- **mkdtemp**:
+- **mock**:
+- **ok**:
+- **own**:
+- **parameter**:
+- **promise**:
+- **publish**:
+- **real**:
+- **reason**:
+- **recursive**:
+- **reduce**:
+- **resolution**:
+- **route**:
+- **runner**:
+- **score**:
+- **separator**:
+- **some**:
+- **sort**:
+- **spy**:
+- **stem**:
+- **strict**:
+- **stringify**:
+- **substitution**:
+- **sum**:
+- **synthetic**:
+- **text**:
+- **than**:
+- **threshold**:
+- **tie**:
+- **timer**:
+- **tmpdir**:
+- **under**:
+- **unfiltered**:
+- **unmatched**:
+- **unprepared**:
+- **unrecorded**:
+- **validator**:
+- **vi**:
+- **weight**:
+- **widget**:
+
+<!-- coinagerie:end -->

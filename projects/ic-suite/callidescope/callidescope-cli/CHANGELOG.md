@@ -1,3 +1,93 @@
+## 0.0.63 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.63
+- Updated callidescope-output to 0.0.62
+- Updated callidescope-graph to 0.0.62
+- Updated callidescope-core to 0.0.62
+
+## 0.0.62 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.62
+- Updated callidescope-output to 0.0.61
+- Updated callidescope-graph to 0.0.61
+- Updated callidescope-core to 0.0.61
+
+## 0.0.61 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.61
+- Updated callidescope-output to 0.0.60
+- Updated callidescope-graph to 0.0.60
+- Updated callidescope-core to 0.0.60
+
+## 0.0.60 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.60
+- Updated callidescope-output to 0.0.59
+- Updated callidescope-graph to 0.0.59
+- Updated callidescope-core to 0.0.59
+
+## 0.0.59 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.59
+- Updated callidescope-output to 0.0.58
+- Updated callidescope-graph to 0.0.58
+- Updated callidescope-core to 0.0.58
+
+## 0.0.58 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.58
+- Updated callidescope-output to 0.0.57
+- Updated callidescope-graph to 0.0.57
+- Updated callidescope-core to 0.0.57
+
+## 0.0.57 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.57
+- Updated callidescope-output to 0.0.56
+- Updated callidescope-graph to 0.0.56
+- Updated callidescope-core to 0.0.56
+
+## 0.0.56 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.56
+- Updated callidescope-output to 0.0.55
+- Updated callidescope-graph to 0.0.55
+- Updated callidescope-core to 0.0.55
+
+## 0.0.55 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.55
+- Updated callidescope-output to 0.0.54
+- Updated callidescope-graph to 0.0.54
+- Updated callidescope-core to 0.0.54
+
+## 0.0.54 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.54
+- Updated callidescope-output to 0.0.53
+- Updated callidescope-graph to 0.0.53
+- Updated callidescope-core to 0.0.53
+
 ## 0.0.53 (2026-10-27)
 
 ### 🧱 Updated Dependencies

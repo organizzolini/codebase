@@ -451,3 +451,100 @@ graph LR
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run observability:coinagerie-check:write`.
+
+- **after**:
+- **assign**:
+- **bind**:
+- **breadth**:
+- **call**:
+- **callee**:
+- **child**:
+- **clear**:
+- **colorize**:
+- **compile**:
+- **compiler**:
+- **compute**:
+- **console**:
+- **constant**:
+- **controller**:
+- **convention**:
+- **cook**:
+- **count**:
+- **debug**:
+- **decorator**:
+- **define**:
+- **describe**:
+- **descriptor**:
+- **destination**:
+- **detail**:
+- **duration**:
+- **each**:
+- **ecma**:
+- **entry**:
+- **es**:
+- **exactly**:
+- **experimental**:
+- **expression**:
+- **fake**:
+- **hoist**:
+- **implementation**:
+- **injectable**:
+- **invalid**:
+- **irregular**:
+- **iso**:
+- **java**:
+- **lead**:
+- **least**:
+- **length**:
+- **level**:
+- **logger**:
+- **lower**:
+- **lowercased**:
+- **maximum**:
+- **meta**:
+- **method**:
+- **metric**:
+- **miss**:
+- **mock**:
+- **ms**:
+- **non**:
+- **once**:
+- **original**:
+- **parameter**:
+- **past**:
+- **percent**:
+- **publish**:
+- **quasi**:
+- **real**:
+- **recursive**:
+- **remainder**:
+- **replace**:
+- **resolution**:
+- **should**:
+- **single**:
+- **slice**:
+- **spy**:
+- **stack**:
+- **strict**:
+- **synthetic**:
+- **tester**:
+- **text**:
+- **timer**:
+- **timestamped**:
+- **trace**:
+- **transient**:
+- **transport**:
+- **unvalidated**:
+- **valid**:
+- **verb**:
+- **vi**:
+- **violation**:
+- **warn**:
+
+<!-- coinagerie:end -->

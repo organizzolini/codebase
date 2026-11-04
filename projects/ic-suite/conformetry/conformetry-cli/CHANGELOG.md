@@ -1,3 +1,116 @@
+## 0.0.65 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.65
+- Updated conformetry-generation to 0.0.65
+- Updated conformetry-validation to 0.0.64
+- Updated conformetry-output to 0.0.64
+- Updated conformetry-core to 0.0.63
+
+## 0.0.64 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.64
+- Updated conformetry-generation to 0.0.64
+- Updated conformetry-validation to 0.0.63
+- Updated conformetry-output to 0.0.63
+- Updated conformetry-core to 0.0.62
+
+## 0.0.63 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.63
+- Updated conformetry-generation to 0.0.63
+- Updated conformetry-validation to 0.0.62
+- Updated conformetry-output to 0.0.62
+- Updated conformetry-core to 0.0.61
+
+## 0.0.62 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.62
+- Updated conformetry-generation to 0.0.62
+- Updated conformetry-validation to 0.0.61
+- Updated conformetry-output to 0.0.61
+- Updated conformetry-core to 0.0.60
+
+## 0.0.61 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.61
+- Updated conformetry-generation to 0.0.61
+- Updated conformetry-validation to 0.0.60
+- Updated conformetry-output to 0.0.60
+- Updated conformetry-core to 0.0.59
+
+## 0.0.60 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.60
+- Updated conformetry-generation to 0.0.60
+- Updated conformetry-validation to 0.0.59
+- Updated conformetry-output to 0.0.59
+- Updated conformetry-core to 0.0.58
+
+## 0.0.59 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.59
+- Updated conformetry-generation to 0.0.59
+- Updated conformetry-validation to 0.0.58
+- Updated conformetry-output to 0.0.58
+- Updated conformetry-core to 0.0.57
+
+## 0.0.58 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.58
+- Updated conformetry-generation to 0.0.58
+- Updated conformetry-validation to 0.0.57
+- Updated conformetry-output to 0.0.57
+- Updated conformetry-core to 0.0.56
+
+## 0.0.57 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.57
+- Updated conformetry-generation to 0.0.57
+- Updated conformetry-validation to 0.0.56
+- Updated conformetry-output to 0.0.56
+- Updated conformetry-core to 0.0.55
+
+## 0.0.56 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.56
+- Updated conformetry-generation to 0.0.56
+- Updated conformetry-validation to 0.0.55
+- Updated conformetry-output to 0.0.55
+- Updated conformetry-core to 0.0.54
+
+## 0.0.55 (2026-11-03)
+
+### 💅 Refactors
+
+- **configuration,caelundas,lexico,meanderaw,documentation,conformetry:** ♻️ hold every web app to one file shape ([#1951](https://github.com/organizzolini/codebase/pull/1951))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.55
+- Updated conformetry-generation to 0.0.55
+- Updated conformetry-validation to 0.0.54
+- Updated conformetry-output to 0.0.54
+
 ## 0.0.54 (2026-10-27)
 
 ### 🧱 Updated Dependencies

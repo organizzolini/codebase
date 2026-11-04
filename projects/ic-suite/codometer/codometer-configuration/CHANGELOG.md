@@ -1,3 +1,63 @@
+## 0.0.62 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.62
+
+## 0.0.61 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.61
+
+## 0.0.60 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.60
+
+## 0.0.59 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.59
+
+## 0.0.58 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.58
+
+## 0.0.57 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.57
+
+## 0.0.56 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.56
+
+## 0.0.55 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.55
+
+## 0.0.54 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.54
+
+## 0.0.53 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.53
+
 ## 0.0.52 (2026-10-27)
 
 ### 🧱 Updated Dependencies

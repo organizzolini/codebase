@@ -31,11 +31,21 @@ src/
     <route>.tsx                  # One file per route, e.g. index.tsx, word.$id.tsx
     <route>.integration.test.tsx # Ignored by the route generator
   components/
-    <component>.tsx
-    <component>.unit.test.tsx
+    <component>/
+      <component>.tsx              # The folder's component and its Properties
+      <component>.unit.test.tsx
+      <component>.types.ts
+      <component>.constants.ts
+      <component>.utilities.ts
+      <part>.tsx                   # More components the folder's is built from
+      <module>.<kind>.ts           # Shared code the folder owns, tested beside it
   hooks/
-    use-<hook>.ts
-    use-<hook>.unit.test.ts
+    use-<hook>/
+      use-<hook>.ts                # The folder's hook
+      use-<hook>.unit.test.ts
+      use-<hook>.types.ts
+      use-<hook>.constants.ts
+      use-<hook>.utilities.ts
   modules/
     <feature>/                   # Server functions and the utilities behind them
   styles/
@@ -53,8 +63,10 @@ is also the standard its files are validated against:
 ```bash
 nx g conformetry:tanstack-route --name=<file-stem> --path=<url-path> --project={{nameKebabCase}}
 nx g conformetry:tanstack-server-function --name=<feature> --project={{nameKebabCase}}
-nx g conformetry:react-component --name=<component> --project={{nameKebabCase}}
-nx g conformetry:react-hook --name=use-<hook> --project={{nameKebabCase}}
+nx g conformetry:react-component-folder --name=<component> --project={{nameKebabCase}}
+nx g conformetry:react-component-file --name=<part> --module=<component> --project={{nameKebabCase}}
+nx g conformetry:react-hook-folder --name=use-<hook> --project={{nameKebabCase}}
+nx g conformetry:react-hook-file --name=use-<other> --module=use-<hook> --project={{nameKebabCase}}
 ```
 
 ### Routes

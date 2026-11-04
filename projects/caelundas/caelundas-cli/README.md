@@ -252,6 +252,38 @@ is no separate build step. Build the web application with
 SQLite takes one writer at a time, so run one ingestion against a file at a
 time; a second waits five seconds and then fails with `SQLITE_BUSY`.
 
+## Night sky
+
+The `night-sky` command fills the tables `caelundas-web`'s night sky reads,
+`star`, `constellation` and `constellation_line`, in the same file, replacing
+what an earlier run wrote. It reads three files downloaded beforehand, never
+committed:
+
+```bash
+curl -LO https://raw.githubusercontent.com/astronexus/HYG-Database/main/hyg/CURRENT/hygdata_v41.csv
+curl -LO https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/constellations.json
+curl -LO https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/constellations.lines.json
+nx run caelundas-cli:start:night-sky --stars hygdata_v41.csv \
+  --constellations constellations.json --lines constellations.lines.json
+```
+
+It stores the stars to magnitude 6.5 at declination -45 degrees or north,
+keyed by Hipparcos number, plus any fainter star a figure joins; the 88 IAU
+constellations, the twelve of the zodiac flagged; and each figure's segments
+between two stored stars. d3-celestial draws its figures by position, so each
+vertex is matched to the catalog star within 0.05 degrees of it, and a segment
+south of the stored sky is left out. `data/night-sky-seed.sql` holds all 88
+constellations and their figures, with only the stars those figures join and
+those brighter than magnitude 3, for `caelundas-web`'s tests and seeded build;
+the full catalog stays an ingest step.
+
+The stars are the [HYG star database](https://github.com/astronexus/HYG-Database)
+v4.1, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), David
+Nash and the HYG contributors; the stored catalog and the seed are derived
+works under the same license. The constellations and figures are
+[d3-celestial](https://github.com/ofrohn/d3-celestial)'s, BSD-3-Clause, Olaf
+Frohn, after the IAU's constellation charts.
+
 ## Structure
 
 ```text
@@ -265,6 +297,7 @@ src/
     ├── perfective/          # Exact-moment detection across every event service
     ├── progressive/         # Spans derived from those moments
     ├── database/            # SQLite connection, entities, migrations
+    ├── night-sky/           # Stars and constellation figures for the web's night sky
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── tags/                # Resolving raw tag strings to nodes of the tag tree
     ├── calendar/            # iCalendar and JSON rendering and output
@@ -328,13 +361,13 @@ Call stacks traced through `projects/caelundas/caelundas-cli`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 1037 |
-| Files | 191 |
-| Calls traced | 1317 |
-| Call stacks | 105 |
+| Callables | 1075 |
+| Files | 202 |
+| Calls traced | 1348 |
+| Call stacks | 106 |
 | Deepest stack | 15 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 37 |
+| Unfollowable calls | 38 |
 
 ### Limits
 
@@ -404,7 +437,29 @@ What this project is judged against, as declared in its own `callidescope.config
                    ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**3. `MajorAspectsService.detect`** — depth ≥ 8 · orphan-root
+**3. `NightSkyCommand.run`** — depth 8 · decorated-method
+
+```text
+🚀 NightSkyCommand.run(_passedParameters: string[], options?: NightSkyCommandOptions): Promise<void> [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.command.ts:91]
+   ↳ Ingests the three files.
+  └─> NightSkyService.ingest(files: NightSkyFiles): Promise<NightSkyRows> [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:81]
+     ↳ Reads the three files, builds the rows and replaces the tables' rows with them, returning what was written.
+    └─> buildNightSkyRows(sources: NightSkySources): NightSkyRows [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:37]
+       ↳ Builds the rows the night sky's tables hold from the three files: the catalog's stars as bright as the eye sees, and…
+      └─> traceConstellationLines(text: string, index: StarIndex): ConstellationLineRow[] [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:145]
+         ↳ Reads d3-celestial's figures as segments between catalog stars by Hipparcos number.
+        └─> map(…)(vertex: [number, number]): CatalogStar | undefined [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:153]
+          └─> findStar(index: StarIndex, vertex: readonly [number, number]): CatalogStar | undefined [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:55]
+             ↳ The catalog star a vertex of a figure lies on, within the tolerance, or nothing.
+            └─> map(…)(star: CatalogStar): { separation: number; star: CatalogStar; } [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:64]
+              └─> measureSeparation(star: CatalogStar, [longitude, latitude]: readonly [number, number]): number [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:184]
+                 ↳ The degrees between a star and a vertex, along the sky, close enough for the small separations matching compares.
+```
+
+<details>
+<summary>103 more call stacks</summary>
+
+**4. `MajorAspectsService.detect`** — depth ≥ 8 · orphan-root
 
 ```text
 🚀 MajorAspectsService.detect(…): DetectedCalendarEvent | null [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:149]
@@ -424,10 +479,7 @@ What this project is judged against, as declared in its own `callidescope.config
                  ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-<details>
-<summary>102 more call stacks</summary>
-
-**4. `TripleAspectsService.detectProgressive`** — depth 8 · orphan-root
+**5. `TripleAspectsService.detectProgressive`** — depth 8 · orphan-root
 
 ```text
 🚀 TripleAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:111]
@@ -447,7 +499,7 @@ What this project is judged against, as declared in its own `callidescope.config
                  ↳ Inverts {@link bodyDisplayName}: returns the body a display name belongs to, or `undefined` when the name is not a…
 ```
 
-**5. `EphemerisService.getAzimuthElevationEphemerisByBody`** — depth ≥ 7 · orphan-root
+**6. `EphemerisService.getAzimuthElevationEphemerisByBody`** — depth ≥ 7 · orphan-root
 
 ```text
 🚀 EphemerisService.getAzimuthElevationEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", AzimuthElevationEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:156]
@@ -465,7 +517,7 @@ What this project is judged against, as declared in its own `callidescope.config
             └─> EphemerisUnavailableError.constructor(…): EphemerisUnavailableError [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:106]
 ```
 
-**6. `IngressesService.buildDecanIngressEvent`** — depth 7 · orphan-root
+**7. `IngressesService.buildDecanIngressEvent`** — depth 7 · orphan-root
 
 ```text
 🚀 IngressesService.buildDecanIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:91]
@@ -483,7 +535,7 @@ What this project is judged against, as declared in its own `callidescope.config
             └─> IngressesComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:79]
 ```
 
-**7. `MinorAspectsComposerService.processAspectGroup`** — depth 7 · orphan-root
+**8. `MinorAspectsComposerService.processAspectGroup`** — depth 7 · orphan-root
 
 ```text
 🚀 MinorAspectsComposerService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:217]
@@ -499,7 +551,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**8. `EphemerisService.getCoordinateEphemerisByBody`** — depth ≥ 6 · orphan-root
+**9. `EphemerisService.getCoordinateEphemerisByBody`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 EphemerisService.getCoordinateEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", CoordinateEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:202]
@@ -515,7 +567,7 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> EphemerisUnavailableError.constructor(…): EphemerisUnavailableError [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:106]
 ```
 
-**9. `AspectsUtilitiesService.getValue`** — depth 6 · orphan-root
+**10. `AspectsUtilitiesService.getValue`** — depth 6 · orphan-root
 
 ```text
 🚀 AspectsUtilitiesService.getValue({ body1, body2 }: { body1: Body; body2: Body; }): AspectBodies | null [projects/caelundas/caelundas-cli/src/modules/aspects/aspects-utilities.service.ts:281]
@@ -529,7 +581,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**10. `AspectsUtilitiesService.anonymous`** — depth 6 · orphan-root
+**11. `AspectsUtilitiesService.anonymous`** — depth 6 · orphan-root
 
 ```text
 🚀 AspectsUtilitiesService.anonymous(longitudes: LongitudesWindow): "forming" | "dissolving" | "perfective" | null [projects/caelundas/caelundas-cli/src/modules/aspects/aspects-utilities.service.ts:312]
@@ -545,7 +597,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**11. `MajorAspectProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**12. `MajorAspectProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 MajorAspectProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:98]
@@ -560,7 +612,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**12. `MajorAspectProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**13. `MajorAspectProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 MajorAspectProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:124]
@@ -575,7 +627,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**13. `MinorAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**14. `MinorAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:80]
@@ -590,7 +642,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**14. `MinorAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**15. `MinorAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:124]
@@ -605,7 +657,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**15. `MinorAspectsService.detect`** — depth ≥ 6 · orphan-root
+**16. `MinorAspectsService.detect`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 MinorAspectsService.detect(…): DetectedCalendarEvent | null [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:183]
@@ -621,7 +673,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**16. `QuadrupleAspectsComposerService.checkPatternExists`** — depth ≥ 6 · orphan-root
+**17. `QuadrupleAspectsComposerService.checkPatternExists`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 QuadrupleAspectsComposerService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:289]
@@ -636,7 +688,7 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> AspectGraphService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:78]
 ```
 
-**17. `QuadrupleAspectsService.detectProgressive`** — depth 6 · orphan-root
+**18. `QuadrupleAspectsService.detectProgressive`** — depth 6 · orphan-root
 
 ```text
 🚀 QuadrupleAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects.service.ts:75]
@@ -650,7 +702,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**18. `QuintupleAspectsService.detectProgressive`** — depth 6 · orphan-root
+**19. `QuintupleAspectsService.detectProgressive`** — depth 6 · orphan-root
 
 ```text
 🚀 QuintupleAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects.service.ts:58]
@@ -664,7 +716,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**19. `SextupleAspectsService.checkPatternExists`** — depth 6 · orphan-root
+**20. `SextupleAspectsService.checkPatternExists`** — depth 6 · orphan-root
 
 ```text
 🚀 SextupleAspectsService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects.service.ts:86]
@@ -679,7 +731,7 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> SextupleAspectsComposerService.find(…)(x: number): boolean [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:425]
 ```
 
-**20. `SextupleAspectsService.detectProgressive`** — depth 6 · orphan-root
+**21. `SextupleAspectsService.detectProgressive`** — depth 6 · orphan-root
 
 ```text
 🚀 SextupleAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects.service.ts:136]
@@ -693,7 +745,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**21. `SpecialtyAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**22. `SpecialtyAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:43]
@@ -708,7 +760,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**22. `SpecialtyAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**23. `SpecialtyAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:113]
@@ -723,7 +775,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**23. `SpecialtyAspectsService.detect`** — depth ≥ 6 · orphan-root
+**24. `SpecialtyAspectsService.detect`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsService.detect(…): DetectedCalendarEvent | null [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:201]
@@ -739,7 +791,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**24. `StelliumService.detectProgressive`** — depth 6 · orphan-root
+**25. `StelliumService.detectProgressive`** — depth 6 · orphan-root
 
 ```text
 🚀 StelliumService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:306]
@@ -753,7 +805,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**25. `mapClasses`** — depth ≥ 5 · orphan-root
+**26. `mapClasses`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 mapClasses(…): Readonly<Record<string, readonly TagPath[]>> [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:19]
@@ -766,7 +818,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ A raw tag that stands for exactly one node.
 ```
 
-**26. `EphemerisService.getDistanceEphemerisByBody`** — depth ≥ 5 · orphan-root
+**27. `EphemerisService.getDistanceEphemerisByBody`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 EphemerisService.getDistanceEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", DistanceEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:260]
@@ -780,7 +832,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> EphemerisUnavailableError.constructor(…): EphemerisUnavailableError [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:106]
 ```
 
-**27. `MajorAspectProgressiveService.castAspectPartsToTypes`** — depth ≥ 5 · orphan-root
+**28. `MajorAspectProgressiveService.castAspectPartsToTypes`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 MajorAspectProgressiveService.castAspectPartsToTypes(…): { aspect: "conjunct" | "opposite" | "sextile" | "square" | "trine"; body1: "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | ... 12 more ... | "venus"; body2: "lunar apogee" | ... 18 more ... | "venus"; } [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:66]
@@ -794,7 +846,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**28. `MajorAspectProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
+**29. `MajorAspectProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
 
 ```text
 🚀 MajorAspectProgressiveService.getAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:97]
@@ -807,7 +859,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**29. `MajorAspectsService.getLongitudesWindow`** — depth 5 · orphan-root
+**30. `MajorAspectsService.getLongitudesWindow`** — depth 5 · orphan-root
 
 ```text
 🚀 MajorAspectsService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:164]
@@ -821,7 +873,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**30. `MajorAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
+**31. `MajorAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 MajorAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:176]
@@ -835,7 +887,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:83]
 ```
 
-**31. `MajorAspectsService.getMajorAspect`** — depth 5 · orphan-root
+**32. `MajorAspectsService.getMajorAspect`** — depth 5 · orphan-root
 
 ```text
 🚀 MajorAspectsService.getMajorAspect(…): "conjunct" | "opposite" | "sextile" | "square" | "trine" | null [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:183]
@@ -850,7 +902,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**32. `MinorAspectsProgressiveService.castAspectComponentsToTypes`** — depth ≥ 5 · orphan-root
+**33. `MinorAspectsProgressiveService.castAspectComponentsToTypes`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.castAspectComponentsToTypes(…): { aspect: "quincunx" | "semisextile" | "semisquare" | "sesquiquadrate"; body1: "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | ... 13 more ... | "venus"; body2: "lunar apogee" | ... 18 more ... | "venus"; } [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:48]
@@ -864,7 +916,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**33. `MinorAspectsProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
+**34. `MinorAspectsProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.getAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:79]
@@ -877,7 +929,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**34. `MinorAspectsService.getLongitudesWindow`** — depth 5 · orphan-root
+**35. `MinorAspectsService.getLongitudesWindow`** — depth 5 · orphan-root
 
 ```text
 🚀 MinorAspectsService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:197]
@@ -891,7 +943,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**35. `MinorAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
+**36. `MinorAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 MinorAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:215]
@@ -905,7 +957,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:83]
 ```
 
-**36. `QuadrupleAspectsComposerService.checkPatternExists`** — depth 5 · orphan-root
+**37. `QuadrupleAspectsComposerService.checkPatternExists`** — depth 5 · orphan-root
 
 ```text
 🚀 QuadrupleAspectsComposerService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:342]
@@ -918,7 +970,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> AspectGraphService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:78]
 ```
 
-**37. `SpecialtyAspectsProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
+**38. `SpecialtyAspectsProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.getAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:42]
@@ -931,7 +983,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**38. `SpecialtyAspectsProgressiveService.extractTypedAspectValues`** — depth ≥ 5 · orphan-root
+**39. `SpecialtyAspectsProgressiveService.extractTypedAspectValues`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.extractTypedAspectValues(…): { aspect: "biquintile" | "decile" | "novile" | "quintile" | "septile" | "tredecile" | "undecile"; body1: "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | ... 15 more ... | "venus"; body2: "lunar apogee" | ... 18 more ... | "venus"; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:59]
@@ -945,7 +997,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**39. `SpecialtyAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
+**40. `SpecialtyAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:233]
@@ -959,7 +1011,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:83]
 ```
 
-**40. `TripleAspectsDetectorService.checkPatternExists`** — depth 5 · orphan-root
+**41. `TripleAspectsDetectorService.checkPatternExists`** — depth 5 · orphan-root
 
 ```text
 🚀 TripleAspectsDetectorService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:69]
@@ -972,7 +1024,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> AspectGraphService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:78]
 ```
 
-**41. `TripleAspectsDetectorService.checkPatternExists`** — depth 5 · orphan-root
+**42. `TripleAspectsDetectorService.checkPatternExists`** — depth 5 · orphan-root
 
 ```text
 🚀 TripleAspectsDetectorService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:119]
@@ -985,7 +1037,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> AspectGraphService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:78]
 ```
 
-**42. `TripleAspectsDetectorService.checkPatternExists`** — depth 5 · orphan-root
+**43. `TripleAspectsDetectorService.checkPatternExists`** — depth 5 · orphan-root
 
 ```text
 🚀 TripleAspectsDetectorService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:170]
@@ -998,7 +1050,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> AspectGraphService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:78]
 ```
 
-**43. `SpecialtyAspectsComposerService.getSpecialtyAspectProgressiveEvent`** — depth 5 · orphan-root
+**44. `SpecialtyAspectsComposerService.getSpecialtyAspectProgressiveEvent`** — depth 5 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsComposerService.getSpecialtyAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:158]
@@ -1011,7 +1063,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**44. `map(…)`** — depth ≥ 4 · orphan-root
+**45. `map(…)`** — depth ≥ 4 · orphan-root
 
 ```text
 🚀 map(…)(name: string): [string, TagMap] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:257]
@@ -1022,7 +1074,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ A raw tag that stands for exactly one node.
 ```
 
-**45. `EphemerisService.getIlluminationEphemerisByBody`** — depth ≥ 4 · orphan-root
+**46. `EphemerisService.getIlluminationEphemerisByBody`** — depth ≥ 4 · orphan-root
 
 ```text
 🚀 EphemerisService.getIlluminationEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", IlluminationEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:342]
@@ -1034,7 +1086,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> EphemerisUnavailableError.constructor(…): EphemerisUnavailableError [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:106]
 ```
 
-**46. `IngressesService.buildPeakIngressEvent`** — depth 4 · orphan-root
+**47. `IngressesService.buildPeakIngressEvent`** — depth 4 · orphan-root
 
 ```text
 🚀 IngressesService.buildPeakIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:106]
@@ -1046,7 +1098,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> IngressesComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:79]
 ```
 
-**47. `IngressesService.buildSignIngressEvent`** — depth 4 · orphan-root
+**48. `IngressesService.buildSignIngressEvent`** — depth 4 · orphan-root
 
 ```text
 🚀 IngressesService.buildSignIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:119]
@@ -1058,7 +1110,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> IngressesComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:79]
 ```
 
-**48. `MajorAspectProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+**49. `MajorAspectProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
 🚀 MajorAspectProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:100]
@@ -1069,7 +1121,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**49. `MajorAspectProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
+**50. `MajorAspectProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
 
 ```text
 🚀 MajorAspectProgressiveService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:114]
@@ -1081,7 +1133,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:83]
 ```
 
-**50. `MajorAspectProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+**51. `MajorAspectProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
 🚀 MajorAspectProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:126]
@@ -1092,7 +1144,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**51. `MinorAspectsEventService.isMatchingAspect`** — depth 4 · orphan-root
+**52. `MinorAspectsEventService.isMatchingAspect`** — depth 4 · orphan-root
 
 ```text
 🚀 MinorAspectsEventService.isMatchingAspect(aspect: "quincunx" | "semisextile" | "semisquare" | "sesquiquadrate"): boolean [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-event.service.ts:93]
@@ -1104,7 +1156,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**52. `MinorAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+**53. `MinorAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:82]
@@ -1115,7 +1167,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**53. `MinorAspectsProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
+**54. `MinorAspectsProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:114]
@@ -1127,7 +1179,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:83]
 ```
 
-**54. `MinorAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+**55. `MinorAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:126]
@@ -1138,7 +1190,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**55. `QuintupleAspectsComposerService.checkPatternExists`** — depth 4 · orphan-root
+**56. `QuintupleAspectsComposerService.checkPatternExists`** — depth 4 · orphan-root
 
 ```text
 🚀 QuintupleAspectsComposerService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:361]
@@ -1149,7 +1201,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> QuintupleAspectsComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:393]
 ```
 
-**56. `SpecialtyAspectsEventService.isMatchingAspect`** — depth 4 · orphan-root
+**57. `SpecialtyAspectsEventService.isMatchingAspect`** — depth 4 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsEventService.isMatchingAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-event.service.ts:98]
@@ -1161,7 +1213,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**57. `SpecialtyAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+**58. `SpecialtyAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:45]
@@ -1172,7 +1224,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**58. `SpecialtyAspectsProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
+**59. `SpecialtyAspectsProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:103]
@@ -1184,7 +1236,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:83]
 ```
 
-**59. `SpecialtyAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+**60. `SpecialtyAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:115]
@@ -1195,7 +1247,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**60. `SpecialtyAspectsService.getLongitudesWindow`** — depth 4 · orphan-root
+**61. `SpecialtyAspectsService.getLongitudesWindow`** — depth 4 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:215]
@@ -1207,7 +1259,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**61. `MinorAspectsComposerService.buildGroupKey`** — depth 4 · orphan-root
+**62. `MinorAspectsComposerService.buildGroupKey`** — depth 4 · orphan-root
 
 ```text
 🚀 MinorAspectsComposerService.buildGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:99]
@@ -1218,7 +1270,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**62. `MinorAspectsComposerService.getLongitudesWindowForBody`** — depth 4 · orphan-root
+**63. `MinorAspectsComposerService.getLongitudesWindowForBody`** — depth 4 · orphan-root
 
 ```text
 🚀 MinorAspectsComposerService.getLongitudesWindowForBody(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:177]
@@ -1231,7 +1283,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**63. `SpecialtyAspectsComposerService.specialtyAspectGroupKey`** — depth 4 · orphan-root
+**64. `SpecialtyAspectsComposerService.specialtyAspectGroupKey`** — depth 4 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsComposerService.specialtyAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:225]
@@ -1242,7 +1294,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**64. `EphemerisDownloadCommand.run`** — depth 3 · decorated-method
+**65. `EphemerisDownloadCommand.run`** — depth 3 · decorated-method
 
 ```text
 🚀 EphemerisDownloadCommand.run(): Promise<void> [projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.ts:42]
@@ -1253,7 +1305,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ The absolute directory the data files live in, from the working directory.
 ```
 
-**65. `EphemerisService.constructor`** — depth 3 · orphan-root
+**66. `EphemerisService.constructor`** — depth 3 · orphan-root
 
 ```text
 🚀 EphemerisService.constructor(…): EphemerisService [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:43]
@@ -1263,7 +1315,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ The absolute directory the data files live in, from the working directory.
 ```
 
-**66. `DailyCyclesService.buildLunarNadirEvent`** — depth ≥ 3 · orphan-root
+**67. `DailyCyclesService.buildLunarNadirEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildLunarNadirEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:80]
@@ -1274,7 +1326,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**67. `DailyCyclesService.buildLunarZenithEvent`** — depth ≥ 3 · orphan-root
+**68. `DailyCyclesService.buildLunarZenithEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildLunarZenithEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:87]
@@ -1285,7 +1337,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**68. `DailyCyclesService.buildMoonriseEvent`** — depth ≥ 3 · orphan-root
+**69. `DailyCyclesService.buildMoonriseEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildMoonriseEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:94]
@@ -1296,7 +1348,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**69. `DailyCyclesService.buildMoonsetEvent`** — depth ≥ 3 · orphan-root
+**70. `DailyCyclesService.buildMoonsetEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildMoonsetEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:101]
@@ -1307,7 +1359,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**70. `DailyCyclesService.buildSolarNadirEvent`** — depth ≥ 3 · orphan-root
+**71. `DailyCyclesService.buildSolarNadirEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSolarNadirEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:108]
@@ -1318,7 +1370,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**71. `DailyCyclesService.buildSolarZenithEvent`** — depth ≥ 3 · orphan-root
+**72. `DailyCyclesService.buildSolarZenithEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSolarZenithEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:115]
@@ -1329,7 +1381,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**72. `DailyCyclesService.buildSunriseEvent`** — depth ≥ 3 · orphan-root
+**73. `DailyCyclesService.buildSunriseEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSunriseEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:122]
@@ -1340,7 +1392,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**73. `DailyCyclesService.buildSunsetEvent`** — depth ≥ 3 · orphan-root
+**74. `DailyCyclesService.buildSunsetEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSunsetEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:129]
@@ -1351,7 +1403,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**74. `EclipsesService.buildLunarEclipseEvent`** — depth 3 · orphan-root
+**75. `EclipsesService.buildLunarEclipseEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 EclipsesService.buildLunarEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipses.service.ts:48]
@@ -1362,7 +1414,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds one eclipse contact event, titled with its type, body and phase, for example "🌐🌙🐉▶️ Total Lunar Eclipse…
 ```
 
-**75. `EclipsesService.buildSolarEclipseEvent`** — depth 3 · orphan-root
+**76. `EclipsesService.buildSolarEclipseEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 EclipsesService.buildSolarEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipses.service.ts:60]
@@ -1373,7 +1425,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds one eclipse contact event, titled with its type, body and phase, for example "🌐🌙🐉▶️ Total Lunar Eclipse…
 ```
 
-**76. `TwilightsService.buildAstronomicalDawnEvent`** — depth 3 · orphan-root
+**77. `TwilightsService.buildAstronomicalDawnEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildAstronomicalDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:61]
@@ -1384,7 +1436,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**77. `TwilightsService.buildAstronomicalDuskEvent`** — depth 3 · orphan-root
+**78. `TwilightsService.buildAstronomicalDuskEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildAstronomicalDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:71]
@@ -1395,7 +1447,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**78. `TwilightsService.buildCivilDawnEvent`** — depth 3 · orphan-root
+**79. `TwilightsService.buildCivilDawnEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildCivilDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:81]
@@ -1406,7 +1458,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**79. `TwilightsService.buildCivilDuskEvent`** — depth 3 · orphan-root
+**80. `TwilightsService.buildCivilDuskEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildCivilDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:91]
@@ -1417,7 +1469,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**80. `TwilightsService.buildNauticalDawnEvent`** — depth 3 · orphan-root
+**81. `TwilightsService.buildNauticalDawnEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildNauticalDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:101]
@@ -1428,7 +1480,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**81. `TwilightsService.buildNauticalDuskEvent`** — depth 3 · orphan-root
+**82. `TwilightsService.buildNauticalDuskEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildNauticalDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:111]
@@ -1439,7 +1491,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**82. `SpecialtyAspectsComposerService.getBodyLongitudesWindow`** — depth 3 · orphan-root
+**83. `SpecialtyAspectsComposerService.getBodyLongitudesWindow`** — depth 3 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsComposerService.getBodyLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:140]
@@ -1450,7 +1502,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**83. `map(…)`** — depth 2 · orphan-root
+**84. `map(…)`** — depth 2 · orphan-root
 
 ```text
 🚀 map(…)(…): [string, "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus"] [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:481]
@@ -1458,7 +1510,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**84. `mapNone`** — depth 2 · orphan-root
+**85. `mapNone`** — depth 2 · orphan-root
 
 ```text
 🚀 mapNone(names: readonly string[]): TagMap [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:53]
@@ -1466,7 +1518,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> map(…)(name: string): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:55]
 ```
 
-**85. `mapPlanetaryPhases`** — depth 2 · orphan-root
+**86. `mapPlanetaryPhases`** — depth 2 · orphan-root
 
 ```text
 🚀 mapPlanetaryPhases(…): Readonly<Record<string, readonly TagPath[]>> [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:66]
@@ -1474,7 +1526,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> map(…)(phase: string): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:78]
 ```
 
-**86. `map(…)`** — depth 2 · orphan-root
+**87. `map(…)`** — depth 2 · orphan-root
 
 ```text
 🚀 map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:51]
@@ -1482,7 +1534,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**87. `map(…)`** — depth 2 · orphan-root
+**88. `map(…)`** — depth 2 · orphan-root
 
 ```text
 🚀 map(…)(…): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:114]
@@ -1490,7 +1542,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**88. `map(…)`** — depth 2 · orphan-root
+**89. `map(…)`** — depth 2 · orphan-root
 
 ```text
 🚀 map(…)(…): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:123]
@@ -1498,7 +1550,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ The nodes a sign stands for: the sign itself, and beside it, as roots of their own, the element, modality and polarity…
 ```
 
-**89. `map(…)`** — depth 2 · orphan-root
+**90. `map(…)`** — depth 2 · orphan-root
 
 ```text
 🚀 map(…)(…): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:160]
@@ -1506,7 +1558,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ The nodes an aspect's nature and harmonic stand for, as roots of their own.
 ```
 
-**90. `map(…)`** — depth 2 · orphan-root
+**91. `map(…)`** — depth 2 · orphan-root
 
 ```text
 🚀 map(…)(…): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:179]
@@ -1514,7 +1566,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ The nodes an aspect's nature and harmonic stand for, as roots of their own.
 ```
 
-**91. `IngressesService.getSign`** — depth 2 · orphan-root
+**92. `IngressesService.getSign`** — depth 2 · orphan-root
 
 ```text
 🚀 IngressesService.getSign(longitude: number): Sign [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:72]
@@ -1522,7 +1574,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> IngressesService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:75]
 ```
 
-**92. `TwilightsComposerService.builder`** — depth 2 · orphan-root
+**93. `TwilightsComposerService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsComposerService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:40]
@@ -1530,7 +1582,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Builds morning astronomical-twilight interval from transition boundaries.
 ```
 
-**93. `TwilightsComposerService.builder`** — depth 2 · orphan-root
+**94. `TwilightsComposerService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsComposerService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:50]
@@ -1538,7 +1590,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Builds morning nautical-twilight interval from transition boundaries.
 ```
 
-**94. `TwilightsComposerService.builder`** — depth 2 · orphan-root
+**95. `TwilightsComposerService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsComposerService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:80]
@@ -1546,7 +1598,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Builds daylight interval between civil dawn and civil dusk boundaries.
 ```
 
-**95. `TwilightsComposerService.builder`** — depth 2 · orphan-root
+**96. `TwilightsComposerService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsComposerService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:90]
@@ -1554,7 +1606,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Builds evening nautical-twilight interval from transition boundaries.
 ```
 
-**96. `TwilightsComposerService.builder`** — depth 2 · orphan-root
+**97. `TwilightsComposerService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsComposerService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:100]
@@ -1562,7 +1614,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Builds evening astronomical-twilight interval from transition boundaries.
 ```
 
-**97. `TwilightsService.builder`** — depth 2 · orphan-root
+**98. `TwilightsService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:193]
@@ -1570,7 +1622,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Builds night interval spanning from astronomical dusk to next astronomical dawn.
 ```
 
-**98. `MajorAspectsService.constructor`** — depth 2 · orphan-root
+**99. `MajorAspectsService.constructor`** — depth 2 · orphan-root
 
 ```text
 🚀 MajorAspectsService.constructor(…): MajorAspectsService [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:37]
@@ -1578,7 +1630,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns a phase-detection function bound to a specific set of aspects.
 ```
 
-**99. `MinorAspectsService.constructor`** — depth 2 · orphan-root
+**100. `MinorAspectsService.constructor`** — depth 2 · orphan-root
 
 ```text
 🚀 MinorAspectsService.constructor(…): MinorAspectsService [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:41]
@@ -1586,7 +1638,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns a phase-detection function bound to a specific set of aspects.
 ```
 
-**100. `QuadrupleAspectsService.getOtherBody`** — depth 2 · orphan-root
+**101. `QuadrupleAspectsService.getOtherBody`** — depth 2 · orphan-root
 
 ```text
 🚀 QuadrupleAspectsService.getOtherBody(edge: AspectBodies, body: Body): Body | null [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects.service.ts:100]
@@ -1595,7 +1647,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns the other body in an aspect edge relative to the given body.
 ```
 
-**101. `SpecialtyAspectsService.constructor`** — depth 2 · orphan-root
+**102. `SpecialtyAspectsService.constructor`** — depth 2 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsService.constructor(…): SpecialtyAspectsService [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:41]
@@ -1603,7 +1655,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns a phase-detection function bound to a specific set of aspects.
 ```
 
-**102. `TripleAspectsService.findBodiesWithAspectTo`** — depth 2 · orphan-root
+**103. `TripleAspectsService.findBodiesWithAspectTo`** — depth 2 · orphan-root
 
 ```text
 🚀 TripleAspectsService.findBodiesWithAspectTo(body: Body, aspectType: Aspect, edges: AspectBodies[]): Body[] [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:36]
@@ -1611,7 +1663,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> TripleAspectsService.map(…)(…): "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | "moon" | ... 5 more ... | "venus" [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:47]
 ```
 
-**103. `TripleAspectsService.groupAspectsByType`** — depth ≥ 2 · orphan-root
+**104. `TripleAspectsService.groupAspectsByType`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 TripleAspectsService.groupAspectsByType<T extends AspectBodies>(edges: T[]): Map<Aspect, T[]> [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:55]
@@ -1619,7 +1671,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> TripleAspectsService.groupByToMap(…)(…): "biquintile" | "decile" | "novile" | "quintile" | "septile" | "tredecile" | "undecile" | "quincunx" | "semisextile" | "semisquare" | "sesquiquadrate" | "conjunct" | "opposite" | "sextile" | "square" | "trine" [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:58]
 ```
 
-**104. `TripleAspectsService.haveAspect`** — depth 2 · orphan-root
+**105. `TripleAspectsService.haveAspect`** — depth 2 · orphan-root
 
 ```text
 🚀 TripleAspectsService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:64]
@@ -1627,7 +1679,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> TripleAspectsService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:72]
 ```
 
-**105. `MinorAspectsComposerService.assembleMinorAspectEvent`** — depth 2 · orphan-root
+**106. `MinorAspectsComposerService.assembleMinorAspectEvent`** — depth 2 · orphan-root
 
 ```text
 🚀 MinorAspectsComposerService.assembleMinorAspectEvent(args: AssembleMinorAspectEventArguments): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:60]
@@ -1647,7 +1699,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `DailyCyclesService.getDailySolarCycleEvents` | 10 | `DailyCyclesBuilderService.getElevationWindow`, `DailyCyclesBuilderService.getHorizonClearanceWindow`, `DailyCyclesBuilderService.isRise`, `DailyCyclesBuilderService.buildSunriseEvent`, `MathService.isMaximum`, `DailyCyclesBuilderService.buildSolarZenithEvent`, `DailyCyclesBuilderService.isSet`, `DailyCyclesBuilderService.buildSunsetEvent`, `MathService.isMinimum`, `DailyCyclesBuilderService.buildSolarNadirEvent` | `projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:222` |
 
 <details>
-<summary>634 more callables</summary>
+<summary>647 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -1670,6 +1722,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `EclipseCalculationService.getGeocentricEvents` | 6 | `EclipseCalculationService.getSolarEclipsePhases`, `EclipseCalculationService.getLunarEclipsePhases`, `EclipseCalculationService.continueOccurrence`, `EclipseClassificationService.getSolarEclipseType`, `EclipseClassificationService.getLunarEclipseType`, `EclipseCalculationService.buildGeocentricEclipseEvents` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-calculation.service.ts:178` |
 | `RetrogradesService.detectBodyStations` | 6 | `EphemerisService.getCoordinateFromEphemeris`, `RetrogradesService.getPreviousLongitudes`, `RetrogradesService.getNextLongitudes`, `RetrogradesService.isRetrograde`, `RetrogradesService.buildRetrogradeEvent`, `RetrogradesService.isDirect` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:56` |
 | `RetrogradesService.detectProgressive` | 6 | `RetrogradesService.filter(…)`, `bodyDisplayName`, `RetrogradesService.filter(…)`, `RetrogradesService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `RetrogradesService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:357` |
+| `buildNightSkyRows` | 6 | `parseStarCatalog`, `traceConstellationLines`, `indexStars`, `flatMap(…)`, `parseConstellations`, `filter(…)` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:37` |
 | `EphemerisAggregationService.processNonNodeBodyMinute` | 5 | `EphemerisTimeService.dateToJulianDays`, `EphemerisCoordinateService.getBodyCoordinatesWithDistance`, `EphemerisConstantsService.isHorizonBody`, `EphemerisHorizonService.computeAzimuthElevationForMinute`, `EphemerisPhenomenaService.computePhenoForMinute` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts:103` |
 | `EphemerisService.computeAllEphemerides` | 5 | `EphemerisService.getAggregationService`, `EphemerisAggregationService.buildEphemerisFeatureSets`, `EphemerisAggregationService.buildEphemerisEntries`, `EphemerisAggregationService.accumulateBodyEphemeris`, `EphemerisAggregationService.entriesToEphemerides` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:107` |
 | `AnnualSolarCycleService.detectProgressive` | 5 | `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.getAdvancingProgressiveEvents`, `AnnualSolarCycleService.getRetreatingProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:199` |
@@ -1715,6 +1768,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `StelliumService.findStelliumsByKey` | 4 | `StelliumService.groupAspectsByType`, `AspectGraphService.unionAspectBodies`, `StelliumService.map(…)`, `StelliumService.findStelliumCliques` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:215` |
 | `StelliumService.detectProgressive` | 4 | `StelliumService.filter(…)`, `StelliumService.groupBy(…)`, `ProgressiveUtilitiesService.pairCompoundBoundaries`, `StelliumService.buildProgressiveStelliumEvent` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:306` |
 | `TripleAspectsComposerService.buildProgressiveBodiesMeta` | 4 | `TripleAspectsComposerService.map(…)`, `TripleAspectsComposerService.filter(…)`, `TripleAspectsComposerService.resolveAspectType`, `TripleAspectsComposerService.resolveProgressiveMeta` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:54` |
+| `findStar` | 4 | `toBand`, `flatMap(…)`, `toSorted(…)`, `map(…)` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:55` |
 | `MinorAspectsComposerService.processAspectGroup` | 4 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:217` |
 | `TagsService.resolve` | 3 | `TagsService.map(…)`, `tagPathKey`, `TagsService.ensurePath` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.service.ts:70` |
 | `CalendarService.buildEventContent` | 3 | `CalendarService.generateUid`, `CalendarService.formatEventTime`, `CalendarService.buildEventProperties` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:221` |
@@ -1781,6 +1835,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TripleAspectsDetectorService.checkYodApexBody` | 3 | `TripleAspectsDetectorService.isYod`, `AspectCalculationSupportService.determineCompoundPhaseFromSnapshots`, `TripleAspectsComposerService.buildTripleAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:145` |
 | `TripleAspectsService.detect` | 3 | `TripleAspectsDetectorService.composeTSquares`, `TripleAspectsDetectorService.composeYods`, `TripleAspectsDetectorService.composeGrandTrines` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:82` |
 | `TripleAspectsService.detectProgressive` | 3 | `TripleAspectsService.filter(…)`, `TripleAspectsService.groupBy(…)`, `TripleAspectsComposerService.pairProgressiveGroup` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:111` |
+| `parseStarCatalog` | 3 | `splitCsvLine`, `map(…)`, `flatMap(…)` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:117` |
+| `flatMap(…)` | 3 | `splitCsvLine`, `readCatalogStar`, `map(…)` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:128` |
 | `EphemerisDownloadService.download` | 3 | `resolveEphemerisDirectory`, `isEphemerisFilePresent`, `EphemerisDownloadService.fetchFile` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts:73` |
 | `MinorAspectsComposerService.extractAspectComponents` | 3 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.find(…)`, `MinorAspectsComposerService.castAspectComponentsToTypes` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:145` |
 | `map(…)` | 2 | `mapEach(…)`, `mapEach` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:257` |
@@ -1872,6 +1928,10 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TripleAspectsComposerService.flatMap(…)` | 2 | `TripleAspectsComposerService.find(…)`, `TripleAspectsComposerService.buildProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:357` |
 | `TripleAspectsService.findBodiesWithAspectTo` | 2 | `TripleAspectsService.map(…)`, `TripleAspectsService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:36` |
 | `TripleAspectsService.groupAspectsByType` | 2 | `TripleAspectsService.groupByToMap(…)`, `groupByToMap` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:55` |
+| `traceConstellationLines` | 2 | `map(…)`, `toSorted(…)` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:145` |
+| `readCatalogStar` | 2 | `some(…)`, `roundStar` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:204` |
+| `NightSkyService.ingest` | 2 | `buildNightSkyRows`, `NightSkyService.transaction(…)` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:81` |
+| `NightSkyCommand.run` | 2 | `NightSkyService.ingest`, `NightSkyCommand.requireFiles` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.command.ts:91` |
 | `MinorAspectsComposerService.assembleMinorAspectEvent` | 2 | `bodyDisplayName`, `MinorAspectsComposerService.resolvePhaseDetails` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:60` |
 | `MinorAspectsComposerService.buildGroupKey` | 2 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:99` |
 | `MinorAspectsComposerService.castAspectComponentsToTypes` | 2 | `isMinorAspect`, `isBody` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:119` |
@@ -2268,6 +2328,11 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TripleAspectsDetectorService.isYod` | 1 | `TripleAspectsComposerService.haveAspect` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:297` |
 | `TripleAspectsService.haveAspect` | 1 | `TripleAspectsService.some(…)` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:64` |
 | `TripleAspectsService.groupBy(…)` | 1 | `TripleAspectsComposerService.getProgressiveGroupKey` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:115` |
+| `map(…)` | 1 | `measureSeparation` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:64` |
+| `indexStars` | 1 | `toBand` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:76` |
+| `map(…)` | 1 | `findStar` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:153` |
+| `NightSkyService.replace` | 1 | `NightSkyService.insertInBatches` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:63` |
+| `NightSkyService.transaction(…)` | 1 | `NightSkyService.replace` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:89` |
 | `EphemerisDownloadCommand.run` | 1 | `EphemerisDownloadService.download` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.ts:42` |
 | `MinorAspectsComposerService.filter(…)` | 1 | `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:101` |
 | `MinorAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:103` |
@@ -2336,6 +2401,7 @@ flowchart LR
   MathModule
   MinorAspectsModule
   MonthlyLunarCycleModule
+  NightSkyModule
   PerfectiveModule
   PhasesModule
   ProgressiveModule
@@ -2402,6 +2468,7 @@ flowchart LR
   IngressesModule --> EphemerisModule
   MainModule --> CaelundasModule
   MainModule --> DiscoveryModule
+  MainModule --> NightSkyModule
   MajorAspectsModule --> AspectsUtilitiesModule
   MajorAspectsModule --> EphemerisModule
   MajorAspectsModule --> ProgressiveUtilitiesModule
@@ -2410,6 +2477,7 @@ flowchart LR
   MinorAspectsModule --> ProgressiveUtilitiesModule
   MonthlyLunarCycleModule --> CalendarModule
   MonthlyLunarCycleModule --> EphemerisModule
+  NightSkyModule --> DatabaseModule
   PerfectiveModule --> AnnualSolarCycleModule
   PerfectiveModule --> AspectsModule
   PerfectiveModule --> DailyCyclesModule
@@ -2467,6 +2535,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_caelundas_cli_constants_ts["src/caelundas-cli.constants.ts"]
   file_src_caelundas_cli_main_end_to_end_test_ts["src/caelundas-cli.main.end-to-end.test.ts"]
@@ -2544,8 +2613,12 @@ graph LR
   file_src_modules_database_database_utilities_unit_test_ts["src/modules/database/database.utilities.unit.test.ts"]
   file_src_modules_database_entities_calendar_event_tag_entity_ts["src/modules/database/entities/calendar-event-tag.entity.ts"]
   file_src_modules_database_entities_calendar_event_entity_ts["src/modules/database/entities/calendar-event.entity.ts"]
+  file_src_modules_database_entities_constellation_line_entity_ts["src/modules/database/entities/constellation-line.entity.ts"]
+  file_src_modules_database_entities_constellation_entity_ts["src/modules/database/entities/constellation.entity.ts"]
+  file_src_modules_database_entities_star_entity_ts["src/modules/database/entities/star.entity.ts"]
   file_src_modules_database_entities_tag_entity_ts["src/modules/database/entities/tag.entity.ts"]
   file_src_modules_database_migrations_1793045891250_migration_ts["src/modules/database/migrations/1793045891250-migration.ts"]
+  file_src_modules_database_migrations_1793628422000_migration_ts["src/modules/database/migrations/1793628422000-migration.ts"]
   file_src_modules_datetime_datetime_constants_ts["src/modules/datetime/datetime.constants.ts"]
   file_src_modules_datetime_datetime_module_ts["src/modules/datetime/datetime.module.ts"]
   file_src_modules_datetime_datetime_service_ts["src/modules/datetime/datetime.service.ts"]
@@ -2646,6 +2719,15 @@ graph LR
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts["src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts"]
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts["src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.unit.test.ts"]
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_types_ts["src/modules/monthly-lunar-cycle/monthly-lunar-cycle.types.ts"]
+  file_src_modules_night_sky_night_sky_command_ts["src/modules/night-sky/night-sky.command.ts"]
+  file_src_modules_night_sky_night_sky_command_unit_test_ts["src/modules/night-sky/night-sky.command.unit.test.ts"]
+  file_src_modules_night_sky_night_sky_constants_ts["src/modules/night-sky/night-sky.constants.ts"]
+  file_src_modules_night_sky_night_sky_module_ts["src/modules/night-sky/night-sky.module.ts"]
+  file_src_modules_night_sky_night_sky_service_ts["src/modules/night-sky/night-sky.service.ts"]
+  file_src_modules_night_sky_night_sky_service_unit_test_ts["src/modules/night-sky/night-sky.service.unit.test.ts"]
+  file_src_modules_night_sky_night_sky_types_ts["src/modules/night-sky/night-sky.types.ts"]
+  file_src_modules_night_sky_night_sky_utilities_ts["src/modules/night-sky/night-sky.utilities.ts"]
+  file_src_modules_night_sky_night_sky_utilities_unit_test_ts["src/modules/night-sky/night-sky.utilities.unit.test.ts"]
   file_src_modules_perfective_perfective_constants_ts["src/modules/perfective/perfective.constants.ts"]
   file_src_modules_perfective_perfective_module_ts["src/modules/perfective/perfective.module.ts"]
   file_src_modules_perfective_perfective_service_ts["src/modules/perfective/perfective.service.ts"]
@@ -2812,6 +2894,7 @@ graph LR
   file_src_caelundas_cli_main_unit_test_ts --> file_src_caelundas_cli_module_ts
   file_src_caelundas_cli_module_ts --> file_src_caelundas_cli_constants_ts
   file_src_caelundas_cli_module_ts --> file_src_modules_caelundas_caelundas_module_ts
+  file_src_caelundas_cli_module_ts --> file_src_modules_night_sky_night_sky_module_ts
   file_src_caelundas_cli_repl_ts --> file_src_caelundas_cli_module_ts
   file_src_ephemeris_download_cli_main_ts --> file_src_ephemeris_download_cli_module_ts
   file_src_ephemeris_download_cli_module_ts --> file_src_modules_ephemeris_download_ephemeris_download_module_ts
@@ -3064,13 +3147,16 @@ graph LR
   file_src_modules_database_data_source_constants_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_data_source_constants_unit_test_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_database_constants_integration_test_ts --> file_src_modules_database_database_constants_ts
-  file_src_modules_database_database_constants_integration_test_ts --> file_src_modules_database_migrations_1793045891250_migration_ts
   file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_calendar_event_tag_entity_ts
   file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_calendar_event_entity_ts
+  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_constellation_line_entity_ts
+  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_constellation_entity_ts
+  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_star_entity_ts
   file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_tag_entity_ts
+  file_src_modules_database_database_constants_ts --> file_src_modules_database_migrations_1793045891250_migration_ts
+  file_src_modules_database_database_constants_ts --> file_src_modules_database_migrations_1793628422000_migration_ts
   file_src_modules_database_database_module_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_database_module_ts --> file_src_modules_database_database_service_ts
-  file_src_modules_database_database_module_ts --> file_src_modules_database_migrations_1793045891250_migration_ts
   file_src_modules_database_database_service_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_database_service_unit_test_ts --> file_src_modules_database_database_service_ts
   file_src_modules_database_database_types_ts --> file_src_modules_database_entities_calendar_event_entity_ts
@@ -3078,6 +3164,8 @@ graph LR
   file_src_modules_database_entities_calendar_event_tag_entity_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_database_entities_calendar_event_tag_entity_ts --> file_src_modules_database_entities_tag_entity_ts
   file_src_modules_database_entities_calendar_event_entity_ts --> file_src_modules_database_database_utilities_ts
+  file_src_modules_database_entities_constellation_line_entity_ts --> file_src_modules_database_entities_constellation_entity_ts
+  file_src_modules_database_entities_constellation_line_entity_ts --> file_src_modules_database_entities_star_entity_ts
   file_src_modules_datetime_datetime_module_ts --> file_src_modules_datetime_datetime_service_ts
   file_src_modules_datetime_datetime_service_unit_test_ts --> file_src_modules_datetime_datetime_service_ts
   file_src_modules_eclipses_eclipse_calculation_service_ts --> file_src_modules_caelundas_caelundas_types_ts
@@ -3507,6 +3595,29 @@ graph LR
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_types_ts --> file_src_modules_ephemeris_ephemeris_types_ts
+  file_src_modules_night_sky_night_sky_command_ts --> file_src_modules_night_sky_night_sky_constants_ts
+  file_src_modules_night_sky_night_sky_command_ts --> file_src_modules_night_sky_night_sky_service_ts
+  file_src_modules_night_sky_night_sky_command_ts --> file_src_modules_night_sky_night_sky_types_ts
+  file_src_modules_night_sky_night_sky_command_unit_test_ts --> file_src_modules_night_sky_night_sky_command_ts
+  file_src_modules_night_sky_night_sky_command_unit_test_ts --> file_src_modules_night_sky_night_sky_constants_ts
+  file_src_modules_night_sky_night_sky_command_unit_test_ts --> file_src_modules_night_sky_night_sky_service_ts
+  file_src_modules_night_sky_night_sky_module_ts --> file_src_modules_database_database_module_ts
+  file_src_modules_night_sky_night_sky_module_ts --> file_src_modules_night_sky_night_sky_command_ts
+  file_src_modules_night_sky_night_sky_module_ts --> file_src_modules_night_sky_night_sky_service_ts
+  file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_database_entities_constellation_line_entity_ts
+  file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_database_entities_constellation_entity_ts
+  file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_database_entities_star_entity_ts
+  file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_night_sky_night_sky_constants_ts
+  file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_night_sky_night_sky_types_ts
+  file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_night_sky_night_sky_utilities_ts
+  file_src_modules_night_sky_night_sky_service_unit_test_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_night_sky_night_sky_service_unit_test_ts --> file_src_modules_night_sky_night_sky_service_ts
+  file_src_modules_night_sky_night_sky_service_unit_test_ts --> file_src_modules_night_sky_night_sky_types_ts
+  file_src_modules_night_sky_night_sky_utilities_ts --> file_src_modules_night_sky_night_sky_constants_ts
+  file_src_modules_night_sky_night_sky_utilities_ts --> file_src_modules_night_sky_night_sky_types_ts
+  file_src_modules_night_sky_night_sky_utilities_unit_test_ts --> file_src_modules_night_sky_night_sky_constants_ts
+  file_src_modules_night_sky_night_sky_utilities_unit_test_ts --> file_src_modules_night_sky_night_sky_types_ts
+  file_src_modules_night_sky_night_sky_utilities_unit_test_ts --> file_src_modules_night_sky_night_sky_utilities_ts
   file_src_modules_perfective_perfective_module_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_module_ts
   file_src_modules_perfective_perfective_module_ts --> file_src_modules_aspects_aspects_module_ts
   file_src_modules_perfective_perfective_module_ts --> file_src_modules_daily_cycles_daily_cycles_module_ts
@@ -4171,7 +4282,6 @@ graph LR
   file_testing_stellium_reference_unit_test_ts --> file_src_modules_stellium_stellium_service_ts
   file_testing_stellium_reference_unit_test_ts --> file_testing_reference_longitudes_constants_ts
   file_testing_temporary_database_utilities_ts --> file_src_modules_database_database_constants_ts
-  file_testing_temporary_database_utilities_ts --> file_src_modules_database_migrations_1793045891250_migration_ts
   file_testing_temporary_database_utilities_ts --> file_testing_temporary_database_types_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
@@ -4182,40 +4292,40 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-57188-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-1.96_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-37-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-328-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-58472-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-2.04_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-38-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-342-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-191.32_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-200.47_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-328-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-88-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-342-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-94-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-15-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-156-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-952-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-186-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1012-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-20-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-115-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-118-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-22-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-117-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2665-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-862-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-3310-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-217-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3933-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2210-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-478-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-2004-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-4231-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-125-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2718-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-876-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-3360-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-234-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3992-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2273-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-512-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2082-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-4381-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -4236,16 +4346,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-52-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-2631-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-474-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-2635-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-475-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-91-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1800-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1008-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1802-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1010-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-555-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-10-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-286-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-2138-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-287-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-2141-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML
@@ -4288,17 +4398,17 @@ graph LR
 
 ### SQL
 
-![SQL Files](https://img.shields.io/badge/SQL_Files-4-e38c00?style=flat-square)
-![SQL Lines](https://img.shields.io/badge/SQL_Lines-368-f29111?style=flat-square)
-![SQL Statements](https://img.shields.io/badge/SQL_Statements-32-7c3aed?style=flat-square)
+![SQL Files](https://img.shields.io/badge/SQL_Files-7-e38c00?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-1734-f29111?style=flat-square)
+![SQL Statements](https://img.shields.io/badge/SQL_Statements-45-7c3aed?style=flat-square)
 ![SQL Selects](https://img.shields.io/badge/SQL_Selects-10-16a34a?style=flat-square)
-![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-7-22c55e?style=flat-square)
-![SQL Updates](https://img.shields.io/badge/SQL_Updates-5-0ea5e9?style=flat-square)
-![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-7-dc2626?style=flat-square)
-![SQL Creates](https://img.shields.io/badge/SQL_Creates-15-0284c7?style=flat-square)
+![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-10-22c55e?style=flat-square)
+![SQL Updates](https://img.shields.io/badge/SQL_Updates-8-0ea5e9?style=flat-square)
+![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-10-dc2626?style=flat-square)
+![SQL Creates](https://img.shields.io/badge/SQL_Creates-20-0284c7?style=flat-square)
 ![SQL Joins](https://img.shields.io/badge/SQL_Joins-3-8b5cf6?style=flat-square)
 ![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-0-059669?style=flat-square)
-![SQL Comments](https://img.shields.io/badge/SQL_Comments-15-64748b?style=flat-square)
+![SQL Comments](https://img.shields.io/badge/SQL_Comments-24-64748b?style=flat-square)
 
 ### HCL
 
@@ -4326,14 +4436,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-34-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-74-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-2-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-40-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-34-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-12-0ea5e9?style=flat-square)
-![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-3-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-91-ca8a04?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-35-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-75-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-3-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-41-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-35-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-13-0ea5e9?style=flat-square)
+![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-6-059669?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-94-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-15-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-9-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -4371,14 +4481,14 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-451-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-454-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-11-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-23-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-131-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-132-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-19-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-80-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
@@ -4387,7 +4497,801 @@ graph LR
 ![Links](https://img.shields.io/badge/Links-22-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-18-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-246-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-255-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run caelundas-cli:coinagerie-check:write`.
+
+- **0520ed**:
+- **07726fe**:
+- **0ff**:
+- **146237171c**:
+- **19e**:
+- **1fd**:
+- **253a**:
+- **3680694135907038de**:
+- **3f**:
+- **4bf**:
+- **5060d**:
+- **57e**:
+- **57f**:
+- **589d**:
+- **6f**:
+- **729a**:
+- **7ccbf**:
+- **84a**:
+- **882a**:
+- **8a**:
+- **ab**:
+- **abbr**:
+- **abbreviation**:
+- **abort**:
+- **absent**:
+- **absolute**:
+- **accumulate**:
+- **accumulator**:
+- **aco**:
+- **across**:
+- **actual**:
+- **adj**:
+- **adjacent**:
+- **advance**:
+- **after**:
+- **agg**:
+- **aggregation**:
+- **air**:
+- **airless**:
+- **along**:
+- **altitude**:
+- **ancestor**:
+- **angle**:
+- **angular**:
+- **annual**:
+- **annular**:
+- **antisolar**:
+- **ap**:
+- **apex**:
+- **aphelion**:
+- **apog**:
+- **apogee**:
+- **approach**:
+- **apsi**:
+- **apside**:
+- **aquarius**:
+- **arcminute**:
+- **arcsecond**:
+- **argv**:
+- **around**:
+- **arrangement**:
+- **array**:
+- **ary**:
+- **ascension**:
+- **asin**:
+- **aspect**:
+- **assemble**:
+- **assertion**:
+- **assign**:
+- **asteroid**:
+- **astronomical**:
+- **atan2**:
+- **autumn**:
+- **autumnal**:
+- **axi**:
+- **azalt**:
+- **azimuth**:
+- **backward**:
+- **band**:
+- **batch**:
+- **bd19**:
+- **beginning1**:
+- **beginning2**:
+- **behind**:
+- **beltane**:
+- **bend**:
+- **bind**:
+- **biquintile**:
+- **blob**:
+- **block**:
+- **body0**:
+- **body1**:
+- **body2**:
+- **body3**:
+- **body4**:
+- **body5**:
+- **body6**:
+- **boomerang**:
+- **bootstrap**:
+- **boundary**:
+- **breadth**:
+- **brightest**:
+- **brightness**:
+- **brilliancy**:
+- **buffer**:
+- **builder**:
+- **bulk**:
+- **butterfly**:
+- **byte**:
+- **ca1882599**:
+- **cal**:
+- **calc**:
+- **calculation**:
+- **calendar**:
+- **call**:
+- **cancer**:
+- **canonical**:
+- **capitalize**:
+- **capricorn**:
+- **cascade**:
+- **cause**:
+- **center**:
+- **cere**:
+- **chain**:
+- **character**:
+- **child**:
+- **chiron**:
+- **choose**:
+- **chunk**:
+- **civil**:
+- **claim**:
+- **classifiable**:
+- **classification**:
+- **classify**:
+- **clear**:
+- **clearance**:
+- **clique**:
+- **clone**:
+- **close**:
+- **closest**:
+- **closure**:
+- **cluster**:
+- **co**:
+- **coerce**:
+- **color**:
+- **combination**:
+- **combine**:
+- **compare**:
+- **comparison**:
+- **compile**:
+- **compiler**:
+- **complete**:
+- **composer**:
+- **composite**:
+- **compound**:
+- **compute**:
+- **concat**:
+- **condition**:
+- **configure**:
+- **conflict**:
+- **conjunct**:
+- **conjunction**:
+- **connect**:
+- **connection**:
+- **console**:
+- **constant**:
+- **constellation**:
+- **contact**:
+- **controller**:
+- **coord**:
+- **coordinate**:
+- **count**:
+- **cradle**:
+- **crescent**:
+- **csv**:
+- **culmination**:
+- **curvature**:
+- **cycle**:
+- **daily**:
+- **danjon**:
+- **dark**:
+- **datetime**:
+- **dawn**:
+- **daylight**:
+- **dbace11**:
+- **ddcde86**:
+- **debug**:
+- **dec**:
+- **decan**:
+- **decile**:
+- **decimal**:
+- **declination**:
+- **decode**:
+- **decoder**:
+- **decorator**:
+- **decuple**:
+- **deep**:
+- **define**:
+- **degree**:
+- **delegate**:
+- **delta**:
+- **derive**:
+- **descendant**:
+- **describe**:
+- **designation**:
+- **destination**:
+- **destroy**:
+- **detail**:
+- **detect**:
+- **detectable**:
+- **detector**:
+- **determine**:
+- **diff**:
+- **difference**:
+- **dignity**:
+- **dimension**:
+- **direct**:
+- **direction**:
+- **disc**:
+- **discovery**:
+- **display**:
+- **dissolve**:
+- **distance**:
+- **domain**:
+- **down**:
+- **download**:
+- **dst**:
+- **dubhe**:
+- **duodecuple**:
+- **duration**:
+- **dusk**:
+- **each**:
+- **earlier**:
+- **earth**:
+- **east**:
+- **eastern**:
+- **ecl2**:
+- **eclipse**:
+- **ecliptic**:
+- **edge**:
+- **element**:
+- **elevation**:
+- **eleventh**:
+- **elongation**:
+- **empty**:
+- **encode**:
+- **encoder**:
+- **ending1**:
+- **ending2**:
+- **enlargement**:
+- **enqueue**:
+- **ensure**:
+- **enter**:
+- **entity**:
+- **entry**:
+- **ephe**:
+- **ephemeride**:
+- **ephemeris**:
+- **epimethian**:
+- **equal**:
+- **equatorial**:
+- **equinox**:
+- **estimate**:
+- **et**:
+- **even**:
+- **event1**:
+- **event2**:
+- **exact**:
+- **exactly**:
+- **execute**:
+- **exp**:
+- **experimental**:
+- **factory**:
+- **failure**:
+- **faint**:
+- **fake**:
+- **family**:
+- **field**:
+- **fifteenth**:
+- **fifth**:
+- **filename**:
+- **fill**:
+- **finite**:
+- **fire**:
+- **fixture**:
+- **fk**:
+- **flag**:
+- **flat**:
+- **floor**:
+- **focal**:
+- **force**:
+- **form**:
+- **fourth**:
+- **frame**:
+- **gamma**:
+- **gap**:
+- **gather**:
+- **gemini**:
+- **geocentric**:
+- **geocentrically**:
+- **geometry**:
+- **gibbous**:
+- **gitkeep**:
+- **grand**:
+- **greater**:
+- **greatest**:
+- **greg**:
+- **gregorian**:
+- **half**:
+- **hammer**:
+- **handler**:
+- **harmonic**:
+- **haversine**:
+- **hexadecan**:
+- **hexagon**:
+- **hexagram**:
+- **high**:
+- **hip**:
+- **hoist**:
+- **hor**:
+- **horizon**:
+- **horizontal**:
+- **hour**:
+- **hourglass**:
+- **hybrid**:
+- **hypot**:
+- **idx**:
+- **illumination**:
+- **imbolc**:
+- **implementation**:
+- **inferior**:
+- **infinity**:
+- **ingest**:
+- **ingress**:
+- **inject**:
+- **injectable**:
+- **insensitive**:
+- **instance**:
+- **instant**:
+- **int**:
+- **integer**:
+- **internal**:
+- **intersection**:
+- **invalid**:
+- **invert**:
+- **invocation**:
+- **involve**:
+- **iso**:
+- **item**:
+- **iterable**:
+- **january**:
+- **java**:
+- **jd**:
+- **jpl**:
+- **julian**:
+- **juno**:
+- **jupiter**:
+- **keep**:
+- **kilometer**:
+- **kind**:
+- **kite**:
+- **know**:
+- **la**:
+- **lamma**:
+- **last**:
+- **lat**:
+- **late**:
+- **later**:
+- **latitude**:
+- **latitude1**:
+- **latitude2**:
+- **leaf**:
+- **least**:
+- **leg**:
+- **length**:
+- **leo**:
+- **less**:
+- **libra**:
+- **lilith**:
+- **limb**:
+- **link**:
+- **literal**:
+- **load**:
+- **locale**:
+- **location**:
+- **logger**:
+- **lon**:
+- **london**:
+- **longitude**:
+- **longitude1**:
+- **longitude2**:
+- **lower**:
+- **lowercase**:
+- **lunar**:
+- **mag**:
+- **magnitude**:
+- **make**:
+- **many**:
+- **mar**:
+- **march**:
+- **margin**:
+- **marker**:
+- **martian**:
+- **math**:
+- **maximum**:
+- **mean**:
+- **measure**:
+- **member**:
+- **merak**:
+- **mercurian**:
+- **mercury**:
+- **meta**:
+- **meter**:
+- **metric**:
+- **migration1793045891250**:
+- **migration1793628422000**:
+- **millisecond**:
+- **min**:
+- **minute1**:
+- **minute2**:
+- **miscount**:
+- **miss**:
+- **mkdtemp**:
+- **mock**:
+- **modality**:
+- **month**:
+- **monthly**:
+- **moon**:
+- **moonrise**:
+- **moonset**:
+- **morning**:
+- **moseph**:
+- **motion**:
+- **ms**:
+- **mystic**:
+- **n0**:
+- **n1**:
+- **na**:
+- **nadir**:
+- **nasa**:
+- **natural**:
+- **nature**:
+- **nautical**:
+- **near**:
+- **nearer**:
+- **nearest**:
+- **need**:
+- **neighbor**:
+- **neptune**:
+- **night**:
+- **ninth**:
+- **nod**:
+- **nodbit**:
+- **non**:
+- **nonnegative**:
+- **nonuple**:
+- **normalize**:
+- **north**:
+- **novile**:
+- **now**:
+- **nth**:
+- **nullable**:
+- **ny**:
+- **observance**:
+- **observational**:
+- **observer**:
+- **occurrence**:
+- **octet**:
+- **october**:
+- **octuple**:
+- **ok**:
+- **omit**:
+- **once**:
+- **one**:
+- **opp**:
+- **opp1**:
+- **opp2**:
+- **opposite**:
+- **opposition**:
+- **optional**:
+- **orb**:
+- **orbital**:
+- **original**:
+- **orm**:
+- **oscu**:
+- **osculate**:
+- **other**:
+- **other0**:
+- **other1**:
+- **overlap**:
+- **own**:
+- **pad**:
+- **pair**:
+- **palla**:
+- **parallax**:
+- **parameter**:
+- **part**:
+- **partial**:
+- **passage**:
+- **past**:
+- **peak**:
+- **pending**:
+- **pentagram**:
+- **penumbral**:
+- **per**:
+- **perfective**:
+- **perigee**:
+- **perihelion**:
+- **perihelion1**:
+- **perihelion2**:
+- **persistence**:
+- **phase**:
+- **pheno**:
+- **phenomenon**:
+- **philadelphia**:
+- **pi**:
+- **pick**:
+- **pipeline**:
+- **pisce**:
+- **pivot**:
+- **place**:
+- **planet**:
+- **planetary**:
+- **pluto**:
+- **point**:
+- **polarity**:
+- **polyline**:
+- **pop**:
+- **position**:
+- **positive**:
+- **present**:
+- **previous**:
+- **prograde**:
+- **progressive**:
+- **promethian**:
+- **promise**:
+- **prototype**:
+- **provide**:
+- **prune**:
+- **publish**:
+- **quadruple**:
+- **quarter**:
+- **quartet1**:
+- **quartet2**:
+- **quincunx**:
+- **quintet1**:
+- **quintet2**:
+- **quintile**:
+- **quintuple**:
+- **quote**:
+- **ra**:
+- **radial**:
+- **radian**:
+- **radius**:
+- **ratio**:
+- **reach**:
+- **readable**:
+- **readdir**:
+- **real**:
+- **reason**:
+- **rectangle**:
+- **recursive**:
+- **reduce**:
+- **refine**:
+- **refract**:
+- **refraction**:
+- **reg**:
+- **regex**:
+- **regular**:
+- **reject**:
+- **relation**:
+- **rename**:
+- **reorder**:
+- **repeat**:
+- **replace**:
+- **resolution**:
+- **respond**:
+- **rest**:
+- **retreat**:
+- **retrieve**:
+- **retrograde**:
+- **reverse**:
+- **reykjavik**:
+- **rise**:
+- **round**:
+- **runner**:
+- **safe**:
+- **sagittarius**:
+- **same**:
+- **samhain**:
+- **sample**:
+- **saturn**:
+- **save**:
+- **scan**:
+- **scenario**:
+- **scorpio**:
+- **se**:
+- **season**:
+- **second**:
+- **seflg**:
+- **segment**:
+- **semidiameter**:
+- **semisextile**:
+- **semisquare**:
+- **separation**:
+- **septile**:
+- **septuple**:
+- **series**:
+- **sesquiquadrate**:
+- **seventh**:
+- **sextile**:
+- **sextuple**:
+- **shadow**:
+- **should**:
+- **sibling**:
+- **simple**:
+- **sin**:
+- **since**:
+- **sky**:
+- **slice**:
+- **smooth**:
+- **snapshot**:
+- **solar**:
+- **solstice**:
+- **some**:
+- **sort**:
+- **south**:
+- **span**:
+- **sparse**:
+- **specialty**:
+- **speed**:
+- **split**:
+- **spring**:
+- **spy**:
+- **sqrt**:
+- **square**:
+- **stack**:
+- **stamp**:
+- **star**:
+- **stat**:
+- **statement**:
+- **station**:
+- **steady**:
+- **stellium**:
+- **store**:
+- **str**:
+- **stray**:
+- **stream**:
+- **strftime**:
+- **strict**:
+- **stringify**:
+- **stub**:
+- **sub**:
+- **subtend**:
+- **subtract**:
+- **summary**:
+- **summer**:
+- **sun**:
+- **sunrise**:
+- **sunset**:
+- **superior**:
+- **sweep**:
+- **swieph**:
+- **swiss**:
+- **sydney**:
+- **synodic**:
+- **synthetic**:
+- **t00**:
+- **t03**:
+- **t05**:
+- **t06**:
+- **t07**:
+- **t08**:
+- **t09**:
+- **t10**:
+- **t12**:
+- **t13**:
+- **t14**:
+- **t16**:
+- **t17**:
+- **t18**:
+- **t19**:
+- **taurus**:
+- **temporality**:
+- **temporary**:
+- **text**:
+- **than**:
+- **third**:
+- **thirteenth**:
+- **threshold**:
+- **tidy**:
+- **tilt**:
+- **timer**:
+- **timespan**:
+- **tmpdir**:
+- **tokyo**:
+- **tolerance**:
+- **topo**:
+- **topocentric**:
+- **topoctr**:
+- **totality**:
+- **trace**:
+- **track**:
+- **transform**:
+- **transformer**:
+- **transition**:
+- **traversal**:
+- **traverse**:
+- **tredecile**:
+- **trim**:
+- **trine**:
+- **trine1**:
+- **trine2**:
+- **triple**:
+- **triplet**:
+- **tromso**:
+- **trunc**:
+- **tuple**:
+- **twice**:
+- **twilight**:
+- **two**:
+- **uint8**:
+- **umbral**:
+- **unavailable**:
+- **uncapitalize**:
+- **unclassified**:
+- **undecile**:
+- **undecuple**:
+- **under**:
+- **unexpected**:
+- **unfold**:
+- **uniq**:
+- **universal**:
+- **unmatched**:
+- **unpaired**:
+- **unstub**:
+- **up**:
+- **updatable**:
+- **upper**:
+- **upsert**:
+- **upward**:
+- **uranus**:
+- **usno**:
+- **ut**:
+- **valid**:
+- **varchar**:
+- **variable**:
+- **vcalendar**:
+- **velocity**:
+- **venu**:
+- **venusian**:
+- **verb**:
+- **vernal**:
+- **vertex**:
+- **vesta**:
+- **vevent**:
+- **vi**:
+- **vigo**:
+- **virgo**:
+- **visibility**:
+- **visible**:
+- **visit**:
+- **wan**:
+- **want**:
+- **warn**:
+- **water**:
+- **wax**:
+- **weak**:
+- **week**:
+- **weekday**:
+- **west**:
+- **western**:
+- **will**:
+- **window**:
+- **window1**:
+- **window2**:
+- **winter**:
+- **within**:
+- **wrap**:
+- **year**:
+- **yod**:
+- **zenith**:
+- **zip**:
+- **zodiac**:
+- **zone**:
+
+<!-- coinagerie:end -->

@@ -245,12 +245,12 @@ describe(PublishablePackagesChecksService, () => {
     expect.hasAssertions();
 
     overrideCommand(
-      (command) => command.args[1] === "healthy:codependix-gate",
+      (command) => command.args[1] === "healthy:codependix-bound",
       { output: "Could not resolve schema", status: 1 },
     );
 
     expect(service.verifyConsumer(context, publishablePackages)).toStrictEqual([
-      "❌ @codependix/nx failed healthy:codependix-gate, which should pass (exit 1):\nCould not resolve schema",
+      "❌ @codependix/nx failed healthy:codependix-bound, which should pass (exit 1):\nCould not resolve schema",
     ]);
   });
 
@@ -271,12 +271,12 @@ describe(PublishablePackagesChecksService, () => {
     expect.hasAssertions();
 
     overrideCommand(
-      (command) => command.args[1] === "broken:callidescope-gate",
+      (command) => command.args[1] === "broken:callidescope-restrict",
       { output: "Call stacks over the depth limit (1)", status: 0 },
     );
 
     expect(service.verifyConsumer(context, publishablePackages)).toStrictEqual([
-      '❌ @callidescope/nx did not fail broken:callidescope-gate with "Call stacks over the depth limit (1)" (exit 0):\nCall stacks over the depth limit (1)',
+      '❌ @callidescope/nx did not fail broken:callidescope-restrict with "Call stacks over the depth limit (1)" (exit 0):\nCall stacks over the depth limit (1)',
     ]);
   });
 });

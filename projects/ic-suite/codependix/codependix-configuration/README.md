@@ -443,3 +443,101 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run codependix-configuration:coinagerie-check:write`.
+
+- **absolute**:
+- **accept**:
+- **acyclic**:
+- **after**:
+- **anchor**:
+- **array**:
+- **boundary**:
+- **breadth**:
+- **bug**:
+- **call**:
+- **choice**:
+- **clear**:
+- **comma**:
+- **compile**:
+- **compiler**:
+- **configure**:
+- **console**:
+- **constant**:
+- **controller**:
+- **decorator**:
+- **define**:
+- **delimit**:
+- **describe**:
+- **each**:
+- **edge**:
+- **empty**:
+- **entry**:
+- **equal**:
+- **experimental**:
+- **extname**:
+- **fake**:
+- **field**:
+- **flag**:
+- **gitkeep**:
+- **homepage**:
+- **implementation**:
+- **implicit**:
+- **injectable**:
+- **instance**:
+- **java**:
+- **kind**:
+- **least**:
+- **length**:
+- **literal**:
+- **load**:
+- **loader**:
+- **lower**:
+- **marker**:
+- **maximum**:
+- **meta**:
+- **metric**:
+- **min**:
+- **miss**:
+- **mkdtemp**:
+- **mock**:
+- **need**:
+- **optional**:
+- **original**:
+- **own**:
+- **promise**:
+- **provide**:
+- **publish**:
+- **real**:
+- **recursive**:
+- **refine**:
+- **reject**:
+- **relative**:
+- **resolution**:
+- **runner**:
+- **safe**:
+- **search**:
+- **selection**:
+- **selector**:
+- **separator**:
+- **some**:
+- **split**:
+- **spy**:
+- **stdin**:
+- **strict**:
+- **stringify**:
+- **success**:
+- **surface**:
+- **synthetic**:
+- **timer**:
+- **tmpdir**:
+- **touch**:
+- **trim**:
+- **undeclared**:
+- **vi**:
+
+<!-- coinagerie:end -->

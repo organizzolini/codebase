@@ -65,16 +65,12 @@ graph LR
   file_src_documentation_constants_ts["src/documentation.constants.ts"]
   file_src_documentation_main_end_to_end_test_ts["src/documentation.main.end-to-end.test.ts"]
   file_src_documentation_main_ts["src/documentation.main.ts"]
-  file_src_documentation_main_unit_test_ts["src/documentation.main.unit.test.ts"]
   file_src_documentation_module_ts["src/documentation.module.ts"]
-  file_src_documentation_module_unit_test_ts["src/documentation.module.unit.test.ts"]
   file_src_documentation_repl_ts["src/documentation.repl.ts"]
-  file_src_documentation_repl_unit_test_ts["src/documentation.repl.unit.test.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_command_ts["src/modules/refresh-documentation/refresh-documentation.command.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_command_unit_test_ts["src/modules/refresh-documentation/refresh-documentation.command.unit.test.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_constants_ts["src/modules/refresh-documentation/refresh-documentation.constants.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_module_ts["src/modules/refresh-documentation/refresh-documentation.module.ts"]
-  file_src_modules_refresh_documentation_refresh_documentation_module_unit_test_ts["src/modules/refresh-documentation/refresh-documentation.module.unit.test.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_service_ts["src/modules/refresh-documentation/refresh-documentation.service.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_service_unit_test_ts["src/modules/refresh-documentation/refresh-documentation.service.unit.test.ts"]
   file_src_modules_refresh_documentation_refresh_documentation_types_ts["src/modules/refresh-documentation/refresh-documentation.types.ts"]
@@ -83,68 +79,198 @@ graph LR
   file_vitest_config_ts["vitest.config.ts"]
   file_src_documentation_main_end_to_end_test_ts --> file_src_documentation_constants_ts
   file_src_documentation_main_ts --> file_src_documentation_module_ts
-  file_src_documentation_main_unit_test_ts --> file_src_documentation_module_ts
   file_src_documentation_module_ts --> file_src_documentation_constants_ts
   file_src_documentation_module_ts --> file_src_modules_refresh_documentation_refresh_documentation_module_ts
-  file_src_documentation_module_unit_test_ts --> file_src_documentation_module_ts
-  file_src_documentation_module_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_module_ts
   file_src_documentation_repl_ts --> file_src_documentation_module_ts
-  file_src_documentation_repl_unit_test_ts --> file_src_documentation_module_ts
   file_src_modules_refresh_documentation_refresh_documentation_command_ts --> file_src_modules_refresh_documentation_refresh_documentation_service_ts
   file_src_modules_refresh_documentation_refresh_documentation_command_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_command_ts
   file_src_modules_refresh_documentation_refresh_documentation_command_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_service_ts
   file_src_modules_refresh_documentation_refresh_documentation_module_ts --> file_src_modules_refresh_documentation_refresh_documentation_command_ts
   file_src_modules_refresh_documentation_refresh_documentation_module_ts --> file_src_modules_refresh_documentation_refresh_documentation_service_ts
-  file_src_modules_refresh_documentation_refresh_documentation_module_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_command_ts
-  file_src_modules_refresh_documentation_refresh_documentation_module_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_module_ts
-  file_src_modules_refresh_documentation_refresh_documentation_module_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_service_ts
   file_src_modules_refresh_documentation_refresh_documentation_service_ts --> file_src_modules_refresh_documentation_refresh_documentation_constants_ts
   file_src_modules_refresh_documentation_refresh_documentation_service_unit_test_ts --> file_src_modules_refresh_documentation_refresh_documentation_service_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
-<!-- callidescope:start -->
+<!-- coinagerie:start -->
 
-## 🔭 Callidescope
+## 🪙 Coinagerie
 
-Call stacks traced through `documentation`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+The words this project uses that the root glossary does not define, regenerated with `nx run documentation:coinagerie-check:write`.
 
-| Measure | Value |
-| --- | --- |
-| Callables | 10 |
-| Files | 14 |
-| Calls traced | 3 |
-| Call stacks | 1 |
-| Deepest stack | 3 |
-| Stacks through recursion | 0 |
-| Unfollowable calls | 1 |
+- **absorb**:
+- **address**:
+- **adr**:
+- **affirmation**:
+- **after**:
+- **alone**:
+- **alternative**:
+- **an**:
+- **analysis**:
+- **assertion**:
+- **band**:
+- **biome**:
+- **bootstrap**:
+- **border**:
+- **both**:
+- **breadth**:
+- **buffer**:
+- **bundle**:
+- **call**:
+- **canonical**:
+- **capture**:
+- **cascade**:
+- **characteristic**:
+- **claim**:
+- **clear**:
+- **close**:
+- **compile**:
+- **compiler**:
+- **complete**:
+- **completion**:
+- **composite**:
+- **concept**:
+- **conformance**:
+- **console**:
+- **constant**:
+- **controller**:
+- **corpus**:
+- **count**:
+- **cut**:
+- **decorator**:
+- **define**:
+- **definition**:
+- **delay**:
+- **describe**:
+- **design**:
+- **development**:
+- **discovery**:
+- **domain**:
+- **draw**:
+- **drift**:
+- **each**:
+- **elimination**:
+- **enhance**:
+- **entity**:
+- **entry**:
+- **ephemeris**:
+- **equal**:
+- **everything**:
+- **evidence**:
+- **exactly**:
+- **example**:
+- **executable**:
+- **experimental**:
+- **expose**:
+- **factory**:
+- **fake**:
+- **family**:
+- **field**:
+- **fingerprint**:
+- **floor**:
+- **force**:
+- **generation**:
+- **gitkeep**:
+- **give**:
+- **greater**:
+- **handler**:
+- **handoff**:
+- **historical**:
+- **hoist**:
+- **hold**:
+- **implementation**:
+- **independent**:
+- **injectable**:
+- **inline**:
+- **instance**:
+- **interlace**:
+- **invocation**:
+- **judge**:
+- **keep**:
+- **last**:
+- **lattice**:
+- **law**:
+- **least**:
+- **leftover**:
+- **less**:
+- **letter**:
+- **link**:
+- **logger**:
+- **lstat**:
+- **manifest**:
+- **maximum**:
+- **md**:
+- **meanderaw**:
+- **mock**:
+- **monorepo**:
+- **ms**:
+- **multi**:
+- **narrow**:
+- **nth**:
+- **once**:
+- **one**:
+- **optimization**:
+- **original**:
+- **overview**:
+- **own**:
+- **partial**:
+- **performance**:
+- **phase**:
+- **pid**:
+- **pipeline**:
+- **pitch**:
+- **plan**:
+- **precommit**:
+- **promise**:
+- **provide**:
+- **publish**:
+- **quickstart**:
+- **real**:
+- **really**:
+- **recursive**:
+- **reject**:
+- **rename**:
+- **research**:
+- **resolution**:
+- **role**:
+- **runner**:
+- **scaffold**:
+- **signal**:
+- **small**:
+- **software**:
+- **sparse**:
+- **spawn**:
+- **spy**:
+- **stack**:
+- **stat**:
+- **statement**:
+- **statistic**:
+- **stdio**:
+- **stdout**:
+- **store**:
+- **strict**:
+- **swiss**:
+- **symbolic**:
+- **symlink**:
+- **synthetic**:
+- **t00**:
+- **t02**:
+- **t13**:
+- **t18**:
+- **t19**:
+- **t23**:
+- **task**:
+- **than**:
+- **theory**:
+- **timer**:
+- **tracker**:
+- **triage**:
+- **typesafety**:
+- **under**:
+- **unlink**:
+- **validator**:
+- **versioning**:
+- **vi**:
+- **wiki**:
 
-### Limits
-
-What this project is judged against, as declared in its own `callidescope.config.ts`.
-
-| Limit | Value |
-| --- | --- |
-| `maximumDepth` | 6 |
-| `maximumBreadth` | 8 |
-
-### Call stacks (depth)
-
-**1. `RefreshDocumentationCommand.run`** — depth 3 · decorated-method
-
-```text
-🚀 RefreshDocumentationCommand.run(): Promise<void> [documentation/src/modules/refresh-documentation/refresh-documentation.command.ts:39]
-   ↳ Refreshes the documentation, failing the process when that fails.
-  └─> RefreshDocumentationService.refresh(): Promise<boolean> [documentation/src/modules/refresh-documentation/refresh-documentation.service.ts:75]
-     ↳ Updates the wiki from code, starting OpenWiki again after a growing wait when it fails, then puts the `openwiki`…
-    └─> RefreshDocumentationService.exposeWiki(): boolean [documentation/src/modules/refresh-documentation/refresh-documentation.service.ts:48]
-       ↳ Replaces the root `openwiki` symlink with the directory it points at.
-```
-
-### Breadth
-
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `RefreshDocumentationService.refresh` | 2 | `RefreshDocumentationService.exposeWiki`, `RefreshDocumentationService.restoreWiki` | `documentation/src/modules/refresh-documentation/refresh-documentation.service.ts:75` |
-| `RefreshDocumentationCommand.run` | 1 | `RefreshDocumentationService.refresh` | `documentation/src/modules/refresh-documentation/refresh-documentation.command.ts:39` |
-<!-- callidescope:end -->
+<!-- coinagerie:end -->

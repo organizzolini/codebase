@@ -58,7 +58,7 @@
       "shared-globals"
     ]
   },
-  "neverConnectToCloud": true,
+  "nxCloudId": "6aea50f4879fcc3ac751e1f5",
   "parallel": 2,
   "plugins": [
     {
@@ -101,9 +101,21 @@
     {
       "options": {
         "configurationPath": "configuration/codependix.config.ts",
-        "gateTargetName": "codependix-gate"
+        "gateTargetName": "codependix-bound"
       },
       "plugin": "@codependix/nx"
+    },
+    {
+      "exclude": ["coinagerie.config.ts"],
+      "options": {
+        "command": "SWC_NODE_PROJECT=\"$NX_WORKSPACE_ROOT/configuration/tsconfig.json\" node --import @swc-node/register/esm-register \"$NX_WORKSPACE_ROOT/projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts\"",
+        "inputs": [
+          "{workspaceRoot}/configuration/coinagerie.config.ts",
+          "{workspaceRoot}/GLOSSARY.md",
+          "{workspaceRoot}/projects/ic-suite/coinagerie/*/src/**/!(*.test.*|*.spec.*)"
+        ]
+      },
+      "plugin": "@coinagerie/nx"
     }
   ],
   "pluginsConfig": {
@@ -161,6 +173,8 @@
       "!codependix-examples",
       "!codometer-agents",
       "!codometer-examples",
+      "!coinagerie-agents",
+      "!coinagerie-examples",
       "!conformetry-agents",
       "!conformetry-examples"
     ],
@@ -358,6 +372,15 @@
             "codometer-languages",
             "codometer-measurement",
             "codometer-output",
+            "coinagerie-agents",
+            "coinagerie-cli",
+            "coinagerie-configuration",
+            "coinagerie-core",
+            "coinagerie-examples",
+            "coinagerie-languages",
+            "coinagerie-nx",
+            "coinagerie-output",
+            "coinagerie-vocabulary",
             "conformetry-agents",
             "conformetry-cli",
             "conformetry-configuration",
@@ -424,6 +447,21 @@
         ]
       }
     ],
+    "coinagerie-check": {
+      "configurations": {
+        "write": {
+          "command": "SWC_NODE_PROJECT=\"$NX_WORKSPACE_ROOT/configuration/tsconfig.json\" node --import @swc-node/register/esm-register \"$NX_WORKSPACE_ROOT/projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts\" --write"
+        }
+      },
+      "dependsOn": [
+        {
+          "projects": ["configuration"],
+          "target": "coinagerie"
+        }
+      ],
+      "description": "Two things the `@coinagerie/nx` inference does not declare. The `write` configuration of the check target it infers for every project holding a `coinagerie.config.ts`, which writes the glossary instead of judging it. And a dependency on the root glossary's own target, `configuration:coinagerie`, so that the root `GLOSSARY.md` is checked, or written, before any project's glossary is: every project excludes the words the root glossary lists, so a project judged against a stale root glossary would be judged wrongly. Nx forwards an explicit configuration down `dependsOn`, so `-c write` writes the root first and `-c check` checks it first. The plugin infers only the check, so the `write` configuration is added here, its command repeats the plugin registration's `command` above, because a configuration replaces `options.command` outright rather than appending to it, and it resolves its paths from `$NX_WORKSPACE_ROOT` because it runs from each project's own folder, at a different depth in each.",
+      "outputs": ["{projectRoot}/README.md"]
+    },
     "dependency-cruiser": [
       {
         "cache": true,
@@ -639,16 +677,17 @@
       },
       "defaultConfiguration": "check",
       "dependsOn": [
-        "callidescope-gate",
+        "callidescope-restrict",
         "catalog-manifests",
-        "codependix-gate",
+        "codependix-bound",
+        "coinagerie-check",
         "conformetry-validate",
         "lockfile",
         "project-ports",
         "readme-projects",
         "vscode-extensions"
       ],
-      "description": "Aggregator for guard-code. `callidescope-gate` and `codependix-gate` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-gate` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
+      "description": "Aggregator for guard-code. `callidescope-restrict` and `codependix-bound` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `coinagerie-check` is the inferred per-project glossary check: it has a `write` configuration but no `check` one, so `guard-code --configuration=check` falls through to its default check, and `guard-code --configuration=write` writes every affected project's glossary. `codependix-bound` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
       "executor": "nx:noop",
       "inputs": ["default"]
     },

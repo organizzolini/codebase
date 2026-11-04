@@ -370,3 +370,83 @@ None.
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nx-projects:coinagerie-check:write`.
+
+- **absolute**:
+- **after**:
+- **arrow**:
+- **bottom**:
+- **breadth**:
+- **bug**:
+- **call**:
+- **clear**:
+- **closure**:
+- **compare**:
+- **compile**:
+- **compiler**:
+- **console**:
+- **constant**:
+- **controller**:
+- **decorator**:
+- **define**:
+- **describe**:
+- **diagram**:
+- **each**:
+- **edge**:
+- **entry**:
+- **equal**:
+- **experimental**:
+- **fake**:
+- **flat**:
+- **gitkeep**:
+- **homepage**:
+- **identifier**:
+- **implementation**:
+- **implicit**:
+- **injectable**:
+- **invalid**:
+- **java**:
+- **know**:
+- **least**:
+- **legend**:
+- **length**:
+- **locale**:
+- **logger**:
+- **maximum**:
+- **mermaid**:
+- **meta**:
+- **metric**:
+- **mkdtemp**:
+- **mock**:
+- **neighborhood**:
+- **pending**:
+- **promise**:
+- **publish**:
+- **reach**:
+- **real**:
+- **recursive**:
+- **reject**:
+- **replace**:
+- **resolution**:
+- **second**:
+- **some**:
+- **sort**:
+- **spy**:
+- **strict**:
+- **stringify**:
+- **syntax**:
+- **synthetic**:
+- **timer**:
+- **tmpdir**:
+- **top**:
+- **touch**:
+- **unconnected**:
+- **vi**:
+- **widget**:
+
+<!-- coinagerie:end -->
