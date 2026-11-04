@@ -594,3 +594,114 @@ What this project is judged against. `declared` is the number in this project's 
 
 None.
 <!-- callidescope:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-examples:coinagerie-check:write`.
+
+- **abort**:
+- **absent**:
+- **absolute**:
+- **accept**:
+- **after**:
+- **alpha**:
+- **ambiguous**:
+- **atlas**:
+- **attribution**:
+- **bar**:
+- **beta**:
+- **camel**:
+- **card**:
+- **catalogue**:
+- **clear**:
+- **close**:
+- **comment**:
+- **compiler**:
+- **conform**:
+- **constant**:
+- **count**:
+- **decorator**:
+- **define**:
+- **definition**:
+- **describe**:
+- **digest**:
+- **direction**:
+- **dossier**:
+- **drift**:
+- **each**:
+- **embed**:
+- **encode**:
+- **entry**:
+- **equal**:
+- **example**:
+- **expectation**:
+- **experimental**:
+- **factory**:
+- **failure**:
+- **filesystem**:
+- **flat**:
+- **force**:
+- **generation**:
+- **greater**:
+- **guide**:
+- **hello**:
+- **implicit**:
+- **instance**:
+- **kebab**:
+- **kind**:
+- **least**:
+- **length**:
+- **load**:
+- **logger**:
+- **manifest**:
+- **meta**:
+- **migrate**:
+- **miss**:
+- **mkdtemp**:
+- **mock**:
+- **ok**:
+- **overview**:
+- **pascal**:
+- **polyglot**:
+- **present**:
+- **promise**:
+- **readdir**:
+- **receipt**:
+- **recursive**:
+- **reformatted**:
+- **relative**:
+- **reminder**:
+- **rename**:
+- **resolution**:
+- **round**:
+- **score**:
+- **search**:
+- **section**:
+- **snake**:
+- **sort**:
+- **spawn**:
+- **stdout**:
+- **str**:
+- **strict**:
+- **structural**:
+- **substitution**:
+- **summary**:
+- **text**:
+- **textual**:
+- **than**:
+- **threshold**:
+- **tidy**:
+- **tmpdir**:
+- **todo**:
+- **trip**:
+- **two**:
+- **unowned**:
+- **validator**:
+- **variant**:
+- **vi**:
+- **widget**:
+- **world**:
+
+<!-- coinagerie:end -->

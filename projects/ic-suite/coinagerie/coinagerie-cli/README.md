@@ -48,7 +48,7 @@ This project was generated from the [nestjs-command-project](../../configuration
 
 ## 🪙 Coinagerie
 
-The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-cli:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with `nx run coinagerie-cli:coinagerie-check:write`.
 
 - **absolute**:
 - **after**:

@@ -200,3 +200,91 @@ None.
 
 </details>
 <!-- callidescope:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-output:coinagerie-check:write`.
+
+- **absolute**:
+- **actual**:
+- **after**:
+- **bare**:
+- **below**:
+- **breadth**:
+- **bug**:
+- **calculate**:
+- **clear**:
+- **compile**:
+- **compiler**:
+- **complete**:
+- **console**:
+- **constant**:
+- **controller**:
+- **count**:
+- **decorator**:
+- **define**:
+- **describe**:
+- **detail**:
+- **difference**:
+- **digit**:
+- **each**:
+- **entry**:
+- **equal**:
+- **experimental**:
+- **fake**:
+- **filename**:
+- **flat**:
+- **fraction**:
+- **gear**:
+- **gitkeep**:
+- **homepage**:
+- **imperfect**:
+- **implementation**:
+- **indent**:
+- **injectable**:
+- **instance**:
+- **inventoried**:
+- **inventory**:
+- **java**:
+- **least**:
+- **length**:
+- **location**:
+- **math**:
+- **maximum**:
+- **meet**:
+- **meta**:
+- **metric**:
+- **mock**:
+- **ok**:
+- **pair**:
+- **partial**:
+- **percent**:
+- **percentage**:
+- **perfect**:
+- **publish**:
+- **ratio**:
+- **real**:
+- **recursive**:
+- **reduce**:
+- **relative**:
+- **resolution**:
+- **round**:
+- **scale**:
+- **score**:
+- **shorten**:
+- **spy**:
+- **strict**:
+- **success**:
+- **sum**:
+- **synthetic**:
+- **text**:
+- **threshold**:
+- **timer**:
+- **trim**:
+- **verdict**:
+- **vi**:
+- **weight**:
+
+<!-- coinagerie:end -->

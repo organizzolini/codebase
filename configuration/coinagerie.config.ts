@@ -118,9 +118,8 @@ export function foldRepositoryWord(word: string): string {
  * spread this: it writes the glossary these words are read from, and reading
  * it would exclude every word it was about to write.
  *
- * A named export beside a default of the same object: the loader reads only a
- * file's default export, and a project spreading the shared configuration
- * imports it by name.
+ * A named export beside the default: the loader reads only a file's default
+ * export, and a project spreading the shared configuration imports it by name.
  */
 export const coinagerieConfiguration = {
   exclude: {
@@ -129,4 +128,20 @@ export const coinagerieConfiguration = {
   fold: foldRepositoryWord,
 } satisfies CoinagerieConfiguration;
 
-export default coinagerieConfiguration;
+/**
+ * The `configuration` project's own glossary, written into its README.
+ *
+ * The default export is what the loader reads, so it adds the one output the
+ * spread configuration above leaves to each project.
+ */
+export default {
+  ...coinagerieConfiguration,
+  outputs: [
+    {
+      description:
+        "The words this project uses that the root glossary does not define, regenerated with `nx run configuration:coinagerie-check:write`.",
+      path: "README.md",
+      type: "markdown",
+    },
+  ],
+} satisfies CoinagerieConfiguration;
