@@ -281,7 +281,7 @@ describe("the gate executor, against a workspace on disk", () => {
     // no project's root contains, so nothing a project excludes for itself is
     // treated as belonging to it.
     workspaceRoot = realpathSync(
-      mkdtempSync(path.join(tmpdir(), "callidescope-gate-")),
+      mkdtempSync(path.join(tmpdir(), "callidescope-restrict-")),
     );
     // High enough that nothing in the fixture reaches it: the breach has to
     // come from the limit the breaching project declared for itself, or the

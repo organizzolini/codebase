@@ -1,0 +1,129 @@
+import {
+  Button,
+  ButtonGroup,
+  Filters,
+  useMediaQuery,
+} from "@codebase/presentation";
+
+import { useFilterQuery } from "../../hooks/use-filter-query/use-filter-query";
+import { CalendarCollectionPicker } from "../calendar-collection-picker/calendar-collection-picker";
+
+import { EDITORS, TABLET_QUERY } from "./calendar-filters.constants";
+import { renderFiltersButton } from "./calendar-filters.utilities";
+import { EMPTY_EVENT_FILTER } from "./event-filter-tree.constants";
+import { countActiveEventFilterRules } from "./event-filter-tree.utilities";
+import { FilterChipRow } from "./filter-chip-row";
+import { FilterSurface } from "./filter-surface";
+
+import type { EventFacet } from "../events-calendar/events-database.types";
+import type {
+  EventFilterField,
+  EventFilterQuery,
+  EventFilterValue,
+} from "./event-filters.types";
+import type { ReactNode } from "react";
+
+// 🔖 Type
+
+/**
+ * The fields the builder offers, the filter tree the link holds, and where
+ * to send an edited one.
+ */
+export interface CalendarFiltersProperties {
+  className?: string;
+  /**
+   * The tags of the data, from which the collections the menu applies in one
+   * step are resolved, and the default one the calendar opens on.
+   */
+  facets?: readonly EventFacet[];
+  fields: readonly EventFilterField[];
+  filter: EventFilterQuery | undefined;
+  /**
+   * Called with every edit to write back to the link: the whole tree, empty
+   * once nothing is left.
+   */
+  onFilterChange: (filter: EventFilterQuery) => void;
+}
+
+// 🧩 Component
+
+/**
+ * Renders the active filters as chips, then the Filters button with a count
+ * of the finished rules, which opens the nested AND/OR filter builder. The
+ * chips scroll sideways rather than wrap the toolbar row, and are left out on
+ * a phone, where the count stands for them. The tree being edited is held
+ * here, so each edit shows at once and only one that changes the query is
+ * written to the link; a link that changes to something else, such as one
+ * reached with Back, replaces it.
+ */
+export function CalendarFilters(
+  properties: Readonly<CalendarFiltersProperties>,
+): ReactNode {
+  const { className, facets = [], fields, filter, onFilterChange } = properties;
+
+  // 🪝 Hooks
+  const isTablet = useMediaQuery(TABLET_QUERY);
+  const { collections, handleCollectionSelect, handleQueryChange, query } =
+    useFilterQuery(filter, facets, onFilterChange);
+  const activeCount = countActiveEventFilterRules(query);
+
+  // 🏗 Setup
+
+  // 💪 Handlers
+
+  // ♻️ Lifecycle
+
+  // 🏁 Early Returns
+
+  // 🎨 Markup
+  return (
+    <div
+      className={className}
+      data-testid="calendar-filters"
+    >
+      <ButtonGroup aria-label="Filter">
+        <FilterSurface
+          isTablet={isTablet}
+          trigger={renderFiltersButton(activeCount)}
+        >
+          <div className="flex flex-col gap-3">
+            <CalendarCollectionPicker
+              collections={collections}
+              onSelect={handleCollectionSelect}
+              query={query}
+            />
+            <Filters<EventFilterValue>
+              advancedMode="inline"
+              editors={EDITORS}
+              fields={[...fields]}
+              onQueryChange={handleQueryChange}
+              query={query}
+              variant="advanced"
+            />
+          </div>
+        </FilterSurface>
+        <Button
+          disabled={activeCount === 0}
+          onClick={() => {
+            handleCollectionSelect(EMPTY_EVENT_FILTER);
+          }}
+          size="sm"
+          variant="outline"
+        >
+          Clear
+        </Button>
+      </ButtonGroup>
+      {isTablet ? (
+        <Filters<EventFilterValue>
+          editors={EDITORS}
+          fields={[...fields]}
+          onQueryChange={handleQueryChange}
+          query={query}
+          size="sm"
+        >
+          <FilterChipRow />
+        </Filters>
+      ) : null}
+    </div>
+  );
+}

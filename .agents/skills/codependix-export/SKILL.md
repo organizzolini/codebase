@@ -1,6 +1,6 @@
 ---
 name: codependix-export
-description: Run a codependix dependency graph export or boundary check, choose between --check boundaries, --check reports, and --write, point a run at a workspace root or a configuration file, or read a Mermaid block or JSON graph it produced. Use when running codependix or npx codependix, when a run exits 0 having written nothing, when --check is refused for carrying no value, when looking for a flag that selects one graph type, when wiring codependix into a CI step or an Nx task, when a codependix-gate target failed, or when reading an exported Nx Neighborhood, NestJS module graph, or file-level import graph. Covers the command-line host directly, without assuming any task runner.
+description: Run a codependix dependency graph export or boundary check, choose between --check boundaries, --check reports, and --write, point a run at a workspace root or a configuration file, or read a Mermaid block or JSON graph it produced. Use when running codependix or npx codependix, when a run exits 0 having written nothing, when --check is refused for carrying no value, when looking for a flag that selects one graph type, when wiring codependix into a CI step or an Nx task, when a codependix-bound target failed, or when reading an exported Nx Neighborhood, NestJS module graph, or file-level import graph. Covers the command-line host directly, without assuming any task runner.
 license: MIT
 ---
 
@@ -226,14 +226,14 @@ each shows up in `--help` under its own name. Do not "fix" the divergence.
 
 `--check boundaries --projects <name>` is a per-project gate from a plain
 shell, and an Nx workspace gets it inferred. The `@codependix/nx` plugin adds a
-cached `codependix-gate` target to every project described by a `project.json`,
+cached `codependix-bound` target to every project described by a `project.json`,
 except the workspace root. It runs exactly that command from the workspace
 root, under the decorator-preserving loader NestJS needs, which the plugin
 registers from its own dependencies:
 
 ```bash
-nx run lexico-entities:codependix-gate   # one project
-nx affected -t codependix-gate           # only what a change touched
+nx run lexico-entities:codependix-bound   # one project
+nx affected -t codependix-bound           # only what a change touched
 ```
 
 Each project's gate fails for findings charged to that project. A broken
@@ -249,7 +249,7 @@ from its own project judges projects those inputs do not cover, so it is never
 replayed from the cache; one judging only its own project is cached as usual.
 The target declares no configurations, so an aggregator run with
 `--configuration=check` falls through to its defaults, as callidescope's
-`callidescope-gate` does. In this repository `guard-code` depends on it. The
+`callidescope-restrict` does. In this repository `guard-code` depends on it. The
 workspace-wide `configuration:codependix` target is write-only: it publishes the
 exports on the default branch and gates nothing.
 

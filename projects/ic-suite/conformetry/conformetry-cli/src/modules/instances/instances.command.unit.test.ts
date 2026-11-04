@@ -176,7 +176,7 @@ describe(InstancesCommand, () => {
 
       await command.run([], {
         config: CONFIGURATION_PATH,
-        templates: ["react-component"],
+        templates: ["react-component-folder"],
       });
 
       expect(written()).toContain(

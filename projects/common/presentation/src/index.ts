@@ -17,6 +17,14 @@ export type {
   CascaderNode,
 } from "./components/reui/cascader/cascader-types";
 export { CascaderVirtualItems } from "./components/reui/cascader/cascader-virtual";
+// The color picker's helpers (parseColor, formatColor and the rest) would
+// crowd the package's names, so only the composed picker is exported.
+export {
+  ColorPicker,
+  ColorPickerContent,
+  type ColorPickerProps,
+  ColorPickerTrigger,
+} from "./components/reui/color-picker";
 export * from "./components/reui/event-calendar/event-calendar";
 export * from "./components/reui/event-calendar/event-calendar-content";
 export type * from "./components/reui/event-calendar/event-calendar-types";

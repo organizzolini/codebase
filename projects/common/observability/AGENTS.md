@@ -104,7 +104,11 @@ re-deriving timestamps and output paths:
 package's `LoggerService`. That closes a cycle with `testing`, allowed by the
 module-boundary rule; `implicitDependencies: ["!testing"]` in `project.json`
 keeps observability's build from waiting on testing's, so `build` has no task
-cycle.
+cycle. Dropping that edge also drops testing's files from this project's
+cache keys, so `project.json` adds them back as the `testing-source` named
+input, folded into `default` and `typescript-files` and into `type-coverage`'s
+inputs. Keep both together: a change to `buildTestingModule` must still
+invalidate observability's cached build, typecheck, and tests.
 
 ## Development
 
