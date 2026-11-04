@@ -4626,6 +4626,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **canonical**:
 - **capitalize**:
 - **capricorn**:
+- **capture**:
 - **cascade**:
 - **cause**:
 - **center**:
@@ -4670,7 +4671,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **conjunct**:
 - **conjunction**:
 - **connection**:
-- **console**:
 - **constant**:
 - **constellation**:
 - **contact**:
