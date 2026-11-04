@@ -3044,9 +3044,11 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   meanderaw_cli["meanderaw-cli"]
   observability["observability"]
   persistence["persistence"]
+  meanderaw_cli --> configuration
   meanderaw_cli --> observability
   meanderaw_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px

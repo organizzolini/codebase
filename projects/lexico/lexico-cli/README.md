@@ -854,10 +854,12 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
   observability["observability"]
   persistence["persistence"]
+  lexico_cli --> configuration
   lexico_cli --> lexico_entities
   lexico_cli --> observability
   lexico_cli --> persistence

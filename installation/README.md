@@ -254,35 +254,49 @@ flowchart LR
   DependenciesModule
   DiscoveryModule
   EnvironmentFilesModule
+  LocalServicesModule
   LoggerModule([LoggerModule])
   MainModule
   ProcessRunnerModule
+  ReleaseArchivesModule
   ReporterModule
   SetupModule
   ShellConfigurationModule
   SoftwareModule
+  SshSigningModule
   UpdateReuiSkillModule
   DependenciesModule --> ProcessRunnerModule
   DependenciesModule --> ReporterModule
   EnvironmentFilesModule --> ProcessRunnerModule
   EnvironmentFilesModule --> ReporterModule
+  LocalServicesModule --> ProcessRunnerModule
+  LocalServicesModule --> ReporterModule
   MainModule --> DependenciesModule
   MainModule --> DiscoveryModule
   MainModule --> EnvironmentFilesModule
+  MainModule --> LocalServicesModule
   MainModule --> ReporterModule
   MainModule --> SetupModule
   MainModule --> ShellConfigurationModule
   MainModule --> SoftwareModule
   MainModule --> UpdateReuiSkillModule
+  ReleaseArchivesModule --> ProcessRunnerModule
+  ReleaseArchivesModule --> ReporterModule
   SetupModule --> DependenciesModule
   SetupModule --> EnvironmentFilesModule
+  SetupModule --> LocalServicesModule
+  SetupModule --> ProcessRunnerModule
   SetupModule --> ReporterModule
   SetupModule --> ShellConfigurationModule
   SetupModule --> SoftwareModule
   ShellConfigurationModule --> ProcessRunnerModule
   ShellConfigurationModule --> ReporterModule
   SoftwareModule --> ProcessRunnerModule
+  SoftwareModule --> ReleaseArchivesModule
   SoftwareModule --> ReporterModule
+  SoftwareModule --> SshSigningModule
+  SshSigningModule --> ProcessRunnerModule
+  SshSigningModule --> ReporterModule
   UpdateReuiSkillModule --> ReporterModule
 ```
 
@@ -319,11 +333,24 @@ graph LR
   file_src_modules_environment_files_environment_files_service_ts["src/modules/environment-files/environment-files.service.ts"]
   file_src_modules_environment_files_environment_files_service_unit_test_ts["src/modules/environment-files/environment-files.service.unit.test.ts"]
   file_src_modules_environment_files_environment_files_types_ts["src/modules/environment-files/environment-files.types.ts"]
+  file_src_modules_local_services_local_services_command_ts["src/modules/local-services/local-services.command.ts"]
+  file_src_modules_local_services_local_services_command_unit_test_ts["src/modules/local-services/local-services.command.unit.test.ts"]
+  file_src_modules_local_services_local_services_constants_ts["src/modules/local-services/local-services.constants.ts"]
+  file_src_modules_local_services_local_services_module_ts["src/modules/local-services/local-services.module.ts"]
+  file_src_modules_local_services_local_services_service_ts["src/modules/local-services/local-services.service.ts"]
+  file_src_modules_local_services_local_services_service_unit_test_ts["src/modules/local-services/local-services.service.unit.test.ts"]
+  file_src_modules_local_services_local_services_types_ts["src/modules/local-services/local-services.types.ts"]
   file_src_modules_process_runner_process_runner_constants_ts["src/modules/process-runner/process-runner.constants.ts"]
   file_src_modules_process_runner_process_runner_module_ts["src/modules/process-runner/process-runner.module.ts"]
   file_src_modules_process_runner_process_runner_service_ts["src/modules/process-runner/process-runner.service.ts"]
   file_src_modules_process_runner_process_runner_service_unit_test_ts["src/modules/process-runner/process-runner.service.unit.test.ts"]
   file_src_modules_process_runner_process_runner_types_ts["src/modules/process-runner/process-runner.types.ts"]
+  file_src_modules_release_archives_release_archives_constants_integration_test_ts["src/modules/release-archives/release-archives.constants.integration.test.ts"]
+  file_src_modules_release_archives_release_archives_constants_ts["src/modules/release-archives/release-archives.constants.ts"]
+  file_src_modules_release_archives_release_archives_module_ts["src/modules/release-archives/release-archives.module.ts"]
+  file_src_modules_release_archives_release_archives_service_ts["src/modules/release-archives/release-archives.service.ts"]
+  file_src_modules_release_archives_release_archives_service_unit_test_ts["src/modules/release-archives/release-archives.service.unit.test.ts"]
+  file_src_modules_release_archives_release_archives_types_ts["src/modules/release-archives/release-archives.types.ts"]
   file_src_modules_reporter_reporter_constants_ts["src/modules/reporter/reporter.constants.ts"]
   file_src_modules_reporter_reporter_module_ts["src/modules/reporter/reporter.module.ts"]
   file_src_modules_reporter_reporter_service_ts["src/modules/reporter/reporter.service.ts"]
@@ -353,6 +380,10 @@ graph LR
   file_src_modules_software_software_gpg_service_unit_test_ts["src/modules/software/software-gpg.service.unit.test.ts"]
   file_src_modules_software_software_infra_service_ts["src/modules/software/software-infra.service.ts"]
   file_src_modules_software_software_infra_service_unit_test_ts["src/modules/software/software-infra.service.unit.test.ts"]
+  file_src_modules_software_software_linux_service_ts["src/modules/software/software-linux.service.ts"]
+  file_src_modules_software_software_linux_service_unit_test_ts["src/modules/software/software-linux.service.unit.test.ts"]
+  file_src_modules_software_software_named_service_ts["src/modules/software/software-named.service.ts"]
+  file_src_modules_software_software_named_service_unit_test_ts["src/modules/software/software-named.service.unit.test.ts"]
   file_src_modules_software_software_ollama_service_ts["src/modules/software/software-ollama.service.ts"]
   file_src_modules_software_software_ollama_service_unit_test_ts["src/modules/software/software-ollama.service.unit.test.ts"]
   file_src_modules_software_software_python_service_ts["src/modules/software/software-python.service.ts"]
@@ -364,6 +395,13 @@ graph LR
   file_src_modules_software_software_service_ts["src/modules/software/software.service.ts"]
   file_src_modules_software_software_service_unit_test_ts["src/modules/software/software.service.unit.test.ts"]
   file_src_modules_software_software_types_ts["src/modules/software/software.types.ts"]
+  file_src_modules_ssh_signing_ssh_signing_constants_ts["src/modules/ssh-signing/ssh-signing.constants.ts"]
+  file_src_modules_ssh_signing_ssh_signing_module_ts["src/modules/ssh-signing/ssh-signing.module.ts"]
+  file_src_modules_ssh_signing_ssh_signing_service_ts["src/modules/ssh-signing/ssh-signing.service.ts"]
+  file_src_modules_ssh_signing_ssh_signing_service_unit_test_ts["src/modules/ssh-signing/ssh-signing.service.unit.test.ts"]
+  file_src_modules_ssh_signing_ssh_signing_types_ts["src/modules/ssh-signing/ssh-signing.types.ts"]
+  file_src_modules_ssh_signing_ssh_signing_utilities_ts["src/modules/ssh-signing/ssh-signing.utilities.ts"]
+  file_src_modules_ssh_signing_ssh_signing_utilities_unit_test_ts["src/modules/ssh-signing/ssh-signing.utilities.unit.test.ts"]
   file_src_modules_update_reui_skill_update_reui_skill_command_ts["src/modules/update-reui-skill/update-reui-skill.command.ts"]
   file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts["src/modules/update-reui-skill/update-reui-skill.command.unit.test.ts"]
   file_src_modules_update_reui_skill_update_reui_skill_constants_ts["src/modules/update-reui-skill/update-reui-skill.constants.ts"]
@@ -376,6 +414,7 @@ graph LR
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_report_ts["testing/report.ts"]
   file_testing_setup_ts["testing/setup.ts"]
+  file_testing_ssh_signature_ts["testing/ssh-signature.ts"]
   file_testing_temporary_workspace_ts["testing/temporary-workspace.ts"]
   file_vitest_config_ts["vitest.config.ts"]
   file_src_installation_main_end_to_end_test_ts --> file_src_installation_constants_ts
@@ -383,6 +422,7 @@ graph LR
   file_src_installation_module_ts --> file_src_installation_constants_ts
   file_src_installation_module_ts --> file_src_modules_dependencies_dependencies_module_ts
   file_src_installation_module_ts --> file_src_modules_environment_files_environment_files_module_ts
+  file_src_installation_module_ts --> file_src_modules_local_services_local_services_module_ts
   file_src_installation_module_ts --> file_src_modules_reporter_reporter_module_ts
   file_src_installation_module_ts --> file_src_modules_setup_setup_module_ts
   file_src_installation_module_ts --> file_src_modules_shell_configuration_shell_configuration_module_ts
@@ -430,17 +470,49 @@ graph LR
   file_src_modules_environment_files_environment_files_service_unit_test_ts --> file_src_modules_environment_files_environment_files_service_ts
   file_src_modules_environment_files_environment_files_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_environment_files_environment_files_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_local_services_local_services_command_ts --> file_src_modules_local_services_local_services_service_ts
+  file_src_modules_local_services_local_services_command_unit_test_ts --> file_src_modules_local_services_local_services_command_ts
+  file_src_modules_local_services_local_services_command_unit_test_ts --> file_src_modules_local_services_local_services_service_ts
+  file_src_modules_local_services_local_services_module_ts --> file_src_modules_local_services_local_services_command_ts
+  file_src_modules_local_services_local_services_module_ts --> file_src_modules_local_services_local_services_service_ts
+  file_src_modules_local_services_local_services_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_local_services_local_services_module_ts --> file_src_modules_reporter_reporter_module_ts
+  file_src_modules_local_services_local_services_service_ts --> file_src_modules_local_services_local_services_constants_ts
+  file_src_modules_local_services_local_services_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_local_services_local_services_service_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_local_services_local_services_service_unit_test_ts --> file_src_modules_local_services_local_services_service_ts
+  file_src_modules_local_services_local_services_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_local_services_local_services_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_local_services_local_services_service_unit_test_ts --> file_testing_environment_ts
+  file_src_modules_local_services_local_services_service_unit_test_ts --> file_testing_fake_process_runner_ts
+  file_src_modules_local_services_local_services_service_unit_test_ts --> file_testing_report_ts
+  file_src_modules_local_services_local_services_service_unit_test_ts --> file_testing_temporary_workspace_ts
   file_src_modules_process_runner_process_runner_module_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_process_runner_process_runner_service_ts --> file_src_modules_process_runner_process_runner_constants_ts
   file_src_modules_process_runner_process_runner_service_ts --> file_src_modules_process_runner_process_runner_types_ts
   file_src_modules_process_runner_process_runner_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_process_runner_process_runner_service_unit_test_ts --> file_testing_temporary_workspace_ts
+  file_src_modules_release_archives_release_archives_constants_integration_test_ts --> file_src_modules_release_archives_release_archives_constants_ts
+  file_src_modules_release_archives_release_archives_constants_ts --> file_src_modules_release_archives_release_archives_types_ts
+  file_src_modules_release_archives_release_archives_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_release_archives_release_archives_module_ts --> file_src_modules_release_archives_release_archives_service_ts
+  file_src_modules_release_archives_release_archives_module_ts --> file_src_modules_reporter_reporter_module_ts
+  file_src_modules_release_archives_release_archives_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_release_archives_release_archives_service_ts --> file_src_modules_release_archives_release_archives_types_ts
+  file_src_modules_release_archives_release_archives_service_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_release_archives_release_archives_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_release_archives_release_archives_service_unit_test_ts --> file_src_modules_release_archives_release_archives_service_ts
+  file_src_modules_release_archives_release_archives_service_unit_test_ts --> file_src_modules_release_archives_release_archives_types_ts
+  file_src_modules_release_archives_release_archives_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_release_archives_release_archives_service_unit_test_ts --> file_testing_fake_process_runner_ts
   file_src_modules_reporter_reporter_module_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_reporter_reporter_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_setup_setup_command_ts --> file_src_modules_setup_setup_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_dependencies_dependencies_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_environment_files_environment_files_service_ts
+  file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_local_services_local_services_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_release_archives_release_archives_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_setup_setup_command_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_setup_setup_service_ts
@@ -450,15 +522,19 @@ graph LR
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_software_software_docker_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_software_software_gpg_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_software_software_infra_service_ts
+  file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_software_software_linux_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_software_software_ollama_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_software_software_python_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_software_software_service_ts
+  file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_ssh_signing_ssh_signing_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_testing_environment_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_testing_fake_process_runner_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_testing_report_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_testing_temporary_workspace_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_dependencies_dependencies_module_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_environment_files_environment_files_module_ts
+  file_src_modules_setup_setup_module_ts --> file_src_modules_local_services_local_services_module_ts
+  file_src_modules_setup_setup_module_ts --> file_src_modules_process_runner_process_runner_module_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_reporter_reporter_module_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_setup_setup_command_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_setup_setup_service_ts
@@ -466,16 +542,21 @@ graph LR
   file_src_modules_setup_setup_module_ts --> file_src_modules_software_software_module_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_dependencies_dependencies_service_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_environment_files_environment_files_service_ts
+  file_src_modules_setup_setup_service_ts --> file_src_modules_local_services_local_services_service_ts
+  file_src_modules_setup_setup_service_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_setup_setup_constants_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_shell_configuration_shell_configuration_service_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_software_software_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_dependencies_dependencies_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_environment_files_environment_files_service_ts
+  file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_local_services_local_services_service_ts
+  file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_setup_setup_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_shell_configuration_shell_configuration_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_software_software_service_ts
+  file_src_modules_setup_setup_service_unit_test_ts --> file_testing_fake_process_runner_ts
   file_src_modules_shell_configuration_shell_configuration_command_ts --> file_src_modules_shell_configuration_shell_configuration_service_ts
   file_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
@@ -502,9 +583,11 @@ graph LR
   file_src_modules_software_software_brew_service_unit_test_ts --> file_src_modules_software_software_brew_service_ts
   file_src_modules_software_software_database_service_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_software_software_database_service_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_software_software_database_service_ts --> file_src_modules_software_software_constants_ts
   file_src_modules_software_software_database_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_software_software_database_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_software_software_database_service_unit_test_ts --> file_src_modules_software_software_database_service_ts
+  file_src_modules_software_software_database_service_unit_test_ts --> file_testing_fake_process_runner_ts
   file_src_modules_software_software_docker_service_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_software_software_docker_service_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_software_software_docker_service_ts --> file_src_modules_software_software_constants_ts
@@ -525,6 +608,33 @@ graph LR
   file_src_modules_software_software_infra_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_software_software_infra_service_unit_test_ts --> file_src_modules_software_software_brew_service_ts
   file_src_modules_software_software_infra_service_unit_test_ts --> file_src_modules_software_software_infra_service_ts
+  file_src_modules_software_software_linux_service_ts --> file_src_modules_dependencies_dependencies_constants_ts
+  file_src_modules_software_software_linux_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_software_software_linux_service_ts --> file_src_modules_release_archives_release_archives_constants_ts
+  file_src_modules_software_software_linux_service_ts --> file_src_modules_release_archives_release_archives_service_ts
+  file_src_modules_software_software_linux_service_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_software_software_linux_service_ts --> file_src_modules_software_software_database_service_ts
+  file_src_modules_software_software_linux_service_ts --> file_src_modules_software_software_python_service_ts
+  file_src_modules_software_software_linux_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_software_software_linux_service_unit_test_ts --> file_src_modules_release_archives_release_archives_constants_ts
+  file_src_modules_software_software_linux_service_unit_test_ts --> file_src_modules_release_archives_release_archives_service_ts
+  file_src_modules_software_software_linux_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_software_software_linux_service_unit_test_ts --> file_src_modules_software_software_database_service_ts
+  file_src_modules_software_software_linux_service_unit_test_ts --> file_src_modules_software_software_linux_service_ts
+  file_src_modules_software_software_linux_service_unit_test_ts --> file_src_modules_software_software_python_service_ts
+  file_src_modules_software_software_linux_service_unit_test_ts --> file_testing_fake_process_runner_ts
+  file_src_modules_software_software_named_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_software_software_named_service_ts --> file_src_modules_release_archives_release_archives_constants_ts
+  file_src_modules_software_software_named_service_ts --> file_src_modules_release_archives_release_archives_service_ts
+  file_src_modules_software_software_named_service_ts --> file_src_modules_software_software_database_service_ts
+  file_src_modules_software_software_named_service_ts --> file_src_modules_software_software_constants_ts
+  file_src_modules_software_software_named_service_ts --> file_src_modules_software_software_types_ts
+  file_src_modules_software_software_named_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_software_software_named_service_unit_test_ts --> file_src_modules_release_archives_release_archives_service_ts
+  file_src_modules_software_software_named_service_unit_test_ts --> file_src_modules_release_archives_release_archives_types_ts
+  file_src_modules_software_software_named_service_unit_test_ts --> file_src_modules_software_software_database_service_ts
+  file_src_modules_software_software_named_service_unit_test_ts --> file_src_modules_software_software_named_service_ts
+  file_src_modules_software_software_named_service_unit_test_ts --> file_testing_fake_process_runner_ts
   file_src_modules_software_software_ollama_service_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_software_software_ollama_service_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_software_software_ollama_service_ts --> file_src_modules_software_software_brew_service_ts
@@ -541,47 +651,83 @@ graph LR
   file_src_modules_software_software_python_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_software_software_python_service_unit_test_ts --> file_src_modules_software_software_brew_service_ts
   file_src_modules_software_software_python_service_unit_test_ts --> file_src_modules_software_software_python_service_ts
+  file_src_modules_software_software_command_ts --> file_src_modules_software_software_named_service_ts
   file_src_modules_software_software_command_ts --> file_src_modules_software_software_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_software_software_command_unit_test_ts --> file_src_modules_release_archives_release_archives_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_brew_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_database_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_docker_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_gpg_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_infra_service_ts
+  file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_linux_service_ts
+  file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_named_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_ollama_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_python_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_command_ts
   file_src_modules_software_software_command_unit_test_ts --> file_src_modules_software_software_service_ts
+  file_src_modules_software_software_command_unit_test_ts --> file_src_modules_ssh_signing_ssh_signing_service_ts
   file_src_modules_software_software_command_unit_test_ts --> file_testing_environment_ts
   file_src_modules_software_software_command_unit_test_ts --> file_testing_fake_process_runner_ts
   file_src_modules_software_software_command_unit_test_ts --> file_testing_report_ts
   file_src_modules_software_software_command_unit_test_ts --> file_testing_temporary_workspace_ts
+  file_src_modules_software_software_constants_ts --> file_src_modules_release_archives_release_archives_constants_ts
   file_src_modules_software_software_constants_ts --> file_src_modules_software_software_types_ts
   file_src_modules_software_software_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_software_software_module_ts --> file_src_modules_release_archives_release_archives_module_ts
   file_src_modules_software_software_module_ts --> file_src_modules_reporter_reporter_module_ts
   file_src_modules_software_software_module_ts --> file_src_modules_software_software_brew_service_ts
   file_src_modules_software_software_module_ts --> file_src_modules_software_software_database_service_ts
   file_src_modules_software_software_module_ts --> file_src_modules_software_software_docker_service_ts
   file_src_modules_software_software_module_ts --> file_src_modules_software_software_gpg_service_ts
   file_src_modules_software_software_module_ts --> file_src_modules_software_software_infra_service_ts
+  file_src_modules_software_software_module_ts --> file_src_modules_software_software_linux_service_ts
+  file_src_modules_software_software_module_ts --> file_src_modules_software_software_named_service_ts
   file_src_modules_software_software_module_ts --> file_src_modules_software_software_ollama_service_ts
   file_src_modules_software_software_module_ts --> file_src_modules_software_software_python_service_ts
   file_src_modules_software_software_module_ts --> file_src_modules_software_software_command_ts
   file_src_modules_software_software_module_ts --> file_src_modules_software_software_service_ts
+  file_src_modules_software_software_module_ts --> file_src_modules_ssh_signing_ssh_signing_module_ts
+  file_src_modules_software_software_service_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_software_software_service_ts --> file_src_modules_software_software_database_service_ts
   file_src_modules_software_software_service_ts --> file_src_modules_software_software_docker_service_ts
   file_src_modules_software_software_service_ts --> file_src_modules_software_software_gpg_service_ts
   file_src_modules_software_software_service_ts --> file_src_modules_software_software_infra_service_ts
+  file_src_modules_software_software_service_ts --> file_src_modules_software_software_linux_service_ts
   file_src_modules_software_software_service_ts --> file_src_modules_software_software_ollama_service_ts
   file_src_modules_software_software_service_ts --> file_src_modules_software_software_python_service_ts
+  file_src_modules_software_software_service_ts --> file_src_modules_ssh_signing_ssh_signing_service_ts
+  file_src_modules_software_software_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_database_service_ts
   file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_docker_service_ts
   file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_gpg_service_ts
   file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_infra_service_ts
+  file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_linux_service_ts
   file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_ollama_service_ts
   file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_python_service_ts
   file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_service_ts
+  file_src_modules_software_software_service_unit_test_ts --> file_src_modules_ssh_signing_ssh_signing_service_ts
+  file_src_modules_software_software_service_unit_test_ts --> file_testing_fake_process_runner_ts
+  file_src_modules_software_software_types_ts --> file_src_installation_constants_ts
+  file_src_modules_ssh_signing_ssh_signing_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_ssh_signing_ssh_signing_module_ts --> file_src_modules_reporter_reporter_module_ts
+  file_src_modules_ssh_signing_ssh_signing_module_ts --> file_src_modules_ssh_signing_ssh_signing_service_ts
+  file_src_modules_ssh_signing_ssh_signing_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_ssh_signing_ssh_signing_service_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_ssh_signing_ssh_signing_service_ts --> file_src_modules_ssh_signing_ssh_signing_constants_ts
+  file_src_modules_ssh_signing_ssh_signing_service_ts --> file_src_modules_ssh_signing_ssh_signing_utilities_ts
+  file_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_src_modules_ssh_signing_ssh_signing_service_ts
+  file_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_testing_environment_ts
+  file_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_testing_fake_process_runner_ts
+  file_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_testing_report_ts
+  file_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_testing_ssh_signature_ts
+  file_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_testing_temporary_workspace_ts
+  file_src_modules_ssh_signing_ssh_signing_utilities_ts --> file_src_modules_ssh_signing_ssh_signing_constants_ts
+  file_src_modules_ssh_signing_ssh_signing_utilities_unit_test_ts --> file_src_modules_ssh_signing_ssh_signing_utilities_ts
+  file_src_modules_ssh_signing_ssh_signing_utilities_unit_test_ts --> file_testing_ssh_signature_ts
   file_src_modules_update_reui_skill_update_reui_skill_command_ts --> file_src_modules_update_reui_skill_update_reui_skill_service_ts
   file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_update_reui_skill_update_reui_skill_command_ts

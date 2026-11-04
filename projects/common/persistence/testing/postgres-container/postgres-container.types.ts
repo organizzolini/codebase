@@ -3,7 +3,7 @@
 import type {
   PostgresConnection,
   PostgresDataSourceSettings,
-} from "./postgresql.types";
+} from "../../src/modules/postgresql/postgresql.types";
 
 /** What `startPostgresContainer` is given. */
 export interface PostgresContainerOptions {

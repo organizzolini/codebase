@@ -389,11 +389,15 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   interface["interface"]
   lexico_web["lexico-web"]
   presentation["presentation"]
+  testing["testing"]
+  lexico_web --> configuration
   lexico_web --> interface
   lexico_web --> presentation
+  lexico_web --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_web subject
 ```
@@ -898,7 +902,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **best**:
 - **breadth**:
 - **breakpoint**:
-- **builder**:
 - **button**:
 - **call**:
 - **callback**:
@@ -915,7 +918,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compress**:
 - **compression**:
 - **condition**:
-- **configurable**:
 - **conjugation**:
 - **connection**:
 - **constant**:
@@ -1059,7 +1061,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **numeral**:
 - **omit**:
 - **once**:
-- **onchange**:
 - **optional**:
 - **original**:
 - **other**:
@@ -1131,6 +1132,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **split**:
 - **ssr**:
 - **stack**:
+- **stand**:
 - **statement**:
 - **strict**:
 - **stringify**:
@@ -1169,8 +1171,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **voice**:
 - **wide**:
 - **width**:
-- **window**:
-- **writable**:
 - **xl**:
 
 <!-- coinagerie:end -->

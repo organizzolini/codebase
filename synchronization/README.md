@@ -708,6 +708,7 @@ flowchart LR
   LoggerModule([LoggerModule])
   MainModule
   PackageManifestsModule
+  ProjectPortsModule
   PullRequestLabelsModule
   PullRequestTemplateModule
   RenderingModule
@@ -734,6 +735,7 @@ flowchart LR
   SynchronizationModule --> DevcontainerConfigurationModule
   SynchronizationModule --> InstalledSkillsModule
   SynchronizationModule --> PackageManifestsModule
+  SynchronizationModule --> ProjectPortsModule
   SynchronizationModule --> PullRequestLabelsModule
   SynchronizationModule --> PullRequestTemplateModule
   SynchronizationModule --> SkillExclusionsModule
@@ -804,6 +806,13 @@ graph LR
   file_src_modules_package_manifests_package_manifests_service_ts["src/modules/package-manifests/package-manifests.service.ts"]
   file_src_modules_package_manifests_package_manifests_service_unit_test_ts["src/modules/package-manifests/package-manifests.service.unit.test.ts"]
   file_src_modules_package_manifests_package_manifests_types_ts["src/modules/package-manifests/package-manifests.types.ts"]
+  file_src_modules_project_ports_project_ports_command_ts["src/modules/project-ports/project-ports.command.ts"]
+  file_src_modules_project_ports_project_ports_command_unit_test_ts["src/modules/project-ports/project-ports.command.unit.test.ts"]
+  file_src_modules_project_ports_project_ports_constants_ts["src/modules/project-ports/project-ports.constants.ts"]
+  file_src_modules_project_ports_project_ports_module_ts["src/modules/project-ports/project-ports.module.ts"]
+  file_src_modules_project_ports_project_ports_service_ts["src/modules/project-ports/project-ports.service.ts"]
+  file_src_modules_project_ports_project_ports_service_unit_test_ts["src/modules/project-ports/project-ports.service.unit.test.ts"]
+  file_src_modules_project_ports_project_ports_types_ts["src/modules/project-ports/project-ports.types.ts"]
   file_src_modules_pull_request_labels_pull_request_labels_github_service_ts["src/modules/pull-request-labels/pull-request-labels-github.service.ts"]
   file_src_modules_pull_request_labels_pull_request_labels_github_service_unit_test_ts["src/modules/pull-request-labels/pull-request-labels-github.service.unit.test.ts"]
   file_src_modules_pull_request_labels_pull_request_labels_command_ts["src/modules/pull-request-labels/pull-request-labels.command.ts"]
@@ -970,6 +979,21 @@ graph LR
   file_src_modules_package_manifests_package_manifests_service_unit_test_ts --> file_src_modules_package_manifests_package_manifests_service_ts
   file_src_modules_package_manifests_package_manifests_service_unit_test_ts --> file_src_modules_package_manifests_package_manifests_types_ts
   file_src_modules_package_manifests_package_manifests_types_ts --> file_src_modules_package_manifests_package_manifests_constants_ts
+  file_src_modules_project_ports_project_ports_command_ts --> file_src_modules_project_ports_project_ports_constants_ts
+  file_src_modules_project_ports_project_ports_command_ts --> file_src_modules_project_ports_project_ports_service_ts
+  file_src_modules_project_ports_project_ports_command_ts --> file_src_modules_project_ports_project_ports_types_ts
+  file_src_modules_project_ports_project_ports_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_project_ports_project_ports_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_project_ports_project_ports_command_unit_test_ts --> file_src_modules_project_ports_project_ports_command_ts
+  file_src_modules_project_ports_project_ports_command_unit_test_ts --> file_src_modules_project_ports_project_ports_service_ts
+  file_src_modules_project_ports_project_ports_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_project_ports_project_ports_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_project_ports_project_ports_constants_ts --> file_src_modules_project_ports_project_ports_types_ts
+  file_src_modules_project_ports_project_ports_module_ts --> file_src_modules_project_ports_project_ports_command_ts
+  file_src_modules_project_ports_project_ports_module_ts --> file_src_modules_project_ports_project_ports_service_ts
+  file_src_modules_project_ports_project_ports_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_project_ports_project_ports_service_ts --> file_src_modules_project_ports_project_ports_constants_ts
+  file_src_modules_project_ports_project_ports_service_unit_test_ts --> file_src_modules_project_ports_project_ports_service_ts
   file_src_modules_pull_request_labels_pull_request_labels_github_service_ts --> file_src_modules_pull_request_labels_pull_request_labels_constants_ts
   file_src_modules_pull_request_labels_pull_request_labels_github_service_ts --> file_src_modules_pull_request_labels_pull_request_labels_types_ts
   file_src_modules_pull_request_labels_pull_request_labels_github_service_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_github_service_ts
@@ -1048,6 +1072,7 @@ graph LR
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_installed_skills_installed_skills_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_package_manifests_package_manifests_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_project_ports_project_ports_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_pull_request_labels_pull_request_labels_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_pull_request_template_pull_request_template_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_skill_exclusions_skill_exclusions_module_ts
@@ -1060,6 +1085,7 @@ graph LR
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_conventional_config_conventional_config_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_installed_skills_installed_skills_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_project_ports_project_ports_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_pull_request_labels_pull_request_labels_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_pull_request_template_pull_request_template_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_skill_exclusions_skill_exclusions_module_ts
