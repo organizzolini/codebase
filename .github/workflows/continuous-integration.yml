@@ -63,15 +63,38 @@ jobs:
           - target: deprecate-code
             name: Deprecate
             emoji: 🧟
-          # Guard runs cold whenever a change reaches the shared configuration
-          # project, and cold it sits near the 12-minute limit: a cold run took
-          # 10m29s, and runs were cancelled at the limit with every finished
-          # task passing. Warm it takes about two. 20 minutes covers a cold
-          # run with the setup and cleanup around it.
+          # `guard-code` is the local aggregate of these five legs. It ran as one
+          # leg until its per-project gates, one task per project each, made up
+          # nearly all of a cold run (callidescope 1,443s, codependix 1,364s,
+          # coinagerie 168s, conformetry 110s of task time, against under 20s
+          # for everything else), and a cold run took up to 15 minutes. Run as
+          # legs of their own they share the runner pool and each stays well
+          # inside the default limit.
+          # Keep `targets` here, and the legs below it, equal to the
+          # `dependsOn` of `guard-code` in `nx.json`: a gate added there and
+          # named in no leg is checked by nothing in CI.
           - target: guard-code
+            targets: catalog-manifests,lockfile,project-ports,readme-projects,vscode-extensions
             name: Guard
             emoji: 💂
-            timeout-minutes: 20
+          - target: callidescope-restrict
+            name: Callidescope Restrict
+            emoji: 🔭
+          - target: codependix-bound
+            name: Codependix Bound
+            emoji: 🕸️
+          # A changed conformetry template selects no instance project, because
+          # `.nxignore` hides it, so this is the one leg that asks the affected
+          # run to add them. See `INCLUDE_TEMPLATES` below.
+          - target: conformetry-validate
+            name: Conformetry Validate
+            emoji: 👔
+          # Runs the root glossary's `configuration:coinagerie` first, through
+          # the target's own `dependsOn`, so each project is judged against a
+          # current root glossary.
+          - target: coinagerie-check
+            name: Coinagerie Check
+            emoji: 🪙
           # New projects stay in Test Codebase until they are explicitly split
           # into their own suite here.
           - target: test-code
@@ -408,8 +431,8 @@ jobs:
         continue-on-error: ${{ matrix.check.target == 'build-projects' }}
         env:
           NX_VERBOSE_LOGGING: ${{ inputs.verbose || false }}
-          TARGET: ${{ matrix.check.target }}
-          INCLUDE_TEMPLATES: ${{ matrix.check.target == 'guard-code' }}
+          TARGET: ${{ matrix.check.targets || matrix.check.target }}
+          INCLUDE_TEMPLATES: ${{ matrix.check.target == 'conformetry-validate' }}
           ARGUMENTS: >-
             ${{ matrix.check.target == 'test-code' && '--configuration=coverage'
             || matrix.check.target != 'build-projects' && '--configuration=check'
