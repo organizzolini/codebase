@@ -2,15 +2,19 @@ import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-import { ConfigurationModule } from "@conformetry/configuration";
+import {
+  ConfigurationModule,
+  ConfigurationService,
+} from "@conformetry/configuration";
 import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ScopeModule } from "../scope/scope.module";
 
 import { InstancesService } from "./instances.service";
 
 import type { ProjectScope } from "./instances.types";
+import type { Instance } from "@conformetry/configuration";
 
 const PROJECT: ProjectScope = {
   name: "widgets",
@@ -63,6 +67,7 @@ async function createWorkspace(): Promise<string> {
 }
 
 describe(InstancesService, () => {
+  let configurationService: ConfigurationService;
   let service: InstancesService;
   let workspaceRoot: string;
 
@@ -72,6 +77,7 @@ describe(InstancesService, () => {
       providers: [InstancesService],
     }).compile();
 
+    configurationService = module.get(ConfigurationService);
     service = await module.resolve(InstancesService);
     workspaceRoot = await createWorkspace();
   });
@@ -246,6 +252,82 @@ describe(InstancesService, () => {
       });
 
       expect(instances).toStrictEqual([]);
+    });
+
+    describe("with a shared discovery cache", () => {
+      const GADGETS: ProjectScope = {
+        name: "gadgets",
+        root: "packages/gadgets",
+        tags: ["type:package"],
+      };
+
+      async function writeUntaggedConfiguration(): Promise<string> {
+        const configurationPath = path.join(
+          workspaceRoot,
+          "shared-untagged.config.json",
+        );
+
+        await writeFile(
+          configurationPath,
+          JSON.stringify([
+            {
+              instances: [{ patterns: ["packages/*/src/modules/*"] }],
+              name: "widget",
+              templatePath: "templates/widget",
+            },
+          ]),
+          "utf8",
+        );
+
+        return configurationPath;
+      }
+
+      it("globs an untagged group once and still scopes each project", async () => {
+        const configurationPath = await writeUntaggedConfiguration();
+        const discoveryCache = new Map<string, Instance[]>();
+        const findInstances = vi.spyOn(configurationService, "findInstances");
+
+        const widgets = await service.findProjectInstances({
+          configurationPath,
+          discoveryCache,
+          project: PROJECT,
+          workspaceRoot,
+        });
+        const gadgets = await service.findProjectInstances({
+          configurationPath,
+          discoveryCache,
+          project: GADGETS,
+          workspaceRoot,
+        });
+
+        expect(findInstances).toHaveBeenCalledExactlyOnceWith();
+        expect(widgets).toHaveLength(1);
+        expect(widgets[0]?.path).toContain("packages/widgets/src/modules");
+        expect(gadgets).toHaveLength(1);
+        expect(gadgets[0]?.path).toContain("packages/gadgets/src/modules");
+
+        findInstances.mockRestore();
+      });
+
+      it("globs again for every project without a cache", async () => {
+        const configurationPath = await writeUntaggedConfiguration();
+        const findInstances = vi.spyOn(configurationService, "findInstances");
+
+        await service.findProjectInstances({
+          configurationPath,
+          project: PROJECT,
+          workspaceRoot,
+        });
+        await service.findProjectInstances({
+          configurationPath,
+          project: GADGETS,
+          workspaceRoot,
+        });
+
+        expect(findInstances).toHaveBeenCalledTimes(2);
+
+        findInstances.mockRestore();
+      });
     });
   });
 });
