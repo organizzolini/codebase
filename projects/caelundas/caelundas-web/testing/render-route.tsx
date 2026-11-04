@@ -2,6 +2,8 @@ import { createMemoryHistory, RouterProvider } from "@tanstack/react-router";
 import { render } from "@testing-library/react";
 import { vi } from "vitest";
 
+import { renderRoute } from "@codebase/testing/react";
+
 import { getRouter } from "../src/router";
 
 import { createTestEventsDatabase } from "./events-database";
@@ -35,10 +37,10 @@ export interface RenderRouteOptions {
 // test hands it another.
 
 /**
- * Renders the application's router at a path, running that route's loader and
- * head the way a navigation would.
+ * Renders the application's router at a path through the shared route
+ * renderer, with the events database a test hands it in the router's context.
  */
-export async function renderRoute(
+export async function renderCalendarRoute(
   path: string,
   options: RenderRouteOptions = {},
 ): Promise<void> {
@@ -49,16 +51,19 @@ export async function renderRoute(
     context: {
       eventsDatabase: options.eventsDatabase ?? createTestEventsDatabase(),
     },
-    history: createMemoryHistory({ initialEntries: [path] }),
-    scrollRestoration: false,
   });
   if (options.waitForLoad === false) {
+    // The shared renderer settles the load first, which a database that never
+    // answers would hold forever, so this renders on the pending state.
+    router.update({
+      ...router.options,
+      history: createMemoryHistory({ initialEntries: [path] }),
+      scrollRestoration: false,
+    });
     render(<RouterProvider router={router} />);
 
     return;
   }
 
-  await router.load();
-
-  render(<RouterProvider router={router} />);
+  await renderRoute(router, path);
 }

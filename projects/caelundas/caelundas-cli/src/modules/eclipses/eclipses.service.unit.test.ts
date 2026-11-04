@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EclipseCalculationService } from "./eclipse-calculation.service";
 import { EclipseEventService } from "./eclipse-event.service";
@@ -26,7 +25,6 @@ const createEvent = (
 
 describe(EclipsesService, () => {
   let service: EclipsesService;
-  const logger = new LoggerService();
 
   const eclipseCalculationService = {
     getAllEclipseCoordinates:
@@ -45,34 +43,39 @@ describe(EclipsesService, () => {
     detectProgressive: vi.fn<EclipseEventService["detectProgressive"]>(),
   };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EclipsesService,
-        {
-          provide: LoggerService,
-          useValue: logger,
-        },
-        {
-          provide: EclipseCalculationService,
-          useValue: eclipseCalculationService,
-        },
-        {
-          provide: EclipseEventService,
-          useValue: eclipseEventService,
-        },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [
+      {
+        provide: EclipseCalculationService,
+        useValue: eclipseCalculationService,
+      },
+      {
+        provide: EclipseEventService,
+        useValue: eclipseEventService,
+      },
+    ],
+  };
 
-    service = await module.resolve(EclipsesService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      EclipsesService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EclipsesService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EclipsesService);
   });
 
   describe("buildLunarEclipseEvent", () => {

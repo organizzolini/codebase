@@ -1,7 +1,7 @@
 import { act, cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { renderRoute } from "../../../testing/render-route";
+import { renderCalendarRoute } from "../../../testing/render-route";
 import { setReducedMotion } from "../../../testing/viewport";
 import { computeStartingSiderealDegrees } from "../../hooks/use-night-sky/night-sky.utilities";
 import { getRouter } from "../../router";
@@ -97,7 +97,7 @@ describe("night sky backdrop", () => {
   });
 
   it("sits behind the page, out of reach of the pointer and of readers", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const svg = await findSky();
     const backdrop = screen.getByTestId("night-sky-backdrop");
@@ -115,13 +115,13 @@ describe("night sky backdrop", () => {
   });
 
   it("turns slower or faster with the speed the link sets", async () => {
-    await renderRoute("/?date=2026-03-01&sky.pixelsPerSecond=12");
+    await renderCalendarRoute("/?date=2026-03-01&sky.pixelsPerSecond=12");
 
     const normalSky = await findSky();
     const normal = readPeriod(normalSky);
 
     cleanup();
-    await renderRoute("/?date=2026-03-01&sky.pixelsPerSecond=24");
+    await renderCalendarRoute("/?date=2026-03-01&sky.pixelsPerSecond=24");
 
     const fastSky = await findSky();
 
@@ -129,13 +129,13 @@ describe("night sky backdrop", () => {
   });
 
   it("shows fewer stars when the link lowers the faintest magnitude", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const normalSky = await findSky();
     const normal = countStars(normalSky);
 
     cleanup();
-    await renderRoute("/?date=2026-03-01&sky.maxMag=3");
+    await renderCalendarRoute("/?date=2026-03-01&sky.maxMag=3");
 
     const fewerSky = await findSky();
 
@@ -145,14 +145,14 @@ describe("night sky backdrop", () => {
   it("draws the zodiac's figures by default, and none for an empty list", async () => {
     // The default view, from the pole, holds the zodiac's band; the ecliptic
     // is turned off so every polyline is a figure's.
-    await renderRoute("/?date=2026-03-01&sky.ecliptic=false");
+    await renderCalendarRoute("/?date=2026-03-01&sky.ecliptic=false");
 
     const zodiacSky = await findSky();
 
     expect(zodiacSky.querySelectorAll("polyline").length).toBeGreaterThan(0);
 
     cleanup();
-    await renderRoute(
+    await renderCalendarRoute(
       "/?date=2026-03-01&sky.ecliptic=false&sky.constellations=",
     );
 
@@ -162,7 +162,9 @@ describe("night sky backdrop", () => {
   });
 
   it("draws the constellation figures the link names", async () => {
-    await renderRoute("/?date=2026-03-01&sky.constellations=ursa_major");
+    await renderCalendarRoute(
+      "/?date=2026-03-01&sky.constellations=ursa_major",
+    );
 
     const figuredSky = await findSky();
 
@@ -170,7 +172,7 @@ describe("night sky backdrop", () => {
   });
 
   it("strokes the figures in the color, opacity and width of the link", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       "/?date=2026-03-01&sky.ecliptic=false&sky.constellations=all&sky.lineColor=%23ff8800&sky.lineOpacity=0.5&sky.lineWidth=2",
     );
 
@@ -183,13 +185,13 @@ describe("night sky backdrop", () => {
   });
 
   it("draws the tuning view when asked", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const normalSky = await findSky();
     const normal = normalSky.getAttribute("viewBox");
 
     cleanup();
-    await renderRoute("/?date=2026-03-01&sky.debug=true");
+    await renderCalendarRoute("/?date=2026-03-01&sky.debug=true");
 
     const tuningSky = await findSky();
 
@@ -197,13 +199,13 @@ describe("night sky backdrop", () => {
   });
 
   it("falls back to the defaults for values that do not parse", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const normalSky = await findSky();
     const normal = countStars(normalSky);
 
     cleanup();
-    await renderRoute(
+    await renderCalendarRoute(
       "/?date=2026-03-01&sky.maxMag=banana&sky.lat=999&sky.debug=yes&sky.vFov=-4&sky.lon=east&sky.starScale=0&sky.altBottom=up&sky.pixelsPerSecond=fast",
     );
 
@@ -213,7 +215,9 @@ describe("night sky backdrop", () => {
   });
 
   it("paints the background gradient in the colors of the link", async () => {
-    await renderRoute("/?date=2026-03-01&sky.top=ff0000&sky.bottom=%2300f");
+    await renderCalendarRoute(
+      "/?date=2026-03-01&sky.top=ff0000&sky.bottom=%2300f",
+    );
 
     const sky = await findSky();
 
@@ -222,7 +226,7 @@ describe("night sky backdrop", () => {
   });
 
   it("never lets a color of the link into the markup unless it is hexadecimal", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       "/?date=2026-03-01&sky.top=red%22/%3E%3Ci%3E&sky.bottom=%3Cb%3E",
     );
 
@@ -235,13 +239,13 @@ describe("night sky backdrop", () => {
   });
 
   it("moves the observer with the link", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const normalSky = await findSky();
     const normal = normalSky.innerHTML;
 
     cleanup();
-    await renderRoute("/?date=2026-03-01&sky.lat=60&sky.lon=10");
+    await renderCalendarRoute("/?date=2026-03-01&sky.lat=60&sky.lon=10");
 
     const movedSky = await findSky();
 
@@ -249,7 +253,7 @@ describe("night sky backdrop", () => {
   });
 
   it("rebuilds the sky when the link changes while the page is open", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const sky = await findSky();
     const normal = sky.innerHTML;
@@ -271,7 +275,7 @@ describe("night sky backdrop", () => {
   });
 
   it("leaves the calendar alone when only the sky's keys change", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const sky = await findSky();
     const normal = sky.innerHTML;
@@ -298,7 +302,7 @@ describe("night sky backdrop", () => {
   it("says nothing of the pole's own one-degree cut at the defaults", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await findSky();
 
     expect(warn).not.toHaveBeenCalledWith(
@@ -311,7 +315,7 @@ describe("night sky backdrop", () => {
   it("says when it reduces a field of view that would put the pole on screen", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    await renderRoute("/?date=2026-03-01&sky.lat=40&sky.vFov=90");
+    await renderCalendarRoute("/?date=2026-03-01&sky.lat=40&sky.vFov=90");
     await findSky();
 
     await waitFor(() => {
@@ -323,7 +327,7 @@ describe("night sky backdrop", () => {
   });
 
   it("draws nothing for sky=off", async () => {
-    await renderRoute("/?date=2026-03-01&sky=off");
+    await renderCalendarRoute("/?date=2026-03-01&sky=off");
 
     await screen.findByRole("grid", { name: "March 2026" });
 
@@ -333,7 +337,7 @@ describe("night sky backdrop", () => {
   });
 
   it("draws nothing at a latitude of zero or below", async () => {
-    await renderRoute("/?date=2026-03-01&sky.lat=0");
+    await renderCalendarRoute("/?date=2026-03-01&sky.lat=0");
 
     await screen.findByRole("grid", { name: "March 2026" });
 
@@ -344,7 +348,7 @@ describe("night sky backdrop", () => {
 
   it("stands still when the page asks for reduced motion, and follows the setting", async () => {
     setReducedMotion(true);
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     const still = await findSky();
 
     expect(queryAnimation()).toBeNull();
@@ -372,7 +376,7 @@ describe("night sky backdrop", () => {
   });
 
   it("refits after the window is resized, once it settles", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const sky = await findSky();
     const before = sky.getAttribute("viewBox");

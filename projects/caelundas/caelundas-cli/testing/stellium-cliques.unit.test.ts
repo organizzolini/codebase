@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "../src/modules/aspects/aspect-graph.service";
 import { ProgressiveCompoundEventService } from "../src/modules/aspects/progressive-compound-event.service";
@@ -20,16 +19,14 @@ describe("stelliumService maximal conjunction cliques", () => {
   let service: StelliumService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { instance } = await buildTestingModule(StelliumService, {
       providers: [
         AspectGraphService,
-        LoggerService,
         ProgressiveCompoundEventService,
         ProgressiveUtilitiesService,
-        StelliumService,
       ],
-    }).compile();
-    service = await module.resolve(StelliumService);
+    });
+    service = instance;
   });
 
   describe("detect", () => {

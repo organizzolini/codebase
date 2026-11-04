@@ -1,10 +1,9 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment from "moment-timezone";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
@@ -12,25 +11,13 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { MinorAspectsProgressiveService } from "./minor-aspects-progressive.service";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
+import type { LoggerService } from "@codebase/observability";
 
 describe(MinorAspectsProgressiveService, () => {
-  let service: MinorAspectsProgressiveService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MinorAspectsProgressiveService,
-        ProgressiveAspectService,
-        {
-          provide: ProgressiveUtilitiesService,
-          useValue: createMock<ProgressiveUtilitiesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(MinorAspectsProgressiveService);
-  });
+  const testingModuleOptions = {
+    mocks: [ProgressiveUtilitiesService],
+    providers: [ProgressiveAspectService],
+  };
 
   const progressiveUtilitiesService = {
     pairProgressiveEvents:
@@ -61,8 +48,13 @@ describe(MinorAspectsProgressiveService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MinorAspectsProgressiveService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MinorAspectsProgressiveService);
   });
 
   it("builds progressive events from forming and dissolving minor aspects", () => {

@@ -1,14 +1,12 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getDataSourceToken } from "@nestjs/typeorm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
 import { createSqliteDataSource } from "@codebase/persistence";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   DATABASE_ENTITIES,
@@ -50,12 +48,12 @@ const LINES = JSON.stringify({
 
 describe(NightSkyService, () => {
   let dataSource: DataSource;
-  let directory: string;
+  const getDirectory = useTemporaryDirectory("night-sky");
   let files: NightSkyFiles;
   let service: NightSkyService;
 
   beforeAll(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "night-sky-"));
+    const directory = getDirectory();
     files = {
       constellations: path.join(directory, "constellations.json"),
       lines: path.join(directory, "constellations.lines.json"),
@@ -76,24 +74,21 @@ describe(NightSkyService, () => {
     await dataSource.initialize();
     await dataSource.runMigrations();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        NightSkyService,
-        { provide: getDataSourceToken(), useValue: dataSource },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(NightSkyService);
+    ({ instance: service } = await buildTestingModule(NightSkyService, {
+      providers: [{ provide: getDataSourceToken(), useValue: dataSource }],
+    }));
   });
 
   afterAll(async () => {
     await dataSource.destroy();
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyService, {
+      providers: [{ provide: getDataSourceToken(), useValue: dataSource }],
+    });
+
+    expect(instance).toBeInstanceOf(NightSkyService);
   });
 
   it("writes the stars, the constellations and their segments", async () => {

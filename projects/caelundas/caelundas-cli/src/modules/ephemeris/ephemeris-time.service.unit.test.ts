@@ -1,7 +1,8 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { utc_to_jd } from "sweph";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisTimeService } from "./ephemeris-time.service";
 
@@ -23,11 +24,9 @@ describe(EphemerisTimeService, () => {
   let service: EphemerisTimeService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [EphemerisTimeService],
-    }).compile();
+    const { instance } = await buildTestingModule(EphemerisTimeService);
 
-    service = await module.resolve(EphemerisTimeService);
+    service = instance;
   });
 
   describe("dateToJulianDays", () => {
@@ -53,8 +52,10 @@ describe(EphemerisTimeService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EphemerisTimeService);
+
+    expect(instance).toBeInstanceOf(EphemerisTimeService);
   });
 
   describe("generateMinutes", () => {

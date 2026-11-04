@@ -6,7 +6,7 @@ import {
   createTestEventsDatabase,
   createTestSqlExecutor,
 } from "../../../testing/events-database";
-import { renderRoute } from "../../../testing/render-route";
+import { renderCalendarRoute } from "../../../testing/render-route";
 import { createEventsDatabase } from "../events-calendar/events-database.utilities";
 
 import { NightSkyBackdropMount } from "./night-sky-backdrop-mount";
@@ -72,7 +72,7 @@ describe("night sky backdrop load failures", () => {
     async (mode) => {
       const report = vi.spyOn(console, "error").mockImplementation(() => {});
 
-      await renderRoute("/?date=2026-03-01", {
+      await renderCalendarRoute("/?date=2026-03-01", {
         eventsDatabase: createBrokenSkyDatabase(mode),
       });
       await screen.findByRole("grid", { name: "March 2026" });

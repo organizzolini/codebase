@@ -1,9 +1,8 @@
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import * as CaelundasTypes from "../caelundas/caelundas.types";
 import { symbolByLunarPhase } from "../caelundas/symbol-caelundas.constants";
@@ -18,12 +17,7 @@ import type { LunarPhase } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type { LogData } from "@codebase/observability";
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 interface ServicePrivate {
   detectProgressive: (
@@ -41,53 +35,53 @@ interface ServicePrivate {
 
 describe(MonthlyLunarCycleService, () => {
   let service: MonthlyLunarCycleService;
+  let logger: BuiltTestingModule<MonthlyLunarCycleService>["logger"];
   let s: ServicePrivate;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        LunarApsidesService,
-        MonthlyLunarCycleService,
-        {
-          provide: CalendarService,
-          useValue: {
-            buildInstantEvent: (args: {
-              date: Moment;
-              description: string;
-              logger: {
-                info: (
-                  message: string,
-                  context?: string,
-                  data?: LogData,
-                ) => void;
-              };
-              summary: string;
-              tags: string[];
-              timezone: string;
-            }): DetectedCalendarEvent => {
-              const { date, description, logger, summary, tags, timezone } =
-                args;
-              const dateString = date.clone().tz(timezone).toISOString(true);
-              logger.info("🗓️ Built a calendar event", undefined, {
-                at: dateString,
-                summary,
-              });
-              return {
-                description,
-                end: date,
-                start: date,
-                summary,
-                tags,
-              };
-            },
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [
+      LunarApsidesService,
+      {
+        provide: CalendarService,
+        useValue: {
+          buildInstantEvent: (args: {
+            date: Moment;
+            description: string;
+            logger: {
+              info: (message: string, context?: string, data?: LogData) => void;
+            };
+            summary: string;
+            tags: string[];
+            timezone: string;
+          }): DetectedCalendarEvent => {
+            const { date, description, logger, summary, tags, timezone } = args;
+            const dateString = date.clone().tz(timezone).toISOString(true);
+            logger.info("🗓️ Built a calendar event", undefined, {
+              at: dateString,
+              summary,
+            });
+            return {
+              description,
+              end: date,
+              start: date,
+              summary,
+              tags,
+            };
           },
         },
-        LoggerService,
-        MathService,
-      ],
-    }).compile();
-    service = await module.resolve(MonthlyLunarCycleService);
+      },
+      MathService,
+    ],
+  };
+
+  beforeAll(async () => {
+    const { instance, logger: builtLogger } = await buildTestingModule(
+      MonthlyLunarCycleService,
+      testingModuleOptions,
+    );
+    logger = builtLogger;
+    service = instance;
     s = service as unknown as ServicePrivate;
   });
 
@@ -236,8 +230,13 @@ describe(MonthlyLunarCycleService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MonthlyLunarCycleService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MonthlyLunarCycleService);
   });
 
   describe("getMonthlyLunarCycleEvent", () => {
@@ -490,9 +489,7 @@ describe(MonthlyLunarCycleService, () => {
         ],
       };
 
-      const warnSpy = vi
-        .spyOn(LoggerService.prototype, "warn")
-        .mockReturnValue(undefined);
+      const warnSpy = logger.warn.mockReturnValue(undefined);
 
       const progressiveEvents = service.detectProgressive([
         invalidEvent,
@@ -517,9 +514,7 @@ describe(MonthlyLunarCycleService, () => {
     });
 
     it("returns null when progressive tags contain an unknown lunar phase", () => {
-      const warnSpy = vi
-        .spyOn(LoggerService.prototype, "warn")
-        .mockReturnValue(undefined);
+      const warnSpy = logger.warn.mockReturnValue(undefined);
 
       const progressiveEvent = s.getMonthlyLunarCycleProgressiveEvent(
         {
@@ -603,9 +598,7 @@ describe(MonthlyLunarCycleService, () => {
 
     describe("extractLunarPhaseFromTags", () => {
       it("warns and return null when no lunar phase tag is present", () => {
-        const warnSpy = vi
-          .spyOn(LoggerService.prototype, "warn")
-          .mockReturnValue(undefined);
+        const warnSpy = logger.warn.mockReturnValue(undefined);
 
         const result = s.extractLunarPhaseFromTags(
           ["Astronomy", "Astrology"],
@@ -623,9 +616,7 @@ describe(MonthlyLunarCycleService, () => {
       });
 
       it("warns and return null when the lunar phase is invalid", () => {
-        const warnSpy = vi
-          .spyOn(LoggerService.prototype, "warn")
-          .mockReturnValue(undefined);
+        const warnSpy = logger.warn.mockReturnValue(undefined);
 
         const result = s.extractLunarPhaseFromTags(
           ["Astronomy", "Astrology", "Monthly Lunar Cycle", "Lunar", "Fake"],
@@ -652,9 +643,7 @@ describe(MonthlyLunarCycleService, () => {
       });
 
       it("warns and returns null when type guard rejects an otherwise recognized phase", () => {
-        const warnSpy = vi
-          .spyOn(LoggerService.prototype, "warn")
-          .mockReturnValue(undefined);
+        const warnSpy = logger.warn.mockReturnValue(undefined);
         const lunarPhaseSpy = vi
           .spyOn(CaelundasTypes, "isLunarPhase")
           .mockReturnValue(false);

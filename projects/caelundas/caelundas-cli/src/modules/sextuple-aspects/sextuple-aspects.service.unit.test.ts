@@ -1,9 +1,8 @@
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
@@ -16,7 +15,7 @@ import { SextupleAspectsService } from "./sextuple-aspects.service";
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { Body } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
-
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 /** Builds one hexagram boundary event for the shared progressive-step tests. */
 function buildHexagramBoundary(
   phase: "Dissolving" | "Forming",
@@ -75,28 +74,39 @@ const hexagram: Body[] = ["sun", "mars", "saturn", "moon", "venus", "jupiter"];
 
 describe(SextupleAspectsService, () => {
   let service: SextupleAspectsService;
+  let logger: BuiltTestingModule<SextupleAspectsService>["logger"];
   let composerService: SextupleAspectsComposerService;
   let compoundPhaseService: CompoundPhaseService;
 
+  const testingModuleOptions = {
+    providers: [
+      SextupleAspectsComposerService,
+      CompoundPhaseService,
+      ProgressiveCompoundEventService,
+      MathService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SextupleAspectsService,
-        SextupleAspectsComposerService,
-        CompoundPhaseService,
-        ProgressiveCompoundEventService,
-        MathService,
-        LoggerService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
+    const {
+      instance,
+      logger: builtLogger,
+      module,
+    } = await buildTestingModule(SextupleAspectsService, testingModuleOptions);
+    logger = builtLogger;
     compoundPhaseService = await module.resolve(CompoundPhaseService);
     composerService = await module.resolve(SextupleAspectsComposerService);
-    service = await module.resolve(SextupleAspectsService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      SextupleAspectsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SextupleAspectsService);
   });
 
   describe("detect", () => {
@@ -358,8 +368,6 @@ describe(SextupleAspectsService, () => {
     });
 
     it("warns and skips an occurrence whose dissolving is missing", () => {
-      const warn = vi.spyOn(LoggerService.prototype, "warn");
-
       const spans = spansOf([
         buildHexagramBoundary("Forming", "2026-10-20T08:00:00.000Z"),
         buildHexagramBoundary("Forming", "2026-10-27T03:15:00.000Z"),
@@ -369,13 +377,11 @@ describe(SextupleAspectsService, () => {
       expect(spans).toStrictEqual([
         ["2026-10-27T03:15:00.000Z", "2026-10-27T11:45:00.000Z"],
       ]);
-      expect(warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "🔀 Unpaired progressive events",
         undefined,
         expect.objectContaining({ unpairedBeginnings: 1 }),
       );
-
-      warn.mockRestore();
     });
 
     it("returns empty array for empty input", () => {

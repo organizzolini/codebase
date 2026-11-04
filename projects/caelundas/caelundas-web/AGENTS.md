@@ -103,11 +103,13 @@ src/
   styles/
     application.css
 testing/
-  render-route.tsx               # Renders a route through a real router
   setup.ts                       # Shared test setup
 ```
 
-The calendar adds its data layer and the files that build its database:
+The calendar adds its data layer and the files that build its database. Its
+`testing/setup.ts` adds the jsdom layout stand-ins after the shared setup, and
+`testing/render-route.tsx` hands the router a seeded database before rendering
+it:
 
 ```text
 src/
@@ -224,13 +226,18 @@ nx run caelundas-web:typecheck-code,lint-code,format-code,deprecate-code,guard-c
 
 ### Testing
 
-Route tests call `renderRoute` from `testing/render-route.tsx`, which loads
-the real route tree in a memory-history router under a bare root, so the
-route's loader, head, and page all run as a navigation would run them. They are
+Route tests call `renderRoute` from `@codebase/testing/react` with the
+application's router, which loads the real route tree in a memory history and
+renders the page without the root's document shell, so the route's loader,
+head, and page all run as a navigation would run them. They are
 integration tests for that reason, and the distinct suffix is also what tells a
 route's files apart from a component's when conformance is checked.
 `vitest.config.ts` deliberately leaves the TanStack Start plugin out, so route
 components are not code-split into lazy chunks under test.
+
+The calendar's tests call `renderCalendarRoute` from `testing/render-route.tsx`,
+which first gives the router a seeded `node:sqlite` events database, or the one
+a test passes, and then renders through that same function.
 
 The views' route tests live in `src/components/events-calendar/calendar-views.utilities.integration.test.tsx`, beside
 the route's own, only to keep each file under the line limit; shared steps
