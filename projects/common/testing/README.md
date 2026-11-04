@@ -115,7 +115,10 @@ page alone, so no test has to mock `__root`. A web application points
   mocks; it is the package's only workspace dependency.
 - `@codebase/observability/testing` imports `/nestjs` back. The module-boundary
   rule allows that one cycle, and observability's `implicitDependencies:
-["!testing"]` keeps it out of the task graph, so no build waits on another.
+["!testing"]` keeps it out of the task graph: this package's build waits on
+  observability's, never the reverse. Observability lists this package's
+  source as a `testing-source` named input, so its cached tasks still rerun
+  when the builder changes.
 - Adapters that need `interface`, `persistence`, or `observability` live with
   those packages and are exported from their `/testing` entries.
 - A project tagged `framework:react` may import this package from its tests
