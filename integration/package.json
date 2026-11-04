@@ -20,6 +20,7 @@
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
+  "executors": "./executors.json",
   "name": "integration",
   "type": "module",
   "typeCoverage": {
