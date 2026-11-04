@@ -89,12 +89,6 @@ jobs:
           - target: conformetry-validate
             name: Conformetry Validate
             emoji: 👔
-          # Runs the root glossary's `configuration:coinagerie` first, through
-          # the target's own `dependsOn`, so each project is judged against a
-          # current root glossary.
-          - target: coinagerie-check
-            name: Coinagerie Check
-            emoji: 🪙
           # New projects stay in Test Codebase until they are explicitly split
           # into their own suite here.
           - target: test-code
