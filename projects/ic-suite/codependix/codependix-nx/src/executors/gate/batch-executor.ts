@@ -1,5 +1,6 @@
 // 🛠️ Utilities
 
+import { describeError } from "../../modules/batch/batch.utilities";
 import {
   resolveBatchService,
   resolveGateService,
@@ -9,7 +10,16 @@ import type {
   GateBatchTaskResult,
   RunGateBatchTask,
 } from "../../modules/batch/batch.types";
-import type { GateBatchExecutorArguments } from "./executor.types";
+import type { GateService } from "../../modules/gate/gate.service";
+import type {
+  GateBatchExecutorArguments,
+  GateExecutorOptions,
+} from "./executor.types";
+
+/** What resolving one task's configuration came to: a task, or its failure. */
+type ResolvedTask =
+  | { failure: GateBatchTaskResult }
+  | { task: RunGateBatchTask };
 
 /**
  * Judges every gate task Nx batched for this executor from as few command line
@@ -19,10 +29,6 @@ import type { GateBatchExecutorArguments } from "./executor.types";
  * replays batched tasks one by one — but the command line is started once per
  * share of the batch instead of once per project, which is most of what a gate
  * costs.
- *
- * The configuration path of every task is resolved here, at the top of the
- * call, because reading it back out of `nx.json` is a long chain of calls that
- * only fits there. A task whose path cannot be resolved fails alone.
  */
 export default async function gateBatchExecutor(
   ...[taskGraph, options, overrides, context]: GateBatchExecutorArguments
@@ -33,27 +39,22 @@ export default async function gateBatchExecutor(
   const tasks: RunGateBatchTask[] = [];
 
   for (const [id, task] of Object.entries(taskGraph.tasks)) {
-    const taskOptions = options[id] ?? overrides;
+    const resolved = resolveTask({
+      cached:
+        context.projectGraph.nodes[task.target.project]?.data.targets?.[
+          task.target.target
+        ]?.cache === true,
+      gateService,
+      id,
+      options: options[id] ?? overrides,
+      project: task.target.project,
+      workspaceRoot: context.root,
+    });
 
-    try {
-      tasks.push({
-        cached:
-          context.projectGraph.nodes[task.target.project]?.data.targets?.[
-            task.target.target
-          ]?.cache === true,
-        configurationPath: gateService.resolveConfigurationPath({
-          configuration: taskOptions.configuration,
-          workspaceRoot: context.root,
-        }),
-        id,
-        options: taskOptions,
-        project: task.target.project,
-      });
-    } catch (error) {
-      results[id] = {
-        success: false,
-        terminalOutput: error instanceof Error ? error.message : String(error),
-      };
+    if ("failure" in resolved) {
+      results[id] = resolved.failure;
+    } else {
+      tasks.push(resolved.task);
     }
   }
 
@@ -79,5 +80,40 @@ function printFailures(results: Record<string, GateBatchTaskResult>): void {
     if (!result.success) {
       process.stdout.write(`\n> ${taskId}\n${result.terminalOutput}\n`);
     }
+  }
+}
+
+/**
+ * Resolves one task's configuration path, or the failure that earns it.
+ *
+ * Reading the path back out of `nx.json` is a long chain of calls, so it is
+ * done here, near the top of the call, and never from inside a batch. A task
+ * whose path cannot be resolved fails alone and costs its peers nothing.
+ */
+function resolveTask(args: {
+  cached: boolean;
+  gateService: GateService;
+  id: string;
+  options: GateExecutorOptions;
+  project: string;
+  workspaceRoot: string;
+}): ResolvedTask {
+  try {
+    return {
+      task: {
+        cached: args.cached,
+        configurationPath: args.gateService.resolveConfigurationPath({
+          configuration: args.options.configuration,
+          workspaceRoot: args.workspaceRoot,
+        }),
+        id: args.id,
+        options: args.options,
+        project: args.project,
+      },
+    };
+  } catch (error) {
+    return {
+      failure: { success: false, terminalOutput: describeError(error) },
+    };
   }
 }

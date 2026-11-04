@@ -21,7 +21,7 @@ vi.mock("node:child_process", async (importOriginal) => ({
 
 /** A child process that prints, then exits with the given code or fails. */
 function buildChild(args: {
-  error?: Error;
+  error?: unknown;
   exitCode: null | number;
   standardError?: string;
   standardOutput?: string;
@@ -293,6 +293,26 @@ describe(BatchService, () => {
       expect(results["a:codependix-bound"]).toStrictEqual({
         success: false,
         terminalOutput: "spawn ENOENT",
+      });
+    });
+
+    it("fails a run that could not start with something other than an error, saying what", async () => {
+      expect.hasAssertions();
+
+      // Whatever a process fails with is its reason, and a task always says one.
+      vi.mocked(spawn).mockReturnValue(
+        buildChild({ error: "spawn blew up", exitCode: null }),
+      );
+
+      const results = await service.runBatch({
+        concurrency: 1,
+        tasks: [taskOf("a")],
+        workspaceRoot: "/workspace",
+      });
+
+      expect(results["a:codependix-bound"]).toStrictEqual({
+        success: false,
+        terminalOutput: "spawn blew up",
       });
     });
 

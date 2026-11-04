@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { readChargedProjects, splitProjects } from "./batch.utilities";
+import {
+  describeError,
+  readChargedProjects,
+  splitProjects,
+} from "./batch.utilities";
 
 describe("batch utilities", () => {
   describe(splitProjects, () => {
@@ -91,6 +95,14 @@ describe("batch utilities", () => {
       ).toStrictEqual(new Set(["a"]));
     });
 
+    it("ignores a project name that is not a string rather than refusing the report", () => {
+      expect(
+        readChargedProjects(
+          '{"boundaries":{"failures":[],"violations":[{"projects":["a",7,null]}]}}',
+        ),
+      ).toStrictEqual(new Set(["a"]));
+    });
+
     it("reads a clean report as charging nobody", () => {
       expect(readChargedProjects(report({}))).toStrictEqual(new Set());
     });
@@ -98,6 +110,11 @@ describe("batch utilities", () => {
     it.each([
       ["text that is not JSON", "not json"],
       ["JSON without a boundaries report", "{}"],
+      ["JSON that is not an object", "[1,2]"],
+      [
+        "a finding that is not an object",
+        '{"boundaries":{"failures":[],"violations":[5]}}',
+      ],
       ["a report with no findings lists", '{"boundaries":{}}'],
       [
         "a finding charged to no list of projects",
@@ -106,5 +123,22 @@ describe("batch utilities", () => {
     ])("refuses %s rather than reading it as clean", (_name, output) => {
       expect(readChargedProjects(output)).toBeUndefined();
     });
+  });
+
+  describe(describeError, () => {
+    it("gives an error's message", () => {
+      expect(describeError(new Error("spawn ENOENT"))).toBe("spawn ENOENT");
+    });
+
+    it.each([
+      ["a string", "boom", "boom"],
+      ["a number", 7, "7"],
+      ["an object with no message", { code: 1 }, "[object Object]"],
+    ])(
+      "describes %s that was thrown in place of an error",
+      (_name, thrown, expected) => {
+        expect(describeError(thrown)).toBe(expected);
+      },
+    );
   });
 });

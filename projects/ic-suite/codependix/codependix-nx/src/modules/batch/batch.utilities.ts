@@ -1,6 +1,16 @@
 // 🛠️ Utilities
 
 /**
+ * Describes whatever was thrown, as the text a task should fail with.
+ *
+ * An error's message when it is one, and the value as text when something else
+ * was thrown, so a task's failure always says something.
+ */
+export function describeError(thrown: unknown): string {
+  return thrown instanceof Error ? thrown.message : String(thrown);
+}
+
+/**
  * Reads which projects a `--format json` boundary run charged a finding to.
  *
  * A finding is charged to every project its `projects` names, whatever its

@@ -13,7 +13,11 @@ import {
   MAX_PARALLEL_RUNS,
   MAX_PROJECTS_ARGUMENT_BYTES,
 } from "./batch.constants";
-import { readChargedProjects, splitProjects } from "./batch.utilities";
+import {
+  describeError,
+  readChargedProjects,
+  splitProjects,
+} from "./batch.utilities";
 
 import type { GateSelection } from "../gate/gate.types";
 import type {
@@ -200,7 +204,7 @@ export class BatchService {
     } catch (error) {
       return {
         success: false,
-        terminalOutput: error instanceof Error ? error.message : String(error),
+        terminalOutput: describeError(error),
       };
     }
   }
