@@ -30,6 +30,24 @@ only for the check that a configuration path was given — the
 `codependix-nx-layer` rule in `configuration/codependix.config.ts`
 holds it to that.
 
+The executor is also a **batch executor**: `executors.json` names a
+`batchImplementation` and sets `preferBatch`, so `nx affected -t codependix-bound`
+hands Nx's whole batch to `BatchService` in one process. One gate per project
+started the command line once per project, and most of a gate's cost is that
+start. A batch runs `codependix map --check boundaries --format json` over the
+projects of every task that judges only its own project, split round-robin
+across up to four runs that go at once and never past `MAX_PROJECTS_ARGUMENT_BYTES`
+in one argument. The JSON report names the projects each finding is charged to,
+and a task fails only when a finding names its own project — a finding charged to
+another project of the batch is that project's, and one in a dependency is a
+note. A failed task is run again by itself to get exactly the report a single
+gate prints, and Nx never prints a batch task's output, so the batch executor
+prints each failure under its task id. Nothing is ever read as a pass it did not
+earn: output that is not the report, or a failing exit that charges no task, fails
+every task of that run. A task that judges other projects or tags runs on its own,
+and `--batch=false` turns batching off. Each task is still hashed, cached and
+replayed on its own.
+
 ## Architecture Overview
 
 ### Tech Stack
@@ -55,6 +73,9 @@ src/index.ts — createNodes
 
 src/executors/gate/executor.ts → GateService.run
   └─ node --import <loader URL> <@codependix/cli/main> map --check boundaries …
+
+src/executors/gate/batch-executor.ts → BatchService.runBatch
+  └─ the same command line, --format json, once per share of the batched projects
 ```
 
 ### Directory Layout
@@ -64,10 +85,12 @@ src/
   index.ts                          # Plugin entry: createNodes, public exports
   codependix-nx.module.ts  # Root module: GateModule, PluginModule
   executors/gate/
+    batch-executor.ts               # Nx batch executor → BatchService.runBatch
     executor.ts                     # Nx executor → GateService.run
     loader.mjs                      # Registers the swc hooks; passed to --import
     schema.json                     # Executor options; shipped as-is in the tarball
   modules/
+    batch/                          # BatchService: judges many gate tasks from a few runs
     gate/                           # GateService: arguments, selection, spawn, hashing
     plugin/                         # PluginService: options and inference
       plugin-context.utilities.ts   # Builds and caches the NestJS context
@@ -143,6 +166,7 @@ See the [testing-strategy skill](../../../../.agents/skills/testing-strategy/SKI
 
 - [src/index.ts](src/index.ts): Plugin entry Nx loads
 - [src/modules/gate/gate.service.ts](src/modules/gate/gate.service.ts): The gate run and its hashing
+- [src/modules/batch/batch.service.ts](src/modules/batch/batch.service.ts): The batched gate run
 - [src/modules/plugin/plugin-inputs.utilities.ts](src/modules/plugin/plugin-inputs.utilities.ts): Tool inputs
 - [src/modules/plugin/plugin-tsconfig.utilities.ts](src/modules/plugin/plugin-tsconfig.utilities.ts): Tsconfig inputs
 - [src/executors/gate/loader.mjs](src/executors/gate/loader.mjs): The `--import` shim

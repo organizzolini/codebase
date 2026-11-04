@@ -570,23 +570,40 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nx:coinagerie-check:write`.
 
 - **abort**:
+- **alone**:
 - **argv**:
+- **batch**:
+- **beta**:
 - **boundary**:
 - **breadth**:
+- **budget**:
 - **chain**:
+- **charge**:
+- **cycle**:
+- **explain**:
 - **follow**:
 - **immediate**:
 - **inject**:
 - **misname**:
+- **parallelism**:
+- **pipe**:
+- **prefer**:
 - **realpath**:
 - **registration**:
 - **selection**:
+- **settle**:
+- **single**:
 - **stdio**:
 - **strictest**:
+- **subpath**:
 - **symlink**:
+- **terminal**:
 - **through**:
+- **uncacheable**:
 - **undeclared**:
 - **unresolved**:
 - **unscoped**:
+- **verdict**:
+- **violation**:
 
 <!-- coinagerie:end -->
