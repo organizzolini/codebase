@@ -601,48 +601,48 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-examples:coinagerie-check:write`.
 
-- **abort**:
-- **absent**:
-- **accept**:
-- **ambiguous**:
-- **atlas**:
-- **attribution**:
-- **bar**:
-- **beta**:
-- **camel**:
-- **card**:
-- **catalogue**:
-- **conform**:
-- **digest**:
-- **direction**:
-- **dossier**:
-- **drift**:
-- **embed**:
-- **expectation**:
-- **filesystem**:
-- **generation**:
-- **guide**:
-- **hello**:
-- **kebab**:
-- **migrate**:
-- **overview**:
-- **pascal**:
-- **polyglot**:
-- **receipt**:
-- **reformatted**:
-- **reminder**:
-- **snake**:
-- **str**:
-- **structural**:
-- **textual**:
-- **threshold**:
-- **tidy**:
-- **todo**:
-- **trip**:
-- **unowned**:
-- **validator**:
-- **variant**:
-- **widget**:
-- **world**:
+- **abort**: Not used in the example sources; the glossary keeps it only as a plain English verb.
+- **absent**: Expectation key listing files that must not appear in an example report checked by the integration test.
+- **accept**: Not used in example code; examples say a file conforms or drifts, never that it is approved.
+- **ambiguous**: Report state where an instance matches two templates equally well, the subject of the ambiguous-attribution example.
+- **atlas**: Instance fixture in the ambiguous-attribution example, holding one file that two templates both declare.
+- **attribution**: How conformetry decides which template an instance path belongs to, inferred from structure since nothing records it.
+- **bar**: Second word of the case-variants example name search bar, showing how spaces become kebab, snake and Pascal.
+- **beta**: Panel-shaped instance fixture in the two-directions example, matched by panel at 100 percent and card at 50 percent.
+- **camel**: Override key for the camel-case name variant, so a caller can supply spelledOutByHand instead of a derived value.
+- **card**: Template for a document paired with its back, a card-shaped instance in the two-directions example.
+- **catalogue**: The drift-catalogue example, a list of every finding kind with the exact report text it produces.
+- **conform**: Verb in the success line All checked files conform, meaning every instance matches its template with no findings.
+- **digest**: Template in the ambiguous-attribution example with a partial claim on one instance, beside overview which fits fully.
+- **direction**: One of the two complementary questions the two-directions example asks, instances-to-templates or templates-to-instances.
+- **dossier**: Template name in the scoring-thresholds example, used by the migrating legacy instance scored at 90 percent.
+- **drift**: Any divergence between an instance and its template that conformetry reports as a finding, such as a missing export.
+- **embed**: Verb for calling conformetry from another tool, as the embedding example embed.ts script does.
+- **expectation**: A per-example entry in the integration test EXPECTATIONS map, stating the exit code and output a guide promises.
+- **filesystem**: Adapter object through which generation and hooks read and write files, rather than touching disk directly.
+- **generation**: The phase that renders a template folder and file paths into instance files, failing when a placeholder has no value.
+- **guide**: A per-example README that walks through commands and output, which the examples test gates against.
+- **hello**: Name of the smallest generator, hello, whose one template file renders a greeting for a given name.
+- **kebab**: Case variant of a name in lowercase words joined by hyphens, derived for file paths and generated content.
+- **migrate**: Choice of fixing every existing instance at once, which thresholds let a team defer while adopting a template.
+- **overview**: Template in the ambiguous-attribution example that explains the path, fitting one instance completely.
+- **pascal**: Case variant with each word capitalized and joined without separators, such as SearchBar in the case-variants example.
+- **polyglot**: Example folder of one component written in several languages, each checked by its own validator.
+- **receipt**: Log file a hooks example postGenerate hook writes into a receipts folder after a generator run.
+- **reformatted**: Instance in the structural-not-textual example rewritten in different formatting, which must still pass validation.
+- **reminder**: Instance name from the embedding example, rendered by embed.ts as a reminder markdown file.
+- **snake**: Case variant with lowercase words joined by underscores, such as search_bar in the case-variants example.
+- **str**: Python type name in the language-validators example polyglot instance, the return annotation of build_polyglot.
+- **structural**: Comparison mode that weighs declarations and their names rather than text, so reformatting does not count as drift.
+- **textual**: Plain-text comparison that conformetry deliberately avoids, since reformatting alone is not drift.
+- **threshold**: Minimum percentage of requirements an instance must meet to pass, default 100 percent, lowered by scoring-thresholds.
+- **tidy**: Instance name in the scoring-thresholds example strict folder, a conforming dossier that the report omits.
+- **todo**: Marker in a template comment meaning the wording is a prompt, so an instance may reword it and still conform.
+- **trip**: A round trip: generate an instance from a template, then validate it, proving the pair agrees.
+- **unowned**: Instance folder in the failure-modes example, rendered from a template whose owner placeholder was deliberately never supplied.
+- **validator**: Per-language check that compares an instance against its template, chosen by the file extension.
+- **variant**: Derived spelling of a name, such as kebab, snake, camel or Pascal, which a template can use and a caller can override.
+- **widget**: Template name in the drift-catalogue example, a sample component whose instances expose each drift kind.
+- **world**: Instance name used in the hello-template example, rendering world.md once as the smallest template.
 
 <!-- coinagerie:end -->

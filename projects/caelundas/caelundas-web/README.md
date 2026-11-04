@@ -1726,564 +1726,564 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run caelundas-web:coinagerie-check:write`.
 
-- **above**:
-- **act**:
-- **advance**:
-- **agenda**:
-- **air**:
-- **align**:
-- **alt**:
-- **altitude**:
-- **ancestor**:
-- **anchor**:
-- **angle**:
-- **animation**:
-- **apoapsi**:
-- **appearance**:
-- **april**:
-- **aquarius**:
-- **argv**:
-- **aria**:
-- **arity**:
-- **arrow**:
-- **article**:
-- **ary**:
-- **ascension**:
-- **asin**:
-- **aspect**:
-- **assemble**:
-- **assembly**:
-- **astraea**:
-- **astronomical**:
-- **atan2**:
-- **axi**:
-- **azimuth**:
-- **back**:
-- **backdrop**:
-- **background**:
-- **badge**:
-- **bar**:
-- **bare**:
-- **below**:
-- **beltane**:
-- **binovile**:
-- **biquintile**:
-- **biseptile**:
-- **blue**:
-- **boomerang**:
-- **border**:
-- **bottom**:
-- **bound**:
-- **boundary**:
-- **box**:
-- **breadth**:
-- **bright**:
-- **brightness**:
-- **browser**:
-- **busy**:
-- **butterfly**:
-- **button**:
-- **calendar**:
-- **cancer**:
-- **capi**:
-- **capricorn**:
-- **card**:
-- **cardinal**:
-- **cascade**:
-- **cascader**:
-- **center**:
-- **cere**:
-- **channel**:
-- **chart**:
-- **checkbox**:
-- **chevron**:
-- **chip**:
-- **chiron**:
-- **chrome**:
-- **circle**:
-- **civil**:
-- **clamp**:
-- **click**:
-- **clip**:
-- **closest**:
-- **cluster**:
-- **co**:
-- **columns3**:
-- **combinator**:
-- **combine**:
-- **compact**:
-- **comparison**:
-- **composite**:
-- **compound**:
-- **condition**:
-- **configurable**:
-- **conjunct**:
-- **conjunction**:
-- **connect**:
-- **constellation**:
-- **contraparallel**:
-- **cover**:
-- **cradle**:
-- **crescent**:
-- **crowd**:
-- **cut**:
-- **cycle**:
-- **dangerously**:
-- **dataset**:
-- **dawn**:
-- **daylight**:
-- **db**:
-- **debounce**:
-- **decan**:
-- **decile**:
-- **decimal**:
-- **declination**:
-- **decuple**:
-- **degree**:
-- **delay**:
-- **dep**:
-- **derive**:
-- **desktop**:
-- **detail**:
-- **deterministic**:
-- **device**:
-- **dialog**:
-- **digit**:
-- **dignity**:
-- **direction**:
-- **disconnect**:
-- **distance**:
-- **div**:
-- **domain**:
-- **down**:
-- **drag**:
-- **draw**:
-- **drawer**:
-- **dropdown**:
-- **duodecuple**:
-- **duration**:
-- **dusk**:
-- **eager**:
-- **earth**:
-- **east**:
-- **eclipse**:
-- **ecliptic**:
-- **effect**:
-- **effective**:
-- **element**:
-- **eleventh**:
-- **elongation**:
-- **emptiness**:
-- **enter**:
-- **envelope**:
-- **epoch**:
-- **eris**:
-- **even**:
-- **expand**:
-- **extent**:
-- **eye**:
-- **facet**:
-- **factor**:
-- **faint**:
-- **faintest**:
-- **fewer**:
-- **fieldset**:
-- **fifteenth**:
-- **fifth**:
-- **figure**:
-- **fill**:
-- **fire**:
-- **flatten**:
-- **flip**:
-- **float**:
-- **floor**:
-- **focal**:
-- **focus**:
-- **follow**:
-- **footer**:
-- **fov**:
-- **fraction**:
-- **frame**:
-- **free**:
-- **func**:
-- **galaxy**:
-- **gantt**:
-- **gap**:
-- **gemini**:
-- **gen**:
-- **geocentric**:
-- **geometry**:
-- **gibbous**:
-- **glow**:
-- **glyph**:
-- **gonggong**:
-- **grand**:
-- **green**:
-- **greenwich**:
-- **grid**:
-- **grind**:
-- **gte**:
-- **gutter**:
-- **h1**:
-- **h2**:
-- **half**:
-- **hammer**:
-- **handle**:
-- **harmonic**:
-- **haumean**:
-- **hebe**:
-- **height**:
-- **hexadecan**:
-- **hexadecimal**:
-- **hexagram**:
-- **high**:
-- **highest**:
-- **history**:
-- **horizon**:
-- **hour**:
-- **hourglass**:
-- **html**:
-- **hydrate**:
-- **hygiea**:
-- **hypot**:
-- **i18**:
-- **icon**:
-- **imbolc**:
-- **incomplete**:
-- **indeterminate**:
-- **indicator**:
-- **infinite**:
-- **infinity**:
-- **ingest**:
-- **ingress**:
-- **inscribe**:
-- **instant**:
-- **integer**:
-- **interaction**:
-- **interpolate**:
-- **intl**:
-- **invalidate**:
-- **inverse**:
-- **iso**:
-- **ixion**:
-- **j2000**:
-- **julian**:
-- **jump**:
-- **juno**:
-- **jupiter**:
-- **keyboard**:
-- **keycap**:
-- **kite**:
-- **know**:
-- **labelledby**:
-- **lamma**:
-- **lane**:
-- **lang**:
-- **lat**:
-- **late**:
-- **later**:
-- **latitude**:
-- **leaf**:
-- **legend**:
-- **leo**:
-- **li**:
-- **libra**:
-- **lilith**:
-- **litha**:
-- **lon**:
-- **longitude**:
-- **loose**:
-- **low**:
-- **lowest**:
-- **lte**:
-- **lunar**:
-- **mabon**:
-- **mag**:
-- **magnitude**:
-- **makemake**:
-- **many**:
-- **mar**:
-- **march**:
-- **margin**:
-- **marker**:
-- **markup**:
-- **mask**:
-- **mean**:
-- **measure**:
-- **measurement**:
-- **memo**:
-- **menu**:
-- **mercury**:
-- **middle**:
-- **mismatch**:
-- **modality**:
-- **month**:
-- **moon**:
-- **more**:
-- **morning**:
-- **motion**:
-- **mount**:
-- **move**:
-- **ms**:
-- **multiple**:
-- **multiselectable**:
-- **mutable**:
-- **mutation**:
-- **mystic**:
-- **na**:
-- **nadir**:
-- **narrow**:
-- **native**:
-- **nature**:
-- **nautical**:
-- **nav**:
-- **navigate**:
-- **navigation**:
-- **needle**:
-- **negate**:
-- **negative**:
-- **neptune**:
-- **neq**:
-- **nessus**:
-- **night**:
-- **ninth**:
-- **nonuple**:
-- **normal**:
-- **north**:
-- **nothing**:
-- **notify**:
-- **novile**:
-- **numeric**:
-- **obliquity**:
-- **observe**:
-- **observer**:
-- **occurrence**:
-- **octile**:
-- **octuple**:
-- **off**:
-- **offer**:
-- **oldest**:
-- **onchange**:
-- **ongoing**:
-- **oo1**:
-- **opacity**:
-- **operand**:
-- **operator**:
-- **ophicus**:
-- **opposition**:
-- **orcus**:
-- **ostara**:
-- **overflow**:
-- **overlie**:
-- **overscan**:
-- **pad**:
-- **palette**:
-- **palla**:
-- **passive**:
-- **peak**:
-- **pentagram**:
-- **periapsi**:
-- **period**:
-- **phase**:
-- **pholus**:
-- **pi**:
-- **pill**:
-- **pisce**:
-- **pixel**:
-- **place**:
-- **planet**:
-- **plural**:
-- **pluto**:
-- **polar**:
-- **polarity**:
-- **pole**:
-- **polyline**:
-- **popover**:
-- **posix**:
-- **prefer**:
-- **preload**:
-- **prerender**:
-- **presentation**:
-- **press**:
-- **prev**:
-- **prevent**:
-- **prograde**:
-- **projection**:
-- **prop**:
-- **propagation**:
-- **quadruple**:
-- **quaoar**:
-- **quarter**:
-- **quiet**:
-- **quincunx**:
-- **quintile**:
-- **quintuple**:
-- **radial**:
-- **radian**:
-- **radio**:
-- **radius**:
-- **ratio**:
-- **recover**:
-- **rect**:
-- **rectangle**:
-- **red**:
-- **rel**:
-- **reload**:
-- **rem**:
-- **removable**:
-- **rerender**:
-- **resize**:
-- **respond**:
-- **restoration**:
-- **retrograde**:
-- **reverse**:
-- **ring**:
-- **rise**:
-- **role**:
-- **rotation**:
-- **route**:
-- **sagitarius**:
-- **same**:
-- **samhain**:
-- **sample**:
-- **saturn**:
-- **scale**:
-- **scheme**:
-- **scorpio**:
-- **scorpius**:
-- **screen**:
-- **scroll**:
-- **scrollbar**:
-- **season**:
-- **sedna**:
-- **selector**:
-- **semisextile**:
-- **septile**:
-- **septuple**:
-- **seventh**:
-- **sextile**:
-- **sextuple**:
-- **sheet**:
-- **should**:
-- **sibling**:
-- **side**:
-- **sidereal**:
-- **sin**:
-- **single**:
-- **skeleton**:
-- **sky**:
-- **slider**:
-- **slot**:
-- **slow**:
-- **south**:
-- **spa**:
-- **space**:
-- **span**:
-- **speak**:
-- **spin**:
-- **spirit**:
-- **spread**:
-- **square**:
-- **ssr**:
-- **stamp**:
-- **stand**:
-- **star**:
-- **station**:
-- **stellium**:
-- **still**:
-- **store**:
-- **stroke**:
-- **structural**:
-- **sub**:
-- **subscribe**:
-- **subtree**:
-- **summarize**:
-- **sun**:
-- **sunday**:
-- **svg**:
-- **svgsvg**:
-- **swipe**:
-- **symbolic**:
-- **synodic**:
-- **tab**:
-- **tablet**:
-- **tan**:
-- **tangent**:
-- **taurus**:
-- **temporality**:
-- **ten**:
-- **testid**:
-- **third**:
-- **thirteenth**:
-- **three**:
-- **through**:
-- **thursday**:
-- **timeline**:
-- **today**:
-- **toggle**:
-- **toolbar**:
-- **tooltip**:
-- **top**:
-- **trace**:
-- **track**:
-- **trail**:
-- **transform**:
-- **transition**:
-- **trapeze**:
-- **tridecile**:
-- **trine**:
-- **trioctile**:
-- **triple**:
-- **triseptile**:
-- **tune**:
-- **twelve**:
-- **twice**:
-- **twilight**:
-- **typhon**:
-- **uint8**:
-- **ul**:
-- **undecile**:
-- **undecuple**:
-- **unfiltered**:
-- **ungrouped**:
-- **unix**:
-- **unmeasured**:
-- **unobserve**:
-- **unreadable**:
-- **unsupported**:
-- **uranus**:
-- **ursa**:
-- **variant**:
-- **variation**:
-- **vector**:
-- **vendored**:
-- **venu**:
-- **vertical**:
-- **vesta**:
-- **viewport**:
-- **vigintile**:
-- **virgo**:
-- **visibility**:
-- **visible**:
-- **wan**:
-- **want**:
-- **water**:
-- **wax**:
-- **weak**:
-- **webkit**:
-- **week**:
-- **weekday**:
-- **west**:
-- **whole**:
-- **width**:
-- **window**:
-- **within**:
-- **year**:
-- **yod**:
-- **yule**:
-- **zenith**:
-- **zodiac**:
-- **zone**:
-- **zoom**:
+- **above**: Places a region higher on screen, such as the one toolbar that sits above every calendar view without remounting.
+- **act**: Imported from Testing Library in unit tests to flush React state updates before the assertions that read them.
+- **advance**: Part of the advancedMode prop that calendar filters passes as inline to the vendored filter builder.
+- **agenda**: Names the list view that lists events by day, the default view below 768 pixels, windowed over a growing 30-day range.
+- **air**: One of the four sign elements used as a filter field, with a value of fire, earth, air or water.
+- **align**: Positions popover menus and pickers against their trigger by the start or end value passed to the component.
+- **alt**: Short form in the sky settings key altBottom, the lowest altitude the night sky draws, beneath the horizon.
+- **altitude**: Height of a star above the horizon in degrees, where the pole observer sees altitude equal declination, shown by the night sky.
+- **ancestor**: A tag higher in the tag tree that an event tag is nested under, listed with each event in the tag view.
+- **anchor**: Names a date or position a calendar timeline is laid out from, passed as the anchor date prop to the timeline.
+- **angle**: Degree rotation the night sky star group is drawn at, derived from sidereal time as the sky turns.
+- **animation**: The sole motion driving the night sky star group, which turns as one group from its drawn starting angle.
+- **apoapsi**: Farthest point of an orbit, which the calendar marks with its own icon in event glyphs and labels.
+- **appearance**: Order of first sighting used to list distinct whole numbers in a filter rule, where an empty list marks an unfinished rule.
+- **april**: Month name the calendar loader tests use for a seeded window that holds no events, as a negative case.
+- **aquarius**: Zodiac sign and constellation name whose sign glyph maps to its icon file in the calendar glyphs.
+- **argv**: The process argument list that the events database build script checks for its ingested flag.
+- **aria**: Prefix of the accessibility attributes such as aria-label that name the calendar pickers and menus for screen readers.
+- **arity**: Filter field setting, many or one, that says whether a rule holds a list of picked values or a single value.
+- **arrow**: Keyboard keys that move through the color picker and menus, and the dropdown indicator the menu triggers leave out.
+- **article**: Semantic container element that wraps each calendar event row in the list views, one row per event.
+- **ary**: Stem fragment of ordinary words like boundary and summary, carrying no project-specific meaning of its own here.
+- **ascension**: Sky coordinate in hours from 0 to 24, with declination, that positions each star the night sky draws.
+- **asin**: JavaScript inverse sine call that yields declination from obliquity and latitude in the night sky ecliptic conversion.
+- **aspect**: Angular relationship between two bodies, such as a conjunction or a harmonic, filtered and colored as a tag root.
+- **assemble**: Function that joins the night sky parts into one SVG string drawn behind every page.
+- **assembly**: Stem of assembleSvg, the night sky helper that joins SVG parts into one string; no standalone assembly term here.
+- **astraea**: Asteroid whose name the project does not use in code; it appears only in the glossary list here.
+- **astronomical**: Twilight stage, such as Astronomical Dawn or Dusk, that the calendar labels and draws with a glyph icon.
+- **atan2**: JavaScript two-argument arctangent that the night sky uses to turn x and y coordinates into a longitude angle.
+- **axi**: Stem of axis, as in the timeline axis that places markers and the swipe axis on drawers.
+- **azimuth**: Compass bearing of a body along the horizon, used by night sky tests to tell the west half from the east.
+- **back**: Reverting a setting to its default, such as a key set back to default when a night sky override is removed.
+- **backdrop**: The night sky layer drawn behind every page, mounted by the NightSkyBackdrop component.
+- **background**: Inline style color painted behind a calendar event row, taken from its record color.
+- **badge**: Small label component from the shared presentation package, used by calendar filters to show counts beside a control.
+- **bar**: Rectangle spanning the true length of an event in the timeline, packed into lanes so overlapping rectangles never cover each other.
+- **bare**: Unwrapped root, the plain div that test helpers render routes beneath in memory-history routers.
+- **below**: Names the width range under a breakpoint, such as the agenda below 768 pixels and the bottom sheet for filters.
+- **beltane**: Cross-quarter festival date, which the calendar marks with a flower glyph and its own icon image.
+- **binovile**: Harmonic aspect at two novile steps that appears in the glossary list but has no code or icon in this project.
+- **biquintile**: Aspect of 144 degrees, two quintile steps, drawn with a dedicated 144-degree icon in calendar glyphs.
+- **biseptile**: Aspect of about 103 degrees, two septile steps, that the project lists only in its glossary.
+- **blue**: Hue the night sky uses for blue-white stars and the default pale line color, mapped from the B-V color index.
+- **boomerang**: Emoji-keyed glyph image that the calendar draws for one event category, mapped from the boomerang emoji.
+- **border**: Outline drawn around agenda date and group surfaces, through class names that set their edges in the calendar.
+- **bottom**: Lower edge of a view, used for the bottom sheet of filters on phones and the altBottom sky limit.
+- **bound**: Attaches a value to a ? placeholder in SQL, in order, so queries never splice text in.
+- **boundary**: Index splitting an event summary into its glyph symbols and English name, so the name is cut at that index.
+- **box**: Bordered square checkbox beside each tag in the filter tag editor, showing a dash when only part of a tag is ticked.
+- **breadth**: Callidescope limit on how many calls a callable fans out to, declared as maximumBreadth in its configuration.
+- **bright**: Star magnitude cutoff deciding which night sky stars are drawn, along with the glows placed behind the brightest.
+- **brightness**: Glyph for the maximum brightness event, keyed by a bright emoji and drawn from maximum-brightness-icon.svg.
+- **browser**: Runtime the calendar uses for everything: the SQLite file downloads and queries inside the tab of each visitor.
+- **busy**: Page state while a calendar reload runs; the notice waits until the reload settles, rather than replacing the view.
+- **butterfly**: Emoji-keyed icon image, butterfly-icon.png, the calendar shows for one of its event label symbols.
+- **button**: Clickable control such as the toolbar Filters and Clear buttons, and the view and menu triggers around the calendar.
+- **calendar**: Event view component from the shared presentation package that this app wraps for month, week, and agenda layouts.
+- **cancer**: Zodiac sign whose ingress event, such as event-sun-ingress-cancer, the filter tests and collections reference by id.
+- **capi**: Low-level C-style interface object of the sqlite-wasm build, reached through sqlite3 to create the database file.
+- **capricorn**: Zodiac sign whose glyph maps to capricorn-icon.svg, which the calendar icon utilities test checks by name.
+- **card**: Stem found only inside cardinal, the modality value for signs, so no separate card concept exists here.
+- **cardinal**: Modality value for a zodiac sign, one of cardinal, fixed or mutable, offered as a filter value.
+- **cascade**: Tag picker prop that, when true, makes ticking a parent tag tick the tags beneath it; group picker sets it false.
+- **cascader**: Nested menu component that the group field picker uses to choose a grouping field, sharing the filter wording.
+- **center**: Layout alignment that places agenda date and group content in the middle of their cells with flex classes.
+- **cere**: Stem of Ceres, the dwarf planet asteroid whose symbol maps to ceres-icon.svg in the calendar glyph constants.
+- **channel**: One of the red, green or blue color channels that the night sky converts to a hex pair in its color output.
+- **chart**: Word that appears only in this glossary list here; the graphics of the project are a timeline and a night sky SVG.
+- **checkbox**: Input that picks a tag in the filter tag editor list, one per tag, labeled by its own name.
+- **chevron**: Disclosure icon that opens and closes a night sky constellation folder, beside its checkbox, in the sky menu.
+- **chip**: Small colored pill that shows one event in a month cell, plus the removable active filter tokens in the toolbar.
+- **chiron**: Centaur asteroid whose symbol maps to chiron-icon.svg in the calendar glyph constants and utility tests.
+- **chrome**: Surrounding padding and frame drawn around an agenda event row beside its text, kept in agenda layout constants.
+- **circle**: Marker drawn for an instant on the timeline, and a cluster of instants drawn as a circle holding a count.
+- **civil**: Twilight stage of dawn or dusk labeled Civil Dawn or Civil Dusk, each with its own calendar glyph icon.
+- **clamp**: Limits a value to a range, as the night sky clamps opacity and the calendar window clamps its day count.
+- **click**: Pointer activation of a calendar control, exercised in tests with fireEvent, such as opening a cluster dialog.
+- **clip**: SVG clip-path that trims an icon shape, such as the undecile 32.7 asset in the icon folder.
+- **closest**: DOM method walking up from an element to its nearest ancestor matching a selector, used to find the filter editor.
+- **cluster**: Group of nearby events or markers collapsed into one count, which the cluster dialog opens to list its events.
+- **co**: Two-letter stray token matched inside ordinary words like cover and connect; it names no concept here.
+- **columns3**: Icon from the icon library mapped to the three-day view option in the calendar view selector.
+- **combinator**: Field on a filter group that is and or or, joining its child rules into a single condition.
+- **combine**: Local helper that joins compiled filter fragments into one SQL condition using the group operator.
+- **compact**: Boolean prop on navigation groups that shrinks their controls, such as today, previous and next, to fit a narrow toolbar.
+- **comparison**: Operator compiled into SQL for a number-valued field, such as equals, greater than, less than, or between.
+- **composite**: Term listed only in this glossary; tags use Compound Aspect, with no separate composite type in code.
+- **compound**: Aspect tag under Type and Aspect that the calendar color menu gives its own color.
+- **condition**: SQL clause that compileEventFilter builds from each finished filter rule, dropping unfinished rules before the query.
+- **configurable**: Property descriptor flag set in test helpers, letting a viewport value be redefined during a test.
+- **conjunct**: Aspect name in event summaries, such as Mars Conjunct Venus, used as sample data in calendar row tests.
+- **conjunction**: Aspect at zero degrees between two bodies, with harmonic 1 and its own conjunction-0 icon in the glyph map.
+- **connect**: Stem seen only inside disconnect calls that tear down the timeline resize and mutation observers.
+- **constellation**: Named star pattern the night sky draws with its own lines, from catalog records, listed as folders in the sky menu.
+- **contraparallel**: Aspect between bodies with equal declination on opposite sides of the equator; the project lists it only here.
+- **cover**: Verb sense for a loaded window whose days span what the view shows, plus a day either side.
+- **cradle**: Calendar glyph mapped from the bed emoji to cradle-icon.png, used for one event label in the glyph map.
+- **crescent**: Moon phase between new and quarter, offered as a filter value and drawn with waxing or waning crescent icons.
+- **crowd**: Threshold at which nearby events merge into one cluster, so the calendar merges only what would overfill the view.
+- **cut**: Verb for removing or trimming: a view is added or cut from the list, and night sky rings are cut at the window edge.
+- **cycle**: Event type group for recurring rhythms, such as the Daily solar cycle or Daily lunar cycle, used in color and filter paths.
+- **dangerously**: Prefix of the React prop dangerouslySetInnerHTML that injects raw SVG markup into the night sky backdrop.
+- **dataset**: Events file the calendar reads, a SQLite database built ahead of time and shipped in the static build.
+- **dawn**: Twilight start of morning, labeled Astronomical or Civil Dawn, each with its glyph in calendar icon constants.
+- **daylight**: Event label for the sun above the horizon, mapped to day-icon.svg as its calendar glyph.
+- **db**: Handle to the events SQLite database that the worker opens read-only through the sqlite3 interface.
+- **debounce**: Timer delay of 250 milliseconds that waits for window resizing to settle before the night sky remeasures.
+- **decan**: Ten-degree third of a zodiac sign, numbered and drawn with the decan digit keycap in calendar glyphs.
+- **decile**: Aspect of 36 degrees, one tenth of the circle, drawn with its own decile-36 icon image in calendar glyphs.
+- **decimal**: Count of digits after the point in a slider step, used to round values so floating errors never reach the menu.
+- **declination**: Angle north or south of the celestial equator, used as the vertical star coordinate, equal to altitude at the pole.
+- **decuple**: Tenth-harmonic group of 36-degree aspects, labeled a stellium in the CLI symbol map and absent from this project.
+- **degree**: Angle unit for all night sky coordinates, such as the 90-degree default vertical field and full turns.
+- **delay**: Pause in milliseconds before an action, such as the calendar tooltip opening after 100 ms and test database answers.
+- **dep**: Stem fragment of depth, deprecate and dependency, which the project uses only as part of longer words.
+- **derive**: Verb for computing a field from raw data, such as the derived field that holds each event duration.
+- **desktop**: Widest layout tier from 1024 pixels, where the view selector sits as buttons and filters open as a popover.
+- **detail**: Secondary text under an event label in its tooltip, passed as the details field of the label object.
+- **deterministic**: SQLite function flag set true so the local time function returns the same result for the same inputs.
+- **device**: Value of width=device-width in the root route viewport meta tag, sizing the page to the phone screen.
+- **dialog**: Modal window that lists the events behind a clicked cluster, the calendar cluster dialog component.
+- **digit**: Numeric character a decan glyph keeps, drawn with a keycap, after the non-digit prefix is removed.
+- **dignity**: Filter field for planet strength in a sign, such as domicile or exaltation, used as a tag root.
+- **direction**: Tag root grouping apparent motion of a body, such as direct or retrograde, colored by the calendar Type group.
+- **disconnect**: Cleanup call that stops a browser observer from watching, as the timeline does for its resize and mutation observers.
+- **distance**: Angular span from the celestial pole, which decides whether the night sky window can show a star ring.
+- **div**: Generic HTML block element used for layout boxes in agenda rows and as the root element tests render into.
+- **domain**: Tag group recording whether an event belongs to the solar, lunar or planetary sphere, and the Nx domain tag this project carries.
+- **down**: Direction toward a lower value, such as the group tree descending to the depth a link asks for.
+- **drag**: Pointer gesture the calendar turns off in its interactions, while the night sky slider thumb stays large enough to grab.
+- **draw**: Renders graphics for the night sky and timeline, such as stars, lines and markers, into SVG output.
+- **drawer**: Side panel that opens the filter builder from 768 pixels wide, with the bottom sheet used on phones.
+- **dropdown**: Menu that opens from a toolbar trigger, such as the View, Color and Sky menus or the calendar view options.
+- **duodecuple**: Twelfth-harmonic group of 30-degree aspects, labeled a stellium in the CLI symbol map and absent from this project.
+- **duration**: Length of an event, read as minutes or a bucket such as a range of hours, used by filters and grouping.
+- **dusk**: Evening twilight stage, labeled Astronomical Dusk, Astronomical Twilight Evening or Civil Dusk, each with its own icon.
+- **eager**: Setting that loads a module or image up front rather than on demand, such as the glyph icons and database.
+- **earth**: Earth-centered reference in the Eclipse Frame filter, and the element name of earth signs in the Element filter.
+- **east**: Elongation stage with the planet east of the Sun, drawn as a right arrow glyph, east-elongation-icon.svg.
+- **eclipse**: Event type for solar or lunar eclipses, colored red in the Type color scheme and offered in the Eclipse Frame filter.
+- **ecliptic**: Yearly path the Sun appears to follow across the sky, drawn as a line with style keys for color and width.
+- **effect**: SVG vector-effect set to non-scaling-stroke, so the night sky lines keep their width under zoom.
+- **effective**: Filter the loader applies, the search filter when set, otherwise the default resolved from data facets.
+- **element**: Classification of a zodiac sign as fire, earth, air or water, offered as a filter field and tag group.
+- **eleventh**: Division label, eleventh hexadecan, paired with its own icon in the calendar glyph map.
+- **elongation**: Angular distance of a planet from the Sun, its stage shown by east or west arrow glyphs on the calendar.
+- **emptiness**: Kind of empty state that decides which notice the calendar shows, such as an empty range or an empty month.
+- **enter**: Keyboard key that confirms a pick in the collection picker and filter rows, used by keyboard tests.
+- **envelope**: Term listed only in this glossary list; the project has no envelope code or type behind it.
+- **epoch**: The reference instant that night-sky code counts astronomical time from: the Unix epoch and J2000.
+- **eris**: Dwarf planet Eris, a body whose aspects the CLI's triple-aspect tests tag; the web app never names it.
+- **even**: Ordinary English in comments and test names, such as hiding a closed tag's children even when one beneath is open.
+- **expand**: The filter tag editor's control that opens a collapsed tag's children, labelled Expand plus the tag's name in the tree.
+- **extent**: Half the side of the debug box drawn around the sky's pole, the outer ring radius plus a debug margin.
+- **eye**: A Lucide glyph beside one calendar view menu option, hidden from screen readers, which name each control by its label.
+- **facet**: An event field with its values, read from the database, that a filter collection chooses to narrow events by.
+- **factor**: A multiplier in the night sky's glow and debug constants, such as the glow radius factor, which scales a star's drawn radius.
+- **faint**: Dim drawing for stars and figures: the night sky's zodiac figures stay faint so the stars read first.
+- **faintest**: The dimmest star magnitude the night sky draws, 6.5 by default, which the sky.maxMag link key can lower.
+- **fewer**: Used in the calendar's clustering and timeline comments, as in fewer than fifteen minutes or fewer clusters a view wants.
+- **fieldset**: An HTML group element wrapping a calendar color menu's controls and the night sky constellation picker's full-height layout.
+- **fifteenth**: Ordinal naming the fifteenth hexadecan event, which the CLI emits and the event glyph table maps to an icon.
+- **fifth**: Ordinal naming the fifth hexadecan event, mapped to its own icon file in the event glyph table.
+- **figure**: The constellation line drawing, a set of segments per constellation, that the night sky draws over its stars.
+- **fill**: An SVG paint attribute, such as fill none on icon roots or the color of drawn night-sky stars.
+- **fire**: A value of the Element filter that marks a sign as belonging to the fire element.
+- **flatten**: Used by the filter rules' flattenFilterRules, which turns a nested filter query into one flat list of rules.
+- **flip**: Negation in the number filter: a negated rule tells its caller to flip the comparison.
+- **float**: The decimal-reading call Number.parseFloat, which the night sky's tests use to read a rotation angle back out of the SVG.
+- **floor**: The Math.floor rounding that splits minutes into whole days and hours, and that the virtual list's binary search uses.
+- **focal**: The body a pattern points at, such as a T-square's apex, named in the event filter's Focal Body field.
+- **focus**: Used for the browser focus state in tests, where a calendar tooltip opens when an event's symbols receive focus.
+- **follow**: Plain English in comments for one value tracking another, such as the day and view following the link at once.
+- **footer**: The bottom bar of the group-by field picker, rendered as a CascaderFooter beneath its options.
+- **fov**: The vertical angle in degrees the night sky shows, set by the sky.vFov link key read from the page link.
+- **fraction**: The 0 to 1 share of one step between two sky points, used to interpolate constellation line segments.
+- **frame**: A call-stack frame, which the filter compiler avoids adding per nested group by looping instead of calling back.
+- **free**: A timeline lane is free at a bar's start when its last bar ended by then, so the bar can take it.
+- **func**: A SQLite scalar function registered through xFunc in the events database worker, such as the local-time conversion.
+- **galaxy**: The Lucide icon, drawn as a galaxy, on the night sky menu's toolbar button that opens the Sky controls.
+- **gantt**: The bar-chart layout the calendar timeline uses to place events across each day's time columns.
+- **gap**: The spacing between a flex or grid layout's items, set with Tailwind gap utilities such as gap-2 in the calendar.
+- **gemini**: The zodiac sign of the twins, mapped from ♊ to its icon and drawn as a night-sky constellation figure.
+- **gen**: The night-sky generator that builds the sky SVG as its own code chunk, plus the routeTree.gen file TanStack writes.
+- **geocentric**: An Earth-centered eclipse marker, drawn as a globe emoji with its own SVG icon in the event glyph table.
+- **geometry**: The SkyGeometry the night sky's ecliptic and constellation line utilities pass in to split paths into visible runs.
+- **gibbous**: The Moon's phase between quarter and full, as the phase filter and its waxing and waning icons name it.
+- **glow**: The soft halo drawn behind a bright star, sized by the glow radius factor and tinted by the sky's glow color.
+- **glyph**: A calendar event's symbol drawn from the event glyph table, such as a planet sign or a Moon phase icon.
+- **gonggong**: A trans-Neptunian dwarf planet whose name no source or test file uses; only the glossary mentions it.
+- **grand**: Part of a three-or-more-body aspect pattern name, like grand trine or grand cross, in the collections and icon table.
+- **green**: Not a color name in this project; it appears only inside the Greenwich mean sidereal time function name.
+- **greenwich**: The mean sidereal time at Greenwich, in hours, which night-sky code computes by hand to place stars.
+- **grid**: The skeleton layout the month view takes: a grid of days, against columns for week and hour views.
+- **grind**: Not used in this project's source, where it appears only as a glossary headword with no code behind it.
+- **gte**: Greater-than-or-equal, the numeric filter operator that matches values at or above a bound, such as hour gte 22.
+- **gutter**: The left column of a calendar grid, the data-slot time gutter, holding the hour labels down each day's rows.
+- **h1**: Each route page's heading level-one element, which the index route marks sr-only and fills with Caelundas.
+- **h2**: The subsection heading in the calendar group-by picker, styled text-sm semibold above its options.
+- **half**: A half-open span of time: start is included and end is not, as the events database type states.
+- **hammer**: The event glyph for the hammer emoji, mapped to its PNG icon file in the calendar icon table.
+- **handle**: The filter tag tree's row control that opens or closes a tag's children, absent while searching.
+- **harmonic**: A numbered aspect family, such as Harmonic 4, whose tags the calendar filters and agenda group under Type.
+- **haumean**: A dwarf planet, stemmed to haumean here, that no source or test file names beyond the glossary.
+- **hebe**: A main-belt asteroid whose name no source or test file uses, leaving only the glossary headword.
+- **height**: The vertical size of the night-sky SVG, set from its options and used to place the sky's pole.
+- **hexadecan**: A sixteenth-harmonic point of the zodiac, named by ordinal such as Fifth Hexadecan, which the CLI emits as an event.
+- **hexadecimal**: A base-16 color form, such as #rrggbb, that the night-sky color settings read as three or six digits.
+- **hexagram**: The dotted six-pointed star emoji, mapped to its PNG icon in the calendar icon table.
+- **high**: The upper index bound of the virtual list's binary search over row offsets, narrowed until it finds the scroll row.
+- **highest**: The top bound of a night-sky color index or bucket range, as named by the index and bucket highest constants.
+- **history**: The browser history entry the page link writes, replaced by each night-sky settings change instead of extended.
+- **horizon**: The zero-altitude line the night sky's view is cut by, with sky.altBottom allowed to reach just below it.
+- **hour**: One of 24 clock hours, the unit of the hour color scheme's legend and the hour filter field.
+- **hourglass**: The ⏳ emoji event glyph, mapped to its PNG icon in the calendar icon table.
+- **html**: The root route's shell, which renders the full page markup as an HTML document around whichever route matches.
+- **hydrate**: The React hydrateRoot call in the client entry that attaches interactivity to server-rendered markup.
+- **hygiea**: A main-belt asteroid no source or test file names, so this headword lives only in the glossary.
+- **hypot**: The JavaScript call that takes the square root of summed squares, measuring distance on the projected sky.
+- **i18**: A localization prop on the calendar grid, set to the no-native-tooltip constant the events calendar passes.
+- **icon**: An image asset, a PNG or SVG file, that the calendar icon table maps each event symbol to.
+- **imbolc**: The cross-quarter festival of early February, mapped to its PNG icon in the event glyph table.
+- **incomplete**: A filter rule missing its operator, values, or field, which the compiler turns into no SQL at all.
+- **indeterminate**: The checkbox partial state, shown when a tag row's children are only partly picked, set by the indeterminate prop.
+- **indicator**: A Cascader prop that the group-by field picker sets to false, hiding the selection indicator beside each option.
+- **infinite**: The timeline's infiniteScroll prop, set to false so the calendar timeline never grows its range on scroll.
+- **infinity**: A non-finite number the night-sky tests guard against, asserting the SVG never contains NaN or Infinity text.
+- **ingest**: The caelundas-cli step that calculates and stores events, which the web build's ingested configuration then copies.
+- **ingress**: A planet's entry into a new zodiac sign, tagged Type / Ingress so the calendar can color and filter it.
+- **inscribe**: A shape drawn inside another; the unused icon files name such designs, like hourglass-inscribed-icon.png.
+- **instant**: A zero-length event: a moment with no duration, which the duration filter and legend list as Instant.
+- **integer**: A whole-number check in the number filter, which accepts a value only when Number.isInteger holds and it is within bounds.
+- **interaction**: Switches the timeline passes to the event calendar that turn off drag, resize and slot selection.
+- **interpolate**: Computes points between two constellation vertices by sampling steps, so each figure segment draws as a smooth curve.
+- **intl**: The JavaScript internationalization API the calendar uses for en-US plural rules and number and day formatting.
+- **invalidate**: Asks the router to reload the current route's data through router.invalidate, skipped when only sky keys change.
+- **inverse**: The opposite operator a filter field pairs with each one, such as isNoneOf as the inverse of isAnyOf.
+- **iso**: The standard date-time string format, with a year-first order, that the events database stores instants in.
+- **ixion**: A trans-Neptunian plutino dwarf planet, not named in any source or test file, so only the glossary records it.
+- **j2000**: The standard astronomical reference date of 1 January 2000 that the night-sky star catalog's coordinates are measured from.
+- **julian**: Day-number system, counting Julian days from a fixed origin, that the night sky converts instants into.
+- **jump**: The calendar-empty action that moves the view to the nearest dates the data covers, when the view is outside them.
+- **juno**: The asteroid symbol ⚵ mapped to juno-icon.svg in the event glyph table, so that body's events get an icon.
+- **jupiter**: The planet symbol ♃ mapped to jupiter-icon.svg in the event glyph table, and named in glyph test event titles.
+- **keyboard**: Input by arrow and letter keys, which the night-sky menu keeps working and the tag editor uses to toggle focused rows.
+- **keycap**: The combining mark U+20E3 that turns a decan's digit into a keycap symbol, drawn in the event glyph table.
+- **kite**: An aspect pattern shape named in the focal body filter, whose emoji 🪁 maps to kite-icon.png.
+- **know**: Plain English in code comments, such as a field the calendar does not know being skipped rather than failing.
+- **labelledby**: The ARIA attribute that points a night-sky color field or slider at its visible label for screen readers.
+- **lamma**: The cross-quarter festival at 135 degrees, emitted as a CLI event and mapped to a PNG icon in the web glyph table.
+- **lane**: A horizontal track in the calendar timeline; each bar takes the first lane free at its start, so bars never overlap.
+- **lang**: The HTML root's language attribute, set to en, so browsers and screen readers know the document is English.
+- **lat**: The observer's latitude in degrees, read from the sky.lat link key to place the night sky's pole.
+- **late**: Plain English for a time near day's end, as the hour filter tests name events from 22 to 23 hours.
+- **later**: Plain English here, but an agenda row of kind later is the button that lists later events.
+- **latitude**: The observer's north-south angle, read from sky.lat to place the night sky, and a column of each calendar event.
+- **leaf**: A tag or group with no children, which stands for itself: a leaf is its own group at any depth below it.
+- **legend**: The key of a color scheme's values and swatches, listed beside the calendar's color-by picker and its color menu.
+- **leo**: The zodiac sign of the lion, whose ♌ glyph maps to leo-icon.svg and tags events as Sign / Leo.
+- **li**: A list item element, one per legend entry in the calendar color-by panel's legend list.
+- **libra**: The scales sign of the zodiac, ♎ mapped to libra-icon.svg, and a constellation folder the night-sky picker lists.
+- **lilith**: The Black Moon point, the lunar apogee body whose ⚸ glyph maps to its SVG icon in the glyph table.
+- **litha**: The summer solstice festival whose 🌞 emoji maps to litha-icon.png in the event glyph table.
+- **lon**: The observer's longitude in degrees, read from the sky.lon link key, which places the night sky's view.
+- **longitude**: The observer's east-west angle, read from sky.lon to place the night sky, and the zodiacal longitude of an event.
+- **loose**: Plain English in tests, such as the timeline window test's loose bar, which starts and ends at the same instant.
+- **low**: The lower index bound of the virtual list's binary search over row offsets, moved up as the search narrows.
+- **lowest**: The altitude floor the night sky's bottom edge can sit at, set by sky.altBottom and kept below the horizon.
+- **lte**: Less-than-or-equal, the numeric filter operator matching values at or below a bound, such as hour lte 23.
+- **lunar**: Tied to the Moon: the daily and monthly lunar cycle tags, colored by the calendar's color-by scheme.
+- **mabon**: The autumn equinox festival whose 🍂 emoji maps to mabon-icon.png in the calendar's event glyph table.
+- **mag**: The magnitude unit suffix, written as mag after a star's brightness value in the night-sky menu's labels.
+- **magnitude**: A star's brightness on the astronomical scale, lower being brighter, stored per star and capped by the faintest-star setting.
+- **makemake**: A dwarf planet of the Kuiper belt that no source or test file names, leaving only this glossary entry.
+- **many**: Plain English in comments, and the filter field arity marking a field that takes several values at once.
+- **mar**: The three-letter month abbreviation in date ranges like Mar 4, 10:20 AM, that the calendar's formatters print.
+- **march**: A month name in the agenda's day headings, such as Wednesday, March 4, 2026, and in date filter tests.
+- **margin**: The clearance a cut keeps past the pole or the window's edge, such as the debug margin and the pole's own margin.
+- **marker**: The dot a timeline draws for an event or a cluster of events, with its width set by the scale.
+- **markup**: A section comment, tagged with a paint palette emoji, that opens the JSX output of a calendar component.
+- **mask**: The CSS property that shapes an event glyph's icon image so its color comes from the glyph's own style.
+- **mean**: Averaged, as in the mean sidereal time the night sky computes by hand for star positions, not the apparent kind.
+- **measure**: Plain English for measuring: the callidescope config's TODO to measure the app's stacks before setting its limits.
+- **measurement**: The counts and figures a night-sky build reports back, such as starsDrawn, segmentsDrawn, and the field-of-view clamp.
+- **memo**: A value React caches between renders, so the navigation hook reads its state outside the memo to avoid extra frames.
+- **menu**: A popover of controls: the calendar color menu, the night-sky Sky menu, and the view menu, each opened from a toolbar button.
+- **mercury**: The innermost planet, named in the calendar's color scheme tests and in a Mercury retrograde filter fixture.
+- **middle**: The midpoint index of the virtual list's binary search, computed as the average of low and high, then checked against offsets.
+- **mismatch**: A star the night-sky test finds drawn at a position the window does not show, which the test expects to be none.
+- **modality**: A zodiac sign's quality, cardinal, fixed or mutable, offered as a filter field and tag group for events.
+- **month**: The calendar's month view, a grid of days, and a color-by scheme that groups events by the calendar month.
+- **moon**: Tag path naming the Moon, whose events a without-the-Moon collection excludes from its planetary aspect set.
+- **more**: Plain English in comments, such as the agenda's button that lists more days when its end is reached.
+- **morning**: One half of the Time of Day filter, which splits events between morning and evening, with dawn twilight icons.
+- **motion**: A tag root for planetary movement, with Direct and retrograde children that the event filter fixtures and tests use.
+- **mount**: The night-sky backdrop component that renders the sky into the page, exported as NightSkyBackdropMount.
+- **move**: The calendar navigation action that shifts the view through time, reported back by each view as it moves.
+- **ms**: A Tailwind logical margin-start utility, such as ms with a percentage offset, that offsets a loading skeleton bar from its start edge.
+- **multiple**: The night sky's realTimeMultiple, how many times faster than the real sky the backdrop turns.
+- **multiselectable**: The ARIA flag marking the filter tag editor as a listbox where a user may choose several tags together.
+- **mutable**: One of the three sign modalities, alongside cardinal and fixed, offered as a value in the event filters.
+- **mutation**: Watch for DOM changes via a MutationObserver, so the timeline re-attaches its measurement when rows change.
+- **mystic**: Name root of the aspect pattern whose door emoji maps to a PNG icon in the event glyph set.
+- **na**: Fragment of Number.NaN, the value returned for a non-numeric filter field, not a word of its own.
+- **nadir**: Event name for the lowest point of the Sun or a planet below the horizon, shown with a down-arrow icon.
+- **narrow**: A width too small for the row tags to fit side by side, so they wrap onto more lines.
+- **native**: The built-in title text the calendar gives each event, unless a setting drops it.
+- **nature**: Classification of an aspect as hard, soft or neutral, used as a filter field and a tag color group.
+- **nautical**: Sun-altitude twilight events, the Dawn, Dusk and Evening variants, each mapped to its own SVG icon.
+- **nav**: Stem of the navigation words, as in CascaderNav and the calendar navigation group component.
+- **navigate**: Accessible name of the toolbar group holding the previous, today and next buttons.
+- **navigation**: The view-moving controls and their CalendarNavigation type that the toolbar passes to its group.
+- **needle**: The lowercased search text a group tag picker matches against each option label.
+- **negate**: Flip a filter rule so a negated rule compiles to the opposite of its condition.
+- **negative**: The polarity of a sign, either positive or negative, offered as a filter value.
+- **neptune**: A planet whose glyph and icon label its events, as in Moon sextile Neptune.
+- **neq**: The not-equal operator a filter rule uses, compiled into a SQL condition for numeric fields.
+- **nessus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **night**: The sky between sunset and dawn, shown as the night-sky backdrop that the calendar draws behind events.
+- **ninth**: Hexadecan-division label for the ninth harmonic, mapped to its own SVG icon among the glyphs.
+- **nonuple**: Stellium label for a cluster of nine bodies, mapped to a symbol in the stellium constants.
+- **normal**: The default, unaltered night-sky drift speed compared against a faster one in a backdrop test.
+- **north**: The lunar north node glyph, mapped to its own SVG icon, and the north pole facing the sky view.
+- **nothing**: The empty result of a filter or view, shown as a state with an offer to clear the filters.
+- **notify**: Call each registered listener with the new media query match, as the test viewport helper does.
+- **novile**: Harmonic aspect at 40 degrees, the ninth harmonic, named in event labels such as Sun novile Pluto.
+- **numeric**: Field kind whose values are numbers, so filters compare them with equality and ordering operators.
+- **obliquity**: Tilt of the Earth axis, a constant that turns ecliptic longitude into equatorial coordinates.
+- **observe**: Attach a ResizeObserver or MutationObserver so the timeline re-measures when its body changes size.
+- **observer**: The viewer position on Earth, from which local times, horizons and eclipses are measured.
+- **occurrence**: Which repeat of a recurring event a timeline bar shows, passed down into the bar content component.
+- **octile**: An aspect at 45 degrees, the eighth harmonic, mapped to its own PNG icon.
+- **octuple**: Stellium label for a cluster of eight bodies, mapped to a symbol in the stellium constants.
+- **off**: The disabled state of a toggle, such as turning colors off so events keep no color.
+- **offer**: To present a choice to the user, such as the operators a derived field offers in filters.
+- **oldest**: The least recently used entry of the events loader cache, evicted first when it grows too large.
+- **onchange**: React change callback each filter, color and group control fires with its next selected value.
+- **ongoing**: Flag for an event already begun but not yet ended, so the agenda shows Ongoing in place of its time.
+- **oo1**: The sqlite-wasm object API namespace the events worker uses to open its read-only database.
+- **opacity**: Transparency setting, applied as Tailwind opacity classes or SVG attributes to dim details and icons.
+- **operand**: A value a filter rule compares, such as a bound of a numeric range or a set of tags.
+- **operator**: The comparison a filter rule applies, such as is any of, chosen per field type.
+- **ophicus**: Constellation name for a body or sign outside the twelve zodiac signs, unused by any code here.
+- **opposition**: The 180-degree aspect, harmonic 2, mapped to its own PNG icon in the glyph set.
+- **orcus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **ostara**: Seasonal festival event, the spring equinox name here, mapped to a PNG icon in the glyph set.
+- **overflow**: Tailwind classes that let a long list or menu scroll inside a fixed height instead of growing.
+- **overlie**: Verb for one layer lying over another, used in no code here and kept only as a glossary entry.
+- **overscan**: Extra rows rendered beyond the visible window in each direction, so fast scrolling shows no blank gap.
+- **pad**: Inner spacing around agenda row content, counted in the row height constants.
+- **palette**: The ordered list of colors a color scheme hands out in turn to each new value.
+- **palla**: Asteroid Pallas, named in event labels such as Mars biquintile Pallas, with its own glyph.
+- **passive**: Option for a scroll listener that never calls preventDefault, letting the browser scroll smoothly.
+- **peak**: Summit of an ingress event, shown with a mountain glyph and its own SVG icon.
+- **pentagram**: The star glyph for a five-pointed pattern, mapped to its own PNG icon in the glyph set.
+- **periapsi**: Closest approach of a body in its orbit, shown with the periapsis icon for the event glyph.
+- **period**: The date range the calendar is showing, such as a month or week, named in empty-state messages.
+- **phase**: Lunar or planetary cycle stage, a filter and color field grouping events by cycle position.
+- **pholus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **pi**: The mathematical constant Math.PI, used to convert degrees into radians for the night-sky math.
+- **pill**: A small rounded tag chip in the agenda, sized by its character count, which wraps onto more lines.
+- **pisce**: Zodiac sign whose glyph maps to its own SVG icon, and a constellation listed in the sky menu.
+- **pixel**: A screen unit, such as a scroll offset in CSS pixels, used by the virtual list to find visible rows.
+- **place**: A position in a color legend where values without one take their color from their own text.
+- **planet**: A celestial body whose glyph, name and events the calendar shows, such as Mars or Jupiter.
+- **plural**: Chooses the singular or plural form of a count label through Intl.PluralRules for en-US.
+- **pluto**: Dwarf-planet body whose glyph maps to its own SVG icon and appears in event names.
+- **polar**: Relating to a celestial pole such as the bottom polar degrees the night-sky projection computes.
+- **polarity**: Whether a zodiac sign is positive or negative, offered as a filter field and a color group.
+- **pole**: The north celestial pole at the top of the night-sky view, where altitude equals declination.
+- **polyline**: The SVG line shape drawing each constellation figure as a connected run of stars.
+- **popover**: The floating panel that opens over the calendar for a filter builder or event tooltip.
+- **posix**: Sqlite-wasm call that writes the database bytes into the worker in-memory file system.
+- **prefer**: A browser media preference, such as reduced motion, read to turn off animations like the sky drift.
+- **preload**: Router flag for loading a route ahead of a visit, which the landing page loader must not count as a visit.
+- **prerender**: Vite and TanStack Start setting that renders the static shell page ahead of time at build.
+- **presentation**: The shared UI primitives package of Button and Skeleton, which the app imports from.
+- **press**: Activating a control, such as the agenda last-row button that loads more days.
+- **prev**: The handler that moves the calendar back one period, wired to the navigation group back button.
+- **prevent**: Keep a linter or formatter from checking a generated file, as the route tree header comment advises.
+- **prograde**: Direction of a planet moving forward through the zodiac, mapped to its own SVG icon.
+- **projection**: Math that maps sky coordinates onto the flat night-sky view, in the night-sky projection utilities.
+- **prop**: React inputs passed to a component, named as properties in this codebase rather than props.
+- **propagation**: Stopping an event from bubbling up to parent handlers, such as on a tag row click.
+- **quadruple**: Stellium label for four bodies clustered together, mapped to a PNG icon in the glyph set.
+- **quaoar**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **quarter**: Calendar quarter of the year, a group field keying events like 2026-Q1, and a Moon phase.
+- **quiet**: Class string that hides the timeline bar labels, keeping the timeline uncluttered.
+- **quincunx**: The 150-degree minor aspect, mapped to its own PNG icon in the glyph set.
+- **quintile**: The 72-degree aspect, a fifth-harmonic, mapped to its own PNG icon in the glyph set.
+- **quintuple**: Label for the CLI quintuple aspects module, computing five-fold harmonic aspect groupings.
+- **radial**: A radialGradient SVG fill, the star glow and ground shading drawn behind the night sky.
+- **radian**: The unit of angle in the night-sky math, with the radians-per-degree constant converting degrees into it.
+- **radio**: Single-choice menu items, a DropdownMenuRadioGroup used for picking one calendar view at a time.
+- **radius**: Distance from the pole to a declination ring, in pixels, used when drawing the night sky.
+- **ratio**: Number relating two quantities, used for no named value here; it appears only as a glossary entry.
+- **recover**: Restore the events database after a test made every read fail, returning reads to normal.
+- **rect**: SVG rectangle element, used for the night-sky ground and the icon background fill.
+- **rectangle**: Shape word in the Mystic Rectangle aspect name, mapped to its own PNG icon via a door emoji.
+- **red**: Color name used in night-sky tests, including one value that tries to inject markup into the SVG.
+- **rel**: Link relation attribute on the root route stylesheet entry, which loads the app CSS.
+- **reload**: Dev-server mode with hot reload, and the loader reload on night-sky setting changes.
+- **rem**: CSS unit of root font size, used for indent and timeline marker widths in the calendar.
+- **removable**: Flag that hides the remove control on a group level row, set false for the color-by list.
+- **rerender**: Re-run a React Testing Library render with new props, to check a component updates in place.
+- **resize**: Dragging a timeline bar edge to change its length, turned off by the timeline interactions setting.
+- **respond**: Posts a result or error from the events worker back to the page, matched to its request id.
+- **restoration**: Router setting that returns the page to its previous scroll spot on back navigation.
+- **retrograde**: Apparent backward motion of a planet, a station event with its own icon in the glyph set.
+- **reverse**: Order a list the opposite way, via toReversed, for agenda and timeline row trees.
+- **ring**: A circle of the night-sky projection, such as the ecliptic ring or a declination ring.
+- **rise**: A planet stage relative to the Sun, such as rising or setting, in the planetary phase filter.
+- **role**: ARIA attribute on a status or alert region, so screen readers announce empty and error states.
+- **rotation**: The sidereal rotation rate of the Earth, in radians per second, a constant for the sky clock.
+- **route**: A TanStack Router page definition, such as the index route whose loader reads the events database.
+- **sagitarius**: Zodiac sign of the archer, whose glyph maps to its own SVG icon in the glyph set.
+- **same**: Ordinary English word, here meaning a value equal to another, as in tests comparing two colors.
+- **samhain**: Seasonal festival event at a cross-quarter day, mapped to its own PNG icon in the glyph set.
+- **sample**: A small slice of rows or stars passed to a test, such as a StarRow list fed to buildNightSky.
+- **saturn**: Ringed planet whose glyph and aspect events, such as Mars squares, appear across the calendar.
+- **scale**: The zoom level of the timeline, such as day, week or month, chosen in the scale select.
+- **scheme**: A set of colors that assigns palette entries to each value of the color-by field.
+- **scorpio**: Zodiac sign of the scorpion, whose glyph maps to its own SVG icon in the glyph set.
+- **scorpius**: Constellation figure name in the sky menu and tests, drawn as one of the star-line figures.
+- **screen**: The Testing Library object that queries the rendered DOM, used in every component unit test.
+- **scroll**: Movement of a list visible window, which the virtual list recomputes on each scroll event.
+- **scrollbar**: Styled bar that a timeline or virtual list keeps over its spacer, shown as a rail and thumb.
+- **season**: A filter and color field giving the time of year an event falls in, such as spring.
+- **sedna**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **selector**: A control that picks one option from a list, such as the view or scale menu in the toolbar.
+- **semisextile**: The 30-degree minor aspect, mapped to its own PNG icon in the glyph set.
+- **septile**: The 51.43-degree aspect, a seventh harmonic, mapped to its own PNG icon in the glyph set.
+- **septuple**: Stellium label for a cluster of seven bodies, mapped to a symbol in the stellium constants.
+- **seventh**: Hexadecan-division label for the seventh harmonic, mapped to its own SVG icon in glyphs.
+- **sextile**: The 60-degree aspect, a harmonic-six pattern, shown in event names with the star glyph.
+- **sextuple**: Stellium label for six bodies clustered together, mapped to its own PNG icon in the glyph set.
+- **sheet**: A bottom or side panel that holds the filter builder on narrow screens, below 768 pixels.
+- **should**: Ordinary English modal in comments describing expected behavior, such as what a link holds.
+- **sibling**: A neighboring element under the same parent, which focus moves between in the tag picker.
+- **side**: The edge of a surface a panel or tooltip opens from, such as the bottom side of a sheet.
+- **sidereal**: Star-based clock, computed per observer, that sets which part of the night sky is overhead.
+- **sin**: The sine function from Math.sin, used in night-sky math to project coordinates onto the view.
+- **single**: Describes one item or key rather than many, such as a timeline set to single scheduling.
+- **skeleton**: Placeholder loading layout shown in each calendar view while events load, one grid per view.
+- **sky**: The night-sky backdrop behind the calendar and its settings, such as sky.top, sky.lat and sky.lon.
+- **slider**: Range control in the night-sky menu, bound to one sky setting such as its drift speed or magnitude.
+- **slot**: Data attribute naming a component part, such as data-slot=button-group, used by styles and tests.
+- **slow**: Used in tests for a delayed read, such as a move whose database answer arrives late.
+- **south**: The descending lunar node glyph, mapped to its own SVG icon beside the north node.
+- **spa**: Vite single-page application mode, in which the build renders one shell page and every route renders in the browser.
+- **space**: Blank room a layout leaves for the calendar, or the word gap in an event summary.
+- **span**: An inline HTML span element, or the length of time a timeline bar or cluster covers.
+- **speak**: Comment verb for a stale loader answer that would still stand in for days no longer shown.
+- **spin**: Animated rotation group of the night sky, left empty when the still option freezes it.
+- **spirit**: Name that no code in this project uses, so it survives only as a glossary entry.
+- **spread**: A test array of timeline bars placed far apart, to check that clustering leaves them separate.
+- **square**: The 90-degree aspect, a harmonic-four pattern, shown in event names beside its glyph.
+- **ssr**: Server-side rendering flag on a route, set false so the app renders in the browser only.
+- **stamp**: A fixed timestamp constant that test database rows use, so their dates are stable across runs.
+- **stand**: Ordinary English verb in fixture descriptions, such as two planets standing ninety degrees apart.
+- **star**: Celestial point in the night sky, as in the morning-star and evening-star icons and the sky backdrop.
+- **station**: Point where a planet turns between direct and retrograde motion, a Type and Motion value.
+- **stellium**: Cluster of three or more bodies in one sign or spot, named by its count and given a glyph icon.
+- **still**: Option or flag that freezes the night-sky drift, leaving the stars in place.
+- **store**: Verb for how the calendar keeps its filter tree, as one condition of the ReUI filter tree.
+- **stroke**: SVG stroke attribute that outlines each glyph shape in the bundled icon files.
+- **structural**: Reuse of unchanged objects between router results, so a search keeps the same identity.
+- **sub**: Prefix or fragment, as in subgroup, subtree and sub-group; in the code it names nested levels.
+- **subscribe**: Register a viewport listener, so a component re-renders when the window width crosses a breakpoint.
+- **subtree**: The DOM option that watches all descendants of an observed node, passed to the MutationObserver.
+- **summarize**: Test helper that turns grouped nodes into label and count strings for assertions.
+- **sun**: Central body of the solar system, whose glyph and events label Sun-relative stages and twilight.
+- **sunday**: Weekday label numbered zero, the first day of the week in SQLite numbering used by filters.
+- **svg**: Vector image format of the glyph icon files and the sky backdrop, drawn as inline elements.
+- **svgsvg**: Fragment of the SVGSVGElement type name, used in tests to type the rendered night sky element.
+- **swipe**: Touch gesture axis the filter drawer reads, set through a swipe-axis data attribute in its classes.
+- **symbolic**: Test fixture record for an event row shown as symbols only, with its name left out.
+- **synodic**: Planet-with-Sun cycle label, a filter field and tag group for each planet stage.
+- **tab**: Keyboard Tab key, which the night-sky menu uses to leave its panel and move focus on.
+- **tablet**: Mid-width screen size between phone and desktop, where the calendar changes its menus and filter layout.
+- **tan**: The tangent function, Math.tan, used by the night-sky projection to map a half angle onto the view.
+- **tangent**: Half-angle value the night-sky projection computes from degrees, used to place points on its view.
+- **taurus**: Zodiac sign of the bull, whose glyph maps to its own SVG icon, and a constellation in the sky menu.
+- **temporality**: Derived filter field classing an event as past, ongoing or upcoming relative to the current time.
+- **ten**: Number ten, as in the ten-degree decan and the hour-of-day filter tests.
+- **testid**: Attribute naming a DOM node for tests, such as data-testid on the agenda row.
+- **third**: The ten-degree decan of a zodiac sign, offered as a filter value.
+- **thirteenth**: Hexadecan-division label for the thirteenth harmonic, mapped to its own SVG icon in glyphs.
+- **three**: The number three, as in the triple stellium and the aspects among three bodies.
+- **through**: End bound of an agenda day range, which is excluded from the days listed.
+- **thursday**: Weekday label numbered four, in the SQLite order the filter weekday field uses.
+- **timeline**: The Gantt-style view of events as bars on a scrollable axis, grouped by type then planet.
+- **today**: Navigation button that jumps to the current period, switched off while that period is shown.
+- **toggle**: Switch control that flips one setting on or off, such as a color menu switch with aria-checked.
+- **toolbar**: The control row above the calendar views, holding navigation, filters, color and view menus.
+- **tooltip**: The hover popup with an event name, symbols and details, drawn as a popover over its chip.
+- **top**: Upper edge of a surface or background, as in the sky.top color and the timeline viewport.
+- **trace**: Function that walks the night-sky ecliptic and returns its sky points for drawing.
+- **track**: A timeline lane that keeps the row height steady as its bars come and go.
+- **trail**: Days past the end of a month kept in the loaded window, fixed at 14 for the month view.
+- **transform**: Attribute that rotates or moves SVG icon shapes, as in the icon matrix values.
+- **transition**: React startTransition call that hydrates the app as a low-priority update, keeping the page responsive.
+- **trapeze**: Four-body aspect pattern that no code in this project uses, so only this glossary names it.
+- **tridecile**: The 108-degree aspect, mapped to its own PNG icon in the glyph set.
+- **trine**: The 120-degree aspect, a harmonic-three pattern, shown in event names with a triangle glyph.
+- **trioctile**: The 135-degree aspect, mapped to its own PNG icon in the glyph set.
+- **triple**: Compound aspect group of three bodies, mapped to the three-body stellium icon.
+- **triseptile**: A 154.29-degree aspect in the seventh-harmonic family, which no code in this project uses.
+- **tune**: To adjust a visual setting, such as the sky backdrop balance between stars and legibility.
+- **twelve**: Count of the zodiac signs, used to check all twelve constellation boxes at once in the sky menu.
+- **twice**: Two times over, as a tag listed a second time for one event counts only once.
+- **twilight**: Sun-altitude dusk and dawn stage, a Type value with civil, nautical and astronomical bands.
+- **typhon**: Centaur body name that no code in this project uses, so it survives only as a glossary entry.
+- **uint8**: Fragment of Uint8Array, the byte array the worker builds from the downloaded database file.
+- **ul**: The unordered HTML list element, which the color-by menu uses for its legend entries.
+- **undecile**: The 32.7-degree aspect, an eleventh-harmonic pattern, shown in event names with its own SVG icon.
+- **undecuple**: Stellium label for eleven bodies clustered together, mapped to a symbol in the stellium constants.
+- **unfiltered**: The full event list before any filter is applied, used to decide what an empty state says.
+- **ungrouped**: Agenda or view shown without grouping, the flat list of days and events the groups replace.
+- **unix**: The 1970 origin of Unix time, whose Julian day the night-sky clock computes from.
+- **unmeasured**: Stand-in size used before a virtual list is measured, a 720 by 640 default height and width.
+- **unobserve**: Method that stops a ResizeObserver watching elements, stubbed to ignore in the test setup.
+- **unreadable**: Marker for an event whose time zone the database cannot read, used in filter tests.
+- **unsupported**: Error for a browser lacking a needed feature, shown by the error view as an unsupported browser.
+- **uranus**: Ice giant body whose glyph maps to its own SVG icon in the glyph set.
+- **ursa**: Constellation prefix in names such as Ursa Major, a figure the sky menu can draw.
+- **variant**: Style option of a button or badge, such as outline, passed to the presentation components.
+- **variation**: Unicode modifier after a symbol that picks its text or emoji look, used in glyph keys.
+- **vector**: Three-part unit array representing a sky point, built before the night-sky projection.
+- **vendored**: Copied third-party code kept in this repository, such as the calendar and filter chip row.
+- **venu**: Fragment of Venus, the planet name in test events and the color-by fixtures.
+- **vertical**: Top-to-bottom gradient that fills the sky backdrop between its top and bottom colors.
+- **vesta**: Asteroid body whose glyph maps to its own SVG icon in the event glyph set.
+- **viewport**: The browser visible area, whose width the calendar reads to choose its layout and breakpoints.
+- **vigintile**: A 18-degree aspect, a twentieth-harmonic division, which no code in this project uses.
+- **virgo**: Zodiac sign of the maiden, whose glyph maps to its own SVG icon, and a constellation in the sky menu.
+- **visibility**: Eclipse filter field saying whether an eclipse is measured from Earth center or the observer.
+- **visible**: Shown on screen, such as the visible rows the virtual list computes for its window.
+- **wan**: Fragment of waning, as in the waning moon icons named by their phase.
+- **want**: Stem of the wanted set in the night-sky menu, the constellation names the user asked to draw.
+- **water**: Elemental class of a zodiac sign, one of fire, earth, air or water, offered as a filter value.
+- **wax**: Fragment of waxing, as in the waxing crescent and gibbous Moon icons.
+- **weak**: Fragment of WeakMap, the garbage-collected cache keyed by database objects in the loader.
+- **webkit**: Vendor prefix on the WebkitMask CSS property that masks each event glyph with its icon file.
+- **week**: Seven-day span the week view shows, named in empty-state phrases such as this week.
+- **weekday**: Calendar day of the week as a grouping and color field, such as Monday through Sunday.
+- **west**: Elongation glyph pointing left for a planet west of the Sun, mapped to its own SVG icon.
+- **whole**: Entire filter tree, written back to the link on every edit rather than a partial change.
+- **width**: Horizontal size of an element, such as an SVG icon, a timeline column or the viewport.
+- **window**: The slice of rows or days currently loaded and rendered, held by the calendar and virtual list.
+- **within**: Inside a range or bound, such as events starting within an hour, as the filter operator.
+- **year**: Calendar year, a group and color field that keys events by the year they fall in.
+- **yod**: Compound aspect pattern, the Yod, a Compound Aspect variant in the color path tests.
+- **yule**: Seasonal festival event at the winter solstice, mapped to its own PNG icon in the glyph set.
+- **zenith**: Point directly overhead, shown as an upward-arrow event glyph with its own SVG icon.
+- **zodiac**: Twelve signs along the ecliptic, the sky backdrop default constellation set and a filter group.
+- **zone**: The IANA time zone that event local times are read in, passed to agenda rows and filters.
+- **zoom**: Timeline scale change, the amount of time a marker width covers at a given zoom level.
 
 <!-- coinagerie:end -->

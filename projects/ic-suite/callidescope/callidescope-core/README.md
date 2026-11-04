@@ -139,15 +139,15 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-core:coinagerie-check:write`.
 
-- **breadth**:
-- **callable**:
-- **callee**:
-- **caller**:
-- **cycle**:
-- **cyclic**:
-- **enclose**:
-- **frame**:
-- **site**:
-- **unresolved**:
+- **breadth**: The count of distinct direct callees one callable has, computed for every callable whether or not a limit is configured.
+- **callable**: Any function or method the call graph can name and trace, identified by a path plus the byte offset of its declaration.
+- **callee**: A callable that another callable calls, recorded as the target side of one caller-to-callee edge.
+- **caller**: The callable on the calling side of a call edge, paired with its callee for each call site it makes.
+- **cycle**: A recursive loop of callables, flagged on a stack frame whose isCycle is true when it belongs to one.
+- **cyclic**: Describes a strongly connected group of callables, counted as cyclicComponentCount in the graph summary.
+- **enclose**: Names the declaration a callable sits inside, recorded as enclosingTypeName when the callable belongs to a type.
+- **frame**: One entry in a reported call stack, carrying the callable name, location, documentation, and whether it is in a cycle.
+- **site**: The source location of one call expression, which produces one caller-to-callee edge; a virtual dispatch has several targets.
+- **unresolved**: A call site the analysis could not turn into an edge, recorded with a reason such as dynamic-value or no-implementation.
 
 <!-- coinagerie:end -->

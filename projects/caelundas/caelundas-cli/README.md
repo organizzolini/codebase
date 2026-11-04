@@ -4526,497 +4526,497 @@ The words this project uses that the root glossary does not define, regenerated 
 - **84a**:
 - **882a**:
 - **8a**:
-- **ab**:
-- **abbr**:
-- **abbreviation**:
-- **abort**:
-- **absent**:
-- **accumulate**:
-- **accumulator**:
-- **aco**:
-- **across**:
-- **adj**:
-- **adjacent**:
-- **advance**:
-- **agg**:
-- **aggregation**:
-- **air**:
-- **airless**:
-- **along**:
-- **altitude**:
-- **ancestor**:
-- **angle**:
-- **angular**:
-- **annual**:
-- **annular**:
-- **antisolar**:
-- **ap**:
-- **apex**:
-- **aphelion**:
-- **apog**:
-- **apogee**:
-- **approach**:
-- **apsi**:
-- **apside**:
-- **aquarius**:
-- **arcminute**:
-- **arcsecond**:
-- **argv**:
-- **around**:
-- **arrangement**:
-- **ary**:
-- **ascension**:
-- **asin**:
-- **aspect**:
-- **assemble**:
-- **asteroid**:
-- **astronomical**:
-- **atan2**:
-- **autumn**:
-- **autumnal**:
-- **axi**:
-- **azalt**:
-- **azimuth**:
-- **backward**:
-- **band**:
-- **batch**:
+- **ab**: Shorthand loop variable for one aspect-body record, the body pair and aspect, compared between minutes in aspects.service.ts.
+- **abbr**: The timezone abbreviation, such as EST or EDT, read from a zone and written into each calendar window and transition.
+- **abbreviation**: The timezone label, such as EDT, carried on each calendar window and transition when the calendar service writes dates.
+- **abort**: Not used in project code; the word appears only as a glossary entry and names no concept in caelundas.
+- **absent**: Missing data file or optional field, which the ephemeris download and calendar output treat as a reason to fall back or stop.
+- **accumulate**: Verb for gathering per-minute body positions into one series, as EphemerisAggregationService accumulateBodyEphemeris does.
+- **accumulator**: Not used as a named concept in project code; its only occurrence is the glossary entry, so it names nothing specific here.
+- **aco**: Stray fragment with no meaning in caelundas; it appears only as a glossary headword, not in any code or identifier.
+- **across**: Perpendicular offset from the main axis, the first argument to atan2 in the math service and the shadow-axis eclipse geometry.
+- **adj**: Stray abbreviation with no use in caelundas code; it appears only as a glossary headword and names no concept.
+- **adjacent**: Neighboring sample, such as the minute before or after, compared to find a sign change in speed or angle.
+- **advance**: Verb in the SQLite upsert, where a conflicting insert advances updated_at so both audit timestamps move forward together.
+- **agg**: Short form that no caelundas code uses; the ephemeris code spells out EphemerisAggregationService in full instead.
+- **aggregation**: The ephemeris pipeline stage that merges per-minute body positions into one series, run by EphemerisAggregationService.
+- **air**: Element name in the tag dimensions, under which signs such as Aquarius, Gemini, and Libra are grouped for classification.
+- **airless**: Horizon elevation mode with no atmospheric refraction, used once in integration tests to check moonrise against USNO times.
+- **along**: Offset measured in the direction of travel, the second argument to atan2 in the math service and in shadow-axis eclipse geometry.
+- **altitude**: The refracted apparent elevation of a body above the horizon, as Swiss Ephemeris reports it, for rise, set and zenith events.
+- **ancestor**: Alias for the parent row in the tags_closure table, one row per ancestor and descendant pair in the read-model SQL.
+- **angle**: A degree value in ephemeris and aspect calculations, normalized to the range zero to 360 before bodies are compared.
+- **angular**: Adjective for the separation between two bodies in ecliptic longitude, checked against an aspect's orb in degrees.
+- **annual**: Yearly solar-cycle group in the annual-solar-cycle module, covering solstices, equinoxes, cross-quarter days, and perihelion and aphelion.
+- **annular**: Eclipse phase of a solar eclipse in which the Moon is too distant to cover the Sun, leaving a bright ring.
+- **antisolar**: The point opposite the Sun, through which the axis of Earth's shadow passes in the eclipse geometry service.
+- **ap**: Stray two-letter fragment with no project meaning; it appears only as a glossary headword and in no caelundas code.
+- **apex**: The single body at the vertex of a yod or T-square pattern, which the triple-aspects composer treats as the focal point.
+- **aphelion**: The point where Earth is farthest from the Sun, one of the annual solar cycle events the module builds as a calendar entry.
+- **apog**: Truncated stem of apogee, a stray fragment that appears only as a glossary headword; the code writes apogee in full.
+- **apogee**: The farthest point of the Moon's orbit from Earth, tracked as a lunar apsis and built into apogee and perigee calendar events.
+- **approach**: The closest visible approach of the Moon or a planet to the Sun over a run of minutes, used by the eclipse calculations.
+- **apsi**: Stray stem of apsis, which the ephemeris constants spell as apside, with no standalone meaning in caelundas.
+- **apside**: Extreme point of a body's orbit, mapped in the ephemeris constants to its Swiss Ephemeris integer for the node or apogee.
+- **aquarius**: Zodiac sign name used as a sign key in ingress events, and as the Aqr constellation row in the night-sky seed data.
+- **arcminute**: Angular unit of one sixtieth of a degree, defined in the math service and used by the daily-cycle sun threshold tests.
+- **arcsecond**: Unit of one sixtieth of an arcminute, whose count per arcminute the math service defines for converting ephemeris angles.
+- **argv**: The process argument array, sliced from index two in the caelundas command to read the options the user typed.
+- **around**: Adverb in comments and seed data that describes a time window, such as events around March 2026, not a named concept.
+- **arrangement**: A valid geometric layout of bodies, such as a hexagon, found by the sextuple-aspects composer for hexagram and hexagon patterns.
+- **ary**: Stray suffix fragment with no meaning in caelundas; it appears only as a glossary headword and names no concept.
+- **ascension**: Right ascension of a star, stored on the star entity in hours and used to place stars when the night sky is drawn.
+- **asin**: Inverse-sine step in the eclipse geometry service that converts a haversine or distance ratio into an angle in degrees.
+- **aspect**: A fixed angular relationship between two bodies, such as conjunct or trine, detected by the aspects module and stored as calendar events.
+- **assemble**: Verb for building the display and typing fields of a multi-body aspect, as the quintuple and sextuple types do.
+- **asteroid**: One of the four tracked asteroids, such as Ceres or Juno, included as bodies in aspect and ephemeris calculations.
+- **astronomical**: The celestial-event domain of the project, and the twilight kind for dawn and dusk, alongside civil and nautical.
+- **atan2**: Two-argument inverse-tangent step in the math service that converts a pair of offsets into an angle for radial speed checks.
+- **autumn**: Fall window of the annual solar cycle, collecting its autumn-season events for each year the detector finds.
+- **autumnal**: The autumnal equinox event, built by the annual solar cycle events service with the title Autumnal Equinox.
+- **axi**: Stray stem of axis, which the code spells out in full, so it has no standalone meaning in caelundas.
+- **azalt**: Swiss Ephemeris azalt function that converts ecliptic positions to azimuth and altitude in the horizon ephemeris service.
+- **azimuth**: Compass bearing of a body along the horizon, one of the horizon ephemeris fields the calendar can carry.
+- **backward**: Retrograde direction of apparent motion, as when a planet appears to move backward through the zodiac in the seed events.
+- **band**: Latitude band index used by the night-sky projection code to bin star vertices and find their neighbors.
+- **batch**: A group of calendar event rows or migration steps processed together in one pass by the persistence layer.
 - **bd19**:
-- **beginning1**:
-- **beginning2**:
-- **behind**:
-- **beltane**:
-- **bend**:
-- **biquintile**:
-- **blob**:
-- **body0**:
-- **body1**:
-- **body2**:
-- **body3**:
-- **body4**:
-- **body5**:
-- **body6**:
-- **boomerang**:
-- **boundary**:
-- **breadth**:
-- **brightest**:
-- **brightness**:
-- **brilliancy**:
-- **bulk**:
-- **butterfly**:
+- **beginning1**: Test fixture event named beginning-1, the first of two events in the progressive detection unit test for span beginnings.
+- **beginning2**: Test fixture event named beginning-2, the second of two events in the progressive detection unit test for span beginnings.
+- **behind**: Word in eclipse comments describing the umbra radius measured behind the Moon along the shadow axis, not a named concept.
+- **beltane**: The Beltane cross-quarter event, built by the annual solar cycle service on the day between the spring equinox and solstice.
+- **bend**: Test variable for the curvature of a synthetic cross-track offset, used to check eclipse contact timing.
+- **biquintile**: Harmonic aspect of 144 degrees, defined in the caelundas constants and detected by the specialty aspects service.
+- **blob**: Web Blob used in the ephemeris download unit test to mock a response body, not a domain concept.
+- **body0**: Array-destructured first body in the quadruple base service, an index helper variable rather than a domain term.
+- **body1**: The first body of an aspect pair, typed as Body and passed through the aspect formatting and utilities services.
+- **body2**: The second body of an aspect pair, typed as Body, passed alongside the first body in aspect formatting and lookups.
+- **body3**: The third body of a quadruple aspect, named and display-formatted in the quadruple aspects base service.
+- **body4**: The fourth body of a quadruple or quintuple aspect, looked up in the quadruple base and composer services.
+- **body5**: The fifth body of a quintuple pentagram, taken from the pentagram body list in the quintuple composer service.
+- **body6**: The sixth body of a sextuple hexagram, taken from the hexagram body list in the sextuple composer service.
+- **boomerang**: Quadruple compound pattern mapped to a returning-arrow glyph in the symbol constants, one of the compound shapes detected.
+- **boundary**: An edge of an interval or range, such as a sign, a twilight, or a date-range limit checked by input validation.
+- **breadth**: One of the two callidescope limits, measuring how many callees a function fans out to, as the README's Limits table records.
+- **brightest**: Planetary phase event for Venus or Mercury when the planet reaches its greatest brightness, detected by the phase service.
+- **brightness**: Apparent magnitude of a planet, used in phase calculations, and the weight of a symbol that grows with the planets involved.
+- **brilliancy**: Greatest brilliancy, the magnitude minimum of a planet, which the phase calculation service detects for Venus and Mars.
+- **bulk**: Label in integration-test event names, marking synthetic events generated to exercise large calendar-event upserts.
+- **butterfly**: Quadruple compound pattern mapped to a butterfly glyph in the symbol constants, one of the compound shapes detected.
 - **ca1882599**:
-- **cal**:
-- **calc**:
-- **calculation**:
-- **calendar**:
-- **cancer**:
-- **canonical**:
-- **capitalize**:
-- **capricorn**:
-- **cascade**:
-- **cause**:
-- **center**:
-- **cere**:
-- **chain**:
-- **chiron**:
-- **choose**:
-- **civil**:
-- **claim**:
-- **classifiable**:
-- **classification**:
-- **classify**:
-- **clearance**:
-- **clique**:
-- **clone**:
-- **closest**:
-- **closure**:
-- **cluster**:
-- **co**:
-- **coerce**:
-- **combination**:
-- **combine**:
-- **comparison**:
-- **composer**:
-- **composite**:
-- **compound**:
-- **concat**:
-- **condition**:
-- **conflict**:
-- **conjunct**:
-- **conjunction**:
-- **connect**:
-- **constellation**:
-- **contact**:
-- **coord**:
-- **coordinate**:
-- **cradle**:
-- **crescent**:
-- **csv**:
-- **culmination**:
-- **curvature**:
-- **cycle**:
-- **daily**:
-- **danjon**:
-- **dark**:
-- **datetime**:
-- **dawn**:
-- **daylight**:
+- **cal**: Stray three-letter fragment with no standalone use in caelundas code; it appears only as a glossary headword.
+- **calc**: The Swiss Ephemeris calc function that computes a body's position, and whose results must come from the data files.
+- **calculation**: A position or event computation in the ephemeris and detector services, such as an aspect or eclipse calculation service.
+- **calendar**: The iCalendar output module that formats detected events into .ics and JSON files, along with the calendar_events table.
+- **cancer**: Zodiac sign Cancer, used as a sign name in ingress seed rows such as event-sun-ingress-cancer.
+- **canonical**: The fixed key order for a body pair, so an aspect key is the same regardless of which body comes first.
+- **capitalize**: Type helper mirroring TypeScript's Capitalize at the value level, used in caelundas.types.ts for body display names.
+- **capricorn**: Zodiac sign Capricorn, the sign name the ingresses service returns for longitude 270 degrees in the end-to-end test.
+- **cascade**: Database delete rule that removes dependent calendar_event_tag rows when their event or tag row is deleted.
+- **cause**: The error cause option passed to Error constructors so the original exception survives in the progressive aspect service.
+- **center**: The disc center of a body, the point whose position eclipse and culmination code measures, unlike the upper limb used for rise and set.
+- **cere**: Fragment of the asteroid name Ceres, which the ephemeris body list spells in full as ceres.
+- **chain**: A linked run of bodies related pairwise by neighbors, which stellium detection rejects because every pair must be in orb.
+- **chiron**: The body Chiron, tracked alongside the planets in aspects and listed in the caelundas body constants.
+- **choose**: Binomial coefficient, as in the combinations helper whose O(n choose k) complexity the math service documents.
+- **civil**: First of three twilight kinds, with nautical and astronomical, that the twilight module emits to mark dawn and dusk.
+- **claim**: Not used as a named concept in project code; it appears only as a glossary entry and names nothing specific in caelundas.
+- **classifiable**: Not used as a named concept in project code; it appears only as a glossary entry and names nothing specific in caelundas.
+- **classification**: The eclipse type or event category labeling step, such as EclipseClassificationService deciding a solar eclipse's type.
+- **classify**: Verb for assigning an event's raw tags to tag tree nodes, as classifyEvent does in tags.utilities.ts for each event.
+- **clearance**: The margin between a body's upper limb and the horizon, which the daily cycles builder uses to decide rise and set.
+- **clique**: A maximal set of bodies that are all pairwise in conjunction, which stellium detection reports when it holds four or more.
+- **clone**: Moment copy called before subtracting a minute, so the original time object is not mutated in the annual solar cycle services.
+- **closest**: Adjective for the minute or moment of nearest approach, such as perihelion or the closest visible approach of the Moon to the Sun.
+- **closure**: The tag tree's ancestor and descendant index in tags_closure, storing one row per pair including each tag with itself.
+- **cluster**: A group of nearby bodies in conjunction, which stellium detection treats as a stellium once it has four or more bodies.
+- **co**: Stray two-letter prefix, as in co-locate in AGENTS.md, with no code meaning in caelundas.
+- **coerce**: Zod z.coerce call in the environment schema that turns the LATITUDE and LONGITUDE strings into numbers before validation.
+- **combination**: A subset of bodies chosen from a larger set, as the MathService getCombinations helper enumerates for pattern detection.
+- **combine**: Inner recursive helper in MathService getCombinations that adds bodies to the chosen subset during enumeration.
+- **comparison**: A value or schema comparison, such as the TypeORM schema builder comparison that database integration tests rely on.
+- **composer**: A service that assembles a detected multi-body pattern into one calendar event, such as TripleAspectsComposerService.
+- **composite**: A multi-body aspect pattern built from several aspect pairs, such as a grand trine or stellium, found by composite detectors.
+- **compound**: A multi-body aspect pattern made of several aspect pairs, such as a triple, quadruple, or pentagram aspect in the caelundas detectors.
+- **concat**: Not used as a named function in project code; its only occurrence is the glossary entry, so it names nothing here.
+- **condition**: A logical test or angular check, such as the first aspect whose angular condition matches in aspect event formatting.
+- **conflict**: A database insert collision on a unique key, which the calendar event upsert and migration logic resolves on conflict.
+- **conjunct**: Aspect of zero degrees between two bodies, the first of the major aspects and the conjunct tag in the seed data.
+- **conjunction**: The zero-degree alignment of two bodies, the aspect that every pair in a stellium must satisfy within the orb.
+- **connect**: Not used as a named function in project code; its only occurrence is the glossary entry, so it names nothing here.
+- **constellation**: A star-chart region stored in the constellation table with its designation and zodiac, loaded by the night-sky command.
+- **contact**: An eclipse contact point, the moment a body's limb touches the shadow edge, such as the external contact P1 on the way in.
+- **coord**: Short form of coordinate used as a local variable for node coordinates in the ephemeris coordinate service.
+- **coordinate**: A longitude, latitude, or azimuth pair for a body or observer, validated as the LATITUDE and LONGITUDE inputs.
+- **cradle**: Quadruple compound pattern mapped to a bed glyph in the symbol constants, one of the compound shapes the composer detects.
+- **crescent**: Moon phase span of 45 degrees of elongation from new Moon toward first quarter, one of the eight phases the caelundas times.
+- **csv**: Comma-separated file format the night-sky star, constellation, and line tables are loaded from, as AGENTS.md describes.
+- **culmination**: The moment a body reaches its highest altitude in the sky, used for lunar zenith events and the rise and set detection.
+- **curvature**: Second difference of three consecutive samples in eclipse topocentric code, measuring how sharply a body's offset bends.
+- **cycle**: A recurring astronomical rhythm, such as the lunar or annual solar cycle, that a module detects and stores as calendar events.
+- **daily**: Adjective for the per-day rhythm of the daily-cycles module, which builds sunrise, sunset, and moonrise calendar events.
+- **danjon**: Limit named for Danjon in eclipse geometry comments, the angular threshold where the Moon's limb touches the shadow boundary.
+- **dark**: Sky state after astronomical dusk, when the Sun sits 18 degrees below the horizon and stars become visible.
+- **datetime**: Module of time-stepping helpers that generate the minute-by-minute instants the ephemeris and detectors iterate over.
+- **dawn**: The twilight moment when the Sun rises through a depression angle, opening civil, nautical, or astronomical morning light.
+- **daylight**: Span from civil dawn to civil dusk, treated as a separate interval in the twilight events alongside Night.
 - **dbace11**:
 - **ddcde86**:
-- **dec**:
-- **decan**:
-- **decile**:
-- **decimal**:
-- **declination**:
-- **decode**:
-- **decoder**:
-- **decuple**:
-- **degree**:
-- **delegate**:
-- **delta**:
-- **derive**:
-- **descendant**:
-- **designation**:
-- **destination**:
-- **destroy**:
-- **detail**:
-- **detect**:
-- **detectable**:
-- **detector**:
-- **determine**:
-- **diff**:
-- **dignity**:
-- **dimension**:
-- **direct**:
-- **direction**:
-- **disc**:
-- **discovery**:
-- **dissolve**:
-- **distance**:
-- **domain**:
-- **down**:
-- **download**:
-- **dst**:
-- **dubhe**:
-- **duodecuple**:
-- **duration**:
-- **dusk**:
-- **earlier**:
-- **earth**:
-- **east**:
-- **eastern**:
-- **ecl2**:
-- **eclipse**:
-- **ecliptic**:
-- **element**:
-- **elevation**:
-- **eleventh**:
-- **elongation**:
-- **encoder**:
-- **ending1**:
-- **ending2**:
-- **enlargement**:
-- **enqueue**:
-- **ensure**:
-- **enter**:
-- **ephe**:
-- **ephemeride**:
-- **ephemeris**:
-- **epimethian**:
-- **equatorial**:
-- **equinox**:
-- **estimate**:
-- **et**:
-- **even**:
-- **event1**:
-- **event2**:
-- **exact**:
-- **faint**:
-- **family**:
-- **fifteenth**:
-- **fifth**:
-- **fill**:
-- **fire**:
-- **fk**:
-- **floor**:
-- **focal**:
-- **fourth**:
-- **frame**:
-- **gamma**:
-- **gap**:
-- **gather**:
-- **gemini**:
-- **geocentric**:
-- **geocentrically**:
-- **geometry**:
-- **gibbous**:
-- **grand**:
-- **greatest**:
-- **greg**:
-- **gregorian**:
-- **half**:
-- **hammer**:
-- **harmonic**:
-- **haversine**:
-- **hexadecan**:
-- **hexagon**:
-- **hexagram**:
-- **high**:
-- **hip**:
-- **hor**:
-- **horizon**:
-- **horizontal**:
-- **hour**:
-- **hourglass**:
-- **hybrid**:
-- **hypot**:
-- **idx**:
-- **illumination**:
-- **imbolc**:
-- **inferior**:
-- **infinity**:
-- **ingest**:
-- **ingress**:
-- **inject**:
-- **insensitive**:
-- **instant**:
-- **integer**:
-- **internal**:
-- **intersection**:
-- **invert**:
-- **invocation**:
-- **involve**:
-- **iso**:
-- **iterable**:
-- **january**:
-- **jd**:
-- **jpl**:
-- **julian**:
-- **juno**:
-- **jupiter**:
-- **kilometer**:
-- **kite**:
-- **know**:
-- **la**:
-- **lamma**:
-- **lat**:
-- **late**:
-- **later**:
-- **latitude**:
-- **latitude1**:
-- **latitude2**:
-- **leaf**:
-- **leg**:
-- **leo**:
-- **libra**:
-- **lilith**:
-- **limb**:
-- **lon**:
-- **london**:
-- **longitude**:
-- **longitude1**:
-- **longitude2**:
-- **lowercase**:
-- **lunar**:
-- **mag**:
-- **magnitude**:
-- **many**:
-- **mar**:
-- **march**:
-- **margin**:
-- **marker**:
-- **martian**:
-- **mean**:
-- **measure**:
-- **merak**:
-- **mercurian**:
-- **mercury**:
-- **meter**:
+- **dec**: Celestial latitude coordinate read from the star catalog's dec field by the night-sky command.
+- **decan**: One of three 10-degree thirds of a zodiac sign, numbered 1 to 3, whose ingresses the ingresses module detects.
+- **decile**: Harmonic aspect at 36 degrees, one tenth of a full circle, drawn with a perpendicular symbol.
+- **decimal**: Format of latitude and longitude values in degrees with fractional digits, as the observer location inputs and stored columns use.
+- **declination**: Angle north or south of the celestial equator, used as the star catalog's dec coordinate in night-sky figures.
+- **decode**: Turns written bytes back into text, which the calendar tests use to inspect generated iCalendar and JSON output.
+- **decoder**: Reads generated iCalendar and JSON bytes back into strings, through TextDecoder in the calendar unit tests.
+- **decuple**: Stellium of ten bodies in conjunction, labeled decuple stellium and drawn with its own symbol in calendar events.
+- **degree**: Angular unit of ecliptic longitude, in which signs span 30 degrees, decans 10, and every orb and threshold is set.
+- **delegate**: Hand a task to an injected service rather than implement it in the command, as AGENTS.md directs for root commands.
+- **delta**: Signed difference between an expected and actual event time, in minutes, that a reference fixture tolerance compares.
+- **derive**: Compute a value from other inputs rather than store it, such as sign from longitude or compound events from two snapshots.
+- **descendant**: A tag below another in its dimension tree, linked to its ancestors through the tags_closure table for classification queries.
+- **designation**: IAU abbreviation such as UMa that identifies a constellation, keyed as the constellation table's primary identifier.
+- **destination**: File path a downloaded ephemeris file is written to, after first landing at a partial file name that is then renamed.
+- **destroy**: Closes a TypeORM data source at the end of a test or command, releasing the SQLite file handle it held.
+- **detail**: Free-text explanation carried in an event's description or an error message, saying what a calendar entry or failure means.
+- **detect**: Scan a range of minutes for an event's occurrence, as PerfectiveService and ProgressiveService expose one detect method each.
+- **detectable**: A test helper that builds a fake detected calendar event at a fixed instant, so end-to-end tests can feed the pipeline.
+- **detector**: Service class whose checkPattern or detect method finds one kind of aspect pattern, such as a grand trine, in ephemeris data.
+- **determine**: Decide whether a condition holds at a minute, as aspect and eclipse checks do before recording an event.
+- **diff**: Measures minutes between two Moment instants, which eclipse tests compare against passage bounds.
+- **dignity**: A planet's standing in a sign, such as domicile, exaltation, or peregrine, which tag-dimensions uses to rank sign ingress tags.
+- **dimension**: One root of the tag tree, grouping related tags such as Motion or Season, so each event carries one tag per root.
+- **direct**: Planet's apparent eastward motion through the zodiac, the opposite of retrograde, as tracked in the Direction tag.
+- **direction**: Whether a planet's apparent motion is eastward or westward, one of direct, retrograde, or stationary, in the caelundas types.
+- **disc**: Apparent circular face of the Sun or Moon as seen from the observer, whose radius decides eclipse overlap geometry.
+- **discovery**: Startup scan that finds NestJS providers and commands, supplied by DiscoveryModule imported into the root module.
+- **dissolve**: The last moment an aspect stays in orb as its bodies separate, the end boundary that closes a forming-to-dissolving span.
+- **distance**: Body's separation from Earth or the observer, returned by ephemeris coordinates and used in eclipse and minute-by-minute tracking.
+- **domain**: Feature-level grouping of services under src/modules, such as ephemeris, calendar, or tags, that each own one job.
+- **down**: Migration direction that reverses a schema change, paired with its up file, so the migration runner can roll back.
+- **download**: Fetch the Swiss Ephemeris data files from the network into data/ephemeris, a one-time step before any calculation.
+- **dst**: Query parameter that tells the USNO almanac URL to skip daylight saving time, so reference fixtures use UTC-based times.
+- **dubhe**: Alpha Ursae Majoris, a bright catalog star that night-sky unit tests use as a fixture.
+- **duodecuple**: Stellium of twelve bodies in conjunction, labeled duodecuple stellium and assigned its own symbol in the stellium constants.
+- **duration**: Span event whose start and end are separate moments, produced by pairing a forming event with its dissolving event.
+- **dusk**: Evening twilight moment when the Sun sinks through a depression angle, closing civil, nautical, or astronomical evening light.
+- **earlier**: Tie-breaking rule that stamps an extremum on the prior minute when two candidate minutes sit equally close to zero speed.
+- **earth**: Home planet of the observer, whose orbit sets perihelion and aphelion and whose shadow causes lunar eclipses.
+- **east**: Direction toward sunrise, used for eastward planetary motion and for a body's elongation measured east of the Sun.
+- **eastern**: Planetary visibility label for a body east of the Sun, such as eastern elongation or eastern brightest, shown in evening sky.
+- **ecl2**: Swiss Ephemeris flag constant SE_ECL2HOR, converting ecliptic coordinates to horizontal ones, a technical identifier rather than a domain term.
+- **eclipse**: Obscuration of the Sun or Moon by Earth's or the Moon's shadow, detected as begin, maximum, and end moments.
+- **ecliptic**: Plane of Earth's orbit against which every body's longitude and latitude are measured, the zodiac's reference frame.
+- **element**: One of the Fire, Earth, Air, and Water classes of a zodiac sign, a root tag node in the tag tree.
+- **elevation**: Altitude of a body above the observer's horizon in degrees, the value that sets sunrise, twilight, and daily cycle thresholds.
+- **eleventh**: Hexadecan event at the annual cycle's eleventh solar longitude threshold, one of sixteen dividing the solar year.
+- **elongation**: Angle between a planet and the Sun as seen from Earth, measured signed or unsigned, timing Mercury and Venus greatest elongations.
+- **encoder**: Converts generated iCalendar and JSON strings into bytes before the calendar service writes them to disk, via TextEncoder.
+- **ending1**: Test fixture name for a closing event, used in progressive unit tests to pair beginnings with endings.
+- **ending2**: Second closing-event test fixture in the progressive pairing tests, distinct from the first one.
+- **enlargement**: Danjon's correction that scales the Moon's parallax to enlarge Earth's shadow in lunar eclipse geometry.
+- **enqueue**: Method of a readable stream controller that pushes a chunk into the ephemeris download's byte stream during tests.
+- **ensure**: Verify a precondition or idempotent state, such as an output directory existing or a command being registered.
+- **enter**: Planet or body crossing into a new zodiac sign or decan, the event the ingresses module detects and names.
+- **ephe**: Directory segment of the Swiss Ephemeris download URL and folder name, holding the JPL DE431 binary files.
+- **ephemeride**: Stemmed form of ephemeris, the plural for the computed body position tables read minute by minute.
+- **ephemeris**: Table of computed body positions over time, produced locally by Swiss Ephemeris from JPL DE431 data files.
+- **epimethian**: Name for a superior-side planetary conjunction in the Mercury and Venus stage list, paired with the promethian conjunction.
+- **equatorial**: Coordinate system measured from the celestial equator, and Earth's equatorial radius in eclipse geometry.
+- **equinox**: Moment the Sun crosses the celestial equator in spring or autumn, one of the annual solar cycle's marked events.
+- **estimate**: Provisional eclipse type assigned to an eclipse when it first appears, replaced by a settled type later.
+- **et**: Short SQL alias for the calendar_event_tags join table, as in the events read-model query, not a domain term.
+- **even**: Rows still get written for celestial occurrences the sky shows everywhere, so each location adds its own row.
+- **event1**: Placeholder name for the first of two calendar events in a test pair, used to check ordering and pairing logic.
+- **event2**: Placeholder name for the second calendar event in a test pair, used to check that ordering and pairing hold.
+- **exact**: Moment an aspect, phase, or station is perfect, the instant the perfective pass records before the progressive span.
+- **faint**: Dimmest star magnitude the night-sky command stores, set so that only what the eye sees from a dark site.
+- **family**: Group of related events, such as Aspects, Eclipses, or Twilights, that a README table and service folder share.
+- **fifteenth**: Hexadecan event at the annual cycle's fifteenth Sun-longitude threshold, one of sixteen per solar year.
+- **fifth**: Hexadecan event at the annual cycle's fifth Sun-longitude threshold, one of sixteen per solar year.
+- **fill**: Verb in setup docs for supplying the .env values, and a Mermaid diagram style color.
+- **fire**: Element tag for the fire signs Aries, Leo, and Sagittarius, a root tag node that ingress tags link to.
+- **fk**: Prefix of generated foreign-key constraint names in the database migrations, a SQL naming artifact, not a domain term.
+- **floor**: Rounds a longitude or chunk index down to its whole-number bucket with Math.floor, as in decan number or batch size.
+- **focal**: Body at the apex or focus of a compound aspect pattern, such as the Venus focal body in a kite, named in event summaries.
+- **fourth**: Ordinal for a fourth body in a quadruple aspect, the opposition that completes a kite pattern.
+- **frame**: Geocentric or topocentric reference used by an eclipse calculation, which tells whether the observer's position is used.
+- **gamma**: Closest approach of the shadow axis to Earth's center, in Earth radii, that classifies an eclipse as partial, central, or total.
+- **gap**: Difference between two longitudes or times, such as the separation that closes through an aspect's orb threshold.
+- **gather**: Collect every value a phase needs for one planet into a single parameter bundle before the phase calculation runs.
+- **gemini**: Zodiac sign spanning 60 to 90 degrees of ecliptic longitude, the Gemini tag used in ingress detection and symbols.
+- **geocentric**: Viewed from Earth's center rather than the observer's surface, the frame used for Moon phase and lunar eclipse timing.
+- **geocentrically**: Adverb form of geocentric, describing a lunar eclipse type judged from Earth's center rather than the observer.
+- **geometry**: Calculations of separations, discs, and contact points between the Sun, Moon, and Earth, in the eclipse geometry service.
+- **gibbous**: Moon phase between half and full, spanning 135 and 225 degrees of elongation, with waxing and waning forms.
+- **grand**: Prefix naming large compound patterns like trine, cross, or sextile, built from several aspects in balanced figures.
+- **greatest**: Qualifier marking the moment of maximum eclipse or maximum elongation, such as greatest elongation or greatest eclipse.
+- **greg**: Abbreviated calendar scale name used by Julian Day conversions and the iCalendar CALSCALE header.
+- **gregorian**: Calendar system written as CALSCALE:GREGORIAN into every iCalendar file, and the proleptic calendar used by Swiss Ephemeris.
+- **half**: One of two portions of the solar year, such as autumn-to-winter or spring-to-autumn, used to group annual events.
+- **hammer**: Compound aspect pattern built on sesquiquadrate aspects, one of the triple patterns counted in calendar tags.
+- **harmonic**: Aspect defined by a multiple of the 360-degree circle, such as the 5th or 12th harmonic, beyond the classic major aspects.
+- **haversine**: Great-circle distance formula used in the eclipse geometry service to measure separations between two sky points stably.
+- **hexadecan**: One of sixteen equal solar longitude thresholds in the annual solar cycle, each producing its own named calendar event.
+- **hexagon**: Six-body compound pattern of six trines and six sextiles, detected as a valid arrangement of sextuple aspects.
+- **hexagram**: Six-body Star of David pattern, drawn from two interlocked triangles, that the sextuple-aspects service validates.
+- **high**: Used for a body far above the horizon, where its upper limb clears the topocentric eclipse test.
+- **hip**: Integer key identifying each star in the star table and night-sky catalog, drawn from the Hipparcos star survey.
+- **hor**: Constellation abbreviation for Horologium in the night-sky seed data, one of its non-zodiac constellations.
+- **horizon**: The observer's visible boundary of sky, where altitude zero sits, used to define rise, set, and twilight thresholds.
+- **horizontal**: Coordinate frame of azimuth and elevation measured from the observer's horizon, the frame Sun and Moon altitudes are reported in.
+- **hour**: Sixty-minute span used for extremum tolerances and for a one-hour window that calendar DST handling checks.
+- **hourglass**: Quadruple compound pattern formed from squares and oppositions, its symbol an hourglass shape in tag tables.
+- **hybrid**: Solar eclipse type that changes between annular and total along its path, classified from the shadow at the path's ends.
+- **hypot**: Computes a vector length from east and north offsets in the eclipse classification service, as JavaScript Math.hypot.
+- **idx**: Prefix of generated index names in the database migrations, a SQL naming artifact rather than a domain term.
+- **illumination**: Fraction of a body's disc that is lit, computed as an ephemeris series but deliberately not used to time Moon phases.
+- **imbolc**: Celtic cross-quarter day in the annual solar cycle, placed between the winter solstice and the spring equinox.
+- **inferior**: Conjunction of an inner planet between Earth and the Sun, used for Mercury and Venus phase and conjunction events.
+- **infinity**: Largest-possible fallback time in tests, used when a row's updatedAt timestamp is missing.
+- **ingest**: Load the star catalog and constellation figures into the database through the night-sky command.
+- **ingress**: Moment a body crosses a sign, decan, or 15-degree midpoint boundary, the event the ingresses module detects.
+- **inject**: Hand a dependency to a class through its constructor, as NestJS does, so tests can substitute a mock service.
+- **insensitive**: Ignores order when comparing keys, so an order-insensitive key identifies a body pair regardless of sequence.
+- **instant**: Moment with equal start and end, such as a single-minute event, stored as the same timestamp in both columns.
+- **integer**: Whole-number SQL column type for keys like the star's Hipparcos number and the tag depth.
+- **internal**: Private or non-exported type or module, such as internal-ephemeris types kept out of the public module surface.
+- **intersection**: Set of elements common to two lists, computed with lodash intersection to find focal bodies shared by triple patterns.
+- **invert**: Reverse a lookup, such as turning a display name back into its body via the bodyFromDisplayName function.
+- **invocation**: Single call of a mocked function, as counted by mock invocationCallOrder in tests that check call order.
+- **involve**: Test whether a body or pattern takes part in an aspect, as involvesBody checks in quadruple aspect composition.
+- **iso**: Standard date-time text format for UTC instants stored in calendar_events start and end columns.
+- **iterable**: Lazily produced sequence, typed as Iterable of moments, that generates minute steps for a day range in ephemeris tests.
+- **january**: Month used in reference fixture names and descriptions, such as the 2026 compound aspect fixture checked against Horizons.
+- **jd**: Julian Day number, the continuous day count from the utc_to_jd function that Swiss Ephemeris uses for time.
+- **jpl**: NASA Jet Propulsion Laboratory, whose DE431 planetary ephemeris data files and Horizons service supply reference positions.
+- **julian**: Continuous day count that Swiss Ephemeris time conversions turn UTC moments into, as a Julian Day number.
+- **juno**: Minor planet numbered 3, one of four asteroids tracked for aspects and ephemeris positions alongside Ceres, Pallas, and Vesta.
+- **jupiter**: Fifth planet from the Sun, the largest body in the ephemeris, tracked for aspects, retrogrades, and ingresses like the others.
+- **kilometer**: Unit of distance, the size used for Earth's equatorial radius in WGS 84 and gamma's scale in eclipse classification.
+- **kite**: Quadruple aspect pattern: a grand trine with a fourth body opposite one trine body, named in calendar event summaries.
+- **know**: Verb in the tag docs meaning a raw tag is unrecognized, so it falls back to a root of its own.
+- **la**: Fragment left from splitting the word parabola, which appears in eclipse topocentric comments, with no domain meaning.
+- **lamma**: Stemmed form of the August cross-quarter day in the annual solar cycle, used by the Lammas event builder.
+- **lat**: Short variable name for a latitude value in ephemeris unit tests, typed as the Latitude type.
+- **late**: Test label for an event placed late in its window, distinguishing it from an earlier or later event in fixtures.
+- **later**: Comparison word for the subsequent of two events or runs, as later runs add rows to the table without duplicating.
+- **latitude**: Angle north or south of the reference plane in degrees, also the observer's LATITUDE setting from -90 to 90.
+- **latitude1**: Local variable holding the first point's latitude in radians for the haversine separation in eclipse geometry.
+- **latitude2**: Local variable for the second point's latitude in radians, paired with latitude1 in the eclipse separation formula.
+- **leaf**: Terminal tag node with no children in a dimension tree, the most specific label an event is filed under in the tags table.
+- **leg**: One of the two member edges of a multi-body aspect pattern, whose dissolving minute removes it from the registry.
+- **leo**: Zodiac sign and constellation named Leo, one of the twelve signs an event can be tagged with.
+- **libra**: Zodiac sign mapped to its own symbol in the caelundas symbol table and listed as a constellation in the night-sky seed.
+- **lilith**: Lunar body tracked as the mean lunar apogee, a smooth average that sits alongside the osculating lunar apogee.
+- **limb**: Outer edge of the Sun or Moon's disc, whose upper edge sets the daily-cycle sunrise, sunset, moonrise and moonset times.
+- **lon**: Short local variable name for a longitude value in ephemeris type unit tests, not a configured field.
+- **london**: City used as a sample location in the end-to-end input parsing test, alongside Tokyo for timezone checks.
+- **longitude**: Angle in degrees placing a body along the ecliptic, and the observer east-west coordinate set by LONGITUDE.
+- **longitude1**: Parameter in the math service angle function holding the first of two ecliptic longitudes whose separation is measured.
+- **longitude2**: Parameter in the math service angle function holding the second of two ecliptic longitudes whose separation is measured.
+- **lowercase**: Parameter name for the lowercased body names that aspect services match against parsed calendar event summaries.
+- **lunar**: Relating to the Moon, covering its phases, nodes, apogee and perigee, daily rise and set, and eclipse events.
+- **mag**: Column of the night-sky star catalog holding a star's brightness on the astronomical magnitude scale.
+- **magnitude**: Brightness of a body on the astronomical scale, estimated by the phenomena service and listed in the night-sky star catalog.
+- **many**: Describes the tags tree allowed to hold many roots, a closure-table tree with several top-level nodes.
+- **mar**: Three-letter month abbreviation used in retrogrades service doc examples, such as Mar 15 for Mercury's station.
+- **march**: Month covered by the seed data comment about events around March 2026, and the March equinox reference fixture.
+- **margin**: Padding in minutes added before and after each date range when querying ephemeris positions.
+- **marker**: Event type flagging one notable point in a cycle; in specialty aspects, it carries tags, a description, and an emoji marker.
+- **martian**: Group label in the caelundas constants for the Mars phase events, such as its conjunctions and opposition.
+- **mean**: Smoothed average of an orbit rather than its instantaneous value, used for Lilith and estimated magnitude.
+- **measure**: Verb for taking an angle from a reference direction, such as azimuth measured from North in horizon coordinates.
+- **merak**: Star in the Big Dipper, used as a sample catalog row in the night-sky service unit tests.
+- **mercurian**: Group label for Mercury's phase events in the caelundas constants and types, such as its elongations.
+- **mercury**: Planet body tracked for stations, conjunctions, and elongations, with a Mercury tag in the events seed data.
+- **meter**: Stray fragment with no use in project source, probably a stem of the codometer tool name or parameter.
 - **migration1793045891250**:
 - **migration1793628422000**:
-- **minute1**:
-- **minute2**:
-- **miscount**:
-- **modality**:
-- **month**:
-- **monthly**:
-- **moon**:
-- **moonrise**:
-- **moonset**:
-- **morning**:
-- **moseph**:
-- **motion**:
-- **ms**:
-- **mystic**:
-- **n0**:
-- **n1**:
-- **na**:
-- **nadir**:
-- **nasa**:
-- **natural**:
-- **nature**:
-- **nautical**:
-- **near**:
-- **nearer**:
-- **nearest**:
-- **need**:
-- **neighbor**:
-- **neptune**:
-- **night**:
-- **ninth**:
-- **nod**:
-- **nodbit**:
-- **nonnegative**:
-- **nonuple**:
-- **north**:
-- **novile**:
-- **nth**:
-- **ny**:
-- **observance**:
-- **observational**:
-- **observer**:
-- **occurrence**:
-- **octet**:
-- **october**:
-- **octuple**:
-- **opp**:
-- **opp1**:
-- **opp2**:
-- **opposite**:
-- **opposition**:
-- **orb**:
-- **orbital**:
-- **orm**:
-- **oscu**:
-- **osculate**:
-- **other0**:
-- **other1**:
-- **overlap**:
-- **pad**:
-- **palla**:
-- **parallax**:
-- **passage**:
-- **past**:
-- **peak**:
-- **pentagram**:
-- **penumbral**:
-- **perfective**:
-- **perigee**:
-- **perihelion**:
-- **perihelion1**:
-- **perihelion2**:
-- **persistence**:
-- **phase**:
-- **pheno**:
-- **phenomenon**:
-- **philadelphia**:
-- **pi**:
-- **pipeline**:
-- **pisce**:
-- **pivot**:
-- **place**:
-- **planet**:
-- **planetary**:
-- **pluto**:
-- **polarity**:
-- **polyline**:
-- **prograde**:
-- **progressive**:
-- **promethian**:
-- **prune**:
-- **quadruple**:
-- **quarter**:
-- **quartet1**:
-- **quartet2**:
-- **quincunx**:
-- **quintet1**:
-- **quintet2**:
-- **quintile**:
-- **quintuple**:
-- **ra**:
-- **radial**:
-- **radian**:
-- **radius**:
-- **ratio**:
-- **readable**:
-- **rectangle**:
-- **refine**:
-- **refract**:
-- **refraction**:
-- **regular**:
-- **relation**:
-- **reorder**:
-- **respond**:
-- **retreat**:
-- **retrieve**:
-- **retrograde**:
-- **reverse**:
-- **reykjavik**:
-- **rise**:
-- **sagittarius**:
-- **same**:
-- **samhain**:
-- **sample**:
-- **saturn**:
-- **save**:
-- **scan**:
-- **scenario**:
-- **scorpio**:
-- **se**:
-- **season**:
-- **seflg**:
-- **semidiameter**:
-- **semisextile**:
-- **semisquare**:
-- **separation**:
-- **septile**:
-- **septuple**:
-- **series**:
-- **sesquiquadrate**:
-- **seventh**:
-- **sextile**:
-- **sextuple**:
-- **shadow**:
-- **should**:
-- **sibling**:
-- **simple**:
-- **sin**:
-- **since**:
-- **sky**:
-- **smooth**:
-- **snapshot**:
-- **solar**:
-- **solstice**:
-- **south**:
-- **span**:
-- **sparse**:
-- **specialty**:
-- **speed**:
-- **spring**:
-- **sqrt**:
-- **square**:
-- **stamp**:
-- **star**:
-- **station**:
-- **steady**:
-- **stellium**:
-- **store**:
-- **str**:
-- **stray**:
-- **stream**:
-- **strftime**:
-- **sub**:
-- **subtend**:
-- **subtract**:
-- **summer**:
-- **sun**:
-- **sunrise**:
-- **sunset**:
-- **superior**:
-- **sweep**:
-- **swieph**:
-- **swiss**:
-- **sydney**:
-- **synodic**:
+- **minute1**: Local test variable holding the first of two consecutive minute timestamps in the perfective service unit tests.
+- **minute2**: Local test variable holding the second of two consecutive minute timestamps in the perfective service unit tests.
+- **miscount**: Test helper that lists fixture counts which disagree with the expected reference counts, reporting them as problems.
+- **modality**: Each sign's modality, cardinal, fixed, or mutable, which an event in that sign also carries as a tag.
+- **month**: Span of one synodic lunar cycle, used to order the eight Moon phases from new moon back to new moon.
+- **monthly**: Module producing the eight Moon phases each as an instant and as the span until the next.
+- **moon**: Earth's natural satellite, the body whose phases, rise and set, and apsides this calendar detects.
+- **moonrise**: Daily-cycle event for the instant the Moon's upper limb appears above the horizon, detected for each day.
+- **moonset**: Daily-cycle event for the instant the Moon's upper limb dips below the horizon, detected for each day.
+- **morning**: Planetary visibility span in the morning, when a body shows before sunrise as a morning star.
+- **moseph**: Stem of the MOSEPH Swiss Ephemeris flag, which selects the built-in Moshier ephemeris rather than JPL files.
+- **motion**: Apparent backward or forward movement of a planet across the sky, the basis of retrograde events.
+- **ms**: Stray fragment with no use in project source; the abbreviation for milliseconds, which the code never writes.
+- **mystic**: Compound aspect of two oppositions joined by four sextiles, called a mystic rectangle in the aspect types.
+- **n0**: Local variable holding the first trine neighbor of a body while the sextuple aspects composer checks for hexagrams.
+- **n1**: Local variable holding the second trine neighbor of a body, paired with the first in the sextuple aspects composer.
+- **na**: Stray fragment with no use in project source, probably an abbreviation such as NA for not available.
+- **nadir**: Lowest altitude a body reaches each day, timed as the lunar or solar nadir daily-cycle event.
+- **nasa**: Agency whose JPL Horizons data the project cites in its design notes and names reference fixtures after.
+- **natural**: Key formed by a calendar event's summary, start, latitude, and longitude, so re-runs update rows in place.
+- **nature**: Classification of each aspect as hard or soft and as a harmonic, held in the tag dimensions constants.
+- **nautical**: Twilight stage between civil and astronomical, detected as dawn and dusk boundary events for each day.
+- **near**: Describes a minute stamped at the closest sampled point to an apsis or crossing, where the value nears zero.
+- **nearer**: Comparative used to pick whichever of two sampled minutes has radial speed closer to zero at an apsis.
+- **nearest**: Rule for stamping an event at the nearest sampled minute, with ties going to the later minute.
+- **need**: Plain verb in design notes explaining why start and end stay ISO text, so the web app need not parse them.
+- **neighbor**: Adjacent sampled minute that a horizon crossing rounds away from, so the event lands on the chosen minute.
+- **neptune**: Outer planet in the caelundas body list, tracked for aspects, ingresses, and stellium detection.
+- **night**: Span from dusk to dawn that the twilight detection labels Night, and the name of the night-sky command.
+- **ninth**: Annual solar cycle event marking the ninth of sixteen equal ecliptic divisions, built as a hexadecan.
+- **nod**: Stem of node, from the Swiss Ephemeris nod-aps call that computes lunar nodes and apsides.
+- **nodbit**: Swiss Ephemeris flag bit for osculating nodes and apsides, which the ephemeris constants map from the osculating flag.
+- **nonnegative**: Zod validator in the reference fixture schema that rejects negative values for each expected count.
+- **nonuple**: Stellium of nine mutually conjunct bodies, named in the stellium constants and mapped to a symbol.
+- **north**: Osculating lunar node where the Moon's orbit crosses the ecliptic northward, tracked as a body in aspects.
+- **novile**: Harmonic aspect at 40 degrees, a ninth-harmonic angle with a tight 1 degree orb in the specialty aspect table.
+- **nth**: Stray fragment with no use in project source, probably an ordinal word such as nth.
+- **ny**: Abbreviation in the New York, NY location string of the events seed data, one observer city.
+- **observance**: One STANDARD or DAYLIGHT timezone block emitted inside an iCalendar VTIMEZONE for the offset in force.
+- **observational**: Adjective for the phenomena detected from the observer's location, such as eclipses, crossings, and rises and sets.
+- **observer**: Location from which positions and rises are computed, set by the LATITUDE and LONGITUDE environment variables.
+- **occurrence**: Single run of an eclipse or stored calendar event, typed by its first minute and upserted once per batch.
+- **octet**: Byte unit in which the calendar caps each iCalendar content line at 75 octets, per RFC 5545.
+- **october**: Month named in a test comment about Venus near inferior conjunction on 21 October 2026.
+- **octuple**: Compound stellium of eight mutually conjunct bodies, named octuple stellium in the stellium constants.
+- **opp**: Loop variable for one opposition aspect pair in the quadruple aspect composer, iterated across pairs.
+- **opp1**: Parameter for the first opposition pair, two bodies at 180 degrees, in the quadruple aspect base service.
+- **opp2**: Parameter for the second opposition pair, two bodies at 180 degrees, in the quadruple aspect base service.
+- **opposite**: Aspect at 180 degrees between two bodies, one of the five Ptolemaic aspects the calendar detects.
+- **opposition**: Event when a planet sits 180 degrees from the Sun, such as Mars's opposition in the planetary phase events.
+- **orb**: Tolerance in degrees around an exact aspect angle within which a body pair counts as in aspect.
+- **orbital**: Describes Earth's position and speed around the Sun, which drive annual solar cycle events such as apsis timing.
+- **orm**: Stem of TypeORM, the object-relational mapper behind the project's SQLite entities and repositories.
+- **oscu**: Stem of osculating, the instantaneous orbital elements that Swiss Ephemeris flags select, rather than smoothed averages.
+- **osculate**: Verb describing an orbit's instantaneous values, which the lunar apogee follows rather than the mean apogee.
+- **other0**: Parameter holding one of the two remaining bodies of a quadruple aspect, besides the base and fourth bodies.
+- **other1**: Parameter holding the second of two remaining bodies of a quadruple aspect, besides the base and fourth bodies.
+- **overlap**: Matching rule in range queries that keeps any stored event sharing time with the requested range.
+- **pad**: Stray fragment with no use in project source, probably a stem of padding, the idea behind the ephemeris margin constant.
+- **palla**: Asteroid in the caelundas body list, one of four asteroids tracked for aspects and ingresses.
+- **parallax**: Shift in a body's apparent position from the observer's surface, used in daily-cycle and eclipse topocentric timing.
+- **passage**: Span of an eclipse from first contact to last, used as the unit of each eclipse test case.
+- **past**: Used in comments to mean beyond a limit, as in SQLite's 1,000-row cap, or earlier in time.
+- **peak**: Moment a body reaches the midpoint of its sign at 15 degrees, the peak ingress event.
+- **pentagram**: Compound aspect of five bodies forming a five-pointed star configuration, shown with a star emoji.
+- **penumbral**: Eclipse type in which the Moon crosses only Earth's penumbra, with no umbral contact at all.
+- **perfective**: Detection pass that finds the exact instant an aspect perfects, a planet stations, or a body crosses a sign.
+- **perigee**: Point on the Moon's orbit nearest Earth, where its radial speed changes sign, detected as a lunar apsis.
+- **perihelion**: Solar apsis event at Earth's closest approach to the Sun, built by the annual solar cycle events service.
+- **perihelion1**: Local test variable holding a sample perihelion event in the annual solar cycle service unit tests.
+- **perihelion2**: Local test variable holding a second sample perihelion event in the annual solar cycle unit tests.
+- **persistence**: Shared storage package, @codebase/persistence, whose SqliteModule backs the calendar event and tag tables in this app.
+- **phase**: Stage of a body's cycle relative to the Sun, covering Moon phases and planetary phase events in this calendar.
+- **pheno**: Ephemeris helper computing illumination fraction, magnitude, and phase angle for a non-Sun body at a moment.
+- **phenomenon**: Singular form of phenomena, the ephemeris service group that computes illumination, magnitude, and horizon events.
+- **philadelphia**: Default observer city, Philadelphia, PA, whose coordinates the input constants use as the location fallback.
+- **pi**: Circle constant from Math.PI, used to convert radians to degrees in ephemeris and eclipse calculations.
+- **pipeline**: Ordered sequence of stages the caelundas command runs, from input parsing through to calendar output.
+- **pisce**: Zodiac sign spanning 330 to 360 degrees of longitude, named in the night-sky seed as Psc.
+- **pivot**: Body chosen to anchor stellium clique search, whose neighbors are skipped so each candidate is tried once.
+- **place**: Plain word for a location, where each stored calendar event is keyed by its latitude and longitude.
+- **planet**: Tag category grouping the Sun, Mercury, and other bodies, named Planet in the events seed data.
+- **planetary**: Describes phase and direction events of the non-luminary planets, such as Mercury's conjunctions or Mars's opposition.
+- **pluto**: Dwarf planet in the caelundas body list, tracked for aspects, ingresses, and stellium detection.
+- **polarity**: Positive or negative classification of each element, with fire and air signs positive and earth and water negative.
+- **polyline**: Line of consecutive star vertices from a GeoJSON feature, used to draw constellation figure lines.
+- **prograde**: Direction of a body moving eastward against the stars, tagged with a prograde symbol in the caelundas constants.
+- **progressive**: Second detection pass that turns exact moments into the spans around them, such as days in orb or weeks retrograde.
+- **promethian**: Mercury's morning conjunction in the Hellenistic tradition, mapped to a new-moon symbol and a conjunction symbol.
+- **prune**: Verb for removing candidate bodies from the hexagram search in the sextuple aspects service.
+- **quadruple**: Compound aspect of four bodies, forming shapes such as boomerang, cradle, butterfly, or grand cross.
+- **quarter**: Moon phase at 90 or 270 degrees of elongation from the Sun, the first and last quarter phases.
+- **quartet1**: Local test variable holding a forming or dissolving pair set for one body quartet in quadruple aspect tests.
+- **quartet2**: Local test variable holding the forming pair set for a second body quartet in quadruple aspect tests.
+- **quincunx**: Aspect of 150 degrees between two bodies, listed with the semi-sextile and semi-square in the caelundas constants.
+- **quintet1**: Local test variable holding the forming pair set for one body quintet in quintuple aspect tests.
+- **quintet2**: Local test variable holding the forming pair set for a second body quintet in quintuple aspect tests.
+- **quintile**: Aspect of 72 degrees, a fifth-harmonic angle listed in the caelundas aspect angle table.
+- **quintuple**: Compound aspect of five bodies, detected by the quintuple aspect composer from sets of pairwise aspects.
+- **ra**: Right ascension column in the night-sky star catalog, the equatorial coordinate that positions each star.
+- **radial**: Describes motion along the line from Earth to a body, whose sign change marks each lunar or solar apsis.
+- **radian**: Unit of angle whose conversion to degrees the eclipse constants define as 180 divided by pi.
+- **radius**: Apparent angular size of the Sun or Moon's disc, which the daily-cycle timing accounts for at rise and set.
+- **ratio**: Quotient of two eclipse measurements, such as shadow and disc sizes, that classification uses to decide type.
+- **readable**: Adjective in the agent guide meaning services stay easy to read when inline values move to constants.
+- **rectangle**: Compound configuration formed by two oppositions joined by four sextiles, named in the aspect constants.
+- **refine**: Zod refinement in the input constants that checks the start date falls inside the supported date window.
+- **refract**: Stem of refraction, the atmospheric bending of light that the horizon correction applies at rise and set.
+- **refraction**: Atmospheric bending of light near the horizon, a 34 arcminute correction applied to rise and set times.
+- **regular**: Ecliptic coordinates of the lunar and solar nodes that the ephemeris coordinate service computes as regular nodes.
+- **relation**: TypeORM typed link, used by the calendar event tag entity to point at its owning calendar event.
+- **reorder**: Test helper that rearranges aspect edges so tests can confirm detection output ignores edge order.
+- **respond**: Local test helper returning a mocked fetch response, used to stub the ephemeris download HTTP call.
+- **retreat**: Half of the solar year running from perihelion to aphelion, the period the calendar tags as Retreating.
+- **retrieve**: Ephemeris lookup that fetches a body's position or radial speed from the local Swiss Ephemeris data.
+- **retrograde**: Apparent backward motion of a planet across the sky, detected as stations and the periods between them.
+- **reverse**: Verb for a planet changing its apparent direction at a station, as the retrogrades module detects.
+- **reykjavik**: Northern city whose USNO reference fixture checks the June 21, 2026 solar event, named in the test fixtures.
+- **rise**: Daily-cycle event when a body's upper limb crosses above the horizon, the counterpart to set.
+- **sagittarius**: Zodiac sign and constellation spanning 240 to 270 degrees of longitude, listed as Sgr in the night-sky seed.
+- **same**: Plain word in comments and seed text, meaning identical, such as bodies at the same zodiacal longitude.
+- **samhain**: Celtic cross-quarter day falling near November 1, built by the annual solar cycle events service.
+- **sample**: Local function in eclipse geometry that takes a timed reading of the topocentric Sun and Moon at one minute.
+- **saturn**: A body in the caelundas list, a slow outer planet whose positions, stations, and aspects come from the ephemeris.
+- **save**: Repository call that persists an entity through TypeORM, used when tags are created in the tags service and in tests.
+- **scan**: Minute-resolution sweep over a date span that detectors run to locate the exact instant an event occurs.
+- **scenario**: Hand-built ephemeris fixture that unit tests install through setScenarioEphemeris to drive a detector without Swiss Ephemeris data.
+- **scorpio**: The eighth zodiac sign, spanning 210 to 240 degrees of longitude, mapped to the Water element and its symbol.
+- **se**: Fragment of the Swiss Ephemeris prefix SE, as in SE body constants and SEFLG flags, with no standalone meaning.
+- **season**: Tag dimension naming the solar-cycle season an event falls in, such as spring, summer, autumn, or winter, in the tag tree.
+- **seflg**: Fragment of the Swiss Ephemeris flag constants such as SEFLG_SPEED and SEFLG_TOPOCTR, which select how positions are computed.
+- **semidiameter**: Angular radius of the Sun or Moon disc, added to the horizon altitude when daily cycles compute rise, set, and upper-limb times.
+- **semisextile**: Minor aspect at exactly 30 degrees of separation between two bodies, detected by the minor-aspects module.
+- **semisquare**: Minor aspect at exactly 45 degrees of separation between two bodies, one of the minor aspect types the minor-aspects module detects.
+- **separation**: Angular distance between two bodies, the value aspect detection compares against each aspect's exact angle and its orb.
+- **septile**: Specialty aspect at about 51.43 degrees, one seventh of a circle, detected by the specialty-aspects module.
+- **septuple**: Compound pattern of seven bodies in conjunction, labelled a septuple stellium in the stellium constants.
+- **series**: Per-minute sequence of values across a date range, such as illumination or distance, produced by the ephemeris services.
+- **sesquiquadrate**: Minor aspect at exactly 135 degrees between two bodies, grouped with quincunx and the semi-aspects as a minor aspect type.
+- **seventh**: Ordinal in Seventh Hexadecan, one of the sixteen-part annual solar cycle points the annual-solar-cycle events service emits.
+- **sextile**: Major aspect at 60 degrees of separation, one of the five major aspects alongside conjunct, opposite, square, and trine.
+- **sextuple**: Compound pattern of six bodies, such as a hexagram, that the sextuple-aspects module detects from its hexagon arrangement.
+- **shadow**: Umbra or penumbra cone that Earth or the Moon casts, whose geometry decides eclipse type and the totality of each eclipse.
+- **should**: Modal in test descriptions and comments stating an expected outcome, such as which events a detection run should emit.
+- **sibling**: Tag sharing a parent with another tag, where names must be unique among siblings through partial unique indexes in the tags table.
+- **simple**: Adjective for an aspect between one pair of bodies, as opposed to compound aspects, which the progressive services pair into duration events.
+- **sin**: Math.sin call in eclipse geometry and the math service, used for spherical distance and eclipse shadow calculations.
+- **since**: Conjunction in code comments explaining why a case holds, such as a pair entering orb being left out since its event is unreported.
+- **sky**: The night-sky module's catalog of stars, constellations, and figure lines, and the command that renders that stored sky.
+- **smooth**: Adjective for a series that varies continuously, such as radial speed across an ephemeris step, so apsis zero crossings are reliable.
+- **snapshot**: Set of body positions at one minute, which aspect and stellium services compare with the next minute to find forming or dissolving events.
+- **solar**: Relating to the Sun, naming the solar eclipse kind, the annual solar cycle module, and the solar events of daily cycles.
+- **solstice**: One of the two annual points where the Sun reaches its extreme declination, emitted as summer and winter solstice events by the annual-solar-cycle module.
+- **south**: The south lunar node, opposite the north node, computed but used in no event; also the south part of the stored night sky.
+- **span**: Duration between two instants, such as the days an aspect stays in orb, produced by progressive pairing of forming and dissolving events.
+- **sparse**: Describing an array with holes, so that combinatorics tests check that the helpers skip missing entries in the input.
+- **specialty**: Category of aspects beyond the major and minor sets, such as septiles and biquintiles, detected by the specialty-aspects module.
+- **speed**: Daily motion of a body in longitude or radial distance, whose sign change marks retrogrades and lunar apsides.
+- **spring**: Season of the annual solar cycle from the vernal equinox to the summer solstice, tagged on events such as Beltane.
+- **sqrt**: Math.sqrt call in eclipse classification and separation, computing the distances and chords used for eclipse magnitude.
+- **square**: Major aspect at exactly 90 degrees of separation, one of the five major aspects and the base of T-square patterns.
+- **stamp**: Verb for writing a timestamp onto a row or event, such as SQLite stamping updated_at to the second in end-to-end tests.
+- **star**: Catalog star from the Hipparcos-keyed table, placed as a vertex of constellation figure lines by the night-sky module.
+- **station**: Stationary point where a planet's longitude speed passes zero, recorded as morning or evening station events by the retrogrades module.
+- **steady**: Describing a motion held constant across minutes, as in the test helper that gives a body a fixed longitude for an aspect test.
+- **stellium**: Group of four or more bodies that are all in conjunction within the 8 degree orb, detected as maximal cliques by the stellium module.
+- **store**: Verb for persisting detected events to the SQLite calendar_events table through CalendarEventsService.upsert during a run.
+- **str**: Shorthand parameter name for a string in helpers such as capitalize and uncapitalize in the caelundas types module.
+- **stray**: Adjective for leftover whitespace or values, such as titles with stray spaces that calendar events tidy before storage.
+- **stream**: Byte stream that the ephemeris download service reads from a remote file, simulated with ReadableStream in its unit tests.
+- **strftime**: SQLite date function used in migration SQL to extract the year, month, week, and weekday parts of a calendar event start.
+- **sub**: Shorthand in comments for sub-domain, sub-command, or sub-module, as in extracting a sub-domain into its own module.
+- **subtend**: Function that returns the angle a body of given radius subtends at a distance, used for parallax and semidiameter in eclipse test utilities.
+- **subtract**: Moment.js method called on a minute to step back one minute, so sweeps can read the positions of the previous minute.
+- **summer**: Season of the annual solar cycle from the summer solstice to the autumnal equinox, tagged on solstice and related events.
+- **sun**: The Sun body, the subject of solar events, and the reference body for twilight, sunrise, sunset, and eclipse geometry.
+- **sunrise**: Daily-cycle event where the Sun's upper limb crosses the horizon at minus 0.8333 degrees, computed by the daily-cycles module.
+- **sunset**: Daily-cycle event where the Sun's upper limb dips below the horizon, the counterpart of sunrise in the daily-cycles module.
+- **superior**: Qualifier for a conjunction where a planet passes behind the Sun, as in the superior conjunction that Venusian phase detection tracks.
+- **sweep**: Walk through a stream of minutes to detect aspect changes, seeding the active registry at the first minute of the span.
+- **swieph**: Fragment of the Swiss Ephemeris flag SEFLG_SWIEPH, which selects the built-in data files for position computation.
+- **swiss**: Short for Swiss Ephemeris, the sweph library and its data files that compute every body position locally without network calls.
+- **sydney**: Test fixture city near 33.87 S and 151.21 E, used to check that the derived timezone equals Australia/Sydney.
+- **synodic**: Adjective for the cycle of a planet's conjunctions with the Sun, which the phase model uses for Mercury, Venus, and Mars stages.
 - **t00**:
 - **t03**:
 - **t05**:
@@ -5032,93 +5032,93 @@ The words this project uses that the root glossary does not define, regenerated 
 - **t17**:
 - **t18**:
 - **t19**:
-- **taurus**:
-- **temporality**:
-- **third**:
-- **thirteenth**:
-- **threshold**:
-- **tidy**:
-- **tilt**:
-- **timespan**:
-- **tokyo**:
-- **tolerance**:
-- **topo**:
-- **topocentric**:
-- **topoctr**:
-- **totality**:
-- **trace**:
-- **track**:
-- **transform**:
-- **transformer**:
-- **transition**:
-- **traversal**:
-- **traverse**:
-- **tredecile**:
-- **trine**:
-- **trine1**:
-- **trine2**:
-- **triple**:
-- **triplet**:
-- **tromso**:
-- **trunc**:
-- **tuple**:
-- **twice**:
-- **twilight**:
-- **uint8**:
-- **umbral**:
-- **unavailable**:
-- **uncapitalize**:
-- **unclassified**:
-- **undecile**:
-- **undecuple**:
-- **under**:
-- **unexpected**:
-- **unfold**:
-- **uniq**:
-- **universal**:
-- **unmatched**:
-- **unpaired**:
-- **updatable**:
-- **upper**:
-- **upsert**:
-- **upward**:
-- **uranus**:
-- **usno**:
-- **ut**:
-- **varchar**:
-- **vcalendar**:
-- **velocity**:
-- **venu**:
-- **venusian**:
-- **verb**:
-- **vernal**:
-- **vertex**:
-- **vesta**:
-- **vevent**:
-- **vigo**:
-- **virgo**:
-- **visibility**:
-- **visible**:
-- **wan**:
-- **want**:
-- **water**:
-- **wax**:
-- **weak**:
-- **week**:
-- **weekday**:
-- **west**:
-- **western**:
-- **will**:
-- **window**:
-- **window1**:
-- **window2**:
-- **winter**:
-- **within**:
-- **year**:
-- **yod**:
-- **zenith**:
-- **zip**:
-- **zodiac**:
-- **zone**:
+- **taurus**: The second zodiac sign, spanning 30 to 60 degrees of longitude, mapped to the Earth element and its symbol.
+- **temporality**: Tag dimension classifying an event as Instant or Duration, computed in the tag map from whether its start equals its end.
+- **third**: Ordinal in Third Hexadecan, one of the sixteen-part annual solar cycle points the annual-solar-cycle events service emits.
+- **thirteenth**: Ordinal in Thirteenth Hexadecan, one of the sixteen-part annual solar cycle points the annual-solar-cycle events service emits.
+- **threshold**: Longitude value that a solar-cycle crossing test compares against, such as the equinox or solstice degree, to detect a crossing.
+- **tidy**: Adjective in a test description meaning text is already clean, so calendar-events leaves tidy titles unchanged.
+- **tilt**: Inclination of the Moon's shadow track relative to the ecliptic, a parameter of the eclipse geometry tests.
+- **timespan**: Formatted start-to-end string built from two instants, used to name the JSON output file for a calendar run.
+- **tokyo**: Test fixture city near 35.7 N and 139.7 E, used to check that the derived timezone equals Asia/Tokyo.
+- **tolerance**: Allowed orb in degrees around an aspect's exact angle, which decides whether a pair of bodies counts as in aspect.
+- **topo**: Fragment of topocentric, the observer-based view of positions, appearing in daily-cycle comments with no standalone meaning.
+- **topocentric**: Describes positions and rise times seen from the observer's location rather than Earth's centre, used for horizon and local eclipse events.
+- **topoctr**: Fragment of the Swiss Ephemeris flag SEFLG_TOPOCTR, which requests positions as seen from the observer's location on Earth.
+- **totality**: Phase of a total eclipse when the Sun or Moon is fully covered, classified by the eclipse calculation and classification services.
+- **trace**: Verb for following constellation lines through catalog star vertices, as in traceConstellationLines in the night-sky module.
+- **track**: Straight-line path of an eclipse shadow across the observer's surface, computed in the eclipse calculation service and its tests.
+- **transform**: Zod transform step in the input module that turns validated environment values into typed location and date fields.
+- **transformer**: TypeORM column converter, such as createMomentTransformer, that writes moments as ISO text and reads them back as moments.
+- **transition**: Twilight boundary event, the instant the Sun crosses a depression angle, which the twilight module emits and logs as a boundary.
+- **traversal**: Walk through body adjacency data, as in pentagram traversal, that returns an ordered path or null when none exists.
+- **traverse**: Verb for walking adjacency data, as traversePentagramPath does to order quintile bodies into a pentagram path.
+- **tredecile**: Specialty aspect at exactly 108 degrees, detected by the specialty-aspects module from the harmonic division of the circle.
+- **trine**: Major aspect at exactly 120 degrees of separation, one of the five major aspects and the base of grand trine patterns.
+- **trine1**: Local variable naming the first of two trine groups when composing a sextuple hexagon arrangement.
+- **trine2**: Local variable naming the second of two trine groups when composing a sextuple hexagon arrangement.
+- **triple**: Compound aspect of three bodies, such as grand trine, hammer, T-square, or yod, detected by the triple-aspects module.
+- **triplet**: Group of three bodies forming a grand trine, the case the triple-aspects detector checks for by handling each triplet.
+- **tromso**: Test fixture location Tromso, Norway, used as the site for a US Naval Observatory moon-phase reference fixture.
+- **trunc**: Math.trunc call that drops fractional minutes when formatting a UTC offset into hours and minutes in the calendar service.
+- **tuple**: Fixed-length typed array, such as a longitude and latitude pair or a zod z.tuple schema in the night-sky module.
+- **twice**: Adverb in comments warning that a row or pattern would be processed a second time unless a guard prevents it.
+- **twilight**: Period between sunset and full darkness, with civil, nautical, and astronomical boundaries computed by the twilights module.
+- **uint8**: Typed byte array type that calendar tests expect for generated ICS file contents, asserting that the output is a Uint8Array.
+- **umbral**: Adjective for the darkest eclipse shadow, the umbra, used in magnitude and contact timing for eclipse classification.
+- **unavailable**: Adjective in EphemerisUnavailableError, the error raised when a position is requested without its Swiss Ephemeris data files.
+- **uncapitalize**: Type-level and runtime helper that lowercases only the first letter of a string, defined in the caelundas types module.
+- **unclassified**: Adjective for raw tags that match no tag-tree path, which the tag map tests expect to leave an empty list.
+- **undecile**: Specialty aspect at about 32.73 degrees, one eleventh of a circle, detected by the specialty-aspects module.
+- **undecuple**: Compound pattern of eleven bodies in conjunction, labelled an undecuple stellium in the stellium constants.
+- **under**: Preposition in code comments placing a helper beneath a section or directory, such as module folders under src/modules.
+- **unexpected**: Adjective in reference fixture checks for summaries that appear without being expected, collected as failures for the run.
+- **unfold**: Verb in calendar tests for reversing ICS line folding, undoing the CRLF and space continuation that splits long lines.
+- **uniq**: Fragment of unique, as in unique pairs or unique indexes asserted in tags and end-to-end tests, with no standalone meaning.
+- **universal**: Adjective for universal time, as in the UT time numbers that the ephemeris time service converts from a UTC moment.
+- **unmatched**: Adjective for a compound ending that no pattern matched, which the compound-aspects end-to-end test reports as a failure.
+- **unpaired**: Adjective for a progressive event with no matching begin or end, which progressive pairing skips and logs as a warning.
+- **updatable**: Adjective for entities that extend the shared SqliteUpdatableEntity base, which adds the timestamp columns each row carries.
+- **upper**: Limb edge of the Sun or Moon disc, the top boundary whose appearance or dip above the horizon defines rise and set times.
+- **upsert**: Insert-or-update write that CalendarEventsService uses to store detected events in the calendar_events table in one statement.
+- **upward**: Direction of a zero crossing where a value rises through zero, used to decide when the Sun crosses a depression angle.
+- **uranus**: One of the outer planets in the caelundas body list, whose positions and aspects come from the ephemeris.
+- **usno**: US Naval Observatory, the almanac whose phase and twilight times this project matches, and whose published tables are reference fixtures.
+- **ut**: Universal Time, the timescale for event timestamps, with the Horizons and ephemeris notes stating times in UT.
+- **varchar**: SQL column type for text identifiers and foreign keys in the SQLite migration that creates the tag and event tables.
+- **vcalendar**: RFC 5545 container element that wraps the timezone and event components of the generated iCalendar file.
+- **velocity**: Daily velocity of a body requested alongside its position, whose sign reveals retrograde motion in ephemeris requests.
+- **venu**: Fragment of Venus, the planet name stem in venusian phase and visibility code, with no standalone meaning here.
+- **venusian**: Adjective for Venus-specific phase events, such as morning and evening star visibility spans in the Venusian phase service.
+- **verb**: Label in event metadata that maps each aspect phase to its lowercase form, such as forming, dissolving, or perfective.
+- **vernal**: Describes the vernal equinox, the spring point of the annual solar cycle that the event service emits as an event.
+- **vertex**: Corner point of a constellation figure, matched to a catalog star within 0.05 degrees by the night-sky utilities.
+- **vesta**: One of four asteroids tracked as a body in aspects and positions, and usable as a vertex in sextuple hexagram composition.
+- **vevent**: iCalendar event component that the calendar service writes for each event, with a deterministic UID.
+- **vigo**: Test fixture city Vigo, Spain, whose US Naval Observatory evening twilight table is a reference fixture for twilight checks.
+- **virgo**: The sixth zodiac sign, spanning 150 to 180 degrees of longitude, mapped to the Earth element and its symbol.
+- **visibility**: Morning or evening star visibility span of Mercury, Venus, or Mars, the time a planet is seen before sunrise or after sunset.
+- **visible**: Adjective for a solar eclipse seen from the observer's location, which keeps its local type while the Sun is above horizon.
+- **wan**: Fragment of waning, as in the waning crescent and waning gibbous Moon phases of the phase symbol table.
+- **want**: Verb in comments stating a need, such as a function that never fails for want of the ephemeris files.
+- **water**: Element that the tag dimensions assign to the cancer, scorpio, and pisces signs, tagging their events as water-sign events.
+- **wax**: Fragment of waxing, as in the waxing crescent and waxing gibbous Moon phases at their 45 and 135 degree elongations.
+- **weak**: Adjective for the weakest eclipse type or the weaker minor aspects, used in comments on fallback choices.
+- **week**: Number of the calendar week that migration SQL computes with strftime and stores as start_week for each event.
+- **weekday**: Day-of-week number of an event start, computed in migration SQL with strftime and stored as start_weekday.
+- **west**: Compass side of the Sun a planet sits on, measured by signed elongation to decide Mercury and Venus morning positions.
+- **western**: Phase label for a planet seen in the morning sky, such as Mercury's western elongation or brightest moment, mapped to symbols.
+- **will**: Ordinary modal verb that this project's tests and comments use to state expected retrograde and aspect outcomes.
+- **window**: Bounded time span that detection scans, from the default two-month date range to the minute samples around an event.
+- **window1**: Longitude sample series for the first body of a pair, read at each sampled instant during aspect detection.
+- **window2**: Longitude sample series for the second body of a pair, read beside the first body's series during aspect checks.
+- **winter**: Season label for the winter solstice and the autumn-to-winter half of the annual solar cycle events.
+- **within**: Preposition used in docs and code comments to bound an event to a date range, minute span, or aspect orb.
+- **year**: Annual solar cycle unit covering solstices, equinoxes, and perihelion, plus the one-year range used for benchmarks.
+- **yod**: Three-body aspect pattern of a sextile base with two quincunxes meeting at an apex, detected by the triple-aspects service.
+- **zenith**: Highest altitude a body reaches each day, which daily cycles turn into solar noon and lunar culmination calendar events.
+- **zip**: Lodash array helper that pairs beginnings with endings in progressive aspect unit tests, not a postal code.
+- **zodiac**: Twelve tropical signs of 30 degrees each, the ecliptic segments that ingresses, decans, and sign mapping use here.
+- **zone**: Named region of clock offsets, derived from observer coordinates and passed to moment-timezone for local event times.
 
 <!-- coinagerie:end -->

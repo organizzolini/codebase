@@ -559,96 +559,96 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run integration:coinagerie-check:write`.
 
-- **abnormal**:
-- **additional**:
-- **adopt**:
-- **adoption**:
-- **alone**:
-- **ancestor**:
-- **ancestry**:
-- **annotation**:
-- **archive**:
-- **arrange**:
-- **baseline**:
-- **batch**:
-- **beside**:
-- **binary**:
-- **boot**:
-- **bound**:
-- **breadth**:
-- **bullet**:
-- **chdir**:
-- **collator**:
-- **companion**:
-- **completion**:
-- **conclude**:
-- **corrupt**:
-- **damage**:
-- **descriptor**:
-- **destination**:
-- **destroy**:
-- **detail**:
-- **diff**:
-- **discard**:
-- **discovery**:
-- **download**:
-- **effect**:
-- **errored**:
-- **executable**:
-- **explain**:
-- **fill**:
-- **help**:
-- **immediate**:
-- **incoming**:
-- **inform**:
-- **integrity**:
-- **intl**:
-- **lock**:
-- **look**:
-- **machine**:
-- **marker**:
-- **mismatch**:
-- **ms**:
-- **mtime**:
-- **newest**:
-- **nothing**:
-- **numeric**:
-- **occurrence**:
-- **past**:
-- **pid**:
-- **posix**:
-- **pr**:
-- **prefer**:
-- **preserve**:
-- **pyproject**:
-- **readable**:
-- **recover**:
-- **recovery**:
-- **revision**:
-- **rewrite**:
-- **same**:
-- **selection**:
-- **selector**:
-- **settle**:
-- **ship**:
-- **snapshot**:
-- **stdio**:
-- **stream**:
-- **succeed**:
-- **tail**:
-- **take**:
-- **temp**:
-- **terminal**:
-- **tip**:
-- **transform**:
-- **unattributed**:
-- **unchanged**:
-- **undo**:
-- **unfamiliar**:
-- **unpack**:
-- **unrestored**:
-- **untrusted**:
-- **unzip**:
-- **utime**:
+- **abnormal**: Exit status the process runner reports when a command dies without giving a code, so the step fails.
+- **additional**: Stem of additionalProperties, the JSON schema keyword set false on an executor schema so unknown options are rejected.
+- **adopt**: Renaming the newest restored task database to this machine's id so the CI job reuses it.
+- **adoption**: The AdoptionPlan that decides which restored task database to rename to this machine's id, if any.
+- **alone**: Judged by itself, as a task that names other projects or tags is, running separately so a failure costs its batch peers nothing.
+- **ancestor**: A previous commit that the pushed head must descend from, tested with git's is-ancestor check before NX_BASE moves.
+- **ancestry**: Git's history test, run through the process runner, that decides whether a push's previous tip is reachable.
+- **annotation**: A GitHub workflow message, such as a warning, that makes a skipped step show on the run page.
+- **archive**: The zip file a pull request's downloaded task cache is saved to before being unpacked.
+- **arrange**: The setup step each test case runs to prepare its fixtures before the command under test is called.
+- **baseline**: The codometer report snapshot from a green main build, which later pull requests are compared against.
+- **batch**: Group of knip tasks Nx hands to one executor call, which runs knip once from the workspace root and splits its findings by project.
+- **beside**: Placed next to another file, such as the codometer report each measured project writes beside its sources.
+- **binary**: The knip executable, resolved from the workspace root's node_modules so every project's check runs the same installed version.
+- **boot**: Starting the real command-line application, as the end-to-end test does once to confirm the container starts.
+- **bound**: Restricts NX_BASE so a push compares against its previous tip, never a commit further back.
+- **breadth**: The count of direct calls a callable makes, which callidescope caps with maximumBreadth.
+- **bullet**: A single list item the upgrade-dependencies step adds to its pull request's details section.
+- **chdir**: Switching the process's working directory, which package-manifest unit tests do and then restore afterward.
+- **collator**: The Intl sorter that orders Node and Python version strings numerically, so 3.10 follows 3.9.
+- **companion**: The sidecar files, such as a SQLite write-ahead log, that move with a database when it is renamed.
+- **completion**: The point at which a process runner's command has exited, after which its printed output is returned.
+- **conclude**: Reporting one upgrade step's outcome and returning whether the run may carry on to the next step.
+- **corrupt**: A task database that fails its integrity check, which CI discards with a warning instead of restoring it.
+- **damage**: Corrupting a test database on purpose, so verify-task-database tests can check that broken files are discarded.
+- **descriptor**: An open file handle that a child process writes its output into when a command saves to a file.
+- **destination**: The path a file is copied to, such as each codometer baseline report's location under the baseline directory.
+- **destroy**: Tearing down a stream with an error, as the process runner's test does to simulate a broken output stream.
+- **detail**: The trimmed stderr text added after a failed command's exit status in the failure line the runner reports.
+- **diff**: The changed-file list git reports between two revisions, which run-affected reads to choose its scope.
+- **discard**: Deleting a task database that failed verification, or the leftovers after adoption, so only one remains.
+- **discovery**: NestJS finding each provider and command at startup, through the DiscoveryModule imported by the root module.
+- **download**: Fetching a pull request's cache artifact through the GitHub CLI API, into the work directory.
+- **effect**: What a scripted test double does when called, such as writing a file so the test can read it.
+- **errored**: The list a test collects each error line into, so assertions can check which failures a step printed.
+- **executable**: The program name a process runner spawns, such as git, unzip, or gh, passed before its argument list.
+- **explain**: Produce the report of why a project failed, by running that project alone again to get exactly what a single run prints.
+- **fill**: Setting each required value in the local .env copy of the defaults before running the integration commands locally.
+- **help**: The usage listing the real command line prints when asked, which the end-to-end test checks for every command.
+- **immediate**: Running right away, as setImmediate defers a callback to the next event-loop turn in process-runner tests.
+- **incoming**: The database being attached and merged into the target, aliased as incoming in the SQLite attach query.
+- **inform**: Sending a message line to the user through the log writer, which cleanup-codebase tests capture into a list.
+- **integrity**: Whether a SQLite task database passes its integrity check, which verify-task-database uses to discard broken files.
+- **intl**: JavaScript's built-in internationalization API, whose collator upgrade-node and upgrade-python use for version sorting.
+- **lock**: The lockfile whose pinned dependency versions an upgrade step rewrites, such as uv's configuration lock.
+- **look**: Searching PATH for a program name to find the executable a process runner should spawn.
+- **machine**: The CI runner's identity, read from the first readable machine id file, that names the adopted database.
+- **marker**: The fixed text inside every database file name that separates its name from its schema version number.
+- **mismatch**: A schema difference between an incoming and a target database, reported as the reason a merge is skipped.
+- **ms**: Suffix for milliseconds in timing limits, such as the under-100ms budget for fast unit tests in AGENTS.md.
+- **mtime**: A file's last-modified time, which merge-task-cache compares to decide which copy of a database is newer.
+- **newest**: The database with the latest modification time, which adoption renames to this machine's id.
+- **nothing**: The no-op outcome: a step that changes no file and so leaves the job's cache or pull request untouched.
+- **numeric**: A collator option that compares digit runs by value, so 3.10 sorts after 3.9 in version lists.
+- **occurrence**: A count of how many times a manifest's new text appears in the file, which must be exactly one to replace it.
+- **past**: A time before now, such as one minute ago, used to backdate a test file's modification time.
+- **pid**: A child process's operating-system identifier, which the process runner's unit-test mocks fix to one.
+- **posix**: The forward-slash path module, path.posix.join, so collected codometer baseline paths match on every operating system.
+- **pr**: The pull request an import, upgrade, or report step reads from or writes changes onto.
+- **prefer**: Stem of prefers, as in a named selection winning over the target's own project when both could be gated.
+- **preserve**: Keeping file timestamps during a copy, as cpSync with preserveTimestamps keeps each database's modification time.
+- **pyproject**: Python's project manifest file, such as the affirmancy application's, which the upgrade-python step edits.
+- **readable**: Able to be read from disk, so a missing or unreadable machine-id file is skipped without failing the step.
+- **recover**: Commands run after an undo to restore the environment, such as a frozen uv sync from the lock.
+- **recovery**: The outcome of undoing a failed upgrade step, reporting whether its recovery commands put the environment right.
+- **revision**: A git commit, branch, or tag reference, such as a base or head ref that run-affected passes to git diff.
+- **rewrite**: Replacing a package.json field's value in place, as package-manifest does for each field it edits.
+- **same**: Identical in value, such as an NX_BASE that already points at the head commit.
+- **selection**: The list of projects or files chosen for an Nx affected run, appended after its fixed flags.
+- **selector**: A path that narrows a conformetry run to one file, such as its template configuration.
+- **settle**: Waiting for every promise to finish, whether it succeeds or fails, as allSettled does for a process's streams.
+- **ship**: Publishing an upgrade's changes to the pull request, which the job reports as nothing shipped when none are made.
+- **snapshot**: The git state recorded before an upgrade step runs, so a failed step can be undone back to it.
+- **stdio**: The standard streams a spawned child uses, set so stdin is ignored and stdout and stderr are piped.
+- **stream**: Running a command while passing its printed output through as it arrives, rather than waiting for it to finish.
+- **succeed**: Finishing with exit status zero, so the run's overall result is success only when every step does.
+- **tail**: The last few lines of a failed command's output, kept so the step's report can quote why it failed.
+- **take**: Reading the machine id from the first readable file in the configured list of id files.
+- **temp**: The OS temporary directory's file that the upgrade step writes its pull request body to.
+- **terminal**: Stem of terminalOutput, the report text a batch task returns so Nx can cache it and the executor can print it.
+- **tip**: A branch's most recent commit, such as a push's previous tip, given by github.event.before.
+- **transform**: A zod step that rewrites a parsed environment value, such as falling back to a default when it is empty.
+- **unattributed**: Count of knip findings in files no project root owns, which no project's check can fail on and so are tallied apart.
+- **unchanged**: A step outcome in which the upgrade left every file as it was, so nothing needs a pull request change.
+- **undo**: Reverting a failed upgrade step's edits back to the snapshot, so its changes never reach the pull request.
+- **unfamiliar**: A task database whose schema differs from the expected one, which merge reports and leaves alone.
+- **unpack**: Extracting a downloaded archive's files into a directory, as import-pr-task-cache does with the cache zip.
+- **unrestored**: An upgrade outcome where a failed step could not be undone, so the run stops and reports it.
+- **untrusted**: A pull request from a fork or different repository whose cache must not be imported, so the import is refused.
+- **unzip**: The command that extracts a downloaded artifact, invoked through the process runner by import-pr-task-cache.
+- **utime**: Setting a file's access and modification times, as tests do with utimesSync to age or date database files.
 
 <!-- coinagerie:end -->

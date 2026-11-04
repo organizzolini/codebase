@@ -1218,82 +1218,82 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run validation:coinagerie-check:write`.
 
-- **adjacent**:
-- **ancestor**:
-- **binary**:
-- **breadth**:
-- **bulk**:
-- **bullet**:
-- **chore**:
-- **clean**:
-- **collapse**:
-- **completion**:
-- **convention**:
-- **daemon**:
-- **delimiter**:
-- **dep**:
-- **directive**:
-- **discovery**:
-- **enter**:
-- **evaluate**:
-- **executable**:
-- **expectation**:
-- **fact**:
-- **family**:
-- **feat**:
-- **footer**:
-- **four**:
-- **generation**:
-- **governance**:
-- **greet**:
-- **guidance**:
-- **handle**:
-- **headline**:
-- **healthy**:
-- **hierarchy**:
-- **hold**:
-- **internal**:
-- **invocation**:
-- **kebab**:
-- **live**:
-- **malformed**:
-- **marker**:
-- **mirror**:
-- **most**:
-- **multiple**:
-- **na**:
-- **native**:
-- **npmrc**:
-- **nth**:
-- **oid**:
-- **overlap**:
-- **oversized**:
-- **paragraph**:
-- **pid**:
-- **pin**:
-- **presence**:
-- **rank**:
-- **rel**:
-- **sample**:
-- **significance**:
-- **significant**:
-- **stdio**:
-- **stream**:
-- **sub**:
-- **succeed**:
-- **superproject**:
-- **tail**:
-- **tarball**:
-- **three**:
-- **tint**:
-- **top**:
-- **tuple**:
-- **undocumented**:
-- **unfilled**:
-- **unignored**:
-- **usage**:
-- **userconfig**:
-- **verdict**:
-- **violation**:
+- **adjacent**: Location of the pnpm binary a lockfile test runs beside the running Node executable, rather than resolving it through PATH.
+- **ancestor**: A parent issue further up the sub-issue chain, read when validating hierarchy depth and inherited release level.
+- **binary**: The external executable such as gh, git, or nx that a validation check spawns and reads output from.
+- **breadth**: How many direct callees a function has, measured by callidescope and reported in this README's per-callable table.
+- **bulk**: Mode of the issue-metadata command that sweeps every open issue with the --all flag, rather than one issue number.
+- **bullet**: The section shape requiring a pull request's Details section to hold only a bulleted list, using one marker throughout.
+- **chore**: The Conventional Commits type for maintenance work, mapped to release level none so it never triggers a version bump.
+- **clean**: Part of the cleanSectionContent method that normalizes a pull request section's content before its shape and length are judged.
+- **collapse**: Newline folding that joins a wrapped template prompt into one line, so a multi-line comment still matches its prefix.
+- **completion**: The spawnSync result of a gh call, whose error and status decide whether the GitHub read succeeded.
+- **convention**: The branch-name and worktree-name rule that session checks enforce, such as type/scope-description for branches.
+- **daemon**: Nx's background process, which the publishable-packages consumer switches off through NX_DAEMON set to false.
+- **delimiter**: The platform separator, path.delimiter, used to split and join PATH entries when the consumer builds its search path.
+- **dep**: Short form for a declared package link in a manifest, which catalog-manifests reads from its dependency sections.
+- **directive**: A fixed instruction line printed on failure, naming the next skill to invoke, such as rename-branch or using-git-worktrees.
+- **discovery**: Nest's core module imported by the validation root module so it can inspect providers at runtime.
+- **enter**: In session-worktree tests, a helper that builds a linked worktree under a parent directory and returns its path.
+- **evaluate**: Method in the audit-governance service that checks one GitHub workflow job against the governance rules, returning its violations.
+- **executable**: The path a spawned check runs, such as a node_modules/.bin binary or process.execPath in the consumer fixtures.
+- **expectation**: The target and outcome a publishable-package plugin check must meet, naming the healthy and broken project targets it expects.
+- **fact**: A reportable outcome such as a missing or unauthorized gh, rather than an exception thrown up the call stack.
+- **family**: A toolchain directory grouping several ic-suite packages, such as codometer or conformetry, resolved as one unit.
+- **feat**: The Conventional Commits type for a new feature, which the release-significance check treats as a release-producing type.
+- **footer**: The trailer line, BREAKING CHANGE, that marks a commit as a breaking change for semantic-release and this check.
+- **four**: Count of template headings a pull request body must carry, enforced by the pull-request-body check.
+- **generation**: The conformetry generator run that scaffolds a fixture project inside the publishable-package consumer before its check.
+- **governance**: Repository rules checked by audit-governance, such as CODEOWNERS presence, workflow names, permissions, and owner handles.
+- **greet**: Folder name of the conformetry greetings example that the publishable-packages check expects a generated file in.
+- **guidance**: The closing hint printed under each failure list, telling the author which command or edit fixes that failure.
+- **handle**: A GitHub owner identifier, @user, @org/team, or an email address, validated by audit-governance for CODEOWNERS entries.
+- **headline**: The first line of a commit message, whose conventional type, scope, and breaking marker the release check parses.
+- **healthy**: Adjective for a working install or fixture, such as the HEALTHY_PROJECT fixture, which must pass while its BROKEN counterpart fails.
+- **hierarchy**: The parent and sub-issue tree of GitHub issues, validated for release significance and a maximum depth of three.
+- **hold**: Used in pull-request-body rules to say a section may contain only one shape, such as an ordered list for Testing.
+- **internal**: Describes a dependency on a sibling workspace package, which catalog-manifests requires to be pinned as workspace:*.
+- **invocation**: A single command run, such as one gh call or one CLI launch, whose arguments decide where metadata is read from.
+- **kebab**: The lowercase, hyphen-separated naming style a linked worktree directory must use, checked by session-worktree-name.
+- **live**: Mode that fetches a pull request's metadata from GitHub at run time through gh pr view, not from environment variables.
+- **malformed**: A pull request section whose content breaks its declared shape, such as two paragraphs under Summary or a non-list Details.
+- **marker**: The bullet character, such as dash, asterisk, or plus, that a Details list must use consistently throughout.
+- **mirror**: The copy of a validation report written to the GitHub Actions step summary, separate from the console output.
+- **most**: In this codebase the release-significance check compares a title against its most significant commit, the highest-level one.
+- **multiple**: Qualifier for a failure set where several sections, issues, or manifests break at once, all collected and printed together.
+- **na**: Part of Number.isNaN, the check that rejects a parsed issue or pull request number that came out as not-a-number.
+- **native**: Describes GitHub's own issueType field, read for a work item's type in preference to labels inferred from text.
+- **npmrc**: The per-consumer .npmrc file the publishable-packages check writes, so npm never reads the developer's real registry settings.
+- **nth**: Ordinal position in mocked call sequences, as in toHaveBeenNthCalledWith assertions in the publishable-packages consumer tests.
+- **oid**: The git object id of a commit in GitHub's pull request data, used as the oid field in release-significance fixtures.
+- **overlap**: Shared scope between a pull request title and its commits, required so the title names a scope that a commit used.
+- **oversized**: A pull request section that exceeds its word limit, such as a Summary longer than forty-eight words.
+- **paragraph**: The single plain-text block a Summary section must hold, with no list, heading, or second block in it.
+- **pid**: Process id field carried on mocked spawn results in tests for gh, lockfile, and publishable-package process calls.
+- **pin**: Writing a dependency as catalog: or workspace:* instead of a literal version, which catalog-manifests enforces across manifests.
+- **presence**: Whether a required file or label exists at all, checked before deeper rules, such as a CODEOWNERS file.
+- **rank**: The numeric ordering of a release level, used to compare the title's significance against a commit's or sub-issue's.
+- **rel**: Shows up in relative paths, such as a manifest path measured from the working directory, and in relative release rank.
+- **sample**: Illustrative fixture data, such as sampleIssues, that a test feeds to a mocked GitHub response to exercise parsing.
+- **significance**: The release level a commit or pull request title earns under semantic-release rules, judged by the release-significance check.
+- **significant**: Adjective for a commit that earns a release level at or above what the pull request title claims.
+- **stdio**: Spawn option setting which ignores stdin, pipes stdout for parsing, and discards stderr in git read helpers.
+- **stream**: Output channel, stdout or stderr, that a gh call captures on its own, unlike the lockfile check which merges both.
+- **sub**: Child GitHub issue under a parent, whose release level the hierarchy rules must not let exceed the parent's.
+- **succeed**: Flag set on each gh result that is true only when the process exited with status zero and no spawn error.
+- **superproject**: The parent repository a git submodule reports via show-superproject-working-tree, which signals this is a submodule.
+- **tail**: Trailing slice of a long process output, kept to the last lines so a failure message shows the end of the run.
+- **tarball**: The .tgz file that pnpm pack writes for each publishable ic-suite package, then installed into a consumer to verify it.
+- **three**: Count word for fixed limits in validation rules, such as the three Nx plugins a consumer must register.
+- **tint**: Arbitrary object key used as a non-label value in test inputs, to prove malformed labels are rejected.
+- **top**: Workflow-level keys, such as name and permissions, that must appear before any job, which audit-governance inspects.
+- **tuple**: A zod tuple of a bare name, or a name and options pair, used to parse release.config.cjs plugin entries.
+- **undocumented**: A project that appears in the workspace but lacks a row in the README table, which the readme-projects check reports.
+- **unfilled**: Still-pending template prompt comment left in a pull request body, which the pull-request-body check rejects.
+- **unignored**: A worktree directory that is not listed in the main checkout's gitignore, which session-worktree-name rejects.
+- **usage**: Help text printed by the issue-metadata command when its environment is incomplete or it gets too many arguments.
+- **userconfig**: Environment setting, npm's per-consumer .npmrc override, so no real registry token from the home directory is read.
+- **verdict**: The pass-or-fail result a check hands back, such as exit 0 or 1 after its findings are collected.
+- **violation**: A single broken rule found by a check, such as a workflow job timeout or an undocumented project, reported with its line.
 
 <!-- coinagerie:end -->

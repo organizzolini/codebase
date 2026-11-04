@@ -954,36 +954,36 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-nx:coinagerie-check:write`.
 
-- **abort**:
-- **adapter**:
-- **bare**:
-- **breadth**:
-- **discovery**:
-- **disk**:
-- **execution**:
-- **explicit**:
-- **filesystem**:
-- **formatter**:
-- **gadget**:
-- **generation**:
-- **hint**:
-- **lstat**:
-- **mix**:
-- **notice**:
-- **posix**:
-- **readlink**:
-- **realpath**:
-- **runtime**:
-- **scoped**:
-- **statistic**:
-- **stem**:
-- **stray**:
-- **subpath**:
-- **symbolic**:
-- **symlink**:
-- **threshold**:
-- **untagged**:
-- **widget**:
-- **wildcard**:
+- **abort**: Option name abortOnError, set false in plugin context so one failure does not stop the whole run.
+- **adapter**: Nest service in the adapter module that backs generation with an Nx Tree instead of disk.
+- **bare**: Adjective for plain node with no loader, the way the conformetry-nx main entry runs.
+- **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
+- **discovery**: Stage that matches instances to templates by file-count ratio, as InstanceDiscoveryService does.
+- **disk**: Physical filesystem that writes land on at once, which the Nx adapter avoids by recording writes in the Tree.
+- **execution**: Sequence a generator or validation run follows through the nx host, mapped in the AGENTS execution flow.
+- **explicit**: Adjective for a directory the user states directly, which overrides path discovery instead of being inferred.
+- **filesystem**: File access that reads through the Tree inside the workspace and falls back to the real filesystem outside it.
+- **formatter**: Adapter that defers formatting to Nx, so generated files run through the workspace formatter after writing.
+- **gadget**: Example project name in the instances test, a second scoped project alongside widgets.
+- **generation**: Writing instance files from a generator, done by the shared generation runtime through an Nx Tree adapter.
+- **hint**: Message field in a path error suggesting the next fix, such as declaring a type input on the generator.
+- **lstat**: Node file-system call reading link metadata without following symlinks, used in tests to confirm a link.
+- **mix**: Stem in the test name mixedPath and mixed-directories fixture, where a workspace mixes directory layouts.
+- **notice**: Verb for a validation pass sensing an instance, which it cannot do for instances it was never offered.
+- **posix**: Path-module variant using forward slashes, as the scope and paths services join pattern segments.
+- **readlink**: Node call reading where a symlink points, asserted relative in the bootstrap test.
+- **realpath**: Node call resolving a path through symlinks, compared so a link counts as ours when it points at output.
+- **runtime**: Moment or context in which generator code executes, as opposed to build time, when the plugin is imported.
+- **scoped**: Limited to a project and its dependency closure, as a callidescope run or a tag-scoped instance group is.
+- **statistic**: Stat result object in the bootstrap test, returned by lstat so its symbolic link check reads the outcome.
+- **stem**: Shared base of a file name, where instances can match the same stem yet belong to different templates.
+- **stray**: Extra directory beside the expected modules that path discovery must not let move new projects.
+- **subpath**: Part of a package export path, matched against an exports map key, where a key may end in a wildcard.
+- **symbolic**: Adjective for a symlink, the kind of link the bootstrap creates and tests check with isSymbolicLink.
+- **symlink**: Filesystem link to the emitted output directory, created by the bootstrap and replaced rather than written through.
+- **threshold**: Lowest acceptable percentage in the validate executor, applied from run level, generator level, or workspace level.
+- **untagged**: Instance group without tags, which resolves its globs as a workspace-wide pattern shared by every project.
+- **widget**: Example template and project name in the instances test, the sample used for generator and instance fixtures.
+- **wildcard**: Star segment in a pattern that matches exactly one folder, while double star matches any number of folders.
 
 <!-- coinagerie:end -->
