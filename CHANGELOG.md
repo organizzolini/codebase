@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.53.1](https://github.com/organizzolini/codebase/compare/v3.53.0...v3.53.1) (2026-11-04)
+
+### ⚡ Performance Improvements
+
+* **callidescope:** ⚡️ gate every project from one batched trace ([#2107](https://github.com/organizzolini/codebase/issues/2107)) ([e10441f](https://github.com/organizzolini/codebase/commit/e10441f9aa2ebd501217c341774cb5515297e265))
+
 ## [3.53.0](https://github.com/organizzolini/codebase/compare/v3.52.3...v3.53.0) (2026-11-04)
 
 ### ✨ Features
