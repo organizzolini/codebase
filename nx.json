@@ -694,28 +694,29 @@
       {
         "cache": true,
         "configurations": {
-          "check": {
-            "command": "knip --config configuration/knip.config.ts --workspace {projectRoot}"
-          },
+          "check": {},
           "write": {
-            "command": "knip --fix --config configuration/knip.config.ts --workspace {projectRoot}"
+            "fix": true
           }
         },
         "defaultConfiguration": "check",
-        "executor": "nx:run-commands",
+        "description": "Fail a project when knip reports an issue in its workspace. Runs through the `integration:knip` executor rather than `nx:run-commands`, because that executor is a batch executor: `nx affected -t knip` hands it every workspace at once and one knip run judges them all, where a run per project loaded the whole repository's module graph each time. Each task still passes, fails and is cached by itself. The executor's own sources are inputs, so changing how knip is run re-runs every project's check, and `--batch=false` turns batching off.",
+        "executor": "integration:knip",
         "filter": {
           "projects": ["tag:language:typescript"]
         },
         "inputs": [
           "{workspaceRoot}/configuration/knip.config.ts",
+          "{workspaceRoot}/integration/executors.json",
+          "{workspaceRoot}/integration/src/executors/knip/**/!(*.test.*|*.spec.*)",
+          "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
           "default",
           {
             "externalDependencies": ["knip", "typescript"]
           }
         ],
         "options": {
-          "command": "knip --config configuration/knip.config.ts --workspace {projectRoot}",
-          "cwd": "{workspaceRoot}"
+          "configuration": "configuration/knip.config.ts"
         }
       }
     ],

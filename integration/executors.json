@@ -1,0 +1,12 @@
+{
+  "$schema": "../node_modules/nx/schemas/executors.json",
+  "executors": {
+    "knip": {
+      "batchImplementation": "./src/executors/knip/batch-executor",
+      "description": "Fail a project when knip reports an issue in its workspace, from one knip run for every project Nx batches.",
+      "implementation": "./src/executors/knip/executor",
+      "preferBatch": true,
+      "schema": "./src/executors/knip/schema.json"
+    }
+  }
+}

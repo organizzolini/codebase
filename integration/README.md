@@ -560,15 +560,19 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run integration:coinagerie-check:write`.
 
 - **abnormal**:
+- **additional**:
 - **adopt**:
 - **adoption**:
+- **alone**:
 - **ancestor**:
 - **ancestry**:
 - **annotation**:
 - **archive**:
 - **arrange**:
 - **baseline**:
+- **batch**:
 - **beside**:
+- **binary**:
 - **boot**:
 - **bound**:
 - **breadth**:
@@ -591,6 +595,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **effect**:
 - **errored**:
 - **executable**:
+- **explain**:
 - **fill**:
 - **help**:
 - **immediate**:
@@ -613,6 +618,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **pid**:
 - **posix**:
 - **pr**:
+- **prefer**:
 - **preserve**:
 - **pyproject**:
 - **readable**:
@@ -632,8 +638,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **tail**:
 - **take**:
 - **temp**:
+- **terminal**:
 - **tip**:
 - **transform**:
+- **unattributed**:
 - **unchanged**:
 - **undo**:
 - **unfamiliar**:
