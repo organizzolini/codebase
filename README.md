@@ -4000,6 +4000,7 @@ graph LR
   file_coinagerie_cli_testing_mocks_ts["coinagerie-cli/testing/mocks.ts"]
   file_coinagerie_cli_testing_run_command_ts["coinagerie-cli/testing/run-command.ts"]
   file_coinagerie_cli_testing_setup_ts["coinagerie-cli/testing/setup.ts"]
+  file_coinagerie_cli_vite_config_ts["coinagerie-cli/vite.config.ts"]
   file_coinagerie_cli_vitest_config_ts["coinagerie-cli/vitest.config.ts"]
   file_coinagerie_configuration_callidescope_config_ts["coinagerie-configuration/callidescope.config.ts"]
   file_coinagerie_configuration_codependix_config_ts["coinagerie-configuration/codependix.config.ts"]
@@ -15885,7 +15886,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-66516-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-66525-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-4.95_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-165-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-636-3178c6?style=flat-square)
@@ -15913,8 +15914,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Constants](https://img.shields.io/badge/Constants-3221-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-2978-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-865-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3208-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-6101-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3209-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-6102-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -15935,16 +15936,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-49-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7946-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7938-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-1252-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-459-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-2966-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2760-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-2965-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2753-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-45-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-195-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-194-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1703-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4711-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1696-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4703-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
@@ -16099,9 +16100,9 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7853 |
-| Files | 2626 |
-| Calls traced | 8562 |
+| Callables | 7854 |
+| Files | 2627 |
+| Calls traced | 8563 |
 | Call stacks | 2190 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |

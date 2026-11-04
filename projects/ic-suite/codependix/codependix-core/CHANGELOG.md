@@ -1,3 +1,7 @@
+## 0.0.61 (2026-11-04)
+
+This was a version bump only for codependix-core to align it with other projects, there were no code changes.
+
 ## 0.0.60 (2026-11-04)
 
 This was a version bump only for codependix-core to align it with other projects, there were no code changes.

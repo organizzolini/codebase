@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.52.0](https://github.com/organizzolini/codebase/compare/v3.51.3...v3.52.0) (2026-11-04)
+
+### ✨ Features
+
+* **coinagerie:** 📦️ publish coinagerie to npm ([#2088](https://github.com/organizzolini/codebase/issues/2088)) ([1ccd418](https://github.com/organizzolini/codebase/commit/1ccd418e4a5936ce64456897e2437d88dcaf24ac)), closes [#1793](https://github.com/organizzolini/codebase/issues/1793) [#1794](https://github.com/organizzolini/codebase/issues/1794) [#1795](https://github.com/organizzolini/codebase/issues/1795) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#2087](https://github.com/organizzolini/codebase/issues/2087)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 stop disabling Nx Cloud so the remote cache connects ([#2101](https://github.com/organizzolini/codebase/issues/2101)) ([71b24f5](https://github.com/organizzolini/codebase/commit/71b24f57b2aba5d40e98290e4b31d4db70b81482))
+
+### ⚡ Performance Improvements
+
+* **conformetry:** ⚡️ expand each instance glob once per inferTargets pass ([#2102](https://github.com/organizzolini/codebase/issues/2102)) ([1c31071](https://github.com/organizzolini/codebase/commit/1c310719979a4a84e1cb45669f12f7335370a564))
+
 ## [3.51.3](https://github.com/organizzolini/codebase/compare/v3.51.2...v3.51.3) (2026-11-04)
 
 ## [3.51.2](https://github.com/organizzolini/codebase/compare/v3.51.1...v3.51.2) (2026-11-04)
