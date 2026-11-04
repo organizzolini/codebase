@@ -560,15 +560,19 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run integration:coinagerie-check:write`.
 
 - **abnormal**: Exit status the process runner reports when a command dies without giving a code, so the step fails.
+- **additional**: Stem of additionalProperties, the JSON schema keyword set false on an executor schema so unknown options are rejected.
 - **adopt**: Renaming the newest restored task database to this machine's id so the CI job reuses it.
 - **adoption**: The AdoptionPlan that decides which restored task database to rename to this machine's id, if any.
+- **alone**: Judged by itself, as a task that names other projects or tags is, running separately so a failure costs its batch peers nothing.
 - **ancestor**: A previous commit that the pushed head must descend from, tested with git's is-ancestor check before NX_BASE moves.
 - **ancestry**: Git's history test, run through the process runner, that decides whether a push's previous tip is reachable.
 - **annotation**: A GitHub workflow message, such as a warning, that makes a skipped step show on the run page.
 - **archive**: The zip file a pull request's downloaded task cache is saved to before being unpacked.
 - **arrange**: The setup step each test case runs to prepare its fixtures before the command under test is called.
 - **baseline**: The codometer report snapshot from a green main build, which later pull requests are compared against.
+- **batch**: Group of knip tasks Nx hands to one executor call, which runs knip once from the workspace root and splits its findings by project.
 - **beside**: Placed next to another file, such as the codometer report each measured project writes beside its sources.
+- **binary**: The knip executable, resolved from the workspace root's node_modules so every project's check runs the same installed version.
 - **boot**: Starting the real command-line application, as the end-to-end test does once to confirm the container starts.
 - **bound**: Restricts NX_BASE so a push compares against its previous tip, never a commit further back.
 - **breadth**: The count of direct calls a callable makes, which callidescope caps with maximumBreadth.
@@ -591,6 +595,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **effect**: What a scripted test double does when called, such as writing a file so the test can read it.
 - **errored**: The list a test collects each error line into, so assertions can check which failures a step printed.
 - **executable**: The program name a process runner spawns, such as git, unzip, or gh, passed before its argument list.
+- **explain**: Produce the report of why a project failed, by running that project alone again to get exactly what a single run prints.
 - **fill**: Setting each required value in the local .env copy of the defaults before running the integration commands locally.
 - **help**: The usage listing the real command line prints when asked, which the end-to-end test checks for every command.
 - **immediate**: Running right away, as setImmediate defers a callback to the next event-loop turn in process-runner tests.
@@ -613,6 +618,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **pid**: A child process's operating-system identifier, which the process runner's unit-test mocks fix to one.
 - **posix**: The forward-slash path module, path.posix.join, so collected codometer baseline paths match on every operating system.
 - **pr**: The pull request an import, upgrade, or report step reads from or writes changes onto.
+- **prefer**: Stem of prefers, as in a named selection winning over the target's own project when both could be gated.
 - **preserve**: Keeping file timestamps during a copy, as cpSync with preserveTimestamps keeps each database's modification time.
 - **pyproject**: Python's project manifest file, such as the affirmancy application's, which the upgrade-python step edits.
 - **readable**: Able to be read from disk, so a missing or unreadable machine-id file is skipped without failing the step.
@@ -632,8 +638,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **tail**: The last few lines of a failed command's output, kept so the step's report can quote why it failed.
 - **take**: Reading the machine id from the first readable file in the configured list of id files.
 - **temp**: The OS temporary directory's file that the upgrade step writes its pull request body to.
+- **terminal**: Stem of terminalOutput, the report text a batch task returns so Nx can cache it and the executor can print it.
 - **tip**: A branch's most recent commit, such as a push's previous tip, given by github.event.before.
 - **transform**: A zod step that rewrites a parsed environment value, such as falling back to a default when it is empty.
+- **unattributed**: Count of knip findings in files no project root owns, which no project's check can fail on and so are tallied apart.
 - **unchanged**: A step outcome in which the upgrade left every file as it was, so nothing needs a pull request change.
 - **undo**: Reverting a failed upgrade step's edits back to the snapshot, so its changes never reach the pull request.
 - **unfamiliar**: A task database whose schema differs from the expected one, which merge reports and leaves alone.
