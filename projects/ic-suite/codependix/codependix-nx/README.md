@@ -569,24 +569,24 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nx:coinagerie-check:write`.
 
-- **abort**:
-- **argv**:
-- **boundary**:
-- **breadth**:
-- **chain**:
-- **follow**:
-- **immediate**:
-- **inject**:
-- **misname**:
-- **realpath**:
-- **registration**:
-- **selection**:
-- **stdio**:
-- **strictest**:
-- **symlink**:
-- **through**:
-- **undeclared**:
-- **unresolved**:
-- **unscoped**:
+- **abort**: NestFactory option set false so a failed container boot throws to the caller instead of exiting the process.
+- **argv**: Argument array of the spawned command line, which the gate builds from its project, configuration, and mode flags.
+- **boundary**: Codependix rule check run per project, failing the gate when a dependency graph breaks a configured rule charged to it.
+- **breadth**: Count of calls one function makes, which callidescope caps per callable so the plugin merges map and filter into one pass.
+- **chain**: Ordered sequence of tsconfig extends bases the plugin walks from the root tsconfig, each reached file becoming a cache input.
+- **follow**: Traversal verb for walking an external dependency's own dependencies and tsconfig extends links, so each reached file joins the inputs.
+- **immediate**: Node setImmediate call the gate unit test uses to fire fake child-process events after the spawn returns.
+- **inject**: Constructor injection the NestJS container uses to hand providers to services, which needs decorator metadata from the swc loader.
+- **misname**: Test fixture for a workspace dependency whose folder name and manifest name disagree, so location must fail rather than match.
+- **realpath**: Node realpathSync call that resolves symlinks to canonical paths, so workspace and package directories compare equal.
+- **registration**: The plugin's entry in nx.json, whose options such as configurationPath the gate and inference read back at run time.
+- **selection**: The projects or tags a gate run is limited to, which the gate uses to decide whether it judges only its own project.
+- **stdio**: Spawn option setting child process streams, here ignoring stdin and piping stdout and stderr so the gate forwards output.
+- **strictest**: Test fixture scoped package provided as a tsconfig extends base, exercising a registry-declared external dependency input.
+- **symlink**: Symlinked workspace package directory the tests create under node_modules, verifying the plugin follows links to real package locations.
+- **through**: Preposition used in docs and code to describe resolving a package's entry through its export, manifest, or extends chain.
+- **undeclared**: Classification for a tsconfig base package that the root package.json does not declare, so its input is skipped with a warning.
+- **unresolved**: Workspace dependency the plugin could not locate, collected into a set and reported as a warning rather than failing inference.
+- **unscoped**: Test fixture for an unscoped package provided as a tsconfig extends base, covering the bare-name case of external dependency resolution.
 
 <!-- coinagerie:end -->

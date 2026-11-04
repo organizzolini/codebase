@@ -477,33 +477,33 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-file-imports:coinagerie-check:write`.
 
-- **ascend**:
-- **backslash**:
-- **breadth**:
-- **canonical**:
-- **connect**:
-- **cpython**:
-- **dedupe**:
-- **diagnostic**:
-- **dot**:
-- **es2022**:
-- **flatten**:
-- **foo**:
-- **grammar**:
-- **measure**:
-- **mermaid**:
-- **mutable**:
-- **py**:
-- **pyc**:
-- **pycache**:
-- **qualifier**:
-- **qualify**:
-- **realpath**:
-- **restrict**:
-- **sensitive**:
-- **sy**:
-- **top**:
-- **unconnected**:
-- **unrelated**:
+- **ascend**: Climbs a Python relative import up one directory per extra leading dot, starting from the importing file's folder.
+- **backslash**: Line-continuation marker at a Python import's line end, which the parser rejoins into one logical statement.
+- **breadth**: How many callables one function calls directly, as callidescope measures it and bounds it with maximumBreadth.
+- **canonical**: Not a term of its own here; the project identifies a file by the symlink-resolved path that toRealPath returns.
+- **connect**: Linked by at least one import edge in either direction, which is what keeps a file in the rendered graph.
+- **cpython**: Implementation tag inside a compiled bytecode file name like grammars.cpython-312.pyc, used by the Python project tests.
+- **dedupe**: Removes repeated import edges with the same source and target, so each file pair appears once.
+- **diagnostic**: Error entry the TypeScript compiler reports while parsing tsconfig, which the project service flattens into readable text.
+- **dot**: The leading period in a Python relative import, where each extra dot climbs one directory from the importing file.
+- **es2022**: The ECMAScript 2022 language target that the testing programs compile against in the TypeScript project tests.
+- **flatten**: Turns a TypeScript diagnostic's nested message chain into one line of text for each config error.
+- **foo**: Placeholder name for a package or module in test fixtures, such as node_modules/foo, standing in for real dependencies.
+- **grammar**: Sample module name, src/grammars.py, that the Python import tests and docstrings use as an example import.
+- **measure**: A reading of size or depth taken from the project's source by callidescope or codometer and compared to a limit.
+- **mermaid**: Text-based diagram language in which codependix writes its graphs into this README between marker comments.
+- **mutable**: Not a term this project uses; its types mark data readonly rather than mutable, so the word is a stray match.
+- **py**: The Python source file extension, which the Python import graph module scans for import statements.
+- **pyc**: Compiled Python bytecode file extension, which the Python project test fixtures place under __pycache__ folders.
+- **pycache**: Bytecode cache folder name that the Python project's constants list, so the scanner skips it as non-source.
+- **qualifier**: Separator joining a project name to a file or module name in a graph node, such as project/src/index.ts.
+- **qualify**: Prefixes a project-relative file name with its project name so names stay unique across the whole workspace graph.
+- **realpath**: Symlink-resolved path that the TypeScript project service uses, because pnpm links workspace packages through symlinks.
+- **restrict**: ESLint no-restricted-imports rule, which bans importing @nx/devkit outside the nx-projects package so only it depends on Nx.
+- **sensitive**: Second half of time-sensitive, marking tests whose results depend on the clock, which the shared test date pins.
+- **sy**: Fragment of ts.sys, TypeScript's host object for filesystem access, used by the project service to resolve symlinks.
+- **top**: Module-level import statements of a Python file, the only ones the parser reads, skipping indented imports nested in blocks.
+- **unconnected**: Describes a file or project with no import edges, shown as a placeholder message rather than a drawn diagram.
+- **unrelated**: Test fixture file with no imports either way, used to check that a file with no edges is reported as isolated.
 
 <!-- coinagerie:end -->

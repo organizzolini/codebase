@@ -449,20 +449,20 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-configuration:coinagerie-check:write`.
 
-- **accept**:
-- **acyclic**:
-- **anchor**:
-- **boundary**:
-- **breadth**:
-- **choice**:
-- **comma**:
-- **delimit**:
-- **marker**:
-- **need**:
-- **refine**:
-- **selection**:
-- **selector**:
-- **stdin**:
-- **undeclared**:
+- **accept**: Describes which --check names the flag resolver allows, rejecting any outside its set with a named list of valid choices.
+- **acyclic**: A boundary rule kind, declared beside access rules, that forbids any cycle among the nodes its selector covers.
+- **anchor**: The named HTML comment block in a Markdown file where codependix writes its generated graph, bounded by start and end markers.
+- **boundary**: Declared rules, of access or acyclic kind, that codependix judges against each built graph during a boundary check run.
+- **breadth**: The callidescope limit on how many direct callees one callable may have, set by maximumBreadth in callidescope.config.ts.
+- **choice**: The answer a user picks from the interactive run menu, which selects check-boundaries, check-reports, or write mode.
+- **comma**: The separator for list arguments such as --projects, --tags, and --check, split into trimmed entries with blanks dropped.
+- **delimit**: Splitting a list argument into entries at each comma, trimming them and dropping blank ones, in the configuration service.
+- **marker**: A file name such as .git whose presence marks a directory as the repository root, listed in REPOSITORY_ROOT_MARKERS.
+- **need**: Shapes validation messages that name what a selector or option must include before it is accepted at all.
+- **refine**: A zod check on boundary selectors that rejects a selector stating none of id, path, project, or tags.
+- **selection**: The projects and tags a run covers, read from configuration selection and command-line arguments to scope the graph.
+- **selector**: The object on each side of a boundary rule that matches nodes by id, path, project, or tags fields.
+- **stdin**: Standard input, which the prompt service checks for a terminal before drawing an interactive menu at all.
+- **undeclared**: Not a term the source code uses; it appears only as a glossary headword here, so no code path defines or enforces it.
 
 <!-- coinagerie:end -->

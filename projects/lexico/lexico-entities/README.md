@@ -887,19 +887,19 @@ The words this project uses that the root glossary does not define, regenerated 
 - **a90**:
 - **aa0**:
 - **ab78**:
-- **abbreviation**:
-- **ablative**:
+- **abbreviation**: Part-of-speech value for abbreviated entries, stored in the lexemes part_of_speech enum beside adjective, noun, and verb.
+- **ablative**: Case value in the forms case enum, also allowed for gerund, supine, and preposition cases in this package.
 - **aca248**:
 - **accb69**:
-- **accusative**:
-- **adjectival**:
-- **adjective**:
-- **adverb**:
+- **accusative**: Case value in the forms case enum, also allowed for gerund, supine, and preposition cases in this package.
+- **adjectival**: Form kind for the AdjectivalForm entity, one single-table child of the forms hierarchy for adjective forms.
+- **adjective**: Part-of-speech value and inflection kind here, covered by the AdjectiveInflection entity and adjective declension enum.
+- **adverb**: Part-of-speech value for adverbs, with its own AdverbForm and AdverbInflection entities in the dictionary.
 - **ae1**:
-- **afa**:
+- **afa**: Hexadecimal fragment of a generated hash, uuid, or TypeORM IDX index name in this package's migrations, not a real word.
 - **afa9**:
-- **alway**:
-- **auditable**:
+- **alway**: Lemmatizer fragment of the SQL keyword ALWAYS in GENERATED ALWAYS AS, which computes the translations tsvector column.
+- **auditable**: Test-helper vocabulary for entities whose created, updated, and deleted audit columns must match an expected shape.
 - **b06814**:
 - **b1**:
 - **b2**:
@@ -918,7 +918,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **be3**:
 - **be34**:
 - **bf4**:
-- **breadth**:
+- **breadth**: Heading of the callidescope breadth section in this README, currently None, so no breadth limit is measured here.
 - **c0**:
 - **c1**:
 - **c121**:
@@ -941,7 +941,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **c92**:
 - **ca25**:
 - **ca45**:
-- **cascade**:
+- **cascade**: Foreign-key behavior in the migrations, ON DELETE CASCADE, so deleting a parent row also removes its dependent rows.
 - **cb28**:
 - **cc8536**:
 - **ccb85**:
@@ -950,14 +950,14 @@ The words this project uses that the root glossary does not define, regenerated 
 - **cd7**:
 - **cd87**:
 - **ce044**:
-- **circumfix**:
-- **classical**:
-- **comparable**:
-- **comparative**:
-- **concurrent**:
-- **conjugation**:
-- **conjunction**:
-- **conjunctional**:
+- **circumfix**: Part-of-speech value for affixes that surround a stem, stored in the lexemes part_of_speech enum.
+- **classical**: Pronunciation variant value for Classical Latin, one of the three values in the pronunciations variant enum.
+- **comparable**: Test helper vocabulary: assertExactSet asserts that two value sets resolve to the same comparable string members.
+- **comparative**: Degree-of-comparison value in the adjective, adverb, and forms degree enums, alongside positive and superlative.
+- **concurrent**: Vitest modifier it.concurrent.each, which entity integration tests use to run database cases in parallel.
+- **conjugation**: Verb class enum, first through fourth plus third-io, that sets a verb's inflectional stem and personal endings.
+- **conjunction**: Part-of-speech value for conjunctions, stored in the lexemes part_of_speech enum with the other word classes.
+- **conjunctional**: Adverb type value for adverbs that link clauses, paired with descriptive in the adverb type enum.
 - **d067**:
 - **d09**:
 - **d14365**:
@@ -971,24 +971,24 @@ The words this project uses that the root glossary does not define, regenerated 
 - **d5773**:
 - **d57731**:
 - **d677**:
-- **da**:
+- **da**: Piece of a hexadecimal character class in a UUID regular expression in the entities integration test, not a word.
 - **dae85**:
-- **dative**:
+- **dative**: Case value in the forms case enum, also allowed for gerund, supine, and preposition cases in this package.
 - **dbe1**:
 - **dc81283**:
 - **dcce6**:
 - **dd8**:
-- **declension**:
-- **degree**:
-- **deletable**:
-- **descriptive**:
-- **destroy**:
-- **determiner**:
-- **dictionary**:
-- **disambiguator**:
-- **discriminator**:
-- **down**:
-- **driver**:
+- **declension**: Noun or adjective declension enum value, first through fifth, that determines an inflection's endings.
+- **degree**: Comparison degree value, comparative, positive, or superlative, stored in the forms and inflections degree enums.
+- **deletable**: Name of the PostgresqlDeletableEntity base class from @codebase/persistence, which gives every entity soft-delete columns.
+- **descriptive**: Adverb type value for adverbs that modify a verb or adjective, paired with conjunctional in the adverb type enum.
+- **destroy**: DataSource.destroy call that closes the integration test's database connection once its cases finish running.
+- **determiner**: Part-of-speech value for determiners, stored in the lexemes part_of_speech enum beside pronoun and numeral.
+- **dictionary**: The src/modules/entities/dictionary folder, holding the Word, Lexeme, Form, Inflection, and Translation entity classes.
+- **disambiguator**: Numeric lexeme column that, together with lemma, makes each dictionary entry unique and tells homographs apart.
+- **discriminator**: Column named type that TypeORM single-table inheritance reads to pick the child class for forms and inflections.
+- **down**: Method name of a TypeORM migration's down step, which reverses that migration's schema changes.
+- **driver**: TypeORM Postgres driver, which the data-source and entity constants configure and whose string values they normalize.
 - **e02087015**:
 - **e06542**:
 - **e19**:
@@ -1003,18 +1003,18 @@ The words this project uses that the root glossary does not define, regenerated 
 - **e9**:
 - **e93**:
 - **eaf47**:
-- **eager**:
+- **eager**: TypeORM relation option, eager true, that loads a related entity automatically; entity service tests assert it.
 - **ebe1**:
-- **ecclesiastical**:
+- **ecclesiastical**: Pronunciation variant value for Ecclesiastical Latin, one of classical, ecclesiastical, or vulgar in the enum.
 - **ed02**:
 - **edc2**:
 - **ee8**:
 - **ee83**:
 - **efbc0**:
 - **efc0**:
-- **etymology**:
-- **exact**:
-- **expectation**:
+- **etymology**: Optional lexeme column holding a word's Latin or Greek origin, as its column comment states.
+- **exact**: Test vocabulary: assertExactSet and the exact set validation tests check that two sets match with no extra members.
+- **expectation**: Test-helper shape describing the columns, relations, and constraints each entity must have, checked for every entity.
 - **f068**:
 - **f08**:
 - **f1**:
@@ -1041,117 +1041,117 @@ The words this project uses that the root glossary does not define, regenerated 
 - **feaf97**:
 - **feca7**:
 - **fef6**:
-- **fem**:
-- **feminine**:
+- **fem**: Fragment of the masc/fem gender value, which marks nouns whose gender depends on the referent.
+- **feminine**: Gender enum value shared by forms, inflections, and nouns, one of feminine, masculine, or neuter.
 - **ffc72**:
-- **fifth**:
-- **fk**:
-- **fourth**:
-- **fresh**:
-- **future**:
-- **fuzzystrmatch**:
-- **gender**:
-- **generation**:
-- **genitive**:
-- **gerund**:
-- **gin**:
-- **idiom**:
-- **idx**:
-- **imperative**:
-- **imperfect**:
-- **indicative**:
-- **infinitive**:
-- **inflection**:
-- **inheritance**:
-- **inject**:
-- **interfix**:
-- **interjection**:
-- **inverse**:
-- **jsonb**:
-- **know**:
-- **lemma**:
-- **lexeme**:
-- **literature**:
-- **locative**:
-- **lock**:
-- **many**:
-- **marker**:
-- **masc**:
-- **masculine**:
+- **fifth**: Noun declension enum value for the fifth declension, stored in the inflections declension enum.
+- **fk**: Prefix of TypeORM's FK_ constraint names, the foreign keys that link child rows such as tokens to their parents.
+- **fourth**: Declension and conjugation enum value for the fourth class, used by noun and verb inflections.
+- **fresh**: Describes a module imported in a fresh Node process, so decorator metadata and state do not leak between runs.
+- **future**: Tense enum value for future forms, also one of the three non-finite tenses for infinitives, participles, and gerunds.
+- **fuzzystrmatch**: Postgres extension the second migration creates to support fuzzy string matching on dictionary headwords.
+- **gender**: Grammatical gender concept, the enum set of feminine, masculine, neuter, and masc/fem on forms and nouns.
+- **generation**: Field generationStrategy in column expectations, one of increment, rowid, or uuid, that the entity service tests check.
+- **genitive**: Case value in the forms case enum, also allowed for gerund and preposition cases in this package.
+- **gerund**: GerundForm, a non-finite verb form entity in the forms hierarchy, limited to the four oblique cases.
+- **gin**: Postgres GIN index type, used on translation full-text search and the lemma trigram index.
+- **idiom**: Part-of-speech enum value for idioms, stored in the lexemes part_of_speech enum beside phrase and proverb.
+- **idx**: Fragment of TypeORM's IDX_ prefix for index names in the migrations, not a term the package defines.
+- **imperative**: Mood enum value for commands in finite verb forms, one of imperative, indicative, or subjunctive.
+- **imperfect**: Tense enum value for imperfect finite verb forms, one of the six values in the forms tense enum.
+- **indicative**: Mood enum value for statements in finite verb forms, one of imperative, indicative, or subjunctive.
+- **infinitive**: InfinitiveForm, a non-finite verb form entity in the forms hierarchy, which the forms module exports.
+- **inflection**: The Inflection entity hierarchy describing how a lexeme varies, backed by the inflections table.
+- **inheritance**: Single-table inheritance, the TypeORM pattern behind the forms and inflections tables and their discriminator column.
+- **inject**: NestJS injection decorators, such as InjectRepository, used to supply TypeORM repositories to services.
+- **interfix**: Part-of-speech enum value for affixes inserted inside a stem, stored in the lexemes part_of_speech enum.
+- **interjection**: Part-of-speech enum value for interjections, stored in the lexemes part_of_speech enum with the other word classes.
+- **inverse**: Side of a bidirectional relation, such as WordForm's link back to its Form, named in entity comments.
+- **jsonb**: Postgres binary JSON column type the migrations use for structured columns, such as principal_parts.
+- **know**: Stem of the TypeScript unknown type, as in untyped query results; a lemmatizer artifact, not a term here.
+- **lemma**: Lexeme column holding the dictionary headword, unique together with disambiguator and indexed for lookup.
+- **lexeme**: The Lexeme entity, a lexical entry joined to words, which holds part of speech, etymology, and lemma.
+- **literature**: The literature module: Author, Text, Line, and Token entities that tie classical texts to dictionary words.
+- **locative**: Case value for locative forms, listed in the forms case enum alongside the other standard cases.
+- **lock**: Fragment of lock_timeout, the Postgres setting the migrations use to bound how long they wait for locks.
+- **many**: Relation cardinality label, one-to-many or many-to-many, that the entities service tests branch on.
+- **marker**: Constant tag on an Inflection subclass, such as uninflected, identifying lexemes that do not vary by inflection.
+- **masc**: Fragment of the masc/fem gender value, which marks nouns whose gender varies by referent.
+- **masculine**: Gender enum value for masculine forms and nouns, one of feminine, masculine, or neuter.
 - **migration1791164926316**:
 - **migration1792000000000**:
-- **mood**:
-- **neuter**:
-- **nominal**:
-- **nominative**:
-- **noop**:
-- **noun**:
-- **numeral**:
-- **op**:
-- **operator**:
-- **orm**:
-- **orphan**:
-- **participle**:
-- **particle**:
-- **passive**:
-- **perfect**:
-- **persistence**:
-- **person**:
-- **phoneme**:
-- **phonemic**:
-- **phonetic**:
-- **phrase**:
-- **pk**:
-- **pluperfect**:
-- **plural**:
-- **preposition**:
-- **principal**:
-- **pronoun**:
-- **pronunciation**:
-- **proper**:
-- **proverb**:
-- **proxy**:
-- **punctuation**:
-- **rel**:
-- **relation**:
-- **relevant**:
-- **representative**:
-- **role**:
-- **save**:
-- **side**:
-- **singular**:
-- **slug**:
-- **snake**:
-- **snapshot**:
-- **specify**:
-- **speech**:
-- **stable**:
-- **store**:
-- **subjunctive**:
-- **subset**:
-- **superlative**:
-- **supine**:
-- **synchronize**:
-- **third**:
-- **transformer**:
-- **translation**:
-- **trgm**:
-- **trigram**:
-- **tsvector**:
-- **undecorated**:
-- **uninflected**:
-- **unmatched**:
-- **uq**:
-- **uuid**:
-- **uuidv7**:
-- **variant**:
-- **vary**:
-- **verb**:
-- **vocative**:
-- **voice**:
-- **vulgar**:
-- **wf**:
-- **wl**:
-- **zone**:
+- **mood**: Grammatical mood of a finite verb form, one of imperative, indicative, or subjunctive.
+- **neuter**: Gender enum value for neuter forms and nouns, one of feminine, masculine, or neuter.
+- **nominal**: NominalForm, a form entity in the forms hierarchy covering noun and adjective forms of a lexeme.
+- **nominative**: Case value in the forms case enum for subject forms, the one case gerund and supine enums leave out.
+- **noop**: Lodash helper used in testing/setup.ts as a silent replacement, so console.log stays quiet during tests.
+- **noun**: Part-of-speech value and inflection kind for nouns, covered by NounInflection and the noun declension enum.
+- **numeral**: Part-of-speech enum value for numerals, stored in the lexemes part_of_speech enum beside determiner and pronoun.
+- **op**: Truncated fragment, not a term; TypeORM find operators are named in full in entity constants and tests.
+- **operator**: TypeORM find operator, a wrapper such as In(...), that the bigint transformer passes through untouched when writing.
+- **orm**: Fragment of the TypeORM name or of the word form, not a term the package defines in its own code.
+- **orphan**: TypeORM orphanedRowAction relation option, set to delete, which removes child rows when their parent is removed.
+- **participle**: ParticipleForm, a non-finite verb form entity in the forms hierarchy, with tense limited to future, perfect, present.
+- **particle**: Part-of-speech enum value for particles, stored in the lexemes part_of_speech enum with the other word classes.
+- **passive**: Voice enum value for passive verb forms, one of active or passive in the forms voice enum.
+- **perfect**: Tense enum value for perfect verb forms, also one of the three non-finite tenses.
+- **persistence**: The @codebase/persistence package, providing DatabaseModule, base entities, and the shared createDataSource helper.
+- **person**: Grammatical person of a finite verb form, one of first, second, or third, stored in the forms person enum.
+- **phoneme**: Stem of the phonemes column in pronunciations, which holds a phonemic segmentation such as a.moː.
+- **phonemic**: Pronunciation column holding a word's phonemic transcription, stored beside phonetic and phonemes.
+- **phonetic**: Pronunciation column holding a word's phonetic transcription, stored beside phonemic and phonemes.
+- **phrase**: Part-of-speech enum value for multi-word phrases, stored in the lexemes part_of_speech enum with idiom and proverb.
+- **pk**: Prefix of TypeORM's PK_ constraint names, the primary key constraint each table declares on its id column.
+- **pluperfect**: Tense enum value for pluperfect finite verb forms, one of the six values in the forms tense enum.
+- **plural**: Number enum value for plural forms, paired with singular in the forms number enum.
+- **preposition**: PrepositionInflection, the inflection kind for prepositions, which governs a case through prepositionCase.
+- **principal**: PrincipalPart entity, the principal parts a verb or noun is cited by, stored in the principal_parts table.
+- **pronoun**: Part-of-speech enum value for pronouns, stored in the lexemes part_of_speech enum with determiner and numeral.
+- **pronunciation**: Entity holding a lexeme's classical, ecclesiastical, or vulgar sound variants and transcriptions, one row per variant.
+- **proper**: Fragment of the properNoun part-of-speech enum value, which marks proper nouns in the lexemes enum.
+- **proverb**: Part-of-speech enum value for proverbs, stored in the lexemes part_of_speech enum beside phrase and idiom.
+- **proxy**: JavaScript Proxy that createRelationProxy returns in entities unit tests, standing in for relation metadata.
+- **punctuation**: Tokens table comment noting that a parsed token may be punctuation rather than a word from a literature line.
+- **rel**: Prefix of TypeORM's REL_ constraint names, the unique key on one-to-one relation columns such as lexeme_id.
+- **relation**: TypeORM relation metadata and the Relation wrapper type, used to type entity links such as WordForm.form.
+- **relevant**: Test variable naming the tables this package owns, so entity assertions skip tables from other packages.
+- **representative**: Fixture entity that contract tests use to check indexes and unique constraints, such as Text's slug column.
+- **role**: Database login reported by current_user in the integration test, which should be the lexico_username role.
+- **save**: TypeORM repository save call, which the integration tests use to write fixture rows before asserting on them.
+- **side**: Entity side of a relation, such as the inverse side of WordForm.form, named in the entity class comments.
+- **singular**: Number enum value for singular forms, paired with plural in the forms number enum.
+- **slug**: Unique text identifier column on Text and Author rows, used as a readable key for literature entries.
+- **snake**: SnakeNamingStrategy from typeorm-naming-strategies, which lexico extends so table and column names use snake_case.
+- **snapshot**: TableIndexSnapshot type, a captured list of a table's indexes that the schema comparison checks read back.
+- **specify**: No direct use in source; the nearest match is userSpecifiedName, a table-name override in the naming strategy.
+- **speech**: Part of speech, the PartOfSpeech type and partOfSpeechEnumValues export that name a lexeme's word class.
+- **stable**: Describes join-table rows that carry audit columns and a stable UUID, instead of a composite key.
+- **store**: Lemmatizer fragment of STORED in the generated tsvector column, meaning its value is computed and saved.
+- **subjunctive**: Mood enum value for hypothetical finite verb forms, one of imperative, indicative, or subjunctive.
+- **subset**: Relation option subset type used by contract assertions, picking only the TypeORM options a test checks.
+- **superlative**: Degree value for the highest comparison, one of comparative, positive, or superlative in the degree enums.
+- **supine**: SupineForm, a non-finite verb form entity limited to accusative and ablative cases, expressing purpose and respect.
+- **synchronize**: TypeORM synchronize option, which the data source sets to false, so schema changes come only from migrations.
+- **third**: Enum value for the third person, third declension, or third conjugation, depending on which enum holds it.
+- **transformer**: TypeORM column transformer, such as BIGINT_NUMBER_TRANSFORMER, that converts bigint strings to JavaScript numbers.
+- **translation**: Entity for one English sense of a lexeme, held in the translations table with its full-text search column.
+- **trgm**: Fragment of pg_trgm, the Postgres trigram extension the second migration creates for fuzzy lemma and word search.
+- **trigram**: Postgres trigram index, created on lemma and word data for fuzzy matching in migration 1792000000000.
+- **tsvector**: Postgres full-text search vector type, used by the translation_full_text_search column computed from translation data.
+- **undecorated**: Test-only class name UndecoratedEntity, an entity without the table decorator, checked for a clear error.
+- **uninflected**: UninflectedInflection, the inflection kind for lexemes that do not vary, a child of the inflections hierarchy.
+- **unmatched**: Name in entity service code for relation targets that match no entity, collected so they can be reported.
+- **uq**: Prefix of TypeORM's UQ_ constraint names, such as the unique constraint on the lemma and disambiguator pair.
+- **uuid**: Column type for the id and audit columns across entities, assigned by uuidv7() on insert in the database.
+- **uuidv7**: Postgres uuidv7() function, the default for every id column, so the database assigns time-ordered ids on insert.
+- **variant**: Pronunciation variant column, an enum of classical, ecclesiastical, and vulgar, indexed for lookup.
+- **vary**: Verb in the UninflectedInflection comment saying these lexemes do not vary by inflection.
+- **verb**: Part-of-speech value and inflection kind for verbs, covered by VerbInflection and the verb conjugation enum.
+- **vocative**: Case value for direct address in the forms case enum, which gerund forms exclude, as the constants note.
+- **voice**: Grammatical voice of a Latin verb form, active or passive, stored in the forms voice enum.
+- **vulgar**: Pronunciation variant value for Vulgar Latin, one of the three values in the pronunciations variant enum.
+- **wf**: Alias for WordForm in the Word entity's OneToMany callback, mapping each word to its WordForm rows.
+- **wl**: Alias for WordLexeme in the Word entity's OneToMany callback, mapping each word to its WordLexeme rows.
+- **zone**: Fragment of 'time zone' in the TIMESTAMP WITH TIME ZONE column type that every audit timestamp uses.
 
 <!-- coinagerie:end -->

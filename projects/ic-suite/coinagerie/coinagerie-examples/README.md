@@ -90,22 +90,22 @@ MIT — see [LICENSE](../../../../LICENSE).
 
 The words this project uses that the root glossary does not define, regenerated with `nx run coinagerie-examples:coinagerie-check:write`.
 
-- **bad**:
-- **bill**:
-- **destination**:
-- **disk**:
-- **gap**:
-- **glossary**:
-- **guide**:
-- **kilometer**:
-- **leftover**:
-- **move**:
-- **orbit**:
-- **perigee**:
-- **planner**:
-- **scratch**:
-- **sentence**:
-- **stale**:
-- **unparsable**:
+- **bad**: Prefix of the bad-shape check-failure fixture, a configuration whose exclude field is not an object, so it is rejected.
+- **bill**: Stands for billing, the example package whose own README glossary lists words beneath the shared root glossary.
+- **destination**: A glossary output file the check reads and writes, one per configured output, here a markdown block or a JSON object.
+- **disk**: Filesystem contents the test runner compares the check-failures table against, so every configuration on disk is listed.
+- **gap**: Problem lines run-examples prints when the check-failures table disagrees with its configurations on disk, failing the examples run.
+- **glossary**: The coinagerie markdown or JSON mapping of words to definitions that each example's check compares with its project's code.
+- **guide**: The README.md of each example, holding a summary, a Run it section, and the glossary and failure outputs its test asserts.
+- **kilometer**: A distance unit in the outputs example, defined in its markdown block but left empty in its JSON on purpose.
+- **leftover**: The word leftoverWord, from a file in gitignored scratch, that the exclusions example expects the check to leave out.
+- **move**: Promoting a word from a package glossary to the shared root glossary, a deliberate manual edit that --write never performs.
+- **orbit**: A word the outputs example's planner project uses, defined only in its JSON glossary, leaving the markdown block empty.
+- **perigee**: The point of an orbit nearest the body it circles, a planner term the outputs example defines in its markdown block.
+- **planner**: Name of the orbit project in the outputs example, a project whose README and JSON glossary list the words it uses.
+- **scratch**: A gitignored directory the exclusions example writes a file into, proving the check skips paths its .gitignore hides.
+- **sentence**: The message text a failing example must print, which the integration test asserts verbatim so guide wording cannot drift.
+- **stale**: A word the glossary lists that the code no longer uses, which the check reports and --write deletes with its definition.
+- **unparsable**: The fixture glossary with a stray line that the check must refuse, writing nothing and naming the file it could not read.
 
 <!-- coinagerie:end -->

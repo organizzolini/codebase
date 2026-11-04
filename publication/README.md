@@ -1069,69 +1069,69 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run publication:coinagerie-check:write`.
 
-- **abnormal**:
-- **acquire**:
-- **addition**:
-- **advance**:
-- **already**:
-- **annotate**:
-- **aside**:
-- **attest**:
-- **baseline**:
-- **batch**:
-- **boot**:
-- **breadth**:
-- **cause**:
-- **chore**:
-- **completion**:
-- **decide**:
-- **delay**:
-- **descriptor**:
-- **destroy**:
-- **detail**:
-- **diff**:
-- **digest**:
-- **discovery**:
-- **dist**:
-- **download**:
-- **during**:
-- **effect**:
-- **executable**:
-- **fresh**:
-- **help**:
-- **homedir**:
-- **immediate**:
-- **leftover**:
-- **look**:
-- **mirror**:
-- **most**:
-- **move**:
-- **must**:
-- **newly**:
-- **npmj**:
-- **origin**:
-- **pid**:
-- **quiet**:
-- **readable**:
-- **refuse**:
-- **rehearsal**:
-- **revision**:
-- **scratch**:
-- **settle**:
-- **stdio**:
-- **stream**:
-- **succeed**:
-- **summarize**:
-- **supersede**:
-- **take**:
-- **tarball**:
-- **temp**:
-- **tip**:
-- **unpack**:
-- **unreadable**:
-- **unreleased**:
-- **unseal**:
-- **versioned**:
-- **xzf**:
+- **abnormal**: Not used in publication source, so the word names no release concept here and carries only its everyday English sense.
+- **acquire**: Local async helper in the release-group service that takes a slot before each parallel task runs, capping concurrency.
+- **addition**: Noun in version-packages comments naming the release's .nxignore addition, a file change that makes the earlier graph stale.
+- **advance**: Only appears as vi.advanceTimersByTimeAsync in tag-packages tests, moving fake timers forward to skip retry waits.
+- **already**: Adverb in link-packages messages such as is already linked, reported when a package is linked before this run changes it.
+- **annotate**: Git tag flag, --annotate, that tag-packages passes so each release tag is created as an annotated tag with a message.
+- **aside**: Phrase in main-tip comments: a release run that notices main moved stops itself instead of failing on a rejected push.
+- **attest**: Provenance step named Attest Packages, which link-packages lists packages for when attest is written to GITHUB_OUTPUT.
+- **baseline**: Starting version a package is measured from when no earlier tag exists, placed on the commit before it was added.
+- **batch**: Group of six tags pushed together by tag-packages, with a rejected batch retried, so pushes respect the remote's limits.
+- **boot**: Starting the real NestJS container, timed in the end-to-end test, since dependency-injection gaps fail only when it runs.
+- **breadth**: Callidescope limit on how many callees one frame may fan out to, set as maximumBreadth in the publication config.
+- **cause**: Error property passed to a thrown release-group error so the original failure is preserved for the caller to inspect.
+- **chore**: Conventional commit type prefix used for release commits, such as chore(release) tagging the codebase or packages.
+- **completion**: Process-runner term for running a command to completion and returning what it printed, shared by its runner methods.
+- **decide**: Gate method that decides whether the publishable-packages check is affected, so it runs whole or is skipped.
+- **delay**: Retry delay between curl attempts and tarball downloads, set through the --retry-delay flag and a setTimeout wait in tests.
+- **descriptor**: File descriptor from fs.openSync, used as a child process's stdout so its output is written straight to a file.
+- **destroy**: Stream method a process-runner test calls on purpose to simulate a broken stream, so the error path is exercised.
+- **detail**: Trimmed stderr text appended to a failed command's error line, after the word exited and the status code.
+- **diff**: Git diff command checked in tag-packages tests, such as git diff --cached --quiet, to see whether anything is staged.
+- **digest**: Sha256 checksum of a package tarball, sent as the digest in a storage record when a package is linked.
+- **discovery**: NestJS DiscoveryModule imported by the publication module so the container can find its command providers at boot.
+- **dist**: npm dist.tarball field read with npm view to find the tarball URL that link-packages then downloads.
+- **download**: Fetch of a package tarball into the scratch directory, retried because npm can trail a publish by a few seconds.
+- **during**: Preposition in main-tip messages: main moved during this run, so the release is superseded by a newer run instead.
+- **effect**: Property on the test runner, effects, mapping command patterns such as curl star to fake outcomes for each spawned command.
+- **executable**: Program a process runner spawns, looked up on PATH, such as the publication-missing-executable case in integration tests.
+- **fresh**: Test fixture package name fresh at version 0.1.0, present on neither npm nor the linked set, used in link-packages tests.
+- **help**: Help flag that the end-to-end test passes to run the real command line once, without performing any release work.
+- **homedir**: os.homedir call that locates the user's npmrc file when publish-packages writes registry authentication for a publish.
+- **immediate**: Not used in publication source, so the word carries only its everyday English sense here and names no code.
+- **leftover**: Describes versions and tags an earlier run left unpushed; tag-packages commits leftover versions first, then pushes them.
+- **look**: Word in process-runner docs saying the executable is looked up on PATH, meaning resolved through the system search path.
+- **mirror**: Publish step that copies each npm package to GitHub Packages as owner/project, exiting 1 when a mirror or input fails.
+- **most**: Count reached in the release-group concurrency test, where at most six calls run at once, asserted with a toBe check.
+- **move**: Verb in main-tip: a release run notices that main moved, which makes the run step aside rather than push its release.
+- **must**: Modal word in comments and in the private mustStream helper, which runs a command and fails the run when it does not succeed.
+- **newly**: Adjective for packages versioned in this run, listed in newly-published.txt so link-packages knows what to link.
+- **npmj**: Stray fragment of npmjs.org, the public npm registry host named in publish tests and refusal messages.
+- **origin**: Git remote named origin, fetched by main-tip and pushed to by the tag steps, against which main's tip is compared.
+- **pid**: Process id field stubbed in process-runner tests, set to 1 on a fake spawn completion to mimic a child process.
+- **quiet**: Git flag --quiet passed to fetch and diff in the release steps, suppressing output so the run logs stay readable.
+- **readable**: Node Readable stream class used in a process-runner test to build a stream that breaks partway through a run.
+- **refuse**: Verb in publish tests: a rehearsal is refused when a package would still publish to npmjs.org or GitHub Packages.
+- **rehearsal**: Dry-run release mode where packages are not really published, and which is refused if any would reach a real registry.
+- **revision**: Git revision pair NX_BASE and NX_HEAD that the publishable-packages gate needs, failing when either one is unset.
+- **scratch**: Scratch directory taken from RUNNER_TEMP, where link-packages writes storage records and npm tarballs during a run.
+- **settle**: Static helper in the release-group service that waits for one parallel task to finish and records its outcome either way.
+- **stdio**: Node child-process option for the standard streams, set to pipe, inherit or a file descriptor for each process runner call.
+- **stream**: Node output stream of a child process, read as text, with the process runner returning stdout, stderr and the exit code.
+- **succeed**: Test helper named succeeded that makes a fake command exit cleanly, used across most publication command tests.
+- **summarize**: Not used in publication source, so the word names no code here and carries only its everyday English sense.
+- **supersede**: Main-tip message constant superseded, saying a newer run's release makes this run's release unnecessary.
+- **take**: Verb in comments: a release run takes minutes, so another pull request may merge into main during that window.
+- **tarball**: Packed npm package archive, downloaded to scratch and unpacked by the link and publish steps, checked by its digest.
+- **temp**: Temporary workspace used by tests, created inside the project and never in the operating system temp directory.
+- **tip**: Head commit of main, fetched and compared against the base commit to detect that main has moved during a run.
+- **unpack**: Verb for extracting a packed tarball into a directory with tar -xzf, as publish-packages does before publishing.
+- **unreadable**: Not used in publication source, so the word names no error here and carries only its plain English sense.
+- **unreleased**: Version state for a package an earlier run committed but never tagged, so it reads as unreleased and is bumped again.
+- **unseal**: Stem of unsealedMessage, the refusal publish-packages raises when a package publishes to a registry despite a rehearsal.
+- **versioned**: Adjective for ic-suite packages whose version was bumped in this run, which tag-packages then tags and pushes.
+- **xzf**: Stray fragment of the tar -xzf flags, which extract a gzip-compressed archive before a tarball is unpacked.
 
 <!-- coinagerie:end -->
