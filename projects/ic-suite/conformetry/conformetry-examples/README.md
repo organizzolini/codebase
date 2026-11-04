@@ -615,7 +615,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **camel**:
 - **card**:
 - **catalogue**:
-- **clear**:
 - **close**:
 - **comment**:
 - **compiler**:
@@ -660,7 +659,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **migrate**:
 - **miss**:
 - **mkdtemp**:
-- **mock**:
 - **ok**:
 - **overview**:
 - **pascal**:
@@ -688,6 +686,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **structural**:
 - **substitution**:
 - **summary**:
+- **temporary**:
 - **text**:
 - **textual**:
 - **than**:
@@ -700,7 +699,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **unowned**:
 - **validator**:
 - **variant**:
-- **vi**:
 - **widget**:
 - **world**:
 

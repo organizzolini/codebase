@@ -580,10 +580,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **bug**:
 - **call**:
 - **camel**:
-- **clear**:
 - **compile**:
 - **compiler**:
-- **console**:
 - **constant**:
 - **controller**:
 - **decorator**:
@@ -596,13 +594,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **experimental**:
 - **fake**:
 - **filesystem**:
-- **force**:
 - **formatter**:
 - **gamma**:
 - **generation**:
 - **gitkeep**:
 - **homepage**:
-- **implementation**:
 - **injectable**:
 - **instance**:
 - **java**:
@@ -612,11 +608,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **maximum**:
 - **meta**:
 - **metric**:
-- **mkdtemp**:
 - **mock**:
 - **normalize**:
 - **pascal**:
 - **promise**:
+- **provide**:
 - **publish**:
 - **readdir**:
 - **real**:
@@ -630,8 +626,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **strict**:
 - **substitution**:
 - **synthetic**:
+- **temporary**:
 - **timer**:
-- **tmpdir**:
 - **vi**:
 
 <!-- coinagerie:end -->
