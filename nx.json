@@ -58,7 +58,6 @@
       "shared-globals"
     ]
   },
-  "neverConnectToCloud": true,
   "nxCloudId": "6aea50f4879fcc3ac751e1f5",
   "parallel": 2,
   "plugins": [
@@ -175,14 +174,7 @@
       "!codometer-agents",
       "!codometer-examples",
       "!coinagerie-agents",
-      "!coinagerie-cli",
-      "!coinagerie-configuration",
-      "!coinagerie-core",
       "!coinagerie-examples",
-      "!coinagerie-languages",
-      "!coinagerie-nx",
-      "!coinagerie-output",
-      "!coinagerie-vocabulary",
       "!conformetry-agents",
       "!conformetry-examples"
     ],

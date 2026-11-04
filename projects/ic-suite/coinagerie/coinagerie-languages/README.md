@@ -1,3 +1,13 @@
+# @coinagerie/languages
+
+[![npm](https://img.shields.io/npm/v/@coinagerie/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/languages)
+
+Per-language identifier tokenizers and keyword lists that coinagerie uses to turn source files into words.
+
+```bash
+npm install @coinagerie/languages
+```
+
 ## Languages
 
 One tokenizer per language behind `(content, path) => string[]`, chosen by
@@ -86,6 +96,7 @@ The words this package uses that the root glossary does not define, regenerated 
 - **method**:
 - **mock**:
 - **plain**:
+- **publish**:
 - **quotable**:
 - **quote**:
 - **real**:

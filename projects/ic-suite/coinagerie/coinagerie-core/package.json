@@ -5,8 +5,7 @@
   },
   "dependencies": {
     "@nestjs/common": "catalog:ic-suite",
-    "reflect-metadata": "catalog:",
-    "tslib": "catalog:"
+    "reflect-metadata": "catalog:"
   },
   "description": "Contracts for the coinagerie vocabulary toolchain: the glossary, the vocabulary report, and shared constants",
   "devDependencies": {
@@ -22,6 +21,12 @@
     ".": "./src/index.ts",
     "./package.json": "./package.json"
   },
+  "files": [
+    "CHANGELOG.md",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "homepage": "https://github.com/organizzolini/codebase/tree/main/projects/ic-suite/coinagerie/coinagerie-core#readme",
   "keywords": [
     "coinagerie",
@@ -32,7 +37,19 @@
   "license": "MIT",
   "main": "src/index.ts",
   "name": "@coinagerie/core",
-  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/src/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/src/index.js",
+    "registry": "https://registry.npmjs.org",
+    "types": "./dist/src/index.d.ts"
+  },
   "repository": {
     "directory": "projects/ic-suite/coinagerie/coinagerie-core",
     "type": "git",

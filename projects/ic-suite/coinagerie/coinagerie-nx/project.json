@@ -12,23 +12,7 @@
     "type:package"
   ],
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "options": {
-        "assets": [
-          {
-            "glob": "README.md",
-            "input": "projects/ic-suite/coinagerie/coinagerie-nx",
-            "output": "."
-          }
-        ],
-        "generatePackageJson": false,
-        "main": "projects/ic-suite/coinagerie/coinagerie-nx/src/index.ts",
-        "outputPath": "projects/ic-suite/coinagerie/coinagerie-nx/dist",
-        "tsConfig": "projects/ic-suite/coinagerie/coinagerie-nx/tsconfig.build.json"
-      },
-      "outputs": ["{options.outputPath}"]
-    },
+    "build": {},
     "build-projects": {},
     "codometer": {},
     "dependency-cruiser": {},
@@ -40,6 +24,7 @@
     "markdown-lint": {},
     "oxfmt": {},
     "oxlint": {},
+    "pack": {},
     "prettier": {},
     "spell-check": {},
     "test-code": {},

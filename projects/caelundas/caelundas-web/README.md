@@ -126,7 +126,7 @@ Call stacks traced through `projects/caelundas/caelundas-web`, deepest first. Ea
 | Measure | Value |
 | --- | --- |
 | Callables | 683 |
-| Files | 289 |
+| Files | 290 |
 | Calls traced | 665 |
 | Call stacks | 102 |
 | Deepest stack | 6 |
@@ -1514,14 +1514,14 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-30657-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-30671-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-1.05_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-47-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-399-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-400-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-399-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-400-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-147-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-2-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
@@ -1540,7 +1540,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-1667-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-263-059669?style=flat-square)
 ![Constants](https://img.shields.io/badge/Constants-1544-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-1197-0284c7?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-1198-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-652-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-1816-64748b?style=flat-square)
 ![Comment Lines](https://img.shields.io/badge/Comment_Lines-3198-475569?style=flat-square)
@@ -1564,16 +1564,16 @@ What this project is judged against, as declared in its own `callidescope.config
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-184-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-185-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-47-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-15-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-117-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-99-16a34a?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-100-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-2-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-49-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-169-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-50-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-170-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML
@@ -1842,6 +1842,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **configurable**:
 - **conjunct**:
 - **conjunction**:
+- **connect**:
 - **console**:
 - **constant**:
 - **constellation**:

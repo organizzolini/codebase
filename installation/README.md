@@ -862,6 +862,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compute**:
 - **concat**:
 - **configure**:
+- **connect**:
 - **connection**:
 - **console**:
 - **constant**:
