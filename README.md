@@ -631,6 +631,7 @@ graph LR
   module_callidescope_nx_RunConfigurationModule["callidescope-nx/RunConfigurationModule"]
   module_callidescope_nx_RunPlanModule["callidescope-nx/RunPlanModule"]
   module_callidescope_nx_SignaturesModule["callidescope-nx/SignaturesModule"]
+  module_callidescope_nx_VerdictModule["callidescope-nx/VerdictModule"]
   module_callidescope_nx_WorkspaceModule["callidescope-nx/WorkspaceModule"]
   module_callidescope_nx_WriteDestinationsModule["callidescope-nx/WriteDestinationsModule"]
   module_callidescope_output_AddressReportModule["callidescope-output/AddressReportModule"]
@@ -1375,16 +1376,17 @@ graph LR
   module_callidescope_nx_PluginModule --> module_callidescope_nx_CallidescopeModule
   module_callidescope_nx_PluginModule --> module_callidescope_nx_ConfigurationModule
   module_callidescope_nx_PluginModule --> module_callidescope_nx_OptionsModule
-  module_callidescope_nx_PluginModule --> module_callidescope_nx_ProjectReportsModule
   module_callidescope_nx_PluginModule --> module_callidescope_nx_ProjectsModule
   module_callidescope_nx_PluginModule --> module_callidescope_nx_ReportModule
   module_callidescope_nx_PluginModule --> module_callidescope_nx_RunConfigurationModule
+  module_callidescope_nx_PluginModule --> module_callidescope_nx_VerdictModule
   module_callidescope_nx_PluginModule --> module_callidescope_nx_WorkspaceModule
   module_callidescope_nx_ProgramModule --> module_callidescope_nx_WorkspaceModule
   module_callidescope_nx_ProjectReportsModule --> module_callidescope_nx_GraphModule
   module_callidescope_nx_ProjectReportsModule --> module_callidescope_nx_SignaturesModule
   module_callidescope_nx_RunConfigurationModule --> module_callidescope_nx_ConfigurationModule
   module_callidescope_nx_RunPlanModule --> module_callidescope_nx_FlagResolutionModule
+  module_callidescope_nx_VerdictModule --> module_callidescope_nx_ProjectReportsModule
   module_callidescope_nx_WriteDestinationsModule --> module_callidescope_nx_OutputJsonModule
   module_callidescope_nx_WriteDestinationsModule --> module_callidescope_nx_OutputMarkdownModule
   module_callidescope_nx_WriteDestinationsModule --> module_callidescope_nx_ReportModule
@@ -3161,6 +3163,8 @@ graph LR
   file_callidescope_nx_src_executors_breadth_executor_unit_test_ts["callidescope-nx/src/executors/breadth/executor.unit.test.ts"]
   file_callidescope_nx_src_executors_depth_executor_ts["callidescope-nx/src/executors/depth/executor.ts"]
   file_callidescope_nx_src_executors_depth_executor_unit_test_ts["callidescope-nx/src/executors/depth/executor.unit.test.ts"]
+  file_callidescope_nx_src_executors_gate_batch_executor_ts["callidescope-nx/src/executors/gate/batch-executor.ts"]
+  file_callidescope_nx_src_executors_gate_batch_executor_unit_test_ts["callidescope-nx/src/executors/gate/batch-executor.unit.test.ts"]
   file_callidescope_nx_src_executors_gate_executor_integration_test_ts["callidescope-nx/src/executors/gate/executor.integration.test.ts"]
   file_callidescope_nx_src_executors_gate_executor_ts["callidescope-nx/src/executors/gate/executor.ts"]
   file_callidescope_nx_src_executors_gate_executor_types_ts["callidescope-nx/src/executors/gate/executor.types.ts"]
@@ -3201,6 +3205,11 @@ graph LR
   file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts["callidescope-nx/src/modules/run-configuration/run-configuration.service.ts"]
   file_callidescope_nx_src_modules_run_configuration_run_configuration_service_unit_test_ts["callidescope-nx/src/modules/run-configuration/run-configuration.service.unit.test.ts"]
   file_callidescope_nx_src_modules_run_configuration_run_configuration_types_ts["callidescope-nx/src/modules/run-configuration/run-configuration.types.ts"]
+  file_callidescope_nx_src_modules_verdict_verdict_constants_ts["callidescope-nx/src/modules/verdict/verdict.constants.ts"]
+  file_callidescope_nx_src_modules_verdict_verdict_module_ts["callidescope-nx/src/modules/verdict/verdict.module.ts"]
+  file_callidescope_nx_src_modules_verdict_verdict_service_ts["callidescope-nx/src/modules/verdict/verdict.service.ts"]
+  file_callidescope_nx_src_modules_verdict_verdict_service_unit_test_ts["callidescope-nx/src/modules/verdict/verdict.service.unit.test.ts"]
+  file_callidescope_nx_src_modules_verdict_verdict_types_ts["callidescope-nx/src/modules/verdict/verdict.types.ts"]
   file_callidescope_nx_testing_mocks_ts["callidescope-nx/testing/mocks.ts"]
   file_callidescope_nx_testing_setup_ts["callidescope-nx/testing/setup.ts"]
   file_callidescope_nx_vite_config_ts["callidescope-nx/vite.config.ts"]
@@ -9168,6 +9177,17 @@ graph LR
   file_callidescope_nx_src_executors_depth_executor_ts --> file_callidescope_nx_src_modules_address_address_utilities_ts
   file_callidescope_nx_src_executors_depth_executor_unit_test_ts --> file_callidescope_nx_src_executors_depth_executor_ts
   file_callidescope_nx_src_executors_depth_executor_unit_test_ts --> file_callidescope_nx_src_modules_address_address_utilities_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_ts --> file_callidescope_nx_src_executors_gate_executor_types_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_ts --> file_callidescope_nx_src_modules_plugin_plugin_context_utilities_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_ts --> file_callidescope_nx_src_modules_plugin_plugin_constants_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_ts --> file_callidescope_nx_src_modules_plugin_plugin_types_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_ts --> file_callidescope_nx_src_modules_plugin_plugin_utilities_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_unit_test_ts --> file_callidescope_nx_src_executors_gate_batch_executor_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_unit_test_ts --> file_callidescope_nx_src_executors_gate_executor_types_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_unit_test_ts --> file_callidescope_nx_src_modules_options_options_service_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_unit_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_constants_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_unit_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_service_ts
+  file_callidescope_nx_src_executors_gate_batch_executor_unit_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_types_ts
   file_callidescope_nx_src_executors_gate_executor_integration_test_ts --> file_callidescope_nx_src_executors_gate_executor_ts
   file_callidescope_nx_src_executors_gate_executor_integration_test_ts --> file_callidescope_nx_src_executors_gate_executor_types_ts
   file_callidescope_nx_src_executors_gate_executor_integration_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_constants_ts
@@ -9225,6 +9245,7 @@ graph LR
   file_callidescope_nx_src_modules_plugin_plugin_module_ts --> file_callidescope_nx_src_modules_plugin_plugin_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_module_ts --> file_callidescope_nx_src_modules_projects_projects_module_ts
   file_callidescope_nx_src_modules_plugin_plugin_module_ts --> file_callidescope_nx_src_modules_run_configuration_run_configuration_module_ts
+  file_callidescope_nx_src_modules_plugin_plugin_module_ts --> file_callidescope_nx_src_modules_verdict_verdict_module_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_ts --> file_callidescope_nx_src_modules_options_options_constants_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_ts --> file_callidescope_nx_src_modules_options_options_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_ts --> file_callidescope_nx_src_modules_options_options_types_ts
@@ -9232,12 +9253,14 @@ graph LR
   file_callidescope_nx_src_modules_plugin_plugin_service_ts --> file_callidescope_nx_src_modules_plugin_plugin_types_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_ts --> file_callidescope_nx_src_modules_projects_projects_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_ts --> file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts
+  file_callidescope_nx_src_modules_plugin_plugin_service_ts --> file_callidescope_nx_src_modules_verdict_verdict_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_callidescope_nx_src_modules_options_options_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_constants_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_types_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_callidescope_nx_src_modules_projects_projects_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts
+  file_callidescope_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_callidescope_nx_src_modules_verdict_verdict_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_types_ts --> file_callidescope_nx_src_modules_plugin_plugin_constants_ts
   file_callidescope_nx_src_modules_plugin_plugin_utilities_ts --> file_callidescope_nx_src_modules_plugin_plugin_context_utilities_ts
   file_callidescope_nx_src_modules_plugin_plugin_utilities_ts --> file_callidescope_nx_src_modules_plugin_plugin_types_ts
@@ -9247,6 +9270,12 @@ graph LR
   file_callidescope_nx_src_modules_run_configuration_run_configuration_module_ts --> file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts
   file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts --> file_callidescope_nx_src_modules_run_configuration_run_configuration_types_ts
   file_callidescope_nx_src_modules_run_configuration_run_configuration_service_unit_test_ts --> file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts
+  file_callidescope_nx_src_modules_verdict_verdict_module_ts --> file_callidescope_nx_src_modules_verdict_verdict_service_ts
+  file_callidescope_nx_src_modules_verdict_verdict_service_ts --> file_callidescope_nx_src_modules_plugin_plugin_constants_ts
+  file_callidescope_nx_src_modules_verdict_verdict_service_ts --> file_callidescope_nx_src_modules_plugin_plugin_types_ts
+  file_callidescope_nx_src_modules_verdict_verdict_service_unit_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_constants_ts
+  file_callidescope_nx_src_modules_verdict_verdict_service_unit_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_types_ts
+  file_callidescope_nx_src_modules_verdict_verdict_service_unit_test_ts --> file_callidescope_nx_src_modules_verdict_verdict_service_ts
   file_callidescope_output_src_modules_address_report_address_report_module_ts --> file_callidescope_output_src_modules_address_report_address_report_service_ts
   file_callidescope_output_src_modules_address_report_address_report_module_ts --> file_callidescope_output_src_modules_report_report_module_ts
   file_callidescope_output_src_modules_address_report_address_report_service_ts --> file_callidescope_output_src_modules_address_report_address_report_types_ts
@@ -16100,10 +16129,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7857 |
-| Files | 2627 |
-| Calls traced | 8566 |
-| Call stacks | 2190 |
+| Callables | 7866 |
+| Files | 2632 |
+| Calls traced | 8580 |
+| Call stacks | 2192 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
 | Unfollowable calls | 491 |

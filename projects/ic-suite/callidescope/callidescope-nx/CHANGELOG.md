@@ -1,3 +1,9 @@
+## 0.0.65 (2026-11-04)
+
+### 🔥 Performance
+
+- **callidescope:** ⚡️ gate every project from one batched trace ([#2107](https://github.com/organizzolini/codebase/pull/2107))
+
 ## 0.0.64 (2026-11-04)
 
 ### 🧱 Updated Dependencies
