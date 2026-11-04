@@ -422,6 +422,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compare**:
 - **compile**:
 - **compiler**:
+- **connect**:
 - **console**:
 - **constant**:
 - **controller**:

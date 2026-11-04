@@ -1842,6 +1842,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **configurable**:
 - **conjunct**:
 - **conjunction**:
+- **connect**:
 - **console**:
 - **constant**:
 - **constellation**:

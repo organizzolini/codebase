@@ -4668,6 +4668,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **conflict**:
 - **conjunct**:
 - **conjunction**:
+- **connect**:
 - **connection**:
 - **console**:
 - **constant**:
