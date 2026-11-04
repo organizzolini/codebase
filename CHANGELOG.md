@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.53.2](https://github.com/organizzolini/codebase/compare/v3.53.1...v3.53.2) (2026-11-04)
+
+### ⚡ Performance Improvements
+
+* **codependix:** ⚡️ judge every project from one batched boundary check ([#2111](https://github.com/organizzolini/codebase/issues/2111)) ([8f0ce0b](https://github.com/organizzolini/codebase/commit/8f0ce0ba6502bb7f1439f733b460bf0256726abc))
+* **configuration,integration:** ⚡️ judge every project's knip check from one batched run ([#2112](https://github.com/organizzolini/codebase/issues/2112)) ([3d5f141](https://github.com/organizzolini/codebase/commit/3d5f1413e15b909827d6d95a16774ef5e33fbc72))
+
 ## [3.53.1](https://github.com/organizzolini/codebase/compare/v3.53.0...v3.53.1) (2026-11-04)
 
 ### ⚡ Performance Improvements
