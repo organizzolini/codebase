@@ -9,9 +9,28 @@ import { CharacteristicsModule } from "../characteristics.module";
 import { PathUtilitiesModule } from "./path-utilities.module";
 import { PathUtilitiesService } from "./path-utilities.service";
 
+/** The token a consumer module gathers the shared service under, through a factory whose `inject` list only resolves exported providers. */
+const SHARED = Symbol("SHARED");
+
 describe(PathUtilitiesModule, () => {
   it("exports PathUtilitiesService", () => {
     expectModuleExports(PathUtilitiesModule, PathUtilitiesService);
+  });
+
+  it("lets a consumer that imports the module inject PathUtilitiesService", async () => {
+    const module = await Test.createTestingModule({
+      imports: [PathUtilitiesModule],
+      providers: [
+        {
+          inject: [PathUtilitiesService],
+          provide: SHARED,
+          useFactory: (service: PathUtilitiesService): PathUtilitiesService =>
+            service,
+        },
+      ],
+    }).compile();
+
+    expect(module.get(SHARED)).toBeInstanceOf(PathUtilitiesService);
   });
 
   it("is the only provider of PathUtilitiesService across CharacteristicsModule", async () => {

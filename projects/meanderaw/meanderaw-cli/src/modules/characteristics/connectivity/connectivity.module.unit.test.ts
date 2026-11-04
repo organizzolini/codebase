@@ -9,9 +9,28 @@ import { CharacteristicsModule } from "../characteristics.module";
 import { ConnectivityModule } from "./connectivity.module";
 import { ConnectivityService } from "./connectivity.service";
 
+/** The token a consumer module gathers the shared service under, through a factory whose `inject` list only resolves exported providers. */
+const SHARED = Symbol("SHARED");
+
 describe(ConnectivityModule, () => {
   it("exports ConnectivityService", () => {
     expectModuleExports(ConnectivityModule, ConnectivityService);
+  });
+
+  it("lets a consumer that imports the module inject ConnectivityService", async () => {
+    const module = await Test.createTestingModule({
+      imports: [ConnectivityModule],
+      providers: [
+        {
+          inject: [ConnectivityService],
+          provide: SHARED,
+          useFactory: (service: ConnectivityService): ConnectivityService =>
+            service,
+        },
+      ],
+    }).compile();
+
+    expect(module.get(SHARED)).toBeInstanceOf(ConnectivityService);
   });
 
   it("is the only provider of ConnectivityService across CharacteristicsModule", async () => {

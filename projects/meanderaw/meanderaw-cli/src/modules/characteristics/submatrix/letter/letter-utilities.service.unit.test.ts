@@ -1,3 +1,4 @@
+import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
@@ -65,6 +66,24 @@ describe(LetterUtilitiesService, () => {
 
   it("is exported by LetterCharacteristicsModule for letter services to inject", () => {
     expectModuleExports(LetterCharacteristicsModule, LetterUtilitiesService);
+  });
+
+  it("lets a consumer that imports LetterCharacteristicsModule inject it", async () => {
+    const shared = Symbol("shared");
+    const module = await Test.createTestingModule({
+      imports: [LetterCharacteristicsModule],
+      providers: [
+        {
+          inject: [LetterUtilitiesService],
+          provide: shared,
+          useFactory: (
+            utilities: LetterUtilitiesService,
+          ): LetterUtilitiesService => utilities,
+        },
+      ],
+    }).compile();
+
+    expect(module.get(shared)).toBeInstanceOf(LetterUtilitiesService);
   });
 
   it("mirrors a template east to west, swapping east and west arms", () => {
