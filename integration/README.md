@@ -577,6 +577,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **bound**: Restricts NX_BASE so a push compares against its previous tip, never a commit further back.
 - **breadth**: The count of direct calls a callable makes, which callidescope caps with maximumBreadth.
 - **bullet**: A single list item the upgrade-dependencies step adds to its pull request's details section.
+- **charge**:
 - **chdir**: Switching the process's working directory, which package-manifest unit tests do and then restore afterward.
 - **collator**: The Intl sorter that orders Node and Python version strings numerically, so 3.10 follows 3.9.
 - **companion**: The sidecar files, such as a SQLite write-ahead log, that move with a database when it is renamed.

@@ -1078,7 +1078,8 @@
     "spell-check": [
       {
         "cache": true,
-        "executor": "nx:run-commands",
+        "description": "Fail a project when cspell finds a misspelling under its root. Runs through the `integration:spell-check` executor rather than `nx:run-commands`, because that executor is a batch executor: `nx affected -t spell-check` hands it every project at once and one cspell run judges them all, where a run per project paid cspell's start-up and dictionary load each time. Each task still passes, fails and is cached by itself. The executor's own sources are inputs, so changing how cspell is run re-runs every project's check, and `--batch=false` turns batching off.",
+        "executor": "integration:spell-check",
         "filter": {
           "projects": [
             "tag:language:infrastructure",
@@ -1090,14 +1091,16 @@
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
           "{workspaceRoot}/configuration/.cspell/**",
           "{workspaceRoot}/configuration/cspell.config.yaml",
+          "{workspaceRoot}/integration/executors.json",
+          "{workspaceRoot}/integration/src/executors/spell-check/**/!(*.test.*|*.spec.*)",
+          "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
           "shared-globals",
           {
             "externalDependencies": ["cspell"]
           }
         ],
         "options": {
-          "command": "cspell --config configuration/cspell.config.yaml '{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}' --no-progress --gitignore --gitignore-root .",
-          "cwd": "{workspaceRoot}"
+          "configuration": "configuration/cspell.config.yaml"
         }
       }
     ],
