@@ -226,6 +226,7 @@ describe(CatalogManifestsService, () => {
       "@callidescope/configuration",
       "@codebase/observability",
       "@codometer/configuration",
+      "@coinagerie/core",
       "@conformetry/core",
       "@jimmypaolini/anything",
     ])("treats %s as internal", (dependencyName) => {

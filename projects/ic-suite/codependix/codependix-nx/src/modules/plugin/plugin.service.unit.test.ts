@@ -42,7 +42,7 @@ describe(PluginService, () => {
           [
             "packages/alpha",
             {
-              "codependix-gate": {
+              "codependix-bound": {
                 cache: true,
                 executor: "@codependix/nx:gate",
                 inputs: [
@@ -174,7 +174,7 @@ describe(PluginService, () => {
         }),
       ).toStrictEqual({
         configurationPath: "codependix.config.ts",
-        gateTargetName: "codependix-gate",
+        gateTargetName: "codependix-bound",
       });
     });
   });

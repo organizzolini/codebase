@@ -1,4 +1,4 @@
-import type { EventsDatabase } from "./lib/events-database/events-database.types";
+import type { EventsDatabase } from "./components/events-calendar/events-database.types";
 
 /**
  * What every route's loader receives. The database travels in the router's

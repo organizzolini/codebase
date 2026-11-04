@@ -2,6 +2,92 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.51.2](https://github.com/organizzolini/codebase/compare/v3.51.1...v3.51.2) (2026-11-04)
+
+### ♻️ Code Refactoring
+
+* **callidescope,codependix,configuration,validation:** ♻️ rename gate targets to restrict and bound ([#2100](https://github.com/organizzolini/codebase/issues/2100)) ([2b8017a](https://github.com/organizzolini/codebase/commit/2b8017a499455b21200eb4c08c1eaca5f4b9cf97))
+
+## [3.51.1](https://github.com/organizzolini/codebase/compare/v3.51.0...v3.51.1) (2026-11-03)
+
+### ⚡ Performance Improvements
+
+* **configuration,infrastructure,installation:** ⚡️ trim pre-commit checks and use Nx Cloud with scoped tokens ([#2097](https://github.com/organizzolini/codebase/issues/2097)) ([b43f34a](https://github.com/organizzolini/codebase/commit/b43f34aaca681dffb4adef26e2a3abc83dd9d8ab))
+
+## [3.51.0](https://github.com/organizzolini/codebase/compare/v3.50.0...v3.51.0) (2026-11-03)
+
+### ✨ Features
+
+* **nx-cloud:** set up nx cloud workspace ([#2099](https://github.com/organizzolini/codebase/issues/2099)) ([fb5ddcc](https://github.com/organizzolini/codebase/commit/fb5ddcc40346394b11975c23e4ac7aad7d8d59b2))
+
+### ⚡ Performance Improvements
+
+* **callidescope:** ⚡️ cache file-system probes across a run's programs ([#2098](https://github.com/organizzolini/codebase/issues/2098)) ([3bc4484](https://github.com/organizzolini/codebase/commit/3bc4484539482ead12ed46f2aa39a0852fcb7471))
+
+## [3.50.0](https://github.com/organizzolini/codebase/compare/v3.49.0...v3.50.0) (2026-11-03)
+
+### ✨ Features
+
+* **configuration,coinagerie:** ✨ adopt coinagerie with a root glossary ([#1888](https://github.com/organizzolini/codebase/issues/1888)) ([ba65ac8](https://github.com/organizzolini/codebase/commit/ba65ac83439a781420a4760eead1eb7547761db6)), closes [#1785](https://github.com/organizzolini/codebase/issues/1785) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1786](https://github.com/organizzolini/codebase/issues/1786) [#1787](https://github.com/organizzolini/codebase/issues/1787) [#1788](https://github.com/organizzolini/codebase/issues/1788) [#1887](https://github.com/organizzolini/codebase/issues/1887) [#1885](https://github.com/organizzolini/codebase/issues/1885) [#1879](https://github.com/organizzolini/codebase/issues/1879) [#1789](https://github.com/organizzolini/codebase/issues/1789)
+
+## [3.49.0](https://github.com/organizzolini/codebase/compare/v3.48.0...v3.49.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ add coinagerie agent skills ([#1887](https://github.com/organizzolini/codebase/issues/1887)) ([1babeae](https://github.com/organizzolini/codebase/commit/1babeae40373a91ba49cf9257dc1e931487e82ca)), closes [#1782](https://github.com/organizzolini/codebase/issues/1782) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1885](https://github.com/organizzolini/codebase/issues/1885) [#1778](https://github.com/organizzolini/codebase/issues/1778) [#1879](https://github.com/organizzolini/codebase/issues/1879) [#1775](https://github.com/organizzolini/codebase/issues/1775)
+
+### 📝 Documentation
+
+* **coinagerie:** 📝 add coinagerie examples and guided tour ([#1885](https://github.com/organizzolini/codebase/issues/1885)) ([da5227a](https://github.com/organizzolini/codebase/commit/da5227a0c383c468ae6d2cbe8530eb405f4c62e6)), closes [#1879](https://github.com/organizzolini/codebase/issues/1879) [#1778](https://github.com/organizzolini/codebase/issues/1778) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1779](https://github.com/organizzolini/codebase/issues/1779) [#1780](https://github.com/organizzolini/codebase/issues/1780) [#1781](https://github.com/organizzolini/codebase/issues/1781)
+
+## [3.48.0](https://github.com/organizzolini/codebase/compare/v3.47.0...v3.48.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ infer coinagerie check targets in nx ([#1879](https://github.com/organizzolini/codebase/issues/1879)) ([c6f42e7](https://github.com/organizzolini/codebase/commit/c6f42e7805b51ea12e94693a65ff44d07dca5f50)), closes [#1775](https://github.com/organizzolini/codebase/issues/1775) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1881](https://github.com/organizzolini/codebase/issues/1881) [#1770](https://github.com/organizzolini/codebase/issues/1770)
+
+## [3.47.0](https://github.com/organizzolini/codebase/compare/v3.46.0...v3.47.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ read identifiers from python, sql, shell, css, hcl, toml, json, and yaml ([#1881](https://github.com/organizzolini/codebase/issues/1881)) ([6db570a](https://github.com/organizzolini/codebase/commit/6db570a18dde3d3f98405eb11becf478d740f3ab)), closes [#1770](https://github.com/organizzolini/codebase/issues/1770) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1771](https://github.com/organizzolini/codebase/issues/1771) [#1772](https://github.com/organizzolini/codebase/issues/1772) [#1773](https://github.com/organizzolini/codebase/issues/1773) [#1774](https://github.com/organizzolini/codebase/issues/1774) [#1880](https://github.com/organizzolini/codebase/issues/1880) [#1766](https://github.com/organizzolini/codebase/issues/1766) [#1882](https://github.com/organizzolini/codebase/issues/1882) [#1762](https://github.com/organizzolini/codebase/issues/1762) [#1875](https://github.com/organizzolini/codebase/issues/1875)
+
+## [3.46.0](https://github.com/organizzolini/codebase/compare/v3.45.0...v3.46.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ write json glossaries and override configuration with flags ([#1880](https://github.com/organizzolini/codebase/issues/1880)) ([5cdc269](https://github.com/organizzolini/codebase/commit/5cdc26922b8a3bab3abee20b04cad54d5c95d00b)), closes [#1766](https://github.com/organizzolini/codebase/issues/1766) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1882](https://github.com/organizzolini/codebase/issues/1882) [#1762](https://github.com/organizzolini/codebase/issues/1762) [#1875](https://github.com/organizzolini/codebase/issues/1875) [#1755](https://github.com/organizzolini/codebase/issues/1755)
+
+## [3.45.0](https://github.com/organizzolini/codebase/compare/v3.44.0...v3.45.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ fold word forms and exclude configured words ([#1882](https://github.com/organizzolini/codebase/issues/1882)) ([2760046](https://github.com/organizzolini/codebase/commit/27600466bf8213f6da8404fe739f0aae66c994df)), closes [#1762](https://github.com/organizzolini/codebase/issues/1762) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1875](https://github.com/organizzolini/codebase/issues/1875) [#1755](https://github.com/organizzolini/codebase/issues/1755)
+
+## [3.44.0](https://github.com/organizzolini/codebase/compare/v3.43.0...v3.44.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ build a markdown glossary from typescript ([#1875](https://github.com/organizzolini/codebase/issues/1875)) ([2b02aff](https://github.com/organizzolini/codebase/commit/2b02afff32c03b175bbcecf0cd06c9eb9142e841)), closes [#1755](https://github.com/organizzolini/codebase/issues/1755) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1859](https://github.com/organizzolini/codebase/issues/1859) [#1750](https://github.com/organizzolini/codebase/issues/1750)
+
+## [3.43.0](https://github.com/organizzolini/codebase/compare/v3.42.0...v3.43.0) (2026-11-03)
+
+### ✨ Features
+
+* **caelundas,presentation:** ✨ show a tunable night sky behind the web calendar ([#1884](https://github.com/organizzolini/codebase/issues/1884)) ([beba8a2](https://github.com/organizzolini/codebase/commit/beba8a2261afdeadd4259a2074e8a391cf6b7ce2)), closes [#1878](https://github.com/organizzolini/codebase/issues/1878) [#1951](https://github.com/organizzolini/codebase/issues/1951) [#1867](https://github.com/organizzolini/codebase/issues/1867) [#1868](https://github.com/organizzolini/codebase/issues/1868) [#1869](https://github.com/organizzolini/codebase/issues/1869) [#1870](https://github.com/organizzolini/codebase/issues/1870) [#1871](https://github.com/organizzolini/codebase/issues/1871) [#1872](https://github.com/organizzolini/codebase/issues/1872) [#1873](https://github.com/organizzolini/codebase/issues/1873) [#1861](https://github.com/organizzolini/codebase/issues/1861) [#1878](https://github.com/organizzolini/codebase/issues/1878) [#1951](https://github.com/organizzolini/codebase/issues/1951)
+
+## [3.42.0](https://github.com/organizzolini/codebase/compare/v3.41.9...v3.42.0) (2026-11-03)
+
+### ✨ Features
+
+* **caelundas:** ✨ generate a real-star night sky SVG ([#1878](https://github.com/organizzolini/codebase/issues/1878)) ([4a2dca4](https://github.com/organizzolini/codebase/commit/4a2dca48368c3b5f1e9631e1f52c978b7a982514)), closes [#1951](https://github.com/organizzolini/codebase/issues/1951) [#1951](https://github.com/organizzolini/codebase/issues/1951) [#1884](https://github.com/organizzolini/codebase/issues/1884) [#1862](https://github.com/organizzolini/codebase/issues/1862) [#1863](https://github.com/organizzolini/codebase/issues/1863) [#1864](https://github.com/organizzolini/codebase/issues/1864) [#1865](https://github.com/organizzolini/codebase/issues/1865) [#1866](https://github.com/organizzolini/codebase/issues/1866) [#1861](https://github.com/organizzolini/codebase/issues/1861) [#1951](https://github.com/organizzolini/codebase/issues/1951)
+
+## [3.41.9](https://github.com/organizzolini/codebase/compare/v3.41.8...v3.41.9) (2026-11-03)
+
+### ♻️ Code Refactoring
+
+* **configuration,caelundas,lexico,meanderaw,documentation,conformetry:** ♻️ hold every web app to one file shape ([#1951](https://github.com/organizzolini/codebase/issues/1951)) ([5c92134](https://github.com/organizzolini/codebase/commit/5c9213414614db7290247a531c766635e4e81833))
+
 ## [3.41.8](https://github.com/organizzolini/codebase/compare/v3.41.7...v3.41.8) (2026-10-30)
 
 ### 📝 Documentation

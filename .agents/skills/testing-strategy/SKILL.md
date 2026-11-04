@@ -55,9 +55,9 @@ wrap another common package live with that package and are exported from its
 
 A project lists each package it imports in tests as a development dependency.
 `persistence` and `interface` may list `@codebase/testing` too. So may
-`observability`: that project-graph cycle is allowed, and `testing`'s build
-(`dependsOn: []`) and observability's `implicitDependencies: ["!testing"]` keep
-it out of the task graph.
+`observability`: that project-graph cycle is allowed, and observability's
+`implicitDependencies: ["!testing"]` keeps it out of the task graph, so
+`testing`'s build waits on observability's and never the reverse.
 Every helper that changes global state undoes it after the test, so nothing
 leaks into the next one. The [package README](../../../projects/common/testing/README.md)
 has an example per subpath.

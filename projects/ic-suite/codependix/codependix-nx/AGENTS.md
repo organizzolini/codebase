@@ -5,8 +5,8 @@
 **Type**: Nx plugin — one inferred target and its executor, built on a NestJS
 application context
 
-**Purpose**: Infers `codependix-gate` onto every `project.json` project but the
-workspace root, so `nx affected -t codependix-gate` checks codependix
+**Purpose**: Infers `codependix-bound` onto every `project.json` project but the
+workspace root, so `nx affected -t codependix-bound` checks codependix
 boundaries per project and fails the task named after the project whose
 boundary broke.
 

@@ -202,6 +202,11 @@ const scopes = [
     name: "codometer",
   },
   {
+    description:
+      "Codebase vocabulary CLI that lists the words a codebase uses and keeps a glossary of them in step with the code",
+    name: "coinagerie",
+  },
+  {
     description: "Escape hatch: suppress semantic-release for any commit type",
     name: "no-release",
   },
