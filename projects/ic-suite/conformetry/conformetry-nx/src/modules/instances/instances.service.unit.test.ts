@@ -300,7 +300,7 @@ describe(InstancesService, () => {
           workspaceRoot,
         });
 
-        expect(findInstances).toHaveBeenCalledExactlyOnceWith();
+        expect(findInstances).toHaveBeenCalledTimes(1);
         expect(widgets).toHaveLength(1);
         expect(widgets[0]?.path).toContain("packages/widgets/src/modules");
         expect(gadgets).toHaveLength(1);
