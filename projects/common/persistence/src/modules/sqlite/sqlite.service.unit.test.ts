@@ -1,7 +1,9 @@
 import { ConfigModule } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import { DefaultNamingStrategy } from "typeorm";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
+
+import { overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CreateSprockets1767225600002 } from "../../../testing/fixtures/migrations/1767225600002-create-sprockets";
 
@@ -12,37 +14,34 @@ describe(SqliteService, () => {
   let service: SqliteService;
   const namingStrategy = new DefaultNamingStrategy();
 
+  const options = {
+    imports: [ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true })],
+    providers: [
+      {
+        provide: SQLITE_OPTIONS,
+        useValue: { entities: [], namingStrategy, project: "fixture" },
+      },
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true })],
-      providers: [
-        SqliteService,
-        {
-          provide: SQLITE_OPTIONS,
-          useValue: { entities: [], namingStrategy, project: "fixture" },
-        },
-      ],
-    }).compile();
-
-    service = await module.resolve(SqliteService);
+    ({ instance: service } = await buildTestingModule(SqliteService, options));
   });
 
-  afterEach(() => {
-    vi.unstubAllEnvs();
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SqliteService, options);
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(SqliteService);
   });
 
   it("connects with the project's default file while the unprefixed variable is set", () => {
-    vi.stubEnv("SQLITE_DATABASE", "other.sqlite");
+    overrideEnvironment({ SQLITE_DATABASE: "other.sqlite" });
 
     expect(service.connection()).toStrictEqual({ database: "fixture.sqlite" });
   });
 
   it("reads the project's prefixed variable through configuration", () => {
-    vi.stubEnv("FIXTURE_SQLITE_DATABASE", ":memory:");
+    overrideEnvironment({ FIXTURE_SQLITE_DATABASE: ":memory:" });
 
     expect(service.connection()).toStrictEqual({ database: ":memory:" });
   });
@@ -58,10 +57,9 @@ describe(SqliteService, () => {
   });
 
   it("runs the migrations it was given on start", async () => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SqliteService, {
       imports: [ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true })],
       providers: [
-        SqliteService,
         {
           provide: SQLITE_OPTIONS,
           useValue: {
@@ -71,7 +69,7 @@ describe(SqliteService, () => {
           },
         },
       ],
-    }).compile();
+    });
 
     expect(module.get(SqliteService).createTypeOrmOptions()).toMatchObject({
       migrations: [CreateSprockets1767225600002],
@@ -81,10 +79,9 @@ describe(SqliteService, () => {
   });
 
   it("refuses to connect when its module was imported without forRoot", async () => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SqliteService, {
       imports: [ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true })],
-      providers: [SqliteService],
-    }).compile();
+    });
 
     expect(() => module.get(SqliteService).connection()).toThrow(
       /SqliteModule\.forRoot/,

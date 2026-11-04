@@ -1204,6 +1204,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **byte**:
 - **call**:
 - **callback**:
+- **capture**:
 - **child**:
 - **chunk**:
 - **clean**:
@@ -1215,7 +1216,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compiler**:
 - **configurable**:
 - **connection**:
-- **console**:
 - **constant**:
 - **controller**:
 - **convention**:
@@ -1378,6 +1378,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **succeed**:
 - **synchronize**:
 - **synthetic**:
+- **temporary**:
 - **terminal**:
 - **text**:
 - **than**:

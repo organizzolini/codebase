@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { ConfigModule } from "@nestjs/config";
@@ -8,6 +7,8 @@ import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { CreateSprockets1767225600002 } from "../../../testing/fixtures/migrations/1767225600002-create-sprockets";
 import { Sprocket } from "../../../testing/fixtures/sprocket.entity";
@@ -34,17 +35,16 @@ const UUID_PATTERN =
  */
 describe(SqliteModule, () => {
   describe("with a database file", () => {
-    let directory: string;
+    const directory = useTemporaryDirectory("sqlite-module");
     let file: string;
     let module: TestingModule;
     let repository: Repository<Sprocket>;
 
     beforeAll(async () => {
-      directory = fs.mkdtempSync(path.join(os.tmpdir(), "sqlite-module-"));
-      file = path.join(directory, "fixture.sqlite");
+      file = path.join(directory(), "fixture.sqlite");
 
       // 🎯 An unprefixed variable must be ignored; the prefixed one is read.
-      vi.stubEnv("SQLITE_DATABASE", path.join(directory, "ignored.sqlite"));
+      vi.stubEnv("SQLITE_DATABASE", path.join(directory(), "ignored.sqlite"));
       vi.stubEnv("FIXTURE_SQLITE_DATABASE", file);
 
       const environmentSchema = z.object(
@@ -73,7 +73,6 @@ describe(SqliteModule, () => {
 
     afterAll(async () => {
       await module.close();
-      fs.rmSync(directory, { force: true, recursive: true });
       vi.unstubAllEnvs();
     });
 

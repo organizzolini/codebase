@@ -538,9 +538,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **greet**:
 - **greeter**:
 - **hoist**:
-- **implementation**:
 - **implicit**:
 - **injectable**:
+- **instance**:
 - **invalid**:
 - **irregular**:
 - **iso**:
@@ -562,11 +562,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **non**:
 - **now**:
 - **once**:
-- **original**:
 - **parameter**:
 - **past**:
 - **percent**:
 - **promise**:
+- **provide**:
 - **publish**:
 - **quasi**:
 - **real**:

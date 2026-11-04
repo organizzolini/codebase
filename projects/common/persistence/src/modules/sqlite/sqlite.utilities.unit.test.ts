@@ -7,6 +7,8 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
+import { createTemporaryDirectory } from "@codebase/testing";
+
 import {
   assertSqliteEnvironmentKeys,
   createSqliteDataSource,
@@ -41,15 +43,13 @@ describe("sqlite utilities", () => {
 
   describe(ensureSqliteDirectory, () => {
     it("creates the missing folders of a file database", () => {
-      const root = fs.mkdtempSync(path.join(os.tmpdir(), "sqlite-directory-"));
+      const root = createTemporaryDirectory("sqlite-directory");
       const database = path.join(root, "output", "nested", "fixture.sqlite");
 
       ensureSqliteDirectory({ database });
 
       expect(fs.existsSync(path.dirname(database))).toBe(true);
       expect(fs.existsSync(database)).toBe(false);
-
-      fs.rmSync(root, { force: true, recursive: true });
     });
 
     it("leaves an existing folder and an in-memory database alone", () => {

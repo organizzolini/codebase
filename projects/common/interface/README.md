@@ -129,12 +129,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**:
 - **buffer**:
 - **builder**:
-- **clear**:
 - **close**:
-- **compile**:
 - **compiler**:
 - **connection**:
-- **console**:
 - **constant**:
 - **count**:
 - **decode**:
@@ -157,7 +154,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **floor**:
 - **greet**:
 - **handler**:
-- **implementation**:
 - **instance**:
 - **int**:
 - **invalid**:
@@ -194,7 +190,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ql**:
 - **quick**:
 - **real**:
-- **recursive**:
 - **reject**:
 - **relate**:
 - **relation**:
@@ -206,7 +201,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **score**:
 - **self**:
 - **slice**:
-- **spy**:
 - **strict**:
 - **stringify**:
 - **summarize**:
