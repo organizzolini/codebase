@@ -127,8 +127,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
     routes: 131 / 145,
   },
   publication: NEST_BASELINE,
-  synchronization: NEST_BASELINE,
-  validation: NEST_BASELINE,
 };
 
 /**

@@ -1,14 +1,15 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueLabelsGithubService } from "./issue-labels-github.service";
 import { IssueLabelsCommand } from "./issue-labels.command";
 import { IssueLabelsService } from "./issue-labels.service";
 
 import type { GithubCliResult } from "./issue-labels.types";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 /** A `gh` call that ran and worked. */
 const succeeded: GithubCliResult = {
@@ -26,35 +27,32 @@ const failed = (standardError: string): GithubCliResult => ({
   succeeded: false,
 });
 
+const moduleOptions = {
+  mocks: [IssueLabelsGithubService],
+  providers: [IssueLabelsService],
+};
+
 describe(IssueLabelsCommand, () => {
   let command: IssueLabelsCommand;
   let githubService: IssueLabelsGithubService;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        IssueLabelsCommand,
-        IssueLabelsService,
-        {
-          provide: IssueLabelsGithubService,
-          useValue: createMock<IssueLabelsGithubService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(IssueLabelsCommand, moduleOptions);
 
-    command = await module.resolve(IssueLabelsCommand);
-    githubService = await module.resolve(IssueLabelsGithubService);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    githubService = built.mock(IssueLabelsGithubService);
+    logger = built.logger;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
 
-    for (const variableName of ["ISSUE_BODY", "ISSUE_LABELS", "ISSUE_NUMBER"]) {
-      Reflect.deleteProperty(process.env, variableName);
-    }
+    overrideEnvironment({
+      ISSUE_BODY: undefined,
+      ISSUE_LABELS: undefined,
+      ISSUE_NUMBER: undefined,
+    });
 
     vi.mocked(githubService.isAvailable).mockReturnValue(true);
     vi.mocked(githubService.describeFailure).mockImplementation(
@@ -63,28 +61,21 @@ describe(IssueLabelsCommand, () => {
     );
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      IssueLabelsCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(IssueLabelsCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        IssueLabelsCommand,
-        IssueLabelsService,
-        {
-          provide: IssueLabelsGithubService,
-          useValue: createMock<IssueLabelsGithubService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("IssueLabelsCommand");
+    await expectLoggerContext(IssueLabelsCommand, moduleOptions);
   });
 
   it("does nothing without an issue number", async () => {
@@ -101,18 +92,22 @@ describe(IssueLabelsCommand, () => {
   it("adds the labels a template submission implies", async () => {
     expect.hasAssertions();
 
-    process.env["ISSUE_NUMBER"] = "7";
-    process.env["ISSUE_BODY"] = [
-      "### Type",
-      "",
-      "feat",
-      "",
-      "### Scope",
-      "",
-      "lexico",
-      "",
-    ].join("\n");
-    process.env["ISSUE_LABELS"] = JSON.stringify([{ name: "source:human" }]);
+    overrideEnvironment({ ISSUE_NUMBER: "7" });
+    overrideEnvironment({
+      ISSUE_BODY: [
+        "### Type",
+        "",
+        "feat",
+        "",
+        "### Scope",
+        "",
+        "lexico",
+        "",
+      ].join("\n"),
+    });
+    overrideEnvironment({
+      ISSUE_LABELS: JSON.stringify([{ name: "source:human" }]),
+    });
     vi.mocked(githubService.run).mockReturnValue(succeeded);
 
     await command.run();
@@ -138,9 +133,9 @@ describe(IssueLabelsCommand, () => {
   it("adds nothing already present, and skips a plain-body issue entirely", async () => {
     expect.hasAssertions();
 
-    process.env["ISSUE_NUMBER"] = "7";
-    process.env["ISSUE_BODY"] = "Plain issue, no template.";
-    process.env["ISSUE_LABELS"] = "not json";
+    overrideEnvironment({ ISSUE_NUMBER: "7" });
+    overrideEnvironment({ ISSUE_BODY: "Plain issue, no template." });
+    overrideEnvironment({ ISSUE_LABELS: "not json" });
 
     await command.run();
 
@@ -153,8 +148,8 @@ describe(IssueLabelsCommand, () => {
   it("treats a missing issue body as empty content", async () => {
     expect.hasAssertions();
 
-    process.env["ISSUE_NUMBER"] = "7";
-    process.env["ISSUE_LABELS"] = "[]";
+    overrideEnvironment({ ISSUE_NUMBER: "7" });
+    overrideEnvironment({ ISSUE_LABELS: "[]" });
 
     await command.run();
 
@@ -167,9 +162,11 @@ describe(IssueLabelsCommand, () => {
   it("skips labels already on the issue", async () => {
     expect.hasAssertions();
 
-    process.env["ISSUE_NUMBER"] = "7";
-    process.env["ISSUE_BODY"] = ["### Type", "", "feat", ""].join("\n");
-    process.env["ISSUE_LABELS"] = JSON.stringify(["type:feat"]);
+    overrideEnvironment({ ISSUE_NUMBER: "7" });
+    overrideEnvironment({
+      ISSUE_BODY: ["### Type", "", "feat", ""].join("\n"),
+    });
+    overrideEnvironment({ ISSUE_LABELS: JSON.stringify(["type:feat"]) });
 
     await command.run();
 
@@ -179,9 +176,13 @@ describe(IssueLabelsCommand, () => {
   it("drops label entries with no readable name and ignores a document that is not an array", async () => {
     expect.hasAssertions();
 
-    process.env["ISSUE_NUMBER"] = "7";
-    process.env["ISSUE_BODY"] = ["### Type", "", "feat", ""].join("\n");
-    process.env["ISSUE_LABELS"] = JSON.stringify([42, { tint: "red" }]);
+    overrideEnvironment({ ISSUE_NUMBER: "7" });
+    overrideEnvironment({
+      ISSUE_BODY: ["### Type", "", "feat", ""].join("\n"),
+    });
+    overrideEnvironment({
+      ISSUE_LABELS: JSON.stringify([42, { tint: "red" }]),
+    });
     vi.mocked(githubService.run).mockReturnValue(succeeded);
 
     await command.run();
@@ -196,7 +197,7 @@ describe(IssueLabelsCommand, () => {
 
     vi.clearAllMocks();
     vi.mocked(githubService.isAvailable).mockReturnValue(true);
-    process.env["ISSUE_LABELS"] = "{}";
+    overrideEnvironment({ ISSUE_LABELS: "{}" });
     vi.mocked(githubService.run).mockReturnValue(succeeded);
 
     await command.run();
@@ -213,8 +214,10 @@ describe(IssueLabelsCommand, () => {
   it("reports when gh is unavailable", async () => {
     expect.hasAssertions();
 
-    process.env["ISSUE_NUMBER"] = "7";
-    process.env["ISSUE_BODY"] = ["### Type", "", "feat", ""].join("\n");
+    overrideEnvironment({ ISSUE_NUMBER: "7" });
+    overrideEnvironment({
+      ISSUE_BODY: ["### Type", "", "feat", ""].join("\n"),
+    });
     vi.mocked(githubService.isAvailable).mockReturnValue(false);
 
     await command.run();
@@ -227,8 +230,10 @@ describe(IssueLabelsCommand, () => {
   it("reports a failed gh issue edit without throwing", async () => {
     expect.hasAssertions();
 
-    process.env["ISSUE_NUMBER"] = "7";
-    process.env["ISSUE_BODY"] = ["### Type", "", "feat", ""].join("\n");
+    overrideEnvironment({ ISSUE_NUMBER: "7" });
+    overrideEnvironment({
+      ISSUE_BODY: ["### Type", "", "feat", ""].join("\n"),
+    });
     vi.mocked(githubService.run).mockReturnValue(failed("HTTP 403"));
 
     await command.run();

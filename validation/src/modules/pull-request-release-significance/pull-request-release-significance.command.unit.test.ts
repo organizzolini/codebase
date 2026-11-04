@@ -1,7 +1,5 @@
 import { appendFileSync } from "node:fs";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -12,7 +10,9 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
@@ -69,34 +69,30 @@ const pullRequestDocument = (options: {
 }): string =>
   JSON.stringify({ commits: options.commits ?? [], title: options.title });
 
+const moduleOptions = {
+  mocks: [PullRequestReleaseSignificanceGithubService],
+  providers: [PullRequestReleaseSignificanceService],
+};
+
 describe(PullRequestReleaseSignificanceCommand, () => {
   let command: PullRequestReleaseSignificanceCommand;
   let githubService: PullRequestReleaseSignificanceGithubService;
   let reportLines: string[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestReleaseSignificanceCommand,
-        PullRequestReleaseSignificanceService,
-        {
-          provide: PullRequestReleaseSignificanceGithubService,
-          useValue: createMock<PullRequestReleaseSignificanceGithubService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(PullRequestReleaseSignificanceCommand);
-    githubService = await module.resolve(
-      PullRequestReleaseSignificanceGithubService,
+    const built = await buildTestingModule(
+      PullRequestReleaseSignificanceCommand,
+      moduleOptions,
     );
+
+    command = built.instance;
+    githubService = built.mock(PullRequestReleaseSignificanceGithubService);
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
-    Reflect.deleteProperty(process.env, "PULL_REQUEST_NUMBER");
-    Reflect.deleteProperty(process.env, STEP_SUMMARY_VARIABLE);
+    overrideEnvironment({ PULL_REQUEST_NUMBER: undefined });
+    overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: undefined });
 
     reportLines = [];
     vi.spyOn(console, "info").mockImplementation((line: unknown): void => {
@@ -135,29 +131,23 @@ describe(PullRequestReleaseSignificanceCommand, () => {
     }
   };
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PullRequestReleaseSignificanceCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestReleaseSignificanceCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestReleaseSignificanceCommand,
-        PullRequestReleaseSignificanceService,
-        {
-          provide: PullRequestReleaseSignificanceGithubService,
-          useValue: createMock<PullRequestReleaseSignificanceGithubService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "PullRequestReleaseSignificanceCommand",
+    await expectLoggerContext(
+      PullRequestReleaseSignificanceCommand,
+      moduleOptions,
     );
   });
 
@@ -194,7 +184,7 @@ describe(PullRequestReleaseSignificanceCommand, () => {
     it("reads PULL_REQUEST_NUMBER when no argument was passed", async () => {
       expect.hasAssertions();
 
-      process.env["PULL_REQUEST_NUMBER"] = "99";
+      overrideEnvironment({ PULL_REQUEST_NUMBER: "99" });
       vi.mocked(githubService.run).mockReturnValue(
         succeeded(pullRequestDocument({ title: "feat(lexico): add a page" })),
       );
@@ -212,7 +202,7 @@ describe(PullRequestReleaseSignificanceCommand, () => {
     it("prefers the argument over PULL_REQUEST_NUMBER", async () => {
       expect.hasAssertions();
 
-      process.env["PULL_REQUEST_NUMBER"] = "99";
+      overrideEnvironment({ PULL_REQUEST_NUMBER: "99" });
       vi.mocked(githubService.run).mockReturnValue(
         succeeded(pullRequestDocument({ title: "feat(lexico): add a page" })),
       );
@@ -329,7 +319,7 @@ describe(PullRequestReleaseSignificanceCommand, () => {
     it("mirrors the report when the variable is set", async () => {
       expect.hasAssertions();
 
-      process.env[STEP_SUMMARY_VARIABLE] = "/tmp/summary";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "/tmp/summary" });
       vi.mocked(githubService.run).mockReturnValue(
         succeeded(pullRequestDocument({ title: "feat(lexico): add a page" })),
       );
@@ -356,7 +346,7 @@ describe(PullRequestReleaseSignificanceCommand, () => {
     it("logs a warning when writing step summary throws an error", async () => {
       expect.hasAssertions();
 
-      process.env[STEP_SUMMARY_VARIABLE] = "/tmp/summary";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "/tmp/summary" });
       vi.mocked(githubService.run).mockReturnValue(
         succeeded(pullRequestDocument({ title: "feat(lexico): add a page" })),
       );
@@ -373,7 +363,7 @@ describe(PullRequestReleaseSignificanceCommand, () => {
     it("writes nothing when the variable is empty", async () => {
       expect.hasAssertions();
 
-      process.env[STEP_SUMMARY_VARIABLE] = "";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "" });
       vi.mocked(githubService.run).mockReturnValue(
         succeeded(pullRequestDocument({ title: "feat(lexico): add a page" })),
       );
@@ -385,7 +375,7 @@ describe(PullRequestReleaseSignificanceCommand, () => {
     it("cannot turn a passing pull request into a failing one", async () => {
       expect.hasAssertions();
 
-      process.env[STEP_SUMMARY_VARIABLE] = "/tmp/summary";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "/tmp/summary" });
       vi.mocked(githubService.run).mockReturnValue(
         succeeded(pullRequestDocument({ title: "feat(lexico): add a page" })),
       );

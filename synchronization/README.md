@@ -1383,10 +1383,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **byte**:
 - **call**:
 - **capitalize**:
+- **capture**:
 - **character**:
 - **chdir**:
 - **child**:
-- **chunk**:
 - **clean**:
 - **clear**:
 - **clone**:
@@ -1409,6 +1409,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **creation**:
 - **declaration**:
 - **decorator**:
+- **deep**:
 - **define**:
 - **delegate**:
 - **derive**:
@@ -1470,7 +1471,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **loose**:
 - **lower**:
 - **machine**:
-- **make**:
 - **manifest**:
 - **mark**:
 - **marker**:
@@ -1508,7 +1508,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **prototype**:
 - **provide**:
 - **readdir**:
-- **real**:
 - **reason**:
 - **reconcile**:
 - **reconciliation**:
@@ -1557,18 +1556,15 @@ The words this project uses that the root glossary does not define, regenerated 
 - **synchronize**:
 - **synthetic**:
 - **tab**:
-- **temp**:
+- **temporary**:
 - **text**:
 - **than**:
-- **timer**:
 - **tint**:
-- **tmpdir**:
 - **top**:
 - **track**:
 - **trim**:
 - **unavailable**:
 - **undeclared**:
-- **unstub**:
 - **up**:
 - **upper**:
 - **usage**:

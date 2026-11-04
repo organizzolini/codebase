@@ -1,8 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { ConformetryGeneratorsCommand } from "../conformetry-generators/conformetry-generators.command";
@@ -20,6 +20,73 @@ import { SynchronizationCommand } from "./synchronization.command";
 import { SynchronizationService } from "./synchronization.service";
 
 import type { SynchronizableCommand } from "./synchronization.types";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+
+const moduleOptions = {
+  providers: [
+    SynchronizationService,
+    {
+      provide: ConformetryGeneratorsCommand,
+      useValue: createMock<ConformetryGeneratorsCommand>({
+        synchronizationLabel: "conformetry-generators",
+      }),
+    },
+    {
+      provide: ConventionalConfigCommand,
+      useValue: createMock<ConventionalConfigCommand>({
+        synchronizationLabel: "conventional-config",
+      }),
+    },
+    {
+      provide: DevcontainerConfigurationCommand,
+      useValue: createMock<DevcontainerConfigurationCommand>({
+        synchronizationLabel: "devcontainer-configuration",
+      }),
+    },
+    {
+      provide: InstalledSkillsCommand,
+      useValue: createMock<InstalledSkillsCommand>({
+        synchronizationLabel: "installed-skills",
+      }),
+    },
+    {
+      provide: PackageManifestsCommand,
+      useValue: createMock<PackageManifestsCommand>({
+        synchronizationLabel: "package-manifests",
+      }),
+    },
+    {
+      provide: PullRequestLabelsCommand,
+      useValue: createMock<PullRequestLabelsCommand>({
+        synchronizationLabel: "pull-request-labels",
+      }),
+    },
+    {
+      provide: PullRequestTemplateCommand,
+      useValue: createMock<PullRequestTemplateCommand>({
+        synchronizationLabel: "pull-request-template",
+      }),
+    },
+    {
+      provide: SkillExclusionsCommand,
+      useValue: createMock<SkillExclusionsCommand>({
+        synchronizationLabel: "skill-exclusions",
+      }),
+    },
+    {
+      provide: TypeormMigrationSqlCommand,
+      useValue: createMock<TypeormMigrationSqlCommand>({
+        synchronizationLabel: "typeorm-migration-sql",
+      }),
+    },
+    {
+      provide: VscodeExtensionsCommand,
+      useValue: createMock<VscodeExtensionsCommand>({
+        synchronizationLabel: "vscode-extensions",
+      }),
+    },
+  ],
+};
 
 describe(SynchronizationCommand, () => {
   let command: SynchronizationCommand;
@@ -27,7 +94,7 @@ describe(SynchronizationCommand, () => {
   let conventionalConfig: ConventionalConfigCommand;
   let devcontainerConfiguration: DevcontainerConfigurationCommand;
   let installedSkills: InstalledSkillsCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let packageManifests: PackageManifestsCommand;
   let pullRequestLabels: PullRequestLabelsCommand;
   let pullRequestTemplate: PullRequestTemplateCommand;
@@ -59,156 +126,52 @@ describe(SynchronizationCommand, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SynchronizationCommand,
-        SynchronizationService,
-        {
-          provide: ConformetryGeneratorsCommand,
-          useValue: createMock<ConformetryGeneratorsCommand>({
-            synchronizationLabel: "conformetry-generators",
-          }),
-        },
-        {
-          provide: ConventionalConfigCommand,
-          useValue: createMock<ConventionalConfigCommand>({
-            synchronizationLabel: "conventional-config",
-          }),
-        },
-        {
-          provide: DevcontainerConfigurationCommand,
-          useValue: createMock<DevcontainerConfigurationCommand>({
-            synchronizationLabel: "devcontainer-configuration",
-          }),
-        },
-        {
-          provide: InstalledSkillsCommand,
-          useValue: createMock<InstalledSkillsCommand>({
-            synchronizationLabel: "installed-skills",
-          }),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PackageManifestsCommand,
-          useValue: createMock<PackageManifestsCommand>({
-            synchronizationLabel: "package-manifests",
-          }),
-        },
-        {
-          provide: PullRequestLabelsCommand,
-          useValue: createMock<PullRequestLabelsCommand>({
-            synchronizationLabel: "pull-request-labels",
-          }),
-        },
-        {
-          provide: PullRequestTemplateCommand,
-          useValue: createMock<PullRequestTemplateCommand>({
-            synchronizationLabel: "pull-request-template",
-          }),
-        },
-        {
-          provide: SkillExclusionsCommand,
-          useValue: createMock<SkillExclusionsCommand>({
-            synchronizationLabel: "skill-exclusions",
-          }),
-        },
-        {
-          provide: TypeormMigrationSqlCommand,
-          useValue: createMock<TypeormMigrationSqlCommand>({
-            synchronizationLabel: "typeorm-migration-sql",
-          }),
-        },
-        {
-          provide: VscodeExtensionsCommand,
-          useValue: createMock<VscodeExtensionsCommand>({
-            synchronizationLabel: "vscode-extensions",
-          }),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      SynchronizationCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(SynchronizationCommand);
-    conformetryGenerators = await module.resolve(ConformetryGeneratorsCommand);
-    conventionalConfig = await module.resolve(ConventionalConfigCommand);
-    devcontainerConfiguration = await module.resolve(
+    command = built.instance;
+    conformetryGenerators = await built.module.resolve(
+      ConformetryGeneratorsCommand,
+    );
+    conventionalConfig = await built.module.resolve(ConventionalConfigCommand);
+    devcontainerConfiguration = await built.module.resolve(
       DevcontainerConfigurationCommand,
     );
-    installedSkills = await module.resolve(InstalledSkillsCommand);
-    logger = await module.resolve(LoggerService);
-    packageManifests = await module.resolve(PackageManifestsCommand);
-    pullRequestLabels = await module.resolve(PullRequestLabelsCommand);
-    pullRequestTemplate = await module.resolve(PullRequestTemplateCommand);
-    skillExclusions = await module.resolve(SkillExclusionsCommand);
-    typeormMigrationSql = await module.resolve(TypeormMigrationSqlCommand);
-    vscodeExtensions = await module.resolve(VscodeExtensionsCommand);
+    installedSkills = await built.module.resolve(InstalledSkillsCommand);
+    logger = built.logger;
+    packageManifests = await built.module.resolve(PackageManifestsCommand);
+    pullRequestLabels = await built.module.resolve(PullRequestLabelsCommand);
+    pullRequestTemplate = await built.module.resolve(
+      PullRequestTemplateCommand,
+    );
+    skillExclusions = await built.module.resolve(SkillExclusionsCommand);
+    typeormMigrationSql = await built.module.resolve(
+      TypeormMigrationSqlCommand,
+    );
+    vscodeExtensions = await built.module.resolve(VscodeExtensionsCommand);
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      SynchronizationCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SynchronizationCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SynchronizationCommand,
-        SynchronizationService,
-        {
-          provide: ConformetryGeneratorsCommand,
-          useValue: createMock<ConformetryGeneratorsCommand>(),
-        },
-        {
-          provide: ConventionalConfigCommand,
-          useValue: createMock<ConventionalConfigCommand>(),
-        },
-        {
-          provide: DevcontainerConfigurationCommand,
-          useValue: createMock<DevcontainerConfigurationCommand>(),
-        },
-        {
-          provide: InstalledSkillsCommand,
-          useValue: createMock<InstalledSkillsCommand>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PackageManifestsCommand,
-          useValue: createMock<PackageManifestsCommand>(),
-        },
-        {
-          provide: PullRequestLabelsCommand,
-          useValue: createMock<PullRequestLabelsCommand>(),
-        },
-        {
-          provide: PullRequestTemplateCommand,
-          useValue: createMock<PullRequestTemplateCommand>(),
-        },
-        {
-          provide: SkillExclusionsCommand,
-          useValue: createMock<SkillExclusionsCommand>(),
-        },
-        {
-          provide: TypeormMigrationSqlCommand,
-          useValue: createMock<TypeormMigrationSqlCommand>(),
-        },
-        {
-          provide: VscodeExtensionsCommand,
-          useValue: createMock<VscodeExtensionsCommand>(),
-        },
-      ],
-    }).compile();
+    expect.hasAssertions();
 
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("SynchronizationCommand");
+    await expectLoggerContext(SynchronizationCommand, moduleOptions);
   });
 
   it("runs every command in check mode and reports success", async () => {

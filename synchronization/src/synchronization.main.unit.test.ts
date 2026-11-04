@@ -1,5 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { captureExitCode } from "@codebase/testing";
 
 import type { IssueLabelsModule } from "./modules/issue-labels/issue-labels.module";
 import type { SynchronizationModule } from "./modules/synchronization/synchronization.module";
@@ -60,18 +62,14 @@ vi.mock("./modules/synchronization/synchronization.module", () => ({
 }));
 
 describe("main bootstrap", () => {
-  const originalExitCode = process.exitCode;
+  let exitCode: ReturnType<typeof captureExitCode>;
 
   beforeEach(() => {
     run.mockClear();
     loggerServiceMock.setContext.mockClear();
     loggerServiceMock.error.mockClear();
-    process.exitCode = undefined;
+    exitCode = captureExitCode();
     vi.resetModules();
-  });
-
-  afterEach(() => {
-    process.exitCode = originalExitCode;
   });
 
   it("runs the synchronization command factory with a configured logger", async () => {
@@ -115,7 +113,7 @@ describe("main bootstrap", () => {
     const error = new Error("💥 command exploded");
     serviceErrorHandler(error);
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(loggerServiceMock.error).toHaveBeenCalledWith(
       error.message,
       error.stack,

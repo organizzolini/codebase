@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestReleaseSignificanceService } from "./pull-request-release-significance.service";
 
@@ -74,20 +75,25 @@ describe(PullRequestReleaseSignificanceService, () => {
   let service: PullRequestReleaseSignificanceService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PullRequestReleaseSignificanceService],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestReleaseSignificanceService,
+    );
 
-    service = await module.resolve(PullRequestReleaseSignificanceService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     releaseConfig = releaseConfigDocument(RELEASE_RULES);
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PullRequestReleaseSignificanceService,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestReleaseSignificanceService);
   });
 
   describe("parseConventionalSubject", () => {

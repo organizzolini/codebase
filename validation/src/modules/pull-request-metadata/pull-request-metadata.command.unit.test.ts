@@ -1,7 +1,5 @@
 import { appendFileSync } from "node:fs";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -12,7 +10,9 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
@@ -43,40 +43,36 @@ const failed = (standardError: string): GithubCliResult => ({
   succeeded: false,
 });
 
+const moduleOptions = {
+  mocks: [PullRequestMetadataGithubService],
+  providers: [PullRequestMetadataService],
+};
+
 describe(PullRequestMetadataCommand, () => {
   let command: PullRequestMetadataCommand;
   let githubService: PullRequestMetadataGithubService;
   let reportLines: string[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestMetadataCommand,
-        PullRequestMetadataService,
-        {
-          provide: PullRequestMetadataGithubService,
-          useValue: createMock<PullRequestMetadataGithubService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestMetadataCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(PullRequestMetadataCommand);
-    githubService = await module.resolve(PullRequestMetadataGithubService);
+    command = built.instance;
+    githubService = built.mock(PullRequestMetadataGithubService);
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
 
-    for (const variableName of [
-      "PULL_REQUEST_ASSIGNEES",
-      "PULL_REQUEST_LABELS",
-      "PULL_REQUEST_NUMBER",
-      "PULL_REQUEST_TITLE",
-      STEP_SUMMARY_VARIABLE,
-    ]) {
-      Reflect.deleteProperty(process.env, variableName);
-    }
+    overrideEnvironment({
+      PULL_REQUEST_ASSIGNEES: undefined,
+      PULL_REQUEST_LABELS: undefined,
+      PULL_REQUEST_NUMBER: undefined,
+      PULL_REQUEST_TITLE: undefined,
+      [STEP_SUMMARY_VARIABLE]: undefined,
+    });
 
     reportLines = [];
     vi.spyOn(console, "info").mockImplementation((line: unknown): void => {
@@ -117,42 +113,35 @@ describe(PullRequestMetadataCommand, () => {
 
   /** Puts a valid pull request in the environment. */
   const setValidEnvironment = (): void => {
-    process.env["PULL_REQUEST_TITLE"] = "feat(lexico): ✨ add a page";
-    process.env["PULL_REQUEST_LABELS"] = JSON.stringify([
-      { name: "scope:lexico" },
-      { name: "source:agent" },
-      { name: "type:feat" },
-    ]);
-    process.env["PULL_REQUEST_ASSIGNEES"] = JSON.stringify([
-      { login: "JimmyPaolini" },
-    ]);
-    process.env["PULL_REQUEST_NUMBER"] = "7";
+    overrideEnvironment({ PULL_REQUEST_TITLE: "feat(lexico): ✨ add a page" });
+    overrideEnvironment({
+      PULL_REQUEST_LABELS: JSON.stringify([
+        { name: "scope:lexico" },
+        { name: "source:agent" },
+        { name: "type:feat" },
+      ]),
+    });
+    overrideEnvironment({
+      PULL_REQUEST_ASSIGNEES: JSON.stringify([{ login: "JimmyPaolini" }]),
+    });
+    overrideEnvironment({ PULL_REQUEST_NUMBER: "7" });
   };
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PullRequestMetadataCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestMetadataCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestMetadataCommand,
-        PullRequestMetadataService,
-        {
-          provide: PullRequestMetadataGithubService,
-          useValue: createMock<PullRequestMetadataGithubService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "PullRequestMetadataCommand",
-    );
+    await expectLoggerContext(PullRequestMetadataCommand, moduleOptions);
   });
 
   describe("the environment input mode", () => {
@@ -169,12 +158,14 @@ describe(PullRequestMetadataCommand, () => {
     it("reports every failure and the commands that fix them", async () => {
       expect.hasAssertions();
 
-      process.env["PULL_REQUEST_TITLE"] = "feat(lexico): ✨ add a page";
-      process.env["PULL_REQUEST_LABELS"] = JSON.stringify([
-        { name: "do-not-merge" },
-      ]);
-      process.env["PULL_REQUEST_ASSIGNEES"] = "[]";
-      process.env["PULL_REQUEST_NUMBER"] = "7";
+      overrideEnvironment({
+        PULL_REQUEST_TITLE: "feat(lexico): ✨ add a page",
+      });
+      overrideEnvironment({
+        PULL_REQUEST_LABELS: JSON.stringify([{ name: "do-not-merge" }]),
+      });
+      overrideEnvironment({ PULL_REQUEST_ASSIGNEES: "[]" });
+      overrideEnvironment({ PULL_REQUEST_NUMBER: "7" });
 
       await expect(runCommand()).resolves.toBe(true);
       expect(reportLines).toStrictEqual([
@@ -201,13 +192,17 @@ describe(PullRequestMetadataCommand, () => {
     it("names a placeholder when no number was supplied", async () => {
       expect.hasAssertions();
 
-      process.env["PULL_REQUEST_TITLE"] = "feat(lexico): ✨ add a page";
-      process.env["PULL_REQUEST_LABELS"] = JSON.stringify([
-        { name: "scope:lexico" },
-        { name: "source:agent" },
-        { name: "type:feat" },
-      ]);
-      process.env["PULL_REQUEST_ASSIGNEES"] = "[]";
+      overrideEnvironment({
+        PULL_REQUEST_TITLE: "feat(lexico): ✨ add a page",
+      });
+      overrideEnvironment({
+        PULL_REQUEST_LABELS: JSON.stringify([
+          { name: "scope:lexico" },
+          { name: "source:agent" },
+          { name: "type:feat" },
+        ]),
+      });
+      overrideEnvironment({ PULL_REQUEST_ASSIGNEES: "[]" });
 
       await expect(runCommand()).resolves.toBe(true);
       expect(reportLines).toContain("- gh pr edit <number> --add-assignee @me");
@@ -217,7 +212,7 @@ describe(PullRequestMetadataCommand, () => {
       expect.hasAssertions();
 
       setValidEnvironment();
-      process.env["PULL_REQUEST_TITLE"] = "not a conventional title";
+      overrideEnvironment({ PULL_REQUEST_TITLE: "not a conventional title" });
 
       await expect(runCommand()).resolves.toBe(true);
       expect(reportLines).toStrictEqual([
@@ -229,7 +224,7 @@ describe(PullRequestMetadataCommand, () => {
       expect.hasAssertions();
 
       setValidEnvironment();
-      process.env["PULL_REQUEST_LABELS"] = "not json";
+      overrideEnvironment({ PULL_REQUEST_LABELS: "not json" });
 
       await expect(runCommand()).resolves.toBe(true);
       expect(reportLines[0]).toContain(
@@ -281,7 +276,7 @@ describe(PullRequestMetadataCommand, () => {
     it("prefers the argument over PULL_REQUEST_NUMBER in remediationCommands", async () => {
       expect.hasAssertions();
 
-      process.env["PULL_REQUEST_NUMBER"] = "99";
+      overrideEnvironment({ PULL_REQUEST_NUMBER: "99" });
       vi.mocked(githubService.run).mockReturnValue(
         succeeded(
           JSON.stringify({
@@ -368,7 +363,7 @@ describe(PullRequestMetadataCommand, () => {
       expect.hasAssertions();
 
       setValidEnvironment();
-      process.env[STEP_SUMMARY_VARIABLE] = "/tmp/summary";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "/tmp/summary" });
 
       await expect(runCommand()).resolves.toBe(false);
       expect(appendFileSync).toHaveBeenCalledWith(
@@ -391,7 +386,7 @@ describe(PullRequestMetadataCommand, () => {
       expect.hasAssertions();
 
       setValidEnvironment();
-      process.env[STEP_SUMMARY_VARIABLE] = "";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "" });
 
       await expect(runCommand()).resolves.toBe(false);
       expect(appendFileSync).not.toHaveBeenCalled();
@@ -401,7 +396,7 @@ describe(PullRequestMetadataCommand, () => {
       expect.hasAssertions();
 
       setValidEnvironment();
-      process.env[STEP_SUMMARY_VARIABLE] = "/tmp/summary";
+      overrideEnvironment({ [STEP_SUMMARY_VARIABLE]: "/tmp/summary" });
       vi.mocked(appendFileSync).mockImplementation((): never => {
         throw new Error("no space left on device");
       });
