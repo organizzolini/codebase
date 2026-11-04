@@ -23,6 +23,7 @@ import type {
   CoinagerieConfiguration,
   CoinagerieOutput,
   ConfigurationOverrides,
+  ExcludedEntries,
   ExcludedWords,
   FoldWord,
   LoadConfigurationArguments,
@@ -190,7 +191,7 @@ export class ConfigurationService {
     try {
       return {
         configuration: parsed.data,
-        words: await this.resolveWords(parsed.data.exclude?.words),
+        excluded: await this.resolveWords(parsed.data.exclude?.words),
       };
     } catch (error: unknown) {
       throw new InvalidConfigurationError(
@@ -257,7 +258,8 @@ export class ConfigurationService {
       directory,
       exclude: {
         paths: configuration.exclude?.paths ?? [],
-        words: args.loaded.words,
+        patterns: args.loaded.excluded.patterns,
+        words: args.loaded.excluded.words,
       },
       fold:
         configuration.fold === undefined
@@ -269,23 +271,42 @@ export class ConfigurationService {
   }
 
   /**
-   * The words a configuration excludes, calling its function when it has one.
+   * The entries a configuration excludes, calling its function when it has
+   * one, split into exact words and patterns.
    *
    * Throws a plain error for the caller to name the file in, so that no frame
    * is spent on building the report here.
    */
   private async resolveWords(
     words: ExcludedWords | undefined,
-  ): Promise<string[]> {
+  ): Promise<ExcludedEntries> {
     const resolved: unknown =
       typeof words === "function" ? await words() : (words ?? []);
     const parsed = WORD_LIST_SCHEMA.safeParse(resolved);
 
     if (!parsed.success) {
-      throw new Error("must be a list of strings, or a function returning one");
+      throw new Error(
+        "must be a list of strings or RegExp objects, or a function returning one",
+      );
     }
 
-    return parsed.data;
+    const patterns: RegExp[] = [];
+    const exact: string[] = [];
+
+    // A loop rather than callbacks: each callback is one more frame deep in the
+    // call stack the configuration is loaded through.
+    for (const entry of parsed.data) {
+      if (entry instanceof RegExp) {
+        // A copy: the global and sticky flags would make `test` stateful.
+        patterns.push(
+          new RegExp(entry.source, entry.flags.replaceAll(/[gy]/gu, "")),
+        );
+      } else {
+        exact.push(entry);
+      }
+    }
+
+    return { patterns, words: exact };
   }
 
   // 🌎 Public Methods
@@ -305,7 +326,7 @@ export class ConfigurationService {
       return this.resolve({
         configurationPath: undefined,
         directory: args.workingDirectory,
-        loaded: { configuration: {}, words: [] },
+        loaded: { configuration: {}, excluded: { patterns: [], words: [] } },
         location: args.workingDirectory,
         overrides: args.overrides,
         workingDirectory: args.workingDirectory,

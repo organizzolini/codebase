@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.52.3](https://github.com/organizzolini/codebase/compare/v3.52.2...v3.52.3) (2026-11-04)
+
 ## [3.52.2](https://github.com/organizzolini/codebase/compare/v3.52.1...v3.52.2) (2026-11-04)
 
 ## [3.52.1](https://github.com/organizzolini/codebase/compare/v3.52.0...v3.52.1) (2026-11-04)
