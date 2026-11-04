@@ -88,9 +88,9 @@ tool configs import it. Keep that: it is true, and `nx affected` uses it.
 
 ## Where each caller names these targets
 
-| Caller                       | Targets                                                                                                           |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `continuous-integration.yml` | `lint-code`, `format-code`, `deprecate-code`, `guard-code`, `secure-code`, `build-projects` through `nx affected` |
-| `continuous-deployment.yml`  | `callidescope:write`, `codependix:write`, `codometer:write`                                                       |
-| `lint-staged.config.ts`      | `sherif`, `syncpack` through `nx run-many`, the rest through `nx affected`                                        |
-| `.husky/*`                   | `commitlint`, `validate-branch-name`, `lint-staged`, invoked directly                                             |
+| Caller                       | Targets                                                                                                                                                                                                                                         |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `continuous-integration.yml` | `lint-code`, `format-code`, `deprecate-code`, `secure-code`, `build-projects`, and the leaves of `guard-code` (a leg each for `callidescope-restrict`, `codependix-bound` and `conformetry-validate`, the rest in Guard), through `nx affected` |
+| `continuous-deployment.yml`  | `callidescope:write`, `codependix:write`, `codometer:write`                                                                                                                                                                                     |
+| `lint-staged.config.ts`      | `sherif`, `syncpack` through `nx run-many`, the rest through `nx affected`                                                                                                                                                                      |
+| `.husky/*`                   | `commitlint`, `validate-branch-name`, `lint-staged`, invoked directly                                                                                                                                                                           |
