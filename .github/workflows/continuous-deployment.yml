@@ -326,7 +326,7 @@ jobs:
             --exclude=configuration
           pnpm exec nx run configuration:codometer:write
 
-      - name: 📖 Define Words
+      - name: 🪙 Coin Vocabulary
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.target.id == 'push-releases' &&
