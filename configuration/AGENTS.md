@@ -63,6 +63,9 @@ holding a coinagerie configuration is the root its run scans, so the root
 glossary's configuration has to sit at the root, and it writes the
 `GLOSSARY.md` beside it. Every project's own `coinagerie.config.ts` spreads
 `coinagerieConfiguration` from `configuration/coinagerie.config.ts`.
+A word with no glossary entry fails `guard-code` through each project's
+inferred `coinagerie-check`, in the commit hook and in CI; write the entries
+with `nx run <project>:coinagerie-check:write`.
 
 ## In the graph, and out of releases
 
