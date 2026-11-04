@@ -1236,10 +1236,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **bullet**:
 - **byte**:
 - **call**:
+- **capture**:
 - **character**:
 - **child**:
 - **chore**:
-- **chunk**:
 - **clean**:
 - **clear**:
 - **collapse**:
@@ -1354,7 +1354,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **once**:
 - **one**:
 - **optional**:
-- **original**:
 - **overlap**:
 - **oversized**:
 - **own**:
@@ -1376,7 +1375,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **publish**:
 - **rank**:
 - **readdir**:
-- **real**:
 - **reason**:
 - **recursive**:
 - **reg**:
@@ -1421,10 +1419,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **synthetic**:
 - **tail**:
 - **tarball**:
+- **temporary**:
 - **text**:
 - **than**:
 - **three**:
-- **timer**:
 - **tint**:
 - **tmpdir**:
 - **top**:
