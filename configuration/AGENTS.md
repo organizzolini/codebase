@@ -57,7 +57,15 @@ Only files a tool insists on finding there: `nx.json`, `package.json`,
 for tools that require a root entrypoint), `.gitignore`, `.gitattributes`,
 `.gitmodules`, `.editorconfig`, `.nxignore`, `.openwikiignore`,
 `.node-version`, `.nvmrc`, `skills-lock.json`, and
-`validate-branch-name.config.cjs`, whose tool takes no config path.
+`validate-branch-name.config.cjs`, whose tool takes no config path. The root
+`coinagerie.config.ts` is the one exception to "named in `nx.json`": the folder
+holding a coinagerie configuration is the root its run scans, so the root
+glossary's configuration has to sit at the root, and it writes the
+`GLOSSARY.md` beside it. Every project's own `coinagerie.config.ts` spreads
+`coinagerieConfiguration` from `configuration/coinagerie.config.ts`.
+A word with no glossary entry fails `guard-code` through each project's
+inferred `coinagerie-check`, in the commit hook and in CI; write the entries
+with `nx run <project>:coinagerie-check:write`.
 
 ## In the graph, and out of releases
 
@@ -71,7 +79,7 @@ tool configs import it. Keep that: it is true, and `nx affected` uses it.
 - **The boundary rules know it.** The project carries the `name:configuration`
   tag. Each `allow` rule in `codependix.config.ts` lists it as a permitted
   target, and the `*-is-a-leaf` rules reach every project but it. A new rule
-  must do the same, or every project's `codependix-gate` fails.
+  must do the same, or every project's `codependix-bound` fails.
 - **Releases ignore it.** A change here would otherwise patch-bump every
   package. the `publication` project's `version-packages` command appends this folder to
   `.nxignore` for the `nx release` command and restores the file on exit. Do not

@@ -18,11 +18,31 @@ export class CompilerHostService {
 
   // 🔐 Private Fields
 
+  /**
+   * Answers to the file-system questions module resolution asks, shared by
+   * every program of a run.
+   *
+   * One run probes the same `node_modules` paths once per program — about
+   * 370,000 `stat` calls over 21,000 distinct paths for `configuration` — and
+   * those probes, not parsing, were most of its time. The tree does not change
+   * during a run, so an answer stays right until `clear`.
+   */
+  private readonly directoryExistsCache = new Map<
+    string,
+    { answer: boolean }
+  >();
+
+  private readonly fileExistsCache = new Map<string, { answer: boolean }>();
+
+  private readonly fileTextCache = new Map<
+    string,
+    { answer: string | undefined }
+  >();
   private readonly moduleResolutionCaches = new Map<
     string,
     ts.ModuleResolutionCache
   >();
-
+  private readonly realPathCache = new Map<string, { answer: string }>();
   /**
    * Keyed on file name and script target together.
    *
@@ -35,6 +55,25 @@ export class CompilerHostService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /** Wraps a one-argument host method so each distinct argument asks once. */
+  private memoize<Value>(
+    cache: Map<string, { answer: Value }>,
+    ask: (key: string) => Value,
+  ): (key: string) => Value {
+    return (key: string): Value => {
+      const cached = cache.get(key);
+
+      if (cached !== undefined) {
+        return cached.answer;
+      }
+
+      const answer = ask(key);
+      cache.set(key, { answer });
+
+      return answer;
+    };
+  }
 
   /** Returns the module resolution cache for one working directory. */
   private resolveModuleCache(
@@ -62,6 +101,10 @@ export class CompilerHostService {
   /** Drops every cached source file, for a host that outlives one run. */
   public clear(): void {
     this.sourceFileCache.clear();
+    this.directoryExistsCache.clear();
+    this.fileExistsCache.clear();
+    this.fileTextCache.clear();
+    this.realPathCache.clear();
     this.moduleResolutionCaches.clear();
   }
 
@@ -111,6 +154,25 @@ export class CompilerHostService {
     };
 
     host.getSourceFile = readCached;
+    host.fileExists = this.memoize(
+      this.fileExistsCache,
+      host.fileExists.bind(host),
+    );
+    host.readFile = this.memoize(this.fileTextCache, host.readFile.bind(host));
+
+    const askDirectory = host.directoryExists?.bind(host);
+    const askRealPath = host.realpath?.bind(host);
+
+    if (askDirectory !== undefined) {
+      host.directoryExists = this.memoize(
+        this.directoryExistsCache,
+        askDirectory,
+      );
+    }
+
+    if (askRealPath !== undefined) {
+      host.realpath = this.memoize(this.realPathCache, askRealPath);
+    }
 
     return host;
   }

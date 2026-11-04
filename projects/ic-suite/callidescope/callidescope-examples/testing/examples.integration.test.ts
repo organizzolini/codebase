@@ -621,7 +621,8 @@ describe("callidescope examples (integration)", () => {
       //
       // Every `*-core` here arrives behind the `configuration` package above
       // it: each toolchain moved its result vocabulary down into a contracts
-      // leaf. Neither refusal above is weakened.
+      // leaf. Neither refusal above is weakened. The coinagerie trio arrives
+      // the same way, via `coinagerie.config.ts`.
       expect(
         result.projects.map((project) => project.projectName),
       ).toStrictEqual([
@@ -634,6 +635,9 @@ describe("callidescope examples (integration)", () => {
         "projects/ic-suite/codependix/codependix-core",
         "projects/ic-suite/codometer/codometer-configuration",
         "projects/ic-suite/codometer/codometer-core",
+        "projects/ic-suite/coinagerie/coinagerie-configuration",
+        "projects/ic-suite/coinagerie/coinagerie-core",
+        "projects/ic-suite/coinagerie/coinagerie-languages",
       ]);
     });
 
@@ -643,7 +647,7 @@ describe("callidescope examples (integration)", () => {
         cyclicComponentCount: 1,
         edgeCount: 54,
         entryPointCount: 19,
-        fileCount: 40,
+        fileCount: 41,
         maximumDepth: 8,
         projectCount: 1,
         unresolvedCallCount: 2,

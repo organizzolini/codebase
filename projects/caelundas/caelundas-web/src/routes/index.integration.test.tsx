@@ -20,13 +20,37 @@ import {
 } from "../../testing/events-database";
 import { renderRoute } from "../../testing/render-route";
 import { setViewportWidth } from "../../testing/viewport";
-import { UnsupportedBrowserError } from "../lib/events-database/events-database.errors";
+import { UnsupportedBrowserError } from "../components/events-calendar/events-database.constants";
+import { getRouter } from "../router";
 
 import { Route } from "./index";
 
+// The route helper builds its own router, so the one it built is kept for
+// a test that navigates it.
+vi.mock(import("../router"), async (importOriginal) => {
+  const original = await importOriginal();
+
+  return { ...original, getRouter: vi.fn(original.getRouter) };
+});
+
+/**
+ * The router the last render of a route was given.
+ */
+function getRenderedRouter(): ReturnType<typeof getRouter> {
+  const router = vi.mocked(getRouter).mock.results.at(-1)?.value;
+
+  if (router === undefined) {
+    throw new Error("No route has been rendered");
+  }
+
+  return router;
+}
+
 // Each click of the View menu re-renders the whole route, which a slow
-// continuous integration runner needs well past the default time for.
-vi.setConfig({ testTimeout: 15_000 });
+// continuous integration runner needs well past the default time for: a
+// loaded runner passed 15 seconds on the menus' test, so the limit is three
+// times that.
+vi.setConfig({ testTimeout: 45_000 });
 
 describe("index", () => {
   it("renders its page", async () => {
@@ -51,7 +75,10 @@ describe("index", () => {
     expect(
       within(within(toolbar).getByRole("group", { name: "View" })).getByRole(
         "button",
-        { name: "Month", pressed: true },
+        {
+          name: "Month",
+          pressed: true,
+        },
       ),
     ).toBeDefined();
   });
@@ -143,8 +170,10 @@ describe("index", () => {
     await renderRoute("/?date=2026-03-01", {
       eventsDatabase: {
         describeDataset: async () => new Promise(() => {}),
+        findConstellations: async () => new Promise(() => {}),
         findEvents: async () => new Promise(() => {}),
         findFacets: async () => new Promise(() => {}),
+        findNightSky: async () => new Promise(() => {}),
       },
       waitForLoad: false,
     });
@@ -428,28 +457,33 @@ describe("index", () => {
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
   });
 
-  it("turns the colors and the grouping of crowded days off from the View menu", async () => {
+  it("turns the colors off from the Color menu and the grouping of crowded days from the View menu", async () => {
     await renderRoute("/?date=2026-03-01");
     await screen.findByRole("grid", { name: "March 2026" });
 
     const seen = new Set<string>();
 
-    for (const name of [
-      "Color events",
-      "Group similar events",
-      "Color events",
-      "Group similar events",
-    ]) {
-      fireEvent.click(screen.getByRole("button", { name: "View options" }));
-      fireEvent.click(await screen.findByRole("menuitemcheckbox", { name }));
+    for (const [menu, role, name] of [
+      ["Color options", "switch", "Color events"],
+      ["View options", "menuitemcheckbox", "Group similar events"],
+      ["Color options", "switch", "Color events"],
+      ["View options", "menuitemcheckbox", "Group similar events"],
+    ] as const) {
+      fireEvent.click(screen.getByRole("button", { name: menu }));
+      fireEvent.click(await screen.findByRole(role, { name }));
+      // A switch leaves its panel open, where a menu item closes its menu.
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+      await waitFor(() => {
+        expect(screen.queryByRole(role, { name })).toBeNull();
+      });
 
       // The link now says so, and the menu reads back what it holds.
-      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      fireEvent.click(screen.getByRole("button", { name: menu }));
       await waitFor(() => {
         expect(
-          screen
-            .getByRole("menuitemcheckbox", { name })
-            .getAttribute("aria-checked"),
+          screen.getByRole(role, { name }).getAttribute("aria-checked"),
         ).toBe(seen.has(name) ? "true" : "false");
       });
       seen.add(name);
@@ -525,4 +559,64 @@ describe("index", () => {
       }, BUILDER_WAIT);
     },
   );
+
+  describe("sky link parameters", () => {
+    it("keeps them through the calendar's own navigation", async () => {
+      await renderRoute("/?date=2026-03-01&sky.lat=51.5");
+      const router = getRenderedRouter();
+      const toolbar = await findToolbar();
+
+      fireEvent.click(within(toolbar).getByRole("button", { name: /Next/u }));
+
+      await screen.findByRole("grid", { name: "April 2026" });
+
+      expect(router.state.location.search).toMatchObject({
+        date: "2026-04-01",
+        "sky.lat": 51.5,
+      });
+    });
+
+    it("does not run the loader again for a change to them alone", async () => {
+      const database = createTestEventsDatabase();
+      // The loader caches its event reads, so it is the dataset read, made on
+      // every load, that shows the loader ran.
+      const loads = vi.spyOn(database, "describeDataset");
+      await renderRoute("/?date=2026-03-01", { eventsDatabase: database });
+
+      const router = getRenderedRouter();
+
+      await screen.findByRole("grid", { name: "March 2026" });
+      loads.mockClear();
+      await router.navigate({
+        search: (previous) => ({ ...previous, "sky.lat": 51.5 }),
+        to: "/",
+      });
+
+      expect(loads).not.toHaveBeenCalled();
+      expect(router.state.location.search).toMatchObject({ "sky.lat": 51.5 });
+    });
+
+    it("still runs the loader for a change to the calendar", async () => {
+      const database = createTestEventsDatabase();
+      // The loader caches its event reads, so it is the dataset read, made on
+      // every load, that shows the loader ran.
+      const loads = vi.spyOn(database, "describeDataset");
+      await renderRoute("/?date=2026-03-01&sky.lat=51.5", {
+        eventsDatabase: database,
+      });
+
+      const router = getRenderedRouter();
+
+      await screen.findByRole("grid", { name: "March 2026" });
+      loads.mockClear();
+      await router.navigate({
+        search: (previous) => ({ ...previous, date: "2026-04-01" }),
+        to: "/",
+      });
+
+      await waitFor(() => {
+        expect(loads).toHaveBeenCalledWith();
+      });
+    });
+  });
 });
