@@ -103,6 +103,17 @@ describe(PullRequestBodyLinksService, () => {
     ).toBe("## 🔗 Related\n\n- Closes #1\n- Closes #7\n");
   });
 
+  it("keeps references inside the Related section when a heading follows it", () => {
+    expect(
+      service.addRelatedIssueReferences(
+        "## 🔗 Related\n\n- Closes #1\n\n## Notes\n\ntext\n",
+        [7],
+      ),
+    ).toBe(
+      "## 🔗 Related\n\n- Closes #1\n- Related to #7\n\n## Notes\n\ntext\n",
+    );
+  });
+
   it("adds references to an empty Related section", () => {
     expect(service.addRelatedIssueReferences("## 🔗 Related\n", [7])).toBe(
       "## 🔗 Related\n- Related to #7\n",

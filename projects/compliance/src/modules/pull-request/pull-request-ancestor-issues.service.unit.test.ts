@@ -168,6 +168,28 @@ describe(PullRequestAncestorIssuesService, () => {
     ]);
   });
 
+  it("reports only descendants when the linked issues have no ancestors", () => {
+    stubGithub({ linked: "[5]" });
+    vi.mocked(children.collect).mockReturnValue({ ok: true, value: [8] });
+    vi.mocked(links.addRelatedIssueReferences).mockReturnValue("new body");
+
+    expect(service.link(context).outcome.lines).toStrictEqual([
+      "✅ Added closing descendant issue references: #8",
+    ]);
+  });
+
+  it("collects a shared ancestor once across several linked issues", () => {
+    stubGithub({ linked: "[5,6]", parents: { "3": 1, "5": 3, "6": 3 } });
+    vi.mocked(links.addRelatedIssueReferences).mockReturnValue("new body");
+
+    service.link(context);
+
+    expect(links.addRelatedIssueReferences).toHaveBeenCalledWith(
+      "Closes #5",
+      [3, 1],
+    );
+  });
+
   it("fails when the descendants cannot be read", () => {
     stubGithub({ linked: "[5]" });
     vi.mocked(children.collect).mockReturnValue({

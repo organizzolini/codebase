@@ -1306,7 +1306,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **controller**:
 - **corrupt**:
 - **count**:
-- **creation**:
 - **declaration**:
 - **decorator**:
 - **define**:
@@ -1331,7 +1330,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **explicit**:
 - **expression**:
 - **factory**:
-- **failure**:
 - **fake**:
 - **field**:
 - **filesystem**:
@@ -1339,7 +1337,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **flag**:
 - **flat**:
 - **force**:
-- **form**:
 - **gitkeep**:
 - **greater**:
 - **handle**:
@@ -1381,7 +1378,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **meta**:
 - **method**:
 - **min**:
-- **mirror**:
 - **mismatch**:
 - **miss**:
 - **mkdtemp**:
@@ -1390,7 +1386,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **mount**:
 - **multiplier**:
 - **need**:
-- **nth**:
 - **ok**:
 - **once**:
 - **one**:
@@ -1398,9 +1393,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **original**:
 - **pair**:
 - **parameter**:
-- **part**:
-- **pid**:
-- **plan**:
 - **position**:
 - **preserve**:
 - **preset**:
@@ -1410,8 +1402,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **readdir**:
 - **real**:
 - **reason**:
-- **reconcile**:
-- **reconciliation**:
 - **recursive**:
 - **reg**:
 - **reject**:
@@ -1429,8 +1419,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **second**:
 - **section**:
 - **selection**:
-- **sideway**:
-- **signal**:
 - **single**:
 - **slash**:
 - **slice**:
@@ -1461,7 +1449,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **text**:
 - **than**:
 - **timer**:
-- **tint**:
 - **tmpdir**:
 - **top**:
 - **track**:
@@ -1474,7 +1461,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **usage**:
 - **valid**:
 - **validator**:
-- **variable**:
 - **vendored**:
 - **verbatim**:
 - **vi**:
