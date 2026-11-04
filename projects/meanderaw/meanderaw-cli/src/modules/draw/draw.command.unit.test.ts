@@ -1,5 +1,4 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   beforeAll,
   beforeEach,
@@ -10,7 +9,8 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CorpusService } from "../corpus/corpus.service";
 import { DatabaseService } from "../database/database.service";
@@ -22,6 +22,10 @@ import { DrawCommand } from "./draw.command";
 
 import type { Meander } from "../database/entities/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
+import type {
+  BuiltTestingModule,
+  TestingModuleOptions,
+} from "@codebase/testing/nestjs";
 
 const { mkdirMock, writeFileMock } = vi.hoisted(() => ({
   mkdirMock: vi.fn<() => Promise<void>>(),
@@ -58,7 +62,33 @@ describe(DrawCommand, () => {
   let draw: Mock<() => Promise<Meander>>;
   let ingest: Mock<() => Promise<Meander[]>>;
   let drawAll: Mock<() => Promise<number>>;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<DrawCommand>["logger"];
+
+  /** The collaborators `DrawCommand` is built with, each answering with the mock functions above. */
+  const moduleOptions = (): TestingModuleOptions => ({
+    providers: [
+      {
+        provide: DrawCodeService,
+        useValue: createMock<DrawCodeService>({ draw }),
+      },
+      {
+        provide: DrawEnumerationService,
+        useValue: createMock<DrawEnumerationService>({ drawAll }),
+      },
+      {
+        provide: DrawIndexService,
+        useValue: createMock<DrawIndexService>({ build }),
+      },
+      {
+        provide: CorpusService,
+        useValue: createMock<CorpusService>({ ingest }),
+      },
+      {
+        provide: DatabaseService,
+        useValue: createMock<DatabaseService>({ clear }),
+      },
+    ],
+  });
 
   beforeAll(async () => {
     build = vi
@@ -76,38 +106,10 @@ describe(DrawCommand, () => {
     ingest = vi.fn<() => Promise<Meander[]>>().mockResolvedValue([]);
     drawAll = vi.fn<() => Promise<number>>().mockResolvedValue(30_279);
 
-    const module = await Test.createTestingModule({
-      providers: [
-        DrawCommand,
-        {
-          provide: DrawCodeService,
-          useValue: createMock<DrawCodeService>({ draw }),
-        },
-        {
-          provide: DrawEnumerationService,
-          useValue: createMock<DrawEnumerationService>({ drawAll }),
-        },
-        {
-          provide: DrawIndexService,
-          useValue: createMock<DrawIndexService>({ build }),
-        },
-        {
-          provide: CorpusService,
-          useValue: createMock<CorpusService>({ ingest }),
-        },
-        {
-          provide: DatabaseService,
-          useValue: createMock<DatabaseService>({ clear }),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(DrawCommand, moduleOptions());
 
-    command = await module.resolve(DrawCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
@@ -120,46 +122,14 @@ describe(DrawCommand, () => {
     mkdirMock.mockClear();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DrawCommand, moduleOptions());
+
+    expect(instance).toBeInstanceOf(DrawCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DrawCommand,
-        {
-          provide: DrawCodeService,
-          useValue: createMock<DrawCodeService>(),
-        },
-        {
-          provide: DrawEnumerationService,
-          useValue: createMock<DrawEnumerationService>(),
-        },
-        {
-          provide: DrawIndexService,
-          useValue: createMock<DrawIndexService>(),
-        },
-        {
-          provide: CorpusService,
-          useValue: createMock<CorpusService>(),
-        },
-        {
-          provide: DatabaseService,
-          useValue: createMock<DatabaseService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(DrawCommand);
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("DrawCommand");
+    await expectLoggerContext(DrawCommand, moduleOptions());
   });
 
   it("clears the existing rows before drawing, so a draw run regenerates rather than colliding with them", async () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CrossCountCharacteristicService } from "../submatrix/cross/cross-count-characteristic.service";
 import { ForkCountCharacteristicService } from "../submatrix/fork/fork-count-characteristic.service";
@@ -19,9 +20,8 @@ describe(CompoundUtilitiesService, () => {
   let service: CompoundUtilitiesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(CompoundUtilitiesService, {
       providers: [
-        CompoundUtilitiesService,
         {
           provide: CrossCountCharacteristicService,
           useValue: { compute: (): number => counts.crossCount },
@@ -31,17 +31,13 @@ describe(CompoundUtilitiesService, () => {
           useValue: { compute: (): number => counts.forkCount },
         },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(CompoundUtilitiesService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     Object.assign(counts, { crossCount: 0, forkCount: 0 });
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
   });
 
   it.each([

@@ -266,7 +266,6 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run meanderaw-web:coinagerie-check:write`.
 
-- **after**:
 - **breadth**:
 - **character**:
 - **child**:
@@ -274,11 +273,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **css**:
 - **define**:
 - **describe**:
-- **each**:
-- **entry**:
 - **gen**:
 - **h1**:
-- **history**:
 - **href**:
 - **html**:
 - **hydrate**:
@@ -286,14 +282,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **least**:
 - **level**:
 - **link**:
-- **load**:
 - **loader**:
 - **maximum**:
 - **meta**:
-- **mock**:
 - **preload**:
 - **preview**:
-- **promise**:
 - **rel**:
 - **resolution**:
 - **restoration**:
@@ -305,6 +298,5 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ssr**:
 - **strict**:
 - **transition**:
-- **vi**:
 
 <!-- coinagerie:end -->

@@ -5901,7 +5901,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **configure**:
 - **connection**:
 - **connectivity**:
-- **console**:
 - **constant**:
 - **continuation**:
 - **controller**:
@@ -6153,7 +6152,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **rag**:
 - **rank**:
 - **reach**:
-- **real**:
 - **reason**:
 - **rectangle**:
 - **rectangular**:
@@ -6246,7 +6244,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **tight**:
 - **tightest**:
 - **tile**:
-- **timer**:
 - **tl**:
 - **tolerance**:
 - **top**:

@@ -4,6 +4,8 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
 import { CharacteristicContextService } from "../../characteristic-context.service";
@@ -32,10 +34,6 @@ describe(IsMeshCharacteristicService, () => {
 
       contextService = await module.resolve(CharacteristicContextService);
       service = await module.resolve(IsMeshCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
     });
 
     it.each([
@@ -69,9 +67,8 @@ describe(IsMeshCharacteristicService, () => {
     let service: IsMeshCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsMeshCharacteristicService, {
         providers: [
-          IsMeshCharacteristicService,
           {
             provide: CornerCountCharacteristicService,
             useValue: { compute: (): number => values.cornerCount },
@@ -99,9 +96,9 @@ describe(IsMeshCharacteristicService, () => {
             useValue: { compute: (): number => values.tileCrossingCount },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsMeshCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

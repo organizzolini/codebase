@@ -1,25 +1,38 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../code/code.module";
 import { MatrixModule } from "../matrix/matrix.module";
 
 import { CharacteristicContextService } from "./characteristic-context.service";
 
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** What the class under test is built with. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  imports: [CodeModule, MatrixModule],
+};
+
 describe(CharacteristicContextService, () => {
   let service: CharacteristicContextService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CodeModule, MatrixModule],
-      providers: [CharacteristicContextService],
-    }).compile();
+    const built = await buildTestingModule(
+      CharacteristicContextService,
+      MODULE_OPTIONS,
+    );
 
-    service = await module.resolve(CharacteristicContextService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      CharacteristicContextService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(CharacteristicContextService);
   });
 
   it("reads a formatted Code into its shape, parsed Code, and decoded matrix", () => {
