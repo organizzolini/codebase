@@ -25,7 +25,7 @@ vi.mock("./modules/plugin/plugin-context.utilities", () => ({
 
 /** One project's inferred gate. */
 const TARGETS: InferredTargets = {
-  "codependix-gate": {
+  "codependix-bound": {
     cache: true,
     executor: "@codependix/nx:gate",
     inputs: ["default"],
@@ -41,7 +41,7 @@ async function createNodes(
 
   return await callback(
     projectConfigurationFiles,
-    { gateTargetName: "codependix-gate" },
+    { gateTargetName: "codependix-bound" },
     createMock<CreateNodesContext>({ workspaceRoot: "/workspace" }),
   );
 }
@@ -103,7 +103,7 @@ describe("codependixPlugin", () => {
 
     expect(pluginService.inferTargets).toHaveBeenCalledTimes(1);
     expect(pluginService.inferTargets).toHaveBeenCalledWith({
-      options: { gateTargetName: "codependix-gate" },
+      options: { gateTargetName: "codependix-bound" },
       projectConfigurationFiles: [
         "packages/alpha/project.json",
         "packages/beta/project.json",

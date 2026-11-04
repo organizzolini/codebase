@@ -58,6 +58,22 @@ resource "github_actions_variable" "openwiki_model_id" {
   value         = data.terraform_remote_state.openrouter.outputs.refresh_documentation_model
 }
 
+# The Nx Cloud access tokens CI reads as NX_CLOUD_ACCESS_TOKEN. Nx Cloud has no
+# API to mint them, so they are created in its workspace settings and set once
+# by hand; these resources declare the same secrets and write back the values
+# the workflow passes in, so a later change is made here and not in the UI.
+resource "github_actions_secret" "nx_cloud_read_only_token" {
+  repository      = var.repository
+  secret_name     = "NX_CLOUD_READ_ONLY_TOKEN"
+  plaintext_value = var.nx_cloud_read_only_token
+}
+
+resource "github_actions_secret" "nx_cloud_read_write_token" {
+  repository      = var.repository
+  secret_name     = "NX_CLOUD_READ_WRITE_TOKEN"
+  plaintext_value = var.nx_cloud_read_write_token
+}
+
 # The repository itself, imported as it is configured. Destroying it would
 # delete the codebase, so Terraform refuses to, and archives it if it ever does.
 import {

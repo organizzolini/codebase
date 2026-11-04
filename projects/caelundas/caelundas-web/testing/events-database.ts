@@ -2,8 +2,8 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-import { createEventsDatabase } from "../src/lib/events-database/events-database";
-import { LOCAL_TIME_FUNCTIONS } from "../src/lib/events-database/events-database.local-time";
+import { listLocalTimeFunctions } from "../src/components/events-calendar/events-database-local-time.utilities";
+import { createEventsDatabase } from "../src/components/events-calendar/events-database.utilities";
 
 import type {
   EventsDatabase,
@@ -11,7 +11,7 @@ import type {
   SqlExecutor,
   SqlRow,
   SqlValue,
-} from "../src/lib/events-database/events-database.types";
+} from "../src/components/events-calendar/events-database.types";
 
 // The database belongs to caelundas-cli: its tables are what its migration
 // creates, and its seed rows and the SQL that rewrites its read model are its
@@ -23,6 +23,9 @@ const MIGRATIONS_DIRECTORY = path.join(
   CLI_ROOT,
   "src/modules/database/migrations",
 );
+// The committed rows, the events and the night sky's constellations with the
+// stars they join, in the order the build applies them.
+const SEED_FILES = ["events-seed.sql", "night-sky-seed.sql"];
 
 /**
  * Which of the committed SQL files build a test's database.
@@ -69,10 +72,14 @@ export function createFailingEventsDatabase(error: Error): {
     database: {
       describeDataset: async () =>
         failing ? Promise.reject(error) : seeded.describeDataset(),
+      findConstellations: async () =>
+        failing ? Promise.reject(error) : seeded.findConstellations(),
       findEvents: async (query) =>
         failing ? Promise.reject(error) : seeded.findEvents(query),
       findFacets: async (window) =>
         failing ? Promise.reject(error) : seeded.findFacets(window),
+      findNightSky: async () =>
+        failing ? Promise.reject(error) : seeded.findNightSky(),
     },
     recover: () => {
       failing = false;
@@ -95,6 +102,7 @@ export function createRecordingEventsDatabase(delay = 0): {
   return {
     database: {
       describeDataset: async () => seeded.describeDataset(),
+      findConstellations: async () => seeded.findConstellations(),
       findEvents: async (query) => {
         queries.push(query);
 
@@ -107,6 +115,7 @@ export function createRecordingEventsDatabase(delay = 0): {
         return seeded.findEvents(query);
       },
       findFacets: async (window) => seeded.findFacets(window),
+      findNightSky: async () => seeded.findNightSky(),
     },
     queries,
   };
@@ -133,9 +142,9 @@ export function createTestSqlExecutor(
   database.exec(readTablesSql());
 
   if (options.empty !== true) {
-    database.exec(
-      readFileSync(path.join(DATA_DIRECTORY, "events-seed.sql"), "utf8"),
-    );
+    for (const seed of SEED_FILES) {
+      database.exec(readFileSync(path.join(DATA_DIRECTORY, seed), "utf8"));
+    }
   }
 
   // Extra rows go in with the seed, before the read-model SQL derives its
@@ -185,7 +194,7 @@ function readTablesSql(): string {
  * Gives the database the local-time functions the browser's worker registers.
  */
 function registerLocalTimeFunctions(database: DatabaseSync): void {
-  for (const [name, localTime] of Object.entries(LOCAL_TIME_FUNCTIONS)) {
+  for (const [name, localTime] of Object.entries(listLocalTimeFunctions())) {
     database.function(name, { deterministic: true }, localTime);
   }
 }

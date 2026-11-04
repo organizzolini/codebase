@@ -87,6 +87,9 @@
       "configurations": {
         "caelundas": {
           "command": "node --import @swc-node/register/esm-register src/caelundas-cli.main.ts caelundas {args}"
+        },
+        "night-sky": {
+          "command": "node --import @swc-node/register/esm-register src/caelundas-cli.main.ts night-sky {args}"
         }
       },
       "defaultConfiguration": "caelundas",

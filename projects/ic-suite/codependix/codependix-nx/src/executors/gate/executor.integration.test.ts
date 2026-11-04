@@ -62,7 +62,7 @@ function writeFixtureWorkspace(): string {
   mkdirSync(FIXTURE_ROOT, { recursive: true });
 
   const workspaceRoot = mkdtempSync(
-    path.join(FIXTURE_ROOT, "codependix-gate-"),
+    path.join(FIXTURE_ROOT, "codependix-bound-"),
   );
   const projects = ["a", "b", "c"];
   const edges: Record<string, string[]> = { a: ["b"], b: [], c: ["a"] };

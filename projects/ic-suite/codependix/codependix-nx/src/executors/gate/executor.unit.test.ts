@@ -33,7 +33,7 @@ function buildContext(projectName?: string, cache = false): ExecutorContext {
               [projectName]: {
                 data: {
                   root: projectName,
-                  targets: { "codependix-gate": { cache } },
+                  targets: { "codependix-bound": { cache } },
                 },
                 name: projectName,
                 type: "lib",
@@ -44,7 +44,7 @@ function buildContext(projectName?: string, cache = false): ExecutorContext {
     root: "/workspace",
     ...(projectName === undefined
       ? {}
-      : { projectName, targetName: "codependix-gate" }),
+      : { projectName, targetName: "codependix-bound" }),
   };
 }
 
