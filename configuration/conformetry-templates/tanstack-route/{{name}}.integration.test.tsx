@@ -1,13 +1,15 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { renderRoute } from "../../testing/render-route";
+import { renderRoute } from "@codebase/testing/react";
+
+import { getRouter } from "../router";
 
 import { Route } from "./{{name}}";
 
 describe("{{name}}", () => {
   it("renders its page", async () => {
-    await renderRoute("{{path}}");
+    await renderRoute(getRouter(), "{{path}}");
 
     await expect(
       screen.findByRole("heading", { level: 1 }),

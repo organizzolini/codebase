@@ -148,7 +148,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **circular**:
 - **classlist**:
 - **clause**:
-- **clear**:
 - **click**:
 - **clone**:
 - **close**:
@@ -305,7 +304,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **hex**:
 - **hexadecimal**:
 - **higher**:
-- **history**:
 - **hoist**:
 - **hold**:
 - **href**:
@@ -319,7 +317,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **iife**:
 - **img**:
 - **immediate**:
-- **implementation**:
 - **implicit**:
 - **increment**:
 - **incremental**:
@@ -362,7 +359,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **level**:
 - **link**:
 - **literal**:
-- **load**:
 - **loader**:
 - **logger**:
 - **logic**:
@@ -389,6 +385,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **md050**:
 - **meanderaw**:
 - **meaningless**:
+- **measurement**:
 - **member**:
 - **mermaid**:
 - **meta**:
@@ -463,6 +460,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **policy**:
 - **poll**:
 - **positive**:
+- **posix**:
 - **pr**:
 - **pragma**:
 - **precision**:
@@ -482,7 +480,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **prose**:
 - **protocol**:
 - **prototype**:
-- **provide**:
 - **proxy**:
 - **publish**:
 - **px**:
@@ -496,7 +493,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **reassign**:
 - **recommend**:
 - **recursion**:
-- **recursive**:
 - **redeclare**:
 - **reduce**:
 - **redundant**:
@@ -561,7 +557,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **splice**:
 - **split**:
 - **spread**:
-- **spy**:
 - **stack**:
 - **standalone**:
 - **statement**:
@@ -644,6 +639,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **verbatim**:
 - **vi**:
 - **violation**:
+- **vocabulary**:
 - **vue**:
 - **wheel**:
 - **which**:
