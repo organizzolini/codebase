@@ -10,6 +10,7 @@ import { EnvironmentFilesModule } from "./modules/environment-files/environment-
 import { LocalServicesModule } from "./modules/local-services/local-services.module";
 import { ReporterModule } from "./modules/reporter/reporter.module";
 import { SetupModule } from "./modules/setup/setup.module";
+import { SharedNxCacheModule } from "./modules/shared-nx-cache/shared-nx-cache.module";
 import { ShellConfigurationModule } from "./modules/shell-configuration/shell-configuration.module";
 import { SoftwareModule } from "./modules/software/software.module";
 import { UpdateReuiSkillModule } from "./modules/update-reui-skill/update-reui-skill.module";
@@ -32,6 +33,7 @@ import { UpdateReuiSkillModule } from "./modules/update-reui-skill/update-reui-s
     LoggerModule,
     ReporterModule,
     SetupModule,
+    SharedNxCacheModule,
     ShellConfigurationModule,
     SoftwareModule,
     UpdateReuiSkillModule,

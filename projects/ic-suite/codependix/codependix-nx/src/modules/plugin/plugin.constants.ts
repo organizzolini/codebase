@@ -43,7 +43,7 @@ export const CODEPENDIX_NX_PLUGIN_NAME = "@codependix/nx";
  * registering both plugins would otherwise infer two targets under one name,
  * and Nx keeps whichever plugin it ran last without saying so.
  */
-export const DEFAULT_GATE_TARGET_NAME = "codependix-gate";
+export const DEFAULT_GATE_TARGET_NAME = "codependix-bound";
 
 /**
  * What the configuration refusal names when the plugin registration lacks the

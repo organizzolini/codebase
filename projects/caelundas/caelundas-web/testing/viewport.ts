@@ -6,6 +6,8 @@ const DESKTOP_WIDTH = 1280;
 
 let viewportWidth = DESKTOP_WIDTH;
 
+let prefersReducedMotion = false;
+
 // Every query a listener watches, so a width a test sets mid-render reaches
 // the page the way a resized window would.
 const listeners = new Set<{
@@ -19,6 +21,7 @@ const listeners = new Set<{
  */
 export function installViewport(): void {
   viewportWidth = DESKTOP_WIDTH;
+  prefersReducedMotion = false;
   listeners.clear();
 
   Object.defineProperty(globalThis, "matchMedia", {
@@ -32,7 +35,7 @@ export function installViewport(): void {
       },
       addListener: () => {},
       dispatchEvent: () => false,
-      matches: matchesWidth(query),
+      matches: matchesQuery(query),
       media: query,
       onchange: null,
       removeEventListener: (
@@ -51,32 +54,48 @@ export function installViewport(): void {
 }
 
 /**
+ * Sets whether the page asks for reduced motion, telling each listener of
+ * that preference.
+ */
+export function setReducedMotion(reduced: boolean): void {
+  prefersReducedMotion = reduced;
+
+  for (const { listener, query } of listeners) {
+    if (query.includes("prefers-reduced-motion")) {
+      notify(listener, reduced);
+    }
+  }
+}
+
+/**
  * Sets the width media queries see, such as 375 for a phone or 800 for a
  * tablet, telling each listener whose query the change flips.
  */
 export function setViewportWidth(width: number): void {
   const before = [...listeners].map((entry) => ({
     ...entry,
-    matched: matchesWidth(entry.query),
+    matched: matchesQuery(entry.query),
   }));
 
   viewportWidth = width;
 
   const flipped = before.filter(
-    ({ matched, query }) => matched !== matchesWidth(query),
+    ({ matched, query }) => matched !== matchesQuery(query),
   );
 
   for (const { listener, query } of flipped) {
-    const event = Object.assign(new Event("change"), {
-      matches: matchesWidth(query),
-    });
-
-    if (typeof listener === "function") {
-      listener(event);
-    } else {
-      listener.handleEvent(event);
-    }
+    notify(listener, matchesQuery(query));
   }
+}
+
+/**
+ * Whether a query holds: the reduced motion preference a test sets, or every
+ * width feature at the current width.
+ */
+function matchesQuery(query: string): boolean {
+  return query.includes("prefers-reduced-motion")
+    ? prefersReducedMotion
+    : matchesWidth(query);
 }
 
 /**
@@ -91,4 +110,20 @@ function matchesWidth(query: string): boolean {
       ? viewportWidth >= Number(pixels)
       : viewportWidth <= Number(pixels),
   );
+}
+
+/**
+ * Tells a listener that a query's answer changed.
+ */
+function notify(
+  listener: EventListenerOrEventListenerObject,
+  matches: boolean,
+): void {
+  const event = Object.assign(new Event("change"), { matches });
+
+  if (typeof listener === "function") {
+    listener(event);
+  } else {
+    listener.handleEvent(event);
+  }
 }

@@ -26,6 +26,7 @@
     "callidescope.workspace.config.ts",
     "codependix.config.ts",
     "codometer.config.ts",
+    "coinagerie.config.ts",
     "eslint.config.ts",
     "examples/**/*.ts",
     "scripts/**/*.ts",

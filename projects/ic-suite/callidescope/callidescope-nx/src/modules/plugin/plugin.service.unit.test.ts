@@ -193,7 +193,7 @@ describe(PluginService, () => {
         "callidescope-breadth",
         "callidescope-depth",
         "callidescope-trace",
-        "callidescope-gate",
+        "callidescope-restrict",
       ]);
     });
 
@@ -239,7 +239,7 @@ describe(PluginService, () => {
           inputs: INPUTS,
           options: { configuration: CONFIGURATION_PATH },
         },
-        "callidescope-gate": {
+        "callidescope-restrict": {
           cache: true,
           executor: "@callidescope/nx:gate",
           // The project's own limits join the workspace's, and they join as a
@@ -269,7 +269,9 @@ describe(PluginService, () => {
       // Nothing is read from beside the project to decide this: the input
       // glob matches no file, so the target is there and the limits it
       // enforces are the ones the workspace declared.
-      expect(targets.get("packages/beta")?.["callidescope-gate"]).toBeDefined();
+      expect(
+        targets.get("packages/beta")?.["callidescope-restrict"],
+      ).toBeDefined();
     });
 
     it("gives a project the configuration excludes no gate target", async () => {
@@ -304,7 +306,7 @@ describe(PluginService, () => {
       ]);
       // The exclusion is one project's, never the run's.
       expect(
-        targets.get("packages/alpha")?.["callidescope-gate"],
+        targets.get("packages/alpha")?.["callidescope-restrict"],
       ).toBeDefined();
     });
 
@@ -324,7 +326,7 @@ describe(PluginService, () => {
       });
 
       expect(
-        targets.get("packages/alpha")?.["callidescope-gate"],
+        targets.get("packages/alpha")?.["callidescope-restrict"],
       ).toBeDefined();
     });
 

@@ -25,14 +25,14 @@ const NX_CONFIGURATION = {
     {
       options: {
         configurationPath: "callidescope.config.ts",
-        gateTargetName: "callidescope-gate",
+        gateTargetName: "callidescope-restrict",
       },
       plugin: "@callidescope/nx",
     },
     {
       options: {
         configurationPath: "codependix.config.ts",
-        gateTargetName: "codependix-gate",
+        gateTargetName: "codependix-bound",
       },
       plugin: "@codependix/nx",
     },

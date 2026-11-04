@@ -31,8 +31,10 @@ src/
   `LoggerServiceContract` type; every other entry stays free of workspace
   imports. Owner-specific adapters belong to their owning packages and are
   exported from those packages' `/testing` entries.
-- **Keep the `build` target's `dependsOn` empty.** Observability imports
-  `/nestjs` back, so a `^build` here would order a task cycle.
+- **Never let observability's build wait on this one.** Observability imports
+  `/nestjs` back, and its `implicitDependencies: ["!testing"]` is what keeps
+  that edge out of the task graph; this package's own `^build` waits on
+  observability's, which is the one direction the graph keeps.
 - **Undo every global change when the test finishes.** Register the undo with
   `onTestFinished` (or a `beforeAll` teardown) inside the helper, never in the
   caller.

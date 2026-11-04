@@ -121,3 +121,103 @@ None.
 
 None.
 <!-- callidescope:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run codometer-core:coinagerie-check:write`.
+
+- **after**:
+- **anchor**:
+- **array**:
+- **block**:
+- **breach**:
+- **breadth**:
+- **bug**:
+- **byte**:
+- **cell**:
+- **clear**:
+- **color**:
+- **comment**:
+- **compile**:
+- **compiler**:
+- **conditional**:
+- **console**:
+- **constant**:
+- **controller**:
+- **count**:
+- **css**:
+- **custom**:
+- **declaration**:
+- **decorator**:
+- **define**:
+- **describe**:
+- **doc**:
+- **docstring**:
+- **each**:
+- **empty**:
+- **equal**:
+- **execute**:
+- **experimental**:
+- **expression**:
+- **failure**:
+- **fake**:
+- **generic**:
+- **gitkeep**:
+- **hcl**:
+- **homepage**:
+- **implementation**:
+- **injectable**:
+- **inline**:
+- **instance**:
+- **interpolation**:
+- **invalid**:
+- **item**:
+- **java**:
+- **javascript**:
+- **jupyter**:
+- **kind**:
+- **least**:
+- **level1**:
+- **level2**:
+- **level3**:
+- **level4**:
+- **level5**:
+- **level6**:
+- **link**:
+- **maximum**:
+- **measure**:
+- **meta**:
+- **method**:
+- **metric**:
+- **mock**:
+- **paragraph**:
+- **pipeline**:
+- **protocol**:
+- **publish**:
+- **quote**:
+- **real**:
+- **reason**:
+- **recursive**:
+- **resolution**:
+- **scalar**:
+- **selector**:
+- **sequence**:
+- **severity**:
+- **shebang**:
+- **sort**:
+- **spy**:
+- **statement**:
+- **statistic**:
+- **strict**:
+- **synthetic**:
+- **task**:
+- **thematic**:
+- **timer**:
+- **todo**:
+- **toml**:
+- **variable**:
+- **vi**:
+
+<!-- coinagerie:end -->

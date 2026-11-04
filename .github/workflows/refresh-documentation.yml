@@ -5,6 +5,14 @@ on:
     - cron: 18 8 * * 5 # Weekly Friday 8:18am UTC
   workflow_dispatch:
 
+# Nx Cloud's remote cache. Only a trusted run gets the read-write token: a run
+# for a pull request, or a manual run off `main`, gets the read-only one, whose
+# results stay in a cache of their own and cannot reach what `main` reads. The
+# token is the join of two expressions, one of them always empty, so a missing
+# read-only secret leaves it empty rather than falling back to the read-write one.
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_READ_ONLY_TOKEN }}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
