@@ -28,7 +28,7 @@ export const DEFAULT_BREADTH_TARGET_NAME = "callidescope-breadth";
  * the target here a pipeline is meant to read an exit code from, so it says
  * `gate`.
  */
-export const DEFAULT_GATE_TARGET_NAME = "callidescope-gate";
+export const DEFAULT_GATE_TARGET_NAME = "callidescope-restrict";
 
 /** Names the plugin option in a refusal of a missing configuration path. */
 export const PLUGIN_CONFIGURATION_SURFACE = `The "configurationPath" option in the nx.json registration of ${CALLIDESCOPE_NX_PLUGIN_NAME}`;

@@ -21,6 +21,11 @@ git restore --staged notepads/notepad.ts || true
 
 EXIT_CODE=0
 
+# 🤝 Share the Nx cache with every other worktree on this machine
+# Prints nothing when the shared cache server cannot be reached, so a commit
+# never waits on it.
+eval "$("${REPOSITORY_ROOT}/scripts/git/seed-session-nx-cache.sh" env 2>/dev/null)" || true
+
 # `nx sync:check` used to run here. The generator plugin it checked is no longer
 # committed — it is emitted into .conformetry on install — so no commit can
 # stage it out of date. Every conformetry command re-checks the emitted plugin
@@ -71,7 +76,7 @@ if [ "${EXIT_CODE}" = "137" ] || grep -q "Task failed to spawn" last-lint-staged
   else
     printf '   The likely cause is the operating system reclaiming memory.\n'
     printf '   Free some memory and commit again, or run the analysis directly:\n'
-    printf '   nx affected --target=type-codebase,lint-codebase,tidy-codebase,form-codebase,gate-codebase --configuration=check --parallel=1 --files=<staged path>\n\n'
+    printf '   nx affected --target=typecheck,oxlint,oxfmt --configuration=check --parallel=1 --files=<staged path>\n\n'
   fi
 fi
 

@@ -40,6 +40,9 @@
     --input: 220 13% 91%;
     --ring: 224 71.4% 4.1%;
     --radius: 0.5rem;
+    /* The shared Button rounds to min(var(--radius-md), 12px) outside a
+       button group, so the token has to exist or the corner computes to 0. */
+    --radius-md: calc(var(--radius) - 2px);
 
     /* Chart colors - Lexico theme */
     --chart-1: 12 76% 61%;
