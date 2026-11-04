@@ -2162,6 +2162,7 @@ graph LR
   file_caelundas_cli_callidescope_config_ts["caelundas-cli/callidescope.config.ts"]
   file_caelundas_cli_codependix_config_ts["caelundas-cli/codependix.config.ts"]
   file_caelundas_cli_codometer_config_ts["caelundas-cli/codometer.config.ts"]
+  file_caelundas_cli_coinagerie_config_ts["caelundas-cli/coinagerie.config.ts"]
   file_caelundas_cli_eslint_config_ts["caelundas-cli/eslint.config.ts"]
   file_caelundas_cli_src_caelundas_cli_constants_ts["caelundas-cli/src/caelundas-cli.constants.ts"]
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts["caelundas-cli/src/caelundas-cli.main.end-to-end.test.ts"]
@@ -2502,6 +2503,7 @@ graph LR
   file_caelundas_cli_vitest_config_ts["caelundas-cli/vitest.config.ts"]
   file_caelundas_web_callidescope_config_ts["caelundas-web/callidescope.config.ts"]
   file_caelundas_web_codometer_config_ts["caelundas-web/codometer.config.ts"]
+  file_caelundas_web_coinagerie_config_ts["caelundas-web/coinagerie.config.ts"]
   file_caelundas_web_eslint_config_ts["caelundas-web/eslint.config.ts"]
   file_caelundas_web_scripts_build_events_database_ts["caelundas-web/scripts/build-events-database.ts"]
   file_caelundas_web_src_client_tsx["caelundas-web/src/client.tsx"]
@@ -2901,6 +2903,7 @@ graph LR
   file_caelundas_web_vitest_config_ts["caelundas-web/vitest.config.ts"]
   file_callidescope_agents_codependix_config_ts["callidescope-agents/codependix.config.ts"]
   file_callidescope_agents_codometer_config_ts["callidescope-agents/codometer.config.ts"]
+  file_callidescope_agents_coinagerie_config_ts["callidescope-agents/coinagerie.config.ts"]
   file_callidescope_agents_eslint_config_ts["callidescope-agents/eslint.config.ts"]
   file_callidescope_agents_testing_setup_ts["callidescope-agents/testing/setup.ts"]
   file_callidescope_agents_testing_skills_unit_test_ts["callidescope-agents/testing/skills.unit.test.ts"]
@@ -2908,6 +2911,7 @@ graph LR
   file_callidescope_cli_callidescope_config_ts["callidescope-cli/callidescope.config.ts"]
   file_callidescope_cli_codependix_config_ts["callidescope-cli/codependix.config.ts"]
   file_callidescope_cli_codometer_config_ts["callidescope-cli/codometer.config.ts"]
+  file_callidescope_cli_coinagerie_config_ts["callidescope-cli/coinagerie.config.ts"]
   file_callidescope_cli_eslint_config_ts["callidescope-cli/eslint.config.ts"]
   file_callidescope_cli_src_callidescope_cli_constants_ts["callidescope-cli/src/callidescope-cli.constants.ts"]
   file_callidescope_cli_src_callidescope_cli_main_end_to_end_test_ts["callidescope-cli/src/callidescope-cli.main.end-to-end.test.ts"]
@@ -2959,6 +2963,7 @@ graph LR
   file_callidescope_configuration_callidescope_config_ts["callidescope-configuration/callidescope.config.ts"]
   file_callidescope_configuration_codependix_config_ts["callidescope-configuration/codependix.config.ts"]
   file_callidescope_configuration_codometer_config_ts["callidescope-configuration/codometer.config.ts"]
+  file_callidescope_configuration_coinagerie_config_ts["callidescope-configuration/coinagerie.config.ts"]
   file_callidescope_configuration_eslint_config_ts["callidescope-configuration/eslint.config.ts"]
   file_callidescope_configuration_src_index_ts["callidescope-configuration/src/index.ts"]
   file_callidescope_configuration_src_index_unit_test_ts["callidescope-configuration/src/index.unit.test.ts"]
@@ -2996,6 +3001,7 @@ graph LR
   file_callidescope_core_callidescope_config_ts["callidescope-core/callidescope.config.ts"]
   file_callidescope_core_codependix_config_ts["callidescope-core/codependix.config.ts"]
   file_callidescope_core_codometer_config_ts["callidescope-core/codometer.config.ts"]
+  file_callidescope_core_coinagerie_config_ts["callidescope-core/coinagerie.config.ts"]
   file_callidescope_core_eslint_config_ts["callidescope-core/eslint.config.ts"]
   file_callidescope_core_src_index_ts["callidescope-core/src/index.ts"]
   file_callidescope_core_src_index_unit_test_ts["callidescope-core/src/index.unit.test.ts"]
@@ -3012,6 +3018,7 @@ graph LR
   file_callidescope_examples_callidescope_workspace_config_ts["callidescope-examples/callidescope.workspace.config.ts"]
   file_callidescope_examples_codependix_config_ts["callidescope-examples/codependix.config.ts"]
   file_callidescope_examples_codometer_config_ts["callidescope-examples/codometer.config.ts"]
+  file_callidescope_examples_coinagerie_config_ts["callidescope-examples/coinagerie.config.ts"]
   file_callidescope_examples_eslint_config_ts["callidescope-examples/eslint.config.ts"]
   file_callidescope_examples_examples_base_class_base_class_ts["callidescope-examples/examples/base-class/base-class.ts"]
   file_callidescope_examples_examples_base_class_base_task_ts["callidescope-examples/examples/base-class/base-task.ts"]
@@ -3056,6 +3063,7 @@ graph LR
   file_callidescope_graph_callidescope_config_ts["callidescope-graph/callidescope.config.ts"]
   file_callidescope_graph_codependix_config_ts["callidescope-graph/codependix.config.ts"]
   file_callidescope_graph_codometer_config_ts["callidescope-graph/codometer.config.ts"]
+  file_callidescope_graph_coinagerie_config_ts["callidescope-graph/coinagerie.config.ts"]
   file_callidescope_graph_eslint_config_ts["callidescope-graph/eslint.config.ts"]
   file_callidescope_graph_src_index_ts["callidescope-graph/src/index.ts"]
   file_callidescope_graph_src_modules_callables_address_constants_ts["callidescope-graph/src/modules/callables/address.constants.ts"]
@@ -3145,6 +3153,7 @@ graph LR
   file_callidescope_nx_callidescope_config_ts["callidescope-nx/callidescope.config.ts"]
   file_callidescope_nx_codependix_config_ts["callidescope-nx/codependix.config.ts"]
   file_callidescope_nx_codometer_config_ts["callidescope-nx/codometer.config.ts"]
+  file_callidescope_nx_coinagerie_config_ts["callidescope-nx/coinagerie.config.ts"]
   file_callidescope_nx_eslint_config_ts["callidescope-nx/eslint.config.ts"]
   file_callidescope_nx_src_callidescope_nx_module_ts["callidescope-nx/src/callidescope-nx.module.ts"]
   file_callidescope_nx_src_executors_address_types_ts["callidescope-nx/src/executors/address.types.ts"]
@@ -3199,6 +3208,7 @@ graph LR
   file_callidescope_output_callidescope_config_ts["callidescope-output/callidescope.config.ts"]
   file_callidescope_output_codependix_config_ts["callidescope-output/codependix.config.ts"]
   file_callidescope_output_codometer_config_ts["callidescope-output/codometer.config.ts"]
+  file_callidescope_output_coinagerie_config_ts["callidescope-output/coinagerie.config.ts"]
   file_callidescope_output_eslint_config_ts["callidescope-output/eslint.config.ts"]
   file_callidescope_output_src_index_ts["callidescope-output/src/index.ts"]
   file_callidescope_output_src_modules_address_report_address_report_constants_ts["callidescope-output/src/modules/address-report/address-report.constants.ts"]
@@ -3249,6 +3259,7 @@ graph LR
   file_callidescope_output_vitest_config_ts["callidescope-output/vitest.config.ts"]
   file_codependix_agents_codependix_config_ts["codependix-agents/codependix.config.ts"]
   file_codependix_agents_codometer_config_ts["codependix-agents/codometer.config.ts"]
+  file_codependix_agents_coinagerie_config_ts["codependix-agents/coinagerie.config.ts"]
   file_codependix_agents_eslint_config_ts["codependix-agents/eslint.config.ts"]
   file_codependix_agents_testing_setup_ts["codependix-agents/testing/setup.ts"]
   file_codependix_agents_testing_skills_unit_test_ts["codependix-agents/testing/skills.unit.test.ts"]
@@ -3256,6 +3267,7 @@ graph LR
   file_codependix_boundaries_callidescope_config_ts["codependix-boundaries/callidescope.config.ts"]
   file_codependix_boundaries_codependix_config_ts["codependix-boundaries/codependix.config.ts"]
   file_codependix_boundaries_codometer_config_ts["codependix-boundaries/codometer.config.ts"]
+  file_codependix_boundaries_coinagerie_config_ts["codependix-boundaries/coinagerie.config.ts"]
   file_codependix_boundaries_eslint_config_ts["codependix-boundaries/eslint.config.ts"]
   file_codependix_boundaries_src_index_ts["codependix-boundaries/src/index.ts"]
   file_codependix_boundaries_src_modules_boundaries_boundaries_constants_ts["codependix-boundaries/src/modules/boundaries/boundaries.constants.ts"]
@@ -3295,6 +3307,7 @@ graph LR
   file_codependix_cli_callidescope_config_ts["codependix-cli/callidescope.config.ts"]
   file_codependix_cli_codependix_config_ts["codependix-cli/codependix.config.ts"]
   file_codependix_cli_codometer_config_ts["codependix-cli/codometer.config.ts"]
+  file_codependix_cli_coinagerie_config_ts["codependix-cli/coinagerie.config.ts"]
   file_codependix_cli_eslint_config_ts["codependix-cli/eslint.config.ts"]
   file_codependix_cli_src_codependix_cli_constants_ts["codependix-cli/src/codependix-cli.constants.ts"]
   file_codependix_cli_src_codependix_cli_main_end_to_end_test_ts["codependix-cli/src/codependix-cli.main.end-to-end.test.ts"]
@@ -3326,6 +3339,7 @@ graph LR
   file_codependix_configuration_callidescope_config_ts["codependix-configuration/callidescope.config.ts"]
   file_codependix_configuration_codependix_config_ts["codependix-configuration/codependix.config.ts"]
   file_codependix_configuration_codometer_config_ts["codependix-configuration/codometer.config.ts"]
+  file_codependix_configuration_coinagerie_config_ts["codependix-configuration/coinagerie.config.ts"]
   file_codependix_configuration_eslint_config_ts["codependix-configuration/eslint.config.ts"]
   file_codependix_configuration_src_index_ts["codependix-configuration/src/index.ts"]
   file_codependix_configuration_src_index_unit_test_ts["codependix-configuration/src/index.unit.test.ts"]
@@ -3358,6 +3372,7 @@ graph LR
   file_codependix_core_callidescope_config_ts["codependix-core/callidescope.config.ts"]
   file_codependix_core_codependix_config_ts["codependix-core/codependix.config.ts"]
   file_codependix_core_codometer_config_ts["codependix-core/codometer.config.ts"]
+  file_codependix_core_coinagerie_config_ts["codependix-core/coinagerie.config.ts"]
   file_codependix_core_eslint_config_ts["codependix-core/eslint.config.ts"]
   file_codependix_core_src_index_ts["codependix-core/src/index.ts"]
   file_codependix_core_src_index_unit_test_ts["codependix-core/src/index.unit.test.ts"]
@@ -3372,6 +3387,7 @@ graph LR
   file_codependix_core_vitest_config_ts["codependix-core/vitest.config.ts"]
   file_codependix_examples_codependix_config_ts["codependix-examples/codependix.config.ts"]
   file_codependix_examples_codometer_config_ts["codependix-examples/codometer.config.ts"]
+  file_codependix_examples_coinagerie_config_ts["codependix-examples/coinagerie.config.ts"]
   file_codependix_examples_eslint_config_ts["codependix-examples/eslint.config.ts"]
   file_codependix_examples_testing_boundary_attribution_integration_test_ts["codependix-examples/testing/boundary-attribution.integration.test.ts"]
   file_codependix_examples_testing_examples_integration_test_ts["codependix-examples/testing/examples.integration.test.ts"]
@@ -3402,6 +3418,7 @@ graph LR
   file_codependix_file_imports_callidescope_config_ts["codependix-file-imports/callidescope.config.ts"]
   file_codependix_file_imports_codependix_config_ts["codependix-file-imports/codependix.config.ts"]
   file_codependix_file_imports_codometer_config_ts["codependix-file-imports/codometer.config.ts"]
+  file_codependix_file_imports_coinagerie_config_ts["codependix-file-imports/coinagerie.config.ts"]
   file_codependix_file_imports_eslint_config_ts["codependix-file-imports/eslint.config.ts"]
   file_codependix_file_imports_src_index_ts["codependix-file-imports/src/index.ts"]
   file_codependix_file_imports_src_modules_file_imports_workspace_graph_file_imports_workspace_graph_constants_ts["codependix-file-imports/src/modules/file-imports-workspace-graph/file-imports-workspace-graph.constants.ts"]
@@ -3442,6 +3459,7 @@ graph LR
   file_codependix_nestjs_modules_callidescope_config_ts["codependix-nestjs-modules/callidescope.config.ts"]
   file_codependix_nestjs_modules_codependix_config_ts["codependix-nestjs-modules/codependix.config.ts"]
   file_codependix_nestjs_modules_codometer_config_ts["codependix-nestjs-modules/codometer.config.ts"]
+  file_codependix_nestjs_modules_coinagerie_config_ts["codependix-nestjs-modules/coinagerie.config.ts"]
   file_codependix_nestjs_modules_eslint_config_ts["codependix-nestjs-modules/eslint.config.ts"]
   file_codependix_nestjs_modules_src_index_ts["codependix-nestjs-modules/src/index.ts"]
   file_codependix_nestjs_modules_src_index_unit_test_ts["codependix-nestjs-modules/src/index.unit.test.ts"]
@@ -3472,6 +3490,7 @@ graph LR
   file_codependix_nx_projects_callidescope_config_ts["codependix-nx-projects/callidescope.config.ts"]
   file_codependix_nx_projects_codependix_config_ts["codependix-nx-projects/codependix.config.ts"]
   file_codependix_nx_projects_codometer_config_ts["codependix-nx-projects/codometer.config.ts"]
+  file_codependix_nx_projects_coinagerie_config_ts["codependix-nx-projects/coinagerie.config.ts"]
   file_codependix_nx_projects_eslint_config_ts["codependix-nx-projects/eslint.config.ts"]
   file_codependix_nx_projects_src_index_ts["codependix-nx-projects/src/index.ts"]
   file_codependix_nx_projects_src_index_unit_test_ts["codependix-nx-projects/src/index.unit.test.ts"]
@@ -3494,6 +3513,7 @@ graph LR
   file_codependix_nx_callidescope_config_ts["codependix-nx/callidescope.config.ts"]
   file_codependix_nx_codependix_config_ts["codependix-nx/codependix.config.ts"]
   file_codependix_nx_codometer_config_ts["codependix-nx/codometer.config.ts"]
+  file_codependix_nx_coinagerie_config_ts["codependix-nx/coinagerie.config.ts"]
   file_codependix_nx_eslint_config_ts["codependix-nx/eslint.config.ts"]
   file_codependix_nx_src_codependix_nx_module_ts["codependix-nx/src/codependix-nx.module.ts"]
   file_codependix_nx_src_executors_gate_executor_integration_test_ts["codependix-nx/src/executors/gate/executor.integration.test.ts"]
@@ -3526,6 +3546,7 @@ graph LR
   file_codependix_output_callidescope_config_ts["codependix-output/callidescope.config.ts"]
   file_codependix_output_codependix_config_ts["codependix-output/codependix.config.ts"]
   file_codependix_output_codometer_config_ts["codependix-output/codometer.config.ts"]
+  file_codependix_output_coinagerie_config_ts["codependix-output/coinagerie.config.ts"]
   file_codependix_output_eslint_config_ts["codependix-output/eslint.config.ts"]
   file_codependix_output_src_index_ts["codependix-output/src/index.ts"]
   file_codependix_output_src_modules_anchors_anchors_constants_ts["codependix-output/src/modules/anchors/anchors.constants.ts"]
@@ -3588,6 +3609,7 @@ graph LR
   file_codependix_output_vitest_config_ts["codependix-output/vitest.config.ts"]
   file_codometer_agents_codependix_config_ts["codometer-agents/codependix.config.ts"]
   file_codometer_agents_codometer_config_ts["codometer-agents/codometer.config.ts"]
+  file_codometer_agents_coinagerie_config_ts["codometer-agents/coinagerie.config.ts"]
   file_codometer_agents_eslint_config_ts["codometer-agents/eslint.config.ts"]
   file_codometer_agents_testing_setup_ts["codometer-agents/testing/setup.ts"]
   file_codometer_agents_testing_skills_unit_test_ts["codometer-agents/testing/skills.unit.test.ts"]
@@ -3595,6 +3617,7 @@ graph LR
   file_codometer_cli_callidescope_config_ts["codometer-cli/callidescope.config.ts"]
   file_codometer_cli_codependix_config_ts["codometer-cli/codependix.config.ts"]
   file_codometer_cli_codometer_config_ts["codometer-cli/codometer.config.ts"]
+  file_codometer_cli_coinagerie_config_ts["codometer-cli/coinagerie.config.ts"]
   file_codometer_cli_eslint_config_ts["codometer-cli/eslint.config.ts"]
   file_codometer_cli_src_codometer_cli_constants_ts["codometer-cli/src/codometer-cli.constants.ts"]
   file_codometer_cli_src_codometer_cli_main_end_to_end_test_ts["codometer-cli/src/codometer-cli.main.end-to-end.test.ts"]
@@ -3632,6 +3655,7 @@ graph LR
   file_codometer_configuration_callidescope_config_ts["codometer-configuration/callidescope.config.ts"]
   file_codometer_configuration_codependix_config_ts["codometer-configuration/codependix.config.ts"]
   file_codometer_configuration_codometer_config_ts["codometer-configuration/codometer.config.ts"]
+  file_codometer_configuration_coinagerie_config_ts["codometer-configuration/coinagerie.config.ts"]
   file_codometer_configuration_eslint_config_ts["codometer-configuration/eslint.config.ts"]
   file_codometer_configuration_src_index_ts["codometer-configuration/src/index.ts"]
   file_codometer_configuration_src_index_unit_test_ts["codometer-configuration/src/index.unit.test.ts"]
@@ -3659,6 +3683,7 @@ graph LR
   file_codometer_core_callidescope_config_ts["codometer-core/callidescope.config.ts"]
   file_codometer_core_codependix_config_ts["codometer-core/codependix.config.ts"]
   file_codometer_core_codometer_config_ts["codometer-core/codometer.config.ts"]
+  file_codometer_core_coinagerie_config_ts["codometer-core/coinagerie.config.ts"]
   file_codometer_core_eslint_config_ts["codometer-core/eslint.config.ts"]
   file_codometer_core_src_index_ts["codometer-core/src/index.ts"]
   file_codometer_core_src_index_unit_test_ts["codometer-core/src/index.unit.test.ts"]
@@ -3673,6 +3698,7 @@ graph LR
   file_codometer_core_vitest_config_ts["codometer-core/vitest.config.ts"]
   file_codometer_examples_codependix_config_ts["codometer-examples/codependix.config.ts"]
   file_codometer_examples_codometer_config_ts["codometer-examples/codometer.config.ts"]
+  file_codometer_examples_coinagerie_config_ts["codometer-examples/coinagerie.config.ts"]
   file_codometer_examples_eslint_config_ts["codometer-examples/eslint.config.ts"]
   file_codometer_examples_examples_compression_brotli_config_ts["codometer-examples/examples/compression/brotli.config.ts"]
   file_codometer_examples_examples_compression_gzip_config_ts["codometer-examples/examples/compression/gzip.config.ts"]
@@ -3720,6 +3746,7 @@ graph LR
   file_codometer_languages_callidescope_config_ts["codometer-languages/callidescope.config.ts"]
   file_codometer_languages_codependix_config_ts["codometer-languages/codependix.config.ts"]
   file_codometer_languages_codometer_config_ts["codometer-languages/codometer.config.ts"]
+  file_codometer_languages_coinagerie_config_ts["codometer-languages/coinagerie.config.ts"]
   file_codometer_languages_eslint_config_ts["codometer-languages/eslint.config.ts"]
   file_codometer_languages_src_index_ts["codometer-languages/src/index.ts"]
   file_codometer_languages_src_modules_comments_comments_constants_ts["codometer-languages/src/modules/comments/comments.constants.ts"]
@@ -3824,6 +3851,7 @@ graph LR
   file_codometer_measurement_callidescope_config_ts["codometer-measurement/callidescope.config.ts"]
   file_codometer_measurement_codependix_config_ts["codometer-measurement/codependix.config.ts"]
   file_codometer_measurement_codometer_config_ts["codometer-measurement/codometer.config.ts"]
+  file_codometer_measurement_coinagerie_config_ts["codometer-measurement/coinagerie.config.ts"]
   file_codometer_measurement_eslint_config_ts["codometer-measurement/eslint.config.ts"]
   file_codometer_measurement_src_index_ts["codometer-measurement/src/index.ts"]
   file_codometer_measurement_src_modules_customization_customization_constants_ts["codometer-measurement/src/modules/customization/customization.constants.ts"]
@@ -3877,6 +3905,7 @@ graph LR
   file_codometer_output_callidescope_config_ts["codometer-output/callidescope.config.ts"]
   file_codometer_output_codependix_config_ts["codometer-output/codependix.config.ts"]
   file_codometer_output_codometer_config_ts["codometer-output/codometer.config.ts"]
+  file_codometer_output_coinagerie_config_ts["codometer-output/coinagerie.config.ts"]
   file_codometer_output_eslint_config_ts["codometer-output/eslint.config.ts"]
   file_codometer_output_src_index_ts["codometer-output/src/index.ts"]
   file_codometer_output_src_modules_changes_changes_constants_ts["codometer-output/src/modules/changes/changes.constants.ts"]
@@ -3941,6 +3970,7 @@ graph LR
   file_codometer_output_vitest_config_ts["codometer-output/vitest.config.ts"]
   file_coinagerie_agents_codependix_config_ts["coinagerie-agents/codependix.config.ts"]
   file_coinagerie_agents_codometer_config_ts["coinagerie-agents/codometer.config.ts"]
+  file_coinagerie_agents_coinagerie_config_ts["coinagerie-agents/coinagerie.config.ts"]
   file_coinagerie_agents_eslint_config_ts["coinagerie-agents/eslint.config.ts"]
   file_coinagerie_agents_testing_portability_unit_test_ts["coinagerie-agents/testing/portability.unit.test.ts"]
   file_coinagerie_agents_testing_setup_ts["coinagerie-agents/testing/setup.ts"]
@@ -4005,6 +4035,7 @@ graph LR
   file_coinagerie_core_vitest_config_ts["coinagerie-core/vitest.config.ts"]
   file_coinagerie_examples_codependix_config_ts["coinagerie-examples/codependix.config.ts"]
   file_coinagerie_examples_codometer_config_ts["coinagerie-examples/codometer.config.ts"]
+  file_coinagerie_examples_coinagerie_config_ts["coinagerie-examples/coinagerie.config.ts"]
   file_coinagerie_examples_eslint_config_ts["coinagerie-examples/eslint.config.ts"]
   file_coinagerie_examples_testing_coinagerie_ts["coinagerie-examples/testing/coinagerie.ts"]
   file_coinagerie_examples_testing_examples_integration_test_ts["coinagerie-examples/testing/examples.integration.test.ts"]
@@ -4180,6 +4211,7 @@ graph LR
   file_configuration_conformetry_templates_nestjs_command_module___nameKebabCase_____nameKebabCase___module_ts["configuration/conformetry-templates/nestjs-command-module/{{nameKebabCase}}/{{nameKebabCase}}.module.ts"]
   file_configuration_conformetry_templates_nestjs_command_module___nameKebabCase_____nameKebabCase___types_ts["configuration/conformetry-templates/nestjs-command-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts"]
   file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___codometer_config_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/codometer.config.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___coinagerie_config_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/coinagerie.config.ts"]
   file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___eslint_config_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/eslint.config.ts"]
   file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___constants_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/src/{{nameKebabCase}}.constants.ts"]
   file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_end_to_end_test_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/src/{{nameKebabCase}}.main.end-to-end.test.ts"]
@@ -4195,6 +4227,7 @@ graph LR
   file_configuration_conformetry_templates_nestjs_dataloader_module___nameKebabCase_____nameKebabCase___module_ts["configuration/conformetry-templates/nestjs-dataloader-module/{{nameKebabCase}}/{{nameKebabCase}}.module.ts"]
   file_configuration_conformetry_templates_nestjs_dataloader_module___nameKebabCase_____nameKebabCase___types_ts["configuration/conformetry-templates/nestjs-dataloader-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts"]
   file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___codometer_config_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/codometer.config.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___coinagerie_config_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/coinagerie.config.ts"]
   file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___eslint_config_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/eslint.config.ts"]
   file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___constants_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/src/{{nameKebabCase}}.constants.ts"]
   file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___end_to_end_test_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/src/{{nameKebabCase}}.end-to-end.test.ts"]
@@ -4224,6 +4257,7 @@ graph LR
   file_configuration_conformetry_templates_nestjs_service_module___nameKebabCase_____nameKebabCase___service_unit_test_ts["configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.service.unit.test.ts"]
   file_configuration_conformetry_templates_nestjs_service_module___nameKebabCase_____nameKebabCase___types_ts["configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts"]
   file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___codometer_config_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/codometer.config.ts"]
+  file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___coinagerie_config_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/coinagerie.config.ts"]
   file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___eslint_config_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/eslint.config.ts"]
   file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___src_index_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/src/index.ts"]
   file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___testing_mocks_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/testing/mocks.ts"]
@@ -4247,6 +4281,7 @@ graph LR
   file_configuration_conformetry_templates_react_hook_folder___nameKebabCase_____nameKebabCase___utilities_ts["configuration/conformetry-templates/react-hook-folder/{{nameKebabCase}}/{{nameKebabCase}}.utilities.ts"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___callidescope_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/callidescope.config.ts"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___codometer_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/codometer.config.ts"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___coinagerie_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/coinagerie.config.ts"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___eslint_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/eslint.config.ts"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_client_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/client.tsx"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/router.tsx"]
@@ -4276,6 +4311,7 @@ graph LR
   file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_conformetry_agents_codependix_config_ts["conformetry-agents/codependix.config.ts"]
   file_conformetry_agents_codometer_config_ts["conformetry-agents/codometer.config.ts"]
+  file_conformetry_agents_coinagerie_config_ts["conformetry-agents/coinagerie.config.ts"]
   file_conformetry_agents_eslint_config_ts["conformetry-agents/eslint.config.ts"]
   file_conformetry_agents_testing_setup_ts["conformetry-agents/testing/setup.ts"]
   file_conformetry_agents_testing_skills_unit_test_ts["conformetry-agents/testing/skills.unit.test.ts"]
@@ -4283,6 +4319,7 @@ graph LR
   file_conformetry_cli_callidescope_config_ts["conformetry-cli/callidescope.config.ts"]
   file_conformetry_cli_codependix_config_ts["conformetry-cli/codependix.config.ts"]
   file_conformetry_cli_codometer_config_ts["conformetry-cli/codometer.config.ts"]
+  file_conformetry_cli_coinagerie_config_ts["conformetry-cli/coinagerie.config.ts"]
   file_conformetry_cli_eslint_config_ts["conformetry-cli/eslint.config.ts"]
   file_conformetry_cli_src_conformetry_cli_constants_ts["conformetry-cli/src/conformetry-cli.constants.ts"]
   file_conformetry_cli_src_conformetry_cli_main_end_to_end_test_ts["conformetry-cli/src/conformetry-cli.main.end-to-end.test.ts"]
@@ -4320,6 +4357,7 @@ graph LR
   file_conformetry_configuration_callidescope_config_ts["conformetry-configuration/callidescope.config.ts"]
   file_conformetry_configuration_codependix_config_ts["conformetry-configuration/codependix.config.ts"]
   file_conformetry_configuration_codometer_config_ts["conformetry-configuration/codometer.config.ts"]
+  file_conformetry_configuration_coinagerie_config_ts["conformetry-configuration/coinagerie.config.ts"]
   file_conformetry_configuration_eslint_config_ts["conformetry-configuration/eslint.config.ts"]
   file_conformetry_configuration_src_index_ts["conformetry-configuration/src/index.ts"]
   file_conformetry_configuration_src_index_unit_test_ts["conformetry-configuration/src/index.unit.test.ts"]
@@ -4375,6 +4413,7 @@ graph LR
   file_conformetry_core_callidescope_config_ts["conformetry-core/callidescope.config.ts"]
   file_conformetry_core_codependix_config_ts["conformetry-core/codependix.config.ts"]
   file_conformetry_core_codometer_config_ts["conformetry-core/codometer.config.ts"]
+  file_conformetry_core_coinagerie_config_ts["conformetry-core/coinagerie.config.ts"]
   file_conformetry_core_eslint_config_ts["conformetry-core/eslint.config.ts"]
   file_conformetry_core_src_index_ts["conformetry-core/src/index.ts"]
   file_conformetry_core_src_index_unit_test_ts["conformetry-core/src/index.unit.test.ts"]
@@ -4389,6 +4428,7 @@ graph LR
   file_conformetry_core_vitest_config_ts["conformetry-core/vitest.config.ts"]
   file_conformetry_examples_codependix_config_ts["conformetry-examples/codependix.config.ts"]
   file_conformetry_examples_codometer_config_ts["conformetry-examples/codometer.config.ts"]
+  file_conformetry_examples_coinagerie_config_ts["conformetry-examples/coinagerie.config.ts"]
   file_conformetry_examples_eslint_config_ts["conformetry-examples/eslint.config.ts"]
   file_conformetry_examples_examples_ambiguous_attribution_conformetry_config_ts["conformetry-examples/examples/ambiguous-attribution/conformetry.config.ts"]
   file_conformetry_examples_examples_case_variants_conformetry_config_ts["conformetry-examples/examples/case-variants/conformetry.config.ts"]
@@ -4409,6 +4449,7 @@ graph LR
   file_conformetry_generation_callidescope_config_ts["conformetry-generation/callidescope.config.ts"]
   file_conformetry_generation_codependix_config_ts["conformetry-generation/codependix.config.ts"]
   file_conformetry_generation_codometer_config_ts["conformetry-generation/codometer.config.ts"]
+  file_conformetry_generation_coinagerie_config_ts["conformetry-generation/coinagerie.config.ts"]
   file_conformetry_generation_eslint_config_ts["conformetry-generation/eslint.config.ts"]
   file_conformetry_generation_src_index_ts["conformetry-generation/src/index.ts"]
   file_conformetry_generation_src_modules_generation_generation_constants_ts["conformetry-generation/src/modules/generation/generation.constants.ts"]
@@ -4424,6 +4465,7 @@ graph LR
   file_conformetry_languages_callidescope_config_ts["conformetry-languages/callidescope.config.ts"]
   file_conformetry_languages_codependix_config_ts["conformetry-languages/codependix.config.ts"]
   file_conformetry_languages_codometer_config_ts["conformetry-languages/codometer.config.ts"]
+  file_conformetry_languages_coinagerie_config_ts["conformetry-languages/coinagerie.config.ts"]
   file_conformetry_languages_eslint_config_ts["conformetry-languages/eslint.config.ts"]
   file_conformetry_languages_src_index_ts["conformetry-languages/src/index.ts"]
   file_conformetry_languages_src_modules_differences_differences_constants_ts["conformetry-languages/src/modules/differences/differences.constants.ts"]
@@ -4509,6 +4551,7 @@ graph LR
   file_conformetry_nx_callidescope_config_ts["conformetry-nx/callidescope.config.ts"]
   file_conformetry_nx_codependix_config_ts["conformetry-nx/codependix.config.ts"]
   file_conformetry_nx_codometer_config_ts["conformetry-nx/codometer.config.ts"]
+  file_conformetry_nx_coinagerie_config_ts["conformetry-nx/coinagerie.config.ts"]
   file_conformetry_nx_eslint_config_ts["conformetry-nx/eslint.config.ts"]
   file_conformetry_nx_src_conformetry_nx_main_ts["conformetry-nx/src/conformetry-nx.main.ts"]
   file_conformetry_nx_src_conformetry_nx_main_unit_test_ts["conformetry-nx/src/conformetry-nx.main.unit.test.ts"]
@@ -4577,6 +4620,7 @@ graph LR
   file_conformetry_output_callidescope_config_ts["conformetry-output/callidescope.config.ts"]
   file_conformetry_output_codependix_config_ts["conformetry-output/codependix.config.ts"]
   file_conformetry_output_codometer_config_ts["conformetry-output/codometer.config.ts"]
+  file_conformetry_output_coinagerie_config_ts["conformetry-output/coinagerie.config.ts"]
   file_conformetry_output_eslint_config_ts["conformetry-output/eslint.config.ts"]
   file_conformetry_output_src_index_ts["conformetry-output/src/index.ts"]
   file_conformetry_output_src_modules_inventory_inventory_constants_ts["conformetry-output/src/modules/inventory/inventory.constants.ts"]
@@ -4598,6 +4642,7 @@ graph LR
   file_conformetry_validation_callidescope_config_ts["conformetry-validation/callidescope.config.ts"]
   file_conformetry_validation_codependix_config_ts["conformetry-validation/codependix.config.ts"]
   file_conformetry_validation_codometer_config_ts["conformetry-validation/codometer.config.ts"]
+  file_conformetry_validation_coinagerie_config_ts["conformetry-validation/coinagerie.config.ts"]
   file_conformetry_validation_eslint_config_ts["conformetry-validation/eslint.config.ts"]
   file_conformetry_validation_src_index_ts["conformetry-validation/src/index.ts"]
   file_conformetry_validation_src_modules_runner_runner_constants_ts["conformetry-validation/src/modules/runner/runner.constants.ts"]
@@ -4624,6 +4669,7 @@ graph LR
   file_documentation_callidescope_config_ts["documentation/callidescope.config.ts"]
   file_documentation_codependix_config_ts["documentation/codependix.config.ts"]
   file_documentation_codometer_config_ts["documentation/codometer.config.ts"]
+  file_documentation_coinagerie_config_ts["documentation/coinagerie.config.ts"]
   file_documentation_eslint_config_ts["documentation/eslint.config.ts"]
   file_documentation_src_documentation_constants_ts["documentation/src/documentation.constants.ts"]
   file_documentation_src_documentation_main_end_to_end_test_ts["documentation/src/documentation.main.end-to-end.test.ts"]
@@ -4647,6 +4693,7 @@ graph LR
   file_installation_callidescope_config_ts["installation/callidescope.config.ts"]
   file_installation_codependix_config_ts["installation/codependix.config.ts"]
   file_installation_codometer_config_ts["installation/codometer.config.ts"]
+  file_installation_coinagerie_config_ts["installation/coinagerie.config.ts"]
   file_installation_eslint_config_ts["installation/eslint.config.ts"]
   file_installation_src_installation_constants_ts["installation/src/installation.constants.ts"]
   file_installation_src_installation_main_end_to_end_test_ts["installation/src/installation.main.end-to-end.test.ts"]
@@ -4766,6 +4813,7 @@ graph LR
   file_integration_callidescope_config_ts["integration/callidescope.config.ts"]
   file_integration_codependix_config_ts["integration/codependix.config.ts"]
   file_integration_codometer_config_ts["integration/codometer.config.ts"]
+  file_integration_coinagerie_config_ts["integration/coinagerie.config.ts"]
   file_integration_eslint_config_ts["integration/eslint.config.ts"]
   file_integration_src_integration_constants_ts["integration/src/integration.constants.ts"]
   file_integration_src_integration_main_end_to_end_test_ts["integration/src/integration.main.end-to-end.test.ts"]
@@ -4906,6 +4954,7 @@ graph LR
   file_interface_callidescope_config_ts["interface/callidescope.config.ts"]
   file_interface_codependix_config_ts["interface/codependix.config.ts"]
   file_interface_codometer_config_ts["interface/codometer.config.ts"]
+  file_interface_coinagerie_config_ts["interface/coinagerie.config.ts"]
   file_interface_eslint_config_ts["interface/eslint.config.ts"]
   file_interface_src_index_ts["interface/src/index.ts"]
   file_interface_src_modules_graphql_client_graphql_client_constants_ts["interface/src/modules/graphql-client/graphql-client.constants.ts"]
@@ -4925,6 +4974,7 @@ graph LR
   file_lexico_api_callidescope_config_ts["lexico-api/callidescope.config.ts"]
   file_lexico_api_codependix_config_ts["lexico-api/codependix.config.ts"]
   file_lexico_api_codometer_config_ts["lexico-api/codometer.config.ts"]
+  file_lexico_api_coinagerie_config_ts["lexico-api/coinagerie.config.ts"]
   file_lexico_api_eslint_config_ts["lexico-api/eslint.config.ts"]
   file_lexico_api_src_deletable_entities_ts["lexico-api/src/deletable.entities.ts"]
   file_lexico_api_src_lexico_api_graphql_end_to_end_test_ts["lexico-api/src/lexico-api-graphql.end-to-end.test.ts"]
@@ -5106,6 +5156,7 @@ graph LR
   file_lexico_cli_callidescope_config_ts["lexico-cli/callidescope.config.ts"]
   file_lexico_cli_codependix_config_ts["lexico-cli/codependix.config.ts"]
   file_lexico_cli_codometer_config_ts["lexico-cli/codometer.config.ts"]
+  file_lexico_cli_coinagerie_config_ts["lexico-cli/coinagerie.config.ts"]
   file_lexico_cli_eslint_config_ts["lexico-cli/eslint.config.ts"]
   file_lexico_cli_src_lexico_cli_constants_ts["lexico-cli/src/lexico-cli.constants.ts"]
   file_lexico_cli_src_lexico_cli_main_end_to_end_test_ts["lexico-cli/src/lexico-cli.main.end-to-end.test.ts"]
@@ -5265,6 +5316,7 @@ graph LR
   file_lexico_entities_callidescope_config_ts["lexico-entities/callidescope.config.ts"]
   file_lexico_entities_codependix_config_ts["lexico-entities/codependix.config.ts"]
   file_lexico_entities_codometer_config_ts["lexico-entities/codometer.config.ts"]
+  file_lexico_entities_coinagerie_config_ts["lexico-entities/coinagerie.config.ts"]
   file_lexico_entities_eslint_config_ts["lexico-entities/eslint.config.ts"]
   file_lexico_entities_src_index_ts["lexico-entities/src/index.ts"]
   file_lexico_entities_src_modules_database_data_source_constants_ts["lexico-entities/src/modules/database/data-source.constants.ts"]
@@ -5319,6 +5371,7 @@ graph LR
   file_lexico_web_codegen_ts["lexico-web/codegen.ts"]
   file_lexico_web_codependix_config_ts["lexico-web/codependix.config.ts"]
   file_lexico_web_codometer_config_ts["lexico-web/codometer.config.ts"]
+  file_lexico_web_coinagerie_config_ts["lexico-web/coinagerie.config.ts"]
   file_lexico_web_eslint_config_ts["lexico-web/eslint.config.ts"]
   file_lexico_web_src_client_tsx["lexico-web/src/client.tsx"]
   file_lexico_web_src_components_adjective_forms_adjective_forms_constants_ts["lexico-web/src/components/adjective-forms/adjective-forms.constants.ts"]
@@ -5437,6 +5490,7 @@ graph LR
   file_meanderaw_cli_callidescope_config_ts["meanderaw-cli/callidescope.config.ts"]
   file_meanderaw_cli_codependix_config_ts["meanderaw-cli/codependix.config.ts"]
   file_meanderaw_cli_codometer_config_ts["meanderaw-cli/codometer.config.ts"]
+  file_meanderaw_cli_coinagerie_config_ts["meanderaw-cli/coinagerie.config.ts"]
   file_meanderaw_cli_eslint_config_ts["meanderaw-cli/eslint.config.ts"]
   file_meanderaw_cli_src_meanderaw_cli_constants_ts["meanderaw-cli/src/meanderaw-cli.constants.ts"]
   file_meanderaw_cli_src_meanderaw_cli_main_end_to_end_test_ts["meanderaw-cli/src/meanderaw-cli.main.end-to-end.test.ts"]
@@ -5875,6 +5929,7 @@ graph LR
   file_meanderaw_cli_vitest_config_ts["meanderaw-cli/vitest.config.ts"]
   file_meanderaw_web_callidescope_config_ts["meanderaw-web/callidescope.config.ts"]
   file_meanderaw_web_codometer_config_ts["meanderaw-web/codometer.config.ts"]
+  file_meanderaw_web_coinagerie_config_ts["meanderaw-web/coinagerie.config.ts"]
   file_meanderaw_web_eslint_config_ts["meanderaw-web/eslint.config.ts"]
   file_meanderaw_web_src_client_tsx["meanderaw-web/src/client.tsx"]
   file_meanderaw_web_src_router_tsx["meanderaw-web/src/router.tsx"]
@@ -5889,6 +5944,7 @@ graph LR
   file_observability_callidescope_config_ts["observability/callidescope.config.ts"]
   file_observability_codependix_config_ts["observability/codependix.config.ts"]
   file_observability_codometer_config_ts["observability/codometer.config.ts"]
+  file_observability_coinagerie_config_ts["observability/coinagerie.config.ts"]
   file_observability_eslint_config_ts["observability/eslint.config.ts"]
   file_observability_src_index_ts["observability/src/index.ts"]
   file_observability_src_lib_conventional_log_message_eslint_rule_ts["observability/src/lib/conventional-log-message.eslint-rule.ts"]
@@ -5905,6 +5961,7 @@ graph LR
   file_persistence_callidescope_config_ts["persistence/callidescope.config.ts"]
   file_persistence_codependix_config_ts["persistence/codependix.config.ts"]
   file_persistence_codometer_config_ts["persistence/codometer.config.ts"]
+  file_persistence_coinagerie_config_ts["persistence/coinagerie.config.ts"]
   file_persistence_eslint_config_ts["persistence/eslint.config.ts"]
   file_persistence_src_index_ts["persistence/src/index.ts"]
   file_persistence_src_modules_postgresql_export_postgresql_export_arguments_command_integration_test_ts["persistence/src/modules/postgresql-export/postgresql-export-arguments.command.integration.test.ts"]
@@ -6005,6 +6062,7 @@ graph LR
   file_presentation_callidescope_config_ts["presentation/callidescope.config.ts"]
   file_presentation_codependix_config_ts["presentation/codependix.config.ts"]
   file_presentation_codometer_config_ts["presentation/codometer.config.ts"]
+  file_presentation_coinagerie_config_ts["presentation/coinagerie.config.ts"]
   file_presentation_eslint_config_ts["presentation/eslint.config.ts"]
   file_presentation_src_components_examples_c_sidebar_1_tsx["presentation/src/components/examples/c-sidebar-1.tsx"]
   file_presentation_src_components_reui_alert_tsx["presentation/src/components/reui/alert.tsx"]
@@ -6154,6 +6212,7 @@ graph LR
   file_publication_callidescope_config_ts["publication/callidescope.config.ts"]
   file_publication_codependix_config_ts["publication/codependix.config.ts"]
   file_publication_codometer_config_ts["publication/codometer.config.ts"]
+  file_publication_coinagerie_config_ts["publication/coinagerie.config.ts"]
   file_publication_eslint_config_ts["publication/eslint.config.ts"]
   file_publication_src_modules_link_packages_link_packages_command_ts["publication/src/modules/link-packages/link-packages.command.ts"]
   file_publication_src_modules_link_packages_link_packages_command_unit_test_ts["publication/src/modules/link-packages/link-packages.command.unit.test.ts"]
@@ -6238,6 +6297,7 @@ graph LR
   file_synchronization_callidescope_config_ts["synchronization/callidescope.config.ts"]
   file_synchronization_codependix_config_ts["synchronization/codependix.config.ts"]
   file_synchronization_codometer_config_ts["synchronization/codometer.config.ts"]
+  file_synchronization_coinagerie_config_ts["synchronization/coinagerie.config.ts"]
   file_synchronization_eslint_config_ts["synchronization/eslint.config.ts"]
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts["synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts"]
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_unit_test_ts["synchronization/src/modules/conformetry-generators/conformetry-generators.command.unit.test.ts"]
@@ -6354,6 +6414,7 @@ graph LR
   file_validation_callidescope_config_ts["validation/callidescope.config.ts"]
   file_validation_codependix_config_ts["validation/codependix.config.ts"]
   file_validation_codometer_config_ts["validation/codometer.config.ts"]
+  file_validation_coinagerie_config_ts["validation/coinagerie.config.ts"]
   file_validation_eslint_config_ts["validation/eslint.config.ts"]
   file_validation_src_modules_audit_governance_audit_governance_command_ts["validation/src/modules/audit-governance/audit-governance.command.ts"]
   file_validation_src_modules_audit_governance_audit_governance_command_unit_test_ts["validation/src/modules/audit-governance/audit-governance.command.unit.test.ts"]
@@ -10481,6 +10542,7 @@ graph LR
   file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___vitest_config_ts --> file_configuration_vitest_config_ts
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___callidescope_config_ts --> file_configuration_callidescope_config_ts
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___codometer_config_ts --> file_configuration_codometer_config_ts
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___coinagerie_config_ts --> file_configuration_coinagerie_config_ts
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___eslint_config_ts --> file_configuration_eslint_config_ts
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_tsx
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_render_route_tsx
@@ -15823,19 +15885,19 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-66403-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.91_MB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-66516-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.95_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-165-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-629-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-636-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-622-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-629-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-155-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-262-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1558-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1559-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
@@ -15849,10 +15911,10 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-2908-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-1067-059669?style=flat-square)
 ![Constants](https://img.shields.io/badge/Constants-3221-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2971-0284c7?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2978-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-865-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3207-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-6097-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3208-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-6101-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -15873,30 +15935,30 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-49-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7931-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-1251-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-457-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-2962-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2751-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7946-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-1252-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-459-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-2966-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2760-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-45-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-195-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1695-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4699-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1703-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4711-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3565-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3571-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-476-7c3aed?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-477-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-91-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1688-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3394-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1690-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3399-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-686-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-689-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -16008,23 +16070,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-144-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-28742-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-30759-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-840-8b5cf6?style=flat-square)
+![H2](https://img.shields.io/badge/H2-848-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-752-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-7096-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-967-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-5298-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-9040-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-975-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-7234-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-286-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-2833-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-917-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-567-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15454-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15465-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -16037,10 +16099,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7851 |
-| Files | 2579 |
-| Calls traced | 8561 |
-| Call stacks | 2189 |
+| Callables | 7853 |
+| Files | 2626 |
+| Calls traced | 8562 |
+| Call stacks | 2190 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
 | Unfollowable calls | 491 |
