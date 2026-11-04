@@ -891,7 +891,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **dot**: Fragment of dotDotDotToken, the rest-parameter marker read by SignaturesService when building parameter signatures.
 - **downward**: Traversal direction from a root toward its callees, the way buildDownwardStacks walks the graph.
 - **dynamic**: Call whose target cannot be known statically, recorded as the DYNAMIC_CALL constant with a dynamic-value reason.
-- **element**: Bracket-indexed call target such as obj[key], recognized by isElementAccessExpression during symbol resolution.
+- **element**: Bracket-indexed call target such as obj with a key in brackets, recognized by isElementAccessExpression during symbol resolution.
 - **enclose**: Wrap a region in a boundary, such as the enclosing callable that a call site sits inside during traversal.
 - **enter**: Callable the lookup began from, which ordering places first within its strongly connected component.
 - **es**: Fragment of ECMAScript language-level names like ES2015 and ES2022, used when reading standard library files.

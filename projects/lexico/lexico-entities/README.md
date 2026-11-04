@@ -1112,7 +1112,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **proverb**: Part-of-speech enum value for proverbs, stored in the lexemes part_of_speech enum beside phrase and idiom.
 - **proxy**: JavaScript Proxy that createRelationProxy returns in entities unit tests, standing in for relation metadata.
 - **punctuation**: Tokens table comment noting that a parsed token may be punctuation rather than a word from a literature line.
-- **rel**: Prefix of TypeORM's REL_ constraint names, the unique key on one-to-one relation columns such as lexeme_id.
+- **rel**: Prefix of TypeORM's REL constraint names, the unique key on one-to-one relation columns such as lexeme_id.
 - **relation**: TypeORM relation metadata and the Relation wrapper type, used to type entity links such as WordForm.form.
 - **relevant**: Test variable naming the tables this package owns, so entity assertions skip tables from other packages.
 - **representative**: Fixture entity that contract tests use to check indexes and unique constraints, such as Text's slug column.

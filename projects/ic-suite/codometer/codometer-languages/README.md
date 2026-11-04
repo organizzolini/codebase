@@ -1064,7 +1064,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **splitline**: Fragment of splitlines, the Python string method the analyzer script uses to count docstring and source lines.
 - **startswith**: String prefix test used by the comment readers to detect shebangs, JSDoc openings, and custom CSS properties.
 - **stdin**: Standard input stream from which the Python analyzer script reads its newline-delimited list of files to measure.
-- **str**: Python str annotation in the analyzer script, such as the dict[str, int] stats and the list of paths read from stdin.
+- **str**: Python str annotation in the analyzer script, such as the dict of str to int stats and the list of paths read from stdin.
 - **sub**: Python regex substitution call that strips the comment marker from token text to leave the prose of a comment.
 - **sy**: Two-letter fragment of sys, as in sys.stdin read by the Python analyzer script to receive its file list.
 - **syntax**: Comment syntax that one reader handles, which the comments module keeps separate per language, as CSS has only one form.

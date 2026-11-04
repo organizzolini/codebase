@@ -1287,7 +1287,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **three**: Count word for fixed limits in validation rules, such as the three Nx plugins a consumer must register.
 - **tint**: Arbitrary object key used as a non-label value in test inputs, to prove malformed labels are rejected.
 - **top**: Workflow-level keys, such as name and permissions, that must appear before any job, which audit-governance inspects.
-- **tuple**: A zod tuple of a bare name, or a [name, options] pair, used to parse release.config.cjs plugin entries.
+- **tuple**: A zod tuple of a bare name, or a name and options pair, used to parse release.config.cjs plugin entries.
 - **undocumented**: A project that appears in the workspace but lacks a row in the README table, which the readme-projects check reports.
 - **unfilled**: Still-pending template prompt comment left in a pull request body, which the pull-request-body check rejects.
 - **unignored**: A worktree directory that is not listed in the main checkout's gitignore, which session-worktree-name rejects.
