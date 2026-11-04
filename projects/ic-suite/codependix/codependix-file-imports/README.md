@@ -494,7 +494,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **mermaid**: Text-based diagram language in which codependix writes its graphs into this README between marker comments.
 - **mutable**: Not a term this project uses; its types mark data readonly rather than mutable, so the word is a stray match.
 - **py**: The Python source file extension, which the Python import graph module scans for import statements.
-- **pyc**: Compiled Python bytecode file extension, which the Python project test fixtures place under __pycache__ folders.
+- **pyc**: Compiled Python bytecode file extension, which the Python project test fixtures place under pycache folders.
 - **pycache**: Bytecode cache folder name that the Python project's constants list, so the scanner skips it as non-source.
 - **qualifier**: Separator joining a project name to a file or module name in a graph node, such as project/src/index.ts.
 - **qualify**: Prefixes a project-relative file name with its project name so names stay unique across the whole workspace graph.
