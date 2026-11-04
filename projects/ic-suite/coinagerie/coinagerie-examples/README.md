@@ -34,6 +34,7 @@ file elsewhere.
 | ------- | ------- |
 | [zero-config](examples/zero-config/README.md) | What does `coinagerie` do in a folder with no configuration? |
 | [exclusions](examples/exclusions/README.md) | How do I leave files and words out? |
+| [exclusion-patterns](examples/exclusion-patterns/README.md) | How do I leave out a whole family of words, such as plan IDs? |
 | [folding](examples/folding/README.md) | How do `aspects` and `aspect` become one entry, and `configuration` and `configure`? |
 | [layered-glossaries](examples/layered-glossaries/README.md) | How does a package avoid redefining the root's words? |
 | [outputs](examples/outputs/README.md) | How do I write markdown and JSON, and what does `--write` keep? |
