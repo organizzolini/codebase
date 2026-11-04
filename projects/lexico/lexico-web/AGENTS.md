@@ -54,7 +54,6 @@ src/
   styles/
     application.css
 testing/
-  render-route.tsx               # Renders a route through a real router
   setup.ts                       # Shared test setup
 ```
 
@@ -134,9 +133,10 @@ nx run lexico-web:typecheck-code,lint-code,format-code,deprecate-code,guard-code
 
 ### Testing
 
-Route tests call `renderRoute` from `testing/render-route.tsx`, which loads
-the real route tree in a memory-history router under a bare root, so the
-route's loader, head, and page all run as a navigation would run them. They are
+Route tests call `renderRoute` from `@codebase/testing/react` with the
+application's router, which loads the real route tree in a memory history and
+renders the page without the root's document shell, so the route's loader,
+head, and page all run as a navigation would run them. They are
 integration tests for that reason, and the distinct suffix is also what tells a
 route's files apart from a component's when conformance is checked.
 `vitest.config.ts` deliberately leaves the TanStack Start plugin out, so route

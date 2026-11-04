@@ -1939,13 +1939,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **close**:
 - **coerce**:
 - **combine**:
-- **compile**:
 - **compiler**:
 - **condition**:
 - **configurable**:
 - **conjugation**:
 - **connection**:
-- **console**:
 - **constant**:
 - **controller**:
 - **cor**:
@@ -1996,7 +1994,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **experimental**:
 - **expression**:
 - **factory**:
-- **fake**:
 - **field**:
 - **finite**:
 - **flaccus**:
@@ -2026,7 +2023,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **identifier**:
 - **identify**:
 - **imperfect**:
-- **implementation**:
 - **infinitive**:
 - **infinity**:
 - **inflection**:
@@ -2141,8 +2137,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **rank**:
 - **reader**:
 - **ready**:
-- **real**:
-- **recursive**:
 - **reg**:
 - **reject**:
 - **relate**:
@@ -2193,7 +2187,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **than**:
 - **third**:
 - **tier**:
-- **timer**:
 - **tmpdir**:
 - **tokenize**:
 - **transform**:
