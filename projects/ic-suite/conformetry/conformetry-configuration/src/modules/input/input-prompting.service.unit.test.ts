@@ -137,21 +137,21 @@ describe(InputPromptingService, () => {
   describe("promptForTemplate", () => {
     const TEMPLATES = [
       { description: "A NestJS service module", name: "nestjs-service-module" },
-      { name: "react-component" },
+      { name: "react-component-folder" },
     ];
 
     it("returns the template the caller chose", async () => {
-      promptRunner.mockResolvedValue({ template: "react-component" });
+      promptRunner.mockResolvedValue({ template: "react-component-folder" });
 
       await expect(service.promptForTemplate(TEMPLATES)).resolves.toBe(
-        "react-component",
+        "react-component-folder",
       );
     });
 
     // Filtering as you type is the whole reason a long template name is
     // cheap to select, so the prompt type is asserted rather than assumed.
     it("asks with an autocomplete over the configured templates", async () => {
-      promptRunner.mockResolvedValue({ template: "react-component" });
+      promptRunner.mockResolvedValue({ template: "react-component-folder" });
 
       await service.promptForTemplate(TEMPLATES);
 
@@ -163,7 +163,10 @@ describe(InputPromptingService, () => {
               title: "nestjs-service-module",
               value: "nestjs-service-module",
             },
-            { title: "react-component", value: "react-component" },
+            {
+              title: "react-component-folder",
+              value: "react-component-folder",
+            },
           ],
           type: "autocomplete",
         }),
@@ -186,12 +189,15 @@ describe(InputPromptingService, () => {
 
     it("returns every template the caller ticked", async () => {
       promptRunner.mockResolvedValue({
-        templates: ["nestjs-service-module", "react-component"],
+        templates: ["nestjs-service-module", "react-component-folder"],
       });
 
       await expect(
         service.promptForTemplates(TEMPLATES),
-      ).resolves.toStrictEqual(["nestjs-service-module", "react-component"]);
+      ).resolves.toStrictEqual([
+        "nestjs-service-module",
+        "react-component-folder",
+      ]);
     });
 
     // The flag and the picker have to be able to express the same set, and

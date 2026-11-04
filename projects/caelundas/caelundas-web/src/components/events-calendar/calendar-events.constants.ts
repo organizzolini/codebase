@@ -1,0 +1,1 @@
+export const MINUTE_MILLISECONDS = 60_000;

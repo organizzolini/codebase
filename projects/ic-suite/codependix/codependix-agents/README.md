@@ -308,3 +308,41 @@ _This project has no internal file imports._
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-2-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run codependix-agents:coinagerie-check:write`.
+
+- **clear**:
+- **compiler**:
+- **configure**:
+- **define**:
+- **describe**:
+- **each**:
+- **entry**:
+- **equal**:
+- **field**:
+- **front**:
+- **least**:
+- **length**:
+- **less**:
+- **link**:
+- **matter**:
+- **maximum**:
+- **meta**:
+- **mock**:
+- **navigate**:
+- **readdir**:
+- **relative**:
+- **replace**:
+- **resolution**:
+- **ship**:
+- **split**:
+- **strict**:
+- **than**:
+- **triage**:
+- **vi**:
+
+<!-- coinagerie:end -->

@@ -115,7 +115,10 @@ page alone, so no test has to mock `__root`. A web application points
   mocks; it is the package's only workspace dependency.
 - `@codebase/observability/testing` imports `/nestjs` back. The module-boundary
   rule allows that one cycle, and observability's `implicitDependencies:
-["!testing"]` keeps it out of the task graph, so no build waits on another.
+["!testing"]` keeps it out of the task graph: this package's build waits on
+  observability's, never the reverse. Observability lists this package's
+  source as a `testing-source` named input, so its cached tasks still rerun
+  when the builder changes.
 - Adapters that need `interface`, `persistence`, or `observability` live with
   those packages and are exported from their `/testing` entries.
 - A project tagged `framework:react` may import this package from its tests
@@ -227,3 +230,129 @@ graph LR
 ```
 
 <!-- codependix:end name="codependix-file-imports" -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run testing:coinagerie-check:write`.
+
+- **absent**:
+- **actual**:
+- **advance**:
+- **after**:
+- **answer**:
+- **array**:
+- **assign**:
+- **basename**:
+- **breadth**:
+- **browser**:
+- **buffer**:
+- **builder**:
+- **call**:
+- **capture**:
+- **child**:
+- **chunk**:
+- **clear**:
+- **clock**:
+- **compile**:
+- **compiler**:
+- **confirm**:
+- **console**:
+- **constant**:
+- **contract**:
+- **counter**:
+- **decorator**:
+- **deep**:
+- **define**:
+- **describe**:
+- **each**:
+- **empty**:
+- **entry**:
+- **equal**:
+- **exp**:
+- **experimental**:
+- **fake**:
+- **fixture**:
+- **flush**:
+- **force**:
+- **fork**:
+- **greet**:
+- **greeter**:
+- **h1**:
+- **handler**:
+- **history**:
+- **href**:
+- **html**:
+- **implementation**:
+- **injectable**:
+- **instance**:
+- **iso**:
+- **lang**:
+- **least**:
+- **level**:
+- **load**:
+- **loader**:
+- **logger**:
+- **make**:
+- **maximum**:
+- **meta**:
+- **method**:
+- **mkdtemp**:
+- **mock**:
+- **now**:
+- **nth**:
+- **omit**:
+- **once**:
+- **onchange**:
+- **original**:
+- **partial**:
+- **partially**:
+- **pid**:
+- **ping**:
+- **poem**:
+- **point**:
+- **present**:
+- **promise**:
+- **provide**:
+- **publish**:
+- **question**:
+- **readdir**:
+- **real**:
+- **realpath**:
+- **recursive**:
+- **reg**:
+- **reject**:
+- **relative**:
+- **remove**:
+- **resolution**:
+- **restoration**:
+- **role**:
+- **route**:
+- **sample**:
+- **screen**:
+- **scroll**:
+- **selector**:
+- **signal**:
+- **spawn**:
+- **spy**:
+- **stand**:
+- **starter**:
+- **stdout**:
+- **stream**:
+- **strict**:
+- **stub**:
+- **synthetic**:
+- **temporary**:
+- **text**:
+- **through**:
+- **timer**:
+- **tmpdir**:
+- **uint8**:
+- **validator**:
+- **variable**:
+- **vi**:
+- **warn**:
+- **wire**:
+
+<!-- coinagerie:end -->

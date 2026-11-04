@@ -45,6 +45,7 @@ try {
         .toSorted()
         .map((name) => path.join(migrations, name)),
       path.join(cliRoot, "data/events-seed.sql"),
+      path.join(cliRoot, "data/night-sky-seed.sql"),
       path.join(cliRoot, "data/events-read-model.sql"),
     ]) {
       database.exec(readFileSync(file, "utf8"));
