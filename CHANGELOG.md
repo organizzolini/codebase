@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.53.3](https://github.com/organizzolini/codebase/compare/v3.53.2...v3.53.3) (2026-11-04)
+
+### ⚡ Performance Improvements
+
+* **integration:** ⚡️ judge every project's spell check from one batched cspell run ([#2113](https://github.com/organizzolini/codebase/issues/2113)) ([300ac43](https://github.com/organizzolini/codebase/commit/300ac435ff0ca7fb237f1aaf8fc2e12e44cc4ff2))
+
+### 📝 Documentation
+
+* **configuration:** 📝 define the glossary words ([#2106](https://github.com/organizzolini/codebase/issues/2106)) ([bec52d7](https://github.com/organizzolini/codebase/commit/bec52d7b9b756e41c8e46936a56a54b4bcc2263c))
+
 ## [3.53.2](https://github.com/organizzolini/codebase/compare/v3.53.1...v3.53.2) (2026-11-04)
 
 ### ⚡ Performance Improvements

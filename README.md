@@ -4847,6 +4847,15 @@ graph LR
   file_integration_src_executors_knip_knip_types_ts["integration/src/executors/knip/knip.types.ts"]
   file_integration_src_executors_knip_knip_utilities_ts["integration/src/executors/knip/knip.utilities.ts"]
   file_integration_src_executors_knip_knip_utilities_unit_test_ts["integration/src/executors/knip/knip.utilities.unit.test.ts"]
+  file_integration_src_executors_spell_check_batch_executor_ts["integration/src/executors/spell-check/batch-executor.ts"]
+  file_integration_src_executors_spell_check_batch_executor_unit_test_ts["integration/src/executors/spell-check/batch-executor.unit.test.ts"]
+  file_integration_src_executors_spell_check_executor_ts["integration/src/executors/spell-check/executor.ts"]
+  file_integration_src_executors_spell_check_executor_unit_test_ts["integration/src/executors/spell-check/executor.unit.test.ts"]
+  file_integration_src_executors_spell_check_spell_check_constants_ts["integration/src/executors/spell-check/spell-check.constants.ts"]
+  file_integration_src_executors_spell_check_spell_check_runner_ts["integration/src/executors/spell-check/spell-check.runner.ts"]
+  file_integration_src_executors_spell_check_spell_check_types_ts["integration/src/executors/spell-check/spell-check.types.ts"]
+  file_integration_src_executors_spell_check_spell_check_utilities_ts["integration/src/executors/spell-check/spell-check.utilities.ts"]
+  file_integration_src_executors_spell_check_spell_check_utilities_unit_test_ts["integration/src/executors/spell-check/spell-check.utilities.unit.test.ts"]
   file_integration_src_integration_constants_ts["integration/src/integration.constants.ts"]
   file_integration_src_integration_main_end_to_end_test_ts["integration/src/integration.main.end-to-end.test.ts"]
   file_integration_src_integration_main_ts["integration/src/integration.main.ts"]
@@ -11495,6 +11504,25 @@ graph LR
   file_integration_src_executors_knip_knip_runner_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
   file_integration_src_executors_knip_knip_utilities_ts --> file_integration_src_executors_knip_knip_types_ts
   file_integration_src_executors_knip_knip_utilities_unit_test_ts --> file_integration_src_executors_knip_knip_utilities_ts
+  file_integration_src_executors_spell_check_batch_executor_ts --> file_integration_src_executors_spell_check_spell_check_runner_ts
+  file_integration_src_executors_spell_check_batch_executor_ts --> file_integration_src_executors_spell_check_spell_check_types_ts
+  file_integration_src_executors_spell_check_batch_executor_ts --> file_integration_src_executors_spell_check_spell_check_utilities_ts
+  file_integration_src_executors_spell_check_batch_executor_unit_test_ts --> file_integration_src_executors_spell_check_batch_executor_ts
+  file_integration_src_executors_spell_check_batch_executor_unit_test_ts --> file_integration_src_executors_spell_check_spell_check_types_ts
+  file_integration_src_executors_spell_check_batch_executor_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_executors_spell_check_executor_ts --> file_integration_src_executors_spell_check_spell_check_runner_ts
+  file_integration_src_executors_spell_check_executor_ts --> file_integration_src_executors_spell_check_spell_check_types_ts
+  file_integration_src_executors_spell_check_executor_unit_test_ts --> file_integration_src_executors_spell_check_executor_ts
+  file_integration_src_executors_spell_check_executor_unit_test_ts --> file_integration_src_executors_spell_check_spell_check_types_ts
+  file_integration_src_executors_spell_check_executor_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_executors_spell_check_spell_check_runner_ts --> file_integration_src_executors_spell_check_spell_check_constants_ts
+  file_integration_src_executors_spell_check_spell_check_runner_ts --> file_integration_src_executors_spell_check_spell_check_types_ts
+  file_integration_src_executors_spell_check_spell_check_runner_ts --> file_integration_src_executors_spell_check_spell_check_utilities_ts
+  file_integration_src_executors_spell_check_spell_check_runner_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_executors_spell_check_spell_check_runner_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_executors_spell_check_spell_check_utilities_ts --> file_integration_src_executors_spell_check_spell_check_constants_ts
+  file_integration_src_executors_spell_check_spell_check_utilities_ts --> file_integration_src_executors_spell_check_spell_check_types_ts
+  file_integration_src_executors_spell_check_spell_check_utilities_unit_test_ts --> file_integration_src_executors_spell_check_spell_check_utilities_ts
   file_integration_src_integration_main_end_to_end_test_ts --> file_integration_src_integration_constants_ts
   file_integration_src_integration_main_ts --> file_integration_src_integration_module_ts
   file_integration_src_integration_main_unit_test_ts --> file_integration_src_modules_run_affected_run_affected_module_ts
@@ -15981,36 +16009,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-67524-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.98_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-167-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-645-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-68214-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-5.20_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-168-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-654-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-638-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-161-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-647-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-166-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-262-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1582-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1598-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-200-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-203-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-60-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-214-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-3098-16a34a?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-216-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-3143-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-944-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-2953-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-1089-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3259-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-3001-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-878-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3240-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-6179-475569?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-2981-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-1106-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3292-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-3025-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-892-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3262-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-6226-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -16030,17 +16058,17 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### JSON
 
-![JSON Files](https://img.shields.io/badge/JSON_Files-51-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7970-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-1259-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-460-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-2987-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2768-16a34a?style=flat-square)
+![JSON Files](https://img.shields.io/badge/JSON_Files-52-a16207?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7994-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-1263-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-461-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-3003-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2782-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-45-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-198-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-200-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1699-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4730-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1703-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4751-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
@@ -16124,11 +16152,11 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Module Files](https://img.shields.io/badge/Module_Files-71-7c3aed?style=flat-square)
 ![Service Files](https://img.shields.io/badge/Service_Files-78-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-52-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-74-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-68-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-8-0ea5e9?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-75-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-69-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-9-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-189-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-192-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-5-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-6-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -16166,23 +16194,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-144-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-29906-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-29977-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-848-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-753-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-8099-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-8103-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-975-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-6288-22c55e?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-6289-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-287-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2846-0ea5e9?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2853-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-917-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-569-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15522-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-571-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15554-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -16195,10 +16223,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7912 |
-| Files | 2644 |
-| Calls traced | 8646 |
-| Call stacks | 2194 |
+| Callables | 7923 |
+| Files | 2650 |
+| Calls traced | 8659 |
+| Call stacks | 2196 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
 | Unfollowable calls | 491 |
