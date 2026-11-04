@@ -563,6 +563,7 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **abort**:
 - **absolute**:
+- **actual**:
 - **after**:
 - **alpha**:
 - **argv**:
@@ -576,14 +577,13 @@ The words this project uses that the root glossary does not define, regenerated 
 - **bug**:
 - **call**:
 - **callback**:
+- **capture**:
 - **chain**:
 - **child**:
 - **chunk**:
-- **clear**:
+- **color**:
 - **comment**:
-- **compile**:
 - **compiler**:
-- **console**:
 - **constant**:
 - **controller**:
 - **decorator**:
@@ -656,14 +656,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **sort**:
 - **spawn**:
 - **split**:
-- **spy**:
 - **stat**:
 - **stdio**:
 - **stdout**:
 - **strict**:
 - **strictest**:
 - **stringify**:
-- **stub**:
 - **success**:
 - **surface**:
 - **symlink**:

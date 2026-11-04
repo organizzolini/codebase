@@ -422,7 +422,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compare**:
 - **compile**:
 - **compiler**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -451,6 +450,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **implementation**:
 - **inbound**:
 - **injectable**:
+- **instance**:
 - **isolate**:
 - **java**:
 - **least**:
@@ -474,7 +474,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **qualify**:
 - **readdir**:
 - **real**:
-- **recursive**:
 - **reg**:
 - **reject**:
 - **relative**:

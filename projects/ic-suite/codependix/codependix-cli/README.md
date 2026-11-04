@@ -985,7 +985,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **after**:
 - **anchor**:
 - **anything**:
-- **array**:
 - **assertion**:
 - **bootstrap**:
 - **boundary**:
@@ -995,16 +994,15 @@ The words this project uses that the root glossary does not define, regenerated 
 - **call**:
 - **capture**:
 - **chdir**:
-- **chunk**:
 - **clear**:
 - **color**:
 - **combine**:
 - **comma**:
 - **compile**:
 - **compiler**:
-- **console**:
 - **constant**:
 - **controller**:
+- **count**:
 - **cycle**:
 - **decorator**:
 - **define**:
@@ -1061,7 +1059,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **provide**:
 - **publish**:
 - **real**:
-- **realpath**:
 - **reason**:
 - **recursive**:
 - **reject**:
@@ -1085,10 +1082,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **summary**:
 - **surface**:
 - **synthetic**:
+- **temporary**:
 - **timer**:
-- **tmpdir**:
 - **touch**:
-- **uint8**:
 - **unmatched**:
 - **verdict**:
 - **vi**:

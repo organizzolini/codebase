@@ -798,7 +798,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compare**:
 - **compile**:
 - **compiler**:
-- **console**:
 - **constant**:
 - **continuation**:
 - **controller**:
@@ -829,6 +828,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **implicit**:
 - **indent**:
 - **injectable**:
+- **instance**:
 - **isolate**:
 - **java**:
 - **judge**:
@@ -861,7 +861,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **publish**:
 - **reach**:
 - **real**:
-- **recursive**:
 - **reject**:
 - **relative**:
 - **repeat**:
@@ -881,7 +880,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **some**:
 - **sort**:
 - **split**:
-- **spy**:
 - **stack**:
 - **strict**:
 - **summary**:
