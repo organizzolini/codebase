@@ -26,6 +26,7 @@ The words this package uses that the root glossary does not define, regenerated 
 
 - **breadth**:
 - **discriminate**:
+- **exact**:
 - **forbid**:
 - **prettify**:
 - **refine**:
