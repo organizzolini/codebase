@@ -969,8 +969,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**:
 - **bug**:
 - **call**:
+- **capture**:
 - **child**:
-- **clear**:
 - **collection**:
 - **compare**:
 - **compile**:
@@ -1033,7 +1033,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **metric**:
 - **miss**:
 - **mix**:
-- **mkdtemp**:
 - **mock**:
 - **normalize**:
 - **notice**:
@@ -1042,6 +1041,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **once**:
 - **original**:
 - **part**:
+- **populate**:
 - **posix**:
 - **promise**:
 - **prototype**:
@@ -1080,10 +1080,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **symbolic**:
 - **symlink**:
 - **synthetic**:
+- **temporary**:
 - **than**:
 - **threshold**:
 - **timer**:
-- **tmpdir**:
 - **trim**:
 - **vi**:
 - **warn**:

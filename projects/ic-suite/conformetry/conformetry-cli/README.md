@@ -1326,8 +1326,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **buffer**:
 - **bug**:
 - **call**:
+- **capture**:
 - **choose**:
-- **chunk**:
 - **clear**:
 - **close**:
 - **cog**:
@@ -1394,7 +1394,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ratio**:
 - **real**:
 - **reason**:
-- **recursive**:
 - **reject**:
 - **remove**:
 - **resolution**:

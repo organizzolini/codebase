@@ -464,17 +464,18 @@ const MODULE_BOUNDARIES = {
     // template or instance path is part of resolving it, and
     // `conformetry-generation` consumes it upward.
     {
-      onlyDependOnLibsWithTags: [],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:conformetry-core",
     },
     {
-      onlyDependOnLibsWithTags: ["name:conformetry-core"],
+      onlyDependOnLibsWithTags: ["name:conformetry-core", "name:testing"],
       sourceTag: "name:conformetry-configuration",
     },
     {
       onlyDependOnLibsWithTags: [
         "name:conformetry-configuration",
         "name:conformetry-core",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-generation",
     },
@@ -489,6 +490,7 @@ const MODULE_BOUNDARIES = {
       onlyDependOnLibsWithTags: [
         "name:conformetry-configuration",
         "name:conformetry-core",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-languages",
     },
@@ -497,6 +499,7 @@ const MODULE_BOUNDARIES = {
         "name:conformetry-configuration",
         "name:conformetry-core",
         "name:conformetry-languages",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-validation",
     },
@@ -505,6 +508,7 @@ const MODULE_BOUNDARIES = {
         "name:conformetry-core",
         "name:conformetry-languages",
         "name:conformetry-validation",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-output",
     },
@@ -516,6 +520,7 @@ const MODULE_BOUNDARIES = {
         "name:conformetry-output",
         "name:conformetry-validation",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:conformetry",
     },
@@ -527,6 +532,7 @@ const MODULE_BOUNDARIES = {
         "name:conformetry-output",
         "name:conformetry-validation",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-nx",
     },
@@ -543,6 +549,7 @@ const MODULE_BOUNDARIES = {
         "name:conformetry-nx",
         "name:conformetry-output",
         "name:conformetry-validation",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-examples",
     },

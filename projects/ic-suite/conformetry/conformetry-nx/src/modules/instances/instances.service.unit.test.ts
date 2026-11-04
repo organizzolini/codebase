@@ -1,10 +1,14 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { ConfigurationModule } from "@conformetry/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ScopeModule } from "../scope/scope.module";
 
@@ -22,11 +26,7 @@ const PROJECT: ProjectScope = {
  * Writes a workspace with two projects and a config whose globs cover both, so
  * the per-project filter has something to exclude.
  */
-async function createWorkspace(): Promise<string> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "conformetry-nx-workspace-"),
-  );
-
+async function populateWorkspace(workspaceRoot: string): Promise<void> {
   for (const projectName of ["widgets", "gadgets"]) {
     const modulePath = path.join(
       workspaceRoot,
@@ -58,26 +58,29 @@ async function createWorkspace(): Promise<string> {
     ]),
     "utf8",
   );
-
-  return workspaceRoot;
 }
 
 describe(InstancesService, () => {
+  const readWorkspaceRoot = useTemporaryDirectory("nx-workspace");
   let service: InstancesService;
   let workspaceRoot: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(InstancesService, {
       imports: [ConfigurationModule, ScopeModule],
-      providers: [InstancesService],
-    }).compile();
+    });
 
-    service = await module.resolve(InstancesService);
-    workspaceRoot = await createWorkspace();
+    service = built.instance;
+    workspaceRoot = readWorkspaceRoot();
+    await populateWorkspace(workspaceRoot);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(InstancesService, {
+      imports: [ConfigurationModule, ScopeModule],
+    });
+
+    expect(instance).toBeInstanceOf(InstancesService);
   });
 
   describe("findProjectInstances", () => {
@@ -193,7 +196,7 @@ describe(InstancesService, () => {
     });
 
     it("keeps two file instances that share a name but not their files", async () => {
-      const root = await mkdtemp(path.join(tmpdir(), "conformetry-nx-shared-"));
+      const root = createTemporaryDirectory("nx-shared");
       const modulePath = path.join(root, "packages/widgets/src/modules/orders");
 
       await mkdir(modulePath, { recursive: true });

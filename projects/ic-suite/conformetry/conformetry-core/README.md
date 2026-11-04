@@ -445,10 +445,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**:
 - **bug**:
 - **capture**:
-- **clear**:
 - **compile**:
 - **compiler**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -467,7 +465,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **filesystem**:
 - **gitkeep**:
 - **homepage**:
-- **implementation**:
 - **injectable**:
 - **instance**:
 - **inventoried**:
@@ -485,10 +482,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **publish**:
 - **ratio**:
 - **real**:
-- **recursive**:
 - **resolution**:
 - **score**:
-- **spy**:
 - **strict**:
 - **substitution**:
 - **synthetic**:

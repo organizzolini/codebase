@@ -980,7 +980,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **character**:
 - **child**:
 - **claim**:
-- **clear**:
 - **closest**:
 - **collection**:
 - **combine**:
@@ -990,7 +989,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compile**:
 - **compiler**:
 - **conform**:
-- **console**:
 - **constant**:
 - **consume**:
 - **controller**:
@@ -1033,7 +1031,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **html**:
 - **human**:
 - **identifier**:
-- **implementation**:
 - **injectable**:
 - **inline**:
 - **instance**:
@@ -1064,7 +1061,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **metric**:
 - **min**:
 - **miss**:
-- **mkdtemp**:
 - **mock**:
 - **nbformat**:
 - **notebook**:
@@ -1115,7 +1111,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **spawn**:
 - **spec**:
 - **split**:
-- **spy**:
 - **srow**:
 - **statement**:
 - **stdin**:
@@ -1130,11 +1125,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **sy**:
 - **syntax**:
 - **synthetic**:
+- **temporary**:
 - **text**:
 - **than**:
 - **thematic**:
 - **timer**:
-- **tmpdir**:
 - **todo**:
 - **tok**:
 - **tokenize**:

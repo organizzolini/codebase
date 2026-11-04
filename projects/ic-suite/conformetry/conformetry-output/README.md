@@ -215,11 +215,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**:
 - **bug**:
 - **calculate**:
-- **clear**:
 - **compile**:
 - **compiler**:
 - **complete**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -241,7 +239,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **gitkeep**:
 - **homepage**:
 - **imperfect**:
-- **implementation**:
 - **indent**:
 - **injectable**:
 - **instance**:
@@ -263,10 +260,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **percent**:
 - **percentage**:
 - **perfect**:
+- **provide**:
 - **publish**:
 - **ratio**:
 - **real**:
-- **recursive**:
 - **reduce**:
 - **relative**:
 - **resolution**:
@@ -274,7 +271,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **scale**:
 - **score**:
 - **shorten**:
-- **spy**:
 - **strict**:
 - **success**:
 - **sum**:

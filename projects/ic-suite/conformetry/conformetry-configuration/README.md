@@ -979,14 +979,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **chdir**:
 - **child**:
 - **choice**:
-- **clear**:
 - **collision**:
 - **comma**:
 - **compare**:
 - **compile**:
 - **compiler**:
 - **complete**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -1020,7 +1018,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **greater**:
 - **hint**:
 - **homepage**:
-- **implementation**:
 - **injectable**:
 - **instance**:
 - **interpolate**:
@@ -1046,7 +1043,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **metric**:
 - **min**:
 - **miss**:
-- **mkdtemp**:
 - **mock**:
 - **non**:
 - **normalize**:
@@ -1061,6 +1057,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **pending**:
 - **pick**:
 - **pop**:
+- **populate**:
 - **promise**:
 - **provide**:
 - **publish**:
@@ -1092,7 +1089,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **sort**:
 - **span**:
 - **split**:
-- **spy**:
 - **stdin**:
 - **stem**:
 - **strict**:
@@ -1103,13 +1099,13 @@ The words this project uses that the root glossary does not define, regenerated 
 - **synthetic**:
 - **take**:
 - **task**:
+- **temporary**:
 - **terminal**:
 - **text**:
 - **than**:
 - **threshold**:
 - **tie**:
 - **timer**:
-- **tmpdir**:
 - **transitive**:
 - **trim**:
 - **unmatched**:
