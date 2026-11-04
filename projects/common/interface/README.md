@@ -51,34 +51,34 @@ This project was generated from the [nestjs-service-project](../../../configurat
 
 The words this project uses that the root glossary does not define, regenerated with `nx run interface:coinagerie-check:write`.
 
-- **breadth**:
-- **decode**:
-- **edge1**:
-- **edge2**:
-- **expose**:
-- **floor**:
-- **large**:
-- **middle**:
-- **mismatch**:
-- **narrow**:
-- **negative**:
-- **outsider**:
-- **paginate**:
-- **pagination**:
-- **payload**:
-- **ql**:
-- **quick**:
-- **relate**:
-- **relation**:
-- **relay**:
-- **scalar**:
-- **self**:
-- **summarize**:
-- **tail**:
-- **unhandled**:
-- **unload**:
-- **upper**:
-- **violation**:
-- **wrong**:
+- **breadth**: The callee-count limit callidescope applies per callable, set to seven in this project.
+- **decode**: Reverse of encode, turning a cursor back into its offset or payload via decodeOffsetCursor and similar helpers.
+- **edge1**: Test fixture edge with id 1 and cursor-1, the first of two edges in a connection test.
+- **edge2**: Test fixture edge with id 2 and cursor-2, the second of two edges in a connection test.
+- **expose**: Declare a field a GraphQL resolver makes public, listed in a class exposed fields type.
+- **floor**: Math.floor rounding that picks the middle id of a test id list in the pagination helper.
+- **large**: Size word in test names for first and last counts beyond the array length, such as largeFirstResult.
+- **middle**: Position between the first and last members, one of the pagination matrix cursor cases.
+- **mismatch**: A relation whose cardinality or nullability differs from the entity, recorded as a mismatchedRelations entry.
+- **narrow**: A field type narrower than its column, such as non-null where the entity is nullable, typed as NarrowedField.
+- **negative**: Input value below zero, such as an offset or count in pagination, clamped to zero on encode.
+- **outsider**: A cursor id outside the connection, used as a miss case in the pagination test matrix.
+- **paginate**: Verb for splitting results into pages of edges and cursors, such as the Paginated helper.
+- **pagination**: Relay-style page state, the PageInfo and cursor connections that the GraphQL server returns.
+- **payload**: The decoded object a cursor carries, which encode and decode round-trip in the utility tests.
+- **ql**: Fragment of GraphQL, as in the graphql package names such as graphql-server and graphql-client.
+- **quick**: A pagination matrix with only the none, first and last cases, built by the quick option.
+- **relate**: Type wrapper naming a related entity class lazily, so circular imports between entities do not break.
+- **relation**: A link between two entities in the GraphQL shape, whose cardinality and nullability must match the entity.
+- **relay**: Pagination standard the server follows for its Connection, Edge and PageInfo types.
+- **scalar**: Custom leaf type that reaches a web client as the string it travels as on the wire.
+- **self**: The implementing class of a type, named Self in generics so a shape requires its own fields.
+- **summarize**: Test helper that reduces a connection to edge count, page info and cursors for assertions.
+- **tail**: The cursor of the last id in a list, the far end of a range in the pagination test helper.
+- **unhandled**: Mock server setting that makes any unexpected request fail rather than pass through.
+- **unload**: Fragment of unloaded, the state of a relation not yet fetched, mapped to undefined by mapRelation.
+- **upper**: Cursor built from the middle id in uppercase, a non-matching case in the pagination test matrix.
+- **violation**: A rule breach found when a GraphQL field declaration disagrees with its entity relation or column.
+- **wrong**: Test key in an invalid payload cursor, a field name the cursor decoder does not expect.
 
 <!-- coinagerie:end -->

@@ -456,34 +456,34 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run observability:coinagerie-check:write`.
 
-- **breadth**:
-- **callee**:
-- **colorize**:
-- **convention**:
-- **cook**:
-- **descriptor**:
-- **destination**:
-- **detail**:
-- **duration**:
-- **ecma**:
-- **es**:
-- **irregular**:
-- **iso**:
-- **lowercased**:
-- **ms**:
-- **past**:
-- **percent**:
-- **quasi**:
-- **remainder**:
-- **should**:
-- **single**:
-- **tester**:
-- **timestamped**:
-- **trace**:
-- **transient**:
-- **transport**:
-- **unvalidated**:
-- **verb**:
-- **violation**:
+- **breadth**: The count of direct calls a callable makes, which callidescope gates against this project's maximum breadth limit.
+- **callee**: The function or method a call expression invokes; logger callees are excluded so this package is judged on its own.
+- **colorize**: The pino-pretty option that colours development log output, enabled only outside production in LoggerService.
+- **convention**: The logging message rule: an emoji naming the subject, then a present-progressive or past-tense verb, checked at runtime and by lint.
+- **cook**: A stray fragment with no code in this package; it appears only as a headword in this glossary.
+- **descriptor**: A numeric handle, such as 1 for standard output or 2 for standard error, that the logger's pino destination writes to.
+- **destination**: The pino output stream chosen at construction, either standard output or standard error, depending on the process environment.
+- **detail**: An extra structured key attached to a log entry alongside its message; the logger unit tests pass one as a sample field.
+- **duration**: Not used by this package's code, so the headword adds no project-specific meaning and is a stray entry.
+- **ecma**: A stray fragment for ECMAScript; this package's code never names it, so the headword carries no local meaning.
+- **es**: A stray fragment, likely from ECMAScript; this package's code never names the standard, so it has no local role.
+- **irregular**: Refers to irregular past-tense verbs listed in IRREGULAR_PAST_VERBS, which the message convention accepts as past-tense verbs.
+- **iso**: The ISO 8601 timestamp format used in output log file names built by createTimestampedOutputLogFilePath.
+- **lowercased**: The lower-case form of a word that the convention checker compares against -ing and -ed suffixes and the irregular verb set.
+- **ms**: A stray fragment for the millisecond unit; this package's code never names it, so the headword has no local role.
+- **past**: The tense the logging convention accepts for the verb after the emoji subject, as an -ed form or an irregular verb.
+- **percent**: An optional numeric progress field on this package's log entry type, carried through to output without any formatting rule.
+- **quasi**: A stray fragment with no code in this package; it appears only as a headword in this glossary.
+- **remainder**: The part of a log message left after its leading emoji is split off, which the convention rule then checks for a verb.
+- **should**: The ordinary modal in this package's doc comments, stating intended behaviour such as application code calling info rather than error.
+- **single**: Output layout where pino-pretty renders each development log entry on one line, as the README explains.
+- **tester**: A stray fragment with no code in this package; it appears only as a headword in this glossary.
+- **timestamped**: Describes a log line or output file name that carries a timestamp, as built by createTimestampedOutputLogFilePath and error log entries.
+- **trace**: The verbose log level below debug, which LoggerService.verbose emits through its pino child logger.
+- **transient**: The Nest scope of LoggerService, so each injecting class receives its own instance rather than a shared singleton.
+- **transport**: The pino-pretty development output target, named as a string so pino loads it only outside production.
+- **unvalidated**: Describes an unknown error value that buildErrorLogEntry normalizes into a stable message before it is written to a log file.
+- **verb**: The grammatical word the convention rule requires after the emoji subject, in present-progressive or past tense.
+- **violation**: A message convention failure that the ESLint rule reports at lint time, either a missing emoji subject or a wrong verb.
 
 <!-- coinagerie:end -->

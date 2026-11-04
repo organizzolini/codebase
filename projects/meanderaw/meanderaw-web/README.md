@@ -266,21 +266,21 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run meanderaw-web:coinagerie-check:write`.
 
-- **breadth**:
-- **gen**:
-- **h1**:
-- **history**:
-- **html**:
-- **hydrate**:
-- **lang**:
-- **preload**:
-- **rel**:
-- **restoration**:
-- **role**:
-- **route**:
-- **screen**:
-- **scroll**:
-- **ssr**:
-- **transition**:
+- **breadth**: Callidescope's count of the direct calls a web callable makes, recorded in the project's Breadth table for its gate.
+- **gen**: Stem of routeTree.gen.ts, the generated route tree file that TanStack Router writes and the lint and trace tools exclude.
+- **h1**: The level-one heading element that the index route renders as MeanderawWeb, which the integration test finds by role.
+- **history**: The memory history that the render-route test helper passes to the router, so routes render at a chosen path in tests.
+- **html**: The root HTML document element that the __root route renders around the matched route, with lang set to en.
+- **hydrate**: Stray fragment with no source hit in the web project, so the glossary lists it without any meanderaw concept behind it.
+- **lang**: The lang attribute on the root html element, set to en in the __root route so the document declares its language.
+- **preload**: Stray fragment with no source hit in the web project, so the glossary lists it without any meanderaw concept behind it.
+- **rel**: The link rel attribute, set to stylesheet in the __root route's links array to load the application CSS.
+- **restoration**: Stray fragment with no source hit in the web project, so the glossary lists it without any meanderaw concept behind it.
+- **role**: Accessibility role argument in testing-library queries such as findByRole, which the index integration test uses to find the heading.
+- **route**: A TanStack Router route, each file under src/routes that renders one page and is listed in the generated route tree.
+- **screen**: The testing-library screen object that the index integration test queries to find elements of the rendered web page.
+- **scroll**: Stray fragment with no source hit in the web project, so the glossary lists it without any meanderaw concept behind it.
+- **ssr**: The server-side rendering flag set to true in the generated routeTree.gen.ts, so each route renders its HTML on the server.
+- **transition**: Stray fragment with no source hit in the web project, so the glossary lists it without any meanderaw concept behind it.
 
 <!-- coinagerie:end -->

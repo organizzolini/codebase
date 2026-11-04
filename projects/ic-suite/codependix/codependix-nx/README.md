@@ -569,41 +569,41 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nx:coinagerie-check:write`.
 
-- **abort**:
-- **alone**:
-- **argv**:
-- **batch**:
-- **beta**:
-- **boundary**:
-- **breadth**:
-- **budget**:
-- **chain**:
-- **charge**:
-- **cycle**:
-- **explain**:
-- **follow**:
-- **immediate**:
-- **inject**:
-- **misname**:
-- **parallelism**:
-- **pipe**:
-- **prefer**:
-- **realpath**:
-- **registration**:
-- **selection**:
-- **settle**:
-- **single**:
-- **stdio**:
-- **strictest**:
-- **subpath**:
-- **symlink**:
-- **terminal**:
-- **through**:
-- **uncacheable**:
-- **undeclared**:
-- **unresolved**:
-- **unscoped**:
-- **verdict**:
-- **violation**:
+- **abort**: NestFactory option set false so a failed container boot throws to the caller instead of exiting the process.
+- **alone**: Judged by itself, as a task that names other projects or tags is, running separately so a failure costs its batch peers nothing.
+- **argv**: Argument array of the spawned command line, which the gate builds from its project, configuration, and mode flags.
+- **batch**: Group of gate tasks Nx hands to one executor call, which runs one boundary check and reads each project's verdict from it.
+- **beta**: Placeholder project name used in fixtures for a second dependency in gate and batch executor tests.
+- **boundary**: Codependix rule check run per project, failing the gate when a dependency graph breaks a configured rule charged to it.
+- **breadth**: Count of calls one function makes, which callidescope caps per callable so the plugin merges map and filter into one pass.
+- **budget**: Comment-length allowance codometer enforces per language, shown as the Comment Budget badges in this package's readme.
+- **chain**: Ordered sequence of tsconfig extends bases the plugin walks from the root tsconfig, each reached file becoming a cache input.
+- **charge**: Assign a boundary finding to the project it belongs to, so only a finding charged to a project fails that project's gate.
+- **cycle**: Chain of projects or modules that depend on each other in a loop, which an acyclic boundary rule reports as a violation.
+- **explain**: Produce the report of why a project failed, by running that project alone again to get exactly what a single run prints.
+- **follow**: Traversal verb for walking an external dependency's own dependencies and tsconfig extends links, so each reached file joins the inputs.
+- **immediate**: Node setImmediate call the gate unit test uses to fire fake child-process events after the spawn returns.
+- **inject**: Constructor injection the NestJS container uses to hand providers to services, which needs decorator metadata from the swc loader.
+- **misname**: Test fixture for a workspace dependency whose folder name and manifest name disagree, so location must fail rather than match.
+- **parallelism**: Nx option, set true in the gate batch worker context, letting it run many project tasks within one call.
+- **pipe**: Stdio mode that captures a child process's output so the batch service can read its report and keep its error text.
+- **prefer**: Stem of prefers, as in a named selection winning over the target's own project when both could be gated.
+- **realpath**: Node realpathSync call that resolves symlinks to canonical paths, so workspace and package directories compare equal.
+- **registration**: The plugin's entry in nx.json, whose options such as configurationPath the gate and inference read back at run time.
+- **selection**: The projects or tags a gate run is limited to, which the gate uses to decide whether it judges only its own project.
+- **settle**: Resolve a batch task outright with its verdict or its failure reason, instead of rejecting, so one failed run costs peers nothing.
+- **single**: One project judged by a run of its own, the command line a failing batch task is rerun with to print its own report.
+- **stdio**: Spawn option setting child process streams, here ignoring stdin and piping stdout and stderr so the gate forwards output.
+- **strictest**: Test fixture scoped package provided as a tsconfig extends base, exercising a registry-declared external dependency input.
+- **subpath**: Path under a package root, resolved through an exports map to find the file a package entry point names.
+- **symlink**: Symlinked workspace package directory the tests create under node_modules, verifying the plugin follows links to real package locations.
+- **terminal**: Stem of terminalOutput, the report text a batch task returns so Nx can cache it and the executor can print it.
+- **through**: Preposition used in docs and code to describe resolving a package's entry through its export, manifest, or extends chain.
+- **uncacheable**: Selection Nx cannot hash as a cached task, which the gate refuses with an error rather than judging and replaying it.
+- **undeclared**: Classification for a tsconfig base package that the root package.json does not declare, so its input is skipped with a warning.
+- **unresolved**: Workspace dependency the plugin could not locate, collected into a set and reported as a warning rather than failing inference.
+- **unscoped**: Test fixture for an unscoped package provided as a tsconfig extends base, covering the bare-name case of external dependency resolution.
+- **verdict**: Judgement a gate reaches about a project's boundaries, decided by the codependix cli and replayed from the Nx cache.
+- **violation**: Entry in a boundary report naming an edge or cycle that breaks a declared rule, which the batch maps to one project.
 
 <!-- coinagerie:end -->

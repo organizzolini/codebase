@@ -128,33 +128,33 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-core:coinagerie-check:write`.
 
-- **anchor**:
-- **breach**:
-- **breadth**:
-- **conditional**:
-- **doc**:
-- **docstring**:
-- **generic**:
-- **hcl**:
-- **interpolation**:
-- **javascript**:
-- **jupyter**:
-- **level1**:
-- **level2**:
-- **level3**:
-- **level4**:
-- **level5**:
-- **level6**:
-- **measure**:
-- **paragraph**:
-- **pipeline**:
-- **scalar**:
-- **selector**:
-- **severity**:
-- **shebang**:
-- **statistic**:
-- **thematic**:
-- **todo**:
-- **toml**:
+- **anchor**: A named README marker pair that codometer's output writers splice generated content between, as the configuration package describes.
+- **breach**: What a limit reports when a measured metric crosses it, with a CodometerSeverity of fail or warn deciding the consequence.
+- **breadth**: The callidescope report section that counts direct calls per callable, listed as the Breadth table of this package.
+- **conditional**: A branching construct in Shell code, such as an if statement, tallied as conditionals in the shell statistics.
+- **doc**: A JSDoc-style block above a declaration, tallied as docComments in the TypeScript statistics that core defines.
+- **docstring**: A Python triple-quoted string that documents a module, class, or function, tallied as docstrings and docstringLines in Python statistics.
+- **generic**: A type parameter declaration, such as the T in a generic function, tallied as genericDeclarations in the TypeScript statistics.
+- **hcl**: The HashiCorp Configuration Language statistics, which core models with its attributes, blocks, comments, and interpolations.
+- **interpolation**: An HCL expression embedded in a value, counted as interpolations in the HCL statistics that core models.
+- **javascript**: The statistics group for TypeScript and JavaScript files, keyed alongside the other language groups in the result.
+- **jupyter**: The notebook statistics group in the code statistics result, covering cells, executions, and outputs of Jupyter notebooks.
+- **level1**: The markdown statistic headingLevel1 that counts level-one headings, one of six per-level fields core defines.
+- **level2**: The markdown statistic headingLevel2 that counts level-two headings, one of six per-level fields core defines.
+- **level3**: The markdown statistic headingLevel3 that counts level-three headings, one of six per-level fields core defines.
+- **level4**: The markdown statistic headingLevel4 that counts level-four headings, one of six per-level fields core defines.
+- **level5**: The markdown statistic headingLevel5 that counts level-five headings, one of six per-level fields core defines.
+- **level6**: The markdown statistic headingLevel6 that counts level-six headings, one of six per-level fields core defines.
+- **measure**: The label of the first column of the callidescope summary table in this README, listing callables and files.
+- **paragraph**: A block of Markdown prose, tallied as paragraphs in the markdown statistics that core defines.
+- **pipeline**: The sequence of analyzers whose output is the aggregated CodeStatisticsResult that core's types describe.
+- **scalar**: A non-container JSON or YAML value, tallied as scalars in the statistics that core defines for those formats.
+- **selector**: A custom statistic's matcher, whose instances field records each occurrence it found, such as a comment selector's blocks.
+- **severity**: Either fail, which gates a change, or warn, which only reports a breach, as the core type declares.
+- **shebang**: The leading hash-bang line a script carries, counted as shebangs in the shell statistics that core defines.
+- **statistic**: A counted value in the code statistics result, whether a built-in language field or a custom counter under custom.
+- **thematic**: A horizontal rule in Markdown, tallied as thematicBreaks in the markdown statistics that core defines.
+- **todo**: A comment flagged for later work, tallied as todos in the code statistics that core defines.
+- **toml**: The configuration-file statistics group for tables, array tables, keys, and arrays, one of the formats core models.
 
 <!-- coinagerie:end -->

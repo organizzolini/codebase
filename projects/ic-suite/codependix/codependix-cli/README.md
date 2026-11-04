@@ -980,30 +980,30 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-cli:coinagerie-check:write`.
 
-- **acyclic**:
-- **anchor**:
-- **boundary**:
-- **breadth**:
-- **chdir**:
-- **combine**:
-- **comma**:
-- **cycle**:
-- **delimit**:
-- **discovery**:
-- **drift**:
-- **fmt**:
-- **forbid**:
-- **hint**:
-- **realpath**:
-- **rejection**:
-- **restrict**:
-- **selection**:
-- **spread**:
-- **stale**:
-- **uint8**:
-- **unmatched**:
-- **verdict**:
-- **violation**:
-- **widget**:
+- **acyclic**: Rule kind string in the nxProjects configuration that fails a run whenever a named set of projects forms a cycle.
+- **anchor**: Config key naming the marker inside a Markdown destination where a graph section is spliced in place.
+- **boundary**: Rule-checked constraint on project dependencies; the check command fails the run when an edge breaks a declared rule.
+- **breadth**: Count of direct callees of one callable, which callidescope measures and limits with maximumBreadth.
+- **chdir**: Node process.chdir the map command integration tests call to run from a fixture working directory, then restore it.
+- **combine**: Verb for merging each active graph type's section into one Markdown file, as CombinedOutputService does.
+- **comma**: Separator in list options such as exclude and include, which parseCommaDelimitedOption splits values on.
+- **cycle**: Path of dependency edges returning to where it started, which an acyclic rule fails a run on when it crosses projects.
+- **delimit**: Verb in parseCommaDelimitedOption, which splits include and exclude values on commas into a list of globs.
+- **discovery**: Nest DiscoveryModule imported by the CLI root module, letting it locate providers and their metadata at runtime.
+- **drift**: Gap between committed exports and a fresh run, which check names as stale; tests create it deliberately.
+- **fmt**: Parameter name for the format value in the path command's unit tests, which accepts json, markdown, or mermaid.
+- **forbid**: Rule kind string in the nxProjects configuration that fails a run when a from-selected project depends on a to-selected one.
+- **hint**: Optional message field on a warning or failure entry that tells the user what to check, such as a spelling reminder.
+- **realpath**: Node realpathSync, used in the path command's integration test to resolve a temp working directory to its canonical path.
+- **rejection**: Refusal of a bad command line, such as a format value outside json, markdown, or mermaid, reported as a failed run.
+- **restrict**: Verb naming callidescope-restrict, the inferred gate target that fails when a project breaks its own depth or breadth limits.
+- **selection**: The projects a run is scoped to, which the run refuses when none match and warns about when only some do.
+- **spread**: Object spread in callidescope.config.ts that layers shared projectDefaults under each project's own overrides.
+- **stale**: State of a committed export or destination that no longer matches a fresh run, which check fails on.
+- **uint8**: Shorthand for Uint8Array, the byte-array chunk type a mocked stdout write accepts in the path command tests.
+- **unmatched**: Adjective for a selection entry that matches no project, which the run names in a warning without failing.
+- **verdict**: Outcome string, such as fail, a boundary violations entry carries in the JSON report for each violated rule.
+- **violation**: One breach of a declared boundary rule, counted in the run summary and listed with its projects and verdict.
+- **widget**: Fixture project name in the map command's integration test, used to build a widget-neighborhood graph JSON.
 
 <!-- coinagerie:end -->

@@ -304,10 +304,10 @@ _This project has no internal file imports._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-agents:coinagerie-check:write`.
 
-- **front**:
-- **matter**:
-- **measure**:
-- **ship**:
-- **triage**:
+- **front**: Leading part of the front matter block, the YAML header at the top of each SKILL.md that the unit test parses.
+- **matter**: Second half of the front matter phrase, naming the YAML header whose name and description the skills tool reads.
+- **measure**: Verb for running codometer over a directory to count its metrics, the activity the codometer-measure skill documents.
+- **ship**: Verb for publishing skill directories as this package's contents, so an installer copies each one into an agent skills folder.
+- **triage**: Name of the skill for acting on a breached limit or a stale committed report, the third of this package's three skills.
 
 <!-- coinagerie:end -->

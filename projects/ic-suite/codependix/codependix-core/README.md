@@ -112,13 +112,13 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-core:coinagerie-check:write`.
 
-- **anchor**:
-- **boundary**:
-- **breadth**:
-- **fresh**:
-- **intro**:
-- **selection**:
-- **stale**:
-- **subheading**:
+- **anchor**: The named comment block inside a Markdown destination that codependix rewrites, and whose current content it compares with fresh output.
+- **boundary**: The rule-definition and violation vocabulary in core, describing edges that break declared limits on each graph level.
+- **breadth**: Callidescope's per-callable count of direct calls, rendered as a table in this README and capped by maximumBreadth.
+- **fresh**: The content a new codependix run would generate, which is compared against what a file already holds to find drift.
+- **intro**: The single line placed under the Codependix heading in a Markdown section, supplied per graph type through introLine.
+- **selection**: Not used in core source; the only mention is this README glossary, so the word carries no core-specific meaning here.
+- **stale**: An export whose committed file no longer matches a fresh run, carried as a StaleExport that makes the check fail.
+- **subheading**: The optional ### heading placed above an anchor block, carried as MarkdownSectionArguments and undefined for the workspace README.
 
 <!-- coinagerie:end -->
