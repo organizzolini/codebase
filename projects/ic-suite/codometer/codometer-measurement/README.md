@@ -373,7 +373,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **categorize**:
 - **cell**:
 - **character**:
-- **clear**:
 - **color**:
 - **comment**:
 - **compile**:
@@ -382,7 +381,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compression**:
 - **compressor**:
 - **conditional**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -510,7 +508,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **some**:
 - **sort**:
 - **split**:
-- **spy**:
 - **stat**:
 - **statement**:
 - **statistic**:
@@ -521,6 +518,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **symlink**:
 - **synthetic**:
 - **task**:
+- **temporary**:
 - **than**:
 - **thematic**:
 - **thing**:

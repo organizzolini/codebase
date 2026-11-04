@@ -304,7 +304,6 @@ _This project has no internal file imports._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-agents:coinagerie-check:write`.
 
-- **clear**:
 - **compiler**:
 - **configure**:
 - **define**:
@@ -322,7 +321,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **maximum**:
 - **measure**:
 - **meta**:
-- **mock**:
 - **readdir**:
 - **relative**:
 - **replace**:
@@ -332,6 +330,5 @@ The words this project uses that the root glossary does not define, regenerated 
 - **strict**:
 - **than**:
 - **triage**:
-- **vi**:
 
 <!-- coinagerie:end -->

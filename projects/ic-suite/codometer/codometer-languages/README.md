@@ -1010,7 +1010,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compile**:
 - **compiler**:
 - **conditional**:
-- **console**:
 - **constant**:
 - **consume**:
 - **controller**:
@@ -1045,7 +1044,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **expression**:
 - **extname**:
 - **factory**:
-- **fake**:
 - **field**:
 - **flag**:
 - **flat**:
@@ -1064,6 +1062,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **injectable**:
 - **inline**:
 - **inside**:
+- **instance**:
 - **int**:
 - **interpolation**:
 - **ipynb**:
@@ -1143,7 +1142,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **re**:
 - **reader**:
 - **readline**:
-- **real**:
 - **reason**:
 - **recursive**:
 - **reg**:
@@ -1173,7 +1171,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **sort**:
 - **span**:
 - **sparse**:
-- **splice**:
 - **split**:
 - **splitline**:
 - **spy**:
@@ -1194,7 +1191,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **text**:
 - **than**:
 - **thematic**:
-- **timer**:
 - **tmpdir**:
 - **todo**:
 - **tokenize**:

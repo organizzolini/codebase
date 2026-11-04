@@ -128,7 +128,6 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-core:coinagerie-check:write`.
 
-- **after**:
 - **anchor**:
 - **array**:
 - **block**:
@@ -137,13 +136,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **bug**:
 - **byte**:
 - **cell**:
-- **clear**:
 - **color**:
 - **comment**:
 - **compile**:
 - **compiler**:
 - **conditional**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -155,19 +152,16 @@ The words this project uses that the root glossary does not define, regenerated 
 - **describe**:
 - **doc**:
 - **docstring**:
-- **each**:
 - **empty**:
 - **equal**:
 - **execute**:
 - **experimental**:
 - **expression**:
 - **failure**:
-- **fake**:
 - **generic**:
 - **gitkeep**:
 - **hcl**:
 - **homepage**:
-- **implementation**:
 - **injectable**:
 - **inline**:
 - **instance**:
@@ -191,15 +185,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **meta**:
 - **method**:
 - **metric**:
-- **mock**:
 - **paragraph**:
 - **pipeline**:
 - **protocol**:
 - **publish**:
 - **quote**:
-- **real**:
 - **reason**:
-- **recursive**:
 - **resolution**:
 - **scalar**:
 - **selector**:
@@ -207,17 +198,14 @@ The words this project uses that the root glossary does not define, regenerated 
 - **severity**:
 - **shebang**:
 - **sort**:
-- **spy**:
 - **statement**:
 - **statistic**:
 - **strict**:
 - **synthetic**:
 - **task**:
 - **thematic**:
-- **timer**:
 - **todo**:
 - **toml**:
 - **variable**:
-- **vi**:
 
 <!-- coinagerie:end -->

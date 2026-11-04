@@ -913,7 +913,6 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **absolute**:
 - **accept**:
-- **after**:
 - **amount**:
 - **analysis**:
 - **anchor**:
@@ -925,14 +924,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **bug**:
 - **callback**:
 - **character**:
-- **clear**:
 - **color**:
 - **comment**:
 - **compile**:
 - **compiler**:
 - **compression**:
 - **configure**:
-- **console**:
 - **constant**:
 - **controller**:
 - **css**:
@@ -946,13 +943,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **equal**:
 - **experimental**:
 - **extname**:
-- **fake**:
 - **finite**:
 - **flag**:
 - **flat**:
 - **gitkeep**:
 - **homepage**:
-- **implementation**:
 - **indentation**:
 - **infinity**:
 - **injectable**:
@@ -977,7 +972,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **metric**:
 - **min**:
 - **miss**:
-- **mkdtemp**:
 - **mock**:
 - **multiplier**:
 - **na**:
@@ -988,8 +982,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **positive**:
 - **prettify**:
 - **promise**:
+- **provide**:
 - **publish**:
-- **real**:
 - **recursive**:
 - **refine**:
 - **reject**:
@@ -1013,9 +1007,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **success**:
 - **surface**:
 - **synthetic**:
+- **temporary**:
 - **text**:
-- **timer**:
-- **tmpdir**:
 - **trim**:
 - **vi**:
 - **wrap**:

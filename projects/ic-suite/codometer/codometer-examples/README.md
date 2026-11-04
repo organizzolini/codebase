@@ -566,7 +566,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **channel**:
 - **charge**:
 - **child**:
-- **clear**:
 - **color**:
 - **comment**:
 - **compile**:
@@ -593,7 +592,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **discount**:
 - **discovery**:
 - **downstream**:
-- **each**:
 - **empty**:
 - **encode**:
 - **entry**:
@@ -643,7 +641,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **method**:
 - **metric**:
 - **mkdtemp**:
-- **mock**:
 - **network**:
 - **non**:
 - **notification**:
@@ -715,7 +712,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **upstream**:
 - **variable**:
 - **vendor**:
-- **vi**:
 - **walk**:
 - **warn**:
 

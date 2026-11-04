@@ -1296,6 +1296,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **bundle**:
 - **byte**:
 - **call**:
+- **capture**:
 - **cell**:
 - **chdir**:
 - **chunk**:
@@ -1378,7 +1379,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **link**:
 - **load**:
 - **logger**:
-- **make**:
 - **marker**:
 - **maximum**:
 - **md**:

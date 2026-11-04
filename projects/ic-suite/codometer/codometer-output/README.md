@@ -604,6 +604,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **bullet**:
 - **byte**:
 - **call**:
+- **capture**:
 - **cell**:
 - **character**:
 - **choose**:
@@ -652,13 +653,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **expression**:
 - **failure**:
 - **flat**:
-- **force**:
-- **fresh**:
 - **generic**:
 - **govern**:
 - **hcl**:
 - **homepage**:
-- **implementation**:
 - **indentation**:
 - **injectable**:
 - **inline**:
@@ -694,7 +692,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **metric**:
 - **min**:
 - **miss**:
-- **mkdtemp**:
 - **mock**:
 - **nb**:
 - **newline**:
@@ -742,7 +739,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **sort**:
 - **splice**:
 - **split**:
-- **spy**:
 - **stale**:
 - **statement**:
 - **statistic**:
@@ -756,7 +752,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **temporary**:
 - **than**:
 - **thematic**:
-- **tmpdir**:
 - **todo**:
 - **toml**:
 - **touch**:
