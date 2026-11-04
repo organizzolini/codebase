@@ -958,11 +958,13 @@ The words this project uses that the root glossary does not define, regenerated 
 - **adapter**:
 - **bare**:
 - **breadth**:
+- **discovery**:
 - **disk**:
 - **execution**:
 - **explicit**:
 - **filesystem**:
 - **formatter**:
+- **gadget**:
 - **generation**:
 - **hint**:
 - **lstat**:
@@ -980,6 +982,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **symbolic**:
 - **symlink**:
 - **threshold**:
+- **untagged**:
 - **widget**:
 - **wildcard**:
 

@@ -836,6 +836,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **codename**:
 - **completion**:
 - **concat**:
+- **connect**:
 - **crypto**:
 - **daemon**:
 - **decode**:

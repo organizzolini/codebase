@@ -1337,6 +1337,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **condition**:
 - **confirm**:
 - **conflict**:
+- **connect**:
 - **consider**:
 - **context2**:
 - **continuation**:

@@ -1,3 +1,16 @@
+## 0.0.66 (2026-11-04)
+
+### 🔥 Performance
+
+- **conformetry:** ⚡️ expand each instance glob once per inferTargets pass ([#2102](https://github.com/organizzolini/codebase/pull/2102))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.65
+- Updated conformetry-generation to 0.0.65
+- Updated conformetry-validation to 0.0.64
+- Updated conformetry-output to 0.0.64
+
 ## 0.0.65 (2026-11-04)
 
 ### 🧱 Updated Dependencies

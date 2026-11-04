@@ -1167,6 +1167,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **clean**:
 - **coerce**:
 - **configurable**:
+- **connect**:
 - **convention**:
 - **creatable**:
 - **db**:

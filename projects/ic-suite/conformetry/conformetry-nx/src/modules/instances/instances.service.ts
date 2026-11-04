@@ -6,7 +6,10 @@ import { Injectable } from "@nestjs/common";
 import { ScopeService } from "../scope/scope.service";
 
 import type { FindProjectInstancesArguments } from "./instances.types";
-import type { Instance } from "@conformetry/configuration";
+import type {
+  ConformetryInstanceGroup,
+  Instance,
+} from "@conformetry/configuration";
 
 /**
  * Turns Nx project knowledge into the instances conformetry validates.
@@ -30,6 +33,44 @@ export class InstancesService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * Expands one group's globs, reusing an earlier expansion of the same ones.
+   *
+   * An untagged group is the same glob for every project, and a glob walks the
+   * whole workspace, so expanding it per project is what made inferring the
+   * targets of ~70 projects take half a minute. The key is the whole request,
+   * so a tagged group, whose globs differ by project root, never shares an
+   * entry with another project's.
+   */
+  private discoverGroup(args: {
+    cache: Map<string, Instance[]> | undefined;
+    group: ConformetryInstanceGroup;
+    workspaceRoot: string;
+  }): Instance[] {
+    const { group } = args;
+    const request = {
+      ...(group.exclude === undefined ? {} : { exclude: group.exclude }),
+      patterns: group.patterns ?? [],
+      ...(group.substitutions === undefined
+        ? {}
+        : { substitutions: group.substitutions }),
+      ...(group.threshold === undefined ? {} : { threshold: group.threshold }),
+      workingDirectory: args.workspaceRoot,
+    };
+    const key = JSON.stringify(request);
+    const cached = args.cache?.get(key);
+
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const instances = this.configurationService.findInstances(request);
+
+    args.cache?.set(key, instances);
+
+    return instances;
+  }
 
   /**
    * Returns whether an instance belongs to a project.
@@ -82,16 +123,10 @@ export class InstancesService {
         return this.scopeService.resolveGroup({ group, project: args.project });
       })
       .flatMap((group) => {
-        return this.configurationService.findInstances({
-          ...(group.exclude === undefined ? {} : { exclude: group.exclude }),
-          patterns: group.patterns ?? [],
-          ...(group.substitutions === undefined
-            ? {}
-            : { substitutions: group.substitutions }),
-          ...(group.threshold === undefined
-            ? {}
-            : { threshold: group.threshold }),
-          workingDirectory: args.workspaceRoot,
+        return this.discoverGroup({
+          cache: args.discoveryCache,
+          group,
+          workspaceRoot: args.workspaceRoot,
         });
       })
       .filter((instance) => {

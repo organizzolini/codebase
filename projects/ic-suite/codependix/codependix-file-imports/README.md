@@ -481,6 +481,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **backslash**:
 - **breadth**:
 - **canonical**:
+- **connect**:
 - **cpython**:
 - **dedupe**:
 - **diagnostic**:
