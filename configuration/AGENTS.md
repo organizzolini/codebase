@@ -63,9 +63,10 @@ holding a coinagerie configuration is the root its run scans, so the root
 glossary's configuration has to sit at the root, and it writes the
 `GLOSSARY.md` beside it. Every project's own `coinagerie.config.ts` spreads
 `coinagerieConfiguration` from `configuration/coinagerie.config.ts`.
-A word with no glossary entry fails `guard-code` through each project's
-inferred `coinagerie-check`, in the commit hook and in CI; write the entries
-with `nx run <project>:coinagerie-check:write`.
+No hook or pull request judges a glossary: the release workflow writes every
+glossary on the default branch, adding new words and removing stale ones, the
+way it writes the callidescope, codependix, and codometer reports. To see a
+project's words sooner, run `nx run <project>:coinagerie-check:write`.
 
 ## In the graph, and out of releases
 

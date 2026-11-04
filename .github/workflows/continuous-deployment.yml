@@ -326,6 +326,17 @@ jobs:
             --exclude=configuration
           pnpm exec nx run configuration:codometer:write
 
+      - name: 📖 Define Words
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.target.id == 'push-releases' &&
+          env.RELEASE_SUPERSEDED != 'true'
+        run: |
+          pnpm exec nx run-many \
+            --target=coinagerie \
+            --target=coinagerie-check \
+            --configuration=write
+
       # semantic-release versions and tags the codebase itself, and creates the
       # `v*` release the README badge shows, never an ic-suite package. Its one
       # `chore(release): 🔖 tag codebase` commit also carries the package
