@@ -25,6 +25,7 @@
     "./callidescope.config": "./callidescope.config.ts",
     "./codependix.config": "./codependix.config.ts",
     "./codometer.config": "./codometer.config.ts",
+    "./coinagerie.config": "./coinagerie.config.ts",
     "./eslint.config": "./eslint.config.ts",
     "./package.json": "./package.json",
     "./tsconfig.json": "./tsconfig.json",

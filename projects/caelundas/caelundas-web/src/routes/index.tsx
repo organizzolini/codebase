@@ -5,32 +5,39 @@ import {
 } from "@tanstack/react-router";
 import { type ReactNode, useMemo, useSyncExternalStore } from "react";
 
-import { CalendarEmpty } from "../components/calendar-empty";
-import { CalendarError } from "../components/calendar-error";
-import { CalendarFilters } from "../components/calendar-filters";
-import { CalendarSkeleton } from "../components/calendar-skeleton";
-import { CalendarViewOptions } from "../components/calendar-view-options";
-import { EventsCalendar } from "../components/events-calendar";
-import { useCalendarSearch } from "../components/use-calendar-search";
-import { loadCalendar } from "../lib/calendar/calendar-loader";
-import { validateCalendarSearch } from "../lib/calendar/calendar-search";
-import {
-  CalendarSymbolsContext,
-  DEFAULT_CALENDAR_SYMBOLS,
-} from "../lib/calendar/calendar-symbols";
+import { CalendarEmpty } from "../components/calendar-empty/calendar-empty";
+import { CalendarError } from "../components/calendar-error/calendar-error";
+import { CalendarFilters } from "../components/calendar-filters/calendar-filters";
+import { createEventFilterFields } from "../components/calendar-filters/event-filter-fields.utilities";
+import { EMPTY_EVENT_FILTER } from "../components/calendar-filters/event-filter-tree.constants";
+import { CalendarMenus } from "../components/calendar-menus/calendar-menus";
+import { CalendarSkeleton } from "../components/calendar-skeleton/calendar-skeleton";
+import { CalendarViewOptions } from "../components/calendar-view-options/calendar-view-options";
+import { loadedKeys } from "../components/events-calendar/calendar-loader.constants";
+import { loadCalendar } from "../components/events-calendar/calendar-loader.utilities";
 import {
   isWideViewport,
   subscribeToViewport,
-} from "../lib/calendar/calendar-viewport";
+} from "../components/events-calendar/calendar-viewport.utilities";
 import {
   AGENDA_DAY_COUNT,
   CALENDAR_VIEW_PERIODS,
   DEFAULT_TIMELINE_SCALE,
-  getDefaultCalendarView,
-} from "../lib/calendar/calendar-views";
-import { parseCalendarDate } from "../lib/calendar/calendar-window";
-import { createEventFilterFields } from "../lib/event-filters/event-filter-fields";
-import { EMPTY_EVENT_FILTER } from "../lib/event-filters/event-filter-tree";
+} from "../components/events-calendar/calendar-views.constants";
+import { getDefaultCalendarView } from "../components/events-calendar/calendar-views.utilities";
+import { parseCalendarDate } from "../components/events-calendar/calendar-window.utilities";
+import { EventsCalendar } from "../components/events-calendar/events-calendar";
+import { readTimeZone } from "../components/events-calendar/events-calendar.utilities";
+import {
+  getCalendarReloadKey,
+  readCalendarSearch,
+  validateCalendarSearch,
+} from "../hooks/use-calendar-search/calendar-search.utilities";
+import {
+  CalendarSymbolsContext,
+  DEFAULT_CALENDAR_SYMBOLS,
+} from "../hooks/use-calendar-search/calendar-symbols.constants";
+import { useCalendarSearch } from "../hooks/use-calendar-search/use-calendar-search";
 
 // 🧭 Route
 
@@ -56,15 +63,22 @@ export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Caelundas" }] }),
   pendingComponent: IndexPending,
   pendingMs: 200,
-  shouldReload: true,
+  // A change to the backdrop's keys alone skips even the reload.
+  shouldReload: ({ location }) =>
+    getCalendarReloadKey(location.search) !== loadedKeys.current,
   ssr: false,
   validateSearch: validateCalendarSearch,
 
-  loader: async ({ context, location }) =>
-    loadCalendar(
+  loader: async ({ context, location, preload }) => {
+    if (!preload) {
+      loadedKeys.current = getCalendarReloadKey(location.search);
+    }
+
+    return loadCalendar(
       context.eventsDatabase,
       validateCalendarSearch(location.search),
-    ),
+    );
+  },
 });
 
 // 🧩 Component
@@ -100,7 +114,12 @@ function IndexPage(): ReactNode {
   // 🪝 Hooks
   const { colorBy, dataset, emptiness, events, facets, grouping } =
     Route.useLoaderData();
-  const search = Route.useSearch();
+  // The calendar's own search only: structural sharing hands back the same
+  // object when a sky key alone changed, so the page is not rendered again.
+  const search = Route.useSearch({
+    select: readCalendarSearch,
+    structuralSharing: true,
+  });
   const fields = useMemo(() => createEventFilterFields(facets), [facets]);
   const isWide = useSyncExternalStore(subscribeToViewport, isWideViewport);
   // While a reload runs, the notice of why the last window was empty would
@@ -118,8 +137,7 @@ function IndexPage(): ReactNode {
   // 🏗 Setup
   const { filter } = search;
   const view = search.view ?? getDefaultCalendarView(isWide);
-  const timeZone =
-    dataset?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const timeZone = readTimeZone(dataset);
 
   // 💪 Handlers
   const {
@@ -166,16 +184,23 @@ function IndexPage(): ReactNode {
           filters={
             <CalendarFilters
               className="contents"
+              facets={facets}
+              fields={fields}
+              filter={filter}
+              onFilterChange={handleFilterChange}
+            />
+          }
+          grouping={grouping}
+          menus={
+            <CalendarMenus
+              className="contents"
               clusters={search.clusters !== false}
               colorBy={colorBy}
               colors={search.colors !== false}
               facets={facets}
-              fields={fields}
-              filter={filter}
               onClustersChange={handleClustersChange}
               onColorByChange={handleColorByChange}
               onColorsChange={handleColorsChange}
-              onFilterChange={handleFilterChange}
               onSymbolsChange={handleSymbolsChange}
               symbols={search.symbols}
               viewOptions={
@@ -190,7 +215,6 @@ function IndexPage(): ReactNode {
               }
             />
           }
-          grouping={grouping}
           onDateChange={handleDateChange}
           onShowLater={handleShowLater}
           onViewChange={handleViewChange}

@@ -32,7 +32,7 @@ Register it in `nx.json`:
       "plugin": "@codependix/nx",
       "options": {
         "configurationPath": "configuration/codependix.config.ts",
-        "gateTargetName": "codependix-gate"
+        "gateTargetName": "codependix-bound"
       }
     }
   ]
@@ -42,7 +42,7 @@ Register it in `nx.json`:
 | Option | Meaning |
 | ------ | ------- |
 | `configurationPath` | **Required.** Where the codependix configuration lives. Registering the plugin without it fails inference, naming the option; there is no default path |
-| `gateTargetName` | Name of the inferred gate target. `codependix-gate` when omitted |
+| `gateTargetName` | Name of the inferred gate target. `codependix-bound` when omitted |
 
 The gate runs the command line under the `@swc-node/register` hooks, which
 this plugin depends on and registers itself — the workspace does not need to
@@ -59,9 +59,9 @@ project Nx infers from a `package.json` alone gets no gate until it is given
 a `project.json` as well.
 
 ```bash
-nx run lexico-entities:codependix-gate          # one project
-nx run-many -t codependix-gate                  # every project
-nx affected -t codependix-gate                  # only what changed
+nx run lexico-entities:codependix-bound          # one project
+nx run-many -t codependix-bound                  # every project
+nx affected -t codependix-bound                  # only what changed
 ```
 
 ### The gate
@@ -169,8 +169,8 @@ stays cached.
 ### Executor options
 
 ```bash
-nx run lexico-api:codependix-gate --projects=lexico-entities,lexico-api
-nx run logging:codependix-gate --tags=type:package --dependencies=false
+nx run lexico-api:codependix-bound --projects=lexico-entities,lexico-api
+nx run logging:codependix-bound --tags=type:package --dependencies=false
 ```
 
 | Option | Meaning |
@@ -554,3 +554,127 @@ graph LR
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nx:coinagerie-check:write`.
+
+- **abort**:
+- **absolute**:
+- **after**:
+- **alpha**:
+- **argv**:
+- **array**:
+- **assertion**:
+- **basename**:
+- **bind**:
+- **boundary**:
+- **breadth**:
+- **buffer**:
+- **bug**:
+- **call**:
+- **callback**:
+- **chain**:
+- **child**:
+- **chunk**:
+- **clear**:
+- **comment**:
+- **compile**:
+- **compiler**:
+- **console**:
+- **constant**:
+- **controller**:
+- **decorator**:
+- **define**:
+- **describe**:
+- **each**:
+- **edge**:
+- **entry**:
+- **equal**:
+- **exactly**:
+- **experimental**:
+- **factory**:
+- **fake**:
+- **filename**:
+- **fixture**:
+- **flag**:
+- **flat**:
+- **follow**:
+- **force**:
+- **gitkeep**:
+- **hoist**:
+- **homepage**:
+- **href**:
+- **immediate**:
+- **implementation**:
+- **implicit**:
+- **inject**:
+- **injectable**:
+- **inside**:
+- **instance**:
+- **item**:
+- **judge**:
+- **kind**:
+- **last**:
+- **least**:
+- **length**:
+- **link**:
+- **loader**:
+- **locate**:
+- **logger**:
+- **manifest**:
+- **maximum**:
+- **meta**:
+- **misname**:
+- **miss**:
+- **mkdtemp**:
+- **mock**:
+- **once**:
+- **original**:
+- **own**:
+- **pending**:
+- **pop**:
+- **promise**:
+- **protocol**:
+- **publish**:
+- **real**:
+- **realpath**:
+- **reason**:
+- **recursive**:
+- **registration**:
+- **reject**:
+- **relative**:
+- **replace**:
+- **resolution**:
+- **segment**:
+- **selection**:
+- **sep**:
+- **slice**:
+- **some**:
+- **sort**:
+- **spawn**:
+- **split**:
+- **spy**:
+- **stat**:
+- **stdio**:
+- **stdout**:
+- **strict**:
+- **strictest**:
+- **stringify**:
+- **stub**:
+- **success**:
+- **surface**:
+- **symlink**:
+- **synthetic**:
+- **through**:
+- **timer**:
+- **trim**:
+- **undeclared**:
+- **unresolved**:
+- **unscoped**:
+- **vi**:
+- **warn**:
+
+<!-- coinagerie:end -->

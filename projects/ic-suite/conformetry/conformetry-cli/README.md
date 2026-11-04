@@ -77,7 +77,7 @@ missing one before that.
 A template's own inputs are passed as flags alongside these:
 
 ```bash
-conformetry generate --config configuration/conformetry.config.ts --template react-component --name search-bar
+conformetry generate --config configuration/conformetry.config.ts --template react-component-folder --name search-bar
 ```
 
 **Omitting `--template` at a terminal offers a picker** — an autocomplete over
@@ -1310,3 +1310,118 @@ graph LR
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-cli:coinagerie-check:write`.
+
+- **after**:
+- **argv**:
+- **array**:
+- **assertion**:
+- **bootstrap**:
+- **breadth**:
+- **buffer**:
+- **bug**:
+- **call**:
+- **choose**:
+- **chunk**:
+- **clear**:
+- **close**:
+- **cog**:
+- **comma**:
+- **compile**:
+- **compiler**:
+- **console**:
+- **constant**:
+- **controller**:
+- **count**:
+- **debug**:
+- **decorator**:
+- **deep**:
+- **define**:
+- **definition**:
+- **delimit**:
+- **describe**:
+- **difference**:
+- **discovery**:
+- **each**:
+- **empty**:
+- **entry**:
+- **equal**:
+- **experimental**:
+- **factory**:
+- **failure**:
+- **fake**:
+- **filename**:
+- **flag**:
+- **flat**:
+- **gadget**:
+- **gear**:
+- **generation**:
+- **gitkeep**:
+- **globbed**:
+- **handler**:
+- **homepage**:
+- **implementation**:
+- **indent**:
+- **injectable**:
+- **instance**:
+- **inventoried**:
+- **inventory**:
+- **java**:
+- **least**:
+- **length**:
+- **load**:
+- **locate**:
+- **logger**:
+- **maximum**:
+- **meta**:
+- **metric**:
+- **miss**:
+- **mock**:
+- **ok**:
+- **optional**:
+- **original**:
+- **pair**:
+- **parameter**:
+- **percentage**:
+- **promise**:
+- **provide**:
+- **publish**:
+- **ratio**:
+- **real**:
+- **reason**:
+- **recursive**:
+- **reject**:
+- **remove**:
+- **resolution**:
+- **runner**:
+- **scoped**:
+- **score**:
+- **selection**:
+- **shorten**:
+- **slice**:
+- **some**:
+- **spy**:
+- **stack**:
+- **stdout**:
+- **stem**:
+- **strict**:
+- **stringify**:
+- **substitution**:
+- **surface**:
+- **synthetic**:
+- **terminal**:
+- **threshold**:
+- **tie**:
+- **timer**:
+- **two**:
+- **unmatched**:
+- **vi**:
+- **warn**:
+- **weight**:
+
+<!-- coinagerie:end -->
