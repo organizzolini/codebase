@@ -163,7 +163,7 @@ Dependency graph export toolchain that reads what each project depends on, rende
 **[codependix-examples](projects/ic-suite/codependix/codependix-examples)** - Twenty-one subjects built to be graphed, each carrying the guide codependix renders from it\
 **[codependix-file-imports](projects/ic-suite/codependix/codependix-file-imports)** - Builds a project's file-level import graph — a `typescript` module walking its own `ts.Program`, and a `python` module parsing `import`/`from ... import` statements [![npm](https://img.shields.io/npm/v/@codependix/file-imports?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/file-imports)\
 **[codependix-nestjs-modules](projects/ic-suite/codependix/codependix-nestjs-modules)** - Explores a NestJS project's container and builds its module graph [![npm](https://img.shields.io/npm/v/@codependix/nestjs-modules?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nestjs-modules)\
-**[codependix-nx](projects/ic-suite/codependix/codependix-nx)** - Nx plugin inferring a per-project `codependix-gate` target that checks the boundaries charged to a project, built over its Nx dependency closure [![npm](https://img.shields.io/npm/v/@codependix/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx)\
+**[codependix-nx](projects/ic-suite/codependix/codependix-nx)** - Nx plugin inferring a per-project `codependix-bound` target that checks the boundaries charged to a project, built over its Nx dependency closure [![npm](https://img.shields.io/npm/v/@codependix/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx)\
 **[codependix-nx-projects](projects/ic-suite/codependix/codependix-nx-projects)** - Builds a project's one-hop Nx dependency neighborhood from the Nx project graph [![npm](https://img.shields.io/npm/v/@codependix/nx-projects?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx-projects)\
 **[codependix-output](projects/ic-suite/codependix/codependix-output)** - Renders every graph as JSON, Markdown, and mermaid, routes each to its configured destination, and splices anchor blocks into place [![npm](https://img.shields.io/npm/v/@codependix/output?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/output)
 
@@ -994,6 +994,7 @@ graph LR
   module_installation_ReleaseArchivesModule["installation/ReleaseArchivesModule"]
   module_installation_ReporterModule["installation/ReporterModule"]
   module_installation_SetupModule["installation/SetupModule"]
+  module_installation_SharedNxCacheModule["installation/SharedNxCacheModule"]
   module_installation_ShellConfigurationModule["installation/ShellConfigurationModule"]
   module_installation_SoftwareModule["installation/SoftwareModule"]
   module_installation_SshSigningModule["installation/SshSigningModule"]
@@ -1876,6 +1877,7 @@ graph LR
   module_installation_MainModule --> module_installation_LocalServicesModule
   module_installation_MainModule --> module_installation_ReporterModule
   module_installation_MainModule --> module_installation_SetupModule
+  module_installation_MainModule --> module_installation_SharedNxCacheModule
   module_installation_MainModule --> module_installation_ShellConfigurationModule
   module_installation_MainModule --> module_installation_SoftwareModule
   module_installation_MainModule --> module_installation_UpdateReuiSkillModule
@@ -1888,6 +1890,7 @@ graph LR
   module_installation_SetupModule --> module_installation_ReporterModule
   module_installation_SetupModule --> module_installation_ShellConfigurationModule
   module_installation_SetupModule --> module_installation_SoftwareModule
+  module_installation_SharedNxCacheModule --> module_installation_ReporterModule
   module_installation_ShellConfigurationModule --> module_installation_ProcessRunnerModule
   module_installation_ShellConfigurationModule --> module_installation_ReporterModule
   module_installation_SoftwareModule --> module_installation_ProcessRunnerModule
@@ -4696,6 +4699,16 @@ graph LR
   file_installation_src_modules_setup_setup_service_ts["installation/src/modules/setup/setup.service.ts"]
   file_installation_src_modules_setup_setup_service_unit_test_ts["installation/src/modules/setup/setup.service.unit.test.ts"]
   file_installation_src_modules_setup_setup_types_ts["installation/src/modules/setup/setup.types.ts"]
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts["installation/src/modules/shared-nx-cache/shared-nx-cache-server.service.integration.test.ts"]
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_ts["installation/src/modules/shared-nx-cache/shared-nx-cache-server.service.ts"]
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts["installation/src/modules/shared-nx-cache/shared-nx-cache-server.service.unit.test.ts"]
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_ts["installation/src/modules/shared-nx-cache/shared-nx-cache-storage.service.ts"]
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts["installation/src/modules/shared-nx-cache/shared-nx-cache-storage.service.unit.test.ts"]
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_ts["installation/src/modules/shared-nx-cache/shared-nx-cache.command.ts"]
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts["installation/src/modules/shared-nx-cache/shared-nx-cache.command.unit.test.ts"]
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_constants_ts["installation/src/modules/shared-nx-cache/shared-nx-cache.constants.ts"]
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_module_ts["installation/src/modules/shared-nx-cache/shared-nx-cache.module.ts"]
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_types_ts["installation/src/modules/shared-nx-cache/shared-nx-cache.types.ts"]
   file_installation_src_modules_shell_configuration_shell_configuration_command_ts["installation/src/modules/shell-configuration/shell-configuration.command.ts"]
   file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts["installation/src/modules/shell-configuration/shell-configuration.command.unit.test.ts"]
   file_installation_src_modules_shell_configuration_shell_configuration_constants_ts["installation/src/modules/shell-configuration/shell-configuration.constants.ts"]
@@ -10971,6 +10984,7 @@ graph LR
   file_installation_src_installation_module_ts --> file_installation_src_modules_local_services_local_services_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_setup_setup_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_shell_configuration_shell_configuration_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_software_software_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_module_ts
@@ -11103,6 +11117,36 @@ graph LR
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_software_software_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_testing_fake_process_runner_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_constants_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_server_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
+  file_installation_src_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_installation_src_modules_shared_nx_cache_shared_nx_cache_command_ts
   file_installation_src_modules_shell_configuration_shell_configuration_command_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
   file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
@@ -15779,36 +15823,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-64800-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.84_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-164-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-619-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-66403-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.91_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-165-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-629-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-612-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-147-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-622-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-155-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-255-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1494-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-262-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1558-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-193-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-58-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-208-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2952-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-902-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-2846-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-1008-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3115-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2895-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-838-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3124-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5976-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-197-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-60-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-212-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-3031-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-944-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-2908-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-1067-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3221-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2971-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-865-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3207-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-6097-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -15828,31 +15872,31 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### JSON
 
-![JSON Files](https://img.shields.io/badge/JSON_Files-48-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7910-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-1246-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-456-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-2950-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2745-16a34a?style=flat-square)
-![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-42-059669?style=flat-square)
+![JSON Files](https://img.shields.io/badge/JSON_Files-49-a16207?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7931-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-1251-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-457-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-2962-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2751-16a34a?style=flat-square)
+![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-45-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-195-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1693-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4684-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1695-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4699-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3535-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3565-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-473-7c3aed?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-476-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-91-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1678-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3377-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1688-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3394-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-675-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-686-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -15867,17 +15911,17 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Shell
 
-![Shell Files](https://img.shields.io/badge/Shell_Files-20-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-1869-4eaa25?style=flat-square)
-![Shell Functions](https://img.shields.io/badge/Shell_Functions-16-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-162-0284c7?style=flat-square)
-![Shell Exports](https://img.shields.io/badge/Shell_Exports-17-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-139-7c3aed?style=flat-square)
-![Shell Loops](https://img.shields.io/badge/Shell_Loops-20-8b5cf6?style=flat-square)
+![Shell Files](https://img.shields.io/badge/Shell_Files-21-89e051?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-1947-4eaa25?style=flat-square)
+![Shell Functions](https://img.shields.io/badge/Shell_Functions-18-16a34a?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-171-0284c7?style=flat-square)
+![Shell Exports](https://img.shields.io/badge/Shell_Exports-18-ea580c?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-141-7c3aed?style=flat-square)
+![Shell Loops](https://img.shields.io/badge/Shell_Loops-21-8b5cf6?style=flat-square)
 ![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-53-059669?style=flat-square)
-![Shebangs](https://img.shields.io/badge/Shebangs-21-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-355-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-355-475569?style=flat-square)
+![Shebangs](https://img.shields.io/badge/Shebangs-22-6b7280?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-379-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-379-475569?style=flat-square)
 
 ### SQL
 
@@ -15896,14 +15940,14 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### HCL
 
 ![HCL Files](https://img.shields.io/badge/HCL_Files-9-844fba?style=flat-square)
-![HCL Lines](https://img.shields.io/badge/HCL_Lines-622-a78bfa?style=flat-square)
-![HCL Blocks](https://img.shields.io/badge/HCL_Blocks-85-7c3aed?style=flat-square)
-![HCL Resources](https://img.shields.io/badge/HCL_Resources-17-0284c7?style=flat-square)
-![HCL Variables](https://img.shields.io/badge/HCL_Variables-17-16a34a?style=flat-square)
+![HCL Lines](https://img.shields.io/badge/HCL_Lines-650-a78bfa?style=flat-square)
+![HCL Blocks](https://img.shields.io/badge/HCL_Blocks-89-7c3aed?style=flat-square)
+![HCL Resources](https://img.shields.io/badge/HCL_Resources-19-0284c7?style=flat-square)
+![HCL Variables](https://img.shields.io/badge/HCL_Variables-19-16a34a?style=flat-square)
 ![HCL Outputs](https://img.shields.io/badge/HCL_Outputs-2-059669?style=flat-square)
-![HCL Attributes](https://img.shields.io/badge/HCL_Attributes-232-0ea5e9?style=flat-square)
+![HCL Attributes](https://img.shields.io/badge/HCL_Attributes-244-0ea5e9?style=flat-square)
 ![HCL Interpolations](https://img.shields.io/badge/HCL_Interpolations-4-db2777?style=flat-square)
-![HCL Comments](https://img.shields.io/badge/HCL_Comments-61-64748b?style=flat-square)
+![HCL Comments](https://img.shields.io/badge/HCL_Comments-65-64748b?style=flat-square)
 
 ### CSS
 
@@ -15919,15 +15963,15 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-70-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-76-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-51-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-72-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-66-db2777?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-71-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-78-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-52-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-73-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-67-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-7-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-183-ca8a04?style=flat-square)
-![Integration Tests](https://img.shields.io/badge/Integration_Tests-4-7c3aed?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-186-ca8a04?style=flat-square)
+![Integration Tests](https://img.shields.io/badge/Integration_Tests-5-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-6-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
 ![HCL Comment Budget](https://img.shields.io/badge/HCL_Comment_Budget-0-ea580c?style=flat-square)
@@ -15964,23 +16008,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-144-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-28644-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-28742-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-840-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-752-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-7091-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-7096-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-967-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-5298-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-286-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2813-0ea5e9?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2833-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-917-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-565-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15331-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-567-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15454-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -15993,13 +16037,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7807 |
-| Files | 2573 |
-| Calls traced | 8507 |
-| Call stacks | 2182 |
+| Callables | 7851 |
+| Files | 2579 |
+| Calls traced | 8561 |
+| Call stacks | 2189 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
-| Unfollowable calls | 488 |
+| Unfollowable calls | 491 |
 
 ### Projects
 

@@ -45,7 +45,7 @@ Register it in `nx.json`:
 | `traceTargetName` | Name of the inferred trace target. `callidescope-trace` when omitted |
 | `depthTargetName` | Name of the inferred depth target. `callidescope-depth` when omitted |
 | `breadthTargetName` | Name of the inferred breadth target. `callidescope-breadth` when omitted |
-| `gateTargetName` | Name of the inferred gate target. `callidescope-gate` when omitted |
+| `gateTargetName` | Name of the inferred gate target. `callidescope-restrict` when omitted |
 
 All inferred targets default to `callidescope-*` names to avoid generic task
 labels in Nx lists. Rename any of them from the registration if a workspace
@@ -73,7 +73,7 @@ nx run callidescope-nx:callidescope-depth --addresses="src/a.service.ts#A.b,src/
 
 | Target | Answers |
 | ------ | ------- |
-| `callidescope-gate` | Whether anything in the project broke the limits it is held to |
+| `callidescope-restrict` | Whether anything in the project broke the limits it is held to |
 | `callidescope-trace` | Every call stack in the project, and which ones broke a limit |
 | `callidescope-depth` | Every stack above and below each callable — callers up to a root, callees down to a leaf |
 | `callidescope-breadth` | Each callable's direct callers and callees, side by side |
@@ -1143,6 +1143,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **reg**:
 - **reject**:
 - **resolution**:
+- **restrict**:
 - **second**:
 - **selection**:
 - **slice**:

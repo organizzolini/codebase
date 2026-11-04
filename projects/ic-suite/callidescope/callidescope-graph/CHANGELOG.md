@@ -1,3 +1,10 @@
+## 0.0.60 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.61
+- Updated callidescope-core to 0.0.60
+
 ## 0.0.59 (2026-11-03)
 
 ### 🔥 Performance

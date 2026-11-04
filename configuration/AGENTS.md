@@ -79,7 +79,7 @@ tool configs import it. Keep that: it is true, and `nx affected` uses it.
 - **The boundary rules know it.** The project carries the `name:configuration`
   tag. Each `allow` rule in `codependix.config.ts` lists it as a permitted
   target, and the `*-is-a-leaf` rules reach every project but it. A new rule
-  must do the same, or every project's `codependix-gate` fails.
+  must do the same, or every project's `codependix-bound` fails.
 - **Releases ignore it.** A change here would otherwise patch-bump every
   package. the `publication` project's `version-packages` command appends this folder to
   `.nxignore` for the `nx release` command and restores the file on exit. Do not

@@ -120,13 +120,13 @@ reported the same way, as a rejected command line rather than a crash.
 No mode is ever inferred, which is the rule `codometer`'s and
 `callidescope`'s flags follow too.
 
-In an Nx workspace the gate is a per-project `codependix-gate` target, and
+In an Nx workspace the gate is a per-project `codependix-bound` target, and
 publishing is the one workspace-wide `write` run. This repository's `guard-code`
 reaches the first on every pull request, and its release workflow runs the
 second on the default branch:
 
 ```bash
-nx run <project>:codependix-gate
+nx run <project>:codependix-bound
 nx run configuration:codependix:write
 ```
 
@@ -139,12 +139,12 @@ every other one.
 
 `--check boundaries --projects <name>` is a gate for one project, and needs no
 task runner. [`@codependix/nx`](../codependix-nx/README.md) infers it for an
-Nx workspace as a cached `codependix-gate` target on every project but the
-workspace root, so `nx affected -t codependix-gate` selects the projects a
+Nx workspace as a cached `codependix-bound` target on every project but the
+workspace root, so `nx affected -t codependix-bound` selects the projects a
 change touched and a failure names the project it is charged to rather than
 one workspace-wide task. The target declares no configurations, so
 `guard-code --configuration=check` falls through to its defaults, as
-`callidescope-gate` does.
+`callidescope-restrict` does.
 
 Publishing stays workspace-wide: one `--write` run produces every project's
 anchor blocks, which must reflect one commit, so `configuration:codependix` is
@@ -195,7 +195,7 @@ and [a container that cannot boot](../codependix-examples/examples/boundary-boot
 | [`@codependix/boundaries`](../codependix-boundaries/README.md) | Builds each level's graph for a workspace, judges it against the declared rules, and reports what breaks them. `--check boundaries` delegates to it wholesale |
 | [`@codependix/configuration`](../codependix-configuration/README.md) | Reads `codependix.config.ts` and resolves per-project export destinations and boundary rules |
 | [`@codependix/examples`](../codependix-examples/README.md) | Twenty-one subjects built to be graphed, each with the guide codependix renders from it |
-| [`@codependix/nx`](../codependix-nx/README.md) | Nx plugin: infers a per-project `codependix-gate` target that runs `--check boundaries` over the project and its Nx dependencies |
+| [`@codependix/nx`](../codependix-nx/README.md) | Nx plugin: infers a per-project `codependix-bound` target that runs `--check boundaries` over the project and its Nx dependencies |
 | [`@codependix/nx-projects`](../codependix-nx-projects/README.md) | Builds a project's Nx Neighborhood and the whole-workspace Workspace Graph |
 | [`@codependix/nestjs-modules`](../codependix-nestjs-modules/README.md) | Explores a NestJS project's container and builds its module graph |
 | [`@codependix/file-imports`](../codependix-file-imports/README.md) | Builds a project's file-level import graph — a `typescript` module walking its own `ts.Program`, and a `python` module parsing `import`/`from ... import` statements |
