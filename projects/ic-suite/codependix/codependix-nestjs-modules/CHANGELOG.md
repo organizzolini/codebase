@@ -1,3 +1,31 @@
+## 0.0.58 (2026-11-03)
+
+This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
+
+## 0.0.57 (2026-11-03)
+
+This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
+
+## 0.0.56 (2026-11-03)
+
+This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
+
+## 0.0.55 (2026-11-03)
+
+This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
+
+## 0.0.54 (2026-11-03)
+
+This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
+
+## 0.0.53 (2026-11-03)
+
+This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
+
+## 0.0.52 (2026-11-03)
+
+This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
+
 ## 0.0.51 (2026-10-27)
 
 This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.

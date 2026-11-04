@@ -6,8 +6,10 @@ import { vi } from "vitest";
 
 import { createSqliteDataSource } from "@codebase/persistence";
 
-import { DATABASE_ENTITIES } from "../src/modules/database/database.constants";
-import { Migration1793045891250 } from "../src/modules/database/migrations/1793045891250-migration";
+import {
+  DATABASE_ENTITIES,
+  DATABASE_MIGRATIONS,
+} from "../src/modules/database/database.constants";
 
 import type { TemporaryDatabase } from "./temporary-database.types";
 
@@ -28,7 +30,7 @@ export async function createTemporaryDatabase(): Promise<TemporaryDatabase> {
   const dataSource = createSqliteDataSource(
     {
       entities: DATABASE_ENTITIES,
-      migrations: [Migration1793045891250],
+      migrations: DATABASE_MIGRATIONS,
       project: "caelundas",
     },
     { CAELUNDAS_SQLITE_DATABASE: file },

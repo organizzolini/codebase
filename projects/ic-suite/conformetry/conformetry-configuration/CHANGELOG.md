@@ -1,3 +1,51 @@
+## 0.0.62 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.60
+
+## 0.0.61 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.59
+
+## 0.0.60 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.58
+
+## 0.0.59 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.57
+
+## 0.0.58 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.56
+
+## 0.0.57 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.55
+
+## 0.0.56 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.54
+
+## 0.0.55 (2026-11-03)
+
+### 💅 Refactors
+
+- **configuration,caelundas,lexico,meanderaw,documentation,conformetry:** ♻️ hold every web app to one file shape ([#1951](https://github.com/organizzolini/codebase/pull/1951))
+
 ## 0.0.54 (2026-10-27)
 
 ### 🧱 Updated Dependencies

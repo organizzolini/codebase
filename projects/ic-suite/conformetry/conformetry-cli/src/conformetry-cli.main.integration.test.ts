@@ -54,8 +54,8 @@ describe(MainModule, () => {
     const command = await module.resolve(InstancesCommand);
 
     expect(command).toBeDefined();
-    expect(command.parseTemplates("react-component")).toStrictEqual([
-      "react-component",
+    expect(command.parseTemplates("react-component-folder")).toStrictEqual([
+      "react-component-folder",
     ]);
   });
 

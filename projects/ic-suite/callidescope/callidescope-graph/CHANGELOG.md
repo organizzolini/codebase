@@ -1,3 +1,56 @@
+## 0.0.59 (2026-11-03)
+
+### 🔥 Performance
+
+- **callidescope:** ⚡️ cache file-system probes across a run's programs ([#2098](https://github.com/organizzolini/codebase/pull/2098))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.60
+- Updated callidescope-core to 0.0.59
+
+## 0.0.58 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.59
+- Updated callidescope-core to 0.0.58
+
+## 0.0.57 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.58
+- Updated callidescope-core to 0.0.57
+
+## 0.0.56 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.57
+- Updated callidescope-core to 0.0.56
+
+## 0.0.55 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.56
+- Updated callidescope-core to 0.0.55
+
+## 0.0.54 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.55
+- Updated callidescope-core to 0.0.54
+
+## 0.0.53 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.54
+- Updated callidescope-core to 0.0.53
+
 ## 0.0.52 (2026-10-27)
 
 ### 🧱 Updated Dependencies

@@ -6,6 +6,7 @@ import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "./caelundas-cli.constants";
 import { CaelundasModule } from "./modules/caelundas/caelundas.module";
+import { NightSkyModule } from "./modules/night-sky/night-sky.module";
 
 /**
  * Root NestJS application module.
@@ -21,6 +22,7 @@ import { CaelundasModule } from "./modules/caelundas/caelundas.module";
     DiscoveryModule,
     LoggerModule,
     CaelundasModule,
+    NightSkyModule,
   ],
 })
 export class MainModule {}
