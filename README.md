@@ -15951,15 +15951,15 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3605-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3602-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-482-7c3aed?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-481-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-91-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1705-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3429-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1700-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3419-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-700-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-702-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -16003,7 +16003,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### HCL
 
 ![HCL Files](https://img.shields.io/badge/HCL_Files-9-844fba?style=flat-square)
-![HCL Lines](https://img.shields.io/badge/HCL_Lines-654-a78bfa?style=flat-square)
+![HCL Lines](https://img.shields.io/badge/HCL_Lines-653-a78bfa?style=flat-square)
 ![HCL Blocks](https://img.shields.io/badge/HCL_Blocks-89-7c3aed?style=flat-square)
 ![HCL Resources](https://img.shields.io/badge/HCL_Resources-19-0284c7?style=flat-square)
 ![HCL Variables](https://img.shields.io/badge/HCL_Variables-19-16a34a?style=flat-square)
@@ -16100,9 +16100,9 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7854 |
+| Callables | 7857 |
 | Files | 2627 |
-| Calls traced | 8563 |
+| Calls traced | 8566 |
 | Call stacks | 2190 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |

@@ -57,7 +57,7 @@ describe(ConfigurationService, () => {
     expect(configuration).toStrictEqual({
       configurationPath: undefined,
       directory,
-      exclude: { paths: [], words: [] },
+      exclude: { paths: [], patterns: [], words: [] },
       fold: undefined,
       include: [...DEFAULT_INCLUDE],
       outputs: [],
@@ -98,7 +98,7 @@ describe(ConfigurationService, () => {
     expect(configuration).toStrictEqual({
       configurationPath,
       directory: path.join(directory, "nested"),
-      exclude: { paths: ["**/*.test.ts"], words: [] },
+      exclude: { paths: ["**/*.test.ts"], patterns: [], words: [] },
       fold: undefined,
       include: [...DEFAULT_INCLUDE],
       outputs: [
@@ -142,6 +142,79 @@ describe(ConfigurationService, () => {
       expect(exclude.words).toStrictEqual(["service"]);
     },
   );
+
+  it("resolves a regular expression in exclude.words into a pattern beside the words", async () => {
+    writeConfiguration(
+      "coinagerie.config.ts",
+      'export default { exclude: { words: ["service", /^(task|test)\\d{3}$/] } };\n',
+    );
+
+    const { exclude } = await service.loadConfiguration({
+      workingDirectory: directory,
+    });
+
+    expect(exclude).toStrictEqual({
+      paths: [],
+      patterns: [/^(task|test)\d{3}$/],
+      words: ["service"],
+    });
+  });
+
+  it.each([
+    ["a synchronous function", String.raw`() => [/^md\d{3}$/, 'service']`],
+    [
+      "an asynchronous function",
+      String.raw`async () => [/^md\d{3}$/, 'service']`,
+    ],
+  ])(
+    "resolves exclude.words written as %s holding a pattern into its words and patterns",
+    async (_case, source) => {
+      writeConfiguration(
+        "coinagerie.config.ts",
+        `export default { exclude: { words: ${source} } };\n`,
+      );
+
+      const { exclude } = await service.loadConfiguration({
+        workingDirectory: directory,
+      });
+
+      expect(exclude).toStrictEqual({
+        paths: [],
+        patterns: [/^md\d{3}$/],
+        words: ["service"],
+      });
+    },
+  );
+
+  it("drops the global and sticky flags from a pattern, which make a test stateful", async () => {
+    writeConfiguration(
+      "coinagerie.config.ts",
+      "export default { exclude: { words: [/^md\\d{3}$/giy] } };\n",
+    );
+
+    const { exclude } = await service.loadConfiguration({
+      workingDirectory: directory,
+    });
+
+    expect(exclude.patterns.map((pattern) => pattern.flags)).toStrictEqual([
+      "i",
+    ]);
+    expect(exclude.patterns[0]?.test("md001")).toBe(true);
+    expect(exclude.patterns[0]?.test("md001")).toBe(true);
+  });
+
+  it("keeps a pattern's case-insensitive flag", async () => {
+    writeConfiguration(
+      "coinagerie.config.ts",
+      "export default { exclude: { words: [/^MD\\d{3}$/i] } };\n",
+    );
+
+    const { exclude } = await service.loadConfiguration({
+      workingDirectory: directory,
+    });
+
+    expect(exclude.patterns[0]?.flags).toBe("i");
+  });
 
   it("keeps a fold function callable", async () => {
     writeConfiguration(
@@ -187,6 +260,11 @@ describe(ConfigurationService, () => {
       "an exclude.words function that returns a list holding a number",
       "exclude: { words: () => [1] }",
       "list of strings",
+    ],
+    [
+      "an exclude.words function that returns a list holding a pattern and a number",
+      String.raw`exclude: { words: () => [/^md\d{3}$/, 1] }`,
+      "list of strings or RegExp objects",
     ],
   ])("refuses %s, naming the file", async (_case, field, reason) => {
     const configurationPath = writeConfiguration(
@@ -303,6 +381,10 @@ describe(ConfigurationService, () => {
       "exclude.words holding a non-string",
       "export default { exclude: { words: [1] } };\n",
     ],
+    [
+      "exclude.words holding a pattern beside a non-string and a non-pattern",
+      "export default { exclude: { words: [/^md\\d{3}$/, true, {}] } };\n",
+    ],
     ["a fold that is not a function", 'export default { fold: "aspect" };\n'],
     [
       "an output of an unknown type",
@@ -343,6 +425,19 @@ describe(ConfigurationService, () => {
     await expect(loading).rejects.toThrow(configurationPath);
   });
 
+  it("names exclude.words in the refusal of an entry that is neither a word nor a pattern", async () => {
+    const configurationPath = writeConfiguration(
+      "coinagerie.config.ts",
+      "export default { exclude: { words: [/^md\\d{3}$/, true] } };\n",
+    );
+
+    const loading = service.loadConfiguration({ workingDirectory: directory });
+
+    await expect(loading).rejects.toThrow(InvalidConfigurationError);
+    await expect(loading).rejects.toThrow(configurationPath);
+    await expect(loading).rejects.toThrow("exclude.words");
+  });
+
   describe("flag overrides", () => {
     const FILE = [
       "export default {",
@@ -374,6 +469,7 @@ describe(ConfigurationService, () => {
 
       expect(configuration.exclude).toStrictEqual({
         paths: ["flagExclude"],
+        patterns: [],
         words: ["fileWord"],
       });
       expect(configuration.fold?.("word")).toBe("WORD");
@@ -449,6 +545,7 @@ describe(ConfigurationService, () => {
       expect(configuration.include).toStrictEqual([...DEFAULT_INCLUDE]);
       expect(configuration.exclude).toStrictEqual({
         paths: ["dist"],
+        patterns: [],
         words: [],
       });
       expect(configuration.outputs).toStrictEqual([

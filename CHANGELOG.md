@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.53.0](https://github.com/organizzolini/codebase/compare/v3.52.3...v3.53.0) (2026-11-04)
+
+### ✨ Features
+
+* **coinagerie:** ✨ accept regular expressions in exclude.words ([#2109](https://github.com/organizzolini/codebase/issues/2109)) ([d79fb01](https://github.com/organizzolini/codebase/commit/d79fb0190272300bb7bbde7c7821de0e77770c3f))
+
+## [3.52.3](https://github.com/organizzolini/codebase/compare/v3.52.2...v3.52.3) (2026-11-04)
+
+## [3.52.2](https://github.com/organizzolini/codebase/compare/v3.52.1...v3.52.2) (2026-11-04)
+
 ## [3.52.1](https://github.com/organizzolini/codebase/compare/v3.52.0...v3.52.1) (2026-11-04)
 
 ## [3.52.0](https://github.com/organizzolini/codebase/compare/v3.51.3...v3.52.0) (2026-11-04)

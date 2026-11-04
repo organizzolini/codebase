@@ -168,7 +168,6 @@ locals {
     "🔭 Callidescope Restrict",
     "🕸️ Codependix Bound",
     "👔 Conformetry Validate",
-    "🪙 Coinagerie Check",
     "👷 Build",
     "🧑‍⚕️ Lint",
     "🧟 Deprecate",
