@@ -385,7 +385,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **md050**:
 - **meanderaw**:
 - **meaningless**:
-- **measurement**:
 - **member**:
 - **mermaid**:
 - **meta**:
