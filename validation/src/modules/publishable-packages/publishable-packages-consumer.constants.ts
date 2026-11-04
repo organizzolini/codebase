@@ -83,12 +83,12 @@ export const PLUGIN_TARGET_EXPECTATIONS: readonly PluginTargetExpectation[] = [
   {
     failure: "Call stacks over the depth limit (1)",
     plugin: "@callidescope/nx",
-    target: "callidescope-gate",
+    target: "callidescope-restrict",
   },
   {
     failure: "broken-does-not-reach-healthy",
     plugin: "@codependix/nx",
-    target: "codependix-gate",
+    target: "codependix-bound",
   },
   {
     failure: 'Missing markdown heading: "Usage"',

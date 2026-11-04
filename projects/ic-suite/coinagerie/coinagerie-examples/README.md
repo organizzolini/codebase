@@ -83,3 +83,70 @@ nx run coinagerie-examples:vitest
 ## License
 
 MIT — see [LICENSE](../../../../LICENSE).
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run coinagerie-examples:coinagerie-check:write`.
+
+- **absolute**:
+- **after**:
+- **bad**:
+- **bill**:
+- **bug**:
+- **clear**:
+- **color**:
+- **compiler**:
+- **console**:
+- **define**:
+- **describe**:
+- **destination**:
+- **disk**:
+- **each**:
+- **empty**:
+- **encode**:
+- **entry**:
+- **equal**:
+- **example**:
+- **failure**:
+- **flat**:
+- **force**:
+- **gap**:
+- **glossary**:
+- **guide**:
+- **homepage**:
+- **implicit**:
+- **kilometer**:
+- **least**:
+- **leftover**:
+- **length**:
+- **meta**:
+- **miss**:
+- **mkdtemp**:
+- **mock**:
+- **move**:
+- **orbit**:
+- **perigee**:
+- **plan**:
+- **planner**:
+- **readdir**:
+- **recursive**:
+- **relative**:
+- **remove**:
+- **replace**:
+- **resolution**:
+- **scratch**:
+- **second**:
+- **sentence**:
+- **some**:
+- **sort**:
+- **spawn**:
+- **stale**:
+- **stdout**:
+- **strict**:
+- **trim**:
+- **unparsable**:
+- **vi**:
+
+<!-- coinagerie:end -->

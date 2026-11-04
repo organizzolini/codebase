@@ -286,6 +286,11 @@ patterns:
   # the `charAt` method of JavaScript's `String` onto the word the code spells out.
   - name: external-identifier
     pattern: /\bmdast-util-[\w-]+|\bRefinementCtx\b|\btmp_path\b|\btoken_hex\b|--bool\b|(?<=")NUM(?=")|\bCascaderNav\b|\bcascader-nav\b|\["char", "character"\]/g
+  # A project's glossary block in its README. It lists the words the project's code
+  # spells, banned abbreviations and invented names included, and a glossary
+  # that left those out would not be a glossary of the code.
+  - name: coinagerie-glossary-block
+    pattern: /<!-- coinagerie:start -->[\s\S]*?<!-- coinagerie:end -->/g
   # HTML element names quoted as a React type argument (`ComponentProps<"nav">`,
   # `ComponentPropsWithoutRef<"img">`). The tag names come from HTML, so `nav` is the
   # element rather than an abbreviation anyone here chose.
@@ -322,6 +327,7 @@ ignoreRegExpList:
   - hexadecimal-color
   - lint-rule-name
   - external-identifier
+  - coinagerie-glossary-block
   - react-intrinsic-element
   - vendored-component-path
   - ipa-transcription

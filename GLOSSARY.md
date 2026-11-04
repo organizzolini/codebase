@@ -61,6 +61,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **base**:
 - **bash**:
 - **bashrc**:
+- **bearer**:
 - **because**:
 - **before**:
 - **better**:
@@ -398,6 +399,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **next**:
 - **no**:
 - **node**:
+- **nohup**:
 - **note**:
 - **notepad**:
 - **npm**:
@@ -441,6 +443,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **patch**:
 - **path**:
 - **pattern**:
+- **peer**:
 - **perf**:
 - **perfectionist**:
 - **permission**:
@@ -473,6 +476,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **pretty**:
 - **print**:
 - **privilege**:
+- **probe**:
 - **problem**:
 - **process**:
 - **producer**:
@@ -546,6 +550,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **security**:
 - **sed**:
 - **see**:
+- **seed**:
 - **semantic**:
 - **semver**:
 - **serve**:
@@ -682,6 +687,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **util**:
 - **utility**:
 - **uv**:
+- **v1**:
 - **v8**:
 - **validate**:
 - **validation**:

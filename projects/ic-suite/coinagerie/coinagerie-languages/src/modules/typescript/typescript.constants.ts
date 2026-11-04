@@ -53,4 +53,10 @@ export const TYPESCRIPT_KEYWORDS: string[] = Array.from(
   (_unused, offset) => ts.tokenToString(ts.SyntaxKind.FirstKeyword + offset),
 )
   .filter((keyword): keyword is string => keyword !== undefined)
-  .toSorted();
+  .reduce<string[]>((sorted, keyword) => {
+    // Inserted in order rather than sorted afterwards: `toSorted` needs a
+    // library newer than every project that typechecks this file reads.
+    const index = sorted.findIndex((existing) => existing > keyword);
+    sorted.splice(index === -1 ? sorted.length : index, 0, keyword);
+    return sorted;
+  }, []);

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.51.2](https://github.com/organizzolini/codebase/compare/v3.51.1...v3.51.2) (2026-11-04)
+
+### ♻️ Code Refactoring
+
+* **callidescope,codependix,configuration,validation:** ♻️ rename gate targets to restrict and bound ([#2100](https://github.com/organizzolini/codebase/issues/2100)) ([2b8017a](https://github.com/organizzolini/codebase/commit/2b8017a499455b21200eb4c08c1eaca5f4b9cf97))
+
+## [3.51.1](https://github.com/organizzolini/codebase/compare/v3.51.0...v3.51.1) (2026-11-03)
+
+### ⚡ Performance Improvements
+
+* **configuration,infrastructure,installation:** ⚡️ trim pre-commit checks and use Nx Cloud with scoped tokens ([#2097](https://github.com/organizzolini/codebase/issues/2097)) ([b43f34a](https://github.com/organizzolini/codebase/commit/b43f34aaca681dffb4adef26e2a3abc83dd9d8ab))
+
 ## [3.51.0](https://github.com/organizzolini/codebase/compare/v3.50.0...v3.51.0) (2026-11-03)
 
 ### ✨ Features
