@@ -1366,6 +1366,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **configure**:
 - **confirm**:
 - **conflict**:
+- **connect**:
 - **consider**:
 - **console**:
 - **context2**:
