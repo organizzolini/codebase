@@ -1,3 +1,16 @@
+## 0.0.63 (2026-11-04)
+
+### 💅 Refactors
+
+- **callidescope,codependix,configuration,validation:** ♻️ rename gate targets to restrict and bound ([#2100](https://github.com/organizzolini/codebase/pull/2100))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.62
+- Updated codependix-boundaries to 0.0.62
+- Updated codependix-output to 0.0.62
+- Updated codependix-core to 0.0.60
+
 ## 0.0.62 (2026-11-03)
 
 ### 🧱 Updated Dependencies
