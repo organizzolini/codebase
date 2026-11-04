@@ -1,3 +1,17 @@
+# @coinagerie/cli
+
+[![npm](https://img.shields.io/npm/v/@coinagerie/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/cli)
+
+**Keep a glossary of the words your codebase uses.**
+
+```bash
+npm install --save-dev @coinagerie/cli
+```
+
+```bash
+npx @coinagerie/cli
+```
+
 ## Usage
 
 `coinagerie` lists the words a codebase uses — every identifier, object key,
@@ -124,6 +138,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **promise**:
 - **prototype**:
 - **provide**:
+- **publish**:
 - **readdir**:
 - **real**:
 - **reason**:

@@ -1,3 +1,13 @@
+# @coinagerie/nx
+
+[![npm](https://img.shields.io/npm/v/@coinagerie/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/nx)
+
+An Nx plugin that infers a coinagerie check target for every project that holds a `coinagerie.config.ts`.
+
+```bash
+npm install --save-dev @coinagerie/nx @coinagerie/cli
+```
+
 ## Usage
 
 An Nx plugin that gives every project holding a coinagerie configuration its
@@ -107,6 +117,7 @@ The words this package uses that the root glossary does not define, regenerated 
 - **nullable**:
 - **posix**:
 - **promise**:
+- **publish**:
 - **real**:
 - **recursive**:
 - **relative**:
