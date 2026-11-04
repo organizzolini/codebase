@@ -6,6 +6,7 @@ configuration/conformetry-templates/**/vite.config.*
 configuration/conformetry-templates/**/vitest.config.*
 configuration/conformetry-templates/**/eslint.config.*
 configuration/conformetry-templates/**/codometer.config.*
+configuration/conformetry-templates/**/coinagerie.config.*
 configuration/conformetry-templates/**/callidescope.config.*
 .claude/worktrees
 

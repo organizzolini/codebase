@@ -334,8 +334,8 @@ Four toolchains are developed in this repository and gate its own code. You are 
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
 | `conformetry`  | Scaffolds projects, modules, and components from templates, then measures the generated instances back against those templates | `conformetry-validate`, inside `guard-code` in the 💂 Guard check                              |
 | `codometer`    | Measures a directory — languages, declared conventions, compressed size — against the limits its configuration declares        | that project's `codometer` target, inside Make Projects                                        |
-| `codependix`   | Exports Nx, NestJS module, and file-level import graphs, and judges them against declared boundary rules                       | the inferred per-project `codependix-gate` target, inside `guard-code` in the 💂 Guard check   |
-| `callidescope` | Traces call stacks through injected dependencies and flags stacks that are too deep or callables that reach too widely         | the inferred per-project `callidescope-gate` target, inside `guard-code` in the 💂 Guard check |
+| `codependix`   | Exports Nx, NestJS module, and file-level import graphs, and judges them against declared boundary rules                       | the inferred per-project `codependix-bound` target, inside `guard-code` in the 💂 Guard check   |
+| `callidescope` | Traces call stacks through injected dependencies and flags stacks that are too deep or callables that reach too widely         | the inferred per-project `callidescope-restrict` target, inside `guard-code` in the 💂 Guard check |
 
 Each is documented in its command-line package — [conformetry-cli](../projects/ic-suite/conformetry/conformetry-cli/README.md), [codometer-cli](../projects/ic-suite/codometer/codometer-cli/README.md), [codependix-cli](../projects/ic-suite/codependix/codependix-cli/README.md), [callidescope-cli](../projects/ic-suite/callidescope/callidescope-cli/README.md) — and each has agent skills for the same three moments, which read just as well for a human: running it, configuring it, and acting on what it said (codependix adds a fourth, for reading a graph the repository already committed). They are the `conformetry-*`, `codometer-*`, `codependix-*`, and `callidescope-*` entries under [.agents/skills](../.agents/skills).
 
@@ -351,13 +351,15 @@ Three Husky hooks enforce quality gates locally, from [configuration/.husky/](..
 
 | Hook         | Trigger      | What it runs                                                                                                       | Config                                                                   |
 | ------------ | ------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format, lint, typecheck, spelling, and more on staged files | [lint-staged.config.ts](../configuration/lint-staged.config.ts) |
+| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format (`oxfmt`), lint (`oxlint`), and `typecheck` on the affected projects | [lint-staged.config.ts](../configuration/lint-staged.config.ts) |
 | `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                          | [commitlint.config.ts](../configuration/commitlint.config.ts)   |
 | `pre-push`   | `git push`   | **validate-branch-name**, then a commit signature check over the pushed commits                                    | [validate-branch-name.config.cjs](../validate-branch-name.config.cjs)    |
 
 If a hook fails, the git operation is blocked until you fix the error. `pre-commit` writes its full output to `last-lint-staged-output.log`, which is where to look when the terminal output is truncated.
 
-A commit that touches the `infrastructure` project also runs its `helm-lint` and `compose-config` targets through `lint-code`, so `helm` and `docker compose` must be on your `PATH` (both dev containers install them). `compose-config` creates the gitignored root `.env` from `.env.default` when it is missing and never overwrites an existing one.
+Everything else the full gate checks (`eslint`, `knip`, `fallow`, `dependency-cruiser`, `type-coverage`, spelling, markdown, `helm-lint`, `compose-config`, `callidescope-gate`, `codependix-gate`, `conformetry-validate`) runs only in the CI workflows and in the `validate-code` skill, so a commit stays fast. Run `pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --base=main` before you push to see it early. The release commit made in CI runs the same fast set. `helm` and `docker compose` must be on your `PATH` for that run (both dev containers install them); `compose-config` creates the gitignored root `.env` from `.env.default` when it is missing and never overwrites an existing one.
+
+Each worktree has its own Nx cache, so a new one starts cold. The `pre-commit` hook and the `seed-session-nx-cache` session hook point Nx at a shared cache server on `127.0.0.1` (the `installation` project's `shared-nx-cache` command), which holds every task output any worktree on the machine has computed. To use it in your own terminal, run `eval "$(scripts/git/seed-session-nx-cache.sh env)"`. Once `nx.json` names an `nxCloudId`, Nx Cloud is the remote cache instead and the shim does nothing; run `nx login` once to use it locally. In CI, `NX_CLOUD_ACCESS_TOKEN` is the read-write token for `main` and the merge queue and the read-only token for pull requests, both declared in `infrastructure/terraform/github`.
 
 Both signing checks are run by Husky already — do not invoke `scripts/git/` signing scripts by hand in a normal commit or push.
 
@@ -445,7 +447,7 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 | `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
 | `conformetry` | Code generator templates and validation tests for generated instances |
 | `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
-| `interface` | Shared GraphQL package: Relay connection helpers, entity-to-object types, client code generation, and test helpers |
+| `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
@@ -462,6 +464,7 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 | `callidescope` | Call stack tracing and linting CLI, the configuration package it reads, and the packages that build and render its call graph |
 | `codependix` | Dependency graph export CLI, the configuration package it reads, and the package that judges the graphs against declared rules |
 | `codometer` | Code statistics measurement CLI, the configuration package it reads, and the packages that diff and render its pull request change report |
+| `coinagerie` | Codebase vocabulary CLI that lists the words a codebase uses and keeps a glossary of them in step with the code |
 | `no-release` | Escape hatch: suppress semantic-release for any commit type |
 | `publication` | Publication CLI: the CI release steps and the publishable-packages gate |
 | `release` | Version bumps and release commits generated by semantic-release |

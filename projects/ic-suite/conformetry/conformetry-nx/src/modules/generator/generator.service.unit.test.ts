@@ -24,8 +24,8 @@ async function createConfigurationPath(): Promise<string> {
       // without a description, which is optional.
       {
         inputs: { name: { type: "string" } },
-        name: "react-component",
-        templatePath: "templates/react-component",
+        name: "react-component-folder",
+        templatePath: "templates/react-component-folder",
       },
       {
         description: "Generate a NestJS service module",
@@ -93,9 +93,9 @@ describe(GeneratorService, () => {
       expect(files.map((file) => file.filePath)).toStrictEqual([
         "tools/generators/generators.json",
         "tools/generators/src/generators/nestjs-service-module.ts",
-        "tools/generators/src/generators/react-component.ts",
+        "tools/generators/src/generators/react-component-folder.ts",
         "tools/generators/src/schemas/nestjs-service-module.json",
-        "tools/generators/src/schemas/react-component.json",
+        "tools/generators/src/schemas/react-component-folder.json",
         "tools/generators/package.json",
       ]);
     });

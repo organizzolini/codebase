@@ -4,28 +4,28 @@ const config: KnipConfig = {
   $schema: "https://unpkg.com/knip@5/schema.json",
 
   // Globally ignored file patterns (tests, build output, caches)
-  // Every project carries a codometer.config.ts that the codometer command line
-  // reads by walking upward from the directory it measures. Nothing imports it,
-  // the way nothing imports eslint.config.ts — but knip has a plugin that knows
-  // about eslint and none that knows about codometer, so it is named here. A
-  // project's callidescope.config.ts is found the same way — resolved by name
-  // beside every project a trace reaches, never imported — so it is named here
-  // for the same reason. A project's own codependix.config.ts is optional and
-  // resolved the same way — beside every project a run maps, never imported —
-  // so it is named here too.
+  // Each toolchain configuration named here is read by file name, never
+  // imported, the way nothing imports eslint.config.ts — but knip has a plugin
+  // for eslint and none for these. codometer walks upward from the directory it
+  // measures; callidescope resolves one beside every project a trace reaches;
+  // codependix, optionally, beside every project a run maps; and coinagerie
+  // from the folder a run starts in, where only the shared configuration a
+  // project spreads imports anything.
   ignore: [
     "**/*.test.ts",
     "**/callidescope.config.ts",
     "**/codependix.config.ts",
     "**/codometer.config.ts",
+    "**/coinagerie.config.ts",
     "notepads/**",
   ],
 
-  // Blank constants/types files are conformance placeholders; keep them out of unused-file checks only.
+  // Blank constants/types/utilities files are conformance placeholders; keep them out of unused-file checks only.
   // testing/mocks.ts files are conformance placeholders for project-level test utilities (used by future tests).
   ignoreFiles: [
     "**/src/**/*.constants.ts",
     "**/src/**/*.types.ts",
+    "**/src/**/*.utilities.ts",
     "**/src/graphql/generated/**",
     "**/testing/mocks.ts",
   ],
@@ -137,6 +137,7 @@ const config: KnipConfig = {
         "configuration/conformetry-templates/**", // Generator templates are placeholder files, not executable workspace code
         "projects/ic-suite/codometer/codometer-examples/examples/compiled/**", // Stand-in build output, committed so a target example has something to measure
         "projects/ic-suite/codometer/codometer-examples/examples/corpus/**", // Sample corpus written to be counted; uncalled and unimported by construction
+        "projects/ic-suite/coinagerie/coinagerie-examples/examples/**", // Fixture projects written to be read for their words; uncalled and unimported by construction
         // Skill scripts are invoked by the skill framework, not imported in code
         "**/.agents/skills/**",
         "**/.claude/skills/**",
@@ -211,6 +212,15 @@ const config: KnipConfig = {
         "@swc-node/register", // Named as a string on the command line testing/codometer.ts spawns, never imported
       ],
       project: ["codometer.config.ts", "examples/**/*.ts", "testing/**/*.ts"],
+    },
+
+    // coinagerie-examples: Fixture projects and the harness that runs the
+    // coinagerie command line over them. The fixtures are read for their
+    // words, never imported, so knip is told where the entry points really are.
+    "projects/ic-suite/coinagerie/coinagerie-examples": {
+      entry: ["codometer.config.ts", "testing/**/*.ts"],
+      ignore: ["examples/**"],
+      project: ["testing/**/*.ts"],
     },
 
     // components: Shared React component library (shadcn/ui)
@@ -410,6 +420,12 @@ const config: KnipConfig = {
     "projects/ic-suite/codometer/codometer-configuration": {
       entry: ["src/index.ts"],
       ignore: ["src/**/*.test.ts", "testing/**"],
+      project: "src/**/*.ts",
+    },
+
+    // coinagerie packages: the vocabulary CLI, booted by its main and its repl
+    "projects/ic-suite/coinagerie/coinagerie-cli": {
+      entry: ["src/coinagerie-cli.main.ts", "src/coinagerie-cli.repl.ts"],
       project: "src/**/*.ts",
     },
 

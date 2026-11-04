@@ -48,8 +48,8 @@ const COMMAND_MODULE: InventoriedTemplate = {
 const BARE_MODULE: InventoriedTemplate = {
   description: "",
   instances: [],
-  name: "react-component",
-  templatePath: "configuration/templates/react-component",
+  name: "react-component-folder",
+  templatePath: "configuration/templates/react-component-folder",
 };
 
 describe(InventoryService, () => {
@@ -93,8 +93,8 @@ describe(InventoryService, () => {
       });
 
       expect(lines).toStrictEqual([
-        "  react-component",
-        "    Template: configuration/templates/react-component",
+        "  react-component-folder",
+        "    Template: configuration/templates/react-component-folder",
       ]);
     });
 
