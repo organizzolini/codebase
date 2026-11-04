@@ -3,12 +3,13 @@ import {
   DEFAULT_EXCLUDE_GLOBS,
 } from "@codometer/configuration";
 import { DiscoveryService } from "@codometer/measurement";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationListingService } from "./configuration-listing.service";
 
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type {
   LoadedConfiguration,
   ResolvedCodometerConfiguration,
@@ -54,27 +55,23 @@ function buildDiscovery(files: string[]): DiscoveryResult {
   };
 }
 
+/** What the ConfigurationListingService is built with. */
+const DEPENDENCIES = {
+  mocks: [CodometerConfigurationService, DiscoveryService],
+} satisfies TestingModuleOptions;
+
 describe(ConfigurationListingService, () => {
   let service: ConfigurationListingService;
   let codometerConfigurationService: CodometerConfigurationService;
   let discoveryService: DiscoveryService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConfigurationListingService,
-        {
-          provide: CodometerConfigurationService,
-          useValue: createMock<CodometerConfigurationService>(),
-        },
-        {
-          provide: DiscoveryService,
-          useValue: createMock<DiscoveryService>(),
-        },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      ConfigurationListingService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(ConfigurationListingService);
+    service = instance;
     codometerConfigurationService = module.get(CodometerConfigurationService);
     discoveryService = module.get(DiscoveryService);
   });
@@ -84,8 +81,13 @@ describe(ConfigurationListingService, () => {
     vi.mocked(discoveryService.discoverFiles).mockReset();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      ConfigurationListingService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(ConfigurationListingService);
   });
 
   describe("findConfigurationFiles", () => {
