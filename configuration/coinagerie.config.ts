@@ -108,6 +108,50 @@ export function foldRepositoryWord(word: string): string {
   return FOLDED_WORDS.get(word) ?? word;
 }
 
+// 🗣️ Common words
+
+/**
+ * Plain English and runtime vocabulary that no project defines differently
+ * from anywhere else: function words, verbs every program uses, and the names
+ * of the standard library, the test framework, and package manifest fields.
+ *
+ * Chosen by how many project glossaries listed the word unprompted, so a word
+ * a project means something particular by belongs in that project's glossary
+ * and stays out of this list. Written as one string per line of prose rather
+ * than one array entry per word to stay under the file size limit.
+ */
+export const commonWordExclusions: string[] = `
+  absolute actual address after afterward again allow alpha although
+  analysis answer anything append array ask assertion assign at attach
+  attempt basename because before better bind block bootstrap buffer bug
+  builder byte call callback can capture cell character child chunk clear
+  close collection color comment compare compile compiler complete compute
+  configure connection console constant contain controller count css
+  custom debug declaration decorator deep define definition describe
+  difference directly disable discover display each edge empty enable
+  encode entity entry equal every exactly example execute exp experimental
+  expression extname extra factory failure fake field filename find finish
+  finite first fixture flag flat force form gitkeep greater handler hide
+  hoist homepage href identifier implementation implicit indent
+  indentation injectable inline inside instance int invalid isolate it
+  item java judge keep kind last lead least length less level link literal
+  load loader locale locate location logger long lower make manifest math
+  maximum md member meta method metric millisecond min miss mkdtemp mock
+  next no non normalize now nullable ok omit once one open optional
+  original other outside own pair parameter part partial pending per pick
+  plain plan point pop position positive present preview previous promise
+  protocol prototype provide publish quote reach readdir real reason
+  recursive reduce reg regex reject relative remove rename repeat replace
+  resolution rest round runner safe score search second section see
+  segment sep separator sequence show signal skip slice so some sort spawn
+  special split spy stack stat statement stdout stop strict stringify stub
+  substitution success summary surface synthetic task temporary text than
+  that the them timer tmpdir touch trim two unstub up valid variable vi
+  visit walk warn what wide without work wrap
+`
+  .split(/\s+/u)
+  .filter(Boolean);
+
 // 🧩 Configuration
 
 /**
@@ -123,7 +167,11 @@ export function foldRepositoryWord(word: string): string {
  */
 export const coinagerieConfiguration = {
   exclude: {
-    words: (): string[] => [...keywordExclusions, ...readRootGlossaryWords()],
+    words: (): string[] => [
+      ...keywordExclusions,
+      ...commonWordExclusions,
+      ...readRootGlossaryWords(),
+    ],
   },
   fold: foldRepositoryWord,
 } satisfies CoinagerieConfiguration;
