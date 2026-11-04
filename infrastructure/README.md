@@ -105,3 +105,110 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 The `terraform/github` root imports the repository's settings (merge methods, features, secret scanning, Dependabot security updates) and its `main` ruleset, and sets the `OPENWIKI_MODEL_ID` Actions variable to the OpenRouter preset (`@preset/refresh-documentation`) by reading the openrouter root's state. It needs `TF_VAR_state_bucket` and `TF_VAR_github_token`; CI reads the `GH_TOKEN` repository secret, which needs Administration and Variables write on this repository, because `GITHUB_TOKEN` cannot be granted either. Because the provider cannot express the ruleset's `code_quality` rule or its unattributed-changes approval, `terraform_data.main_ruleset_unsupported_rules` patches both back through the GitHub REST API whenever the ruleset updates. Terraform cannot read the value of the imported "Default key", so `OPENROUTER_API_KEY` stays a hand-set secret.
 
 The `terraform/linode` root imports the state bucket (`organizzolini`, region `us-iad-2`) and its access key and refuses to destroy it. It needs `TF_VAR_linode_token`; CI reads the `LINODE_TOKEN` repository secret, a Linode API token with Object Storage read and write.
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run infrastructure:coinagerie-check:write`.
+
+- **account**:
+- **acl**:
+- **actor**:
+- **affinity**:
+- **after**:
+- **alert**:
+- **analysis**:
+- **annotation**:
+- **approval**:
+- **approve**:
+- **archive**:
+- **assignment**:
+- **autoscaler**:
+- **backend**:
+- **backoff**:
+- **bypass**:
+- **chart**:
+- **claim**:
+- **cluster**:
+- **completion**:
+- **condition**:
+- **count**:
+- **destroy**:
+- **dismiss**:
+- **dockerignore**:
+- **down**:
+- **driver**:
+- **dynamic**:
+- **each**:
+- **enforcement**:
+- **entry**:
+- **fullname**:
+- **guardrail**:
+- **healthcheck**:
+- **history**:
+- **jsonencode**:
+- **k8**:
+- **kind**:
+- **kubernete**:
+- **last**:
+- **length**:
+- **lifecycle**:
+- **linear**:
+- **lke**:
+- **method**:
+- **min**:
+- **modelfile**:
+- **mount**:
+- **non**:
+- **one**:
+- **parallelism**:
+- **period**:
+- **persistence**:
+- **persistent**:
+- **plaintext**:
+- **plan**:
+- **pod**:
+- **policy**:
+- **pool**:
+- **preset**:
+- **prevent**:
+- **protection**:
+- **provisioner**:
+- **pvc**:
+- **queue**:
+- **rebase**:
+- **recreate**:
+- **region**:
+- **replace**:
+- **replica**:
+- **resolution**:
+- **restart**:
+- **review**:
+- **ruleset**:
+- **scan**:
+- **second**:
+- **selector**:
+- **sensitive**:
+- **signoff**:
+- **slug**:
+- **spec**:
+- **squash**:
+- **stale**:
+- **strict**:
+- **thread**:
+- **threshold**:
+- **toleration**:
+- **topic**:
+- **ttl**:
+- **unsupported**:
+- **up**:
+- **usd**:
+- **variable**:
+- **visibility**:
+- **vulnerability**:
+- **websocket**:
+- **webui**:
+- **wiki**:
+
+<!-- coinagerie:end -->

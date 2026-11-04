@@ -36,6 +36,9 @@
         "setup": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts setup"
         },
+        "shared-nx-cache": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts shared-nx-cache"
+        },
         "shell-configuration": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts shell-configuration"
         },
@@ -46,7 +49,7 @@
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts update-reui-skill"
         }
       },
-      "description": "Run one setup command by name: setup, shell-configuration, software, environment-files, dependencies, or update-reui-skill.",
+      "description": "Run one setup command by name: setup, shell-configuration, software, environment-files, dependencies, update-reui-skill, or shared-nx-cache.",
       "executor": "nx:run-commands",
       "options": {
         "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts",

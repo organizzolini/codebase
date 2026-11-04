@@ -16,7 +16,11 @@ Atciq
 Aticq
 atpress
 attemp
+Australe
+Austrina
+Austrinus
 azalt
+Berenices
 binovile
 biquintile
 biseptile
@@ -24,6 +28,7 @@ caelendars
 caelundae
 caelundas
 caelunday
+Capricornus
 coeli
 CSPICE
 Cyice
@@ -39,9 +44,12 @@ epimethean
 epimethian
 ERFA
 Espenak
+Frohn
 geopos
 hexadecan
 hexadecans
+Hipparcos
+hygdata
 illum
 imbolc
 imum
@@ -66,6 +74,7 @@ ostara
 periapsis
 perifocus
 pheno
+Piscis
 prograde
 quincunx
 sagitarius
@@ -97,5 +106,6 @@ undecile
 undecuple
 unrefracted
 USNO
+Venatici
 yods
 zodiac

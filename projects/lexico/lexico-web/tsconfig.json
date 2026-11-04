@@ -29,6 +29,7 @@
     "codegen.ts",
     "codependix.config.ts",
     "codometer.config.ts",
+    "coinagerie.config.ts",
     "eslint.config.ts",
     "src/**/*.js",
     "src/**/*.jsx",

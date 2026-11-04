@@ -9,7 +9,7 @@ import type { ExecutorContext } from "@nx/devkit";
  * Fails one project's task when a codependix boundary finding is charged to it.
  *
  * Inferred onto every project but the workspace root, so
- * `nx affected -t codependix-gate` checks a branch's boundaries by the
+ * `nx affected -t codependix-bound` checks a branch's boundaries by the
  * projects it changed, and the task that fails is named after the project
  * whose boundary broke — which one workspace-wide check never could.
  *

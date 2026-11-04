@@ -1,3 +1,75 @@
+## 0.0.61 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.61
+- Updated codometer-measurement to 0.0.61
+- Updated codometer-core to 0.0.61
+
+## 0.0.60 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.60
+- Updated codometer-measurement to 0.0.60
+- Updated codometer-core to 0.0.60
+
+## 0.0.59 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.59
+- Updated codometer-measurement to 0.0.59
+- Updated codometer-core to 0.0.59
+
+## 0.0.58 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.58
+- Updated codometer-measurement to 0.0.58
+- Updated codometer-core to 0.0.58
+
+## 0.0.57 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.57
+- Updated codometer-measurement to 0.0.57
+- Updated codometer-core to 0.0.57
+
+## 0.0.56 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.56
+- Updated codometer-measurement to 0.0.56
+- Updated codometer-core to 0.0.56
+
+## 0.0.55 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.55
+- Updated codometer-measurement to 0.0.55
+- Updated codometer-core to 0.0.55
+
+## 0.0.54 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.54
+- Updated codometer-measurement to 0.0.54
+- Updated codometer-core to 0.0.54
+
+## 0.0.53 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.53
+- Updated codometer-measurement to 0.0.53
+- Updated codometer-core to 0.0.53
+
 ## 0.0.52 (2026-10-27)
 
 ### 🧱 Updated Dependencies
