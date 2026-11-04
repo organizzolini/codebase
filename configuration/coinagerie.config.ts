@@ -152,6 +152,40 @@ export const commonWordExclusions: string[] = `
   .split(/\s+/u)
   .filter(Boolean);
 
+// 📚 External vocabulary
+
+/**
+ * Words this repository takes from tools it uses and does not define: lint
+ * rule names, library and product terms, abbreviations, and the plain
+ * vocabulary of the documents it quotes, with the truncated stems the tokenizer
+ * leaves of them.
+ *
+ * Each one is found in the documentation of the thing it came from, so a
+ * glossary here would only repeat it. Kept in a text file beside this one: the
+ * stems are not words, and a spell check should not have to learn them.
+ */
+const EXTERNAL_WORDS_PATH = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "coinagerie-external-words.txt",
+);
+
+export const externalWordExclusions: string[] = readFileSync(
+  EXTERNAL_WORDS_PATH,
+  "utf8",
+)
+  .split(/\s+/u)
+  .filter(Boolean);
+
+/**
+ * Words that follow a shape no one defines: hexadecimal runs from hashes and
+ * identifiers, and a name ending in digits, such as a numbered fixture or a
+ * version tag. `j2000`, the astronomical epoch, is the one name kept.
+ */
+export const patternExclusions: RegExp[] = [
+  /^(?=.*\d)[0-9a-f]{2,}$/u,
+  /^(?!j2000$)[a-z]+\d+$/u,
+];
+
 // 🧩 Configuration
 
 /**
@@ -167,9 +201,11 @@ export const commonWordExclusions: string[] = `
  */
 export const coinagerieConfiguration = {
   exclude: {
-    words: (): string[] => [
+    words: (): (string | RegExp)[] => [
       ...keywordExclusions,
       ...commonWordExclusions,
+      ...externalWordExclusions,
+      ...patternExclusions,
       ...readRootGlossaryWords(),
     ],
   },

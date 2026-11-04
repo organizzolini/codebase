@@ -573,7 +573,6 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-generation:coinagerie-check:write`.
 
 - **adapter**: Pluggable object that performs host-specific disk or formatter work, defaulting to disk and a no-op.
-- **beta**: Placeholder input name in the generation unit test, passed undefined so the hook input drops it.
 - **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
 - **camel**: Case variant of a name in camelCase, one of the name variants a template renders into its paths and files.
 - **filesystem**: Adapter the run reads and writes through, exposed to hooks as context.filesystem and taking absolute paths only.
@@ -582,7 +581,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **generation**: Runtime phase that walks a template tree, renders every path and file, and writes the instance output.
 - **kebab**: Case variant of a name with lowercase words joined by hyphens, one of the substitutions a template renders.
 - **pascal**: Case variant of a name with each word capitalized and no separators, one of the template substitutions.
-- **receive**: Verb naming what a hook gets: each hook receives one GeneratorHookContext for the run.
 - **snake**: Case variant of a name with lowercase words joined by underscores, one of the template substitutions.
 
 <!-- coinagerie:end -->

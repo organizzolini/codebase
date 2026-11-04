@@ -533,7 +533,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **deduplicate**: Verb for collapsing repeated findings so only one template prints a shared file's defect, done by ValidationDeduplicationService.deduplicate.
 - **deduplication**: Step after scoring that decides which template prints each shared file's finding, so one defect is reported once.
 - **descriptor**: Metadata a validator declares for itself, such as its name and fileExtensions, which the runner matches against documents.
-- **gear**: Fixture name in validation tests, a gears module under packages/widgets, used as an unmatched instance path.
 - **inference**: Step that guesses placeholder values for an instance from its validators, reporting any it cannot infer as missing.
 - **kebab**: Case variant such as nameKebabCase, a placeholder that renders an instance name in kebab-case within template paths and contents.
 - **lenient**: Describes a group with a looser threshold; when groups disagree the strictest wins, so a lenient one cannot relax a bar.

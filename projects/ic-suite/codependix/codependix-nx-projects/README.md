@@ -383,7 +383,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **diagram**: The Mermaid graph drawn for one project, centered on it with a highlighted subject style, or a placeholder when it has no neighbors.
 - **know**: Stem of knownNames and known, the set of workspace projects an edge may point at, not a term of its own.
 - **legend**: Explanatory note added alongside a diagram to explain a visual convention, such as dashed edges for inferred dependencies.
-- **mermaid**: Text diagram language that codependix writes the Nx neighborhood into, starting from a graph LR header.
 - **neighborhood**: One project's immediate Nx dependencies and dependents, drawn as its one-hop graph and exported as a diagram.
 - **syntax**: The marker comment form, codependix:start and codependix:end, that fences each generated graph block in a committed README.
 - **top**: The dependent project at the apex of a diamond graph in closure tests, which depends on left and right.

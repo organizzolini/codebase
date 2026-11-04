@@ -455,8 +455,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **boundary**: Declared rules, of access or acyclic kind, that codependix judges against each built graph during a boundary check run.
 - **breadth**: The callidescope limit on how many direct callees one callable may have, set by maximumBreadth in callidescope.config.ts.
 - **choice**: The answer a user picks from the interactive run menu, which selects check-boundaries, check-reports, or write mode.
-- **comma**: The separator for list arguments such as --projects, --tags, and --check, split into trimmed entries with blanks dropped.
-- **delimit**: Splitting a list argument into entries at each comma, trimming them and dropping blank ones, in the configuration service.
 - **marker**: A file name such as .git whose presence marks a directory as the repository root, listed in REPOSITORY_ROOT_MARKERS.
 - **need**: Shapes validation messages that name what a selector or option must include before it is accepted at all.
 - **refine**: A zod check on boundary selectors that rejects a selector stating none of id, path, project, or tags.

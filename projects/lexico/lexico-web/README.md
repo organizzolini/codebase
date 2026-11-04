@@ -887,7 +887,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **align**: Attribute on the search bar's input group addon that places the button at the inline end.
 - **alt**: Alternate text on the Lexico logo image, so screen readers announce the brand name rather than the file.
 - **aria**: Accessibility attribute prefix used on sidebar, identifier, and table elements, such as aria-label and aria-hidden.
-- **axe**: Stray fragment from stemming NUMBER_AXES and PERSON_AXES, the constant lists of verb-form axes such as number and person.
 - **axi**: One dimension of a conjugation picked with tabs, such as voice, mood, tense, number or person, in the axis-tabs component.
 - **background**: Tailwind utility class and CSS variable for the page color, such as bg-background on the body element.
 - **badge**: Presentation component imported from the shared library, used to render each identifier chip in lexeme-identifiers.
@@ -914,7 +913,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **declension**: Paradigm of case and number endings for nouns and adjectives, shown in the noun and adjective forms tables.
 - **decline**: Not used in lexico-web source, which says declension instead, so the verb has no project meaning here.
 - **degree**: Comparison grade of an adjective or adverb, such as positive, shown in lexeme inflection data and header details.
-- **dep**: Stem of dependency, as in the dependency closure callidescope measures and the Dependency Checks section of the eslint config.
 - **describer**: Not used in lexico-web source; the project has no describer abstraction, so the word has no local meaning.
 - **detail**: Header line of extra facts, such as gender and degree, joined into the lexeme header's card description.
 - **determiner**: Part of speech listed among declension forms in lexeme-forms constants, grouped with pronoun and numeral.
@@ -943,13 +941,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **fulltext**: Not used in lexico-web source; search is served by the GraphQL API, so no full-text term appears here.
 - **future**: Tense name for the future, abbreviated FUT in identifiers and listed among finite verb tenses.
 - **fuzzy**: Match kind for a near-miss search hit within a small edit distance, labeled Fuzzy match with a ScanSearch icon.
-- **gen**: Prefix of generated paths such as src/graphql/generated and routeTree.gen.ts, excluded from lint and call-stack tracing.
 - **gender**: Noun class for adjectives, one of masculine, feminine or neuter, selected via tabs in the adjective forms table.
 - **genitive**: Latin case listed in noun and adjective form tables, and used as a row label in forms-table test fixtures.
 - **gerund**: Non-finite verb form ending in -ing, listed among infinitives and participles, whose kind maps to the gerund label.
 - **grammar**: Word in code comments naming grammar-book conventions, such as the short labels and case order in form tables.
 - **grid**: CSS layout used for search result cards and forms-table cells, with its container tagged by a testid.
-- **h1**: Top-level page heading element, used for the 404 message, the index title and a screen-reader-only Search heading.
 - **handle**: Name for event-handler functions grouped under the handlers comment header in components, such as adjective forms.
 - **headword**: Dictionary entry's main Latin form, the lemma a search matches exactly, shown as exact-headword in match kinds.
 - **height**: Pixel height computed for the logo from its width at a four-to-three ratio, applied as an inline style.
@@ -967,7 +963,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **inflection**: Grammar details of a lexeme or matched form, such as conjugation, declension and degree, passed to the lexeme header and card.
 - **inset**: Not found as a word in lexico-web source, so the term carries no project meaning here beyond generic UI vocabulary.
 - **invalidate**: Router method from useRouter that the search route calls to re-run its loaders and refresh the current results.
-- **is2**: Stray fragment from is2xl, the breakpoint flag from useBreakpoint that marks screens at least 1536px wide.
 - **land**: Stem of search-landing and Landmark, the landing page component and the icon marking a Latin match.
 - **landmark**: Lucide icon component used to mark a Latin language match in the language constants.
 - **lang**: Short for language, as in the LANGUAGES constant and the lang key that decides how a match is labeled.
@@ -1019,7 +1014,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **pronunciation**: Spoken form of a lexeme, a list of phonetic variants with their variant label, rendered in the lexeme pronunciations section.
 - **proper**: Stem used in the codebase's Properties interface naming, such as AdjectiveFormsProperties and the properties parameter.
 - **punctuation**: Not used in lexico-web source, so the word names no code here and carries only its everyday English sense.
-- **ql**: Stray fragment from stemming a longer word, found nowhere in lexico-web source, so it carries no project meaning.
 - **redirect**: TanStack Router function that throws a redirect, sending the index route to the search page.
 - **refine**: Zod method on the any schema, adding a predicate check that the value is defined and non-null.
 - **rel**: Link relation attribute on head links in the root route, set to icon or stylesheet for the favicon and CSS.

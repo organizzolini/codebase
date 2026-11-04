@@ -925,9 +925,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **measure**: Declaring an input with include and exclude globs is how a subset of the tree gets measured here.
 - **measurement**: The set of built-in counters the codebase measurement produces, which configured custom statistics extend under custom labels.
 - **multiplier**: The factor a limit unit such as KB or MB applies to its amount, looked up in LIMIT_UNIT_MULTIPLIERS.
-- **na**: A stray two-letter token that appears only as a glossary headword here, with no use in this package's sources.
-- **negation**: A leading exclamation mark on a glob, marked by NEGATION_PREFIX, that moves the pattern into the exclusions list.
-- **prettify**: The zod helper that formats a failed schema parse into the readable message a rejected configuration shows.
 - **refine**: A zod validation predicate added to a schema, such as the check that every custom statistic carries a unique label.
 - **selection**: The list of custom labels an output asks for, which the configuration refuses unless the top level declared them.
 - **selector**: A configured filter on an entry naming the language or declarations it covers, so one limit can target one kind.

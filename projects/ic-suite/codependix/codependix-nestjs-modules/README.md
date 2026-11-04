@@ -416,9 +416,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **diagram**: The fenced Mermaid flowchart drawn for a project's NestJS modules, or a placeholder when it defines none.
 - **dynamic**: A module built at runtime rather than declared statically, whose providers NestJS hosts in synthetic stand-in modules.
 - **explore**: Follow module imports outward from a root such as MainModule, the start point a library package lacks.
-- **inbound**: An edge arriving at a module from another module that imports it, such as the edges the graph omits for ambient modules.
 - **legend**: Explanatory note added alongside a diagram to explain a visual convention, such as rounded nodes for ambient modules.
-- **mermaid**: Text diagram language that codependix writes the NestJS module graph in, through a flowchart LR header.
 - **posix**: Forward-slash path helper from Node's path module, used to get a module's folder after converting backslashes.
 - **qualifier**: Separator slash joining a project name to a module class name, so each node id is unique across the workspace graph.
 - **qualify**: Prefixes a module's class name with its project name, so one module name in two projects gives two distinct nodes.

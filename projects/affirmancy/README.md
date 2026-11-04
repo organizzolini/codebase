@@ -397,7 +397,6 @@ _This project has no immediate Nx dependencies or dependents._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run affirmancy:coinagerie-check:write`.
 
-- **abc**: Appears only inside the collections.abc import in testing/test_services.py, which supplies the Callable and Iterator types.
 - **affirmation**: Pydantic model in src/models.py holding one generated sentence of text, which the output writer numbers into per-grammar lists.
 - **aleph**: A Subject in the Hebrew Letter category, first in order, whose metadata carries the character alef.
 - **analyze**: Verb in research prompts asking the model to distill search results, and in the analyze_sources notebook step.
@@ -419,14 +418,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **cf**: Latin abbreviation found in no source file here, only in the README glossary list, so it names nothing.
 - **chakra**: Subject category in subjects.py for energy centres, each entry such as Root Chakra (Muladhara) is a practice subject.
 - **chat**: Named in the service table for Open WebUI, the browser-based chat interface wrapping the local Ollama model.
-- **cl**: Fragment with no source match in this project, so it is a tokenizer artifact and names nothing here.
 - **classmethod**: Decorator stacked under field_validator on strip_trailing_periods in models.py, receiving the class not an instance.
 - **commissive**: Deontic-group value in grammars.py for a speaker's promise or undertaking, beside benedictive and aorist.
 - **conditional**: Irrealis-epistemic mood member in grammars.py using would with an if-premise, grouped with subjunctive and potential.
 - **construction**: Used in grammars.py form descriptions for a grammatical structure, such as a marker phrase expressing epistemic doubt.
 - **daemon**: Keyword argument daemon=True on a test thread that serves a stub HTTP server, so it exits with pytest.
 - **debitive**: Deontic-group value in grammars.py for an action required by duty or obligation, not merely desired.
-- **deixi**: Truncated stem of deixis, produced by stemming, that names nothing here since deixis is the real term.
 - **deny**: English verb that no code or config in this project uses, so it names nothing in affirmancy.
 - **dict**: Python mapping type annotated on LangGraph node returns in the notebooks and on the subject metadata field.
 - **distal**: Spatial deixis member in grammars.py for referents away from the speaker, the third step of the scale.
@@ -438,14 +435,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **enumerate**: Python builtin used in notebooks and output.py to number affirmations and search results from one, with start=1.
 - **episodic**: Other-group aspect value in grammars.py for events occurring as a series of separate episodes.
 - **evaluate**: Appears only in a pyproject.toml comment noting that Pydantic evaluates annotations at class creation time.
-- **ex**: Loop variable in semantics.ipynb that filters slugs against an exclude list, and in test_grammars for examples.
 - **exception**: Python error caught around LLM retry calls in affirmancy.ipynb, logged with the attempt number before retrying.
 - **exclusive**: Personal deixis value in grammars.py for the we-excluding first-person plural form that omits the listener.
 - **existential**: Number member in grammars.py for a subject asserting the predicate applies to some unspecified subset of the group.
 - **experiential**: Other-group aspect value in grammars.py for an event viewed as having been experienced, beside inceptive and terminative.
 - **far**: Qualifier in grammars.py for the far-distal spatial deixis step, and for remote tense descriptions such as remote future.
 - **fence**: Matches no code or config here, so it has no role and only appears in this glossary list.
-- **flake8**: Lint tool name referenced only by the pyproject.toml section tool.ruff.lint.flake8-type-checking, configuring ruff's flake8 rules.
 - **float**: Numeric type annotation on make_llm temperature and embedding vectors, and a Primitive union member in subjects.py.
 - **fool**: Tarot Card subject at order zero in subjects.py, used as the worked example in tests and the prices notebook.
 - **forever**: English adverb that no source file in this project contains, so it has no role in the pipeline.
@@ -473,7 +468,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **indicative**: Default unmarked mood in grammars.py for stating a plain fact, also the mood of the minimal test grammar.
 - **inferential**: Irrealis-epistemic mood member in grammars.py for a claim drawn from evidence, beside dubitative and presumptive.
 - **infinitive**: Form member in grammars.py for the non-finite infinitive, listed beside gerund, participle and supine.
-- **ini**: Stray token matching no file here, likely cut from a longer word, so it names nothing in affirmancy.
 - **interpreter**: Matches no code here; the project's actual runtime is Python 3.11 or newer, managed by uv.
 - **interrogative**: Irrealis-epistemic mood member in grammars.py for questions, grouped with subjunctive, conditional and potential.
 - **ipynb**: Notebook file extension of affirmancy, semantics and prices, linted by ruff through extend-include in pyproject.toml.
@@ -498,7 +492,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **metal**: Subject category in subjects.py for metals, one of many practice categories the pipeline generates affirmations for.
 - **minimal**: Grammar built with only a mood set, shown in the Grammar docstring and as a minimal test fixture.
 - **modality**: Subject category in subjects.py grouping possibility and necessity subjects that the grammars express.
-- **monkey**: Partial token of the pytest fixture name monkeypatch, which test_output.py uses, so it has no standalone role.
 - **monkeypatch**: Pytest fixture in test_output.py that redirects PROJECT_DIRECTORY to a temporary path so output files land there.
 - **mood**: Grammar axis in grammars.py for the speaker's attitude toward a proposition, such as indicative or optative.
 - **near**: Tense qualifier in grammars.py for events close to now, such as the near future or near past.
@@ -508,7 +501,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **nonfuture**: Cross-cutting tense member in grammars.py for events that are present or past rather than future.
 - **nonpast**: Cross-cutting tense member in grammars.py for events that are present or future rather than past.
 - **optative**: Mood member in grammars.py for expressing a wish or hope, listed under the Volative group.
-- **outgo**: Stray token in the glossary alone, matching no file here, so it has no role in the affirmancy codebase.
 - **parametrize**: Pytest decorator in test_services.py and others that runs one test body across several status codes such as 403, 404, 500.
 - **participle**: Non-finite Form member in grammars.py for a verbal adjective, listed beside infinitive, gerund and supine.
 - **passive**: Voice member in grammars.py for a subject that receives the action, alongside active and middle.
@@ -544,7 +536,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **recaptcha**: Matches no code or config here, so the Google bot-check service it names plays no role in affirmancy.
 - **recent**: Past-group tense value in grammars.py for an event just before now, such as the recent past.
 - **reproducible**: Build option in pyproject.toml set to true, so identical inputs produce identical wheels.
-- **roundtrip**: Stemmed fragment of round-trip, which no project source names, so it has no role in affirmancy.
 - **rstrip**: Python string method in models.py that strips trailing periods from each affirmation text in a validator.
 - **rune**: Subject category in subjects.py for runes such as Ingwaz, whose divinatory meanings get dedicated search sources.
 - **runtime**: Execution-time behavior the pyproject protects: pydantic.BaseModel field-type imports must stay real imports, not TYPE_CHECKING-only.
@@ -560,7 +551,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **singular**: Number member in grammars.py for one referent, one of the core values beside plural and dual.
 - **slug**: Kebab-case identifier that Grammar.slug builds from specified fields only, which Subject and SubjectCategory also carry for output filenames.
 - **small**: Model size tier naming gemma4:e2b, the deliberately small CPU-friendly variant fetched by the pull-small Ollama target.
-- **sock**: Local variable name for a bound socket in test_services.py, used to reserve a free ephemeral port for a stub SearxNG server.
 - **socket**: Python standard-library module imported by test_services.py to bind a free localhost port for a fake SearxNG server.
 - **solfeggio**: Subject category of seven tones, Do through Ti, whose frequencies and chakra associations supply affirmation subjects in subjects.py.
 - **speculative**: Mood member in grammars.py for conjecture, presenting an affirmation as a guess about what might be true.

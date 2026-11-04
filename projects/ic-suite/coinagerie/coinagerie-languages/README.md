@@ -42,12 +42,10 @@ This project was generated from the [nestjs-service-project](../../configuration
 
 The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-languages:coinagerie-check:write`.
 
-- **assignment**: A TypeScript syntax kind, PropertyAssignment, whose quoted object key the tokenizer reads as a name.
 - **bare**: Describes a name with no quotes around it, read by the scanner's plain identifier pattern rather than a quoted key rule.
 - **breadth**: The maximumBreadth limit in this package's callidescope configuration, capping how many callees one callable may make.
 - **effect**: The action a YAML rule takes on a match: skip, block, or key, read by the YAML scanner's rules.
 - **grammar**: The LexicalGrammar object a language constant supplies to the shared scanner, holding its rules and key patterns.
-- **hcl**: The HashiCorp Configuration Language, one of the languages this package reads, through its HclService and HCL_GRAMMAR.
 - **hit**: The result of one YAML rule match, carrying its effect, captured keys, and length, or YAML_UNMATCHED.
 - **lexical**: Describes the scanner approach that reads names without a parser, using comment, string, and key rules only.
 - **quotable**: Names the TypeScript declaration kinds, such as enum members, whose quoted name counts as a key.

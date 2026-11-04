@@ -47,7 +47,6 @@ The words this package uses that the root glossary does not define, regenerated 
 - **structural**: The brackets, braces, comma and colon that carry JSON structure, which the tokenizer separates from literal text.
 - **tokenize**: Splits already-valid JSON into strings, punctuation, and literals so a duplicated key can be found by hand.
 - **unmock**: Calls vi.doUnmock to restore real modules in delivery tests after they were replaced by mocks.
-- **unsorted**: Test input whose words are out of order, used to show reconcile sorts a glossary's words.
 - **vocabulary**: The set of words the codebase uses, which comparison checks each glossary against to find missing or stale words.
 
 <!-- coinagerie:end -->

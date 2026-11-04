@@ -602,12 +602,8 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-output:coinagerie-check:write`.
 
 - **above**: Upward stack set rendered as the above section, the paths traced toward callers of one callable.
-- **alpha0**: Placeholder callable id in project-reports tests, the first callable of the alpha two-project fixture chain.
-- **alpha1**: Placeholder callable id for the second callable in the alpha fixture chain used by project-reports tests.
-- **alpha2**: Placeholder callable id for the third callable in the alpha fixture chain used by project-reports tests.
 - **anchor**: Start or end marker that delimits a generated block inside a markdown file, so a splice can replace it.
 - **below**: Downward stack set rendered as the below section, the paths traced toward callees of one callable.
-- **beta**: Placeholder project or callable name in fixtures for the second project of a two-project graph.
 - **breadth**: Width of a call graph as reported in the breadth section, measured against maximumBreadth.
 - **callable**: Function, method, or constructor declaration that a report lists by display name, id, and stacks.
 - **callee**: Callable that a caller invokes, listed in report sections and drawn as the target of a diagram edge.
@@ -624,10 +620,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **diagram**: Mermaid flowchart drawn from a call graph, one node per callable and one edge per call.
 - **direct**: Immediate callee or caller of a callable, the one-hop count printed as direct calls and direct callees.
 - **downward**: Stack set traced toward the callees of a callable, passed as the below argument of the address report.
-- **enclose**: Wrap a block in fences or brackets, a sense this package does not use beyond its empty glossary stub.
 - **fence**: Markdown code block that wraps a rendered tree of stacks, so the indentation survives in the report.
-- **flowchart**: Mermaid header line flowchart LR that opens every generated call diagram block.
-- **four**: Headroom bucket label for four or more callables, written as the literal 4+ in HEADROOM_BUCKET_FOUR_PLUS.
 - **frame**: One callable entry within a rendered stack, carrying its signature, depth, and cycle flag.
 - **fresh**: Newly generated replacement, as in the block that splices over a stale or corrupted anchored span.
 - **headroom**: Measure of how far a stack or callable sits below its limit, bucketed into labeled ranges for the report.
@@ -635,7 +628,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **marker**: Literal text tag that flags a frame or delimits a block, such as the deprecated marker or start anchor.
 - **measure**: Take a depth or breadth reading over the call graph, the step whose figures a limit is judged against.
 - **measurement**: Depth and breadth figures recorded for a project run, passed into project reports and rendered as results.
-- **mermaid**: Diagram markup language that renders call graphs as text, the format the MermaidReportService writes.
 - **near**: Adjacent in the dependency sense, as in projects nowhere near a breaching project, whose gates stay silent.
 - **omega**: Placeholder package name in workspace report tests, the second project in a limits lookup.
 - **orphan**: Callable with no caller, reported as an orphan root kind in a project report instead of a stack.
@@ -643,7 +635,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **payload**: Data body a report or generated block carries, the content written into a destination file or section.
 - **pin**: Fix a value so it stays unchanged, a term this package does not use beyond its empty glossary stub.
 - **plus**: Suffix marking an open-ended bucket, as in the 4+ label for four or more callables.
-- **remain**: Callables left after the preview slice, rendered inside a summary as more callables beyond the preview.
 - **sentence**: Unit of prose split at sentence-ending punctuation, used to truncate a summary at a natural boundary.
 - **shallow**: Low-depth set of reports, such as those built at depth two, which a fitting page can show whole.
 - **shorten**: Cut a summary down to what fits under an indented frame, so it reads as one short line.
@@ -654,10 +645,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **staleness**: Verdict that extracted anchored content has drifted from a fresh render, decided by comparing both blocks.
 - **subsection**: Heading level one deeper than its parent, prefixed so a rendered section nests as a clean subtree.
 - **successor**: Callable a frame moves on to, listed under successorsByComponent in the project report fixture.
-- **thing**: Generic noun for an unnamed item or fact, the sense used in code comments rather than a project term.
 - **three**: Upper end of the two-to-three headroom bucket label, the range a callable reads as slack under its limit.
 - **trace**: Call-stack walk recorded for an address or project, the traced paths the report renders.
-- **truncation**: Shortening of text or lists that ends in a suffix marker, such as the ellipsis TRUNCATION_SUFFIX.
 - **unmeasured**: Headroom bucket and reading for a callable with no depth measurement, labeled no stacks in reports.
 - **unread**: Project whose files a run never read, which a report flags rather than counting as clean.
 - **unresolved**: Call or address that could not be matched to a callable, counted per project as unresolved calls.

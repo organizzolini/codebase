@@ -214,7 +214,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **detail**: Indented lines printed under each difference in the report, giving its expected and actual values, weight, and fix.
 - **digit**: Count of decimal places kept when rendering a score percentage, fixed by SCORE_PERCENTAGE_DIGITS at one.
 - **fraction**: Failed weight over total weight, printed beside a percentage so a reader can see how many requirements missed.
-- **gear**: Sample module name in the inventory tests, a gears folder under packages/widgets used as the fixture path.
 - **imperfect**: Instance whose score falls short of full weight, so only these appear in the summary of non-perfect scores.
 - **inventoried**: Types for entries the inventory service has listed: InventoriedInstance, InventoriedTemplate, and InventoriedPairing.
 - **inventory**: Module that renders the template and instance listing, with its indent ladder, headings, and match percentage.

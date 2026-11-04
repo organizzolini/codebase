@@ -32,6 +32,10 @@ ignorePaths:
   # The root glossary lists every word the code outside the projects uses, and
   # a word is listed because the code spells it, however it is spelled.
   - "**/GLOSSARY.md"
+  # The words coinagerie leaves out of every glossary, as its tokenizer spells
+  # them: truncated stems and abbreviations rather than words, and listed
+  # because the code writes them that way.
+  - "**/coinagerie-external-words.txt"
   - "**/coverage"
   - "**/dist"
   - "**/projects/lexico/lexico-cli/data/**"

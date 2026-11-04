@@ -267,8 +267,6 @@ None.
 The words this project uses that the root glossary does not define, regenerated with `nx run meanderaw-web:coinagerie-check:write`.
 
 - **breadth**: Callidescope's count of the direct calls a web callable makes, recorded in the project's Breadth table for its gate.
-- **gen**: Stem of routeTree.gen.ts, the generated route tree file that TanStack Router writes and the lint and trace tools exclude.
-- **h1**: The level-one heading element that the index route renders as MeanderawWeb, which the integration test finds by role.
 - **history**: The memory history that the render-route test helper passes to the router, so routes render at a chosen path in tests.
 - **html**: The root HTML document element that the __root route renders around the matched route, with lang set to en.
 - **hydrate**: Stray fragment with no source hit in the web project, so the glossary lists it without any meanderaw concept behind it.
