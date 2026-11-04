@@ -675,6 +675,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **creation**:
 - **descendant**:
 - **discovery**:
+- **draft**:
 - **evaluate**:
 - **fact**:
 - **feat**:

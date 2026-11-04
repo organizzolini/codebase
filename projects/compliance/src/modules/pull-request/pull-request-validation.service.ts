@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { linkedIssueNumbersSchema } from "./pull-request-body-links.constants";
 import {
   BODY_GUIDANCE_LINES,
   BODY_MISSING_MESSAGE,
@@ -69,6 +70,56 @@ export class PullRequestValidationService {
       failures:
         failures.length === 0 ? [] : [...failures, ...BODY_GUIDANCE_LINES],
     };
+  }
+
+  /** A pull request must close at least one issue; the write phase then relates its ancestors. */
+  private checkLinkedIssue(context: PullRequestContext): CheckOutcome {
+    const base = {
+      heading: "❌ Pull request is not linked to an issue",
+      remediationCommands: [],
+      successMessage: "✅ Pull request closes at least one issue",
+    };
+    const view = this.pullRequestGithubService.run([
+      "pr",
+      "view",
+      String(context.number),
+      "--json",
+      "closingIssuesReferences",
+      "--jq",
+      "[.closingIssuesReferences[].number]",
+    ]);
+
+    if (!view.succeeded) {
+      return {
+        ...base,
+        failures: [
+          `❌ Unable to read the issues closed by pull request ${String(context.number)}: ${this.pullRequestGithubService.describeFailure(view)}`,
+        ],
+      };
+    }
+
+    try {
+      const linked = linkedIssueNumbersSchema.parse(
+        JSON.parse(view.standardOutput),
+      );
+
+      return {
+        ...base,
+        failures:
+          linked.length === 0
+            ? [
+                "❌ No issue is closed by this pull request. Add a `Closes #<issue>` bullet to the 🔗 Related section.",
+              ]
+            : [],
+      };
+    } catch (error) {
+      return {
+        ...base,
+        failures: [
+          `❌ Unable to parse the issues closed by pull request ${String(context.number)}: ${error instanceof Error ? error.message : String(error)}`,
+        ],
+      };
+    }
   }
 
   /** Labels and assignees against what the title declares. */
@@ -219,6 +270,7 @@ export class PullRequestValidationService {
    * Dependabot writes its own title and body and appends a tail to the title
    * that no configuration shortens, so those two checks exempt a pull request
    * it authored. The author is what counts: the actor is whoever last edited.
+   * The linked-issue check exempts Dependabot and draft pull requests.
    */
   public validate(context: PullRequestContext): CheckOutcome[] {
     const authoredByDependabot = context.author === DEPENDABOT_LOGIN;
@@ -229,6 +281,9 @@ export class PullRequestValidationService {
         : [this.checkTitle(context), this.checkBody(context)]),
       this.checkMetadata(context),
       this.checkSignificance(context),
+      ...(authoredByDependabot || context.draft
+        ? []
+        : [this.checkLinkedIssue(context)]),
     ];
   }
 }

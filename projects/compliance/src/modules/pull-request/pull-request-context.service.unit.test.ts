@@ -16,6 +16,7 @@ const document = {
   assignees: ["owner"],
   author: "someone",
   body: null,
+  draft: false,
   labels: ["type: feat"],
   number: 12,
   title: "feat(scope): add",

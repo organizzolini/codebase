@@ -27,6 +27,7 @@ const context: PullRequestContext = {
   assignees: [],
   author: "someone",
   body: "body",
+  draft: false,
   labels: [],
   number: 12,
   title: "feat: add",

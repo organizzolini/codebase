@@ -15,6 +15,7 @@ const context: PullRequestContext = {
   assignees: ["owner"],
   author: "someone",
   body: "## Summary\ntext",
+  draft: false,
   labels: [],
   number: 12,
   title: "feat(scope): add",
@@ -87,12 +88,14 @@ describe(PullRequestValidationService, () => {
       scopes: [],
       type: "feat",
     });
-    vi.mocked(github.run).mockReturnValue({
+    vi.mocked(github.run).mockImplementation((arguments_) => ({
       available: true,
       standardError: "",
-      standardOutput: "{}",
+      standardOutput: arguments_.includes("closingIssuesReferences")
+        ? "[5]"
+        : "{}",
       succeeded: true,
-    });
+    }));
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 500");
     vi.mocked(significance.resolveFromDocument).mockReturnValue({
       commits: [],
@@ -109,10 +112,10 @@ describe(PullRequestValidationService, () => {
     expect(service).toBeDefined();
   });
 
-  it("runs all four checks and passes when nothing is wrong", () => {
+  it("runs all five checks and passes when nothing is wrong", () => {
     const outcomes = service.validate(context);
 
-    expect(outcomes).toHaveLength(4);
+    expect(outcomes).toHaveLength(5);
     expect(outcomes.flatMap((outcome) => outcome.failures)).toStrictEqual([]);
   });
 
@@ -155,6 +158,49 @@ describe(PullRequestValidationService, () => {
 
     expect(outcomes).toHaveLength(2);
     expect(title.check).not.toHaveBeenCalled();
+  });
+
+  it("fails when the pull request closes no issue", () => {
+    vi.mocked(github.run).mockImplementation((arguments_) => ({
+      available: true,
+      standardError: "",
+      standardOutput: arguments_.includes("closingIssuesReferences")
+        ? "[]"
+        : "{}",
+      succeeded: true,
+    }));
+
+    const outcome = service.validate(context)[4];
+
+    expect(outcome?.failures[0]).toContain("No issue is closed");
+  });
+
+  it("skips the linked-issue check for a draft pull request", () => {
+    expect(service.validate({ ...context, draft: true })).toHaveLength(4);
+  });
+
+  it("fails the linked-issue check when gh cannot read the issues", () => {
+    vi.mocked(github.run).mockReturnValue({
+      available: true,
+      standardError: "",
+      standardOutput: "",
+      succeeded: false,
+    });
+
+    expect(service.validate(context)[4]?.failures[0]).toContain("HTTP 500");
+  });
+
+  it("fails the linked-issue check on unparsable output", () => {
+    vi.mocked(github.run).mockReturnValue({
+      available: true,
+      standardError: "",
+      standardOutput: "nope",
+      succeeded: true,
+    });
+
+    expect(service.validate(context)[4]?.failures[0]).toContain(
+      "Unable to parse the issues closed",
+    );
   });
 
   it("fails metadata and significance on a title that does not parse", () => {
