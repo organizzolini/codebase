@@ -602,7 +602,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **builder**:
 - **chain**:
 - **charge**:
-- **clear**:
 - **close**:
 - **compare**:
 - **compiler**:
@@ -650,7 +649,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **greet**:
 - **guide**:
 - **hand**:
-- **implementation**:
 - **implicit**:
 - **inclusion**:
 - **injectable**:
@@ -670,7 +668,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **meta**:
 - **miss**:
 - **mkdtemp**:
-- **mock**:
 - **neighbor**:
 - **neighborhood**:
 - **non**:
@@ -724,7 +721,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **some**:
 - **sort**:
 - **split**:
-- **spy**:
 - **stale**:
 - **statement**:
 - **storefront**:
@@ -733,6 +729,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **subheading**:
 - **summary**:
 - **synthetic**:
+- **temporary**:
 - **than**:
 - **third**:
 - **tmpdir**:
@@ -744,7 +741,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **unwritten**:
 - **usage**:
 - **verdict**:
-- **vi**:
 - **violation**:
 - **without**:
 - **wrap**:

@@ -117,10 +117,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **boundary**:
 - **breadth**:
 - **bug**:
-- **clear**:
 - **compile**:
 - **compiler**:
-- **console**:
 - **constant**:
 - **controller**:
 - **decorator**:
@@ -135,8 +133,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **fresh**:
 - **gitkeep**:
 - **homepage**:
-- **implementation**:
 - **injectable**:
+- **instance**:
 - **intro**:
 - **java**:
 - **least**:
@@ -146,11 +144,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **mock**:
 - **publish**:
 - **real**:
-- **recursive**:
 - **resolution**:
 - **section**:
 - **selection**:
-- **spy**:
 - **stale**:
 - **strict**:
 - **subheading**:

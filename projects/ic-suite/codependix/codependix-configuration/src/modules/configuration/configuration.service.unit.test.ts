@@ -1,10 +1,11 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { ZodError } from "zod";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputService } from "../input/input.service";
 import { OverrideResolutionService } from "../override-resolution/override-resolution.service";
@@ -38,7 +39,7 @@ async function writeConfigurationFile(
   fileName: string,
   contents: string,
 ): Promise<string> {
-  const directory = await mkdtemp(path.join(tmpdir(), "codependix-config-"));
+  const directory = createTemporaryDirectory("codependix-config");
   const configurationPath = path.join(directory, fileName);
 
   await writeFile(configurationPath, contents, "utf8");
@@ -50,21 +51,27 @@ describe(ConfigurationService, () => {
   let service: ConfigurationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(ConfigurationService, {
       providers: [
-        ConfigurationService,
         ConfigurationLoaderService,
         FlagResolutionService,
         InputService,
         OverrideResolutionService,
       ],
-    }).compile();
-
-    service = await module.resolve(ConfigurationService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConfigurationService, {
+      providers: [
+        ConfigurationLoaderService,
+        FlagResolutionService,
+        InputService,
+        OverrideResolutionService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(ConfigurationService);
   });
 
   describe("requireConfigurationPath", () => {
@@ -161,9 +168,7 @@ describe(ConfigurationService, () => {
     });
 
     it("throws when no workspace root holds the relative path either", async () => {
-      const searchDirectory = await mkdtemp(
-        path.join(tmpdir(), "codependix-rootless-"),
-      );
+      const searchDirectory = createTemporaryDirectory("codependix-rootless");
       const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(searchDirectory);
 
       await expect(
@@ -690,9 +695,7 @@ describe(ConfigurationService, () => {
 
   describe("loadProjectConfiguration", () => {
     it("returns undefined when a project has no configuration file of its own", async () => {
-      const projectRoot = await mkdtemp(
-        path.join(tmpdir(), "codependix-project-none-"),
-      );
+      const projectRoot = createTemporaryDirectory("codependix-project-none");
 
       await expect(
         service.loadProjectConfiguration({ projectRoot }),

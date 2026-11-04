@@ -14,6 +14,7 @@
   },
   "description": "Boundary rule validation, forbid/allow rule enforcement, and cycle detection for Codependix graphs",
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",

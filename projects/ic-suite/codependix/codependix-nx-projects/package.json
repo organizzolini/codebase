@@ -10,6 +10,7 @@
   },
   "description": "Nx workspace project graph extractor and neighborhood relationship builder for Codependix",
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",

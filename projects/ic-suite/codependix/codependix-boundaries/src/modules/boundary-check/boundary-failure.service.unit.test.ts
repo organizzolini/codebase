@@ -1,6 +1,7 @@
 import { NeighborhoodService } from "@codependix/nx-projects";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { BoundaryFailureService } from "./boundary-failure.service";
 
@@ -100,15 +101,17 @@ describe(BoundaryFailureService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [BoundaryFailureService, NeighborhoodService],
-    }).compile();
-
-    service = await module.resolve(BoundaryFailureService);
+    ({ instance: service } = await buildTestingModule(BoundaryFailureService, {
+      providers: [NeighborhoodService],
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(BoundaryFailureService, {
+      providers: [NeighborhoodService],
+    });
+
+    expect(instance).toBeInstanceOf(BoundaryFailureService);
   });
 
   it("charges a failure to the projects it was collected for", () => {

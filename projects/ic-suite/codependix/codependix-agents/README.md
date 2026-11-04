@@ -315,7 +315,6 @@ _This project has no internal file imports._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-agents:coinagerie-check:write`.
 
-- **clear**:
 - **compiler**:
 - **configure**:
 - **define**:
@@ -332,7 +331,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **matter**:
 - **maximum**:
 - **meta**:
-- **mock**:
 - **navigate**:
 - **readdir**:
 - **relative**:
@@ -343,6 +341,5 @@ The words this project uses that the root glossary does not define, regenerated 
 - **strict**:
 - **than**:
 - **triage**:
-- **vi**:
 
 <!-- coinagerie:end -->

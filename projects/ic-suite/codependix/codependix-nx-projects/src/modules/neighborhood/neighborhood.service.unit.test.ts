@@ -1,10 +1,11 @@
-import { mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { createProjectGraphAsync } from "@nx/devkit";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InvalidProjectGraphError } from "./neighborhood.constants";
 import { NeighborhoodService } from "./neighborhood.service";
@@ -80,15 +81,13 @@ describe(NeighborhoodService, () => {
   let service: NeighborhoodService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [NeighborhoodService],
-    }).compile();
-
-    service = await module.resolve(NeighborhoodService);
+    ({ instance: service } = await buildTestingModule(NeighborhoodService));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NeighborhoodService);
+
+    expect(instance).toBeInstanceOf(NeighborhoodService);
   });
 
   describe("readProjectGraph", () => {
@@ -107,7 +106,7 @@ describe(NeighborhoodService, () => {
     describe("a supplied graph", () => {
       /** Writes a graph file and returns its path. */
       async function writeGraphFile(content: string): Promise<string> {
-        const directory = await mkdtemp(path.join(tmpdir(), "codependix-nx-"));
+        const directory = createTemporaryDirectory("codependix-nx");
         const filePath = path.join(directory, "graph.json");
         await writeFile(filePath, content, "utf8");
 

@@ -466,6 +466,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**:
 - **bug**:
 - **call**:
+- **capture**:
 - **classify**:
 - **clear**:
 - **combine**:
@@ -521,7 +522,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **mermaid**:
 - **meta**:
 - **metric**:
-- **mkdtemp**:
 - **mock**:
 - **multi**:
 - **neighbor**:
@@ -551,7 +551,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **slice**:
 - **some**:
 - **sort**:
-- **spy**:
 - **stale**:
 - **stdout**:
 - **strict**:
@@ -562,9 +561,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **summary**:
 - **synthetic**:
 - **tail**:
+- **temporary**:
 - **than**:
 - **timer**:
-- **tmpdir**:
 - **touch**:
 - **trim**:
 - **two**:

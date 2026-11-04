@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PythonImportParserService } from "./python-import-parser.service";
 
@@ -7,15 +8,15 @@ describe(PythonImportParserService, () => {
   let service: PythonImportParserService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PythonImportParserService],
-    }).compile();
-
-    service = await module.resolve(PythonImportParserService);
+    ({ instance: service } = await buildTestingModule(
+      PythonImportParserService,
+    ));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PythonImportParserService);
+
+    expect(instance).toBeInstanceOf(PythonImportParserService);
   });
 
   it("parses a plain import statement", () => {

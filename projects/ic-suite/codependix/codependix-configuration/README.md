@@ -451,21 +451,21 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **absolute**:
 - **accept**:
+- **actual**:
 - **acyclic**:
 - **after**:
 - **anchor**:
+- **answer**:
 - **array**:
 - **boundary**:
 - **breadth**:
 - **bug**:
 - **call**:
 - **choice**:
-- **clear**:
 - **comma**:
 - **compile**:
 - **compiler**:
 - **configure**:
-- **console**:
 - **constant**:
 - **controller**:
 - **decorator**:
@@ -484,7 +484,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **flag**:
 - **gitkeep**:
 - **homepage**:
-- **implementation**:
 - **implicit**:
 - **injectable**:
 - **instance**:
@@ -502,7 +501,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **metric**:
 - **min**:
 - **miss**:
-- **mkdtemp**:
 - **mock**:
 - **need**:
 - **optional**:
@@ -532,8 +530,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **success**:
 - **surface**:
 - **synthetic**:
+- **temporary**:
 - **timer**:
-- **tmpdir**:
 - **touch**:
 - **trim**:
 - **undeclared**:
