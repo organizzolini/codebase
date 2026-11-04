@@ -1049,6 +1049,7 @@ What this project is judged against, as declared in its own `callidescope.config
 The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-nx:coinagerie-check:write`.
 
 - **abort**:
+- **batch**:
 - **beta**:
 - **breach**:
 - **breadth**:
@@ -1062,12 +1063,15 @@ The words this project uses that the root glossary does not define, regenerated 
 - **hold**:
 - **identify**:
 - **know**:
+- **parallelism**:
 - **posix**:
+- **prefer**:
 - **realpath**:
 - **refuse**:
 - **restrict**:
 - **selection**:
 - **subpath**:
+- **terminal**:
 - **trace**:
 - **unmatched**:
 - **unread**:
