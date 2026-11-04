@@ -1062,13 +1062,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **call**:
 - **callable**:
 - **callback**:
-- **chunk**:
+- **capture**:
 - **clear**:
 - **closure**:
 - **compare**:
 - **compile**:
 - **compiler**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -1093,7 +1092,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **field**:
 - **filename**:
 - **flat**:
-- **force**:
 - **gamma**:
 - **gitkeep**:
 - **hold**:
@@ -1118,7 +1116,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **maximum**:
 - **meta**:
 - **metric**:
-- **mkdtemp**:
 - **mock**:
 - **normalize**:
 - **ok**:
@@ -1136,7 +1133,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **publish**:
 - **reach**:
 - **real**:
-- **realpath**:
 - **reason**:
 - **recursive**:
 - **refuse**:
@@ -1161,8 +1157,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **summary**:
 - **surface**:
 - **synthetic**:
+- **temporary**:
 - **timer**:
-- **tmpdir**:
 - **trace**:
 - **trim**:
 - **unmatched**:

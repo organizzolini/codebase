@@ -1,6 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
+
 import { OptionsService } from "../../modules/options/options.service";
 import { EMPTY_SCOPE_REPORT } from "../../modules/plugin/plugin.constants";
 
@@ -74,7 +76,7 @@ describe(gateExecutor, () => {
       ok: true,
       report: "## Call stacks over the depth limit (0)",
     });
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    captureOutput();
   });
 
   it("gates the project the target belongs to when nothing else is named", async () => {

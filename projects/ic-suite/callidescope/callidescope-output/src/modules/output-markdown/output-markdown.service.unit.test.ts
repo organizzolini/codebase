@@ -1,10 +1,11 @@
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildEmptyCallGraphResult } from "../../../testing/mocks";
 import { ANALYSIS_MODULES } from "../../../testing/modules";
@@ -38,19 +39,12 @@ function buildDestination(
 }
 
 describe(OutputMarkdownService, () => {
-  let service: OutputMarkdownService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(OutputMarkdownService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [OutputMarkdownService],
-    }).compile();
+    });
 
-    service = await module.resolve(OutputMarkdownService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(OutputMarkdownService);
   });
 
   const subjectLogger: DeepMocked<LoggerService> = createMock<LoggerService>();
@@ -58,10 +52,8 @@ describe(OutputMarkdownService, () => {
   const result = buildEmptyCallGraphResult();
 
   /** Returns a path inside a fresh temporary directory. */
-  async function temporaryPath(): Promise<string> {
-    const directory = await mkdtemp(
-      path.join(tmpdir(), "callidescope-markdown-"),
-    );
+  function temporaryPath(): string {
+    const directory = createTemporaryDirectory("callidescope-markdown");
 
     return path.join(directory, "REPORT.md");
   }
@@ -78,7 +70,7 @@ describe(OutputMarkdownService, () => {
   // 📄 Splicing
 
   it("replaces the block between existing anchors", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(
       filePath,
@@ -105,7 +97,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("appends the block when the file has no anchors", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(filePath, "# Title\n", "utf8");
     subject.syncAnchoredBlock({
@@ -126,7 +118,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("replaces a start marker with no matching end, rather than no-oping", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(
       filePath,
@@ -148,7 +140,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("keeps another anchored block intact when repairing a missing end marker", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(
       filePath,
@@ -172,7 +164,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("does not double the blank line before what follows a repaired block", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(
       filePath,
@@ -190,7 +182,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("leaves exactly one blank line before an appended block", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(filePath, "# Title\n", "utf8");
     subject.syncAnchoredBlock({
@@ -204,7 +196,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("does not open a new file with a blank line", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     subject.syncAnchoredBlock({
       check: false,
@@ -219,7 +211,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("creates the file when it does not exist", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     subject.syncAnchoredBlock({
       check: false,
@@ -232,7 +224,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("does not treat a dollar sign in the content as a pattern reference", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(
       filePath,
@@ -252,8 +244,8 @@ describe(OutputMarkdownService, () => {
   });
 
   it("writes to an overriding path when one is given", async () => {
-    const configured = await temporaryPath();
-    const override = await temporaryPath();
+    const configured = temporaryPath();
+    const override = temporaryPath();
 
     subject.syncAnchoredBlock({
       check: false,
@@ -278,8 +270,8 @@ describe(OutputMarkdownService, () => {
 
   // ✅ Check mode
 
-  it("reports a current block as current", async () => {
-    const filePath = await temporaryPath();
+  it("reports a current block as current", () => {
+    const filePath = temporaryPath();
     const destination = buildDestination(filePath);
 
     subject.sync({ check: false, content: "body", destination, result });
@@ -290,7 +282,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("reports a drifted block as stale", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(
       filePath,
@@ -309,7 +301,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("reports a start marker with no matching end as stale", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(
       filePath,
@@ -328,7 +320,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("reports a file with no anchors as stale", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(filePath, "# Title\n", "utf8");
 
@@ -342,19 +334,19 @@ describe(OutputMarkdownService, () => {
     ).toBe(false);
   });
 
-  it("reports a missing file as stale rather than failing", async () => {
+  it("reports a missing file as stale rather than failing", () => {
     expect(
       subject.sync({
         check: true,
         content: "body",
-        destination: buildDestination(await temporaryPath()),
+        destination: buildDestination(temporaryPath()),
         result,
       }),
     ).toBe(false);
   });
 
   it("writes nothing in check mode", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     await writeFile(filePath, "untouched", "utf8");
     subject.sync({
@@ -369,25 +361,25 @@ describe(OutputMarkdownService, () => {
 
   // 🔌 Custom writers
 
-  it("defers to a configured writer", async () => {
+  it("defers to a configured writer", () => {
     const writeBlock = vi.fn<WriteMarkdownOutput>(() => true);
 
     subject.sync({
       check: false,
       content: "body",
-      destination: buildDestination(await temporaryPath(), { writeBlock }),
+      destination: buildDestination(temporaryPath(), { writeBlock }),
       result,
     });
 
     expect(writeBlock).toHaveBeenCalledTimes(1);
   });
 
-  it("passes a configured writer's verdict straight through", async () => {
+  it("passes a configured writer's verdict straight through", () => {
     expect(
       subject.sync({
         check: true,
         content: "body",
-        destination: buildDestination(await temporaryPath(), {
+        destination: buildDestination(temporaryPath(), {
           writeBlock: () => false,
         }),
         result,
@@ -396,7 +388,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("lets a configured writer splice the block itself", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     subject.sync({
       check: false,
@@ -412,13 +404,13 @@ describe(OutputMarkdownService, () => {
     );
   });
 
-  it("lets a configured writer wrap its own content", async () => {
+  it("lets a configured writer wrap its own content", () => {
     let wrapped = "";
 
     subject.sync({
       check: false,
       content: "body",
-      destination: buildDestination(await temporaryPath(), {
+      destination: buildDestination(temporaryPath(), {
         writeBlock: (args) => {
           wrapped = args.helpers.wrapInAnchors("mine");
 
@@ -431,13 +423,13 @@ describe(OutputMarkdownService, () => {
     expect(wrapped).toContain("mine");
   });
 
-  it("wraps the rendered content when a writer passes nothing", async () => {
+  it("wraps the rendered content when a writer passes nothing", () => {
     let wrapped = "";
 
     subject.sync({
       check: false,
       content: "body",
-      destination: buildDestination(await temporaryPath(), {
+      destination: buildDestination(temporaryPath(), {
         writeBlock: (args) => {
           wrapped = args.helpers.wrapInAnchors();
 
@@ -451,7 +443,7 @@ describe(OutputMarkdownService, () => {
   });
 
   it("splices a writer's own content when it passes some", async () => {
-    const filePath = await temporaryPath();
+    const filePath = temporaryPath();
 
     subject.sync({
       check: false,
@@ -466,13 +458,13 @@ describe(OutputMarkdownService, () => {
     await expect(readFile(filePath, "utf8")).resolves.toContain("mine");
   });
 
-  it("exposes the configured markers to a writer", async () => {
+  it("exposes the configured markers to a writer", () => {
     let markers = "";
 
     subject.sync({
       check: false,
       content: "body",
-      destination: buildDestination(await temporaryPath(), {
+      destination: buildDestination(temporaryPath(), {
         writeBlock: (args) => {
           markers = `${args.helpers.startMarker}|${args.helpers.endMarker}`;
 
@@ -488,12 +480,12 @@ describe(OutputMarkdownService, () => {
   });
 
   it("lets a configured writer redirect to another path", async () => {
-    const override = await temporaryPath();
+    const override = temporaryPath();
 
     subject.sync({
       check: false,
       content: "body",
-      destination: buildDestination(await temporaryPath(), {
+      destination: buildDestination(temporaryPath(), {
         writeBlock: (args) =>
           args.helpers.syncAnchoredBlock({ path: override }),
       }),

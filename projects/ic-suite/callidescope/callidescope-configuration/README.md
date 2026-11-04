@@ -1099,14 +1099,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **cause**:
 - **choice**:
 - **choose**:
-- **clear**:
 - **collaborator**:
 - **comma**:
 - **compile**:
 - **compiler**:
 - **complete**:
 - **configure**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -1135,10 +1133,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **gitkeep**:
 - **hollow**:
 - **homepage**:
-- **implementation**:
 - **incomplete**:
 - **indentation**:
 - **injectable**:
+- **instance**:
 - **int**:
 - **integer**:
 - **intl**:
@@ -1154,7 +1152,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **meta**:
 - **metric**:
 - **miss**:
-- **mkdtemp**:
 - **mock**:
 - **multiselect**:
 - **nonnegative**:
@@ -1197,9 +1194,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **suggestion**:
 - **surface**:
 - **synthetic**:
+- **temporary**:
 - **terminal**:
 - **timer**:
-- **tmpdir**:
 - **touch**:
 - **trim**:
 - **unbounded**:

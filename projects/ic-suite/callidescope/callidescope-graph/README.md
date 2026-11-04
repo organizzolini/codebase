@@ -903,7 +903,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compute**:
 - **condense**:
 - **configure**:
-- **console**:
 - **constant**:
 - **construction**:
 - **controller**:
@@ -961,6 +960,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **implementation**:
 - **initializer**:
 - **injectable**:
+- **instance**:
 - **invalid**:
 - **iterable**:
 - **java**:
@@ -994,7 +994,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **metric**:
 - **min**:
 - **miss**:
-- **mkdtemp**:
 - **mock**:
 - **modern**:
 - **neighbor**:
@@ -1049,7 +1048,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **sort**:
 - **splice**:
 - **split**:
-- **spy**:
 - **stack**:
 - **statement**:
 - **strict**:
@@ -1060,11 +1058,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **syntax**:
 - **synthetic**:
 - **tarjan**:
+- **temporary**:
 - **text**:
 - **than**:
 - **through**:
 - **timer**:
-- **tmpdir**:
 - **too**:
 - **trace**:
 - **transitive**:

@@ -147,10 +147,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **callable**:
 - **callee**:
 - **caller**:
-- **clear**:
 - **compile**:
 - **compiler**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -171,8 +169,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **frame**:
 - **gitkeep**:
 - **homepage**:
-- **implementation**:
 - **injectable**:
+- **instance**:
 - **java**:
 - **kind**:
 - **least**:
@@ -189,11 +187,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **publish**:
 - **real**:
 - **reason**:
-- **recursive**:
 - **resolution**:
 - **rest**:
 - **site**:
-- **spy**:
 - **stack**:
 - **statement**:
 - **strict**:

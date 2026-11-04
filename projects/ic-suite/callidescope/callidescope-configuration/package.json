@@ -14,6 +14,7 @@
   },
   "description": "Configuration loader, entry point resolution, and depth limit definitions for Callidescope",
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",

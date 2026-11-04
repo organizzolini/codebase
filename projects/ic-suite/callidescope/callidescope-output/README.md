@@ -622,6 +622,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **callable**:
 - **callee**:
 - **caller**:
+- **capture**:
 - **cell**:
 - **chain**:
 - **character**:
@@ -635,7 +636,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compiler**:
 - **condense**:
 - **configure**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -674,11 +674,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **headroom**:
 - **homepage**:
 - **identifier**:
-- **implementation**:
 - **indent**:
 - **indentation**:
 - **infinity**:
 - **injectable**:
+- **instance**:
 - **java**:
 - **keep**:
 - **kind**:
@@ -700,7 +700,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **meta**:
 - **metric**:
 - **miss**:
-- **mkdtemp**:
 - **mock**:
 - **near**:
 - **omega**:
@@ -717,7 +716,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **point**:
 - **preview**:
 - **previous**:
-- **promise**:
 - **provide**:
 - **publish**:
 - **reach**:
@@ -743,7 +741,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **span**:
 - **splice**:
 - **split**:
-- **spy**:
 - **stack**:
 - **stale**:
 - **staleness**:
@@ -761,7 +758,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **thing**:
 - **three**:
 - **timer**:
-- **tmpdir**:
 - **trace**:
 - **trim**:
 - **truncation**:

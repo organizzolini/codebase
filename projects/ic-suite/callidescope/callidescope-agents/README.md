@@ -316,7 +316,6 @@ _This project has no internal file imports._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-agents:coinagerie-check:write`.
 
-- **clear**:
 - **compiler**:
 - **configure**:
 - **define**:
@@ -333,7 +332,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **matter**:
 - **maximum**:
 - **meta**:
-- **mock**:
 - **readdir**:
 - **relative**:
 - **replace**:
@@ -344,6 +342,5 @@ The words this project uses that the root glossary does not define, regenerated 
 - **than**:
 - **trace**:
 - **triage**:
-- **vi**:
 
 <!-- coinagerie:end -->

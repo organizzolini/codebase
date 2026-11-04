@@ -1169,7 +1169,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **callee**:
 - **cent**:
 - **choose**:
-- **clear**:
 - **closure**:
 - **collapse**:
 - **compiler**:
@@ -1233,8 +1232,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **mermaid**:
 - **meta**:
 - **min**:
-- **mkdtemp**:
-- **mock**:
 - **mutual**:
 - **network**:
 - **normalize**:
@@ -1254,7 +1251,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **rate**:
 - **readdir**:
 - **recursion**:
-- **recursive**:
 - **relay**:
 - **remain**:
 - **remove**:
@@ -1271,7 +1267,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **sort**:
 - **spawn**:
 - **split**:
-- **spy**:
 - **stack**:
 - **stdio**:
 - **stdout**:
@@ -1290,14 +1285,12 @@ The words this project uses that the root glossary does not define, regenerated 
 - **text**:
 - **than**:
 - **tier**:
-- **tmpdir**:
 - **trace**:
 - **traverse**:
 - **trim**:
 - **unresolved**:
 - **upper**:
 - **verdict**:
-- **vi**:
 - **walkthrough**:
 - **wide**:
 - **without**:

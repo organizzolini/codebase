@@ -1796,6 +1796,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **callee**:
 - **caller**:
 - **canonical**:
+- **capture**:
 - **cause**:
 - **cell**:
 - **choice**:
@@ -1806,7 +1807,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **compiler**:
 - **condense**:
 - **configure**:
-- **console**:
 - **constant**:
 - **controller**:
 - **count**:
@@ -1880,7 +1880,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **method**:
 - **metric**:
 - **miss**:
-- **mkdtemp**:
 - **mock**:
 - **multiselect**:
 - **omit**:
@@ -1901,7 +1900,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **quiet**:
 - **readable**:
 - **real**:
-- **realpath**:
 - **reason**:
 - **recursive**:
 - **reduce**:
@@ -1930,9 +1928,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **suggestion**:
 - **summary**:
 - **synthetic**:
+- **temporary**:
 - **text**:
 - **timer**:
-- **tmpdir**:
 - **touch**:
 - **trace**:
 - **undeclared**:

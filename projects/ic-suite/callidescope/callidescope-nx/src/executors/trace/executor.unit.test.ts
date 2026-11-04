@@ -1,6 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
+
 import { OptionsService } from "../../modules/options/options.service";
 
 import traceExecutor from "./executor";
@@ -71,7 +73,7 @@ describe(traceExecutor, () => {
     pluginService.resolveTraceScope.mockResolvedValue(buildScope());
     pluginService.describeRefusedScope.mockReturnValue("Unknown Nx projects.");
     pluginService.runTrace.mockResolvedValue({ ok: true, report: "# Report" });
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    captureOutput();
   });
 
   it("traces the project the target belongs to when nothing else is named", async () => {
