@@ -962,7 +962,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **child**:
 - **circumfix**:
 - **classical**:
-- **clear**:
 - **comment**:
 - **comparable**:
 - **comparative**:
@@ -973,7 +972,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **conjugation**:
 - **conjunction**:
 - **conjunctional**:
-- **console**:
 - **constant**:
 - **controller**:
 - **d067**:
@@ -992,6 +990,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **da**:
 - **dae85**:
 - **dative**:
+- **db**:
 - **dbe1**:
 - **dc81283**:
 - **dcce6**:
@@ -1092,13 +1091,13 @@ The words this project uses that the root glossary does not define, regenerated 
 - **idx**:
 - **imperative**:
 - **imperfect**:
-- **implementation**:
 - **indicative**:
 - **infinitive**:
 - **inflection**:
 - **inheritance**:
 - **inject**:
 - **injectable**:
+- **instance**:
 - **interfix**:
 - **interjection**:
 - **inverse**:
@@ -1133,7 +1132,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **nominal**:
 - **nominative**:
 - **non**:
-- **noop**:
 - **normalize**:
 - **noun**:
 - **now**:
@@ -1176,7 +1174,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **proxy**:
 - **publish**:
 - **punctuation**:
-- **recursive**:
 - **reject**:
 - **rel**:
 - **relation**:
@@ -1197,7 +1194,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **sort**:
 - **specify**:
 - **speech**:
-- **spy**:
 - **stable**:
 - **statement**:
 - **store**:

@@ -960,7 +960,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **exact**:
 - **exactly**:
 - **extent**:
-- **fake**:
 - **favicon**:
 - **feminine**:
 - **field**:
@@ -1095,7 +1094,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **proper**:
 - **punctuation**:
 - **ql**:
-- **real**:
 - **redirect**:
 - **refine**:
 - **reject**:
