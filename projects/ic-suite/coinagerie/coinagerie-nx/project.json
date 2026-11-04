@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "name": "coinagerie-nx",
+  "projectType": "library",
+  "sourceRoot": "projects/ic-suite/coinagerie/coinagerie-nx",
+  "tags": [
+    "framework:nestjs",
+    "generator:nestjs-service-project",
+    "language:typescript",
+    "layer:cli",
+    "name:coinagerie-nx",
+    "type:package"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "assets": [
+          {
+            "glob": "README.md",
+            "input": "projects/ic-suite/coinagerie/coinagerie-nx",
+            "output": "."
+          }
+        ],
+        "generatePackageJson": false,
+        "main": "projects/ic-suite/coinagerie/coinagerie-nx/src/index.ts",
+        "outputPath": "projects/ic-suite/coinagerie/coinagerie-nx/dist",
+        "tsConfig": "projects/ic-suite/coinagerie/coinagerie-nx/tsconfig.build.json"
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "build-projects": {},
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

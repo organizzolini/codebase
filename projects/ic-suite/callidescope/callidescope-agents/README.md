@@ -309,3 +309,38 @@ _This project has no internal file imports._
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-1-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-agents:coinagerie-check:write`.
+
+- **compiler**:
+- **configure**:
+- **define**:
+- **describe**:
+- **each**:
+- **entry**:
+- **equal**:
+- **field**:
+- **front**:
+- **least**:
+- **length**:
+- **less**:
+- **link**:
+- **matter**:
+- **maximum**:
+- **meta**:
+- **readdir**:
+- **relative**:
+- **replace**:
+- **resolution**:
+- **ship**:
+- **split**:
+- **strict**:
+- **than**:
+- **trace**:
+- **triage**:
+
+<!-- coinagerie:end -->

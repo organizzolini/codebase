@@ -1075,3 +1075,136 @@ graph LR
 <!-- A deliberate misspelling: the example of a `--format` value nobody
 recognizes, which is exactly what this refusal is about.
 cspell:ignore mermiad -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-configuration:coinagerie-check:write`.
+
+- **absolute**:
+- **accept**:
+- **address**:
+- **after**:
+- **anchor**:
+- **array**:
+- **autocomplete**:
+- **bare**:
+- **block**:
+- **breadth**:
+- **bug**:
+- **call**:
+- **callback**:
+- **callee**:
+- **cause**:
+- **choice**:
+- **choose**:
+- **collaborator**:
+- **comma**:
+- **compile**:
+- **compiler**:
+- **complete**:
+- **configure**:
+- **constant**:
+- **controller**:
+- **count**:
+- **custom**:
+- **decorator**:
+- **deep**:
+- **define**:
+- **delimit**:
+- **describe**:
+- **destination**:
+- **each**:
+- **entry**:
+- **equal**:
+- **example**:
+- **expectation**:
+- **experimental**:
+- **extname**:
+- **fake**:
+- **field**:
+- **flag**:
+- **flat**:
+- **footer**:
+- **forbid**:
+- **fully**:
+- **future**:
+- **gitkeep**:
+- **hollow**:
+- **homepage**:
+- **incomplete**:
+- **indentation**:
+- **injectable**:
+- **instance**:
+- **int**:
+- **integer**:
+- **intl**:
+- **java**:
+- **least**:
+- **length**:
+- **load**:
+- **lower**:
+- **marker**:
+- **maximum**:
+- **member**:
+- **mermaid**:
+- **meta**:
+- **metric**:
+- **miss**:
+- **mock**:
+- **multiselect**:
+- **nonnegative**:
+- **occurrence**:
+- **offer**:
+- **optional**:
+- **original**:
+- **orphan**:
+- **partial**:
+- **permit**:
+- **plain**:
+- **plan**:
+- **point**:
+- **positive**:
+- **preparation**:
+- **preview**:
+- **promise**:
+- **provide**:
+- **publish**:
+- **reader**:
+- **real**:
+- **reason**:
+- **recursive**:
+- **reject**:
+- **relative**:
+- **resolution**:
+- **runner**:
+- **selection**:
+- **separator**:
+- **serialize**:
+- **single**:
+- **some**:
+- **space**:
+- **split**:
+- **spy**:
+- **stdin**:
+- **strict**:
+- **stringify**:
+- **suggest**:
+- **suggestion**:
+- **surface**:
+- **synthetic**:
+- **temporary**:
+- **terminal**:
+- **timer**:
+- **touch**:
+- **trim**:
+- **unbounded**:
+- **undeclared**:
+- **unreadable**:
+- **vi**:
+- **width**:
+- **without**:
+- **wrap**:
+
+<!-- coinagerie:end -->

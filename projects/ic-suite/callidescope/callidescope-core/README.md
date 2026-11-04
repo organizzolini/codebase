@@ -132,3 +132,73 @@ None.
 
 None.
 <!-- callidescope:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-core:coinagerie-check:write`.
+
+- **after**:
+- **bind**:
+- **breadth**:
+- **bug**:
+- **call**:
+- **callable**:
+- **callee**:
+- **caller**:
+- **compile**:
+- **compiler**:
+- **constant**:
+- **controller**:
+- **count**:
+- **cycle**:
+- **cyclic**:
+- **decorator**:
+- **deep**:
+- **define**:
+- **describe**:
+- **display**:
+- **each**:
+- **edge**:
+- **enclose**:
+- **entry**:
+- **equal**:
+- **experimental**:
+- **fake**:
+- **frame**:
+- **gitkeep**:
+- **homepage**:
+- **injectable**:
+- **instance**:
+- **java**:
+- **kind**:
+- **least**:
+- **location**:
+- **lower**:
+- **maximum**:
+- **member**:
+- **meta**:
+- **metric**:
+- **mock**:
+- **optional**:
+- **parameter**:
+- **point**:
+- **publish**:
+- **real**:
+- **reason**:
+- **resolution**:
+- **rest**:
+- **site**:
+- **stack**:
+- **statement**:
+- **strict**:
+- **summary**:
+- **synthetic**:
+- **text**:
+- **timer**:
+- **unresolved**:
+- **vi**:
+- **wide**:
+
+<!-- coinagerie:end -->

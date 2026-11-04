@@ -45,7 +45,7 @@ Register it in `nx.json`:
 | `traceTargetName` | Name of the inferred trace target. `callidescope-trace` when omitted |
 | `depthTargetName` | Name of the inferred depth target. `callidescope-depth` when omitted |
 | `breadthTargetName` | Name of the inferred breadth target. `callidescope-breadth` when omitted |
-| `gateTargetName` | Name of the inferred gate target. `callidescope-gate` when omitted |
+| `gateTargetName` | Name of the inferred gate target. `callidescope-restrict` when omitted |
 
 All inferred targets default to `callidescope-*` names to avoid generic task
 labels in Nx lists. Rename any of them from the registration if a workspace
@@ -73,7 +73,7 @@ nx run callidescope-nx:callidescope-depth --addresses="src/a.service.ts#A.b,src/
 
 | Target | Answers |
 | ------ | ------- |
-| `callidescope-gate` | Whether anything in the project broke the limits it is held to |
+| `callidescope-restrict` | Whether anything in the project broke the limits it is held to |
 | `callidescope-trace` | Every call stack in the project, and which ones broke a limit |
 | `callidescope-depth` | Every stack above and below each callable — callers up to a root, callees down to a leaf |
 | `callidescope-breadth` | Each callable's direct callers and callees, side by side |
@@ -1041,3 +1041,133 @@ What this project is judged against, as declared in its own `callidescope.config
 
 </details>
 <!-- callidescope:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-nx:coinagerie-check:write`.
+
+- **abort**:
+- **address**:
+- **after**:
+- **alpha**:
+- **array**:
+- **assertion**:
+- **basename**:
+- **beta**:
+- **breach**:
+- **breadth**:
+- **bug**:
+- **call**:
+- **callable**:
+- **callback**:
+- **capture**:
+- **clear**:
+- **closure**:
+- **compare**:
+- **compile**:
+- **compiler**:
+- **constant**:
+- **controller**:
+- **count**:
+- **decorator**:
+- **deep**:
+- **define**:
+- **describe**:
+- **direct**:
+- **discover**:
+- **display**:
+- **downward**:
+- **each**:
+- **empty**:
+- **entry**:
+- **equal**:
+- **exp**:
+- **experimental**:
+- **explain**:
+- **explanation**:
+- **factory**:
+- **fake**:
+- **field**:
+- **filename**:
+- **flat**:
+- **gamma**:
+- **gitkeep**:
+- **hold**:
+- **homepage**:
+- **identify**:
+- **implementation**:
+- **injectable**:
+- **instance**:
+- **item**:
+- **java**:
+- **judge**:
+- **kind**:
+- **know**:
+- **least**:
+- **length**:
+- **load**:
+- **locale**:
+- **locate**:
+- **location**:
+- **logger**:
+- **manifest**:
+- **maximum**:
+- **meta**:
+- **metric**:
+- **mock**:
+- **normalize**:
+- **ok**:
+- **omit**:
+- **once**:
+- **own**:
+- **partial**:
+- **pending**:
+- **point**:
+- **posix**:
+- **preview**:
+- **promise**:
+- **prototype**:
+- **provide**:
+- **publish**:
+- **reach**:
+- **real**:
+- **reason**:
+- **recursive**:
+- **refuse**:
+- **reg**:
+- **reject**:
+- **resolution**:
+- **restrict**:
+- **second**:
+- **selection**:
+- **slice**:
+- **some**:
+- **sort**:
+- **split**:
+- **spy**:
+- **stack**:
+- **stdout**:
+- **strict**:
+- **stringify**:
+- **stub**:
+- **subpath**:
+- **success**:
+- **summary**:
+- **surface**:
+- **synthetic**:
+- **temporary**:
+- **timer**:
+- **trace**:
+- **trim**:
+- **unmatched**:
+- **unread**:
+- **untagged**:
+- **upward**:
+- **verdict**:
+- **vi**:
+- **wide**:
+- **wildcard**:
+
+<!-- coinagerie:end -->

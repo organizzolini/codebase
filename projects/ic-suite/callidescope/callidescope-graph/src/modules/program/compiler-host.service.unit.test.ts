@@ -1,4 +1,4 @@
-import { writeFile } from "node:fs/promises";
+import { rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import ts from "typescript";
@@ -125,5 +125,59 @@ describe(CompilerHostService, () => {
         .createHost({ options: OPTIONS, workspaceRoot })
         .getSourceFile(filePath, ts.ScriptTarget.ES2022),
     ).not.toBe(first);
+  });
+
+  it("remembers whether a file existed across hosts", async () => {
+    // Module resolution asks this of the same paths once per program, which is
+    // where a cold run spent most of its time.
+    const filePath = await writeSource("export const a = 1;\n");
+    const subject = new CompilerHostService();
+    const workspaceRoot = path.dirname(filePath);
+    const first = subject.createHost({ options: OPTIONS, workspaceRoot });
+
+    expect(first.fileExists(filePath)).toBe(true);
+
+    await rm(filePath);
+
+    expect(
+      subject
+        .createHost({ options: OPTIONS, workspaceRoot })
+        .fileExists(filePath),
+    ).toBe(true);
+  });
+
+  it("remembers a directory and a file's text across hosts", async () => {
+    const filePath = await writeSource("export const a = 1;\n");
+    const subject = new CompilerHostService();
+    const workspaceRoot = path.dirname(filePath);
+    const host = subject.createHost({ options: OPTIONS, workspaceRoot });
+
+    expect(host.directoryExists?.(workspaceRoot)).toBe(true);
+    expect(host.readFile(filePath)).toBe("export const a = 1;\n");
+
+    await rm(filePath);
+
+    const later = subject.createHost({ options: OPTIONS, workspaceRoot });
+
+    expect(later.readFile(filePath)).toBe("export const a = 1;\n");
+  });
+
+  it("remembers a real path, and forgets every answer on clear", async () => {
+    const filePath = await writeSource("export const a = 1;\n");
+    const subject = new CompilerHostService();
+    const workspaceRoot = path.dirname(filePath);
+    const host = subject.createHost({ options: OPTIONS, workspaceRoot });
+
+    expect(host.realpath?.(filePath)).toBeDefined();
+    expect(host.fileExists(filePath)).toBe(true);
+
+    await rm(filePath);
+    subject.clear();
+
+    expect(
+      subject
+        .createHost({ options: OPTIONS, workspaceRoot })
+        .fileExists(filePath),
+    ).toBe(false);
   });
 });

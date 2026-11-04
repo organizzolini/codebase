@@ -55,7 +55,7 @@ None.
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-365-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-16.48_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-17.15_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-4-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-13-3178c6?style=flat-square)
 
@@ -239,7 +239,7 @@ None.
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-122-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-134-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-4-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-7-a78bfa?style=flat-square)
@@ -259,3 +259,52 @@ None.
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run meanderaw-web:coinagerie-check:write`.
+
+- **after**:
+- **breadth**:
+- **character**:
+- **child**:
+- **compiler**:
+- **css**:
+- **define**:
+- **describe**:
+- **each**:
+- **entry**:
+- **gen**:
+- **h1**:
+- **history**:
+- **href**:
+- **html**:
+- **hydrate**:
+- **lang**:
+- **least**:
+- **level**:
+- **link**:
+- **load**:
+- **loader**:
+- **maximum**:
+- **meta**:
+- **mock**:
+- **preload**:
+- **preview**:
+- **promise**:
+- **rel**:
+- **resolution**:
+- **restoration**:
+- **role**:
+- **route**:
+- **screen**:
+- **scroll**:
+- **section**:
+- **ssr**:
+- **strict**:
+- **transition**:
+- **vi**:
+
+<!-- coinagerie:end -->

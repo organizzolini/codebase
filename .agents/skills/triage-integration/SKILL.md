@@ -102,7 +102,7 @@ branch, and Nx forwards an explicit configuration down `dependsOn` — so an
 edge there would let `lint-code --configuration=write` publish from a
 branch.
 
-`callidescope-gate` and `codependix-gate` are reached through `guard-code`'s
+`callidescope-restrict` and `codependix-bound` are reached through `guard-code`'s
 `dependsOn` rather than named here. Both are inferred per project and have no
 configurations, so `--configuration=check` falls through to their defaults.
 `nx affected` scopes each to the projects a commit actually touched — a commit
@@ -251,7 +251,7 @@ Config: [projects/affirmancy/project.json](../../../projects/affirmancy/project.
 
 Every synchronization command is its own Nx target on the `synchronization` project — `conformetry-generators`, `conventional-config`, `devcontainer-configuration`, `pull-request-template`, `skill-exclusions`, `vscode-extensions`, and `vscode-settings` — run directly rather than through a shared aggregate, the same way `configuration:codometer` and `configuration:callidescope` are run. There is no `sync-*` target, no `scripts/sync-*.ts` script, and no `synchronization:synchronize` aggregate target — those were retired when the work moved into [synchronization](../../../synchronization). `lint-code`'s dependents name each derivation target directly.
 
-The `nestjs-module-graphs` and `nx-project-graphs` targets were retired too, per issue #296: [codependix](../../../projects/ic-suite/codependix/codependix-cli) now derives the same NestJS module graphs and Nx neighborhood graphs through its own anchor blocks, gated per project by `codependix-gate` and published by `nx run configuration:codependix:write` instead.
+The `nestjs-module-graphs` and `nx-project-graphs` targets were retired too, per issue #296: [codependix](../../../projects/ic-suite/codependix/codependix-cli) now derives the same NestJS module graphs and Nx neighborhood graphs through its own anchor blocks, gated per project by `codependix-bound` and published by `nx run configuration:codependix:write` instead.
 
 | Check command                                             | Write command                           | What it validates                                                                                                                                           |
 | --------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -263,7 +263,7 @@ The `nestjs-module-graphs` and `nx-project-graphs` targets were retired too, per
 | `nx run synchronization:vscode-extensions:check`          | `:write`                                | `.vscode/extensions.json` matches devcontainer extension lists                                                                                              |
 | none on a branch (see below)                              | `nx run configuration:codependix:write` | Each project's README codependix blocks match its real Nx, NestJS, and import graphs                                                                        |
 
-A broken dependency boundary is not a sync check. `codependix-gate` is inferred per project and runs inside `guard-code`, so a boundary failure names the project it is charged to — run `pnpm exec nx run <project>:codependix-gate` to reproduce it, and read it with the [codependix-triage](../codependix-triage/SKILL.md) skill. The README blocks in the table are published from the default branch, so a branch has no check on them, and `configuration:codependix:write` is the only way to regenerate one by hand.
+A broken dependency boundary is not a sync check. `codependix-bound` is inferred per project and runs inside `guard-code`, so a boundary failure names the project it is charged to — run `pnpm exec nx run <project>:codependix-bound` to reproduce it, and read it with the [codependix-triage](../codependix-triage/SKILL.md) skill. The README blocks in the table are published from the default branch, so a branch has no check on them, and `configuration:codependix:write` is the only way to regenerate one by hand.
 
 > **Lesson**: If sync checks fail, it means a source of truth was edited without updating its counterpart. Example: editing `configuration/conformetry.config.ts` requires regenerating the `AGENTS.md` generators table. Editing `configuration/conventional.config.cjs` requires regenerating `.vscode/settings.json`, the PR template, and the types/scopes tables in AGENTS.md and the branch and commit skills.
 
@@ -431,7 +431,7 @@ Read `configuration/commitlint.config.ts` for the full rule set before amending.
 | `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
 | `conformetry` | Code generator templates and validation tests for generated instances |
 | `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
-| `interface` | Shared GraphQL package: Relay connection helpers, entity-to-object types, client code generation, and test helpers |
+| `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
@@ -448,6 +448,7 @@ Read `configuration/commitlint.config.ts` for the full rule set before amending.
 | `callidescope` | Call stack tracing and linting CLI, the configuration package it reads, and the packages that build and render its call graph |
 | `codependix` | Dependency graph export CLI, the configuration package it reads, and the package that judges the graphs against declared rules |
 | `codometer` | Code statistics measurement CLI, the configuration package it reads, and the packages that diff and render its pull request change report |
+| `coinagerie` | Codebase vocabulary CLI that lists the words a codebase uses and keeps a glossary of them in step with the code |
 | `no-release` | Escape hatch: suppress semantic-release for any commit type |
 | `publication` | Publication CLI: the CI release steps and the publishable-packages gate |
 | `release` | Version bumps and release commits generated by semantic-release |
