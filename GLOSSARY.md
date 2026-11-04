@@ -12,13 +12,9 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **active**:
 - **affect**:
 - **affirmancy**:
-- **afterward**:
-- **again**:
 - **age**:
 - **agent**:
 - **ai**:
-- **allow**:
-- **although**:
 - **analytics**:
 - **analyzer**:
 - **animate**:
@@ -33,13 +29,9 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **argument**:
 - **arm64**:
 - **artifact**:
-- **ask**:
 - **asset**:
 - **assignee**:
 - **astronomy**:
-- **at**:
-- **attach**:
-- **attempt**:
 - **attestation**:
 - **attribute**:
 - **audit**:
@@ -62,9 +54,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **bash**:
 - **bashrc**:
 - **bearer**:
-- **because**:
-- **before**:
-- **better**:
 - **bin**:
 - **blank**:
 - **body**:
@@ -80,7 +69,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **caelundas**:
 - **callidescope**:
 - **callidescopeignore**:
-- **can**:
 - **cancel**:
 - **candidate**:
 - **carousel**:
@@ -129,7 +117,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **configuration**:
 - **conformetry**:
 - **consumer**:
-- **contain**:
 - **content**:
 - **context**:
 - **continuous**:
@@ -175,10 +162,8 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **devcontainer**:
 - **devkit**:
 - **devtool**:
-- **directly**:
 - **directory**:
 - **dirname**:
-- **disable**:
 - **discussion**:
 - **disown**:
 - **dispatch**:
@@ -201,7 +186,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **embla**:
 - **emit**:
 - **emoji**:
-- **enable**:
 - **endpoint**:
 - **enforce**:
 - **engine**:
@@ -215,7 +199,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **etc**:
 - **euo**:
 - **event**:
-- **every**:
 - **exclude**:
 - **exclusion**:
 - **executor**:
@@ -225,7 +208,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **express5**:
 - **extension**:
 - **external**:
-- **extra**:
 - **extract**:
 - **extractor**:
 - **fail**:
@@ -235,9 +217,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **feature**:
 - **file**:
 - **filter**:
-- **find**:
-- **finish**:
-- **first**:
 - **fix**:
 - **fn**:
 - **fold**:
@@ -279,7 +258,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **health**:
 - **helm**:
 - **helper**:
-- **hide**:
 - **home**:
 - **hook**:
 - **host**:
@@ -305,7 +283,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **interval**:
 - **io**:
 - **issue**:
-- **it**:
 - **jaq**:
 - **jiti**:
 - **jq**:
@@ -349,7 +326,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **lodash**:
 - **log**:
 - **login**:
-- **long**:
 - **lookup**:
 - **ls**:
 - **lsof**:
@@ -395,8 +371,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **nbstripout**:
 - **nest**:
 - **nestjs**:
-- **next**:
-- **no**:
 - **node**:
 - **nohup**:
 - **note**:
@@ -409,7 +383,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **nxignore**:
 - **observability**:
 - **ollama**:
-- **open**:
 - **openrouter**:
 - **openwiki**:
 - **openwikiignore**:
@@ -423,7 +396,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **outcome**:
 - **outdated**:
 - **output**:
-- **outside**:
 - **overwrite**:
 - **owner**:
 - **oxfmt**:
@@ -548,7 +520,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **secure**:
 - **security**:
 - **sed**:
-- **see**:
 - **seed**:
 - **semantic**:
 - **semver**:
@@ -569,7 +540,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **sherif**:
 - **shiki**:
 - **short**:
-- **show**:
 - **shutdown**:
 - **sign**:
 - **signature**:
@@ -578,14 +548,11 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **silent**:
 - **size**:
 - **skill**:
-- **skip**:
 - **sl**:
 - **sleep**:
 - **smoke**:
-- **so**:
 - **sonner**:
 - **sortable**:
-- **special**:
 - **specifier**:
 - **spell**:
 - **sql**:
@@ -605,7 +572,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **status**:
 - **stderr**:
 - **step**:
-- **stop**:
 - **storage**:
 - **straggler**:
 - **strategy**:
@@ -639,9 +605,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **testcontainer**:
 - **tf**:
 - **tflint**:
-- **that**:
-- **the**:
-- **them**:
 - **theme**:
 - **threadpool**:
 - **timeout**:
@@ -707,10 +670,8 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **wasm**:
 - **watch**:
 - **web**:
-- **what**:
 - **wink**:
 - **word**:
-- **work**:
 - **worker**:
 - **workflow**:
 - **workspace**:
