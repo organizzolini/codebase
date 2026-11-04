@@ -1734,7 +1734,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **conflict**:
 - **conjugation**:
 - **conjunction**:
-- **console**:
 - **consonant**:
 - **constant**:
 - **controller**:
@@ -1825,7 +1824,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **floor**:
 - **florus**:
 - **fm**:
-- **force**:
 - **form**:
 - **form1**:
 - **fracco**:
@@ -1960,7 +1958,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **min**:
 - **mino**:
 - **miss**:
-- **mkdtemp**:
 - **mock**:
 - **mood**:
 - **multi**:
@@ -2102,7 +2099,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **save**:
 - **sc**:
 - **scan**:
-- **scoped**:
 - **scriptorum**:
 - **second**:
 - **section**:
@@ -2169,7 +2165,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **tidy**:
 - **timer**:
 - **timestamped**:
-- **tmpdir**:
 - **top**:
 - **tr**:
 - **trace**:

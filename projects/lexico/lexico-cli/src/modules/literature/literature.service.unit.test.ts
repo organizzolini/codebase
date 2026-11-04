@@ -5,6 +5,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
 import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { NumeralsService } from "../numerals/numerals.service";
@@ -88,9 +89,8 @@ describe(LiteratureService, () => {
     new LiteratureWordNormalizationService();
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(LiteratureService, {
       providers: [
-        LiteratureService,
         {
           provide: getRepositoryToken(Author),
           useValue: createRepositoryMock<Author>(),
@@ -127,20 +127,16 @@ describe(LiteratureService, () => {
           provide: LiteratureWordNormalizationService,
           useValue: literatureWordNormalizationService,
         },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(LiteratureService);
-    logger = await module.resolve(LoggerService);
-    authorRepository = module.get(getRepositoryToken(Author));
-    lineRepository = module.get(getRepositoryToken(Line));
-    textRepository = module.get(getRepositoryToken(Text));
-    tokenRepository = module.get(getRepositoryToken(Token));
-    wordRepository = module.get(getRepositoryToken(Word));
+    service = built.instance;
+    logger = built.mock(LoggerService);
+    authorRepository = built.module.get(getRepositoryToken(Author));
+    lineRepository = built.module.get(getRepositoryToken(Line));
+    textRepository = built.module.get(getRepositoryToken(Text));
+    tokenRepository = built.module.get(getRepositoryToken(Token));
+    wordRepository = built.module.get(getRepositoryToken(Word));
 
     authorRepository.findOneOrFail.mockResolvedValue(createAuthorFixture());
     authorRepository.save.mockResolvedValue(createAuthorFixture());
@@ -208,8 +204,49 @@ describe(LiteratureService, () => {
     readFileMock.mockResolvedValue("# heading");
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LiteratureService, {
+      providers: [
+        {
+          provide: getRepositoryToken(Author),
+          useValue: createRepositoryMock<Author>(),
+        },
+        {
+          provide: getRepositoryToken(Line),
+          useValue: createRepositoryMock<Line>(),
+        },
+        {
+          provide: NumeralsService,
+          useValue: numeralsService,
+        },
+        {
+          provide: getRepositoryToken(Text),
+          useValue: createRepositoryMock<Text>(),
+        },
+        {
+          provide: getRepositoryToken(Token),
+          useValue: createRepositoryMock<Token>(),
+        },
+        {
+          provide: getRepositoryToken(Word),
+          useValue: createRepositoryMock<Word>(),
+        },
+        {
+          provide: LiteratureLibraryScanService,
+          useValue: literatureLibraryScanService,
+        },
+        {
+          provide: LiteratureTextIngestionService,
+          useValue: literatureTextIngestionService,
+        },
+        {
+          provide: LiteratureWordNormalizationService,
+          useValue: literatureWordNormalizationService,
+        },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(LiteratureService);
   });
 
   it("should set logger context on construction", () => {

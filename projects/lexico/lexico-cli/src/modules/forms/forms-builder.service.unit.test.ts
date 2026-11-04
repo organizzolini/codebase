@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -9,6 +8,7 @@ import {
   type NominalForm,
   type PartOfSpeech,
 } from "@codebase/lexico-entities";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { FormsBuilderGuardsService } from "./forms-builder-guards.service";
 import { FormsBuilderVerbService } from "./forms-builder-verb.service";
@@ -21,27 +21,37 @@ describe(FormsBuilderService, () => {
   let transientWordsService: FormsTransientWordsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(FormsBuilderService, {
       providers: [
-        FormsBuilderService,
         FormsBuilderGuardsService,
         FormsBuilderVerbService,
         FormsTransientWordsService,
       ],
-    }).compile();
+    });
 
-    formsBuilderVerbService = await module.resolve(FormsBuilderVerbService);
-    service = await module.resolve(FormsBuilderService);
-    transientWordsService = await module.resolve(FormsTransientWordsService);
+    formsBuilderVerbService = await built.module.resolve(
+      FormsBuilderVerbService,
+    );
+    service = built.instance;
+    transientWordsService = await built.module.resolve(
+      FormsTransientWordsService,
+    );
   });
 
   beforeEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(FormsBuilderService, {
+      providers: [
+        FormsBuilderGuardsService,
+        FormsBuilderVerbService,
+        FormsTransientWordsService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(FormsBuilderService);
   });
 
   it("should return empty array for unsupported part of speech", () => {

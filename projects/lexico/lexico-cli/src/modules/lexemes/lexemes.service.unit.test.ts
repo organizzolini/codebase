@@ -1,5 +1,4 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import * as cheerio from "cheerio";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -11,7 +10,7 @@ import {
   type Pronunciation,
   Translation,
 } from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { EtymologyService } from "../etymology/etymology.service";
@@ -26,11 +25,13 @@ import { WordsService } from "../words/words.service";
 import { LexemesService } from "./lexemes.service";
 
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+import type { Provider } from "@nestjs/common";
 import type { Repository } from "typeorm";
 
 describe(LexemesService, () => {
   let service: LexemesService;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<LexemesService>["logger"];
   let etymologyService: DeepMocked<EtymologyService>;
   let formsBuilderService: DeepMocked<FormsBuilderService>;
   let formsService: DeepMocked<FormsService>;
@@ -47,6 +48,89 @@ describe(LexemesService, () => {
     typeof vi.mocked<Repository<Lexeme>["findOne"]>
   >;
 
+  const createProviders = (): Provider[] => [
+    { provide: getRepositoryToken(Lexeme), useValue: lexemeRepository },
+    { provide: EtymologyService, useValue: createMock<EtymologyService>() },
+    {
+      provide: FormsBuilderService,
+      useValue: createMock<FormsBuilderService>({
+        buildFormsForPartOfSpeech: vi.fn<() => Form[]>().mockReturnValue([]),
+      }),
+    },
+    {
+      provide: FormsService,
+      useValue: createMock<FormsService>({
+        ingestLexemeForms: vi
+          .fn<() => Promise<void>>()
+          .mockResolvedValue(undefined),
+      }),
+    },
+    {
+      provide: PartOfSpeechService,
+      useValue: createMock<PartOfSpeechService>({
+        getFirstPrincipalPartName: vi
+          .fn<() => string>()
+          .mockReturnValue("first"),
+        getPartOfSpeech: vi
+          .fn<PartOfSpeechService["getPartOfSpeech"]>()
+          .mockReturnValue("noun"),
+        ingestInflection: vi
+          .fn<PartOfSpeechService["ingestInflection"]>()
+          .mockReturnValue(
+            null as unknown as ReturnType<
+              PartOfSpeechService["ingestInflection"]
+            >,
+          ),
+        parseForms: vi.fn<() => Promise<unknown>>().mockResolvedValue({}),
+      }),
+    },
+    {
+      provide: PrincipalPartsService,
+      useValue: createMock<PrincipalPartsService>({
+        ingestLexemePrincipalParts: vi
+          .fn<() => Promise<void>>()
+          .mockResolvedValue(undefined),
+        parsePrincipalParts: vi
+          .fn<
+            () => {
+              macronizedWord: string;
+              principalParts: PrincipalPart[];
+            }
+          >()
+          .mockReturnValue({
+            macronizedWord: "amo",
+            principalParts: [] as PrincipalPart[],
+          }),
+      }),
+    },
+    {
+      provide: PronunciationService,
+      useValue: createMock<PronunciationService>({
+        ingestLexemePronunciations: vi
+          .fn<() => Promise<void>>()
+          .mockResolvedValue(undefined),
+        parse: vi.fn<() => Pronunciation[]>().mockReturnValue([]),
+      }),
+    },
+    {
+      provide: TranslationsService,
+      useValue: createMock<TranslationsService>({
+        parseTranslations: vi.fn<() => Translation[]>().mockReturnValue([]),
+        prepareTranslationsForSave: vi.fn<
+          (savedLexeme: Lexeme, translations: Translation[]) => Translation[]
+        >((_savedLexeme, translations) => translations),
+      }),
+    },
+    {
+      provide: WordsService,
+      useValue: createMock<WordsService>({
+        ingestLexemeWords: vi
+          .fn<() => Promise<void>>()
+          .mockResolvedValue(undefined),
+      }),
+    },
+  ];
+
   beforeAll(async () => {
     lexemeRepository = createRepositoryMock<Lexeme>() as DeepMocked<
       Repository<Lexeme>
@@ -56,111 +140,20 @@ describe(LexemesService, () => {
     >;
     findOneLexeme = vi.mocked(lexemeRepository.findOne);
 
-    const module = await Test.createTestingModule({
-      providers: [
-        LexemesService,
-        { provide: getRepositoryToken(Lexeme), useValue: lexemeRepository },
-        { provide: EtymologyService, useValue: createMock<EtymologyService>() },
-        {
-          provide: FormsBuilderService,
-          useValue: createMock<FormsBuilderService>({
-            buildFormsForPartOfSpeech: vi
-              .fn<() => Form[]>()
-              .mockReturnValue([]),
-          }),
-        },
-        {
-          provide: FormsService,
-          useValue: createMock<FormsService>({
-            ingestLexemeForms: vi
-              .fn<() => Promise<void>>()
-              .mockResolvedValue(undefined),
-          }),
-        },
-        {
-          provide: PartOfSpeechService,
-          useValue: createMock<PartOfSpeechService>({
-            getFirstPrincipalPartName: vi
-              .fn<() => string>()
-              .mockReturnValue("first"),
-            getPartOfSpeech: vi
-              .fn<PartOfSpeechService["getPartOfSpeech"]>()
-              .mockReturnValue("noun"),
-            ingestInflection: vi
-              .fn<PartOfSpeechService["ingestInflection"]>()
-              .mockReturnValue(
-                null as unknown as ReturnType<
-                  PartOfSpeechService["ingestInflection"]
-                >,
-              ),
-            parseForms: vi.fn<() => Promise<unknown>>().mockResolvedValue({}),
-          }),
-        },
-        {
-          provide: PrincipalPartsService,
-          useValue: createMock<PrincipalPartsService>({
-            ingestLexemePrincipalParts: vi
-              .fn<() => Promise<void>>()
-              .mockResolvedValue(undefined),
-            parsePrincipalParts: vi
-              .fn<
-                () => {
-                  macronizedWord: string;
-                  principalParts: PrincipalPart[];
-                }
-              >()
-              .mockReturnValue({
-                macronizedWord: "amo",
-                principalParts: [] as PrincipalPart[],
-              }),
-          }),
-        },
-        {
-          provide: PronunciationService,
-          useValue: createMock<PronunciationService>({
-            ingestLexemePronunciations: vi
-              .fn<() => Promise<void>>()
-              .mockResolvedValue(undefined),
-            parse: vi.fn<() => Pronunciation[]>().mockReturnValue([]),
-          }),
-        },
-        {
-          provide: TranslationsService,
-          useValue: createMock<TranslationsService>({
-            parseTranslations: vi.fn<() => Translation[]>().mockReturnValue([]),
-            prepareTranslationsForSave: vi.fn<
-              (
-                savedLexeme: Lexeme,
-                translations: Translation[],
-              ) => Translation[]
-            >((_savedLexeme, translations) => translations),
-          }),
-        },
-        {
-          provide: WordsService,
-          useValue: createMock<WordsService>({
-            ingestLexemeWords: vi
-              .fn<() => Promise<void>>()
-              .mockResolvedValue(undefined),
-          }),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(LexemesService, {
+      providers: createProviders(),
+    });
 
-    service = await module.resolve(LexemesService);
-    logger = await module.resolve(LoggerService);
-    etymologyService = module.get(EtymologyService);
-    formsBuilderService = module.get(FormsBuilderService);
-    formsService = module.get(FormsService);
-    partOfSpeechService = module.get(PartOfSpeechService);
-    principalPartsService = module.get(PrincipalPartsService);
-    pronunciationService = module.get(PronunciationService);
-    translationsService = module.get(TranslationsService);
-    wordsService = module.get(WordsService);
+    service = built.instance;
+    logger = built.logger;
+    etymologyService = built.module.get(EtymologyService);
+    formsBuilderService = built.module.get(FormsBuilderService);
+    formsService = built.module.get(FormsService);
+    partOfSpeechService = built.module.get(PartOfSpeechService);
+    principalPartsService = built.module.get(PrincipalPartsService);
+    pronunciationService = built.module.get(PronunciationService);
+    translationsService = built.module.get(TranslationsService);
+    wordsService = built.module.get(WordsService);
   });
 
   beforeEach(() => {
@@ -202,8 +195,12 @@ describe(LexemesService, () => {
     wordsService.ingestLexemeWords.mockResolvedValue(undefined);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LexemesService, {
+      providers: createProviders(),
+    });
+
+    expect(instance).toBeInstanceOf(LexemesService);
   });
 
   it("should return true from existsByLemma when count is positive", async () => {

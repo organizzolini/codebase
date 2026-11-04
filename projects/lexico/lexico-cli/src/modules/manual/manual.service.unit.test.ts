@@ -1,10 +1,10 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Lexeme, Word, WordForm, WordLexeme } from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { NumeralsService } from "../numerals/numerals.service";
@@ -15,6 +15,8 @@ import { ManualService } from "./manual.service";
 import * as manualUtilities from "./manual.utilities";
 
 import type { ManualDeletionLexeme } from "./manual.types";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+import type { Provider } from "@nestjs/common";
 import type { Repository } from "typeorm";
 import type { Mocked } from "vitest";
 
@@ -24,64 +26,61 @@ describe(ManualService, () => {
   let lexemesRepository: DeepMocked<Repository<Lexeme>>;
   let wordsService: Mocked<WordsService>;
   let numeralsService: Mocked<NumeralsService>;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<ManualService>["logger"];
+
+  const createProviders = (): Provider[] => [
+    {
+      provide: getRepositoryToken(Lexeme),
+      useValue: createRepositoryMock<Lexeme>(),
+    },
+    {
+      provide: WordsService,
+      useValue: createMock<WordsService>({
+        ingestLexemeWords: vi
+          .fn<(lexeme?: Lexeme) => Promise<void>>()
+          .mockResolvedValue(undefined),
+      }),
+    },
+    {
+      provide: NumeralsService,
+      useValue: createMock<NumeralsService>({
+        toRoman: vi.fn<(numberValue: number) => string>((numberValue) => {
+          const romanNumerals: Record<number, string> = {
+            1: "I",
+            2: "II",
+            3: "III",
+            4: "IV",
+            5: "V",
+            10: "X",
+          };
+          return romanNumerals[numberValue] ?? "X";
+        }),
+      }),
+    },
+    {
+      provide: getRepositoryToken(Word),
+      useValue: createRepositoryMock<Word>(),
+    },
+    {
+      provide: getRepositoryToken(WordLexeme),
+      useValue: createRepositoryMock<WordLexeme>(),
+    },
+    {
+      provide: getRepositoryToken(WordForm),
+      useValue: createRepositoryMock<WordForm>(),
+    },
+  ];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ManualService,
-        {
-          provide: getRepositoryToken(Lexeme),
-          useValue: createRepositoryMock<Lexeme>(),
-        },
-        {
-          provide: WordsService,
-          useValue: createMock<WordsService>({
-            ingestLexemeWords: vi
-              .fn<(lexeme?: Lexeme) => Promise<void>>()
-              .mockResolvedValue(undefined),
-          }),
-        },
-        {
-          provide: NumeralsService,
-          useValue: createMock<NumeralsService>({
-            toRoman: vi.fn<(numberValue: number) => string>((numberValue) => {
-              const romanNumerals: Record<number, string> = {
-                1: "I",
-                2: "II",
-                3: "III",
-                4: "IV",
-                5: "V",
-                10: "X",
-              };
-              return romanNumerals[numberValue] ?? "X";
-            }),
-          }),
-        },
-        {
-          provide: getRepositoryToken(Word),
-          useValue: createRepositoryMock<Word>(),
-        },
-        {
-          provide: getRepositoryToken(WordLexeme),
-          useValue: createRepositoryMock<WordLexeme>(),
-        },
-        {
-          provide: getRepositoryToken(WordForm),
-          useValue: createRepositoryMock<WordForm>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(ManualService, {
+      providers: createProviders(),
+    });
 
-    service = await module.resolve(ManualService);
-    lexemesRepository = module.get(getRepositoryToken(Lexeme));
-    wordsService = module.get(WordsService);
-    numeralsService = module.get(NumeralsService);
-    logger = await module.resolve(LoggerService);
+    service = built.instance;
+    lexemesRepository = built.module.get(getRepositoryToken(Lexeme));
+    wordsService = built.module.get(WordsService);
+    numeralsService = built.module.get(NumeralsService);
+    logger = built.logger;
 
     lexemesRepository.delete.mockResolvedValue({ affected: 1, raw: [] });
   });
@@ -158,37 +157,16 @@ describe(ManualService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ManualService, {
+      providers: createProviders(),
+    });
+
+    expect(instance).toBeInstanceOf(ManualService);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ManualService,
-        {
-          provide: getRepositoryToken(Lexeme),
-          useValue: createRepositoryMock<Lexeme>(),
-        },
-        {
-          provide: WordsService,
-          useValue: createMock<WordsService>(),
-        },
-        {
-          provide: NumeralsService,
-          useValue: createMock<NumeralsService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(ManualService);
-    const scopedLogger = await module.resolve(LoggerService);
-
-    expect(scopedLogger.setContext).toHaveBeenCalledWith("ManualService");
+    await expectLoggerContext(ManualService, { providers: createProviders() });
   });
 
   describe("createManual", () => {
