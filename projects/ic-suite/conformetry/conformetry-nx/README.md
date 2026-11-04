@@ -983,6 +983,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **define**:
 - **definition**:
 - **describe**:
+- **discover**:
+- **discovery**:
 - **disk**:
 - **each**:
 - **empty**:
@@ -1003,6 +1005,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **flat**:
 - **force**:
 - **formatter**:
+- **gadget**:
 - **generation**:
 - **gitkeep**:
 - **greater**:
@@ -1085,6 +1088,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **timer**:
 - **tmpdir**:
 - **trim**:
+- **untagged**:
 - **vi**:
 - **warn**:
 - **widget**:
