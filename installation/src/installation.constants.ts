@@ -11,4 +11,9 @@ export const environmentSchema = z.object({
    * developer's machine, it adds nothing.
    */
   GITHUB_PATH: z.string().optional(),
+  /**
+   * The bearer token the `shared-nx-cache` command accepts, and the one Nx itself
+   * sends. Unset, a built-in token is used, since the server is local.
+   */
+  NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN: z.string().optional(),
 });

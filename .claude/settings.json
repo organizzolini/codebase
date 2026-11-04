@@ -48,6 +48,11 @@
             "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/git/validate-session-hooks-path.sh\"",
             "timeout": 15,
             "type": "command"
+          },
+          {
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/git/seed-session-nx-cache.sh\"",
+            "timeout": 15,
+            "type": "command"
           }
         ],
         "matcher": "startup|resume|clear"

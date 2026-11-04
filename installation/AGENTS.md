@@ -8,6 +8,8 @@
 
 One command is maintenance rather than setup: `update-reui-skill` refreshes the vendored ReUI skill, and `upgrade-dependencies.yml` runs it after `skills update`. It is not part of `setup`, and an outage prints the retry command and exits 0.
 
+Another is a long-running service rather than setup: `shared-nx-cache` serves Nx's self-hosted remote cache so every git worktree on one machine shares task outputs. It is not part of `setup`.
+
 ### Run Locally
 
 ```bash
@@ -16,6 +18,7 @@ nx run installation:start:setup                  # Everything this project does,
 nx run installation:start:software               # Or one step: shell-configuration, software, environment-files, dependencies
 nx run installation:start:local-services         # Start a Docker daemon where this machine can run one, then the local Postgres container
 nx run installation:start:update-reui-skill      # Refresh the vendored ReUI skill (also run by the weekly upgrade-dependencies workflow)
+nx run installation:start:shared-nx-cache           # Serve the local Nx remote cache in the foreground on 127.0.0.1:19750 until Ctrl+C (flags: --port, --directory)
 nx run installation:start:software -- gitleaks trivy postgres-client   # Just these (the setup-codebase action runs it this way too)
 ```
 
@@ -34,6 +37,7 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 | `dependencies`        | `modules/dependencies`                    |
 | `local-services`      | `modules/local-services`                  |
 | `update-reui-skill`   | `modules/update-reui-skill`               |
+| `shared-nx-cache`     | `modules/shared-nx-cache`                 |
 
 `software` with names, such as `software gitleaks trivy postgres-client`, installs only those, through `modules/software/software-named.service.ts`. The names are any tool installed from a release archive (`helm`, `kubectl`, `terraform`, `gitleaks`, `trivy`, `uv`), which only Linux uses, and `postgres-client` (PostgreSQL 18's `pg_dump` and `pg_restore`), which works on both. They are the same installs `software` makes with no names, so a laptop, a devcontainer, and a CI runner run one version of each; the `setup-codebase` composite action runs it this way after `pnpm install`, with the software its inputs ask for. Naming software changes two things: a tool that cannot be installed fails the run instead of warning, since it was asked for, and the apt steps go through `sudo` when this is not root, as on a runner. It puts `~/.local/bin` first on `PATH`, and in `GITHUB_PATH` when that is set. See [ADR 0030](../documentation/adr/0030-let-software-install-named-tools.md).
 
@@ -42,6 +46,8 @@ From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`,
 `setup` asks `ProcessRunnerService.platform()` which machine it is on, so a test covers both. A Mac runs shell configuration, software, files, and dependencies. Linux, which is what a Claude Code cloud session and the devcontainer run, has no Homebrew and no shell to configure, so it runs the files, `software`, and `local-services`; `software` (with `modules/release-archives` and `modules/ssh-signing`) installs a different set there — Helm, kubectl, Terraform, gitleaks, Trivy, and uv from their release archives, Python through uv, linode-cli through `uv tool install`, squawk through pnpm, and PostgreSQL 18 from its apt repository — and on both machines it makes SSH commit signatures verifiable; the script has already run `pnpm install`.
 
 On a Mac, `setup` configures the shell before it installs software, as the script always did, so completions for tools installed in the same run are wired the next time it runs.
+
+`shared-nx-cache` runs a local HTTP server that implements Nx's self-hosted remote cache API (`PUT` and `GET /v1/cache/{hash}`, opaque tar archives keyed by task hash), so a task one worktree ran is a cache hit in every other. It binds to `127.0.0.1` only, never an external address, and checks a bearer token: the built-in `codebase-local-nx-cache` (not a secret, since the server is local) unless `NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN` is set, which is the variable Nx reads too. Entries are files in `~/.cache/codebase-nx-shared` (`--directory`), written atomically and never overwritten. On startup and hourly it evicts entries unused for 14 days, then the oldest while the directory exceeds 5 GiB; a read counts as use. It listens on port 19750 (`--port`), runs in the foreground until SIGINT or SIGTERM, and leaves running it in the background to the calling shell. Point Nx at it with `NX_SELF_HOSTED_REMOTE_CACHE_SERVER=http://127.0.0.1:19750`.
 
 ## Architecture Overview
 

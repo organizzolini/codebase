@@ -44,3 +44,107 @@ nx run interface:vitest
 ## 👔 Conformetry
 
 This project was generated from the [nestjs-service-project](../../../configuration/conformetry-templates/nestjs-service-project) conformetry template.
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run interface:coinagerie-check:write`.
+
+- **after**:
+- **array**:
+- **assertion**:
+- **bind**:
+- **breadth**:
+- **buffer**:
+- **builder**:
+- **clear**:
+- **close**:
+- **compile**:
+- **compiler**:
+- **connection**:
+- **console**:
+- **constant**:
+- **count**:
+- **decode**:
+- **decorator**:
+- **define**:
+- **describe**:
+- **each**:
+- **edge**:
+- **edge1**:
+- **edge2**:
+- **encode**:
+- **entity**:
+- **equal**:
+- **experimental**:
+- **expose**:
+- **factory**:
+- **fake**:
+- **field**:
+- **flat**:
+- **floor**:
+- **handler**:
+- **implementation**:
+- **instance**:
+- **int**:
+- **invalid**:
+- **item**:
+- **kind**:
+- **large**:
+- **last**:
+- **least**:
+- **length**:
+- **load**:
+- **math**:
+- **maximum**:
+- **middle**:
+- **min**:
+- **mismatch**:
+- **mock**:
+- **narrow**:
+- **negative**:
+- **non**:
+- **nullable**:
+- **omit**:
+- **outsider**:
+- **paginate**:
+- **pagination**:
+- **pair**:
+- **parameter**:
+- **payload**:
+- **pick**:
+- **previous**:
+- **prototype**:
+- **publish**:
+- **ql**:
+- **quick**:
+- **real**:
+- **recursive**:
+- **relate**:
+- **relation**:
+- **relay**:
+- **rename**:
+- **resolution**:
+- **safe**:
+- **scalar**:
+- **score**:
+- **self**:
+- **slice**:
+- **spy**:
+- **strict**:
+- **stringify**:
+- **summarize**:
+- **summary**:
+- **synthetic**:
+- **tail**:
+- **text**:
+- **timer**:
+- **unhandled**:
+- **unload**:
+- **upper**:
+- **vi**:
+- **violation**:
+- **wrong**:
+
+<!-- coinagerie:end -->

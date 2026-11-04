@@ -1,3 +1,53 @@
+## 0.0.64 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.64
+- Updated conformetry-generation to 0.0.64
+- Updated conformetry-validation to 0.0.63
+- Updated conformetry-output to 0.0.63
+- Updated conformetry-core to 0.0.62
+
+## 0.0.63 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.63
+- Updated conformetry-generation to 0.0.63
+- Updated conformetry-validation to 0.0.62
+- Updated conformetry-output to 0.0.62
+- Updated conformetry-core to 0.0.61
+
+## 0.0.62 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.62
+- Updated conformetry-generation to 0.0.62
+- Updated conformetry-validation to 0.0.61
+- Updated conformetry-output to 0.0.61
+- Updated conformetry-core to 0.0.60
+
+## 0.0.61 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.61
+- Updated conformetry-generation to 0.0.61
+- Updated conformetry-validation to 0.0.60
+- Updated conformetry-output to 0.0.60
+- Updated conformetry-core to 0.0.59
+
+## 0.0.60 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.60
+- Updated conformetry-generation to 0.0.60
+- Updated conformetry-validation to 0.0.59
+- Updated conformetry-output to 0.0.59
+- Updated conformetry-core to 0.0.58
+
 ## 0.0.59 (2026-11-03)
 
 ### 🧱 Updated Dependencies

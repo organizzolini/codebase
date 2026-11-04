@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.51.3](https://github.com/organizzolini/codebase/compare/v3.51.2...v3.51.3) (2026-11-04)
+
+## [3.51.2](https://github.com/organizzolini/codebase/compare/v3.51.1...v3.51.2) (2026-11-04)
+
+### ♻️ Code Refactoring
+
+* **callidescope,codependix,configuration,validation:** ♻️ rename gate targets to restrict and bound ([#2100](https://github.com/organizzolini/codebase/issues/2100)) ([2b8017a](https://github.com/organizzolini/codebase/commit/2b8017a499455b21200eb4c08c1eaca5f4b9cf97))
+
+## [3.51.1](https://github.com/organizzolini/codebase/compare/v3.51.0...v3.51.1) (2026-11-03)
+
+### ⚡ Performance Improvements
+
+* **configuration,infrastructure,installation:** ⚡️ trim pre-commit checks and use Nx Cloud with scoped tokens ([#2097](https://github.com/organizzolini/codebase/issues/2097)) ([b43f34a](https://github.com/organizzolini/codebase/commit/b43f34aaca681dffb4adef26e2a3abc83dd9d8ab))
+
+## [3.51.0](https://github.com/organizzolini/codebase/compare/v3.50.0...v3.51.0) (2026-11-03)
+
+### ✨ Features
+
+* **nx-cloud:** set up nx cloud workspace ([#2099](https://github.com/organizzolini/codebase/issues/2099)) ([fb5ddcc](https://github.com/organizzolini/codebase/commit/fb5ddcc40346394b11975c23e4ac7aad7d8d59b2))
+
+### ⚡ Performance Improvements
+
+* **callidescope:** ⚡️ cache file-system probes across a run's programs ([#2098](https://github.com/organizzolini/codebase/issues/2098)) ([3bc4484](https://github.com/organizzolini/codebase/commit/3bc4484539482ead12ed46f2aa39a0852fcb7471))
+
+## [3.50.0](https://github.com/organizzolini/codebase/compare/v3.49.0...v3.50.0) (2026-11-03)
+
+### ✨ Features
+
+* **configuration,coinagerie:** ✨ adopt coinagerie with a root glossary ([#1888](https://github.com/organizzolini/codebase/issues/1888)) ([ba65ac8](https://github.com/organizzolini/codebase/commit/ba65ac83439a781420a4760eead1eb7547761db6)), closes [#1785](https://github.com/organizzolini/codebase/issues/1785) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1786](https://github.com/organizzolini/codebase/issues/1786) [#1787](https://github.com/organizzolini/codebase/issues/1787) [#1788](https://github.com/organizzolini/codebase/issues/1788) [#1887](https://github.com/organizzolini/codebase/issues/1887) [#1885](https://github.com/organizzolini/codebase/issues/1885) [#1879](https://github.com/organizzolini/codebase/issues/1879) [#1789](https://github.com/organizzolini/codebase/issues/1789)
+
+## [3.49.0](https://github.com/organizzolini/codebase/compare/v3.48.0...v3.49.0) (2026-11-03)
+
+### ✨ Features
+
+* **coinagerie:** ✨ add coinagerie agent skills ([#1887](https://github.com/organizzolini/codebase/issues/1887)) ([1babeae](https://github.com/organizzolini/codebase/commit/1babeae40373a91ba49cf9257dc1e931487e82ca)), closes [#1782](https://github.com/organizzolini/codebase/issues/1782) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1885](https://github.com/organizzolini/codebase/issues/1885) [#1778](https://github.com/organizzolini/codebase/issues/1778) [#1879](https://github.com/organizzolini/codebase/issues/1879) [#1775](https://github.com/organizzolini/codebase/issues/1775)
+
+### 📝 Documentation
+
+* **coinagerie:** 📝 add coinagerie examples and guided tour ([#1885](https://github.com/organizzolini/codebase/issues/1885)) ([da5227a](https://github.com/organizzolini/codebase/commit/da5227a0c383c468ae6d2cbe8530eb405f4c62e6)), closes [#1879](https://github.com/organizzolini/codebase/issues/1879) [#1778](https://github.com/organizzolini/codebase/issues/1778) [#1749](https://github.com/organizzolini/codebase/issues/1749) [#1779](https://github.com/organizzolini/codebase/issues/1779) [#1780](https://github.com/organizzolini/codebase/issues/1780) [#1781](https://github.com/organizzolini/codebase/issues/1781)
+
 ## [3.48.0](https://github.com/organizzolini/codebase/compare/v3.47.0...v3.48.0) (2026-11-03)
 
 ### ✨ Features

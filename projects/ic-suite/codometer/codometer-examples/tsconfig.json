@@ -24,6 +24,7 @@
   "include": [
     "codependix.config.ts",
     "codometer.config.ts",
+    "coinagerie.config.ts",
     "eslint.config.ts",
     "examples/**/*.ts",
     "testing/**/*.ts",

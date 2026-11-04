@@ -29,6 +29,9 @@ ignorePaths:
   - "**/*.min.js"
   - "**/Modelfile*"
   - "**/CHANGELOG.md"
+  # The root glossary lists every word the code outside the projects uses, and
+  # a word is listed because the code spells it, however it is spelled.
+  - "**/GLOSSARY.md"
   - "**/coverage"
   - "**/dist"
   - "**/projects/lexico/lexico-cli/data/**"
@@ -71,6 +74,10 @@ ignorePaths:
   - "**/.agents/skills/codometer-configure/**"
   - "**/.agents/skills/codometer-measure/**"
   - "**/.agents/skills/codometer-triage/**"
+  - "**/.agents/skills/coinagerie-collect/**"
+  - "**/.agents/skills/coinagerie-configure/**"
+  - "**/.agents/skills/coinagerie-define/**"
+  - "**/.agents/skills/coinagerie-triage/**"
   - "**/.agents/skills/conformetry-configure/**"
   - "**/.agents/skills/conformetry-generate/**"
   - "**/.agents/skills/conformetry-validate/**"
@@ -275,9 +282,15 @@ patterns:
   # `mdast-util-*` packages, Zod's `RefinementCtx` type, pytest's `tmp_path` fixture,
   # Python's `secrets.token_hex()`, the `git config --bool` flag, and the Universal
   # Dependencies `NUM` part-of-speech tag, and ReUI's `CascaderNav` component with
-  # the `cascader-nav` file it lives in.
+  # the `cascader-nav` file it lives in. The `char` entry of the coinagerie fold map folds
+  # the `charAt` method of JavaScript's `String` onto the word the code spells out.
   - name: external-identifier
-    pattern: /\bmdast-util-[\w-]+|\bRefinementCtx\b|\btmp_path\b|\btoken_hex\b|--bool\b|(?<=")NUM(?=")|\bCascaderNav\b|\bcascader-nav\b/g
+    pattern: /\bmdast-util-[\w-]+|\bRefinementCtx\b|\btmp_path\b|\btoken_hex\b|--bool\b|(?<=")NUM(?=")|\bCascaderNav\b|\bcascader-nav\b|\["char", "character"\]/g
+  # A project's glossary block in its README. It lists the words the project's code
+  # spells, banned abbreviations and invented names included, and a glossary
+  # that left those out would not be a glossary of the code.
+  - name: coinagerie-glossary-block
+    pattern: /<!-- coinagerie:start -->[\s\S]*?<!-- coinagerie:end -->/g
   # HTML element names quoted as a React type argument (`ComponentProps<"nav">`,
   # `ComponentPropsWithoutRef<"img">`). The tag names come from HTML, so `nav` is the
   # element rather than an abbreviation anyone here chose.
@@ -314,6 +327,7 @@ ignoreRegExpList:
   - hexadecimal-color
   - lint-rule-name
   - external-identifier
+  - coinagerie-glossary-block
   - react-intrinsic-element
   - vendored-component-path
   - ipa-transcription
@@ -351,19 +365,33 @@ overrides:
       - /'(?:Col|Ret)'/g
 # cspell:enable
 words:
+  # A headword the coinagerie singularizer or lemmatizer makes of a word the
+  # code wrote, which the shared coinagerie configuration folds back.
+  - axio
   # The zsh function that loads bash-style completion, written into shell startup files.
   - bashcompinit
+  # A headword the coinagerie singularizer or lemmatizer makes of a word the
+  # code wrote, which the shared coinagerie configuration folds back.
+  - caelunda
   # The rc-style conformetry config filenames the Nx plugin looks for.
   - conformetryrc
   # Dependabot's dependabot.yml field name for delaying a version update.
   - cooldown
   # The reduction of an inflected word to its lemma, and the wink-lemmatizer package that does it.
   - lemmatizer
+  # A headword the coinagerie singularizer or lemmatizer makes of a word the
+  # code wrote, which the shared coinagerie configuration folds back.
+  - metadatum
+  - nestj
   # Nx's project-discovery ignore file, read when listing a workspace's projects.
   - nxignore
   - openwiki
   # OpenWiki's gitignore-style file of paths it must not treat as source.
   - openwikiignore
+  # A headword the coinagerie singularizer or lemmatizer makes of a word the
+  # code wrote, which the shared coinagerie configuration folds back.
+  - postgre
+  - protobufj
   # The git feature (`git rerere`) that replays a recorded conflict resolution.
   - rerere
   # Observer sites in caelundas reference fixtures, checked against USNO.
@@ -375,3 +403,9 @@ words:
   - Tromsø
   # The markdown heading style written as text underlined by === or ---.
   - setext
+  # The code that folds a plural into its singular, which misreads a name ending in s.
+  - singularizer
+  # A headword the coinagerie singularizer or lemmatizer makes of a word the
+  # code wrote, which the shared coinagerie configuration folds back.
+  - vitej
+  - xarg

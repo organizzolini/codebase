@@ -29,25 +29,34 @@ import path from "node:path";
  * In CI it is doubled, for the release commit, whose hook checks every bumped
  * package. v2.34.0's took 11m40s over 718 tasks with a critical path of 2m15s,
  * on a 4-CPU runner. The heaviest tasks then, `configuration:codependix` and
- * `callidescope-gate`, peaked near 1.6 GB, so 8 stay under the runner's 16 GB.
- * The per-project `codependix-gate` replaced the first and was measured on
+ * `callidescope-restrict`, peaked near 1.6 GB, so 8 stay under the runner's 16 GB.
+ * The per-project `codependix-bound` replaced the first and was measured on
  * macOS at up to 1.3 GB (`lexico-api`), under that figure.
  */
 const ANALYSIS_PARALLELISM = process.env["CI"] ? 8 : getLocalParallelism();
 
 /**
  * How many tasks a local run may execute at once: two fewer than the CPU
- * count, so the machine stays usable, within a floor of 4 and a ceiling of 12.
- * A cold run of every target at 4 measured 31m24s against a critical path of
- * 1m24s and used 140% of an 18-core machine, so the fixed 4 left the cores
- * idle. Memory bounds it from the other side: the heaviest tasks peak near
- * 1.6 GB, so each slot is budgeted 3 GB of the machine's total memory.
+ * count, within a floor of 4 and a ceiling of 6. The local hook runs only the
+ * fast tier below, which a warm cache mostly replays, so extra slots sat idle
+ * on a hit and starved the machine on a miss. Memory bounds it too: the
+ * heaviest tasks peak near 1.6 GB, so each slot is budgeted 3 GB.
  */
 function getLocalParallelism(): number {
   const byCpu = os.availableParallelism() - 2;
   const byMemory = Math.floor(os.totalmem() / 3 / 1024 ** 3);
-  return Math.max(4, Math.min(byCpu, byMemory, 12));
+  return Math.max(4, Math.min(byCpu, byMemory, 6));
 }
+
+/**
+ * The targets every commit runs, local or CI: formatting, lint, and typecheck,
+ * which catch what an edit loop breaks and replay from the cache when nothing
+ * changed. Every other gate runs in the continuous integration, deployment, and
+ * compliance workflows and in the `validate-code` skill, which agents run
+ * before submitting. The release commit made in CI runs this same set, so the
+ * hook means one thing wherever it fires.
+ */
+const ANALYSIS_TARGETS = "typecheck,oxlint,oxfmt";
 
 /**
  * Renders staged paths as one workspace-relative `--files=` flag each.
@@ -171,8 +180,8 @@ const config = {
   // `configuration`, which owns those two, has to run whether or not
   // `affected` selected it.
   "**/package.json": (): string[] => [
-    "pnpm exec nx run-many --projects=validation --targets=catalog-manifests --outputStyle=static",
-    "pnpm exec nx run-many --projects=configuration --targets=sherif,syncpack --outputStyle=static",
+    "nx run-many --projects=validation --targets=catalog-manifests --outputStyle=static",
+    "nx run-many --projects=configuration --targets=sherif,syncpack --outputStyle=static",
   ],
 
   // 🔬 Static analysis and conformetry validation
@@ -198,7 +207,7 @@ const config = {
   // forwards an explicit configuration down `dependsOn`, so an edge there
   // would let `lint-code --configuration=write` publish from a branch.
 
-  // `callidescope-gate` and `codependix-gate` reach a commit through
+  // `callidescope-restrict` and `codependix-bound` reach a commit through
   // `guard-code`'s `dependsOn` instead of being named here. Both are inferred
   // per project and have no configurations, so the `check` configuration below
   // falls through to their defaults. `nx affected` scopes each to the projects
@@ -221,7 +230,7 @@ const config = {
   // without a shell, so `NX_DAEMON=false nx ...` would be parsed as the
   // executable name.
   "*": (files: string[]): string[] => [
-    `pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedChangeFlags(files)}`,
+    `nx affected --target=${ANALYSIS_TARGETS} --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedChangeFlags(files)}`,
   ],
 };
 

@@ -23,6 +23,7 @@
   "extends": "../../configuration/tsconfig.json",
   "include": [
     "codometer.config.ts",
+    "coinagerie.config.ts",
     "eslint.config.ts",
     "scripts/**/*.ts",
     "src/**/*.ts",
