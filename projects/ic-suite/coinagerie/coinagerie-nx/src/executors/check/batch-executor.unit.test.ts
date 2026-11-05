@@ -127,6 +127,22 @@ describe(checkBatchExecutor, () => {
     );
   });
 
+  it.each([
+    ["JSON that is no list", "object-b"],
+    ["a list holding something that is no verdict", "junk-b"],
+  ])("fails every task when the process printed %s", async (_name, project) => {
+    expect.hasAssertions();
+
+    const results = await checkBatchExecutor(...buildArguments(["a", project]));
+
+    expect(
+      Object.values(results).map((result) => result.success),
+    ).toStrictEqual([false, false]);
+    expect(results["a:coinagerie-check"]?.terminalOutput).toContain(
+      "without a verdict",
+    );
+  });
+
   it("fails a task whose project the graph does not know without losing its peers", async () => {
     expect.hasAssertions();
 

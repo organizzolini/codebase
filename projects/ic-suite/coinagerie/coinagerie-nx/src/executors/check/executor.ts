@@ -34,17 +34,20 @@ export default async function checkExecutor(
     throw new Error(`Unknown project: ${projectName}.`);
   }
 
-  const results = await runGroup({
-    group: {
-      command: options.command,
-      mode: options.write === true ? "write" : "check",
-      tasks: [{ directory: projectConfiguration.root, id: projectName }],
-    },
-    root: context.root,
-  });
-  const result = results[projectName];
+  const outcomes = Object.values(
+    await runGroup({
+      group: {
+        command: options.command,
+        mode: options.write === true ? "write" : "check",
+        tasks: [{ directory: projectConfiguration.root, id: projectName }],
+      },
+      root: context.root,
+    }),
+  );
 
-  process.stdout.write(`${result?.terminalOutput ?? ""}\n`);
+  process.stdout.write(
+    `${outcomes.map(({ terminalOutput }) => terminalOutput).join("\n")}\n`,
+  );
 
-  return { success: result?.success === true };
+  return { success: outcomes.every(({ success }) => success) };
 }
