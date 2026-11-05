@@ -1652,16 +1652,19 @@ The words this project uses that the root glossary does not define, regenerated 
 - **book**: Work-level grouping unit in ingested texts, set as type book or text by the Latin Library builder and the EDCS provider.
 - **breadth**: Callidescope limit measuring the widest fan-out of direct callees, set as maximumBreadth in the project config.
 - **category**: Grouping page or part-of-speech class; Latin Library category links become Author entities, and the forms builder builds Forms per category.
+- **conjunction**: Part-of-speech tag for conjunctions, which the part-of-speech constants also assign to idioms, particles, and phrases.
 - **coquinaria**: Title of the Apicius text De Re Coquinaria, an ingested Latin cookery book under the apicius data folder.
 - **corpus**: Ingested collection of Latin texts, such as the data/library corpus from Open Greek and Latin, and the Corpus Scriptorum provider.
 - **csel**: Short name for the Corpus Scriptorum Ecclesiasticorum Latinorum, the ecclesiastical corpus whose XML this command downloads and caches.
 - **curtius**: Literature constants slug for Curtius Rufus, expanded to quintus curtius rufus for literature ingestion lookups.
 - **datenbank**: German noun part of Epigraphik-Datenbank, the EDCS name the project's command and provider use for the inscription database.
 - **db**: Stray fragment of the db.edcs.eu source URL, which the EDCS library provider records as text metadata.
+- **degree**: Comparison grade of an adjective or adverb, such as positive, comparative, or superlative, set on manual inflections.
 - **dictionary**: Main ingestion stage that parses cached Wiktionary pages into lexemes, forms, and translations, run by the dictionary command.
 - **disambiguator**: Numeric index that tells apart lexemes sharing a lemma, saved on each lexeme and used to reload it by lemma.
 - **ecclesiastical**: Pronunciation mode for Ecclesiastical Latin, with its own phoneme map and service used beside the classical one.
 - **ecclesiasticorum**: Part of the Corpus Scriptorum Ecclesiasticorum Latinorum name, the CSEL corpus command and its ingestion module.
+- **element**: Cheerio node a parser callback receives while walking Wiktionary or library HTML, passed to $(element) for selection.
 - **epigraphik**: Prefix of Epigraphik-Datenbank Clauss-Slaby, the inscription source whose command, provider, and chunk schema this CLI reads.
 - **headword**: Wiktionary heading marker, the strong.headword element whose paragraph the lexemes parser iterates to find each lexeme.
 - **iacē**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jacē before phonemes are mapped.

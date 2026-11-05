@@ -65,10 +65,12 @@ This project was generated from the [nestjs-command-project](../../configuration
 The words this project uses that the root glossary does not define, regenerated with `nx run coinagerie-cli:coinagerie-check:write`.
 
 - **anchor**: Start and end marker comments bracketing the coinagerie block in a markdown glossary, so a write replaces only that span.
+- **angle**: Sample glossary word the end-to-end tests define as the gap between two bodies, used to exercise a failing check.
 - **aspect**: Sample glossary word in the collect command's JSON and check-failure fixtures, standing for an identifier that must be defined.
 - **breadth**: Second limit in callidescope's gate, the count of distinct callees one callable may reach, here capped at five in this package.
 - **bullet**: Glossary entry line in the form dash, bold word, colon, which carries the definition beneath it and is what the parser reads.
 - **glossary**: The markdown or JSON file of word-to-definition entries that a run checks against the code and rewrites when asked.
+- **lunar**: Sample glossary word in the check-failure fixtures, given an empty definition, which a check still passes though it stays undefined.
 - **phase**: Sample glossary word in the check-failure fixtures, given a short definition that the markdown and JSON tests assert on.
 - **reconcile**: Method of the comparison service that merges collected words with existing glossary entries, keeping definitions for words still in use.
 - **rewrite**: Action of the write mode that rewrites every glossary to hold exactly the code's words, keeping definitions for words still present.

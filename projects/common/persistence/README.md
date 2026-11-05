@@ -1163,6 +1163,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **deletable**: The entity base layer that adds soft-delete support, last in the identifiable, creatable, updatable, deletable chain.
 - **explain**: Builds the human-readable reason a command refused to run, as ExportCommand.explain does for missing dump tables.
 - **identifiable**: The entity base layer that adds a primary id, first in the identifiable, creatable, updatable, deletable chain.
+- **latitude**: An example geographic column that must survive a round trip exactly, so the package stores it as text rather than a float.
+- **longitude**: An example geographic column that must survive a round trip exactly, so the package stores it as text rather than a float.
 - **refusal**: A deliberate, explained refusal to run, such as truncate refusing a table that another table still references.
 - **role**: The Postgres role, the database user identity that connections and grants run as, as in the README context table.
 - **trace**: The callidescope call-stack trace that measures depth, with config notes on which callees the trace does not follow.

@@ -1900,6 +1900,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **corpus**: Fixture collection of literary texts and lines seeded into the database, used by literature search and lookup tests.
 - **cut**: Local name for the page-limit condition that trims a query's rows to the count a page requested.
 - **db**: Suffix of the POSTGRES_DB environment variable, naming the Postgres database the API connects to and tests stub.
+- **degree**: Comparison level of adjectives and adverbs, such as comparative or superlative, modeled on the adverb form entities.
 - **deletable**: Shared base type for soft-deletable rows, exposing id and audit columns through GraphQL types across modules.
 - **disambiguator**: Numeric lexeme field separating homographs that share a headword, such as two entries spelled the same way.
 - **headword**: Dictionary entry form that a search matches first, seeded with English senses and ranked by the search service.

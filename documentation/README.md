@@ -110,6 +110,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **cut**: Seam where a meander band is split, which ADR 0006 and ADR 0013 use when comparing one drawing or family to another.
 - **design**: Architectural design that an ADR records, or a rule like ADR 0002 that a pull request gate would fail every pull request by design.
 - **domain**: Refers to CONTEXT.md and the domain model in agents domain documentation, the glossary of terms agents must use consistently.
+- **ephemeris**: Astronomical position data that the caelundas performance plan generates year by year with local computation instead of HTTP calls.
 - **family**: Meander classification group, such as the cross, branch, and parallel families whose drawing rules ADR 0004 and ADR 0006 adjust.
 - **generation**: Refers to conformetry's generation package that renders code from templates, and the generation layer named in ADR 0013.
 - **handoff**: Structured hand-off comment posted on a spec issue for the next session, whose repository rules agents handoffs documentation sets out.
@@ -124,6 +125,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **pitch**: One grid unit on the lattice, which ADR 0004 uses to place the interrupted crossing break one pitch either side of the junction.
 - **role**: Layer assignment of a package, which ADR 0013 documents so a reader learns its place without opening its index file.
 - **statistic**: Per-project figure, such as the statistics block that ADR 0002 publishes in each project's README on the default branch.
+- **swiss**: Short for Swiss Ephemeris, the local astronomy library that the caelundas performance plan uses instead of NASA Horizons HTTP calls.
 - **triage**: Labels in agents triage-labels documentation map the status family to canonical roles for issues in this repository.
 - **under**: Names the under-strand of a meander crossing, the strand that ADR 0004 breaks with a one-pitch gap at the junction.
 - **wiki**: OpenWiki output under documentation openwiki that the refresh service regenerates from code, reached through the openwiki symlink.
