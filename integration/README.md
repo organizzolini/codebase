@@ -567,6 +567,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **binary**: The knip executable, resolved from the workspace root's node_modules so every project's check runs the same installed version.
 - **breadth**: The count of direct calls a callable makes, which callidescope caps with maximumBreadth.
 - **bullet**: A single list item the upgrade-dependencies step adds to its pull request's details section.
+- **charge**: Assign a knip or cspell finding to the workspace root that owns its file, so only a finding charged to a project fails that project.
 - **corrupt**: A task database that fails its integrity check, which CI discards with a warning instead of restoring it.
 - **discovery**: NestJS finding each provider and command at startup, through the DiscoveryModule imported by the root module.
 - **effect**: What a scripted test double does when called, such as writing a file so the test can read it.
