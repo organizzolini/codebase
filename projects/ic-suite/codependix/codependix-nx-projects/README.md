@@ -377,9 +377,6 @@ None.
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nx-projects:coinagerie-check:write`.
 
 - **breadth**: How many callables a function calls directly, as measured for this project and bounded by maximumBreadth.
-- **closure**: Transitive set of projects a project depends on, collected by resolveDependencyClosure, that a callidescope run is scoped to.
-- **diagram**: The Mermaid graph drawn for one project, centered on it with a highlighted subject style, or a placeholder when it has no neighbors.
 - **neighborhood**: One project's immediate Nx dependencies and dependents, drawn as its one-hop graph and exported as a diagram.
-- **unconnected**: Neighborhood state for a project with no immediate Nx dependencies or dependents, shown as a placeholder message.
 
 <!-- coinagerie:end -->

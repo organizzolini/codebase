@@ -978,32 +978,13 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-languages:coinagerie-check:write`.
 
 - **anchor**: YAML node property holding a reusable node's name, which the YAML comment service reads as a string when present.
-- **breach**: Wording for a comment that exceeds its budget, which the comments service shortens so the report line stays readable.
 - **breadth**: Limit on how many calls a function may make, which the languages service keeps within by avoiding an extra split.
 - **budget**: Per-statistic allowance of words, lines, or characters for one comment block, judged by the comment measurement.
-- **claim**: Verb for a counter taking a TypeScript declaration when its kind matches, so the declaration is tallied once.
-- **conditional**: Shell conditional opening pattern in the shell constants, which the shell analyzer matches to count control structures.
 - **counter**: Custom statistic that tallies matching declarations or comments, configured per selector and shared by the TypeScript and comment services.
-- **dump**: Fragment of json.dumps in the Python analyzer script, which prints its per-file statistics as JSON to standard output.
-- **excerpt**: Short leading slice of a comment, capped at COMMENT_EXCERPT_LENGTH of 48 characters, kept to identify a measured block.
-- **execution**: Notebook run state such as execution counts, which the Jupyter service leaves out of the cells and outputs it measures.
-- **explore**: Name of a notebook test fixture, explore.ipynb, used by the Jupyter service tests to exercise cell counting.
-- **flatten**: Test helper flattenDeclarationComments that collects every declaration comment measurement into one list for assertions.
-- **generic**: Type-parameter flag that the TypeScript service increments for each generic class or function it tallies as a declaration.
-- **marker**: Comment opening token, such as a hash or slash, that the comment constants treat as the only sign of a comment.
 - **pipeline**: Shell pipe operator counted as joining two commands, and the measurement pipeline collaborator the languages service holds.
-- **primitive**: JSON scalar value counted as a primitive, alongside objects, arrays, and nesting depth, by the JSON service.
 - **prop**: Shortened CSS declaration property, read as node.prop so custom properties beginning with a double dash can be counted.
-- **prose**: The words of a comment left once its markers are stripped, which the comments service counts against a budget.
-- **re**: Prefix in re-parse and re-read, which the markdown service avoids by parsing each document only once.
 - **reader**: Per-syntax comment reader that the comments module provides, one for each comment syntax, such as Python or HCL.
-- **scan**: In-progress state object for one file during comment measurement, holding its text, its lines, and what has been read.
-- **scanner**: Lexical pass over source that hands the comment readers their tokens, so each measurement does not rescan the file text.
 - **selector**: Config key naming which comments a custom statistic counts, such as the comment selector a budget is attached to.
-- **severity**: Breach level for a comment or limit, carried from configuration into the comment measurement record unchanged.
-- **span**: Character range of a comment token, which the HCL comment reader records for each block comment in source order.
-- **sparse**: Name of a minimal test fixture, such as sparse.ipynb or sparse.toml, that checks readers tolerate incomplete input.
 - **splice**: Array splice call that empties a list of temporary directories in the CSS and language comment tests.
-- **tokenize**: Python standard tokenizer that the Python analyzer script runs to read comment tokens with their positions in the source.
 
 <!-- coinagerie:end -->

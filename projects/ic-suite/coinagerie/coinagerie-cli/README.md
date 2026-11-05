@@ -68,19 +68,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **aspect**: Sample glossary word in the collect command's JSON and check-failure fixtures, standing for an identifier that must be defined.
 - **breadth**: Second limit in callidescope's gate, the count of distinct callees one callable may reach, here capped at five in this package.
 - **bullet**: Glossary entry line in the form dash, bold word, colon, which carries the definition beneath it and is what the parser reads.
-- **deliver**: Private method of the collect command that writes or prints the reconciled glossary for the chosen mode, once words are collected.
-- **delivery**: Final stage of a collect run, reached through the deliver method, where words are printed, checked, or written to destinations.
-- **discovery**: Step of finding the files a run scans, bounded by the include globs and the gitignore rules the run honors.
 - **glossary**: The markdown or JSON file of word-to-definition entries that a run checks against the code and rewrites when asked.
-- **leftover**: Word from a scratch-directory fixture file that the end-to-end test asserts stays out of the printed output.
-- **lunar**: Sample glossary word in the check-failure fixtures, given an empty definition, which a check still passes though it stays undefined.
-- **malformed**: Glossary block whose structure cannot be fully parsed, which a run refuses to write, leaving the file untouched.
 - **phase**: Sample glossary word in the check-failure fixtures, given a short definition that the markdown and JSON tests assert on.
-- **polyglot**: Repository mixing several languages, whose identifiers coinagerie gathers across every file type it scans into one glossary.
 - **reconcile**: Method of the comparison service that merges collected words with existing glossary entries, keeping definitions for words still in use.
-- **rejection**: Reason string that rejectionOf returns when a command line is invalid, halting the run before any words are collected.
 - **rewrite**: Action of the write mode that rewrites every glossary to hold exactly the code's words, keeping definitions for words still present.
-- **stale**: Glossary entry for a word the code no longer uses, which a check names and a write deletes along with its definition.
 - **vocabulary**: Workspace package that collects the words a codebase uses, depended on by coinagerie-cli to gather its vocabulary.
 
 <!-- coinagerie:end -->

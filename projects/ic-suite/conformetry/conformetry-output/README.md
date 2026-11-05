@@ -208,13 +208,9 @@ None.
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-output:coinagerie-check:write`.
 
 - **breadth**: Callidescope measure of how many callables one function calls directly, shown in the README breadth tables and gated per project.
-- **fraction**: Failed weight over total weight, printed beside a percentage so a reader can see how many requirements missed.
-- **imperfect**: Instance whose score falls short of full weight, so only these appear in the summary of non-perfect scores.
 - **inventoried**: Types for entries the inventory service has listed: InventoriedInstance, InventoriedTemplate, and InventoriedPairing.
 - **inventory**: Module that renders the template and instance listing, with its indent ladder, headings, and match percentage.
 - **meet**: Verdict wording used when an instance's score reaches its threshold, paired with below threshold for failing instances.
 - **perfect**: Score of exactly full weight; reporting leaves perfect instances out of the summary of scores that fell short.
-- **threshold**: Minimum percentage an instance's score must reach to pass, printed beside the verdict as meets or below threshold.
-- **verdict**: Pass or fail phrase closing each instance's score line, with a check or cross marker, saying meets or below threshold.
 
 <!-- coinagerie:end -->

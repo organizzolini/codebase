@@ -439,11 +439,7 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-core:coinagerie-check:write`.
 
-- **adapter**: The file system boundary a run reads and writes through, supplied by the host as the filesystem field a hook receives.
 - **breadth**: The number of distinct callees one callable calls directly, which callidescope gates in each project; core reports none, since it only declares types.
-- **filesystem**: The file operations the generation runtime uses, behind FileSystemAdapter, so a virtual tree can stand in under Nx generators.
 - **inventoried**: Discovered and paired as an instance or template, such as the InventoriedInstance and InventoriedPairing types carry them.
-- **threshold**: The minimum conformance score an instance must reach, recorded on each result after every level has been resolved.
-- **validator**: The per-format comparison unit for one file type, supplying a descriptor and a single-document comparison through ConformetryLanguageValidator.
 
 <!-- coinagerie:end -->

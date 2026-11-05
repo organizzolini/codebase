@@ -584,50 +584,24 @@ _This project defines no NestJS modules to graph._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-examples:coinagerie-check:write`.
 
-- **absent**: Fixture state where a configuration file or module is missing, so the example shows what codependix refuses or omits.
 - **ambient**: Modules marked global that codependix registers implicitly into containers, judged by inbound edge counts in the ambient-modules fixtures.
 - **anchor**: The named comment block in a Markdown README where codependix writes its graph, placed by the anchor-placement examples.
 - **attribution**: How a boundary finding is assigned to the projects it blames, rendered in the boundary-attribution examples.
 - **boundary**: Declared rules judged against each graph, with rendered examples showing which edges and cycles fail a check.
-- **chain**: The three-deep dependency path from atlas-application through atlas-service to atlas-core in the graph-levels fixture.
 - **charge**: Assigns a boundary finding to the projects it blames, so a cycle fails every project on it even when only one was named.
 - **creation**: The rule that fills in a missing anchor or section during a write, instead of refusing to run.
-- **cycle**: A dependency loop across projects, which is charged to every project that owns a node on it.
-- **deliver**: Writes a rendered graph export to its configured destination and reports which files were created or changed.
-- **delivery**: Examples that show codependix writing graph JSON or Markdown to destinations and reporting what changed.
-- **diagram**: A Mermaid graph block rendered inside a guide, showing nodes and edges for one example's real project graph.
-- **discovery**: How NestJS projects are found and described, with the nestjs-graphs renderer building descriptors without a real scan.
-- **drift**: A committed export that no longer matches a fresh build, which the check reports as stale rather than raising an error.
-- **dynamic**: A runtime import() call expression in the typescript-resolution fixture, which adds no static edge to the graph.
 - **exploration**: The outcome recorded for one NestJS container explored from its root module, either explored or failed.
-- **explore**: Walks a NestJS container outward from its root module, building the module graph the examples render.
 - **forbid**: A boundary rule kind that bans edges from one selector to another, with each violation charged to the edge's source.
 - **hand**: Marks a section a person wrote by hand, which anchor-placement must leave alone when it writes a generated block.
-- **intro**: The one-line description placed under the Codependix heading, supplied as introLine for each graph type.
 - **inventory**: A NestJS module fixture imported by several container and graph-level example projects.
 - **neighborhood**: One-hop view of a project's direct dependencies and dependents, rendered as the Nx Neighborhood section.
-- **orphan**: A NestJS module fixture defined but never imported by the root, so a rooted project's graph leaves it out.
 - **placement**: Where an anchor block lands in a file: appended, placed under a heading, or auto-created, as the anchor-placement examples show.
-- **re**: A stem fragment from re-export, re-render, and re-exported: the re-exported.ts fixture and the --write re-render command.
-- **redact**: Replaces machine-specific paths in rendered output with placeholders, which the renderers do before writing guides.
 - **refusal**: The message an invalid configuration or command line produces, reproduced by the refusals example.
 - **restrict**: No codependix meaning here; the only use is an ESLint no-restricted-imports rule in this project's config.
-- **ring**: The three-project cycle of shop-ledger, shop-invoices, and shop-payments, where all three are charged for one loop.
-- **scanner**: The Python import scanner under test, exercised by the python-scanner fixture and its graphs integration test.
 - **scenario**: One boundary-attribution case: a fixed workspace plus the run arguments that point codependix at a set of projects.
 - **selector**: A boundary rule endpoint that matches nodes by id, path, project, or tags, with at least one field required.
 - **self**: A node's edge to itself, which the neighborhood-scope example counts and renders apart from ordinary dependencies.
-- **ship**: A NestJS module fixture for delivery goods, one of the sample container modules in the ambient-modules examples.
 - **sibling**: A module imported from the same package directory, such as sibling.py imported by main.py in the Python fixture.
-- **small**: A container with too few modules for the ambient rule to fire, used by the small-container example to show that limit.
-- **snapshot**: The captured file state of a project taken before a delivery run, so the example can report what changed.
-- **stale**: An export on disk that no longer matches a fresh run, reported as StaleExport and making the check fail.
 - **subheading**: An optional ### heading placed above an anchor block, such as Nx Neighborhood, or omitted for the workspace README.
-- **third**: No codependix meaning: the word appears only as a glossary headword and no fixture or source file uses it.
-- **unconnected**: The state of a graph with no connecting edges, which the examples render as an UNCONNECTED message in place of a diagram.
-- **unreachable**: The name of an export in the typescript-resolution broken fixture, a symbol that nothing in the project imports.
-- **unwritten**: A configured JSON destination left untouched when the run targets Markdown, as the delivery examples demonstrate.
-- **verdict**: Pass or fail outcome recorded for each boundary violation, where a fail makes the run exit non-zero.
-- **violation**: A boundary finding, an edge or cycle breaking a declared rule, that the boundary examples report and charge.
 
 <!-- coinagerie:end -->

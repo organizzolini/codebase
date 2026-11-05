@@ -572,11 +572,7 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-generation:coinagerie-check:write`.
 
-- **adapter**: Pluggable object that performs host-specific disk or formatter work, defaulting to disk and a no-op.
 - **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
-- **camel**: Case variant of a name in camelCase, one of the name variants a template renders into its paths and files.
-- **filesystem**: Adapter the run reads and writes through, exposed to hooks as context.filesystem and taking absolute paths only.
-- **gamma**: Third placeholder input in the generation unit test, kept in the hook input while beta is dropped.
 - **generation**: Runtime phase that walks a template tree, renders every path and file, and writes the instance output.
 
 <!-- coinagerie:end -->

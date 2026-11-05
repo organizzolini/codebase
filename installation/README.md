@@ -822,33 +822,15 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run installation:coinagerie-check:write`.
 
-- **archive**: A release download, zip or binary, that the release-archives module verifies and unpacks for a Linux tool install.
-- **binary**: Format value marking a release download as a raw executable rather than an archive, so it is installed without unpacking.
 - **bundle**: The ReUI skill JSON payload the update-reui-skill command downloads from reui.io and writes into the vendored skill.
-- **cluster**: Linode LKE Kubernetes target whose id the dependencies module imports into Terraform state before writing kubeconfig.
-- **detach**: Spawn option that lets a daemon keep running after setup exits, paired with unref in ProcessRunnerService.
-- **discovery**: NestJS DiscoveryModule that the root installation module imports, so nest-commander can find command providers at startup.
-- **dump**: PostgreSQL 18 backup command, the pg_dump tool installed alongside pg_restore by the software module's database step.
-- **enter**: Test helper, enterWorkspace, that points a temporary workspace and a chosen login shell at a test environment.
 - **explain**: Private shared cache storage method, explainFailure, that turns a failed write into an outcome and reason.
 - **infra**: Shortened name of SoftwareInfraService, which installs the DevOps command-line tools and prints their versions.
-- **lock**: Refresh step in update-reui-skill that re-pins the ReUI skill in skills-lock.json after fetching it from reui.io.
-- **malformed**: Test variable for a request with an invalid cache key, which the server must reject with a client error.
-- **marker**: Shell comment line tagging a block that shell-configuration manages, which it removes only when the next line is processes.sh.
-- **pin**: Exact tool version recorded in release-archives constants, which must match the devcontainer's version and the CI setup.
 - **pipeline**: Promise-based Node stream helper that the shared cache storage uses to write a request body into its temporary file.
 - **place**: Sole spot where the installation project starts child processes, held by the ProcessRunnerService module.
-- **ready**: Closing success line that the setup command prints once every tool and shell configuration has finished installing.
 - **reply**: Parsed HTTP response from a live cache-server call in integration tests, holding status, headers, and body.
 - **reporter**: Single print channel, ReporterService, through which every installation command writes its messages to the terminal.
 - **self**: Marks the Nx remote cache that this machine serves itself for every worktree, instead of a hosted cloud service.
-- **software**: Step and command name for installing the remaining developer tools, run as start:software and listed in the setup order.
 - **splice**: Array method, lines.splice, that shell-configuration uses to remove a two-line block from a shell rc file.
-- **stale**: Boolean marking a shared cache entry older than the maximum age limit, which storage evicts.
-- **track**: Verb for whether Terraform's state records a resource, which decides if the cluster import runs.
-- **unreadable**: Test variable for a Terraform version whose JSON output cannot be parsed, so the text version line is used instead.
-- **upload**: Nx client action of sending task output to the shared cache, which stores it and serves it back later.
-- **uuid**: Random identifier from crypto.randomUUID, used to name each temporary cache upload so writes never collide.
 - **whitespace**: Run of blank characters, which the ssh-signing module's pattern matches while handling armor and commit headers.
 
 <!-- coinagerie:end -->

@@ -963,26 +963,10 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-configuration:coinagerie-check:write`.
 
 - **accept**: Validating a value the caller already supplied and throwing when invalid, as acceptProvidedValue does before any interactive prompt runs.
-- **best**: The highest-ranked template fit for an instance, since the best fit wins when several templates share one of its files.
 - **breadth**: The number of distinct functions one callable calls directly, which callidescope reports and gates in the Breadth table.
-- **camel**: Name variant such as nameCamelCase, produced by lodash camelCase from the input name and used as the base for the Pascal form.
-- **collision**: Two templates or generators claiming the same name or path, which configuration checks reject so one cannot silently shadow the other.
-- **discovery**: Finding templates and instances from configured globs and matching them, the job of the instance and template discovery modules.
 - **inventoried**: Listed with its matched template pairings in a discovery result, as the resolveInventoriedInstances methods return them.
 - **inventory**: The set of templates and instances discovery found, which the instance discovery service resolves into results for commands.
 - **larger**: Describing the template that covers more of the instance files, which matching prefers over a smaller partial match.
-- **reserve**: Names a generator definition may not take, such as all, which findReservedNames rejects during configuration validation.
-- **scoped**: Limiting a measurement run to one project and its dependency closure, as the callidescope configuration describes.
-- **smaller**: The template covering fewer of the instance files, which matching ranks below a larger full match in its fixtures.
-- **span**: One parsed fragment of template text, shaped as type, value, start, end, and optional children, walked by the rendering service.
 - **stem**: The folder name a template instance is located by, joined onto the instance path when locating its files, as nameStem holds it.
-- **threshold**: The minimum conformance score an instance must reach to pass, resolved from instance, generator, or run level, defaulting to 1.
-- **tie**: Two templates matching an instance equally well, reported as ambiguous rather than resolved arbitrarily by the matching service.
-- **unmatched**: An instance that matches no template, or only partially, returned in the unmatched list by the instance matching service.
-- **unusable**: A generator name that cannot serve as a template name, flagged by findUnusableNames during configuration validation.
-- **upper**: Uppercasing only the first letter of a camel-case name through lodash upperFirst, yielding the Pascal case variant.
-- **uuid**: A random UUID from node crypto, appended to a placeholder prefix so each rendered stand-in value is unique.
-- **want**: The template pairings an instance selection asks for, collected into a wanted set when instance discovery filters pairings.
-- **weigh**: Scoring every instance against every template by the share of the template files it already has, through weighInstance.
 
 <!-- coinagerie:end -->

@@ -1218,36 +1218,16 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run validation:coinagerie-check:write`.
 
-- **binary**: The external executable such as gh, git, or nx that a validation check spawns and reads output from.
 - **breadth**: How many direct callees a function has, measured by callidescope and reported in this README's per-callable table.
-- **bulk**: Mode of the issue-metadata command that sweeps every open issue with the --all flag, rather than one issue number.
 - **bullet**: The section shape requiring a pull request's Details section to hold only a bulleted list, using one marker throughout.
-- **chore**: The Conventional Commits type for maintenance work, mapped to release level none so it never triggers a version bump.
-- **collapse**: Newline folding that joins a wrapped template prompt into one line, so a multi-line comment still matches its prefix.
 - **convention**: The branch-name and worktree-name rule that session checks enforce, such as type/scope-description for branches.
 - **directive**: A fixed instruction line printed on failure, naming the next skill to invoke, such as rename-branch or using-git-worktrees.
-- **discovery**: Nest's core module imported by the validation root module so it can inspect providers at runtime.
-- **enter**: In session-worktree tests, a helper that builds a linked worktree under a parent directory and returns its path.
-- **executable**: The path a spawned check runs, such as a node_modules/.bin binary or process.execPath in the consumer fixtures.
-- **expectation**: The target and outcome a publishable-package plugin check must meet, naming the healthy and broken project targets it expects.
 - **family**: A toolchain directory grouping several ic-suite packages, such as codometer or conformetry, resolved as one unit.
 - **generation**: The conformetry generator run that scaffolds a fixture project inside the publishable-package consumer before its check.
 - **governance**: Repository rules checked by audit-governance, such as CODEOWNERS presence, workflow names, permissions, and owner handles.
-- **hierarchy**: The parent and sub-issue tree of GitHub issues, validated for release significance and a maximum depth of three.
 - **live**: Mode that fetches a pull request's metadata from GitHub at run time through gh pr view, not from environment variables.
-- **malformed**: A pull request section whose content breaks its declared shape, such as two paragraphs under Summary or a non-list Details.
-- **marker**: The bullet character, such as dash, asterisk, or plus, that a Details list must use consistently throughout.
 - **mirror**: The copy of a validation report written to the GitHub Actions step summary, separate from the console output.
-- **nth**: Ordinal position in mocked call sequences, as in toHaveBeenNthCalledWith assertions in the publishable-packages consumer tests.
-- **oversized**: A pull request section that exceeds its word limit, such as a Summary longer than forty-eight words.
-- **pin**: Writing a dependency as catalog: or workspace:* instead of a literal version, which catalog-manifests enforces across manifests.
-- **rel**: Shows up in relative paths, such as a manifest path measured from the working directory, and in relative release rank.
 - **significance**: The release level a commit or pull request title earns under semantic-release rules, judged by the release-significance check.
 - **significant**: Adjective for a commit that earns a release level at or above what the pull request title claims.
-- **three**: Count word for fixed limits in validation rules, such as the three Nx plugins a consumer must register.
-- **undocumented**: A project that appears in the workspace but lacks a row in the README table, which the readme-projects check reports.
-- **unfilled**: Still-pending template prompt comment left in a pull request body, which the pull-request-body check rejects.
-- **verdict**: The pass-or-fail result a check hands back, such as exit 0 or 1 after its findings are collected.
-- **violation**: A single broken rule found by a check, such as a workflow job timeout or an undocumented project, reported with its line.
 
 <!-- coinagerie:end -->

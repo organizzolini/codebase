@@ -455,22 +455,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **anchor**: Pair of start and end comment markers delimiting a generated section of a Markdown file, which codependix splices in place.
 - **boundary**: Check family that judges dependency graphs against configured rules, implemented by BoundaryCheckModule and its reporting services.
 - **breadth**: Count of direct calls a callable makes, listed in the README breadth table that callidescope reports for each function.
-- **cycle**: Dependency loop reported by a no-cycles rule, shown as a path that starts and ends at the same node.
-- **deliver**: Verb for writing a finished graph export into its Markdown or JSON destination through DeliveryService.
-- **delivery**: DeliveryService and its module, which write graph exports to their targets and classify differences against existing files.
-- **explore**: Verb for walking a NestJS project's source to discover its modules, as NestjsProjectService.exploreProject does during a run.
-- **final**: Trailing text after a spliced anchor section, with its leading newline normalized so the section keeps a blank line before what follows.
-- **fresh**: Newly computed export text that an anchor's current content is compared against to decide whether the file is stale.
-- **intro**: The single explanatory line placed under a spliced Markdown section heading, carried by the MARKDOWN_SECTION_INTRO_LINE constant.
-- **marker**: Start or end comment line delimiting an anchor block, using codependix's own syntax independent of conformetry's markers.
 - **neighborhood**: Mermaid graph of a subject project and its direct dependency neighbors, exported by NeighborhoodModule as the Nx Neighborhood section.
-- **queue**: FIFO list driving the breadth-first path search in path-query, shifting one entry at a time to extend candidate routes.
-- **remainder**: Text after the section start in an anchor file, searched for the next heading to find where the section ends.
-- **stale**: State of a committed export whose contents no longer match a fresh run, which the check mode reports as a failure.
 - **subheading**: Optional third-level heading placed under a Codependix section to group one project's export, passed to the anchors service.
-- **subsection**: New third-level block appended at the end of an existing Codependix heading when a file has no anchor for it yet.
-- **unmatched**: Selection entry that matched no project, reported with a hint so a misspelled --projects name is noticed.
-- **verdict**: Pass, fail, or note outcome a boundary check assigns to a run, which the reporting service prints for each judged project.
-- **violation**: Single rule breach found by a boundary check, recorded with its rule, edge, and message to feed the verdict.
 
 <!-- coinagerie:end -->

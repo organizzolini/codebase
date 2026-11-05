@@ -527,19 +527,9 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-validation:coinagerie-check:write`.
 
 - **breadth**: Callidescope measure of how many callables one function calls directly, shown in this package's Breadth tables and gated.
-- **claim**: Verb for a validator recognising a document by its extension, so only the documents it handles are checked.
-- **deduplicate**: Verb for collapsing repeated findings so only one template prints a shared file's defect, done by ValidationDeduplicationService.deduplicate.
-- **deduplication**: Step after scoring that decides which template prints each shared file's finding, so one defect is reported once.
-- **inference**: Step that guesses placeholder values for an instance from its validators, reporting any it cannot infer as missing.
 - **lenient**: Describes a group with a looser threshold; when groups disagree the strictest wins, so a lenient one cannot relax a bar.
 - **stem**: Name portion of an instance, such as aspects, joined to its directory so each module is scored separately.
-- **threshold**: Minimum score an instance must reach to pass, resolved from its group, generator, or run, defaulting to a perfect one.
-- **tie**: Equal-scoring match between an instance and two templates; kept when the templates differ, collapsed when a directory repeats.
 - **under**: Nests each finding beneath its file when the runner assembles results, so the report groups defects by the file they belong to.
-- **unfiltered**: Result of a validate call with no languageNames filter, which tests compare against filtered output to confirm filtering works.
-- **unmatched**: Instance whose path matched no template, reported as a finding because a glob asserts that path holds generated code.
-- **unprepared**: Test case where nothing was prepared, so validation reports a placeholder difference instead of failing the whole run.
 - **unrecorded**: Instance whose match recorded no stand-in placeholder values, leaving nothing for inference to fill, so the run stays ok.
-- **validator**: Language engine that checks documents with a given extension; it sees only the documents it claims, through the runner.
 
 <!-- coinagerie:end -->

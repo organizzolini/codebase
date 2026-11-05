@@ -410,12 +410,7 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **ambient**: Module that NestJS marks as global, drawn as a rounded node and left out of edges because every module can inject it.
 - **breadth**: Count of callables a function calls directly, as callidescope reports it in this project's Breadth table.
-- **diagram**: The fenced Mermaid flowchart drawn for a project's NestJS modules, or a placeholder when it defines none.
-- **dynamic**: A module built at runtime rather than declared statically, whose providers NestJS hosts in synthetic stand-in modules.
-- **explore**: Follow module imports outward from a root such as MainModule, the start point a library package lacks.
 - **qualifier**: Separator slash joining a project name to a module class name, so each node id is unique across the workspace graph.
-- **qualify**: Prefixes a module's class name with its project name, so one module name in two projects gives two distinct nodes.
 - **restrict**: ESLint no-restricted-imports rule, which bans importing @nx/devkit outside the nx-projects package so only it depends on Nx.
-- **unconnected**: Project state with no NestJS module connected by an import edge, shown as a placeholder message instead of a diagram.
 
 <!-- coinagerie:end -->

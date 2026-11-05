@@ -586,30 +586,16 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-output:coinagerie-check:write`.
 
-- **absent**: Describes a report or field that a reader tolerates missing, so the run treats it as no data rather than an error.
 - **anchor**: Start and end marker comments that bracket a generated block in a markdown file, so a sync replaces only that span.
 - **baseline**: The previous codometer report a changes run diffs against, joined per project to produce each row's base value and delta.
-- **breach**: Flag on a metric row recording that its value exceeded a configured limit, with the severity of the worst limit breached.
 - **breadth**: Callidescope measure counting how many distinct callees a callable invokes directly, checked against the project's maximumBreadth limit.
 - **bullet**: Markdown list item the generated block emits for each instance of a custom statistic, naming the location it came from.
-- **compression**: Gzip-versus-raw label attached to a size statistic, so a compressed figure is never mistaken for a raw byte count.
-- **conditional**: Branching construct counted in shell scripts and drawn as the Shell Conditionals badge in the generated codometer block.
 - **counter**: Named measurement tally, such as a custom convention, that the pipeline produces and the badge block must always render.
-- **deliver**: Method on DeliveryService that produces every resolved output for a run and returns the names of stale ones.
-- **delivery**: The module and service that write every resolved output for a run, then report which written outputs are stale.
-- **discovery**: Gitignore-aware file walk shared with measurement, so the configuration listing finds the same files a run would measure.
-- **fresh**: Adjective for a generated output that matches a current run exactly, so a check reports it up to date rather than stale.
-- **generic**: TypeScript tally of declarations that take type parameters, drawn as the Generic Declarations badge in the block.
-- **govern**: Private ChangesService method that picks the limits deciding a metric's verdict: the failing ones when any breached, otherwise every limit.
-- **marker**: String delimiting an anchored or document block, or a file such as .git whose presence marks a repository root.
 - **pipeline**: Ordered measurement stages a codometer run passes through, from parsing source files to producing the reports.
 - **preamble**: Existing markdown content with trailing newlines trimmed and two newlines added, placed before a newly appended anchored block.
 - **retire**: Metric that existed in the baseline but is missing from the current report, shown as removed with a zero value.
 - **selector**: Per-instance key in a custom statistic's configuration, such as the comment selector, that splits its breaches by instance.
-- **severity**: Level of a breached limit, either fail or warn, where a failing breach outranks an advisory one in verdicts.
 - **splice**: Method on DocumentsService that replaces the section between markers in a document, leaving everything outside them untouched.
-- **stale**: A committed output that no longer matches a regenerated run, so a check fails until it is rewritten.
 - **statistic**: One measured value, such as a count or size, that a configuration names and the renderer groups into a badge.
-- **unreadable**: Report or config file that cannot be read or parsed; it is skipped with a warning instead of failing the whole run.
 
 <!-- coinagerie:end -->

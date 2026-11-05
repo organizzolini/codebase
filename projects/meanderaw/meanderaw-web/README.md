@@ -267,8 +267,6 @@ None.
 The words this project uses that the root glossary does not define, regenerated with `nx run meanderaw-web:coinagerie-check:write`.
 
 - **breadth**: Callidescope's count of the direct calls a web callable makes, recorded in the project's Breadth table for its gate.
-- **rel**: The link rel attribute, set to stylesheet in the __root route's links array to load the application CSS.
 - **role**: Accessibility role argument in testing-library queries such as findByRole, which the index integration test uses to find the heading.
-- **transition**: Stray fragment with no source hit in the web project, so the glossary lists it without any meanderaw concept behind it.
 
 <!-- coinagerie:end -->

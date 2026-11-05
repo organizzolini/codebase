@@ -573,17 +573,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **boundary**: Codependix rule check run per project, failing the gate when a dependency graph breaks a configured rule charged to it.
 - **breadth**: Count of calls one function makes, which callidescope caps per callable so the plugin merges map and filter into one pass.
 - **budget**: Comment-length allowance codometer enforces per language, shown as the Comment Budget badges in this package's readme.
-- **chain**: Ordered sequence of tsconfig extends bases the plugin walks from the root tsconfig, each reached file becoming a cache input.
 - **charge**: Assign a boundary finding to the project it belongs to, so only a finding charged to a project fails that project's gate.
-- **cycle**: Chain of projects or modules that depend on each other in a loop, which an acyclic boundary rule reports as a violation.
 - **explain**: Produce the report of why a project failed, by running that project alone again to get exactly what a single run prints.
-- **registration**: The plugin's entry in nx.json, whose options such as configurationPath the gate and inference read back at run time.
-- **settle**: Resolve a batch task outright with its verdict or its failure reason, instead of rejecting, so one failed run costs peers nothing.
-- **uncacheable**: Selection Nx cannot hash as a cached task, which the gate refuses with an error rather than judging and replaying it.
-- **undeclared**: Classification for a tsconfig base package that the root package.json does not declare, so its input is skipped with a warning.
-- **unresolved**: Workspace dependency the plugin could not locate, collected into a set and reported as a warning rather than failing inference.
-- **unscoped**: Test fixture for an unscoped package provided as a tsconfig extends base, covering the bare-name case of external dependency resolution.
-- **verdict**: Judgement a gate reaches about a project's boundaries, decided by the codependix cli and replayed from the Nx cache.
-- **violation**: Entry in a boundary report naming an edge or cycle that breaks a declared rule, which the batch maps to one project.
 
 <!-- coinagerie:end -->

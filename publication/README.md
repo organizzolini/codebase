@@ -1072,19 +1072,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **baseline**: Starting version a package is measured from when no earlier tag exists, placed on the commit before it was added.
 - **batch**: Group of six tags pushed together by tag-packages, with a rejected batch retried, so pushes respect the remote's limits.
 - **breadth**: Callidescope limit on how many callees one frame may fan out to, set as maximumBreadth in the publication config.
-- **chore**: Conventional commit type prefix used for release commits, such as chore(release) tagging the codebase or packages.
-- **decide**: Gate method that decides whether the publishable-packages check is affected, so it runs whole or is skipped.
-- **discovery**: NestJS DiscoveryModule imported by the publication module so the container can find its command providers at boot.
-- **effect**: Property on the test runner, effects, mapping command patterns such as curl star to fake outcomes for each spawned command.
-- **executable**: Program a process runner spawns, looked up on PATH, such as the publication-missing-executable case in integration tests.
-- **fresh**: Test fixture package name fresh at version 0.1.0, present on neither npm nor the linked set, used in link-packages tests.
-- **leftover**: Describes versions and tags an earlier run left unpushed; tag-packages commits leftover versions first, then pushes them.
 - **mirror**: Publish step that copies each npm package to GitHub Packages as owner/project, exiting 1 when a mirror or input fails.
 - **quiet**: Git flag --quiet passed to fetch and diff in the release steps, suppressing output so the run logs stay readable.
 - **rehearsal**: Dry-run release mode where packages are not really published, and which is refused if any would reach a real registry.
-- **settle**: Static helper in the release-group service that waits for one parallel task to finish and records its outcome either way.
-- **unreadable**: Not used in publication source, so the word names no error here and carries only its plain English sense.
-- **unreleased**: Version state for a package an earlier run committed but never tagged, so it reads as unreleased and is bumped again.
-- **versioned**: Adjective for ic-suite packages whose version was bumped in this run, which tag-packages then tags and pushes.
 
 <!-- coinagerie:end -->

@@ -304,7 +304,6 @@ _This project has no internal file imports._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-agents:coinagerie-check:write`.
 
-- **ship**: Verb for publishing skill directories as this package's contents, so an installer copies each one into an agent skills folder.
 - **triage**: Name of the skill for acting on a breached limit or a stale committed report, the third of this package's three skills.
 
 <!-- coinagerie:end -->

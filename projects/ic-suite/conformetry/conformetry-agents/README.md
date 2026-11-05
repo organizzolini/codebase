@@ -294,6 +294,4 @@ _This project has no internal file imports._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-agents:coinagerie-check:write`.
 
-- **ship**: To distribute a skill to other repositories as a copied directory, with no bundled scripts, since those would fail elsewhere.
-
 <!-- coinagerie:end -->

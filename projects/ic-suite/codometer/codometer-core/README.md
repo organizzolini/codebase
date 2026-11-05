@@ -129,13 +129,9 @@ None.
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-core:coinagerie-check:write`.
 
 - **anchor**: A named README marker pair that codometer's output writers splice generated content between, as the configuration package describes.
-- **breach**: What a limit reports when a measured metric crosses it, with a CodometerSeverity of fail or warn deciding the consequence.
 - **breadth**: The callidescope report section that counts direct calls per callable, listed as the Breadth table of this package.
-- **conditional**: A branching construct in Shell code, such as an if statement, tallied as conditionals in the shell statistics.
-- **generic**: A type parameter declaration, such as the T in a generic function, tallied as genericDeclarations in the TypeScript statistics.
 - **pipeline**: The sequence of analyzers whose output is the aggregated CodeStatisticsResult that core's types describe.
 - **selector**: A custom statistic's matcher, whose instances field records each occurrence it found, such as a comment selector's blocks.
-- **severity**: Either fail, which gates a change, or warn, which only reports a breach, as the core type declares.
 - **statistic**: A counted value in the code statistics result, whether a built-in language field or a custom counter under custom.
 
 <!-- coinagerie:end -->

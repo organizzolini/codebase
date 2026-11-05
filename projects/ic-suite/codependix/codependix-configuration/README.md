@@ -454,8 +454,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **anchor**: The named HTML comment block in a Markdown file where codependix writes its generated graph, bounded by start and end markers.
 - **boundary**: Declared rules, of access or acyclic kind, that codependix judges against each built graph during a boundary check run.
 - **breadth**: The callidescope limit on how many direct callees one callable may have, set by maximumBreadth in callidescope.config.ts.
-- **marker**: A file name such as .git whose presence marks a directory as the repository root, listed in REPOSITORY_ROOT_MARKERS.
 - **selector**: The object on each side of a boundary rule that matches nodes by id, path, project, or tags fields.
-- **undeclared**: Not a term the source code uses; it appears only as a glossary headword here, so no code path defines or enforces it.
 
 <!-- coinagerie:end -->

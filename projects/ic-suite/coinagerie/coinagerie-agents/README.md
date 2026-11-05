@@ -70,9 +70,6 @@ MIT — see [LICENSE](../../../../LICENSE).
 
 The words this project uses that the root glossary does not define, regenerated with `nx run coinagerie-agents:coinagerie-check:write`.
 
-- **portability**: Property that a skill package stays valid copied alone into another repository, checked by the portability unit test.
-- **prose**: Free-text body of a glossary or skill file that the coinagerie collector ignores, reading only names rather than sentences.
-- **ship**: Publish the package's four skills as an installable directory, so consumers receive only markdown with no bundled script or manifest.
 - **specific**: Describing content tied to one workspace rather than the toolchain, which the shipped skills must never contain.
 - **triage**: Skill for acting on a failed check, a refused glossary, or a word that looks wrong, which the other skills hand off to.
 - **under**: Placement marker in the skill text saying where a coinagerie block sits, such as beneath the Coinagerie heading in a README.

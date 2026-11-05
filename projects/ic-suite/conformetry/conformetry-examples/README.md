@@ -601,22 +601,10 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-examples:coinagerie-check:write`.
 
-- **absent**: Expectation key listing files that must not appear in an example report checked by the integration test.
 - **accept**: Not used in example code; examples say a file conforms or drifts, never that it is approved.
 - **attribution**: How conformetry decides which template an instance path belongs to, inferred from structure since nothing records it.
-- **camel**: Override key for the camel-case name variant, so a caller can supply spelledOutByHand instead of a derived value.
-- **conform**: Verb in the success line All checked files conform, meaning every instance matches its template with no findings.
-- **direction**: One of the two complementary questions the two-directions example asks, instances-to-templates or templates-to-instances.
-- **drift**: Any divergence between an instance and its template that conformetry reports as a finding, such as a missing export.
-- **expectation**: A per-example entry in the integration test EXPECTATIONS map, stating the exit code and output a guide promises.
-- **filesystem**: Adapter object through which generation and hooks read and write files, rather than touching disk directly.
 - **generation**: The phase that renders a template folder and file paths into instance files, failing when a placeholder has no value.
-- **polyglot**: Example folder of one component written in several languages, each checked by its own validator.
-- **receipt**: Log file a hooks example postGenerate hook writes into a receipts folder after a generator run.
-- **threshold**: Minimum percentage of requirements an instance must meet to pass, default 100 percent, lowered by scoring-thresholds.
-- **trip**: A round trip: generate an instance from a template, then validate it, proving the pair agrees.
 - **unowned**: Instance folder in the failure-modes example, rendered from a template whose owner placeholder was deliberately never supplied.
-- **validator**: Per-language check that compares an instance against its template, chosen by the file extension.
 - **world**: Instance name used in the hello-template example, rendering world.md once as the smallest template.
 
 <!-- coinagerie:end -->

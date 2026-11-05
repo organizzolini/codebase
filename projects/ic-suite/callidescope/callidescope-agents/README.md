@@ -316,7 +316,6 @@ _This project has no internal file imports._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-agents:coinagerie-check:write`.
 
-- **ship**: Verb for publishing to npm, as in this package ships documentation and every shipped skill, not source code.
 - **trace**: A callidescope skill and the act of reading call stacks, depth, and breadth, the first of three agent skills here.
 - **triage**: Skill for acting on a failed depth gate, a stale committed report, or a refused run, the third callidescope agent skill.
 

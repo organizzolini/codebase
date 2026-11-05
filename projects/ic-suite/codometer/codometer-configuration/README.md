@@ -913,13 +913,8 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **accept**: The check of a --check or --format value against the names the flags service admits, refusing unknown ones.
 - **anchor**: The marker pair a README block is spliced between, which the anchor helper appends when absent and compares in check mode.
-- **breach**: A limit violation the limits evaluation records, which a fail severity turns into a nonzero exit.
 - **breadth**: A per-callable count of direct calls, the table column that a breadth gate measures against its limit.
-- **compression**: The setting on an input that picks gzip, brotli, or none for the bytes whose size is measured on disk.
-- **effective**: The input list a run actually measures, after the default codebase input is added when none is declared.
-- **marker**: The HTML comment line an anchor searches for to find where its generated block begins or ends in a file.
 - **selector**: A configured filter on an entry naming the language or declarations it covers, so one limit can target one kind.
-- **severity**: Whether a breach stops the run (fail) or only prints (warn), set per limit and defaulting to fail.
 - **statistic**: A custom counter declared under custom in configuration, with its own label, group, and optional comment budget.
 
 <!-- coinagerie:end -->

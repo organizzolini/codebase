@@ -561,30 +561,17 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **adopt**: Renaming the newest restored task database to this machine's id so the CI job reuses it.
 - **adoption**: The AdoptionPlan that decides which restored task database to rename to this machine's id, if any.
-- **archive**: The zip file a pull request's downloaded task cache is saved to before being unpacked.
 - **baseline**: The codometer report snapshot from a green main build, which later pull requests are compared against.
 - **batch**: Group of knip tasks Nx hands to one executor call, which runs knip once from the workspace root and splits its findings by project.
-- **binary**: The knip executable, resolved from the workspace root's node_modules so every project's check runs the same installed version.
 - **breadth**: The count of direct calls a callable makes, which callidescope caps with maximumBreadth.
 - **bullet**: A single list item the upgrade-dependencies step adds to its pull request's details section.
 - **charge**: Assign a knip or cspell finding to the workspace root that owns its file, so only a finding charged to a project fails that project.
 - **corrupt**: A task database that fails its integrity check, which CI discards with a warning instead of restoring it.
-- **discovery**: NestJS finding each provider and command at startup, through the DiscoveryModule imported by the root module.
-- **effect**: What a scripted test double does when called, such as writing a file so the test can read it.
-- **executable**: The program name a process runner spawns, such as git, unzip, or gh, passed before its argument list.
 - **explain**: Produce the report of why a project failed, by running that project alone again to get exactly what a single run prints.
-- **lock**: The lockfile whose pinned dependency versions an upgrade step rewrites, such as uv's configuration lock.
-- **marker**: The fixed text inside every database file name that separates its name from its schema version number.
-- **occurrence**: A count of how many times a manifest's new text appears in the file, which must be exactly one to replace it.
-- **past**: A time before now, such as one minute ago, used to backdate a test file's modification time.
 - **rewrite**: Replacing a package.json field's value in place, as package-manifest does for each field it edits.
 - **selector**: A path that narrows a conformetry run to one file, such as its template configuration.
-- **settle**: Waiting for every promise to finish, whether it succeeds or fails, as allSettled does for a process's streams.
-- **ship**: Publishing an upgrade's changes to the pull request, which the job reports as nothing shipped when none are made.
-- **snapshot**: The git state recorded before an upgrade step runs, so a failed step can be undone back to it.
 - **unattributed**: Count of knip findings in files no project root owns, which no project's check can fail on and so are tallied apart.
 - **unchanged**: A step outcome in which the upgrade left every file as it was, so nothing needs a pull request change.
-- **undo**: Reverting a failed upgrade step's edits back to the snapshot, so its changes never reach the pull request.
 - **unrestored**: An upgrade outcome where a failed step could not be undone, so the run stops and reports it.
 
 <!-- coinagerie:end -->

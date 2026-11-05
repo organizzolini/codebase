@@ -950,30 +950,12 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-languages:coinagerie-check:write`.
 
-- **absent**: Comparison state for an optional field missing on one side, which the comparison treats as an empty string.
 - **anchor**: Offset in an instance file where a TypeScript error is pinned when known, carried on the difference type.
-- **best**: Candidate chosen during JSON comparison as the one whose differences weigh least against the template.
 - **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
-- **bridge**: Interface to the Python validator, a child process fed one JSON request on stdin and answering on stdout.
 - **callable**: Function or method identified by file and qualified name, the unit callidescope measures for depth and breadth.
-- **callee**: Expression naming the function a call invokes, from which a dotted name like Nest.Injectable is built.
-- **camel**: Case variant of a name in camelCase, produced by the string case converters in constants.
-- **claim**: Verb for a Language declaring which file extensions it handles, leaving unclaimed ones to the Fallback.
-- **conform**: Verb for a comparison finding no difference, as in the report saying checked files conform.
-- **differ**: Verb for a comparison reporting each mismatch as a Difference for what does not match.
-- **dump**: Python json.dumps call that prints the difference payload as one JSON line back to the Node bridge.
-- **envelope**: Top-level notebook wrapper holding kernel, language, and format metadata, compared separately from its cells.
-- **executable**: Python interpreter name used to launch the bridge process, supplied by PYTHON_EXECUTABLE in the python constants.
 - **leaf**: Node with no children, matched on its own identity without descending into the tree.
 - **perfect**: Full score of 1 that a comparison earns when it has nothing to weigh, exported as PERFECT_SCORE.
-- **primitive**: JSON value that is a scalar rather than an object or array, tested by isJsonPrimitive before comparing.
-- **re**: Python regular expression module, used in constants.py to split names on hyphens and underscores.
-- **sourceless**: Notebook with no source on its cells, used in a test to check that paired cells still compare.
 - **stem**: Name of a file without its extension, carried as nameStem by the files service for each instance.
-- **tokenize**: Python module that splits source into tokens, used in comments.py to find comment tokens.
 - **unclaimed**: Extension no Language claims, which LanguagesService widens the Fallback to cover so it still compares.
-- **validator**: Per-language comparison module, such as the Python or TypeScript validator, that returns differences for one file.
-- **weigh**: Verb for assigning comparison importance, where structure counts syntax nodes and comments count separately.
-- **widen**: Verb for extending the Fallback Language to also claim extensions that no other Language claims.
 
 <!-- coinagerie:end -->

@@ -954,17 +954,9 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-nx:coinagerie-check:write`.
 
-- **adapter**: Nest service in the adapter module that backs generation with an Nx Tree instead of disk.
 - **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
-- **discovery**: Stage that matches instances to templates by file-count ratio, as InstanceDiscoveryService does.
-- **execution**: Sequence a generator or validation run follows through the nx host, mapped in the AGENTS execution flow.
-- **filesystem**: File access that reads through the Tree inside the workspace and falls back to the real filesystem outside it.
 - **generation**: Writing instance files from a generator, done by the shared generation runtime through an Nx Tree adapter.
-- **notice**: Verb for a validation pass sensing an instance, which it cannot do for instances it was never offered.
-- **scoped**: Limited to a project and its dependency closure, as a callidescope run or a tag-scoped instance group is.
 - **statistic**: Stat result object in the bootstrap test, returned by lstat so its symbolic link check reads the outcome.
 - **stem**: Shared base of a file name, where instances can match the same stem yet belong to different templates.
-- **threshold**: Lowest acceptable percentage in the validate executor, applied from run level, generator level, or workspace level.
-- **untagged**: Instance group without tags, which resolves its globs as a workspace-wide pattern shared by every project.
 
 <!-- coinagerie:end -->

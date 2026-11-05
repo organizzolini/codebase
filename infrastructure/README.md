@@ -113,22 +113,8 @@ The `terraform/linode` root imports the state bucket (`organizzolini`, region `u
 The words this project uses that the root glossary does not define, regenerated with `nx run infrastructure:coinagerie-check:write`.
 
 - **account**: Owner, a user or organization, of the GitHub repository that the github Terraform root manages.
-- **archive**: Setting that archives instead of deleting the GitHub repository when Terraform destroys it.
-- **claim**: Name of the PVC the Job pod mounts, derived from the chart's fullname helper.
-- **cluster**: Linode Kubernetes Engine, the managed service that Terraform provisions for the Helm jobs.
-- **dynamic**: Terraform block that generates repeated nested blocks, such as one required_check per status check.
-- **persistence**: Helm values block that toggles a PVC and sets its mount path for the Job's output.
-- **persistent**: Storage that outlives the pod, as the PVC does for Job output; PVCs are never deleted automatically.
 - **preset**: OpenRouter ranked-model profile named by slug, which the refresh-documentation workflow calls as preset/slug.
-- **queue**: Ruleset block that serializes merges through GitHub's merge queue, retesting each pull request.
-- **region**: Linode datacenter the LKE cluster and state bucket live in, set by linode_region and region variables.
-- **scan**: Trivy misconfiguration check run over the Terraform code, identical to the Secure Code workflow.
 - **selector**: Label pair, name and instance, that matches pods to their Helm release for the Job.
-- **slug**: URL-safe name of the OpenRouter workspace read at import, and the preset name in its @preset address.
-- **stale**: Outdated review left on earlier commit, which the ruleset dismisses once new commits are pushed.
-- **thread**: Review conversation on a pull request diff that the ruleset requires to be resolved before merge.
-- **threshold**: Security scan level that sets when code scanning alerts block a merge, errors or high severity.
-- **visibility**: Repository setting that makes the GitHub repository public, set to public in the github root.
 - **wiki**: GitHub documentation area for the repository, enabled by has_wiki, separate from the OpenWiki pages.
 
 <!-- coinagerie:end -->

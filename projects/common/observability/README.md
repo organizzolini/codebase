@@ -457,15 +457,8 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run observability:coinagerie-check:write`.
 
 - **breadth**: The count of direct calls a callable makes, which callidescope gates against this project's maximum breadth limit.
-- **callee**: The function or method a call expression invokes; logger callees are excluded so this package is judged on its own.
 - **convention**: The logging message rule: an emoji naming the subject, then a present-progressive or past-tense verb, checked at runtime and by lint.
-- **duration**: Not used by this package's code, so the headword adds no project-specific meaning and is a stray entry.
-- **irregular**: Refers to irregular past-tense verbs listed in IRREGULAR_PAST_VERBS, which the message convention accepts as past-tense verbs.
-- **past**: The tense the logging convention accepts for the verb after the emoji subject, as an -ed form or an irregular verb.
-- **remainder**: The part of a log message left after its leading emoji is split off, which the convention rule then checks for a verb.
-- **timestamped**: Describes a log line or output file name that carries a timestamp, as built by createTimestampedOutputLogFilePath and error log entries.
 - **trace**: The verbose log level below debug, which LoggerService.verbose emits through its pino child logger.
 - **verb**: The grammatical word the convention rule requires after the emoji subject, in present-progressive or past tense.
-- **violation**: A message convention failure that the ESLint rule reports at lint time, either a missing emoji subject or a wrong verb.
 
 <!-- coinagerie:end -->

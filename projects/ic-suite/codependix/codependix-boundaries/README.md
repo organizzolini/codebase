@@ -787,20 +787,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**: Count of direct callees of one callable, which callidescope measures and limits with maximumBreadth.
 - **bullet**: One list item in the boundary check's Markdown outcome report, holding a verdict in bold followed by its log line.
 - **charge**: Which judged projects a violation or failure is attributed to, rendered as all judged projects or a comma list.
-- **closure**: Set of projects reached by following dependency edges from the projects a run covers, which bounds what gets judged.
-- **cycle**: Closed path of graph edges returning to its start node, which an acyclic rule reports in full.
-- **disallow**: What an allow rule reports when a dependency falls outside its listed targets, worded as a permitted surface.
-- **explore**: Verb in exploreProject, the NestJS call that inspects one project's modules before boundary rules are judged.
 - **forbid**: Kind of boundary rule that names a dependency edge from one project to another which must not exist.
-- **frame**: One line of a V8 stack trace, parsed by the boundary check to locate the file a failure came from.
 - **holder**: Project whose root directory contains a given file path, found by findProjectHolding for a failure's source file.
 - **neighborhood**: Graph type showing one project's direct dependency neighbors, which boundary rules deliberately do not judge.
 - **restrict**: Verb in no-restricted-imports, the ESLint rule that blocks importing @nx/devkit outside the nx-projects package.
 - **selector**: Object naming which nodes a rule claims by project, tag, or dependency, evaluated by BoundarySelectorService.
 - **shorthand**: Compact a-to-b notation the boundary unit tests use to write a graph's edges in one readable string.
-- **unmatched**: Adjective for a selection that matches no project, which codependix refuses before a run starts.
-- **verdict**: Outcome label a boundary check gives a violation or failure, such as fail, that the report prints.
-- **violation**: One condemned edge reported with a level, a message, and the projects it is charged to.
-- **want**: Verb meaning needs, as in what another package wants from NxProject rather than importing Nx directly.
 
 <!-- coinagerie:end -->

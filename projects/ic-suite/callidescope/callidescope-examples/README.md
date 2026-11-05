@@ -1157,27 +1157,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **aggregate**: The umbrella Nx target that runs every example at once, documented separately from the run of each individual example.
 - **breadth**: The count of distinct direct callees one callable has, the limit the gated-leaf fixture exists to exercise.
 - **callable**: Any function or method the tracer can name, as in the fixtures, identified by its declaration rather than its local name.
-- **callee**: A callable invoked by another, such as normalizeLabel reached through the plain-call fixture.
-- **closure**: The transitive set of packages a scoped run reaches through imports, as the dependency-closure fixture demonstrates.
-- **collapse**: Folding a cycle of callables into one component before depth is measured, so its members count once.
-- **cycle**: A recursive loop of callables, here the three-member mutual-recursion fixture, collapsed before depth is counted.
-- **cyclic**: Describes a group of callables that call one another, counted as a cyclic component in the run summary.
-- **diagram**: The markdown file written as output/diagram.md, drawing the same call stacks as a mermaid flowchart.
-- **filesystem**: The FilesystemProviderService fixture, a provider whose ingest method the structural-interface example calls.
-- **frame**: One step in a reported call stack, a callable with its file, signature, and any annotations.
 - **ingest**: The method that loads a document in the filesystem and structural-interface fixtures, reached through an interface call.
 - **inventory**: A stock-holding service fixture whose reserve method an orders call reaches through an injected dependency.
 - **leaf**: The innermost callable of a stack, the one a chain ends on, as in the leaf method of the mutual-recursion fixture.
-- **orphan**: A stack headed by an orphan-root, a callable nothing claims, so the tool treats it as its own entry point.
 - **place**: A method in the injected-dependency fixture that places an order, reserving inventory through an injected dependency.
 - **presentation**: A mode argument in the frame-annotations fixture that shapes how a rendered frame summary is produced.
-- **queue**: A sink fixture in implementation-fan-out that emits one line to a queued target among its sibling sinks.
-- **reserve**: The InventoryService method an order calls through an injected dependency, reporting how much stock is available.
-- **tier**: The pricing band an amount falls into, which picks the discount and rate the deep-stack fixture applies.
 - **trace**: A frame-annotations method that carries one value through every annotation shape, shown at depth seven.
-- **traverse**: A method that sits above the mutual-recursion cycle and reaches into it, so it is an orphan root.
-- **unresolved**: A call site the analysis could not turn into an edge, which makes a stack depth only a lower bound.
-- **upper**: A callback-argument step that converts one string entry to capital letters, reached through map.
-- **verdict**: The judgement a depth-limit service states about a stack, and where the number behind it came from.
 
 <!-- coinagerie:end -->

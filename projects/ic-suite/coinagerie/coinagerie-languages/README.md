@@ -43,14 +43,7 @@ This project was generated from the [nestjs-service-project](../../configuration
 The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-languages:coinagerie-check:write`.
 
 - **breadth**: The maximumBreadth limit in this package's callidescope configuration, capping how many callees one callable may make.
-- **effect**: The action a YAML rule takes on a match: skip, block, or key, read by the YAML scanner's rules.
 - **grammar**: The LexicalGrammar object a language constant supplies to the shared scanner, holding its rules and key patterns.
-- **quotable**: Names the TypeScript declaration kinds, such as enum members, whose quoted name counts as a key.
-- **scan**: The ScannerService method that walks a file's text with a LexicalGrammar and returns its raw identifier list.
-- **scanner**: The shared lexical engine, ScannerService, that every non-TypeScript language's tokenizer delegates its text reading to.
 - **splice**: Array method call in TYPESCRIPT_KEYWORDS that inserts each keyword in sorted position, avoiding toSorted for older libraries.
-- **tokenize**: The method each tokenizer exposes to return every identifier in a file's content, repeats kept, as a string array.
-- **tokenizer**: The per-language reader registered for a file extension, taking content and path and returning its identifiers.
-- **unmatched**: Describes a position where no YAML rule matches, which YAML_UNMATCHED resolves to one skipped character.
 
 <!-- coinagerie:end -->

@@ -1156,36 +1156,18 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run persistence:coinagerie-check:write`.
 
-- **archive**: A dump archive that postgresql-export writes and postgresql-import reads back, as in the archive.parts fixture table.
 - **breadth**: The number of direct calls a callable makes, measured by callidescope and reported in this project's Breadth table.
 - **convention**: The naming and log-message rules that the package's entities, commands, and tests follow, checked by tests and the lint rules.
 - **creatable**: The entity base layer that adds create-time columns, sitting second in the identifiable, creatable, updatable, deletable chain.
 - **db**: A stray fragment for database; this package's code and docs use the full word, so the headword carries no local role.
 - **deletable**: The entity base layer that adds soft-delete support, last in the identifiable, creatable, updatable, deletable chain.
-- **discovery**: A stray fragment with no code or doc use in this package; it appears only as a headword in this glossary.
-- **dump**: A pg_dump archive written by postgresql-export and read by postgresql-import; the package gitignores *.dump files it leaves.
-- **dynamic**: A stray fragment with no code or doc use in this package; it appears only as a headword in this glossary.
 - **explain**: Builds the human-readable reason a command refused to run, as ExportCommand.explain does for missing dump tables.
 - **identifiable**: The entity base layer that adds a primary id, first in the identifiable, creatable, updatable, deletable chain.
-- **latitude**: An example geographic column that must survive a round trip exactly, so the package stores it as text rather than a float.
-- **longitude**: An example geographic column that must survive a round trip exactly, so the package stores it as text rather than a float.
-- **persistence**: The package name: the shared Postgres and SQLite layer that owns TypeORM entities, connections, and the export and import commands.
-- **preflight**: A check run before an export or import starts that verifies tools and target state, covered by the preflight command tests.
-- **qualify**: Prefixing a table name with its schema; unqualified --table names resolve in the --schema option, and qualified ones are kept.
 - **refusal**: A deliberate, explained refusal to run, such as truncate refusing a table that another table still references.
 - **role**: The Postgres role, the database user identity that connections and grants run as, as in the README context table.
-- **several**: The flag that selects plural wording in a missing-table message when more than one table is absent, in missingTablesMessage.
-- **soft**: Soft deletion, which marks a row deleted with a deletedAt column instead of removing it, on the deletable entity base.
-- **stale**: Describes an out-of-date schema or dump that import must drop and replace, as the clean-data integration test drops a schema.
 - **trace**: The callidescope call-stack trace that measures depth, with config notes on which callees the trace does not follow.
 - **unqualified**: A table name without a schema prefix, which resolves in the --schema option's search path rather than a fixed schema.
-- **unreachable**: Describes a database that cannot be contacted, as the export dry-run test prints the plan for an unreachable target.
 - **updatable**: The entity base layer that adds update tracking columns, third in the identifiable, creatable, updatable, deletable chain.
-- **upper**: The case step that makes project names all-caps inside environment variable prefixes, as the SQLite utilities tests show.
-- **uuid**: The id column type for identifiable entities; AGENTS forbids sharing one Postgres entity with SQLite because uuid differs.
 - **verb**: The verb in a log message that the export log convention test expects after the subject emoji, such as exists.
-- **want**: A stray fragment with no code or doc use in this package; it appears only as a headword in this glossary.
-- **within**: A stray local name in the schema export test, holding one run's result; it carries no project-specific meaning.
-- **year**: A numeric column that the SQLite module integration test selects from its calendar event rows.
 
 <!-- coinagerie:end -->

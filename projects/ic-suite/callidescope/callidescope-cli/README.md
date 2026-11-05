@@ -1775,44 +1775,12 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-cli:coinagerie-check:write`.
 
-- **absent**: Treated as not set, so a list flag written empty reads as absent and cannot blank a configured list.
-- **assemble**: The step that builds the call graph from analyzed programs, as in GraphAssemblyService assemble, returning an AssembledGraph.
-- **assembly**: The noun for that step, as in GraphAssemblyService, the service that assembles the call graph from analyzed programs.
-- **autocomplete**: Interactive prompt feature that suggests callables as you type, used by the depth and breadth commands to resolve addresses interactively.
 - **breadth**: The number of distinct callables a single callable calls directly, which the maximumBreadth limit gates and the breadth command prints.
 - **callable**: A function, method, or constructor that the call graph treats as one node, named by file and qualified name in addresses.
-- **callee**: A function that a call invokes, here the callables a stack descends into, which excludeCallees patterns can hide.
-- **caller**: A callable that calls another, the upstream end of a call edge, which the caller and callee chains walk toward roots.
 - **canonical**: Substring of getCanonicalFileName, a TypeScript host function in the test program fixtures, not a term of this project.
-- **condense**: Fragment of condensed, as in the condensed call graph that feeds the cyclicComponentCount summary of mutually calling callables.
-- **cycle**: A ring of callables that call one another, which the call graph condenses so depth and breadth still terminate.
-- **cyclic**: Fragment of cyclic, as in cyclicComponentCount, the summary field that counts groups of callables calling one another.
-- **deepest**: Furthest in a set, as in the deepest stack a project reaches or the deepest project root that owns a file.
-- **diagram**: The Mermaid picture of the call graph, printed by --format mermaid or written to a declared mermaid path.
-- **direct**: Immediate rather than transitive, as in the direct callees and direct callers that breadth prints side by side.
-- **disallow**: Fragment of disallowed, as in the test helper stubDisallowedProjectConfiguration, which refuses a project's config field.
-- **discovery**: The step that finds source files and projects to trace before any analysis begins, and what counts as in scope.
-- **downward**: Toward callees and dependencies, as in the walk that runs downward only through a project's own dependencies, never up to dependents.
-- **frame**: One function in a call stack, carrying its file and line, which the printed stack lists from caller down to callee.
-- **hierarchy**: The class inheritance and implementation graph, held by the ClassesService that call resolution consults for overrides.
-- **identify**: Fragment of identifyAddresses, the depth command's step that resolves the named callables it is asked to report on.
-- **identity**: Service that gives each callable a stable key, so one function resolves to the same entry across runs.
-- **marker**: A file or directory name that tells the locator where the repository root sits, such as dot-git or pnpm-workspace.yaml.
-- **multiselect**: An interactive prompt that lets the user tick several callables at once, offered for address choice in a terminal.
-- **orphan**: A callable with no caller, promoted to an orphan root so the trace still starts a stack there.
 - **permit**: Fragment of ProjectConfigurationFieldNotPermitted, the error for a field a project may not set in its own config.
 - **quiet**: Describes a project that has no files of its own to read, as in the limits test naming the quiet project's file.
 - **refusal**: A command's deliberate rejection of input or a destination, printed with a headline and advice rather than a stack trace.
-- **scoped**: Limited to the projects a change touched, as in a scoped run, whose measurements are closed over their own dependencies.
-- **stale**: Of a committed report that no longer matches a fresh run, so --check reports fails and names each drifted file.
-- **suggestion**: A valid address offered when a lookup fails, listed beside the refusal so the user can retype it.
 - **trace**: The act of following calls from one callable through its callees to report the call stacks the tool measures.
-- **undeclared**: Naming a project directory that no configuration declares, so the run has no project to report against.
-- **unexpected**: Describing a failure nobody anticipated, which the CLI must surface as an error, never a green check.
-- **unreadable**: Too hard for a person to parse, as in a diagram trying to carry signatures, which is kept readable by design.
-- **unresolved**: A call site whose target the type checker cannot pin to a callable, recorded beside the resolved edges.
-- **unscoped**: A run or result covering the whole workspace rather than only the touched projects, used to check scoped agreement.
-- **upward**: Toward callers, as in the buildUpwardStacks walk that climbs from a callable to the roots that call it.
-- **widest**: Largest in a set, as in the widest project, caelundas, which holds the most call stacks in this repository.
 
 <!-- coinagerie:end -->

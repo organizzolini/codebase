@@ -853,50 +853,14 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-graph:coinagerie-check:write`.
 
-- **assemble**: Builds the final graph result by combining callables, edges, and condensed components into one AssembledGraph.
-- **assembly**: Stage in the pipeline where GraphAssemblyService joins discovered callables and resolved edges into the output graph.
 - **breadth**: Width of a call graph, counting distinct callees per frame and compared to the maximumBreadth limit.
 - **callable**: Function, method, or constructor declaration that the call graph tracks as a node, identified by CallableId.
-- **callee**: Declaration that a call site invokes, the target end of an edge in the call graph.
-- **caller**: Callable whose body contains a call site, the source end of an edge that calleeIdsByCaller indexes.
 - **canonical**: Normalized spelling of a file name, such as getCanonicalFileName in test host stubs that returns it unchanged.
-- **claim**: Mark a callable as already rooted so later passes do not root it again, tracked by the claimed set.
-- **classification**: Pass that labels each discovered callable with its entry-point or naming kind during entries discovery.
-- **closure**: Dependency set of projects a run reaches through imports, against which its measurement scope is judged.
-- **condense**: Collapse strongly connected cycle components into single nodes so the graph becomes acyclic for depth measurement.
-- **construction**: A new-expression call site that constructs an instance, counted as a call site even without parentheses.
-- **cycle**: Loop in the call graph where a callable reaches itself, closed rather than followed so traversal terminates.
-- **deepest**: Longest call stack from a root, the path measured against maximumDepth and reported as the stack depth.
-- **direct**: Immediate call relationship, one hop with no intermediate callable, as opposed to a transitive reach.
 - **disambiguator**: Trailing line-number suffix that separates two callables sharing one address, such as a line suffix after the name.
-- **downward**: Traversal direction from a root toward its callees, the way buildDownwardStacks walks the graph.
-- **dynamic**: Call whose target cannot be known statically, recorded as the DYNAMIC_CALL constant with a dynamic-value reason.
-- **element**: Bracket-indexed call target such as obj with a key in brackets, recognized by isElementAccessExpression during symbol resolution.
-- **enter**: Callable the lookup began from, which ordering places first within its strongly connected component.
-- **flatten**: Turn a TypeScript diagnostic nested message chain into one plain string via flattenDiagnosticMessageText.
-- **frame**: One entry on the iterative traversal stack, holding a callable and its position among its successors.
-- **hierarchy**: Index of class inheritance that resolves interface members to concrete implementations, built by ClassesService.
-- **identity**: Key built from a callable file path, qualified name, and line, produced by CallableIdentityService.
-- **later**: Subsequent pass or call that must reuse an earlier result, so it never roots or reads the same thing twice.
 - **leaf**: Callable with no outgoing callees, a terminal frame that ends a stack and is counted as its depth.
-- **nominal**: Class-name based match, preferred over structural checks when a base names its implementers directly.
-- **orphan**: Callable nothing calls and nothing roots, so it starts its own stack and shows as a root.
-- **permissive**: Filter that excludes nothing, used in tests to let every file through the file-filter contract.
-- **question**: Optional-marker token on a declaration, read as a QuestionToken to decide if a member may be absent.
 - **quiet**: Dropping something without reporting it, as a lookup that quietly finds nothing rather than failing.
-- **reverse**: Flip a path order so a stack reads callee-first, applied with toReversed when a flag is set.
-- **scan**: Walk a directory tree or source file set to collect candidates, skipping excluded scan directory names.
 - **sibling**: Directory at the same level as another one, which containment checks must never treat as inside it.
 - **splice**: Remove a run of members from the pending stack once a component closes, taking everything from one index onward.
-- **successor**: Next callee of a frame still to visit, tracked by successorIndex so the traversal resumes where it left off.
 - **trace**: Analyze a project code to build its call graph, starting from entry points and following each call site.
-- **traversal**: Walk over the call graph from roots through successors, the process depth and breadth measurement perform.
-- **traverse**: Visit a graph node and its successors, the method that recursively walks every path from a start callable.
-- **unresolved**: Call site or address whose target could not be matched to a declaration, reported rather than silently dropped.
-- **unwrap**: Peel an import alias off to reach the symbol it names, in symbol resolution via unwrapAlias.
-- **upward**: Propagating a measurement toward callers, the direction a depth result moves when a candidate is followed.
-- **verdict**: Boolean decision whether a source file counts as external, memoized per file by the external service.
-- **weak**: Map keyed by object identity that drops entries when the source file is released, used for verdicts and checkers.
-- **widest**: Callable with the greatest fan-out, the point a run reports as its breadth maximum.
 
 <!-- coinagerie:end -->

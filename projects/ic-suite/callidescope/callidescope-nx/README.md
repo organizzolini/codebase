@@ -1049,21 +1049,11 @@ What this project is judged against, as declared in its own `callidescope.config
 The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-nx:coinagerie-check:write`.
 
 - **batch**: Group of gate tasks Nx hands to one executor call, which traces the workspace once and judges each project from that trace.
-- **breach**: Limit overrun that makes a gate fail, such as a dependency whose stack exceeds its maximum depth or breadth.
 - **breadth**: Width measurement of a traced project, reported by the breadth executor and gated against maximumBreadth.
 - **callable**: Function, method, or class member that a trace or query names by its file and qualified name in an address.
-- **closure**: Set of projects a run reaches through dependencies, the scope within which a gate or trace is measured.
-- **direct**: Immediate caller or callee of one callable, the one-hop listing printed by the executor that inspects it.
-- **downward**: Stack direction running from a callable toward its dependencies, the way depth reads a call stack in this plugin.
 - **explain**: Produce a reason for why an address or verdict failed to match, printed as a block the reader can follow.
-- **gamma**: Placeholder project name for a third fixture dependency, as in an alpha-beta-gamma chain in tests.
-- **identify**: Match an address against the traced selection, the private step that resolves which callable it names.
 - **restrict**: Target name, callidescope-restrict, given to the gate executor that restricts a run to the selected projects.
 - **trace**: Executor that builds call stacks for a project and its dependencies, printing the same verdict block a gate prints.
-- **unmatched**: Tag filter that matched no project, reported so a run can name a selector that selected nothing.
 - **unread**: Project whose own files a run reads nothing from, which makes its gate fail rather than pass silently.
-- **untagged**: Project with an empty tag list, which tag-based selectors cannot pick up and so reaches only by name or path.
-- **upward**: Stack direction running from a callable toward its callers, built by buildUpwardStacks for the address view.
-- **verdict**: Judgement a gate or trace reaches about the limits of a project, printed as a block that explains pass or fail.
 
 <!-- coinagerie:end -->

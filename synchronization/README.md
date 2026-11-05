@@ -1336,30 +1336,15 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run synchronization:coinagerie-check:write`.
 
-- **binary**: Local skills executable checked before falling back to pnpm, which restores missing skills through experimental_install.
 - **breadth**: Callidescope measure of how many direct callees a frame fans out to, gated for every traced project in the workspace.
-- **collision**: Port clash found by project-ports when two projects derive the same port number, which makes the command fail.
 - **corrupt**: Fake behavior flag corruptsLockfile that simulates a restore which damages the lockfile, testing the safety check.
 - **creation**: Label creation step in pull-request-labels that runs gh to add each missing label and reports success or failure.
-- **direct**: Adjective counting direct callees in callidescope config, the fan-out width of SynchronizationCommand.synchronize.
-- **discovery**: NestJS DiscoveryModule imported by the synchronization module so its commands and synchronizers are found at boot.
-- **drift**: Mismatch between a generated file and its source, reported by check mode so the run fails until the file is rewritten.
-- **executable**: Program name in an installed-skills process command, the first field passed to spawnSync along with its arguments.
-- **filesystem**: Import alias of node:fs in conventional-config tests, spied on so existsSync reports pnpm-workspace.yaml as present or absent.
-- **lock**: The skills-lock.json file of declared skills, checked or restored by the installed-skills targets in this project.
-- **marker**: Start and end comment pair fencing a generated table or list in a file, which sync rewrites between the two comments.
 - **mirror**: Symlinked copy of a file, such as AGENTS.md under .github/skills, that sync must never write through.
-- **nth**: Not used in synchronization source, so the word names no index or selector here and carries only its everyday sense.
 - **preset**: Semantic-release preset configuration whose types list conventional-config appends missing commit types into.
 - **reconcile**: Verb for syncing a derived file with its source of truth, the purpose named in each synchronization project target.
 - **reconciliation**: Process of comparing the GitHub label vocabulary against the conventional config, applied by the issue-labels write mode.
 - **rewrite**: Verb for sync replacing dropdown options, markdown tables, or scope arrays inside marked blocks of source files.
 - **scenario**: Name field for each parameterized test case, such as scenarioName in the conformetry generator command tests.
-- **stale**: Status of a generated file whose content no longer matches its source, reported in check output until it is rewritten.
 - **synchronizable**: Interface implemented by each synchronizer command, such as conformetry generators, so one run can dispatch to all of them.
-- **track**: Verb in installed-skills tests and comments: restoring leaves tracked files alone and returns them to committed content.
-- **undeclared**: Test variable naming markdown files that carry markers but are missing from the declared file list.
-- **upper**: Not a named term in synchronization source, which uppercases text only through the capitalize helper.
-- **validator**: Validator service class in conventional-config that checks type and scope dropdowns against the values in the source.
 
 <!-- coinagerie:end -->

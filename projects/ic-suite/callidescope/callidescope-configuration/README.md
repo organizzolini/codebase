@@ -1084,28 +1084,11 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **accept**: Describes the input a depth or breadth command takes, the same address form every stack frame prints for copying.
 - **anchor**: The opening and closing comment markers that bracket the generated markdown block this package writes into a README file.
-- **autocomplete**: A prompt type that narrows a suggestion list as the user types, used when choosing addresses or directories interactively.
 - **breadth**: The second gated limit, counting how many callables one callable calls directly, capped by maximumBreadth.
-- **callee**: A callable that a traced caller invokes, which excludeCallees globs can drop from the graph so it does not count.
-- **collaborator**: A service the configuration module delegates one question to, such as file reading or prompting, rather than doing the work itself.
-- **expectation**: A callback in the flag-resolution unit tests that asserts the resolved run flags for one case.
 - **forbid**: Classifies a run-level field that no project configuration may set, such as directories or excludeFrom.
-- **future**: Not a term this package uses beyond its glossary line, so it carries no project-specific meaning here.
 - **hollow**: A fixture project whose limits field is written as undefined, a form the configuration reader must refuse by name.
-- **incomplete**: A project configuration file missing fields, which is refused outright rather than inheriting values from the workspace.
-- **marker**: A file whose presence identifies the repository root, such as .git or pnpm-workspace.yaml, when resolving configuration paths.
-- **multiselect**: A prompt that lets the user pick several entries from a list, such as the projects a run should trace.
-- **occurrence**: A count of how many times an exclude entry appears in a configuration, which a test asserts is exactly one.
-- **offer**: Decides whether a prompt is shown at all, as a policy over two collaborators that check if a terminal is attached.
-- **orphan**: A callable that no entry-point rule reaches, which the tool reports as a root worth checking for dead code.
 - **permit**: Classifies a project-configuration field the project may set itself, such as entryPoints, exclude, or limits.
-- **preparation**: The setup step in the run-plan service that resolves a project lookup before a run starts tracing.
 - **reader**: The package that finds, validates, and fills in each callidescope.config file, so no analyzer handles optional fields.
-- **space**: Appears in no code here beyond the glossary line, so it has no project-specific meaning in this package.
-- **suggest**: The InputService method that returns autocomplete suggestion entries, each a title and value pair, for a typed prefix.
-- **suggestion**: One title-and-value entry in an autocomplete list, narrowed by InputService.filter as the user types.
 - **unbounded**: A project whose maximumBreadth is undeclared, so it gates depth only and no breadth limit applies to it.
-- **undeclared**: A destination or field a configuration never names, which is refused rather than invented or given a default.
-- **unreadable**: A configuration file whose extension the reader cannot parse, which is refused by naming the unsupported format.
 
 <!-- coinagerie:end -->

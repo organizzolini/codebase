@@ -93,10 +93,5 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **gap**: Problem lines run-examples prints when the check-failures table disagrees with its configurations on disk, failing the examples run.
 - **glossary**: The coinagerie markdown or JSON mapping of words to definitions that each example's check compares with its project's code.
-- **leftover**: The word leftoverWord, from a file in gitignored scratch, that the exclusions example expects the check to leave out.
-- **orbit**: A word the outputs example's planner project uses, defined only in its JSON glossary, leaving the markdown block empty.
-- **perigee**: The point of an orbit nearest the body it circles, a planner term the outputs example defines in its markdown block.
-- **planner**: Name of the orbit project in the outputs example, a project whose README and JSON glossary list the words it uses.
-- **stale**: A word the glossary lists that the code no longer uses, which the check reports and --write deletes with its definition.
 
 <!-- coinagerie:end -->

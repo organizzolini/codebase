@@ -1279,22 +1279,11 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **anchor**: The block name, such as codometer, that a README section is keyed by so a rewrite replaces it rather than appending.
 - **baseline**: The previously committed report that a fresh measurement is diffed against when checking for stale reports.
-- **breach**: A measured value that crosses a configured limit, reported as a warning or failing the run depending on severity.
 - **breadth**: The number of distinct callables a function calls directly, reported in the breadth table and gated by a limit.
 - **bundle**: The built JavaScript output that codometer measures for the package, with its size checked against a Bundle limit.
-- **compression**: The encoding a measured input's bytes are sized under, one of gzip, brotli, or none, before limits compare them.
-- **conditional**: A Shell construct the shell analyzer counts, reported as Shell Conditionals alongside functions, loops, and pipelines.
-- **deliver**: The DeliveryService action that writes each measured output to its destination and reports stale leftover paths.
-- **delivery**: The codometer-cli module that writes finished outputs to their destinations, separate from measuring and limit evaluation.
-- **discovery**: The walk over a directory that gathers the files to measure, honoring every gitignore it reads along the way.
-- **generic**: A type-parameter declaration in TypeScript code, counted by the analyzer and tallied as Generic Declarations in badges.
-- **marker**: The HTML comment line that opens or closes a generated README section, which codometer uses to find and replace it.
 - **pipeline**: A chain of commands joined with pipe operators, which the Shell analyzer counts as its own construct.
 - **selector**: The matcher in a configured comment or limit entry that names which files, languages, or declarations it covers.
-- **severity**: The level on a limit or comment budget, where fail stops the run on a breach and warn only reports it.
-- **stale**: A committed report that no longer matches a fresh measurement, which the reports check fails on rather than rewriting it.
 - **staleness**: The condition of a committed report that differs from a fresh run, kept distinct from a limit breach.
 - **statistic**: A custom measurement counter declared in configuration, keyed by its label and measured for each output.
-- **unreadable**: A file the walker cannot read, which is listed as unreadable rather than stopping the run.
 
 <!-- coinagerie:end -->
