@@ -451,39 +451,11 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-output:coinagerie-check:write`.
 
-- **adjacency**: Map from each node to its sorted outgoing targets, built from directed edges so path-query searches can traverse the graph.
 - **ambient**: Field of the project-graph inputs listing TypeScript ambient module names, passed empty in unit tests that declare none.
 - **anchor**: Pair of start and end comment markers delimiting a generated section of a Markdown file, which codependix splices in place.
-- **arrow**: Connector glyph placed between successive nodes in a Markdown path, separating the steps path-query prints.
-- **bf**: Shorthand for breadth-first, the queue-driven search path-query uses to find shortest directed routes between two nodes.
 - **boundary**: Check family that judges dependency graphs against configured rules, implemented by BoundaryCheckModule and its reporting services.
 - **breadth**: Count of direct calls a callable makes, listed in the README breadth table that callidescope reports for each function.
-- **classify**: Verb for labeling how a checked file differs from its fresh export, the classifyDifference helper inside DeliveryService.
-- **combine**: Verb for merging each graph type's whole-workspace data into one combined export, so a run emits one shared output.
-- **cycle**: Dependency loop reported by a no-cycles rule, shown as a path that starts and ends at the same node.
-- **deliver**: Verb for writing a finished graph export into its Markdown or JSON destination through DeliveryService.
-- **delivery**: DeliveryService and its module, which write graph exports to their targets and classify differences against existing files.
-- **explore**: Verb for walking a NestJS project's source to discover its modules, as NestjsProjectService.exploreProject does during a run.
-- **final**: Trailing text after a spliced anchor section, with its leading newline normalized so the section keeps a blank line before what follows.
-- **fresh**: Newly computed export text that an anchor's current content is compared against to decide whether the file is stale.
-- **hint**: Optional follow-up sentence attached to a reported problem, naming what the user should check, such as the spelling of a project.
-- **intro**: The single explanatory line placed under a spliced Markdown section heading, carried by the MARKDOWN_SECTION_INTRO_LINE constant.
-- **know**: Verb in the anchors design note saying its low-level primitives know nothing about the graphs or callers above them.
-- **marker**: Start or end comment line delimiting an anchor block, using codependix's own syntax independent of conformetry's markers.
-- **mermaid**: Diagram text format codependix emits for dependency graphs, embedded in fenced blocks inside its Markdown exports.
-- **multi**: Prefix in test names for files holding several anchor blocks, checking that each block is located and spliced independently.
-- **neighbor**: Directly linked node in a graph export, drawn beside the subject project in the Nx Neighborhood diagram.
 - **neighborhood**: Mermaid graph of a subject project and its direct dependency neighbors, exported by NeighborhoodModule as the Nx Neighborhood section.
-- **queue**: FIFO list driving the breadth-first path search in path-query, shifting one entry at a time to extend candidate routes.
-- **remainder**: Text after the section start in an anchor file, searched for the next heading to find where the section ends.
-- **selection**: The --projects or --tags choice a run is limited to, which decides which projects produce output and which are judged.
-- **shortest**: Adjective for the path-query result that finds the fewest-edge directed route between two nodes.
-- **stale**: State of a committed export whose contents no longer match a fresh run, which the check mode reports as a failure.
 - **subheading**: Optional third-level heading placed under a Codependix section to group one project's export, passed to the anchors service.
-- **subsection**: New third-level block appended at the end of an existing Codependix heading when a file has no anchor for it yet.
-- **tail**: Text after an anchor section's body, kept unchanged when that section is rewritten in place.
-- **unmatched**: Selection entry that matched no project, reported with a hint so a misspelled --projects name is noticed.
-- **verdict**: Pass, fail, or note outcome a boundary check assigns to a run, which the reporting service prints for each judged project.
-- **violation**: Single rule breach found by a boundary check, recorded with its rule, edge, and message to feed the verdict.
 
 <!-- coinagerie:end -->
