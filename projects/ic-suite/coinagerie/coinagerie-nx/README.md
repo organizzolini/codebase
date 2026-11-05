@@ -68,17 +68,8 @@ This project was generated from the [nestjs-service-project](../../configuration
 
 The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-nx:coinagerie-check:write`.
 
-- **abort**: The NestJS option abortOnError, set false so a failed plugin bootstrap does not kill the Nx daemon's process.
-- **bad**: Marker in a directory name that makes the fake command line fail that project, so tests can plant a disagreement.
 - **batch**: Group of coinagerie-check tasks Nx hands to one executor call, which starts the command line once and names every project to it.
-- **beta**: A fixture package name in the plugin's unit tests, standing for a project that holds a coinagerie configuration.
 - **breadth**: The maximumBreadth limit in this package's callidescope.config.ts, set to four callees per callable.
 - **gamma**: A fixture package name in the plugin's unit tests, standing for a project with a project.json but no configuration.
-- **mj**: The module-extension fragment of .mjs configuration file names that the plugin matches as coinagerie config variants.
-- **posix**: Node's path module, the forward-slash variant used to derive a project root from a configuration file path.
-- **prefer**: Key in executors.json, preferBatch, that makes Nx hand the check executor every ready task in one batch call.
-- **sample**: A fixture folder name in the plugin's unit tests, holding a coinagerie.config.ts that the inference reads.
-- **terminal**: Stem of terminalOutput, the report text a batch task returns so Nx can cache it and the executor can print it.
-- **verdict**: The pass-or-fail result and report the command line prints for one project, kept per task so each is cached alone.
 
 <!-- coinagerie:end -->

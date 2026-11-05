@@ -315,10 +315,6 @@ _This project has no internal file imports._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-agents:coinagerie-check:write`.
 
-- **front**: Leading part of a SKILL.md metadata block, the fenced YAML holding its name and description for the skills tool.
-- **matter**: Body of the fenced metadata at the top of each SKILL.md, which must carry a name matching its directory and a description.
-- **navigate**: Skill for answering dependency questions from a committed graph, such as what depends on a project or what a rename touches.
-- **ship**: Verb for publishing: each skill directory here is released to consumers who install it with skills add.
 - **triage**: Skill for acting on a codependix run that failed or reported drift, one of the three skills this package ships.
 
 <!-- coinagerie:end -->

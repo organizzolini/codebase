@@ -912,26 +912,9 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-configuration:coinagerie-check:write`.
 
 - **accept**: The check of a --check or --format value against the names the flags service admits, refusing unknown ones.
-- **amount**: The numeric part of a limit's text, such as 10 in 10 KB, parsed by LIMIT_VALUE_PATTERN before its unit multiplies it.
 - **anchor**: The marker pair a README block is spliced between, which the anchor helper appends when absent and compares in check mode.
-- **badge**: A shields.io line that the default markdown writer renders for each configured statistic, one per counter in order.
-- **breach**: A limit violation the limits evaluation records, which a fail severity turns into a nonzero exit.
 - **breadth**: A per-callable count of direct calls, the table column that a breadth gate measures against its limit.
-- **compression**: The setting on an input that picks gzip, brotli, or none for the bytes whose size is measured on disk.
-- **effective**: The input list a run actually measures, after the default codebase input is added when none is declared.
-- **infinity**: The unbounded limit that no configured value can express, since LIMIT_VALUE_PATTERN accepts only digits and a unit.
-- **internal**: A helper kept private to this package, filed under the Private Methods section as AGENTS.md directs.
-- **marker**: The HTML comment line an anchor searches for to find where its generated block begins or ends in a file.
-- **measure**: Declaring an input with include and exclude globs is how a subset of the tree gets measured here.
-- **measurement**: The set of built-in counters the codebase measurement produces, which configured custom statistics extend under custom labels.
-- **multiplier**: The factor a limit unit such as KB or MB applies to its amount, looked up in LIMIT_UNIT_MULTIPLIERS.
-- **na**: A stray two-letter token that appears only as a glossary headword here, with no use in this package's sources.
-- **negation**: A leading exclamation mark on a glob, marked by NEGATION_PREFIX, that moves the pattern into the exclusions list.
-- **prettify**: The zod helper that formats a failed schema parse into the readable message a rejected configuration shows.
-- **refine**: A zod validation predicate added to a schema, such as the check that every custom statistic carries a unique label.
-- **selection**: The list of custom labels an output asks for, which the configuration refuses unless the top level declared them.
 - **selector**: A configured filter on an entry naming the language or declarations it covers, so one limit can target one kind.
-- **severity**: Whether a breach stops the run (fail) or only prints (warn), set per limit and defaulting to fail.
 - **statistic**: A custom counter declared under custom in configuration, with its own label, group, and optional comment budget.
 
 <!-- coinagerie:end -->

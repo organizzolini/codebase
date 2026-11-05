@@ -1,7 +1,9 @@
 import {
   commonWordExclusions,
+  externalWordExclusions,
   foldRepositoryWord,
   keywordExclusions,
+  patternExclusions,
 } from "./configuration/coinagerie.config.js";
 
 import type { CoinagerieConfiguration } from "@coinagerie/configuration";
@@ -41,7 +43,12 @@ export default {
       "docs/**",
       "openwiki/**",
     ],
-    words: [...keywordExclusions, ...commonWordExclusions],
+    words: [
+      ...keywordExclusions,
+      ...commonWordExclusions,
+      ...externalWordExclusions,
+      ...patternExclusions,
+    ],
   },
   fold: foldRepositoryWord,
   outputs: [

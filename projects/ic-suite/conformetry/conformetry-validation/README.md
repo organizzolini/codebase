@@ -527,28 +527,9 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-validation:coinagerie-check:write`.
 
 - **breadth**: Callidescope measure of how many callables one function calls directly, shown in this package's Breadth tables and gated.
-- **calculate**: How validation-scoring works out an instance's score from its file results, the fraction of its template honoured.
-- **claim**: Verb for a validator recognising a document by its extension, so only the documents it handles are checked.
-- **clean**: Document with no differences; it still counts toward the weight total so the score keeps its full denominator.
-- **deduplicate**: Verb for collapsing repeated findings so only one template prints a shared file's defect, done by ValidationDeduplicationService.deduplicate.
-- **deduplication**: Step after scoring that decides which template prints each shared file's finding, so one defect is reported once.
-- **descriptor**: Metadata a validator declares for itself, such as its name and fileExtensions, which the runner matches against documents.
-- **gear**: Fixture name in validation tests, a gears module under packages/widgets, used as an unmatched instance path.
-- **inference**: Step that guesses placeholder values for an instance from its validators, reporting any it cannot infer as missing.
-- **kebab**: Case variant such as nameKebabCase, a placeholder that renders an instance name in kebab-case within template paths and contents.
 - **lenient**: Describes a group with a looser threshold; when groups disagree the strictest wins, so a lenient one cannot relax a bar.
-- **route**: Verb for sending each document to the validator that claims its extension, the first step of the runner's check.
 - **stem**: Name portion of an instance, such as aspects, joined to its directory so each module is scored separately.
-- **sum**: Total of requirement weights in a file or run, the denominator that a score's failed share is measured against.
-- **threshold**: Minimum score an instance must reach to pass, resolved from its group, generator, or run, defaulting to a perfect one.
-- **tie**: Equal-scoring match between an instance and two templates; kept when the templates differ, collapsed when a directory repeats.
 - **under**: Nests each finding beneath its file when the runner assembles results, so the report groups defects by the file they belong to.
-- **unfiltered**: Result of a validate call with no languageNames filter, which tests compare against filtered output to confirm filtering works.
-- **unmatched**: Instance whose path matched no template, reported as a finding because a glob asserts that path holds generated code.
-- **unprepared**: Test case where nothing was prepared, so validation reports a placeholder difference instead of failing the whole run.
 - **unrecorded**: Instance whose match recorded no stand-in placeholder values, leaving nothing for inference to fill, so the run stays ok.
-- **validator**: Language engine that checks documents with a given extension; it sees only the documents it claims, through the runner.
-- **weight**: Importance of one document or requirement in a score; failing documents' weight shows how much of the total went missing.
-- **widget**: Sample template name in validation tests, a widget template under the fixture templates folder used for scoring checks.
 
 <!-- coinagerie:end -->
