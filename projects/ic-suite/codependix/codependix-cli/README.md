@@ -984,21 +984,15 @@ The words this project uses that the root glossary does not define, regenerated 
 - **anchor**: Config key naming the marker inside a Markdown destination where a graph section is spliced in place.
 - **boundary**: Rule-checked constraint on project dependencies; the check command fails the run when an edge breaks a declared rule.
 - **breadth**: Count of direct callees of one callable, which callidescope measures and limits with maximumBreadth.
-- **chdir**: Node process.chdir the map command integration tests call to run from a fixture working directory, then restore it.
-- **combine**: Verb for merging each active graph type's section into one Markdown file, as CombinedOutputService does.
 - **cycle**: Path of dependency edges returning to where it started, which an acyclic rule fails a run on when it crosses projects.
 - **discovery**: Nest DiscoveryModule imported by the CLI root module, letting it locate providers and their metadata at runtime.
 - **drift**: Gap between committed exports and a fresh run, which check names as stale; tests create it deliberately.
 - **forbid**: Rule kind string in the nxProjects configuration that fails a run when a from-selected project depends on a to-selected one.
-- **hint**: Optional message field on a warning or failure entry that tells the user what to check, such as a spelling reminder.
 - **rejection**: Refusal of a bad command line, such as a format value outside json, markdown, or mermaid, reported as a failed run.
 - **restrict**: Verb naming callidescope-restrict, the inferred gate target that fails when a project breaks its own depth or breadth limits.
-- **selection**: The projects a run is scoped to, which the run refuses when none match and warns about when only some do.
-- **spread**: Object spread in callidescope.config.ts that layers shared projectDefaults under each project's own overrides.
 - **stale**: State of a committed export or destination that no longer matches a fresh run, which check fails on.
 - **unmatched**: Adjective for a selection entry that matches no project, which the run names in a warning without failing.
 - **verdict**: Outcome string, such as fail, a boundary violations entry carries in the JSON report for each violated rule.
 - **violation**: One breach of a declared boundary rule, counted in the run summary and listed with its projects and verdict.
-- **widget**: Fixture project name in the map command's integration test, used to build a widget-neighborhood graph JSON.
 
 <!-- coinagerie:end -->

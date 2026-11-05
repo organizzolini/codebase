@@ -1317,23 +1317,15 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-cli:coinagerie-check:write`.
 
-- **argv**: The process argument vector the CLI reads its flags from, which the command-line entry point and integration tests overwrite to simulate invocations.
 - **breadth**: The number of other callables one function calls directly, which callidescope reports in the Breadth table of this README and gates against a limit.
-- **choose**: Picking one template from the interactive prompt that generate shows when no template was named, reported as the chosen name.
 - **discovery**: The process of finding templates and instances on disk by matching configured globs, run by InstanceDiscoveryService before validation or listing.
 - **generation**: Rendering a template with resolved inputs to create new files, which the generate command performs through GenerationService.
 - **inventoried**: Listed in a discovery result with its matched path and template pairings, as the InventoriedInstance type records.
 - **inventory**: The list of templates and instances discovery found, which the instances and templates commands print for review.
-- **percentage**: The share of met requirements printed beside each fraction in validation reports, from 0 to 100 at file, instance, and total levels.
-- **ratio**: Fraction from 0 to 1 that a score or the --threshold option is expressed in, so 1 demands a perfect match.
 - **scoped**: Restricting the instances of a template to projects selected by tags, which the CLI host cannot locate without a project graph.
-- **selection**: The subset of templates or instances a run is narrowed to by --templates or --instances, reported as empty when nothing matches.
-- **shorten**: Trimming absolute instance and template paths to be relative to the working directory for display, as the list commands do.
 - **stem**: The folder name a template instance is located by, stored as nameStem and joined onto the instance path to find its files.
-- **terminal**: An interactive TTY, checked by ConfigurationService isAtTerminal, which decides whether the CLI prompts for a missing value or refuses.
 - **threshold**: The minimum conformance score an instance must reach to pass, set per generator, instance group, or the --threshold flag.
 - **tie**: A case where two templates explain the same instance equally well, which validation reports rather than hiding behind one verdict.
 - **unmatched**: Instances that match no template, reported by validate and instances runs and counted separately from an empty workspace.
-- **weight**: The count of requirements a finding stands for, so a missing class counts as every member it held.
 
 <!-- coinagerie:end -->

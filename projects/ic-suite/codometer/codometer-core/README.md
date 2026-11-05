@@ -132,17 +132,10 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breach**: What a limit reports when a measured metric crosses it, with a CodometerSeverity of fail or warn deciding the consequence.
 - **breadth**: The callidescope report section that counts direct calls per callable, listed as the Breadth table of this package.
 - **conditional**: A branching construct in Shell code, such as an if statement, tallied as conditionals in the shell statistics.
-- **doc**: A JSDoc-style block above a declaration, tallied as docComments in the TypeScript statistics that core defines.
 - **generic**: A type parameter declaration, such as the T in a generic function, tallied as genericDeclarations in the TypeScript statistics.
-- **javascript**: The statistics group for TypeScript and JavaScript files, keyed alongside the other language groups in the result.
-- **measure**: The label of the first column of the callidescope summary table in this README, listing callables and files.
-- **paragraph**: A block of Markdown prose, tallied as paragraphs in the markdown statistics that core defines.
 - **pipeline**: The sequence of analyzers whose output is the aggregated CodeStatisticsResult that core's types describe.
-- **scalar**: A non-container JSON or YAML value, tallied as scalars in the statistics that core defines for those formats.
 - **selector**: A custom statistic's matcher, whose instances field records each occurrence it found, such as a comment selector's blocks.
 - **severity**: Either fail, which gates a change, or warn, which only reports a breach, as the core type declares.
 - **statistic**: A counted value in the code statistics result, whether a built-in language field or a custom counter under custom.
-- **todo**: A comment flagged for later work, tallied as todos in the code statistics that core defines.
-- **toml**: The configuration-file statistics group for tables, array tables, keys, and arrays, one of the formats core models.
 
 <!-- coinagerie:end -->

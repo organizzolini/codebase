@@ -347,49 +347,27 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-measurement:coinagerie-check:write`.
 
-- **ambiguous**: Set of metric paths that resolve to more than one instance, which the limits service refuses to choose between.
-- **analyze**: Method on each analyzer service, such as the customization analyze call, that returns a measured result for its inputs.
 - **anchor**: Stem of anchored, as in the discovery test's note that a leading-slash ignore pattern is anchored at the repository root.
 - **boundary**: Repository edge passed to the inputs constructor, beyond which an input configuration is not allowed to reach.
 - **breach**: Outcome of a metric exceeding its limit, which the customization and limits services report together with a severity.
 - **breadth**: Callidescope maximumBreadth limit this package holds itself to, set to nine in its own callidescope configuration.
 - **budget**: Per-comment allowance checked in the customization pass, judged against each comment block's own configured limit.
 - **bundle**: Compiled JavaScript output that this package's own codometer config measures, held to a 32 KB size limit.
-- **compress**: Verb for the size analyzer squeezing measured files with zlib at a stated level, as its compress method does.
 - **compression**: Codometer setting choosing gzip, brotli, or no compression for size measurement, read from the inputs configuration.
 - **conditional**: Counter of conditional statements in the measure constants, zero-initialized in each code statistic record a run produces.
 - **counter**: Custom metric that measures files by path, declarations by symbol, or comments, as the customization service describes.
-- **dirent**: Node filesystem directory entry type that discovery's readDirectoryEntries returns, and that its unit tests fake per kind.
 - **discovery**: Module that walks the repository and categorizes files by language, honoring ignore rules and skipping symlinks and unreadable directories.
-- **dist**: Build output directory that discovery drops from its walk, while this package's own codometer config measures its compiled JavaScript.
-- **doc**: Stem of documentation comments, as in customization selectors that name a documentable kind such as class docs.
-- **double**: Verb for counting a file twice, which the customization pass avoids by reusing the single walk over every source file.
-- **evaluate**: Method of the limits service that judges every metric against its configured limits and returns the evaluation.
 - **generic**: Adjective for the repository-root marker strategy in inputs, which works for every repository because it never asks git.
-- **gzip**: Default compression setting in inputs, the algorithm whose level the size constants pin rather than leave to zlib.
-- **ipynb**: Notebook extension in discovery's NOTEBOOK_EXTENSIONS set, deliberately kept out of the JSON extension set.
-- **javascript**: Language set whose extensions discovery treats as JavaScript source, and whose compiled bundle this package limits to 32 KB.
 - **marker**: Repository root marker filename, looked for in REPOSITORY_ROOT_MARKERS when inputs locates the top of a repository.
-- **measure**: Verb for the measure service's top-level run, which composes inputs, discovery, size, and limits into one report.
-- **measurement**: One codometer run over inputs, reported as a measure result, which this package's own callidescope limits judge.
 - **nth**: Fragment of toHaveBeenNthCalledWith, the Vitest assertion the measure unit test uses to check the size analyzer's calls.
-- **paragraph**: Markdown paragraph count, the paragraphs statistic the markdown analyzer tallies in each measured document.
 - **pin**: Verb for fixing a value or behaviour in a test so later changes break it, as the input and target tree fixtures describe.
 - **pipeline**: Measurement pipeline, the sequence of inputs, discovery, size, and limits services that one codometer run passes through.
-- **py**: Python extension that discovery categorizes into pyFiles for the Python analyzer to measure.
-- **repo**: Repository root path used in discovery test mocks, such as /repo, the directory a measurement walks from.
-- **scalar**: Scalar value term appearing only in this package's glossary, since the measurement code names no scalar counter.
 - **scoped**: Adjective for a run limited to one project and its dependency closure, as the callidescope config describes its own measurement.
 - **selector**: Config key naming which files or declarations a custom statistic counts, such as a language or a documentable kind.
 - **severity**: Setting that makes a custom statistic or limit a fail or warn breach, carried unchanged into customization results.
 - **statistic**: Named metric a custom configuration computes, such as a comment-selector statistic with its own breach and budget.
-- **symbolic**: Stem of symbolic link, which the inputs service checks to see whether a link points at a file.
-- **todo**: Stem of the TODO developer marker, which appears in this package only as a glossary word, not in measurement source.
-- **toml**: Extension set in discovery for TOML documents, grouping .toml files for the TOML analyzer to measure.
 - **unbind**: Describes a limit path that names no measured target, which codometer cannot bind to a metric in the measurement.
-- **unignored**: Result flag from the ignore matcher marking a path re-included by a negation rule, which discovery checks as it walks.
 - **unqualified**: Limit path with no target name in front, which the limits integration tests hold against the default target.
 - **unreadable**: Directory the discovery walk cannot read, which is skipped with a warning instead of aborting the whole measurement.
-- **vendored**: Fixture file vendor/vendored.ts that the discovery integration test asserts is never returned by a file walk.
 
 <!-- coinagerie:end -->

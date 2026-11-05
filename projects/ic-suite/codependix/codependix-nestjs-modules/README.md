@@ -408,16 +408,11 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nestjs-modules:coinagerie-check:write`.
 
-- **abort**: Stray word with no use in this project's code; nothing here cancels or aborts a module graph run.
 - **ambient**: Module that NestJS marks as global, drawn as a rounded node and left out of edges because every module can inject it.
 - **breadth**: Count of callables a function calls directly, as callidescope reports it in this project's Breadth table.
-- **connect**: Having at least one module import edge in or out, the test that decides which modules the graph draws.
-- **derive**: Computes a module's project-relative folder from the directory of its declaring file, as deriveModuleFolder does.
 - **diagram**: The fenced Mermaid flowchart drawn for a project's NestJS modules, or a placeholder when it defines none.
 - **dynamic**: A module built at runtime rather than declared statically, whose providers NestJS hosts in synthetic stand-in modules.
 - **explore**: Follow module imports outward from a root such as MainModule, the start point a library package lacks.
-- **legend**: Explanatory note added alongside a diagram to explain a visual convention, such as rounded nodes for ambient modules.
-- **posix**: Forward-slash path helper from Node's path module, used to get a module's folder after converting backslashes.
 - **qualifier**: Separator slash joining a project name to a module class name, so each node id is unique across the workspace graph.
 - **qualify**: Prefixes a module's class name with its project name, so one module name in two projects gives two distinct nodes.
 - **restrict**: ESLint no-restricted-imports rule, which bans importing @nx/devkit outside the nx-projects package so only it depends on Nx.

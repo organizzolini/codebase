@@ -1048,7 +1048,6 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-nx:coinagerie-check:write`.
 
-- **abort**: Option that lets plugin context building continue past errors, set false in plugin-context utilities.
 - **batch**: Group of gate tasks Nx hands to one executor call, which traces the workspace once and judges each project from that trace.
 - **breach**: Limit overrun that makes a gate fail, such as a dependency whose stack exceeds its maximum depth or breadth.
 - **breadth**: Width measurement of a traced project, reported by the breadth executor and gated against maximumBreadth.
@@ -1057,17 +1056,9 @@ The words this project uses that the root glossary does not define, regenerated 
 - **direct**: Immediate caller or callee of one callable, the one-hop listing printed by the executor that inspects it.
 - **downward**: Stack direction running from a callable toward its dependencies, the way depth reads a call stack in this plugin.
 - **explain**: Produce a reason for why an address or verdict failed to match, printed as a block the reader can follow.
-- **explanation**: Text returned by the address service explaining a non-match, appended to the report rather than logged.
 - **gamma**: Placeholder project name for a third fixture dependency, as in an alpha-beta-gamma chain in tests.
-- **hold**: Predicate that a project owns a TypeScript program, as holdsProgram checks for a tsconfig.json.
 - **identify**: Match an address against the traced selection, the private step that resolves which callable it names.
-- **know**: Stem of known, as in knownNames and knownTags, the project names and tags a run has already recognized.
-- **posix**: Forward-slash path join, used by manifest and plugin code so schema and file paths match on every platform.
-- **prefer**: Stem of prefers, as in a named selection winning over the target's own project when both could be gated.
-- **refuse**: Stop a run with a clear reason when its configuration is incomplete or its selection is empty, rather than guessing.
 - **restrict**: Target name, callidescope-restrict, given to the gate executor that restricts a run to the selected projects.
-- **selection**: Set of projects a run was asked to judge or trace, widened along the Nx dependency graph when enabled.
-- **terminal**: Stem of terminalOutput, the report text a batch task returns so Nx can cache it and the executor can print it.
 - **trace**: Executor that builds call stacks for a project and its dependencies, printing the same verdict block a gate prints.
 - **unmatched**: Tag filter that matched no project, reported so a run can name a selector that selected nothing.
 - **unread**: Project whose own files a run reads nothing from, which makes its gate fail rather than pass silently.

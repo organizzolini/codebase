@@ -1278,39 +1278,23 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-cli:coinagerie-check:write`.
 
 - **anchor**: The block name, such as codometer, that a README section is keyed by so a rewrite replaces it rather than appending.
-- **announce**: The stdout line a measure run prints when it starts, naming the directory it is about to measure.
-- **argv**: The process argument vector that the CLI entry point rewrites, so a bare invocation defaults to the measure command.
 - **baseline**: The previously committed report that a fresh measurement is diffed against when checking for stale reports.
 - **breach**: A measured value that crosses a configured limit, reported as a warning or failing the run depending on severity.
 - **breadth**: The number of distinct callables a function calls directly, reported in the breadth table and gated by a limit.
 - **bundle**: The built JavaScript output that codometer measures for the package, with its size checked against a Bundle limit.
-- **chdir**: The working-directory change that tests use to point a measure run at a fixture tree, then restore afterwards.
 - **compression**: The encoding a measured input's bytes are sized under, one of gzip, brotli, or none, before limits compare them.
 - **conditional**: A Shell construct the shell analyzer counts, reported as Shell Conditionals alongside functions, loops, and pipelines.
 - **deliver**: The DeliveryService action that writes each measured output to its destination and reports stale leftover paths.
 - **delivery**: The codometer-cli module that writes finished outputs to their destinations, separate from measuring and limit evaluation.
-- **destination**: A configured output target, such as a JSON or markdown file path, that a run writes its report to.
 - **discovery**: The walk over a directory that gathers the files to measure, honoring every gitignore it reads along the way.
-- **dist**: The compiled output folder whose JavaScript files a configured input globs in, so built size can be measured.
-- **doc**: A comment block describing a declaration, which the TypeScript analyzer tallies as Doc Comments in the badge block.
-- **evaluate**: The limits service method that checks every measured value against its configured limits and returns breaches and failures.
 - **generic**: A type-parameter declaration in TypeScript code, counted by the analyzer and tallied as Generic Declarations in badges.
-- **ipynb**: The file extension of a Jupyter notebook, which the notebook analyzer picks up and counts in its own Jupyter section.
-- **javascript**: The combined language section for TypeScript and JavaScript, whose files, classes, and functions get one badge section.
 - **marker**: The HTML comment line that opens or closes a generated README section, which codometer uses to find and replace it.
-- **measure**: The codometer-cli command that measures a repository, which is also the default when no subcommand is given.
-- **measurement**: The codometer-measurement package that runs analyzers over declared inputs and produces the results that limits and reports read.
-- **paragraph**: A run of prose lines in Markdown separated from neighbors by blank lines, which the Markdown analyzer counts.
 - **pipeline**: A chain of commands joined with pipe operators, which the Shell analyzer counts as its own construct.
-- **scalar**: A single non-container value in JSON or YAML, counted by type and shown as a scalar badge.
 - **selector**: The matcher in a configured comment or limit entry that names which files, languages, or declarations it covers.
 - **severity**: The level on a limit or comment budget, where fail stops the run on a breach and warn only reports it.
 - **stale**: A committed report that no longer matches a fresh measurement, which the reports check fails on rather than rewriting it.
 - **staleness**: The condition of a committed report that differs from a fresh run, kept distinct from a limit breach.
 - **statistic**: A custom measurement counter declared in configuration, keyed by its label and measured for each output.
-- **todo**: A comment marked for future work, counted by the language analyzers and shown as TODO Comments in badges.
-- **toml**: A configuration file format whose tables, array tables, keys, and arrays a built-in analyzer measures.
 - **unreadable**: A file the walker cannot read, which is listed as unreadable rather than stopping the run.
-- **vendored**: A third-party source file under a folder excluded by a gitignore-style rule, so discovery never measures it.
 
 <!-- coinagerie:end -->

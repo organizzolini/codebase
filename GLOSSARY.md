@@ -4,23 +4,17 @@
 
 The words the repository uses outside its projects, regenerated with `nx run configuration:coinagerie:write`.
 
-- **access**: Permission to reach a service, such as Docker or GitHub, which setup steps and troubleshooting checks verify before work begins.
-- **affect**: Names the code a prompt or doc governs, so it is updated alongside that code whenever dependencies or review processes change.
 - **affirmancy**: A Python Jupyter notebook project that generates affirmations through a LangGraph ReAct agent running on a local Ollama model.
-- **agent**: An autonomous AI worker, such as a Claude subagent, that performs a delegated task with its own tools and context.
 - **analyzer**: A codometer or callidescope component that inspects one input language's source to produce measurements, such as a TypeScript or Python analyzer.
-- **app**: A deployable program under projects, such as a web or API backend, as opposed to a library package in the same workspace.
 - **application**: A project tagged type:application in the Nx workspace that runs as a deployable program, as opposed to a type:package library.
 - **applier**: Subagent role that writes leased live copy-edit batches into source files and returns canonical results to the parent.
 - **apply**: Writes a leased copy-edit batch into source files and returns canonical results, a step the Impeccable applier performs.
-- **architecture**: Structure of the system and its design decisions, recorded in README sections and in documentation/adr decision records.
 - **astronomy**: Scientific domain of the caelundas project, whose ephemeris and calendar calculations rely on the astronomy-engine library.
 - **authority**: Which source decides a question when two disagree, such as the measured report over an agent's own visual judgment in Impeccable reviews.
 - **caelundas**: A Node.js CLI for astronomical calendar generation from NASA JPL ephemeris data, one of the workspace's applications.
 - **callidescope**: IC-suite toolchain that measures call-stack depth and breadth across the workspace and gates each project's limits.
 - **callidescopeignore**: Ignore file, configured at configuration/.callidescopeignore, listing paths the trace skips when measuring call stacks.
 - **candidate**: A possible source location for visible copy, ranked below stronger evidence such as a file and line hint.
-- **change**: A modification to code, configuration, or a design, which a commit, pull request, or changelog entry records.
 - **cleanup**: Removal of stale or generated files, such as the Cleanup Codebase workflow or the cleanup-codebase integration command.
 - **codebase**: The entire monorepo, one Nx workspace holding every project, root document, and tool, as the guidance files describe.
 - **codependix**: IC-suite toolchain that exports dependency graphs and enforces boundary rules between projects, modules, and files.
@@ -40,20 +34,16 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **documenter**: Impeccable subagent that records DESIGN.md and its sidecar from a finished build, deriving the design system from the shipped artifact.
 - **expansion**: Test coverage widening effort, as tracked in the notepads folder for the lexico-ingestion test-expansion status.
 - **fold**: Coinagerie configuration hook that maps a word to its canonical headword, merging families like plurals and spelling variants.
-- **gate**: Check that must pass before a change merges or ships, such as the full validation run or the coverage and size thresholds.
 - **guard**: Nx code-quality target run with typecheck, lint, format, and deprecate across affected projects, in the validate-code step.
 - **ic**: Four in-house toolchains grouped as the suite, callidescope, codependix, codometer, and conformetry, that measure and gate this workspace.
 - **impeccable**: Design tooling suite whose agents and skills, such as asset producer and finish reviewer, drive approved visual builds.
 - **infrastructure**: Top-level folder of deployment projects such as Helm charts and Terraform, whose words the root glossary skips.
 - **installation**: Setup process that installs the toolchain and dependencies, run by scripts/installation.sh and the installation project.
 - **layout**: The folder arrangement and section-comment structure that conformetry templates and generated files follow across the workspace.
-- **legacy**: Older worktree catalog and stale-process metadata formats that current tooling migrates automatically or rejects as stale rather than trusting.
 - **lemmatizer**: Coinagerie's stage that reduces inflected forms to base headwords, sometimes landing on odd ones that fold must repair.
 - **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
-- **linguistic**: Adjective for the grammatical and word-form data the lexico entities store, such as lemmas and inflections of Latin words.
 - **lint**: Static-check gate, run as the Nx lint-code target, covering ESLint, oxlint, oxfmt, typecheck and spell-check across projects.
 - **lookup**: Read-only callidescope query that traces a callable, prints its callers or callees, and never applies a depth or breadth gate.
-- **management**: Oversight of worktree and branch lifecycles that the git skills leave to the operator rather than automating, such as stash cleanup.
 - **map**: Wayfinder's planning artifact for a huge effort, a graph of linked decisions that collapses into a buildable spec when cleared.
 - **meander**: Greek key or fret border motif that the meanderaw project generates as SVG from composable motif and modifier definitions.
 - **modifier**: Composable transform in meanderaw's motif library that adjusts how a Greek meander motif is drawn.
@@ -61,7 +51,6 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **observability**: Shared package at projects/common/observability that provides the pino-backed LoggerService and telemetry used by services.
 - **phone**: Narrowest viewport size that web layouts and published artifacts must work at, with a 16px side gutter and no horizontal scroll.
 - **platform**: Operating system or surface a result targets, such as web or iOS, which capture and verification steps fix per run.
-- **privilege**: Principle of granting an agent only the tools its purpose needs, which agent guidance states as the default for enabled tools.
 - **probe**: Diagnostic experiment in diagnosing-bugs, which must map to a prediction and change one variable at a time.
 - **producer**: Impeccable subagent role that turns approved mock references into clean reusable raster assets without redesigning them.
 - **project**: A workspace unit with its own folder, tags, and Nx targets, which root files name when wiring commands and CI jobs to one package.
@@ -69,11 +58,9 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **publication**: The CLI project that runs the CI release steps and enforces the publishable-packages gate, listed in the CONTRIBUTING project table.
 - **publishable**: A package the publication gate verifies and packs for release, including every publishable ic-suite package that CI tarballs and installs.
 - **quality**: The aim of the lint, format, typecheck, and coverage gates that validate-code runs before a change is committed or submitted.
-- **reflect**: A verb in the code of conduct repair step, and in the agent naming rule that an agent name should reflect its purpose.
 - **refresh**: The Refresh Documentation workflow that regenerates the repository wiki on a schedule, and the reload step after instruction changes.
 - **relationship**: The link between an agent prompt and the chat mode whose tools it inherits, which prompt instructions must mention when it applies.
 - **remediation**: The guidance block a session hook prints when commit signing or branch validation fails, naming the steps that fix the configuration.
-- **repository**: The git repository itself, the whole codebase workspace that CONTRIBUTING, the documentation, and the agent skills all describe.
 - **reviewer**: The agent role that checks a finished change against its contract and returns an ordered list of fixes, such as the impeccable finish reviewer.
 - **root**: The repository top-level folder, which holds the root glossary, root configuration, and every file outside a project folder.
 - **secure**: The secure-code CI target that runs secret, Python AST, dependency, and infrastructure scans on every pull request.

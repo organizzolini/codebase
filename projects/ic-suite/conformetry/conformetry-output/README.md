@@ -207,26 +207,14 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-output:coinagerie-check:write`.
 
-- **bare**: Inventory request with no path filter, so it lists a registry rather than the instances it matches.
-- **below**: Verdict printed when an instance's percentage falls under its configured threshold, marking that instance as failing.
 - **breadth**: Callidescope measure of how many callables one function calls directly, shown in the README breadth tables and gated per project.
-- **calculate**: Work done by ScoringService.calculateScore, which turns an instance's weighted results into the score reporting prints.
-- **detail**: Indented lines printed under each difference in the report, giving its expected and actual values, weight, and fix.
-- **digit**: Count of decimal places kept when rendering a score percentage, fixed by SCORE_PERCENTAGE_DIGITS at one.
 - **fraction**: Failed weight over total weight, printed beside a percentage so a reader can see how many requirements missed.
 - **imperfect**: Instance whose score falls short of full weight, so only these appear in the summary of non-perfect scores.
 - **inventoried**: Types for entries the inventory service has listed: InventoriedInstance, InventoriedTemplate, and InventoriedPairing.
 - **inventory**: Module that renders the template and instance listing, with its indent ladder, headings, and match percentage.
 - **meet**: Verdict wording used when an instance's score reaches its threshold, paired with below threshold for failing instances.
-- **percent**: Share printed for a score or file overlap, produced by multiplying a zero-to-one ratio by PERCENT_SCALE.
-- **percentage**: Printed form of an instance's score or file-overlap ratio, shown next to its fraction so the scale is not hidden.
 - **perfect**: Score of exactly full weight; reporting leaves perfect instances out of the summary of scores that fell short.
-- **ratio**: Matched-over-total value between zero and one, from which the inventory computes each pairing's match percentage.
-- **scale**: Size of the denominator behind a percentage, which the report exposes by printing the fraction beside it.
-- **shorten**: Turning an absolute path into a relative one against the host's working directory, a step kept out of rendering.
-- **sum**: Total of requirement weights, computed by ScoringService.sumWeights and passed into formatting as totalWeight.
 - **threshold**: Minimum percentage an instance's score must reach to pass, printed beside the verdict as meets or below threshold.
 - **verdict**: Pass or fail phrase closing each instance's score line, with a check or cross marker, saying meets or below threshold.
-- **weight**: Importance of one difference, counted in requirements, printed only when it stands in for more than one requirement.
 
 <!-- coinagerie:end -->

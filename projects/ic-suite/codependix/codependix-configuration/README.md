@@ -454,13 +454,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **anchor**: The named HTML comment block in a Markdown file where codependix writes its generated graph, bounded by start and end markers.
 - **boundary**: Declared rules, of access or acyclic kind, that codependix judges against each built graph during a boundary check run.
 - **breadth**: The callidescope limit on how many direct callees one callable may have, set by maximumBreadth in callidescope.config.ts.
-- **choice**: The answer a user picks from the interactive run menu, which selects check-boundaries, check-reports, or write mode.
 - **marker**: A file name such as .git whose presence marks a directory as the repository root, listed in REPOSITORY_ROOT_MARKERS.
-- **need**: Shapes validation messages that name what a selector or option must include before it is accepted at all.
-- **refine**: A zod check on boundary selectors that rejects a selector stating none of id, path, project, or tags.
-- **selection**: The projects and tags a run covers, read from configuration selection and command-line arguments to scope the graph.
 - **selector**: The object on each side of a boundary rule that matches nodes by id, path, project, or tags fields.
-- **stdin**: Standard input, which the prompt service checks for a terminal before drawing an interactive menu at all.
 - **undeclared**: Not a term the source code uses; it appears only as a glossary headword here, so no code path defines or enforces it.
 
 <!-- coinagerie:end -->

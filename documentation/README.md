@@ -98,7 +98,6 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run documentation:coinagerie-check:write`.
 
-- **adr**: Architecture decision record file in the documentation adr folder, numbered, recording one decided trade-off for the repository.
 - **affirmation**: Generated phrase that the affirmations feature planning documents describe, produced by an LLM from tarot-card references.
 - **band**: Horizontal strip of a meander drawing bounded by two borders, which ADR 0004 and ADR 0006 adjust for crossings and branch families.
 - **border**: Edge of a meander band that ADR 0006 closes on both sides in the branch and parallel families through a MotifService hook.
@@ -108,39 +107,29 @@ The words this project uses that the root glossary does not define, regenerated 
 - **cascade**: Refers to the cascading dependents rule in ADR 0017, where a bump to one internal dependency republishes every package depending on it.
 - **characteristic**: Named property of a meander, such as its letter counts, that ADR 0012 and ADR 0018 store together in one sparse JSON map.
 - **claim**: Step where a session assigns an issue to itself with gh issue edit, the first write it makes against the tracker.
-- **completion**: Names the spawnSync result of the OpenWiki run in the refresh documentation service, and planning docs' completion targets.
 - **composite**: Reusable GitHub Actions bundles that call one command each, which ADR 0029 keeps in the integration project for CI steps.
 - **concept**: Domain term that agents must use as CONTEXT.md defines it, rather than inventing synonyms in issues and test names.
 - **conformance**: Check that generated code matches its conformetry template, which the generator template conformance validation plan adds.
 - **corpus**: Committed historical set of meander drawings that ADR 0006 and ADR 0013 read as a test set for regression checks.
 - **cut**: Seam where a meander band is split, which ADR 0006 and ADR 0013 use when comparing one drawing or family to another.
-- **delay**: Wait between OpenWiki refresh attempts, set to two minutes in the refresh documentation constants before each retry.
 - **design**: Architectural design that an ADR records, or a rule like ADR 0002 that a pull request gate would fail every pull request by design.
 - **discovery**: Names the NestJS DiscoveryModule that MainModule imports in the documentation codependix graph, letting the CLI find its commands.
 - **domain**: Refers to CONTEXT.md and the domain model in agents domain documentation, the glossary of terms agents must use consistently.
 - **draw**: Describes the meander drawing operation that ADR 0004 changes, so interrupted crossings render as a one-pitch break.
 - **drift**: Unwanted divergence between code and documentation or between dependency versions, which ADR 0017 cites as a cost of cascading versions.
 - **ephemeris**: Astronomical position data that the caelundas performance plan generates year by year with local computation instead of HTTP calls.
-- **everything**: Appears in AGENTS.md's rule that everything injected into a constructor must be private readonly, so dependencies stay fixed.
 - **executable**: Runnable code described in planning docs, such as the caelundas executable services and the CMake build that produces them.
 - **family**: Meander classification group, such as the cross, branch, and parallel families whose drawing rules ADR 0004 and ADR 0006 adjust.
-- **floor**: Minimum threshold, such as the legibility floor of four rows in ADR 0004 or the stagger floor raised in ADR 0006.
 - **generation**: Refers to conformetry's generation package that renders code from templates, and the generation layer named in ADR 0013.
 - **handoff**: Structured hand-off comment posted on a spec issue for the next session, whose repository rules agents handoffs documentation sets out.
 - **historical**: Describes the historical meander corpus of committed drawings whose labels ADR 0012 and ADR 0013 treat as a test set.
-- **hold**: Appears in ADR titles such as Hold one path law, meaning keep a single rule, package, or path law for one concern.
 - **interlace**: Woven over-and-under crossing pattern in meander drawings, which ADR 0004 breaks with a one-pitch gap at each crossing.
-- **invocation**: Single run of a command or OpenWiki process, such as each attempt the refresh service starts before it gives up.
 - **lattice**: Grid on which every meander sits, which ADR 0007 uses to address each drawing and MeanderLatticeService validates against.
 - **law**: Governing rule in ADR 0011, the universal path and naming law that every project type follows for its file layout.
 - **leftover**: File that OpenWiki leaves behind, such as CLAUDE.md, which the refresh documentation service deletes after each run.
 - **letter**: Glyph counted in each meander's letter-count map under ADR 0017, counted in all sixteen orientations for every meander.
 - **meanderaw**: Meander drawing project whose cross, branch, and parallel families ADRs 0004 to 0006 change, producing the drawings in the corpus.
-- **ms**: Millisecond unit in the benchmark tables of ADR 0017 for write sweeps, single-key filters, and full-record fetches.
-- **multi**: Appears in ADR 0015's title, Store Families as an Open Multi-Label Set, where one meander may carry several families at once.
-- **narrow**: Describes ADR 0006's decision to narrow callidescope down to depth and breadth, dropping the other noise controls it had.
 - **nth**: Used in conformetry language docs, where paired markdown and code cells are matched by position, the nth against the nth.
-- **performance**: Measured speed in ADR 0017 benchmarks and the caelundas performance plan, such as timing a year-scale ephemeris generation.
 - **phase**: Names the canonical rotation of a meander in ADR 0014, chosen by minimizing seam components for each drawing in the corpus.
 - **pipeline**: Generic meander pipeline of decode, render, compute Characteristics, and classify that ADR 0012 runs for every drawing.
 - **pitch**: One grid unit on the lattice, which ADR 0004 uses to place the interrupted crossing break one pitch either side of the junction.
@@ -149,14 +138,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **software**: Installed toolchain, such as the Node and pnpm runtime in scripts local software, which ADR 0026 keeps in shell scripts.
 - **sparse**: Describes ADR 0017's storage choice of a sparse JSON map that holds only the nonzero letter counts for each meander.
 - **statistic**: Per-project figure, such as the statistics block that ADR 0002 publishes in each project's README on the default branch.
-- **store**: Verb in ADR titles such as Store Families as an Open Multi-Label Set, naming how meander data persists in tables or JSON.
 - **swiss**: Short for Swiss Ephemeris, the local astronomy library that the caelundas performance plan uses instead of NASA Horizons HTTP calls.
-- **symbolic**: Refers to symbolic links, since the refresh documentation service refuses a symbolic link at the openwiki path during a run.
 - **theory**: Refers to meander theory, the mathematical model of lattice addresses, rows, and columns behind meanderaw in the openwiki concepts.
 - **tracker**: GitHub Issues tracker configured in agents issue-tracker documentation, where one parent issue per pull request is filed.
 - **triage**: Labels in agents triage-labels documentation map the status family to canonical roles for issues in this repository.
 - **under**: Names the under-strand of a meander crossing, the strand that ADR 0004 breaks with a one-pitch gap at the junction.
-- **unlink**: Node filesystem removal call that this documentation project never invokes, so the word appears only as a glossary headword.
 - **validator**: Check that decides whether generated or configured output is valid, such as the validator layer named in ADR 0013.
 - **wiki**: OpenWiki output under documentation openwiki that the refresh service regenerates from code, reached through the openwiki symlink.
 

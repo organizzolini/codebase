@@ -576,11 +576,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
 - **camel**: Case variant of a name in camelCase, one of the name variants a template renders into its paths and files.
 - **filesystem**: Adapter the run reads and writes through, exposed to hooks as context.filesystem and taking absolute paths only.
-- **formatter**: Adapter that receives the generated file paths after postGenerate and formats them, defaulting to a no-op.
 - **gamma**: Third placeholder input in the generation unit test, kept in the hook input while beta is dropped.
 - **generation**: Runtime phase that walks a template tree, renders every path and file, and writes the instance output.
-- **kebab**: Case variant of a name with lowercase words joined by hyphens, one of the substitutions a template renders.
-- **pascal**: Case variant of a name with each word capitalized and no separators, one of the template substitutions.
-- **snake**: Case variant of a name with lowercase words joined by underscores, one of the template substitutions.
 
 <!-- coinagerie:end -->
