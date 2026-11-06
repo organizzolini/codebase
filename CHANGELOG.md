@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.55.0](https://github.com/organizzolini/codebase/compare/v3.54.1...v3.55.0) (2026-11-06)
+
+### ✨ Features
+
+* **infrastructure:** ✨ add the organizzolini-codebase-terraform-state bucket and its move runbook ([#2153](https://github.com/organizzolini/codebase/issues/2153)) ([e77e817](https://github.com/organizzolini/codebase/commit/e77e8172d1749fa6039536d2b564fcc6f14fbbb8))
+
 ## [3.54.1](https://github.com/organizzolini/codebase/compare/v3.54.0...v3.54.1) (2026-11-06)
 
 ### 🐛 Bug Fixes
