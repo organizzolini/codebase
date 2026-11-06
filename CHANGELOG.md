@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.56.0](https://github.com/organizzolini/codebase/compare/v3.55.1...v3.56.0) (2026-11-06)
+
+### ✨ Features
+
+* **integration,installation:** ✨ read the shared nx cache bucket locally and set it up with the machine ([#2160](https://github.com/organizzolini/codebase/issues/2160)) ([8d1c0f8](https://github.com/organizzolini/codebase/commit/8d1c0f8c395843f77d2dcbdfb5fb55fd212d5322))
+
+### 📝 Documentation
+
+* **integration:** 📝 remove the nx cloud badge from the readme ([#2159](https://github.com/organizzolini/codebase/issues/2159)) ([e1f04c9](https://github.com/organizzolini/codebase/commit/e1f04c9f562d519e5825cde52cab51210bec8cf9))
+
 ## [3.55.1](https://github.com/organizzolini/codebase/compare/v3.55.0...v3.55.1) (2026-11-06)
 
 ### 🐛 Bug Fixes
