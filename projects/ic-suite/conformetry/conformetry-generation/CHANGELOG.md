@@ -1,3 +1,14 @@
+## 0.0.71 (2026-11-06)
+
+### 🚀 Features
+
+- **compliance,configuration,documentation:** ✨ migrate external-resource commands ([#2058](https://github.com/organizzolini/codebase/pull/2058), [#1980](https://github.com/organizzolini/codebase/issues/1980))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.71
+- Updated conformetry-core to 0.0.69
+
 ## 0.0.70 (2026-11-06)
 
 ### 🧱 Updated Dependencies

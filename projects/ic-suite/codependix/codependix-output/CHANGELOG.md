@@ -1,3 +1,18 @@
+## 0.0.69 (2026-11-06)
+
+### 🚀 Features
+
+- **compliance,configuration,documentation:** ✨ migrate external-resource commands ([#2058](https://github.com/organizzolini/codebase/pull/2058), [#1980](https://github.com/organizzolini/codebase/issues/1980))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.67
+- Updated codependix-configuration to 0.0.69
+- Updated codependix-file-imports to 0.0.67
+- Updated codependix-nx-projects to 0.0.68
+- Updated codependix-boundaries to 0.0.69
+- Updated codependix-core to 0.0.67
+
 ## 0.0.68 (2026-11-06)
 
 ### 🧱 Updated Dependencies

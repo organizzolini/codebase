@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.57.0](https://github.com/organizzolini/codebase/compare/v3.56.0...v3.57.0) (2026-11-06)
+
+### ✨ Features
+
+* **compliance,configuration,documentation:** ✨ migrate external-resource commands ([#2058](https://github.com/organizzolini/codebase/issues/2058)) ([e5f9924](https://github.com/organizzolini/codebase/commit/e5f9924bb947623e32b2832a81f09745c02344eb)), closes [#1980](https://github.com/organizzolini/codebase/issues/1980) [#2055](https://github.com/organizzolini/codebase/issues/2055) [#1981](https://github.com/organizzolini/codebase/issues/1981)
+
 ## [3.56.0](https://github.com/organizzolini/codebase/compare/v3.55.1...v3.56.0) (2026-11-06)
 
 ### ✨ Features

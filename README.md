@@ -348,6 +348,7 @@ graph LR
   coinagerie_nx["coinagerie-nx"]
   coinagerie_output["coinagerie-output"]
   coinagerie_vocabulary["coinagerie-vocabulary"]
+  compliance["compliance"]
   configuration["configuration"]
   conformetry_agents["conformetry-agents"]
   conformetry_cli["conformetry-cli"]
@@ -463,6 +464,7 @@ graph LR
   coinagerie_output --> coinagerie_core
   coinagerie_vocabulary --> coinagerie_configuration
   coinagerie_vocabulary --> coinagerie_languages
+  compliance --> observability
   conformetry_cli --> conformetry_configuration
   conformetry_cli --> conformetry_core
   conformetry_cli --> conformetry_generation
@@ -874,6 +876,13 @@ graph LR
   module_coinagerie_vocabulary_VocabularyModule["coinagerie-vocabulary/VocabularyModule"]
   module_coinagerie_vocabulary_WordsModule["coinagerie-vocabulary/WordsModule"]
   module_coinagerie_vocabulary_YamlModule["coinagerie-vocabulary/YamlModule"]
+  module_compliance_AuditGovernanceModule["compliance/AuditGovernanceModule"]
+  module_compliance_DiscoveryModule["compliance/DiscoveryModule"]
+  module_compliance_IssueModule["compliance/IssueModule"]
+  module_compliance_LoggerModule["compliance/LoggerModule"]
+  module_compliance_MainModule["compliance/MainModule"]
+  module_compliance_OrganizationProjectModule["compliance/OrganizationProjectModule"]
+  module_compliance_PullRequestModule["compliance/PullRequestModule"]
   module_conformetry_cli_ConfigModule["conformetry-cli/ConfigModule"]
   module_conformetry_cli_ConfigurationModule["conformetry-cli/ConfigurationModule"]
   module_conformetry_cli_DifferencesModule["conformetry-cli/DifferencesModule"]
@@ -1137,12 +1146,10 @@ graph LR
   module_synchronization_InstalledSkillsModule["synchronization/InstalledSkillsModule"]
   module_synchronization_InstanceDiscoveryModule["synchronization/InstanceDiscoveryModule"]
   module_synchronization_InstanceGroupModule["synchronization/InstanceGroupModule"]
-  module_synchronization_IssueLabelsModule["synchronization/IssueLabelsModule"]
   module_synchronization_LoggerModule["synchronization/LoggerModule"]
   module_synchronization_MainModule["synchronization/MainModule"]
   module_synchronization_PackageManifestsModule["synchronization/PackageManifestsModule"]
   module_synchronization_ProjectPortsModule["synchronization/ProjectPortsModule"]
-  module_synchronization_PullRequestLabelsModule["synchronization/PullRequestLabelsModule"]
   module_synchronization_PullRequestTemplateModule["synchronization/PullRequestTemplateModule"]
   module_synchronization_RenderingModule["synchronization/RenderingModule"]
   module_synchronization_SkillExclusionsModule["synchronization/SkillExclusionsModule"]
@@ -1151,18 +1158,13 @@ graph LR
   module_synchronization_TypeormMigrationSqlModule["synchronization/TypeormMigrationSqlModule"]
   module_synchronization_VscodeExtensionsModule["synchronization/VscodeExtensionsModule"]
   module_synchronization_VscodeSettingsModule["synchronization/VscodeSettingsModule"]
-  module_validation_AuditGovernanceModule["validation/AuditGovernanceModule"]
   module_validation_CatalogManifestsModule["validation/CatalogManifestsModule"]
   module_validation_ConfigModule["validation/ConfigModule"]
   module_validation_DiscoveryModule["validation/DiscoveryModule"]
-  module_validation_IssueMetadataModule["validation/IssueMetadataModule"]
   module_validation_LockfileModule["validation/LockfileModule"]
   module_validation_LoggerModule["validation/LoggerModule"]
   module_validation_MainModule["validation/MainModule"]
   module_validation_PublishablePackagesModule["validation/PublishablePackagesModule"]
-  module_validation_PullRequestBodyModule["validation/PullRequestBodyModule"]
-  module_validation_PullRequestMetadataModule["validation/PullRequestMetadataModule"]
-  module_validation_PullRequestReleaseSignificanceModule["validation/PullRequestReleaseSignificanceModule"]
   module_validation_ReadmeProjectsModule["validation/ReadmeProjectsModule"]
   module_validation_SessionBranchNameModule["validation/SessionBranchNameModule"]
   module_validation_SessionWorktreeNameModule["validation/SessionWorktreeNameModule"]
@@ -1701,6 +1703,13 @@ graph LR
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_FoldingModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_LanguagesModule
   module_coinagerie_vocabulary_VocabularyModule --> module_coinagerie_vocabulary_WordsModule
+  module_compliance_MainModule --> module_compliance_AuditGovernanceModule
+  module_compliance_MainModule --> module_compliance_DiscoveryModule
+  module_compliance_MainModule --> module_compliance_IssueModule
+  module_compliance_MainModule --> module_compliance_OrganizationProjectModule
+  module_compliance_MainModule --> module_compliance_PullRequestModule
+  module_compliance_OrganizationProjectModule --> module_compliance_PullRequestModule
+  module_compliance_PullRequestModule --> module_compliance_IssueModule
   module_conformetry_cli_ConfigurationModule --> module_conformetry_cli_InputModule
   module_conformetry_cli_ConfigurationModule --> module_conformetry_cli_InstanceDiscoveryModule
   module_conformetry_cli_ConfigurationModule --> module_conformetry_cli_InstanceGroupModule
@@ -2126,7 +2135,6 @@ graph LR
   module_synchronization_InstanceDiscoveryModule --> module_synchronization_RenderingModule
   module_synchronization_InstanceDiscoveryModule --> module_synchronization_TemplateDiscoveryModule
   module_synchronization_MainModule --> module_synchronization_DiscoveryModule
-  module_synchronization_MainModule --> module_synchronization_IssueLabelsModule
   module_synchronization_MainModule --> module_synchronization_SynchronizationModule
   module_synchronization_SynchronizationModule --> module_synchronization_ConformetryGeneratorsModule
   module_synchronization_SynchronizationModule --> module_synchronization_ConventionalConfigModule
@@ -2134,22 +2142,16 @@ graph LR
   module_synchronization_SynchronizationModule --> module_synchronization_InstalledSkillsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PackageManifestsModule
   module_synchronization_SynchronizationModule --> module_synchronization_ProjectPortsModule
-  module_synchronization_SynchronizationModule --> module_synchronization_PullRequestLabelsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestTemplateModule
   module_synchronization_SynchronizationModule --> module_synchronization_SkillExclusionsModule
   module_synchronization_SynchronizationModule --> module_synchronization_TypeormMigrationSqlModule
   module_synchronization_SynchronizationModule --> module_synchronization_VscodeExtensionsModule
   module_synchronization_SynchronizationModule --> module_synchronization_VscodeSettingsModule
   module_synchronization_TemplateDiscoveryModule --> module_synchronization_RenderingModule
-  module_validation_MainModule --> module_validation_AuditGovernanceModule
   module_validation_MainModule --> module_validation_CatalogManifestsModule
   module_validation_MainModule --> module_validation_DiscoveryModule
-  module_validation_MainModule --> module_validation_IssueMetadataModule
   module_validation_MainModule --> module_validation_LockfileModule
   module_validation_MainModule --> module_validation_PublishablePackagesModule
-  module_validation_MainModule --> module_validation_PullRequestBodyModule
-  module_validation_MainModule --> module_validation_PullRequestMetadataModule
-  module_validation_MainModule --> module_validation_PullRequestReleaseSignificanceModule
   module_validation_MainModule --> module_validation_ReadmeProjectsModule
   module_validation_MainModule --> module_validation_SessionBranchNameModule
   module_validation_MainModule --> module_validation_SessionWorktreeNameModule
@@ -4253,6 +4255,103 @@ graph LR
   file_coinagerie_vocabulary_testing_setup_ts["coinagerie-vocabulary/testing/setup.ts"]
   file_coinagerie_vocabulary_vite_config_ts["coinagerie-vocabulary/vite.config.ts"]
   file_coinagerie_vocabulary_vitest_config_ts["coinagerie-vocabulary/vitest.config.ts"]
+  file_compliance_callidescope_config_ts["compliance/callidescope.config.ts"]
+  file_compliance_codometer_config_ts["compliance/codometer.config.ts"]
+  file_compliance_coinagerie_config_ts["compliance/coinagerie.config.ts"]
+  file_compliance_eslint_config_ts["compliance/eslint.config.ts"]
+  file_compliance_src_compliance_constants_ts["compliance/src/compliance.constants.ts"]
+  file_compliance_src_compliance_main_end_to_end_test_ts["compliance/src/compliance.main.end-to-end.test.ts"]
+  file_compliance_src_compliance_main_ts["compliance/src/compliance.main.ts"]
+  file_compliance_src_compliance_module_ts["compliance/src/compliance.module.ts"]
+  file_compliance_src_compliance_repl_ts["compliance/src/compliance.repl.ts"]
+  file_compliance_src_modules_audit_governance_audit_governance_command_ts["compliance/src/modules/audit-governance/audit-governance.command.ts"]
+  file_compliance_src_modules_audit_governance_audit_governance_command_unit_test_ts["compliance/src/modules/audit-governance/audit-governance.command.unit.test.ts"]
+  file_compliance_src_modules_audit_governance_audit_governance_constants_ts["compliance/src/modules/audit-governance/audit-governance.constants.ts"]
+  file_compliance_src_modules_audit_governance_audit_governance_module_ts["compliance/src/modules/audit-governance/audit-governance.module.ts"]
+  file_compliance_src_modules_audit_governance_audit_governance_module_unit_test_ts["compliance/src/modules/audit-governance/audit-governance.module.unit.test.ts"]
+  file_compliance_src_modules_audit_governance_audit_governance_service_ts["compliance/src/modules/audit-governance/audit-governance.service.ts"]
+  file_compliance_src_modules_audit_governance_audit_governance_service_unit_test_ts["compliance/src/modules/audit-governance/audit-governance.service.unit.test.ts"]
+  file_compliance_src_modules_audit_governance_audit_governance_types_ts["compliance/src/modules/audit-governance/audit-governance.types.ts"]
+  file_compliance_src_modules_issue_issue_assignees_constants_ts["compliance/src/modules/issue/issue-assignees.constants.ts"]
+  file_compliance_src_modules_issue_issue_assignees_types_ts["compliance/src/modules/issue/issue-assignees.types.ts"]
+  file_compliance_src_modules_issue_issue_assigning_service_ts["compliance/src/modules/issue/issue-assigning.service.ts"]
+  file_compliance_src_modules_issue_issue_assigning_service_unit_test_ts["compliance/src/modules/issue/issue-assigning.service.unit.test.ts"]
+  file_compliance_src_modules_issue_issue_audit_service_ts["compliance/src/modules/issue/issue-audit.service.ts"]
+  file_compliance_src_modules_issue_issue_audit_service_unit_test_ts["compliance/src/modules/issue/issue-audit.service.unit.test.ts"]
+  file_compliance_src_modules_issue_issue_github_service_ts["compliance/src/modules/issue/issue-github.service.ts"]
+  file_compliance_src_modules_issue_issue_github_service_unit_test_ts["compliance/src/modules/issue/issue-github.service.unit.test.ts"]
+  file_compliance_src_modules_issue_issue_labeling_service_ts["compliance/src/modules/issue/issue-labeling.service.ts"]
+  file_compliance_src_modules_issue_issue_labeling_service_unit_test_ts["compliance/src/modules/issue/issue-labeling.service.unit.test.ts"]
+  file_compliance_src_modules_issue_issue_labels_service_ts["compliance/src/modules/issue/issue-labels.service.ts"]
+  file_compliance_src_modules_issue_issue_labels_service_unit_test_ts["compliance/src/modules/issue/issue-labels.service.unit.test.ts"]
+  file_compliance_src_modules_issue_issue_metadata_type_service_ts["compliance/src/modules/issue/issue-metadata-type.service.ts"]
+  file_compliance_src_modules_issue_issue_metadata_type_service_unit_test_ts["compliance/src/modules/issue/issue-metadata-type.service.unit.test.ts"]
+  file_compliance_src_modules_issue_issue_metadata_constants_ts["compliance/src/modules/issue/issue-metadata.constants.ts"]
+  file_compliance_src_modules_issue_issue_metadata_service_ts["compliance/src/modules/issue/issue-metadata.service.ts"]
+  file_compliance_src_modules_issue_issue_metadata_service_unit_test_ts["compliance/src/modules/issue/issue-metadata.service.unit.test.ts"]
+  file_compliance_src_modules_issue_issue_metadata_types_ts["compliance/src/modules/issue/issue-metadata.types.ts"]
+  file_compliance_src_modules_issue_issue_plan_service_ts["compliance/src/modules/issue/issue-plan.service.ts"]
+  file_compliance_src_modules_issue_issue_plan_service_unit_test_ts["compliance/src/modules/issue/issue-plan.service.unit.test.ts"]
+  file_compliance_src_modules_issue_issue_report_service_ts["compliance/src/modules/issue/issue-report.service.ts"]
+  file_compliance_src_modules_issue_issue_report_service_unit_test_ts["compliance/src/modules/issue/issue-report.service.unit.test.ts"]
+  file_compliance_src_modules_issue_issue_command_ts["compliance/src/modules/issue/issue.command.ts"]
+  file_compliance_src_modules_issue_issue_command_unit_test_ts["compliance/src/modules/issue/issue.command.unit.test.ts"]
+  file_compliance_src_modules_issue_issue_constants_ts["compliance/src/modules/issue/issue.constants.ts"]
+  file_compliance_src_modules_issue_issue_module_ts["compliance/src/modules/issue/issue.module.ts"]
+  file_compliance_src_modules_issue_issue_types_ts["compliance/src/modules/issue/issue.types.ts"]
+  file_compliance_src_modules_organization_project_organization_project_command_ts["compliance/src/modules/organization-project/organization-project.command.ts"]
+  file_compliance_src_modules_organization_project_organization_project_command_unit_test_ts["compliance/src/modules/organization-project/organization-project.command.unit.test.ts"]
+  file_compliance_src_modules_organization_project_organization_project_constants_ts["compliance/src/modules/organization-project/organization-project.constants.ts"]
+  file_compliance_src_modules_organization_project_organization_project_module_ts["compliance/src/modules/organization-project/organization-project.module.ts"]
+  file_compliance_src_modules_organization_project_organization_project_types_ts["compliance/src/modules/organization-project/organization-project.types.ts"]
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts["compliance/src/modules/pull-request/pull-request-ancestor-issues.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-ancestor-issues.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_body_links_constants_ts["compliance/src/modules/pull-request/pull-request-body-links.constants.ts"]
+  file_compliance_src_modules_pull_request_pull_request_body_links_service_ts["compliance/src/modules/pull-request/pull-request-body-links.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_body_links_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-body-links.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_body_constants_ts["compliance/src/modules/pull-request/pull-request-body.constants.ts"]
+  file_compliance_src_modules_pull_request_pull_request_body_service_ts["compliance/src/modules/pull-request/pull-request-body.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_body_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-body.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_body_types_ts["compliance/src/modules/pull-request/pull-request-body.types.ts"]
+  file_compliance_src_modules_pull_request_pull_request_context_constants_ts["compliance/src/modules/pull-request/pull-request-context.constants.ts"]
+  file_compliance_src_modules_pull_request_pull_request_context_service_ts["compliance/src/modules/pull-request/pull-request-context.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_context_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-context.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_context_types_ts["compliance/src/modules/pull-request/pull-request-context.types.ts"]
+  file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_ts["compliance/src/modules/pull-request/pull-request-descendant-issues.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-descendant-issues.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_github_constants_ts["compliance/src/modules/pull-request/pull-request-github.constants.ts"]
+  file_compliance_src_modules_pull_request_pull_request_github_service_ts["compliance/src/modules/pull-request/pull-request-github.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_github_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-github.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_github_types_ts["compliance/src/modules/pull-request/pull-request-github.types.ts"]
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts["compliance/src/modules/pull-request/pull-request-label-vocabulary.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-label-vocabulary.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_labels_assignees_constants_ts["compliance/src/modules/pull-request/pull-request-labels-assignees.constants.ts"]
+  file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_ts["compliance/src/modules/pull-request/pull-request-labels-assignees.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-labels-assignees.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_labels_assignees_types_ts["compliance/src/modules/pull-request/pull-request-labels-assignees.types.ts"]
+  file_compliance_src_modules_pull_request_pull_request_labels_constants_ts["compliance/src/modules/pull-request/pull-request-labels.constants.ts"]
+  file_compliance_src_modules_pull_request_pull_request_labels_service_ts["compliance/src/modules/pull-request/pull-request-labels.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_labels_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-labels.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_labels_types_ts["compliance/src/modules/pull-request/pull-request-labels.types.ts"]
+  file_compliance_src_modules_pull_request_pull_request_release_significance_constants_ts["compliance/src/modules/pull-request/pull-request-release-significance.constants.ts"]
+  file_compliance_src_modules_pull_request_pull_request_release_significance_service_ts["compliance/src/modules/pull-request/pull-request-release-significance.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_release_significance_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-release-significance.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_release_significance_types_ts["compliance/src/modules/pull-request/pull-request-release-significance.types.ts"]
+  file_compliance_src_modules_pull_request_pull_request_report_service_ts["compliance/src/modules/pull-request/pull-request-report.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_report_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-report.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_title_constants_ts["compliance/src/modules/pull-request/pull-request-title.constants.ts"]
+  file_compliance_src_modules_pull_request_pull_request_title_service_ts["compliance/src/modules/pull-request/pull-request-title.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_title_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-title.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts["compliance/src/modules/pull-request/pull-request-validation.service.ts"]
+  file_compliance_src_modules_pull_request_pull_request_validation_service_unit_test_ts["compliance/src/modules/pull-request/pull-request-validation.service.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_command_ts["compliance/src/modules/pull-request/pull-request.command.ts"]
+  file_compliance_src_modules_pull_request_pull_request_command_unit_test_ts["compliance/src/modules/pull-request/pull-request.command.unit.test.ts"]
+  file_compliance_src_modules_pull_request_pull_request_constants_ts["compliance/src/modules/pull-request/pull-request.constants.ts"]
+  file_compliance_src_modules_pull_request_pull_request_module_ts["compliance/src/modules/pull-request/pull-request.module.ts"]
+  file_compliance_src_modules_pull_request_pull_request_types_ts["compliance/src/modules/pull-request/pull-request.types.ts"]
+  file_compliance_testing_mocks_ts["compliance/testing/mocks.ts"]
+  file_compliance_testing_setup_ts["compliance/testing/setup.ts"]
+  file_compliance_vitest_config_ts["compliance/vitest.config.ts"]
   file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
   file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
   file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
@@ -6411,16 +6510,6 @@ graph LR
   file_synchronization_src_modules_installed_skills_installed_skills_service_ts["synchronization/src/modules/installed-skills/installed-skills.service.ts"]
   file_synchronization_src_modules_installed_skills_installed_skills_service_unit_test_ts["synchronization/src/modules/installed-skills/installed-skills.service.unit.test.ts"]
   file_synchronization_src_modules_installed_skills_installed_skills_types_ts["synchronization/src/modules/installed-skills/installed-skills.types.ts"]
-  file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts["synchronization/src/modules/issue-labels/issue-labels-github.service.ts"]
-  file_synchronization_src_modules_issue_labels_issue_labels_github_service_unit_test_ts["synchronization/src/modules/issue-labels/issue-labels-github.service.unit.test.ts"]
-  file_synchronization_src_modules_issue_labels_issue_labels_command_ts["synchronization/src/modules/issue-labels/issue-labels.command.ts"]
-  file_synchronization_src_modules_issue_labels_issue_labels_command_unit_test_ts["synchronization/src/modules/issue-labels/issue-labels.command.unit.test.ts"]
-  file_synchronization_src_modules_issue_labels_issue_labels_constants_ts["synchronization/src/modules/issue-labels/issue-labels.constants.ts"]
-  file_synchronization_src_modules_issue_labels_issue_labels_module_ts["synchronization/src/modules/issue-labels/issue-labels.module.ts"]
-  file_synchronization_src_modules_issue_labels_issue_labels_module_unit_test_ts["synchronization/src/modules/issue-labels/issue-labels.module.unit.test.ts"]
-  file_synchronization_src_modules_issue_labels_issue_labels_service_ts["synchronization/src/modules/issue-labels/issue-labels.service.ts"]
-  file_synchronization_src_modules_issue_labels_issue_labels_service_unit_test_ts["synchronization/src/modules/issue-labels/issue-labels.service.unit.test.ts"]
-  file_synchronization_src_modules_issue_labels_issue_labels_types_ts["synchronization/src/modules/issue-labels/issue-labels.types.ts"]
   file_synchronization_src_modules_package_manifests_package_manifests_command_ts["synchronization/src/modules/package-manifests/package-manifests.command.ts"]
   file_synchronization_src_modules_package_manifests_package_manifests_command_unit_test_ts["synchronization/src/modules/package-manifests/package-manifests.command.unit.test.ts"]
   file_synchronization_src_modules_package_manifests_package_manifests_constants_ts["synchronization/src/modules/package-manifests/package-manifests.constants.ts"]
@@ -6435,15 +6524,6 @@ graph LR
   file_synchronization_src_modules_project_ports_project_ports_service_ts["synchronization/src/modules/project-ports/project-ports.service.ts"]
   file_synchronization_src_modules_project_ports_project_ports_service_unit_test_ts["synchronization/src/modules/project-ports/project-ports.service.unit.test.ts"]
   file_synchronization_src_modules_project_ports_project_ports_types_ts["synchronization/src/modules/project-ports/project-ports.types.ts"]
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts["synchronization/src/modules/pull-request-labels/pull-request-labels-github.service.ts"]
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_unit_test_ts["synchronization/src/modules/pull-request-labels/pull-request-labels-github.service.unit.test.ts"]
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts["synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts"]
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts["synchronization/src/modules/pull-request-labels/pull-request-labels.command.unit.test.ts"]
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_constants_ts["synchronization/src/modules/pull-request-labels/pull-request-labels.constants.ts"]
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts["synchronization/src/modules/pull-request-labels/pull-request-labels.module.ts"]
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_service_ts["synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts"]
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_service_unit_test_ts["synchronization/src/modules/pull-request-labels/pull-request-labels.service.unit.test.ts"]
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_types_ts["synchronization/src/modules/pull-request-labels/pull-request-labels.types.ts"]
   file_synchronization_src_modules_pull_request_template_pull_request_template_command_ts["synchronization/src/modules/pull-request-template/pull-request-template.command.ts"]
   file_synchronization_src_modules_pull_request_template_pull_request_template_command_unit_test_ts["synchronization/src/modules/pull-request-template/pull-request-template.command.unit.test.ts"]
   file_synchronization_src_modules_pull_request_template_pull_request_template_constants_ts["synchronization/src/modules/pull-request-template/pull-request-template.constants.ts"]
@@ -6496,14 +6576,6 @@ graph LR
   file_validation_codometer_config_ts["validation/codometer.config.ts"]
   file_validation_coinagerie_config_ts["validation/coinagerie.config.ts"]
   file_validation_eslint_config_ts["validation/eslint.config.ts"]
-  file_validation_src_modules_audit_governance_audit_governance_command_ts["validation/src/modules/audit-governance/audit-governance.command.ts"]
-  file_validation_src_modules_audit_governance_audit_governance_command_unit_test_ts["validation/src/modules/audit-governance/audit-governance.command.unit.test.ts"]
-  file_validation_src_modules_audit_governance_audit_governance_constants_ts["validation/src/modules/audit-governance/audit-governance.constants.ts"]
-  file_validation_src_modules_audit_governance_audit_governance_module_ts["validation/src/modules/audit-governance/audit-governance.module.ts"]
-  file_validation_src_modules_audit_governance_audit_governance_module_unit_test_ts["validation/src/modules/audit-governance/audit-governance.module.unit.test.ts"]
-  file_validation_src_modules_audit_governance_audit_governance_service_ts["validation/src/modules/audit-governance/audit-governance.service.ts"]
-  file_validation_src_modules_audit_governance_audit_governance_service_unit_test_ts["validation/src/modules/audit-governance/audit-governance.service.unit.test.ts"]
-  file_validation_src_modules_audit_governance_audit_governance_types_ts["validation/src/modules/audit-governance/audit-governance.types.ts"]
   file_validation_src_modules_catalog_manifests_catalog_manifests_command_ts["validation/src/modules/catalog-manifests/catalog-manifests.command.ts"]
   file_validation_src_modules_catalog_manifests_catalog_manifests_command_unit_test_ts["validation/src/modules/catalog-manifests/catalog-manifests.command.unit.test.ts"]
   file_validation_src_modules_catalog_manifests_catalog_manifests_constants_ts["validation/src/modules/catalog-manifests/catalog-manifests.constants.ts"]
@@ -6512,18 +6584,6 @@ graph LR
   file_validation_src_modules_catalog_manifests_catalog_manifests_service_ts["validation/src/modules/catalog-manifests/catalog-manifests.service.ts"]
   file_validation_src_modules_catalog_manifests_catalog_manifests_service_unit_test_ts["validation/src/modules/catalog-manifests/catalog-manifests.service.unit.test.ts"]
   file_validation_src_modules_catalog_manifests_catalog_manifests_types_ts["validation/src/modules/catalog-manifests/catalog-manifests.types.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_github_service_ts["validation/src/modules/issue-metadata/issue-metadata-github.service.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_github_service_unit_test_ts["validation/src/modules/issue-metadata/issue-metadata-github.service.unit.test.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_type_service_ts["validation/src/modules/issue-metadata/issue-metadata-type.service.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_type_service_unit_test_ts["validation/src/modules/issue-metadata/issue-metadata-type.service.unit.test.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_command_ts["validation/src/modules/issue-metadata/issue-metadata.command.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_command_unit_test_ts["validation/src/modules/issue-metadata/issue-metadata.command.unit.test.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_constants_ts["validation/src/modules/issue-metadata/issue-metadata.constants.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_module_ts["validation/src/modules/issue-metadata/issue-metadata.module.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_module_unit_test_ts["validation/src/modules/issue-metadata/issue-metadata.module.unit.test.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_service_ts["validation/src/modules/issue-metadata/issue-metadata.service.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_service_unit_test_ts["validation/src/modules/issue-metadata/issue-metadata.service.unit.test.ts"]
-  file_validation_src_modules_issue_metadata_issue_metadata_types_ts["validation/src/modules/issue-metadata/issue-metadata.types.ts"]
   file_validation_src_modules_lockfile_lockfile_command_ts["validation/src/modules/lockfile/lockfile.command.ts"]
   file_validation_src_modules_lockfile_lockfile_command_unit_test_ts["validation/src/modules/lockfile/lockfile.command.unit.test.ts"]
   file_validation_src_modules_lockfile_lockfile_constants_ts["validation/src/modules/lockfile/lockfile.constants.ts"]
@@ -6548,34 +6608,6 @@ graph LR
   file_validation_src_modules_publishable_packages_publishable_packages_service_ts["validation/src/modules/publishable-packages/publishable-packages.service.ts"]
   file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages.service.unit.test.ts"]
   file_validation_src_modules_publishable_packages_publishable_packages_types_ts["validation/src/modules/publishable-packages/publishable-packages.types.ts"]
-  file_validation_src_modules_pull_request_body_pull_request_body_command_ts["validation/src/modules/pull-request-body/pull-request-body.command.ts"]
-  file_validation_src_modules_pull_request_body_pull_request_body_command_unit_test_ts["validation/src/modules/pull-request-body/pull-request-body.command.unit.test.ts"]
-  file_validation_src_modules_pull_request_body_pull_request_body_constants_ts["validation/src/modules/pull-request-body/pull-request-body.constants.ts"]
-  file_validation_src_modules_pull_request_body_pull_request_body_module_ts["validation/src/modules/pull-request-body/pull-request-body.module.ts"]
-  file_validation_src_modules_pull_request_body_pull_request_body_module_unit_test_ts["validation/src/modules/pull-request-body/pull-request-body.module.unit.test.ts"]
-  file_validation_src_modules_pull_request_body_pull_request_body_service_ts["validation/src/modules/pull-request-body/pull-request-body.service.ts"]
-  file_validation_src_modules_pull_request_body_pull_request_body_service_unit_test_ts["validation/src/modules/pull-request-body/pull-request-body.service.unit.test.ts"]
-  file_validation_src_modules_pull_request_body_pull_request_body_types_ts["validation/src/modules/pull-request-body/pull-request-body.types.ts"]
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts["validation/src/modules/pull-request-metadata/pull-request-metadata-github.service.ts"]
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_unit_test_ts["validation/src/modules/pull-request-metadata/pull-request-metadata-github.service.unit.test.ts"]
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_ts["validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts"]
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts["validation/src/modules/pull-request-metadata/pull-request-metadata.command.unit.test.ts"]
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_constants_ts["validation/src/modules/pull-request-metadata/pull-request-metadata.constants.ts"]
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts["validation/src/modules/pull-request-metadata/pull-request-metadata.module.ts"]
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_unit_test_ts["validation/src/modules/pull-request-metadata/pull-request-metadata.module.unit.test.ts"]
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_ts["validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts"]
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_unit_test_ts["validation/src/modules/pull-request-metadata/pull-request-metadata.service.unit.test.ts"]
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_types_ts["validation/src/modules/pull-request-metadata/pull-request-metadata.types.ts"]
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts["validation/src/modules/pull-request-release-significance/pull-request-release-significance-github.service.ts"]
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_unit_test_ts["validation/src/modules/pull-request-release-significance/pull-request-release-significance-github.service.unit.test.ts"]
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts["validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts"]
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts["validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.unit.test.ts"]
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts["validation/src/modules/pull-request-release-significance/pull-request-release-significance.constants.ts"]
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts["validation/src/modules/pull-request-release-significance/pull-request-release-significance.module.ts"]
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_unit_test_ts["validation/src/modules/pull-request-release-significance/pull-request-release-significance.module.unit.test.ts"]
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts["validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts"]
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_unit_test_ts["validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.unit.test.ts"]
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts["validation/src/modules/pull-request-release-significance/pull-request-release-significance.types.ts"]
   file_validation_src_modules_readme_projects_readme_projects_command_ts["validation/src/modules/readme-projects/readme-projects.command.ts"]
   file_validation_src_modules_readme_projects_readme_projects_command_unit_test_ts["validation/src/modules/readme-projects/readme-projects.command.unit.test.ts"]
   file_validation_src_modules_readme_projects_readme_projects_constants_ts["validation/src/modules/readme-projects/readme-projects.constants.ts"]
@@ -10679,6 +10711,219 @@ graph LR
   file_coinagerie_vocabulary_src_modules_words_words_module_ts --> file_coinagerie_vocabulary_src_modules_words_words_service_ts
   file_coinagerie_vocabulary_src_modules_words_words_service_ts --> file_coinagerie_vocabulary_src_modules_words_words_constants_ts
   file_coinagerie_vocabulary_src_modules_words_words_service_unit_test_ts --> file_coinagerie_vocabulary_src_modules_words_words_service_ts
+  file_compliance_src_compliance_main_end_to_end_test_ts --> file_compliance_src_compliance_constants_ts
+  file_compliance_src_compliance_main_end_to_end_test_ts --> file_compliance_testing_mocks_ts
+  file_compliance_src_compliance_main_ts --> file_compliance_src_compliance_module_ts
+  file_compliance_src_compliance_module_ts --> file_compliance_src_compliance_constants_ts
+  file_compliance_src_compliance_module_ts --> file_compliance_src_modules_audit_governance_audit_governance_module_ts
+  file_compliance_src_compliance_module_ts --> file_compliance_src_modules_issue_issue_module_ts
+  file_compliance_src_compliance_module_ts --> file_compliance_src_modules_organization_project_organization_project_module_ts
+  file_compliance_src_compliance_module_ts --> file_compliance_src_modules_pull_request_pull_request_module_ts
+  file_compliance_src_compliance_repl_ts --> file_compliance_src_compliance_module_ts
+  file_compliance_src_modules_audit_governance_audit_governance_command_ts --> file_compliance_src_modules_audit_governance_audit_governance_service_ts
+  file_compliance_src_modules_audit_governance_audit_governance_command_ts --> file_compliance_src_modules_audit_governance_audit_governance_types_ts
+  file_compliance_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_command_ts
+  file_compliance_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_service_ts
+  file_compliance_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_compliance_testing_mocks_ts
+  file_compliance_src_modules_audit_governance_audit_governance_module_ts --> file_compliance_src_modules_audit_governance_audit_governance_command_ts
+  file_compliance_src_modules_audit_governance_audit_governance_module_ts --> file_compliance_src_modules_audit_governance_audit_governance_service_ts
+  file_compliance_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_command_ts
+  file_compliance_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_module_ts
+  file_compliance_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_service_ts
+  file_compliance_src_modules_audit_governance_audit_governance_service_ts --> file_compliance_src_modules_audit_governance_audit_governance_constants_ts
+  file_compliance_src_modules_audit_governance_audit_governance_service_ts --> file_compliance_src_modules_audit_governance_audit_governance_types_ts
+  file_compliance_src_modules_audit_governance_audit_governance_service_unit_test_ts --> file_compliance_src_modules_audit_governance_audit_governance_service_ts
+  file_compliance_src_modules_issue_issue_assigning_service_ts --> file_compliance_src_modules_issue_issue_assignees_constants_ts
+  file_compliance_src_modules_issue_issue_assigning_service_ts --> file_compliance_src_modules_issue_issue_github_service_ts
+  file_compliance_src_modules_issue_issue_assigning_service_ts --> file_compliance_src_modules_issue_issue_types_ts
+  file_compliance_src_modules_issue_issue_assigning_service_unit_test_ts --> file_compliance_src_modules_issue_issue_assigning_service_ts
+  file_compliance_src_modules_issue_issue_assigning_service_unit_test_ts --> file_compliance_src_modules_issue_issue_github_service_ts
+  file_compliance_src_modules_issue_issue_assigning_service_unit_test_ts --> file_compliance_src_modules_issue_issue_metadata_types_ts
+  file_compliance_src_modules_issue_issue_audit_service_ts --> file_compliance_src_modules_issue_issue_github_service_ts
+  file_compliance_src_modules_issue_issue_audit_service_ts --> file_compliance_src_modules_issue_issue_metadata_service_ts
+  file_compliance_src_modules_issue_issue_audit_service_ts --> file_compliance_src_modules_issue_issue_types_ts
+  file_compliance_src_modules_issue_issue_audit_service_unit_test_ts --> file_compliance_src_modules_issue_issue_audit_service_ts
+  file_compliance_src_modules_issue_issue_audit_service_unit_test_ts --> file_compliance_src_modules_issue_issue_github_service_ts
+  file_compliance_src_modules_issue_issue_audit_service_unit_test_ts --> file_compliance_src_modules_issue_issue_metadata_service_ts
+  file_compliance_src_modules_issue_issue_github_service_ts --> file_compliance_src_modules_issue_issue_assignees_constants_ts
+  file_compliance_src_modules_issue_issue_github_service_ts --> file_compliance_src_modules_issue_issue_assignees_types_ts
+  file_compliance_src_modules_issue_issue_github_service_ts --> file_compliance_src_modules_issue_issue_metadata_constants_ts
+  file_compliance_src_modules_issue_issue_github_service_ts --> file_compliance_src_modules_issue_issue_metadata_types_ts
+  file_compliance_src_modules_issue_issue_github_service_unit_test_ts --> file_compliance_src_modules_issue_issue_github_service_ts
+  file_compliance_src_modules_issue_issue_github_service_unit_test_ts --> file_compliance_src_modules_issue_issue_metadata_constants_ts
+  file_compliance_src_modules_issue_issue_labeling_service_ts --> file_compliance_src_modules_issue_issue_github_service_ts
+  file_compliance_src_modules_issue_issue_labeling_service_ts --> file_compliance_src_modules_issue_issue_labels_service_ts
+  file_compliance_src_modules_issue_issue_labeling_service_unit_test_ts --> file_compliance_src_modules_issue_issue_github_service_ts
+  file_compliance_src_modules_issue_issue_labeling_service_unit_test_ts --> file_compliance_src_modules_issue_issue_labeling_service_ts
+  file_compliance_src_modules_issue_issue_labeling_service_unit_test_ts --> file_compliance_src_modules_issue_issue_labels_service_ts
+  file_compliance_src_modules_issue_issue_labels_service_ts --> file_compliance_src_modules_issue_issue_metadata_constants_ts
+  file_compliance_src_modules_issue_issue_labels_service_ts --> file_compliance_src_modules_issue_issue_metadata_types_ts
+  file_compliance_src_modules_issue_issue_labels_service_unit_test_ts --> file_compliance_src_modules_issue_issue_labels_service_ts
+  file_compliance_src_modules_issue_issue_metadata_type_service_ts --> file_compliance_src_modules_issue_issue_metadata_constants_ts
+  file_compliance_src_modules_issue_issue_metadata_type_service_ts --> file_compliance_src_modules_issue_issue_metadata_types_ts
+  file_compliance_src_modules_issue_issue_metadata_type_service_unit_test_ts --> file_compliance_src_modules_issue_issue_metadata_type_service_ts
+  file_compliance_src_modules_issue_issue_metadata_service_ts --> file_compliance_src_modules_issue_issue_metadata_type_service_ts
+  file_compliance_src_modules_issue_issue_metadata_service_ts --> file_compliance_src_modules_issue_issue_metadata_constants_ts
+  file_compliance_src_modules_issue_issue_metadata_service_ts --> file_compliance_src_modules_issue_issue_metadata_types_ts
+  file_compliance_src_modules_issue_issue_metadata_service_unit_test_ts --> file_compliance_src_modules_issue_issue_metadata_type_service_ts
+  file_compliance_src_modules_issue_issue_metadata_service_unit_test_ts --> file_compliance_src_modules_issue_issue_metadata_service_ts
+  file_compliance_src_modules_issue_issue_metadata_service_unit_test_ts --> file_compliance_src_modules_issue_issue_metadata_types_ts
+  file_compliance_src_modules_issue_issue_plan_service_ts --> file_compliance_src_modules_issue_issue_metadata_constants_ts
+  file_compliance_src_modules_issue_issue_plan_service_ts --> file_compliance_src_modules_issue_issue_constants_ts
+  file_compliance_src_modules_issue_issue_plan_service_ts --> file_compliance_src_modules_issue_issue_types_ts
+  file_compliance_src_modules_issue_issue_plan_service_unit_test_ts --> file_compliance_src_modules_issue_issue_plan_service_ts
+  file_compliance_src_modules_issue_issue_report_service_ts --> file_compliance_src_modules_issue_issue_metadata_constants_ts
+  file_compliance_src_modules_issue_issue_report_service_ts --> file_compliance_src_modules_issue_issue_types_ts
+  file_compliance_src_modules_issue_issue_report_service_unit_test_ts --> file_compliance_src_modules_issue_issue_report_service_ts
+  file_compliance_src_modules_issue_issue_command_ts --> file_compliance_src_modules_issue_issue_assigning_service_ts
+  file_compliance_src_modules_issue_issue_command_ts --> file_compliance_src_modules_issue_issue_audit_service_ts
+  file_compliance_src_modules_issue_issue_command_ts --> file_compliance_src_modules_issue_issue_labeling_service_ts
+  file_compliance_src_modules_issue_issue_command_ts --> file_compliance_src_modules_issue_issue_plan_service_ts
+  file_compliance_src_modules_issue_issue_command_ts --> file_compliance_src_modules_issue_issue_report_service_ts
+  file_compliance_src_modules_issue_issue_command_ts --> file_compliance_src_modules_issue_issue_types_ts
+  file_compliance_src_modules_issue_issue_command_unit_test_ts --> file_compliance_src_modules_issue_issue_assigning_service_ts
+  file_compliance_src_modules_issue_issue_command_unit_test_ts --> file_compliance_src_modules_issue_issue_audit_service_ts
+  file_compliance_src_modules_issue_issue_command_unit_test_ts --> file_compliance_src_modules_issue_issue_labeling_service_ts
+  file_compliance_src_modules_issue_issue_command_unit_test_ts --> file_compliance_src_modules_issue_issue_plan_service_ts
+  file_compliance_src_modules_issue_issue_command_unit_test_ts --> file_compliance_src_modules_issue_issue_report_service_ts
+  file_compliance_src_modules_issue_issue_command_unit_test_ts --> file_compliance_src_modules_issue_issue_command_ts
+  file_compliance_src_modules_issue_issue_command_unit_test_ts --> file_compliance_src_modules_issue_issue_types_ts
+  file_compliance_src_modules_issue_issue_command_unit_test_ts --> file_compliance_testing_mocks_ts
+  file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_assigning_service_ts
+  file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_audit_service_ts
+  file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_github_service_ts
+  file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_labeling_service_ts
+  file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_labels_service_ts
+  file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_metadata_type_service_ts
+  file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_metadata_service_ts
+  file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_plan_service_ts
+  file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_report_service_ts
+  file_compliance_src_modules_issue_issue_module_ts --> file_compliance_src_modules_issue_issue_command_ts
+  file_compliance_src_modules_organization_project_organization_project_command_ts --> file_compliance_src_modules_organization_project_organization_project_constants_ts
+  file_compliance_src_modules_organization_project_organization_project_command_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_organization_project_organization_project_command_unit_test_ts --> file_compliance_src_modules_organization_project_organization_project_command_ts
+  file_compliance_src_modules_organization_project_organization_project_command_unit_test_ts --> file_compliance_src_modules_organization_project_organization_project_constants_ts
+  file_compliance_src_modules_organization_project_organization_project_command_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_organization_project_organization_project_command_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_types_ts
+  file_compliance_src_modules_organization_project_organization_project_command_unit_test_ts --> file_compliance_testing_mocks_ts
+  file_compliance_src_modules_organization_project_organization_project_module_ts --> file_compliance_src_modules_organization_project_organization_project_command_ts
+  file_compliance_src_modules_organization_project_organization_project_module_ts --> file_compliance_src_modules_pull_request_pull_request_module_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_issue_issue_metadata_service_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_links_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_links_service_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_context_types_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_types_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_unit_test_ts --> file_compliance_src_modules_issue_issue_metadata_service_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_body_links_service_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_context_types_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_types_ts
+  file_compliance_src_modules_pull_request_pull_request_body_links_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_links_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_body_links_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_body_links_service_ts
+  file_compliance_src_modules_pull_request_pull_request_body_constants_ts --> file_compliance_src_modules_pull_request_pull_request_body_types_ts
+  file_compliance_src_modules_pull_request_pull_request_body_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_body_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_types_ts
+  file_compliance_src_modules_pull_request_pull_request_body_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_body_service_ts
+  file_compliance_src_modules_pull_request_pull_request_context_service_ts --> file_compliance_src_modules_pull_request_pull_request_context_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_context_service_ts --> file_compliance_src_modules_pull_request_pull_request_context_types_ts
+  file_compliance_src_modules_pull_request_pull_request_context_service_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_context_service_ts --> file_compliance_src_modules_pull_request_pull_request_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_context_service_ts --> file_compliance_src_modules_pull_request_pull_request_types_ts
+  file_compliance_src_modules_pull_request_pull_request_context_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_context_service_ts
+  file_compliance_src_modules_pull_request_pull_request_context_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_context_types_ts
+  file_compliance_src_modules_pull_request_pull_request_context_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_context_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_types_ts
+  file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_ts --> file_compliance_src_modules_pull_request_pull_request_types_ts
+  file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_types_ts
+  file_compliance_src_modules_pull_request_pull_request_github_service_ts --> file_compliance_src_modules_pull_request_pull_request_github_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_github_service_ts --> file_compliance_src_modules_pull_request_pull_request_github_types_ts
+  file_compliance_src_modules_pull_request_pull_request_github_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_github_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts --> file_compliance_src_modules_pull_request_pull_request_labels_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts --> file_compliance_src_modules_pull_request_pull_request_labels_service_ts
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts --> file_compliance_src_modules_pull_request_pull_request_labels_types_ts
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts --> file_compliance_src_modules_pull_request_pull_request_types_ts
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_types_ts
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts
+  file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_labels_service_ts
+  file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_ts --> file_compliance_src_modules_pull_request_pull_request_labels_assignees_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_ts --> file_compliance_src_modules_pull_request_pull_request_labels_assignees_types_ts
+  file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_ts
+  file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_labels_assignees_types_ts
+  file_compliance_src_modules_pull_request_pull_request_labels_constants_ts --> file_compliance_src_modules_pull_request_pull_request_labels_types_ts
+  file_compliance_src_modules_pull_request_pull_request_labels_service_ts --> file_compliance_src_modules_pull_request_pull_request_labels_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_labels_service_ts --> file_compliance_src_modules_pull_request_pull_request_labels_types_ts
+  file_compliance_src_modules_pull_request_pull_request_labels_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_labels_service_ts
+  file_compliance_src_modules_pull_request_pull_request_labels_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_labels_types_ts
+  file_compliance_src_modules_pull_request_pull_request_release_significance_service_ts --> file_compliance_src_modules_pull_request_pull_request_release_significance_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_release_significance_service_ts --> file_compliance_src_modules_pull_request_pull_request_release_significance_types_ts
+  file_compliance_src_modules_pull_request_pull_request_release_significance_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_release_significance_service_ts
+  file_compliance_src_modules_pull_request_pull_request_release_significance_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_release_significance_types_ts
+  file_compliance_src_modules_pull_request_pull_request_report_service_ts --> file_compliance_src_modules_pull_request_pull_request_github_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_report_service_ts --> file_compliance_src_modules_pull_request_pull_request_types_ts
+  file_compliance_src_modules_pull_request_pull_request_report_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_report_service_ts
+  file_compliance_src_modules_pull_request_pull_request_report_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_types_ts
+  file_compliance_src_modules_pull_request_pull_request_title_service_ts --> file_compliance_src_modules_pull_request_pull_request_title_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_title_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_title_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_links_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_body_types_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_context_types_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_release_significance_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_title_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_constants_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_ts --> file_compliance_src_modules_pull_request_pull_request_types_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_body_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_context_types_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_release_significance_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_title_service_ts
+  file_compliance_src_modules_pull_request_pull_request_validation_service_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_validation_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_ts --> file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_ts --> file_compliance_src_modules_pull_request_pull_request_context_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_ts --> file_compliance_src_modules_pull_request_pull_request_context_types_ts
+  file_compliance_src_modules_pull_request_pull_request_command_ts --> file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_ts --> file_compliance_src_modules_pull_request_pull_request_report_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_ts --> file_compliance_src_modules_pull_request_pull_request_validation_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_context_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_context_types_ts
+  file_compliance_src_modules_pull_request_pull_request_command_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_report_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_validation_service_ts
+  file_compliance_src_modules_pull_request_pull_request_command_unit_test_ts --> file_compliance_src_modules_pull_request_pull_request_command_ts
+  file_compliance_src_modules_pull_request_pull_request_command_unit_test_ts --> file_compliance_testing_mocks_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_issue_issue_module_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_ancestor_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_body_links_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_body_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_context_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_descendant_issues_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_github_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_label_vocabulary_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_labels_assignees_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_labels_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_release_significance_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_report_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_title_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_validation_service_ts
+  file_compliance_src_modules_pull_request_pull_request_module_ts --> file_compliance_src_modules_pull_request_pull_request_command_ts
   file_configuration_commitlint_config_ts --> file_configuration_conventional_config_d_cts
   file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_end_to_end_test_ts --> file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___constants_ts
   file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_ts --> file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___module_ts
@@ -15636,27 +15881,6 @@ graph LR
   file_synchronization_src_modules_installed_skills_installed_skills_service_ts --> file_synchronization_src_modules_installed_skills_installed_skills_types_ts
   file_synchronization_src_modules_installed_skills_installed_skills_service_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
   file_synchronization_src_modules_installed_skills_installed_skills_service_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_service_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts --> file_synchronization_src_modules_issue_labels_issue_labels_constants_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts --> file_synchronization_src_modules_issue_labels_issue_labels_types_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_github_service_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_github_service_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_constants_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_command_ts --> file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_command_ts --> file_synchronization_src_modules_issue_labels_issue_labels_constants_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_command_ts --> file_synchronization_src_modules_issue_labels_issue_labels_service_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_command_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_command_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_command_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_command_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_service_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_command_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_types_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_module_ts --> file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_module_ts --> file_synchronization_src_modules_issue_labels_issue_labels_command_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_module_ts --> file_synchronization_src_modules_issue_labels_issue_labels_service_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_module_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_module_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_command_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_module_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_module_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_module_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_service_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_service_ts --> file_synchronization_src_modules_issue_labels_issue_labels_constants_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_service_ts --> file_synchronization_src_modules_issue_labels_issue_labels_types_ts
-  file_synchronization_src_modules_issue_labels_issue_labels_service_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_service_ts
   file_synchronization_src_modules_package_manifests_package_manifests_command_ts --> file_synchronization_src_modules_package_manifests_package_manifests_service_ts
   file_synchronization_src_modules_package_manifests_package_manifests_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_package_manifests_package_manifests_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
@@ -15689,31 +15913,6 @@ graph LR
   file_synchronization_src_modules_project_ports_project_ports_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_project_ports_project_ports_service_ts --> file_synchronization_src_modules_project_ports_project_ports_constants_ts
   file_synchronization_src_modules_project_ports_project_ports_service_unit_test_ts --> file_synchronization_src_modules_project_ports_project_ports_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_constants_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_types_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_constants_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_types_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_constants_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_types_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_unit_test_ts --> file_synchronization_testing_mocks_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_constants_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_types_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_service_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_constants_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_service_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_types_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_service_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_service_ts
-  file_synchronization_src_modules_pull_request_labels_pull_request_labels_service_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_types_ts
   file_synchronization_src_modules_pull_request_template_pull_request_template_command_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_constants_ts
   file_synchronization_src_modules_pull_request_template_pull_request_template_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_pull_request_template_pull_request_template_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
@@ -15741,7 +15940,6 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_installed_skills_installed_skills_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_package_manifests_package_manifests_command_ts
-  file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
@@ -15753,7 +15951,6 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_package_manifests_package_manifests_command_ts
-  file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_command_ts
@@ -15768,7 +15965,6 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_installed_skills_installed_skills_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_package_manifests_package_manifests_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_project_ports_project_ports_module_ts
-  file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_synchronization_synchronization_command_ts
@@ -15781,7 +15977,6 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_project_ports_project_ports_module_ts
-  file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_command_ts
@@ -15829,26 +16024,11 @@ graph LR
   file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_command_ts
   file_synchronization_src_synchronization_main_end_to_end_test_ts --> file_synchronization_src_synchronization_constants_ts
   file_synchronization_src_synchronization_main_ts --> file_synchronization_src_synchronization_module_ts
-  file_synchronization_src_synchronization_main_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_module_ts
   file_synchronization_src_synchronization_main_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
-  file_synchronization_src_synchronization_module_ts --> file_synchronization_src_modules_issue_labels_issue_labels_module_ts
   file_synchronization_src_synchronization_module_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
   file_synchronization_src_synchronization_module_ts --> file_synchronization_src_synchronization_constants_ts
   file_synchronization_src_synchronization_repl_ts --> file_synchronization_src_synchronization_module_ts
   file_synchronization_src_synchronization_repl_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
-  file_validation_src_modules_audit_governance_audit_governance_command_ts --> file_validation_src_modules_audit_governance_audit_governance_service_ts
-  file_validation_src_modules_audit_governance_audit_governance_command_ts --> file_validation_src_modules_audit_governance_audit_governance_types_ts
-  file_validation_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_command_ts
-  file_validation_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_service_ts
-  file_validation_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_validation_testing_mocks_ts
-  file_validation_src_modules_audit_governance_audit_governance_module_ts --> file_validation_src_modules_audit_governance_audit_governance_command_ts
-  file_validation_src_modules_audit_governance_audit_governance_module_ts --> file_validation_src_modules_audit_governance_audit_governance_service_ts
-  file_validation_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_command_ts
-  file_validation_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_module_ts
-  file_validation_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_service_ts
-  file_validation_src_modules_audit_governance_audit_governance_service_ts --> file_validation_src_modules_audit_governance_audit_governance_constants_ts
-  file_validation_src_modules_audit_governance_audit_governance_service_ts --> file_validation_src_modules_audit_governance_audit_governance_types_ts
-  file_validation_src_modules_audit_governance_audit_governance_service_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_service_ts
   file_validation_src_modules_catalog_manifests_catalog_manifests_command_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_service_ts
   file_validation_src_modules_catalog_manifests_catalog_manifests_command_unit_test_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_command_ts
   file_validation_src_modules_catalog_manifests_catalog_manifests_command_unit_test_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_service_ts
@@ -15863,39 +16043,6 @@ graph LR
   file_validation_src_modules_catalog_manifests_catalog_manifests_service_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_types_ts
   file_validation_src_modules_catalog_manifests_catalog_manifests_service_unit_test_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_service_ts
   file_validation_src_modules_catalog_manifests_catalog_manifests_service_unit_test_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_types_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_github_service_ts --> file_validation_src_modules_issue_metadata_issue_metadata_constants_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_github_service_ts --> file_validation_src_modules_issue_metadata_issue_metadata_types_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_github_service_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_github_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_github_service_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_constants_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_type_service_ts --> file_validation_src_modules_issue_metadata_issue_metadata_constants_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_type_service_ts --> file_validation_src_modules_issue_metadata_issue_metadata_types_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_type_service_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_type_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_ts --> file_validation_src_modules_issue_metadata_issue_metadata_github_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_ts --> file_validation_src_modules_issue_metadata_issue_metadata_constants_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_ts --> file_validation_src_modules_issue_metadata_issue_metadata_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_ts --> file_validation_src_modules_issue_metadata_issue_metadata_types_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_github_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_type_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_command_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_constants_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_types_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_validation_testing_mocks_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_module_ts --> file_validation_src_modules_issue_metadata_issue_metadata_github_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_module_ts --> file_validation_src_modules_issue_metadata_issue_metadata_type_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_module_ts --> file_validation_src_modules_issue_metadata_issue_metadata_command_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_module_ts --> file_validation_src_modules_issue_metadata_issue_metadata_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_github_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_type_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_command_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_module_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_service_ts --> file_validation_src_modules_issue_metadata_issue_metadata_type_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_service_ts --> file_validation_src_modules_issue_metadata_issue_metadata_constants_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_service_ts --> file_validation_src_modules_issue_metadata_issue_metadata_types_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_service_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_type_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_service_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_service_ts
-  file_validation_src_modules_issue_metadata_issue_metadata_service_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_types_ts
   file_validation_src_modules_lockfile_lockfile_command_ts --> file_validation_src_modules_lockfile_lockfile_constants_ts
   file_validation_src_modules_lockfile_lockfile_command_ts --> file_validation_src_modules_lockfile_lockfile_service_ts
   file_validation_src_modules_lockfile_lockfile_command_unit_test_ts --> file_validation_src_modules_lockfile_lockfile_command_ts
@@ -15953,72 +16100,6 @@ graph LR
   file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts
   file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_constants_ts
   file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_command_ts --> file_validation_src_modules_pull_request_body_pull_request_body_constants_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_command_ts --> file_validation_src_modules_pull_request_body_pull_request_body_service_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_command_ts --> file_validation_src_modules_pull_request_body_pull_request_body_types_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_validation_src_modules_pull_request_body_pull_request_body_command_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_validation_src_modules_pull_request_body_pull_request_body_constants_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_validation_src_modules_pull_request_body_pull_request_body_service_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_validation_testing_mocks_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_constants_ts --> file_validation_src_modules_pull_request_body_pull_request_body_types_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_module_ts --> file_validation_src_modules_pull_request_body_pull_request_body_command_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_module_ts --> file_validation_src_modules_pull_request_body_pull_request_body_service_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_module_unit_test_ts --> file_validation_src_modules_pull_request_body_pull_request_body_command_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_module_unit_test_ts --> file_validation_src_modules_pull_request_body_pull_request_body_module_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_module_unit_test_ts --> file_validation_src_modules_pull_request_body_pull_request_body_service_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_service_ts --> file_validation_src_modules_pull_request_body_pull_request_body_constants_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_service_ts --> file_validation_src_modules_pull_request_body_pull_request_body_types_ts
-  file_validation_src_modules_pull_request_body_pull_request_body_service_unit_test_ts --> file_validation_src_modules_pull_request_body_pull_request_body_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_constants_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_types_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_constants_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_constants_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_types_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_constants_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_types_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_validation_testing_mocks_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_command_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_constants_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_types_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_ts
-  file_validation_src_modules_pull_request_metadata_pull_request_metadata_service_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_types_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_validation_testing_mocks_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts
-  file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_service_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts
   file_validation_src_modules_readme_projects_readme_projects_command_ts --> file_validation_src_modules_readme_projects_readme_projects_service_ts
   file_validation_src_modules_readme_projects_readme_projects_command_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_command_ts
   file_validation_src_modules_readme_projects_readme_projects_command_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_service_ts
@@ -16072,25 +16153,15 @@ graph LR
   file_validation_src_modules_session_worktree_name_session_worktree_name_service_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_service_ts
   file_validation_src_validation_main_end_to_end_test_ts --> file_validation_src_validation_constants_ts
   file_validation_src_validation_main_ts --> file_validation_src_validation_module_ts
-  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_module_ts
-  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_lockfile_lockfile_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_module_ts
-  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_pull_request_body_pull_request_body_module_ts
-  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts
-  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts
-  file_validation_src_validation_module_ts --> file_validation_src_modules_audit_governance_audit_governance_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_module_ts
-  file_validation_src_validation_module_ts --> file_validation_src_modules_issue_metadata_issue_metadata_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_lockfile_lockfile_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_module_ts
-  file_validation_src_validation_module_ts --> file_validation_src_modules_pull_request_body_pull_request_body_module_ts
-  file_validation_src_validation_module_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts
-  file_validation_src_validation_module_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_readme_projects_readme_projects_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_session_branch_name_session_branch_name_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts
@@ -16106,36 +16177,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-72512-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-5.09_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-168-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-663-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-60154-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.64_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-162-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-596-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-656-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-168-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-589-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-132-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-267-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1636-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-232-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1367-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-206-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-61-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-220-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-3207-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-959-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-3019-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-1147-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3398-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-3096-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-921-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3321-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-6320-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-180-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-59-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-193-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2573-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-716-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-2288-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-1001-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-2905-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2777-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-770-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2932-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5413-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -16156,30 +16227,30 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-52-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7996-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-1264-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7961-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-1252-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-461-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-3006-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2781-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-2976-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2763-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-45-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-202-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-1702-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4753-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4723-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3629-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3506-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-482-7c3aed?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-466-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-91-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1715-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3448-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1670-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3367-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-708-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-685-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -16246,14 +16317,14 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-72-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-80-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-53-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-76-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-70-db2777?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-65-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-67-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-46-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-69-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-63-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-9-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-195-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-169-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-5-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-6-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -16290,24 +16361,24 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-143-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-28246-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-137-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-836-8b5cf6?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-144-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27896-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-846-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-747-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-82-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6501-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-962-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4714-22c55e?style=flat-square)
-![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-281-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2811-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-917-059669?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6530-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-967-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4726-22c55e?style=flat-square)
+![Task List Items](https://img.shields.io/badge/Task_List_Items-60-4ade80?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-284-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2705-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-948-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-568-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15524-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15021-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -16320,13 +16391,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7975 |
-| Files | 2669 |
-| Calls traced | 8721 |
-| Call stacks | 2206 |
+| Callables | 8012 |
+| Files | 2694 |
+| Calls traced | 8715 |
+| Call stacks | 2217 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
-| Unfollowable calls | 493 |
+| Unfollowable calls | 491 |
 
 ### Projects
 
@@ -16336,6 +16407,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/caelundas/caelundas-web` | 6 | 6 | 0 | 8 |
 | `projects/common/observability` | 4 | 4 | 0 | 2 |
 | `projects/common/persistence` | 7 | 7 | 0 | 7 |
+| `projects/compliance` | 8 | 8 | 0 | 9 |
 | `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
 | `projects/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
 | `projects/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |
@@ -16350,8 +16422,8 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
 | `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
 | `publication` | 6 | 6 | 0 | 8 |
-| `synchronization` | 10 | 10 | 0 | 9 |
-| `validation` | 8 | 8 | 0 | 9 |
+| `synchronization` | 10 | 10 | 0 | 8 |
+| `validation` | 8 | 8 | 0 | 8 |
 | `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
 | `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
@@ -16393,7 +16465,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 20 |
+| 0 — at limit | 21 |
 | 1 | 2 |
 | 2–3 | 5 |
 | 4+ | 12 |

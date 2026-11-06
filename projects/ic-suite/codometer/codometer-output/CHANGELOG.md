@@ -1,3 +1,15 @@
+## 0.0.68 (2026-11-06)
+
+### 🚀 Features
+
+- **compliance,configuration,documentation:** ✨ migrate external-resource commands ([#2058](https://github.com/organizzolini/codebase/pull/2058), [#1980](https://github.com/organizzolini/codebase/issues/1980))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.68
+- Updated codometer-measurement to 0.0.68
+- Updated codometer-core to 0.0.68
+
 ## 0.0.67 (2026-11-06)
 
 ### 🧱 Updated Dependencies
