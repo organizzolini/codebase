@@ -82,7 +82,7 @@ describe("caelundas api bootstrap suite", () => {
     expect(createLightshipMock).toHaveBeenCalledWith({ port: 9001 });
     expect(loggerConstructorMock).toHaveBeenCalledTimes(1);
     expect(setContextMock).toHaveBeenCalledWith("NestApplication");
-    expect(listenMock).toHaveBeenCalledWith(8968);
+    expect(listenMock).toHaveBeenCalledWith(6173);
     expect(signalReadyMock).toHaveBeenCalledTimes(1);
     expect(registerShutdownHandlerMock).toHaveBeenCalledTimes(1);
 
