@@ -69,8 +69,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       {
         patterns: ["projects/ic-suite/callidescope/callidescope-cli"],
         substitutions: {
-          packageName: "@callidescope/cli",
-          packageVersion: "0.0.53",
           type: "projects/ic-suite/callidescope",
           workspaceRelativePrefix: "../../../../",
         },
@@ -78,8 +76,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       {
         patterns: ["projects/ic-suite/codependix/codependix-cli"],
         substitutions: {
-          packageName: "@codependix/cli",
-          packageVersion: "0.0.54",
           type: "projects/ic-suite/codependix",
           workspaceRelativePrefix: "../../../../",
         },
@@ -87,8 +83,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       {
         patterns: ["projects/ic-suite/codometer/codometer-cli"],
         substitutions: {
-          packageName: "@codometer/cli",
-          packageVersion: "0.0.53",
           type: "projects/ic-suite/codometer",
           workspaceRelativePrefix: "../../../../",
         },
@@ -103,8 +97,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       {
         patterns: ["projects/ic-suite/conformetry/conformetry-cli"],
         substitutions: {
-          packageName: "@conformetry/cli",
-          packageVersion: "0.0.54",
           type: "projects/ic-suite/conformetry",
           workspaceRelativePrefix: "../../../../",
         },

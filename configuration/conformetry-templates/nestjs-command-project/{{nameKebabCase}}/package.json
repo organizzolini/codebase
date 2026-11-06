@@ -1,5 +1,4 @@
 {
-  "name": "{{#packageName}}{{packageName}}{{/packageName}}{{^packageName}}{{nameKebabCase}}{{/packageName}}",
   "dependencies": {
     "@nestjs/common": "catalog:ic-suite",
     "@nestjs/config": "catalog:",
