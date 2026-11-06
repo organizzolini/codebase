@@ -1,5 +1,4 @@
 import { ConfigService } from "@nestjs/config";
-import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 
@@ -92,7 +91,6 @@ describe(startDatabaseTestingModule, () => {
       const closing = await startDatabaseTestingModule({
         entities: [Widget],
         migrations: [CreateWidgets1767225600000],
-        namingStrategy: new SnakeNamingStrategy(),
         project: "fixture",
       });
 
