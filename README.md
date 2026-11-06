@@ -111,7 +111,6 @@
 [![Gitmoji](https://img.shields.io/badge/Gitmoji-Emoji%20Commits-FFDD67)](https://gitmoji.dev/)
 [![Semantic Release](https://img.shields.io/badge/Semantic%20Release-Versioning-494949?logo=semantic-release)](https://semantic-release.gitbook.io/)
 [![Verdaccio](https://img.shields.io/badge/Verdaccio-Local%20Registry-4B5E40?logo=verdaccio)](https://verdaccio.org/)
-[![Nx Cloud](https://img.shields.io/badge/Nx%20Cloud-Remote%20Cache-143055?logo=nx)](https://nx.app/)
 [![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![Dependabot](https://img.shields.io/badge/Dependabot-Updates-025E8C?logo=dependabot)](https://docs.github.com/en/code-security/dependabot)
 [![Docker](https://img.shields.io/badge/Docker-Container-2496ED?logo=docker)](https://www.docker.com/)
