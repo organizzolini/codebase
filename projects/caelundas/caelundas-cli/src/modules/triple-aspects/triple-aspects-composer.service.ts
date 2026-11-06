@@ -23,7 +23,7 @@ import type {
   Body,
   TripleAspect,
 } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { ProgressiveBodiesMeta } from "./triple-aspects.types";
 import type { Moment } from "moment-timezone";
 

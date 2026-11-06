@@ -1,6 +1,5 @@
 import { createRouter, type Router } from "@tanstack/react-router";
 
-import { createBrowserEventsDatabase } from "./components/events-calendar/events-database-browser.utilities";
 import { routeTree } from "./routeTree.gen";
 
 /**
@@ -9,9 +8,6 @@ import { routeTree } from "./routeTree.gen";
  */
 export function getRouter(): Router<typeof routeTree, "never", true> {
   return createRouter({
-    // The browser database starts its worker on the first query, so creating
-    // it while the static shell is rendered ahead of time loads nothing.
-    context: { eventsDatabase: createBrowserEventsDatabase() },
     defaultPreload: "intent",
     // A page that selects part of the search is rendered again only when that
     // part changed. The night sky hook's overrides stay stable through it: if

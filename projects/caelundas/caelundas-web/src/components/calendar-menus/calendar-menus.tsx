@@ -4,7 +4,7 @@ import { NightSkyMenu } from "../night-sky-menu/night-sky-menu";
 
 import type { CalendarSymbols } from "../../hooks/use-calendar-search/calendar-symbols.types";
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

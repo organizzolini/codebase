@@ -10,7 +10,7 @@ import {
   formatEventTime,
 } from "../events-calendar/calendar-format.utilities";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
