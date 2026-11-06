@@ -61,8 +61,10 @@ describe("caelundas api bootstrap suite", () => {
     const listenMock = vi
       .fn<() => Promise<INestApplication>>()
       .mockResolvedValue(undefined as unknown as INestApplication);
+    const enableCorsMock = vi.fn<(options: unknown) => void>();
     const mockApp = createMock<INestApplication>({
       close: closeMock,
+      enableCors: enableCorsMock,
       listen: listenMock,
     });
     const createSpy = vi
@@ -82,6 +84,7 @@ describe("caelundas api bootstrap suite", () => {
     expect(createLightshipMock).toHaveBeenCalledWith({ port: 9001 });
     expect(loggerConstructorMock).toHaveBeenCalledTimes(1);
     expect(setContextMock).toHaveBeenCalledWith("NestApplication");
+    expect(enableCorsMock).toHaveBeenCalledWith({ origin: "*" });
     expect(listenMock).toHaveBeenCalledWith(6173);
     expect(signalReadyMock).toHaveBeenCalledTimes(1);
     expect(registerShutdownHandlerMock).toHaveBeenCalledTimes(1);
@@ -100,10 +103,14 @@ describe("caelundas api bootstrap suite", () => {
 
     process.env["CAELUNDAS_API_LIGHTSHIP_PORT"] = "9005";
     process.env["CAELUNDAS_API_PORT"] = "9999";
+    process.env["CAELUNDAS_API_CORS_ORIGINS"] =
+      "http://localhost:8967, http://127.0.0.1:8967";
+    const enableCorsMock = vi.fn<(options: unknown) => void>();
     const listenMock = vi
       .fn<() => Promise<INestApplication>>()
       .mockResolvedValue(undefined as unknown as INestApplication);
     const mockApp = createMock<INestApplication>({
+      enableCors: enableCorsMock,
       listen: listenMock,
     });
     const createSpy = vi
@@ -118,8 +125,12 @@ describe("caelundas api bootstrap suite", () => {
 
     expect(createLightshipMock).toHaveBeenCalledWith({ port: 9005 });
     expect(listenMock).toHaveBeenCalledWith(9999);
+    expect(enableCorsMock).toHaveBeenCalledWith({
+      origin: ["http://localhost:8967", "http://127.0.0.1:8967"],
+    });
 
     delete process.env["CAELUNDAS_API_LIGHTSHIP_PORT"];
     delete process.env["CAELUNDAS_API_PORT"];
+    delete process.env["CAELUNDAS_API_CORS_ORIGINS"];
   });
 });
