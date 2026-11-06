@@ -5,7 +5,7 @@ export default [
   ...baseConfig,
 
   // 🙈 Ignores
-  { ignores: ["src/modules/database/migrations/**"] },
+  { ignores: ["src/modules/caelundas-database/migrations/**"] },
 
   // 📦 Dependency Checks
   {
@@ -18,7 +18,8 @@ export default [
           // are outside the build dependency check's scope.
           // vitest: referenced via tsconfig "types" array; it's a devDependency and
           // the @nx/dependency-checks rule misidentifies it as a production dependency.
-          ignoredDependencies: ["@golevelup/ts-vitest", "vitest"],
+          // pg: the driver TypeORM loads by name for its Postgres connection.
+          ignoredDependencies: ["@golevelup/ts-vitest", "pg", "vitest"],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
         },
       ],

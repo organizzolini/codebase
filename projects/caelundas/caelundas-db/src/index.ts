@@ -1,18 +1,15 @@
 // 📤 Exports
+export { CAELUNDAS_PROJECT } from "./modules/caelundas-database/caelundas-database.constants";
+export { CaelundasDatabaseModule } from "./modules/caelundas-database/caelundas-database.module";
+export { CaelundasDatabaseService } from "./modules/caelundas-database/caelundas-database.service";
+export { createMomentTransformer } from "./modules/caelundas-database/caelundas-database.utilities";
 export {
   CAELUNDAS_DATABASE_ENTITIES,
   CAELUNDAS_DATABASE_MIGRATIONS,
-  CAELUNDAS_DATABASE_PROJECT,
-} from "./modules/database/database.constants";
-export { DatabaseModule } from "./modules/database/database.module";
-export { DatabaseService } from "./modules/database/database.service";
-export { createMomentTransformer } from "./modules/database/database.utilities";
-export { CalendarEventDerived } from "./modules/database/entities/calendar-event-derived.entity";
-export { CalendarEventTagNode } from "./modules/database/entities/calendar-event-tag-node.entity";
-export { CalendarEventTag } from "./modules/database/entities/calendar-event-tag.entity";
-export { CalendarEvent } from "./modules/database/entities/calendar-event.entity";
-export { ConstellationLine } from "./modules/database/entities/constellation-line.entity";
-export { Constellation } from "./modules/database/entities/constellation.entity";
-export { Star } from "./modules/database/entities/star.entity";
-export { TagNode } from "./modules/database/entities/tag-node.entity";
-export { Tag } from "./modules/database/entities/tag.entity";
+} from "./modules/caelundas-database/data-source.constants";
+export { CalendarEventTag } from "./modules/caelundas-database/entities/calendar-event-tag.entity";
+export { CalendarEvent } from "./modules/caelundas-database/entities/calendar-event.entity";
+export { ConstellationLine } from "./modules/caelundas-database/entities/constellation-line.entity";
+export { Constellation } from "./modules/caelundas-database/entities/constellation.entity";
+export { Star } from "./modules/caelundas-database/entities/star.entity";
+export { Tag } from "./modules/caelundas-database/entities/tag.entity";

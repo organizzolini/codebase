@@ -13,7 +13,7 @@ import type { Relation } from "typeorm";
  * serves reading an event's tags, so a second index leads with the tag,
  * which serves finding the events that carry one.
  */
-@Entity({ name: "calendar_event_tags" })
+@Entity()
 @Index("calendar_event_tags_tag_id_calendar_event_id", [
   "tagId",
   "calendarEventId",
@@ -24,7 +24,7 @@ export class CalendarEventTag {
   calendarEvent?: Relation<CalendarEvent>;
 
   /** The event that carries the tag. */
-  @PrimaryColumn("text")
+  @PrimaryColumn("uuid")
   calendarEventId!: string;
 
   @JoinColumn({ name: "tag_id" })
@@ -32,6 +32,6 @@ export class CalendarEventTag {
   tag?: Relation<Tag>;
 
   /** The tag the event carries. */
-  @PrimaryColumn("text")
+  @PrimaryColumn("uuid")
   tagId!: string;
 }

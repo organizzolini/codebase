@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
 /**
- * One row of the `constellation` table: one of the 88 IAU constellations,
+ * One row of the `constellations` table: one of the 88 IAU constellations,
  * keyed by its three-letter designation.
  */
-@Entity({ name: "constellation" })
+@Entity()
 export class Constellation {
   /** The IAU designation, such as `UMa`. */
   @PrimaryColumn("text")

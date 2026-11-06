@@ -4,13 +4,13 @@
     "@nestjs/common": "catalog:",
     "@nestjs/typeorm": "catalog:",
     "moment-timezone": "catalog:",
+    "pg": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
     "typeorm": "catalog:"
   },
   "devDependencies": {
     "@golevelup/ts-vitest": "catalog:",
-    "@nestjs/config": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",

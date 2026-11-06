@@ -21,7 +21,7 @@ export default {
    * stack describes a tool's output rather than anything a person
    * structured; `lexico-entities` excludes its migrations the same way.
    */
-  exclude: ["src/modules/database/migrations/**"],
+  exclude: ["src/modules/caelundas-database/migrations/**"],
   limits: {
     maximumBreadth: 1,
     maximumDepth: 2,

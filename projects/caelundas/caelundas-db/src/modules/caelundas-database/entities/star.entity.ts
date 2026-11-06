@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
 /**
- * One row of the `star` table: a star of the HYG catalog the night sky draws,
+ * One row of the `stars` table: a star of the HYG catalog the night sky draws,
  * keyed by its Hipparcos number, at J2000.
  */
-@Entity({ name: "star" })
+@Entity()
 export class Star {
   /** The B−V color index, which sets the star's color. */
   @Column("real")
