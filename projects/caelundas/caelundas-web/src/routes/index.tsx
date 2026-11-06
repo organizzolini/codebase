@@ -45,8 +45,8 @@ import { useCalendarSearch } from "../hooks/use-calendar-search/use-calendar-sea
  * The landing page.
  */
 // The calendar of astronomical events reads only in the browser: the static
-// build renders a bare shell ahead of time, and the database lives in a
-// worker. A first load that takes longer than a moment shows a skeleton, and
+// build renders a bare shell ahead of time, and the events come from the
+// Caelundas API. A first load that takes longer than a moment shows a skeleton, and
 // a failed one an error.
 //
 // Every later load, a move to another day, view or filter, reloads in the
@@ -69,15 +69,12 @@ export const Route = createFileRoute("/")({
   ssr: false,
   validateSearch: validateCalendarSearch,
 
-  loader: async ({ context, location, preload }) => {
+  loader: async ({ location, preload }) => {
     if (!preload) {
       loadedKeys.current = getCalendarReloadKey(location.search);
     }
 
-    return loadCalendar(
-      context.eventsDatabase,
-      validateCalendarSearch(location.search),
-    );
+    return loadCalendar(validateCalendarSearch(location.search));
   },
 });
 
@@ -112,7 +109,7 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 // notice over the calendar says why.
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { colorBy, dataset, emptiness, events, facets, grouping } =
+  const { collections, colorBy, dataset, emptiness, events, facets, grouping } =
     Route.useLoaderData();
   // The calendar's own search only: structural sharing hands back the same
   // object when a sky key alone changed, so the page is not rendered again.
@@ -184,7 +181,7 @@ function IndexPage(): ReactNode {
           filters={
             <CalendarFilters
               className="contents"
-              facets={facets}
+              collections={collections}
               fields={fields}
               filter={filter}
               onFilterChange={handleFilterChange}

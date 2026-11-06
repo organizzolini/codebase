@@ -5,7 +5,7 @@ import { CalendarSymbolsContext } from "../../hooks/use-calendar-search/calendar
 
 import { CalendarEventChip } from "./calendar-event-chip";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 
 const EVENT: CalendarEventRecord = {
   color: null,

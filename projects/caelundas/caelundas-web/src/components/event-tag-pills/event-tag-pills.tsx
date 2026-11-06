@@ -1,6 +1,6 @@
 import { getTagColor } from "./calendar-tag-colors.utilities";
 
-import type { CalendarEventTag } from "../events-calendar/events-database.types";
+import type { CalendarEventTag } from "../events-calendar/calendar-records.types";
 import type { CSSProperties, ReactNode } from "react";
 
 // 🔖 Type

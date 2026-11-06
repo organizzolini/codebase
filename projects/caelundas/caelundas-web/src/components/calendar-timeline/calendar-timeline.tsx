@@ -35,7 +35,7 @@ import type { CalendarNavigation } from "../calendar-navigation-group/calendar-n
 import type {
   CalendarEventRecord,
   EventFacet,
-} from "../events-calendar/events-database.types";
+} from "../events-calendar/calendar-records.types";
 import type { TimelineLayout } from "./calendar-timeline-lanes.types";
 import type { TimelineBar } from "./calendar-timeline.types";
 import type { GanttRenderEventProps, GanttScale } from "@codebase/presentation";

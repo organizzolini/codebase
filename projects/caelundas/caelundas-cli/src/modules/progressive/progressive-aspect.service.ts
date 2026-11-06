@@ -6,7 +6,7 @@ import { LoggerService } from "@codebase/observability";
 import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { bodyDisplayName } from "../caelundas/caelundas.types";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { TypedAspectParts } from "./progressive.types";
 
 /**

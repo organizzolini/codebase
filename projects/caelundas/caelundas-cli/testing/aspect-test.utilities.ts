@@ -3,7 +3,7 @@ import moment, { type Moment } from "moment-timezone";
 import { bodies } from "../src/modules/caelundas/caelundas.constants";
 
 import type { Body } from "../src/modules/caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../src/modules/ephemeris/ephemeris.types";
 
 /**

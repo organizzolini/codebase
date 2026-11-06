@@ -8,7 +8,7 @@ import {
   MINUTE_MILLISECONDS,
 } from "./calendar-clusters.constants";
 
-import type { CalendarEventRecord } from "../../components/events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../../components/events-calendar/calendar-records.types";
 import type {
   ClusteredEvents,
   ClusterOptions,
