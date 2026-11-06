@@ -22,8 +22,8 @@ interface SchemaTable {
   table: string;
 }
 
-describe("the caelundas entities", () => {
-  const directory = mkdtempSync(path.join(tmpdir(), "caelundas-entities-"));
+describe("the caelundas database", () => {
+  const directory = mkdtempSync(path.join(tmpdir(), "caelundas-db-"));
   let dataSource: DataSource;
 
   beforeAll(async () => {

@@ -56,3 +56,28 @@ export const EVICTION_INTERVAL_MILLISECONDS = 60 * 60 * 1000;
 
 /** The highest port number there is. */
 export const MAXIMUM_PORT = 65_535;
+
+/** The environment variable naming the bucket's S3 endpoint, such as `https://us-iad-18.linodeobjects.com`. */
+export const REMOTE_ENDPOINT_KEY = "NX_SHARED_CACHE_REMOTE_ENDPOINT";
+
+/** The environment variable naming the bucket. */
+export const REMOTE_BUCKET_KEY = "NX_SHARED_CACHE_REMOTE_BUCKET";
+
+/** The environment variable naming the bucket's signing region. */
+export const REMOTE_REGION_KEY = "NX_SHARED_CACHE_REMOTE_REGION";
+
+/** The environment variable holding the access key id; a read-only key keeps the bucket read-only. */
+export const REMOTE_ACCESS_KEY_ID_KEY = "NX_SHARED_CACHE_REMOTE_ACCESS_KEY_ID";
+
+/** The environment variable holding the secret access key. */
+export const REMOTE_SECRET_ACCESS_KEY_KEY =
+  "NX_SHARED_CACHE_REMOTE_SECRET_ACCESS_KEY";
+
+/** The environment variable that, set to `true`, lets the server upload to the bucket. */
+export const REMOTE_WRITABLE_KEY = "NX_SHARED_CACHE_REMOTE_WRITABLE";
+
+/** Where in the bucket entries live, so the bucket can hold other things too. */
+export const REMOTE_PREFIX = "nx";
+
+/** How long one request to the bucket may take before it counts as a miss. */
+export const REMOTE_TIMEOUT_MILLISECONDS = 30_000;

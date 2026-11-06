@@ -7,7 +7,7 @@ import {
 
 /**
  * The `DataSource` the TypeORM command line reads for
- * `nx run caelundas-entities:migration:*`, built from the same options as the
+ * `nx run caelundas-db:migration:*`, built from the same options as the
  * runtime module so a generated migration matches what the applications
  * expect. It reads only `CAELUNDAS_SQLITE_DATABASE`, which names the file,
  * `caelundas.sqlite` in the working directory by default, and never

@@ -1,4 +1,4 @@
-# 🌌 Caelundas Entities
+# 🌌 Caelundas Database
 
 **The calendar's shape.** The shared TypeORM schema for
 [caelundas-cli](../caelundas-cli/README.md) and caelundas-api.
@@ -9,7 +9,7 @@ migration arrive in the pull request that follows.
 ## Test
 
 ```bash
-nx run caelundas-entities:vitest
+nx run caelundas-db:vitest
 ```
 
 ## 👔 Conformetry

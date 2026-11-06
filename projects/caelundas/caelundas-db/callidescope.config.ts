@@ -1,7 +1,7 @@
 import { projectDefaults } from "../../../configuration/callidescope.config.js";
 
 /**
- * What caelundas-entities is held to, measured rather than assumed.
+ * What caelundas-db is held to, measured rather than assumed.
  *
  * Two frames of depth: `DatabaseService.refreshReadModel` runs its
  * statements inside the transaction callback it hands to the entity manager.

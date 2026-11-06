@@ -1,14 +1,14 @@
 {
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "name": "caelundas-entities",
+  "name": "caelundas-db",
   "projectType": "library",
-  "sourceRoot": "projects/caelundas/caelundas-entities",
+  "sourceRoot": "projects/caelundas/caelundas-db",
   "tags": [
     "domain:caelundas",
     "framework:nestjs",
     "framework:typeorm",
     "language:typescript",
-    "name:caelundas-entities",
+    "name:caelundas-db",
     "type:package"
   ],
   "targets": {
@@ -18,14 +18,14 @@
         "assets": [
           {
             "glob": "README.md",
-            "input": "projects/caelundas/caelundas-entities",
+            "input": "projects/caelundas/caelundas-db",
             "output": "."
           }
         ],
         "generatePackageJson": false,
-        "main": "projects/caelundas/caelundas-entities/src/index.ts",
-        "outputPath": "projects/caelundas/caelundas-entities/dist",
-        "tsConfig": "projects/caelundas/caelundas-entities/tsconfig.build.json"
+        "main": "projects/caelundas/caelundas-db/src/index.ts",
+        "outputPath": "projects/caelundas/caelundas-db/dist",
+        "tsConfig": "projects/caelundas/caelundas-db/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },
