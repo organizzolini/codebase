@@ -25,7 +25,7 @@ export class CalendarEventEntity {
   durationMinutes!: number;
 
   @Field(() => Date, { description: "When the event ends, as an instant." })
-  end!: Date;
+  end!: Date | string;
 
   @Field(() => ID)
   id!: string;
@@ -37,7 +37,7 @@ export class CalendarEventEntity {
   location!: null | string;
 
   @Field(() => Date, { description: "When the event starts, as an instant." })
-  start!: Date;
+  start!: Date | string;
 
   @Field(() => String, {
     description:

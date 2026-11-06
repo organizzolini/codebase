@@ -10,8 +10,8 @@ export class EventsWindowInput {
   @Field(() => Date, {
     description: "The moment the window stops at, which it does not include.",
   })
-  end!: Date;
+  end!: Date | string;
 
   @Field(() => Date, { description: "The first moment the window includes." })
-  start!: Date;
+  start!: Date | string;
 }

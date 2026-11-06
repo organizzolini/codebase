@@ -10,6 +10,7 @@ import {
   facetRowSchema,
   FACETS_SQL,
 } from "./events.constants";
+import { toIsoString } from "./events.utilities";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
 import type { EventFacetEntity } from "./event-facet.entities";
@@ -54,7 +55,7 @@ export class EventsService {
   ): Promise<CalendarEventEntity[]> {
     const rows = await this.select(
       EVENTS_IN_WINDOW_SQL,
-      [window.end.toISOString(), window.start.toISOString()],
+      [toIsoString(window.end), toIsoString(window.start)],
       eventRowSchema,
     );
 
@@ -77,7 +78,10 @@ export class EventsService {
   ): Promise<EventFacetEntity[]> {
     const rows = await this.select(
       FACETS_SQL,
-      [window?.end.toISOString() ?? null, window?.start.toISOString() ?? null],
+      [
+        window === undefined ? null : toIsoString(window.end),
+        window === undefined ? null : toIsoString(window.start),
+      ],
       facetRowSchema,
     );
     const facets = new Map<string, EventFacetEntity>();

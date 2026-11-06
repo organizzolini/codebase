@@ -14,12 +14,12 @@ export class EventsDatasetEntity {
   @Field(() => Date, {
     description: "The end of the latest event, as an instant.",
   })
-  end!: Date;
+  end!: Date | string;
 
   @Field(() => Date, {
     description: "The start of the earliest event, as an instant.",
   })
-  start!: Date;
+  start!: Date | string;
 
   @Field(() => String, {
     description:
