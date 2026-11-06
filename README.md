@@ -312,6 +312,7 @@ The workspace's dependency graph, exported by [codependix](projects/ic-suite/cod
 graph LR
   affirmancy["affirmancy"]
   caelundas_cli["caelundas-cli"]
+  caelundas_db["caelundas-db"]
   caelundas_web["caelundas-web"]
   callidescope_agents["callidescope-agents"]
   callidescope_cli["callidescope-cli"]
@@ -380,6 +381,7 @@ graph LR
   validation["validation"]
   caelundas_cli --> observability
   caelundas_cli --> persistence
+  caelundas_db --> persistence
   caelundas_web --> presentation
   callidescope_cli --> callidescope_configuration
   callidescope_cli --> callidescope_core
@@ -560,6 +562,9 @@ graph LR
   module_caelundas_cli_TripleAspectsModule["caelundas-cli/TripleAspectsModule"]
   module_caelundas_cli_TwilightsModule["caelundas-cli/TwilightsModule"]
   module_caelundas_cli_TypeOrmModule["caelundas-cli/TypeOrmModule"]
+  module_caelundas_db_CaelundasDatabaseModule["caelundas-db/CaelundasDatabaseModule"]
+  module_caelundas_db_PostgresqlModule["caelundas-db/PostgresqlModule"]
+  module_caelundas_db_TypeOrmModule["caelundas-db/TypeOrmModule"]
   module_callidescope_cli_AddressLookupModule["callidescope-cli/AddressLookupModule"]
   module_callidescope_cli_AddressReportModule["callidescope-cli/AddressReportModule"]
   module_callidescope_cli_BreadthModule["callidescope-cli/BreadthModule"]
@@ -1274,6 +1279,9 @@ graph LR
   module_caelundas_cli_TwilightsModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_TwilightsModule --> module_caelundas_cli_MathModule
   module_caelundas_cli_TwilightsModule --> module_caelundas_cli_ProgressiveUtilitiesModule
+  module_caelundas_db_CaelundasDatabaseModule --> module_caelundas_db_PostgresqlModule
+  module_caelundas_db_CaelundasDatabaseModule --> module_caelundas_db_TypeOrmModule
+  module_caelundas_db_PostgresqlModule --> module_caelundas_db_TypeOrmModule
   module_callidescope_cli_AddressLookupModule --> module_callidescope_cli_CallablesModule
   module_callidescope_cli_AddressLookupModule --> module_callidescope_cli_CallidescopeModule
   module_callidescope_cli_AddressLookupModule --> module_callidescope_cli_ConfigurationModule
@@ -2521,6 +2529,35 @@ graph LR
   file_caelundas_cli_testing_temporary_database_types_ts["caelundas-cli/testing/temporary-database.types.ts"]
   file_caelundas_cli_testing_temporary_database_utilities_ts["caelundas-cli/testing/temporary-database.utilities.ts"]
   file_caelundas_cli_vitest_config_ts["caelundas-cli/vitest.config.ts"]
+  file_caelundas_db_callidescope_config_ts["caelundas-db/callidescope.config.ts"]
+  file_caelundas_db_codependix_config_ts["caelundas-db/codependix.config.ts"]
+  file_caelundas_db_codometer_config_ts["caelundas-db/codometer.config.ts"]
+  file_caelundas_db_coinagerie_config_ts["caelundas-db/coinagerie.config.ts"]
+  file_caelundas_db_eslint_config_ts["caelundas-db/eslint.config.ts"]
+  file_caelundas_db_src_index_ts["caelundas-db/src/index.ts"]
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_constants_ts["caelundas-db/src/modules/caelundas-database/caelundas-database.constants.ts"]
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_integration_test_ts["caelundas-db/src/modules/caelundas-database/caelundas-database.module.integration.test.ts"]
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_ts["caelundas-db/src/modules/caelundas-database/caelundas-database.module.ts"]
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_integration_test_ts["caelundas-db/src/modules/caelundas-database/caelundas-database.service.integration.test.ts"]
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_ts["caelundas-db/src/modules/caelundas-database/caelundas-database.service.ts"]
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_unit_test_ts["caelundas-db/src/modules/caelundas-database/caelundas-database.service.unit.test.ts"]
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_types_ts["caelundas-db/src/modules/caelundas-database/caelundas-database.types.ts"]
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_utilities_ts["caelundas-db/src/modules/caelundas-database/caelundas-database.utilities.ts"]
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_utilities_unit_test_ts["caelundas-db/src/modules/caelundas-database/caelundas-database.utilities.unit.test.ts"]
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts["caelundas-db/src/modules/caelundas-database/data-source.constants.ts"]
+  file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_derived_time_entity_ts["caelundas-db/src/modules/caelundas-database/entities/calendar-event-derived-time.entity.ts"]
+  file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_tag_node_entity_ts["caelundas-db/src/modules/caelundas-database/entities/calendar-event-tag-node.entity.ts"]
+  file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_tag_entity_ts["caelundas-db/src/modules/caelundas-database/entities/calendar-event-tag.entity.ts"]
+  file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_entity_ts["caelundas-db/src/modules/caelundas-database/entities/calendar-event.entity.ts"]
+  file_caelundas_db_src_modules_caelundas_database_entities_constellation_line_entity_ts["caelundas-db/src/modules/caelundas-database/entities/constellation-line.entity.ts"]
+  file_caelundas_db_src_modules_caelundas_database_entities_constellation_entity_ts["caelundas-db/src/modules/caelundas-database/entities/constellation.entity.ts"]
+  file_caelundas_db_src_modules_caelundas_database_entities_star_entity_ts["caelundas-db/src/modules/caelundas-database/entities/star.entity.ts"]
+  file_caelundas_db_src_modules_caelundas_database_entities_tag_node_entity_ts["caelundas-db/src/modules/caelundas-database/entities/tag-node.entity.ts"]
+  file_caelundas_db_src_modules_caelundas_database_entities_tag_entity_ts["caelundas-db/src/modules/caelundas-database/entities/tag.entity.ts"]
+  file_caelundas_db_src_modules_caelundas_database_migrations_1793990506900_migration_ts["caelundas-db/src/modules/caelundas-database/migrations/1793990506900-migration.ts"]
+  file_caelundas_db_testing_mocks_ts["caelundas-db/testing/mocks.ts"]
+  file_caelundas_db_testing_setup_ts["caelundas-db/testing/setup.ts"]
+  file_caelundas_db_vitest_config_ts["caelundas-db/vitest.config.ts"]
   file_caelundas_web_callidescope_config_ts["caelundas-web/callidescope.config.ts"]
   file_caelundas_web_codometer_config_ts["caelundas-web/codometer.config.ts"]
   file_caelundas_web_coinagerie_config_ts["caelundas-web/coinagerie.config.ts"]
@@ -6194,6 +6231,7 @@ graph LR
   file_persistence_src_modules_postgresql_postgresql_container_utilities_ts["persistence/src/modules/postgresql/postgresql-container.utilities.ts"]
   file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts["persistence/src/modules/postgresql/postgresql-testing.utilities.integration.test.ts"]
   file_persistence_src_modules_postgresql_postgresql_constants_ts["persistence/src/modules/postgresql/postgresql.constants.ts"]
+  file_persistence_src_modules_postgresql_postgresql_constants_unit_test_ts["persistence/src/modules/postgresql/postgresql.constants.unit.test.ts"]
   file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts["persistence/src/modules/postgresql/postgresql.module.integration.test.ts"]
   file_persistence_src_modules_postgresql_postgresql_module_ts["persistence/src/modules/postgresql/postgresql.module.ts"]
   file_persistence_src_modules_postgresql_postgresql_service_ts["persistence/src/modules/postgresql/postgresql.service.ts"]
@@ -8069,6 +8107,48 @@ graph LR
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_testing_reference_longitudes_constants_ts
   file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_testing_temporary_database_types_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_constants_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_ts --> file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_module_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_derived_time_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_tag_node_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_tag_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_entities_tag_node_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_integration_test_ts --> file_caelundas_db_src_modules_caelundas_database_entities_tag_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_constants_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_unit_test_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_constants_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_unit_test_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_service_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_utilities_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_constants_ts
+  file_caelundas_db_src_modules_caelundas_database_caelundas_database_utilities_unit_test_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_utilities_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_constants_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_derived_time_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_tag_node_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_tag_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_entities_constellation_line_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_entities_constellation_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_entities_star_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_entities_tag_node_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_entities_tag_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_db_src_modules_caelundas_database_migrations_1793990506900_migration_ts
+  file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_tag_node_entity_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_utilities_ts
+  file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_tag_entity_ts --> file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_tag_entity_ts --> file_caelundas_db_src_modules_caelundas_database_entities_tag_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_entity_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_constants_ts
+  file_caelundas_db_src_modules_caelundas_database_entities_calendar_event_entity_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_utilities_ts
+  file_caelundas_db_src_modules_caelundas_database_entities_constellation_line_entity_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_utilities_ts
+  file_caelundas_db_src_modules_caelundas_database_entities_constellation_line_entity_ts --> file_caelundas_db_src_modules_caelundas_database_entities_constellation_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_entities_constellation_line_entity_ts --> file_caelundas_db_src_modules_caelundas_database_entities_star_entity_ts
+  file_caelundas_db_src_modules_caelundas_database_entities_star_entity_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_utilities_ts
+  file_caelundas_db_src_modules_caelundas_database_entities_tag_node_entity_ts --> file_caelundas_db_src_modules_caelundas_database_caelundas_database_utilities_ts
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx --> file_caelundas_web_src_components_calendar_agenda_calendar_agenda_constants_ts
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx --> file_caelundas_web_src_components_calendar_agenda_calendar_agenda_types_ts
   file_caelundas_web_src_components_calendar_agenda_agenda_row_content_tsx --> file_caelundas_web_src_components_calendar_agenda_calendar_agenda_utilities_ts
@@ -12964,7 +13044,6 @@ graph LR
   file_lexico_cli_src_modules_words_words_service_unit_test_ts --> file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_constants_ts
   file_lexico_cli_src_modules_words_words_service_unit_test_ts --> file_lexico_cli_src_modules_words_words_service_ts
   file_lexico_cli_src_modules_words_words_service_unit_test_ts --> file_lexico_cli_testing_mocks_ts
-  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_database_database_constants_ts
   file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_database_migrations_1791164926316_migration_ts
   file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_database_migrations_1792000000000_migration_ts
   file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_adjectival_form_entity_ts
@@ -12995,9 +13074,7 @@ graph LR
   file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_literature_text_entity_ts
   file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_literature_token_entity_ts
   file_lexico_entities_src_modules_database_data_source_constants_unit_test_ts --> file_lexico_entities_src_modules_database_data_source_constants_ts
-  file_lexico_entities_src_modules_database_data_source_constants_unit_test_ts --> file_lexico_entities_src_modules_database_database_constants_ts
   file_lexico_entities_src_modules_database_database_module_ts --> file_lexico_entities_src_modules_database_data_source_constants_ts
-  file_lexico_entities_src_modules_database_database_module_ts --> file_lexico_entities_src_modules_database_database_constants_ts
   file_lexico_entities_src_modules_database_database_module_ts --> file_lexico_entities_src_modules_database_database_service_ts
   file_lexico_entities_src_modules_database_database_service_unit_test_ts --> file_lexico_entities_src_modules_database_database_service_ts
   file_lexico_entities_src_modules_database_database_types_ts --> file_lexico_entities_src_modules_database_database_constants_ts
@@ -13063,7 +13140,6 @@ graph LR
   file_lexico_entities_src_modules_entities_entities_constants_unit_test_ts --> file_lexico_entities_src_modules_entities_entities_constants_ts
   file_lexico_entities_src_modules_entities_entities_module_ts --> file_lexico_entities_src_modules_entities_entities_service_ts
   file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_database_data_source_constants_ts
-  file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_database_database_constants_ts
   file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_entities_literature_author_entity_ts
   file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_entities_literature_line_entity_ts
   file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_entities_literature_text_entity_ts
@@ -15238,6 +15314,7 @@ graph LR
   file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_widget_entity_ts
   file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_persistence_testing_types_ts
   file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_persistence_testing_utilities_ts
+  file_persistence_src_modules_postgresql_postgresql_constants_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
   file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
   file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
   file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_module_ts
@@ -15256,6 +15333,7 @@ graph LR
   file_persistence_src_modules_postgresql_postgresql_types_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
   file_persistence_src_modules_postgresql_postgresql_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
   file_persistence_src_modules_postgresql_postgresql_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
   file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
   file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
   file_persistence_src_modules_sqlite_entities_creatable_entity_ts --> file_persistence_src_modules_sqlite_entities_identifiable_entity_ts
@@ -16178,36 +16256,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-60154-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.64_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-162-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-596-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-72575-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-5.08_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-170-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-693-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-589-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-132-0ea5e9?style=flat-square)
-![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-686-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-169-0ea5e9?style=flat-square)
+![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-9-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-232-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1367-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-269-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1618-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-180-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-59-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-193-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2573-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-716-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-2288-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-1001-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-2905-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2777-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-770-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-2932-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5413-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-209-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-61-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-225-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-3190-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-985-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-3110-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-1065-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3453-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-3159-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-944-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3339-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-6150-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -16227,31 +16305,31 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### JSON
 
-![JSON Files](https://img.shields.io/badge/JSON_Files-52-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7961-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-1252-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-461-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-2976-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2763-16a34a?style=flat-square)
-![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-45-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-202-0ea5e9?style=flat-square)
+![JSON Files](https://img.shields.io/badge/JSON_Files-55-a16207?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-8102-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-1290-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-469-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-3071-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2830-16a34a?style=flat-square)
+![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-46-059669?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-210-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1702-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4723-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1726-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4845-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3506-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3512-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-466-7c3aed?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-467-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-91-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1670-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3367-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1672-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3373-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-685-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-687-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -16318,16 +16396,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-65-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-67-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-46-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-69-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-63-db2777?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-70-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-90-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-50-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-84-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-75-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-9-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-169-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-197-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-5-7c3aed?style=flat-square)
-![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-6-0284c7?style=flat-square)
+![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-7-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
 ![HCL Comment Budget](https://img.shields.io/badge/HCL_Comment_Budget-0-ea580c?style=flat-square)
 ![Python Comment Budget](https://img.shields.io/badge/Python_Comment_Budget-0-db2777?style=flat-square)
@@ -16362,24 +16440,24 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-144-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27896-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-846-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-747-a78bfa?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-147-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-28749-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-140-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-864-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-779-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-82-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6530-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-967-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4726-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6650-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-978-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4789-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-60-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-284-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2705-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-948-059669?style=flat-square)
-![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-568-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15021-ef4444?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-290-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2859-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-964-059669?style=flat-square)
+![Images](https://img.shields.io/badge/Images-1177-10b981?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-590-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15742-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -16392,10 +16470,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 8012 |
-| Files | 2694 |
-| Calls traced | 8715 |
-| Call stacks | 2217 |
+| Callables | 8032 |
+| Files | 2716 |
+| Calls traced | 8716 |
+| Call stacks | 2236 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
 | Unfollowable calls | 491 |
@@ -16404,11 +16482,12 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
+| `compliance` | 8 | 8 | 0 | 9 |
 | `integration` | 6 | 6 | 0 | 8 |
+| `projects/caelundas/caelundas-db` | 2 | 2 | 0 | 1 |
 | `projects/caelundas/caelundas-web` | 6 | 6 | 0 | 8 |
 | `projects/common/observability` | 4 | 4 | 0 | 2 |
 | `projects/common/persistence` | 7 | 7 | 0 | 7 |
-| `compliance` | 8 | 8 | 0 | 9 |
 | `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
 | `projects/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
 | `projects/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |
@@ -16466,7 +16545,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 21 |
+| 0 — at limit | 22 |
 | 1 | 2 |
 | 2–3 | 5 |
 | 4+ | 12 |

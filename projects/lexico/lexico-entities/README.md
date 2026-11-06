@@ -234,7 +234,7 @@ Call stacks traced through `projects/lexico/lexico-entities`, deepest first. Eac
 
 | Measure | Value |
 | --- | --- |
-| Callables | 20 |
+| Callables | 18 |
 | Files | 44 |
 | Calls traced | 0 |
 | Call stacks | 0 |
@@ -354,7 +354,6 @@ graph LR
   file_testing_entity_definition_assertions_ts["testing/entity-definition-assertions.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_modules_database_data_source_constants_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_database_migrations_1791164926316_migration_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_database_migrations_1792000000000_migration_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_adjectival_form_entity_ts
@@ -385,9 +384,7 @@ graph LR
   file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_literature_text_entity_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_literature_token_entity_ts
   file_src_modules_database_data_source_constants_unit_test_ts --> file_src_modules_database_data_source_constants_ts
-  file_src_modules_database_data_source_constants_unit_test_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_database_module_ts --> file_src_modules_database_data_source_constants_ts
-  file_src_modules_database_database_module_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_database_module_ts --> file_src_modules_database_database_service_ts
   file_src_modules_database_database_service_unit_test_ts --> file_src_modules_database_database_service_ts
   file_src_modules_database_database_types_ts --> file_src_modules_database_database_constants_ts
@@ -453,7 +450,6 @@ graph LR
   file_src_modules_entities_entities_constants_unit_test_ts --> file_src_modules_entities_entities_constants_ts
   file_src_modules_entities_entities_module_ts --> file_src_modules_entities_entities_service_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_database_data_source_constants_ts
-  file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_entities_literature_author_entity_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_entities_literature_line_entity_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_entities_literature_text_entity_ts
@@ -485,14 +481,14 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4952-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-212.24_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4910-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-210.47_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-54-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-26.47_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-26.00_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
@@ -501,24 +497,24 @@ graph LR
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-2-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-151-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-102-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-99-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
 ![Test Files](https://img.shields.io/badge/Test_Files-6-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-13-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-36-7c3aed?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-11-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-35-7c3aed?style=flat-square)
 ![Functions](https://img.shields.io/badge/Functions-195-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-20-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-187-4ade80?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-18-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-185-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-28-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-151-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-211-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-111-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-131-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-232-475569?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-144-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-205-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-110-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-128-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-224-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-3-ca8a04?style=flat-square)
 
 ### Python
@@ -539,16 +535,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-151-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-148-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-41-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-10-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-102-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-77-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-99-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-74-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-8-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-31-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-137-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-134-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML
