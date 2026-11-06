@@ -1247,101 +1247,20 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run persistence:coinagerie-check:write`.
 
-- **activity**:
-- **archive**:
-- **argv**:
-- **back**:
-- **backend**:
-- **bad**:
-- **both**:
-- **breadth**:
-- **clean**:
-- **coerce**:
-- **configurable**:
-- **connect**:
-- **convention**:
-- **creatable**:
-- **db**:
-- **ddl**:
-- **decode**:
-- **deletable**:
-- **delimiter**:
-- **descriptor**:
-- **destroy**:
-- **detail**:
-- **discovery**:
-- **dot**:
-- **down**:
-- **driver**:
-- **dump**:
-- **dynamic**:
-- **ensure**:
-- **err**:
-- **exception**:
-- **explain**:
-- **gadget**:
-- **greet**:
-- **hold**:
-- **identifiable**:
-- **initialization**:
-- **inject**:
-- **invocation**:
-- **latitude**:
-- **longitude**:
-- **mask**:
-- **migration1767225600001**:
-- **ms**:
-- **mtime**:
-- **noun**:
-- **orm**:
-- **parts1767225600001**:
-- **pathname**:
-- **persistence**:
-- **pgdatabase**:
-- **pghost**:
-- **pgpassfile**:
-- **pgpassword**:
-- **pgport**:
-- **pgservice**:
-- **pguser**:
-- **pid**:
-- **preflight**:
-- **qualify**:
-- **random**:
-- **refusal**:
-- **refuse**:
-- **role**:
-- **roll**:
-- **sample**:
-- **save**:
-- **say**:
-- **several**:
-- **snake**:
-- **soft**:
-- **sprocket**:
-- **sprockets1767225600002**:
-- **stale**:
-- **stdin**:
-- **stray**:
-- **succeed**:
-- **synchronize**:
-- **terminal**:
-- **trace**:
-- **unavailable**:
-- **unqualified**:
-- **unreachable**:
-- **updatable**:
-- **upper**:
-- **uppercase**:
-- **uuid**:
-- **verb**:
-- **want**:
-- **whole**:
-- **widget**:
-- **widgets1767225600000**:
-- **within**:
-- **writable**:
-- **wrong**:
-- **year**:
+- **breadth**: The number of direct calls a callable makes, measured by callidescope and reported in this project's Breadth table.
+- **convention**: The naming and log-message rules that the package's entities, commands, and tests follow, checked by tests and the lint rules.
+- **creatable**: The entity base layer that adds create-time columns, sitting second in the identifiable, creatable, updatable, deletable chain.
+- **db**: A stray fragment for database; this package's code and docs use the full word, so the headword carries no local role.
+- **deletable**: The entity base layer that adds soft-delete support, last in the identifiable, creatable, updatable, deletable chain.
+- **explain**: Builds the human-readable reason a command refused to run, as ExportCommand.explain does for missing dump tables.
+- **identifiable**: The entity base layer that adds a primary id, first in the identifiable, creatable, updatable, deletable chain.
+- **latitude**: An example geographic column that must survive a round trip exactly, so the package stores it as text rather than a float.
+- **longitude**: An example geographic column that must survive a round trip exactly, so the package stores it as text rather than a float.
+- **refusal**: A deliberate, explained refusal to run, such as truncate refusing a table that another table still references.
+- **role**: The Postgres role, the database user identity that connections and grants run as, as in the README context table.
+- **trace**: The callidescope call-stack trace that measures depth, with config notes on which callees the trace does not follow.
+- **unqualified**: A table name without a schema prefix, which resolves in the --schema option's search path rather than a fixed schema.
+- **updatable**: The entity base layer that adds update tracking columns, third in the identifiable, creatable, updatable, deletable chain.
+- **verb**: The verb in a log message that the export log convention test expects after the subject emoji, such as exists.
 
 <!-- coinagerie:end -->

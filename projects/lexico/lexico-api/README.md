@@ -1859,207 +1859,26 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run lexico-api:coinagerie-check:write`.
 
-- **ab**:
-- **accusative**:
-- **adapter**:
-- **adjectival**:
-- **adjective**:
-- **adverb**:
-- **aeneid**:
-- **agreement**:
-- **ama**:
-- **amare**:
-- **amo**:
-- **amor**:
-- **arma**:
-- **assemble**:
-- **back**:
-- **backward**:
-- **batch**:
-- **bellum**:
-- **bellus**:
-- **book**:
-- **caesar**:
-- **canto**:
-- **carmina**:
-- **catullus**:
-- **cicero**:
-- **claim**:
-- **clean**:
-- **coerce**:
-- **combine**:
-- **condition**:
-- **configurable**:
-- **conjugation**:
-- **cor**:
-- **corpus**:
-- **cut**:
-- **db**:
-- **declension**:
-- **decline**:
-- **decode**:
-- **decompose**:
-- **decomposition**:
-- **degree**:
-- **deletable**:
-- **diacritic**:
-- **diligo**:
-- **direction**:
-- **disambiguator**:
-- **distance**:
-- **driver**:
-- **dummy**:
-- **dynamic**:
-- **eclogue**:
-- **edo**:
-- **enclitic**:
-- **english**:
-- **era**:
-- **est**:
-- **et**:
-- **etymology**:
-- **everything**:
-- **exact**:
-- **flaccus**:
-- **float**:
-- **form2**:
-- **form3**:
-- **frequency**:
-- **fresh**:
-- **fulltext**:
-- **fuzzy**:
-- **fuzzy0**:
-- **fuzzy1**:
-- **gender**:
-- **genitive**:
-- **georgic**:
-- **gerund**:
-- **grandparent**:
-- **headword**:
-- **healthy**:
-- **hit**:
-- **horace**:
-- **identify**:
-- **imperfect**:
-- **infinitive**:
-- **infinity**:
-- **inflection**:
-- **inject**:
-- **insertion**:
-- **internal**:
-- **introspect**:
-- **invariable**:
-- **land**:
-- **latin**:
-- **laudo**:
-- **lemma**:
-- **lexeme**:
-- **lexeme1**:
-- **lexeme2**:
-- **light**:
-- **literature**:
-- **macron**:
-- **many**:
-- **mean**:
-- **metamorphose**:
-- **middle**:
-- **mismatch**:
-- **mood**:
-- **neither**:
-- **nominal**:
-- **noun**:
-- **nth**:
-- **nullish**:
-- **numeric**:
-- **origin**:
-- **orm**:
-- **orphan**:
-- **outsider**:
-- **ovid**:
-- **pad**:
-- **page1**:
-- **page2**:
-- **page3**:
-- **paginate**:
-- **pagination**:
-- **participle**:
-- **partition**:
-- **passage**:
-- **past**:
-- **payload**:
-- **performance**:
-- **persistence**:
-- **person**:
-- **phoneme**:
-- **phonemic**:
-- **phonetic**:
-- **playground**:
-- **plural**:
-- **prefix0**:
-- **prefix1**:
-- **preposition**:
-- **principal**:
-- **proem**:
-- **pronunciation**:
-- **proper**:
-- **puella**:
-- **punctuation**:
-- **qb**:
-- **ql**:
-- **que**:
-- **quick**:
-- **random**:
-- **rank**:
-- **reader**:
-- **ready**:
-- **relate**:
-- **relation**:
-- **relay**:
-- **repo**:
-- **retyped**:
-- **reverse**:
-- **rosa**:
-- **rosae**:
-- **save**:
-- **seneca**:
-- **si**:
-- **sine**:
-- **single**:
-- **singular**:
-- **slug**:
-- **soft**:
-- **speech**:
-- **stem**:
-- **stranger**:
-- **sub**:
-- **sum**:
-- **summarize**:
-- **supine**:
-- **take**:
-- **term**:
-- **third**:
-- **tier**:
-- **tokenize**:
-- **transform**:
-- **translate**:
-- **translation**:
-- **typename**:
-- **typo**:
-- **uninflected**:
-- **unmatched**:
-- **unshift**:
-- **untranslated**:
-- **uuid**:
-- **valerius**:
-- **variant**:
-- **ve**:
-- **verb**:
-- **verbal**:
-- **vergil**:
-- **violation**:
-- **vir**:
-- **voco**:
-- **voice**:
-- **window**:
+- **batch**: Dataloader term for grouping ID lookups into one query, such as lexemes loaded together in a single batch.
+- **book**: Division of a literary work used as a text locator, such as book one of Vergil's Aeneid in literature fixtures.
+- **corpus**: Fixture collection of literary texts and lines seeded into the database, used by literature search and lookup tests.
+- **cut**: Local name for the page-limit condition that trims a query's rows to the count a page requested.
+- **db**: Suffix of the POSTGRES_DB environment variable, naming the Postgres database the API connects to and tests stub.
+- **degree**: Comparison level of adjectives and adverbs, such as comparative or superlative, modeled on the adverb form entities.
+- **deletable**: Shared base type for soft-deletable rows, exposing id and audit columns through GraphQL types across modules.
+- **disambiguator**: Numeric lexeme field separating homographs that share a headword, such as two entries spelled the same way.
+- **headword**: Dictionary entry form that a search matches first, seeded with English senses and ranked by the search service.
+- **lexeme**: Dictionary entry for a Latin word, the core entity of the lexicon carrying its headword, translations, forms, and pronunciation.
+- **literature**: Domain module for authors, texts, lines, tokens, and passages, the largest area of the lexico API's resolvers and services.
+- **pronunciation**: Lexeme field recording how a word is pronounced, with phonemes, phonetic spelling, and variant data mapped to GraphQL.
+- **quick**: Word in the README Quick Start heading, introducing the short setup steps for running the lexico API locally.
+- **reader**: Readable view of a line, reduced to what a reader can observe; the reader query selects one line for display.
+- **retyped**: Adjective for a GraphQL type whose fields are redeclared as non-null rows, such as LexemeType in the lexico type tests.
+- **stem**: Portion of a word the search matches; a headword is found whole or as a stem with its enclitic split off.
+- **term**: Search input string a user types; fuzzy matching applies only to terms above a shortest allowed length.
+- **translation**: English sense of a lexeme, a Translation entity joined to lexemes and returned in search results and lexeme types.
+- **valerius**: Roman poet named in the literature search corpus fixture, whose texts the corpus lists for search tests.
+- **verb**: Part of speech whose finite forms, such as indicative or subjunctive, are modeled and tested across the search and forms code.
+- **vergil**: Latin poet whose Aeneid, Eclogues, and Georgics seed most literature search and integration test fixtures.
 
 <!-- coinagerie:end -->

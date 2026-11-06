@@ -1277,59 +1277,13 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-cli:coinagerie-check:write`.
 
-- **anchor**:
-- **announce**:
-- **argv**:
-- **baseline**:
-- **breach**:
-- **breadth**:
-- **bundle**:
-- **chdir**:
-- **compression**:
-- **conditional**:
-- **deeper**:
-- **deliver**:
-- **delivery**:
-- **destination**:
-- **discovery**:
-- **dist**:
-- **doc**:
-- **docstring**:
-- **evaluate**:
-- **generic**:
-- **hcl**:
-- **help**:
-- **interpolation**:
-- **ipynb**:
-- **javascript**:
-- **jupyter**:
-- **level1**:
-- **level2**:
-- **level3**:
-- **level4**:
-- **level5**:
-- **level6**:
-- **marker**:
-- **measure**:
-- **measurement**:
-- **notebook**:
-- **paragraph**:
-- **pipeline**:
-- **redistribute**:
-- **scalar**:
-- **selector**:
-- **severity**:
-- **shebang**:
-- **stale**:
-- **staleness**:
-- **statistic**:
-- **symlink**:
-- **thematic**:
-- **thing**:
-- **todo**:
-- **toml**:
-- **unreadable**:
-- **vendor**:
-- **vendored**:
+- **anchor**: The block name, such as codometer, that a README section is keyed by so a rewrite replaces it rather than appending.
+- **baseline**: The previously committed report that a fresh measurement is diffed against when checking for stale reports.
+- **breadth**: The number of distinct callables a function calls directly, reported in the breadth table and gated by a limit.
+- **bundle**: The built JavaScript output that codometer measures for the package, with its size checked against a Bundle limit.
+- **pipeline**: A chain of commands joined with pipe operators, which the Shell analyzer counts as its own construct.
+- **selector**: The matcher in a configured comment or limit entry that names which files, languages, or declarations it covers.
+- **staleness**: The condition of a committed report that differs from a fresh run, kept distinct from a limit breach.
+- **statistic**: A custom measurement counter declared in configuration, keyed by its label and measured for each output.
 
 <!-- coinagerie:end -->

@@ -1,3 +1,25 @@
+## 0.0.4 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-core to 0.0.4
+
+## 0.0.3 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-core to 0.0.3
+
+## 0.0.2 (2026-11-04)
+
+### 🚀 Features
+
+- **coinagerie:** ✨ accept regular expressions in exclude.words ([#2109](https://github.com/organizzolini/codebase/pull/2109))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-core to 0.0.2
+
 ## 0.0.1 (2026-11-04)
 
 ### 🚀 Features

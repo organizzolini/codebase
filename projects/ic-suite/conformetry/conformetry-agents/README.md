@@ -294,8 +294,4 @@ _This project has no internal file imports._
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-agents:coinagerie-check:write`.
 
-- **front**:
-- **matter**:
-- **ship**:
-
 <!-- coinagerie:end -->

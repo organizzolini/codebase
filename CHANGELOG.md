@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.53.3](https://github.com/organizzolini/codebase/compare/v3.53.2...v3.53.3) (2026-11-04)
+
+### ⚡ Performance Improvements
+
+* **integration:** ⚡️ judge every project's spell check from one batched cspell run ([#2113](https://github.com/organizzolini/codebase/issues/2113)) ([300ac43](https://github.com/organizzolini/codebase/commit/300ac435ff0ca7fb237f1aaf8fc2e12e44cc4ff2))
+
+### 📝 Documentation
+
+* **configuration:** 📝 define the glossary words ([#2106](https://github.com/organizzolini/codebase/issues/2106)) ([bec52d7](https://github.com/organizzolini/codebase/commit/bec52d7b9b756e41c8e46936a56a54b4bcc2263c))
+
+## [3.53.2](https://github.com/organizzolini/codebase/compare/v3.53.1...v3.53.2) (2026-11-04)
+
+### ⚡ Performance Improvements
+
+* **codependix:** ⚡️ judge every project from one batched boundary check ([#2111](https://github.com/organizzolini/codebase/issues/2111)) ([8f0ce0b](https://github.com/organizzolini/codebase/commit/8f0ce0ba6502bb7f1439f733b460bf0256726abc))
+* **configuration,integration:** ⚡️ judge every project's knip check from one batched run ([#2112](https://github.com/organizzolini/codebase/issues/2112)) ([3d5f141](https://github.com/organizzolini/codebase/commit/3d5f1413e15b909827d6d95a16774ef5e33fbc72))
+
+## [3.53.1](https://github.com/organizzolini/codebase/compare/v3.53.0...v3.53.1) (2026-11-04)
+
+### ⚡ Performance Improvements
+
+* **callidescope:** ⚡️ gate every project from one batched trace ([#2107](https://github.com/organizzolini/codebase/issues/2107)) ([e10441f](https://github.com/organizzolini/codebase/commit/e10441f9aa2ebd501217c341774cb5515297e265))
+
+## [3.53.0](https://github.com/organizzolini/codebase/compare/v3.52.3...v3.53.0) (2026-11-04)
+
+### ✨ Features
+
+* **coinagerie:** ✨ accept regular expressions in exclude.words ([#2109](https://github.com/organizzolini/codebase/issues/2109)) ([d79fb01](https://github.com/organizzolini/codebase/commit/d79fb0190272300bb7bbde7c7821de0e77770c3f))
+
+## [3.52.3](https://github.com/organizzolini/codebase/compare/v3.52.2...v3.52.3) (2026-11-04)
+
+## [3.52.2](https://github.com/organizzolini/codebase/compare/v3.52.1...v3.52.2) (2026-11-04)
+
 ## [3.52.1](https://github.com/organizzolini/codebase/compare/v3.52.0...v3.52.1) (2026-11-04)
 
 ## [3.52.0](https://github.com/organizzolini/codebase/compare/v3.51.3...v3.52.0) (2026-11-04)

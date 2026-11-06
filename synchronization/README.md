@@ -1336,78 +1336,11 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run synchronization:coinagerie-check:write`.
 
-- **announce**:
-- **bear**:
-- **behavior**:
-- **binary**:
-- **breadth**:
-- **capitalize**:
-- **chdir**:
-- **clean**:
-- **clone**:
-- **collision**:
-- **column1**:
-- **column2**:
-- **comma**:
-- **completion**:
-- **consequence**:
-- **corrupt**:
-- **delegate**:
-- **derive**:
-- **direct**:
-- **dirty**:
-- **discovery**:
-- **down**:
-- **drift**:
-- **dropdown**:
-- **executable**:
-- **explicit**:
-- **filesystem**:
-- **handle**:
-- **hint**:
-- **interpreter**:
-- **invert**:
-- **invocation**:
-- **lock**:
-- **loose**:
-- **machine**:
-- **mark**:
-- **marker**:
-- **maybe**:
-- **mismatch**:
-- **modulus**:
-- **mount**:
-- **multiplier**:
-- **need**:
-- **preserve**:
-- **preset**:
-- **reorder**:
-- **replacement**:
-- **restoration**:
-- **rewrite**:
-- **same**:
-- **scenario**:
-- **selection**:
-- **single**:
-- **slash**:
-- **stale**:
-- **stdio**:
-- **str**:
-- **stream**:
-- **succeed**:
-- **synchronizable**:
-- **synchronize**:
-- **tab**:
-- **temp**:
-- **top**:
-- **track**:
-- **unavailable**:
-- **undeclared**:
-- **upper**:
-- **usage**:
-- **validator**:
-- **vendored**:
-- **verbatim**:
-- **whole**:
+- **breadth**: Callidescope measure of how many direct callees a frame fans out to, gated for every traced project in the workspace.
+- **corrupt**: Fake behavior flag corruptsLockfile that simulates a restore which damages the lockfile, testing the safety check.
+- **preset**: Semantic-release preset configuration whose types list conventional-config appends missing commit types into.
+- **rewrite**: Verb for sync replacing dropdown options, markdown tables, or scope arrays inside marked blocks of source files.
+- **scenario**: Name field for each parameterized test case, such as scenarioName in the conformetry generator command tests.
+- **synchronizable**: Interface implemented by each synchronizer command, such as conformetry generators, so one run can dispatch to all of them.
 
 <!-- coinagerie:end -->

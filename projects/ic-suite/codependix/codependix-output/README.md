@@ -454,39 +454,11 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codependix-output:coinagerie-check:write`.
 
-- **adjacency**:
-- **ambient**:
-- **anchor**:
-- **arrow**:
-- **bf**:
-- **boundary**:
-- **breadth**:
-- **classify**:
-- **combine**:
-- **cycle**:
-- **deliver**:
-- **delivery**:
-- **explore**:
-- **final**:
-- **fresh**:
-- **hint**:
-- **intro**:
-- **know**:
-- **marker**:
-- **mermaid**:
-- **multi**:
-- **neighbor**:
-- **neighborhood**:
-- **queue**:
-- **remainder**:
-- **selection**:
-- **shortest**:
-- **stale**:
-- **subheading**:
-- **subsection**:
-- **tail**:
-- **unmatched**:
-- **verdict**:
-- **violation**:
+- **ambient**: Field of the project-graph inputs listing TypeScript ambient module names, passed empty in unit tests that declare none.
+- **anchor**: Pair of start and end comment markers delimiting a generated section of a Markdown file, which codependix splices in place.
+- **boundary**: Check family that judges dependency graphs against configured rules, implemented by BoundaryCheckModule and its reporting services.
+- **breadth**: Count of direct calls a callable makes, listed in the README breadth table that callidescope reports for each function.
+- **neighborhood**: Mermaid graph of a subject project and its direct dependency neighbors, exported by NeighborhoodModule as the Nx Neighborhood section.
+- **subheading**: Optional third-level heading placed under a Codependix section to group one project's export, passed to the anchors service.
 
 <!-- coinagerie:end -->

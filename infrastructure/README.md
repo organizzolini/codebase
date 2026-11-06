@@ -112,84 +112,10 @@ The `terraform/linode` root imports the state bucket (`organizzolini`, region `u
 
 The words this project uses that the root glossary does not define, regenerated with `nx run infrastructure:coinagerie-check:write`.
 
-- **account**:
-- **acl**:
-- **actor**:
-- **affinity**:
-- **alert**:
-- **annotation**:
-- **approval**:
-- **approve**:
-- **archive**:
-- **assignment**:
-- **autoscaler**:
-- **backend**:
-- **backoff**:
-- **bypass**:
-- **chart**:
-- **claim**:
-- **cluster**:
-- **completion**:
-- **condition**:
-- **destroy**:
-- **dismiss**:
-- **dockerignore**:
-- **down**:
-- **driver**:
-- **dynamic**:
-- **enforcement**:
-- **fullname**:
-- **guardrail**:
-- **healthcheck**:
-- **history**:
-- **jsonencode**:
-- **k8**:
-- **kubernete**:
-- **lifecycle**:
-- **linear**:
-- **lke**:
-- **modelfile**:
-- **mount**:
-- **parallelism**:
-- **period**:
-- **persistence**:
-- **persistent**:
-- **plaintext**:
-- **pod**:
-- **policy**:
-- **pool**:
-- **preset**:
-- **prevent**:
-- **protection**:
-- **provisioner**:
-- **pvc**:
-- **queue**:
-- **rebase**:
-- **recreate**:
-- **region**:
-- **replica**:
-- **restart**:
-- **review**:
-- **ruleset**:
-- **scan**:
-- **selector**:
-- **sensitive**:
-- **signoff**:
-- **slug**:
-- **spec**:
-- **squash**:
-- **stale**:
-- **thread**:
-- **threshold**:
-- **toleration**:
-- **topic**:
-- **ttl**:
-- **unsupported**:
-- **usd**:
-- **visibility**:
-- **vulnerability**:
-- **websocket**:
-- **webui**:
-- **wiki**:
+- **account**: Owner, a user or organization, of the GitHub repository that the github Terraform root manages.
+- **preset**: OpenRouter ranked-model profile named by slug, which the refresh-documentation workflow calls as preset/slug.
+- **selector**: Label pair, name and instance, that matches pods to their Helm release for the Job.
+- **visibility**: Repository setting that makes the GitHub repository public, set to public in the github root.
+- **wiki**: GitHub documentation area for the repository, enabled by has_wiki, separate from the OpenWiki pages.
 
 <!-- coinagerie:end -->

@@ -42,24 +42,8 @@ This project was generated from the [nestjs-service-project](../../configuration
 
 The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-languages:coinagerie-check:write`.
 
-- **assignment**:
-- **bare**:
-- **breadth**:
-- **effect**:
-- **grammar**:
-- **hcl**:
-- **hit**:
-- **lexical**:
-- **quotable**:
-- **reload**:
-- **scan**:
-- **scanner**:
-- **splice**:
-- **syntax**:
-- **tokenize**:
-- **tokenizer**:
-- **toml**:
-- **unmatched**:
-- **unmock**:
+- **breadth**: The maximumBreadth limit in this package's callidescope configuration, capping how many callees one callable may make.
+- **grammar**: The LexicalGrammar object a language constant supplies to the shared scanner, holding its rules and key patterns.
+- **splice**: Array method call in TYPESCRIPT_KEYWORDS that inserts each keyword in sorted position, avoiding toSorted for older libraries.
 
 <!-- coinagerie:end -->

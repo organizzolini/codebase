@@ -1,3 +1,28 @@
+## 0.0.53 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.66
+- Updated codependix-cli to 0.0.67
+
+## 0.0.52 (2026-11-04)
+
+### 🔥 Performance
+
+- **codependix:** ⚡️ judge every project from one batched boundary check ([#2111](https://github.com/organizzolini/codebase/pull/2111))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.65
+- Updated codependix-cli to 0.0.66
+
+## 0.0.51 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.64
+- Updated codependix-cli to 0.0.65
+
 ## 0.0.50 (2026-11-04)
 
 ### 🧱 Updated Dependencies

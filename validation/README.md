@@ -1218,40 +1218,9 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run validation:coinagerie-check:write`.
 
-- **adjacent**:
-- **binary**:
-- **breadth**:
-- **completion**:
-- **daemon**:
-- **delimiter**:
-- **dep**:
-- **directive**:
-- **discovery**:
-- **enter**:
-- **executable**:
-- **expectation**:
-- **family**:
-- **four**:
-- **generation**:
-- **greet**:
-- **healthy**:
-- **internal**:
-- **invocation**:
-- **kebab**:
-- **npmrc**:
-- **nth**:
-- **pid**:
-- **pin**:
-- **stdio**:
-- **stream**:
-- **succeed**:
-- **superproject**:
-- **tail**:
-- **tarball**:
-- **three**:
-- **undocumented**:
-- **unignored**:
-- **userconfig**:
-- **violation**:
+- **breadth**: How many direct callees a function has, measured by callidescope and reported in this README's per-callable table.
+- **directive**: A fixed instruction line printed on failure, naming the next skill to invoke, such as rename-branch or using-git-worktrees.
+- **family**: A toolchain directory grouping several ic-suite packages, such as codometer or conformetry, resolved as one unit.
+- **generation**: The conformetry generator run that scaffolds a fixture project inside the publishable-package consumer before its check.
 
 <!-- coinagerie:end -->

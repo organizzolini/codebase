@@ -61,7 +61,7 @@ export class VocabularyService {
   }
 
   /**
-   * The headwords the configuration leaves out.
+   * The headwords the configuration leaves out by exact word.
    *
    * Its words are folded the way the code's are, so exclusion compares
    * headwords: excluding `service` covers `services`, and excluding
@@ -84,13 +84,26 @@ export class VocabularyService {
     return excluded;
   }
 
+  /** Whether a pattern leaves out a word: it matches the word or its headword. */
+  private matchesPattern(
+    word: string,
+    headword: string,
+    patterns: RegExp[],
+  ): boolean {
+    return patterns.some(
+      (pattern) => pattern.test(word) || pattern.test(headword),
+    );
+  }
+
   // 🌎 Public Methods
 
   /**
    * Every word the configured files use, sorted and de-duplicated.
    *
    * The files a configuration writes a glossary to are left out, so a run
-   * never reads its own output back as vocabulary.
+   * never reads its own output back as vocabulary. A headword a pattern
+   * matches is left out wholly, as a string leaves out a headword: the pattern
+   * is tested against each occurrence's lowercase word and its headword.
    */
   async collect(
     configuration: ResolvedCoinagerieConfiguration,
@@ -102,8 +115,10 @@ export class VocabularyService {
       skip: configuration.outputs.map((output) => output.path),
     });
     const excluded = this.excludedHeadwords(configuration);
+    const patterns = configuration.exclude.patterns;
     const words = new Set<string>();
     const headwords = new Map<string, string>();
+    const patternExcluded = new Set<string>();
 
     // One file at a time: reading every file at once opens them all at once,
     // which exhausts the file descriptors of a large repository.
@@ -118,12 +133,18 @@ export class VocabularyService {
 
         headwords.set(word, headword);
 
+        if (this.matchesPattern(word, headword, patterns)) {
+          patternExcluded.add(headword);
+        }
+
         if (!excluded.has(headword)) {
           words.add(headword);
         }
       }
     }
 
-    return [...words].toSorted();
+    return [...words]
+      .filter((headword) => !patternExcluded.has(headword))
+      .toSorted();
   }
 }

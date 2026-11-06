@@ -797,69 +797,11 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run publication:coinagerie-check:write`.
 
-- **abnormal**:
-- **acquire**:
-- **addition**:
-- **advance**:
-- **already**:
-- **annotate**:
-- **aside**:
-- **attest**:
-- **baseline**:
-- **batch**:
-- **boot**:
-- **breadth**:
-- **cause**:
-- **chore**:
-- **completion**:
-- **decide**:
-- **delay**:
-- **descriptor**:
-- **destroy**:
-- **detail**:
-- **diff**:
-- **digest**:
-- **discovery**:
-- **dist**:
-- **download**:
-- **during**:
-- **effect**:
-- **executable**:
-- **fresh**:
-- **help**:
-- **homedir**:
-- **immediate**:
-- **leftover**:
-- **look**:
-- **mirror**:
-- **most**:
-- **move**:
-- **must**:
-- **newly**:
-- **npmj**:
-- **origin**:
-- **pid**:
-- **quiet**:
-- **readable**:
-- **refuse**:
-- **rehearsal**:
-- **revision**:
-- **scratch**:
-- **settle**:
-- **stdio**:
-- **stream**:
-- **succeed**:
-- **summarize**:
-- **supersede**:
-- **take**:
-- **tarball**:
-- **temp**:
-- **tip**:
-- **unpack**:
-- **unreadable**:
-- **unreleased**:
-- **unseal**:
-- **versioned**:
-- **xzf**:
+- **baseline**: Starting version a package is measured from when no earlier tag exists, placed on the commit before it was added.
+- **batch**: Group of six tags pushed together by tag-packages, with a rejected batch retried, so pushes respect the remote's limits.
+- **breadth**: Callidescope limit on how many callees one frame may fan out to, set as maximumBreadth in the publication config.
+- **mirror**: Publish step that copies each npm package to GitHub Packages as owner/project, exiting 1 when a mirror or input fails.
+- **quiet**: Git flag --quiet passed to fetch and diff in the release steps, suppressing output so the run logs stay readable.
+- **rehearsal**: Dry-run release mode where packages are not really published, and which is refused if any would reach a real registry.
 
 <!-- coinagerie:end -->

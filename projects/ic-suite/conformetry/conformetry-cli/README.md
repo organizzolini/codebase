@@ -1315,29 +1315,10 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-cli:coinagerie-check:write`.
 
-- **argv**:
-- **breadth**:
-- **choose**:
-- **cog**:
-- **comma**:
-- **delimit**:
-- **discovery**:
-- **gadget**:
-- **gear**:
-- **generation**:
-- **globbed**:
-- **inventoried**:
-- **inventory**:
-- **percentage**:
-- **ratio**:
-- **scoped**:
-- **selection**:
-- **shorten**:
-- **stem**:
-- **terminal**:
-- **threshold**:
-- **tie**:
-- **unmatched**:
-- **weight**:
+- **breadth**: The number of other callables one function calls directly, which callidescope reports in the Breadth table of this README and gates against a limit.
+- **generation**: Rendering a template with resolved inputs to create new files, which the generate command performs through GenerationService.
+- **inventoried**: Listed in a discovery result with its matched path and template pairings, as the InventoriedInstance type records.
+- **inventory**: The list of templates and instances discovery found, which the instances and templates commands print for review.
+- **stem**: The folder name a template instance is located by, stored as nameStem and joined onto the instance path to find its files.
 
 <!-- coinagerie:end -->

@@ -89,12 +89,6 @@ jobs:
           - target: conformetry-validate
             name: Conformetry Validate
             emoji: 👔
-          # Runs the root glossary's `configuration:coinagerie` first, through
-          # the target's own `dependsOn`, so each project is judged against a
-          # current root glossary.
-          - target: coinagerie-check
-            name: Coinagerie Check
-            emoji: 🪙
           # New projects stay in Test Codebase until they are explicitly split
           # into their own suite here.
           - target: test-code
@@ -148,12 +142,11 @@ jobs:
           # Never authenticates to a registry: no step is given an npm token,
           # and setup-node is given no `registry-url`. Its first run on #1473
           # took 4m05s with nothing cached: 2m49s to pack and check, 34s of
-          # that in the consumer. 15 minutes leaves room for a runner several
-          # times slower.
+          # that in the consumer. Across 79 runs it never passed 5m33s, so it
+          # runs under the default limit.
           - target: verify-publishable-packages
             name: Publishable Packages
             emoji: 🤵
-            timeout-minutes: 15
           # Plans the OpenRouter Terraform when a pull request changes it, and
           # comments what the plan would create, update, replace, and delete. It
           # is a comment, not part of the body, so it cannot race the Codometer
@@ -162,19 +155,23 @@ jobs:
           # reports, so it can be a required check, and its steps run only for a
           # same-repository pull request that changes the module, since a fork
           # is not given the secrets the plan needs.
+          # The slowest of the 4 runs that planned anything took 2m09s, so it
+          # runs under the default limit too.
           - target: plan-terraform
             name: Infrastructure
             emoji: 🧑‍🚀
-            timeout-minutes: 15
           # Builds and tests the devcontainer image when a pull request changes
           # a file the image or its test reads, without publishing it:
           # Continuous Deployment builds and pushes the image on `main`. Like
           # the infrastructure leg it always reports, and does its work only
           # when the change calls for it. It needs none of the Node setup.
+          # Only 3 of 81 runs built the image, the slowest in 9m05s, so 15
+          # minutes keeps room for a slower build without waiting 20 on a hung
+          # one.
           - target: build-devcontainer
             name: Devcontainer
             emoji: 🧑‍🏭
-            timeout-minutes: 20
+            timeout-minutes: 15
 
     steps:
       # Decides first what the job has to do, so the skip decision below and
