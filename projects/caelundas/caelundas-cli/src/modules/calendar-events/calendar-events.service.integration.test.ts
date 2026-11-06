@@ -1,8 +1,12 @@
 import moment from "moment-timezone";
 import { In } from "typeorm";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { CalendarEvent, Tag } from "@codebase/caelundas-db";
+import {
+  CaelundasDatabaseService,
+  CalendarEvent,
+  Tag,
+} from "@codebase/caelundas-db";
 import { LoggerModule } from "@codebase/observability";
 
 import {
@@ -106,6 +110,58 @@ describe("calendar events service integration", () => {
     expect(nodes.map(({ tag_name: name }) => name)).toContain("Sun");
     expect(derived?.temporality).toBe("Instant");
     expect(paths.map(({ path }) => path)).toContain("Planet / Sun");
+  });
+
+  it("rebuilds the read model once per upsert, after the last batch is written", async () => {
+    expect.hasAssertions();
+
+    const databaseService = database.module.get(CaelundasDatabaseService);
+    const rebuild = databaseService.refreshReadModel.bind(databaseService);
+    const refresh = vi.spyOn(databaseService, "refreshReadModel");
+    refresh.mockClear();
+    const count = CALENDAR_EVENT_BATCH_SIZE + 1;
+    const stored: number[] = [];
+    refresh.mockImplementationOnce(async (manager) => {
+      stored.push(
+        await manager.getRepository(CalendarEvent).countBy({
+          summary: In(["Refresh first", `Refresh ${String(count - 1)}`]),
+        }),
+      );
+      await rebuild(manager);
+    });
+    const start = moment.utc("2031-01-01T00:00:00Z");
+    await service.upsert(
+      Array.from({ length: count }, (_value, index) =>
+        event(
+          index === 0 ? "Refresh first" : `Refresh ${String(index)}`,
+          start.clone().add(index, "minutes").toISOString(),
+        ),
+      ),
+      philadelphia,
+    );
+
+    expect(refresh).toHaveBeenCalledTimes(1);
+    expect(stored).toStrictEqual([2]);
+  });
+
+  it("stores no event when the read model rebuild fails", async () => {
+    expect.hasAssertions();
+
+    vi.spyOn(
+      database.module.get(CaelundasDatabaseService),
+      "refreshReadModel",
+    ).mockRejectedValueOnce(new Error("refresh failed"));
+
+    await expect(
+      service.upsert(
+        [tagged("Rolled back", "2026-01-20T00:00:00Z", ["rolled back tag"])],
+        philadelphia,
+      ),
+    ).rejects.toThrow("refresh failed");
+    await expect(repository.countBy({ summary: "Rolled back" })).resolves.toBe(
+      0,
+    );
+    await expect(tags.countBy({ name: "rolled back tag" })).resolves.toBe(0);
   });
 
   it("stores an instant as a timestamptz and reads it back as a UTC moment", async () => {
