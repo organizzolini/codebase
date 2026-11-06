@@ -39,6 +39,23 @@ export interface EventsApplication {
   readonly stop: () => Promise<void>;
 }
 
+/** The tags {@link seedFilterTags} adds, by name. */
+export interface FilterTags {
+  readonly aspect: Tag;
+  readonly direction: Tag;
+  readonly harmonic: Tag;
+  readonly harmonic2: Tag;
+  readonly harmonic6: Tag;
+  readonly harmonic12: Tag;
+  readonly ingress: Tag;
+  readonly major: Tag;
+  readonly moon: Tag;
+  readonly planet: Tag;
+  readonly signIngress: Tag;
+  readonly simple: Tag;
+  readonly type: Tag;
+}
+
 /** The body of a GraphQL response: data, errors, or both. */
 export type GraphqlResponse = z.infer<typeof graphqlResponseSchema>;
 
@@ -138,6 +155,90 @@ export async function seedEvents(
     .refreshReadModel(database.dataSource.manager);
 
   return { aspect, conjunct, forming, mars, phase, planet, retrograde };
+}
+
+/**
+ * Adds the tags the filters and collections read to the seeded fixture, and
+ * gives them to its events: the Type chains Aspect / Simple Aspect / Major
+ * Aspect, Ingress / Sign Ingress and Direction, the planet Moon, and the
+ * numbered root Aspect Harmonic with Harmonic 2, Harmonic 6 and Harmonic 12.
+ * Moon Conjunct Mars is a Major Aspect with the Moon and Harmonic 2; Sun
+ * Enters Aries a Sign Ingress with Harmonic 12; Mars Retrograde a Direction;
+ * Equinox Watch has Harmonic 6. Run {@link seedEvents} first. Returns the
+ * tags by name.
+ */
+export async function seedFilterTags(
+  database: DatabaseTestingModule,
+): Promise<FilterTags> {
+  const tags = database.dataSource.getTreeRepository(Tag);
+  const planet = await tags.findOneByOrFail({ name: "Planet" });
+  const moon = await tags.save(tags.create({ name: "Moon", parent: planet }));
+  const type = await tags.save(tags.create({ name: "Type" }));
+  const aspect = await tags.save(tags.create({ name: "Aspect", parent: type }));
+  const simple = await tags.save(
+    tags.create({ name: "Simple Aspect", parent: aspect }),
+  );
+  const major = await tags.save(
+    tags.create({ name: "Major Aspect", parent: simple }),
+  );
+  const ingress = await tags.save(
+    tags.create({ name: "Ingress", parent: type }),
+  );
+  const signIngress = await tags.save(
+    tags.create({ name: "Sign Ingress", parent: ingress }),
+  );
+  const direction = await tags.save(
+    tags.create({ name: "Direction", parent: type }),
+  );
+  const harmonic = await tags.save(tags.create({ name: "Aspect Harmonic" }));
+  const harmonic2 = await tags.save(
+    tags.create({ name: "Harmonic 2", parent: harmonic }),
+  );
+  const harmonic6 = await tags.save(
+    tags.create({ name: "Harmonic 6", parent: harmonic }),
+  );
+  const harmonic12 = await tags.save(
+    tags.create({ name: "Harmonic 12", parent: harmonic }),
+  );
+  const given: [string, Tag[]][] = [
+    ["Moon Conjunct Mars", [major, moon, harmonic2]],
+    ["Sun Enters Aries", [signIngress, harmonic12]],
+    ["Mars Retrograde", [direction]],
+    ["Equinox Watch", [harmonic6]],
+  ];
+
+  for (const [summary, eventTags] of given) {
+    const [event] = await database.dataSource.query<[{ id: string }]>(
+      `select id from calendar_events where "summary" = $1`,
+      [summary],
+    );
+
+    for (const tag of eventTags) {
+      await database
+        .repository(CalendarEventTag)
+        .insert({ calendarEventId: event.id, tagId: tag.id });
+    }
+  }
+
+  await database.module
+    .get(CaelundasDatabaseService)
+    .refreshReadModel(database.dataSource.manager);
+
+  return {
+    aspect,
+    direction,
+    harmonic,
+    harmonic2,
+    harmonic6,
+    harmonic12,
+    ingress,
+    major,
+    moon,
+    planet,
+    signIngress,
+    simple,
+    type,
+  };
 }
 
 /**
