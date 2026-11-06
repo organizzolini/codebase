@@ -441,7 +441,7 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 
 | Scope             | Description                                                                                                     |
 | ----------------- | --------------------------------------------------------------------------------------------------------------- |
-| `ic-suite`        | In-house code measurement and validation toolchains and their shared conventions                                |
+| `ic-suite`        | Code measurement and validation toolchains and their shared conventions                                |
 | `affirmancy`      | Python Jupyter notebook application for LangGraph affirmation generation                                        |
 | `caelundas`       | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris)                                           |
 | `configuration`   | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.)                                           |

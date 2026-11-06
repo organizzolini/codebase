@@ -95,7 +95,7 @@ const types = [
 
 const scopes = [
   {
-    description: "In-house code measurement and validation toolchains and their shared conventions",
+    description: "Code measurement and validation toolchains and their shared conventions",
     name: "ic-suite",
   },
   {
