@@ -293,6 +293,20 @@ SqliteModule.forRoot({
 | --------------------------- | ------------------ | -------------------------------- |
 | `<PROJECT>_SQLITE_DATABASE` | `<project>.sqlite` | The database file, or `:memory:` |
 
+`prepareDatabase` runs against each new better-sqlite3 connection, so an
+application can register its own SQL functions. It is TypeORM's option of the
+same name, and `createSqliteDataSource` takes it too.
+
+```ts
+SqliteModule.forRoot({
+  entities: [CalendarEvent],
+  prepareDatabase: (database) => {
+    database.function("local_day", (iso: string) => iso.slice(0, 10));
+  },
+  project: "caelundas",
+});
+```
+
 An unprefixed `SQLITE_DATABASE` is never read. Spread
 `sqliteEnvironmentSchema({ project })` into the application's environment
 schema, and export `createSqliteDataSource({ entities, migrations, project })`
