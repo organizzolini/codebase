@@ -15,7 +15,7 @@ import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";
 import { CalendarEventsService } from "./calendar-events.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "./calendar-events.types";
 import type { TestingModule } from "@nestjs/testing";
 import type { Repository, TreeRepository } from "typeorm";
 

@@ -18,7 +18,7 @@ import {
   SOLAR_RETREATING_TAG,
 } from "./annual-solar-cycle.constants";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { DistanceEphemeris } from "../ephemeris/ephemeris.types";
 import type {
   DetectAnnualSolarCycleArguments,

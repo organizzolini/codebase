@@ -237,16 +237,14 @@ it names.
 
 A run creates `output/database.sqlite` and applies the migration when the
 table is missing, and adds to it on later runs: the same event for the same
-place updates its row. The schema comes from a generated migration:
-`nx run caelundas-cli:migration:generate` creates the next one, and
-`migration:run`, `migration:revert` and `migration:show` work on the file
-directly. They read the data source and migrations from
-`src/modules/database/`, the folder the `migration` target's `module` option
-names. The same file is what the web application, `caelundas-web`, reads: the
+place updates its row. The entities and the one migration come from the
+`caelundas-entities` library (`nx run caelundas-entities:migration:generate`
+creates the next one). The same file is what the web application, `caelundas-web`, reads: the
 migration creates the read model it queries (`tag_nodes`,
 `calendar_event_tag_nodes` and the `calendar_events_derived` view), and every
-run ends by rewriting those tables with `data/events-read-model.sql`, so there
-is no separate build step. Build the web application with
+run ends by rebuilding those tables with `DatabaseService.refreshReadModel`
+from `caelundas-entities`, in the same transaction that wrote the events, so
+there is no separate build step. Build the web application with
 `nx run caelundas-web:build:ingested`, which copies the file.
 
 SQLite takes one writer at a time, so run one ingestion against a file at a
@@ -296,7 +294,6 @@ src/
     ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena
     ├── perfective/          # Exact-moment detection across every event service
     ├── progressive/         # Spans derived from those moments
-    ├── database/            # SQLite connection, entities, migrations
     ├── night-sky/           # Stars and constellation figures for the web's night sky
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── tags/                # Resolving raw tag strings to nodes of the tag tree

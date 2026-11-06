@@ -1,4 +1,4 @@
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 // 🏷️ Types
 import type { referenceFixtureSchema } from "./reference-fixtures.constants";
 import type { z } from "zod";

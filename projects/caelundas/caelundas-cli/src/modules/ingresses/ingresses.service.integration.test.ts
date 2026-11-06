@@ -15,7 +15,7 @@ import { IngressesComposerService } from "./ingresses-composer.service";
 import { IngressesService } from "./ingresses.service";
 
 import type { Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { EphemerisAggregationService } from "../ephemeris/ephemeris-aggregation.service";
 import type { EphemerisConstantsService } from "../ephemeris/ephemeris-constants.service";
 import type { EphemerisCoordinateService } from "../ephemeris/ephemeris-coordinate.service";

@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { DatabaseModule } from "../database/database.module";
+import { DatabaseModule } from "../../database.module";
 import { TagsModule } from "../tags/tags.module";
 
 import { CalendarEventsService } from "./calendar-events.service";

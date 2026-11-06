@@ -3,10 +3,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import moment from "moment-timezone";
 import { Between, Repository } from "typeorm";
 
-import { CalendarEvent, CalendarEventTag } from "@codebase/caelundas-entities";
+import {
+  CalendarEvent,
+  CalendarEventTag,
+  DatabaseService,
+} from "@codebase/caelundas-entities";
 import { LoggerService } from "@codebase/observability";
 
-import { DatabaseService } from "../database/database.service";
 import { TagsService } from "../tags/tags.service";
 import { classifyEvent, tagPathKey } from "../tags/tags.utilities";
 
@@ -19,16 +22,14 @@ import {
   SQLITE_MAXIMUM_PARAMETERS,
 } from "./calendar-events.constants";
 
-import type {
-  DetectedCalendarEvent,
-  StoredCalendarEvent,
-} from "../database/database.types";
+import type { ClassifiedCalendarEvent } from "../tags/tags.types";
 import type {
   CalendarEventRow,
   CalendarEventTagLink,
-  ClassifiedCalendarEvent,
+  DetectedCalendarEvent,
   FindInRangeParameters,
   Observer,
+  StoredCalendarEvent,
 } from "./calendar-events.types";
 import type { Moment } from "moment-timezone";
 import type { EntityManager } from "typeorm";

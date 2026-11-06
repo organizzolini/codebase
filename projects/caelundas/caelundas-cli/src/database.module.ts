@@ -5,21 +5,21 @@ import {
   CAELUNDAS_DATABASE_ENTITIES,
   CAELUNDAS_DATABASE_MIGRATIONS,
   CAELUNDAS_DATABASE_PROJECT,
+  DatabaseService,
 } from "@codebase/caelundas-entities";
 import { SqliteModule } from "@codebase/persistence";
 
-import { DatabaseService } from "./database.service";
-
 /**
- * Connects caelundas to the SQLite file its `CAELUNDAS_SQLITE_DATABASE`
- * variable names, by default `output/database.sqlite` in the
- * `caelundas-cli` project.
- *
- * `SqliteModule.forRoot` reads that variable through the application's
- * global `ConfigModule`. It never synchronizes the schema, but it runs the
- * migrations on start, so a run creates the file and its tables when
- * they are missing: a local file has one writer, so there is no second
+ * Connects caelundas to its SQLite file, by default `output/database.sqlite`
+ * in this project, and migrates it on start: this is the one application that
+ * writes the file, and a local file has one writer, so there is no second
  * process to race the DDL.
+ *
+ * It wires the library's pieces itself rather than calling
+ * `DatabaseModule.forRoot({ migrate: true })` from `caelundas-entities`,
+ * because Nest merges a dynamic module's imports with its decorator's, so
+ * that call opens a second connection that never migrates beside the migrating one,
+ * and an in-memory database would be two different databases.
  */
 @Module({
   controllers: [],

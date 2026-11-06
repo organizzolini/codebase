@@ -1,6 +1,4 @@
 // 🏷️ Types
-import type { DetectedCalendarEvent } from "../database/database.types";
-import type { TagPath } from "../tags/tags.types";
 import type {
   CalendarEvent,
   CalendarEventTag,
@@ -20,17 +18,28 @@ export type CalendarEventTagLink = Pick<
   "calendarEventId" | "tagId"
 >;
 
-/** An event to write, with the tag paths it is classified under. */
-export interface ClassifiedCalendarEvent {
-  event: DetectedCalendarEvent;
-  paths: readonly TagPath[];
-}
-
 /** An observer location in decimal degrees. */
 export interface Coordinates {
   latitude: number;
   longitude: number;
 }
+
+/**
+ * A {@link CalendarEvent} as a detector builds it and a writer reads it:
+ * without the fields the database owns, the id and audit columns, or the
+ * observer's coordinates and timezone, which `CalendarEventsService.upsert`
+ * adds for the observer it stores the event for. Its `tags` are raw strings,
+ * which the upsert resolves to nodes of the tag tree. A stored row is one as
+ * well, and the writers are passed the stored rows `findInRange` returns, not
+ * detected ones.
+ */
+export type DetectedCalendarEvent = Omit<
+  CalendarEvent,
+  "latitude" | "longitude" | "timezone" | keyof PostgresqlUpdatableEntity
+> & {
+  /** Raw tag strings, such as `aspects` and `moon`. */
+  tags: string[];
+};
 
 /** The range and location whose events {@link CalendarEventsService.findInRange} returns. */
 export interface FindInRangeParameters extends Coordinates {
@@ -45,3 +54,11 @@ export interface FindInRangeParameters extends Coordinates {
 export interface Observer extends Coordinates {
   timezone: string;
 }
+
+/**
+ * A stored {@link CalendarEvent} as `findInRange` returns it, with the names
+ * of the tags it is linked to directly, ordered by code point. The nodes
+ * above them in the tree are not included: the closure table holds those.
+ */
+export type StoredCalendarEvent = CalendarEvent &
+  Pick<DetectedCalendarEvent, "tags">;

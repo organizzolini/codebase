@@ -3,10 +3,9 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { CalendarEvent } from "@codebase/caelundas-entities";
+import { CalendarEvent, DatabaseService } from "@codebase/caelundas-entities";
 import { LoggerService } from "@codebase/observability";
 
-import { DatabaseService } from "../database/database.service";
 import { TagsService } from "../tags/tags.service";
 import { tagPathKey } from "../tags/tags.utilities";
 

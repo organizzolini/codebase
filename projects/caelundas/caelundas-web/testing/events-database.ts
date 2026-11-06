@@ -185,15 +185,15 @@ function createNodeSqliteExecutor(database: DatabaseSync): SqlExecutor {
  * `typeorm_metadata` table, which TypeORM creates and a bare database lacks.
  */
 function readTablesSql(): string {
-  return `create table "typeorm_metadata" ("type" varchar not null, "database" varchar, "schema" varchar, "table" varchar, "name" varchar, "value" text);\n${readMigrationsSql()}`;
-}
-
-function readMigrationsSql(): string {
-  return readdirSync(MIGRATIONS_DIRECTORY)
+  const migrations = readdirSync(MIGRATIONS_DIRECTORY)
     .filter((name) => name.endsWith("-up.sql"))
     .toSorted()
-    .map((name) => readFileSync(path.join(MIGRATIONS_DIRECTORY, name), "utf8"))
-    .join("\n");
+    .map((name) => readFileSync(path.join(MIGRATIONS_DIRECTORY, name), "utf8"));
+
+  return [
+    'create table "typeorm_metadata" ("type" varchar not null, "database" varchar, "schema" varchar, "table" varchar, "name" varchar, "value" text);',
+    ...migrations,
+  ].join("\n");
 }
 
 /**

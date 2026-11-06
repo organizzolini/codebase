@@ -1,9 +1,19 @@
+import path from "node:path";
+
 import { z } from "zod";
 
 import { CAELUNDAS_DATABASE_PROJECT } from "@codebase/caelundas-entities";
 import { sqliteEnvironmentSchema } from "@codebase/persistence";
 
-import { DATABASE_DEFAULT_FILE } from "./modules/database/database.constants";
+/**
+ * Where the database file is when `CAELUNDAS_SQLITE_DATABASE` names none:
+ * `output/database.sqlite` in the `caelundas-cli` project, wherever the
+ * command runs from, so the web build always finds what ingestion wrote.
+ */
+export const DATABASE_DEFAULT_FILE = path.resolve(
+  import.meta.dirname,
+  "../output/database.sqlite",
+);
 
 // 🌱 Add environment schema fields here
 export const environmentSchema = z.object({

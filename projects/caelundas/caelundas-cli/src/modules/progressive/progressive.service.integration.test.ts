@@ -12,7 +12,7 @@ import { TwilightsService } from "../twilights/twilights.service";
 import { ProgressiveModule } from "./progressive.module";
 import { ProgressiveService } from "./progressive.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 /**
  * Progressive-step tests: the real progressive pass, fed hand-built perfective

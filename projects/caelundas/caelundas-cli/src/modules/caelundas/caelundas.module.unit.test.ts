@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { DATABASE_DEFAULT_FILE } from "../database/database.constants";
+import { DATABASE_DEFAULT_FILE } from "../../caelundas-cli.constants";
 
 type ConfigOptions =
   | undefined
