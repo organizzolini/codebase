@@ -3,11 +3,20 @@ import { readFile } from "node:fs/promises";
 import { Injectable } from "@nestjs/common";
 
 import {
+  parseNightSkyInput,
+  selectConstellationSegments,
+} from "./night-sky-input.utilities";
+import {
   NIGHT_SKY_CATALOG_FILE,
   nightSkyCatalogSchema,
 } from "./night-sky.constants";
+import {
+  buildNightSky,
+  computeStartingSiderealDegrees,
+} from "./night-sky.utilities";
 
-import type { NightSkyCatalog } from "./night-sky.types";
+import type { NightSkyInput } from "./night-sky-input.entities";
+import type { NightSky, NightSkyCatalog } from "./night-sky.types";
 import type { OnModuleInit } from "@nestjs/common";
 
 /**
@@ -40,6 +49,27 @@ export class NightSkyService implements OnModuleInit {
   // 🔏 Private Methods
 
   // 🌎 Public Methods
+
+  /**
+   * Builds the night sky a query asks for, from the stars and figures held
+   * in memory, refusing input the builder cannot draw.
+   */
+  public build(input: NightSkyInput): NightSky {
+    const { constellations, ...options } = parseNightSkyInput(input);
+
+    return buildNightSky({
+      ...options,
+      constellationSegments: selectConstellationSegments(
+        this.catalog.segments,
+        constellations,
+      ),
+      localSiderealDegrees: computeStartingSiderealDegrees(
+        new Date(),
+        options.longitudeDegrees,
+      ),
+      stars: this.catalog.stars,
+    });
+  }
 
   /**
    * Reads and validates the bundled catalog, and sorts its stars brightest

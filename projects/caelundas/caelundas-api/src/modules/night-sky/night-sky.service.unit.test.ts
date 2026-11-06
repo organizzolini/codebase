@@ -48,4 +48,18 @@ describe(NightSkyService, () => {
 
     expect(() => fresh.catalog).toThrow("not loaded");
   });
+
+  it("builds a sky from the loaded catalog", () => {
+    expect.hasAssertions();
+
+    expect(service.build({ height: 600, width: 800 }).svg).toContain(
+      'viewBox="0 0 800 600"',
+    );
+  });
+
+  it("refuses input the builder cannot draw", () => {
+    expect.hasAssertions();
+
+    expect(() => service.build({ height: 0, width: 800 })).toThrow("height");
+  });
 });

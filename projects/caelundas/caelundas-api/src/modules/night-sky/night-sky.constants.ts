@@ -83,6 +83,13 @@ export const DEFAULT_OPTIONS = {
   verticalFieldOfViewDegrees: 90,
 } as const;
 
+// 📏 Input
+
+/**
+ * The most pixels a query may ask the sky to span along either side.
+ */
+export const MAXIMUM_SIZE_PIXELS = 8192;
+
 // 📐 Geometry
 
 /**

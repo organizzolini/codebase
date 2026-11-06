@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 
+import { NightSkyResolver } from "./night-sky.resolver";
 import { NightSkyService } from "./night-sky.service";
 
 /**
@@ -9,6 +10,6 @@ import { NightSkyService } from "./night-sky.service";
   controllers: [],
   exports: [NightSkyService],
   imports: [],
-  providers: [NightSkyService],
+  providers: [NightSkyResolver, NightSkyService],
 })
 export class NightSkyModule {}

@@ -157,6 +157,19 @@ export interface NightSkyOptions {
 }
 
 /**
+ * A `nightSky` query's input with every default applied and every value
+ * checked: the builder's options, less what the server supplies, plus the
+ * observer's longitude and the figures asked for by name.
+ */
+export type ParsedNightSkyInput = Omit<
+  ResolvedNightSkyOptions,
+  "constellationSegments" | "localSiderealDegrees" | "stars"
+> & {
+  constellations: readonly string[];
+  longitudeDegrees: number;
+};
+
+/**
  * A point of the sky projected about the pole, in the rotating group's frame.
  */
 export interface ProjectedPoint {
