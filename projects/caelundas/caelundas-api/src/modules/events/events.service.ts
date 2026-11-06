@@ -2,8 +2,15 @@ import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
 import { EntityManager } from "typeorm";
 
-import { DATASET_SQL, datasetRowSchema } from "./events.constants";
+import {
+  DATASET_SQL,
+  datasetRowSchema,
+  eventRowSchema,
+  EVENTS_IN_WINDOW_SQL,
+} from "./events.constants";
 
+import type { CalendarEventEntity } from "./calendar-event.entities";
+import type { EventsWindowInput } from "./events-window-input.entities";
 import type { EventsDatasetEntity } from "./events.entities";
 import type { z } from "zod";
 
@@ -33,6 +40,29 @@ export class EventsService {
     const rows = await this.select(DATASET_SQL, [], datasetRowSchema);
 
     return rows.at(0) ?? null;
+  }
+
+  /**
+   * The events that overlap the window, earliest first, each with the tags
+   * it was given.
+   */
+  public async findEvents(
+    window: EventsWindowInput,
+  ): Promise<CalendarEventEntity[]> {
+    const rows = await this.select(
+      EVENTS_IN_WINDOW_SQL,
+      [window.end.toISOString(), window.start.toISOString()],
+      eventRowSchema,
+    );
+
+    return rows.map(
+      ({ duration_minutes, start_local_day, start_local_hour, ...row }) => ({
+        ...row,
+        durationMinutes: duration_minutes,
+        startLocalDay: start_local_day,
+        startLocalHour: start_local_hour,
+      }),
+    );
   }
 
   /**

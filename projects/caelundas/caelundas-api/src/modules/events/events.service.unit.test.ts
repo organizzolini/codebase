@@ -64,6 +64,70 @@ describe(EventsService, () => {
     await expect(service.describeDataset()).resolves.toBeNull();
   });
 
+  it("finds the events in a window, binding its end then its start", async () => {
+    expect.hasAssertions();
+
+    const start = new Date("2026-03-05T03:30:00Z");
+    const end = new Date("2026-03-05T05:00:00Z");
+
+    query.mockResolvedValueOnce([
+      {
+        color: null,
+        description: "Mars stations retrograde",
+        duration_minutes: 90,
+        end,
+        id: "event-1",
+        location: null,
+        start,
+        start_local_day: "2026-03-04",
+        start_local_hour: 22,
+        summary: "Mars Retrograde",
+        tags: [
+          {
+            depth: 2,
+            id: "tag-1",
+            name: "Retrograde",
+            path: "Planet / Mars / Retrograde",
+          },
+        ],
+        timezone: "America/New_York",
+      },
+    ]);
+
+    await expect(
+      service.findEvents({
+        end: new Date("2026-03-06T00:00:00Z"),
+        start: new Date("2026-03-05T00:00:00Z"),
+      }),
+    ).resolves.toStrictEqual([
+      {
+        color: null,
+        description: "Mars stations retrograde",
+        durationMinutes: 90,
+        end,
+        id: "event-1",
+        location: null,
+        start,
+        startLocalDay: "2026-03-04",
+        startLocalHour: 22,
+        summary: "Mars Retrograde",
+        tags: [
+          {
+            depth: 2,
+            id: "tag-1",
+            name: "Retrograde",
+            path: "Planet / Mars / Retrograde",
+          },
+        ],
+        timezone: "America/New_York",
+      },
+    ]);
+    expect(query).toHaveBeenLastCalledWith(expect.any(String), [
+      "2026-03-06T00:00:00.000Z",
+      "2026-03-05T00:00:00.000Z",
+    ]);
+  });
+
   it("refuses a row that does not match the schema", async () => {
     expect.hasAssertions();
 
