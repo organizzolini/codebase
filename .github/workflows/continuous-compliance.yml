@@ -8,8 +8,7 @@ name: 🦹 Continuous Compliance
 # 3. 🧑‍⚖️ Comply: Pull request metadata and commit message conventions, on
 #    pull requests and again on the merge queue group that will land them.
 #
-# Label reconciliation runs through `synchronization`, and compliance
-# validation runs through `validation`. All checks execute directly via
+# All external-resource checks run through `compliance`. Checks execute directly via
 # Node.js without building an Nx project graph.
 
 on:
@@ -41,7 +40,7 @@ on:
 permissions:
   contents: read
   # Label creation and updates are issues-scoped and pull-requests-scoped
-  # endpoints, which is what the label reconciliation steps below write through.
+  # endpoints, which is what the compliance commands below write through.
   issues: write
   pull-requests: write
 
@@ -75,81 +74,28 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
-      # The label reconciliation steps and audit checks run their CLIs
-      # directly through node rather than through Nx, so those projects
-      # and the workspace packages they import are all this needs. The trailing
-      # `...` on each filter resolves that transitively. Still no Nx cache, no
-      # uv, and no Homebrew: there is no project graph to build.
+      # The compliance CLI and the workspace packages it imports are all this
+      # needs. Still no Nx cache, no uv, and no Homebrew: there is no project
+      # graph to build.
       - name: 📚 Install Root Dependencies
         run: |
           CI=true pnpm install --frozen-lockfile --reporter=append-only \
-            --filter . --filter synchronization... --filter validation... \
+            --filter . --filter compliance... \
             --ignore-scripts
 
-      # Only on the event that creates an issue — an edit or a label change
-      # never adds a field the body didn't already have, and re-adding labels
-      # on every edit would fight a human who removed one on purpose.
-      - name: 🏷️ Reconcile Issue Labels
-        if: github.event_name == 'issues' && github.event.action == 'opened'
+      # One run per event: labels and assigns a new issue, audits the issue an
+      # event names, or sweeps every open issue on scheduled and manual runs.
+      - name: 🧑‍💼 Comply Issue
         env:
           GH_TOKEN: ${{ github.token }}
+          ISSUE_ACTION: ${{ github.event.action }}
+          ISSUE_ASSIGNEES: ${{ toJSON(github.event.issue.assignees) }}
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_LABELS: ${{ toJSON(github.event.issue.labels) }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            synchronization/src/synchronization.main.ts issue-labels
-
-      # Issue events can arrive with no assignees. Default those to the
-      # repository owner while leaving already-owned issues unchanged.
-      - name: 🧑‍💼 Ensure Issue Assignee
-        if: >-
-          github.event_name == 'issues' &&
-          github.event.issue != null &&
-          github.event.issue.assignees[0] == null
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-        run: |
-          gh issue edit "$ISSUE_NUMBER" --add-assignee JimmyPaolini
-
-      # On scheduled or manual runs, paginate through every open issue and
-      # assign any that are currently unassigned. The REST issues endpoint
-      # also returns pull requests, which are excluded before assignment.
-      - name: 🧑‍💼 Ensure Open Issues Have Assignees
-        if: github.event.issue == null
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          ISSUE_NUMBERS="$(gh api --paginate --slurp \
-            "repos/${GITHUB_REPOSITORY}/issues?state=open&per_page=100" \
-            --jq 'add[] | select(.pull_request == null) | select((.assignees | length) == 0) | .number')"
-
-          while IFS= read -r issue_number; do
-            if [ -n "$issue_number" ]; then
-              gh issue edit "$issue_number" --add-assignee JimmyPaolini
-            fi
-          done <<< "$ISSUE_NUMBERS"
-
-      # Read live, by issue number, rather than out of this event's payload.
-      - name: 🧾 Audit Single Issue Metadata
-        if: github.event_name == 'issues' && github.event.issue != null
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-        run: |
-          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            validation/src/validation.main.ts issue-metadata "$ISSUE_NUMBER"
-
-      # Sweeps and audits all open issues and hierarchy relationships on
-      # scheduled runs and manual dispatches.
-      - name: 🧾 Audit All Open Issues Metadata
-        if: github.event.issue == null
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            validation/src/validation.main.ts issue-metadata --all
+            projects/compliance/src/compliance.main.ts issue
 
   enforce:
     name: 👮 Enforce
@@ -184,14 +130,14 @@ jobs:
       - name: 📚 Install Root Dependencies
         run: |
           CI=true pnpm install --frozen-lockfile --reporter=append-only \
-            --filter . --filter synchronization... --filter validation... \
+            --filter . --filter compliance... \
             --ignore-scripts
 
       # Audits repository governance (CODEOWNERS rules and workflow security).
       - name: 👮 Audit Repository Governance
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            validation/src/validation.main.ts audit-governance
+            projects/compliance/src/compliance.main.ts audit-governance
 
   comply:
     name: 🧑‍⚖️ Comply
@@ -208,30 +154,6 @@ jobs:
       (github.event_name == 'pull_request' && !github.event.pull_request.draft))
 
     steps:
-      # A merge group carries no pull request payload, only its temporary
-      # `gh-readonly-queue/<base>/pr-<number>-<sha>` ref. Every pull request
-      # check below reads the queued pull request live through this number, so
-      # an edit made after the pull request entered the queue is caught here.
-      # The author is read too, since `github.actor` here is whoever queued the
-      # pull request, never the bot that opened it.
-      - name: 🚂 Resolve Merge Group Pull Request
-        id: merge-group
-        if: github.event_name == 'merge_group'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          HEAD_REF: ${{ github.event.merge_group.head_ref }}
-        run: |
-          PULL_REQUEST_NUMBER="$(sed -nE 's#^.*/pr-([0-9]+)-[0-9a-f]+$#\1#p' <<< "$HEAD_REF")"
-          if [ -z "$PULL_REQUEST_NUMBER" ]; then
-            echo "::error::Unable to parse a pull request number from ${HEAD_REF}"
-            exit 1
-          fi
-          PULL_REQUEST_AUTHOR="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST_NUMBER}" \
-            --jq .user.login)"
-          echo "🚂 Merge group ${HEAD_REF} queues pull request #${PULL_REQUEST_NUMBER} by ${PULL_REQUEST_AUTHOR}."
-          echo "pull-request-number=${PULL_REQUEST_NUMBER}" >> "$GITHUB_OUTPUT"
-          echo "pull-request-author=${PULL_REQUEST_AUTHOR}" >> "$GITHUB_OUTPUT"
-
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
 
@@ -247,19 +169,26 @@ jobs:
       - name: 📚 Install Root Dependencies
         run: |
           CI=true pnpm install --frozen-lockfile --reporter=append-only \
-            --filter . --filter synchronization... --filter validation... \
+            --filter . --filter compliance... \
             --ignore-scripts
 
-      # Only on pull request events — syncs labels from PR title. A merge group
-      # check must not write to the pull request it is judging.
-      - name: 🏷️ Reconcile Pull Request Labels
-        if: github.event_name == 'pull_request'
+      # One run covers a pull request event and a merge group alike. A merge
+      # group carries no pull request payload, only a synthetic ref, so the
+      # command resolves the number and reads live metadata itself. It writes
+      # parent references and labels only for pull request events, then
+      # validates title, body, labels, assignees, and release significance
+      # together. Dependabot's pull requests are exempt from the title and
+      # body checks inside the command.
+      - name: 🧑‍⚖️ Comply Pull Request
+        id: pull-request
+        if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
         env:
           GH_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ github.event.merge_group.head_ref }}
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            synchronization/src/synchronization.main.ts pull-request-labels write
+            projects/compliance/src/compliance.main.ts pull-request
 
       # Validates that the pull request branch name conforms to Conventional
       # Commits. A merge group's branch is the queue's own, so it is not checked.
@@ -269,59 +198,6 @@ jobs:
           BRANCH_NAME: ${{ github.head_ref }}
         run: |
           npx validate-branch-name -t "$BRANCH_NAME"
-
-      # Validates that the pull request title follows Conventional Commits
-      # format. A merge group reads the title live, since the squash commit's
-      # subject is that title and it may have been edited after queueing.
-      # Skipped for a pull request Dependabot authored, whose title it writes
-      # itself; keyed off the author, as the body check below is.
-      - name: 🏷️ Validate Pull Request Title
-        if: >-
-          (github.event_name == 'pull_request' || github.event_name == 'merge_group') &&
-          (github.event.pull_request.user.login ||
-          steps.merge-group.outputs.pull-request-author) != 'dependabot[bot]'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PULL_REQUEST_NUMBER: >-
-            ${{ github.event.pull_request.number || steps.merge-group.outputs.pull-request-number }}
-          PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          if [ "$GITHUB_EVENT_NAME" = "merge_group" ]; then
-            PULL_REQUEST_TITLE="$(gh pr view "$PULL_REQUEST_NUMBER" --json title -q .title)"
-          fi
-          echo "$PULL_REQUEST_TITLE" | \
-            npx commitlint --config configuration/commitlint.config.ts
-
-      # Validates pull request body against required template sections. Skipped
-      # for a pull request Dependabot authored, whose body it writes itself;
-      # keyed off the author, not `github.actor`, which is whoever last labeled,
-      # edited, or queued it.
-      - name: 📝 Validate Pull Request Body
-        if: >-
-          (github.event_name == 'pull_request' || github.event_name == 'merge_group') &&
-          (github.event.pull_request.user.login ||
-          steps.merge-group.outputs.pull-request-author) != 'dependabot[bot]'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PULL_REQUEST_NUMBER: >-
-            ${{ github.event.pull_request.number || steps.merge-group.outputs.pull-request-number }}
-        run: |
-          gh pr view "$PULL_REQUEST_NUMBER" --json body -q .body > pull_request_body.md
-          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            validation/src/validation.main.ts pull-request-body pull_request_body.md
-          rm pull_request_body.md
-
-      # Validates that PR title release significance matches or exceeds commits.
-      - name: 🚦 Validate Release Significance
-        if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PULL_REQUEST_NUMBER: >-
-            ${{ github.event.pull_request.number || steps.merge-group.outputs.pull-request-number }}
-        run: |
-          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            validation/src/validation.main.ts pull-request-release-significance \
-            "$PULL_REQUEST_NUMBER"
 
       # Validates that the latest commit on main follows Conventional Commits.
       # Skipped for a squash commit authored by Dependabot, whose subject is the
@@ -340,7 +216,7 @@ jobs:
       - name: 🏷️ Validate Merge Group Commit Message
         if: >-
           github.event_name == 'merge_group' &&
-          steps.merge-group.outputs.pull-request-author != 'dependabot[bot]'
+          steps.pull-request.outputs.pull-request-author != 'dependabot[bot]'
         env:
           HEAD_SHA: ${{ github.event.merge_group.head_sha }}
         run: |

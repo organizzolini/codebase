@@ -1219,15 +1219,8 @@ graph LR
 The words this project uses that the root glossary does not define, regenerated with `nx run validation:coinagerie-check:write`.
 
 - **breadth**: How many direct callees a function has, measured by callidescope and reported in this README's per-callable table.
-- **bullet**: The section shape requiring a pull request's Details section to hold only a bulleted list, using one marker throughout.
-- **convention**: The branch-name and worktree-name rule that session checks enforce, such as type/scope-description for branches.
 - **directive**: A fixed instruction line printed on failure, naming the next skill to invoke, such as rename-branch or using-git-worktrees.
 - **family**: A toolchain directory grouping several ic-suite packages, such as codometer or conformetry, resolved as one unit.
 - **generation**: The conformetry generator run that scaffolds a fixture project inside the publishable-package consumer before its check.
-- **governance**: Repository rules checked by audit-governance, such as CODEOWNERS presence, workflow names, permissions, and owner handles.
-- **live**: Mode that fetches a pull request's metadata from GitHub at run time through gh pr view, not from environment variables.
-- **mirror**: The copy of a validation report written to the GitHub Actions step summary, separate from the console output.
-- **significance**: The release level a commit or pull request title earns under semantic-release rules, judged by the release-significance check.
-- **significant**: Adjective for a commit that earns a release level at or above what the pull request title claims.
 
 <!-- coinagerie:end -->

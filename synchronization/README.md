@@ -1338,11 +1338,7 @@ The words this project uses that the root glossary does not define, regenerated 
 
 - **breadth**: Callidescope measure of how many direct callees a frame fans out to, gated for every traced project in the workspace.
 - **corrupt**: Fake behavior flag corruptsLockfile that simulates a restore which damages the lockfile, testing the safety check.
-- **creation**: Label creation step in pull-request-labels that runs gh to add each missing label and reports success or failure.
-- **mirror**: Symlinked copy of a file, such as AGENTS.md under .github/skills, that sync must never write through.
 - **preset**: Semantic-release preset configuration whose types list conventional-config appends missing commit types into.
-- **reconcile**: Verb for syncing a derived file with its source of truth, the purpose named in each synchronization project target.
-- **reconciliation**: Process of comparing the GitHub label vocabulary against the conventional config, applied by the issue-labels write mode.
 - **rewrite**: Verb for sync replacing dropdown options, markdown tables, or scope arrays inside marked blocks of source files.
 - **scenario**: Name field for each parameterized test case, such as scenarioName in the conformetry generator command tests.
 - **synchronizable**: Interface implemented by each synchronizer command, such as conformetry generators, so one run can dispatch to all of them.

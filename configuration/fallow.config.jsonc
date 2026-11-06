@@ -8,9 +8,7 @@
   },
   "duplicates": {
     "crossLanguage": true,
-    "ignore": [
-      "projects/**/src/modules/*-database/migrations/**/*.ts",
-    ],
+    "ignore": ["projects/**/src/modules/*-database/migrations/**/*.ts"],
     "ignoreDefaults": true,
     "ignoreImports": true,
     "minLines": 12,
@@ -252,7 +250,7 @@
   "ignorePatterns": [
     // pnpm-workspace.yaml's `projects/*` glob matches every direct child of
     // `projects/`, including the pure grouping folders that hold no
-    // package.json of their own — `projects/ic-suite` nests the four IC-suite
+    // package.json of their own — `projects/ic-suite` nests the five IC-suite
     // toolchains, and `projects/caelundas`, `projects/lexico`, and
     // `projects/meanderaw` each nest one domain's projects. Their projects are
     // matched by separate, more specific patterns.

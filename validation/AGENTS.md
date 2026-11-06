@@ -6,8 +6,9 @@
 
 **Purpose**: <!-- Briefly describe the specific purpose of this CLI application -->
 
-Run the repository's one-sided checks — the ones with a `check` and no `write` —
-collecting every failure and printing the command that fixes each.
+Runs codebase and project checks that do not modify their inputs. GitHub issue
+and pull request policy checks, plus repository governance checks run by
+Continuous Compliance, live in the [compliance CLI](../projects/compliance/AGENTS.md).
 
 ### Run Locally
 
@@ -18,10 +19,12 @@ nx run validation:start
 
 ## What belongs here, and what deliberately does not
 
-A check belongs here when it has no `write` side and when it already depends on
-Node. A check with both sides belongs in
-[synchronization](../synchronization/AGENTS.md), whose `SynchronizableCommand`
-contract is `check`/`write` reconciliation.
+A check belongs here when it verifies codebase or project state without
+changing it. Checks that read or update GitHub issues and pull requests, or
+enforce repository governance for Continuous Compliance, belong in
+[compliance](../projects/compliance/AGENTS.md). Codebase-file reconciliation
+with `check` and `write` modes belongs in
+[synchronization](../synchronization/AGENTS.md).
 
 These five stay in `scripts/git/` on purpose, and moving them here would be a
 regression rather than finishing the job:

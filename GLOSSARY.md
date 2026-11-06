@@ -27,7 +27,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **documenter**: Impeccable subagent that records DESIGN.md and its sidecar from a finished build, deriving the design system from the shipped artifact.
 - **fold**: Coinagerie configuration hook that maps a word to its canonical headword, merging families like plurals and spelling variants.
 - **guard**: Nx code-quality target run with typecheck, lint, format, and deprecate across affected projects, in the validate-code step.
-- **ic**: Four in-house toolchains grouped as the suite, callidescope, codependix, codometer, and conformetry, that measure and gate this workspace.
+- **ic**: Five toolchains grouped as the suite, callidescope, codependix, codometer, coinagerie, and conformetry, that measure and gate this workspace.
 - **impeccable**: Design tooling suite whose agents and skills, such as asset producer and finish reviewer, drive approved visual builds.
 - **infrastructure**: Top-level folder of deployment projects such as Helm charts and Terraform, whose words the root glossary skips.
 - **installation**: Setup process that installs the toolchain and dependencies, run by scripts/installation.sh and the installation project.
@@ -49,7 +49,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **reviewer**: The agent role that checks a finished change against its contract and returns an ordered list of fixes, such as the impeccable finish reviewer.
 - **secure**: The secure-code CI target that runs secret, Python AST, dependency, and infrastructure scans on every pull request.
 - **structure**: The enforced folder layout of the workspace, validated by the structure rule and the devcontainer workspace structure check.
-- **suite**: A set of related toolchains or tests, such as the four ic-suite toolchains callidescope, codependix, codometer, and conformetry.
+- **suite**: A set of related toolchains or tests, such as the five ic-suite toolchains callidescope, codependix, codometer, coinagerie, and conformetry.
 - **synchronization**: The synchronization project and its Nx target family, which keep VS Code settings, extensions, and devcontainer config matched to their source.
 - **typecheck**: Nx target that runs type checking per project, driven by the typecheck-code gate in validate-code and CI.
 - **validation**: Workspace package and CLI, such as validation.main.ts, that checks PR bodies, branch names, and worktree names locally.

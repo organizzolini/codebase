@@ -148,6 +148,7 @@ graph LR
   codometer_languages["codometer-languages"]
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
+  compliance["compliance"]
   configuration["configuration"]
   conformetry_cli["conformetry-cli"]
   conformetry_nx["conformetry-nx"]
@@ -175,6 +176,7 @@ graph LR
   codometer_languages --> observability
   codometer_measurement --> observability
   codometer_output --> observability
+  compliance --> observability
   conformetry_cli --> observability
   conformetry_nx --> observability
   documentation --> observability

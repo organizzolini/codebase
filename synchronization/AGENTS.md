@@ -4,7 +4,9 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: <!-- Briefly describe the specific purpose of this CLI application -->
+**Purpose**: Reconciles codebase files and generated repository configuration.
+GitHub issue and pull request metadata checks belong in
+[compliance](../projects/compliance/AGENTS.md).
 
 ### Run Locally
 

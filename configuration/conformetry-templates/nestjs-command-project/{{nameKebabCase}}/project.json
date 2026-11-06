@@ -1,5 +1,6 @@
 {
   "$schema": "{{workspaceRelativePrefix}}node_modules/nx/schemas/project-schema.json",
+  "name": "{{nameKebabCase}}",
   "sourceRoot": "{{type}}/{{nameKebabCase}}",
   "tags": [
     "framework:nest-commander",

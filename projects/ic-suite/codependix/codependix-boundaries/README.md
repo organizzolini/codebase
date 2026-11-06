@@ -548,9 +548,9 @@ Call stacks traced through `projects/ic-suite/codependix/codependix-boundaries`,
 
 | Measure | Value |
 | --- | --- |
-| Callables | 77 |
-| Files | 23 |
-| Calls traced | 83 |
+| Callables | 139 |
+| Files | 25 |
+| Calls traced | 158 |
 | Call stacks | 7 |
 | Deepest stack | 12 |
 | Stacks through recursion | 0 |
@@ -570,16 +570,16 @@ What this project is judged against, as declared in its own `callidescope.config
 **1. `BoundaryCheckService.nestjsModules`** — depth ≥ 12 · orphan-root
 
 ```text
-🚀 BoundaryCheckService.nestjsModules(levelArguments: LevelCheckArguments): Promise<BoundaryCheckOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:145]
-  └─> BoundaryCheckService.runNestjsLevel(args: LevelCheckArguments): Promise<BoundaryCheckOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:158]
+🚀 BoundaryCheckService.nestjsModules(levelArguments: LevelCheckArguments): Promise<BoundaryLevelOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:170]
+  └─> BoundaryCheckService.runNestjsLevel(args: LevelCheckArguments): Promise<BoundaryLevelOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:183]
      ↳ Judges every `framework:nestjs` project's module graph.
-    └─> BoundaryCheckService.runProjectLevel(…): Promise<BoundaryCheckOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:213]
-       ↳ Judges every project at one level, isolating each project's failure.
-      └─> BoundariesService.evaluate(args: EvaluateBoundariesArguments): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:222]
+    └─> BoundaryCheckService.runProjectLevel(…): Promise<BoundaryLevelOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:254]
+       ↳ Judges every project in the build set at one level, isolating each project's failure.
+      └─> BoundariesService.evaluate(args: EvaluateBoundariesArguments): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:258]
          ↳ Every violation one graph's rules report, in the order the rules were declared.
-        └─> BoundariesService.flatMap(…)(this: undefined, rule: CodependixBoundaryRule): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:223]
-          └─> BoundariesService.evaluateAcyclicRule(…): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:140]
-             ↳ Reports every cycle an `acyclic` rule's selected nodes still form.
+        └─> BoundariesService.flatMap(…)(this: undefined, rule: CodependixBoundaryRule): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:259]
+          └─> BoundariesService.evaluateAcyclicRule(…): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:174]
+             ↳ Reports every cycle an `acyclic` rule's selected nodes still form, each charged to every project owning a node on it:…
             └─> BoundarySelectorService.selectIds(…): Set<string> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:106]
                ↳ The ids of every node a selector claims.
               └─> BoundarySelectorService.filter(…)(node: BoundaryNode): boolean [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:116]
@@ -594,16 +594,16 @@ What this project is judged against, as declared in its own `callidescope.config
 **2. `BoundaryCheckService.python`** — depth ≥ 12 · orphan-root
 
 ```text
-🚀 BoundaryCheckService.python(levelArguments: LevelCheckArguments): Promise<BoundaryCheckOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:148]
-  └─> BoundaryCheckService.runPythonImportsLevel(args: LevelCheckArguments): Promise<BoundaryCheckOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:237]
+🚀 BoundaryCheckService.python(levelArguments: LevelCheckArguments): Promise<BoundaryLevelOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:173]
+  └─> BoundaryCheckService.runPythonImportsLevel(args: LevelCheckArguments): Promise<BoundaryLevelOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:285]
      ↳ Judges every `language:python` project's file-level import graph.
-    └─> BoundaryCheckService.runProjectLevel(…): Promise<BoundaryCheckOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:213]
-       ↳ Judges every project at one level, isolating each project's failure.
-      └─> BoundariesService.evaluate(args: EvaluateBoundariesArguments): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:222]
+    └─> BoundaryCheckService.runProjectLevel(…): Promise<BoundaryLevelOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:254]
+       ↳ Judges every project in the build set at one level, isolating each project's failure.
+      └─> BoundariesService.evaluate(args: EvaluateBoundariesArguments): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:258]
          ↳ Every violation one graph's rules report, in the order the rules were declared.
-        └─> BoundariesService.flatMap(…)(this: undefined, rule: CodependixBoundaryRule): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:223]
-          └─> BoundariesService.evaluateAcyclicRule(…): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:140]
-             ↳ Reports every cycle an `acyclic` rule's selected nodes still form.
+        └─> BoundariesService.flatMap(…)(this: undefined, rule: CodependixBoundaryRule): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:259]
+          └─> BoundariesService.evaluateAcyclicRule(…): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:174]
+             ↳ Reports every cycle an `acyclic` rule's selected nodes still form, each charged to every project owning a node on it:…
             └─> BoundarySelectorService.selectIds(…): Set<string> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:106]
                ↳ The ids of every node a selector claims.
               └─> BoundarySelectorService.filter(…)(node: BoundaryNode): boolean [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:116]
@@ -618,16 +618,16 @@ What this project is judged against, as declared in its own `callidescope.config
 **3. `BoundaryCheckService.typescript`** — depth ≥ 12 · orphan-root
 
 ```text
-🚀 BoundaryCheckService.typescript(levelArguments: LevelCheckArguments): Promise<BoundaryCheckOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:150]
-  └─> BoundaryCheckService.runTypescriptImportsLevel(args: LevelCheckArguments): Promise<BoundaryCheckOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:253]
+🚀 BoundaryCheckService.typescript(levelArguments: LevelCheckArguments): Promise<BoundaryLevelOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:175]
+  └─> BoundaryCheckService.runTypescriptImportsLevel(args: LevelCheckArguments): Promise<BoundaryLevelOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:299]
      ↳ Judges every TypeScript project's file-level import graph.
-    └─> BoundaryCheckService.runProjectLevel(…): Promise<BoundaryCheckOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:213]
-       ↳ Judges every project at one level, isolating each project's failure.
-      └─> BoundariesService.evaluate(args: EvaluateBoundariesArguments): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:222]
+    └─> BoundaryCheckService.runProjectLevel(…): Promise<BoundaryLevelOutcome> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:254]
+       ↳ Judges every project in the build set at one level, isolating each project's failure.
+      └─> BoundariesService.evaluate(args: EvaluateBoundariesArguments): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:258]
          ↳ Every violation one graph's rules report, in the order the rules were declared.
-        └─> BoundariesService.flatMap(…)(this: undefined, rule: CodependixBoundaryRule): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:223]
-          └─> BoundariesService.evaluateAcyclicRule(…): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:140]
-             ↳ Reports every cycle an `acyclic` rule's selected nodes still form.
+        └─> BoundariesService.flatMap(…)(this: undefined, rule: CodependixBoundaryRule): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:259]
+          └─> BoundariesService.evaluateAcyclicRule(…): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:174]
+             ↳ Reports every cycle an `acyclic` rule's selected nodes still form, each charged to every project owning a node on it:…
             └─> BoundarySelectorService.selectIds(…): Set<string> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:106]
                ↳ The ids of every node a selector claims.
               └─> BoundarySelectorService.filter(…)(node: BoundaryNode): boolean [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:116]
@@ -645,14 +645,14 @@ What this project is judged against, as declared in its own `callidescope.config
 **4. `BoundaryCheckService.nxProjects`** — depth 11 · orphan-root
 
 ```text
-🚀 BoundaryCheckService.nxProjects(levelArguments: LevelCheckArguments): BoundaryCheckOutcome [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:147]
-  └─> BoundaryCheckService.runNxLevel(args: LevelCheckArguments): BoundaryCheckOutcome [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:177]
-     ↳ Judges the whole-workspace Nx project graph.
-    └─> BoundariesService.evaluate(args: EvaluateBoundariesArguments): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:222]
+🚀 BoundaryCheckService.nxProjects(levelArguments: LevelCheckArguments): BoundaryLevelOutcome [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:172]
+  └─> BoundaryCheckService.runNxLevel(args: LevelCheckArguments): BoundaryLevelOutcome [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:209]
+     ↳ Judges the whole-workspace Nx project graph, drawn over the build set so no edge from a judged project into a…
+    └─> BoundariesService.evaluate(args: EvaluateBoundariesArguments): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:258]
        ↳ Every violation one graph's rules report, in the order the rules were declared.
-      └─> BoundariesService.flatMap(…)(this: undefined, rule: CodependixBoundaryRule): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:223]
-        └─> BoundariesService.evaluateAcyclicRule(…): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:140]
-           ↳ Reports every cycle an `acyclic` rule's selected nodes still form.
+      └─> BoundariesService.flatMap(…)(this: undefined, rule: CodependixBoundaryRule): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:259]
+        └─> BoundariesService.evaluateAcyclicRule(…): BoundaryViolation[] [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:174]
+           ↳ Reports every cycle an `acyclic` rule's selected nodes still form, each charged to every project owning a node on it:…
           └─> BoundarySelectorService.selectIds(…): Set<string> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:106]
              ↳ The ids of every node a selector claims.
             └─> BoundarySelectorService.filter(…)(node: BoundaryNode): boolean [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:116]
@@ -667,7 +667,7 @@ What this project is judged against, as declared in its own `callidescope.config
 **5. `BoundaryCheckService.buildGraph`** — depth 9 · orphan-root
 
 ```text
-🚀 BoundaryCheckService.buildGraph(project: PythonProject): BoundaryGraph [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:241]
+🚀 BoundaryCheckService.buildGraph(project: PythonProject): BoundaryGraph [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:289]
   └─> PythonService.buildGraph(project: PythonProject): PythonImportGraph [projects/ic-suite/codependix/codependix-file-imports/src/modules/python/python.service.ts:39]
      ↳ Builds a Python project's internal file-level import Graph.
     └─> PythonImportGraphService.buildGraph(project: PythonProject): PythonImportGraph [projects/ic-suite/codependix/codependix-file-imports/src/modules/python/python-import-graph.service.ts:180]
@@ -687,7 +687,7 @@ What this project is judged against, as declared in its own `callidescope.config
 **6. `BoundaryCheckService.buildGraph`** — depth ≥ 7 · orphan-root
 
 ```text
-🚀 BoundaryCheckService.buildGraph(project: TypescriptProject): BoundaryGraph [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:257]
+🚀 BoundaryCheckService.buildGraph(project: TypescriptProject): BoundaryGraph [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:303]
   └─> TypescriptService.buildGraph(projectProgram: TypescriptProjectProgram): TypescriptImportGraph [projects/ic-suite/codependix/codependix-file-imports/src/modules/typescript/typescript.service.ts:44]
      ↳ Builds a project's internal file-level import Graph from its program.
     └─> TypescriptImportGraphService.buildGraph(projectProgram: TypescriptProjectProgram): TypescriptImportGraph [projects/ic-suite/codependix/codependix-file-imports/src/modules/typescript/typescript-import-graph.service.ts:185]
@@ -701,18 +701,16 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Resolves a path through symlinks, which is how pnpm workspaces link.
 ```
 
-**7. `BoundaryCheckService.buildGraph`** — depth ≥ 6 · orphan-root
+**7. `BoundaryCheckService.buildGraph`** — depth ≥ 5 · orphan-root
 
 ```text
-🚀 BoundaryCheckService.buildGraph(project: NestjsProject): Promise<BoundaryGraph> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:162]
-  └─> NestjsProjectService.exploreProject(project: NestjsProject): Promise<NestjsExploredModule[]> [projects/ic-suite/codependix/codependix-nestjs-modules/src/modules/nestjs-project/nestjs-project.service.ts:232]
-     ↳ Explores a project's container in preview mode and returns its tree.
-    └─> NestjsProjectService.buildSyntheticRootModule(project: NestjsProject): Promise<DynamicModule> [projects/ic-suite/codependix/codependix-nestjs-modules/src/modules/nestjs-project/nestjs-project.service.ts:59]
-       ↳ Roots a package that bootstraps nothing in every module it defines.
-      └─> NestjsProjectService.map(…)(file: string): Promise<Type<unknown>[]> [projects/ic-suite/codependix/codependix-nestjs-modules/src/modules/nestjs-project/nestjs-project.service.ts:66]
-        └─> NestjsProjectService.loadModuleClasses(file: string): Promise<Type<unknown>[]> [projects/ic-suite/codependix/codependix-nestjs-modules/src/modules/nestjs-project/nestjs-project.service.ts:166]
-           ↳ Imports a module file and returns every module class it exports.
-          └─> NestjsProjectService.map(…)([, moduleClass]: [string, Type<unknown>]): Type<unknown> [projects/ic-suite/codependix/codependix-nestjs-modules/src/modules/nestjs-project/nestjs-project.service.ts:177]
+🚀 BoundaryCheckService.buildGraph(project: NestjsProject): Promise<BoundaryGraph> [projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:187]
+  └─> ModuleGraphService.buildGraph(tree: NestjsExploredModule[], projectName: string): NestjsModuleGraph [projects/ic-suite/codependix/codependix-nestjs-modules/src/modules/module-graph/module-graph.service.ts:168]
+     ↳ Reduces an explored container to a Graph of its module imports.
+    └─> ModuleGraphService.collectEdgesAndNodes(…): { connectedModuleNames: Set<string>; edges: NestjsModuleGraphEdge[]; nodes: NestjsModuleGraphNode[]; } [projects/ic-suite/codependix/codependix-nestjs-modules/src/modules/module-graph/module-graph.service.ts:49]
+       ↳ Walks the tree into the edges worth drawing and the nodes they touch.
+      └─> ModuleGraphService.addNode(name: string, declaringFile: string): void [projects/ic-suite/codependix/codependix-nestjs-modules/src/modules/module-graph/module-graph.service.ts:61]
+        └─> ModuleGraphService.some(…)(node: NestjsModuleGraphNode): boolean [projects/ic-suite/codependix/codependix-nestjs-modules/src/modules/module-graph/module-graph.service.ts:64]
 ```
 
 </details>
@@ -721,55 +719,99 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `RunContextService.build` | 7 | `ConfigurationService.loadConfiguration`, `NeighborhoodService.readProjectGraph`, `RunContextService.resolveProjectGraphPath`, `NeighborhoodService.readProjects`, `RunContextService.loadProjectConfigurations`, `RunContextService.resolveEnabledGraphTypes`, `RunContextService.selectProjects` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:139` |
-| `BoundariesService.evaluateAccessRule` | 5 | `BoundariesService.indexNodes`, `BoundariesService.judgesEdge`, `BoundariesService.resolveNode`, `BoundarySelectorService.matches`, `BoundariesService.buildAccessViolation` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:107` |
-| `BoundaryCheckService.run` | 5 | `BoundaryCheckService.graphTypeForLevel`, `BoundaryCheckService.rulesForLevel`, `BoundaryCheckService.runLevel`, `BoundaryCheckService.flatMap(…)`, `BoundaryCheckService.flatMap(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:284` |
+| `RunContextService.build` | 7 | `RunContextService.loadConfiguration`, `NeighborhoodService.readProjectGraph`, `RunContextService.resolveProjectGraphPath`, `NeighborhoodService.readProjects`, `RunContextService.loadProjectConfigurations`, `RunContextService.resolveProjectSets`, `RunContextService.resolveEnabledGraphTypes` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:246` |
+| `BoundaryCheckService.run` | 6 | `BoundaryCheckService.graphTypeForLevel`, `BoundaryCheckService.rulesForLevel`, `BoundaryCheckService.runLevel`, `BoundaryCheckService.judge`, `BoundaryCheckService.flatMap(…)`, `BoundaryCheckService.flatMap(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:330` |
+| `BoundaryOutcomeReportService.renderMarkdown` | 6 | `BoundaryOutcomeReportService.findWorkspaceFailures`, `BoundaryOutcomeReportService.flatMap(…)`, `BoundaryOutcomeReportService.flatMap(…)`, `BoundaryOutcomeReportService.findProjectFailures`, `BoundaryOutcomeReportService.renderWorkspaceGroup`, `BoundaryOutcomeReportService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:240` |
 
 <details>
-<summary>40 more callables</summary>
+<summary>84 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `BoundaryCheckService.runNxLevel` | 4 | `BoundaryGraphService.buildNxGraph`, `WorkspaceGraphService.buildWorkspaceGraph`, `BoundariesService.evaluate`, `BoundaryCheckService.collectProjectFailure` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:177` |
+| `BoundariesService.evaluateAccessRule` | 5 | `BoundariesService.indexNodes`, `BoundariesService.judgesEdge`, `BoundariesService.resolveNode`, `BoundarySelectorService.matches`, `BoundariesService.buildAccessViolation` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:137` |
+| `BoundaryCheckService.runNxLevel` | 5 | `BoundaryGraphService.buildNxGraph`, `WorkspaceGraphService.buildWorkspaceGraph`, `BoundariesService.evaluate`, `BoundaryFailureService.collect`, `BoundaryCheckService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:209` |
+| `BoundaryOutcomeReportService.renderProjectGroup` | 5 | `BoundaryOutcomeReportService.map(…)`, `BoundaryOutcomeReportService.filter(…)`, `BoundaryOutcomeReportService.map(…)`, `BoundaryOutcomeReportService.filter(…)`, `BoundaryOutcomeReportService.findProjectFailures` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:122` |
+| `BoundariesService.evaluateAcyclicRule` | 4 | `BoundariesService.indexNodes`, `BoundarySelectorService.selectIds`, `BoundaryCyclesService.findCycles`, `BoundariesService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:174` |
+| `BoundaryFailureService.resolveOwnerProject` | 4 | `NeighborhoodService.resolveDependencyClosure`, `BoundaryFailureService.filter(…)`, `BoundaryFailureService.readFramePath`, `BoundaryFailureService.findProjectHolding` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-failure.service.ts:127` |
 | `BoundarySelectorService.selectIds` | 3 | `BoundarySelectorService.map(…)`, `BoundarySelectorService.map(…)`, `BoundarySelectorService.filter(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:106` |
-| `BoundariesService.evaluateAcyclicRule` | 3 | `BoundarySelectorService.selectIds`, `BoundaryCyclesService.findCycles`, `BoundariesService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:140` |
-| `BoundaryCheckService.buildGraph` | 3 | `BoundaryGraphService.buildNestjsGraph`, `ModuleGraphService.buildGraph`, `NestjsProjectService.exploreProject` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:162` |
-| `BoundaryCheckService.buildGraph` | 3 | `BoundaryGraphService.buildTypescriptImportGraph`, `TypescriptService.buildGraph`, `TypescriptService.buildProgram` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:257` |
+| `BoundariesService.map(…)` | 3 | `BoundariesService.buildMessage`, `describeCycle`, `BoundariesService.chargeProjects` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:186` |
+| `BoundaryCheckService.judge` | 3 | `BoundaryCheckService.map(…)`, `BoundaryCheckService.map(…)`, `BoundaryCheckService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:101` |
+| `BoundaryCheckService.buildGraph` | 3 | `BoundaryGraphService.buildNestjsGraph`, `ModuleGraphService.buildGraph`, `NestjsProjectService.exploreProject` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:187` |
+| `BoundaryCheckService.buildGraph` | 3 | `BoundaryGraphService.buildTypescriptImportGraph`, `TypescriptService.buildGraph`, `TypescriptService.buildProgram` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:303` |
+| `RunContextService.resolveBuildProjects` | 3 | `NeighborhoodService.resolveDependencyClosure`, `RunContextService.map(…)`, `RunContextService.filter(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:128` |
+| `RunContextService.resolveProjectSets` | 3 | `RunContextService.selectProjects`, `emptySelectionError`, `RunContextService.resolveBuildProjects` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:191` |
 | `BoundaryCyclesService.findCycles` | 2 | `BoundaryCyclesService.buildAdjacency`, `BoundaryCyclesService.walk` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-cycles.service.ts:127` |
 | `BoundarySelectorService.matches` | 2 | `BoundarySelectorService.matchesGlobs`, `BoundarySelectorService.matchesTags` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:86` |
-| `BoundariesService.map(…)` | 2 | `BoundariesService.buildMessage`, `describeCycle` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:151` |
-| `BoundariesService.flatMap(…)` | 2 | `BoundariesService.evaluateAcyclicRule`, `BoundariesService.evaluateAccessRule` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:223` |
+| `BoundariesService.buildAccessViolation` | 2 | `BoundariesService.buildMessage`, `BoundariesService.chargeProjects` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:58` |
+| `BoundariesService.chargeProjects` | 2 | `BoundariesService.map(…)`, `BoundariesService.toSorted(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:113` |
+| `BoundariesService.flatMap(…)` | 2 | `BoundariesService.evaluateAcyclicRule`, `BoundariesService.evaluateAccessRule` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:259` |
+| `BoundaryFailureService.findProjectHolding` | 2 | `BoundaryFailureService.filter(…)`, `BoundaryFailureService.toSorted(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-failure.service.ts:51` |
 | `BoundaryGraphService.buildNxGraph` | 2 | `BoundaryGraphService.map(…)`, `BoundaryGraphService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-graph.service.ts:101` |
-| `BoundaryCheckService.runNestjsLevel` | 2 | `BoundaryCheckService.runProjectLevel`, `NestjsProjectService.discoverProjects` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:158` |
-| `BoundaryCheckService.runProjectLevel` | 2 | `BoundariesService.evaluate`, `BoundaryCheckService.collectProjectFailure` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:213` |
-| `BoundaryCheckService.runPythonImportsLevel` | 2 | `BoundaryCheckService.runProjectLevel`, `PythonService.discoverProjects` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:237` |
-| `BoundaryCheckService.buildGraph` | 2 | `BoundaryGraphService.buildPythonImportGraph`, `PythonService.buildGraph` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:241` |
-| `BoundaryCheckService.runTypescriptImportsLevel` | 2 | `BoundaryCheckService.runProjectLevel`, `TypescriptService.discoverProjects` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:253` |
+| `BoundaryCheckService.runNestjsLevel` | 2 | `BoundaryCheckService.runProjectLevel`, `NestjsProjectService.discoverProjects` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:183` |
+| `BoundaryCheckService.runProjectLevel` | 2 | `BoundariesService.evaluate`, `BoundaryFailureService.collect` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:254` |
+| `BoundaryCheckService.runPythonImportsLevel` | 2 | `BoundaryCheckService.runProjectLevel`, `PythonService.discoverProjects` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:285` |
+| `BoundaryCheckService.buildGraph` | 2 | `BoundaryGraphService.buildPythonImportGraph`, `PythonService.buildGraph` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:289` |
+| `BoundaryCheckService.runTypescriptImportsLevel` | 2 | `BoundaryCheckService.runProjectLevel`, `TypescriptService.discoverProjects` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:299` |
+| `BoundaryOutcomeReportService.map(…)` | 2 | `BoundaryOutcomeReportService.renderBullet`, `BoundaryOutcomeReportService.renderViolation` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:130` |
+| `BoundaryOutcomeReportService.map(…)` | 2 | `BoundaryOutcomeReportService.renderBullet`, `BoundaryOutcomeReportService.renderFailure` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:135` |
+| `BoundaryOutcomeReportService.renderWorkspaceGroup` | 2 | `BoundaryOutcomeReportService.map(…)`, `BoundaryOutcomeReportService.findWorkspaceFailures` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:166` |
+| `BoundaryOutcomeReportService.map(…)` | 2 | `BoundaryOutcomeReportService.renderBullet`, `BoundaryOutcomeReportService.renderFailure` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:167` |
+| `BoundaryOutcomeReportService.buildReport` | 2 | `BoundaryOutcomeReportService.map(…)`, `BoundaryOutcomeReportService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:187` |
+| `RunContextService.findUnmatchedSelection` | 2 | `RunContextService.filter(…)`, `RunContextService.filter(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:299` |
 | `BoundaryCyclesService.recordCycle` | 1 | `BoundaryCyclesService.buildCycleKey` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-cycles.service.ts:73` |
 | `BoundaryCyclesService.walk` | 1 | `BoundaryCyclesService.recordCycle` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-cycles.service.ts:91` |
 | `BoundarySelectorService.matchesGlobs` | 1 | `BoundarySelectorService.some(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:37` |
 | `BoundarySelectorService.matchesTags` | 1 | `BoundarySelectorService.some(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:59` |
 | `BoundarySelectorService.some(…)` | 1 | `BoundarySelectorService.some(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:71` |
 | `BoundarySelectorService.filter(…)` | 1 | `BoundarySelectorService.matches` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-selector.service.ts:116` |
-| `BoundariesService.buildAccessViolation` | 1 | `BoundariesService.buildMessage` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:54` |
-| `BoundariesService.indexNodes` | 1 | `BoundariesService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:166` |
-| `BoundariesService.evaluate` | 1 | `BoundariesService.flatMap(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:222` |
-| `BoundaryReportService.renderSummary` | 1 | `BoundaryReportService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-report.service.ts:36` |
-| `BoundaryReportService.renderViolations` | 1 | `BoundaryReportService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-report.service.ts:56` |
+| `BoundariesService.map(…)` | 1 | `BoundariesService.resolveNode` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:120` |
+| `BoundariesService.indexNodes` | 1 | `BoundariesService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:202` |
+| `BoundariesService.evaluate` | 1 | `BoundariesService.flatMap(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundaries.service.ts:258` |
+| `BoundaryReportService.describeCharge` | 1 | `BoundaryReportService.isChargedToEveryProject` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-report.service.ts:43` |
+| `BoundaryReportService.isChargedToEveryProject` | 1 | `BoundaryReportService.every(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-report.service.ts:67` |
+| `BoundaryReportService.renderNotes` | 1 | `BoundaryReportService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-report.service.ts:84` |
+| `BoundaryReportService.map(…)` | 1 | `BoundaryReportService.renderViolation` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-report.service.ts:85` |
+| `BoundaryReportService.renderSummary` | 1 | `BoundaryReportService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-report.service.ts:97` |
+| `BoundaryReportService.renderViolation` | 1 | `BoundaryReportService.describeCharge` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-report.service.ts:118` |
+| `BoundaryReportService.renderViolations` | 1 | `BoundaryReportService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-report.service.ts:143` |
+| `BoundaryReportService.map(…)` | 1 | `BoundaryReportService.renderViolation` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundaries/boundary-report.service.ts:144` |
+| `BoundaryFailureService.readFramePath` | 1 | `BoundaryFailureService.readFrameLocation` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-failure.service.ts:102` |
+| `BoundaryFailureService.collect` | 1 | `BoundaryFailureService.resolveOwnerProject` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-failure.service.ts:165` |
 | `BoundaryGraphService.buildFileNodes` | 1 | `BoundaryGraphService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-graph.service.ts:45` |
 | `BoundaryGraphService.buildNestjsGraph` | 1 | `BoundaryGraphService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-graph.service.ts:77` |
 | `BoundaryGraphService.map(…)` | 1 | `BoundaryGraphService.resolveProjectRoot` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-graph.service.ts:114` |
 | `BoundaryGraphService.buildPythonImportGraph` | 1 | `BoundaryGraphService.buildFileNodes` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-graph.service.ts:128` |
 | `BoundaryGraphService.buildTypescriptImportGraph` | 1 | `BoundaryGraphService.buildFileNodes` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-graph.service.ts:141` |
-| `BoundaryCheckService.nestjsModules` | 1 | `BoundaryCheckService.runNestjsLevel` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:145` |
-| `BoundaryCheckService.nxProjects` | 1 | `BoundaryCheckService.runNxLevel` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:147` |
-| `BoundaryCheckService.python` | 1 | `BoundaryCheckService.runPythonImportsLevel` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:148` |
-| `BoundaryCheckService.typescript` | 1 | `BoundaryCheckService.runTypescriptImportsLevel` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:150` |
-| `RunContextService.loadProjectConfigurations` | 1 | `RunContextService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:52` |
-| `RunContextService.map(…)` | 1 | `ConfigurationService.loadProjectConfiguration` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:57` |
-| `RunContextService.resolveEnabledGraphTypes` | 1 | `RunContextService.filter(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:79` |
-| `RunContextService.selectProjects` | 1 | `RunContextService.filter(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:114` |
-| `RunContextService.filter(…)` | 1 | `ConfigurationService.isProjectSelected` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:119` |
+| `BoundaryCheckService.map(…)` | 1 | `BoundaryCheckService.resolveVerdict` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:110` |
+| `BoundaryCheckService.map(…)` | 1 | `BoundaryCheckService.resolveVerdict` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:114` |
+| `BoundaryCheckService.resolveVerdict` | 1 | `BoundaryCheckService.some(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:122` |
+| `BoundaryCheckService.nestjsModules` | 1 | `BoundaryCheckService.runNestjsLevel` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:170` |
+| `BoundaryCheckService.nxProjects` | 1 | `BoundaryCheckService.runNxLevel` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:172` |
+| `BoundaryCheckService.python` | 1 | `BoundaryCheckService.runPythonImportsLevel` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:173` |
+| `BoundaryCheckService.typescript` | 1 | `BoundaryCheckService.runTypescriptImportsLevel` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-check.service.ts:175` |
+| `BoundaryOutcomeReportService.findProjectFailures` | 1 | `BoundaryOutcomeReportService.filter(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:41` |
+| `BoundaryOutcomeReportService.filter(…)` | 1 | `BoundaryOutcomeReportService.isWorkspaceWide` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:45` |
+| `BoundaryOutcomeReportService.findWorkspaceFailures` | 1 | `BoundaryOutcomeReportService.filter(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:50` |
+| `BoundaryOutcomeReportService.filter(…)` | 1 | `BoundaryOutcomeReportService.isWorkspaceWide` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:53` |
+| `BoundaryOutcomeReportService.isWorkspaceWide` | 1 | `BoundaryReportService.isChargedToEveryProject` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:59` |
+| `BoundaryOutcomeReportService.renderBullet` | 1 | `BoundaryOutcomeReportService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:77` |
+| `BoundaryOutcomeReportService.renderFailure` | 1 | `BoundaryReportService.renderViolation` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:95` |
+| `BoundaryOutcomeReportService.renderViolation` | 1 | `BoundaryReportService.renderViolation` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:150` |
+| `BoundaryOutcomeReportService.renderFailures` | 1 | `BoundaryOutcomeReportService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:220` |
+| `BoundaryOutcomeReportService.map(…)` | 1 | `BoundaryOutcomeReportService.renderFailure` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:224` |
+| `BoundaryOutcomeReportService.map(…)` | 1 | `BoundaryOutcomeReportService.renderProjectGroup` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/boundary-check/boundary-outcome-report.service.ts:265` |
+| `emptySelectionError` | 1 | `InputError.constructor` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.constants.ts:15` |
+| `RunContextService.isSelectedBy` | 1 | `ConfigurationService.isProjectSelected` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:54` |
+| `RunContextService.loadConfiguration` | 1 | `ConfigurationService.loadConfiguration` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:74` |
+| `RunContextService.loadProjectConfigurations` | 1 | `RunContextService.map(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:99` |
+| `RunContextService.map(…)` | 1 | `ConfigurationService.loadProjectConfiguration` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:104` |
+| `RunContextService.resolveEnabledGraphTypes` | 1 | `RunContextService.filter(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:157` |
+| `RunContextService.selectProjects` | 1 | `RunContextService.filter(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:222` |
+| `RunContextService.filter(…)` | 1 | `RunContextService.isSelectedBy` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:227` |
+| `RunContextService.matches` | 1 | `RunContextService.some(…)` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:306` |
+| `RunContextService.some(…)` | 1 | `RunContextService.isSelectedBy` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:310` |
+| `RunContextService.filter(…)` | 1 | `RunContextService.matches` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:323` |
+| `RunContextService.filter(…)` | 1 | `RunContextService.matches` | `projects/ic-suite/codependix/codependix-boundaries/src/modules/run-context/run-context.service.ts:326` |
 
 </details>
 <!-- callidescope:end -->
