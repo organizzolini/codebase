@@ -4,7 +4,7 @@ import type {
   CalendarEventRecord,
   EventFacet,
   EventsDataset,
-} from "./events-database.types";
+} from "./calendar-records.types";
 
 export const CONSTANTS_CACHE = new Map<
   string,

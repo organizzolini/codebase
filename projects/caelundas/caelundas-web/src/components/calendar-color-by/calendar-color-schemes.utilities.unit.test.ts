@@ -7,7 +7,7 @@ import { COLOR_PALETTE } from "./calendar-color-schemes.constants";
 import { createColorScheme } from "./calendar-color-schemes.utilities";
 import { EVENT_COLOR_RULES } from "./calendar-colors.constants";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 
 let FIELDS: ReturnType<typeof createEventGroupFields> = [];
 

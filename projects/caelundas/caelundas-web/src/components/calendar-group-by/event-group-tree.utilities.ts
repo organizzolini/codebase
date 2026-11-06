@@ -7,7 +7,7 @@ import { DERIVED_GROUP_IDS } from "./event-groups.constants";
 import type {
   CalendarEventGroupKey,
   CalendarEventRecord,
-} from "../events-calendar/events-database.types";
+} from "../events-calendar/calendar-records.types";
 import type {
   GroupBucket,
   GroupDescription,

@@ -1,5 +1,5 @@
+import type { EventsWindow } from "./calendar-records.types";
 import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
-import type { EventsWindow } from "./events-database.types";
 
 /**
  * What else decides the days a view shows: how many the agenda lists, and

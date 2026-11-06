@@ -2,7 +2,7 @@ import { findFacets } from "../src/components/events-calendar/events-api.utiliti
 
 import { type CalendarApiOptions, serveCalendarApi } from "./calendar-api";
 
-import type { EventFacet } from "../src/components/events-calendar/events-database.types";
+import type { EventFacet } from "../src/components/events-calendar/calendar-records.types";
 
 /**
  * The facets the mocked API answers for the whole dataset, from the fixture

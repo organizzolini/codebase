@@ -21,14 +21,14 @@ import type {
   FacetsQuery,
   FilterCollectionsQuery,
 } from "../../graphql/generated/operations";
-import type { ViewWindows, ViewWindowSearch } from "./calendar-window.types";
-import type { EventsReadQuery } from "./events-api.types";
 import type {
   CalendarEventRecord,
   EventFacet,
   EventsDataset,
   EventsWindow,
-} from "./events-database.types";
+} from "./calendar-records.types";
+import type { ViewWindows, ViewWindowSearch } from "./calendar-window.types";
+import type { EventsReadQuery } from "./events-api.types";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 
 // 🌎 Public Functions

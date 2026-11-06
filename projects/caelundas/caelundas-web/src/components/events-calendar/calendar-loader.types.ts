@@ -6,7 +6,7 @@ import type {
   EventFacet,
   EventsDataset,
   EventsWindow,
-} from "./events-database.types";
+} from "./calendar-records.types";
 
 /**
  * Everything the calendar page renders from one load.

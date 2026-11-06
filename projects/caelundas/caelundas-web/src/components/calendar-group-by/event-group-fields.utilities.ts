@@ -12,7 +12,7 @@ import {
   MAXIMUM_GROUP_LEVELS,
 } from "./event-groups.constants";
 
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type {
   EventGroupField,
   EventGrouping,

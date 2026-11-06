@@ -1,5 +1,5 @@
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type { AgendaListRow, AgendaRow } from "./calendar-agenda.types";
 
 // ♟️ Constants

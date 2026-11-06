@@ -32,7 +32,7 @@ import type {
   EventFacet,
   EventsDataset,
   EventsWindow,
-} from "./events-database.types";
+} from "./calendar-records.types";
 
 /**
  * Forgets every read the loader kept, so the next load asks the API again.

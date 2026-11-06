@@ -2,7 +2,7 @@ import type {
   EventFilterGroupInput,
   EventGroupingInput,
 } from "../../graphql/generated/operations";
-import type { EventsWindow } from "./events-database.types";
+import type { EventsWindow } from "./calendar-records.types";
 
 // 🏷️ Types
 
