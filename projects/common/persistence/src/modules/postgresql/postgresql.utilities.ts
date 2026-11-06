@@ -1,10 +1,10 @@
 import { DataSource } from "typeorm";
-import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { z } from "zod";
 
 import {
   DEFAULT_POSTGRES_HOST,
   DEFAULT_POSTGRES_PORT,
+  PluralSnakeNamingStrategy,
   POSTGRES_CONNECTION_FIELDS,
   POSTGRES_ENVIRONMENT_SUFFIXES,
   PROJECT_NAME_PATTERN,
@@ -108,8 +108,8 @@ export function postgresConnection({
  * on the connection rather than on any entity, so it comes from
  * configuration rather than code, and pinned as every session's search
  * path, so unqualified SQL and TypeORM's `current_schema()` fallback both
- * land in it rather than in `public`. Snake case unless another strategy is
- * given, so a raw SQL reader never quotes a column.
+ * land in it rather than in `public`. Snake case with plural table names unless
+ * another strategy is given, so a raw SQL reader never quotes a name.
  *
  * Throws when the schema could not be named unquoted.
  */
@@ -125,7 +125,7 @@ export function postgresDataSourceOptions(
     logging: false,
     migrations,
     migrationsRun: false,
-    namingStrategy: namingStrategy ?? new SnakeNamingStrategy(),
+    namingStrategy: namingStrategy ?? new PluralSnakeNamingStrategy(),
     password: connection.password,
     port: connection.port,
     schema: connection.schema,
