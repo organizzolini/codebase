@@ -815,6 +815,8 @@ graph LR
   module_codometer_output_MarkdownModule["codometer-output/MarkdownModule"]
   module_codometer_output_RenderModule["codometer-output/RenderModule"]
   module_codometer_output_ReportModule["codometer-output/ReportModule"]
+  module_coinagerie_cli_BatchModule["coinagerie-cli/BatchModule"]
+  module_coinagerie_cli_CheckModule["coinagerie-cli/CheckModule"]
   module_coinagerie_cli_CollectModule["coinagerie-cli/CollectModule"]
   module_coinagerie_cli_ComparisonModule["coinagerie-cli/ComparisonModule"]
   module_coinagerie_cli_ConfigModule["coinagerie-cli/ConfigModule"]
@@ -1622,6 +1624,10 @@ graph LR
   module_codometer_output_ConfigurationListingModule --> module_codometer_output_DiscoveryModule
   module_codometer_output_DeliveryModule --> module_codometer_output_JsonModule
   module_codometer_output_DeliveryModule --> module_codometer_output_MarkdownModule
+  module_coinagerie_cli_BatchModule --> module_coinagerie_cli_CheckModule
+  module_coinagerie_cli_CheckModule --> module_coinagerie_cli_ConfigurationModule
+  module_coinagerie_cli_CheckModule --> module_coinagerie_cli_DeliveryModule
+  module_coinagerie_cli_CheckModule --> module_coinagerie_cli_VocabularyModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_ComparisonModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_ConfigurationModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_DeliveryModule
@@ -1643,6 +1649,7 @@ graph LR
   module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_TomlModule
   module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_TypescriptModule
   module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_YamlModule
+  module_coinagerie_cli_MainModule --> module_coinagerie_cli_BatchModule
   module_coinagerie_cli_MainModule --> module_coinagerie_cli_CollectModule
   module_coinagerie_cli_MainModule --> module_coinagerie_cli_DiscoveryModule
   module_coinagerie_cli_PythonModule --> module_coinagerie_cli_ScannerModule
@@ -4012,6 +4019,17 @@ graph LR
   file_coinagerie_cli_src_coinagerie_cli_repl_ts["coinagerie-cli/src/coinagerie-cli.repl.ts"]
   file_coinagerie_cli_src_coinagerie_cli_repl_unit_test_ts["coinagerie-cli/src/coinagerie-cli.repl.unit.test.ts"]
   file_coinagerie_cli_src_index_ts["coinagerie-cli/src/index.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_command_ts["coinagerie-cli/src/modules/batch/batch.command.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_command_unit_test_ts["coinagerie-cli/src/modules/batch/batch.command.unit.test.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_constants_ts["coinagerie-cli/src/modules/batch/batch.constants.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_module_ts["coinagerie-cli/src/modules/batch/batch.module.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_types_ts["coinagerie-cli/src/modules/batch/batch.types.ts"]
+  file_coinagerie_cli_src_modules_check_check_constants_ts["coinagerie-cli/src/modules/check/check.constants.ts"]
+  file_coinagerie_cli_src_modules_check_check_module_ts["coinagerie-cli/src/modules/check/check.module.ts"]
+  file_coinagerie_cli_src_modules_check_check_service_ts["coinagerie-cli/src/modules/check/check.service.ts"]
+  file_coinagerie_cli_src_modules_check_check_service_unit_test_ts["coinagerie-cli/src/modules/check/check.service.unit.test.ts"]
+  file_coinagerie_cli_src_modules_check_check_types_ts["coinagerie-cli/src/modules/check/check.types.ts"]
+  file_coinagerie_cli_src_modules_check_check_utilities_ts["coinagerie-cli/src/modules/check/check.utilities.ts"]
   file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts["coinagerie-cli/src/modules/collect/collect.command.end-to-end.test.ts"]
   file_coinagerie_cli_src_modules_collect_collect_command_ts["coinagerie-cli/src/modules/collect/collect.command.ts"]
   file_coinagerie_cli_src_modules_collect_collect_command_unit_test_ts["coinagerie-cli/src/modules/collect/collect.command.unit.test.ts"]
@@ -4141,6 +4159,12 @@ graph LR
   file_coinagerie_nx_eslint_config_ts["coinagerie-nx/eslint.config.ts"]
   file_coinagerie_nx_src_coinagerie_nx_module_ts["coinagerie-nx/src/coinagerie-nx.module.ts"]
   file_coinagerie_nx_src_coinagerie_nx_module_unit_test_ts["coinagerie-nx/src/coinagerie-nx.module.unit.test.ts"]
+  file_coinagerie_nx_src_executors_check_batch_executor_ts["coinagerie-nx/src/executors/check/batch-executor.ts"]
+  file_coinagerie_nx_src_executors_check_batch_executor_unit_test_ts["coinagerie-nx/src/executors/check/batch-executor.unit.test.ts"]
+  file_coinagerie_nx_src_executors_check_executor_ts["coinagerie-nx/src/executors/check/executor.ts"]
+  file_coinagerie_nx_src_executors_check_executor_types_ts["coinagerie-nx/src/executors/check/executor.types.ts"]
+  file_coinagerie_nx_src_executors_check_executor_unit_test_ts["coinagerie-nx/src/executors/check/executor.unit.test.ts"]
+  file_coinagerie_nx_src_executors_check_executor_utilities_ts["coinagerie-nx/src/executors/check/executor.utilities.ts"]
   file_coinagerie_nx_src_index_ts["coinagerie-nx/src/index.ts"]
   file_coinagerie_nx_src_index_unit_test_ts["coinagerie-nx/src/index.unit.test.ts"]
   file_coinagerie_nx_src_modules_options_options_constants_ts["coinagerie-nx/src/modules/options/options.constants.ts"]
@@ -4155,6 +4179,7 @@ graph LR
   file_coinagerie_nx_src_modules_plugin_plugin_service_ts["coinagerie-nx/src/modules/plugin/plugin.service.ts"]
   file_coinagerie_nx_src_modules_plugin_plugin_service_unit_test_ts["coinagerie-nx/src/modules/plugin/plugin.service.unit.test.ts"]
   file_coinagerie_nx_src_modules_plugin_plugin_types_ts["coinagerie-nx/src/modules/plugin/plugin.types.ts"]
+  file_coinagerie_nx_testing_fake_command_line_ts["coinagerie-nx/testing/fake-command-line.ts"]
   file_coinagerie_nx_testing_fake_workspace_ts["coinagerie-nx/testing/fake-workspace.ts"]
   file_coinagerie_nx_testing_mocks_ts["coinagerie-nx/testing/mocks.ts"]
   file_coinagerie_nx_testing_setup_ts["coinagerie-nx/testing/setup.ts"]
@@ -10394,9 +10419,26 @@ graph LR
   file_coinagerie_cli_src_coinagerie_cli_main_end_to_end_test_ts --> file_coinagerie_cli_testing_run_command_ts
   file_coinagerie_cli_src_coinagerie_cli_main_ts --> file_coinagerie_cli_src_coinagerie_cli_module_ts
   file_coinagerie_cli_src_coinagerie_cli_module_ts --> file_coinagerie_cli_src_coinagerie_cli_constants_ts
+  file_coinagerie_cli_src_coinagerie_cli_module_ts --> file_coinagerie_cli_src_modules_batch_batch_module_ts
   file_coinagerie_cli_src_coinagerie_cli_module_ts --> file_coinagerie_cli_src_modules_collect_collect_module_ts
   file_coinagerie_cli_src_coinagerie_cli_module_unit_test_ts --> file_coinagerie_cli_src_coinagerie_cli_module_ts
   file_coinagerie_cli_src_coinagerie_cli_repl_ts --> file_coinagerie_cli_src_coinagerie_cli_module_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_ts --> file_coinagerie_cli_src_modules_batch_batch_constants_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_ts --> file_coinagerie_cli_src_modules_batch_batch_types_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_ts --> file_coinagerie_cli_src_modules_check_check_service_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_unit_test_ts --> file_coinagerie_cli_src_modules_batch_batch_command_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_unit_test_ts --> file_coinagerie_cli_src_modules_check_check_service_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_unit_test_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
+  file_coinagerie_cli_src_modules_batch_batch_module_ts --> file_coinagerie_cli_src_modules_batch_batch_command_ts
+  file_coinagerie_cli_src_modules_batch_batch_module_ts --> file_coinagerie_cli_src_modules_check_check_module_ts
+  file_coinagerie_cli_src_modules_batch_batch_types_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
+  file_coinagerie_cli_src_modules_check_check_module_ts --> file_coinagerie_cli_src_modules_check_check_service_ts
+  file_coinagerie_cli_src_modules_check_check_service_ts --> file_coinagerie_cli_src_modules_check_check_constants_ts
+  file_coinagerie_cli_src_modules_check_check_service_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
+  file_coinagerie_cli_src_modules_check_check_service_ts --> file_coinagerie_cli_src_modules_check_check_utilities_ts
+  file_coinagerie_cli_src_modules_check_check_service_unit_test_ts --> file_coinagerie_cli_src_modules_check_check_service_ts
+  file_coinagerie_cli_src_modules_check_check_utilities_ts --> file_coinagerie_cli_src_modules_check_check_constants_ts
+  file_coinagerie_cli_src_modules_check_check_utilities_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
   file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts --> file_coinagerie_cli_testing_examples_ts
   file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts --> file_coinagerie_cli_testing_fixture_tree_ts
   file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts --> file_coinagerie_cli_testing_run_command_ts
@@ -10533,6 +10575,17 @@ graph LR
   file_coinagerie_languages_src_modules_yaml_yaml_service_unit_test_ts --> file_coinagerie_languages_src_modules_yaml_yaml_service_ts
   file_coinagerie_nx_src_coinagerie_nx_module_ts --> file_coinagerie_nx_src_modules_plugin_plugin_module_ts
   file_coinagerie_nx_src_coinagerie_nx_module_unit_test_ts --> file_coinagerie_nx_src_coinagerie_nx_module_ts
+  file_coinagerie_nx_src_executors_check_batch_executor_ts --> file_coinagerie_nx_src_executors_check_executor_types_ts
+  file_coinagerie_nx_src_executors_check_batch_executor_ts --> file_coinagerie_nx_src_executors_check_executor_utilities_ts
+  file_coinagerie_nx_src_executors_check_batch_executor_unit_test_ts --> file_coinagerie_nx_src_executors_check_batch_executor_ts
+  file_coinagerie_nx_src_executors_check_batch_executor_unit_test_ts --> file_coinagerie_nx_src_executors_check_executor_types_ts
+  file_coinagerie_nx_src_executors_check_batch_executor_unit_test_ts --> file_coinagerie_nx_testing_fake_command_line_ts
+  file_coinagerie_nx_src_executors_check_executor_ts --> file_coinagerie_nx_src_executors_check_executor_types_ts
+  file_coinagerie_nx_src_executors_check_executor_ts --> file_coinagerie_nx_src_executors_check_executor_utilities_ts
+  file_coinagerie_nx_src_executors_check_executor_unit_test_ts --> file_coinagerie_nx_src_executors_check_executor_ts
+  file_coinagerie_nx_src_executors_check_executor_unit_test_ts --> file_coinagerie_nx_src_executors_check_executor_types_ts
+  file_coinagerie_nx_src_executors_check_executor_unit_test_ts --> file_coinagerie_nx_testing_fake_command_line_ts
+  file_coinagerie_nx_src_executors_check_executor_utilities_ts --> file_coinagerie_nx_src_executors_check_executor_types_ts
   file_coinagerie_nx_src_index_ts --> file_coinagerie_nx_src_modules_options_options_constants_ts
   file_coinagerie_nx_src_index_ts --> file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_ts
   file_coinagerie_nx_src_index_ts --> file_coinagerie_nx_src_modules_plugin_plugin_constants_ts
@@ -16010,8 +16063,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-68214-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-5.20_MB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-71277-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-5.04_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-168-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-654-3178c6?style=flat-square)
 
@@ -16022,7 +16075,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-262-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1598-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1600-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
@@ -16035,11 +16088,11 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Methods](https://img.shields.io/badge/Methods-944-15803d?style=flat-square)
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-2981-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-1106-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3292-dc2626?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3294-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-3025-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-892-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3262-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-6226-475569?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-894-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3267-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-6244-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -16064,9 +16117,9 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-1263-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-461-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-3003-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2782-16a34a?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2781-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-45-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-200-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-201-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-1703-475569?style=flat-square)
 ![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4751-dc2626?style=flat-square)
@@ -16195,16 +16248,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-144-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-29977-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-28446-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-848-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-753-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-8103-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6572-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-975-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-6289-22c55e?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4758-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-287-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-2853-0ea5e9?style=flat-square)
@@ -16224,13 +16277,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7923 |
-| Files | 2650 |
-| Calls traced | 8659 |
-| Call stacks | 2196 |
+| Callables | 7954 |
+| Files | 2663 |
+| Calls traced | 8689 |
+| Call stacks | 2202 |
 | Deepest stack | 17 |
 | Stacks through recursion | 15 |
-| Unfollowable calls | 491 |
+| Unfollowable calls | 492 |
 
 ### Projects
 
@@ -16247,7 +16300,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
 | `projects/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
 | `projects/ic-suite/coinagerie/coinagerie-cli` | 13 | 13 | 0 | 5 |
-| `projects/ic-suite/coinagerie/coinagerie-nx` | 6 | 6 | 0 | 3 |
+| `projects/ic-suite/coinagerie/coinagerie-nx` | 6 | 6 | 0 | 4 |
 | `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 9 |
 | `projects/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
 | `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |

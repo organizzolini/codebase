@@ -1,3 +1,13 @@
+## 0.0.5 (2026-11-06)
+
+### 🔥 Performance
+
+- **coinagerie:** ⚡️ judge every project's glossary from one batched command-line run ([#2115](https://github.com/organizzolini/codebase/pull/2115))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.5
+
 ## 0.0.4 (2026-11-04)
 
 ### 🧱 Updated Dependencies
