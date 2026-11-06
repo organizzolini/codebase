@@ -80,6 +80,11 @@ The API emits its schema to the gitignored `caelundas-api/src/schema.gql` each
 time it boots, so boot it first (`nx run caelundas-api:start`) when the file is
 missing.
 
+`src/components/events-calendar/events-api.utilities.ts` sends a generated
+document to the API with `queryApi`. The API's address is the
+`VITE_CAELUNDAS_API_URL` build variable, `http://localhost:6173/graphql` when
+unset.
+
 ## Architecture Overview
 
 ### Tech Stack
