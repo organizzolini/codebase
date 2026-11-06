@@ -1,8 +1,10 @@
 // 🏷️ Types
 import type { DetectedCalendarEvent } from "../database/database.types";
-import type { CalendarEventTag } from "../database/entities/calendar-event-tag.entity";
-import type { CalendarEvent } from "../database/entities/calendar-event.entity";
 import type { TagPath } from "../tags/tags.types";
+import type {
+  CalendarEvent,
+  CalendarEventTag,
+} from "@codebase/caelundas-entities";
 import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 import type { Moment } from "moment-timezone";
 

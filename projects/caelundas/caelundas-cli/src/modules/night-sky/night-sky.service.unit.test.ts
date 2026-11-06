@@ -7,14 +7,13 @@ import { Test } from "@nestjs/testing";
 import { getDataSourceToken } from "@nestjs/typeorm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import {
+  CAELUNDAS_DATABASE_ENTITIES,
+  CAELUNDAS_DATABASE_MIGRATIONS,
+  CAELUNDAS_DATABASE_PROJECT,
+} from "@codebase/caelundas-entities";
 import { LoggerService } from "@codebase/observability";
 import { createSqliteDataSource } from "@codebase/persistence";
-
-import {
-  DATABASE_ENTITIES,
-  DATABASE_MIGRATIONS,
-  DATABASE_PROJECT,
-} from "../database/database.constants";
 
 import { NightSkyService } from "./night-sky.service";
 
@@ -67,9 +66,9 @@ describe(NightSkyService, () => {
 
     dataSource = createSqliteDataSource(
       {
-        entities: DATABASE_ENTITIES,
-        migrations: DATABASE_MIGRATIONS,
-        project: DATABASE_PROJECT,
+        entities: CAELUNDAS_DATABASE_ENTITIES,
+        migrations: CAELUNDAS_DATABASE_MIGRATIONS,
+        project: CAELUNDAS_DATABASE_PROJECT,
       },
       { CAELUNDAS_SQLITE_DATABASE: ":memory:" },
     );

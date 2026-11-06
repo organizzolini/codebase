@@ -4,11 +4,12 @@ import { Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
+import {
+  Constellation,
+  ConstellationLine,
+  Star,
+} from "@codebase/caelundas-entities";
 import { LoggerService } from "@codebase/observability";
-
-import { ConstellationLine } from "../database/entities/constellation-line.entity";
-import { Constellation } from "../database/entities/constellation.entity";
-import { Star } from "../database/entities/star.entity";
 
 import { INSERT_BATCH_SIZE } from "./night-sky.constants";
 import { buildNightSkyRows } from "./night-sky.utilities";

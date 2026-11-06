@@ -16,14 +16,17 @@ import { DatabaseSync } from "node:sqlite";
 // `caelundas-cli` owns the database and leaves it web-ready: every run ends
 // by rewriting the read model this app queries. With `--ingested` the build
 // copies that file. By default, where nothing has been ingested, it builds one
-// from the CLI's migrations and committed seed rows, the way the tests do.
+// from the entities library's migration and the CLI's committed seed rows, the way the tests do.
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const cliRoot = path.join(projectRoot, "../caelundas-cli");
 const ingested = path.join(cliRoot, "output/database.sqlite");
 const output = path.join(projectRoot, "output/events.sqlite");
 const partial = `${output}.partial`;
-const migrations = path.join(cliRoot, "src/modules/database/migrations");
+const migrations = path.join(
+  projectRoot,
+  "../caelundas-entities/src/modules/database/migrations",
+);
 
 mkdirSync(path.dirname(output), { recursive: true });
 rmSync(partial, { force: true });
@@ -38,6 +41,12 @@ try {
     copyFileSync(ingested, partial);
   } else {
     const database = new DatabaseSync(partial);
+
+    // The migration records its view in TypeORM's `typeorm_metadata` table,
+    // which TypeORM creates and a bare database lacks.
+    database.exec(
+      'create table "typeorm_metadata" ("type" varchar not null, "database" varchar, "schema" varchar, "table" varchar, "name" varchar, "value" text)',
+    );
 
     for (const file of [
       ...readdirSync(migrations)

@@ -1185,6 +1185,9 @@ importers:
 
   projects/caelundas/caelundas-cli:
     dependencies:
+      '@codebase/caelundas-entities':
+        specifier: workspace:*
+        version: link:../caelundas-entities
       '@codebase/observability':
         specifier: workspace:*
         version: link:../../common/observability

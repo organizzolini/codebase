@@ -13,15 +13,16 @@ import type {
   SqlValue,
 } from "../src/components/events-calendar/events-database.types";
 
-// The database belongs to caelundas-cli: its tables are what its migration
-// creates, and its seed rows and the SQL that rewrites its read model are its
-// data files. They
-// are read, never copied, so the web application's tests cannot drift from it.
-const CLI_ROOT = path.join(import.meta.dirname, "../../caelundas-cli");
-const DATA_DIRECTORY = path.join(CLI_ROOT, "data");
+// The tables are what the caelundas-entities migration creates; the seed rows
+// and the SQL that rewrites the read model are caelundas-cli's data files. They
+// are read, never copied, so the web application's tests cannot drift from them.
+const DATA_DIRECTORY = path.join(
+  import.meta.dirname,
+  "../../caelundas-cli/data",
+);
 const MIGRATIONS_DIRECTORY = path.join(
-  CLI_ROOT,
-  "src/modules/database/migrations",
+  import.meta.dirname,
+  "../../caelundas-entities/src/modules/database/migrations",
 );
 // The committed rows, the events and the night sky's constellations with the
 // stars they join, in the order the build applies them.
@@ -180,9 +181,14 @@ function createNodeSqliteExecutor(database: DatabaseSync): SqlExecutor {
 
 /**
  * The SQL that creates the tables and the read model: every migration's
- * generated `-up.sql`, in order.
+ * generated `-up.sql`, in order. The migration records its view in TypeORM's
+ * `typeorm_metadata` table, which TypeORM creates and a bare database lacks.
  */
 function readTablesSql(): string {
+  return `create table "typeorm_metadata" ("type" varchar not null, "database" varchar, "schema" varchar, "table" varchar, "name" varchar, "value" text);\n${readMigrationsSql()}`;
+}
+
+function readMigrationsSql(): string {
   return readdirSync(MIGRATIONS_DIRECTORY)
     .filter((name) => name.endsWith("-up.sql"))
     .toSorted()

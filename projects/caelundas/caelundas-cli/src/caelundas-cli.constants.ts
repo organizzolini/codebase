@@ -1,15 +1,13 @@
 import { z } from "zod";
 
+import { CAELUNDAS_DATABASE_PROJECT } from "@codebase/caelundas-entities";
 import { sqliteEnvironmentSchema } from "@codebase/persistence";
 
-import {
-  DATABASE_DEFAULT_FILE,
-  DATABASE_PROJECT,
-} from "./modules/database/database.constants";
+import { DATABASE_DEFAULT_FILE } from "./modules/database/database.constants";
 
 // 🌱 Add environment schema fields here
 export const environmentSchema = z.object({
-  ...sqliteEnvironmentSchema({ project: DATABASE_PROJECT }),
+  ...sqliteEnvironmentSchema({ project: CAELUNDAS_DATABASE_PROJECT }),
   // The default file is the project's own, not one beside the working directory.
   CAELUNDAS_SQLITE_DATABASE: z.string().min(1).default(DATABASE_DEFAULT_FILE),
   END_DATE: z

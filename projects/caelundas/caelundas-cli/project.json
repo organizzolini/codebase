@@ -54,11 +54,6 @@
     "knip": {},
     "lint-code": {},
     "markdown-lint": {},
-    "migration": {
-      "options": {
-        "module": "src/modules/database"
-      }
-    },
     "oxfmt": {},
     "oxlint": {},
     "prettier": {},

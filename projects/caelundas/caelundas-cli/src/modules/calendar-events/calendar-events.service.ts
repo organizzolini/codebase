@@ -3,11 +3,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import moment from "moment-timezone";
 import { Between, Repository } from "typeorm";
 
+import { CalendarEvent, CalendarEventTag } from "@codebase/caelundas-entities";
 import { LoggerService } from "@codebase/observability";
 
 import { DatabaseService } from "../database/database.service";
-import { CalendarEventTag } from "../database/entities/calendar-event-tag.entity";
-import { CalendarEvent } from "../database/entities/calendar-event.entity";
 import { TagsService } from "../tags/tags.service";
 import { classifyEvent, tagPathKey } from "../tags/tags.utilities";
 

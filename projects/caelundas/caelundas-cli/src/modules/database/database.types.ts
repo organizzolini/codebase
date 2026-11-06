@@ -1,5 +1,5 @@
 // 🏷️ Types
-import type { CalendarEvent } from "./entities/calendar-event.entity";
+import type { CalendarEvent } from "@codebase/caelundas-entities";
 import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 /**

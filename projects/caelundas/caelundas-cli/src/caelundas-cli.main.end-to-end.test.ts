@@ -7,6 +7,7 @@ import _ from "lodash";
 import moment from "moment-timezone";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import { CalendarEvent } from "@codebase/caelundas-entities";
 import { LoggerService } from "@codebase/observability";
 
 import {
@@ -19,7 +20,6 @@ import { createTemporaryDatabase } from "../testing/temporary-database.utilities
 import { environmentSchema } from "./caelundas-cli.constants";
 import { CalendarService } from "./modules/calendar/calendar.service";
 import { DATABASE_DEFAULT_FILE } from "./modules/database/database.constants";
-import { CalendarEvent } from "./modules/database/entities/calendar-event.entity";
 import { IngressesService } from "./modules/ingresses/ingresses.service";
 import { inputSchema } from "./modules/input/input.constants";
 import { MathService } from "./modules/math/math.service";

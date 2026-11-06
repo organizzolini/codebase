@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { Tag } from "../database/entities/tag.entity";
+import { Tag } from "@codebase/caelundas-entities";
 
 import { tagNodeKey, tagPathKey } from "./tags.utilities";
 

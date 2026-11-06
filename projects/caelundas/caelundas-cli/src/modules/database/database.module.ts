@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import {
+  CAELUNDAS_DATABASE_ENTITIES,
+  CAELUNDAS_DATABASE_MIGRATIONS,
+  CAELUNDAS_DATABASE_PROJECT,
+} from "@codebase/caelundas-entities";
 import { SqliteModule } from "@codebase/persistence";
 
-import {
-  DATABASE_ENTITIES,
-  DATABASE_MIGRATIONS,
-  DATABASE_PROJECT,
-} from "./database.constants";
 import { DatabaseService } from "./database.service";
 
 /**
@@ -26,11 +26,11 @@ import { DatabaseService } from "./database.service";
   exports: [DatabaseService, TypeOrmModule],
   imports: [
     SqliteModule.forRoot({
-      entities: DATABASE_ENTITIES,
-      migrations: DATABASE_MIGRATIONS,
-      project: DATABASE_PROJECT,
+      entities: CAELUNDAS_DATABASE_ENTITIES,
+      migrations: CAELUNDAS_DATABASE_MIGRATIONS,
+      project: CAELUNDAS_DATABASE_PROJECT,
     }),
-    TypeOrmModule.forFeature(DATABASE_ENTITIES),
+    TypeOrmModule.forFeature(CAELUNDAS_DATABASE_ENTITIES),
   ],
   providers: [DatabaseService],
 })

@@ -6,11 +6,10 @@ import moment from "moment-timezone";
 import { DataSource, In } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
+import { CalendarEvent, Tag } from "@codebase/caelundas-entities";
 import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "../../caelundas-cli.constants";
-import { CalendarEvent } from "../database/entities/calendar-event.entity";
-import { Tag } from "../database/entities/tag.entity";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";
