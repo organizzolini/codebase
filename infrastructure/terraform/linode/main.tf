@@ -147,6 +147,25 @@ resource "linode_object_storage_key" "nx_cache_read_only" {
   }
 }
 
+# A read-only key for the developer machine that runs the local cache server,
+# created by hand with `linode-cli object-storage keys-create` and imported by
+# its numeric ID. Terraform cannot read its secret key, which lives only in
+# ~/.config/codebase/nx-shared-cache-remote.env.
+import {
+  to = linode_object_storage_key.nx_cache_local_read_only
+  id = "7248243"
+}
+
+resource "linode_object_storage_key" "nx_cache_local_read_only" {
+  label = "${var.nx_cache_bucket_label}-local-read-only"
+
+  bucket_access {
+    bucket_name = linode_object_storage_bucket.nx_cache.label
+    region      = var.region
+    permissions = "read_only"
+  }
+}
+
 resource "linode_object_storage_key" "nx_cache_read_write" {
   label = "${var.nx_cache_bucket_label}-read-write"
 

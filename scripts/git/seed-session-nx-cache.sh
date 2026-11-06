@@ -8,7 +8,11 @@
 #     CLAUDE_ENV_FILE, so every `nx` call this session makes shares the cache
 #   - `env` as the first argument prints those exports instead, for a git hook
 #     to `eval`; nothing is printed while the server cannot be reached
-#   - Reads a bucket behind the server from `NX_SHARED_CACHE_REMOTE_*` when set
+#   - Reads a bucket behind the server from `NX_SHARED_CACHE_REMOTE_*` when set,
+#     and from ~/.config/codebase/nx-shared-cache-remote.env when that file
+#     exists, always read-only: only CI on `main` writes to the bucket. A server
+#     already running keeps the settings it started with, so stop it to apply
+#     a new file
 #   - Always exits 0 and prints nothing else: a missing cache only makes Nx
 #     slower, and must never block a session or a commit
 #
@@ -24,6 +28,19 @@ PORT="${NX_SHARED_CACHE_PORT:-19750}"
 TOKEN="${NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN:-codebase-local-nx-cache}"
 SERVER_URL="http://127.0.0.1:${PORT}"
 LOG_FILE="${HOME}/.cache/codebase-nx-shared.log"
+REMOTE_ENV_FILE="${NX_SHARED_CACHE_REMOTE_ENV_FILE:-${HOME}/.config/codebase/nx-shared-cache-remote.env}"
+
+# 🪣 Bucket
+
+# The file holds a key that can only read the bucket. Writing stays off however
+# the file or the environment ask, so a laptop never fills the shared cache.
+if [[ -f "${REMOTE_ENV_FILE}" ]]; then
+	set -a
+	# shellcheck source=/dev/null
+	source "${REMOTE_ENV_FILE}"
+	set +a
+	export NX_SHARED_CACHE_REMOTE_WRITABLE=false
+fi
 
 # 🩺 Health
 
