@@ -168,7 +168,7 @@ runs:
 
     - name: 🌌 Setup uv
       if: inputs.uv == 'true'
-      uses: astral-sh/setup-uv@v10.3.2
+      uses: astral-sh/setup-uv@v10.3.3
       with:
         # The version the devcontainers pin and the `software` command
         # installs, so a runner, a devcontainer, and a laptop run one uv. A
