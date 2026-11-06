@@ -182,6 +182,42 @@ describe(SqliteModule, () => {
     });
   });
 
+  describe("with a prepareDatabase option", () => {
+    it("registers a SQL function on the connection and reads it in a query", async () => {
+      const directory = fs.mkdtempSync(path.join(os.tmpdir(), "sqlite-prep-"));
+
+      vi.stubEnv(
+        "FIXTURE_SQLITE_DATABASE",
+        path.join(directory, "fixture.sqlite"),
+      );
+
+      const prepared = await Test.createTestingModule({
+        imports: [
+          ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true }),
+          SqliteModule.forRoot({
+            entities: [Sprocket],
+            prepareDatabase: (database) => {
+              database.function("double_it", (value: number) => value * 2);
+            },
+            project: "fixture",
+          }),
+        ],
+      }).compile();
+
+      try {
+        await expect(
+          prepared
+            .get(DataSource)
+            .query<{ doubled: number }[]>("SELECT double_it(21) AS doubled"),
+        ).resolves.toStrictEqual([{ doubled: 42 }]);
+      } finally {
+        await prepared.close();
+        fs.rmSync(directory, { force: true, recursive: true });
+        vi.unstubAllEnvs();
+      }
+    });
+  });
+
   describe("with an in-memory database", () => {
     it("connects to :memory: and refuses a table no migration created", async () => {
       vi.stubEnv("FIXTURE_SQLITE_DATABASE", ":memory:");
