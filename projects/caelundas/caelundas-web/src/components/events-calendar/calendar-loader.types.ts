@@ -1,3 +1,4 @@
+import type { ResolvedEventFilterCollection } from "../calendar-filters/event-filter-collections.types";
 import type { EventFilterQuery } from "../calendar-filters/event-filters.types";
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
 import type {
@@ -12,6 +13,11 @@ import type {
  */
 export interface CalendarData {
   anchor: Date;
+  /**
+   * The named filters the calendar offers, resolved against the data's tags
+   * by the API.
+   */
+  collections: ResolvedEventFilterCollection[];
   /**
    * The level the events are colored by, read for each event after the
    * grouping's levels, or nothing when they are colored by type, kind by

@@ -1,10 +1,3 @@
-import { compileEventFilter } from "../src/components/calendar-filters/event-filter-compiler.utilities";
-
-import {
-  createTestSqlExecutor,
-  type TestEventsDatabaseOptions,
-} from "./events-database";
-
 import type {
   EventFilterNode,
   EventFilterQuery,
@@ -47,25 +40,6 @@ export function filterGroup(
  */
 export function filterLink(date: string, filter: unknown): string {
   return `/?date=${date}&filter=${encodeURIComponent(JSON.stringify(filter))}`;
-}
-
-/**
- * The ids of the seeded events a compiled filter keeps, in id order, from
- * the seed alone unless a test asks for more rows.
- */
-export async function findMatchingEventIds(
-  query: EventFilterQuery,
-  options?: TestEventsDatabaseOptions,
-): Promise<string[]> {
-  const executor = createTestSqlExecutor(options);
-  const compiled = compileEventFilter(query);
-  const where = compiled === null ? "" : `where ${compiled.sql}`;
-  const rows = await executor.select(
-    `select e.id from calendar_events_derived e ${where} order by e.id`,
-    compiled?.parameters ?? [],
-  );
-
-  return rows.map((row) => String(row["id"]));
 }
 
 /**

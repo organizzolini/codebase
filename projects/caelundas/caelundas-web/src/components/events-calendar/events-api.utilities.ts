@@ -2,7 +2,6 @@ import { print } from "graphql";
 import { z } from "zod";
 
 import {
-  CalendarWindowsDocument,
   DatasetDocument,
   EventsDocument,
   FacetsDocument,
@@ -15,12 +14,10 @@ import {
 } from "./events-api.constants";
 
 import type {
-  CalendarWindowsQueryVariables,
   EventsQuery,
   FacetsQuery,
   FilterCollectionsQuery,
 } from "../../graphql/generated/operations";
-import type { ViewWindows } from "./calendar-window.types";
 import type { EventsReadQuery } from "./events-api.types";
 import type {
   CalendarEventRecord,
@@ -61,7 +58,14 @@ export async function findEvents(
     window: toWindowInput(query.window),
   });
 
-  return events.map((event) => toEventRecord(event));
+  const records: CalendarEventRecord[] = [];
+
+  // A loop rather than a mapping callback keeps the call stacks shallow.
+  for (const event of events) {
+    records.push(toEventRecord(event));
+  }
+
+  return records;
 }
 
 /**
@@ -85,26 +89,9 @@ export async function findFilterCollections(): Promise<FilterCollectionsQuery> {
 }
 
 /**
- * Reads the days a view shows around a day, and the window of events to read
- * for them.
- */
-export async function findViewWindows(
-  variables: CalendarWindowsQueryVariables,
-): Promise<ViewWindows> {
-  const { calendarWindows } = await queryApi(
-    CalendarWindowsDocument,
-    variables,
-  );
-
-  return {
-    visible: toWindow(calendarWindows.visible),
-    window: toWindow(calendarWindows.window),
-  };
-}
-
-/**
- * Runs one typed GraphQL operation against the Caelundas API and returns its
- * data, throwing the first error the API reports.
+ * Runs one typed GraphQL operation against the Caelundas API, at the address
+ * the `VITE_CAELUNDAS_API_URL` build variable gives or else the local
+ * default, and returns its data, throwing the first error the API reports.
  */
 export async function queryApi<
   TResult,
@@ -113,7 +100,13 @@ export async function queryApi<
   document: TypedDocumentNode<TResult, TVariables>,
   variables: TVariables,
 ): Promise<TResult> {
-  const response = await fetch(readApiUrl(), {
+  const environment: Record<string, unknown> = import.meta.env;
+  const url = z
+    .string()
+    .min(1)
+    .catch(DEFAULT_CAELUNDAS_API_URL)
+    .parse(environment["VITE_CAELUNDAS_API_URL"]);
+  const response = await fetch(url, {
     body: JSON.stringify({ query: print(document), variables }),
     headers: { "content-type": "application/json" },
     method: "POST",
@@ -125,20 +118,6 @@ export async function queryApi<
   }
 
   return z.custom<TResult>().parse(body.data);
-}
-
-/**
- * Reads the API's address from the `VITE_CAELUNDAS_API_URL` build variable,
- * falling back to the local default.
- */
-export function readApiUrl(): string {
-  const environment: Record<string, unknown> = import.meta.env;
-  const configured = z
-    .string()
-    .min(1)
-    .safeParse(environment["VITE_CAELUNDAS_API_URL"]);
-
-  return configured.success ? configured.data : DEFAULT_CAELUNDAS_API_URL;
 }
 
 // 🔏 Private Functions
@@ -163,13 +142,6 @@ function toEventRecord(
     tags: event.tags,
     timezone: event.timezone,
   };
-}
-
-/**
- * Reads the API's pair of instants as a window.
- */
-function toWindow(window: { end: string; start: string }): EventsWindow {
-  return { end: new Date(window.end), start: new Date(window.start) };
 }
 
 /**

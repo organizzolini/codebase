@@ -109,7 +109,7 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 // notice over the calendar says why.
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { colorBy, dataset, emptiness, events, facets, grouping } =
+  const { collections, colorBy, dataset, emptiness, events, facets, grouping } =
     Route.useLoaderData();
   // The calendar's own search only: structural sharing hands back the same
   // object when a sky key alone changed, so the page is not rendered again.
@@ -181,7 +181,7 @@ function IndexPage(): ReactNode {
           filters={
             <CalendarFilters
               className="contents"
-              facets={facets}
+              collections={collections}
               fields={fields}
               filter={filter}
               onFilterChange={handleFilterChange}

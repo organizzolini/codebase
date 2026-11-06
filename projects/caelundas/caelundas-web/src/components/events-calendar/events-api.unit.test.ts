@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { DatasetDocument } from "../../graphql/generated/operations";
 
 import { DEFAULT_CAELUNDAS_API_URL } from "./events-api.constants";
-import { queryApi, readApiUrl } from "./events-api.utilities";
+import { queryApi } from "./events-api.utilities";
 
 /**
  * Stands in for `fetch`, answering with a JSON body.
@@ -20,20 +20,32 @@ describe("graphql client", () => {
     vi.unstubAllGlobals();
   });
 
-  it("reads the API address from the local default", () => {
+  it("calls the local default address when the build variable is empty", async () => {
     expect.hasAssertions();
 
+    const stub = answer({ data: { dataset: null } });
     vi.stubEnv("VITE_CAELUNDAS_API_URL", "");
 
-    expect(readApiUrl()).toBe(DEFAULT_CAELUNDAS_API_URL);
+    await queryApi(DatasetDocument, {});
+
+    expect(stub).toHaveBeenCalledWith(
+      DEFAULT_CAELUNDAS_API_URL,
+      expect.anything(),
+    );
   });
 
-  it("reads the API address from the build variable", () => {
+  it("calls the address the build variable gives", async () => {
     expect.hasAssertions();
 
+    const stub = answer({ data: { dataset: null } });
     vi.stubEnv("VITE_CAELUNDAS_API_URL", "https://api.example.test/graphql");
 
-    expect(readApiUrl()).toBe("https://api.example.test/graphql");
+    await queryApi(DatasetDocument, {});
+
+    expect(stub).toHaveBeenCalledWith(
+      "https://api.example.test/graphql",
+      expect.anything(),
+    );
   });
 
   it("posts the printed document to the API and returns its data", async () => {

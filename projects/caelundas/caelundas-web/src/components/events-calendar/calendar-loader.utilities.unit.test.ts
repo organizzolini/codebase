@@ -1,34 +1,34 @@
 import { describe, expect, it } from "vitest";
 
 import { serveCalendarApi } from "../../../testing/calendar-api";
-import {
-  FIXTURE_EVENTS,
-  FIXTURE_TAGS,
-} from "../../../testing/calendar-fixture";
 import { EMPTY_EVENT_FILTER } from "../calendar-filters/event-filter-tree.constants";
 
 import { loadCalendar } from "./calendar-loader.utilities";
 
-// The fixture lacks the long cycles the default collection keeps, so one is
-// added and given to a single event.
-const DIRECTION = {
-  id: "tag-station",
-  name: "Direction",
-  parentId: "tag-type",
-};
-const WITH_STATION = {
-  events: FIXTURE_EVENTS.map((event) =>
-    event.id === "event-mercury-retrograde"
-      ? { ...event, tagIds: [...event.tagIds, DIRECTION.id] }
-      : event,
-  ),
-  tags: [...FIXTURE_TAGS, DIRECTION],
+// The collection the API resolved against the fixture's tags, as it answers:
+// the events that stand still.
+const HIGHLIGHTS = {
+  description: "The events most worth a look.",
+  filter: {
+    combinator: "AND" as const,
+    groups: null,
+    rules: [
+      {
+        negated: false,
+        operator: "is_any_of",
+        path: ["tag:tag-type"],
+        values: ["tag-retrograde"],
+      },
+    ],
+  },
+  id: "highlights",
+  name: "Highlights",
 };
 const MARCH = { date: "2026-03-15", view: "month" } as const;
 
 describe(loadCalendar, () => {
   it("opens on the default collection when the link names no filter", async () => {
-    serveCalendarApi(WITH_STATION);
+    serveCalendarApi({ collections: [HIGHLIGHTS], defaultId: "highlights" });
 
     const data = await loadCalendar(MARCH);
 
@@ -37,6 +37,19 @@ describe(loadCalendar, () => {
     expect(data.events.map((event) => event.id)).toStrictEqual([
       "event-mercury-retrograde",
     ]);
+    expect(data.collections.map((collection) => collection.id)).toStrictEqual([
+      "highlights",
+    ]);
+  });
+
+  it("offers the collections without opening on one the API has none default", async () => {
+    serveCalendarApi({ collections: [HIGHLIGHTS] });
+
+    const data = await loadCalendar(MARCH);
+
+    expect(data.collections).toHaveLength(1);
+    expect(data.filter).toBeUndefined();
+    expect(data.filtered).toBe(false);
   });
 
   it("shows every event when the link holds an empty filter", async () => {
@@ -109,12 +122,13 @@ describe(loadCalendar, () => {
   });
 
   it("applies no filter when the data has none of the default's tags", async () => {
-    serveCalendarApi();
+    const api = serveCalendarApi();
 
     const data = await loadCalendar(MARCH);
 
     expect(data.filter).toBeUndefined();
     expect(data.filtered).toBe(false);
+    expect(api.requests.filterCollections).toBe(1);
   });
 
   it("counts each tag's events only in the days the view shows", async () => {

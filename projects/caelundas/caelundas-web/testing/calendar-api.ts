@@ -1,6 +1,10 @@
 import { HttpResponse } from "msw";
 
 import { DURATION_BUCKETS } from "../src/components/calendar-filters/event-filters.constants";
+import {
+  calendarViewSchema,
+  timelineScaleSchema,
+} from "../src/components/events-calendar/calendar-views.constants";
 import { getViewWindows } from "../src/components/events-calendar/calendar-window.utilities";
 import {
   mockCalendarWindowsQuery,
@@ -14,10 +18,6 @@ import {
 import { FIXTURE_EVENTS, FIXTURE_TAGS } from "./calendar-fixture";
 import { serveGraphqlApi } from "./graphql-api";
 
-import type {
-  CalendarViewName,
-  TimelineScale,
-} from "../src/components/events-calendar/calendar-views.types";
 import type {
   CalendarWindowsQueryVariables,
   EventFilterGroupInput,
@@ -379,14 +379,16 @@ function findWindows(variables: CalendarWindowsQueryVariables): {
   const { visible, window } = getViewWindows(
     variables.view === null || variables.view === undefined
       ? undefined
-      : (variables.view.toLowerCase().replace("_", "-") as CalendarViewName),
+      : calendarViewSchema.parse(
+          variables.view.toLowerCase().replace("_", "-"),
+        ),
     new Date(variables.anchor),
     {
       agendaDays: variables.agendaDays ?? undefined,
       scale:
         variables.scale === null || variables.scale === undefined
           ? undefined
-          : (variables.scale.toLowerCase() as TimelineScale),
+          : timelineScaleSchema.parse(variables.scale.toLowerCase()),
     },
   );
 

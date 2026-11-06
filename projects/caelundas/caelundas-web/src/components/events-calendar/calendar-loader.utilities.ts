@@ -1,8 +1,4 @@
-import {
-  DEFAULT_EVENT_FILTER_COLLECTION_ID,
-  EVENT_FILTER_COLLECTIONS,
-} from "../calendar-filters/event-filter-collections.constants";
-import { resolveEventFilterCollection } from "../calendar-filters/event-filter-collections.utilities";
+import { toEventFilterCollection } from "../calendar-filters/event-filter-collections.utilities";
 import { toEventFilterInput } from "../calendar-filters/event-filter-input.utilities";
 import {
   createEventGroupFields,
@@ -12,7 +8,7 @@ import {
 
 import {
   CACHED_READS,
-  DATASET_CACHE,
+  CONSTANTS_CACHE,
   EVENTS_CACHE,
   FACETS_CACHE,
 } from "./calendar-loader.constants";
@@ -21,9 +17,11 @@ import {
   describeDataset,
   findEvents,
   findFacets,
+  findFilterCollections,
 } from "./events-api.utilities";
 
 import type { CalendarSearch } from "../../hooks/use-calendar-search/calendar-search.types";
+import type { ResolvedEventFilterCollection } from "../calendar-filters/event-filter-collections.types";
 import type { EventFilterQuery } from "../calendar-filters/event-filters.types";
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
 import type { CalendarData, CalendarEmptiness } from "./calendar-loader.types";
@@ -39,7 +37,7 @@ import type {
  * Forgets every read the loader kept, so the next load asks the API again.
  */
 export function clearCalendarCaches(): void {
-  DATASET_CACHE.clear();
+  CONSTANTS_CACHE.clear();
   EVENTS_CACHE.clear();
   FACETS_CACHE.clear();
 }
@@ -54,39 +52,35 @@ export async function loadCalendar(
   search: CalendarSearch,
 ): Promise<CalendarData> {
   const { anchor, visible, window } = resolveWindows(search);
-  // The facets are read for the visible days, and the default filter and the
-  // grouping are resolved against them, so a later load waits on nothing here.
-  const facets = await findFacetsCached(visible);
-  const effectiveFilter = search.filter ?? resolveDefaultFilter(facets);
+  // The facets are read for the visible days, and the grouping is resolved
+  // against them, so a later load waits on nothing here.
+  const { collections, dataset, defaultFilter, facets } =
+    await readBasics(visible);
+  const effectiveFilter = search.filter ?? defaultFilter;
   const filter = toEventFilterInput(effectiveFilter);
+  const query = { filter, window };
   const { colorBy, grouping } = resolveGroups(search, facets);
-  const [dataset, events] = await Promise.all([
-    readCached(DATASET_CACHE, "dataset", describeDataset),
-    findEventsCached({ filter, window }),
-  ]);
-  const filtered = filter !== null;
-  let emptiness = describeEmptiness({ dataset, events, visible });
-
-  // Whether the filters emptied the days, or they hold nothing to filter, is
-  // asked only when they are empty, so a filtered window costs no second
-  // query.
-  if (emptiness?.kind === "match" && filtered) {
-    const unfiltered = await findEventsCached({ window });
-
-    if (describeEmptiness({ dataset, events: unfiltered, visible }) === null) {
-      emptiness = { kind: "filter" };
-    }
-  }
+  const events = await readCached(EVENTS_CACHE, toEventsKey(query), async () =>
+    findEvents(query),
+  );
+  const emptiness = await describeEmptiness({
+    dataset,
+    events,
+    filtered: filter !== null,
+    visible,
+    window,
+  });
 
   return {
     anchor,
+    collections,
     colorBy,
     dataset,
     emptiness,
     events,
     facets,
     filter: effectiveFilter,
-    filtered,
+    filtered: filter !== null,
     grouping,
     window,
   };
@@ -94,20 +88,21 @@ export async function loadCalendar(
 
 /**
  * Tells why the days a view shows hold no events, or nothing when they hold
- * some. Only those days count, not the buffer read around them.
+ * some. Only those days count, not the buffer read around them. Whether the
+ * filters emptied the days, or they hold nothing to filter, is asked only
+ * when they are empty and filtered, so a filtered window costs no second
+ * query.
  */
-function describeEmptiness(data: {
+async function describeEmptiness(data: {
   dataset: EventsDataset | null;
   events: readonly CalendarEventRecord[];
+  filtered: boolean;
   visible: EventsWindow;
-}): CalendarEmptiness | null {
-  const { dataset, events, visible } = data;
+  window: EventsWindow;
+}): Promise<CalendarEmptiness | null> {
+  const { dataset, events, filtered, visible, window } = data;
 
-  if (
-    events.some(
-      (event) => event.start < visible.end && event.end >= visible.start,
-    )
-  ) {
+  if (events.some((event) => isShown(event, visible))) {
     return null;
   }
 
@@ -123,45 +118,56 @@ function describeEmptiness(data: {
     return { dataset, jumpTo: dataset.end, kind: "range" };
   }
 
-  return { kind: "match" };
-}
+  if (!filtered) {
+    return { kind: "match" };
+  }
 
-/**
- * Reads the events for a window and filter through a small cache, keeping
- * the most recent reads. The data never changes while the page is open, so a
- * cached read stays right.
- */
-async function findEventsCached(
-  query: EventsReadQuery,
-): Promise<CalendarEventRecord[]> {
-  return readCached(
+  const everything = { window };
+  const unfiltered = await readCached(
     EVENTS_CACHE,
-    JSON.stringify([
-      query.window.start,
-      query.window.end,
-      query.filter ?? null,
-      query.grouping ?? null,
-    ]),
-    async () => findEvents(query),
+    toEventsKey(everything),
+    async () => findEvents(everything),
   );
+
+  return unfiltered.some((event) => isShown(event, visible))
+    ? { kind: "filter" }
+    : { kind: "match" };
 }
 
 /**
- * Reads the facets for the days a view shows through a small cache, keeping
- * the most recent windows: the tags are the same whatever the window, but
- * each counts only the events in it.
+ * Whether an event overlaps the days a view shows.
  */
-async function findFacetsCached(window: EventsWindow): Promise<EventFacet[]> {
-  return readCached(
-    FACETS_CACHE,
-    `${window.start.toISOString()}|${window.end.toISOString()}`,
-    async () => findFacets(window),
-  );
+function isShown(event: CalendarEventRecord, visible: EventsWindow): boolean {
+  return event.start < visible.end && event.end >= visible.start;
+}
+
+/**
+ * Reads what the loader needs before the events: the facets of the days the
+ * view shows, and what holds whatever the window, the dataset and the
+ * collections.
+ */
+async function readBasics(visible: EventsWindow): Promise<{
+  collections: ResolvedEventFilterCollection[];
+  dataset: EventsDataset | null;
+  defaultFilter: EventFilterQuery | undefined;
+  facets: EventFacet[];
+}> {
+  const [facets, constants] = await Promise.all([
+    readCached(
+      FACETS_CACHE,
+      `${visible.start.toISOString()}|${visible.end.toISOString()}`,
+      async () => findFacets(visible),
+    ),
+    readCached(CONSTANTS_CACHE, "constants", readConstants),
+  ]);
+
+  return { ...constants, facets };
 }
 
 /**
  * Answers a read from a cache of promises, starting it when the key is new
- * and keeping the most recent ones. A failed read is forgotten, so Retry
+ * and keeping the most recent ones. The data never changes while the page is
+ * open, so a cached read stays right; a failed one is forgotten, so Retry
  * reads it again.
  */
 async function readCached<TValue>(
@@ -195,6 +201,35 @@ async function readCached<TValue>(
 }
 
 /**
+ * Reads the dataset, and the collections the calendar offers with the filter
+ * of the one it opens on, which the API resolved against the data: none when
+ * the data has none of the tags that collection names.
+ */
+async function readConstants(): Promise<{
+  collections: ResolvedEventFilterCollection[];
+  dataset: EventsDataset | null;
+  defaultFilter: EventFilterQuery | undefined;
+}> {
+  const [dataset, { defaultFilterCollection, filterCollections }] =
+    await Promise.all([describeDataset(), findFilterCollections()]);
+  const collections: ResolvedEventFilterCollection[] = [];
+
+  // A loop rather than a mapping callback keeps the call stacks shallow.
+  for (const collection of filterCollections) {
+    collections.push(toEventFilterCollection(collection));
+  }
+
+  return {
+    collections,
+    dataset,
+    defaultFilter:
+      defaultFilterCollection === null
+        ? undefined
+        : toEventFilterCollection(defaultFilterCollection).filter,
+  };
+}
+
+/**
  * The level the search colors events by, kept to a field the data has, or
  * nothing for the default of type, kind by kind.
  */
@@ -205,22 +240,6 @@ function resolveColorBy(
   return search.color === undefined
     ? undefined
     : resolveEventGrouping([search.color], createEventGroupFields(facets))[0];
-}
-
-/**
- * The filter a link with none opens on: the default collection's, resolved
- * against the data, or nothing when the data has none of the tags it names.
- */
-function resolveDefaultFilter(
-  facets: readonly EventFacet[],
-): EventFilterQuery | undefined {
-  const collection = EVENT_FILTER_COLLECTIONS.find(
-    (candidate) => candidate.id === DEFAULT_EVENT_FILTER_COLLECTION_ID,
-  );
-
-  return collection === undefined
-    ? undefined
-    : resolveEventFilterCollection(collection, facets)?.filter;
 }
 
 /**
@@ -280,4 +299,17 @@ function resolveWindows(search: CalendarSearch): {
       scale: search.scale,
     }),
   };
+}
+
+/**
+ * The key a read of events is cached under: the window, the filter and the
+ * grouping it asks for.
+ */
+function toEventsKey(query: EventsReadQuery): string {
+  return JSON.stringify([
+    query.window.start,
+    query.window.end,
+    query.filter ?? null,
+    query.grouping ?? null,
+  ]);
 }

@@ -114,26 +114,3 @@ export const FIXTURE_EVENTS: readonly FixtureEvent[] = [
     ...NEW_YORK,
   },
 ];
-
-/**
- * A run of instant events in the fixture's zone, `count` of them a minute
- * apart from a UTC instant, named "Busy Event 1" onward and carrying no tag.
- */
-export function createBusyEvents(start: string, count: number): FixtureEvent[] {
-  const first = new Date(start).getTime();
-
-  return Array.from({ length: count }, (_, index) => {
-    const at = new Date(first + index * 60_000).toISOString();
-
-    return {
-      color: null,
-      description: "A busy moment",
-      end: at,
-      id: `event-busy-${String(index + 1)}`,
-      start: at,
-      summary: `Busy Event ${String(index + 1)}`,
-      tagIds: [],
-      ...NEW_YORK,
-    };
-  });
-}

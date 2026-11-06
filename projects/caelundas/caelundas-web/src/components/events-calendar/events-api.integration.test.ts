@@ -23,6 +23,7 @@ import {
   describeDataset,
   findEvents,
   findFacets,
+  findFilterCollections,
   queryApi,
 } from "./events-api.utilities";
 
@@ -250,5 +251,16 @@ describe("events api", () => {
       { end: "2026-02-01T00:00:00.000Z", start: "2026-01-01T00:00:00.000Z" },
       null,
     ]);
+  });
+
+  it("reads the collections and the one the calendar opens on", async () => {
+    expect.hasAssertions();
+
+    const data = { defaultFilterCollection: null, filterCollections: [] };
+    serveGraphqlApi(
+      mockFilterCollectionsQuery(() => HttpResponse.json({ data })),
+    );
+
+    await expect(findFilterCollections()).resolves.toStrictEqual(data);
   });
 });
