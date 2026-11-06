@@ -18,7 +18,7 @@ import type {
   Body,
   QuadrupleAspect,
 } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { GetQuadrupleAspectEventArguments } from "./quadruple-aspects.types";
 
 /** Primitive helper methods for quadruple-aspect pattern detection and event shaping. */

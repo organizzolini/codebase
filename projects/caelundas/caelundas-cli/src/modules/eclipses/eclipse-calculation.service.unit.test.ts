@@ -22,7 +22,7 @@ import { EclipseGeometryService } from "./eclipse-geometry.service";
 import { EclipseTopocentricService } from "./eclipse-topocentric.service";
 
 import type { EclipsePhase } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 /** Minutes on either side of closest approach that a scan covers. */
 const SCAN_MINUTES = 400;

@@ -24,7 +24,7 @@ import {
 } from "./phases.constants";
 
 import type { MercurianPhase } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type {
   BuildPlanetPhaseEventArguments,
   MercurianPhaseEventArguments,

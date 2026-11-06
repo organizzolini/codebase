@@ -1,34 +1,35 @@
 import fs from "node:fs";
 import path from "node:path";
-import { setTimeout as sleep } from "node:timers/promises";
 
 import { createMock } from "@golevelup/ts-vitest";
 import _ from "lodash";
 import moment from "moment-timezone";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import { CalendarEvent } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
 import {
   detectable,
   runCalendarCommand,
 } from "../testing/calendar-command.utilities";
+import {
+  DATABASE_TIMEOUT_MILLISECONDS,
+  startCaelundasDatabase,
+} from "../testing/database";
 import { createMajorAspectsService } from "../testing/major-aspects.utilities";
-import { createTemporaryDatabase } from "../testing/temporary-database.utilities";
 
 import { environmentSchema } from "./caelundas-cli.constants";
 import { CalendarService } from "./modules/calendar/calendar.service";
-import { DATABASE_DEFAULT_FILE } from "./modules/database/database.constants";
-import { CalendarEvent } from "./modules/database/entities/calendar-event.entity";
 import { IngressesService } from "./modules/ingresses/ingresses.service";
 import { inputSchema } from "./modules/input/input.constants";
 import { MathService } from "./modules/math/math.service";
 import { ProgressiveUtilitiesService } from "./modules/progressive/progressive-utilities.service";
 
 import type { CalendarCommandOutput } from "../testing/calendar-command.types";
-import type { TemporaryDatabase } from "../testing/temporary-database.types";
 import type { EphemerisService } from "./modules/ephemeris/ephemeris.service";
 import type { Environment } from "./modules/input/input.types";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { ConfigService } from "@nestjs/config";
 import type { Repository } from "typeorm";
 
@@ -39,15 +40,32 @@ const calendarService = new CalendarService(new LoggerService(), {
 } as unknown as ConfigService<Environment>);
 
 describe("main end-to-end suite", () => {
-  it("defaults the database file to the project's own and the output directory", () => {
+  it("defaults the connection to the local caelundas database and the output directory", () => {
     expect.hasAssertions();
     expect(environmentSchema.parse({})).toStrictEqual({
-      CAELUNDAS_SQLITE_DATABASE: DATABASE_DEFAULT_FILE,
+      CAELUNDAS_POSTGRES_DATABASE: "caelundas_development",
+      CAELUNDAS_POSTGRES_HOST: "localhost",
+      CAELUNDAS_POSTGRES_PASSWORD: "caelundas_password",
+      CAELUNDAS_POSTGRES_PORT: 5432,
+      CAELUNDAS_POSTGRES_SCHEMA: "caelundas",
+      CAELUNDAS_POSTGRES_USERNAME: "caelundas_username",
       OUTPUT_DIRECTORY: "./output",
     });
-    expect(DATABASE_DEFAULT_FILE).toBe(
-      path.resolve(import.meta.dirname, "../output/database.sqlite"),
-    );
+  });
+
+  it("reads only CAELUNDAS_POSTGRES_*, ignoring the root's admin login", () => {
+    expect.hasAssertions();
+
+    const environment = environmentSchema.parse({
+      POSTGRES_DB: "postgres",
+      POSTGRES_PASSWORD: "postgres",
+      POSTGRES_USER: "postgres",
+    });
+
+    expect(environment).not.toHaveProperty("POSTGRES_DB");
+    expect(environment).toMatchObject({
+      CAELUNDAS_POSTGRES_USERNAME: "caelundas_username",
+    });
   });
 
   describe("calendar generation e2e", { timeout: 10_000 }, () => {
@@ -328,7 +346,7 @@ describe("main end-to-end suite", () => {
   });
 
   describe("stored calendar events", { timeout: 120_000 }, () => {
-    const output = "./output/e2e-sqlite";
+    const output = "./output/e2e-postgres";
     const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };
     const sydney = { latitude: -33.8688, longitude: 151.2093 };
     const marchFirstHalf = { endDate: "2026-03-16", startDate: "2026-03-01" };
@@ -338,7 +356,7 @@ describe("main end-to-end suite", () => {
       detectable("Overlap", "2026-03-12T12:00:00Z"),
       detectable("Late", "2026-03-20T12:00:00Z"),
     ];
-    let database: TemporaryDatabase;
+    let database: DatabaseTestingModule;
     let calendarEvents: Repository<CalendarEvent>;
     let runs = 0;
 
@@ -359,9 +377,9 @@ describe("main end-to-end suite", () => {
       rows.map((row) => row.summary).toSorted();
 
     beforeAll(async () => {
-      database = await createTemporaryDatabase();
-      calendarEvents = database.dataSource.getRepository(CalendarEvent);
-    });
+      database = await startCaelundasDatabase();
+      calendarEvents = database.repository(CalendarEvent);
+    }, DATABASE_TIMEOUT_MILLISECONDS);
 
     afterAll(async () => {
       await database.close();
@@ -401,20 +419,55 @@ describe("main end-to-end suite", () => {
       expect.hasAssertions();
 
       const before = await calendarEvents.find({ order: { summary: "ASC" } });
+      const links = await database.dataSource.query<{ count: string }[]>(
+        "select count(*) as count from calendar_event_tags",
+      );
       await run(philadelphia, marchFirstHalf);
       const after = await calendarEvents.find({ order: { summary: "ASC" } });
 
       expect(after.map((row) => row.id)).toStrictEqual(
         before.map((row) => row.id),
       );
+      await expect(
+        database.dataSource.query(
+          "select count(*) as count from calendar_event_tags",
+        ),
+      ).resolves.toStrictEqual(links);
+    });
+
+    it("never stores two rows for one natural key", async () => {
+      expect.hasAssertions();
+
+      await expect(
+        database.dataSource.query(
+          `select summary, count(*) as count
+            from calendar_events
+            group by summary, "start", "end", latitude, longitude
+            having count(*) > 1`,
+        ),
+      ).resolves.toStrictEqual([]);
+    });
+
+    it("stores database-assigned uuidv7 ids, six-decimal coordinates and instants", async () => {
+      expect.hasAssertions();
+
+      const [early] = await calendarEvents.findBy({
+        latitude: "39.949309",
+        summary: "Early",
+      });
+
+      expect(early?.id).toMatch(
+        /^[\da-f]{8}-[\da-f]{4}-7[\da-f]{3}-[\da-f]{4}-[\da-f]{12}$/u,
+      );
+      expect(early?.latitude).toBe("39.949309");
+      expect(early?.longitude).toBe("-75.171690");
+      expect(early?.start.toISOString()).toBe("2026-03-02T12:00:00.000Z");
     });
 
     it("updates an overlapping range in place and adds only new events", async () => {
       expect.hasAssertions();
 
       const [before] = await calendarEvents.findBy({ summary: "Overlap" });
-      // SQLite stamps `updated_at` to the second, so let one pass.
-      await sleep(1100);
       const { json } = await run(philadelphia, marchSecondHalf);
       const overlap = await calendarEvents.findBy({ summary: "Overlap" });
 
@@ -468,6 +521,46 @@ describe("main end-to-end suite", () => {
 
       expect(json.map((event) => event.summary)).toStrictEqual(["Retrograde"]);
       expect(ics).toContain("SUMMARY:Retrograde");
+    });
+
+    it("leaves the read model current after a run", async () => {
+      expect.hasAssertions();
+
+      await run(
+        philadelphia,
+        { endDate: "2026-07-10", startDate: "2026-07-01" },
+        [detectable("Fresh", "2026-07-05T12:00:00Z")],
+      );
+      const { dataSource } = database;
+      const [counts] = await dataSource.query<
+        { derived: string; events: string; nodes: string; tags: string }[]
+      >(
+        `select
+          (select count(*) from calendar_event_derived_times) as derived,
+          (select count(*) from calendar_events) as events,
+          (select count(*) from tag_nodes) as nodes,
+          (select count(*) from tags) as tags`,
+      );
+      const fresh = await dataSource.query<
+        { is_direct: boolean; tag_name: string }[]
+      >(
+        `select n.tag_name, n.is_direct
+          from calendar_event_tag_nodes as n
+          inner join calendar_events as e on e.id = n.calendar_event_id
+          where e.summary = 'Fresh'
+          order by n.tag_name`,
+      );
+
+      expect(counts?.nodes).toBe(counts?.tags);
+      expect(counts?.derived).toBe(counts?.events);
+      // The tag the event was given, and the node above it, are derived in
+      // the transaction that wrote the event.
+      expect(fresh).toStrictEqual(
+        expect.arrayContaining([
+          { is_direct: true, tag_name: "Instant" },
+          { is_direct: false, tag_name: "Temporality" },
+        ]),
+      );
     });
 
     it("includes events on the last requested day in both files", async () => {

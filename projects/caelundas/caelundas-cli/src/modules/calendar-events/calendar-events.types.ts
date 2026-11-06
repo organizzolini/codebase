@@ -1,8 +1,5 @@
 // 🏷️ Types
-import type { DetectedCalendarEvent } from "../database/database.types";
-import type { CalendarEventTag } from "../database/entities/calendar-event-tag.entity";
-import type { CalendarEvent } from "../database/entities/calendar-event.entity";
-import type { TagPath } from "../tags/tags.types";
+import type { CalendarEvent, CalendarEventTag } from "@codebase/caelundas-db";
 import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 import type { Moment } from "moment-timezone";
 
@@ -18,17 +15,22 @@ export type CalendarEventTagLink = Pick<
   "calendarEventId" | "tagId"
 >;
 
-/** An event to write, with the tag paths it is classified under. */
-export interface ClassifiedCalendarEvent {
-  event: DetectedCalendarEvent;
-  paths: readonly TagPath[];
-}
-
-/** An observer location in decimal degrees. */
-export interface Coordinates {
-  latitude: number;
-  longitude: number;
-}
+/**
+ * A {@link CalendarEvent} as a detector builds it and a writer reads it:
+ * without the fields the database owns, the id and audit columns, or the
+ * observer's coordinates and timezone, which `CalendarEventsService.upsert`
+ * adds for the observer it stores the event for. Its `tags` are raw strings,
+ * which the upsert resolves to nodes of the tag tree. A stored row is one as
+ * well, and the writers are passed the stored rows `findInRange` returns, not
+ * detected ones.
+ */
+export type DetectedCalendarEvent = Omit<
+  CalendarEvent,
+  "latitude" | "longitude" | "timezone" | keyof PostgresqlUpdatableEntity
+> & {
+  /** Raw tag strings, such as `aspects` and `moon`. */
+  tags: string[];
+};
 
 /** The range and location whose events {@link CalendarEventsService.findInRange} returns. */
 export interface FindInRangeParameters extends Coordinates {
@@ -42,4 +44,30 @@ export interface FindInRangeParameters extends Coordinates {
 /** An observer location and the IANA timezone derived from it. */
 export interface Observer extends Coordinates {
   timezone: string;
+}
+
+/**
+ * A stored {@link CalendarEvent} as `findInRange` returns it, with the names
+ * of the tags it is linked to directly, ordered by code point. The nodes
+ * above them in the tree are not included: the closure table holds those.
+ */
+export type StoredCalendarEvent = CalendarEvent &
+  Pick<DetectedCalendarEvent, "tags">;
+
+/**
+ * The columns `RETURNING` reads back for a written row: its database-assigned
+ * id, and the summary, start and end that identify it within one observer.
+ * The driver answers with `Date`s, not the `Moment`s the entity carries.
+ */
+export interface WrittenCalendarEvent {
+  end: Date | Moment;
+  id: string;
+  start: Date | Moment;
+  summary: string;
+}
+
+/** An observer location in decimal degrees. */
+interface Coordinates {
+  latitude: number;
+  longitude: number;
 }

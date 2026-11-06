@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 
-import { DatabaseModule } from "../database/database.module";
+import { CaelundasDatabaseModule } from "@codebase/caelundas-db";
+
 import { TagsModule } from "../tags/tags.module";
 
 import { CalendarEventsService } from "./calendar-events.service";
@@ -12,7 +13,7 @@ import { CalendarEventsService } from "./calendar-events.service";
 @Module({
   controllers: [],
   exports: [CalendarEventsService],
-  imports: [DatabaseModule, TagsModule],
+  imports: [CaelundasDatabaseModule, TagsModule],
   providers: [CalendarEventsService],
 })
 export class CalendarEventsModule {}
