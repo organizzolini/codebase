@@ -76,6 +76,7 @@ describe(EventsResolver, () => {
         start: new Date("2026-03-01T00:00:00Z"),
       },
       null,
+      [],
     );
   });
 
@@ -109,13 +110,45 @@ describe(EventsResolver, () => {
     await resolver.events(window, filter);
     await resolver.facets(window, filter);
 
-    expect(findEvents).toHaveBeenLastCalledWith(window, parsed);
+    expect(findEvents).toHaveBeenLastCalledWith(window, parsed, []);
     expect(findFacets).toHaveBeenLastCalledWith(window, parsed);
     await expect(
       resolver.events(window, {
         combinator: "xor" as EventFilterCombinator,
       }),
     ).rejects.toThrow(/combinator/u);
+  });
+
+  it("validates the grouping the events query takes and puts the color level last", async () => {
+    expect.hasAssertions();
+
+    const window = {
+      end: new Date("2026-03-02T00:00:00Z"),
+      start: new Date("2026-03-01T00:00:00Z"),
+    };
+
+    findEvents.mockResolvedValue([]);
+
+    await resolver.events(window, null, {
+      colorBy: { field: "hour" },
+      levels: [{ field: "year" }, { depth: 2, field: "tag:root", tags: ["a"] }],
+    });
+
+    expect(findEvents).toHaveBeenLastCalledWith(window, null, [
+      { field: "year", tags: [] },
+      { depth: 2, field: "tag:root", tags: ["a"] },
+      { field: "hour", tags: [] },
+    ]);
+    await expect(
+      resolver.events(window, null, {
+        levels: [
+          { field: "year" },
+          { field: "month" },
+          { field: "day" },
+          { field: "hour" },
+        ],
+      }),
+    ).rejects.toThrow(/too_big/u);
   });
 
   it("answers the facets query over the window, or over everything without one", async () => {

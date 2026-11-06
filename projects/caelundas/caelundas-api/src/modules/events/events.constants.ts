@@ -6,6 +6,10 @@ import { z } from "zod";
 export const EVENT_FILTER_ARGUMENT_DESCRIPTION =
   "Keeps only the events that meet this nested AND/OR filter; rules that are not finished are left out.";
 
+/** What the grouping argument reads, written once. */
+export const EVENT_GROUPING_ARGUMENT_DESCRIPTION =
+  "The levels to read each event's group keys for, and the field it is colored by; each event comes back with one list of keys per level, so an event with two planets is under both and one with no key at a level has an empty list there.";
+
 /**
  * The span and zone of the whole dataset, or no row when it is empty. The
  * zone is the most common one, because the app shows one observer location.
@@ -39,7 +43,8 @@ export const datasetRowSchema = z.object({
  * given as a JSON array, read through the derived-times view. Binds the
  * window's end, then its start; ends are compared inclusively so an instant
  * at the window's first moment is still found. `{filter}` is replaced by
- * the compiled filter, or by nothing. The instants where an aspect
+ * the compiled filter, or by nothing, and `{groups}` by the columns that read
+ * each grouping level's keys, or by nothing. The instants where an aspect
  * begins forming or dissolves are left out, since the event that spans the
  * aspect says as much; they stay in the data. Text sorts by bytes, as the
  * web app's SQLite did, rather than by the database's locale.
@@ -72,7 +77,7 @@ export const EVENTS_IN_WINDOW_SQL = `
         where t.calendar_event_id = e.id and t.is_direct
       ),
       '[]'::json
-    ) as tags
+    ) as tags {groups}
   from calendar_event_derived_times e
   where e."start" < $1::timestamptz and e."end" >= $2::timestamptz
     and not exists (
@@ -93,8 +98,23 @@ export const tagSchema = z.object({
   path: z.string(),
 });
 
-/** One row of {@link EVENTS_IN_WINDOW_SQL}. */
-export const eventRowSchema = z.object({
+/**
+ * The group keys of one level, as {@link EVENTS_IN_WINDOW_SQL} gathers them
+ * into a `group_<level>` column.
+ */
+export const groupKeysSchema = z.array(
+  z.object({
+    key: z.string(),
+    label: z.string().nullable(),
+    path: z.string().nullable(),
+  }),
+);
+
+/**
+ * One row of {@link EVENTS_IN_WINDOW_SQL}; the `group_<level>` columns it
+ * adds for a grouping are read by {@link groupKeysSchema} apart.
+ */
+export const eventRowSchema = z.looseObject({
   color: z.string().nullable(),
   description: z.string(),
   duration_minutes: z.number(),

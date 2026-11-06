@@ -158,3 +158,18 @@ export const eventGroupLevelSchema: z.ZodType<EventGroupLevel> = z.object({
     .nullish()
     .transform((tags) => tags ?? []),
 });
+
+/**
+ * Validates a grouping as it arrives from GraphQL: at most
+ * {@link MAXIMUM_GROUP_LEVELS} levels, and a color level of its own.
+ */
+export const eventGroupingSchema = z.object({
+  colorBy: eventGroupLevelSchema
+    .nullish()
+    .transform((level) => level ?? undefined),
+  levels: eventGroupLevelSchema
+    .array()
+    .max(MAXIMUM_GROUP_LEVELS)
+    .nullish()
+    .transform((levels) => levels ?? []),
+});

@@ -4,6 +4,7 @@ import { EntityManager } from "typeorm";
 
 import { resolveEventFilterCollections } from "./event-filter-collections.utilities";
 import { compileEventFilter } from "./event-filter-compiler.utilities";
+import { compileEventGrouping } from "./event-grouping-compiler.utilities";
 import {
   DATASET_SQL,
   datasetRowSchema,
@@ -11,6 +12,7 @@ import {
   EVENTS_IN_WINDOW_SQL,
   facetRowSchema,
   FACETS_SQL,
+  groupKeysSchema,
 } from "./events.constants";
 import { toIsoString } from "./events.utilities";
 
@@ -18,6 +20,7 @@ import type { CalendarEventEntity } from "./calendar-event.entities";
 import type { EventFacetEntity } from "./event-facet.entities";
 import type { ResolvedEventFilterCollection } from "./event-filter-collections.types";
 import type { EventFilterGroup } from "./event-filter.types";
+import type { EventGroupLevel } from "./event-grouping.types";
 import type { EventsWindowInput } from "./events-window-input.entities";
 import type { EventsDatasetEntity } from "./events.entities";
 import type { z } from "zod";
@@ -52,33 +55,47 @@ export class EventsService {
 
   /**
    * The events that overlap the window and meet the filter, earliest first,
-   * each with the tags it was given.
+   * each with the tags it was given and, for each level of the grouping, the
+   * group keys it falls in.
    */
   public async findEvents(
     window: EventsWindowInput,
     filter?: EventFilterGroup | null,
+    grouping: readonly EventGroupLevel[] = [],
   ): Promise<CalendarEventEntity[]> {
     const compiled = compileEventFilter(filter, 2);
+    const filterParameters = compiled?.parameters ?? [];
+    const groups = compileEventGrouping(grouping, 2 + filterParameters.length);
     const rows = await this.select(
       EVENTS_IN_WINDOW_SQL.replace("{filter}", () =>
         compiled === null ? "" : `and ${compiled.sql}`,
-      ),
+      ).replace("{groups}", () => groups.sql),
       [
         toIsoString(window.end),
         toIsoString(window.start),
-        ...(compiled?.parameters ?? []),
+        ...filterParameters,
+        ...groups.parameters,
       ],
       eventRowSchema,
     );
 
-    return rows.map(
-      ({ duration_minutes, start_local_day, start_local_hour, ...row }) => ({
-        ...row,
-        durationMinutes: duration_minutes,
-        startLocalDay: start_local_day,
-        startLocalHour: start_local_hour,
-      }),
-    );
+    return rows.map((row) => ({
+      color: row.color,
+      description: row.description,
+      durationMinutes: row.duration_minutes,
+      end: row.end,
+      groups: grouping.map((_, level) =>
+        groupKeysSchema.parse(row[`group_${String(level)}`]),
+      ),
+      id: row.id,
+      location: row.location,
+      start: row.start,
+      startLocalDay: row.start_local_day,
+      startLocalHour: row.start_local_hour,
+      summary: row.summary,
+      tags: row.tags,
+      timezone: row.timezone,
+    }));
   }
 
   /**

@@ -1,6 +1,7 @@
 import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
 
 import { CalendarEventTagEntity } from "./calendar-event-tag.entities";
+import { EventGroupKeyEntity } from "./event-group-key.entities";
 
 // 🧬 Entities
 
@@ -26,6 +27,12 @@ export class CalendarEventEntity {
 
   @Field(() => Date, { description: "When the event ends, as an instant." })
   end!: Date | string;
+
+  @Field(() => [[EventGroupKeyEntity]], {
+    description:
+      "The groups the event falls in, one list per level of the query's grouping, then one for its color level when it has one: several for an event with several tags in a dimension, none for one with no key there. Empty when the query asked for neither.",
+  })
+  groups!: EventGroupKeyEntity[][];
 
   @Field(() => ID)
   id!: string;

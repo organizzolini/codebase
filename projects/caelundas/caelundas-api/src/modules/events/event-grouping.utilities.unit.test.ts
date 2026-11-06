@@ -8,17 +8,17 @@ describe(parseEventGrouping, () => {
   it("answers no levels for no grouping and no color", () => {
     expect.hasAssertions();
 
-    expect(parseEventGrouping(null, null)).toStrictEqual([]);
-    expect(parseEventGrouping(undefined, undefined)).toStrictEqual([]);
+    expect(parseEventGrouping(null)).toStrictEqual([]);
+    expect(parseEventGrouping(undefined)).toStrictEqual([]);
   });
 
   it("fills the optional parts and puts the color level after the grouping", () => {
     expect.hasAssertions();
 
     expect(
-      parseEventGrouping([{ field: "year" }], {
-        depth: 2,
-        field: `tag:${ROOT}`,
+      parseEventGrouping({
+        colorBy: { depth: 2, field: `tag:${ROOT}` },
+        levels: [{ field: "year" }],
       }),
     ).toStrictEqual([
       { field: "year", tags: [] },
@@ -31,9 +31,11 @@ describe(parseEventGrouping, () => {
 
     const three = [{ field: "year" }, { field: "month" }, { field: "day" }];
 
-    expect(parseEventGrouping(three, { field: "hour" })).toHaveLength(4);
+    expect(
+      parseEventGrouping({ colorBy: { field: "hour" }, levels: three }),
+    ).toHaveLength(4);
     expect(() =>
-      parseEventGrouping([...three, { field: "hour" }], null),
+      parseEventGrouping({ levels: [...three, { field: "hour" }] }),
     ).toThrow("too_big");
   });
 
@@ -41,10 +43,10 @@ describe(parseEventGrouping, () => {
     expect.hasAssertions();
 
     expect(() =>
-      parseEventGrouping([{ depth: 17, field: `tag:${ROOT}` }], null),
+      parseEventGrouping({ levels: [{ depth: 17, field: `tag:${ROOT}` }] }),
     ).toThrow("depth");
     expect(() =>
-      parseEventGrouping([{ depth: 0, field: `tag:${ROOT}` }], null),
+      parseEventGrouping({ levels: [{ depth: 0, field: `tag:${ROOT}` }] }),
     ).toThrow("depth");
   });
 });

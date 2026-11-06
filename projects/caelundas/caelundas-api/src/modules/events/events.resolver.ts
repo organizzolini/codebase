@@ -7,8 +7,13 @@ import { EventFilterCollectionEntity } from "./event-filter-collection.entities"
 import { DEFAULT_EVENT_FILTER_COLLECTION_ID } from "./event-filter-collections.constants";
 import { EventFilterGroupEntity } from "./event-filter.entities";
 import { parseEventFilter } from "./event-filter.utilities";
+import { EventGroupingEntity } from "./event-grouping.entities";
+import { parseEventGrouping } from "./event-grouping.utilities";
 import { EventsWindowInput } from "./events-window-input.entities";
-import { EVENT_FILTER_ARGUMENT_DESCRIPTION } from "./events.constants";
+import {
+  EVENT_FILTER_ARGUMENT_DESCRIPTION,
+  EVENT_GROUPING_ARGUMENT_DESCRIPTION,
+} from "./events.constants";
 import { EventsDatasetEntity } from "./events.entities";
 import { EventsService } from "./events.service";
 
@@ -60,7 +65,7 @@ export class EventsResolver {
    */
   @Query(() => [CalendarEventEntity], {
     description:
-      "The events that overlap a window and meet the filter, earliest first, each with its tags.",
+      "The events that overlap a window and meet the filter, earliest first, each with its tags and the group keys it falls in at each grouping level.",
     name: "events",
   })
   public async events(
@@ -72,8 +77,18 @@ export class EventsResolver {
       type: () => EventFilterGroupEntity,
     })
     filter?: EventFilterGroupEntity | null,
+    @Arguments("grouping", {
+      description: EVENT_GROUPING_ARGUMENT_DESCRIPTION,
+      nullable: true,
+      type: () => EventGroupingEntity,
+    })
+    grouping?: EventGroupingEntity | null,
   ): Promise<CalendarEventEntity[]> {
-    return this.eventsService.findEvents(window, parseEventFilter(filter));
+    return this.eventsService.findEvents(
+      window,
+      parseEventFilter(filter),
+      parseEventGrouping(grouping),
+    );
   }
 
   /**

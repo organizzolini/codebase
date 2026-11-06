@@ -105,6 +105,7 @@ describe(EventsService, () => {
         description: "Mars stations retrograde",
         durationMinutes: 90,
         end,
+        groups: [],
         id: "event-1",
         location: null,
         start,
@@ -155,6 +156,69 @@ describe(EventsService, () => {
     expect(query).toHaveBeenLastCalledWith(
       expect.stringContaining("and ((e.duration_minutes > $3::numeric))"),
       ["2026-03-06T00:00:00.000Z", "2026-03-05T00:00:00.000Z", "30"],
+    );
+  });
+
+  it("reads each level's group keys with the event, binding them after the filter", async () => {
+    expect.hasAssertions();
+
+    const day = new Date("2026-03-05T03:30:00Z");
+
+    query.mockResolvedValueOnce([
+      {
+        color: null,
+        description: "Mars stations retrograde",
+        duration_minutes: 90,
+        end: day,
+        group_0: [{ key: "2026", label: null, path: null }],
+        group_1: [],
+        id: "event-1",
+        location: null,
+        start: day,
+        start_local_day: "2026-03-04",
+        start_local_hour: 22,
+        summary: "Mars Retrograde",
+        tags: [],
+        timezone: "America/New_York",
+      },
+    ]);
+
+    const events = await service.findEvents(
+      {
+        end: new Date("2026-03-06T00:00:00Z"),
+        start: new Date("2026-03-05T00:00:00Z"),
+      },
+      {
+        combinator: "and",
+        groups: [],
+        rules: [
+          {
+            negated: false,
+            operator: "gt",
+            path: ["duration-minutes"],
+            values: ["30"],
+          },
+        ],
+      },
+      [
+        { field: "year", tags: [] },
+        { field: "tag:0199b1a0-0000-7000-8000-000000000002", tags: [] },
+      ],
+    );
+
+    expect(events.at(0)?.groups).toStrictEqual([
+      [{ key: "2026", label: null, path: null }],
+      [],
+    ]);
+    expect(query).toHaveBeenLastCalledWith(
+      expect.stringContaining("as group_1"),
+      [
+        "2026-03-06T00:00:00.000Z",
+        "2026-03-05T00:00:00.000Z",
+        "30",
+        "0199b1a0-0000-7000-8000-000000000002",
+        1,
+      ],
     );
   });
 
