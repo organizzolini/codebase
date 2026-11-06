@@ -3,6 +3,10 @@ import { SiderealTime } from "astronomy-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 
+import { CaelundasDatabaseModule } from "@codebase/caelundas-db";
+
+import { NoDatabaseModule } from "../testing/no-database.module";
+
 import { CaelundasApiModule } from "./caelundas-api.module";
 
 import type { INestApplication } from "@nestjs/common";
@@ -75,9 +79,13 @@ describe("caelundas api night sky end-to-end suite", () => {
   }
 
   beforeAll(async () => {
+    // The night sky reads no row, so the root module boots without Postgres.
     const module = await Test.createTestingModule({
       imports: [CaelundasApiModule],
-    }).compile();
+    })
+      .overrideModule(CaelundasDatabaseModule)
+      .useModule(NoDatabaseModule)
+      .compile();
 
     application = module.createNestApplication<INestApplication<Server>>();
     await application.listen(0);
