@@ -102,3 +102,46 @@ export const eventRowSchema = z.object({
   tags: z.array(tagSchema),
   timezone: z.string(),
 });
+
+/**
+ * Every tag in the tree with its root, its path beneath that root, and the
+ * number of events it matches among those that overlap a window, its
+ * descendants' included, roots and their tags each in path order. Binds the
+ * window's end, then its start; a null bound leaves that side open, so two
+ * nulls count every event.
+ */
+export const FACETS_SQL = `
+  with in_window as (
+    select e.id
+    from calendar_events e
+    where e."start" < coalesce($1::timestamptz, 'infinity')
+      and e."end" >= coalesce($2::timestamptz, '-infinity')
+  ),
+  tag_counts as (
+    select t.tag_id, count(*) as count
+    from calendar_event_tag_nodes t
+    join in_window w on w.id = t.calendar_event_id
+    group by t.tag_id
+  )
+  select
+    n.id,
+    n."name",
+    n.depth,
+    n.root_id,
+    substr(n."path", length(r."name") + length(' / ') + 1) as path_below_root,
+    coalesce(c.count, 0) as count
+  from tag_nodes n
+  join tag_nodes r on r.id = n.root_id
+  left join tag_counts c on c.tag_id = n.id
+  order by n."path" collate "C"
+`;
+
+/** One row of {@link FACETS_SQL}; Postgres answers counts as text. */
+export const facetRowSchema = z.object({
+  count: z.coerce.number(),
+  depth: z.coerce.number(),
+  id: z.string(),
+  name: z.string(),
+  path_below_root: z.string(),
+  root_id: z.string(),
+});

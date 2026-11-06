@@ -128,6 +128,67 @@ describe(EventsService, () => {
     ]);
   });
 
+  it("gathers the tags beneath each root into its facet, counting over the window", async () => {
+    expect.hasAssertions();
+
+    const row = (
+      id: string,
+      name: string,
+      depth: string,
+      root_id: string,
+      path_below_root: string,
+      count: string,
+    ): Record<string, string> => ({
+      count,
+      depth,
+      id,
+      name,
+      path_below_root,
+      root_id,
+    });
+
+    query.mockResolvedValueOnce([
+      row("planet", "Planet", "0", "planet", "", "0"),
+      row("mars", "Mars", "1", "planet", "Mars", "2"),
+      row("retrograde", "Retrograde", "2", "planet", "Mars / Retrograde", "1"),
+    ]);
+
+    await expect(
+      service.findFacets({
+        end: new Date("2026-03-06T00:00:00Z"),
+        start: new Date("2026-03-05T00:00:00Z"),
+      }),
+    ).resolves.toStrictEqual([
+      {
+        id: "planet",
+        name: "Planet",
+        values: [
+          { count: 2, depth: 1, id: "mars", name: "Mars", path: "Mars" },
+          {
+            count: 1,
+            depth: 2,
+            id: "retrograde",
+            name: "Retrograde",
+            path: "Mars / Retrograde",
+          },
+        ],
+      },
+    ]);
+    expect(query).toHaveBeenLastCalledWith(expect.any(String), [
+      "2026-03-06T00:00:00.000Z",
+      "2026-03-05T00:00:00.000Z",
+    ]);
+  });
+
+  it("counts over every event when no window is given", async () => {
+    expect.hasAssertions();
+
+    query.mockResolvedValueOnce([]);
+
+    await expect(service.findFacets()).resolves.toStrictEqual([]);
+    expect(query).toHaveBeenLastCalledWith(expect.any(String), [null, null]);
+  });
+
   it("refuses a row that does not match the schema", async () => {
     expect.hasAssertions();
 

@@ -2,6 +2,7 @@ import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
 import { CalendarEventEntity } from "./calendar-event.entities";
+import { EventFacetEntity } from "./event-facet.entities";
 import { EventsWindowInput } from "./events-window-input.entities";
 import { EventsDatasetEntity } from "./events.entities";
 import { EventsService } from "./events.service";
@@ -44,6 +45,21 @@ export class EventsResolver {
     window: EventsWindowInput,
   ): Promise<CalendarEventEntity[]> {
     return this.eventsService.findEvents(window);
+  }
+
+  /**
+   * The tag facets, counted over a window.
+   */
+  @Query(() => [EventFacetEntity], {
+    description:
+      "Every tag root and the tags beneath it, each counting the events that overlap the window, or every event when no window is given.",
+    name: "facets",
+  })
+  public async facets(
+    @Arguments("window", { nullable: true, type: () => EventsWindowInput })
+    window?: EventsWindowInput,
+  ): Promise<EventFacetEntity[]> {
+    return this.eventsService.findFacets(window);
   }
   // 🖋️ Mutations
   // 🔗 Relations

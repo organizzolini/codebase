@@ -7,9 +7,12 @@ import {
   datasetRowSchema,
   eventRowSchema,
   EVENTS_IN_WINDOW_SQL,
+  facetRowSchema,
+  FACETS_SQL,
 } from "./events.constants";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
+import type { EventFacetEntity } from "./event-facet.entities";
 import type { EventsWindowInput } from "./events-window-input.entities";
 import type { EventsDatasetEntity } from "./events.entities";
 import type { z } from "zod";
@@ -63,6 +66,38 @@ export class EventsService {
         startLocalHour: start_local_hour,
       }),
     );
+  }
+
+  /**
+   * Every tag root with the tags beneath it, each counting the events that
+   * overlap the window, or every event without one.
+   */
+  public async findFacets(
+    window?: EventsWindowInput,
+  ): Promise<EventFacetEntity[]> {
+    const rows = await this.select(
+      FACETS_SQL,
+      [window?.end.toISOString() ?? null, window?.start.toISOString() ?? null],
+      facetRowSchema,
+    );
+    const facets = new Map<string, EventFacetEntity>();
+
+    for (const row of rows) {
+      if (row.depth === 0) {
+        facets.set(row.id, { id: row.id, name: row.name, values: [] });
+        continue;
+      }
+
+      facets.get(row.root_id)?.values.push({
+        count: row.count,
+        depth: row.depth,
+        id: row.id,
+        name: row.name,
+        path: row.path_below_root,
+      });
+    }
+
+    return [...facets.values()];
   }
 
   /**

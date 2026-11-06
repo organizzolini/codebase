@@ -5,9 +5,11 @@ import { EventsResolver } from "./events.resolver";
 import { EventsService } from "./events.service";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
+import type { EventFacetEntity } from "./event-facet.entities";
 import type { EventsDatasetEntity } from "./events.entities";
 
 const describeDataset = vi.fn<() => Promise<EventsDatasetEntity | null>>();
+const findFacets = vi.fn<() => Promise<EventFacetEntity[]>>();
 const findEvents = vi.fn<() => Promise<CalendarEventEntity[]>>();
 
 describe(EventsResolver, () => {
@@ -17,7 +19,10 @@ describe(EventsResolver, () => {
     const module = await Test.createTestingModule({
       providers: [
         EventsResolver,
-        { provide: EventsService, useValue: { describeDataset, findEvents } },
+        {
+          provide: EventsService,
+          useValue: { describeDataset, findEvents, findFacets },
+        },
       ],
     }).compile();
 
@@ -58,5 +63,23 @@ describe(EventsResolver, () => {
       end: new Date("2026-03-02T00:00:00Z"),
       start: new Date("2026-03-01T00:00:00Z"),
     });
+  });
+
+  it("answers the facets query over the window, or over everything without one", async () => {
+    expect.hasAssertions();
+
+    const window = {
+      end: new Date("2026-03-02T00:00:00Z"),
+      start: new Date("2026-03-01T00:00:00Z"),
+    };
+
+    findFacets.mockResolvedValue([]);
+
+    await expect(resolver.facets(window)).resolves.toStrictEqual([]);
+    expect(findFacets).toHaveBeenLastCalledWith(window);
+
+    await resolver.facets();
+
+    expect(findFacets).toHaveBeenLastCalledWith(undefined);
   });
 });
