@@ -18,12 +18,6 @@ export type CalendarEventTagLink = Pick<
   "calendarEventId" | "tagId"
 >;
 
-/** An observer location in decimal degrees. */
-interface Coordinates {
-  latitude: number;
-  longitude: number;
-}
-
 /**
  * A {@link CalendarEvent} as a detector builds it and a writer reads it:
  * without the fields the database owns, the id and audit columns, or the
@@ -62,3 +56,9 @@ export interface Observer extends Coordinates {
  */
 export type StoredCalendarEvent = CalendarEvent &
   Pick<DetectedCalendarEvent, "tags">;
+
+/** An observer location in decimal degrees. */
+interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
