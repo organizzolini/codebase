@@ -25,7 +25,7 @@
     "README.md"
   ],
   "main": "./src/index.ts",
-  "name": "@codebase/caelundas-entities",
+  "name": "@codebase/caelundas-db",
   "private": true,
   "publishConfig": {
     "exports": {

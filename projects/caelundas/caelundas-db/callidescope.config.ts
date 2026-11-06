@@ -1,7 +1,7 @@
 import { projectDefaults } from "../../../configuration/callidescope.config.js";
 
 /**
- * What caelundas-entities is held to, measured rather than assumed.
+ * What caelundas-db is held to, measured rather than assumed.
  *
  * Nothing yet: the library is scaffolded empty, so there is no frame to trace.
  * The limits are the smallest real numbers the gate accepts, and the entities

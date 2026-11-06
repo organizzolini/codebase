@@ -5,7 +5,7 @@ export default {
   outputs: [
     {
       description:
-        "The words this project uses that the root glossary does not define, regenerated with `nx run caelundas-entities:coinagerie-check:write`.",
+        "The words this project uses that the root glossary does not define, regenerated with `nx run caelundas-db:coinagerie-check:write`.",
       path: "README.md",
       type: "markdown",
     },

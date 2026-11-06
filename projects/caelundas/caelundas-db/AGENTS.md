@@ -1,4 +1,4 @@
-# CaelundasEntities: NestJS Service Application
+# CaelundasDatabase: NestJS Service Application
 
 ## Quick Start
 
@@ -68,10 +68,10 @@ Outputs structured JSON in production (`NODE_ENV=production`) and pretty-printed
 Always prefer running tasks through Nx rather than calling the underlying tools directly.
 
 ```bash
-nx run caelundas-entities:typecheck-code,lint-code,format-code,deprecate-code,guard-code   # Every static check, in one graph
-nx run caelundas-entities:typecheck       # tsc --noEmit
-nx run caelundas-entities:oxfmt           # Formatting
-nx run caelundas-entities:build           # Compile for publication
+nx run caelundas-db:typecheck-code,lint-code,format-code,deprecate-code,guard-code   # Every static check, in one graph
+nx run caelundas-db:typecheck       # tsc --noEmit
+nx run caelundas-db:oxfmt           # Formatting
+nx run caelundas-db:build           # Compile for publication
 ```
 
 ### Testing
@@ -79,9 +79,9 @@ nx run caelundas-entities:build           # Compile for publication
 Follow the codebase's strict three-tier testing strategy. Co-locate test files with the source they test.
 
 ```bash
-nx run caelundas-entities:vitest:unit          # Fast (<100ms) — pure logic, mocked DI
-nx run caelundas-entities:vitest:integration   # Moderate (1-2s) — real database/API I/O
-nx run caelundas-entities:vitest:end-to-end    # Slow (30-60s) — full service initialization
+nx run caelundas-db:vitest:unit          # Fast (<100ms) — pure logic, mocked DI
+nx run caelundas-db:vitest:integration   # Moderate (1-2s) — real database/API I/O
+nx run caelundas-db:vitest:end-to-end    # Slow (30-60s) — full service initialization
 ```
 
 | Tier        | File pattern            | What to test                                     |

@@ -271,6 +271,10 @@ patterns:
   # applications prefix.
   - name: database-tooling-vocabulary
     pattern: /\w*POSTGRES_DB\b/g
+  # The caelundas-db library's name, which the spec fixes and which spells the
+  # banned `db` as one segment of a kebab-case project name.
+  - name: caelundas-db-project-name
+    pattern: /\bcaelundas-db\b/g
   # Hexadecimal color literals, which can spell a banned abbreviation. Six letters with no
   # digit is an English word (`decade`, `facade`), not a color, so it stays checked.
   - name: hexadecimal-color
@@ -324,6 +328,7 @@ ignoreRegExpList:
   - typeorm-constraint-identifier
   - jsdoc-parameter-tag
   - database-tooling-vocabulary
+  - caelundas-db-project-name
   - hexadecimal-color
   - lint-rule-name
   - external-identifier
