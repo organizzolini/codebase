@@ -7,11 +7,16 @@ export default mergeConfig(
   defineConfig({
     test: {
       coverage: {
-        exclude: ["src/**/*.test.ts"],
+        exclude: [
+          "src/**/*.test.ts",
+          "src/**/*.entity.ts",
+          "src/**/*.constants.ts",
+          "src/**/*.module.ts",
+          "src/**/*.types.ts",
+          "src/**/migrations/**/*.ts",
+        ],
         include: ["src/**/*.ts"],
       },
-      // The library is scaffolded empty; drop this with the first test.
-      passWithNoTests: true,
     },
   }),
 );

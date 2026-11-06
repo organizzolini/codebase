@@ -7,7 +7,6 @@
     "domain:caelundas",
     "framework:nestjs",
     "framework:typeorm",
-    "generator:nestjs-service-project",
     "language:typescript",
     "name:caelundas-entities",
     "type:package"
