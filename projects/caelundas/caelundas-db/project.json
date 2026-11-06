@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "name": "caelundas-db",
+  "projectType": "library",
+  "sourceRoot": "projects/caelundas/caelundas-db",
+  "tags": [
+    "domain:caelundas",
+    "framework:nestjs",
+    "framework:typeorm",
+    "generator:nestjs-service-project",
+    "language:typescript",
+    "name:caelundas-db",
+    "type:package"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "assets": [
+          {
+            "glob": "README.md",
+            "input": "projects/caelundas/caelundas-db",
+            "output": "."
+          }
+        ],
+        "generatePackageJson": false,
+        "main": "projects/caelundas/caelundas-db/src/index.ts",
+        "outputPath": "projects/caelundas/caelundas-db/dist",
+        "tsConfig": "projects/caelundas/caelundas-db/tsconfig.build.json"
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "build-projects": {},
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}
