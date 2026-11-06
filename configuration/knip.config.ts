@@ -170,6 +170,19 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // caelundas-api: NestJS GraphQL API
+    "projects/caelundas/caelundas-api": {
+      ignoreDependencies: [
+        // Apollo 5's Express integration, which @nestjs/apollo resolves by
+        // name at startup; without it GraphQLModule refuses to boot.
+        "@as-integrations/express5",
+        // Named only by testing/mocks.ts, a conformance-scaffolded placeholder
+        // that knip ignores, so no import reaches it.
+        "typeorm",
+      ],
+      project: "src/**/*.ts",
+    },
+
     // lexico: TanStack Start SSR web application.
     // The client entry and the generated route tree are named by the TanStack
     // Start plugin rather than imported, so knip is told where they are.
