@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 
+import { DatabaseModule } from "@codebase/caelundas-entities";
 import { LoggerModule } from "@codebase/observability";
 
-import { DatabaseModule } from "../../database.module";
 import { AnnualSolarCycleModule } from "../annual-solar-cycle/annual-solar-cycle.module";
 import { AspectsModule } from "../aspects/aspects.module";
 import { CalendarEventsModule } from "../calendar-events/calendar-events.module";

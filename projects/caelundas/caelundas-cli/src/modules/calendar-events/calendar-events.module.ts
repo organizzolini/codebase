@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 
-import { DatabaseModule } from "../../database.module";
+import { DatabaseModule } from "@codebase/caelundas-entities";
+
 import { TagsModule } from "../tags/tags.module";
 
 import { CalendarEventsService } from "./calendar-events.service";

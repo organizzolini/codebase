@@ -19,7 +19,7 @@ export type CalendarEventTagLink = Pick<
 >;
 
 /** An observer location in decimal degrees. */
-export interface Coordinates {
+interface Coordinates {
   latitude: number;
   longitude: number;
 }
