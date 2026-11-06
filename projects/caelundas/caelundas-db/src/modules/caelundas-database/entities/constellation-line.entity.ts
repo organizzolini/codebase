@@ -1,5 +1,7 @@
 import { Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
+import { createBigintTransformer } from "../caelundas-database.utilities";
+
 import { Constellation } from "./constellation.entity";
 import { Star } from "./star.entity";
 
@@ -25,7 +27,7 @@ export class ConstellationLine {
   constellationDesignation!: string;
 
   /** The star the segment starts at. */
-  @PrimaryColumn("integer")
+  @PrimaryColumn({ transformer: createBigintTransformer(), type: "bigint" })
   fromHip!: number;
 
   @JoinColumn({ name: "from_hip" })
@@ -33,7 +35,7 @@ export class ConstellationLine {
   fromStar?: Relation<Star>;
 
   /** The star the segment ends at. */
-  @PrimaryColumn("integer")
+  @PrimaryColumn({ transformer: createBigintTransformer(), type: "bigint" })
   toHip!: number;
 
   @JoinColumn({ name: "to_hip" })

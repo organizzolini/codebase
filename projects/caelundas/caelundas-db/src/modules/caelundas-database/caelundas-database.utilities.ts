@@ -8,6 +8,21 @@ import type { ValueTransformer } from "typeorm";
 // 🌎 Utilities
 
 /**
+ * Carries a `bigint` column as the `number` the code works in. Postgres
+ * migrations here prefer `bigint` over `integer`, and the driver sends a
+ * `bigint` as text, so this reads that text back as a number; every value
+ * the schema holds, such as a Hipparcos number or a tag's depth, is far
+ * below the largest safe integer. A null or an undefined passes through.
+ */
+export function createBigintTransformer(): ValueTransformer {
+  return {
+    from: (value?: null | string): null | number | undefined =>
+      value === null || value === undefined ? value : Number(value),
+    to: (value?: null | number): null | number | undefined => value,
+  };
+}
+
+/**
  * Carries a `numeric` coordinate column as the string Postgres sends it as:
  * the driver returns `numeric` as text, to keep every digit, and this reads
  * that text back unchanged. A writer may give the coordinate as a number,

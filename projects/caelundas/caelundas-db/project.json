@@ -49,6 +49,7 @@
     "spell-check": {},
     "sqlfluff-format": {},
     "sqlfluff-lint": {},
+    "squawk": {},
     "test-code": {},
     "type-coverage": {},
     "typecheck": {},

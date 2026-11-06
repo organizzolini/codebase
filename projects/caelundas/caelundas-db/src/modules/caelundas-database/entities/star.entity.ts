@@ -1,5 +1,7 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
+import { createBigintTransformer } from "../caelundas-database.utilities";
+
 /**
  * One row of the `stars` table: a star of the HYG catalog the night sky draws,
  * keyed by its Hipparcos number, at J2000.
@@ -15,7 +17,7 @@ export class Star {
   declinationDegrees!: number;
 
   /** The Hipparcos catalog number, which constellation lines refer to. */
-  @PrimaryColumn("integer")
+  @PrimaryColumn({ transformer: createBigintTransformer(), type: "bigint" })
   hip!: number;
 
   /** The apparent visual magnitude. */

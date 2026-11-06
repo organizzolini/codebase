@@ -2,11 +2,31 @@ import moment from "moment-timezone";
 import { describe, expect, it } from "vitest";
 
 import {
+  createBigintTransformer,
   createCoordinateTransformer,
   createMomentTransformer,
 } from "./caelundas-database.utilities";
 
 describe("caelundas database utilities", () => {
+  describe(createBigintTransformer, () => {
+    const transformer = createBigintTransformer();
+
+    it("reads the text Postgres sends back as a number", () => {
+      expect(transformer.from("32349")).toBe(32_349);
+    });
+
+    it("writes a number as it was given", () => {
+      expect(transformer.to(32_349)).toBe(32_349);
+    });
+
+    it("passes a null and an undefined through both ways", () => {
+      expect(transformer.from(null)).toBeNull();
+      expect(transformer.from(undefined)).toBeUndefined();
+      expect(transformer.to(null)).toBeNull();
+      expect(transformer.to(undefined)).toBeUndefined();
+    });
+  });
+
   describe(createCoordinateTransformer, () => {
     const transformer = createCoordinateTransformer();
 
