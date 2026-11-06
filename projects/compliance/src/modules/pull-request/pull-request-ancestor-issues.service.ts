@@ -6,10 +6,8 @@ import {
   ISSUE_REFERENCE_PATTERN,
   issueAncestorSchema,
   linkedIssueNumbersSchema,
-  MANUAL_REFERENCE_LIMIT,
 } from "./pull-request-body-links.constants";
 import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
-import { PullRequestClosingReferencesService } from "./pull-request-closing-references.service";
 import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 import { DEPENDABOT_LOGIN } from "./pull-request.constants";
@@ -36,7 +34,6 @@ export class PullRequestAncestorIssuesService {
     private readonly pullRequestDescendantIssuesService: PullRequestDescendantIssuesService,
     private readonly pullRequestGithubService: PullRequestGithubService,
     private readonly pullRequestBodyLinksService: PullRequestBodyLinksService,
-    private readonly pullRequestClosingReferencesService: PullRequestClosingReferencesService,
   ) {}
 
   // 🔐 Private Fields
@@ -291,65 +288,41 @@ export class PullRequestAncestorIssuesService {
       return this.unchanged(context, [], [descendants.failure]);
     }
 
-    const closable = descendants.value.filter(
-      (number) => !ancestors.value.includes(number),
+    return this.writeReferences(
+      context,
+      ancestors.value,
+      descendants.value.filter((number) => !ancestors.value.includes(number)),
     );
-    const written = this.writeReferences(context, ancestors.value, closable);
-    const closing = this.pullRequestClosingReferencesService.close(
-      context.number,
-      closable
-        .filter((number) => !linked.value.includes(number))
-        .slice(0, Math.max(0, MANUAL_REFERENCE_LIMIT - linked.value.length)),
-    );
-
-    return {
-      body: written.body,
-      outcome: {
-        failures: [...written.outcome.failures, ...closing.failures],
-        lines: [...written.outcome.lines, ...closing.lines],
-      },
-    };
   }
 
   /**
-   * Judges the links the write phase makes: every open descendant of a closed
-   * issue must be a real closing reference, and every ancestor must be named
-   * in the description. GitHub allows ten manual closing references, so once
-   * a pull request holds ten, a `Closes` line in the description stands in
-   * for the rest. Draft and Dependabot pull requests are exempt, like
-   * the linked-issue check.
+   * Judges the links the write phase makes: every ancestor of a closed issue
+   * must be named in the description. Draft and Dependabot pull requests are
+   * exempt, like the linked-issue check.
    */
   public verify(context: PullRequestContext): CheckOutcome {
     const base = {
-      heading: "❌ Pull request does not link its issue hierarchy",
+      heading: "❌ Pull request does not reference its ancestor issues",
       remediationCommands: [
         `compliance pull-request ${String(context.number)} write`,
       ],
-      successMessage: "✅ Pull request links its issue hierarchy",
+      successMessage: "✅ Pull request references its ancestor issues",
     };
-    const linked = this.readLinked(context.number);
 
     if (context.draft || context.author === DEPENDABOT_LOGIN) {
       return { ...base, failures: [] };
     }
+
+    const linked = this.readLinked(context.number);
 
     if (!linked.ok) {
       return { ...base, failures: [linked.failure] };
     }
 
     const ancestors = this.collectAncestors(linked.value);
-    const descendants = this.pullRequestDescendantIssuesService.collect(
-      linked.value,
-    );
 
-    if (!ancestors.ok || !descendants.ok) {
-      return {
-        ...base,
-        failures: [
-          ancestors.ok ? "" : ancestors.failure,
-          descendants.ok ? "" : descendants.failure,
-        ].filter((failure) => failure !== ""),
-      };
+    if (!ancestors.ok) {
+      return { ...base, failures: [ancestors.failure] };
     }
 
     const mentioned = new Set(
@@ -357,31 +330,18 @@ export class PullRequestAncestorIssuesService {
         Number(match.groups?.["issueNumber"]),
       ),
     );
-    const capped = linked.value.length >= MANUAL_REFERENCE_LIMIT;
-    const unclosed = descendants.value.filter(
-      (number) =>
-        !linked.value.includes(number) &&
-        !ancestors.value.includes(number) &&
-        !(capped && mentioned.has(number)),
-    );
     const unrelated = ancestors.value.filter(
       (number) => !mentioned.has(number),
     );
 
     return {
       ...base,
-      failures: [
-        ...(unclosed.length === 0
-          ? []
-          : [
-              `❌ Open descendant issues are not closed by this pull request: ${this.format(unclosed)}`,
-            ]),
-        ...(unrelated.length === 0
+      failures:
+        unrelated.length === 0
           ? []
           : [
               `❌ Ancestor issues are not referenced in the description: ${this.format(unrelated)}`,
-            ]),
-      ],
+            ],
     };
   }
 }
