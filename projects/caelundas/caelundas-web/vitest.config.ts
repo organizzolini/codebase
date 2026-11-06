@@ -9,9 +9,8 @@ import vitestConfig from "@codebase/configuration/vitest.config";
 // inside the Start runtime; the logic they delegate to is tested in each
 // module's `.utilities.ts`.
 //
-// The events database's worker and the page-side client that starts it need
-// a real browser, which jsdom is not; tests read the same SQL through
-// `node:sqlite` instead.
+// Tests answer the calendar's GraphQL requests with the mocked API, so they
+// need neither the API nor a database.
 export default mergeConfig(
   vitestConfig,
   defineConfig({
@@ -26,10 +25,7 @@ export default mergeConfig(
         exclude: [
           "src/**/*.test.ts",
           "src/**/*.test.tsx",
-          "src/components/events-calendar/events-database-browser.constants.ts",
-          "src/components/events-calendar/events-database-browser.utilities.ts",
           "src/**/*.functions.ts",
-          "src/**/*.worker.ts",
           "src/graphql/generated/**",
           "src/client.tsx",
           "src/routeTree.gen.ts",

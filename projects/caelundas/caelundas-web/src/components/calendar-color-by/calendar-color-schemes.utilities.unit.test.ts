@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { createTestEventsDatabase } from "../../../testing/events-database";
+import { findFixtureFacets } from "../../../testing/calendar-facets";
 import { createEventGroupFields } from "../calendar-group-by/event-group-fields.utilities";
 
 import { COLOR_PALETTE } from "./calendar-color-schemes.constants";
@@ -9,9 +9,7 @@ import { EVENT_COLOR_RULES } from "./calendar-colors.constants";
 
 import type { CalendarEventRecord } from "../events-calendar/events-database.types";
 
-const FIELDS = createEventGroupFields(
-  await createTestEventsDatabase().findFacets(),
-);
+let FIELDS: ReturnType<typeof createEventGroupFields> = [];
 
 function event(
   keys: readonly string[],
@@ -33,6 +31,10 @@ function event(
 }
 
 describe(createColorScheme, () => {
+  beforeAll(async () => {
+    FIELDS = createEventGroupFields(await findFixtureFacets());
+  });
+
   it("colors by type, kind by kind, without a level", () => {
     const scheme = createColorScheme(undefined, FIELDS, 0);
 

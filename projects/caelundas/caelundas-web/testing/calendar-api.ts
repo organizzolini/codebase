@@ -76,6 +76,11 @@ export interface CalendarApiOptions {
    * default.
    */
   nightSky?: (input: NightSkyInput) => NightSkyQuery["nightSky"];
+  /**
+   * Fails only the sky's reads with this message, the calendar's reads
+   * answering as usual.
+   */
+  nightSkyError?: string;
   tags?: readonly FixtureTag[];
 }
 
@@ -93,6 +98,20 @@ interface Tree {
   depth: (id: string) => number;
   path: (id: string) => string;
   root: (id: string) => string;
+}
+
+let served: CalendarApi | undefined;
+
+/**
+ * The API the test serves last, which a route test reads what was asked of
+ * after it renders.
+ */
+export function readServedApi(): CalendarApi {
+  if (served === undefined) {
+    throw new Error("No test has served the calendar API");
+  }
+
+  return served;
 }
 
 /**
@@ -175,11 +194,18 @@ export function serveCalendarApi(
     mockNightSkyQuery(async ({ variables }) => {
       api.requests.nightSky.push(variables.input);
 
+      if (options.nightSkyError !== undefined) {
+        return HttpResponse.json({
+          errors: [{ message: options.nightSkyError }],
+        });
+      }
+
       return answer(() => ({
         nightSky: (options.nightSky ?? drawBareSky)(variables.input),
       }));
     }),
   );
+  served = api;
 
   return api;
 }
@@ -211,7 +237,7 @@ function createTree(tags: readonly FixtureTag[]): Tree {
  * A bare sky the size asked for, with the measurements of an unclamped one.
  */
 function drawBareSky(input: NightSkyInput): NightSkyQuery["nightSky"] {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${String(input.width)} ${String(input.height)}"><rect fill="#000" height="${String(input.height)}" width="${String(input.width)}"/></svg>`;
+  const svg = `<svg data-latitude="${String(input.latitudeDegrees ?? 90)}" data-still="${String(input.still ?? false)}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${String(input.width)} ${String(input.height)}"><rect fill="#000" height="${String(input.height)}" width="${String(input.width)}"/></svg>`;
 
   return {
     measurements: {
@@ -478,6 +504,13 @@ function matchesRule(
       }
       // No default
     }
+  } else if (field === "date" && values.length === 2) {
+    const [from = "", to = ""] = values;
+    const overlapsRange =
+      readLocalDay({ ...event, start: event.end }) >= from &&
+      readLocalDay(event) <= to;
+
+    held = rule.operator === "not_between" ? !overlapsRange : overlapsRange;
   } else if (field === "text") {
     const needle = (values[0] ?? "").toLowerCase();
     const found = `${event.summary} ${event.description}`
