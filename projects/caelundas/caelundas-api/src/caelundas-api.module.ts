@@ -4,6 +4,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 
+import { CaelundasDatabaseModule } from "@codebase/caelundas-db";
 import { LoggerModule } from "@codebase/observability";
 
 import {
@@ -29,6 +30,7 @@ import { HealthModule } from "./modules/health/health.module";
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
+    CaelundasDatabaseModule,
     LoggerModule,
     HealthModule,
   ],

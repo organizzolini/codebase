@@ -4,7 +4,7 @@
 
 **Type**: Node.js HTTP API server (NestJS + Apollo GraphQL)
 
-**Purpose**: Serve the astronomical events `caelundas-cli` writes to SQLite to `caelundas-web` over GraphQL. Today it only answers the `health` query; the calendar queries arrive in later pull requests. Runs locally on `CAELUNDAS_API_PORT` (default 6173).
+**Purpose**: Serve the astronomical events `caelundas-cli` writes to the Caelundas Postgres to `caelundas-web` over GraphQL, reading them through `CaelundasDatabaseModule` from `@codebase/caelundas-db`. Today it only answers the `health` query; the calendar queries arrive in later pull requests. Runs locally on `CAELUNDAS_API_PORT` (default 6173).
 
 ### Run Locally
 
@@ -22,6 +22,7 @@ nx run caelundas-api:start
 - **Schema strategy**: Code-first, emitted to `src/schema.gql` beside the root module (`GRAPHQL_SCHEMA_FILE`), whatever the working directory; the file is gitignored
 - **Pagination**: Relay connections via `nestjs-graphql-connection`
 - **Dataloaders**: `dataloader` (request-scoped, prevents N+1 queries)
+- **Database**: Postgres through `CaelundasDatabaseModule` (`@codebase/caelundas-db`, which wraps the shared `DatabaseModule` from `@codebase/persistence`); no file is opened. Connects as `caelundas_username` to `caelundas_development`.`caelundas` with the `CAELUNDAS_POSTGRES_*` variables, which `environmentSchema` takes from `postgresEnvironmentSchema({ project: "caelundas" })`. Migrations run separately with `nx run caelundas-db:migration:run`
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
 - **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Language**: Strict TypeScript
@@ -41,7 +42,7 @@ src/caelundas-api.ts
 ```text
 src/
   caelundas-api.ts            # Bootstrap — do not modify
-  caelundas-api.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
+  caelundas-api.module.ts     # Root NestJS module (imports GraphQLModule, CaelundasDatabaseModule, LoggerModule)
   caelundas-api.constants.ts  # Zod environmentSchema for env validation
   caelundas-api.types.ts      # Application-scoped TypeScript types
   modules/
@@ -86,6 +87,7 @@ This creates 13 files in `src/modules/<domain>/`. After generation:
      imports: [
        ConfigModule.forRoot({ ... }),
        GraphQLModule.forRoot<ApolloDriverConfig>({ ... }),
+       CaelundasDatabaseModule,
        LoggerModule,
        MyDomainModule,   // ← add here
      ],

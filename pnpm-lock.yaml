@@ -1197,9 +1197,15 @@ importers:
       '@as-integrations/express5':
         specifier: 'catalog:'
         version: 1.1.2(@apollo/server@5.5.1(graphql@16.14.2)(supports-color@10.2.2))(express@5.3.0(supports-color@10.2.2))
+      '@codebase/caelundas-db':
+        specifier: workspace:*
+        version: link:../caelundas-db
       '@codebase/observability':
         specifier: workspace:*
         version: link:../../common/observability
+      '@codebase/persistence':
+        specifier: workspace:*
+        version: link:../../common/persistence
       '@nestjs/apollo':
         specifier: 'catalog:'
         version: 14.0.2(@apollo/server@5.5.1(graphql@16.14.2)(supports-color@10.2.2))(@as-integrations/express5@1.1.2(@apollo/server@5.5.1(graphql@16.14.2)(supports-color@10.2.2))(express@5.3.0(supports-color@10.2.2)))(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/graphql@14.0.2(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(graphql@16.14.2)(reflect-metadata@0.2.2)(typescript@6.0.3))(graphql@16.14.2)
