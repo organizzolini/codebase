@@ -299,6 +299,30 @@ describe(PullRequestAncestorIssuesService, () => {
     expect(closing.close).toHaveBeenCalledWith(12, [9]);
   });
 
+  it("stops linking descendants at GitHub's manual reference limit", () => {
+    stubGithub({ linked: "[1,2,3,4,5,6,7,8]" });
+    vi.mocked(children.collect).mockReturnValue({
+      ok: true,
+      value: [20, 21, 22, 23],
+    });
+    vi.mocked(links.addRelatedIssueReferences).mockReturnValue("Closes #5");
+
+    service.link(context);
+
+    expect(closing.close).toHaveBeenCalledWith(12, [20, 21]);
+  });
+
+  it("accepts a Closes line for descendants past the reference limit", () => {
+    stubGithub({ linked: "[1,2,3,4,5,6,7,8,9,10]" });
+    vi.mocked(children.collect).mockReturnValue({ ok: true, value: [20, 21] });
+
+    expect(
+      service.verify({ ...context, body: "Closes #20" }).failures,
+    ).toStrictEqual([
+      "❌ Open descendant issues are not closed by this pull request: #21",
+    ]);
+  });
+
   it("verifies a pull request that links its whole hierarchy", () => {
     stubGithub({ linked: "[5]", parents: { "5": 3 } });
     vi.mocked(children.collect).mockReturnValue({ ok: true, value: [5] });

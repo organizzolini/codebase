@@ -6,6 +6,7 @@ import {
   ISSUE_REFERENCE_PATTERN,
   issueAncestorSchema,
   linkedIssueNumbersSchema,
+  MANUAL_REFERENCE_LIMIT,
 } from "./pull-request-body-links.constants";
 import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
 import { PullRequestClosingReferencesService } from "./pull-request-closing-references.service";
@@ -296,7 +297,9 @@ export class PullRequestAncestorIssuesService {
     const written = this.writeReferences(context, ancestors.value, closable);
     const closing = this.pullRequestClosingReferencesService.close(
       context.number,
-      closable.filter((number) => !linked.value.includes(number)),
+      closable
+        .filter((number) => !linked.value.includes(number))
+        .slice(0, Math.max(0, MANUAL_REFERENCE_LIMIT - linked.value.length)),
     );
 
     return {
@@ -311,7 +314,9 @@ export class PullRequestAncestorIssuesService {
   /**
    * Judges the links the write phase makes: every open descendant of a closed
    * issue must be a real closing reference, and every ancestor must be named
-   * in the description. Draft and Dependabot pull requests are exempt, like
+   * in the description. GitHub allows ten manual closing references, so once
+   * a pull request holds ten, a `Closes` line in the description stands in
+   * for the rest. Draft and Dependabot pull requests are exempt, like
    * the linked-issue check.
    */
   public verify(context: PullRequestContext): CheckOutcome {
@@ -352,9 +357,12 @@ export class PullRequestAncestorIssuesService {
         Number(match.groups?.["issueNumber"]),
       ),
     );
+    const capped = linked.value.length >= MANUAL_REFERENCE_LIMIT;
     const unclosed = descendants.value.filter(
       (number) =>
-        !linked.value.includes(number) && !ancestors.value.includes(number),
+        !linked.value.includes(number) &&
+        !ancestors.value.includes(number) &&
+        !(capped && mentioned.has(number)),
     );
     const unrelated = ancestors.value.filter(
       (number) => !mentioned.has(number),
