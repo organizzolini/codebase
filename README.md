@@ -135,6 +135,7 @@
 
 Swiss Ephemeris calendar generator that turns astronomical events into an `.ics` file
 
+**[caelundas-api](projects/caelundas/caelundas-api)** - NestJS GraphQL API for serving the astronomical events caelundas-cli detects\
 **[caelundas-cli](projects/caelundas/caelundas-cli)** - Command-line application that detects astronomical events with Swiss Ephemeris and writes them to an `.ics` file\
 **[caelundas-web](projects/caelundas/caelundas-web)** - TanStack Start web application for browsing the astronomical events caelundas-cli detects
 
