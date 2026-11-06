@@ -1,5 +1,11 @@
 import { cleanup } from "@testing-library/react";
-import { afterEach, beforeEach } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach } from "vitest";
+
+import {
+  resetGraphqlMockServer,
+  startGraphqlMockServer,
+  stopGraphqlMockServer,
+} from "@codebase/interface/testing";
 
 import { installViewport } from "./viewport";
 
@@ -36,10 +42,19 @@ globalThis.ResizeObserver = class {
   unobserve = ignore;
 };
 
+beforeAll(() => {
+  startGraphqlMockServer();
+});
+
 beforeEach(() => {
   installViewport();
 });
 
 afterEach(() => {
   cleanup();
+  resetGraphqlMockServer();
+});
+
+afterAll(() => {
+  stopGraphqlMockServer();
 });

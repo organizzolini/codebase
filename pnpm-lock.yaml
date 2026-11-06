@@ -1422,6 +1422,9 @@ importers:
 
   projects/caelundas/caelundas-web:
     dependencies:
+      '@codebase/interface':
+        specifier: workspace:*
+        version: link:../../common/interface
       '@codebase/presentation':
         specifier: workspace:*
         version: link:../../common/presentation
