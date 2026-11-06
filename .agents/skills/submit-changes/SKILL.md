@@ -182,7 +182,7 @@ gh pr list --head <branch> --state open
    ```bash
    pr_number="$(gh pr view <branch> --json number --jq .number)"
    NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-     projects/compliance/src/compliance.main.ts pull-request \
+     compliance/src/compliance.main.ts pull-request \
      "${pr_number}"
    ```
 

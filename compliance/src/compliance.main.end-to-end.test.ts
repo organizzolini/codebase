@@ -8,7 +8,7 @@ import { mockDates } from "../testing/mocks";
 import { environmentSchema } from "./compliance.constants";
 
 const COMMAND_PATH = path.resolve(import.meta.dirname, "compliance.main.ts");
-const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../..");
+const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../..");
 
 describe("main end-to-end suite", () => {
   describe("environment schema e2e", () => {

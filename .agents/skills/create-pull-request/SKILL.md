@@ -381,7 +381,7 @@ This codebase uses **squash merging** by default:
 - All commits in the PR become a single commit on main
 - PR title becomes the commit message
 - Keep PR title clean and following conventions
-- **The title is the only thing semantic-release reads** — every commit's own type is discarded once squashed. Pick the title's type and scope overlap to match the branch's work, while keeping the title at least as significant as the most significant commit; see [commit-code's Release Significance section](../commit-code/SKILL.md#release-significance) for the type-to-bump mapping and the [release-significance check](../../../projects/compliance/src/modules/pull-request/pull-request-release-significance.service.ts) that enforces it
+- **The title is the only thing semantic-release reads** — every commit's own type is discarded once squashed. Pick the title's type and scope overlap to match the branch's work, while keeping the title at least as significant as the most significant commit; see [commit-code's Release Significance section](../commit-code/SKILL.md#release-significance) for the type-to-bump mapping and the [release-significance check](../../../compliance/src/modules/pull-request/pull-request-release-significance.service.ts) that enforces it
 
 ### Scope Selection: Multi-Scope Title vs Split PR
 

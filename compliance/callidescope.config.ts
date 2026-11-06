@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../configuration/callidescope.config.js";
+import { projectDefaults } from "../configuration/callidescope.config.js";
 
 /**
  * The deepest stack and widest callable measured for compliance.

@@ -1,4 +1,5 @@
 packages:
+  - compliance
   - configuration
   - documentation
   - infrastructure

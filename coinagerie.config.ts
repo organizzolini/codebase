@@ -30,6 +30,7 @@ export default {
       // Editor settings name the editor's vocabulary, not this repository's.
       ".vscode/**",
       // Folders that are projects.
+      "compliance/**",
       "configuration/**",
       "documentation/**",
       "infrastructure/**",

@@ -271,7 +271,7 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
   - Every PR must close or reference a GitHub issue through GitHub's own link (`Closes #N` as the first `🔗 Related` bullet, or the Development sidebar). Work done without one gets an issue backfilled with [link-issue](.agents/skills/link-issue/SKILL.md) before the PR opens.
   - Every PR description must carry all 4 mandatory sections (`## 🌰 Summary`, `## 📝 Details`, `## 🧪 Testing`, `## 🔗 Related`) with real content and no unfilled placeholder comments. Never omit `🔗 Related`: its first bullet is the `Closes #N` issue link, followed by any specs, files, or documentation.
   - Each section has one shape: Summary is only one plain paragraph of at most 48 words, Details is only a bulleted list with one marker and at most 512 words, Testing is only an ordered list (indent code blocks under a step), and Related opens with a `-` list, after which anything may follow.
-  - Validate the PR once it exists with `NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request <number>` (read-only) and fix what it reports before requesting review.
+  - Validate the PR once it exists with `NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts pull-request <number>` (read-only) and fix what it reports before requesting review.
   - Set all required metadata at creation: `--assignee @me`, `--label type:<type>`, `--label scope:<scope>`, and `--label source:agent`.
 - **Conventional Naming:** If you need to view the current valid Types and Scopes without using a skill, read `configuration/conventional.config.cjs`.
 

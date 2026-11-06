@@ -6,7 +6,7 @@
 
 **Purpose**: Reconciles codebase files and generated repository configuration.
 GitHub issue and pull request metadata checks belong in
-[compliance](../projects/compliance/AGENTS.md).
+[compliance](../compliance/AGENTS.md).
 
 ### Run Locally
 
