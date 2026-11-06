@@ -58,7 +58,18 @@ export class SoftwareDatabaseService {
       source,
       `deb ${PGDG_REPOSITORY_URL} ${codename}-pgdg main\n`,
     );
-    this.processRunner.runOrThrow("curl", ["-fsSL", "-o", key, PGDG_KEY_URL]);
+    // postgresql.org drops the odd connection, so let curl try again.
+    this.processRunner.runOrThrow("curl", [
+      "-fsSL",
+      "--retry",
+      "5",
+      "--retry-all-errors",
+      "--retry-delay",
+      "2",
+      "-o",
+      key,
+      PGDG_KEY_URL,
+    ]);
     this.processRunner.runOrThrow("gpg", [
       "--batch",
       "--yes",
