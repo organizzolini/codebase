@@ -69,3 +69,45 @@ resource "linode_object_storage_key" "state" {
     prevent_destroy = true
   }
 }
+
+# The bucket behind the shared Nx cache: one object per task hash, under `nx/`.
+# Entries are only a speed-up, so a lifecycle rule lets anything unused for
+# thirty days go, and the bucket can be destroyed and refilled without loss.
+resource "linode_object_storage_bucket" "nx_cache" {
+  label         = var.nx_cache_bucket_label
+  region        = var.region
+  endpoint_type = "E3"
+  acl           = "private"
+
+  lifecycle_rule {
+    id      = "expire-unused-cache-entries"
+    enabled = true
+
+    expiration {
+      days = 30
+    }
+  }
+}
+
+# Two keys on that bucket, and the permission is what keeps a pull request out
+# of what `main` reads: the cache server's own read-only flag can be edited by
+# the pull request, but a read-only key cannot write whatever runs with it.
+resource "linode_object_storage_key" "nx_cache_read_only" {
+  label = "${var.nx_cache_bucket_label}-read-only"
+
+  bucket_access {
+    bucket_name = linode_object_storage_bucket.nx_cache.label
+    region      = var.region
+    permissions = "read_only"
+  }
+}
+
+resource "linode_object_storage_key" "nx_cache_read_write" {
+  label = "${var.nx_cache_bucket_label}-read-write"
+
+  bucket_access {
+    bucket_name = linode_object_storage_bucket.nx_cache.label
+    region      = var.region
+    permissions = "read_write"
+  }
+}

@@ -111,7 +111,6 @@
 [![Gitmoji](https://img.shields.io/badge/Gitmoji-Emoji%20Commits-FFDD67)](https://gitmoji.dev/)
 [![Semantic Release](https://img.shields.io/badge/Semantic%20Release-Versioning-494949?logo=semantic-release)](https://semantic-release.gitbook.io/)
 [![Verdaccio](https://img.shields.io/badge/Verdaccio-Local%20Registry-4B5E40?logo=verdaccio)](https://verdaccio.org/)
-[![Nx Cloud](https://img.shields.io/badge/Nx%20Cloud-Remote%20Cache-143055?logo=nx)](https://nx.app/)
 [![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![Dependabot](https://img.shields.io/badge/Dependabot-Updates-025E8C?logo=dependabot)](https://docs.github.com/en/code-security/dependabot)
 [![Docker](https://img.shields.io/badge/Docker-Container-2496ED?logo=docker)](https://www.docker.com/)
@@ -281,25 +280,27 @@ Other important files include [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](.githu
 Template-driven code generation and conformance validation, templates synced from [configuration/conformetry.config.ts](configuration/conformetry.config.ts) by `nx run synchronization:conformetry-generators:write`.
 
 <!-- conformetry:start -->
-| Template | Description |
-| -------- | ----------- |
-| `jupyter-notebook-application` | A standalone Python application template with a Jupyter notebook entry point, pytest/pyright/ruff tooling, and a shared uv workspace venv |
-| `nestjs-command-project` | A standalone NestJS CLI application template built on nest-commander, for a new command-line tool in projects/ |
-| `nestjs-graphql-application` | A standalone NestJS GraphQL API application template, for a new backend service exposing a GraphQL schema over HTTP |
-| `nestjs-service-project` | A standalone NestJS library package template for internal workspace code shared across projects, with no CLI entry point or HTTP server |
-| `tanstack-application` | A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in projects/ |
-| `nestjs-command-module` | A nest-commander command module template — command, module, constants, types, and unit test — for an existing NestJS command-line project |
-| `nestjs-dataloader-module` | A GraphQL dataloader module template — dataloader, module, types, and unit test — for batching lookups inside an existing NestJS project |
-| `nestjs-graphql-module` | A GraphQL module template — resolver, entities, args/input types, factories, constants, and unit test — for an existing NestJS project |
-| `nestjs-service-file` | A service and unit test file template for an existing NestJS module, without the surrounding module files |
-| `nestjs-resolver-file` | A resolver and unit test file template for an existing NestJS module, without the surrounding module files |
-| `nestjs-service-module` | A plain service module template — module, service, constants, types, and unit test — for an existing NestJS project |
-| `react-component-folder` | A React component folder — the component, its types, constants, and utilities, and its unit test — in src/components of an existing React application |
-| `react-component-file` | A React component and its unit test, added to an existing component folder of a React application |
-| `react-hook-folder` | A React hook folder — the hook, the result type it returns, its constants and utilities, and its unit test — in src/hooks of an existing React application |
-| `react-hook-file` | A React hook, the result type it returns, and its unit test, added to an existing hook folder of a React application |
-| `tanstack-route` | A TanStack Start file route and integration test template — the route and the page it renders — for an existing TanStack Start project |
-| `tanstack-server-function` | A TanStack Start server function module template — GET and POST server functions, the utilities behind them, schemas, types, and unit test — for an existing TanStack Start project |
+
+| Template                       | Description                                                                                                                                                                         |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `jupyter-notebook-application` | A standalone Python application template with a Jupyter notebook entry point, pytest/pyright/ruff tooling, and a shared uv workspace venv                                           |
+| `nestjs-command-project`       | A standalone NestJS CLI application template built on nest-commander, for a new command-line tool in projects/                                                                      |
+| `nestjs-graphql-application`   | A standalone NestJS GraphQL API application template, for a new backend service exposing a GraphQL schema over HTTP                                                                 |
+| `nestjs-service-project`       | A standalone NestJS library package template for internal workspace code shared across projects, with no CLI entry point or HTTP server                                             |
+| `tanstack-application`         | A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in projects/                              |
+| `nestjs-command-module`        | A nest-commander command module template — command, module, constants, types, and unit test — for an existing NestJS command-line project                                           |
+| `nestjs-dataloader-module`     | A GraphQL dataloader module template — dataloader, module, types, and unit test — for batching lookups inside an existing NestJS project                                            |
+| `nestjs-graphql-module`        | A GraphQL module template — resolver, entities, args/input types, factories, constants, and unit test — for an existing NestJS project                                              |
+| `nestjs-service-file`          | A service and unit test file template for an existing NestJS module, without the surrounding module files                                                                           |
+| `nestjs-resolver-file`         | A resolver and unit test file template for an existing NestJS module, without the surrounding module files                                                                          |
+| `nestjs-service-module`        | A plain service module template — module, service, constants, types, and unit test — for an existing NestJS project                                                                 |
+| `react-component-folder`       | A React component folder — the component, its types, constants, and utilities, and its unit test — in src/components of an existing React application                               |
+| `react-component-file`         | A React component and its unit test, added to an existing component folder of a React application                                                                                   |
+| `react-hook-folder`            | A React hook folder — the hook, the result type it returns, its constants and utilities, and its unit test — in src/hooks of an existing React application                          |
+| `react-hook-file`              | A React hook, the result type it returns, and its unit test, added to an existing hook folder of a React application                                                                |
+| `tanstack-route`               | A TanStack Start file route and integration test template — the route and the page it renders — for an existing TanStack Start project                                              |
+| `tanstack-server-function`     | A TanStack Start server function module template — GET and POST server functions, the utilities behind them, schemas, types, and unit test — for an existing TanStack Start project |
+
 <!-- conformetry:end -->
 
 ## 🕸️ Codependix
@@ -307,6 +308,7 @@ Template-driven code generation and conformance validation, templates synced fro
 The workspace's dependency graph, exported by [codependix](projects/ic-suite/codependix/codependix-cli), regenerated by `nx run configuration:codependix:write`.
 
 <!-- codependix:start name="codependix-nx-projects" -->
+
 ```mermaid
 graph LR
   affirmancy["affirmancy"]
@@ -518,6 +520,7 @@ _Dashed edges are dependencies Nx inferred from configuration rather than from c
 ### NestJS Module Graph
 
 <!-- codependix:start name="codependix-nestjs-modules" -->
+
 ```mermaid
 graph LR
   module_caelundas_cli_AnnualSolarCycleModule["caelundas-cli/AnnualSolarCycleModule"]
@@ -2142,11 +2145,13 @@ graph LR
   module_validation_MainModule --> module_validation_SessionBranchNameModule
   module_validation_MainModule --> module_validation_SessionWorktreeNameModule
 ```
+
 <!-- codependix:end name="codependix-nestjs-modules" -->
 
 ### File Imports
 
 <!-- codependix:start name="codependix-file-imports" -->
+
 ```mermaid
 graph LR
   file_affirmancy__vulture_whitelist_py["affirmancy/.vulture_whitelist.py"]
@@ -16000,6 +16005,7 @@ graph LR
   file_validation_src_validation_module_ts --> file_validation_src_validation_constants_ts
   file_validation_src_validation_repl_ts --> file_validation_src_validation_module_ts
 ```
+
 <!-- codependix:end name="codependix-file-imports" -->
 <!-- codometer:start -->
 
@@ -16221,86 +16227,86 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 The workspace's call graph, traced by [callidescope](projects/ic-suite/callidescope/callidescope-cli), regenerated by `nx run configuration:callidescope:write`. Projects are listed tightest-first: the rows at the top are the ones a ratchet cannot descend past.
 
-| Measure | Value |
-| --- | --- |
-| Callables | 7923 |
-| Files | 2650 |
-| Calls traced | 8659 |
-| Call stacks | 2196 |
-| Deepest stack | 17 |
-| Stacks through recursion | 15 |
-| Unfollowable calls | 491 |
+| Measure                  | Value |
+| ------------------------ | ----- |
+| Callables                | 7923  |
+| Files                    | 2650  |
+| Calls traced             | 8659  |
+| Call stacks              | 2196  |
+| Deepest stack            | 17    |
+| Stacks through recursion | 15    |
+| Unfollowable calls       | 491   |
 
 ### Projects
 
-| Project | Deepest | Limit | Headroom | Widest |
-| --- | --- | --- | --- | --- |
-| `integration` | 6 | 6 | 0 | 8 |
-| `projects/caelundas/caelundas-web` | 6 | 6 | 0 | 8 |
-| `projects/common/observability` | 4 | 4 | 0 | 2 |
-| `projects/common/persistence` | 7 | 7 | 0 | 7 |
-| `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
-| `projects/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
-| `projects/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |
-| `projects/ic-suite/codependix/codependix-cli` | 15 | 15 | 0 | 7 |
-| `projects/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
-| `projects/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
-| `projects/ic-suite/coinagerie/coinagerie-cli` | 13 | 13 | 0 | 5 |
-| `projects/ic-suite/coinagerie/coinagerie-nx` | 6 | 6 | 0 | 3 |
-| `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 9 |
-| `projects/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
-| `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
-| `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
-| `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
-| `publication` | 6 | 6 | 0 | 8 |
-| `synchronization` | 10 | 10 | 0 | 9 |
-| `validation` | 8 | 8 | 0 | 9 |
-| `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
-| `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
-| `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
-| `projects/ic-suite/coinagerie/coinagerie-configuration` | 2 | 3 | 1 | 3 |
-| `projects/ic-suite/coinagerie/coinagerie-core` | 0 | 1 | 1 | 0 |
-| `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
-| `projects/ic-suite/coinagerie/coinagerie-languages` | 4 | 6 | 2 | 3 |
-| `documentation` | 3 | 6 | 3 | 2 |
-| `projects/common/presentation` | 0 | 3 | 3 | 0 |
-| `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
-| `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
-| `projects/lexico/lexico-entities` | 0 | 3 | 3 | 0 |
-| `projects/lexico/lexico-web` | 6 | 9 | 3 | 8 |
-| `installation` | 13 | 17 | 4 | 8 |
-| `projects/common/interface` | 3 | 7 | 4 | 2 |
-| `projects/ic-suite/codependix/codependix-nx-projects` | 0 | 4 | 4 | 8 |
-| `projects/ic-suite/conformetry/conformetry-configuration` | 10 | 14 | 4 | 5 |
-| `projects/ic-suite/codependix/codependix-configuration` | 2 | 7 | 5 | 4 |
-| `projects/ic-suite/codependix/codependix-nestjs-modules` | 0 | 5 | 5 | 7 |
-| `projects/ic-suite/callidescope/callidescope-graph` | 5 | 11 | 6 | 8 |
-| `projects/ic-suite/codometer/codometer-configuration` | 3 | 9 | 6 | 4 |
-| `projects/ic-suite/codometer/codometer-languages` | 5 | 11 | 6 | 12 |
-| `projects/ic-suite/conformetry/conformetry-generation` | 2 | 8 | 6 | 4 |
-| `projects/ic-suite/conformetry/conformetry-output` | 0 | 6 | 6 | 4 |
-| `projects/meanderaw/meanderaw-web` | 0 | 6 | 6 | 0 |
-| `projects/ic-suite/codometer/codometer-output` | 4 | 11 | 7 | 16 |
-| `projects/ic-suite/coinagerie/coinagerie-vocabulary` | 0 | 7 | 7 | 7 |
-| `projects/ic-suite/codependix/codependix-file-imports` | 0 | 8 | 8 | 8 |
-| `projects/ic-suite/callidescope/callidescope-output` | 4 | 13 | 9 | 7 |
-| `projects/lexico/lexico-api` | 8 | 17 | 9 | 11 |
-| `projects/ic-suite/coinagerie/coinagerie-output` | 0 | 10 | 10 | 4 |
-| `configuration` | 5 | 17 | 12 | 2 |
-| `projects/ic-suite/conformetry/conformetry-validation` | 0 | 13 | 13 | 10 |
-| `projects/ic-suite/codometer/codometer-measurement` | 0 | 14 | 14 | 9 |
-| `projects/ic-suite/callidescope/callidescope-core` | 0 | 17 | 17 | 0 |
+| Project                                                     | Deepest | Limit | Headroom | Widest |
+| ----------------------------------------------------------- | ------- | ----- | -------- | ------ |
+| `integration`                                               | 6       | 6     | 0        | 8      |
+| `projects/caelundas/caelundas-web`                          | 6       | 6     | 0        | 8      |
+| `projects/common/observability`                             | 4       | 4     | 0        | 2      |
+| `projects/common/persistence`                               | 7       | 7     | 0        | 7      |
+| `projects/ic-suite/callidescope/callidescope-cli`           | 15      | 15    | 0        | 10     |
+| `projects/ic-suite/callidescope/callidescope-nx`            | 17      | 17    | 0        | 7      |
+| `projects/ic-suite/codependix/codependix-boundaries`        | 12      | 12    | 0        | 7      |
+| `projects/ic-suite/codependix/codependix-cli`               | 15      | 15    | 0        | 7      |
+| `projects/ic-suite/codependix/codependix-nx`                | 6       | 6     | 0        | 5      |
+| `projects/ic-suite/codometer/codometer-cli`                 | 15      | 15    | 0        | 9      |
+| `projects/ic-suite/coinagerie/coinagerie-cli`               | 13      | 13    | 0        | 5      |
+| `projects/ic-suite/coinagerie/coinagerie-nx`                | 6       | 6     | 0        | 3      |
+| `projects/ic-suite/conformetry/conformetry-cli`             | 15      | 15    | 0        | 9      |
+| `projects/ic-suite/conformetry/conformetry-languages`       | 13      | 13    | 0        | 11     |
+| `projects/ic-suite/conformetry/conformetry-nx`              | 15      | 15    | 0        | 9      |
+| `projects/lexico/lexico-cli`                                | 17      | 17    | 0        | 8      |
+| `projects/meanderaw/meanderaw-cli`                          | 16      | 16    | 0        | 12     |
+| `publication`                                               | 6       | 6     | 0        | 8      |
+| `synchronization`                                           | 10      | 10    | 0        | 9      |
+| `validation`                                                | 8       | 8     | 0        | 9      |
+| `projects/caelundas/caelundas-cli`                          | 15      | 16    | 1        | 12     |
+| `projects/ic-suite/codependix/codependix-core`              | 0       | 1     | 1        | 0      |
+| `projects/ic-suite/codometer/codometer-core`                | 0       | 1     | 1        | 0      |
+| `projects/ic-suite/coinagerie/coinagerie-configuration`     | 2       | 3     | 1        | 3      |
+| `projects/ic-suite/coinagerie/coinagerie-core`              | 0       | 1     | 1        | 0      |
+| `projects/ic-suite/conformetry/conformetry-core`            | 0       | 1     | 1        | 0      |
+| `projects/ic-suite/coinagerie/coinagerie-languages`         | 4       | 6     | 2        | 3      |
+| `documentation`                                             | 3       | 6     | 3        | 2      |
+| `projects/common/presentation`                              | 0       | 3     | 3        | 0      |
+| `projects/ic-suite/callidescope/callidescope-configuration` | 5       | 8     | 3        | 7      |
+| `projects/ic-suite/codependix/codependix-output`            | 11      | 14    | 3        | 7      |
+| `projects/lexico/lexico-entities`                           | 0       | 3     | 3        | 0      |
+| `projects/lexico/lexico-web`                                | 6       | 9     | 3        | 8      |
+| `installation`                                              | 13      | 17    | 4        | 8      |
+| `projects/common/interface`                                 | 3       | 7     | 4        | 2      |
+| `projects/ic-suite/codependix/codependix-nx-projects`       | 0       | 4     | 4        | 8      |
+| `projects/ic-suite/conformetry/conformetry-configuration`   | 10      | 14    | 4        | 5      |
+| `projects/ic-suite/codependix/codependix-configuration`     | 2       | 7     | 5        | 4      |
+| `projects/ic-suite/codependix/codependix-nestjs-modules`    | 0       | 5     | 5        | 7      |
+| `projects/ic-suite/callidescope/callidescope-graph`         | 5       | 11    | 6        | 8      |
+| `projects/ic-suite/codometer/codometer-configuration`       | 3       | 9     | 6        | 4      |
+| `projects/ic-suite/codometer/codometer-languages`           | 5       | 11    | 6        | 12     |
+| `projects/ic-suite/conformetry/conformetry-generation`      | 2       | 8     | 6        | 4      |
+| `projects/ic-suite/conformetry/conformetry-output`          | 0       | 6     | 6        | 4      |
+| `projects/meanderaw/meanderaw-web`                          | 0       | 6     | 6        | 0      |
+| `projects/ic-suite/codometer/codometer-output`              | 4       | 11    | 7        | 16     |
+| `projects/ic-suite/coinagerie/coinagerie-vocabulary`        | 0       | 7     | 7        | 7      |
+| `projects/ic-suite/codependix/codependix-file-imports`      | 0       | 8     | 8        | 8      |
+| `projects/ic-suite/callidescope/callidescope-output`        | 4       | 13    | 9        | 7      |
+| `projects/lexico/lexico-api`                                | 8       | 17    | 9        | 11     |
+| `projects/ic-suite/coinagerie/coinagerie-output`            | 0       | 10    | 10       | 4      |
+| `configuration`                                             | 5       | 17    | 12       | 2      |
+| `projects/ic-suite/conformetry/conformetry-validation`      | 0       | 13    | 13       | 10     |
+| `projects/ic-suite/codometer/codometer-measurement`         | 0       | 14    | 14       | 9      |
+| `projects/ic-suite/callidescope/callidescope-core`          | 0       | 17    | 17       | 0      |
 
 ### Depth headroom
 
-| Headroom | Projects |
-| --- | --- |
-| over limit | 0 |
-| 0 — at limit | 20 |
-| 1 | 2 |
-| 2–3 | 5 |
-| 4+ | 12 |
-| no stacks | 16 |
+| Headroom     | Projects |
+| ------------ | -------- |
+| over limit   | 0        |
+| 0 — at limit | 20       |
+| 1            | 2        |
+| 2–3          | 5        |
+| 4+           | 12       |
+| no stacks    | 16       |
 
 ### Call stacks over the depth limit (0)
 

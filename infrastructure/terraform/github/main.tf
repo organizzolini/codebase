@@ -58,20 +58,70 @@ resource "github_actions_variable" "openwiki_model_id" {
   value         = data.terraform_remote_state.openrouter.outputs.refresh_documentation_model
 }
 
-# The Nx Cloud access tokens CI reads as NX_CLOUD_ACCESS_TOKEN. Nx Cloud has no
-# API to mint them, so they are created in its workspace settings and set once
-# by hand; these resources declare the same secrets and write back the values
-# the workflow passes in, so a later change is made here and not in the UI.
-resource "github_actions_secret" "nx_cloud_read_only_token" {
-  repository      = var.repository
-  secret_name     = "NX_CLOUD_READ_ONLY_TOKEN"
-  plaintext_value = var.nx_cloud_read_only_token
+# The linode root's outputs: the Nx cache bucket and its two keys. It must be
+# applied first, which the apply order in the Continuous Deployment workflow
+# guarantees.
+data "terraform_remote_state" "linode" {
+  backend = "s3"
+
+  config = {
+    bucket = var.state_bucket
+    key    = "codebase/linode.tfstate"
+    region = "us-east-1"
+
+    skip_credentials_validation = true
+    skip_metadata_api_check     = true
+    skip_region_validation      = true
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
+  }
 }
 
-resource "github_actions_secret" "nx_cloud_read_write_token" {
+# Where the shared Nx cache lives, read by CI as NX_SHARED_CACHE_REMOTE_*. The
+# region is the one the state backends already sign with.
+resource "github_actions_variable" "nx_cache_bucket" {
+  repository    = var.repository
+  variable_name = "NX_CACHE_BUCKET"
+  value         = data.terraform_remote_state.linode.outputs.nx_cache_bucket
+}
+
+resource "github_actions_variable" "nx_cache_endpoint" {
+  repository    = var.repository
+  variable_name = "NX_CACHE_ENDPOINT"
+  value         = data.terraform_remote_state.linode.outputs.nx_cache_endpoint
+}
+
+resource "github_actions_variable" "nx_cache_region" {
+  repository    = var.repository
+  variable_name = "NX_CACHE_REGION"
+  value         = "us-east-1"
+}
+
+# The keys CI signs bucket requests with: read-only for pull request runs,
+# read-write for trusted ones. Their permissions are set on the keys in the
+# linode root, so a run cannot widen them.
+resource "github_actions_secret" "nx_cache_read_only_access_key_id" {
   repository      = var.repository
-  secret_name     = "NX_CLOUD_READ_WRITE_TOKEN"
-  plaintext_value = var.nx_cloud_read_write_token
+  secret_name     = "NX_CACHE_READ_ONLY_ACCESS_KEY_ID"
+  plaintext_value = data.terraform_remote_state.linode.outputs.nx_cache_read_only_access_key
+}
+
+resource "github_actions_secret" "nx_cache_read_only_secret_access_key" {
+  repository      = var.repository
+  secret_name     = "NX_CACHE_READ_ONLY_SECRET_ACCESS_KEY"
+  plaintext_value = data.terraform_remote_state.linode.outputs.nx_cache_read_only_secret_key
+}
+
+resource "github_actions_secret" "nx_cache_read_write_access_key_id" {
+  repository      = var.repository
+  secret_name     = "NX_CACHE_READ_WRITE_ACCESS_KEY_ID"
+  plaintext_value = data.terraform_remote_state.linode.outputs.nx_cache_read_write_access_key
+}
+
+resource "github_actions_secret" "nx_cache_read_write_secret_access_key" {
+  repository      = var.repository
+  secret_name     = "NX_CACHE_READ_WRITE_SECRET_ACCESS_KEY"
+  plaintext_value = data.terraform_remote_state.linode.outputs.nx_cache_read_write_secret_key
 }
 
 # The repository itself, imported as it is configured. Destroying it would
