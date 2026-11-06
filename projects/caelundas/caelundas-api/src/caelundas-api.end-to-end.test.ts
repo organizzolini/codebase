@@ -7,8 +7,8 @@ describe("caelundas-api end-to-end suite", () => {
     it("applies defaults for an empty config", () => {
       expect.hasAssertions();
       expect(environmentSchema.parse({})).toStrictEqual({
-        CAELUNDAS_API_LIGHTSHIP_PORT: 9000,
-        CAELUNDAS_API_PORT: 3000,
+        CAELUNDAS_API_LIGHTSHIP_PORT: 9001,
+        CAELUNDAS_API_PORT: 8968,
       });
     });
   });

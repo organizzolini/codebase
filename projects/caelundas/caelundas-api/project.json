@@ -12,6 +12,11 @@
     "type:application"
   ],
   "targets": {
+    "await-health": {
+      "options": {
+        "url": "http://localhost:${CAELUNDAS_API_PORT:-8968}/graphql"
+      }
+    },
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
@@ -25,11 +30,17 @@
     "prettier": {},
     "spell-check": {},
     "start": {
-      "description": "Start the CaelundasApi GraphQL API",
+      "continuous": true,
+      "description": "Start the CaelundasApi GraphQL API with restart on change",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/caelundas-api.ts",
+        "command": "node --watch --import @swc-node/register/esm-register src/caelundas-api.ts",
         "cwd": "{projectRoot}"
+      }
+    },
+    "stop": {
+      "options": {
+        "port": "${CAELUNDAS_API_PORT:-8968}"
       }
     },
     "test-code": {},

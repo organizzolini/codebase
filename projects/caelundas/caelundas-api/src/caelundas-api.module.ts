@@ -10,6 +10,7 @@ import {
   environmentSchema,
   GRAPHQL_SCHEMA_FILE,
 } from "./caelundas-api.constants";
+import { HealthModule } from "./modules/health/health.module";
 
 /**
  * Root NestJS application module for the CaelundasApi GraphQL API.
@@ -29,6 +30,7 @@ import {
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     LoggerModule,
+    HealthModule,
   ],
 })
 export class CaelundasApiModule {}

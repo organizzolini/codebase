@@ -4,8 +4,8 @@ import { z } from "zod";
 
 // 🌱 Add environment schema fields here
 export const environmentSchema = z.object({
-  CAELUNDAS_API_LIGHTSHIP_PORT: z.coerce.number().default(9000),
-  CAELUNDAS_API_PORT: z.coerce.number().default(3000),
+  CAELUNDAS_API_LIGHTSHIP_PORT: z.coerce.number().default(9001),
+  CAELUNDAS_API_PORT: z.coerce.number().default(8968),
 });
 
 /**
