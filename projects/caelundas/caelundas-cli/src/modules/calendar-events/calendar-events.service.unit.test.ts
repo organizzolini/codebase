@@ -4,8 +4,8 @@ import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
-  CalendarEvent,
   CaelundasDatabaseService,
+  CalendarEvent,
 } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 

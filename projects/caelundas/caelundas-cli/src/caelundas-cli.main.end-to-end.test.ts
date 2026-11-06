@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import { setTimeout as sleep } from "node:timers/promises";
 
 import { createMock } from "@golevelup/ts-vitest";
 import _ from "lodash";
@@ -14,13 +13,13 @@ import {
   detectable,
   runCalendarCommand,
 } from "../testing/calendar-command.utilities";
-import { createMajorAspectsService } from "../testing/major-aspects.utilities";
-import { createTemporaryDatabase } from "../testing/temporary-database.utilities";
-
 import {
-  DATABASE_DEFAULT_FILE,
-  environmentSchema,
-} from "./caelundas-cli.constants";
+  DATABASE_TIMEOUT_MILLISECONDS,
+  startCaelundasDatabase,
+} from "../testing/database";
+import { createMajorAspectsService } from "../testing/major-aspects.utilities";
+
+import { environmentSchema } from "./caelundas-cli.constants";
 import { CalendarService } from "./modules/calendar/calendar.service";
 import { IngressesService } from "./modules/ingresses/ingresses.service";
 import { inputSchema } from "./modules/input/input.constants";
@@ -28,9 +27,9 @@ import { MathService } from "./modules/math/math.service";
 import { ProgressiveUtilitiesService } from "./modules/progressive/progressive-utilities.service";
 
 import type { CalendarCommandOutput } from "../testing/calendar-command.types";
-import type { TemporaryDatabase } from "../testing/temporary-database.types";
 import type { EphemerisService } from "./modules/ephemeris/ephemeris.service";
 import type { Environment } from "./modules/input/input.types";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { ConfigService } from "@nestjs/config";
 import type { Repository } from "typeorm";
 
@@ -41,15 +40,32 @@ const calendarService = new CalendarService(new LoggerService(), {
 } as unknown as ConfigService<Environment>);
 
 describe("main end-to-end suite", () => {
-  it("defaults the database file to the project's own and the output directory", () => {
+  it("defaults the connection to the local caelundas database and the output directory", () => {
     expect.hasAssertions();
     expect(environmentSchema.parse({})).toStrictEqual({
-      CAELUNDAS_SQLITE_DATABASE: DATABASE_DEFAULT_FILE,
+      CAELUNDAS_POSTGRES_DATABASE: "caelundas_development",
+      CAELUNDAS_POSTGRES_HOST: "localhost",
+      CAELUNDAS_POSTGRES_PASSWORD: "caelundas_password",
+      CAELUNDAS_POSTGRES_PORT: 5432,
+      CAELUNDAS_POSTGRES_SCHEMA: "caelundas",
+      CAELUNDAS_POSTGRES_USERNAME: "caelundas_username",
       OUTPUT_DIRECTORY: "./output",
     });
-    expect(DATABASE_DEFAULT_FILE).toBe(
-      path.resolve(import.meta.dirname, "../output/database.sqlite"),
-    );
+  });
+
+  it("reads only CAELUNDAS_POSTGRES_*, ignoring the root's admin login", () => {
+    expect.hasAssertions();
+
+    const environment = environmentSchema.parse({
+      POSTGRES_DB: "postgres",
+      POSTGRES_PASSWORD: "postgres",
+      POSTGRES_USER: "postgres",
+    });
+
+    expect(environment).not.toHaveProperty("POSTGRES_DB");
+    expect(environment).toMatchObject({
+      CAELUNDAS_POSTGRES_USERNAME: "caelundas_username",
+    });
   });
 
   describe("calendar generation e2e", { timeout: 10_000 }, () => {
@@ -330,7 +346,7 @@ describe("main end-to-end suite", () => {
   });
 
   describe("stored calendar events", { timeout: 120_000 }, () => {
-    const output = "./output/e2e-sqlite";
+    const output = "./output/e2e-postgres";
     const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };
     const sydney = { latitude: -33.8688, longitude: 151.2093 };
     const marchFirstHalf = { endDate: "2026-03-16", startDate: "2026-03-01" };
@@ -340,7 +356,7 @@ describe("main end-to-end suite", () => {
       detectable("Overlap", "2026-03-12T12:00:00Z"),
       detectable("Late", "2026-03-20T12:00:00Z"),
     ];
-    let database: TemporaryDatabase;
+    let database: DatabaseTestingModule;
     let calendarEvents: Repository<CalendarEvent>;
     let runs = 0;
 
@@ -361,9 +377,9 @@ describe("main end-to-end suite", () => {
       rows.map((row) => row.summary).toSorted();
 
     beforeAll(async () => {
-      database = await createTemporaryDatabase();
-      calendarEvents = database.dataSource.getRepository(CalendarEvent);
-    });
+      database = await startCaelundasDatabase();
+      calendarEvents = database.repository(CalendarEvent);
+    }, DATABASE_TIMEOUT_MILLISECONDS);
 
     afterAll(async () => {
       await database.close();
@@ -415,8 +431,6 @@ describe("main end-to-end suite", () => {
       expect.hasAssertions();
 
       const [before] = await calendarEvents.findBy({ summary: "Overlap" });
-      // SQLite stamps `updated_at` to the second, so let one pass.
-      await sleep(1100);
       const { json } = await run(philadelphia, marchSecondHalf);
       const overlap = await calendarEvents.findBy({ summary: "Overlap" });
 
@@ -482,16 +496,16 @@ describe("main end-to-end suite", () => {
       );
       const { dataSource } = database;
       const [counts] = await dataSource.query<
-        { derived: number; events: number; nodes: number; tags: number }[]
+        { derived: string; events: string; nodes: string; tags: string }[]
       >(
         `select
-          (select count(*) from calendar_events_derived) as derived,
+          (select count(*) from calendar_event_derived_times) as derived,
           (select count(*) from calendar_events) as events,
           (select count(*) from tag_nodes) as nodes,
           (select count(*) from tags) as tags`,
       );
       const fresh = await dataSource.query<
-        { is_direct: number; tag_name: string }[]
+        { is_direct: boolean; tag_name: string }[]
       >(
         `select n.tag_name, n.is_direct
           from calendar_event_tag_nodes as n
@@ -506,8 +520,8 @@ describe("main end-to-end suite", () => {
       // the transaction that wrote the event.
       expect(fresh).toStrictEqual(
         expect.arrayContaining([
-          { is_direct: 1, tag_name: "Instant" },
-          { is_direct: 0, tag_name: "Temporality" },
+          { is_direct: true, tag_name: "Instant" },
+          { is_direct: false, tag_name: "Temporality" },
         ]),
       );
     });

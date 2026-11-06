@@ -54,6 +54,18 @@ export interface Observer extends Coordinates {
 export type StoredCalendarEvent = CalendarEvent &
   Pick<DetectedCalendarEvent, "tags">;
 
+/**
+ * The columns `RETURNING` reads back for a written row: its database-assigned
+ * id, and the summary, start and end that identify it within one observer.
+ * The driver answers with `Date`s, not the `Moment`s the entity carries.
+ */
+export interface WrittenCalendarEvent {
+  end: Date | Moment;
+  id: string;
+  start: Date | Moment;
+  summary: string;
+}
+
 /** An observer location in decimal degrees. */
 interface Coordinates {
   latitude: number;

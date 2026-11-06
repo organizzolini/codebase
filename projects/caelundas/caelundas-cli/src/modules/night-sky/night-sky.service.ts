@@ -14,8 +14,8 @@ import type { NightSkyFiles, NightSkyRows } from "./night-sky.types";
 import type { EntityManager, EntityTarget, ObjectLiteral } from "typeorm";
 
 /**
- * Rewrites the night sky's tables, `star`, `constellation` and
- * `constellation_line`, from the downloaded HYG catalog and d3-celestial's
+ * Rewrites the night sky's tables, `stars`, `constellations` and
+ * `constellation_lines`, from the downloaded HYG catalog and d3-celestial's
  * constellations and figures, in one transaction, so a reader never sees a
  * half-written sky.
  */
@@ -38,7 +38,7 @@ export class NightSkyService {
   // 🔏 Private Methods
 
   /**
-   * Inserts rows of one entity in batches under SQLite's parameter limit.
+   * Inserts rows of one entity in batches under the database's parameter limit.
    */
   private async insertInBatches<Entity extends ObjectLiteral>(
     manager: EntityManager,
@@ -61,9 +61,9 @@ export class NightSkyService {
     manager: EntityManager,
     rows: NightSkyRows,
   ): Promise<void> {
-    await manager.query<unknown>(`delete from "constellation_line"`);
-    await manager.query<unknown>(`delete from "constellation"`);
-    await manager.query<unknown>(`delete from "star"`);
+    for (const target of [ConstellationLine, Constellation, Star]) {
+      await manager.createQueryBuilder().delete().from(target).execute();
+    }
     await this.insertInBatches(manager, Star, rows.stars);
     await this.insertInBatches(manager, Constellation, rows.constellations);
     await this.insertInBatches(manager, ConstellationLine, rows.lines);

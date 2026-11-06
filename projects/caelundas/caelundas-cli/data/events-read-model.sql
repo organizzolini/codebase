@@ -10,15 +10,15 @@ delete from tag_nodes;
 
 -- Every tag with its place in the tree: its depth (the number of ancestors,
 -- so a root is 0), its root, and its full path from that root.
-insert into tag_nodes (id, name, depth, root_id, path)
+insert into tag_nodes (id, "name", "depth", root_id, "path")
 select
     t.id,
-    t.name,
+    t."name",
     (
         select count(*) - 1
         from tags_closure as c
         where c.descendant_id = t.id
-    ) as depth,
+    ) as "depth",
     (
         select c.ancestor_id
         from tags_closure as c
@@ -48,7 +48,7 @@ select
             inner join tags as ancestor on c.ancestor_id = ancestor.id
             where c.descendant_id = t.id
         ) as a
-    ) as path
+    ) as "path"
 from tags as t;
 
 -- One row per event and tag it carries, including every ancestor of the tags
@@ -60,10 +60,10 @@ insert into calendar_event_tag_nodes (
 select
     et.calendar_event_id,
     n.id as tag_id,
-    n.name as tag_name,
-    n.depth as tag_depth,
+    n."name" as tag_name,
+    n."depth" as tag_depth,
     n.root_id as tag_root_id,
-    n.path as tag_path,
+    n."path" as tag_path,
     max(c.ancestor_id = c.descendant_id) as is_direct
 from calendar_event_tags as et
 inner join tags_closure as c on et.tag_id = c.descendant_id

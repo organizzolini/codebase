@@ -7,18 +7,13 @@ import { Test } from "@nestjs/testing";
 import { getDataSourceToken } from "@nestjs/typeorm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import {
-  CAELUNDAS_DATABASE_ENTITIES,
-  CAELUNDAS_DATABASE_MIGRATIONS,
-  CAELUNDAS_PROJECT,
-} from "@codebase/caelundas-db";
+import { Constellation, ConstellationLine, Star } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
-import { createSqliteDataSource } from "@codebase/persistence";
 
 import { NightSkyService } from "./night-sky.service";
 
 import type { NightSkyFiles } from "./night-sky.types";
-import type { DataSource } from "typeorm";
+import type { EntityManager } from "typeorm";
 
 const CATALOG = [
   '"id","hip","proper","ra","dec","mag","ci"',
@@ -48,7 +43,7 @@ const LINES = JSON.stringify({
 });
 
 describe(NightSkyService, () => {
-  let dataSource: DataSource;
+  const manager = createMock<EntityManager>();
   let directory: string;
   let files: NightSkyFiles;
   let service: NightSkyService;
@@ -64,21 +59,17 @@ describe(NightSkyService, () => {
     fs.writeFileSync(files.lines, LINES);
     fs.writeFileSync(files.stars, CATALOG);
 
-    dataSource = createSqliteDataSource(
-      {
-        entities: [...CAELUNDAS_DATABASE_ENTITIES],
-        migrations: [...CAELUNDAS_DATABASE_MIGRATIONS],
-        project: CAELUNDAS_PROJECT,
-      },
-      { CAELUNDAS_SQLITE_DATABASE: ":memory:" },
-    );
-    await dataSource.initialize();
-    await dataSource.runMigrations();
-
     const module = await Test.createTestingModule({
       providers: [
         NightSkyService,
-        { provide: getDataSourceToken(), useValue: dataSource },
+        {
+          provide: getDataSourceToken(),
+          useValue: {
+            transaction: async (
+              work: (transaction: EntityManager) => Promise<unknown>,
+            ): Promise<unknown> => work(manager),
+          },
+        },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
     }).compile();
@@ -86,8 +77,7 @@ describe(NightSkyService, () => {
     service = await module.resolve(NightSkyService);
   });
 
-  afterAll(async () => {
-    await dataSource.destroy();
+  afterAll(() => {
     fs.rmSync(directory, { force: true, recursive: true });
   });
 
@@ -95,36 +85,24 @@ describe(NightSkyService, () => {
     expect(service).toBeDefined();
   });
 
-  it("writes the stars, the constellations and their segments", async () => {
-    await service.ingest(files);
-
-    await expect(
-      dataSource.query(`select hip, magnitude from star order by hip`),
-    ).resolves.toStrictEqual([
-      { hip: 53_910, magnitude: 2.3 },
-      { hip: 54_061, magnitude: 1.8 },
-    ]);
-    await expect(
-      dataSource.query(`select designation, name, zodiac from constellation`),
-    ).resolves.toStrictEqual([
-      { designation: "UMa", name: "Ursa Major", zodiac: 0 },
-    ]);
-    await expect(
-      dataSource.query(
-        `select constellation_designation, from_hip, to_hip from constellation_line`,
-      ),
-    ).resolves.toStrictEqual([
-      { constellation_designation: "UMa", from_hip: 54_061, to_hip: 53_910 },
-    ]);
-  });
-
-  it("replaces what an earlier run wrote rather than adding to it", async () => {
-    await service.ingest(files);
+  it("empties the tables segments first, then writes the stars before the segments that join them", async () => {
     const rows = await service.ingest(files);
+    const deletion = manager.createQueryBuilder().delete();
 
     expect(rows.stars).toHaveLength(2);
-    await expect(
-      dataSource.query(`select count(*) as count from star`),
-    ).resolves.toStrictEqual([{ count: 2 }]);
+    expect(deletion.from).toHaveBeenNthCalledWith(1, ConstellationLine);
+    expect(deletion.from).toHaveBeenNthCalledWith(2, Constellation);
+    expect(deletion.from).toHaveBeenNthCalledWith(3, Star);
+    expect(manager.insert).toHaveBeenNthCalledWith(1, Star, expect.any(Array));
+    expect(manager.insert).toHaveBeenNthCalledWith(
+      2,
+      Constellation,
+      expect.any(Array),
+    );
+    expect(manager.insert).toHaveBeenNthCalledWith(
+      3,
+      ConstellationLine,
+      expect.any(Array),
+    );
   });
 });

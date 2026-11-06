@@ -1,12 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import moment from "moment-timezone";
-import { Between, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import {
+  CaelundasDatabaseService,
   CalendarEvent,
   CalendarEventTag,
-  CaelundasDatabaseService,
 } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
@@ -30,6 +29,7 @@ import type {
   FindInRangeParameters,
   Observer,
   StoredCalendarEvent,
+  WrittenCalendarEvent,
 } from "./calendar-events.types";
 import type { Moment } from "moment-timezone";
 import type { EntityManager } from "typeorm";
@@ -64,8 +64,8 @@ export class CalendarEventsService {
 
   /**
    * The names of the tags each event is linked to directly, ordered by code
-   * point, which is also SQLite's default binary collation, so the order never
-   * depends on a locale. The ids go in batches that stay under SQLite's
+   * point, so the order never depends on a locale or the database's
+   * collation. The ids go in batches that stay under the database's
    * bind-parameter limit.
    */
   private async findTagNames(
@@ -154,54 +154,34 @@ export class CalendarEventsService {
   }
 
   /**
-   * Writes one batch of rows, updating any already stored, and returns the
-   * id each was written under, by {@link calendarEventKey}. TypeORM does not
-   * advance `updated_at` on a conflicting insert for SQLite, so both audit
-   * stamps are written, to the millisecond, and the update takes the new
-   * `updated_at`. TypeORM also reloads each inserted row's generated id with
-   * one `OR` per row, which SQLite refuses past 1,000 rows, and has no
-   * `RETURNING` to read them with, so the reload is turned off and the ids are
-   * read back instead: every row of the
-   * batch shares `observer`, so one select over that observer's events
-   * between the batch's first and last start finds them all.
+   * Writes one batch of rows, updating any already stored on the natural key,
+   * and returns the id each was written under, by {@link calendarEventKey}.
+   * The database assigns the id and both audit stamps, and a conflicting
+   * insert takes the new `updated_at` and keeps `created_at`. `RETURNING`
+   * answers for the inserted and the updated rows alike, so the ids need no
+   * second read.
    */
   private async writeRows(
     manager: EntityManager,
     rows: readonly CalendarEventRow[],
-    observer: Observer,
   ): Promise<Map<string, string>> {
-    const writtenAt = new Date();
-    await manager
+    const result = await manager
       .createQueryBuilder()
       .insert()
       .into(CalendarEvent)
-      .values(
-        rows.map((row) => ({
-          ...row,
-          createdAt: writtenAt,
-          updatedAt: writtenAt,
-        })),
-      )
-      .updateEntity(false)
+      .values([...rows])
       .orUpdate(
         [...CALENDAR_EVENT_UPDATE_COLUMNS],
         [...CALENDAR_EVENT_CONFLICT_COLUMNS],
       )
+      .returning(["id", "summary", "start", "end"])
       .execute();
-    const stored = await manager.getRepository(CalendarEvent).find({
-      select: { end: true, id: true, start: true, summary: true },
-      where: {
-        latitude: this.formatCoordinate(observer.latitude),
-        longitude: this.formatCoordinate(observer.longitude),
-        start: Between(
-          moment.min(rows.map(({ start }) => start)),
-          moment.max(rows.map(({ start }) => start)),
-        ),
-      },
-    });
+
+    // `RETURNING` rows are the driver's raw answer, which TypeORM types as `any`.
+    const { raw } = result as { raw: readonly WrittenCalendarEvent[] };
 
     return this.mapWrittenIds(
-      stored,
+      raw,
       new Set(
         rows.map(({ end, start, summary }) =>
           this.calendarEventKey(summary, start, end),
@@ -277,11 +257,11 @@ export class CalendarEventsService {
   /**
    * The id each stored row is stored under, by {@link calendarEventKey}, from
    * the summary, start and end each row reads back with its id, so the order
-   * SQLite answers in does not matter. Only the rows whose key is in `wanted`
-   * are included, as the select that reads them back also finds neighbors.
+   * the database answers in does not matter. Only the rows whose key is in
+   * `wanted` are included.
    */
   mapWrittenIds(
-    stored: readonly Pick<CalendarEvent, "end" | "id" | "start" | "summary">[],
+    stored: readonly WrittenCalendarEvent[],
     wanted: ReadonlySet<string>,
   ): Map<string, string> {
     const ids = new Map<string, string>();
@@ -347,8 +327,8 @@ export class CalendarEventsService {
    * Writes events for one observer, with its timezone, updating the row of
    * any event already stored, and replaces each one's tag links with links
    * to the nodes of the tag tree {@link classifyEvent} classifies it under,
-   * inserting any node that is missing, then rewrites the read model caelundas-web queries. It all runs in one transaction. Rows go in batches that stay under SQLite's
-   * bind-parameter limit, and a repeated key within the input keeps its last
+   * inserting any node that is missing, then rebuilds the read model. It all runs in one transaction. Rows go in batches that stay under the
+   * database's bind-parameter limit, and a repeated key within the input keeps its last
    * occurrence, as one statement may not update the same row twice.
    */
   async upsert(
@@ -391,7 +371,6 @@ export class CalendarEventsService {
         const ids = await this.writeRows(
           manager,
           batch.map(([, { event }]) => this.toRow(event, observer)),
-          observer,
         );
         await this.replaceTagLinks(
           manager,

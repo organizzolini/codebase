@@ -63,9 +63,9 @@ export class TagsService {
    * Maps each distinct path, by its {@link tagPathKey}, to the id of its last
    * node, through `manager`, so the nodes it inserts belong to the caller's
    * transaction. An event classified under the path is linked to that node.
-   * SQLite takes one writer at a time, so no lock is needed to keep two runs
-   * from inserting the same missing node: the second waits for the first's
-   * transaction to end.
+   * Two runs at once may both insert the same missing node; the unique name
+   * indexes make the second fail rather than store a duplicate, and running it
+   * again succeeds.
    */
   async resolve(
     manager: EntityManager,

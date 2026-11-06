@@ -1,22 +1,21 @@
-import { setTimeout as sleep } from "node:timers/promises";
-
-import { ConfigModule } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
-import { DataSource, In } from "typeorm";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { In } from "typeorm";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { CalendarEvent, Tag } from "@codebase/caelundas-db";
 import { LoggerModule } from "@codebase/observability";
 
-import { environmentSchema } from "../../caelundas-cli.constants";
+import {
+  DATABASE_TIMEOUT_MILLISECONDS,
+  startCaelundasDatabase,
+} from "../../../testing/database";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";
 import { CalendarEventsService } from "./calendar-events.service";
 
 import type { DetectedCalendarEvent } from "./calendar-events.types";
-import type { TestingModule } from "@nestjs/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { Repository, TreeRepository } from "typeorm";
 
 const philadelphia = {
@@ -53,35 +52,23 @@ function tagged(
 }
 
 describe("calendar events service integration", () => {
-  let module: TestingModule;
+  let database: DatabaseTestingModule;
   let service: CalendarEventsService;
   let repository: Repository<CalendarEvent>;
   let tags: TreeRepository<Tag>;
 
   beforeAll(async () => {
-    // One in-memory database, migrated by the module itself as it starts.
-    vi.stubEnv("CAELUNDAS_SQLITE_DATABASE", ":memory:");
-    module = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          ignoreEnvFile: true,
-          isGlobal: true,
-          validate: (config: Record<string, unknown>) =>
-            environmentSchema.parse(config),
-        }),
-        LoggerModule,
-        CalendarEventsModule,
-      ],
-    }).compile();
-    const dataSource = module.get(DataSource);
-    service = module.get(CalendarEventsService);
-    repository = dataSource.getRepository(CalendarEvent);
-    tags = dataSource.getTreeRepository(Tag);
-  });
+    database = await startCaelundasDatabase([
+      LoggerModule,
+      CalendarEventsModule,
+    ]);
+    service = database.module.get(CalendarEventsService);
+    repository = database.repository(CalendarEvent);
+    tags = database.dataSource.getTreeRepository(Tag);
+  }, DATABASE_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {
-    await module.close();
-    vi.unstubAllEnvs();
+    await database.close();
   });
 
   it("stores events with the location they were computed for", async () => {
@@ -105,12 +92,12 @@ describe("calendar events service integration", () => {
       philadelphia,
     );
     const nodes = await repository.manager.query<
-      { is_direct: number; tag_name: string }[]
+      { is_direct: boolean; tag_name: string }[]
     >(
       `select tag_name, is_direct from calendar_event_tag_nodes n join calendar_events e on e.id = n.calendar_event_id where e.summary = 'Read model' order by tag_name`,
     );
     const [derived] = await repository.manager.query<{ temporality: string }[]>(
-      `select temporality from calendar_events_derived where summary = 'Read model'`,
+      `select temporality from calendar_event_derived_times where summary = 'Read model'`,
     );
     const paths = await repository.manager.query<{ path: string }[]>(
       `select path from tag_nodes where name = 'Sun'`,
@@ -121,24 +108,20 @@ describe("calendar events service integration", () => {
     expect(paths.map(({ path }) => path)).toContain("Planet / Sun");
   });
 
-  it("stores an instant as ISO 8601 UTC text and reads it back as a UTC moment", async () => {
+  it("stores an instant as a timestamptz and reads it back as a UTC moment", async () => {
     expect.hasAssertions();
 
     await service.upsert(
       [event("Instant text", "2026-01-12T06:30:15.250Z")],
       philadelphia,
     );
-    const [raw] = await repository.manager.query<
-      { end: string; start: string }[]
-    >(
+    const [raw] = await repository.manager.query<{ end: Date; start: Date }[]>(
       `select "start", "end" from calendar_events where summary = 'Instant text'`,
     );
     const [row] = await repository.findBy({ summary: "Instant text" });
 
-    expect(raw).toStrictEqual({
-      end: "2026-01-12T06:30:15.250Z",
-      start: "2026-01-12T06:30:15.250Z",
-    });
+    expect(raw?.start.toISOString()).toBe("2026-01-12T06:30:15.250Z");
+    expect(raw?.end.toISOString()).toBe("2026-01-12T06:30:15.250Z");
     expect(row?.start.toISOString(true)).toBe("2026-01-12T06:30:15.250+00:00");
   });
 
@@ -167,8 +150,6 @@ describe("calendar events service integration", () => {
       philadelphia,
     );
     const [first] = await repository.findBy({ summary: "Repeated" });
-    // SQLite stamps `updated_at` to the second, so let one pass.
-    await sleep(1100);
     await service.upsert(
       [
         {
@@ -600,12 +581,8 @@ describe("calendar events service integration", () => {
       await tag("Mars", planet);
       await tag("Mars", sign);
 
-      await expect(tag("Mars", planet)).rejects.toThrow(
-        /UNIQUE constraint failed: tags\.parent_id, tags\.name/u,
-      );
-      await expect(tag("Unique planet")).rejects.toThrow(
-        /UNIQUE constraint failed: tags\.name/u,
-      );
+      await expect(tag("Mars", planet)).rejects.toThrow(/tags_sibling_name/u);
+      await expect(tag("Unique planet")).rejects.toThrow(/tags_root_name/u);
     });
   });
 });
