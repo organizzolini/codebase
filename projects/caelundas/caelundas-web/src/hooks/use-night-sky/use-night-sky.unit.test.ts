@@ -215,4 +215,22 @@ describe(useNightSky, () => {
 
     expect(api.requests.nightSky[0]?.still).toBe(true);
   });
+
+  it("sets nothing when the page has gone before the API answers", async () => {
+    const api = serveCalendarApi();
+
+    router.search = {};
+
+    const { unmount } = renderHook(() => useNightSky());
+
+    unmount();
+    await waitFor(() => {
+      expect(api.requests.nightSky).toHaveLength(1);
+    });
+    await new Promise((resolve) => {
+      setTimeout(resolve, 50);
+    });
+
+    expect(api.requests.nightSky).toHaveLength(1);
+  });
 });

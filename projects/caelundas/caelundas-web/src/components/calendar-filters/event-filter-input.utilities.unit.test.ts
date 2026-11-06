@@ -121,4 +121,29 @@ describe(toEventFilterInput, () => {
       ],
     });
   });
+
+  it("writes a group that holds only nested groups with no rules of its own", () => {
+    expect(
+      toEventFilterInput(
+        filterGroup(
+          "or",
+          filterGroup("and", tagRule("planet", "is_any_of", ["sun"])),
+        ),
+      ),
+    ).toStrictEqual({
+      combinator: "OR",
+      groups: [
+        {
+          combinator: "AND",
+          rules: [
+            {
+              operator: "is_any_of",
+              path: ["tag:tag-planet"],
+              values: ["tag-sun"],
+            },
+          ],
+        },
+      ],
+    });
+  });
 });

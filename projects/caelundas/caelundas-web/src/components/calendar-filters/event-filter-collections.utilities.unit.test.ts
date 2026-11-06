@@ -130,4 +130,33 @@ describe(toEventFilterCollection, () => {
       },
     ]);
   });
+
+  it("reads a group that holds only nested groups", () => {
+    const { filter } = toEventFilterCollection({
+      description: "",
+      filter: {
+        combinator: "OR",
+        groups: [
+          {
+            combinator: "AND",
+            groups: null,
+            rules: [
+              {
+                negated: false,
+                operator: "is_any_of",
+                path: ["tag:tag-type"],
+                values: ["tag-ingress"],
+              },
+            ],
+          },
+        ],
+        rules: null,
+      },
+      id: "nested",
+      name: "Nested",
+    });
+
+    expect(filter.rules).toHaveLength(1);
+    expect(filter.rules[0]).toMatchObject({ id: "nested-0-0", type: "group" });
+  });
 });

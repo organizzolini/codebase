@@ -245,4 +245,25 @@ describe(loadCalendar, () => {
 
     expect(api.requests.windows[0]).toMatchObject({ view: null });
   });
+
+  it("keeps only the most recent windows, reading the oldest again", async () => {
+    const api = serveCalendarApi();
+    const day = (offset: number): string =>
+      `2026-03-${String(offset + 1).padStart(2, "0")}`;
+
+    // Past the reads the loader keeps, the first window has been let go.
+    await Array.from({ length: 26 }, (_, offset) => day(offset)).reduce(
+      async (previous, date) => {
+        await previous;
+        await loadCalendar({ date, view: "day" });
+      },
+      Promise.resolve(),
+    );
+
+    const reads = api.requests.facets.length;
+
+    await loadCalendar({ date: day(0), view: "day" });
+
+    expect(api.requests.facets).toHaveLength(reads + 1);
+  });
 });
