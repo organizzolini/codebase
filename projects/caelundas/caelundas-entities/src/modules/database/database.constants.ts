@@ -33,8 +33,7 @@ export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1793943848972];
  * The statements that rebuild the derived tag tables, in the order they run:
  * both tables are emptied, the events' table first, then `tag_nodes` is filled
  * with every tag's place in the tree, then `calendar_event_tag_nodes` with one
- * row per event and tag, ancestors included. Each fill is one `insert ...
- * select`, so SQLite does the set-based work.
+ * row per event and tag, ancestors included. Each fill is one insert-select statement, so SQLite does the set-based work.
  */
 export const CAELUNDAS_READ_MODEL_STATEMENTS = [
   "delete from calendar_event_tag_nodes",

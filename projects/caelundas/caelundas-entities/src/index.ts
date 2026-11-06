@@ -6,7 +6,6 @@ export {
 } from "./modules/database/database.constants";
 export { DatabaseModule } from "./modules/database/database.module";
 export { DatabaseService } from "./modules/database/database.service";
-export type { DatabaseModuleOptions } from "./modules/database/database.types";
 export { createMomentTransformer } from "./modules/database/database.utilities";
 export { CalendarEventDerived } from "./modules/database/entities/calendar-event-derived.entity";
 export { CalendarEventTagNode } from "./modules/database/entities/calendar-event-tag-node.entity";
