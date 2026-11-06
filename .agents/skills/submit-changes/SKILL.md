@@ -177,12 +177,12 @@ gh pr list --head <branch> --state open
 
    Repeat `--label scope:<name>` for each additional scope the title names.
 
-7. Hard gate before finishing: validate release significance for the created PR.
+7. Hard gate before finishing: validate the created PR (its title, body, labels, and release significance).
 
    ```bash
    pr_number="$(gh pr view <branch> --json number --jq .number)"
    NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-     projects/compliance/src/compliance.main.ts pull-request-release-significance \
+     projects/compliance/src/compliance.main.ts pull-request \
      "${pr_number}"
    ```
 

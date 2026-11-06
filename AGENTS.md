@@ -220,11 +220,12 @@ See the [validate-code skill](.agents/skills/validate-code/SKILL.md) for the ful
 
 ### IC-Suite
 
-Four in-house toolchains measure this workspace and gate what they measure:
+Five toolchains measure this workspace and gate what they measure:
 
 - **callidescope**: Call-stack depth, breadth
 - **codependix**: Dependency-graph boundary rules
 - **codometer**: Sizes, counts, comment-block length
+- **coinagerie**: Vocabulary, kept in step with glossaries
 - **conformetry**: Generated code against its template
 
 Use the respective agent skills (e.g., `codometer-measure`, `callidescope-triage`) to interact with these toolchains. Scaffold with `conformetry-generate` instead of hand-crafting. Never manually edit limits, bypass rules, or hand-edit generated output to make a check pass.
@@ -270,7 +271,7 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
   - Every PR must close or reference a GitHub issue through GitHub's own link (`Closes #N` as the first `🔗 Related` bullet, or the Development sidebar). Work done without one gets an issue backfilled with [link-issue](.agents/skills/link-issue/SKILL.md) before the PR opens.
   - Every PR description must carry all 4 mandatory sections (`## 🌰 Summary`, `## 📝 Details`, `## 🧪 Testing`, `## 🔗 Related`) with real content and no unfilled placeholder comments. Never omit `🔗 Related`: its first bullet is the `Closes #N` issue link, followed by any specs, files, or documentation.
   - Each section has one shape: Summary is only one plain paragraph of at most 48 words, Details is only a bulleted list with one marker and at most 512 words, Testing is only an ordered list (indent code blocks under a step), and Related opens with a `-` list, after which anything may follow.
-  - Pre-flight validate PR descriptions locally using `NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request-body <path-to-body>` before creating the PR.
+  - Validate the PR once it exists with `NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request <number>` (read-only) and fix what it reports before requesting review.
   - Set all required metadata at creation: `--assignee @me`, `--label type:<type>`, `--label scope:<scope>`, and `--label source:agent`.
 - **Conventional Naming:** If you need to view the current valid Types and Scopes without using a skill, read `configuration/conventional.config.cjs`.
 

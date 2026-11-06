@@ -23,7 +23,7 @@ By participating, you agree to abide by the [Code of Conduct](CODE_OF_CONDUCT.md
     - [Nx Boundaries](#nx-boundaries)
     - [Size Limits](#size-limits)
     - [Coverage Gates](#coverage-gates)
-  - [In-House Toolchains](#in-house-toolchains)
+  - [Toolchains](#toolchains)
   - [Git Hooks (Husky)](#git-hooks-husky)
   - [Working in a Git Worktree](#working-in-a-git-worktree)
   - [Branch Naming Guidelines](#branch-naming-guidelines)
@@ -175,7 +175,7 @@ codebase/
 ├── projects/           # Every project, one folder each
 │   ├── configuration/  # Every shared tool config, the Husky hooks, and the targets that run them
 │   ├── <domain>/       # caelundas/, lexico/, meanderaw/ — group one domain's projects
-│   └── ic-suite/       # The four IC-suite toolchains, nested one level deeper
+│   └── ic-suite/       # The five IC-suite toolchains, nested one level deeper
 ├── documentation/      # Architecture decision records, agent configuration, guides, planning notes, and generated code documentation
 │   ├── adr/            # Architecture decision records
 │   ├── agents/         # Per-repository configuration the vendored skills read
@@ -262,14 +262,14 @@ The composite targets pick whichever set a project's `language:*` tag selects, s
 
 Five workflows run on every pull request. Each maps to targets you can run locally before pushing. GitHub shows each with an emoji prefix — 🧑‍🔧 Lint Codebase, 🧑‍🔬 Test Coverage, 🕵️ Secure Code, 👷 Make Projects, 🧑‍⚖️ Comply Code.
 
-| Workflow      | Runs                                                                                                                     | Local equivalent                                     |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
-| Lint Codebase | Format, lint, typecheck, type coverage, spelling, markdown, YAML, dead code, conformance, and the synchronization checks | `nx affected --target=lint-code`                     |
-| Test Coverage | Unit, integration, and end-to-end tests with coverage thresholds                                                         | `nx affected --target=test-code`                     |
-| Secure Code   | Secrets, Python AST, dependency vulnerabilities, licenses, infrastructure misconfiguration                               | `nx affected --target=secure-code`                   |
-| Make Projects | Builds every buildable project and gates its declared bundle size                                                        | `nx affected --target=build-projects`                |
-| Comply Code   | Branch name, pull request title, body, labels, assignees, and release significance                                       | See [Pull Request Process](#pull-request-process)    |
-| Enforce Code  | CODEOWNERS rules and workflow security                                                                                   | `validation/src/validation.main.ts audit-governance` |
+| Workflow      | Runs                                                                                                                     | Local equivalent                                              |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| Lint Codebase | Format, lint, typecheck, type coverage, spelling, markdown, YAML, dead code, conformance, and the synchronization checks | `nx affected --target=lint-code`                              |
+| Test Coverage | Unit, integration, and end-to-end tests with coverage thresholds                                                         | `nx affected --target=test-code`                              |
+| Secure Code   | Secrets, Python AST, dependency vulnerabilities, licenses, infrastructure misconfiguration                               | `nx affected --target=secure-code`                            |
+| Make Projects | Builds every buildable project and gates its declared bundle size                                                        | `nx affected --target=build-projects`                         |
+| Comply Code   | Branch name, pull request title, body, labels, assignees, and release significance                                       | See [Pull Request Process](#pull-request-process)             |
+| Enforce Code  | CODEOWNERS rules and workflow security                                                                                   | `projects/compliance/src/compliance.main.ts audit-governance` |
 
 🚀 Continuous Deployment runs post-merge on `main` to release the workspace and to build and verify the dev container image. Builds are verified before merge, in the merge queue, and a pull request that changes the dev container builds and tests it there too.
 
@@ -326,9 +326,9 @@ When a file nears 512 lines, split it along the module file suffixes instead of 
 
 Lowering a threshold to make a change pass is not an option — fix the code.
 
-## In-House Toolchains
+## Toolchains
 
-Four toolchains are developed in this repository and gate its own code. You are most likely to meet them as a failing check, so it is worth knowing which one is talking.
+Five toolchains are developed and published from this repository, and they gate its own code. You are most likely to meet them as a failing check, so it is worth knowing which one is talking.
 
 | Toolchain      | What it does                                                                                                                   | What fails a pull request                                                                      |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
@@ -336,12 +336,13 @@ Four toolchains are developed in this repository and gate its own code. You are 
 | `codometer`    | Measures a directory — languages, declared conventions, compressed size — against the limits its configuration declares        | that project's `codometer` target, inside Make Projects                                        |
 | `codependix`   | Exports Nx, NestJS module, and file-level import graphs, and judges them against declared boundary rules                       | the inferred per-project `codependix-bound` target, in the 🕸️ Codependix Bound check           |
 | `callidescope` | Traces call stacks through injected dependencies and flags stacks that are too deep or callables that reach too widely         | the inferred per-project `callidescope-restrict` target, in the 🔭 Callidescope Restrict check |
+| `coinagerie`   | Collects the words a codebase uses and keeps a glossary of their definitions in step with the code                             | that project's `coinagerie-check` target, inside Lint                                          |
 
-Each is documented in its command-line package — [conformetry-cli](../projects/ic-suite/conformetry/conformetry-cli/README.md), [codometer-cli](../projects/ic-suite/codometer/codometer-cli/README.md), [codependix-cli](../projects/ic-suite/codependix/codependix-cli/README.md), [callidescope-cli](../projects/ic-suite/callidescope/callidescope-cli/README.md) — and each has agent skills for the same three moments, which read just as well for a human: running it, configuring it, and acting on what it said (codependix adds a fourth, for reading a graph the repository already committed). They are the `conformetry-*`, `codometer-*`, `codependix-*`, and `callidescope-*` entries under [.agents/skills](../.agents/skills).
+Each is documented in its command-line package — [conformetry-cli](../projects/ic-suite/conformetry/conformetry-cli/README.md), [codometer-cli](../projects/ic-suite/codometer/codometer-cli/README.md), [codependix-cli](../projects/ic-suite/codependix/codependix-cli/README.md), [callidescope-cli](../projects/ic-suite/callidescope/callidescope-cli/README.md), [coinagerie-cli](../projects/ic-suite/coinagerie/coinagerie-cli/README.md) — and each has agent skills for the same three moments, which read just as well for a human: running it, configuring it, and acting on what it said (codependix adds a fourth, for reading a graph the repository already committed, and coinagerie a fourth, for writing a definition). They are the `conformetry-*`, `codometer-*`, `codependix-*`, `callidescope-*`, and `coinagerie-*` entries under [.agents/skills](../.agents/skills).
 
 Conformetry is the one you should reach for deliberately rather than only meet as a failure: **generate rather than hand-craft**, because code written in a shape a template already describes starts life failing conformance. `nx g conformetry:` lists the generators, and `conformetry templates` describes what each one produces.
 
-Every configuration these four read lives in [configuration/](../configuration), one file per toolchain, alongside per-project `codometer.config.ts` files that spread the shared object.
+Every configuration these five read lives in [configuration/](../configuration), one file per toolchain, alongside per-project `codometer.config.ts` files that spread the shared object.
 
 > ⚠️ **Each toolchain ships an `*-examples` package that contains code which is deliberately wrong** — a breaching limit, a `tsconfig.json` the compiler cannot parse, a stack eight frames deep, an instance missing an export. Each is the reproduction of a failure you will hit, and "fixing" one deletes the only place that behavior is demonstrated. Every examples package's `AGENTS.md` lists its own, and maps "the tool said X" to the example that reproduces X in about a second.
 
@@ -441,7 +442,7 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 
 | Scope             | Description                                                                                                     |
 | ----------------- | --------------------------------------------------------------------------------------------------------------- |
-| `ic-suite`        | Code measurement and validation toolchains and their shared conventions                                |
+| `ic-suite`        | Code measurement and validation toolchains and their shared conventions                                         |
 | `affirmancy`      | Python Jupyter notebook application for LangGraph affirmation generation                                        |
 | `caelundas`       | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris)                                           |
 | `configuration`   | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.)                                           |
@@ -483,7 +484,7 @@ If a change genuinely spans scopes, list them comma-separated (`feat(lexico,logg
 
 This repository squash-merges using the pull request title, so **the title is the only thing semantic-release ever sees**. Every individual commit on the branch is discarded at squash time.
 
-The `pull-request-release-significance` check reads the branch's commits and fails the pull request when the title's type is **less** release-significant than the most significant commit on the branch, or when the title shares no scope overlap with a commit.
+The release-significance check of `compliance pull-request` reads the branch's commits and fails the pull request when the title's type is **less** release-significant than the most significant commit on the branch, or when the title shares no scope overlap with a commit.
 
 **Practical effect:** pick the type and scope for the branch as a whole before you start committing, and keep every commit at or below that significance.
 
@@ -520,7 +521,7 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 
 1. **Push and open**: `git push -u origin <branch>`, then `gh pr create` and fill in the template. Do not use `--fill` — it substitutes the commit message for the body and drops the four required headings
 2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies. The scope list must include every scope your commits use, since Comply Code's release-significance check compares title scopes to commit scopes.
-3. **Description** must contain all four headings from [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) verbatim — 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related — each in its shape: Summary only a single paragraph of at most 48 words, Details only a bulleted list with one marker throughout and at most 512 words, Testing only an ordered list (a step may hold a code block), and Related opening with a `-` list, after which anything may follow. Comply Code runs `validation pull-request-body` and fails on a missing or empty section, a section in the wrong shape or over its limit, or a template comment left unfilled
+3. **Description** must contain all four headings from [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) verbatim — 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related — each in its shape: Summary only a single paragraph of at most 48 words, Details only a bulleted list with one marker throughout and at most 512 words, Testing only an ordered list (a step may hold a code block), and Related opening with a `-` list, after which anything may follow. Comply Code runs `compliance pull-request` and fails on a missing or empty section, a section in the wrong shape or over its limit, or a template comment left unfilled
 4. **Issue link**: every pull request must close or reference a GitHub issue through GitHub's own link — `Closes #N` as the first bullet of 🔗 Related, or the Development sidebar. Continuous Compliance runs `compliance pull-request` on pull requests and in the merge queue, reading `gh pr view --json closingIssuesReferences`, so a plain `Related to #N` does not count. Dependabot's pull requests are exempt. Work with no issue gets one before the pull request opens — see the [link-issue skill](../.agents/skills/link-issue/SKILL.md)
 5. **Labels and assignees** must agree with the title: exactly one `type:*` label matching the title's type, exactly the `scope:*` labels the title names and no extras, at least one assignee, and exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened it. The `do-not-merge` label blocks the pull request while present
 6. **Automated checks**: the five workflows in [The Gates](#the-gates) must pass
@@ -542,7 +543,7 @@ See [create-pull-request](.agents/skills/create-pull-request/SKILL.md) and [upda
 Releases operate at two distinct tiers:
 
 1. **Workspace Root (Repository)**: Uses [semantic-release](https://semantic-release.gitbook.io/), fully automated on merge to `main` by the 🦸 Continuous Deployment workflow (`push-releases` target). Versioning is fixed — the whole codebase shares one version — and nothing is published to a package registry.
-2. **IC-Suite Packages (Publishable Packages)**: Uses [Nx Release](https://nx.dev/features/manage-releases) to independently version and publish the 29 publishable packages across the four toolchains (`callidescope`, `codependix`, `codometer`, `conformetry`). Each package is versioned from its own commit history, and upstream bumps automatically cascade patch bumps to internal dependents. The 8 unpublished packages (`*-agents` and `*-examples` across the four suites) are explicitly excluded in `nx.json` (`release.projects`) in addition to their private manifest flags.
+2. **IC-Suite Packages (Publishable Packages)**: Uses [Nx Release](https://nx.dev/features/manage-releases) to independently version and publish the 36 publishable packages across the five toolchains (`callidescope`, `codependix`, `codometer`, `coinagerie`, `conformetry`). Each package is versioned from its own commit history, and upstream bumps automatically cascade patch bumps to internal dependents. The 10 unpublished packages (`*-agents` and `*-examples` across the five suites) are explicitly excluded in `nx.json` (`release.projects`) in addition to their private manifest flags.
 
 **Version bumps**, from `releaseRules` in [release.config.cjs](../configuration/release.config.cjs) for the codebase and `release.conventionalCommits` in [nx.json](../nx.json) for each package a commit touches:
 

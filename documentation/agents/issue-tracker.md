@@ -13,7 +13,7 @@ The single issue template lives at `.github/ISSUE_TEMPLATE/issue.yml`, with requ
 
 - **Set the GitHub Issue Type by position in the hierarchy.** A root issue — one with no parent, whether a spec or a standalone report — is a **Feature** or a **Bug**. Every sub-issue, at any depth, is a **Task**. So a spec is a Feature, and the pull request issues and commit sub-issues beneath it are Tasks. Set it when creating (`gh issue create --type Feature`) or afterwards (`gh issue edit <n> --type Task`). The `compliance issue` check below enforces it, and it is independent of the `type:*` label, which still names the commit type.
 
-This is enforced two ways. First, the template's required dropdowns and disabled blank issues stop most drift at the source. Second, the 🦹 Continuous Compliance GitHub Actions workflow runs on an issue's `opened`/`edited`/`labeled`/`unlabeled` events as well as on a weekly scheduled cron (every Friday at 8:18 AM NYC time): the `compliance issue` command (`compliance`) validates issue labels, GitHub Issue Types (roots are Feature or Bug, sub-issues are Task), parent-child hierarchy depths (maximum 3 tiers: Spec → PR → Commit), and release significance constraints across open issues. In addition, the scheduled matrix job runs `audit-governance` (`validation`) to enforce `.github/CODEOWNERS` validity and GitHub Actions workflow security policies. The same command also fails any pull request (Dependabot's excepted) whose `closingIssuesReferences` is empty, on pull requests and in the merge queue. On `opened` the same command reconciles the labels a submitted form implies onto the issue first, so a freshly filed template issue already carries them before the check runs.
+This is enforced two ways. First, the template's required dropdowns and disabled blank issues stop most drift at the source. Second, the 🦹 Continuous Compliance GitHub Actions workflow runs on an issue's `opened`/`edited`/`labeled`/`unlabeled` events as well as on a weekly scheduled cron (every Friday at 8:18 AM NYC time): the `compliance issue` command (`compliance`) validates issue labels, GitHub Issue Types (roots are Feature or Bug, sub-issues are Task), parent-child hierarchy depths (maximum 3 tiers: Spec → PR → Commit), and release significance constraints across open issues. In addition, the scheduled matrix job runs `audit-governance` (`compliance`) to enforce `.github/CODEOWNERS` validity and GitHub Actions workflow security policies. The same command also fails any pull request (Dependabot's excepted) whose `closingIssuesReferences` is empty, on pull requests and in the merge queue. On `opened` the same command reconciles the labels a submitted form implies onto the issue first, so a freshly filed template issue already carries them before the check runs.
 
 The README's Continuous Compliance badge is this workflow's own status badge. It validates both issue metadata and repository governance policies across open issues and workflow configurations.
 
@@ -49,8 +49,8 @@ spec issue                  the output of /to-spec      (Issue Type: Feature or 
   the same mechanism the wayfinder map uses below.
 - **Keep every sub-issue at or below the parent's release significance.** A
   squash merge shows semantic-release only the pull request title, and the
-  [pull-request-release-significance](../../validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts)
-  check fails a pull request whose branch carries a commit more significant than
+  [release-significance check](../../projects/compliance/src/modules/pull-request/pull-request-release-significance.service.ts)
+  of `compliance pull-request` fails a pull request whose branch carries a commit more significant than
   its title, or a scope the title does not name. Planning the commits as
   sub-issues is where that is cheapest to get right: a `feat` sub-issue under a
   `chore` parent is a retitle now, or a failed check later. See

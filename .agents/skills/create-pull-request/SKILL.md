@@ -70,7 +70,7 @@ suffixes do not push the queued commit subject over the header limit.
 
 | Scope             | Description                                                                                                     |
 | ----------------- | --------------------------------------------------------------------------------------------------------------- |
-| `ic-suite`        | Code measurement and validation toolchains and their shared conventions                                |
+| `ic-suite`        | Code measurement and validation toolchains and their shared conventions                                         |
 | `affirmancy`      | Python Jupyter notebook application for LangGraph affirmation generation                                        |
 | `caelundas`       | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris)                                           |
 | `configuration`   | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.)                                           |
@@ -229,9 +229,6 @@ Adds a user profile page where users can view and edit their information.
 
 - Closes #123
 EOF
-
-NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-  validation/src/validation.main.ts pull-request-body /tmp/pr_body.md
 ````
 
 #### Using GitHub CLI (preferred)
@@ -282,9 +279,9 @@ All PRs must pass these checks before merging:
 | -------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | Branch Name          | `validate-branch-name`                                 | Branch follows naming conventions                                                                                                |
 | PR Title             | `commitlint`                                           | Title follows commit message format                                                                                              |
-| PR Body              | `validation pull-request-body`                         | Required sections: 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related, each in its shape and within its word limit                   |
+| PR Body              | `compliance pull-request`                              | Required sections: 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related, each in its shape and within its word limit                   |
 | Issue Link           | `compliance pull-request`                              | Pull request closes or references an issue (`closingIssuesReferences` is not empty)                                              |
-| Release Significance | `validation pull-request-release-significance`         | Title's type is at least as significant as the most significant commit, and the title shares at least one scope with each commit |
+| Release Significance | `compliance pull-request`                              | Title's type is at least as significant as the most significant commit, and the title shares at least one scope with each commit |
 | Lint                 | `nx affected --target=lint-code`                       | Every static check: ESLint, oxlint, oxfmt, typecheck, spell-check, knip, and more                                                |
 | Test                 | `nx affected --target=vitest --configuration=coverage` | Unit and integration tests against the coverage gates                                                                            |
 
@@ -384,7 +381,7 @@ This codebase uses **squash merging** by default:
 - All commits in the PR become a single commit on main
 - PR title becomes the commit message
 - Keep PR title clean and following conventions
-- **The title is the only thing semantic-release reads** — every commit's own type is discarded once squashed. Pick the title's type and scope overlap to match the branch's work, while keeping the title at least as significant as the most significant commit; see [commit-code's Release Significance section](../commit-code/SKILL.md#release-significance) for the type-to-bump mapping and the [pull-request-release-significance](../../../validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts) check that enforces it
+- **The title is the only thing semantic-release reads** — every commit's own type is discarded once squashed. Pick the title's type and scope overlap to match the branch's work, while keeping the title at least as significant as the most significant commit; see [commit-code's Release Significance section](../commit-code/SKILL.md#release-significance) for the type-to-bump mapping and the [release-significance check](../../../projects/compliance/src/modules/pull-request/pull-request-release-significance.service.ts) that enforces it
 
 ### Scope Selection: Multi-Scope Title vs Split PR
 
@@ -394,7 +391,7 @@ This codebase uses **squash merging** by default:
 - If you would need many scopes or the title becomes awkward/too long, split
   into multiple pull requests and keep each title scope-focused.
 - Before opening, verify that every commit scope on the branch is represented by
-  the title scopes; otherwise `pull-request-release-significance` will fail.
+  the title scopes; otherwise the release-significance check will fail.
 
 ## Pre-Flight Checklist
 
