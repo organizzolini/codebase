@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "description": "Judge a project's glossaries against the words its code uses, or rewrite them.",
+  "properties": {
+    "command": {
+      "description": "Required. The shell command that starts the coinagerie command line, to which the batch command and its project folders are appended.",
+      "type": "string"
+    },
+    "write": {
+      "default": false,
+      "description": "Rewrite each glossary to hold exactly the code's words, keeping definitions, instead of failing when one disagrees.",
+      "type": "boolean"
+    }
+  },
+  "required": ["command"],
+  "title": "Coinagerie check",
+  "type": "object"
+}
