@@ -78,17 +78,19 @@ data "terraform_remote_state" "linode" {
 }
 
 # Where the shared Nx cache lives, read by CI as NX_SHARED_CACHE_REMOTE_*. The
-# region is the one the state backends already sign with.
+# region is the one the state backends already sign with. Every read of the
+# linode outputs is wrapped in `try`: a pull request plans before the linode
+# root has applied its new outputs, and an apply always runs linode first.
 resource "github_actions_variable" "nx_cache_bucket" {
   repository    = var.repository
   variable_name = "NX_CACHE_BUCKET"
-  value         = data.terraform_remote_state.linode.outputs.nx_cache_bucket
+  value         = try(data.terraform_remote_state.linode.outputs.nx_cache_bucket, "")
 }
 
 resource "github_actions_variable" "nx_cache_endpoint" {
   repository    = var.repository
   variable_name = "NX_CACHE_ENDPOINT"
-  value         = data.terraform_remote_state.linode.outputs.nx_cache_endpoint
+  value         = try(data.terraform_remote_state.linode.outputs.nx_cache_endpoint, "")
 }
 
 resource "github_actions_variable" "nx_cache_region" {
@@ -103,25 +105,25 @@ resource "github_actions_variable" "nx_cache_region" {
 resource "github_actions_secret" "nx_cache_read_only_access_key_id" {
   repository      = var.repository
   secret_name     = "NX_CACHE_READ_ONLY_ACCESS_KEY_ID"
-  plaintext_value = data.terraform_remote_state.linode.outputs.nx_cache_read_only_access_key
+  plaintext_value = try(data.terraform_remote_state.linode.outputs.nx_cache_read_only_access_key, "")
 }
 
 resource "github_actions_secret" "nx_cache_read_only_secret_access_key" {
   repository      = var.repository
   secret_name     = "NX_CACHE_READ_ONLY_SECRET_ACCESS_KEY"
-  plaintext_value = data.terraform_remote_state.linode.outputs.nx_cache_read_only_secret_key
+  plaintext_value = try(data.terraform_remote_state.linode.outputs.nx_cache_read_only_secret_key, "")
 }
 
 resource "github_actions_secret" "nx_cache_read_write_access_key_id" {
   repository      = var.repository
   secret_name     = "NX_CACHE_READ_WRITE_ACCESS_KEY_ID"
-  plaintext_value = data.terraform_remote_state.linode.outputs.nx_cache_read_write_access_key
+  plaintext_value = try(data.terraform_remote_state.linode.outputs.nx_cache_read_write_access_key, "")
 }
 
 resource "github_actions_secret" "nx_cache_read_write_secret_access_key" {
   repository      = var.repository
   secret_name     = "NX_CACHE_READ_WRITE_SECRET_ACCESS_KEY"
-  plaintext_value = data.terraform_remote_state.linode.outputs.nx_cache_read_write_secret_key
+  plaintext_value = try(data.terraform_remote_state.linode.outputs.nx_cache_read_write_secret_key, "")
 }
 
 # The repository itself, imported as it is configured. Destroying it would
