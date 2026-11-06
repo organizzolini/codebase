@@ -7,7 +7,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { ProgressiveUtilitiesService } from "./progressive-utilities.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 describe(ProgressiveUtilitiesService, () => {
   let service: ProgressiveUtilitiesService;

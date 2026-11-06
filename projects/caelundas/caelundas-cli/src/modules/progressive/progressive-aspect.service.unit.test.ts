@@ -8,7 +8,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { ProgressiveAspectService } from "./progressive-aspect.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 describe(ProgressiveAspectService, () => {
