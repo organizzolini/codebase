@@ -1,0 +1,20 @@
+import { projectDefaults } from "../../../configuration/callidescope.config.js";
+
+/**
+ * What caelundas-entities is held to, measured rather than assumed.
+ *
+ * Nothing yet: the library is scaffolded empty, so there is no frame to trace.
+ * The limits are the smallest real numbers the gate accepts, and the entities
+ * pull request that fills this package measures what it adds and sets them
+ * **at** that rather than above it.
+ *
+ * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * for everything this file does not override
+ */
+export default {
+  ...projectDefaults,
+  limits: {
+    maximumBreadth: 1,
+    maximumDepth: 1,
+  },
+};
