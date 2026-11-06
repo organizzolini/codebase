@@ -74,7 +74,7 @@ export const DURATION_BUCKETS: readonly {
 ];
 
 /**
- * The days of the week, numbered from Sunday as SQLite numbers them.
+ * The days of the week, numbered from Sunday, the API's numbering.
  */
 export const WEEKDAY_LABELS: readonly string[] = [
   "Sunday",

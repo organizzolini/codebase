@@ -207,8 +207,6 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 
 **Read model**: the migration also creates `tag_nodes`, `calendar_event_tag_nodes` (each tag's depth, root and path, and one row per event and tag with ancestors, `is_direct` marking the tags given) and the view `calendar_event_derived_times`. The two tag tables are stored, not views, because a tag's depth, root and path take a correlated subquery that every grouping would repeat. `CalendarEventsService.upsert` ends each transaction with `CaelundasDatabaseService.refreshReadModel` from `caelundas-db`, inside the transaction that wrote the events and any new tags, so a run leaves the read model current and a failed refresh stores nothing. The view needs no refresh.
 
-**Leftover SQLite files**: `data/events-seed.sql`, `data/events-read-model.sql` and `data/night-sky-seed.sql` are SQLite SQL that `caelundas-web`'s bundled database still builds from; they match none of the Postgres tables and go with that database. They are linted by the workspace's default (Postgres) `sqlfluff` dialect, with identifiers quoted so they stay valid SQLite.
-
 **Tests**: integration and end-to-end suites start a Testcontainers Postgres through `startCaelundasDatabase` in `testing/database.ts`, which runs the real migration and connects through `CaelundasDatabaseModule` from `CAELUNDAS_POSTGRES_*`. Docker must be running.
 
 ## Kubernetes Deployment

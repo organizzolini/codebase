@@ -46,8 +46,8 @@ export const datasetRowSchema = z.object({
  * the compiled filter, or by nothing, and `{groups}` by the columns that read
  * each grouping level's keys, or by nothing. The instants where an aspect
  * begins forming or dissolves are left out, since the event that spans the
- * aspect says as much; they stay in the data. Text sorts by bytes, as the
- * web app's SQLite did, rather than by the database's locale.
+ * aspect says as much; they stay in the data. Text sorts by bytes, rather
+ * than by the database's locale.
  */
 export const EVENTS_IN_WINDOW_SQL = `
   select

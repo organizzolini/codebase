@@ -277,16 +277,11 @@ keyed by Hipparcos number, plus any fainter star a figure joins; the 88 IAU
 constellations, the twelve of the zodiac flagged; and each figure's segments
 between two stored stars. d3-celestial draws its figures by position, so each
 vertex is matched to the catalog star within 0.05 degrees of it, and a segment
-south of the stored sky is left out. `data/night-sky-seed.sql` holds all 88
-constellations and their figures, with only the stars those figures join and
-those brighter than magnitude 3. It is SQLite SQL for `caelundas-web`'s bundled
-database, not a Postgres seed, and goes when that database does; the full
-catalog stays an ingest step.
+south of the stored sky is left out.
 
 The stars are the [HYG star database](https://github.com/astronexus/HYG-Database)
 v4.1, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), David
-Nash and the HYG contributors; the stored catalog and the seed are derived
-works under the same license. The constellations and figures are
+Nash and the HYG contributors; the stored catalog is a derived work under the same license. The constellations and figures are
 [d3-celestial](https://github.com/ofrohn/d3-celestial)'s, BSD-3-Clause, Olaf
 Frohn, after the IAU's constellation charts.
 

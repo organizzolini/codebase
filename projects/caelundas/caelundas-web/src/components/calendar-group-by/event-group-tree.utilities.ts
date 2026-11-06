@@ -98,7 +98,7 @@ function collectGroups(
 }
 
 /**
- * Orders text by code point, the way SQLite orders the facets' paths.
+ * Orders text by code point, the way the API orders the facets' paths.
  */
 function compareText(left: string, right: string): number {
   return left < right ? -1 : Number(left > right);
