@@ -4,6 +4,9 @@ export default [
   // 🛠️ Base Config
   ...baseConfig,
 
+  // 🙈 Ignores
+  { ignores: ["src/modules/database/migrations/**"] },
+
   // 📦 Dependency Checks
   {
     files: ["**/*.json"],

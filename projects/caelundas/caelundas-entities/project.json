@@ -38,10 +38,25 @@
     "knip": {},
     "lint-code": {},
     "markdown-lint": {},
+    "migration": {
+      "options": {
+        "module": "src/modules/database"
+      }
+    },
     "oxfmt": {},
     "oxlint": {},
     "prettier": {},
     "spell-check": {},
+    "sqlfluff-format": {
+      "options": {
+        "command": "uv run --project configuration sqlfluff {args} --dialect sqlite --config configuration/pyproject.toml {projectRoot}"
+      }
+    },
+    "sqlfluff-lint": {
+      "options": {
+        "command": "uv run --project configuration sqlfluff {args} --dialect sqlite --config configuration/pyproject.toml {projectRoot}"
+      }
+    },
     "test-code": {},
     "type-coverage": {},
     "typecheck": {},

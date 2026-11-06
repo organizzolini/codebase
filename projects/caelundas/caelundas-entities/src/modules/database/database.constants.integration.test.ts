@@ -1,9 +1,14 @@
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { createSqliteDataSource } from "@codebase/persistence";
 
 import {
   CAELUNDAS_DATABASE_ENTITIES,
+  CAELUNDAS_DATABASE_MIGRATIONS,
   CAELUNDAS_DATABASE_PROJECT,
 } from "./database.constants";
 
@@ -11,31 +16,106 @@ import type { DataSource } from "typeorm";
 
 // 🧪 Tests
 
+interface SchemaTable {
+  columns: string[];
+  indexes: string[];
+  table: string;
+}
+
 describe("the caelundas entities", () => {
+  const directory = mkdtempSync(path.join(tmpdir(), "caelundas-entities-"));
   let dataSource: DataSource;
 
   beforeAll(async () => {
     dataSource = createSqliteDataSource(
       {
         entities: CAELUNDAS_DATABASE_ENTITIES,
-        migrations: [],
+        migrations: CAELUNDAS_DATABASE_MIGRATIONS,
         project: CAELUNDAS_DATABASE_PROJECT,
       },
-      { CAELUNDAS_SQLITE_DATABASE: ":memory:" },
+      { CAELUNDAS_SQLITE_DATABASE: path.join(directory, "database.sqlite") },
     );
     await dataSource.initialize();
-    await dataSource.synchronize();
+    await dataSource.runMigrations();
   });
 
   afterAll(async () => {
     await dataSource.destroy();
+    rmSync(directory, { force: true, recursive: true });
+  });
+
+  it("has every column and index the entities describe", async () => {
+    expect.hasAssertions();
+
+    const described: SchemaTable[] = [];
+    const created: SchemaTable[] = [];
+
+    for (const metadata of dataSource.entityMetadatas) {
+      const columns = await dataSource.query<{ name: string }[]>(
+        `select name from pragma_table_info('${metadata.tableName}')`,
+      );
+      const indexes = await dataSource.query<{ name: string }[]>(
+        `select name from pragma_index_list('${metadata.tableName}') where origin = 'c'`,
+      );
+
+      described.push({
+        columns: metadata.columns
+          .map(({ databaseName }) => databaseName)
+          .toSorted(),
+        indexes: metadata.indices.map(({ name }) => name).toSorted(),
+        table: metadata.tableName,
+      });
+      created.push({
+        columns: columns.map(({ name }) => name).toSorted(),
+        indexes: indexes.map(({ name }) => name).toSorted(),
+        table: metadata.tableName,
+      });
+    }
+
+    expect(created).toStrictEqual(described);
+  });
+
+  it("creates the derived-times view", async () => {
+    expect.hasAssertions();
+
+    const views = await dataSource.query<{ name: string }[]>(
+      `select name from sqlite_master where type = 'view'`,
+    );
+
+    expect(views.map(({ name }) => name)).toStrictEqual([
+      "calendar_events_derived",
+    ]);
+  });
+
+  it("records the view so a later generated migration finds it", async () => {
+    expect.hasAssertions();
+
+    const { upQueries } = await dataSource.driver.createSchemaBuilder().log();
+
+    expect(
+      upQueries.filter(({ query }) => /view|typeorm_metadata/iu.test(query)),
+    ).toStrictEqual([]);
+  });
+
+  it("reverts to an empty database", async () => {
+    expect.hasAssertions();
+
+    await dataSource.undoLastMigration();
+
+    const objects = await dataSource.query<{ name: string }[]>(
+      `select name from sqlite_master where name not like 'sqlite_%' and name not in ('migrations', 'typeorm_metadata')`,
+    );
+
+    expect(objects).toStrictEqual([]);
+
+    await dataSource.runMigrations();
   });
 
   it("describes the event, tag, closure, join, derived and night sky tables", async () => {
     expect.hasAssertions();
 
     const tables = await dataSource.query<{ name: string }[]>(
-      `select name from sqlite_master where type = 'table' and name not like 'sqlite_%' and name != 'typeorm_metadata' order by name`,
+      `select name from sqlite_master where type = 'table' and name not like 'sqlite_%' and name not in ('migrations', 'typeorm_metadata') order by name`,
     );
 
     expect(tables.map(({ name }) => name)).toStrictEqual([
