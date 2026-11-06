@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.55.1](https://github.com/organizzolini/codebase/compare/v3.55.0...v3.55.1) (2026-11-06)
+
+### 🐛 Bug Fixes
+
+* **installation:** 🐛 retry the postgresql apt key download ([#2156](https://github.com/organizzolini/codebase/issues/2156)) ([dfc266d](https://github.com/organizzolini/codebase/commit/dfc266d245736028c05c849ed6c8b44b194bf3f1))
+
 ## [3.55.0](https://github.com/organizzolini/codebase/compare/v3.54.1...v3.55.0) (2026-11-06)
 
 ### ✨ Features
