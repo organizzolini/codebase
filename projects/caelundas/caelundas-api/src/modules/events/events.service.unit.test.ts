@@ -38,6 +38,32 @@ describe(EventsService, () => {
     expect(query).toHaveBeenCalledWith("select 1", [7]);
   });
 
+  it("describes the dataset from its single row", async () => {
+    expect.hasAssertions();
+
+    const start = new Date("2026-03-01T00:00:00Z");
+    const end = new Date("2026-03-02T00:00:00Z");
+
+    query.mockResolvedValueOnce([
+      { count: "2", end, start, timezone: "America/New_York" },
+    ]);
+
+    await expect(service.describeDataset()).resolves.toStrictEqual({
+      count: 2,
+      end,
+      start,
+      timezone: "America/New_York",
+    });
+  });
+
+  it("describes an empty dataset as null", async () => {
+    expect.hasAssertions();
+
+    query.mockResolvedValueOnce([]);
+
+    await expect(service.describeDataset()).resolves.toBeNull();
+  });
+
   it("refuses a row that does not match the schema", async () => {
     expect.hasAssertions();
 

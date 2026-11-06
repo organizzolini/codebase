@@ -2,6 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
 import { EntityManager } from "typeorm";
 
+import { DATASET_SQL, datasetRowSchema } from "./events.constants";
+
+import type { EventsDatasetEntity } from "./events.entities";
 import type { z } from "zod";
 
 /**
@@ -22,6 +25,15 @@ export class EventsService {
   // 🔏 Private Methods
 
   // 🌎 Public Methods
+
+  /**
+   * The span and zone of the whole dataset, or null when it holds no event.
+   */
+  public async describeDataset(): Promise<EventsDatasetEntity | null> {
+    const rows = await this.select(DATASET_SQL, [], datasetRowSchema);
+
+    return rows.at(0) ?? null;
+  }
 
   /**
    * Runs one statement with its `$n` parameters on the shared connection and
