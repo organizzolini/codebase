@@ -59,6 +59,27 @@ each select to the worker; the tests' executor runs it on `node:sqlite` over
 the same three SQL files. The route reads the database from the router
 context, which is how a test hands it another one.
 
+## GraphQL Code Generation
+
+The web app reads the `caelundas-api` schema through typed operations, as
+`lexico-web` does. `codegen.ts` reads the documents in `src/graphql/operations/` (one per query:
+dataset, events with filter and grouping, facets, filter collections, calendar
+windows, night sky) and writes `operations.ts` (types and typed documents) and
+`mocks.ts` (MSW handlers) to `src/graphql/generated/`. The generated files are
+committed and never edited. It does not use `@codebase/interface/client`'s
+shared configuration, which also emits the schema's own types and Zod
+validators: those redeclare the enums and inputs these operations take.
+
+```bash
+nx run caelundas-web:codegen          # Regenerate from the API's schema
+nx run caelundas-web:codegen:check    # Fail when a committed file is stale
+nx run caelundas-web:codegen-watch    # Start the API and regenerate on change
+```
+
+The API emits its schema to the gitignored `caelundas-api/src/schema.gql` each
+time it boots, so boot it first (`nx run caelundas-api:start`) when the file is
+missing.
+
 ## Architecture Overview
 
 ### Tech Stack

@@ -59,6 +59,38 @@
       },
       "outputs": ["{projectRoot}/output/events.sqlite"]
     },
+    "codegen": {
+      "configurations": {
+        "check": {
+          "command": "pnpm run codegen --check"
+        }
+      },
+      "description": "Generate typed GraphQL operations and test mocks",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/codegen.ts",
+        "{projectRoot}/src/graphql/operations/**/*.graphql",
+        "{workspaceRoot}/projects/caelundas/caelundas-api/src/schema.gql"
+      ],
+      "options": {
+        "command": "pnpm run codegen",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": [
+        "{projectRoot}/src/graphql/generated/mocks.ts",
+        "{projectRoot}/src/graphql/generated/operations.ts"
+      ]
+    },
+    "codegen-watch": {
+      "continuous": true,
+      "dependsOn": ["caelundas-api:await-health", "caelundas-api:start"],
+      "description": "Regenerate GraphQL artifacts when schema or operations change",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run codegen:watch",
+        "cwd": "{projectRoot}"
+      }
+    },
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},

@@ -1,0 +1,13 @@
+query Facets($window: EventsWindowInput, $filter: EventFilterGroupInput) {
+  facets(window: $window, filter: $filter) {
+    id
+    name
+    values {
+      count
+      depth
+      id
+      name
+      path
+    }
+  }
+}

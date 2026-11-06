@@ -30,6 +30,7 @@ export default mergeConfig(
           "src/components/events-calendar/events-database-browser.utilities.ts",
           "src/**/*.functions.ts",
           "src/**/*.worker.ts",
+          "src/graphql/generated/**",
           "src/client.tsx",
           "src/routeTree.gen.ts",
           "src/router.tsx",
