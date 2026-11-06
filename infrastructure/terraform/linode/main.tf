@@ -70,6 +70,38 @@ resource "linode_object_storage_key" "state" {
   }
 }
 
+# The bucket the state is moving to, named for what it holds. Linode cannot
+# rename a bucket, so the original `state` bucket above stays in place and
+# keeps serving every root until the cutover in infrastructure/AGENTS.md
+# is done by hand. Destroying this one would delete the state it holds.
+resource "linode_object_storage_bucket" "terraform_state" {
+  label         = var.terraform_state_bucket_label
+  region        = var.region
+  endpoint_type = "E3"
+  acl           = "private"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+# The access key the other roots' backends authenticate with once they move.
+# Its secret is readable through `terraform output` in this root only, and goes
+# into the TERRAFORM_STATE_* secrets by hand at the cutover.
+resource "linode_object_storage_key" "terraform_state" {
+  label = var.terraform_state_bucket_label
+
+  bucket_access {
+    bucket_name = linode_object_storage_bucket.terraform_state.label
+    region      = var.region
+    permissions = "read_write"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 # The key Terraform uses to configure the cache bucket. It cannot be scoped to
 # that bucket: a key's `bucket_access` needs the bucket to exist, and the bucket
 # needs a key to exist first. It reaches every bucket in the account, so it is
