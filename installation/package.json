@@ -4,6 +4,7 @@
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
+    "aws4fetch": "catalog:",
     "nest-commander": "catalog:",
     "reflect-metadata": "catalog:",
     "zod": "catalog:"

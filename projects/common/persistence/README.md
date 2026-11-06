@@ -103,8 +103,9 @@ export const meanderawDataSource = createDataSource({
 ```
 
 Neither ever synchronizes or runs migrations on start: the schema changes
-only through migrations, run on their own. Pass `namingStrategy` to replace
-snake case, as lexico does with its pluralizing strategy.
+only through migrations, run on their own. Every table is named in
+plural snake case (`CalendarEvent` is `calendar_events`), and a many-to-many join
+table from both plural names sorted alphabetically (`lexemes_words`).
 
 ### Base entities
 
@@ -236,14 +237,12 @@ Options:
 - `providers`: The providers under test
 - `database`: The project's own `<Project>PostgresqlModule`, imported in place
   of the helper's `forRoot`
-- `namingStrategy`: Replaces snake case on the helper's own `forRoot`
 - `validate`: The application's environment validation, usually
   `environmentSchema.parse`
 - `images`: Overrides the images tried, in order
 
 When the modules under test import the project's own database module, pass
-it as `database` too, or the testing module connects twice; `database` and
-`namingStrategy` cannot be combined, since the project's module sets its own.
+it as `database` too, or the testing module connects twice.
 `close` closes the module, stops the container, and restores the whole of
 `process.env`, removing any default `validate` filled in.
 
