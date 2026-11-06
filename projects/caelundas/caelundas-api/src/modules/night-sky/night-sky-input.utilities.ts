@@ -6,6 +6,8 @@ import {
   COLOR_DIGITS_PATTERN,
   DEFAULT_OPTIONS,
   MAXIMUM_SIZE_PIXELS,
+  MILLISECONDS_PER_MINUTE,
+  SIZE_BUCKET_PIXELS,
 } from "./night-sky.constants";
 
 import type {
@@ -14,6 +16,29 @@ import type {
 } from "./night-sky.types";
 
 // 🔏 Private Functions
+
+/**
+ * The input a request is really drawn from: the time snapped down to the
+ * minute, the size up to its bucket and each figure named once, in order, so
+ * every request for the same sky gives the same input and the same cache key.
+ */
+export function canonicalizeNightSkyInput(
+  input: ParsedNightSkyInput,
+): ParsedNightSkyInput {
+  const bucket = (pixels: number): number =>
+    Math.ceil(pixels / SIZE_BUCKET_PIXELS) * SIZE_BUCKET_PIXELS;
+
+  return {
+    ...input,
+    constellations: [...new Set(input.constellations)].toSorted(),
+    height: bucket(input.height),
+    time: new Date(
+      Math.floor(input.time.getTime() / MILLISECONDS_PER_MINUTE) *
+        MILLISECONDS_PER_MINUTE,
+    ),
+    width: bucket(input.width),
+  };
+}
 
 /**
  * A constellation's name as a query writes it: lower case, with spaces and
@@ -25,6 +50,8 @@ export function normalizeConstellationName(name: string): string {
     .toLowerCase()
     .replaceAll(/[\s-]+/gu, "_");
 }
+
+// 🌎 Public Functions
 
 /**
  * Checks a query's input, fills what it left out, and refuses what the
@@ -39,8 +66,6 @@ export function parseNightSkyInput(input: unknown): ParsedNightSkyInput {
 
   return result.data;
 }
-
-// 🌎 Public Functions
 
 /**
  * The figure segments the query asks for: every one for `all`, the twelve

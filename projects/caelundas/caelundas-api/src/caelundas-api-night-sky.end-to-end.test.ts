@@ -82,15 +82,43 @@ describe("caelundas api night sky end-to-end suite", () => {
     );
 
     expect(svg).toContain('aria-label="Slowly rotating night sky"');
-    expect(svg).toContain('viewBox="0 0 1100 700"');
+    expect(svg).toContain('viewBox="0 0 1152 704"');
     expect(svg).toContain("<animateTransform");
+  });
+
+  it("draws one sky for a window size within the same bucket", async () => {
+    expect.hasAssertions();
+
+    await expect(skyOf("width: 1090, height: 690")).resolves.toBe(
+      await skyOf("width: 1100, height: 700"),
+    );
+    await expect(skyOf("width: 1153, height: 700")).resolves.not.toBe(
+      await skyOf("width: 1152, height: 700"),
+    );
+  });
+
+  it("draws one sky for any moment within the same minute", async () => {
+    expect.hasAssertions();
+
+    const early = await skyOf(
+      'width: 800, height: 600, time: "2026-03-20T04:30:01Z"',
+    );
+    const late = await skyOf(
+      'width: 800, height: 600, time: "2026-03-20T04:30:58Z"',
+    );
+    const next = await skyOf(
+      'width: 800, height: 600, time: "2026-03-20T04:31:01Z"',
+    );
+
+    expect(late).toBe(early);
+    expect(next).not.toBe(early);
   });
 
   it("draws the sky with its defaults when only the size is given", async () => {
     expect.hasAssertions();
 
     await expect(skyOf("width: 800, height: 600")).resolves.toContain(
-      'viewBox="0 0 800 600"',
+      'viewBox="0 0 832 640"',
     );
   });
 

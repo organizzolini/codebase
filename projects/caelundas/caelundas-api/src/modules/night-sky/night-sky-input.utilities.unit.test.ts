@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  canonicalizeNightSkyInput,
   normalizeConstellationName,
   parseNightSkyInput,
   selectConstellationSegments,
@@ -103,6 +104,47 @@ describe("night sky input suite", () => {
       expect.hasAssertions();
 
       expect(() => parseNightSkyInput(input)).toThrow(field);
+    });
+  });
+
+  describe(canonicalizeNightSkyInput, () => {
+    it("snaps the time to the minute and the size up to its bucket", () => {
+      expect.hasAssertions();
+
+      const canonical = canonicalizeNightSkyInput(
+        parseNightSkyInput({
+          height: 690,
+          time: new Date("2026-03-20T04:30:58.500Z"),
+          width: 1090,
+        }),
+      );
+
+      expect(canonical.time).toStrictEqual(new Date("2026-03-20T04:30:00Z"));
+      expect(canonical).toMatchObject({ height: 704, width: 1152 });
+    });
+
+    it("keeps a size already on a bucket", () => {
+      expect.hasAssertions();
+
+      expect(
+        canonicalizeNightSkyInput(
+          parseNightSkyInput({ height: 640, width: 64 }),
+        ),
+      ).toMatchObject({ height: 640, width: 64 });
+    });
+
+    it("names each figure once, in order", () => {
+      expect.hasAssertions();
+
+      expect(
+        canonicalizeNightSkyInput(
+          parseNightSkyInput({
+            constellations: ["zodiac", "Ursa Major", "zodiac", "aries"],
+            height: 600,
+            width: 800,
+          }),
+        ).constellations,
+      ).toStrictEqual(["aries", "ursa_major", "zodiac"]);
     });
   });
 

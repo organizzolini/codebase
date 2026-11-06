@@ -90,6 +90,23 @@ export const DEFAULT_OPTIONS = {
  */
 export const MAXIMUM_SIZE_PIXELS = 8192;
 
+/**
+ * The window sizes the sky is built for, in pixels: a request is drawn at the
+ * next multiple, so nearby sizes share one built sky.
+ */
+export const SIZE_BUCKET_PIXELS = 64;
+
+/**
+ * How many built skies are kept before the least recently used is dropped.
+ */
+export const NIGHT_SKY_CACHE_SIZE = 64;
+
+/**
+ * Milliseconds in the minute a request's time is snapped down to, about a
+ * quarter of a degree of the sky's turn.
+ */
+export const MILLISECONDS_PER_MINUTE = 60_000;
+
 // 📐 Geometry
 
 /**
