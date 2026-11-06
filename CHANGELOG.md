@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.54.1](https://github.com/organizzolini/codebase/compare/v3.54.0...v3.54.1) (2026-11-06)
+
+### 🐛 Bug Fixes
+
+* **infrastructure:** 🐛 give the nx cache bucket a provisioning key for its lifecycle rule ([#2151](https://github.com/organizzolini/codebase/issues/2151)) ([29270fd](https://github.com/organizzolini/codebase/commit/29270fd5b3adf30a481e2e21da942fb137f46602))
+
 ## [3.54.0](https://github.com/organizzolini/codebase/compare/v3.53.4...v3.54.0) (2026-11-06)
 
 ### ✨ Features
