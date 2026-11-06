@@ -1,6 +1,14 @@
 import moment from "moment-timezone";
 import { In } from "typeorm";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import {
   CaelundasDatabaseService,
@@ -55,6 +63,13 @@ function tagged(
   return { ...event(summary, start), tags: eventTags };
 }
 
+/**
+ * Thirty seconds rather than the shared five: two full batches of inserts
+ * took just over five seconds on a CI runner, which is several times
+ * slower than a local machine.
+ */
+const BULK_UPSERT_TIMEOUT_MILLISECONDS = 30_000;
+
 describe("calendar events service integration", () => {
   let database: DatabaseTestingModule;
   let service: CalendarEventsService;
@@ -70,6 +85,10 @@ describe("calendar events service integration", () => {
     repository = database.repository(CalendarEvent);
     tags = database.dataSource.getTreeRepository(Tag);
   }, DATABASE_TIMEOUT_MILLISECONDS);
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
   afterAll(async () => {
     await database.close();
@@ -112,37 +131,41 @@ describe("calendar events service integration", () => {
     expect(paths.map(({ path }) => path)).toContain("Planet / Sun");
   });
 
-  it("rebuilds the read model once per upsert, after the last batch is written", async () => {
-    expect.hasAssertions();
+  it(
+    "rebuilds the read model once per upsert, after the last batch is written",
+    async () => {
+      expect.hasAssertions();
 
-    const databaseService = database.module.get(CaelundasDatabaseService);
-    const rebuild = databaseService.refreshReadModel.bind(databaseService);
-    const refresh = vi.spyOn(databaseService, "refreshReadModel");
-    refresh.mockClear();
-    const count = CALENDAR_EVENT_BATCH_SIZE + 1;
-    const stored: number[] = [];
-    refresh.mockImplementationOnce(async (manager) => {
-      stored.push(
-        await manager.getRepository(CalendarEvent).countBy({
-          summary: In(["Refresh first", `Refresh ${String(count - 1)}`]),
-        }),
-      );
-      await rebuild(manager);
-    });
-    const start = moment.utc("2031-01-01T00:00:00Z");
-    await service.upsert(
-      Array.from({ length: count }, (_value, index) =>
-        event(
-          index === 0 ? "Refresh first" : `Refresh ${String(index)}`,
-          start.clone().add(index, "minutes").toISOString(),
+      const databaseService = database.module.get(CaelundasDatabaseService);
+      const rebuild = databaseService.refreshReadModel.bind(databaseService);
+      const refresh = vi.spyOn(databaseService, "refreshReadModel");
+      refresh.mockClear();
+      const count = CALENDAR_EVENT_BATCH_SIZE + 1;
+      const stored: number[] = [];
+      refresh.mockImplementationOnce(async (manager) => {
+        stored.push(
+          await manager.getRepository(CalendarEvent).countBy({
+            summary: In(["Refresh first", `Refresh ${String(count - 1)}`]),
+          }),
+        );
+        await rebuild(manager);
+      });
+      const start = moment.utc("2031-01-01T00:00:00Z");
+      await service.upsert(
+        Array.from({ length: count }, (_value, index) =>
+          event(
+            index === 0 ? "Refresh first" : `Refresh ${String(index)}`,
+            start.clone().add(index, "minutes").toISOString(),
+          ),
         ),
-      ),
-      philadelphia,
-    );
+        philadelphia,
+      );
 
-    expect(refresh).toHaveBeenCalledTimes(1);
-    expect(stored).toStrictEqual([2]);
-  });
+      expect(refresh).toHaveBeenCalledTimes(1);
+      expect(stored).toStrictEqual([2]);
+    },
+    BULK_UPSERT_TIMEOUT_MILLISECONDS,
+  );
 
   it("stores no event when the read model rebuild fails", async () => {
     expect.hasAssertions();
@@ -287,13 +310,6 @@ describe("calendar events service integration", () => {
       1,
     );
   });
-
-  /**
-   * Thirty seconds rather than the shared five: two full batches of inserts
-   * took just over five seconds on a CI runner, which is several times
-   * slower than a local machine.
-   */
-  const BULK_UPSERT_TIMEOUT_MILLISECONDS = 30_000;
 
   it(
     "writes more events than one statement's parameters allow",
