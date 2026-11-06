@@ -1,6 +1,23 @@
 set lock_timeout = '10s';
 set statement_timeout = '5m';
 
+create table calendar_event_tag_nodes (
+    calendar_event_id uuid not null,
+    is_direct boolean not null,
+    tag_depth bigint not null,
+    tag_id uuid not null,
+    tag_name text not null,
+    tag_path text not null,
+    tag_root_id uuid not null,
+    constraint "PK_641ddfc9822887330f05ea3f224" primary key (calendar_event_id, tag_id)
+);
+
+create index calendar_event_tag_nodes_tag on calendar_event_tag_nodes (tag_id, calendar_event_id);
+
+create index calendar_event_tag_nodes_event on calendar_event_tag_nodes (
+    calendar_event_id, tag_root_id, tag_depth
+);
+
 create table calendar_events (
     id uuid not null default uuidv7(),
     created_at timestamp with time zone not null default now(),
@@ -82,6 +99,15 @@ create index constellation_lines_to_hip on constellation_lines (to_hip);
 
 create index constellation_lines_from_hip on constellation_lines (from_hip);
 
+create table tag_nodes (
+    "depth" bigint not null,
+    id uuid not null,
+    "name" text not null,
+    "path" text not null,
+    root_id uuid not null,
+    constraint "PK_334a646214f797b13a1b9f5ab57" primary key (id)
+);
+
 create table tags_closure (
     ancestor_id uuid not null,
     descendant_id uuid not null,
@@ -123,3 +149,49 @@ alter table tags_closure add constraint "FK_3f3680694135907038de253a57e" foreign
 alter table tags_closure add constraint "FK_8a4bf589d19e5060d7ccbf1fd51" foreign key (
     descendant_id
 ) references tags (id) on delete cascade on update no action;
+
+create view calendar_event_derived_times as select
+    e.id,
+    e.created_at,
+    e.created_by,
+    e.updated_at,
+    e.updated_by,
+    e.color,
+    e.description,
+    e."end",
+    e.latitude,
+    e."location",
+    e.longitude,
+    e."start",
+    e."summary",
+    e.timezone,
+    extract(year from (e."start" at time zone 'UTC'))::integer as start_year,
+    extract(quarter from (e."start" at time zone 'UTC'))::integer as start_quarter,
+    extract(month from (e."start" at time zone 'UTC'))::integer as start_month,
+    floor(
+        (
+            extract(doy from (e."start" at time zone 'UTC'))
+            + 6
+            - mod(extract(dow from (e."start" at time zone 'UTC')) + 6, 7)
+        )
+        / 7
+    )::integer as start_week,
+    extract(dow from (e."start" at time zone 'UTC'))::integer as start_weekday,
+    extract(hour from (e."start" at time zone 'UTC'))::integer as start_hour,
+    (e."start" at time zone 'UTC')::date::text as start_day,
+    floor(extract(epoch from e."end" - e."start") / 60)::integer as duration_minutes,
+    case when e."start" = e."end" then 'Instant' else 'Duration' end as temporality
+from calendar_events as e;
+
+create table if not exists caelundas.typeorm_metadata (
+    "type" character varying not null,
+    "database" character varying,
+    "schema" character varying,
+    "table" character varying,
+    "name" character varying,
+    "value" text
+);
+
+insert into caelundas.typeorm_metadata ("database", "schema", "table", "type", "name", "value") values (
+    default, $1, default, $2, $3, $4
+);

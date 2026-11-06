@@ -1,13 +1,22 @@
 import type { MigrationInterface, QueryRunner } from "typeorm";
 
 /**
- * Creates and drops the caelundas schema's tables, generated from the entities
- * against an empty `caelundas_development`.
+ * Creates and drops the caelundas schema's tables, derived tables and view,
+ * generated from the entities against an empty `caelundas_development`.
  */
-export class Migration1793990019361 implements MigrationInterface {
-  name = "Migration1793990019361";
+export class Migration1793990400886 implements MigrationInterface {
+  name = "Migration1793990400886";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `CREATE TABLE "calendar_event_tag_nodes" ("calendar_event_id" uuid NOT NULL, "is_direct" boolean NOT NULL, "tag_depth" bigint NOT NULL, "tag_id" uuid NOT NULL, "tag_name" text NOT NULL, "tag_path" text NOT NULL, "tag_root_id" uuid NOT NULL, CONSTRAINT "PK_641ddfc9822887330f05ea3f224" PRIMARY KEY ("calendar_event_id", "tag_id"))`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "calendar_event_tag_nodes_tag" ON "calendar_event_tag_nodes"  ("tag_id", "calendar_event_id") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "calendar_event_tag_nodes_event" ON "calendar_event_tag_nodes"  ("calendar_event_id", "tag_root_id", "tag_depth") `,
+    );
     await queryRunner.query(
       `CREATE TABLE "calendar_events" ("id" uuid NOT NULL DEFAULT uuidv7(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "created_by" uuid, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_by" uuid, "color" text, "description" text NOT NULL, "end" TIMESTAMP WITH TIME ZONE NOT NULL, "latitude" numeric(9,6) NOT NULL, "location" text, "longitude" numeric(9,6) NOT NULL, "start" TIMESTAMP WITH TIME ZONE NOT NULL, "summary" text NOT NULL, "timezone" text NOT NULL, CONSTRAINT "calendar_events_natural_key" UNIQUE ("summary", "start", "end", "latitude", "longitude"), CONSTRAINT "PK_faf5391d232322a87cdd1c6f30c" PRIMARY KEY ("id")); COMMENT ON COLUMN "calendar_events"."id" IS 'Primary key, a uuidv7 the database assigns on insert'; COMMENT ON COLUMN "calendar_events"."created_at" IS 'Timestamp when the record was created'; COMMENT ON COLUMN "calendar_events"."created_by" IS 'Identifier of the user or process that created the record'; COMMENT ON COLUMN "calendar_events"."updated_at" IS 'Timestamp when the record was last updated'; COMMENT ON COLUMN "calendar_events"."updated_by" IS 'Identifier of the user or process that last updated the record'`,
     );
@@ -45,6 +54,9 @@ export class Migration1793990019361 implements MigrationInterface {
       `CREATE INDEX "constellation_lines_from_hip" ON "constellation_lines"  ("from_hip") `,
     );
     await queryRunner.query(
+      `CREATE TABLE "tag_nodes" ("depth" bigint NOT NULL, "id" uuid NOT NULL, "name" text NOT NULL, "path" text NOT NULL, "root_id" uuid NOT NULL, CONSTRAINT "PK_334a646214f797b13a1b9f5ab57" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
       `CREATE TABLE "tags_closure" ("ancestor_id" uuid NOT NULL, "descendant_id" uuid NOT NULL, CONSTRAINT "PK_74a541ab48f1e2c9f148e9011fc" PRIMARY KEY ("ancestor_id", "descendant_id"))`,
     );
     await queryRunner.query(
@@ -77,9 +89,54 @@ export class Migration1793990019361 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "tags_closure" ADD CONSTRAINT "FK_8a4bf589d19e5060d7ccbf1fd51" FOREIGN KEY ("descendant_id") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
+    await queryRunner.query(`CREATE VIEW "calendar_event_derived_times" AS select
+    e.id,
+    e.created_at,
+    e.created_by,
+    e.updated_at,
+    e.updated_by,
+    e.color,
+    e.description,
+    e."end",
+    e.latitude,
+    e."location",
+    e.longitude,
+    e."start",
+    e."summary",
+    e.timezone,
+    extract(year from (e."start" at time zone 'UTC'))::integer as start_year,
+    extract(quarter from (e."start" at time zone 'UTC'))::integer as start_quarter,
+    extract(month from (e."start" at time zone 'UTC'))::integer as start_month,
+    floor((extract(doy from (e."start" at time zone 'UTC')) + 6 - mod(extract(dow from (e."start" at time zone 'UTC')) + 6, 7)) / 7)::integer as start_week,
+    extract(dow from (e."start" at time zone 'UTC'))::integer as start_weekday,
+    extract(hour from (e."start" at time zone 'UTC'))::integer as start_hour,
+    (e."start" at time zone 'UTC')::date::text as start_day,
+    floor(extract(epoch from e."end" - e."start") / 60)::integer as duration_minutes,
+    case when e."start" = e."end" then 'Instant' else 'Duration' end as temporality
+from calendar_events as e`);
+    // TypeORM records a view in `typeorm_metadata` but never creates the table in
+    // a generated migration, so create it, in the schema the migration runs in.
+    await queryRunner.query(
+      `CREATE TABLE IF NOT EXISTS "caelundas"."typeorm_metadata" ("type" character varying NOT NULL, "database" character varying, "schema" character varying, "table" character varying, "name" character varying, "value" text)`,
+    );
+    await queryRunner.query(
+      `INSERT INTO "caelundas"."typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES (DEFAULT, $1, DEFAULT, $2, $3, $4)`,
+      [
+        "caelundas",
+        "VIEW",
+        "calendar_event_derived_times",
+        'select\n    e.id,\n    e.created_at,\n    e.created_by,\n    e.updated_at,\n    e.updated_by,\n    e.color,\n    e.description,\n    e."end",\n    e.latitude,\n    e."location",\n    e.longitude,\n    e."start",\n    e."summary",\n    e.timezone,\n    extract(year from (e."start" at time zone \'UTC\'))::integer as start_year,\n    extract(quarter from (e."start" at time zone \'UTC\'))::integer as start_quarter,\n    extract(month from (e."start" at time zone \'UTC\'))::integer as start_month,\n    floor((extract(doy from (e."start" at time zone \'UTC\')) + 6 - mod(extract(dow from (e."start" at time zone \'UTC\')) + 6, 7)) / 7)::integer as start_week,\n    extract(dow from (e."start" at time zone \'UTC\'))::integer as start_weekday,\n    extract(hour from (e."start" at time zone \'UTC\'))::integer as start_hour,\n    (e."start" at time zone \'UTC\')::date::text as start_day,\n    floor(extract(epoch from e."end" - e."start") / 60)::integer as duration_minutes,\n    case when e."start" = e."end" then \'Instant\' else \'Duration\' end as temporality\nfrom calendar_events as e',
+      ],
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `DELETE FROM "caelundas"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
+      ["VIEW", "calendar_event_derived_times", "caelundas"],
+    );
+    await queryRunner.query(`DROP VIEW "calendar_event_derived_times"`);
+    await queryRunner.query(`DROP TABLE "caelundas"."typeorm_metadata"`);
     await queryRunner.query(
       `ALTER TABLE "tags_closure" DROP CONSTRAINT "FK_8a4bf589d19e5060d7ccbf1fd51"`,
     );
@@ -111,6 +168,7 @@ export class Migration1793990019361 implements MigrationInterface {
       `DROP INDEX "caelundas"."IDX_3f3680694135907038de253a57"`,
     );
     await queryRunner.query(`DROP TABLE "tags_closure"`);
+    await queryRunner.query(`DROP TABLE "tag_nodes"`);
     await queryRunner.query(
       `DROP INDEX "caelundas"."constellation_lines_from_hip"`,
     );
@@ -131,5 +189,12 @@ export class Migration1793990019361 implements MigrationInterface {
       `DROP INDEX "caelundas"."calendar_events_start_end"`,
     );
     await queryRunner.query(`DROP TABLE "calendar_events"`);
+    await queryRunner.query(
+      `DROP INDEX "caelundas"."calendar_event_tag_nodes_event"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "caelundas"."calendar_event_tag_nodes_tag"`,
+    );
+    await queryRunner.query(`DROP TABLE "calendar_event_tag_nodes"`);
   }
 }

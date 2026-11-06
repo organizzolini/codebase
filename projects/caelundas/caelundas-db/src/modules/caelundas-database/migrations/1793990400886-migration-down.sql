@@ -1,6 +1,13 @@
 set lock_timeout = '10s';
 set statement_timeout = '5m';
 
+delete from caelundas.typeorm_metadata
+where "type" = $1 and "name" = $2 and "schema" = $3;
+
+drop view calendar_event_derived_times;
+
+drop table caelundas.typeorm_metadata;
+
 alter table tags_closure drop constraint "FK_8a4bf589d19e5060d7ccbf1fd51";
 
 alter table tags_closure drop constraint "FK_3f3680694135907038de253a57e";
@@ -22,6 +29,8 @@ drop index caelundas."IDX_8a4bf589d19e5060d7ccbf1fd5";
 drop index caelundas."IDX_3f3680694135907038de253a57";
 
 drop table tags_closure;
+
+drop table tag_nodes;
 
 drop index caelundas.constellation_lines_from_hip;
 
@@ -46,3 +55,9 @@ drop table tags;
 drop index caelundas.calendar_events_start_end;
 
 drop table calendar_events;
+
+drop index caelundas.calendar_event_tag_nodes_event;
+
+drop index caelundas.calendar_event_tag_nodes_tag;
+
+drop table calendar_event_tag_nodes;

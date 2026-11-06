@@ -3,26 +3,32 @@ import "reflect-metadata";
 import { createDataSource } from "@codebase/persistence";
 
 import { CAELUNDAS_PROJECT } from "./caelundas-database.constants";
+import { CalendarEventDerivedTime } from "./entities/calendar-event-derived-time.entity";
+import { CalendarEventTagNode } from "./entities/calendar-event-tag-node.entity";
 import { CalendarEventTag } from "./entities/calendar-event-tag.entity";
 import { CalendarEvent } from "./entities/calendar-event.entity";
 import { ConstellationLine } from "./entities/constellation-line.entity";
 import { Constellation } from "./entities/constellation.entity";
 import { Star } from "./entities/star.entity";
+import { TagNode } from "./entities/tag-node.entity";
 import { Tag } from "./entities/tag.entity";
-import { Migration1793990019361 } from "./migrations/1793990019361-migration";
+import { Migration1793990400886 } from "./migrations/1793990400886-migration";
 
-/** The tables every application that opens the caelundas schema shares. */
+/** The tables, derived tables and view every application that opens the caelundas schema shares. */
 export const CAELUNDAS_DATABASE_ENTITIES = [
   CalendarEvent,
+  CalendarEventDerivedTime,
   CalendarEventTag,
+  CalendarEventTagNode,
   Constellation,
   ConstellationLine,
   Star,
   Tag,
+  TagNode,
 ] as const;
 
 /** Every migration, in order, for the test harness; the runtime module runs none. */
-export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1793990019361] as const;
+export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1793990400886] as const;
 
 /**
  * The data source the TypeORM command line reads for
