@@ -4,7 +4,7 @@
 
 **Type**: Node.js HTTP API server (NestJS + Apollo GraphQL)
 
-**Purpose**: <!-- Briefly describe the specific purpose of this GraphQL API -->
+**Purpose**: Serve the astronomical events `caelundas-cli` writes to SQLite to `caelundas-web` over GraphQL. Today it only answers the `health` query; the calendar queries arrive in later pull requests. Runs locally on `CAELUNDAS_API_PORT` (default 8968).
 
 ### Run Locally
 
@@ -45,18 +45,13 @@ src/
   caelundas-api.constants.ts  # Zod environmentSchema for env validation
   caelundas-api.types.ts      # Application-scoped TypeScript types
   modules/
-    sample/                           # Example GraphQL module — replace with your domain
-      sample.module.ts
-      sample.resolver.ts
-      sample.service.ts
-      sample.loader.ts
-      sample.entities.ts
-      sample.inputs.ts
-      sample.args.ts
-      sample.factories.ts
-      sample.constants.ts
-      sample.types.ts
-      sample.*.unit.test.ts
+    health/                           # The `health` query every API here answers
+      health.module.ts
+      health.resolver.ts
+      health.service.ts
+      health.constants.ts
+      health.types.ts
+      health.*.unit.test.ts
     <domain>/                         # Add feature modules here
       <domain>.module.ts
       <domain>.resolver.ts
@@ -150,7 +145,7 @@ nx run caelundas-api:vitest:end-to-end    # Slow (30-60s) — full server execut
 | Integration | `*.integration.test.ts` | Database queries, external API clients             |
 | End-to-end  | `*.end-to-end.test.ts`  | Full GraphQL request/response cycles               |
 
-See the [testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
+See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
 
 ## Writing GraphQL Modules
 
@@ -264,7 +259,7 @@ Key rules:
 - **Type imports** — use `import { type Foo }` for type-only imports (enforced by ESLint).
 - **No `any` types** — use `unknown` or proper typing; strict mode is enabled.
 
-See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md) for strict mode patterns.
+See the [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.md) for strict mode patterns.
 
 ## Troubleshooting
 
@@ -274,7 +269,7 @@ See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)
 - **N+1 query problem** — use DataLoaders for all relation fields in resolvers.
 - **Env var validation error on startup** — add the missing variable to `environmentSchema` in `.constants.ts` and to `.env.default`.
 
-See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
+See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
 ## Key Files
 
@@ -282,6 +277,6 @@ See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL
 - [src/caelundas-api.module.ts](src/caelundas-api.module.ts): Root NestJS module
 - [src/caelundas-api.constants.ts](src/caelundas-api.constants.ts): `environmentSchema` (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
-- [src/modules/sample/sample.module.ts](src/modules/sample/sample.module.ts): Example GraphQL module
+- [src/modules/health/health.module.ts](src/modules/health/health.module.ts): The `health` query module
 - [project.json](project.json): Nx targets (`start`, `test`, `lint`, `typecheck`, `format`)
 - [.env.default](.env.default): Environment variable template
