@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+import type {
+  TimelineScale as ApiTimelineScale,
+  CalendarView,
+} from "../../graphql/generated/operations";
+import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
+
 // ♟️ Constants
 
 /**
@@ -16,3 +22,26 @@ export const responseSchema = z.object({
   data: z.unknown().optional(),
   errors: z.array(z.object({ message: z.string() })).optional(),
 });
+
+/**
+ * The API's name for each view the link names.
+ */
+export const API_VIEWS: Readonly<Record<CalendarViewName, CalendarView>> = {
+  agenda: "AGENDA",
+  day: "DAY",
+  month: "MONTH",
+  "three-day": "THREE_DAY",
+  timeline: "TIMELINE",
+  week: "WEEK",
+};
+
+/**
+ * The API's name for each span the timeline shows.
+ */
+export const API_SCALES: Readonly<Record<TimelineScale, ApiTimelineScale>> = {
+  day: "DAY",
+  month: "MONTH",
+  quarter: "QUARTER",
+  week: "WEEK",
+  year: "YEAR",
+};

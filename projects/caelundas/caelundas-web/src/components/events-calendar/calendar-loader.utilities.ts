@@ -5,6 +5,7 @@ import {
   getDefaultGrouping,
   resolveEventGrouping,
 } from "../calendar-group-by/event-group-fields.utilities";
+import { toEventGroupingInput } from "../calendar-group-by/event-group-input.utilities";
 
 import {
   CACHED_READS,
@@ -12,12 +13,13 @@ import {
   EVENTS_CACHE,
   FACETS_CACHE,
 } from "./calendar-loader.constants";
-import { getViewWindows, parseCalendarDate } from "./calendar-window.utilities";
+import { parseCalendarDate } from "./calendar-window.utilities";
 import {
   describeDataset,
   findEvents,
   findFacets,
   findFilterCollections,
+  findViewWindows,
 } from "./events-api.utilities";
 
 import type { CalendarSearch } from "../../hooks/use-calendar-search/calendar-search.types";
@@ -25,7 +27,6 @@ import type { ResolvedEventFilterCollection } from "../calendar-filters/event-fi
 import type { EventFilterQuery } from "../calendar-filters/event-filters.types";
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
 import type { CalendarData, CalendarEmptiness } from "./calendar-loader.types";
-import type { EventsReadQuery } from "./events-api.types";
 import type {
   CalendarEventRecord,
   EventFacet,
@@ -51,17 +52,23 @@ export function clearCalendarCaches(): void {
 export async function loadCalendar(
   search: CalendarSearch,
 ): Promise<CalendarData> {
-  const { anchor, visible, window } = resolveWindows(search);
+  const { anchor, visible, window } = await resolveWindows(search);
   // The facets are read for the visible days, and the grouping is resolved
   // against them, so a later load waits on nothing here.
   const { collections, dataset, defaultFilter, facets } =
     await readBasics(visible);
   const effectiveFilter = search.filter ?? defaultFilter;
   const filter = toEventFilterInput(effectiveFilter);
-  const query = { filter, window };
   const { colorBy, grouping } = resolveGroups(search, facets);
-  const events = await readCached(EVENTS_CACHE, toEventsKey(query), async () =>
-    findEvents(query),
+  const query = {
+    filter,
+    grouping: toEventGroupingInput(grouping, colorBy),
+    window,
+  };
+  const events = await readCached(
+    EVENTS_CACHE,
+    JSON.stringify(query),
+    async () => findEvents(query),
   );
   const emptiness = await describeEmptiness({
     dataset,
@@ -125,7 +132,7 @@ async function describeEmptiness(data: {
   const everything = { window };
   const unfiltered = await readCached(
     EVENTS_CACHE,
-    toEventsKey(everything),
+    JSON.stringify(everything),
     async () => findEvents(everything),
   );
 
@@ -285,31 +292,20 @@ function resolveGroups(
  * The day the search anchors on, today without one, and the window the view
  * shows around it, with the buffer read beyond it.
  */
-function resolveWindows(search: CalendarSearch): {
+async function resolveWindows(search: CalendarSearch): Promise<{
   anchor: Date;
   visible: EventsWindow;
   window: EventsWindow;
-} {
+}> {
   const anchor = parseCalendarDate(search.date, new Date());
 
   return {
     anchor,
-    ...getViewWindows(search.view, anchor, {
+    ...(await findViewWindows({
       agendaDays: search.days,
+      anchor,
       scale: search.scale,
-    }),
+      view: search.view,
+    })),
   };
-}
-
-/**
- * The key a read of events is cached under: the window, the filter and the
- * grouping it asks for.
- */
-function toEventsKey(query: EventsReadQuery): string {
-  return JSON.stringify([
-    query.window.start,
-    query.window.end,
-    query.filter ?? null,
-    query.grouping ?? null,
-  ]);
 }

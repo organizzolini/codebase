@@ -1,4 +1,4 @@
-import type { TimelineScale } from "./calendar-views.types";
+import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
 import type { EventsWindow } from "./events-database.types";
 
 /**
@@ -17,4 +17,13 @@ export interface ViewWindowOptions {
 export interface ViewWindows {
   visible: EventsWindow;
   window: EventsWindow;
+}
+
+/**
+ * What the API is asked for the days a view shows: the day it opens on, the
+ * view, and what else decides the days.
+ */
+export interface ViewWindowSearch extends ViewWindowOptions {
+  anchor: Date;
+  view?: CalendarViewName | undefined;
 }

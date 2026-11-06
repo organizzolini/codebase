@@ -24,6 +24,7 @@ import {
   findEvents,
   findFacets,
   findFilterCollections,
+  findViewWindows,
   queryApi,
 } from "./events-api.utilities";
 
@@ -262,5 +263,44 @@ describe("events api", () => {
     );
 
     await expect(findFilterCollections()).resolves.toStrictEqual(data);
+  });
+
+  it("reads the windows of a view as dates, naming the view and scale as the API does", async () => {
+    expect.hasAssertions();
+
+    let received: unknown;
+    serveGraphqlApi(
+      mockCalendarWindowsQuery(({ variables }) => {
+        received = variables;
+
+        return HttpResponse.json({
+          data: {
+            calendarWindows: {
+              columnMinutes: null,
+              visible: window,
+              window,
+            },
+          },
+        });
+      }),
+    );
+
+    await expect(
+      findViewWindows({
+        agendaDays: 7,
+        anchor: new Date(window.start),
+        scale: "quarter",
+        view: "three-day",
+      }),
+    ).resolves.toStrictEqual({
+      visible: { end: new Date(window.end), start: new Date(window.start) },
+      window: { end: new Date(window.end), start: new Date(window.start) },
+    });
+    expect(received).toStrictEqual({
+      agendaDays: 7,
+      anchor: "2026-01-01T00:00:00.000Z",
+      scale: "QUARTER",
+      view: "THREE_DAY",
+    });
   });
 });

@@ -2,6 +2,7 @@ import { print } from "graphql";
 import { z } from "zod";
 
 import {
+  CalendarWindowsDocument,
   DatasetDocument,
   EventsDocument,
   FacetsDocument,
@@ -9,6 +10,8 @@ import {
 } from "../../graphql/generated/operations";
 
 import {
+  API_SCALES,
+  API_VIEWS,
   DEFAULT_CAELUNDAS_API_URL,
   responseSchema,
 } from "./events-api.constants";
@@ -18,6 +21,7 @@ import type {
   FacetsQuery,
   FilterCollectionsQuery,
 } from "../../graphql/generated/operations";
+import type { ViewWindows, ViewWindowSearch } from "./calendar-window.types";
 import type { EventsReadQuery } from "./events-api.types";
 import type {
   CalendarEventRecord,
@@ -86,6 +90,32 @@ export async function findFacets(window?: EventsWindow): Promise<EventFacet[]> {
  */
 export async function findFilterCollections(): Promise<FilterCollectionsQuery> {
   return queryApi(FilterCollectionsDocument, {});
+}
+
+/**
+ * Reads the days a view shows around a day, and the window of events to read
+ * for them, a day wider either side.
+ */
+export async function findViewWindows(
+  search: ViewWindowSearch,
+): Promise<ViewWindows> {
+  const { calendarWindows } = await queryApi(CalendarWindowsDocument, {
+    agendaDays: search.agendaDays ?? null,
+    anchor: search.anchor.toISOString(),
+    scale: search.scale === undefined ? null : API_SCALES[search.scale],
+    view: search.view === undefined ? null : API_VIEWS[search.view],
+  });
+
+  return {
+    visible: {
+      end: new Date(calendarWindows.visible.end),
+      start: new Date(calendarWindows.visible.start),
+    },
+    window: {
+      end: new Date(calendarWindows.window.end),
+      start: new Date(calendarWindows.window.start),
+    },
+  };
 }
 
 /**

@@ -170,4 +170,79 @@ describe(loadCalendar, () => {
       dataset: { count: 6 },
     });
   });
+
+  it("reads the keys an event is colored by after its grouping's, for a color in the link", async () => {
+    const api = serveCalendarApi();
+    const data = await loadCalendar({
+      ...MARCH,
+      color: { depth: 1, field: "tag:tag-planet" },
+      filter: EMPTY_EVENT_FILTER,
+    });
+    const conjunction = data.events.find(
+      (event) => event.id === "event-mars-conjunct-venus",
+    );
+
+    expect(data.colorBy).toStrictEqual({ depth: 1, field: "tag:tag-planet" });
+    expect(data.grouping).toStrictEqual([]);
+    expect(api.requests.events[0]?.grouping).toStrictEqual({
+      colorBy: { depth: 1, field: "tag:tag-planet" },
+    });
+    expect(
+      conjunction?.groups[0]?.map(({ key }) => key).toSorted(),
+    ).toStrictEqual(["tag-mars", "tag-venus"]);
+  });
+
+  it("colors by nothing in particular without a color, or for a field the data lacks", async () => {
+    serveCalendarApi();
+
+    await expect(
+      loadCalendar(MARCH).then((data) => data.colorBy),
+    ).resolves.toBeUndefined();
+    await expect(
+      loadCalendar({
+        ...MARCH,
+        color: { field: "tag:tag-missing" },
+      }).then((data) => data.colorBy),
+    ).resolves.toBeUndefined();
+  });
+
+  it("reads the agenda's events with its default grouping, and the month's with none", async () => {
+    const api = serveCalendarApi();
+
+    await loadCalendar({ date: "2026-03-15", view: "agenda" });
+    await loadCalendar(MARCH);
+
+    expect(api.requests.events[0]?.grouping?.levels?.length).toBeGreaterThan(0);
+    expect(api.requests.events[1]?.grouping).toBeNull();
+  });
+
+  it("asks the API for the window the view shows around the day", async () => {
+    const api = serveCalendarApi();
+    const data = await loadCalendar({
+      date: "2026-03-15",
+      days: 10,
+      scale: "week",
+      view: "agenda",
+    });
+
+    expect(api.requests.windows).toStrictEqual([
+      {
+        agendaDays: 10,
+        anchor: "2026-03-15T12:00:00.000Z",
+        scale: "WEEK",
+        view: "AGENDA",
+      },
+    ]);
+    expect(data.window.start.getTime()).toBeLessThan(
+      new Date("2026-03-15T00:00:00.000Z").getTime(),
+    );
+  });
+
+  it("asks for the windows of both default views when the link names none", async () => {
+    const api = serveCalendarApi();
+
+    await loadCalendar({ date: "2026-03-15" });
+
+    expect(api.requests.windows[0]).toMatchObject({ view: null });
+  });
 });
