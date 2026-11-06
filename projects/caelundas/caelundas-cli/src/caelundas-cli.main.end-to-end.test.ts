@@ -419,12 +419,49 @@ describe("main end-to-end suite", () => {
       expect.hasAssertions();
 
       const before = await calendarEvents.find({ order: { summary: "ASC" } });
+      const links = await database.dataSource.query<{ count: string }[]>(
+        "select count(*) as count from calendar_event_tags",
+      );
       await run(philadelphia, marchFirstHalf);
       const after = await calendarEvents.find({ order: { summary: "ASC" } });
 
       expect(after.map((row) => row.id)).toStrictEqual(
         before.map((row) => row.id),
       );
+      await expect(
+        database.dataSource.query(
+          "select count(*) as count from calendar_event_tags",
+        ),
+      ).resolves.toStrictEqual(links);
+    });
+
+    it("never stores two rows for one natural key", async () => {
+      expect.hasAssertions();
+
+      await expect(
+        database.dataSource.query(
+          `select summary, count(*) as count
+            from calendar_events
+            group by summary, "start", "end", latitude, longitude
+            having count(*) > 1`,
+        ),
+      ).resolves.toStrictEqual([]);
+    });
+
+    it("stores database-assigned uuidv7 ids, six-decimal coordinates and instants", async () => {
+      expect.hasAssertions();
+
+      const [early] = await calendarEvents.findBy({
+        latitude: "39.949309",
+        summary: "Early",
+      });
+
+      expect(early?.id).toMatch(
+        /^[\da-f]{8}-[\da-f]{4}-7[\da-f]{3}-[\da-f]{4}-[\da-f]{12}$/u,
+      );
+      expect(early?.latitude).toBe("39.949309");
+      expect(early?.longitude).toBe("-75.171690");
+      expect(early?.start.toISOString()).toBe("2026-03-02T12:00:00.000Z");
     });
 
     it("updates an overlapping range in place and adds only new events", async () => {
