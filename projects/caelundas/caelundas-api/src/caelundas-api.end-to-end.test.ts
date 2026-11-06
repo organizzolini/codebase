@@ -8,7 +8,7 @@ describe("caelundas-api end-to-end suite", () => {
       expect.hasAssertions();
       expect(environmentSchema.parse({})).toStrictEqual({
         CAELUNDAS_API_LIGHTSHIP_PORT: 9001,
-        CAELUNDAS_API_PORT: 8968,
+        CAELUNDAS_API_PORT: 6173,
       });
     });
   });

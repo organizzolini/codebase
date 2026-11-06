@@ -14,7 +14,7 @@
   "targets": {
     "await-health": {
       "options": {
-        "url": "http://localhost:${CAELUNDAS_API_PORT:-8968}/graphql"
+        "url": "http://localhost:${CAELUNDAS_API_PORT:-6173}/graphql"
       }
     },
     "codometer": {},
@@ -40,7 +40,7 @@
     },
     "stop": {
       "options": {
-        "port": "${CAELUNDAS_API_PORT:-8968}"
+        "port": "${CAELUNDAS_API_PORT:-6173}"
       }
     },
     "test-code": {},

@@ -4,7 +4,7 @@
 
 **Type**: Node.js HTTP API server (NestJS + Apollo GraphQL)
 
-**Purpose**: Serve the astronomical events `caelundas-cli` writes to SQLite to `caelundas-web` over GraphQL. Today it only answers the `health` query; the calendar queries arrive in later pull requests. Runs locally on `CAELUNDAS_API_PORT` (default 8968).
+**Purpose**: Serve the astronomical events `caelundas-cli` writes to SQLite to `caelundas-web` over GraphQL. Today it only answers the `health` query; the calendar queries arrive in later pull requests. Runs locally on `CAELUNDAS_API_PORT` (default 6173).
 
 ### Run Locally
 
