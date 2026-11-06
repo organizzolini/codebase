@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
 import { linkedIssueNumbersSchema } from "./pull-request-body-links.constants";
 import {
   BODY_GUIDANCE_LINES,
@@ -31,6 +32,7 @@ export class PullRequestValidationService {
   // 🏗 Dependency Injection
 
   constructor(
+    private readonly pullRequestAncestorIssuesService: PullRequestAncestorIssuesService,
     private readonly pullRequestBodyService: PullRequestBodyService,
     private readonly pullRequestGithubService: PullRequestGithubService,
     private readonly pullRequestLabelsAssigneesService: PullRequestLabelsAssigneesService,
@@ -270,7 +272,8 @@ export class PullRequestValidationService {
    * Dependabot writes its own title and body and appends a tail to the title
    * that no configuration shortens, so those two checks exempt a pull request
    * it authored. The author is what counts: the actor is whoever last edited.
-   * The linked-issue check exempts Dependabot and draft pull requests.
+   * The linked-issue check exempts Dependabot and draft pull requests, and
+   * the hierarchy check judges what the write phase links.
    */
   public validate(context: PullRequestContext): CheckOutcome[] {
     const authoredByDependabot = context.author === DEPENDABOT_LOGIN;
@@ -284,6 +287,7 @@ export class PullRequestValidationService {
       ...(authoredByDependabot || context.draft
         ? []
         : [this.checkLinkedIssue(context)]),
+      this.pullRequestAncestorIssuesService.verify(context),
     ];
   }
 }

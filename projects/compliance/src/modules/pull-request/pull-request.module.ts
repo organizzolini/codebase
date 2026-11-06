@@ -7,6 +7,7 @@ import { IssueModule } from "../issue/issue.module";
 import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
 import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
 import { PullRequestBodyService } from "./pull-request-body.service";
+import { PullRequestClosingReferencesService } from "./pull-request-closing-references.service";
 import { PullRequestContextService } from "./pull-request-context.service";
 import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
@@ -35,6 +36,7 @@ import { PullRequestCommand } from "./pull-request.command";
     PullRequestAncestorIssuesService,
     PullRequestDescendantIssuesService,
     PullRequestBodyLinksService,
+    PullRequestClosingReferencesService,
     PullRequestReleaseSignificanceService,
     PullRequestReportService,
     PullRequestTitleService,

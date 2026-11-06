@@ -6,6 +6,7 @@ import { IssueMetadataService } from "../issue/issue-metadata.service";
 
 import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
 import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
+import { PullRequestClosingReferencesService } from "./pull-request-closing-references.service";
 import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 
@@ -43,6 +44,7 @@ describe(PullRequestAncestorIssuesService, () => {
   let github: PullRequestGithubService;
   let children: PullRequestDescendantIssuesService;
   let links: PullRequestBodyLinksService;
+  let closing: PullRequestClosingReferencesService;
   let metadata: IssueMetadataService;
 
   beforeAll(async () => {
@@ -65,6 +67,10 @@ describe(PullRequestAncestorIssuesService, () => {
           provide: PullRequestBodyLinksService,
           useValue: createMock<PullRequestBodyLinksService>(),
         },
+        {
+          provide: PullRequestClosingReferencesService,
+          useValue: createMock<PullRequestClosingReferencesService>(),
+        },
       ],
     }).compile();
 
@@ -72,6 +78,7 @@ describe(PullRequestAncestorIssuesService, () => {
     github = await module.resolve(PullRequestGithubService);
     children = await module.resolve(PullRequestDescendantIssuesService);
     links = await module.resolve(PullRequestBodyLinksService);
+    closing = await module.resolve(PullRequestClosingReferencesService);
     metadata = await module.resolve(IssueMetadataService);
   });
 
@@ -80,6 +87,7 @@ describe(PullRequestAncestorIssuesService, () => {
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 500");
     vi.mocked(metadata.extractParentIssueNumber).mockReturnValue(undefined);
     vi.mocked(children.collect).mockReturnValue({ ok: true, value: [] });
+    vi.mocked(closing.close).mockReturnValue({ failures: [], lines: [] });
   });
 
   /** Answers `gh pr view` with the linked issues and `gh api` by issue. */
@@ -263,5 +271,87 @@ describe(PullRequestAncestorIssuesService, () => {
     expect(service.link(context).outcome.failures[0]).toContain(
       "Unable to read issue 5",
     );
+  });
+
+  it("links the open descendants as real closing references", () => {
+    stubGithub({ linked: "[5]" });
+    vi.mocked(children.collect).mockReturnValue({ ok: true, value: [8, 9] });
+    vi.mocked(links.addRelatedIssueReferences).mockReturnValue("Closes #5");
+    vi.mocked(closing.close).mockReturnValue({
+      failures: ["❌ nope"],
+      lines: ["✅ Linked closing issue #8"],
+    });
+
+    const result = service.link(context);
+
+    expect(closing.close).toHaveBeenCalledWith(12, [8, 9]);
+    expect(result.outcome.failures).toStrictEqual(["❌ nope"]);
+    expect(result.outcome.lines).toContain("✅ Linked closing issue #8");
+  });
+
+  it("skips descendants that are already closing references", () => {
+    stubGithub({ linked: "[5,8]" });
+    vi.mocked(children.collect).mockReturnValue({ ok: true, value: [8, 9] });
+    vi.mocked(links.addRelatedIssueReferences).mockReturnValue("Closes #5");
+
+    service.link(context);
+
+    expect(closing.close).toHaveBeenCalledWith(12, [9]);
+  });
+
+  it("verifies a pull request that links its whole hierarchy", () => {
+    stubGithub({ linked: "[5]", parents: { "5": 3 } });
+    vi.mocked(children.collect).mockReturnValue({ ok: true, value: [5] });
+
+    expect(
+      service.verify({ ...context, body: "Related to #3" }).failures,
+    ).toStrictEqual([]);
+  });
+
+  it("fails verification when an open descendant is not closed", () => {
+    stubGithub({ linked: "[5]" });
+    vi.mocked(children.collect).mockReturnValue({ ok: true, value: [8] });
+
+    expect(service.verify(context).failures[0]).toContain(
+      "Open descendant issues are not closed by this pull request: #8",
+    );
+  });
+
+  it("fails verification when an ancestor is not mentioned", () => {
+    stubGithub({ linked: "[5]", parents: { "5": 3 } });
+
+    expect(service.verify(context).failures[0]).toContain(
+      "Ancestor issues are not referenced in the description: #3",
+    );
+  });
+
+  it("fails verification when the hierarchy cannot be read", () => {
+    stubGithub({ linked: "[5]" });
+    vi.mocked(children.collect).mockReturnValue({
+      failure: "❌ no descendants",
+      ok: false,
+    });
+
+    expect(service.verify(context).failures).toStrictEqual([
+      "❌ no descendants",
+    ]);
+  });
+
+  it("fails verification when the linked issues cannot be read", () => {
+    vi.mocked(github.run).mockReturnValue(failed);
+
+    expect(service.verify(context).failures).toHaveLength(1);
+  });
+
+  it("exempts draft and Dependabot pull requests from verification", () => {
+    stubGithub({ linked: "[5]" });
+    vi.mocked(children.collect).mockReturnValue({ ok: true, value: [8] });
+
+    expect(service.verify({ ...context, draft: true }).failures).toStrictEqual(
+      [],
+    );
+    expect(
+      service.verify({ ...context, author: "dependabot[bot]" }).failures,
+    ).toStrictEqual([]);
   });
 });

@@ -2,6 +2,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
 import { PullRequestBodyService } from "./pull-request-body.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
@@ -23,6 +24,7 @@ const context: PullRequestContext = {
 
 describe(PullRequestValidationService, () => {
   let service: PullRequestValidationService;
+  let ancestors: PullRequestAncestorIssuesService;
   let body: PullRequestBodyService;
   let github: PullRequestGithubService;
   let metadata: PullRequestLabelsAssigneesService;
@@ -33,6 +35,10 @@ describe(PullRequestValidationService, () => {
     const module = await Test.createTestingModule({
       providers: [
         PullRequestValidationService,
+        {
+          provide: PullRequestAncestorIssuesService,
+          useValue: createMock<PullRequestAncestorIssuesService>(),
+        },
         {
           provide: PullRequestBodyService,
           useValue: createMock<PullRequestBodyService>(),
@@ -57,6 +63,7 @@ describe(PullRequestValidationService, () => {
     }).compile();
 
     service = await module.resolve(PullRequestValidationService);
+    ancestors = await module.resolve(PullRequestAncestorIssuesService);
     body = await module.resolve(PullRequestBodyService);
     github = await module.resolve(PullRequestGithubService);
     metadata = await module.resolve(PullRequestLabelsAssigneesService);
@@ -67,6 +74,12 @@ describe(PullRequestValidationService, () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(title.check).mockReturnValue([]);
+    vi.mocked(ancestors.verify).mockReturnValue({
+      failures: [],
+      heading: "hierarchy",
+      remediationCommands: [],
+      successMessage: "ok",
+    });
     vi.mocked(body.extractTemplateComments).mockReturnValue([]);
     vi.mocked(body.checkBody).mockReturnValue({
       emptySections: [],
@@ -115,7 +128,7 @@ describe(PullRequestValidationService, () => {
   it("runs all five checks and passes when nothing is wrong", () => {
     const outcomes = service.validate(context);
 
-    expect(outcomes).toHaveLength(5);
+    expect(outcomes).toHaveLength(6);
     expect(outcomes.flatMap((outcome) => outcome.failures)).toStrictEqual([]);
   });
 
@@ -156,7 +169,7 @@ describe(PullRequestValidationService, () => {
       author: "dependabot[bot]",
     });
 
-    expect(outcomes).toHaveLength(2);
+    expect(outcomes).toHaveLength(3);
     expect(title.check).not.toHaveBeenCalled();
   });
 
@@ -176,7 +189,7 @@ describe(PullRequestValidationService, () => {
   });
 
   it("skips the linked-issue check for a draft pull request", () => {
-    expect(service.validate({ ...context, draft: true })).toHaveLength(4);
+    expect(service.validate({ ...context, draft: true })).toHaveLength(5);
   });
 
   it("fails the linked-issue check when gh cannot read the issues", () => {

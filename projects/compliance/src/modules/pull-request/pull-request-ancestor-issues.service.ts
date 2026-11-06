@@ -3,15 +3,22 @@ import { Injectable } from "@nestjs/common";
 import { IssueMetadataService } from "../issue/issue-metadata.service";
 
 import {
+  ISSUE_REFERENCE_PATTERN,
   issueAncestorSchema,
   linkedIssueNumbersSchema,
 } from "./pull-request-body-links.constants";
 import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
+import { PullRequestClosingReferencesService } from "./pull-request-closing-references.service";
 import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
+import { DEPENDABOT_LOGIN } from "./pull-request.constants";
 
 import type { PullRequestContext } from "./pull-request-context.types";
-import type { LinkResult, PullRequestResult } from "./pull-request.types";
+import type {
+  CheckOutcome,
+  LinkResult,
+  PullRequestResult,
+} from "./pull-request.types";
 
 /**
  * Links the whole issue hierarchy from a pull request description: a
@@ -28,6 +35,7 @@ export class PullRequestAncestorIssuesService {
     private readonly pullRequestDescendantIssuesService: PullRequestDescendantIssuesService,
     private readonly pullRequestGithubService: PullRequestGithubService,
     private readonly pullRequestBodyLinksService: PullRequestBodyLinksService,
+    private readonly pullRequestClosingReferencesService: PullRequestClosingReferencesService,
   ) {}
 
   // 🔐 Private Fields
@@ -124,6 +132,23 @@ export class PullRequestAncestorIssuesService {
         ok: false,
       };
     }
+  }
+
+  /** The issues GitHub lists as closed by the pull request. */
+  private readLinked(number: number): PullRequestResult<number[]> {
+    return this.readJson(
+      [
+        "pr",
+        "view",
+        String(number),
+        "--json",
+        "closingIssuesReferences",
+        "--jq",
+        "[.closingIssuesReferences[].number]",
+      ],
+      (document) => linkedIssueNumbersSchema.parse(document),
+      `issues closed by pull request ${String(number)}`,
+    );
   }
 
   /** The parent of one issue, from GitHub's hierarchy or its body. */
@@ -239,19 +264,7 @@ export class PullRequestAncestorIssuesService {
 
   /** Links ancestors in the description, writing it back when it changed. */
   public link(context: PullRequestContext): LinkResult {
-    const linked = this.readJson(
-      [
-        "pr",
-        "view",
-        String(context.number),
-        "--json",
-        "closingIssuesReferences",
-        "--jq",
-        "[.closingIssuesReferences[].number]",
-      ],
-      (document) => linkedIssueNumbersSchema.parse(document),
-      `issues closed by pull request ${String(context.number)}`,
-    );
+    const linked = this.readLinked(context.number);
 
     if (!linked.ok) {
       return this.unchanged(context, [], [linked.failure]);
@@ -277,10 +290,90 @@ export class PullRequestAncestorIssuesService {
       return this.unchanged(context, [], [descendants.failure]);
     }
 
-    return this.writeReferences(
-      context,
-      ancestors.value,
-      descendants.value.filter((number) => !ancestors.value.includes(number)),
+    const closable = descendants.value.filter(
+      (number) => !ancestors.value.includes(number),
     );
+    const written = this.writeReferences(context, ancestors.value, closable);
+    const closing = this.pullRequestClosingReferencesService.close(
+      context.number,
+      closable.filter((number) => !linked.value.includes(number)),
+    );
+
+    return {
+      body: written.body,
+      outcome: {
+        failures: [...written.outcome.failures, ...closing.failures],
+        lines: [...written.outcome.lines, ...closing.lines],
+      },
+    };
+  }
+
+  /**
+   * Judges the links the write phase makes: every open descendant of a closed
+   * issue must be a real closing reference, and every ancestor must be named
+   * in the description. Draft and Dependabot pull requests are exempt, like
+   * the linked-issue check.
+   */
+  public verify(context: PullRequestContext): CheckOutcome {
+    const base = {
+      heading: "❌ Pull request does not link its issue hierarchy",
+      remediationCommands: [
+        `compliance pull-request ${String(context.number)} write`,
+      ],
+      successMessage: "✅ Pull request links its issue hierarchy",
+    };
+    const linked = this.readLinked(context.number);
+
+    if (context.draft || context.author === DEPENDABOT_LOGIN) {
+      return { ...base, failures: [] };
+    }
+
+    if (!linked.ok) {
+      return { ...base, failures: [linked.failure] };
+    }
+
+    const ancestors = this.collectAncestors(linked.value);
+    const descendants = this.pullRequestDescendantIssuesService.collect(
+      linked.value,
+    );
+
+    if (!ancestors.ok || !descendants.ok) {
+      return {
+        ...base,
+        failures: [
+          ancestors.ok ? "" : ancestors.failure,
+          descendants.ok ? "" : descendants.failure,
+        ].filter((failure) => failure !== ""),
+      };
+    }
+
+    const mentioned = new Set(
+      [...context.body.matchAll(ISSUE_REFERENCE_PATTERN)].map((match) =>
+        Number(match.groups?.["issueNumber"]),
+      ),
+    );
+    const unclosed = descendants.value.filter(
+      (number) =>
+        !linked.value.includes(number) && !ancestors.value.includes(number),
+    );
+    const unrelated = ancestors.value.filter(
+      (number) => !mentioned.has(number),
+    );
+
+    return {
+      ...base,
+      failures: [
+        ...(unclosed.length === 0
+          ? []
+          : [
+              `❌ Open descendant issues are not closed by this pull request: ${this.format(unclosed)}`,
+            ]),
+        ...(unrelated.length === 0
+          ? []
+          : [
+              `❌ Ancestor issues are not referenced in the description: ${this.format(unrelated)}`,
+            ]),
+      ],
+    };
   }
 }

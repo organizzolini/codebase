@@ -44,9 +44,7 @@ export class PullRequestGithubService {
    * and a failure reported with nothing to read is worse than a clumsy line.
    */
   public describeFailure(result: GithubCliResult): string {
-    const output = [result.standardError, result.standardOutput.trim()]
-      .filter((part) => part !== "")
-      .join(" ");
+    const output = `${result.standardError} ${result.standardOutput}`.trim();
 
     return output === "" ? "no output" : output;
   }
