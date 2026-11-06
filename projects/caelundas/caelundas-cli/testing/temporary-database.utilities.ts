@@ -7,8 +7,8 @@ import { vi } from "vitest";
 import {
   CAELUNDAS_DATABASE_ENTITIES,
   CAELUNDAS_DATABASE_MIGRATIONS,
-  CAELUNDAS_DATABASE_PROJECT,
-} from "@codebase/caelundas-entities";
+  CAELUNDAS_PROJECT,
+} from "@codebase/caelundas-db";
 import { createSqliteDataSource } from "@codebase/persistence";
 
 import type { TemporaryDatabase } from "./temporary-database.types";
@@ -29,9 +29,9 @@ export async function createTemporaryDatabase(): Promise<TemporaryDatabase> {
   vi.stubEnv("CAELUNDAS_SQLITE_DATABASE", file);
   const dataSource = createSqliteDataSource(
     {
-      entities: CAELUNDAS_DATABASE_ENTITIES,
-      migrations: CAELUNDAS_DATABASE_MIGRATIONS,
-      project: CAELUNDAS_DATABASE_PROJECT,
+      entities: [...CAELUNDAS_DATABASE_ENTITIES],
+      migrations: [...CAELUNDAS_DATABASE_MIGRATIONS],
+      project: CAELUNDAS_PROJECT,
     },
     { CAELUNDAS_SQLITE_DATABASE: file },
   );

@@ -21,7 +21,7 @@ import { DatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
 
 `DatabaseModule` connects to `lexico_development`.`lexico` as
 `lexico_username` through [`@codebase/persistence`](../../common/persistence/README.md)'s
-`DatabaseModule.forRoot`, with lexico's pluralizing `LexicoNamingStrategy`.
+`DatabaseModule.forRoot`, with its shared plural snake-case naming strategy.
 `lexicoDataSource`, in `src/modules/database/data-source.constants.ts`,
 is the same configuration as a standalone `DataSource`, built with the shared
 `createDataSource`, which is what the migration command line runs against.
@@ -91,8 +91,9 @@ union type — `formCaseValues` / `FormCase`, `verbConjugationValues` /
 degree, and declension. Validation, GraphQL enums, and exhaustive switches all
 read from the same source.
 
-`LexicoNamingStrategy` maps entity and column names to the database's own
-convention, so table names stay predictable across migrations.
+The shared plural snake-case naming strategy in `@codebase/persistence` maps
+entity and column names to the database's own convention, so table names stay
+predictable across migrations.
 
 ## Migrations
 

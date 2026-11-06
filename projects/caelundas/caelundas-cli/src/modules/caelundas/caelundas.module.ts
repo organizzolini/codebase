@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { DatabaseModule } from "@codebase/caelundas-entities";
+import { CaelundasDatabaseModule } from "@codebase/caelundas-db";
 import { LoggerModule } from "@codebase/observability";
 
 import { AnnualSolarCycleModule } from "../annual-solar-cycle/annual-solar-cycle.module";
@@ -45,7 +45,7 @@ import { CaelundasCommand } from "./caelundas.command";
     MathModule,
     EphemerisModule,
     CalendarModule,
-    DatabaseModule,
+    CaelundasDatabaseModule,
     CalendarEventsModule,
     AspectsModule,
     MajorAspectsModule,

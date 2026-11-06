@@ -7,7 +7,7 @@ import _ from "lodash";
 import moment from "moment-timezone";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { CalendarEvent } from "@codebase/caelundas-entities";
+import { CalendarEvent } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
 import {

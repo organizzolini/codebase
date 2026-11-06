@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@codebase/caelundas-entities": "workspace:*",
+    "@codebase/caelundas-db": "workspace:*",
     "@codebase/observability": "workspace:*",
     "@codebase/persistence": "workspace:*",
     "@nestjs/common": "catalog:",

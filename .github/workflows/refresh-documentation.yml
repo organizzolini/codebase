@@ -5,13 +5,14 @@ on:
     - cron: 18 8 * * 5 # Weekly Friday 8:18am UTC
   workflow_dispatch:
 
-# Nx Cloud's remote cache. Only a trusted run gets the read-write token: a run
-# for a pull request, or a manual run off `main`, gets the read-only one, whose
-# results stay in a cache of their own and cannot reach what `main` reads. The
-# token is the join of two expressions, one of them always empty, so a missing
-# read-only secret leaves it empty rather than falling back to the read-write one.
+# The shared Nx cache's bucket, read-only: a scheduled documentation run has no
+# reason to write to what `main` reads.
 env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_READ_ONLY_TOKEN }}
+  NX_SHARED_CACHE_REMOTE_ACCESS_KEY_ID: ${{ secrets.NX_CACHE_READ_ONLY_ACCESS_KEY_ID }}
+  NX_SHARED_CACHE_REMOTE_BUCKET: ${{ vars.NX_CACHE_BUCKET }}
+  NX_SHARED_CACHE_REMOTE_ENDPOINT: ${{ vars.NX_CACHE_ENDPOINT }}
+  NX_SHARED_CACHE_REMOTE_REGION: ${{ vars.NX_CACHE_REGION }}
+  NX_SHARED_CACHE_REMOTE_SECRET_ACCESS_KEY: ${{ secrets.NX_CACHE_READ_ONLY_SECRET_ACCESS_KEY }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

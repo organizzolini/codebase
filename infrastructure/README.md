@@ -67,6 +67,12 @@ nx run infrastructure:postgres:up
 docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh
 ```
 
+For caelundas, the project that most recently joined the list:
+
+```bash
+docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb.d/databases.sh
+```
+
 The script stops at the first object that already exists, so name only the
 projects the volume lacks. Never use `infrastructure:postgres:recreate` for this:
 it deletes the volume and every row in it. See

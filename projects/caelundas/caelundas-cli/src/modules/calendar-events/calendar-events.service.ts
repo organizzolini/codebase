@@ -6,8 +6,8 @@ import { Between, Repository } from "typeorm";
 import {
   CalendarEvent,
   CalendarEventTag,
-  DatabaseService,
-} from "@codebase/caelundas-entities";
+  CaelundasDatabaseService,
+} from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
 import { TagsService } from "../tags/tags.service";
@@ -51,7 +51,7 @@ export class CalendarEventsService {
     @InjectRepository(CalendarEvent)
     private readonly calendarEventRepository: Repository<CalendarEvent>,
     private readonly tagsService: TagsService,
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: CaelundasDatabaseService,
   ) {
     this.logger.setContext(CalendarEventsService.name);
   }

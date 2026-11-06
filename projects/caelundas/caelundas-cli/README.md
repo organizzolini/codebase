@@ -238,12 +238,12 @@ it names.
 A run creates `output/database.sqlite` and applies the migration when the
 table is missing, and adds to it on later runs: the same event for the same
 place updates its row. The entities and the one migration come from the
-`caelundas-entities` library (`nx run caelundas-entities:migration:generate`
+`caelundas-db` library (`nx run caelundas-db:migration:generate`
 creates the next one). The same file is what the web application, `caelundas-web`, reads: the
 migration creates the read model it queries (`tag_nodes`,
 `calendar_event_tag_nodes` and the `calendar_events_derived` view), and every
-run ends by rebuilding those tables with `DatabaseService.refreshReadModel`
-from `caelundas-entities`, in the same transaction that wrote the events, so
+run ends by rebuilding those tables with `CaelundasDatabaseService.refreshReadModel`
+from `caelundas-db`, in the same transaction that wrote the events, so
 there is no separate build step. Build the web application with
 `nx run caelundas-web:build:ingested`, which copies the file.
 
@@ -1709,7 +1709,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `AnnualSolarCycleEventsService.getWinterEvents` | 8 | `AnnualSolarCycleEventsService.isWinterSolstice`, `AnnualSolarCycleEventsService.buildWinterSolsticeEvent`, `AnnualSolarCycleEventsService.isThirteenthHexadecan`, `AnnualSolarCycleEventsService.buildThirteenthHexadecanEvent`, `AnnualSolarCycleEventsService.isImbolc`, `AnnualSolarCycleEventsService.buildImbolcEvent`, `AnnualSolarCycleEventsService.isFifteenthHexadecan`, `AnnualSolarCycleEventsService.buildFifteenthHexadecanEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:123` |
 | `PerfectiveService.detectOrbitalEvents` | 8 | `RetrogradesService.detect`, `IngressesService.detect`, `MonthlyLunarCycleService.detect`, `MonthlyLunarCycleService.detectApsides`, `AnnualSolarCycleService.detect`, `PhasesService.getMartianPhaseEvents`, `PhasesService.getMercurianPhaseEvents`, `PhasesService.getVenusianPhaseEvents` | `projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:171` |
 | `ProgressiveService.detect` | 8 | `AspectsService.detectProgressive`, `RetrogradesService.detectProgressive`, `EclipsesService.detectProgressive`, `IngressesService.detectProgressive`, `MonthlyLunarCycleService.detectProgressive`, `TwilightsService.detectProgressive`, `PhasesService.detectProgressive`, `AnnualSolarCycleService.detectProgressive` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive.service.ts:47` |
-| `CalendarEventsService.transaction(…)` | 7 | `TagsService.resolve`, `CalendarEventsService.flatMap(…)`, `CalendarEventsService.writeRows`, `CalendarEventsService.map(…)`, `CalendarEventsService.replaceTagLinks`, `CalendarEventsService.toTagLinks`, `DatabaseService.refreshReadModel` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:379` |
+| `CalendarEventsService.transaction(…)` | 7 | `TagsService.resolve`, `CalendarEventsService.flatMap(…)`, `CalendarEventsService.writeRows`, `CalendarEventsService.map(…)`, `CalendarEventsService.replaceTagLinks`, `CalendarEventsService.toTagLinks`, `CaelundasDatabaseService.refreshReadModel` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:379` |
 | `PhasesService.detectProgressive` | 7 | `PhasesService.filter(…)`, `PhasesService.filter(…)`, `VenusianPhaseService.getVenusianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MercurianPhaseService.getMercurianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MartianPhaseService.getMartianPhaseProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:97` |
 | `classifyEvent` | 6 | `flatMap(…)`, `pruneAncestorPaths`, `flatMap(…)`, `ingressPaths`, `eclipsePaths`, `isInstant` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:20` |
 | `dignityPaths` | 6 | `find(…)`, `map(…)`, `find(…)`, `map(…)`, `isSign`, `find(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:57` |
@@ -2383,7 +2383,7 @@ flowchart LR
   CalendarModule
   ConfigModule([ConfigModule])
   DailyCyclesModule
-  DatabaseModule
+  CaelundasDatabaseModule
   DatetimeModule
   DiscoveryModule
   EclipsesModule
@@ -2429,7 +2429,7 @@ flowchart LR
   CaelundasModule --> CalendarEventsModule
   CaelundasModule --> CalendarModule
   CaelundasModule --> DailyCyclesModule
-  CaelundasModule --> DatabaseModule
+  CaelundasModule --> CaelundasDatabaseModule
   CaelundasModule --> EclipsesModule
   CaelundasModule --> EphemerisModule
   CaelundasModule --> IngressesModule
@@ -2449,13 +2449,13 @@ flowchart LR
   CaelundasModule --> StelliumModule
   CaelundasModule --> TripleAspectsModule
   CaelundasModule --> TwilightsModule
-  CalendarEventsModule --> DatabaseModule
+  CalendarEventsModule --> CaelundasDatabaseModule
   CalendarEventsModule --> TagsModule
   DailyCyclesModule --> CalendarModule
   DailyCyclesModule --> EphemerisModule
   DailyCyclesModule --> MathModule
-  DatabaseModule --> SqliteModule
-  DatabaseModule --> TypeOrmModule
+  CaelundasDatabaseModule --> SqliteModule
+  CaelundasDatabaseModule --> TypeOrmModule
   EclipsesModule --> EphemerisModule
   EclipsesModule --> MathModule
   EclipsesModule --> ProgressiveUtilitiesModule
@@ -2472,7 +2472,7 @@ flowchart LR
   MinorAspectsModule --> ProgressiveUtilitiesModule
   MonthlyLunarCycleModule --> CalendarModule
   MonthlyLunarCycleModule --> EphemerisModule
-  NightSkyModule --> DatabaseModule
+  NightSkyModule --> CaelundasDatabaseModule
   PerfectiveModule --> AnnualSolarCycleModule
   PerfectiveModule --> AspectsModule
   PerfectiveModule --> DailyCyclesModule

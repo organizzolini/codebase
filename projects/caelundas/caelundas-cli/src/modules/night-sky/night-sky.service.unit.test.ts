@@ -10,8 +10,8 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   CAELUNDAS_DATABASE_ENTITIES,
   CAELUNDAS_DATABASE_MIGRATIONS,
-  CAELUNDAS_DATABASE_PROJECT,
-} from "@codebase/caelundas-entities";
+  CAELUNDAS_PROJECT,
+} from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 import { createSqliteDataSource } from "@codebase/persistence";
 
@@ -66,9 +66,9 @@ describe(NightSkyService, () => {
 
     dataSource = createSqliteDataSource(
       {
-        entities: CAELUNDAS_DATABASE_ENTITIES,
-        migrations: CAELUNDAS_DATABASE_MIGRATIONS,
-        project: CAELUNDAS_DATABASE_PROJECT,
+        entities: [...CAELUNDAS_DATABASE_ENTITIES],
+        migrations: [...CAELUNDAS_DATABASE_MIGRATIONS],
+        project: CAELUNDAS_PROJECT,
       },
       { CAELUNDAS_SQLITE_DATABASE: ":memory:" },
     );

@@ -1,8 +1,5 @@
 // 🏷️ Types
-import type {
-  CalendarEvent,
-  CalendarEventTag,
-} from "@codebase/caelundas-entities";
+import type { CalendarEvent, CalendarEventTag } from "@codebase/caelundas-db";
 import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 import type { Moment } from "moment-timezone";
 

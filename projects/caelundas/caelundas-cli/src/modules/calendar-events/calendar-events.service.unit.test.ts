@@ -3,7 +3,10 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { CalendarEvent, DatabaseService } from "@codebase/caelundas-entities";
+import {
+  CalendarEvent,
+  CaelundasDatabaseService,
+} from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
 import { TagsService } from "../tags/tags.service";
@@ -22,7 +25,7 @@ describe(CalendarEventsService, () => {
         CalendarEventsService,
         LoggerService,
         TagsService,
-        { provide: DatabaseService, useValue: {} },
+        { provide: CaelundasDatabaseService, useValue: {} },
         { provide: getRepositoryToken(CalendarEvent), useValue: {} },
       ],
     }).compile();

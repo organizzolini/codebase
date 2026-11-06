@@ -6,7 +6,7 @@ import moment from "moment-timezone";
 import { DataSource, In } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { CalendarEvent, Tag } from "@codebase/caelundas-entities";
+import { CalendarEvent, Tag } from "@codebase/caelundas-db";
 import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "../../caelundas-cli.constants";
