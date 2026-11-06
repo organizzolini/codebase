@@ -1,221 +1,60 @@
-# CaelundasDatabase: NestJS Service Application
+# CaelundasDatabase: Postgres Schema Library
 
 ## Quick Start
 
-**Type**: Node.js service application (NestJS + `NestFactory`)
+**Type**: NestJS library (`type:package`), published to no registry
 
-**Purpose**: <!-- Briefly describe the specific purpose of this service application -->
+**Purpose**: The Postgres schema Caelundas shares: entities, one migration,
+the derived-times view, and the refresh service for the derived tag tables.
+`caelundas-cli` writes through it and `caelundas-api` reads through it.
 
 ## Architecture Overview
 
-### Tech Stack
-
-- **Framework**: NestJS (modules, dependency injection, providers)
-- **Bootstrap**: `NestFactory.create` (standard NestJS bootstrap)
-- **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
-- **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
-- **Language**: Strict TypeScript
-
-### Execution Flow
-
-```text
-src/main.ts
-  └─ NestFactory.create(MainModule)
-       └─ domain service modules            ← add under src/modules/
-```
-
-### Directory Layout
+- **Framework**: NestJS + TypeORM, on `@codebase/persistence`: `DatabaseModule.forRoot`,
+  `createDataSource`, `PostgresqlUpdatableEntity`, and the Testcontainers harness behind
+  `@codebase/persistence/testing`. This project owns no connection logic.
+- **Database**: `caelundas_development`.`caelundas` as `caelundas_username`, read through
+  `CAELUNDAS_POSTGRES_*` only. No SQLite, and nothing registered on a connection.
+- **Naming**: entities are named by class and never name a table; the shared plural
+  snake-case strategy in `persistence` makes `CalendarEvent` the table `calendar_events`.
+  Do not write a naming strategy here.
 
 ```text
 src/
-  main.ts                           # Bootstrap — do not modify
-  main.module.ts                    # Root NestJS module (imports ConfigModule, LoggerModule)
-  constants.ts                      # Zod environmentSchema for env validation
-  modules/
-    <domain>/                       # Add feature modules here
-      <domain>.module.ts
-      <domain>.service.ts
-      <domain>.types.ts
-      <domain>.constants.ts
-      <domain>.<tier>.test.ts
-testing/                            # Shared test utilities
+  index.ts                               # Public exports
+  modules/caelundas-database/            # The database module, per ADR 0022
+    caelundas-database.module.ts         # CaelundasDatabaseModule
+    caelundas-database.service.ts        # isConnected, refreshReadModel
+    caelundas-database.constants.ts      # Project, coordinate scale, read model SQL
+    caelundas-database.utilities.ts      # Value transformers
+    data-source.constants.ts             # Entities, migrations, caelundasDataSource
+    entities/                            # One *.entity.ts per table or view
+    migrations/                          # The one migration and its .sql pair
 ```
 
-## Development
+## Rules
 
-### Adding Business Logic
+- **Every table's id is a database-assigned `uuidv7`,** except the tag closure, the join
+  table, the star catalog and the derived tables, which keep natural keys.
+- **`calendar_events` upserts on its natural key** `(summary, start, end, latitude,
+  longitude)`; never insert an event without it.
+- **Instants are `timestamptz`, coordinates `numeric(9,6)`, whole numbers `bigint`.** Each
+  has a transformer in `caelundas-database.utilities.ts`; `squawk` rejects `integer`.
+- **The derived-times view needs no refresh;** the two derived tag tables are rebuilt by
+  `refreshReadModel(manager)` in the caller's transaction. A view's name is not
+  pluralized into sense: `calendar_event_derived_times` is already plural.
+- **One migration.** Regenerate it with `nx run caelundas-db:migration:generate` against
+  an empty local Postgres (schema-unqualified), then apply the two hand edits the README
+  lists. Never edit the generated SQL otherwise.
 
-1. **Add domain service modules** — create `src/modules/<domain>/` with a NestJS module, service, types, and constants.
-2. **Register in root module** — import the new module in `main.module.ts`.
-3. **Validate env vars** — extend `environmentSchema` in `constants.ts` with all required environment variables.
-
-### Logging
-
-`LoggerService` and `LoggerModule` come from `@codebase/observability` — this project does not define its own logger. Add `"@codebase/observability": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
-
-`LoggerService` is `Scope.TRANSIENT` — each injecting class gets its own instance. Always call `setContext` in the constructor:
-
-```ts
-constructor(private readonly logger: LoggerService) {
-  this.logger.setContext(MyService.name);
-}
-```
-
-Outputs structured JSON in production (`NODE_ENV=production`) and pretty-printed logs in development.
-
-### Key Commands
-
-Always prefer running tasks through Nx rather than calling the underlying tools directly.
+## Commands
 
 ```bash
-nx run caelundas-db:typecheck-code,lint-code,format-code,deprecate-code,guard-code   # Every static check, in one graph
-nx run caelundas-db:typecheck       # tsc --noEmit
-nx run caelundas-db:oxfmt           # Formatting
-nx run caelundas-db:build           # Compile for publication
+nx run caelundas-db:typecheck-code,lint-code,format-code,deprecate-code,guard-code
+nx run caelundas-db:vitest:unit
+nx run caelundas-db:vitest:integration   # Docker: a Testcontainers Postgres runs the real migration
+nx run caelundas-db:migration:generate   # Needs the shared Postgres or any with the caelundas role
 ```
 
-### Testing
-
-Follow the codebase's strict three-tier testing strategy. Co-locate test files with the source they test.
-
-```bash
-nx run caelundas-db:vitest:unit          # Fast (<100ms) — pure logic, mocked DI
-nx run caelundas-db:vitest:integration   # Moderate (1-2s) — real database/API I/O
-nx run caelundas-db:vitest:end-to-end    # Slow (30-60s) — full service initialization
-```
-
-| Tier        | File pattern            | What to test                                     |
-| ----------- | ----------------------- | ------------------------------------------------ |
-| Unit        | `*.unit.test.ts`        | Pure functions, service methods with mocked deps |
-| Integration | `*.integration.test.ts` | Database queries, external API clients           |
-| End-to-end  | `*.end-to-end.test.ts`  | Full `NestFactory.create()` execution            |
-
-See the [testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
-
-## Writing Modules
-
-Use the generator to scaffold new domain modules, then implement the service:
-
-```bash
-nx g conformetry:nestjs-service-module --name=<domain>
-```
-
-This creates five files in `src/modules/<domain>/`:
-
-| File                            | Purpose                                                 |
-| ------------------------------- | ------------------------------------------------------- |
-| `<domain>.module.ts`            | Declares providers, imports, and exports                |
-| `<domain>.service.ts`           | Business logic — the only place you write domain code   |
-| `<domain>.constants.ts`         | Regex, enums, static config — never inline magic values |
-| `<domain>.types.ts`             | TypeScript types scoped to this module                  |
-| `<domain>.service.unit.test.ts` | Unit tests bootstrapped with `Test.createTestingModule` |
-
-### Module file
-
-Register the service in both `providers` and `exports` so consumers can inject it:
-
-```ts
-@Module({
-  controllers: [],
-  exports: [MyDomainService],
-  imports: [LoggerModule],
-  providers: [MyDomainService],
-})
-export class MyDomainModule {}
-```
-
-Add a JSDoc comment on the module class describing what domain it owns.
-
-### Service file
-
-Follow the section-comment layout from the template — it keeps large services scannable:
-
-```ts
-@Injectable()
-export class MyDomainService {
-  // 🏗 Dependency Injection
-  constructor(private readonly logger: LoggerService) {
-    this.logger.setContext(MyDomainService.name);
-  }
-
-  // 🔐 Private Fields
-
-  // 🔑 Public Fields
-
-  // 🔏 Private Methods
-
-  // 🌎 Public Methods
-}
-```
-
-Key rules:
-
-- **Call `setContext` in every constructor** — always use `MyClass.name`, never a string literal.
-- **Inject `LoggerService` as the last constructor parameter** (after repository/domain deps).
-- **Private first** — keep internal helpers in the `🔏 Private Methods` section, expose only what callers need under `🌎 Public Methods`.
-- **`readonly` everything in the constructor** — all injected deps must be `private readonly`.
-- **One service per module** — if a service grows too large, extract a sub-domain into its own module.
-
-### Constants file
-
-Move all inline values to `.constants.ts` to keep services readable:
-
-```ts
-// ♟️ Constants
-export const DEFAULT_PAGE_SIZE = 100;
-```
-
-### Types file
-
-Put all module-local TypeScript types and interfaces in `.types.ts`:
-
-```ts
-// 🏷️ Types
-export interface ParsedEntry {
-  word: string;
-  partOfSpeech: string;
-}
-```
-
-Do not re-export types from `index.ts` unless they are part of the public API consumed by other modules.
-
-### Registering in the root module
-
-After generating a module, import it in `main.module.ts`:
-
-```ts
-@Module({
-  imports: [
-    ConfigModule.forRoot({ ... }),
-    LoggerModule,
-    MyDomainModule,   // ← add here
-  ],
-  providers: [],
-})
-export class MainModule {}
-```
-
-## Best Practices
-
-- **Never** put business logic in `main.ts` — it bootstraps `NestFactory` only.
-- **Validate at the boundary** — all env vars must be declared in `environmentSchema`; access via `ConfigService`, not `process.env`.
-- **Type imports** — use `import { type Foo }` for type-only imports (enforced by ESLint).
-- **No `any` types** — use `unknown` or proper typing; strict mode is enabled.
-
-See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md) for strict mode patterns.
-
-## Troubleshooting
-
-- **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/constants.ts` and to `.env.default`.
-
-See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
-
-## Key Files
-
-- [src/main.ts](src/main.ts): Application bootstrap
-- [src/main.module.ts](src/main.module.ts): Root NestJS module
-- [src/constants.ts](src/constants.ts): `environmentSchema` (Zod)
-- `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
-- [project.json](project.json): Nx targets (`build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
-- [.env.default](.env.default): Environment variable template
+See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.md) and the
+[write-typescript skill](../../../.agents/skills/write-typescript/SKILL.md).

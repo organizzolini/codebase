@@ -1,14 +1,22 @@
 {
   "dependencies": {
+    "@codebase/persistence": "workspace:*",
+    "@nestjs/common": "catalog:",
+    "@nestjs/typeorm": "catalog:",
+    "moment-timezone": "catalog:",
+    "pg": "catalog:",
     "reflect-metadata": "catalog:",
-    "tslib": "catalog:"
+    "tslib": "catalog:",
+    "typeorm": "catalog:"
   },
   "devDependencies": {
     "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "exports": {
