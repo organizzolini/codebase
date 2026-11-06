@@ -47,6 +47,11 @@ vi.mock(
   },
 );
 
+// Each test renders the whole route; a loaded continuous integration runner
+// took 5 to 7 seconds for the slowest of them, past the default 5, so the limit
+// follows the other integration suites'.
+vi.setConfig({ testTimeout: 30_000 });
+
 const WINDOW_SIZE = {
   innerHeight: globalThis.innerHeight,
   innerWidth: globalThis.innerWidth,
