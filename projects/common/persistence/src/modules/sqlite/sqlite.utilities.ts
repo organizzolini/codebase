@@ -125,7 +125,12 @@ export function sqliteConnection({
  */
 export function sqliteDataSourceOptions(
   connection: SqliteConnection,
-  { entities, migrations, namingStrategy }: SqliteDataSourceSettings,
+  {
+    entities,
+    migrations,
+    namingStrategy,
+    prepareDatabase,
+  }: SqliteDataSourceSettings,
 ): SqliteDataSourceOptions {
   return {
     database: connection.database,
@@ -135,6 +140,7 @@ export function sqliteDataSourceOptions(
     migrations,
     migrationsRun: false,
     namingStrategy: namingStrategy ?? new SnakeNamingStrategy(),
+    ...(prepareDatabase && { prepareDatabase }),
     synchronize: false,
     type: "better-sqlite3",
   };

@@ -1,6 +1,7 @@
 // 🏷️ Types
 
 import type { SQLITE_ENVIRONMENT_SUFFIXES } from "./sqlite.constants";
+import type Database from "better-sqlite3";
 import type { DataSourceOptions, NamingStrategyInterface } from "typeorm";
 import type { z } from "zod";
 
@@ -30,6 +31,9 @@ export interface SqliteDataSourceSettings {
 
   /** Replaces snake case, as lexico's pluralizing strategy does. */
   readonly namingStrategy?: NamingStrategyInterface;
+
+  /** Runs against each new connection, for registering SQL functions. */
+  readonly prepareDatabase?: (database: Database.Database) => void;
 }
 
 /** A project's own SQLite variable, for example `CAELUNDAS_SQLITE_DATABASE`. */
