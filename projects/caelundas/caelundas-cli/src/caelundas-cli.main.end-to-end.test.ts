@@ -472,6 +472,46 @@ describe("main end-to-end suite", () => {
       expect(ics).toContain("SUMMARY:Retrograde");
     });
 
+    it("leaves the read model current after a run", async () => {
+      expect.hasAssertions();
+
+      await run(
+        philadelphia,
+        { endDate: "2026-07-10", startDate: "2026-07-01" },
+        [detectable("Fresh", "2026-07-05T12:00:00Z")],
+      );
+      const { dataSource } = database;
+      const [counts] = await dataSource.query<
+        { derived: number; events: number; nodes: number; tags: number }[]
+      >(
+        `select
+          (select count(*) from calendar_events_derived) as derived,
+          (select count(*) from calendar_events) as events,
+          (select count(*) from tag_nodes) as nodes,
+          (select count(*) from tags) as tags`,
+      );
+      const fresh = await dataSource.query<
+        { is_direct: number; tag_name: string }[]
+      >(
+        `select n.tag_name, n.is_direct
+          from calendar_event_tag_nodes as n
+          inner join calendar_events as e on e.id = n.calendar_event_id
+          where e.summary = 'Fresh'
+          order by n.tag_name`,
+      );
+
+      expect(counts?.nodes).toBe(counts?.tags);
+      expect(counts?.derived).toBe(counts?.events);
+      // The tag the event was given, and the node above it, are derived in
+      // the transaction that wrote the event.
+      expect(fresh).toStrictEqual(
+        expect.arrayContaining([
+          { is_direct: 1, tag_name: "Instant" },
+          { is_direct: 0, tag_name: "Temporality" },
+        ]),
+      );
+    });
+
     it("includes events on the last requested day in both files", async () => {
       expect.hasAssertions();
 
