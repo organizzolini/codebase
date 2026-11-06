@@ -1,7 +1,7 @@
 {
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
   "name": "compliance",
-  "sourceRoot": "projects/compliance",
+  "sourceRoot": "compliance",
   "tags": [
     "framework:nest-commander",
     "framework:nestjs",
@@ -28,7 +28,7 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "node --import @swc-node/register/esm-register src/compliance.repl.ts",
-        "cwd": "projects/compliance"
+        "cwd": "compliance"
       },
       "parallelism": true
     },
@@ -37,25 +37,25 @@
       "cache": false,
       "configurations": {
         "audit-governance": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts audit-governance"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts audit-governance"
         },
         "issue": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts issue"
         },
         "issue-audit": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts issue --all"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts issue --all"
         },
         "organization-project": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts organization-project"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts organization-project"
         },
         "pull-request": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts pull-request"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts pull-request"
         }
       },
       "description": "Run one compliance command by name.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/compliance/src/compliance.main.ts",
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts",
         "cwd": "{workspaceRoot}"
       }
     },

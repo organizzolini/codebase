@@ -95,7 +95,7 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/compliance/src/compliance.main.ts issue
+            compliance/src/compliance.main.ts issue
 
   enforce:
     name: 👮 Enforce
@@ -137,7 +137,7 @@ jobs:
       - name: 👮 Audit Repository Governance
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/compliance/src/compliance.main.ts audit-governance
+            compliance/src/compliance.main.ts audit-governance
 
   comply:
     name: 🧑‍⚖️ Comply
@@ -188,7 +188,7 @@ jobs:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/compliance/src/compliance.main.ts pull-request
+            compliance/src/compliance.main.ts pull-request
 
       # Validates that the pull request branch name conforms to Conventional
       # Commits. A merge group's branch is the queue's own, so it is not checked.

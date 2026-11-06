@@ -8,7 +8,7 @@
 
 Runs codebase and project checks that do not modify their inputs. GitHub issue
 and pull request policy checks, plus repository governance checks run by
-Continuous Compliance, live in the [compliance CLI](../projects/compliance/AGENTS.md).
+Continuous Compliance, live in the [compliance CLI](../compliance/AGENTS.md).
 
 ### Run Locally
 
@@ -22,7 +22,7 @@ nx run validation:start
 A check belongs here when it verifies codebase or project state without
 changing it. Checks that read or update GitHub issues and pull requests, or
 enforce repository governance for Continuous Compliance, belong in
-[compliance](../projects/compliance/AGENTS.md). Codebase-file reconciliation
+[compliance](../compliance/AGENTS.md). Codebase-file reconciliation
 with `check` and `write` modes belongs in
 [synchronization](../synchronization/AGENTS.md).
 

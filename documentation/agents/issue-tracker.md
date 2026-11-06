@@ -49,7 +49,7 @@ spec issue                  the output of /to-spec      (Issue Type: Feature or 
   the same mechanism the wayfinder map uses below.
 - **Keep every sub-issue at or below the parent's release significance.** A
   squash merge shows semantic-release only the pull request title, and the
-  [release-significance check](../../projects/compliance/src/modules/pull-request/pull-request-release-significance.service.ts)
+  [release-significance check](../../compliance/src/modules/pull-request/pull-request-release-significance.service.ts)
   of `compliance pull-request` fails a pull request whose branch carries a commit more significant than
   its title, or a scope the title does not name. Planning the commits as
   sub-issues is where that is cheapest to get right: a `feat` sub-issue under a

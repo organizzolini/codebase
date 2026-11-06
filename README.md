@@ -234,7 +234,7 @@ Symbols and logic shared across projects
 **👀 [observability](projects/common/observability)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`
 
 **🛠️ [configuration](configuration)** - The workspace's tool configuration, git hooks, and the Nx targets that lint, format, scan, and measure the repository's own files\
-**🧭 [compliance](projects/compliance)** - NestJS CLI for Continuous Compliance checks of GitHub issues, pull requests, and repository governance\
+**🧭 [compliance](compliance)** - NestJS CLI for Continuous Compliance checks of GitHub issues, pull requests, and repository governance\
 **📚 [documentation](documentation)** - NestJS CLI that refreshes the repository documentation from code, and is what the scheduled 🧑‍🏫 Refresh Documentation workflow runs\
 **🏗️ [infrastructure](infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
 **🛠️ [installation](installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
@@ -16407,7 +16407,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/caelundas/caelundas-web` | 6 | 6 | 0 | 8 |
 | `projects/common/observability` | 4 | 4 | 0 | 2 |
 | `projects/common/persistence` | 7 | 7 | 0 | 7 |
-| `projects/compliance` | 8 | 8 | 0 | 9 |
+| `compliance` | 8 | 8 | 0 | 9 |
 | `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
 | `projects/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
 | `projects/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |

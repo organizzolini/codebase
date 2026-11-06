@@ -120,7 +120,7 @@ nx run compliance:vitest:end-to-end    # Slow (30-60s) — full CLI execution
 | Integration | `*.integration.test.ts` | Database queries, external API clients           |
 | End-to-end  | `*.end-to-end.test.ts`  | Full `CommandFactory.run()` execution            |
 
-See the [testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
+See the [testing-strategy skill](../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
 
 ## Writing Modules
 
@@ -246,7 +246,7 @@ pnpm nx run-many --targets=conformetry-validate
 - **Type imports** — use `import { type Foo }` for type-only imports (enforced by ESLint).
 - **No `any` types** — use `unknown` or proper typing; strict mode is enabled.
 
-See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md) for strict mode patterns.
+See the [write-typescript skill](../.agents/skills/write-typescript/SKILL.md) for strict mode patterns.
 
 ## Troubleshooting
 
@@ -255,7 +255,7 @@ See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
 - **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/compliance.constants.ts` and to `.env.default`.
 
-See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
+See the [triage-integration skill](../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
 ## Key Files
 
