@@ -15,3 +15,9 @@ variable "region" {
   type        = string
   default     = "us-iad-2"
 }
+
+variable "nx_cache_bucket_label" {
+  description = "Label of the Object Storage bucket the shared Nx cache stores task outputs in."
+  type        = string
+  default     = "organizzolini-nx-cache"
+}
