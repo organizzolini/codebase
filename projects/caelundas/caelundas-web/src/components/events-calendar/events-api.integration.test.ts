@@ -19,7 +19,12 @@ import {
   NightSkyDocument,
 } from "../../graphql/generated/operations";
 
-import { queryApi } from "./events-api.utilities";
+import {
+  describeDataset,
+  findEvents,
+  findFacets,
+  queryApi,
+} from "./events-api.utilities";
 
 const window = { end: "2026-02-01T00:00:00Z", start: "2026-01-01T00:00:00Z" };
 
@@ -137,5 +142,113 @@ describe("events api", () => {
     await expect(
       queryApi(NightSkyDocument, { input: { height: 1, width: 1 } }),
     ).resolves.toStrictEqual({ nightSky });
+  });
+
+  it("reads the dataset's span as dates, or nothing for no data", async () => {
+    expect.hasAssertions();
+
+    serveGraphqlApi(
+      mockDatasetQuery(() =>
+        HttpResponse.json({
+          data: {
+            dataset: {
+              count: 2,
+              end: window.end,
+              start: window.start,
+              timezone: "UTC",
+            },
+          },
+        }),
+      ),
+    );
+
+    await expect(describeDataset()).resolves.toStrictEqual({
+      count: 2,
+      end: new Date(window.end),
+      start: new Date(window.start),
+      timezone: "UTC",
+    });
+
+    serveGraphqlApi(
+      mockDatasetQuery(() => HttpResponse.json({ data: { dataset: null } })),
+    );
+
+    await expect(describeDataset()).resolves.toBeNull();
+  });
+
+  it("asks for a window's events with the filter and grouping, and reads their instants as dates", async () => {
+    expect.hasAssertions();
+
+    let received: unknown;
+    serveGraphqlApi(
+      mockEventsQuery(({ variables }) => {
+        received = variables;
+
+        return HttpResponse.json({
+          data: {
+            events: [
+              {
+                color: null,
+                description: "d",
+                durationMinutes: 0,
+                end: window.start,
+                groups: [[{ key: "k", label: "L", path: null }]],
+                id: "e1",
+                location: null,
+                start: window.start,
+                startLocalDay: "2026-01-01",
+                startLocalHour: 0,
+                summary: "s",
+                tags: [{ depth: 1, id: "t", name: "T", path: "R / T" }],
+                timezone: "UTC",
+              },
+            ],
+          },
+        });
+      }),
+    );
+
+    const [event] = await findEvents({
+      filter: { combinator: "AND", rules: [] },
+      grouping: { levels: [{ field: "month" }] },
+      window: { end: new Date(window.end), start: new Date(window.start) },
+    });
+
+    expect(received).toStrictEqual({
+      filter: { combinator: "AND", rules: [] },
+      grouping: { levels: [{ field: "month" }] },
+      window: {
+        end: "2026-02-01T00:00:00.000Z",
+        start: "2026-01-01T00:00:00.000Z",
+      },
+    });
+    expect(event?.start).toStrictEqual(new Date(window.start));
+    expect(event?.groups).toStrictEqual([
+      [{ key: "k", label: "L", path: null }],
+    ]);
+  });
+
+  it("reads the facets over a window, or over every event without one", async () => {
+    expect.hasAssertions();
+
+    const windows: unknown[] = [];
+    serveGraphqlApi(
+      mockFacetsQuery(({ variables }) => {
+        windows.push(variables.window);
+
+        return HttpResponse.json({ data: { facets: [] } });
+      }),
+    );
+
+    await findFacets({
+      end: new Date(window.end),
+      start: new Date(window.start),
+    });
+    await findFacets();
+
+    expect(windows).toStrictEqual([
+      { end: "2026-02-01T00:00:00.000Z", start: "2026-01-01T00:00:00.000Z" },
+      null,
+    ]);
   });
 });

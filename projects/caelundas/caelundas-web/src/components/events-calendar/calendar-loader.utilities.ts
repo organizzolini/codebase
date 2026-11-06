@@ -3,8 +3,7 @@ import {
   EVENT_FILTER_COLLECTIONS,
 } from "../calendar-filters/event-filter-collections.constants";
 import { resolveEventFilterCollection } from "../calendar-filters/event-filter-collections.utilities";
-import { compileEventFilter } from "../calendar-filters/event-filter-compiler.utilities";
-import { compileEventGrouping } from "../calendar-group-by/event-group-compiler.utilities";
+import { toEventFilterInput } from "../calendar-filters/event-filter-input.utilities";
 import {
   createEventGroupFields,
   getDefaultGrouping,
@@ -13,45 +12,57 @@ import {
 
 import {
   CACHED_READS,
-  EVENTS_BY_DATABASE,
-  FACETS_BY_DATABASE,
+  DATASET_CACHE,
+  EVENTS_CACHE,
+  FACETS_CACHE,
 } from "./calendar-loader.constants";
 import { getViewWindows, parseCalendarDate } from "./calendar-window.utilities";
+import {
+  describeDataset,
+  findEvents,
+  findFacets,
+} from "./events-api.utilities";
 
 import type { CalendarSearch } from "../../hooks/use-calendar-search/calendar-search.types";
 import type { EventFilterQuery } from "../calendar-filters/event-filters.types";
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
 import type { CalendarData, CalendarEmptiness } from "./calendar-loader.types";
+import type { EventsReadQuery } from "./events-api.types";
 import type {
   CalendarEventRecord,
   EventFacet,
-  EventsDatabase,
   EventsDataset,
-  EventsQuery,
   EventsWindow,
-  SqlGroupSource,
 } from "./events-database.types";
+
+/**
+ * Forgets every read the loader kept, so the next load asks the API again.
+ */
+export function clearCalendarCaches(): void {
+  DATASET_CACHE.clear();
+  EVENTS_CACHE.clear();
+  FACETS_CACHE.clear();
+}
 
 /**
  * Reads the events in the window the search parameters' view and day show,
  * plus a buffer, that pass their filter, together with the dataset's span
- * and zone. Reads go through a cache keyed by window and filter, so going
- * back to a window already seen answers at once.
+ * and zone, all through the API. Reads go through a cache keyed by window and
+ * filter, so going back to a window already seen answers at once.
  */
 export async function loadCalendar(
-  database: EventsDatabase,
   search: CalendarSearch,
 ): Promise<CalendarData> {
   const { anchor, visible, window } = resolveWindows(search);
-  // The facets are read once per database, and the default filter and the
+  // The facets are read for the visible days, and the default filter and the
   // grouping are resolved against them, so a later load waits on nothing here.
-  const facets = await findFacetsCached(database, visible);
+  const facets = await findFacetsCached(visible);
   const effectiveFilter = search.filter ?? resolveDefaultFilter(facets);
-  const filter = compileEventFilter(effectiveFilter);
-  const { colorBy, grouping, groups } = resolveGroups(search, facets);
+  const filter = toEventFilterInput(effectiveFilter);
+  const { colorBy, grouping } = resolveGroups(search, facets);
   const [dataset, events] = await Promise.all([
-    database.describeDataset(),
-    findEventsCached(database, { filter, groups, window }),
+    readCached(DATASET_CACHE, "dataset", describeDataset),
+    findEventsCached({ filter, window }),
   ]);
   const filtered = filter !== null;
   let emptiness = describeEmptiness({ dataset, events, visible });
@@ -60,7 +71,7 @@ export async function loadCalendar(
   // asked only when they are empty, so a filtered window costs no second
   // query.
   if (emptiness?.kind === "match" && filtered) {
-    const unfiltered = await findEventsCached(database, { window });
+    const unfiltered = await findEventsCached({ window });
 
     if (describeEmptiness({ dataset, events: unfiltered, visible }) === null) {
       emptiness = { kind: "filter" };
@@ -116,76 +127,53 @@ function describeEmptiness(data: {
 }
 
 /**
- * Reads the events for a window and filter through a small cache per
- * database, keeping the most recent reads. The data never changes while the
- * page is open, so a cached read stays right; a failed one is forgotten, so
- * Retry reads it again.
+ * Reads the events for a window and filter through a small cache, keeping
+ * the most recent reads. The data never changes while the page is open, so a
+ * cached read stays right.
  */
 async function findEventsCached(
-  database: EventsDatabase,
-  query: EventsQuery,
+  query: EventsReadQuery,
 ): Promise<CalendarEventRecord[]> {
-  let cache = EVENTS_BY_DATABASE.get(database);
-
-  if (cache === undefined) {
-    cache = new Map();
-    EVENTS_BY_DATABASE.set(database, cache);
-  }
-
-  const key = JSON.stringify([
-    query.window.start,
-    query.window.end,
-    query.filter ?? null,
-    query.groups ?? [],
-  ]);
-  let events = cache.get(key);
-
-  if (events === undefined) {
-    events = database.findEvents(query);
-    events.catch(() => {
-      cache.delete(key);
-    });
-  } else {
-    // Moved to the back, so the least recently read goes first.
-    cache.delete(key);
-  }
-
-  cache.set(key, events);
-
-  for (const oldest of cache.keys()) {
-    if (cache.size <= CACHED_READS) {
-      break;
-    }
-
-    cache.delete(oldest);
-  }
-
-  return events;
+  return readCached(
+    EVENTS_CACHE,
+    JSON.stringify([
+      query.window.start,
+      query.window.end,
+      query.filter ?? null,
+      query.grouping ?? null,
+    ]),
+    async () => findEvents(query),
+  );
 }
 
 /**
- * Reads a database's facets for the days a view shows through a small cache,
- * keeping the most recent windows: the tags are the same whatever the window,
- * but each counts only the events in it. A failed read is forgotten, so Retry
+ * Reads the facets for the days a view shows through a small cache, keeping
+ * the most recent windows: the tags are the same whatever the window, but
+ * each counts only the events in it.
+ */
+async function findFacetsCached(window: EventsWindow): Promise<EventFacet[]> {
+  return readCached(
+    FACETS_CACHE,
+    `${window.start.toISOString()}|${window.end.toISOString()}`,
+    async () => findFacets(window),
+  );
+}
+
+/**
+ * Answers a read from a cache of promises, starting it when the key is new
+ * and keeping the most recent ones. A failed read is forgotten, so Retry
  * reads it again.
  */
-async function findFacetsCached(
-  database: EventsDatabase,
-  window: EventsWindow,
-): Promise<EventFacet[]> {
-  let cache = FACETS_BY_DATABASE.get(database);
+async function readCached<TValue>(
+  cache: Map<string, Promise<TValue>>,
+  key: string,
+  read: () => Promise<TValue>,
+): Promise<TValue> {
+  let value = cache.get(key);
 
-  if (cache === undefined) {
-    cache = new Map();
-    FACETS_BY_DATABASE.set(database, cache);
-  }
-
-  const key = `${window.start.toISOString()}|${window.end.toISOString()}`;
-  let facets = cache.get(key);
-
-  if (facets === undefined) {
-    facets = database.findFacets(window);
-    facets.catch(() => {
+  if (value === undefined) {
+    value = read();
+    value.catch(() => {
       cache.delete(key);
     });
   } else {
@@ -193,7 +181,7 @@ async function findFacetsCached(
     cache.delete(key);
   }
 
-  cache.set(key, facets);
+  cache.set(key, value);
 
   for (const oldest of cache.keys()) {
     if (cache.size <= CACHED_READS) {
@@ -203,7 +191,7 @@ async function findFacetsCached(
     cache.delete(oldest);
   }
 
-  return facets;
+  return value;
 }
 
 /**
@@ -259,8 +247,7 @@ function resolveGrouping(
 }
 
 /**
- * The levels each event is read with keys for: the grouping's, then the one
- * the events are colored by, each compiled to its source of keys.
+ * The grouping the search's view shows and the level it colors events by.
  */
 function resolveGroups(
   search: CalendarSearch,
@@ -268,17 +255,10 @@ function resolveGroups(
 ): {
   colorBy: EventGroupLevel | undefined;
   grouping: EventGroupLevel[];
-  groups: SqlGroupSource[];
 } {
-  const grouping = resolveGrouping(search, facets);
-  const colorBy = resolveColorBy(search, facets);
-
   return {
-    colorBy,
-    grouping,
-    groups: compileEventGrouping(
-      colorBy === undefined ? grouping : [...grouping, colorBy],
-    ),
+    colorBy: resolveColorBy(search, facets),
+    grouping: resolveGrouping(search, facets),
   };
 }
 

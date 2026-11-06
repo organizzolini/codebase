@@ -7,6 +7,8 @@ import {
   stopGraphqlMockServer,
 } from "@codebase/interface/testing";
 
+import { clearCalendarCaches } from "../src/components/events-calendar/calendar-loader.utilities";
+
 import { installViewport } from "./viewport";
 
 // jsdom lays nothing out, so it neither scrolls, animates nor resizes an
@@ -52,6 +54,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  clearCalendarCaches();
   resetGraphqlMockServer();
 });
 

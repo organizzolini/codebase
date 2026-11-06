@@ -45,8 +45,8 @@ import { useCalendarSearch } from "../hooks/use-calendar-search/use-calendar-sea
  * The landing page.
  */
 // The calendar of astronomical events reads only in the browser: the static
-// build renders a bare shell ahead of time, and the database lives in a
-// worker. A first load that takes longer than a moment shows a skeleton, and
+// build renders a bare shell ahead of time, and the events come from the
+// Caelundas API. A first load that takes longer than a moment shows a skeleton, and
 // a failed one an error.
 //
 // Every later load, a move to another day, view or filter, reloads in the
@@ -69,15 +69,12 @@ export const Route = createFileRoute("/")({
   ssr: false,
   validateSearch: validateCalendarSearch,
 
-  loader: async ({ context, location, preload }) => {
+  loader: async ({ location, preload }) => {
     if (!preload) {
       loadedKeys.current = getCalendarReloadKey(location.search);
     }
 
-    return loadCalendar(
-      context.eventsDatabase,
-      validateCalendarSearch(location.search),
-    );
+    return loadCalendar(validateCalendarSearch(location.search));
   },
 });
 

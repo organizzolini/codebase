@@ -1,18 +1,14 @@
 import type {
   CalendarEventRecord,
   EventFacet,
-  EventsDatabase,
+  EventsDataset,
 } from "./events-database.types";
 
-export const FACETS_BY_DATABASE = new WeakMap<
-  EventsDatabase,
-  Map<string, Promise<EventFacet[]>>
->();
+export const DATASET_CACHE = new Map<string, Promise<EventsDataset | null>>();
 
-export const EVENTS_BY_DATABASE = new WeakMap<
-  EventsDatabase,
-  Map<string, Promise<CalendarEventRecord[]>>
->();
+export const FACETS_CACHE = new Map<string, Promise<EventFacet[]>>();
+
+export const EVENTS_CACHE = new Map<string, Promise<CalendarEventRecord[]>>();
 
 // Enough recent windows to step back and forth through a few months, or
 // views, without reading any of them twice.
