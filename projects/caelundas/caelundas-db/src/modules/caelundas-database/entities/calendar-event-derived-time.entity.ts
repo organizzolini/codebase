@@ -1,5 +1,8 @@
 import { ViewColumn, ViewEntity } from "typeorm";
 
+/** The event's start as the wall-clock `timestamp` in the zone the event names, so a reader groups and filters by the observer's local day and hour. */
+const LOCAL_START = `(e."start" at time zone e.timezone)`;
+
 /** The event's start as a UTC wall-clock `timestamp`, which every derived time but the duration reads. */
 const UTC_START = `(e."start" at time zone 'UTC')`;
 
@@ -7,7 +10,9 @@ const UTC_START = `(e."start" at time zone 'UTC')`;
  * One row of the `calendar_event_derived_times` view: a calendar event with the
  * times derived from its start and end, in UTC: the year, quarter, month,
  * week, weekday, hour and day it starts, how long it lasts in minutes, and
- * whether it is an instant or lasts a while.
+ * whether it is an instant or lasts a while. The day and hour it starts in the
+ * observer's own zone, `start_local_day` and `start_local_hour`, come from
+ * `start AT TIME ZONE timezone`.
  *
  * It is a plain view rather than a materialized one: the columns are cheap to
  * compute from the event's own row, so a reader pays nothing to keep it
@@ -39,6 +44,8 @@ const UTC_START = `(e."start" at time zone 'UTC')`;
     extract(dow from ${UTC_START})::integer as start_weekday,
     extract(hour from ${UTC_START})::integer as start_hour,
     ${UTC_START}::date::text as start_day,
+    ${LOCAL_START}::date::text as start_local_day,
+    extract(hour from ${LOCAL_START})::integer as start_local_hour,
     floor(extract(epoch from e."end" - e."start") / 60)::integer as duration_minutes,
     case when e."start" = e."end" then 'Instant' else 'Duration' end as temporality
 from calendar_events as e`,
@@ -83,6 +90,12 @@ export class CalendarEventDerivedTime {
 
   @ViewColumn()
   startHour!: number;
+
+  @ViewColumn()
+  startLocalDay!: string;
+
+  @ViewColumn()
+  startLocalHour!: number;
 
   @ViewColumn()
   startMonth!: number;

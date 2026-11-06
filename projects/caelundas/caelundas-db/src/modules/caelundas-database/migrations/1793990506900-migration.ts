@@ -4,8 +4,8 @@ import type { MigrationInterface, QueryRunner } from "typeorm";
  * Creates and drops the caelundas schema's tables, derived tables and view,
  * generated from the entities against an empty `caelundas_development`.
  */
-export class Migration1793990400886 implements MigrationInterface {
-  name = "Migration1793990400886";
+export class Migration1793990506900 implements MigrationInterface {
+  name = "Migration1793990506900";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -111,6 +111,8 @@ export class Migration1793990400886 implements MigrationInterface {
     extract(dow from (e."start" at time zone 'UTC'))::integer as start_weekday,
     extract(hour from (e."start" at time zone 'UTC'))::integer as start_hour,
     (e."start" at time zone 'UTC')::date::text as start_day,
+    (e."start" at time zone e.timezone)::date::text as start_local_day,
+    extract(hour from (e."start" at time zone e.timezone))::integer as start_local_hour,
     floor(extract(epoch from e."end" - e."start") / 60)::integer as duration_minutes,
     case when e."start" = e."end" then 'Instant' else 'Duration' end as temporality
 from calendar_events as e`);
@@ -125,7 +127,7 @@ from calendar_events as e`);
         "caelundas",
         "VIEW",
         "calendar_event_derived_times",
-        'select\n    e.id,\n    e.created_at,\n    e.created_by,\n    e.updated_at,\n    e.updated_by,\n    e.color,\n    e.description,\n    e."end",\n    e.latitude,\n    e."location",\n    e.longitude,\n    e."start",\n    e."summary",\n    e.timezone,\n    extract(year from (e."start" at time zone \'UTC\'))::integer as start_year,\n    extract(quarter from (e."start" at time zone \'UTC\'))::integer as start_quarter,\n    extract(month from (e."start" at time zone \'UTC\'))::integer as start_month,\n    floor((extract(doy from (e."start" at time zone \'UTC\')) + 6 - mod(extract(dow from (e."start" at time zone \'UTC\')) + 6, 7)) / 7)::integer as start_week,\n    extract(dow from (e."start" at time zone \'UTC\'))::integer as start_weekday,\n    extract(hour from (e."start" at time zone \'UTC\'))::integer as start_hour,\n    (e."start" at time zone \'UTC\')::date::text as start_day,\n    floor(extract(epoch from e."end" - e."start") / 60)::integer as duration_minutes,\n    case when e."start" = e."end" then \'Instant\' else \'Duration\' end as temporality\nfrom calendar_events as e',
+        'select\n    e.id,\n    e.created_at,\n    e.created_by,\n    e.updated_at,\n    e.updated_by,\n    e.color,\n    e.description,\n    e."end",\n    e.latitude,\n    e."location",\n    e.longitude,\n    e."start",\n    e."summary",\n    e.timezone,\n    extract(year from (e."start" at time zone \'UTC\'))::integer as start_year,\n    extract(quarter from (e."start" at time zone \'UTC\'))::integer as start_quarter,\n    extract(month from (e."start" at time zone \'UTC\'))::integer as start_month,\n    floor((extract(doy from (e."start" at time zone \'UTC\')) + 6 - mod(extract(dow from (e."start" at time zone \'UTC\')) + 6, 7)) / 7)::integer as start_week,\n    extract(dow from (e."start" at time zone \'UTC\'))::integer as start_weekday,\n    extract(hour from (e."start" at time zone \'UTC\'))::integer as start_hour,\n    (e."start" at time zone \'UTC\')::date::text as start_day,\n    (e."start" at time zone e.timezone)::date::text as start_local_day,\n    extract(hour from (e."start" at time zone e.timezone))::integer as start_local_hour,\n    floor(extract(epoch from e."end" - e."start") / 60)::integer as duration_minutes,\n    case when e."start" = e."end" then \'Instant\' else \'Duration\' end as temporality\nfrom calendar_events as e',
       ],
     );
   }

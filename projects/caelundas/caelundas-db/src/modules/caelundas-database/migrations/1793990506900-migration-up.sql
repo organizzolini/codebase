@@ -179,6 +179,8 @@ create view calendar_event_derived_times as select
     extract(dow from (e."start" at time zone 'UTC'))::integer as start_weekday,
     extract(hour from (e."start" at time zone 'UTC'))::integer as start_hour,
     (e."start" at time zone 'UTC')::date::text as start_day,
+    (e."start" at time zone e.timezone)::date::text as start_local_day,
+    extract(hour from (e."start" at time zone e.timezone))::integer as start_local_hour,
     floor(extract(epoch from e."end" - e."start") / 60)::integer as duration_minutes,
     case when e."start" = e."end" then 'Instant' else 'Duration' end as temporality
 from calendar_events as e;

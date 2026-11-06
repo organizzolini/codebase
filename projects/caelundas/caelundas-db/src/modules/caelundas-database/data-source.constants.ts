@@ -12,7 +12,7 @@ import { Constellation } from "./entities/constellation.entity";
 import { Star } from "./entities/star.entity";
 import { TagNode } from "./entities/tag-node.entity";
 import { Tag } from "./entities/tag.entity";
-import { Migration1793990400886 } from "./migrations/1793990400886-migration";
+import { Migration1793990506900 } from "./migrations/1793990506900-migration";
 
 /** The tables, derived tables and view every application that opens the caelundas schema shares. */
 export const CAELUNDAS_DATABASE_ENTITIES = [
@@ -28,7 +28,7 @@ export const CAELUNDAS_DATABASE_ENTITIES = [
 ] as const;
 
 /** Every migration, in order, for the test harness; the runtime module runs none. */
-export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1793990400886] as const;
+export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1793990506900] as const;
 
 /**
  * The data source the TypeORM command line reads for
