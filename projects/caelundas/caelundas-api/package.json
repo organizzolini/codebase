@@ -9,6 +9,7 @@
     "@nestjs/core": "catalog:",
     "@nestjs/graphql": "catalog:",
     "@nestjs/platform-express": "catalog:",
+    "astronomy-engine": "catalog:",
     "graphql": "catalog:",
     "lightship": "catalog:",
     "reflect-metadata": "catalog:",

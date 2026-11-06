@@ -11,6 +11,7 @@ import {
   GRAPHQL_SCHEMA_FILE,
 } from "./caelundas-api.constants";
 import { HealthModule } from "./modules/health/health.module";
+import { NightSkyModule } from "./modules/night-sky/night-sky.module";
 
 /**
  * Root NestJS application module for the CaelundasApi GraphQL API.
@@ -31,6 +32,7 @@ import { HealthModule } from "./modules/health/health.module";
     }),
     LoggerModule,
     HealthModule,
+    NightSkyModule,
   ],
 })
 export class CaelundasApiModule {}
