@@ -12,6 +12,7 @@ import {
   environmentSchema,
   GRAPHQL_SCHEMA_FILE,
 } from "./caelundas-api.constants";
+import { EventsModule } from "./modules/events/events.module";
 import { HealthModule } from "./modules/health/health.module";
 import { NightSkyModule } from "./modules/night-sky/night-sky.module";
 
@@ -36,6 +37,7 @@ import type { MiddlewareConsumer, NestModule } from "@nestjs/common";
     }),
     CaelundasDatabaseModule,
     LoggerModule,
+    EventsModule,
     HealthModule,
     NightSkyModule,
   ],

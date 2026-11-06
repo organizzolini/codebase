@@ -11,12 +11,14 @@
     "@nestjs/core": "catalog:",
     "@nestjs/graphql": "catalog:",
     "@nestjs/platform-express": "catalog:",
+    "@nestjs/typeorm": "catalog:",
     "astronomy-engine": "catalog:",
     "compression": "catalog:",
     "graphql": "catalog:",
     "lightship": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
+    "typeorm": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
@@ -28,7 +30,6 @@
     "@types/compression": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "typeorm": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },

@@ -8,6 +8,7 @@ import { describe, expect, it, vi } from "vitest";
 import { CaelundasDatabaseModule } from "@codebase/caelundas-db";
 
 import { CaelundasApiModule } from "./caelundas-api.module";
+import { EventsModule } from "./modules/events/events.module";
 
 /**
  * Reads the `autoSchemaFile` option a root module hands `GraphQLModule`, by
@@ -60,6 +61,17 @@ describe("caelundas api module suite", () => {
     );
 
     expect(imports).toContain(CaelundasDatabaseModule);
+  });
+
+  it("serves the events, facets and dataset queries", () => {
+    expect.hasAssertions();
+
+    const imports: unknown = Reflect.getMetadata(
+      MODULE_METADATA.IMPORTS,
+      CaelundasApiModule,
+    );
+
+    expect(imports).toContain(EventsModule);
   });
 
   it("emits the schema beside the module whatever the working directory", async () => {
