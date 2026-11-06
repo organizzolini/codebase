@@ -9,6 +9,7 @@ import {
 } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
+import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 import { TagsService } from "../tags/tags.service";
 import { classifyEvent, tagPathKey } from "../tags/tags.utilities";
 
@@ -18,7 +19,6 @@ import {
   CALENDAR_EVENT_TAG_BATCH_SIZE,
   CALENDAR_EVENT_UPDATE_COLUMNS,
   COORDINATE_DECIMAL_PLACES,
-  SQLITE_MAXIMUM_PARAMETERS,
 } from "./calendar-events.constants";
 
 import type { ClassifiedCalendarEvent } from "../tags/tags.types";
@@ -76,7 +76,7 @@ export class CalendarEventsService {
     for (
       let offset = 0;
       offset < eventIds.length;
-      offset += SQLITE_MAXIMUM_PARAMETERS
+      offset += POSTGRES_MAXIMUM_PARAMETERS
     ) {
       const links = await this.calendarEventRepository.manager
         .createQueryBuilder(CalendarEventTag, "eventTag")
@@ -84,7 +84,10 @@ export class CalendarEventsService {
         .select("eventTag.calendarEventId", "calendarEventId")
         .addSelect("tag.name", "name")
         .where("eventTag.calendarEventId IN (:...eventIds)", {
-          eventIds: eventIds.slice(offset, offset + SQLITE_MAXIMUM_PARAMETERS),
+          eventIds: eventIds.slice(
+            offset,
+            offset + POSTGRES_MAXIMUM_PARAMETERS,
+          ),
         })
         .getRawMany<{ calendarEventId: string; name: string }>();
 

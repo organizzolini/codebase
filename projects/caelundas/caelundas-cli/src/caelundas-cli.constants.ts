@@ -3,6 +3,13 @@ import { z } from "zod";
 import { CAELUNDAS_PROJECT } from "@codebase/caelundas-db";
 import { postgresEnvironmentSchema } from "@codebase/persistence";
 
+/**
+ * The most bind parameters one Postgres statement accepts: the wire protocol
+ * counts them in sixteen bits. A bulk insert is split into statements of
+ * `floor(limit / columns)` rows so that none passes it.
+ */
+export const POSTGRES_MAXIMUM_PARAMETERS = 65_535;
+
 // 🌱 Add environment schema fields here
 export const environmentSchema = z.object({
   ...postgresEnvironmentSchema({ project: CAELUNDAS_PROJECT }),

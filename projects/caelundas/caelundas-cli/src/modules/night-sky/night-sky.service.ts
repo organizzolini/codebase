@@ -7,7 +7,8 @@ import { DataSource } from "typeorm";
 import { Constellation, ConstellationLine, Star } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
-import { INSERT_BATCH_SIZE } from "./night-sky.constants";
+import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
+
 import { buildNightSkyRows } from "./night-sky.utilities";
 
 import type { NightSkyFiles, NightSkyRows } from "./night-sky.types";
@@ -38,18 +39,27 @@ export class NightSkyService {
   // 🔏 Private Methods
 
   /**
-   * Inserts rows of one entity in batches under the database's parameter limit.
+   * Inserts rows of one entity in batches under Postgres's parameter limit,
+   * each row binding one parameter per column it carries, so a wide row
+   * makes a smaller batch.
    */
   private async insertInBatches<Entity extends ObjectLiteral>(
     manager: EntityManager,
     target: EntityTarget<Entity>,
     rows: readonly Entity[],
   ): Promise<void> {
-    for (let start = 0; start < rows.length; start += INSERT_BATCH_SIZE) {
-      await manager.insert(
-        target,
-        rows.slice(start, start + INSERT_BATCH_SIZE),
-      );
+    const [first] = rows;
+
+    if (first === undefined) {
+      return;
+    }
+
+    const batchSize = Math.floor(
+      POSTGRES_MAXIMUM_PARAMETERS / Object.keys(first).length,
+    );
+
+    for (let start = 0; start < rows.length; start += batchSize) {
+      await manager.insert(target, rows.slice(start, start + batchSize));
     }
   }
 

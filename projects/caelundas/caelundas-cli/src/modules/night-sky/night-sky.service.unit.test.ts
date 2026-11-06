@@ -5,10 +5,12 @@ import path from "node:path";
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { getDataSourceToken } from "@nestjs/typeorm";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Constellation, ConstellationLine, Star } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
+
+import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 
 import { NightSkyService } from "./night-sky.service";
 
@@ -104,5 +106,32 @@ describe(NightSkyService, () => {
       ConstellationLine,
       expect.any(Array),
     );
+  });
+
+  it("splits a catalog wider than one statement allows into batches under the parameter limit", async () => {
+    const count = 14_000;
+    const catalog = [
+      '"id","hip","proper","ra","dec","mag","ci"',
+      ...Array.from(
+        { length: count },
+        (_value, index) =>
+          `${String(index + 1)},${String(index + 1)},"",1.5,10,3,0.5`,
+      ),
+    ].join("\n");
+    fs.writeFileSync(files.stars, catalog);
+    vi.mocked(manager.insert).mockClear();
+
+    await service.ingest(files);
+    const starBatches = vi
+      .mocked(manager.insert)
+      .mock.calls.filter(([target]) => target === Star)
+      .map(([, rows]) => rows as readonly unknown[]);
+
+    expect(starBatches.length).toBeGreaterThan(1);
+    expect(starBatches.flat()).toHaveLength(count);
+
+    for (const rows of starBatches) {
+      expect(rows.length * 5).toBeLessThanOrEqual(POSTGRES_MAXIMUM_PARAMETERS);
+    }
   });
 });
