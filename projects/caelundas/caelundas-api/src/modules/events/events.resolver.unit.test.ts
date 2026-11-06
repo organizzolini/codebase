@@ -1,6 +1,7 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { CalendarView } from "./calendar-view.entities";
 import { EventFilterCombinator } from "./event-filter-combinator.entities";
 import { EventsResolver } from "./events.resolver";
 import { EventsService } from "./events.service";
@@ -15,6 +16,7 @@ const findFilterCollections =
   vi.fn<() => Promise<ResolvedEventFilterCollection[]>>();
 const findFacets =
   vi.fn<(...parameters: unknown[]) => Promise<EventFacetEntity[]>>();
+const findCalendarWindows = vi.fn<(...parameters: unknown[]) => unknown>();
 const findEvents =
   vi.fn<(...parameters: unknown[]) => Promise<CalendarEventEntity[]>>();
 
@@ -29,6 +31,7 @@ describe(EventsResolver, () => {
           provide: EventsService,
           useValue: {
             describeDataset,
+            findCalendarWindows,
             findEvents,
             findFacets,
             findFilterCollections,
@@ -149,6 +152,25 @@ describe(EventsResolver, () => {
         ],
       }),
     ).rejects.toThrow(/too_big/u);
+  });
+
+  it("answers the calendar windows query with the service's windows", () => {
+    expect.hasAssertions();
+
+    const windows = { columnMinutes: null, visible: {}, window: {} };
+
+    findCalendarWindows.mockReturnValueOnce(windows);
+
+    expect(
+      resolver.calendarWindows({
+        anchor: "2026-10-22T12:00:00.000Z",
+        view: CalendarView.WEEK,
+      }),
+    ).toBe(windows);
+    expect(findCalendarWindows).toHaveBeenCalledWith({
+      anchor: "2026-10-22T12:00:00.000Z",
+      view: "week",
+    });
   });
 
   it("answers the facets query over the window, or over everything without one", async () => {

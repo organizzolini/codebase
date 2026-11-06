@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
 import { EntityManager } from "typeorm";
 
+import { getCalendarWindows } from "./calendar-windows.utilities";
 import { resolveEventFilterCollections } from "./event-filter-collections.utilities";
 import { compileEventFilter } from "./event-filter-compiler.utilities";
 import { compileEventGrouping } from "./event-grouping-compiler.utilities";
@@ -17,6 +18,8 @@ import {
 import { toIsoString } from "./events.utilities";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
+import type { CalendarWindowsArguments } from "./calendar-windows-arguments.entities";
+import type { CalendarWindows } from "./calendar-windows.types";
 import type { EventFacetEntity } from "./event-facet.entities";
 import type { ResolvedEventFilterCollection } from "./event-filter-collections.types";
 import type { EventFilterGroup } from "./event-filter.types";
@@ -51,6 +54,17 @@ export class EventsService {
     const rows = await this.select(DATASET_SQL, [], datasetRowSchema);
 
     return rows.at(0) ?? null;
+  }
+
+  /**
+   * The days a calendar view or a timeline scale shows around a day, and the
+   * window of events to read for them.
+   */
+  public findCalendarWindows(args: CalendarWindowsArguments): CalendarWindows {
+    return getCalendarWindows(args.view, new Date(args.anchor), {
+      agendaDays: args.agendaDays,
+      scale: args.scale,
+    });
   }
 
   /**

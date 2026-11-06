@@ -2,6 +2,8 @@ import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
 import { CalendarEventEntity } from "./calendar-event.entities";
+import { CalendarWindowsArguments } from "./calendar-windows-arguments.entities";
+import { CalendarWindowsEntity } from "./calendar-windows.entities";
 import { EventFacetEntity } from "./event-facet.entities";
 import { EventFilterCollectionEntity } from "./event-filter-collection.entities";
 import { DEFAULT_EVENT_FILTER_COLLECTION_ID } from "./event-filter-collections.constants";
@@ -28,6 +30,20 @@ export class EventsResolver {
     @Inject(EventsService) private readonly eventsService: EventsService,
   ) {}
   // 🔎 Queries
+
+  /**
+   * The days a view shows and the window to read events for.
+   */
+  @Query(() => CalendarWindowsEntity, {
+    description:
+      "The days a calendar view or a timeline scale shows around a day, and the window of events to read for them, a day wider either side: pass it to events and facets so only the span the view draws is read.",
+    name: "calendarWindows",
+  })
+  public calendarWindows(
+    @Arguments() args: CalendarWindowsArguments,
+  ): CalendarWindowsEntity {
+    return this.eventsService.findCalendarWindows(args);
+  }
 
   /**
    * The span and zone of the whole dataset.

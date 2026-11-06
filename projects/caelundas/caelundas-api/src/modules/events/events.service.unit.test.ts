@@ -3,7 +3,9 @@ import { getEntityManagerToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
+import { CalendarView } from "./calendar-view.entities";
 import { EventsService } from "./events.service";
+import { TimelineScale } from "./timeline-scale.entities";
 
 import type { EntityManager } from "typeorm";
 
@@ -36,6 +38,25 @@ describe(EventsService, () => {
       service.select("select 1", [7], z.object({ count: z.coerce.number() })),
     ).resolves.toStrictEqual([{ count: 3 }, { count: 4 }]);
     expect(query).toHaveBeenCalledWith("select 1", [7]);
+  });
+
+  it("works out the windows a view and a timeline scale read", () => {
+    expect.hasAssertions();
+
+    expect(
+      service.findCalendarWindows({
+        anchor: "2026-10-22T12:00:00.000Z",
+        scale: TimelineScale.YEAR,
+        view: CalendarView.TIMELINE,
+      }).visible,
+    ).toStrictEqual({
+      end: new Date("2027-01-01T00:00:00.000Z"),
+      start: new Date("2026-01-01T00:00:00.000Z"),
+    });
+    expect(
+      service.findCalendarWindows({ anchor: new Date("2026-10-22T12:00:00Z") })
+        .columnMinutes,
+    ).toBeNull();
   });
 
   it("describes the dataset from its single row", async () => {
