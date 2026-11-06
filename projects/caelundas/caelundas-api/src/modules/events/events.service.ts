@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
 import { EntityManager } from "typeorm";
 
+import { resolveEventFilterCollections } from "./event-filter-collections.utilities";
 import { compileEventFilter } from "./event-filter-compiler.utilities";
 import {
   DATASET_SQL,
@@ -15,6 +16,7 @@ import { toIsoString } from "./events.utilities";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
 import type { EventFacetEntity } from "./event-facet.entities";
+import type { ResolvedEventFilterCollection } from "./event-filter-collections.types";
 import type { EventFilterGroup } from "./event-filter.types";
 import type { EventsWindowInput } from "./events-window-input.entities";
 import type { EventsDatasetEntity } from "./events.entities";
@@ -117,6 +119,16 @@ export class EventsService {
     }
 
     return [...facets.values()];
+  }
+
+  /**
+   * The named filter collections resolved against the tags the whole
+   * dataset has, in menu order.
+   */
+  public async findFilterCollections(): Promise<
+    ResolvedEventFilterCollection[]
+  > {
+    return resolveEventFilterCollections(await this.findFacets());
   }
 
   /**

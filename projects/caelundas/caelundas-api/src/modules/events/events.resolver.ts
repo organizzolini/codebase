@@ -3,6 +3,8 @@ import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
 import { CalendarEventEntity } from "./calendar-event.entities";
 import { EventFacetEntity } from "./event-facet.entities";
+import { EventFilterCollectionEntity } from "./event-filter-collection.entities";
+import { DEFAULT_EVENT_FILTER_COLLECTION_ID } from "./event-filter-collections.constants";
 import { EventFilterGroupEntity } from "./event-filter.entities";
 import { parseEventFilter } from "./event-filter.utilities";
 import { EventsWindowInput } from "./events-window-input.entities";
@@ -33,6 +35,24 @@ export class EventsResolver {
   })
   public async dataset(): Promise<EventsDatasetEntity | null> {
     return this.eventsService.describeDataset();
+  }
+
+  /**
+   * The collection the calendar opens on.
+   */
+  @Query(() => EventFilterCollectionEntity, {
+    description:
+      "The filter collection the calendar opens on, or null when the data has none of the tags it names.",
+    name: "defaultFilterCollection",
+    nullable: true,
+  })
+  public async defaultFilterCollection(): Promise<EventFilterCollectionEntity | null> {
+    const collections = await this.eventsService.findFilterCollections();
+
+    return (
+      collections.find(({ id }) => id === DEFAULT_EVENT_FILTER_COLLECTION_ID) ??
+      null
+    );
   }
 
   /**
@@ -75,6 +95,18 @@ export class EventsResolver {
     filter?: EventFilterGroupEntity | null,
   ): Promise<EventFacetEntity[]> {
     return this.eventsService.findFacets(window, parseEventFilter(filter));
+  }
+
+  /**
+   * The named filter collections.
+   */
+  @Query(() => [EventFilterCollectionEntity], {
+    description:
+      "The named filters the calendar offers, resolved against the tags the data has: a collection naming tags the data lacks applies to the ones it has, and one none of whose tags exist is left out.",
+    name: "filterCollections",
+  })
+  public async filterCollections(): Promise<EventFilterCollectionEntity[]> {
+    return this.eventsService.findFilterCollections();
   }
   // 🖋️ Mutations
   // 🔗 Relations

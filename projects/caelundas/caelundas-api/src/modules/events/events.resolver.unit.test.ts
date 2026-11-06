@@ -7,9 +7,12 @@ import { EventsService } from "./events.service";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
 import type { EventFacetEntity } from "./event-facet.entities";
+import type { ResolvedEventFilterCollection } from "./event-filter-collections.types";
 import type { EventsDatasetEntity } from "./events.entities";
 
 const describeDataset = vi.fn<() => Promise<EventsDatasetEntity | null>>();
+const findFilterCollections =
+  vi.fn<() => Promise<ResolvedEventFilterCollection[]>>();
 const findFacets =
   vi.fn<(...parameters: unknown[]) => Promise<EventFacetEntity[]>>();
 const findEvents =
@@ -24,7 +27,12 @@ describe(EventsResolver, () => {
         EventsResolver,
         {
           provide: EventsService,
-          useValue: { describeDataset, findEvents, findFacets },
+          useValue: {
+            describeDataset,
+            findEvents,
+            findFacets,
+            findFilterCollections,
+          },
         },
       ],
     }).compile();
@@ -126,5 +134,33 @@ describe(EventsResolver, () => {
     await resolver.facets();
 
     expect(findFacets).toHaveBeenLastCalledWith(undefined, null);
+  });
+
+  it("serves the filter collections the service resolved", async () => {
+    expect.hasAssertions();
+
+    const collection: ResolvedEventFilterCollection = {
+      description: "Everything notable",
+      filter: { combinator: EventFilterCombinator.AND, groups: [], rules: [] },
+      id: "highlights",
+      name: "Highlights",
+    };
+    const other = { ...collection, id: "major-aspects" };
+
+    findFilterCollections.mockResolvedValue([other, collection]);
+
+    await expect(resolver.filterCollections()).resolves.toStrictEqual([
+      other,
+      collection,
+    ]);
+    await expect(resolver.defaultFilterCollection()).resolves.toBe(collection);
+  });
+
+  it("answers no default collection when the data cannot serve it", async () => {
+    expect.hasAssertions();
+
+    findFilterCollections.mockResolvedValue([]);
+
+    await expect(resolver.defaultFilterCollection()).resolves.toBeNull();
   });
 });

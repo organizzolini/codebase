@@ -269,4 +269,35 @@ describe(EventsService, () => {
       service.select("select 1", [], z.object({ count: z.coerce.number() })),
     ).rejects.toThrow(z.ZodError);
   });
+
+  it("resolves the filter collections against the tags of the whole dataset", async () => {
+    expect.hasAssertions();
+
+    query.mockResolvedValueOnce([
+      {
+        count: "0",
+        depth: "0",
+        id: "planetary",
+        name: "Type",
+        path_below_root: "",
+        root_id: "planetary",
+      },
+      {
+        count: "3",
+        depth: "1",
+        id: "direction",
+        name: "Direction",
+        path_below_root: "Direction",
+        root_id: "planetary",
+      },
+    ]);
+
+    const collections = await service.findFilterCollections();
+
+    expect(collections.map(({ id }) => id)).toStrictEqual([
+      "highlights",
+      "planetary-cycles",
+    ]);
+    expect(query).toHaveBeenLastCalledWith(expect.any(String), [null, null]);
+  });
 });
