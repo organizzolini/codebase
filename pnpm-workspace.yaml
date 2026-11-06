@@ -235,6 +235,8 @@ catalog:
   better-sqlite3: ^13.0.3
   '@types/better-sqlite3': ^9.6.0
   astronomy-engine: 2.1.19
+  compression: ^1.8.2
+  '@types/compression': ^1.8.1
 catalogs:
   # Only the ic-suite packages published to npm use this catalog
   # (`catalog:ic-suite`); everything else stays on the default one. Their

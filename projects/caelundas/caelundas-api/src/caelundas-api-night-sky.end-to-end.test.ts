@@ -12,6 +12,20 @@ const nightSkyResponseSchema = z.object({
   data: z.object({ nightSky: z.object({ svg: z.string() }) }),
 });
 
+const measurementsResponseSchema = z.object({
+  data: z.object({
+    nightSky: z.object({
+      measurements: z.object({
+        fieldOfViewClamped: z.boolean(),
+        periodSeconds: z.number(),
+        starsDrawn: z.number(),
+        starsInCatalog: z.number(),
+        svgLength: z.number(),
+      }),
+    }),
+  }),
+});
+
 const errorResponseSchema = z.object({
   errors: z.array(z.object({ message: z.string() })).min(1),
 });
@@ -231,5 +245,41 @@ describe("caelundas api night sky end-to-end suite", () => {
     const difference = Math.abs(startDegreesOf(svg) - expected);
 
     expect(Math.min(difference, 360 - difference)).toBeLessThan(0.5);
+  });
+
+  it("returns the measurements only when they are asked for", async () => {
+    expect.hasAssertions();
+
+    const plain = await query("width: 800, height: 600");
+    const measured = measurementsResponseSchema.parse(
+      await query(
+        "width: 800, height: 600",
+        "svg measurements { fieldOfViewClamped periodSeconds starsDrawn starsInCatalog svgLength }",
+      ),
+    );
+    const { svg } = nightSkyResponseSchema.parse(plain).data.nightSky;
+
+    expect(JSON.stringify(plain)).not.toContain("measurements");
+    expect(measured.data.nightSky.measurements.svgLength).toBe(svg.length);
+    expect(measured.data.nightSky.measurements.starsDrawn).toBeGreaterThan(0);
+  });
+
+  it("compresses a response to a client that accepts it", async () => {
+    expect.hasAssertions();
+
+    const response = await fetch(url, {
+      body: JSON.stringify({
+        query: "{ nightSky(input: { width: 800, height: 600 }) { svg } }",
+      }),
+      headers: {
+        "accept-encoding": "gzip",
+        "content-type": "application/json",
+      },
+      method: "POST",
+    });
+    const body = nightSkyResponseSchema.parse(await response.json());
+
+    expect(response.headers.get("content-encoding")).toBe("gzip");
+    expect(body.data.nightSky.svg).toContain("<svg");
   });
 });

@@ -4,7 +4,7 @@
 
 **Type**: Node.js HTTP API server (NestJS + Apollo GraphQL)
 
-**Purpose**: Serve the astronomical events `caelundas-cli` writes to SQLite to `caelundas-web` over GraphQL. Today it only answers the `health` query; the calendar queries arrive in later pull requests. Runs locally on `CAELUNDAS_API_PORT` (default 6173).
+**Purpose**: Serve the astronomical events `caelundas-cli` writes to SQLite to `caelundas-web` over GraphQL. It answers the `health` query and `nightSky`, which draws the animated star-field backdrop; the calendar queries arrive in later pull requests. Runs locally on `CAELUNDAS_API_PORT` (default 6173).
 
 ### Run Locally
 
@@ -52,6 +52,8 @@ src/
       health.constants.ts
       health.types.ts
       health.*.unit.test.ts
+    night-sky/                        # The `nightSky` query: the builder, its catalog and cache
+      data/night-sky-catalog.json     # Trimmed HYG stars and d3-celestial figures, loaded once at startup
     <domain>/                         # Add feature modules here
       <domain>.module.ts
       <domain>.resolver.ts
@@ -115,7 +117,7 @@ Outputs structured JSON in production (`NODE_ENV=production`) and pretty-printed
 
 ### GraphQL Playground
 
-The GraphQL playground is available at `http://localhost:3000/graphql` in development.
+The GraphQL playground is available at `http://localhost:6173/graphql` in development.
 Disabled automatically in production (`NODE_ENV=production`).
 
 ### Key Commands

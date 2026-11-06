@@ -3,6 +3,7 @@ import { ApolloDriver, type ApolloDriverConfig } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
+import compression from "compression";
 
 import { LoggerModule } from "@codebase/observability";
 
@@ -12,6 +13,8 @@ import {
 } from "./caelundas-api.constants";
 import { HealthModule } from "./modules/health/health.module";
 import { NightSkyModule } from "./modules/night-sky/night-sky.module";
+
+import type { MiddlewareConsumer, NestModule } from "@nestjs/common";
 
 /**
  * Root NestJS application module for the CaelundasApi GraphQL API.
@@ -35,4 +38,12 @@ import { NightSkyModule } from "./modules/night-sky/night-sky.module";
     NightSkyModule,
   ],
 })
-export class CaelundasApiModule {}
+export class CaelundasApiModule implements NestModule {
+  /**
+   * Compresses what the GraphQL endpoint answers, for a client that accepts
+   * it, since a night sky is a large SVG.
+   */
+  public configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(compression()).forRoutes("graphql");
+  }
+}
