@@ -1,5 +1,7 @@
 ## Start
 
+The API reads the Caelundas Postgres through `CaelundasDatabaseModule` from `caelundas-db`, so the database must be running and migrated first (`nx run caelundas-db:migration:run`). Copy `.env.default` to `.env`; the `CAELUNDAS_POSTGRES_*` values there match the shared Compose Postgres.
+
 ```bash
 nx run caelundas-api:start
 ```

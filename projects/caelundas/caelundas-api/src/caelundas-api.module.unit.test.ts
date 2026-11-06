@@ -5,6 +5,8 @@ import { MODULE_METADATA } from "@nestjs/common/constants";
 import { GRAPHQL_MODULE_OPTIONS } from "@nestjs/graphql";
 import { describe, expect, it, vi } from "vitest";
 
+import { CaelundasDatabaseModule } from "@codebase/caelundas-db";
+
 import { CaelundasApiModule } from "./caelundas-api.module";
 
 /**
@@ -47,6 +49,17 @@ describe("caelundas api module suite", () => {
     const module = new CaelundasApiModule();
 
     expect(module).toBeDefined();
+  });
+
+  it("connects to the Caelundas Postgres through CaelundasDatabaseModule", () => {
+    expect.hasAssertions();
+
+    const imports: unknown = Reflect.getMetadata(
+      MODULE_METADATA.IMPORTS,
+      CaelundasApiModule,
+    );
+
+    expect(imports).toContain(CaelundasDatabaseModule);
   });
 
   it("emits the schema beside the module whatever the working directory", async () => {

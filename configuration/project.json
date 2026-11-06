@@ -48,7 +48,6 @@
       "!{workspaceRoot}/.agents/skills/implement/**",
       "!{workspaceRoot}/.agents/skills/improve-codebase-architecture/**",
       "!{workspaceRoot}/.agents/skills/link-workspace-packages/**",
-      "!{workspaceRoot}/.agents/skills/monitor-ci/**",
       "!{workspaceRoot}/.agents/skills/nx-generate/**",
       "!{workspaceRoot}/.agents/skills/nx-import/**",
       "!{workspaceRoot}/.agents/skills/nx-plugins/**",

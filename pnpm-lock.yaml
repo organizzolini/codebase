@@ -395,6 +395,9 @@ catalogs:
     autoprefixer:
       specifier: ^10.5.0
       version: 10.6.1
+    aws4fetch:
+      specifier: ^1.0.20
+      version: 1.0.20
     cheerio:
       specifier: ^1.0.0
       version: 1.2.0
@@ -1091,6 +1094,9 @@ importers:
       '@nestjs/core':
         specifier: 'catalog:'
         version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/platform-express@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      aws4fetch:
+        specifier: 'catalog:'
+        version: 1.0.20
       nest-commander:
         specifier: 'catalog:'
         version: 3.21.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@types/inquirer@8.2.13)(@types/node@26.6.2)(typescript@6.0.3)
@@ -1197,9 +1203,15 @@ importers:
       '@as-integrations/express5':
         specifier: 'catalog:'
         version: 1.1.2(@apollo/server@5.5.1(graphql@16.14.2)(supports-color@10.2.2))(express@5.3.0(supports-color@10.2.2))
+      '@codebase/caelundas-db':
+        specifier: workspace:*
+        version: link:../caelundas-db
       '@codebase/observability':
         specifier: workspace:*
         version: link:../../common/observability
+      '@codebase/persistence':
+        specifier: workspace:*
+        version: link:../../common/persistence
       '@nestjs/apollo':
         specifier: 'catalog:'
         version: 14.0.2(@apollo/server@5.5.1(graphql@16.14.2)(supports-color@10.2.2))(@as-integrations/express5@1.1.2(@apollo/server@5.5.1(graphql@16.14.2)(supports-color@10.2.2))(express@5.3.0(supports-color@10.2.2)))(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/graphql@14.0.2(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(graphql@16.14.2)(reflect-metadata@0.2.2)(typescript@6.0.3))(graphql@16.14.2)
@@ -1346,6 +1358,58 @@ importers:
       moment:
         specifier: 'catalog:'
         version: 2.31.0
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1(@noble/hashes@2.2.0))(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))(vite@8.3.5(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+
+  projects/caelundas/caelundas-db:
+    dependencies:
+      '@codebase/persistence':
+        specifier: workspace:*
+        version: link:../../common/persistence
+      '@nestjs/common':
+        specifier: 'catalog:'
+        version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
+      '@nestjs/typeorm':
+        specifier: 'catalog:'
+        version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@13.0.3)(pg@8.23.0)(supports-color@10.2.2))
+      moment-timezone:
+        specifier: 'catalog:'
+        version: 0.6.4
+      pg:
+        specifier: 'catalog:'
+        version: 8.23.0
+      reflect-metadata:
+        specifier: 'catalog:'
+        version: 0.2.2
+      tslib:
+        specifier: 'catalog:'
+        version: 2.8.1
+      typeorm:
+        specifier: 'catalog:'
+        version: 1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@13.0.3)(pg@8.23.0)(supports-color@10.2.2)
+    devDependencies:
+      '@golevelup/ts-vitest':
+        specifier: 'catalog:'
+        version: 4.0.0
+      '@nestjs/testing':
+        specifier: 'catalog:'
+        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/platform-express@12.1.0)
+      '@nx/eslint-plugin':
+        specifier: 'catalog:'
+        version: 24.0.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@24.0.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@7.0.1(supports-color@10.2.2)(typanion@3.14.0))
+      '@swc/helpers':
+        specifier: 'catalog:'
+        version: 0.5.23
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.2
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 5.0.1(vitest@5.0.1)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -1541,6 +1605,9 @@ importers:
       pg:
         specifier: 'catalog:'
         version: 8.23.0
+      pluralize:
+        specifier: 'catalog:'
+        version: 8.0.0
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2
@@ -1578,6 +1645,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.2
+      '@types/pluralize':
+        specifier: 'catalog:'
+        version: 0.0.33
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.1(vitest@5.0.1)
@@ -4015,9 +4085,6 @@ importers:
       pg:
         specifier: 'catalog:'
         version: 8.23.0
-      pluralize:
-        specifier: 'catalog:'
-        version: 8.0.0
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2
@@ -4027,9 +4094,6 @@ importers:
       typeorm:
         specifier: 'catalog:'
         version: 1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@13.0.3)(pg@8.23.0)(supports-color@10.2.2)
-      typeorm-naming-strategies:
-        specifier: 'catalog:'
-        version: 4.1.0(typeorm@1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@13.0.3)(pg@8.23.0)(supports-color@10.2.2))
       vitest:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1(@noble/hashes@2.2.0))(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))(vite@8.3.5(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
@@ -4040,9 +4104,6 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.2
-      '@types/pluralize':
-        specifier: 'catalog:'
-        version: 0.0.33
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -9758,6 +9819,9 @@ packages:
 
   avvio@9.3.0:
     resolution: {integrity: sha512-g2tQ7LE7oOSqDfwEm3M+ZCMTJc7KiZCdJ4UwyZJb5ckTKyYu50OYmvv0mCFXPuYXoM4zkSt8zM9XQ9KCvxA74A==}
+
+  aws4fetch@1.0.20:
+    resolution: {integrity: sha512-/djoAN709iY65ETD6LKCtyyEI04XIBP5xVvfmNxsEP0uJB5tyaGBztSryRr4HqMStr9R06PisQE7m9zDTXKu6g==}
 
   axe-core@4.13.0:
     resolution: {integrity: sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A==}
@@ -22085,6 +22149,8 @@ snapshots:
     dependencies:
       '@fastify/error': 4.2.0
       fastq: 1.20.3
+
+  aws4fetch@1.0.20: {}
 
   axe-core@4.13.0: {}
 

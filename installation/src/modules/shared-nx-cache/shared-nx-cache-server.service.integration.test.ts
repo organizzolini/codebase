@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import net from "node:net";
 import path from "node:path";
+import { Readable } from "node:stream";
+import { buffer } from "node:stream/consumers";
 
 import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
@@ -9,6 +11,7 @@ import {
   afterAll,
   afterEach,
   beforeAll,
+  beforeEach,
   describe,
   expect,
   it,
@@ -19,6 +22,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
 
+import { SharedNxCacheRemoteService } from "./shared-nx-cache-remote.service";
 import { SharedNxCacheServerService } from "./shared-nx-cache-server.service";
 import { SharedNxCacheStorageService } from "./shared-nx-cache-storage.service";
 import { DEFAULT_TOKEN } from "./shared-nx-cache.constants";
@@ -93,6 +97,7 @@ describe(SharedNxCacheServerService, () => {
       providers: [
         SharedNxCacheServerService,
         SharedNxCacheStorageService,
+        SharedNxCacheRemoteService,
         { provide: ConfigService, useValue: { get: () => undefined } },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
@@ -287,5 +292,142 @@ describe(SharedNxCacheServerService, () => {
         .every((status) => [200, 404].includes(status)),
     ).toBe(true);
     expect(intact).toBe(true);
+  });
+
+  describe("with a bucket behind it", () => {
+    let bucketWorkspace: TemporaryWorkspace;
+    let bucketDirectory: string;
+    let bucketServer: RunningServer;
+    let bucketBase: string;
+    const objects = new Map<string, Buffer>();
+    const remote = {
+      enabled: (): boolean => true,
+      fetch: vi.fn<SharedNxCacheRemoteService["fetch"]>(),
+      store: vi.fn<SharedNxCacheRemoteService["store"]>(),
+      writable: vi.fn<SharedNxCacheRemoteService["writable"]>(),
+    };
+
+    /** Calls the live server and reads the whole reply. */
+    const call = async (
+      method: string,
+      hash: string,
+      body?: Buffer,
+    ): Promise<{ body: Buffer; status: number }> => {
+      const response = await fetch(`${bucketBase}${hash}`, {
+        ...(body === undefined ? {} : { body: new Uint8Array(body) }),
+        headers: { Authorization: `Bearer ${DEFAULT_TOKEN}` },
+        method,
+      });
+
+      return {
+        body: Buffer.from(await response.arrayBuffer()),
+        status: response.status,
+      };
+    };
+
+    beforeAll(async () => {
+      bucketWorkspace = createTemporaryWorkspace();
+      bucketDirectory = path.join(bucketWorkspace.root, "cache");
+
+      const module = await Test.createTestingModule({
+        providers: [
+          SharedNxCacheServerService,
+          SharedNxCacheStorageService,
+          { provide: SharedNxCacheRemoteService, useValue: remote },
+          { provide: ConfigService, useValue: { get: () => undefined } },
+          { provide: LoggerService, useValue: createMock<LoggerService>() },
+        ],
+      }).compile();
+      const service = await module.resolve(SharedNxCacheServerService);
+
+      bucketServer = await service.start({
+        directory: bucketDirectory,
+        port: 0,
+      });
+      bucketBase = `http://127.0.0.1:${String(bucketServer.port)}/v1/cache/`;
+    });
+
+    beforeEach(() => {
+      objects.clear();
+      remote.fetch.mockImplementation(async (hash) => {
+        const found = await Promise.resolve(objects.get(hash));
+
+        return found === undefined
+          ? undefined
+          : { body: Readable.from([found]), length: found.length };
+      });
+      remote.store.mockImplementation(async (hash, body) => {
+        objects.set(hash, await buffer(body));
+      });
+      remote.writable.mockReturnValue(true);
+    });
+
+    afterEach(() => {
+      fs.rmSync(bucketDirectory, { force: true, recursive: true });
+      vi.clearAllMocks();
+    });
+
+    afterAll(async () => {
+      await bucketServer.close();
+      bucketWorkspace.remove();
+    });
+
+    it("answers a local miss from the bucket and keeps a local copy", async () => {
+      expect.hasAssertions();
+
+      objects.set("abc", Buffer.from("from the bucket"));
+
+      const first = await call("GET", "abc");
+
+      objects.clear();
+
+      const second = await call("GET", "abc");
+
+      expect(first.status).toBe(200);
+      expect(first.body.toString()).toBe("from the bucket");
+      expect(second.body.toString()).toBe("from the bucket");
+      expect(remote.fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it("answers 404 when neither has the hash", async () => {
+      expect.hasAssertions();
+
+      await expect(call("GET", "nowhere")).resolves.toMatchObject({
+        status: 404,
+      });
+    });
+
+    it("does not ask the bucket for a hash it already holds", async () => {
+      expect.hasAssertions();
+
+      await call("PUT", "held", Buffer.from("local"));
+      remote.fetch.mockClear();
+
+      await expect(call("GET", "held")).resolves.toMatchObject({ status: 200 });
+      expect(remote.fetch).not.toHaveBeenCalled();
+    });
+
+    it("uploads a stored entry to a writable bucket", async () => {
+      expect.hasAssertions();
+
+      const put = await call("PUT", "fresh", Buffer.from("new output"));
+
+      expect(put.status).toBe(200);
+      expect(objects.get("fresh")?.toString()).toBe("new output");
+    });
+
+    it("keeps an upload local when the bucket is read-only", async () => {
+      expect.hasAssertions();
+
+      remote.writable.mockReturnValue(false);
+
+      const put = await call("PUT", "private", Buffer.from("local only"));
+
+      expect(put.status).toBe(200);
+      expect(remote.store).not.toHaveBeenCalled();
+      await expect(call("GET", "private")).resolves.toMatchObject({
+        status: 200,
+      });
+    });
   });
 });

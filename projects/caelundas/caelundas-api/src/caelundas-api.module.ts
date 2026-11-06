@@ -5,6 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import compression from "compression";
 
+import { CaelundasDatabaseModule } from "@codebase/caelundas-db";
 import { LoggerModule } from "@codebase/observability";
 
 import {
@@ -33,6 +34,7 @@ import type { MiddlewareConsumer, NestModule } from "@nestjs/common";
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
+    CaelundasDatabaseModule,
     LoggerModule,
     HealthModule,
     NightSkyModule,
