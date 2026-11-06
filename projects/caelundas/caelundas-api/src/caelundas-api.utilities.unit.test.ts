@@ -11,6 +11,7 @@ import { describe, expect, it } from "vitest";
 
 import { PageInfo } from "./caelundas-api.entities";
 import {
+  corsOptions,
   createConnection,
   createEdge,
   decodeOffsetCursor,
@@ -344,6 +345,22 @@ describe("relay pagination helpers suite", () => {
       expect(result.edges).toHaveLength(4);
       expect(result.hasNextPage).toBe(false);
       expect(result.hasPreviousPage).toBe(false);
+    });
+  });
+
+  describe("cors options", () => {
+    it("allows every origin when the wildcard is listed", () => {
+      expect.hasAssertions();
+
+      expect(corsOptions(["*"])).toStrictEqual({ origin: "*" });
+    });
+
+    it("allows only the listed origins otherwise", () => {
+      expect.hasAssertions();
+
+      expect(corsOptions(["http://localhost:8967"])).toStrictEqual({
+        origin: ["http://localhost:8967"],
+      });
     });
   });
 });

@@ -3,6 +3,15 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { PageInfo } from "./caelundas-api.entities";
 
 import type { ClassConstructor, Connection, Edge } from "./caelundas-api.types";
+import type { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
+
+/**
+ * Builds the CORS options from the allowed origins: `*` allows every origin,
+ * otherwise only the listed ones are echoed back.
+ */
+export function corsOptions(origins: string[]): CorsOptions {
+  return { origin: origins.includes("*") ? "*" : origins };
+}
 
 /**
  * Creates a Relay Connection containing edges, page info, and total count.

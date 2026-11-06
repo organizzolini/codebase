@@ -5,7 +5,7 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { readServedApi } from "../../../testing/calendar-api";
 import {
@@ -25,6 +25,11 @@ function withBusyEvents(
 ): { events: typeof FIXTURE_EVENTS } {
   return { events: [...FIXTURE_EVENTS, ...createBusyEvents(start, count)] };
 }
+
+// Each test renders the whole route; a loaded continuous integration runner
+// took 5 to 7 seconds for the slowest of them, past the default 5, so the limit
+// follows the other integration suites'.
+vi.setConfig({ testTimeout: 30_000 });
 
 // The agenda's own behavior is tested ungrouped; grouping it has its own
 // tests.

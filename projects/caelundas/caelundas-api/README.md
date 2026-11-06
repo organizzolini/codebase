@@ -6,6 +6,8 @@ The API reads the Caelundas Postgres through `CaelundasDatabaseModule` from `cae
 nx run caelundas-api:start
 ```
 
+The web app calls the API from another origin, so the API answers cross-origin requests, including the `OPTIONS` preflight of a GraphQL POST. `CAELUNDAS_API_CORS_ORIGINS` lists the allowed origins, comma separated; `.env.default` allows the web app's dev server on port 8967, and leaving it unset allows every origin (`*`).
+
 ## Test
 
 ```bash
