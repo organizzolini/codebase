@@ -111,6 +111,7 @@
 [![Gitmoji](https://img.shields.io/badge/Gitmoji-Emoji%20Commits-FFDD67)](https://gitmoji.dev/)
 [![Semantic Release](https://img.shields.io/badge/Semantic%20Release-Versioning-494949?logo=semantic-release)](https://semantic-release.gitbook.io/)
 [![Verdaccio](https://img.shields.io/badge/Verdaccio-Local%20Registry-4B5E40?logo=verdaccio)](https://verdaccio.org/)
+[![Nx Cloud](https://img.shields.io/badge/Nx%20Cloud-Remote%20Cache-143055?logo=nx)](https://nx.app/)
 [![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![Dependabot](https://img.shields.io/badge/Dependabot-Updates-025E8C?logo=dependabot)](https://docs.github.com/en/code-security/dependabot)
 [![Docker](https://img.shields.io/badge/Docker-Container-2496ED?logo=docker)](https://www.docker.com/)
@@ -280,27 +281,25 @@ Other important files include [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](.githu
 Template-driven code generation and conformance validation, templates synced from [configuration/conformetry.config.ts](configuration/conformetry.config.ts) by `nx run synchronization:conformetry-generators:write`.
 
 <!-- conformetry:start -->
-
-| Template                       | Description                                                                                                                                                                         |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `jupyter-notebook-application` | A standalone Python application template with a Jupyter notebook entry point, pytest/pyright/ruff tooling, and a shared uv workspace venv                                           |
-| `nestjs-command-project`       | A standalone NestJS CLI application template built on nest-commander, for a new command-line tool in projects/                                                                      |
-| `nestjs-graphql-application`   | A standalone NestJS GraphQL API application template, for a new backend service exposing a GraphQL schema over HTTP                                                                 |
-| `nestjs-service-project`       | A standalone NestJS library package template for internal workspace code shared across projects, with no CLI entry point or HTTP server                                             |
-| `tanstack-application`         | A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in projects/                              |
-| `nestjs-command-module`        | A nest-commander command module template — command, module, constants, types, and unit test — for an existing NestJS command-line project                                           |
-| `nestjs-dataloader-module`     | A GraphQL dataloader module template — dataloader, module, types, and unit test — for batching lookups inside an existing NestJS project                                            |
-| `nestjs-graphql-module`        | A GraphQL module template — resolver, entities, args/input types, factories, constants, and unit test — for an existing NestJS project                                              |
-| `nestjs-service-file`          | A service and unit test file template for an existing NestJS module, without the surrounding module files                                                                           |
-| `nestjs-resolver-file`         | A resolver and unit test file template for an existing NestJS module, without the surrounding module files                                                                          |
-| `nestjs-service-module`        | A plain service module template — module, service, constants, types, and unit test — for an existing NestJS project                                                                 |
-| `react-component-folder`       | A React component folder — the component, its types, constants, and utilities, and its unit test — in src/components of an existing React application                               |
-| `react-component-file`         | A React component and its unit test, added to an existing component folder of a React application                                                                                   |
-| `react-hook-folder`            | A React hook folder — the hook, the result type it returns, its constants and utilities, and its unit test — in src/hooks of an existing React application                          |
-| `react-hook-file`              | A React hook, the result type it returns, and its unit test, added to an existing hook folder of a React application                                                                |
-| `tanstack-route`               | A TanStack Start file route and integration test template — the route and the page it renders — for an existing TanStack Start project                                              |
-| `tanstack-server-function`     | A TanStack Start server function module template — GET and POST server functions, the utilities behind them, schemas, types, and unit test — for an existing TanStack Start project |
-
+| Template | Description |
+| -------- | ----------- |
+| `jupyter-notebook-application` | A standalone Python application template with a Jupyter notebook entry point, pytest/pyright/ruff tooling, and a shared uv workspace venv |
+| `nestjs-command-project` | A standalone NestJS CLI application template built on nest-commander, for a new command-line tool in projects/ |
+| `nestjs-graphql-application` | A standalone NestJS GraphQL API application template, for a new backend service exposing a GraphQL schema over HTTP |
+| `nestjs-service-project` | A standalone NestJS library package template for internal workspace code shared across projects, with no CLI entry point or HTTP server |
+| `tanstack-application` | A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in projects/ |
+| `nestjs-command-module` | A nest-commander command module template — command, module, constants, types, and unit test — for an existing NestJS command-line project |
+| `nestjs-dataloader-module` | A GraphQL dataloader module template — dataloader, module, types, and unit test — for batching lookups inside an existing NestJS project |
+| `nestjs-graphql-module` | A GraphQL module template — resolver, entities, args/input types, factories, constants, and unit test — for an existing NestJS project |
+| `nestjs-service-file` | A service and unit test file template for an existing NestJS module, without the surrounding module files |
+| `nestjs-resolver-file` | A resolver and unit test file template for an existing NestJS module, without the surrounding module files |
+| `nestjs-service-module` | A plain service module template — module, service, constants, types, and unit test — for an existing NestJS project |
+| `react-component-folder` | A React component folder — the component, its types, constants, and utilities, and its unit test — in src/components of an existing React application |
+| `react-component-file` | A React component and its unit test, added to an existing component folder of a React application |
+| `react-hook-folder` | A React hook folder — the hook, the result type it returns, its constants and utilities, and its unit test — in src/hooks of an existing React application |
+| `react-hook-file` | A React hook, the result type it returns, and its unit test, added to an existing hook folder of a React application |
+| `tanstack-route` | A TanStack Start file route and integration test template — the route and the page it renders — for an existing TanStack Start project |
+| `tanstack-server-function` | A TanStack Start server function module template — GET and POST server functions, the utilities behind them, schemas, types, and unit test — for an existing TanStack Start project |
 <!-- conformetry:end -->
 
 ## 🕸️ Codependix
@@ -308,7 +307,6 @@ Template-driven code generation and conformance validation, templates synced fro
 The workspace's dependency graph, exported by [codependix](projects/ic-suite/codependix/codependix-cli), regenerated by `nx run configuration:codependix:write`.
 
 <!-- codependix:start name="codependix-nx-projects" -->
-
 ```mermaid
 graph LR
   affirmancy["affirmancy"]
@@ -520,7 +518,6 @@ _Dashed edges are dependencies Nx inferred from configuration rather than from c
 ### NestJS Module Graph
 
 <!-- codependix:start name="codependix-nestjs-modules" -->
-
 ```mermaid
 graph LR
   module_caelundas_cli_AnnualSolarCycleModule["caelundas-cli/AnnualSolarCycleModule"]
@@ -817,6 +814,8 @@ graph LR
   module_codometer_output_MarkdownModule["codometer-output/MarkdownModule"]
   module_codometer_output_RenderModule["codometer-output/RenderModule"]
   module_codometer_output_ReportModule["codometer-output/ReportModule"]
+  module_coinagerie_cli_BatchModule["coinagerie-cli/BatchModule"]
+  module_coinagerie_cli_CheckModule["coinagerie-cli/CheckModule"]
   module_coinagerie_cli_CollectModule["coinagerie-cli/CollectModule"]
   module_coinagerie_cli_ComparisonModule["coinagerie-cli/ComparisonModule"]
   module_coinagerie_cli_ConfigModule["coinagerie-cli/ConfigModule"]
@@ -1624,6 +1623,10 @@ graph LR
   module_codometer_output_ConfigurationListingModule --> module_codometer_output_DiscoveryModule
   module_codometer_output_DeliveryModule --> module_codometer_output_JsonModule
   module_codometer_output_DeliveryModule --> module_codometer_output_MarkdownModule
+  module_coinagerie_cli_BatchModule --> module_coinagerie_cli_CheckModule
+  module_coinagerie_cli_CheckModule --> module_coinagerie_cli_ConfigurationModule
+  module_coinagerie_cli_CheckModule --> module_coinagerie_cli_DeliveryModule
+  module_coinagerie_cli_CheckModule --> module_coinagerie_cli_VocabularyModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_ComparisonModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_ConfigurationModule
   module_coinagerie_cli_CollectModule --> module_coinagerie_cli_DeliveryModule
@@ -1645,6 +1648,7 @@ graph LR
   module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_TomlModule
   module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_TypescriptModule
   module_coinagerie_cli_LanguagesModule --> module_coinagerie_cli_YamlModule
+  module_coinagerie_cli_MainModule --> module_coinagerie_cli_BatchModule
   module_coinagerie_cli_MainModule --> module_coinagerie_cli_CollectModule
   module_coinagerie_cli_MainModule --> module_coinagerie_cli_DiscoveryModule
   module_coinagerie_cli_PythonModule --> module_coinagerie_cli_ScannerModule
@@ -2145,13 +2149,11 @@ graph LR
   module_validation_MainModule --> module_validation_SessionBranchNameModule
   module_validation_MainModule --> module_validation_SessionWorktreeNameModule
 ```
-
 <!-- codependix:end name="codependix-nestjs-modules" -->
 
 ### File Imports
 
 <!-- codependix:start name="codependix-file-imports" -->
-
 ```mermaid
 graph LR
   file_affirmancy__vulture_whitelist_py["affirmancy/.vulture_whitelist.py"]
@@ -4016,6 +4018,17 @@ graph LR
   file_coinagerie_cli_src_coinagerie_cli_repl_ts["coinagerie-cli/src/coinagerie-cli.repl.ts"]
   file_coinagerie_cli_src_coinagerie_cli_repl_unit_test_ts["coinagerie-cli/src/coinagerie-cli.repl.unit.test.ts"]
   file_coinagerie_cli_src_index_ts["coinagerie-cli/src/index.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_command_ts["coinagerie-cli/src/modules/batch/batch.command.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_command_unit_test_ts["coinagerie-cli/src/modules/batch/batch.command.unit.test.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_constants_ts["coinagerie-cli/src/modules/batch/batch.constants.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_module_ts["coinagerie-cli/src/modules/batch/batch.module.ts"]
+  file_coinagerie_cli_src_modules_batch_batch_types_ts["coinagerie-cli/src/modules/batch/batch.types.ts"]
+  file_coinagerie_cli_src_modules_check_check_constants_ts["coinagerie-cli/src/modules/check/check.constants.ts"]
+  file_coinagerie_cli_src_modules_check_check_module_ts["coinagerie-cli/src/modules/check/check.module.ts"]
+  file_coinagerie_cli_src_modules_check_check_service_ts["coinagerie-cli/src/modules/check/check.service.ts"]
+  file_coinagerie_cli_src_modules_check_check_service_unit_test_ts["coinagerie-cli/src/modules/check/check.service.unit.test.ts"]
+  file_coinagerie_cli_src_modules_check_check_types_ts["coinagerie-cli/src/modules/check/check.types.ts"]
+  file_coinagerie_cli_src_modules_check_check_utilities_ts["coinagerie-cli/src/modules/check/check.utilities.ts"]
   file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts["coinagerie-cli/src/modules/collect/collect.command.end-to-end.test.ts"]
   file_coinagerie_cli_src_modules_collect_collect_command_ts["coinagerie-cli/src/modules/collect/collect.command.ts"]
   file_coinagerie_cli_src_modules_collect_collect_command_unit_test_ts["coinagerie-cli/src/modules/collect/collect.command.unit.test.ts"]
@@ -4145,6 +4158,12 @@ graph LR
   file_coinagerie_nx_eslint_config_ts["coinagerie-nx/eslint.config.ts"]
   file_coinagerie_nx_src_coinagerie_nx_module_ts["coinagerie-nx/src/coinagerie-nx.module.ts"]
   file_coinagerie_nx_src_coinagerie_nx_module_unit_test_ts["coinagerie-nx/src/coinagerie-nx.module.unit.test.ts"]
+  file_coinagerie_nx_src_executors_check_batch_executor_ts["coinagerie-nx/src/executors/check/batch-executor.ts"]
+  file_coinagerie_nx_src_executors_check_batch_executor_unit_test_ts["coinagerie-nx/src/executors/check/batch-executor.unit.test.ts"]
+  file_coinagerie_nx_src_executors_check_executor_ts["coinagerie-nx/src/executors/check/executor.ts"]
+  file_coinagerie_nx_src_executors_check_executor_types_ts["coinagerie-nx/src/executors/check/executor.types.ts"]
+  file_coinagerie_nx_src_executors_check_executor_unit_test_ts["coinagerie-nx/src/executors/check/executor.unit.test.ts"]
+  file_coinagerie_nx_src_executors_check_executor_utilities_ts["coinagerie-nx/src/executors/check/executor.utilities.ts"]
   file_coinagerie_nx_src_index_ts["coinagerie-nx/src/index.ts"]
   file_coinagerie_nx_src_index_unit_test_ts["coinagerie-nx/src/index.unit.test.ts"]
   file_coinagerie_nx_src_modules_options_options_constants_ts["coinagerie-nx/src/modules/options/options.constants.ts"]
@@ -4159,6 +4178,7 @@ graph LR
   file_coinagerie_nx_src_modules_plugin_plugin_service_ts["coinagerie-nx/src/modules/plugin/plugin.service.ts"]
   file_coinagerie_nx_src_modules_plugin_plugin_service_unit_test_ts["coinagerie-nx/src/modules/plugin/plugin.service.unit.test.ts"]
   file_coinagerie_nx_src_modules_plugin_plugin_types_ts["coinagerie-nx/src/modules/plugin/plugin.types.ts"]
+  file_coinagerie_nx_testing_fake_command_line_ts["coinagerie-nx/testing/fake-command-line.ts"]
   file_coinagerie_nx_testing_fake_workspace_ts["coinagerie-nx/testing/fake-workspace.ts"]
   file_coinagerie_nx_testing_mocks_ts["coinagerie-nx/testing/mocks.ts"]
   file_coinagerie_nx_testing_setup_ts["coinagerie-nx/testing/setup.ts"]
@@ -10398,9 +10418,26 @@ graph LR
   file_coinagerie_cli_src_coinagerie_cli_main_end_to_end_test_ts --> file_coinagerie_cli_testing_run_command_ts
   file_coinagerie_cli_src_coinagerie_cli_main_ts --> file_coinagerie_cli_src_coinagerie_cli_module_ts
   file_coinagerie_cli_src_coinagerie_cli_module_ts --> file_coinagerie_cli_src_coinagerie_cli_constants_ts
+  file_coinagerie_cli_src_coinagerie_cli_module_ts --> file_coinagerie_cli_src_modules_batch_batch_module_ts
   file_coinagerie_cli_src_coinagerie_cli_module_ts --> file_coinagerie_cli_src_modules_collect_collect_module_ts
   file_coinagerie_cli_src_coinagerie_cli_module_unit_test_ts --> file_coinagerie_cli_src_coinagerie_cli_module_ts
   file_coinagerie_cli_src_coinagerie_cli_repl_ts --> file_coinagerie_cli_src_coinagerie_cli_module_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_ts --> file_coinagerie_cli_src_modules_batch_batch_constants_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_ts --> file_coinagerie_cli_src_modules_batch_batch_types_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_ts --> file_coinagerie_cli_src_modules_check_check_service_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_unit_test_ts --> file_coinagerie_cli_src_modules_batch_batch_command_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_unit_test_ts --> file_coinagerie_cli_src_modules_check_check_service_ts
+  file_coinagerie_cli_src_modules_batch_batch_command_unit_test_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
+  file_coinagerie_cli_src_modules_batch_batch_module_ts --> file_coinagerie_cli_src_modules_batch_batch_command_ts
+  file_coinagerie_cli_src_modules_batch_batch_module_ts --> file_coinagerie_cli_src_modules_check_check_module_ts
+  file_coinagerie_cli_src_modules_batch_batch_types_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
+  file_coinagerie_cli_src_modules_check_check_module_ts --> file_coinagerie_cli_src_modules_check_check_service_ts
+  file_coinagerie_cli_src_modules_check_check_service_ts --> file_coinagerie_cli_src_modules_check_check_constants_ts
+  file_coinagerie_cli_src_modules_check_check_service_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
+  file_coinagerie_cli_src_modules_check_check_service_ts --> file_coinagerie_cli_src_modules_check_check_utilities_ts
+  file_coinagerie_cli_src_modules_check_check_service_unit_test_ts --> file_coinagerie_cli_src_modules_check_check_service_ts
+  file_coinagerie_cli_src_modules_check_check_utilities_ts --> file_coinagerie_cli_src_modules_check_check_constants_ts
+  file_coinagerie_cli_src_modules_check_check_utilities_ts --> file_coinagerie_cli_src_modules_check_check_types_ts
   file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts --> file_coinagerie_cli_testing_examples_ts
   file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts --> file_coinagerie_cli_testing_fixture_tree_ts
   file_coinagerie_cli_src_modules_collect_collect_command_end_to_end_test_ts --> file_coinagerie_cli_testing_run_command_ts
@@ -10537,6 +10574,17 @@ graph LR
   file_coinagerie_languages_src_modules_yaml_yaml_service_unit_test_ts --> file_coinagerie_languages_src_modules_yaml_yaml_service_ts
   file_coinagerie_nx_src_coinagerie_nx_module_ts --> file_coinagerie_nx_src_modules_plugin_plugin_module_ts
   file_coinagerie_nx_src_coinagerie_nx_module_unit_test_ts --> file_coinagerie_nx_src_coinagerie_nx_module_ts
+  file_coinagerie_nx_src_executors_check_batch_executor_ts --> file_coinagerie_nx_src_executors_check_executor_types_ts
+  file_coinagerie_nx_src_executors_check_batch_executor_ts --> file_coinagerie_nx_src_executors_check_executor_utilities_ts
+  file_coinagerie_nx_src_executors_check_batch_executor_unit_test_ts --> file_coinagerie_nx_src_executors_check_batch_executor_ts
+  file_coinagerie_nx_src_executors_check_batch_executor_unit_test_ts --> file_coinagerie_nx_src_executors_check_executor_types_ts
+  file_coinagerie_nx_src_executors_check_batch_executor_unit_test_ts --> file_coinagerie_nx_testing_fake_command_line_ts
+  file_coinagerie_nx_src_executors_check_executor_ts --> file_coinagerie_nx_src_executors_check_executor_types_ts
+  file_coinagerie_nx_src_executors_check_executor_ts --> file_coinagerie_nx_src_executors_check_executor_utilities_ts
+  file_coinagerie_nx_src_executors_check_executor_unit_test_ts --> file_coinagerie_nx_src_executors_check_executor_ts
+  file_coinagerie_nx_src_executors_check_executor_unit_test_ts --> file_coinagerie_nx_src_executors_check_executor_types_ts
+  file_coinagerie_nx_src_executors_check_executor_unit_test_ts --> file_coinagerie_nx_testing_fake_command_line_ts
+  file_coinagerie_nx_src_executors_check_executor_utilities_ts --> file_coinagerie_nx_src_executors_check_executor_types_ts
   file_coinagerie_nx_src_index_ts --> file_coinagerie_nx_src_modules_options_options_constants_ts
   file_coinagerie_nx_src_index_ts --> file_coinagerie_nx_src_modules_plugin_plugin_context_utilities_ts
   file_coinagerie_nx_src_index_ts --> file_coinagerie_nx_src_modules_plugin_plugin_constants_ts
@@ -16005,7 +16053,6 @@ graph LR
   file_validation_src_validation_module_ts --> file_validation_src_validation_constants_ts
   file_validation_src_validation_repl_ts --> file_validation_src_validation_module_ts
 ```
-
 <!-- codependix:end name="codependix-file-imports" -->
 <!-- codometer:start -->
 
@@ -16015,8 +16062,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-68214-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-5.20_MB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-71277-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-5.04_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-168-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-654-3178c6?style=flat-square)
 
@@ -16027,7 +16074,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-262-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1598-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1600-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
@@ -16040,11 +16087,11 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Methods](https://img.shields.io/badge/Methods-944-15803d?style=flat-square)
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-2981-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-1106-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3292-dc2626?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3294-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-3025-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-892-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3262-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-6226-475569?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-894-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3267-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-6244-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -16069,9 +16116,9 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-1263-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-461-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-3003-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2782-16a34a?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2781-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-45-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-200-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-201-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-1703-475569?style=flat-square)
 ![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4751-dc2626?style=flat-square)
@@ -16200,16 +16247,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-144-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-29977-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-28446-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-848-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-753-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-8103-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6572-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-975-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-6289-22c55e?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4758-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-287-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-2853-0ea5e9?style=flat-square)
@@ -16227,86 +16274,86 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 The workspace's call graph, traced by [callidescope](projects/ic-suite/callidescope/callidescope-cli), regenerated by `nx run configuration:callidescope:write`. Projects are listed tightest-first: the rows at the top are the ones a ratchet cannot descend past.
 
-| Measure                  | Value |
-| ------------------------ | ----- |
-| Callables                | 7923  |
-| Files                    | 2650  |
-| Calls traced             | 8659  |
-| Call stacks              | 2196  |
-| Deepest stack            | 17    |
-| Stacks through recursion | 15    |
-| Unfollowable calls       | 491   |
+| Measure | Value |
+| --- | --- |
+| Callables | 7954 |
+| Files | 2663 |
+| Calls traced | 8689 |
+| Call stacks | 2202 |
+| Deepest stack | 17 |
+| Stacks through recursion | 15 |
+| Unfollowable calls | 492 |
 
 ### Projects
 
-| Project                                                     | Deepest | Limit | Headroom | Widest |
-| ----------------------------------------------------------- | ------- | ----- | -------- | ------ |
-| `integration`                                               | 6       | 6     | 0        | 8      |
-| `projects/caelundas/caelundas-web`                          | 6       | 6     | 0        | 8      |
-| `projects/common/observability`                             | 4       | 4     | 0        | 2      |
-| `projects/common/persistence`                               | 7       | 7     | 0        | 7      |
-| `projects/ic-suite/callidescope/callidescope-cli`           | 15      | 15    | 0        | 10     |
-| `projects/ic-suite/callidescope/callidescope-nx`            | 17      | 17    | 0        | 7      |
-| `projects/ic-suite/codependix/codependix-boundaries`        | 12      | 12    | 0        | 7      |
-| `projects/ic-suite/codependix/codependix-cli`               | 15      | 15    | 0        | 7      |
-| `projects/ic-suite/codependix/codependix-nx`                | 6       | 6     | 0        | 5      |
-| `projects/ic-suite/codometer/codometer-cli`                 | 15      | 15    | 0        | 9      |
-| `projects/ic-suite/coinagerie/coinagerie-cli`               | 13      | 13    | 0        | 5      |
-| `projects/ic-suite/coinagerie/coinagerie-nx`                | 6       | 6     | 0        | 3      |
-| `projects/ic-suite/conformetry/conformetry-cli`             | 15      | 15    | 0        | 9      |
-| `projects/ic-suite/conformetry/conformetry-languages`       | 13      | 13    | 0        | 11     |
-| `projects/ic-suite/conformetry/conformetry-nx`              | 15      | 15    | 0        | 9      |
-| `projects/lexico/lexico-cli`                                | 17      | 17    | 0        | 8      |
-| `projects/meanderaw/meanderaw-cli`                          | 16      | 16    | 0        | 12     |
-| `publication`                                               | 6       | 6     | 0        | 8      |
-| `synchronization`                                           | 10      | 10    | 0        | 9      |
-| `validation`                                                | 8       | 8     | 0        | 9      |
-| `projects/caelundas/caelundas-cli`                          | 15      | 16    | 1        | 12     |
-| `projects/ic-suite/codependix/codependix-core`              | 0       | 1     | 1        | 0      |
-| `projects/ic-suite/codometer/codometer-core`                | 0       | 1     | 1        | 0      |
-| `projects/ic-suite/coinagerie/coinagerie-configuration`     | 2       | 3     | 1        | 3      |
-| `projects/ic-suite/coinagerie/coinagerie-core`              | 0       | 1     | 1        | 0      |
-| `projects/ic-suite/conformetry/conformetry-core`            | 0       | 1     | 1        | 0      |
-| `projects/ic-suite/coinagerie/coinagerie-languages`         | 4       | 6     | 2        | 3      |
-| `documentation`                                             | 3       | 6     | 3        | 2      |
-| `projects/common/presentation`                              | 0       | 3     | 3        | 0      |
-| `projects/ic-suite/callidescope/callidescope-configuration` | 5       | 8     | 3        | 7      |
-| `projects/ic-suite/codependix/codependix-output`            | 11      | 14    | 3        | 7      |
-| `projects/lexico/lexico-entities`                           | 0       | 3     | 3        | 0      |
-| `projects/lexico/lexico-web`                                | 6       | 9     | 3        | 8      |
-| `installation`                                              | 13      | 17    | 4        | 8      |
-| `projects/common/interface`                                 | 3       | 7     | 4        | 2      |
-| `projects/ic-suite/codependix/codependix-nx-projects`       | 0       | 4     | 4        | 8      |
-| `projects/ic-suite/conformetry/conformetry-configuration`   | 10      | 14    | 4        | 5      |
-| `projects/ic-suite/codependix/codependix-configuration`     | 2       | 7     | 5        | 4      |
-| `projects/ic-suite/codependix/codependix-nestjs-modules`    | 0       | 5     | 5        | 7      |
-| `projects/ic-suite/callidescope/callidescope-graph`         | 5       | 11    | 6        | 8      |
-| `projects/ic-suite/codometer/codometer-configuration`       | 3       | 9     | 6        | 4      |
-| `projects/ic-suite/codometer/codometer-languages`           | 5       | 11    | 6        | 12     |
-| `projects/ic-suite/conformetry/conformetry-generation`      | 2       | 8     | 6        | 4      |
-| `projects/ic-suite/conformetry/conformetry-output`          | 0       | 6     | 6        | 4      |
-| `projects/meanderaw/meanderaw-web`                          | 0       | 6     | 6        | 0      |
-| `projects/ic-suite/codometer/codometer-output`              | 4       | 11    | 7        | 16     |
-| `projects/ic-suite/coinagerie/coinagerie-vocabulary`        | 0       | 7     | 7        | 7      |
-| `projects/ic-suite/codependix/codependix-file-imports`      | 0       | 8     | 8        | 8      |
-| `projects/ic-suite/callidescope/callidescope-output`        | 4       | 13    | 9        | 7      |
-| `projects/lexico/lexico-api`                                | 8       | 17    | 9        | 11     |
-| `projects/ic-suite/coinagerie/coinagerie-output`            | 0       | 10    | 10       | 4      |
-| `configuration`                                             | 5       | 17    | 12       | 2      |
-| `projects/ic-suite/conformetry/conformetry-validation`      | 0       | 13    | 13       | 10     |
-| `projects/ic-suite/codometer/codometer-measurement`         | 0       | 14    | 14       | 9      |
-| `projects/ic-suite/callidescope/callidescope-core`          | 0       | 17    | 17       | 0      |
+| Project | Deepest | Limit | Headroom | Widest |
+| --- | --- | --- | --- | --- |
+| `integration` | 6 | 6 | 0 | 8 |
+| `projects/caelundas/caelundas-web` | 6 | 6 | 0 | 8 |
+| `projects/common/observability` | 4 | 4 | 0 | 2 |
+| `projects/common/persistence` | 7 | 7 | 0 | 7 |
+| `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
+| `projects/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
+| `projects/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |
+| `projects/ic-suite/codependix/codependix-cli` | 15 | 15 | 0 | 7 |
+| `projects/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
+| `projects/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
+| `projects/ic-suite/coinagerie/coinagerie-cli` | 13 | 13 | 0 | 5 |
+| `projects/ic-suite/coinagerie/coinagerie-nx` | 6 | 6 | 0 | 4 |
+| `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 9 |
+| `projects/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
+| `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
+| `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
+| `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
+| `publication` | 6 | 6 | 0 | 8 |
+| `synchronization` | 10 | 10 | 0 | 9 |
+| `validation` | 8 | 8 | 0 | 9 |
+| `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
+| `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/coinagerie/coinagerie-configuration` | 2 | 3 | 1 | 3 |
+| `projects/ic-suite/coinagerie/coinagerie-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/coinagerie/coinagerie-languages` | 4 | 6 | 2 | 3 |
+| `documentation` | 3 | 6 | 3 | 2 |
+| `projects/common/presentation` | 0 | 3 | 3 | 0 |
+| `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
+| `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
+| `projects/lexico/lexico-entities` | 0 | 3 | 3 | 0 |
+| `projects/lexico/lexico-web` | 6 | 9 | 3 | 8 |
+| `installation` | 13 | 17 | 4 | 8 |
+| `projects/common/interface` | 3 | 7 | 4 | 2 |
+| `projects/ic-suite/codependix/codependix-nx-projects` | 0 | 4 | 4 | 8 |
+| `projects/ic-suite/conformetry/conformetry-configuration` | 10 | 14 | 4 | 5 |
+| `projects/ic-suite/codependix/codependix-configuration` | 2 | 7 | 5 | 4 |
+| `projects/ic-suite/codependix/codependix-nestjs-modules` | 0 | 5 | 5 | 7 |
+| `projects/ic-suite/callidescope/callidescope-graph` | 5 | 11 | 6 | 8 |
+| `projects/ic-suite/codometer/codometer-configuration` | 3 | 9 | 6 | 4 |
+| `projects/ic-suite/codometer/codometer-languages` | 5 | 11 | 6 | 12 |
+| `projects/ic-suite/conformetry/conformetry-generation` | 2 | 8 | 6 | 4 |
+| `projects/ic-suite/conformetry/conformetry-output` | 0 | 6 | 6 | 4 |
+| `projects/meanderaw/meanderaw-web` | 0 | 6 | 6 | 0 |
+| `projects/ic-suite/codometer/codometer-output` | 4 | 11 | 7 | 16 |
+| `projects/ic-suite/coinagerie/coinagerie-vocabulary` | 0 | 7 | 7 | 7 |
+| `projects/ic-suite/codependix/codependix-file-imports` | 0 | 8 | 8 | 8 |
+| `projects/ic-suite/callidescope/callidescope-output` | 4 | 13 | 9 | 7 |
+| `projects/lexico/lexico-api` | 8 | 17 | 9 | 11 |
+| `projects/ic-suite/coinagerie/coinagerie-output` | 0 | 10 | 10 | 4 |
+| `configuration` | 5 | 17 | 12 | 2 |
+| `projects/ic-suite/conformetry/conformetry-validation` | 0 | 13 | 13 | 10 |
+| `projects/ic-suite/codometer/codometer-measurement` | 0 | 14 | 14 | 9 |
+| `projects/ic-suite/callidescope/callidescope-core` | 0 | 17 | 17 | 0 |
 
 ### Depth headroom
 
-| Headroom     | Projects |
-| ------------ | -------- |
-| over limit   | 0        |
-| 0 — at limit | 20       |
-| 1            | 2        |
-| 2–3          | 5        |
-| 4+           | 12       |
-| no stacks    | 16       |
+| Headroom | Projects |
+| --- | --- |
+| over limit | 0 |
+| 0 — at limit | 20 |
+| 1 | 2 |
+| 2–3 | 5 |
+| 4+ | 12 |
+| no stacks | 16 |
 
 ### Call stacks over the depth limit (0)
 

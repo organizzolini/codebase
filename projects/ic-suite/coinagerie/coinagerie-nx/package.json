@@ -20,15 +20,20 @@
     "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
   },
+  "executors": "./executors.json",
   "exports": {
     ".": "./src/index.ts",
-    "./package.json": "./package.json"
+    "./executors.json": "./executors.json",
+    "./package.json": "./package.json",
+    "./src/executors/*": "./src/executors/*"
   },
   "files": [
     "CHANGELOG.md",
     "dist",
+    "executors.json",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "src/executors/*/schema.json"
   ],
   "homepage": "https://github.com/organizzolini/codebase/tree/main/projects/ic-suite/coinagerie/coinagerie-nx#readme",
   "keywords": [
@@ -41,6 +46,9 @@
   "license": "MIT",
   "main": "src/index.ts",
   "name": "@coinagerie/nx",
+  "nx": {
+    "executors": "./executors.json"
+  },
   "publishConfig": {
     "access": "public",
     "exports": {
@@ -48,7 +56,9 @@
         "types": "./dist/src/index.d.ts",
         "default": "./dist/src/index.js"
       },
-      "./package.json": "./package.json"
+      "./executors.json": "./executors.json",
+      "./package.json": "./package.json",
+      "./src/executors/*": "./dist/src/executors/*.js"
     },
     "main": "./dist/src/index.js",
     "registry": "https://registry.npmjs.org",
@@ -65,5 +75,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.4"
+  "version": "0.0.5"
 }

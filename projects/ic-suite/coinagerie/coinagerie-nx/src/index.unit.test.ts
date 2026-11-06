@@ -88,7 +88,7 @@ describe("coinageriePlugin", () => {
               targets: {
                 "coinagerie-check": {
                   cache: true,
-                  executor: "nx:run-commands",
+                  executor: "@coinagerie/nx:check",
                   inputs: [
                     "{projectRoot}/coinagerie.config.ts",
                     "{projectRoot}/coinagerie.config.mts",
@@ -99,10 +99,7 @@ describe("coinageriePlugin", () => {
                     "{projectRoot}/**/*",
                     "{workspaceRoot}/GLOSSARY.md",
                   ],
-                  options: {
-                    command: "coinagerie --check",
-                    cwd: "{projectRoot}",
-                  },
+                  options: { command: "coinagerie" },
                 },
               },
             },
