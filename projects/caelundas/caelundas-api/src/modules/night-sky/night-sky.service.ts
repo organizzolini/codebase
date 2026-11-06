@@ -55,7 +55,7 @@ export class NightSkyService implements OnModuleInit {
    * in memory, refusing input the builder cannot draw.
    */
   public build(input: NightSkyInput): NightSky {
-    const { constellations, ...options } = parseNightSkyInput(input);
+    const { constellations, time, ...options } = parseNightSkyInput(input);
 
     return buildNightSky({
       ...options,
@@ -64,7 +64,7 @@ export class NightSkyService implements OnModuleInit {
         constellations,
       ),
       localSiderealDegrees: computeStartingSiderealDegrees(
-        new Date(),
+        time,
         options.longitudeDegrees,
       ),
       stars: this.catalog.stars,

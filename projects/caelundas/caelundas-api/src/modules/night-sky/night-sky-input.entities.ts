@@ -126,6 +126,13 @@ export class NightSkyInput {
   })
   still?: boolean;
 
+  @Field(() => Date, {
+    description:
+      "The moment the sky is drawn for, which sets its starting angle with the longitude. Defaults to now.",
+    nullable: true,
+  })
+  time?: Date;
+
   @Field(() => Float, {
     description: "Degrees of altitude shown, up to 90. Defaults to 90.",
     nullable: true,

@@ -39,6 +39,20 @@ describe("night sky input suite", () => {
       });
     });
 
+    it("defaults the time to now and keeps one it is given", () => {
+      expect.hasAssertions();
+
+      const before = Date.now();
+      const given = new Date("2026-03-20T04:30:00Z");
+
+      expect(
+        parseNightSkyInput({ height: 600, width: 800 }).time.getTime(),
+      ).toBeGreaterThanOrEqual(before);
+      expect(
+        parseNightSkyInput({ height: 600, time: given, width: 800 }).time,
+      ).toStrictEqual(given);
+    });
+
     it("reads colors with or without the #, as lowercase #rrggbb", () => {
       expect.hasAssertions();
 

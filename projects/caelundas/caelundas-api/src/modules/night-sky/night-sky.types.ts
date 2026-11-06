@@ -167,6 +167,7 @@ export type ParsedNightSkyInput = Omit<
 > & {
   constellations: readonly string[];
   longitudeDegrees: number;
+  time: Date;
 };
 
 /**

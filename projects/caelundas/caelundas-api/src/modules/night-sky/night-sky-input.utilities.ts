@@ -120,6 +120,7 @@ function createInputSchema(): z.ZodType<ParsedNightSkyInput> {
       .default(DEFAULT_OPTIONS.pixelsPerSecond),
     starScale: z.number().positive().max(10).default(DEFAULT_OPTIONS.starScale),
     still: z.boolean().default(DEFAULT_OPTIONS.still),
+    time: z.date().default(() => new Date()),
     verticalFieldOfViewDegrees: z
       .number()
       .positive()

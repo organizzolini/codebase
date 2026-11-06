@@ -1,4 +1,5 @@
 import { Test } from "@nestjs/testing";
+import { SiderealTime } from "astronomy-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 
@@ -14,6 +15,23 @@ const nightSkyResponseSchema = z.object({
 const errorResponseSchema = z.object({
   errors: z.array(z.object({ message: z.string() })).min(1),
 });
+
+/**
+ * The angle a still sky starts at for a moment and longitude: apparent
+ * sidereal time at Greenwich plus the longitude, from the engine directly.
+ */
+function expectedStartDegrees(time: Date, longitudeDegrees: number): number {
+  return (((SiderealTime(time) * 15 + longitudeDegrees) % 360) + 360) % 360;
+}
+
+/**
+ * Reads the starting angle out of a still sky's SVG.
+ */
+function startDegreesOf(svg: string): number {
+  const match = /<g transform="rotate\((-?[\d.]+)\)">/u.exec(svg);
+
+  return -Number(match?.[1]);
+}
 
 describe("caelundas api night sky end-to-end suite", () => {
   let application: INestApplication<Server>;
@@ -156,5 +174,34 @@ describe("caelundas api night sky end-to-end suite", () => {
 
     expect(tooSmall.errors[0]?.message).toContain("width");
     expect(southern.errors[0]?.message).toContain("latitudeDegrees");
+  });
+
+  it("starts the sky at the sidereal angle of the time and longitude asked", async () => {
+    expect.hasAssertions();
+
+    const time = new Date("2026-03-20T04:30:00Z");
+    const west = await skyOf(
+      `width: 800, height: 600, still: true, time: "${time.toISOString()}", longitudeDegrees: -74`,
+    );
+    const east = await skyOf(
+      `width: 800, height: 600, still: true, time: "${time.toISOString()}", longitudeDegrees: 16`,
+    );
+
+    expect(startDegreesOf(west)).toBeCloseTo(
+      expectedStartDegrees(time, -74),
+      3,
+    );
+    expect(startDegreesOf(east)).toBeCloseTo(expectedStartDegrees(time, 16), 3);
+  });
+
+  it("starts the sky at the sidereal angle of now when no time is given", async () => {
+    expect.hasAssertions();
+
+    const before = Date.now();
+    const svg = await skyOf("width: 800, height: 600, still: true");
+    const expected = expectedStartDegrees(new Date(before), -74);
+    const difference = Math.abs(startDegreesOf(svg) - expected);
+
+    expect(Math.min(difference, 360 - difference)).toBeLessThan(0.5);
   });
 });
