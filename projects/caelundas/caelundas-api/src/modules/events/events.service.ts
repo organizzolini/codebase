@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
 import { EntityManager } from "typeorm";
 
+import { compileEventFilter } from "./event-filter-compiler.utilities";
 import {
   DATASET_SQL,
   datasetRowSchema,
@@ -14,6 +15,7 @@ import { toIsoString } from "./events.utilities";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
 import type { EventFacetEntity } from "./event-facet.entities";
+import type { EventFilterGroup } from "./event-filter.types";
 import type { EventsWindowInput } from "./events-window-input.entities";
 import type { EventsDatasetEntity } from "./events.entities";
 import type { z } from "zod";
@@ -47,15 +49,23 @@ export class EventsService {
   }
 
   /**
-   * The events that overlap the window, earliest first, each with the tags
-   * it was given.
+   * The events that overlap the window and meet the filter, earliest first,
+   * each with the tags it was given.
    */
   public async findEvents(
     window: EventsWindowInput,
+    filter?: EventFilterGroup | null,
   ): Promise<CalendarEventEntity[]> {
+    const compiled = compileEventFilter(filter, 2);
     const rows = await this.select(
-      EVENTS_IN_WINDOW_SQL,
-      [toIsoString(window.end), toIsoString(window.start)],
+      EVENTS_IN_WINDOW_SQL.replace("{filter}", () =>
+        compiled === null ? "" : `and ${compiled.sql}`,
+      ),
+      [
+        toIsoString(window.end),
+        toIsoString(window.start),
+        ...(compiled?.parameters ?? []),
+      ],
       eventRowSchema,
     );
 
@@ -71,16 +81,21 @@ export class EventsService {
 
   /**
    * Every tag root with the tags beneath it, each counting the events that
-   * overlap the window, or every event without one.
+   * overlap the window and meet the filter, or every event without a window.
    */
   public async findFacets(
     window?: EventsWindowInput,
+    filter?: EventFilterGroup | null,
   ): Promise<EventFacetEntity[]> {
+    const compiled = compileEventFilter(filter, 2);
     const rows = await this.select(
-      FACETS_SQL,
+      FACETS_SQL.replace("{filter}", () =>
+        compiled === null ? "" : `and ${compiled.sql}`,
+      ),
       [
         window === undefined ? null : toIsoString(window.end),
         window === undefined ? null : toIsoString(window.start),
+        ...(compiled?.parameters ?? []),
       ],
       facetRowSchema,
     );

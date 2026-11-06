@@ -128,6 +128,77 @@ describe(EventsService, () => {
     ]);
   });
 
+  it("applies a compiled filter to the events, binding it after the window", async () => {
+    expect.hasAssertions();
+
+    query.mockResolvedValueOnce([]);
+
+    await service.findEvents(
+      {
+        end: new Date("2026-03-06T00:00:00Z"),
+        start: new Date("2026-03-05T00:00:00Z"),
+      },
+      {
+        combinator: "and",
+        groups: [],
+        rules: [
+          {
+            negated: false,
+            operator: "gt",
+            path: ["duration-minutes"],
+            values: ["30"],
+          },
+        ],
+      },
+    );
+
+    expect(query).toHaveBeenLastCalledWith(
+      expect.stringContaining("and ((e.duration_minutes > $3::numeric))"),
+      ["2026-03-06T00:00:00.000Z", "2026-03-05T00:00:00.000Z", "30"],
+    );
+  });
+
+  it("applies a compiled filter to the facets, with or without a window", async () => {
+    expect.hasAssertions();
+
+    query.mockResolvedValueOnce([]);
+
+    await service.findFacets(undefined, {
+      combinator: "and",
+      groups: [],
+      rules: [
+        {
+          negated: false,
+          operator: "is_any_of",
+          path: ["weekday"],
+          values: ["2"],
+        },
+      ],
+    });
+
+    expect(query).toHaveBeenLastCalledWith(
+      expect.stringContaining("= any($3::integer[])"),
+      [null, null, [2]],
+    );
+  });
+
+  it("leaves the statement as it was when the filter compiles to nothing", async () => {
+    expect.hasAssertions();
+
+    query.mockResolvedValueOnce([]);
+
+    await service.findFacets(undefined, {
+      combinator: "and",
+      groups: [],
+      rules: [],
+    });
+
+    expect(query).toHaveBeenLastCalledWith(
+      expect.not.stringContaining("{filter}"),
+      [null, null],
+    );
+  });
+
   it("gathers the tags beneath each root into its facet, counting over the window", async () => {
     expect.hasAssertions();
 

@@ -1,6 +1,7 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { EventFilterCombinator } from "./event-filter-combinator.entities";
 import { EventsResolver } from "./events.resolver";
 import { EventsService } from "./events.service";
 
@@ -9,8 +10,10 @@ import type { EventFacetEntity } from "./event-facet.entities";
 import type { EventsDatasetEntity } from "./events.entities";
 
 const describeDataset = vi.fn<() => Promise<EventsDatasetEntity | null>>();
-const findFacets = vi.fn<() => Promise<EventFacetEntity[]>>();
-const findEvents = vi.fn<() => Promise<CalendarEventEntity[]>>();
+const findFacets =
+  vi.fn<(...parameters: unknown[]) => Promise<EventFacetEntity[]>>();
+const findEvents =
+  vi.fn<(...parameters: unknown[]) => Promise<CalendarEventEntity[]>>();
 
 describe(EventsResolver, () => {
   let resolver: EventsResolver;
@@ -59,10 +62,52 @@ describe(EventsResolver, () => {
         start: new Date("2026-03-01T00:00:00Z"),
       }),
     ).resolves.toStrictEqual([]);
-    expect(findEvents).toHaveBeenCalledWith({
+    expect(findEvents).toHaveBeenCalledWith(
+      {
+        end: new Date("2026-03-02T00:00:00Z"),
+        start: new Date("2026-03-01T00:00:00Z"),
+      },
+      null,
+    );
+  });
+
+  it("validates the filter the events and facets queries take before the service sees it", async () => {
+    expect.hasAssertions();
+
+    const window = {
       end: new Date("2026-03-02T00:00:00Z"),
       start: new Date("2026-03-01T00:00:00Z"),
-    });
+    };
+    const filter = {
+      combinator: EventFilterCombinator.OR,
+      rules: [{ operator: "contains", path: ["text"], values: ["mars"] }],
+    };
+    const parsed = {
+      combinator: "or",
+      groups: [],
+      rules: [
+        {
+          negated: false,
+          operator: "contains",
+          path: ["text"],
+          values: ["mars"],
+        },
+      ],
+    };
+
+    findEvents.mockResolvedValue([]);
+    findFacets.mockResolvedValue([]);
+
+    await resolver.events(window, filter);
+    await resolver.facets(window, filter);
+
+    expect(findEvents).toHaveBeenLastCalledWith(window, parsed);
+    expect(findFacets).toHaveBeenLastCalledWith(window, parsed);
+    await expect(
+      resolver.events(window, {
+        combinator: "xor" as EventFilterCombinator,
+      }),
+    ).rejects.toThrow(/combinator/u);
   });
 
   it("answers the facets query over the window, or over everything without one", async () => {
@@ -76,10 +121,10 @@ describe(EventsResolver, () => {
     findFacets.mockResolvedValue([]);
 
     await expect(resolver.facets(window)).resolves.toStrictEqual([]);
-    expect(findFacets).toHaveBeenLastCalledWith(window);
+    expect(findFacets).toHaveBeenLastCalledWith(window, null);
 
     await resolver.facets();
 
-    expect(findFacets).toHaveBeenLastCalledWith(undefined);
+    expect(findFacets).toHaveBeenLastCalledWith(undefined, null);
   });
 });

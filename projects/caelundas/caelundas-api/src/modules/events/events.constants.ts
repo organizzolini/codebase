@@ -2,6 +2,10 @@ import { z } from "zod";
 
 // ♟️ Constants
 
+/** What a filter argument keeps, written once for both queries. */
+export const EVENT_FILTER_ARGUMENT_DESCRIPTION =
+  "Keeps only the events that meet this nested AND/OR filter; rules that are not finished are left out.";
+
 /**
  * The span and zone of the whole dataset, or no row when it is empty. The
  * zone is the most common one, because the app shows one observer location.
@@ -34,7 +38,8 @@ export const datasetRowSchema = z.object({
  * The events that overlap a window, earliest first, each with the tags it was
  * given as a JSON array, read through the derived-times view. Binds the
  * window's end, then its start; ends are compared inclusively so an instant
- * at the window's first moment is still found. The instants where an aspect
+ * at the window's first moment is still found. `{filter}` is replaced by
+ * the compiled filter, or by nothing. The instants where an aspect
  * begins forming or dissolves are left out, since the event that spans the
  * aspect says as much; they stay in the data. Text sorts by bytes, as the
  * web app's SQLite did, rather than by the database's locale.
@@ -76,6 +81,7 @@ export const EVENTS_IN_WINDOW_SQL = `
       where n.calendar_event_id = e.id
         and n.tag_path in ('Phase / Forming', 'Phase / Dissolving')
     )
+    {filter}
   order by e."start", e."summary" collate "C", e.id
 `;
 
@@ -108,14 +114,16 @@ export const eventRowSchema = z.object({
  * number of events it matches among those that overlap a window, its
  * descendants' included, roots and their tags each in path order. Binds the
  * window's end, then its start; a null bound leaves that side open, so two
- * nulls count every event.
+ * nulls count every event. `{filter}` is replaced by the compiled filter, or
+ * by nothing, so the counts cover the events the filter keeps.
  */
 export const FACETS_SQL = `
   with in_window as (
     select e.id
-    from calendar_events e
+    from calendar_event_derived_times e
     where e."start" < coalesce($1::timestamptz, 'infinity')
       and e."end" >= coalesce($2::timestamptz, '-infinity')
+      {filter}
   ),
   tag_counts as (
     select t.tag_id, count(*) as count
