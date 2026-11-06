@@ -8,7 +8,6 @@ import {
   LEXICO_DATABASE_ENTITIES,
   LEXICO_DATABASE_MIGRATIONS,
 } from "../database/data-source.constants";
-import { LexicoNamingStrategy } from "../database/database.constants";
 
 import { Author } from "./literature/author.entity";
 import { Line } from "./literature/line.entity";
@@ -423,7 +422,6 @@ describe("entity integration schema", () => {
       {
         entities: [...LEXICO_DATABASE_ENTITIES],
         migrations: [...LEXICO_DATABASE_MIGRATIONS],
-        namingStrategy: new LexicoNamingStrategy(),
         project: "lexico",
       },
       { ...process.env, ...container.environment },
