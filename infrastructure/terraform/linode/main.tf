@@ -70,6 +70,14 @@ resource "linode_object_storage_key" "state" {
   }
 }
 
+# The key Terraform uses to configure the cache bucket. It cannot be scoped to
+# that bucket: a key's `bucket_access` needs the bucket to exist, and the bucket
+# needs a key to exist first. It reaches every bucket in the account, so it is
+# kept out of the outputs and never handed to CI.
+resource "linode_object_storage_key" "nx_cache_provisioner" {
+  label = "${var.nx_cache_bucket_label}-provisioner"
+}
+
 # The bucket behind the shared Nx cache: one object per task hash, under `nx/`.
 # Entries are only a speed-up, so a lifecycle rule lets anything unused for
 # thirty days go, and the bucket can be destroyed and refilled without loss.
@@ -78,6 +86,11 @@ resource "linode_object_storage_bucket" "nx_cache" {
   region        = var.region
   endpoint_type = "E3"
   acl           = "private"
+
+  # The provider sets a lifecycle rule through the bucket's own S3 API, so it
+  # needs credentials the bucket cannot supply for itself.
+  access_key = linode_object_storage_key.nx_cache_provisioner.access_key
+  secret_key = linode_object_storage_key.nx_cache_provisioner.secret_key
 
   lifecycle_rule {
     id      = "expire-unused-cache-entries"
