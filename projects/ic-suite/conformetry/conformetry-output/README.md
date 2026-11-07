@@ -207,84 +207,10 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-output:coinagerie-check:write`.
 
-- **absolute**:
-- **actual**:
-- **after**:
-- **bare**:
-- **below**:
-- **breadth**:
-- **bug**:
-- **calculate**:
-- **clear**:
-- **compile**:
-- **compiler**:
-- **complete**:
-- **console**:
-- **constant**:
-- **controller**:
-- **count**:
-- **decorator**:
-- **define**:
-- **describe**:
-- **detail**:
-- **difference**:
-- **digit**:
-- **each**:
-- **entry**:
-- **equal**:
-- **experimental**:
-- **fake**:
-- **filename**:
-- **flat**:
-- **fraction**:
-- **gear**:
-- **gitkeep**:
-- **homepage**:
-- **imperfect**:
-- **implementation**:
-- **indent**:
-- **injectable**:
-- **instance**:
-- **inventoried**:
-- **inventory**:
-- **java**:
-- **least**:
-- **length**:
-- **location**:
-- **math**:
-- **maximum**:
-- **meet**:
-- **meta**:
-- **metric**:
-- **mock**:
-- **ok**:
-- **pair**:
-- **partial**:
-- **percent**:
-- **percentage**:
-- **perfect**:
-- **publish**:
-- **ratio**:
-- **real**:
-- **recursive**:
-- **reduce**:
-- **relative**:
-- **resolution**:
-- **round**:
-- **scale**:
-- **score**:
-- **shorten**:
-- **spy**:
-- **strict**:
-- **success**:
-- **sum**:
-- **synthetic**:
-- **text**:
-- **threshold**:
-- **timer**:
-- **trim**:
-- **verdict**:
-- **vi**:
-- **weight**:
+- **breadth**: Callidescope measure of how many callables one function calls directly, shown in the README breadth tables and gated per project.
+- **inventoried**: Types for entries the inventory service has listed: InventoriedInstance, InventoriedTemplate, and InventoriedPairing.
+- **inventory**: Module that renders the template and instance listing, with its indent ladder, headings, and match percentage.
+- **meet**: Verdict wording used when an instance's score reaches its threshold, paired with below threshold for failing instances.
+- **perfect**: Score of exactly full weight; reporting leaves perfect instances out of the summary of scores that fell short.
 
 <!-- coinagerie:end -->

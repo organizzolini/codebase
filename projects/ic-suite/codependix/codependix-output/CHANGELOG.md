@@ -1,3 +1,95 @@
+## 0.0.70 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.68
+- Updated codependix-configuration to 0.0.70
+- Updated codependix-file-imports to 0.0.68
+- Updated codependix-nx-projects to 0.0.69
+- Updated codependix-boundaries to 0.0.70
+- Updated codependix-core to 0.0.68
+
+## 0.0.69 (2026-11-06)
+
+### 🚀 Features
+
+- **compliance,configuration,documentation:** ✨ migrate external-resource commands ([#2058](https://github.com/organizzolini/codebase/pull/2058), [#1980](https://github.com/organizzolini/codebase/issues/1980))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.67
+- Updated codependix-configuration to 0.0.69
+- Updated codependix-file-imports to 0.0.67
+- Updated codependix-nx-projects to 0.0.68
+- Updated codependix-boundaries to 0.0.69
+- Updated codependix-core to 0.0.67
+
+## 0.0.68 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.66
+- Updated codependix-configuration to 0.0.68
+- Updated codependix-file-imports to 0.0.66
+- Updated codependix-nx-projects to 0.0.67
+- Updated codependix-boundaries to 0.0.68
+- Updated codependix-core to 0.0.66
+
+## 0.0.67 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.65
+- Updated codependix-configuration to 0.0.67
+- Updated codependix-file-imports to 0.0.65
+- Updated codependix-nx-projects to 0.0.66
+- Updated codependix-boundaries to 0.0.67
+- Updated codependix-core to 0.0.65
+
+## 0.0.66 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.64
+- Updated codependix-configuration to 0.0.66
+- Updated codependix-file-imports to 0.0.64
+- Updated codependix-nx-projects to 0.0.65
+- Updated codependix-boundaries to 0.0.66
+- Updated codependix-core to 0.0.64
+
+## 0.0.65 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.63
+- Updated codependix-configuration to 0.0.65
+- Updated codependix-file-imports to 0.0.63
+- Updated codependix-nx-projects to 0.0.64
+- Updated codependix-boundaries to 0.0.65
+- Updated codependix-core to 0.0.63
+
+## 0.0.64 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.62
+- Updated codependix-configuration to 0.0.64
+- Updated codependix-file-imports to 0.0.62
+- Updated codependix-nx-projects to 0.0.63
+- Updated codependix-boundaries to 0.0.64
+- Updated codependix-core to 0.0.62
+
+## 0.0.63 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.61
+- Updated codependix-configuration to 0.0.63
+- Updated codependix-file-imports to 0.0.61
+- Updated codependix-nx-projects to 0.0.62
+- Updated codependix-boundaries to 0.0.63
+- Updated codependix-core to 0.0.61
+
 ## 0.0.62 (2026-11-04)
 
 ### 🧱 Updated Dependencies

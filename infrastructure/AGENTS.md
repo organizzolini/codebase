@@ -30,7 +30,7 @@ infrastructure/
 │   └── kubernetes-job/      # Reusable chart for K8s Jobs
 └── terraform/               # Cluster provisioning
     ├── github/              # Repository settings, ruleset, Actions variables
-    ├── linode/              # Object Storage bucket holding the state
+    ├── linode/              # Object Storage buckets: the state and the shared Nx cache
     └── openrouter/          # OpenRouter workspace, key, guardrail, preset
 ```
 
@@ -54,6 +54,37 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 ## Kubernetes Deployment
 
 See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint` and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
+
+## Moving the Terraform State Bucket
+
+The state moves from the original `organizzolini` bucket to
+`organizzolini-codebase-terraform-state`. Linode cannot rename a bucket, so the
+`linode` root creates the new bucket and its key beside the old ones, and a
+person moves the state across. Every step before step 5 leaves the old bucket
+serving all three roots, so the move can stop at any point.
+
+1. **Create**: merge the change that adds the bucket. The Continuous Deployment `Infrastructure` job applies the `linode` root.
+2. **Read the new credentials**: initialize the `linode` root against the old bucket, then read the outputs without printing them:
+
+   ```bash
+   cd infrastructure/terraform/linode
+   terraform output -raw terraform_state_access_key
+   terraform output -raw terraform_state_secret_key
+   ```
+
+3. **Copy**: with the old key as one AWS CLI profile and the new key as another, sync every object, then compare object counts and ETags:
+
+   ```bash
+   aws s3 sync s3://organizzolini s3://organizzolini-codebase-terraform-state \
+     --endpoint-url https://us-iad-18.linodeobjects.com
+   ```
+
+   The `sync` needs one profile that can read the old bucket and write the new one, so copy through a local directory when the two keys differ.
+
+4. **Check the copy**: `aws s3 ls --recursive` on both buckets lists the same `codebase/*.tfstate` keys, and the new `linode.tfstate` matches the old one byte for byte.
+5. **Switch**: set `TERRAFORM_STATE_BUCKET`, `TERRAFORM_STATE_ENDPOINT`, `TERRAFORM_STATE_ACCESS_KEY_ID`, and `TERRAFORM_STATE_SECRET_ACCESS_KEY` to the new values with `gh secret set`, reading each from the `terraform output` of step 2.
+6. **Prove it**: run `nx run infrastructure:terraform-init:<root>` and `terraform plan` for each of `openrouter`, `github`, and `linode` with the new values. Each plan must show no changes, since the state is the same state. Roll back by restoring the four secrets to the old values.
+7. **Retire the old bucket** only after a week of clean runs: `terraform state rm` the `state` bucket and key in the `linode` root, delete their resources and `bucket_label`, then delete the old bucket and key in Linode by hand. Both resources set `prevent_destroy` so that Terraform cannot do this itself.
 
 ## Troubleshooting
 

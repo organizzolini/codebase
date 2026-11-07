@@ -45,19 +45,6 @@ export class MyService {
 }
 ```
 
-## Testing helpers
-
-`@codebase/observability/testing` exports `expectLoggerContext`, which builds
-the class under test with `buildTestingModule` from
-`@codebase/testing/nestjs` and asserts that it sets its logger context to its
-own class name:
-
-```ts
-import { expectLoggerContext } from "@codebase/observability/testing";
-
-await expectLoggerContext(MyService, { mocks: [MyDependency] });
-```
-
 ## Output modes
 
 | `NODE_ENV`    | Output                                               |
@@ -97,24 +84,24 @@ MIT — see [LICENSE](../../LICENSE).
 
 Call stacks traced through `projects/common/observability`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 
-| Measure                  | Value |
-| ------------------------ | ----- |
-| Callables                | 26    |
-| Files                    | 11    |
-| Calls traced             | 5     |
-| Call stacks              | 1     |
-| Deepest stack            | 4     |
-| Stacks through recursion | 0     |
-| Unfollowable calls       | 1     |
+| Measure | Value |
+| --- | --- |
+| Callables | 26 |
+| Files | 11 |
+| Calls traced | 5 |
+| Call stacks | 1 |
+| Deepest stack | 4 |
+| Stacks through recursion | 0 |
+| Unfollowable calls | 1 |
 
 ### Limits
 
 What this project is judged against, as declared in its own `callidescope.config.ts`.
 
-| Limit            | Value |
-| ---------------- | ----- |
-| `maximumDepth`   | 4     |
-| `maximumBreadth` | 2     |
+| Limit | Value |
+| --- | --- |
+| `maximumDepth` | 4 |
+| `maximumBreadth` | 2 |
 
 ### Call stacks (depth)
 
@@ -132,12 +119,11 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Breadth
 
-| Callable                         | Breadth | Calls directly                                         | Location                                                                            |
-| -------------------------------- | ------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| `checkConventionalMessage`       | 2       | `parseLogMessage`, `isConventionalVerb`                | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:61`  |
-| `CallExpression`                 | 2       | `isLoggerObjectText`, `checkMessageArgumentConvention` | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:174` |
-| `checkMessageArgumentConvention` | 1       | `checkConventionalMessage`                             | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:91`  |
-
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `checkConventionalMessage` | 2 | `parseLogMessage`, `isConventionalVerb` | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:61` |
+| `CallExpression` | 2 | `isLoggerObjectText`, `checkMessageArgumentConvention` | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:174` |
+| `checkMessageArgumentConvention` | 1 | `checkConventionalMessage` | `projects/common/observability/src/lib/conventional-log-message.eslint-rule.ts:91` |
 <!-- callidescope:end -->
 
 ## 🕸️ Codependix
@@ -147,7 +133,6 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ### Nx Neighborhood
 
 <!-- codependix:start name="codependix-nx-projects" -->
-
 ```mermaid
 graph LR
   caelundas_cli["caelundas-cli"]
@@ -163,6 +148,7 @@ graph LR
   codometer_languages["codometer-languages"]
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
+  compliance["compliance"]
   configuration["configuration"]
   conformetry_cli["conformetry-cli"]
   conformetry_nx["conformetry-nx"]
@@ -190,6 +176,7 @@ graph LR
   codometer_languages --> observability
   codometer_measurement --> observability
   codometer_output --> observability
+  compliance --> observability
   conformetry_cli --> observability
   conformetry_nx --> observability
   documentation --> observability
@@ -206,24 +193,20 @@ graph LR
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class observability subject
 ```
-
 <!-- codependix:end name="codependix-nx-projects" -->
 
 ### NestJS Module Graph
 
 <!-- codependix:start name="codependix-nestjs-modules" -->
-
 ```mermaid
 flowchart LR
   LoggerModule
 ```
-
 <!-- codependix:end name="codependix-nestjs-modules" -->
 
 ### File Imports
 
 <!-- codependix:start name="codependix-file-imports" -->
-
 ```mermaid
 graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
@@ -239,16 +222,8 @@ graph LR
   file_src_modules_logger_logger_service_ts["src/modules/logger/logger.service.ts"]
   file_src_modules_logger_logger_service_unit_test_ts["src/modules/logger/logger.service.unit.test.ts"]
   file_src_modules_logger_logger_types_ts["src/modules/logger/logger.types.ts"]
-  file_testing_fixtures_sample_clock_module_ts["testing/fixtures/sample-clock.module.ts"]
-  file_testing_fixtures_sample_clock_service_ts["testing/fixtures/sample-clock.service.ts"]
-  file_testing_fixtures_sample_greeter_module_ts["testing/fixtures/sample-greeter.module.ts"]
-  file_testing_fixtures_sample_greeter_service_ts["testing/fixtures/sample-greeter.service.ts"]
-  file_testing_index_ts["testing/index.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
-  file_testing_testing_module_testing_module_types_ts["testing/testing-module/testing-module.types.ts"]
-  file_testing_testing_module_testing_module_utilities_ts["testing/testing-module/testing-module.utilities.ts"]
-  file_testing_testing_module_testing_module_utilities_unit_test_ts["testing/testing-module/testing-module.utilities.unit.test.ts"]
   file_vitest_config_ts["vitest.config.ts"]
   file_src_lib_conventional_log_message_eslint_rule_ts --> file_src_modules_logger_logger_constants_ts
   file_src_lib_conventional_log_message_eslint_rule_unit_test_ts --> file_src_lib_conventional_log_message_eslint_rule_ts
@@ -258,22 +233,7 @@ graph LR
   file_src_modules_logger_logger_service_ts --> file_src_modules_logger_logger_constants_ts
   file_src_modules_logger_logger_service_ts --> file_src_modules_logger_logger_types_ts
   file_src_modules_logger_logger_service_unit_test_ts --> file_src_modules_logger_logger_service_ts
-  file_testing_fixtures_sample_clock_module_ts --> file_testing_fixtures_sample_clock_service_ts
-  file_testing_fixtures_sample_greeter_module_ts --> file_testing_fixtures_sample_clock_module_ts
-  file_testing_fixtures_sample_greeter_module_ts --> file_testing_fixtures_sample_greeter_service_ts
-  file_testing_fixtures_sample_greeter_service_ts --> file_src_modules_logger_logger_service_ts
-  file_testing_fixtures_sample_greeter_service_ts --> file_testing_fixtures_sample_clock_service_ts
-  file_testing_testing_module_testing_module_types_ts --> file_src_modules_logger_logger_types_ts
-  file_testing_testing_module_testing_module_utilities_ts --> file_src_modules_logger_logger_service_ts
-  file_testing_testing_module_testing_module_utilities_ts --> file_src_modules_logger_logger_types_ts
-  file_testing_testing_module_testing_module_utilities_ts --> file_testing_testing_module_testing_module_types_ts
-  file_testing_testing_module_testing_module_utilities_unit_test_ts --> file_src_modules_logger_logger_service_ts
-  file_testing_testing_module_testing_module_utilities_unit_test_ts --> file_testing_fixtures_sample_clock_module_ts
-  file_testing_testing_module_testing_module_utilities_unit_test_ts --> file_testing_fixtures_sample_clock_service_ts
-  file_testing_testing_module_testing_module_utilities_unit_test_ts --> file_testing_fixtures_sample_greeter_service_ts
-  file_testing_testing_module_testing_module_utilities_unit_test_ts --> file_testing_testing_module_testing_module_utilities_ts
 ```
-
 <!-- codependix:end name="codependix-file-imports" -->
 
 <!-- codometer:start -->
@@ -498,103 +458,9 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run observability:coinagerie-check:write`.
 
-- **after**:
-- **assign**:
-- **bind**:
-- **breadth**:
-- **call**:
-- **callee**:
-- **child**:
-- **clear**:
-- **clock**:
-- **colorize**:
-- **compile**:
-- **compiler**:
-- **compute**:
-- **console**:
-- **constant**:
-- **contract**:
-- **controller**:
-- **convention**:
-- **cook**:
-- **count**:
-- **debug**:
-- **decorator**:
-- **define**:
-- **describe**:
-- **descriptor**:
-- **destination**:
-- **detail**:
-- **duration**:
-- **each**:
-- **ecma**:
-- **entry**:
-- **equal**:
-- **es**:
-- **exactly**:
-- **experimental**:
-- **expression**:
-- **fake**:
-- **greet**:
-- **greeter**:
-- **hoist**:
-- **implicit**:
-- **injectable**:
-- **instance**:
-- **invalid**:
-- **irregular**:
-- **iso**:
-- **java**:
-- **lead**:
-- **least**:
-- **length**:
-- **level**:
-- **logger**:
-- **lower**:
-- **lowercased**:
-- **maximum**:
-- **meta**:
-- **method**:
-- **metric**:
-- **miss**:
-- **mock**:
-- **ms**:
-- **non**:
-- **now**:
-- **once**:
-- **parameter**:
-- **past**:
-- **percent**:
-- **promise**:
-- **provide**:
-- **publish**:
-- **quasi**:
-- **real**:
-- **recursive**:
-- **reject**:
-- **remainder**:
-- **replace**:
-- **resolution**:
-- **sample**:
-- **should**:
-- **single**:
-- **slice**:
-- **spy**:
-- **stack**:
-- **strict**:
-- **synthetic**:
-- **tester**:
-- **text**:
-- **timer**:
-- **timestamped**:
-- **trace**:
-- **transient**:
-- **transport**:
-- **unvalidated**:
-- **valid**:
-- **verb**:
-- **vi**:
-- **violation**:
-- **warn**:
+- **breadth**: The count of direct calls a callable makes, which callidescope gates against this project's maximum breadth limit.
+- **convention**: The logging message rule: an emoji naming the subject, then a present-progressive or past-tense verb, checked at runtime and by lint.
+- **trace**: The verbose log level below debug, which LoggerService.verbose emits through its pino child logger.
+- **verb**: The grammatical word the convention rule requires after the emoji subject, in present-progressive or past tense.
 
 <!-- coinagerie:end -->

@@ -21,7 +21,7 @@ import { DatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
 
 `DatabaseModule` connects to `lexico_development`.`lexico` as
 `lexico_username` through [`@codebase/persistence`](../../common/persistence/README.md)'s
-`DatabaseModule.forRoot`, with lexico's pluralizing `LexicoNamingStrategy`.
+`DatabaseModule.forRoot`, with its shared plural snake-case naming strategy.
 `lexicoDataSource`, in `src/modules/database/data-source.constants.ts`,
 is the same configuration as a standalone `DataSource`, built with the shared
 `createDataSource`, which is what the migration command line runs against.
@@ -91,8 +91,9 @@ union type — `formCaseValues` / `FormCase`, `verbConjugationValues` /
 degree, and declension. Validation, GraphQL enums, and exhaustive switches all
 read from the same source.
 
-`LexicoNamingStrategy` maps entity and column names to the database's own
-convention, so table names stay predictable across migrations.
+The shared plural snake-case naming strategy in `@codebase/persistence` maps
+entity and column names to the database's own convention, so table names stay
+predictable across migrations.
 
 ## Migrations
 
@@ -233,8 +234,8 @@ Call stacks traced through `projects/lexico/lexico-entities`, deepest first. Eac
 
 | Measure | Value |
 | --- | --- |
-| Callables | 20 |
-| Files | 43 |
+| Callables | 18 |
+| Files | 44 |
 | Calls traced | 0 |
 | Call stacks | 0 |
 | Deepest stack | 0 |
@@ -304,6 +305,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_database_data_source_constants_ts["src/modules/database/data-source.constants.ts"]
@@ -354,7 +356,6 @@ graph LR
   file_testing_entity_definition_assertions_ts["testing/entity-definition-assertions.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_modules_database_data_source_constants_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_database_migrations_1791164926316_migration_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_database_migrations_1792000000000_migration_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_adjectival_form_entity_ts
@@ -385,9 +386,7 @@ graph LR
   file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_literature_text_entity_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_literature_token_entity_ts
   file_src_modules_database_data_source_constants_unit_test_ts --> file_src_modules_database_data_source_constants_ts
-  file_src_modules_database_data_source_constants_unit_test_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_database_module_ts --> file_src_modules_database_data_source_constants_ts
-  file_src_modules_database_database_module_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_database_module_ts --> file_src_modules_database_database_service_ts
   file_src_modules_database_database_service_unit_test_ts --> file_src_modules_database_database_service_ts
   file_src_modules_database_database_types_ts --> file_src_modules_database_database_constants_ts
@@ -453,7 +452,6 @@ graph LR
   file_src_modules_entities_entities_constants_unit_test_ts --> file_src_modules_entities_entities_constants_ts
   file_src_modules_entities_entities_module_ts --> file_src_modules_entities_entities_service_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_database_data_source_constants_ts
-  file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_entities_literature_author_entity_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_entities_literature_line_entity_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_entities_literature_text_entity_ts
@@ -485,40 +483,40 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4938-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-211.83_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4910-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-210.47_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-53-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-54-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-26.47_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-26.00_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-53-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-54-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-8-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-2-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-151-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-102-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-99-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
 ![Test Files](https://img.shields.io/badge/Test_Files-6-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-13-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-36-7c3aed?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-11-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-35-7c3aed?style=flat-square)
 ![Functions](https://img.shields.io/badge/Functions-195-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-20-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-187-4ade80?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-18-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-185-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-28-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-151-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-210-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-111-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-131-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-232-475569?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-144-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-205-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-110-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-128-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-224-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-3-ca8a04?style=flat-square)
 
 ### Python
@@ -539,16 +537,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-150-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-148-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-41-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-10-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-102-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-76-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-99-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-74-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-8-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-30-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-136-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-31-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-134-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML
@@ -701,540 +699,22 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run lexico-entities:coinagerie-check:write`.
 
-- **0191e**:
-- **01b**:
-- **01e**:
-- **023445108890a**:
-- **02e**:
-- **03033925e**:
-- **045c**:
-- **077bd**:
-- **099d**:
-- **0a**:
-- **0b**:
-- **0ca**:
-- **0e**:
-- **0fa**:
-- **0fd**:
-- **1029749f**:
-- **102f**:
-- **116e**:
-- **1209a**:
-- **155ad**:
-- **176364b**:
-- **1795a**:
-- **191c**:
-- **198dea**:
-- **19cd**:
-- **1aa**:
-- **1aab**:
-- **1aee**:
-- **1c**:
-- **1cbb**:
-- **1d**:
-- **1e**:
-- **1fb**:
-- **209b**:
-- **216ae**:
-- **2243dcd**:
-- **234b**:
-- **234ba**:
-- **23e**:
-- **258ca**:
-- **25936d**:
-- **2709e**:
-- **275807c**:
-- **2883c**:
-- **2b**:
-- **2bc**:
-- **2d**:
-- **2f**:
-- **3001e**:
-- **3068fc**:
-- **309a**:
-- **34738bc**:
-- **36263dabf**:
-- **366638dd**:
-- **37f**:
-- **390a**:
-- **39313ab**:
-- **3a**:
-- **3bfcf**:
-- **3d**:
-- **3e**:
-- **3eb**:
-- **3f**:
-- **40b**:
-- **423ad**:
-- **43fa**:
-- **4478795971e**:
-- **44ab**:
-- **44faf**:
-- **455b**:
-- **45ba**:
-- **463838022e**:
-- **4747c**:
-- **479aa**:
-- **4839d**:
-- **49641fb**:
-- **49d**:
-- **4a**:
-- **4c**:
-- **4cc**:
-- **4d**:
-- **4eccee**:
-- **513c**:
-- **513daa**:
-- **516db**:
-- **52ebb**:
-- **53b**:
-- **54256ad**:
-- **551cde**:
-- **55f**:
-- **5683b**:
-- **569c**:
-- **579999929ed**:
-- **57efb**:
-- **5c**:
-- **5cadaeb**:
-- **5cc**:
-- **6210a**:
-- **6286a**:
-- **62db**:
-- **63a**:
-- **63c**:
-- **643892e**:
-- **644ba**:
-- **652df**:
-- **65a**:
-- **6952e**:
-- **69b**:
-- **69e**:
-- **6b**:
-- **6c**:
-- **6ebfde**:
-- **70876dfb**:
-- **70d**:
-- **725470a**:
-- **72915c**:
-- **75ceaf**:
-- **769cd**:
-- **76d**:
-- **773610b**:
-- **784a**:
-- **788f**:
-- **794cdcdf**:
-- **795d**:
-- **79bf**:
-- **7a**:
-- **7b**:
-- **7bf**:
-- **7c**:
-- **7e**:
-- **7ef**:
-- **7f**:
-- **7fb**:
-- **7fdf**:
-- **800c**:
-- **81c**:
-- **865a**:
-- **86789cf**:
-- **86e**:
-- **877e**:
-- **87cbd**:
-- **88b**:
-- **899e**:
-- **89ada**:
-- **8b**:
-- **8ba**:
-- **8c**:
-- **8d**:
-- **8de**:
-- **8fc**:
-- **903b**:
-- **9093c**:
-- **90ccb**:
-- **9204890678d**:
-- **9325e**:
-- **9430896d**:
-- **94e**:
-- **955b**:
-- **9561dea**:
-- **95d**:
-- **965b**:
-- **968b**:
-- **996c**:
-- **9a**:
-- **9bc**:
-- **9ca**:
-- **9d**:
-- **9f**:
-- **a0**:
-- **a08**:
-- **a1**:
-- **a15**:
-- **a1872**:
-- **a3**:
-- **a3450**:
-- **a4**:
-- **a5**:
-- **a5664**:
-- **a60756**:
-- **a65192**:
-- **a7**:
-- **a70**:
-- **a801**:
-- **a9**:
-- **a90**:
-- **aa0**:
-- **ab78**:
-- **abbreviation**:
-- **ablative**:
-- **aca248**:
-- **accb69**:
-- **accusative**:
-- **actual**:
-- **adjectival**:
-- **adjective**:
-- **adverb**:
-- **ae1**:
-- **afa**:
-- **afa9**:
-- **after**:
-- **alway**:
-- **array**:
-- **assertion**:
-- **assign**:
-- **auditable**:
-- **b06814**:
-- **b1**:
-- **b2**:
-- **b3**:
-- **b33**:
-- **b3302**:
-- **b52847**:
-- **b7**:
-- **b8**:
-- **b8633**:
-- **b88**:
-- **ba062**:
-- **bb44**:
-- **bba7**:
-- **bc0**:
-- **be3**:
-- **be34**:
-- **bf4**:
-- **breadth**:
-- **builder**:
-- **c0**:
-- **c1**:
-- **c121**:
-- **c148**:
-- **c157882**:
-- **c16**:
-- **c22**:
-- **c3**:
-- **c3172**:
-- **c4**:
-- **c564**:
-- **c57**:
-- **c6**:
-- **c62679**:
-- **c678**:
-- **c7**:
-- **c72**:
-- **c8**:
-- **c89**:
-- **c92**:
-- **ca25**:
-- **ca45**:
-- **callback**:
-- **cascade**:
-- **cb28**:
-- **cc8536**:
-- **ccb85**:
-- **ccf78**:
-- **cd4**:
-- **cd7**:
-- **cd87**:
-- **ce044**:
-- **character**:
-- **child**:
-- **circumfix**:
-- **classical**:
-- **clear**:
-- **comment**:
-- **comparable**:
-- **comparative**:
-- **compare**:
-- **compile**:
-- **compiler**:
-- **concurrent**:
-- **conjugation**:
-- **conjunction**:
-- **conjunctional**:
-- **console**:
-- **constant**:
-- **controller**:
-- **d067**:
-- **d09**:
-- **d14365**:
-- **d2**:
-- **d3**:
-- **d36**:
-- **d41189**:
-- **d416578**:
-- **d44**:
-- **d473505**:
-- **d5773**:
-- **d57731**:
-- **d677**:
-- **da**:
-- **dae85**:
-- **dative**:
-- **dbe1**:
-- **dc81283**:
-- **dcce6**:
-- **dd8**:
-- **declension**:
-- **decorator**:
-- **define**:
-- **definition**:
-- **degree**:
-- **deletable**:
-- **describe**:
-- **descriptive**:
-- **destroy**:
-- **determiner**:
-- **dictionary**:
-- **disambiguator**:
-- **discriminator**:
-- **down**:
-- **driver**:
-- **e02087015**:
-- **e06542**:
-- **e19**:
-- **e197**:
-- **e22**:
-- **e4**:
-- **e53911**:
-- **e6**:
-- **e701643**:
-- **e8**:
-- **e89**:
-- **e9**:
-- **e93**:
-- **each**:
-- **eaf47**:
-- **eager**:
-- **ebe1**:
-- **ecclesiastical**:
-- **ed02**:
-- **edc2**:
-- **ee8**:
-- **ee83**:
-- **efbc0**:
-- **efc0**:
-- **entity**:
-- **entry**:
-- **equal**:
-- **etymology**:
-- **exact**:
-- **expectation**:
-- **experimental**:
-- **expression**:
-- **f068**:
-- **f08**:
-- **f1**:
-- **f19**:
-- **f20**:
-- **f233**:
-- **f29**:
-- **f3**:
-- **f355**:
-- **f480**:
-- **f58**:
-- **f6**:
-- **f8**:
-- **f817**:
-- **fa0**:
-- **fa6**:
-- **fabd9**:
-- **failure**:
-- **fb2390**:
-- **fb90**:
-- **fd30**:
-- **fd67**:
-- **fdd34**:
-- **fe95**:
-- **feaf97**:
-- **feca7**:
-- **fef6**:
-- **fem**:
-- **feminine**:
-- **ffc72**:
-- **fifth**:
-- **finite**:
-- **fk**:
-- **form**:
-- **fourth**:
-- **fresh**:
-- **future**:
-- **fuzzystrmatch**:
-- **gender**:
-- **generation**:
-- **genitive**:
-- **gerund**:
-- **gin**:
-- **greater**:
-- **href**:
-- **idiom**:
-- **idx**:
-- **imperative**:
-- **imperfect**:
-- **implementation**:
-- **indicative**:
-- **infinitive**:
-- **inflection**:
-- **inheritance**:
-- **inject**:
-- **injectable**:
-- **interfix**:
-- **interjection**:
-- **inverse**:
-- **item**:
-- **java**:
-- **jsonb**:
-- **kind**:
-- **know**:
-- **least**:
-- **lemma**:
-- **length**:
-- **lexeme**:
-- **literature**:
-- **load**:
-- **locale**:
-- **locative**:
-- **lock**:
-- **lower**:
-- **many**:
-- **marker**:
-- **masc**:
-- **masculine**:
-- **maximum**:
-- **meta**:
-- **metric**:
-- **migration1791164926316**:
-- **migration1792000000000**:
-- **millisecond**:
-- **mock**:
-- **mood**:
-- **neuter**:
-- **nominal**:
-- **nominative**:
-- **non**:
-- **noop**:
-- **normalize**:
-- **noun**:
-- **now**:
-- **nullable**:
-- **numeral**:
-- **omit**:
-- **one**:
-- **op**:
-- **operator**:
-- **orm**:
-- **orphan**:
-- **other**:
-- **parameter**:
-- **part**:
-- **partial**:
-- **participle**:
-- **particle**:
-- **passive**:
-- **pending**:
-- **perfect**:
-- **persistence**:
-- **person**:
-- **phoneme**:
-- **phonemic**:
-- **phonetic**:
-- **phrase**:
-- **pick**:
-- **pk**:
-- **pluperfect**:
-- **plural**:
-- **positive**:
-- **preposition**:
-- **present**:
-- **principal**:
-- **promise**:
-- **pronoun**:
-- **pronunciation**:
-- **proper**:
-- **proverb**:
-- **proxy**:
-- **publish**:
-- **punctuation**:
-- **recursive**:
-- **reject**:
-- **rel**:
-- **relation**:
-- **relevant**:
-- **representative**:
-- **resolution**:
-- **role**:
-- **runner**:
-- **save**:
-- **search**:
-- **second**:
-- **side**:
-- **singular**:
-- **slug**:
-- **snake**:
-- **snapshot**:
-- **some**:
-- **sort**:
-- **specify**:
-- **speech**:
-- **spy**:
-- **stable**:
-- **statement**:
-- **store**:
-- **strict**:
-- **stringify**:
-- **stub**:
-- **subjunctive**:
-- **subset**:
-- **superlative**:
-- **supine**:
-- **synchronize**:
-- **synthetic**:
-- **text**:
-- **than**:
-- **third**:
-- **transformer**:
-- **translation**:
-- **trgm**:
-- **trigram**:
-- **tsvector**:
-- **undecorated**:
-- **uninflected**:
-- **unmatched**:
-- **unstub**:
-- **up**:
-- **uq**:
-- **uuid**:
-- **uuidv7**:
-- **variant**:
-- **vary**:
-- **verb**:
-- **vi**:
-- **vocative**:
-- **voice**:
-- **vulgar**:
-- **wf**:
-- **wl**:
-- **zone**:
+- **breadth**: Heading of the callidescope breadth section in this README, currently None, so no breadth limit is measured here.
+- **cascade**: Foreign-key behavior in the migrations, ON DELETE CASCADE, so deleting a parent row also removes its dependent rows.
+- **conjunction**: Part-of-speech value for conjunctions, stored in the lexemes part_of_speech enum with the other word classes.
+- **degree**: Comparison degree value, comparative, positive, or superlative, stored in the forms and inflections degree enums.
+- **deletable**: Name of the PostgresqlDeletableEntity base class from @codebase/persistence, which gives every entity soft-delete columns.
+- **dictionary**: The src/modules/entities/dictionary folder, holding the Word, Lexeme, Form, Inflection, and Translation entity classes.
+- **disambiguator**: Numeric lexeme column that, together with lemma, makes each dictionary entry unique and tells homographs apart.
+- **ecclesiastical**: Pronunciation variant value for Ecclesiastical Latin, one of classical, ecclesiastical, or vulgar in the enum.
+- **generation**: Field generationStrategy in column expectations, one of increment, rowid, or uuid, that the entity service tests check.
+- **lexeme**: The Lexeme entity, a lexical entry joined to words, which holds part of speech, etymology, and lemma.
+- **literature**: The literature module: Author, Text, Line, and Token entities that tie classical texts to dictionary words.
+- **perfect**: Tense enum value for perfect verb forms, also one of the three non-finite tenses.
+- **pronunciation**: Entity holding a lexeme's classical, ecclesiastical, or vulgar sound variants and transcriptions, one row per variant.
+- **representative**: Fixture entity that contract tests use to check indexes and unique constraints, such as Text's slug column.
+- **role**: Database login reported by current_user in the integration test, which should be the lexico_username role.
+- **translation**: Entity for one English sense of a lexeme, held in the translations table with its full-text search column.
+- **verb**: Part-of-speech value and inflection kind for verbs, covered by VerbInflection and the verb conjugation enum.
 
 <!-- coinagerie:end -->
