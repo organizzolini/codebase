@@ -30,7 +30,6 @@ import { Line } from "../entities/literature/line.entity";
 import { Text } from "../entities/literature/text.entity";
 import { Token } from "../entities/literature/token.entity";
 
-import { LexicoNamingStrategy } from "./database.constants";
 import { Migration1791164926316 } from "./migrations/1791164926316-migration";
 import { Migration1792000000000 } from "./migrations/1792000000000-migration";
 
@@ -79,6 +78,5 @@ export const LEXICO_DATABASE_MIGRATIONS = [
 export const lexicoDataSource = createDataSource({
   entities: [...LEXICO_DATABASE_ENTITIES],
   migrations: ["src/modules/database/migrations/*.ts"],
-  namingStrategy: new LexicoNamingStrategy(),
   project: "lexico",
 });

@@ -1,0 +1,57 @@
+{
+  "dependencies": {
+    "@codebase/persistence": "workspace:*",
+    "@nestjs/common": "catalog:",
+    "@nestjs/typeorm": "catalog:",
+    "moment-timezone": "catalog:",
+    "pg": "catalog:",
+    "reflect-metadata": "catalog:",
+    "tslib": "catalog:",
+    "typeorm": "catalog:"
+  },
+  "devDependencies": {
+    "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
+    "@nx/eslint-plugin": "catalog:",
+    "@swc/helpers": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "exports": {
+    ".": {
+      "default": "./src/index.ts",
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "./src/index.ts",
+  "name": "@codebase/caelundas-db",
+  "private": true,
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "default": "./dist/src/index.js",
+        "import": "./dist/src/index.js",
+        "require": "./dist/src/index.js",
+        "types": "./dist/src/index.d.ts"
+      }
+    },
+    "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts"
+  },
+  "type": "module",
+  "typeCoverage": {
+    "atLeast": 100,
+    "strict": true
+  },
+  "types": "./src/index.ts",
+  "version": "0.0.1"
+}

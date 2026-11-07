@@ -1,3 +1,6 @@
+import pluralize from "pluralize";
+import { SnakeNamingStrategy } from "typeorm-naming-strategies";
+
 // ♟️ Constants
 
 /**
@@ -44,3 +47,29 @@ export const PROJECT_NAME_PATTERN = /^[a-z][a-z0-9_]*$/;
  * `PostgresqlService` that turns them into TypeORM's.
  */
 export const DATABASE_OPTIONS = Symbol("DATABASE_OPTIONS");
+
+/**
+ * The naming strategy every Postgres project shares: snake case, plural table
+ * names, and join tables named from both plural table names, sorted
+ * alphabetically. A raw SQL reader never quotes a name, and a many-to-many
+ * join table is the same whichever side declares it.
+ */
+export const PluralSnakeNamingStrategy: new () => SnakeNamingStrategy = class extends SnakeNamingStrategy {
+  /** Builds a deterministic join table name from both entity table names. */
+  override joinTableName(
+    firstEntityName: string,
+    secondEntityName: string,
+  ): string {
+    const firstTableName = super.tableName(firstEntityName, firstEntityName);
+    const secondTableName = super.tableName(secondEntityName, secondEntityName);
+
+    return [pluralize(firstTableName), pluralize(secondTableName)]
+      .toSorted()
+      .join("_");
+  }
+
+  /** Converts a base table name to the plural table name used in the schema. */
+  override tableName(targetName: string, userSpecifiedName: string): string {
+    return pluralize(super.tableName(targetName, userSpecifiedName));
+  }
+};

@@ -20,15 +20,3 @@ variable "repository" {
   type        = string
   default     = "codebase"
 }
-
-variable "nx_cloud_read_only_token" {
-  description = "Nx Cloud access token that can only read the remote cache, for pull request runs."
-  type        = string
-  sensitive   = true
-}
-
-variable "nx_cloud_read_write_token" {
-  description = "Nx Cloud access token that can write the remote cache, for trusted runs on main."
-  type        = string
-  sensitive   = true
-}

@@ -139,70 +139,7 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-core:coinagerie-check:write`.
 
-- **after**:
-- **bind**:
-- **breadth**:
-- **bug**:
-- **call**:
-- **callable**:
-- **callee**:
-- **caller**:
-- **clear**:
-- **compile**:
-- **compiler**:
-- **console**:
-- **constant**:
-- **controller**:
-- **count**:
-- **cycle**:
-- **cyclic**:
-- **decorator**:
-- **deep**:
-- **define**:
-- **describe**:
-- **display**:
-- **each**:
-- **edge**:
-- **enclose**:
-- **entry**:
-- **equal**:
-- **experimental**:
-- **fake**:
-- **frame**:
-- **gitkeep**:
-- **homepage**:
-- **implementation**:
-- **injectable**:
-- **java**:
-- **kind**:
-- **least**:
-- **location**:
-- **lower**:
-- **maximum**:
-- **member**:
-- **meta**:
-- **metric**:
-- **mock**:
-- **optional**:
-- **parameter**:
-- **point**:
-- **publish**:
-- **real**:
-- **reason**:
-- **recursive**:
-- **resolution**:
-- **rest**:
-- **site**:
-- **spy**:
-- **stack**:
-- **statement**:
-- **strict**:
-- **summary**:
-- **synthetic**:
-- **text**:
-- **timer**:
-- **unresolved**:
-- **vi**:
-- **wide**:
+- **breadth**: The count of distinct direct callees one callable has, computed for every callable whether or not a limit is configured.
+- **callable**: Any function or method the call graph can name and trace, identified by a path plus the byte offset of its declaration.
 
 <!-- coinagerie:end -->

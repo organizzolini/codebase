@@ -1,3 +1,59 @@
+## 0.0.69 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.70
+- Updated callidescope-core to 0.0.69
+
+## 0.0.68 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.69
+- Updated callidescope-core to 0.0.68
+
+## 0.0.67 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.68
+- Updated callidescope-core to 0.0.67
+
+## 0.0.66 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.67
+- Updated callidescope-core to 0.0.66
+
+## 0.0.65 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.66
+- Updated callidescope-core to 0.0.65
+
+## 0.0.64 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.65
+- Updated callidescope-core to 0.0.64
+
+## 0.0.63 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.64
+- Updated callidescope-core to 0.0.63
+
+## 0.0.62 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.63
+- Updated callidescope-core to 0.0.62
+
 ## 0.0.61 (2026-11-04)
 
 ### 🧱 Updated Dependencies
