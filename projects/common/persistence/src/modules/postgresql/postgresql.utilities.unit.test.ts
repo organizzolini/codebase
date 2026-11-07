@@ -1,8 +1,7 @@
-import { DefaultNamingStrategy } from "typeorm";
-import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
+import { PluralSnakeNamingStrategy } from "./postgresql.constants";
 import {
   assertPostgresEnvironmentKeys,
   createDataSource,
@@ -141,23 +140,11 @@ describe("database utilities", () => {
       ).toMatchObject({ migrationsRun: false, synchronize: false });
     });
 
-    it("names columns in snake case unless told otherwise", () => {
+    it("names tables in plural snake case", () => {
       expect(
         postgresDataSourceOptions(connection, { entities: [], migrations: [] })
           .namingStrategy,
-      ).toBeInstanceOf(SnakeNamingStrategy);
-    });
-
-    it("uses the naming strategy it is given", () => {
-      const namingStrategy = new DefaultNamingStrategy();
-
-      expect(
-        postgresDataSourceOptions(connection, {
-          entities: [],
-          migrations: [],
-          namingStrategy,
-        }).namingStrategy,
-      ).toBe(namingStrategy);
+      ).toBeInstanceOf(PluralSnakeNamingStrategy);
     });
 
     it("passes the entities and migrations through", () => {

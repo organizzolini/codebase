@@ -1,4 +1,5 @@
 packages:
+  - compliance
   - configuration
   - documentation
   - infrastructure
@@ -117,6 +118,7 @@ catalog:
   "@vitest/eslint-plugin": ^1.6.20
   "@vitest/ui": ^5.0.0
   autoprefixer: ^10.5.0
+  aws4fetch: ^1.0.20
   cheerio: ^1.0.0
   cheerio-tableparser: ^1.0.1
   class-variance-authority: ^0.7.1

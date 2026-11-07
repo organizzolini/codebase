@@ -20,7 +20,7 @@ In development, meanders live in a Postgres database named `meanderaw_developmen
 
 - **`id` is a uuidv7** that Postgres 18's native `uuidv7()` assigns on insert, not a sequence. TypeORM only generates version 4 uuids, and a bulk `insert` skips the per-entity hooks that could generate one in the application.
 - **`code` alone is unique.** The formatted Code, `{columns}x{rows}y{lattice}` with an `r{repeats}` suffix past one repeat, already spells out the lattice address [ADR 0007](0007-address-every-meander-by-its-lattice.md) defines. Lookups go through the Code rather than a `(lattice, rows, columns)` triple.
-- **Columns are snake case** (`is_hardcoded`), through the same `SnakeNamingStrategy` lexico uses, so raw SQL never quotes one.
+- **Columns are snake case** (`is_hardcoded`), through the shared plural snake-case naming strategy, so raw SQL never quotes one.
 - **`characteristics` is `jsonb`.** Raw SQL reads a key as `COALESCE((characteristics ->> 'key')::numeric, 0)`. A single Characteristic can now take a GIN or expression index, which [ADR 0017](0017-store-letter-counts-as-a-sparse-json-map.md) noted a text JSON column could not.
 - **Integration tests start a throwaway Postgres 18 container** per suite through `@testcontainers/postgresql`, replacing in-memory SQLite. That way they exercise the same driver, column types, and `uuidv7()` default as the real database.
 

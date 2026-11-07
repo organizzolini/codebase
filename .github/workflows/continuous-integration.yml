@@ -26,14 +26,21 @@ permissions:
   pull-requests: write
   issues: write
 
-# Nx Cloud's remote cache. Only a trusted run gets the read-write token: a run
-# for a pull request, or a manual run off `main`, gets the read-only one, whose
-# results stay in a cache of their own and cannot reach what `main` reads. The
-# token is the join of two expressions, one of them always empty, so a missing
-# read-only secret leaves it empty rather than falling back to the read-write one.
+# The shared Nx cache's bucket. Only a trusted run gets the read-write key and
+# `NX_SHARED_CACHE_REMOTE_WRITABLE`: a run for a pull request, or a manual run
+# off `main`, gets the read-only key, which cannot write whatever the cache
+# server is told. Each key is the join of two expressions, one of them always
+# empty, so a missing read-only secret leaves it empty rather than falling back
+# to the read-write one.
 env:
-  NX_CLOUD_ACCESS_TOKEN: >-
-    ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && secrets.NX_CLOUD_READ_ONLY_TOKEN || '' }}${{ !((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))) && secrets.NX_CLOUD_READ_WRITE_TOKEN || '' }}
+  NX_SHARED_CACHE_REMOTE_ACCESS_KEY_ID: >-
+    ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && secrets.NX_CACHE_READ_ONLY_ACCESS_KEY_ID || '' }}${{ !((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))) && secrets.NX_CACHE_READ_WRITE_ACCESS_KEY_ID || '' }}
+  NX_SHARED_CACHE_REMOTE_BUCKET: ${{ vars.NX_CACHE_BUCKET }}
+  NX_SHARED_CACHE_REMOTE_ENDPOINT: ${{ vars.NX_CACHE_ENDPOINT }}
+  NX_SHARED_CACHE_REMOTE_REGION: ${{ vars.NX_CACHE_REGION }}
+  NX_SHARED_CACHE_REMOTE_SECRET_ACCESS_KEY: >-
+    ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && secrets.NX_CACHE_READ_ONLY_SECRET_ACCESS_KEY || '' }}${{ !((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))) && secrets.NX_CACHE_READ_WRITE_SECRET_ACCESS_KEY || '' }}
+  NX_SHARED_CACHE_REMOTE_WRITABLE: ${{ !((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))) }}
 
 concurrency:
   group: >-
@@ -63,15 +70,32 @@ jobs:
           - target: deprecate-code
             name: Deprecate
             emoji: 🧟
-          # Guard runs cold whenever a change reaches the shared configuration
-          # project, and cold it sits near the 12-minute limit: a cold run took
-          # 10m29s, and runs were cancelled at the limit with every finished
-          # task passing. Warm it takes about two. 20 minutes covers a cold
-          # run with the setup and cleanup around it.
+          # `guard-code` is the local aggregate of these five legs. It ran as one
+          # leg until its per-project gates, one task per project each, made up
+          # nearly all of a cold run (callidescope 1,443s, codependix 1,364s,
+          # coinagerie 168s, conformetry 110s of task time, against under 20s
+          # for everything else), and a cold run took up to 15 minutes. Run as
+          # legs of their own they share the runner pool and each stays well
+          # inside the default limit.
+          # Keep `targets` here, and the legs below it, equal to the
+          # `dependsOn` of `guard-code` in `nx.json`: a gate added there and
+          # named in no leg is checked by nothing in CI.
           - target: guard-code
+            targets: catalog-manifests,lockfile,project-ports,readme-projects,vscode-extensions
             name: Guard
             emoji: 💂
-            timeout-minutes: 20
+          - target: callidescope-restrict
+            name: Callidescope Restrict
+            emoji: 🔭
+          - target: codependix-bound
+            name: Codependix Bound
+            emoji: 🕸️
+          # A changed conformetry template selects no instance project, because
+          # `.nxignore` hides it, so this is the one leg that asks the affected
+          # run to add them. See `INCLUDE_TEMPLATES` below.
+          - target: conformetry-validate
+            name: Conformetry Validate
+            emoji: 👔
           # New projects stay in Test Codebase until they are explicitly split
           # into their own suite here.
           - target: test-code
@@ -125,12 +149,11 @@ jobs:
           # Never authenticates to a registry: no step is given an npm token,
           # and setup-node is given no `registry-url`. Its first run on #1473
           # took 4m05s with nothing cached: 2m49s to pack and check, 34s of
-          # that in the consumer. 15 minutes leaves room for a runner several
-          # times slower.
+          # that in the consumer. Across 79 runs it never passed 5m33s, so it
+          # runs under the default limit.
           - target: verify-publishable-packages
             name: Publishable Packages
             emoji: 🤵
-            timeout-minutes: 15
           # Plans the OpenRouter Terraform when a pull request changes it, and
           # comments what the plan would create, update, replace, and delete. It
           # is a comment, not part of the body, so it cannot race the Codometer
@@ -139,19 +162,23 @@ jobs:
           # reports, so it can be a required check, and its steps run only for a
           # same-repository pull request that changes the module, since a fork
           # is not given the secrets the plan needs.
+          # The slowest of the 4 runs that planned anything took 2m09s, so it
+          # runs under the default limit too.
           - target: plan-terraform
             name: Infrastructure
             emoji: 🧑‍🚀
-            timeout-minutes: 15
           # Builds and tests the devcontainer image when a pull request changes
           # a file the image or its test reads, without publishing it:
           # Continuous Deployment builds and pushes the image on `main`. Like
           # the infrastructure leg it always reports, and does its work only
           # when the change calls for it. It needs none of the Node setup.
+          # Only 3 of 81 runs built the image, the slowest in 9m05s, so 15
+          # minutes keeps room for a slower build without waiting 20 on a hung
+          # one.
           - target: build-devcontainer
             name: Devcontainer
             emoji: 🧑‍🏭
-            timeout-minutes: 20
+            timeout-minutes: 15
 
     steps:
       # Decides first what the job has to do, so the skip decision below and
@@ -274,8 +301,6 @@ jobs:
           TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
           TF_VAR_linode_token: ${{ secrets.LINODE_TOKEN }}
-          TF_VAR_nx_cloud_read_only_token: ${{ secrets.NX_CLOUD_READ_ONLY_TOKEN }}
-          TF_VAR_nx_cloud_read_write_token: ${{ secrets.NX_CLOUD_READ_WRITE_TOKEN }}
         run: |
           pnpm exec nx run infrastructure:terraform-plan:openrouter
           pnpm exec nx run infrastructure:terraform-plan:github
@@ -408,8 +433,8 @@ jobs:
         continue-on-error: ${{ matrix.check.target == 'build-projects' }}
         env:
           NX_VERBOSE_LOGGING: ${{ inputs.verbose || false }}
-          TARGET: ${{ matrix.check.target }}
-          INCLUDE_TEMPLATES: ${{ matrix.check.target == 'guard-code' }}
+          TARGET: ${{ matrix.check.targets || matrix.check.target }}
+          INCLUDE_TEMPLATES: ${{ matrix.check.target == 'conformetry-validate' }}
           ARGUMENTS: >-
             ${{ matrix.check.target == 'test-code' && '--configuration=coverage'
             || matrix.check.target != 'build-projects' && '--configuration=check'

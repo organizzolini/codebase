@@ -98,7 +98,7 @@ describe(PackageManifestsCommand, () => {
   describe("synchronize", () => {
     it("returns true in check mode when all packages are synchronized", async () => {
       const summary: PackageManifestsSummary = {
-        checkedCount: 29,
+        checkedCount: 36,
         failedProjects: [],
         isSynchronized: true,
         succeededProjects: [],
@@ -111,13 +111,13 @@ describe(PackageManifestsCommand, () => {
       expect(logger.info).toHaveBeenCalledWith(
         expect.stringContaining("Verified"),
         undefined,
-        expect.objectContaining({ checkedCount: 29 }),
+        expect.objectContaining({ checkedCount: 36 }),
       );
     });
 
     it("returns false in check mode when packages are out of sync", async () => {
       const summary: PackageManifestsSummary = {
-        checkedCount: 29,
+        checkedCount: 36,
         failedProjects: [
           {
             differences: ['license: expected "MIT", received "undefined"'],
@@ -175,6 +175,21 @@ describe(PackageManifestsCommand, () => {
       expect(logger.error).toHaveBeenCalledWith(
         "💥 Failed synchronizing package manifest metadata",
         expect.stringContaining("boom"),
+      );
+    });
+
+    it("handles non-Error exceptions and returns false", async () => {
+      vi.mocked(packageManifestsService.checkAll).mockImplementation(() => {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw "not an error object";
+      });
+
+      const result = await command.synchronize("check");
+
+      expect(result).toBe(false);
+      expect(logger.error).toHaveBeenCalledWith(
+        "💥 Failed synchronizing package manifest metadata",
+        "not an error object",
       );
     });
   });

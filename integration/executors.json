@@ -1,0 +1,19 @@
+{
+  "$schema": "../node_modules/nx/schemas/executors.json",
+  "executors": {
+    "knip": {
+      "batchImplementation": "./src/executors/knip/batch-executor",
+      "description": "Fail a project when knip reports an issue in its workspace, from one knip run for every project Nx batches.",
+      "implementation": "./src/executors/knip/executor",
+      "preferBatch": true,
+      "schema": "./src/executors/knip/schema.json"
+    },
+    "spell-check": {
+      "batchImplementation": "./src/executors/spell-check/batch-executor",
+      "description": "Fail a project when cspell finds a misspelling under its root, from one cspell run for every project Nx batches.",
+      "implementation": "./src/executors/spell-check/executor",
+      "preferBatch": true,
+      "schema": "./src/executors/spell-check/schema.json"
+    }
+  }
+}

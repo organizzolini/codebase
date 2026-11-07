@@ -55,8 +55,11 @@ const descriptionSchema = z
 const isFunction = (value: unknown): value is (...args: never[]) => unknown =>
   typeof value === "function";
 
+/** One entry of `exclude.words`: an exact word, or a pattern. */
+const excludedWordSchema = z.union([z.string(), z.instanceof(RegExp)]);
+
 /** What `exclude.words` must come to once any function has been called. */
-export const WORD_LIST_SCHEMA = z.array(z.string());
+export const WORD_LIST_SCHEMA = z.array(excludedWordSchema);
 
 /**
  * What a configured `fold` must return for every word: text with no
@@ -92,9 +95,10 @@ export const CONFIGURATION_SCHEMA: z.ZodType<CoinagerieConfiguration> =
         paths: z.array(z.string()).optional(),
         words: z
           .union([
-            z.array(z.string()),
+            z.array(excludedWordSchema),
             z.custom<Extract<ExcludedWords, () => unknown>>(isFunction, {
-              message: "Expected a list of words or a function returning one",
+              message:
+                "Expected a list of words or regular expressions, or a function returning one",
             }),
           ])
           .optional(),

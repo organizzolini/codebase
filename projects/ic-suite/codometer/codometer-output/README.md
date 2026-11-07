@@ -72,7 +72,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | --- | --- | --- | --- |
 | `RenderService.renderSection` | 6 | `RenderService.groupByProject(…)`, `RenderService.groupByProject`, `RenderService.groupByProject(…)`, `RenderService.flatMap(…)`, `RenderService.readProjects`, `RenderService.renderComparison` | `projects/ic-suite/codometer/codometer-output/src/modules/render/render.service.ts:154` |
 | `ChangesService.collect` | 4 | `ChangesService.map(…)`, `ChangesService.readReportPaths`, `ChangesService.flatMap(…)`, `ChangesService.flatMap(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/changes/changes.service.ts:292` |
-| `ConfigurationListingService.findConfigurationFiles` | 4 | `ConfigurationListingService.resolveWalkExclusions`, `DiscoveryService.discoverFiles`, `ConfigurationListingService.toSorted(…)`, `ConfigurationListingService.filter(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:188` |
+| `ConfigurationListingService.findConfigurationFiles` | 4 | `ConfigurationListingService.resolveWalkExclusions`, `DiscoveryService.discoverFiles`, `ConfigurationListingService.toSorted(…)`, `ConfigurationListingService.filter(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:179` |
 | `buildRepositoryGroup` | 4 | `buildGroup`, `buildBadge`, `formatBytes`, `buildCustomBadges` | `projects/ic-suite/codometer/codometer-output/src/modules/markdown/markdown.utilities.ts:263` |
 | `RenderService.renderProject` | 4 | `RenderService.filter(…)`, `RenderService.readIsOpen`, `RenderService.renderFailures`, `RenderService.map(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/render/render.service.ts:106` |
 | `ChangesService.map(…)` | 3 | `ChangesService.readBreach`, `ChangesService.readLabel`, `ChangesService.readGoverningLimit` | `projects/ic-suite/codometer/codometer-output/src/modules/changes/changes.service.ts:223` |
@@ -103,8 +103,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ChangesService.readGoverningLimit` | 2 | `ChangesService.filter(…)`, `ChangesService.map(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/changes/changes.service.ts:195` |
 | `ChangesService.readReport` | 2 | `ChangesService.parseReport`, `ChangesService.flatMap(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/changes/changes.service.ts:243` |
 | `formatValue` | 2 | `formatBytes`, `formatCount` | `projects/ic-suite/codometer/codometer-output/src/modules/render/render.utilities.ts:34` |
-| `ConfigurationListingService.formatLimitValue` | 2 | `formatBytes`, `formatCount` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:101` |
-| `ConfigurationListingService.describeConfigurations` | 2 | `ConfigurationListingService.findConfigurationFiles`, `ConfigurationListingService.describeConfiguration` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:155` |
+| `ConfigurationListingService.formatLimitValue` | 2 | `formatBytes`, `formatCount` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:100` |
+| `ConfigurationListingService.describeConfigurations` | 2 | `ConfigurationListingService.findConfigurationFiles`, `ConfigurationListingService.describeConfiguration` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:146` |
 | `JsonService.sync` | 2 | `JsonService.render`, `JsonService.readExisting` | `projects/ic-suite/codometer/codometer-output/src/modules/json/json.service.ts:62` |
 | `buildCustomBadges` | 2 | `map(…)`, `filter(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/markdown/markdown.utilities.ts:47` |
 | `buildCustomGroup` | 2 | `buildCustomBadges`, `buildGroup` | `projects/ic-suite/codometer/codometer-output/src/modules/markdown/markdown.utilities.ts:64` |
@@ -130,10 +130,10 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ChangesService.map(…)` | 1 | `ChangesService.collectProjectRows` | `projects/ic-suite/codometer/codometer-output/src/modules/changes/changes.service.ts:293` |
 | `formatDelta` | 1 | `formatValue` | `projects/ic-suite/codometer/codometer-output/src/modules/render/render.utilities.ts:24` |
 | `ConfigurationListingService.describeConfiguration` | 1 | `ConfigurationService.loadConfigurationFile` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:66` |
-| `ConfigurationListingService.resolveWalkExclusions` | 1 | `ConfigurationService.loadConfigurationFile` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:120` |
-| `ConfigurationListingService.toLimitRows` | 1 | `ConfigurationListingService.flatMap(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:207` |
-| `ConfigurationListingService.flatMap(…)` | 1 | `ConfigurationListingService.map(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:210` |
-| `ConfigurationListingService.map(…)` | 1 | `ConfigurationListingService.formatLimitValue` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:211` |
+| `ConfigurationListingService.resolveWalkExclusions` | 1 | `ConfigurationService.loadConfigurationFile` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:115` |
+| `ConfigurationListingService.toLimitRows` | 1 | `ConfigurationListingService.flatMap(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:198` |
+| `ConfigurationListingService.flatMap(…)` | 1 | `ConfigurationListingService.map(…)` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:201` |
+| `ConfigurationListingService.map(…)` | 1 | `ConfigurationListingService.formatLimitValue` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/configuration-listing.service.ts:202` |
 | `RenderConfigurationService.map(…)` | 1 | `RenderConfigurationService.renderRow` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/render-configuration.service.ts:72` |
 | `RenderConfigurationService.map(…)` | 1 | `RenderConfigurationService.renderDirectory` | `projects/ic-suite/codometer/codometer-output/src/modules/configuration-listing/render-configuration.service.ts:144` |
 | `buildBadge` | 1 | `encodeValue` | `projects/ic-suite/codometer/codometer-output/src/modules/markdown/markdown.utilities.ts:14` |
@@ -586,182 +586,16 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-output:coinagerie-check:write`.
 
-- **ab**:
-- **absent**:
-- **absolute**:
-- **after**:
-- **ambiguous**:
-- **analysis**:
-- **anchor**:
-- **array**:
-- **badge**:
-- **baseline**:
-- **basename**:
-- **block**:
-- **breach**:
-- **breadth**:
-- **bug**:
-- **bullet**:
-- **byte**:
-- **call**:
-- **capture**:
-- **cell**:
-- **character**:
-- **choose**:
-- **clear**:
-- **collection**:
-- **color**:
-- **comment**:
-- **compare**:
-- **comparison**:
-- **compile**:
-- **compiler**:
-- **compression**:
-- **conditional**:
-- **configure**:
-- **console**:
-- **constant**:
-- **controller**:
-- **count**:
-- **counter**:
-- **css**:
-- **custom**:
-- **debug**:
-- **declaration**:
-- **decorator**:
-- **deep**:
-- **define**:
-- **deliver**:
-- **delivery**:
-- **delta**:
-- **describe**:
-- **destination**:
-- **discover**:
-- **discovery**:
-- **doc**:
-- **docstring**:
-- **each**:
-- **empty**:
-- **encode**:
-- **entry**:
-- **equal**:
-- **evaluate**:
-- **exactly**:
-- **execute**:
-- **exp**:
-- **experimental**:
-- **expression**:
-- **failure**:
-- **flat**:
-- **generic**:
-- **govern**:
-- **hcl**:
-- **homepage**:
-- **indentation**:
-- **injectable**:
-- **inline**:
-- **instance**:
-- **interpolation**:
-- **item**:
-- **java**:
-- **javascript**:
-- **jupyter**:
-- **kind**:
-- **least**:
-- **length**:
-- **less**:
-- **level1**:
-- **level2**:
-- **level3**:
-- **level4**:
-- **level5**:
-- **level6**:
-- **link**:
-- **load**:
-- **locale**:
-- **logger**:
-- **make**:
-- **marker**:
-- **math**:
-- **maximum**:
-- **md**:
-- **measure**:
-- **measurement**:
-- **meta**:
-- **method**:
-- **metric**:
-- **min**:
-- **miss**:
-- **mock**:
-- **nb**:
-- **newline**:
-- **non**:
-- **notebook**:
-- **nullable**:
-- **once**:
-- **optional**:
-- **other**:
-- **paragraph**:
-- **part**:
-- **partial**:
-- **pipeline**:
-- **preamble**:
-- **promise**:
-- **protocol**:
-- **provide**:
-- **publish**:
-- **py**:
-- **quote**:
-- **reason**:
-- **recursive**:
-- **reg**:
-- **regex**:
-- **reject**:
-- **relative**:
-- **remove**:
-- **replace**:
-- **replacement**:
-- **resolution**:
-- **retire**:
-- **safe**:
-- **sample**:
-- **scalar**:
-- **second**:
-- **section**:
-- **selector**:
-- **sep**:
-- **separator**:
-- **sequence**:
-- **severity**:
-- **shebang**:
-- **slice**:
-- **some**:
-- **sort**:
-- **splice**:
-- **split**:
-- **stale**:
-- **statement**:
-- **statistic**:
-- **stdout**:
-- **strict**:
-- **stringify**:
-- **success**:
-- **summary**:
-- **synthetic**:
-- **task**:
-- **temporary**:
-- **than**:
-- **thematic**:
-- **todo**:
-- **toml**:
-- **touch**:
-- **trail**:
-- **trim**:
-- **unreadable**:
-- **variable**:
-- **vi**:
-- **walk**:
-- **warn**:
-- **wrap**:
+- **anchor**: Start and end marker comments that bracket a generated block in a markdown file, so a sync replaces only that span.
+- **baseline**: The previous codometer report a changes run diffs against, joined per project to produce each row's base value and delta.
+- **breadth**: Callidescope measure counting how many distinct callees a callable invokes directly, checked against the project's maximumBreadth limit.
+- **bullet**: Markdown list item the generated block emits for each instance of a custom statistic, naming the location it came from.
+- **counter**: Named measurement tally, such as a custom convention, that the pipeline produces and the badge block must always render.
+- **pipeline**: Ordered measurement stages a codometer run passes through, from parsing source files to producing the reports.
+- **preamble**: Existing markdown content with trailing newlines trimmed and two newlines added, placed before a newly appended anchored block.
+- **retire**: Metric that existed in the baseline but is missing from the current report, shown as removed with a zero value.
+- **selector**: Per-instance key in a custom statistic's configuration, such as the comment selector, that splits its breaches by instance.
+- **splice**: Method on DocumentsService that replaces the section between markers in a document, leaving everything outside them untouched.
+- **statistic**: One measured value, such as a count or size, that a configuration names and the renderer groups into a badge.
 
 <!-- coinagerie:end -->

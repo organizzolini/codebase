@@ -128,84 +128,10 @@ None.
 
 The words this project uses that the root glossary does not define, regenerated with `nx run codometer-core:coinagerie-check:write`.
 
-- **anchor**:
-- **array**:
-- **block**:
-- **breach**:
-- **breadth**:
-- **bug**:
-- **byte**:
-- **cell**:
-- **color**:
-- **comment**:
-- **compile**:
-- **compiler**:
-- **conditional**:
-- **constant**:
-- **controller**:
-- **count**:
-- **css**:
-- **custom**:
-- **declaration**:
-- **decorator**:
-- **define**:
-- **describe**:
-- **doc**:
-- **docstring**:
-- **empty**:
-- **equal**:
-- **execute**:
-- **experimental**:
-- **expression**:
-- **failure**:
-- **generic**:
-- **gitkeep**:
-- **hcl**:
-- **homepage**:
-- **injectable**:
-- **inline**:
-- **instance**:
-- **interpolation**:
-- **invalid**:
-- **item**:
-- **java**:
-- **javascript**:
-- **jupyter**:
-- **kind**:
-- **least**:
-- **level1**:
-- **level2**:
-- **level3**:
-- **level4**:
-- **level5**:
-- **level6**:
-- **link**:
-- **maximum**:
-- **measure**:
-- **meta**:
-- **method**:
-- **metric**:
-- **paragraph**:
-- **pipeline**:
-- **protocol**:
-- **publish**:
-- **quote**:
-- **reason**:
-- **resolution**:
-- **scalar**:
-- **selector**:
-- **sequence**:
-- **severity**:
-- **shebang**:
-- **sort**:
-- **statement**:
-- **statistic**:
-- **strict**:
-- **synthetic**:
-- **task**:
-- **thematic**:
-- **todo**:
-- **toml**:
-- **variable**:
+- **anchor**: A named README marker pair that codometer's output writers splice generated content between, as the configuration package describes.
+- **breadth**: The callidescope report section that counts direct calls per callable, listed as the Breadth table of this package.
+- **pipeline**: The sequence of analyzers whose output is the aggregated CodeStatisticsResult that core's types describe.
+- **selector**: A custom statistic's matcher, whose instances field records each occurrence it found, such as a comment selector's blocks.
+- **statistic**: A counted value in the code statistics result, whether a built-in language field or a custom counter under custom.
 
 <!-- coinagerie:end -->
