@@ -1,4 +1,5 @@
-import { describe, it } from "vitest";
+import { MODULE_METADATA } from "@nestjs/common/constants";
+import { describe, expect, it } from "vitest";
 
 import {
   expectModuleExports,
@@ -10,12 +11,18 @@ import { ConfigurationService } from "./configuration.service";
 import { ProjectConfigurationService } from "./project-configuration.service";
 
 describe(ConfigurationModule, () => {
-  it("exports the facade, and provides what it is built from", () => {
+  it("exports the facade alone, and provides what it is built from", () => {
     expectModuleExports(ConfigurationModule, ConfigurationService);
     expectModuleProvides(
       ConfigurationModule,
       ConfigurationService,
       ProjectConfigurationService,
     );
+
+    // The helper checks containment; the facade being the only export is the
+    // contract, so the exact set is pinned here.
+    expect(
+      Reflect.getMetadata(MODULE_METADATA.EXPORTS, ConfigurationModule),
+    ).toStrictEqual([ConfigurationService]);
   });
 });

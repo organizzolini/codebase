@@ -180,9 +180,11 @@ describe(PluginService, () => {
         ProjectsService,
       ],
       providers: [
-        OptionsService, // The real one, over the mocked `ConfigurationService` beside it: what
-        // configuration a run resolves is the thing several cases below pin, // and a stub of it would pin the stub instead.
+        OptionsService,
+        // The real one, over the mocked `ConfigurationService` beside it.
         RunConfigurationService,
+        // The real one, over the mocked `ProjectReportsService` beside it.
+        VerdictService,
       ],
     });
 
