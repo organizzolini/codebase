@@ -9,9 +9,29 @@ import { CharacteristicsModule } from "../characteristics.module";
 import { SubmatrixUtilitiesModule } from "./submatrix-utilities.module";
 import { SubmatrixUtilitiesService } from "./submatrix-utilities.service";
 
+/** The token a consumer module gathers the shared service under, through a factory whose `inject` list only resolves exported providers. */
+const SHARED = Symbol("SHARED");
+
 describe(SubmatrixUtilitiesModule, () => {
   it("exports SubmatrixUtilitiesService", () => {
     expectModuleExports(SubmatrixUtilitiesModule, SubmatrixUtilitiesService);
+  });
+
+  it("lets a consumer that imports the module inject SubmatrixUtilitiesService", async () => {
+    const module = await Test.createTestingModule({
+      imports: [SubmatrixUtilitiesModule],
+      providers: [
+        {
+          inject: [SubmatrixUtilitiesService],
+          provide: SHARED,
+          useFactory: (
+            service: SubmatrixUtilitiesService,
+          ): SubmatrixUtilitiesService => service,
+        },
+      ],
+    }).compile();
+
+    expect(module.get(SHARED)).toBeInstanceOf(SubmatrixUtilitiesService);
   });
 
   it("is the only provider of SubmatrixUtilitiesService across CharacteristicsModule", async () => {
