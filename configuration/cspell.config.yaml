@@ -272,9 +272,9 @@ patterns:
     pattern: /\w*POSTGRES_DB\b/g
   # The caelundas-db library's name, which the spec fixes and which spells the
   # banned `db` as one segment of a kebab-case project name, and as a snake-case
-  # identifier in the generated Mermaid graphs.
+  # identifier, with any prefix, in the generated Mermaid graphs.
   - name: caelundas-db-project-name
-    pattern: /\bcaelundas[-_]db\b/g
+    pattern: /\w*caelundas[-_]db(?![a-z])\w*/g
   # Hexadecimal color literals, which can spell a banned abbreviation. Six letters with no
   # digit is an English word (`decade`, `facade`), not a color, so it stays checked.
   - name: hexadecimal-color
