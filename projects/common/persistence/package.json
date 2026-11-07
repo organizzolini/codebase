@@ -10,6 +10,7 @@
     "better-sqlite3": "catalog:",
     "nest-commander": "catalog:",
     "pg": "catalog:",
+    "pluralize": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
     "typeorm": "catalog:",
@@ -24,6 +25,7 @@
     "@swc/helpers": "catalog:",
     "@types/better-sqlite3": "catalog:",
     "@types/node": "catalog:",
+    "@types/pluralize": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

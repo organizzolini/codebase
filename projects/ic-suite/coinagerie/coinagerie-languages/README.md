@@ -1,3 +1,13 @@
+# @coinagerie/languages
+
+[![npm](https://img.shields.io/npm/v/@coinagerie/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/languages)
+
+Per-language identifier tokenizers and keyword lists that coinagerie uses to turn source files into words.
+
+```bash
+npm install @coinagerie/languages
+```
+
 ## Languages
 
 One tokenizer per language behind `(content, path) => string[]`, chosen by
@@ -32,89 +42,8 @@ This project was generated from the [nestjs-service-project](../../configuration
 
 The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-languages:coinagerie-check:write`.
 
-- **after**:
-- **array**:
-- **assignment**:
-- **bare**:
-- **block**:
-- **breadth**:
-- **bug**:
-- **child**:
-- **clear**:
-- **compile**:
-- **compiler**:
-- **console**:
-- **constant**:
-- **controller**:
-- **count**:
-- **css**:
-- **declaration**:
-- **decorator**:
-- **define**:
-- **describe**:
-- **each**:
-- **effect**:
-- **entry**:
-- **equal**:
-- **exp**:
-- **experimental**:
-- **extname**:
-- **fake**:
-- **flat**:
-- **gitkeep**:
-- **grammar**:
-- **greater**:
-- **hcl**:
-- **hit**:
-- **homepage**:
-- **identifier**:
-- **implementation**:
-- **indent**:
-- **injectable**:
-- **inside**:
-- **kind**:
-- **last**:
-- **least**:
-- **length**:
-- **lexical**:
-- **literal**:
-- **lower**:
-- **math**:
-- **maximum**:
-- **member**:
-- **meta**:
-- **method**:
-- **mock**:
-- **plain**:
-- **quotable**:
-- **quote**:
-- **real**:
-- **recursive**:
-- **reduce**:
-- **reg**:
-- **reload**:
-- **resolution**:
-- **scan**:
-- **scanner**:
-- **second**:
-- **slice**:
-- **sort**:
-- **splice**:
-- **split**:
-- **spy**:
-- **strict**:
-- **syntax**:
-- **synthetic**:
-- **text**:
-- **than**:
-- **timer**:
-- **tokenize**:
-- **tokenizer**:
-- **toml**:
-- **trim**:
-- **unmatched**:
-- **unmock**:
-- **vi**:
-- **visit**:
+- **breadth**: The maximumBreadth limit in this package's callidescope configuration, capping how many callees one callable may make.
+- **grammar**: The LexicalGrammar object a language constant supplies to the shared scanner, holding its rules and key patterns.
+- **splice**: Array method call in TYPESCRIPT_KEYWORDS that inserts each keyword in sorted position, avoiding toSorted for older libraries.
 
 <!-- coinagerie:end -->

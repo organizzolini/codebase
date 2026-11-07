@@ -40,7 +40,7 @@ import type {
   RunValidationArguments,
   RunValidationResult,
 } from "./plugin.types";
-import type { TemplateDefinition } from "@conformetry/configuration";
+import type { Instance, TemplateDefinition } from "@conformetry/configuration";
 import type { GeneratorDefinition } from "@conformetry/generation";
 
 /**
@@ -343,6 +343,7 @@ export class PluginService {
       configurationPath: pluginOptions.configurationPath,
     });
     const targetsByProjectRoot = new Map<string, InferredTargets>();
+    const discoveryCache = new Map<string, Instance[]>();
 
     for (const projectConfigurationFile of args.projectConfigurationFiles.filter(
       (filePath) => {
@@ -360,6 +361,7 @@ export class PluginService {
 
       const instances = await this.instancesService.findProjectInstances({
         configurationPath: pluginOptions.configurationPath,
+        discoveryCache,
         project,
         workspaceRoot: args.workspaceRoot,
       });

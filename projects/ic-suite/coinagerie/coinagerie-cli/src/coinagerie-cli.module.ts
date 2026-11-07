@@ -5,6 +5,7 @@ import { DiscoveryModule } from "@nestjs/core";
 import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "./coinagerie-cli.constants";
+import { BatchModule } from "./modules/batch/batch.module";
 import { CollectModule } from "./modules/collect/collect.module";
 
 /**
@@ -20,6 +21,7 @@ import { CollectModule } from "./modules/collect/collect.module";
     }),
     DiscoveryModule,
     LoggerModule,
+    BatchModule,
     CollectModule,
   ],
 })

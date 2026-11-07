@@ -37,6 +37,14 @@ export interface Exchange {
   response: ServerResponse;
 }
 
+/** An object read from the bucket. */
+export interface RemoteEntry {
+  /** The bytes, as they arrive. */
+  body: Readable;
+  /** The object's size. */
+  length: number;
+}
+
 /** A server that is listening. */
 export interface RunningServer {
   /** Stops listening, ends open connections, and clears the eviction timer. */

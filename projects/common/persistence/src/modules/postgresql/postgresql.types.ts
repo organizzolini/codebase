@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 import type { POSTGRES_ENVIRONMENT_SUFFIXES } from "./postgresql.constants";
-import type { DataSourceOptions, NamingStrategyInterface } from "typeorm";
+import type { DataSourceOptions } from "typeorm";
 import type { z } from "zod";
 
 /** Backward-compatible alias for {@link PostgresqlModuleOptions}. */
@@ -38,9 +38,6 @@ export type PostgresDataSourceOptions = Extract<
 export interface PostgresDataSourceSettings {
   readonly entities: NonNullable<PostgresDataSourceOptions["entities"]>;
   readonly migrations: NonNullable<PostgresDataSourceOptions["migrations"]>;
-
-  /** Replaces snake case, as lexico's pluralizing strategy does. */
-  readonly namingStrategy?: NamingStrategyInterface;
 }
 
 /** A project's own Postgres variable, for example `LEXICO_POSTGRES_DATABASE`. */

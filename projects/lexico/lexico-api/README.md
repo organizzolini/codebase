@@ -72,6 +72,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_deletable_entities_ts["src/deletable.entities.ts"]
   file_src_lexico_api_graphql_end_to_end_test_ts["src/lexico-api-graphql.end-to-end.test.ts"]
@@ -817,7 +818,7 @@ Call stacks traced through `projects/lexico/lexico-api`, deepest first. Each fra
 | Measure | Value |
 | --- | --- |
 | Callables | 387 |
-| Files | 111 |
+| Files | 112 |
 | Calls traced | 227 |
 | Call stacks | 54 |
 | Deepest stack | 8 |
@@ -1684,14 +1685,14 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-18186-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-563.64_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-18200-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-564.05_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-181-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-182-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-181-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-182-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-56-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-40-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-1-f97316?style=flat-square)
@@ -1710,7 +1711,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-804-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-499-059669?style=flat-square)
 ![Constants](https://img.shields.io/badge/Constants-1042-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-992-0284c7?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-993-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-238-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-586-64748b?style=flat-square)
 ![Comment Lines](https://img.shields.io/badge/Comment_Lines-978-475569?style=flat-square)
@@ -1734,16 +1735,16 @@ What this project is judged against, as declared in its own `callidescope.config
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-167-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-168-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-37-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-14-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-110-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-90-16a34a?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-91-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-9-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-37-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-151-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-38-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-152-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML
@@ -1896,333 +1897,26 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run lexico-api:coinagerie-check:write`.
 
-- **ab**:
-- **accusative**:
-- **adapter**:
-- **adjectival**:
-- **adjective**:
-- **adverb**:
-- **aeneid**:
-- **after**:
-- **agreement**:
-- **ama**:
-- **amare**:
-- **amo**:
-- **amor**:
-- **answer**:
-- **anything**:
-- **arma**:
-- **array**:
-- **assemble**:
-- **assertion**:
-- **assign**:
-- **back**:
-- **backward**:
-- **batch**:
-- **bellum**:
-- **bellus**:
-- **bind**:
-- **book**:
-- **buffer**:
-- **builder**:
-- **caesar**:
-- **call**:
-- **canto**:
-- **carmina**:
-- **catullus**:
-- **child**:
-- **chunk**:
-- **cicero**:
-- **claim**:
-- **clean**:
-- **clear**:
-- **close**:
-- **coerce**:
-- **combine**:
-- **compile**:
-- **compiler**:
-- **condition**:
-- **configurable**:
-- **conjugation**:
-- **connection**:
-- **console**:
-- **constant**:
-- **controller**:
-- **cor**:
-- **corpus**:
-- **count**:
-- **cut**:
-- **db**:
-- **declension**:
-- **decline**:
-- **decode**:
-- **decompose**:
-- **decomposition**:
-- **decorator**:
-- **deep**:
-- **define**:
-- **definition**:
-- **degree**:
-- **deletable**:
-- **describe**:
-- **diacritic**:
-- **diligo**:
-- **direction**:
-- **disambiguator**:
-- **distance**:
-- **driver**:
-- **dummy**:
-- **dynamic**:
-- **each**:
-- **eclogue**:
-- **edge**:
-- **edo**:
-- **empty**:
-- **enclitic**:
-- **encode**:
-- **english**:
-- **entity**:
-- **entry**:
-- **equal**:
-- **era**:
-- **est**:
-- **et**:
-- **etymology**:
-- **everything**:
-- **exact**:
-- **exactly**:
-- **execute**:
-- **exp**:
-- **experimental**:
-- **expression**:
-- **factory**:
-- **fake**:
-- **field**:
-- **finite**:
-- **flaccus**:
-- **flat**:
-- **float**:
-- **form**:
-- **form2**:
-- **form3**:
-- **frequency**:
-- **fresh**:
-- **fulltext**:
-- **fuzzy**:
-- **fuzzy0**:
-- **fuzzy1**:
-- **gender**:
-- **genitive**:
-- **georgic**:
-- **gerund**:
-- **gitkeep**:
-- **grandparent**:
-- **greater**:
-- **handler**:
-- **headword**:
-- **healthy**:
-- **hit**:
-- **horace**:
-- **identifier**:
-- **identify**:
-- **imperfect**:
-- **implementation**:
-- **infinitive**:
-- **infinity**:
-- **inflection**:
-- **inject**:
-- **injectable**:
-- **insertion**:
-- **instance**:
-- **int**:
-- **internal**:
-- **introspect**:
-- **invariable**:
-- **item**:
-- **keep**:
-- **land**:
-- **last**:
-- **latin**:
-- **laudo**:
-- **least**:
-- **lemma**:
-- **length**:
-- **less**:
-- **lexeme**:
-- **lexeme1**:
-- **lexeme2**:
-- **light**:
-- **link**:
-- **literal**:
-- **literature**:
-- **load**:
-- **loader**:
-- **logger**:
-- **lower**:
-- **macron**:
-- **many**:
-- **math**:
-- **maximum**:
-- **mean**:
-- **member**:
-- **meta**:
-- **metamorphose**:
-- **method**:
-- **middle**:
-- **millisecond**:
-- **min**:
-- **mismatch**:
-- **miss**:
-- **mock**:
-- **mood**:
-- **neither**:
-- **nominal**:
-- **non**:
-- **normalize**:
-- **noun**:
-- **now**:
-- **nth**:
-- **nullable**:
-- **nullish**:
-- **numeric**:
-- **omit**:
-- **once**:
-- **one**:
-- **optional**:
-- **origin**:
-- **orm**:
-- **orphan**:
-- **other**:
-- **outsider**:
-- **ovid**:
-- **pad**:
-- **page1**:
-- **page2**:
-- **page3**:
-- **paginate**:
-- **pagination**:
-- **parameter**:
-- **part**:
-- **partial**:
-- **participle**:
-- **partition**:
-- **passage**:
-- **past**:
-- **payload**:
-- **performance**:
-- **persistence**:
-- **person**:
-- **phoneme**:
-- **phonemic**:
-- **phonetic**:
-- **plain**:
-- **playground**:
-- **plural**:
-- **position**:
-- **positive**:
-- **prefix0**:
-- **prefix1**:
-- **preposition**:
-- **present**:
-- **previous**:
-- **principal**:
-- **proem**:
-- **promise**:
-- **pronunciation**:
-- **proper**:
-- **provide**:
-- **puella**:
-- **punctuation**:
-- **qb**:
-- **ql**:
-- **que**:
-- **quick**:
-- **random**:
-- **rank**:
-- **reader**:
-- **ready**:
-- **real**:
-- **recursive**:
-- **reg**:
-- **reject**:
-- **relate**:
-- **relation**:
-- **relay**:
-- **remove**:
-- **replace**:
-- **repo**:
-- **resolution**:
-- **retyped**:
-- **reverse**:
-- **rosa**:
-- **rosae**:
-- **round**:
-- **safe**:
-- **save**:
-- **score**:
-- **search**:
-- **second**:
-- **seneca**:
-- **si**:
-- **signal**:
-- **sine**:
-- **single**:
-- **singular**:
-- **slice**:
-- **slug**:
-- **soft**:
-- **sort**:
-- **speech**:
-- **split**:
-- **spy**:
-- **statement**:
-- **stem**:
-- **stranger**:
-- **strict**:
-- **stringify**:
-- **stub**:
-- **sub**:
-- **sum**:
-- **summarize**:
-- **summary**:
-- **supine**:
-- **synthetic**:
-- **take**:
-- **term**:
-- **text**:
-- **than**:
-- **third**:
-- **tier**:
-- **timer**:
-- **tmpdir**:
-- **tokenize**:
-- **transform**:
-- **translate**:
-- **translation**:
-- **trim**:
-- **two**:
-- **typename**:
-- **typo**:
-- **uninflected**:
-- **unmatched**:
-- **unshift**:
-- **unstub**:
-- **untranslated**:
-- **uuid**:
-- **valerius**:
-- **variable**:
-- **variant**:
-- **ve**:
-- **verb**:
-- **verbal**:
-- **vergil**:
-- **vi**:
-- **violation**:
-- **vir**:
-- **voco**:
-- **voice**:
-- **walk**:
-- **window**:
-- **without**:
+- **batch**: Dataloader term for grouping ID lookups into one query, such as lexemes loaded together in a single batch.
+- **book**: Division of a literary work used as a text locator, such as book one of Vergil's Aeneid in literature fixtures.
+- **corpus**: Fixture collection of literary texts and lines seeded into the database, used by literature search and lookup tests.
+- **cut**: Local name for the page-limit condition that trims a query's rows to the count a page requested.
+- **db**: Suffix of the POSTGRES_DB environment variable, naming the Postgres database the API connects to and tests stub.
+- **degree**: Comparison level of adjectives and adverbs, such as comparative or superlative, modeled on the adverb form entities.
+- **deletable**: Shared base type for soft-deletable rows, exposing id and audit columns through GraphQL types across modules.
+- **disambiguator**: Numeric lexeme field separating homographs that share a headword, such as two entries spelled the same way.
+- **headword**: Dictionary entry form that a search matches first, seeded with English senses and ranked by the search service.
+- **lexeme**: Dictionary entry for a Latin word, the core entity of the lexicon carrying its headword, translations, forms, and pronunciation.
+- **literature**: Domain module for authors, texts, lines, tokens, and passages, the largest area of the lexico API's resolvers and services.
+- **pronunciation**: Lexeme field recording how a word is pronounced, with phonemes, phonetic spelling, and variant data mapped to GraphQL.
+- **quick**: Word in the README Quick Start heading, introducing the short setup steps for running the lexico API locally.
+- **reader**: Readable view of a line, reduced to what a reader can observe; the reader query selects one line for display.
+- **retyped**: Adjective for a GraphQL type whose fields are redeclared as non-null rows, such as LexemeType in the lexico type tests.
+- **stem**: Portion of a word the search matches; a headword is found whole or as a stem with its enclitic split off.
+- **term**: Search input string a user types; fuzzy matching applies only to terms above a shortest allowed length.
+- **translation**: English sense of a lexeme, a Translation entity joined to lexemes and returned in search results and lexeme types.
+- **valerius**: Roman poet named in the literature search corpus fixture, whose texts the corpus lists for search tests.
+- **verb**: Part of speech whose finite forms, such as indicative or subjunctive, are modeled and tested across the search and forms code.
+- **vergil**: Latin poet whose Aeneid, Eclogues, and Georgics seed most literature search and integration test fixtures.
 
 <!-- coinagerie:end -->

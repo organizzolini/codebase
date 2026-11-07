@@ -1,6 +1,3 @@
-import pluralize from "pluralize";
-import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-
 // ♟️ Constants
 export const formCase = {
   ablative: "ablative",
@@ -212,36 +209,3 @@ export const prepositionCase = {
 /** Grammatical case governed by a Latin preposition. */
 
 export const prepositionCases = Object.values(prepositionCase);
-
-/**
- * Custom TypeORM naming strategy that extends SnakeNamingStrategy with:
- * - Automatic pluralization of table names
- * - Join table names formed from the two table names combined alphabetically in snake_case.
- */
-export const LexicoNamingStrategy: new () => SnakeNamingStrategy = class extends SnakeNamingStrategy {
-  /**
-   * Builds a deterministic join table name from both entity table names.
-   */
-  override joinTableName(
-    firstEntityName: string,
-    secondEntityName: string,
-  ): string {
-    const firstTableName = super.tableName(firstEntityName, firstEntityName);
-    const secondTableName = super.tableName(secondEntityName, secondEntityName);
-    const sortedPluralizedTableNames = [
-      pluralize(firstTableName),
-      pluralize(secondTableName),
-    ].toSorted();
-    const joinTableName = sortedPluralizedTableNames.join("_");
-    return joinTableName;
-  }
-
-  /**
-   * Converts a base table name to the pluralized table name used in the schema.
-   */
-  override tableName(targetName: string, userSpecifiedName: string): string {
-    const baseTableName = super.tableName(targetName, userSpecifiedName);
-    const tableName = pluralize(baseTableName);
-    return tableName;
-  }
-};

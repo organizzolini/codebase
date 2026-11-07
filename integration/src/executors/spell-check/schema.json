@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "additionalProperties": false,
+  "description": "Fail a project when cspell finds a misspelling under its root. Batched, so one cspell run judges every project Nx hands it.",
+  "properties": {
+    "configuration": {
+      "description": "Workspace-relative path of the cspell configuration.",
+      "type": "string"
+    }
+  },
+  "required": ["configuration"],
+  "title": "Spell check",
+  "type": "object"
+}

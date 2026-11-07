@@ -63,9 +63,10 @@ holding a coinagerie configuration is the root its run scans, so the root
 glossary's configuration has to sit at the root, and it writes the
 `GLOSSARY.md` beside it. Every project's own `coinagerie.config.ts` spreads
 `coinagerieConfiguration` from `configuration/coinagerie.config.ts`.
-A word with no glossary entry fails `guard-code` through each project's
-inferred `coinagerie-check`, in the commit hook and in CI; write the entries
-with `nx run <project>:coinagerie-check:write`.
+No hook or pull request judges a glossary: the release workflow writes every
+glossary on the default branch, adding new words and removing stale ones, the
+way it writes the callidescope, codependix, and codometer reports. To see a
+project's words sooner, run `nx run <project>:coinagerie-check:write`.
 
 ## In the graph, and out of releases
 
@@ -88,9 +89,9 @@ tool configs import it. Keep that: it is true, and `nx affected` uses it.
 
 ## Where each caller names these targets
 
-| Caller                       | Targets                                                                                                           |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `continuous-integration.yml` | `lint-code`, `format-code`, `deprecate-code`, `guard-code`, `secure-code`, `build-projects` through `nx affected` |
-| `continuous-deployment.yml`  | `callidescope:write`, `codependix:write`, `codometer:write`                                                       |
-| `lint-staged.config.ts`      | `sherif`, `syncpack` through `nx run-many`, the rest through `nx affected`                                        |
-| `.husky/*`                   | `commitlint`, `validate-branch-name`, `lint-staged`, invoked directly                                             |
+| Caller                       | Targets                                                                                                                                                                                                                                                             |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `continuous-integration.yml` | `lint-code`, `format-code`, `deprecate-code`, `secure-code`, `build-projects`, and the leaves of `guard-code` (a leg each for `callidescope-restrict`, `codependix-bound`, `conformetry-validate` and `coinagerie-check`, the rest in Guard), through `nx affected` |
+| `continuous-deployment.yml`  | `callidescope:write`, `codependix:write`, `codometer:write`                                                                                                                                                                                                         |
+| `lint-staged.config.ts`      | `sherif`, `syncpack` through `nx run-many`, the rest through `nx affected`                                                                                                                                                                                          |
+| `.husky/*`                   | `commitlint`, `validate-branch-name`, `lint-staged`, invoked directly                                                                                                                                                                                               |
