@@ -14,9 +14,11 @@ import {
   EXECUTOR_OPTION_SURFACE,
   LOADER_SPECIFIER,
   NX_CONFIGURATION_FILENAME,
+  UNCACHEABLE_SELECTION_MESSAGE,
 } from "./gate.constants";
 
 import type {
+  BuildBatchArguments,
   BuildCommandArguments,
   GateOptions,
   GateSelection,
@@ -46,18 +48,6 @@ export class GateService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /** Whether a selection names exactly the project the target belongs to. */
-  private judgesOwnProject(args: {
-    projectName: string | undefined;
-    selection: GateSelection;
-  }): boolean {
-    return (
-      args.selection.tags.length === 0 &&
-      args.selection.projects.length === 1 &&
-      args.selection.projects[0] === args.projectName
-    );
-  }
 
   /**
    * Reads a list of names out of an executor's options.
@@ -123,6 +113,29 @@ export class GateService {
   // 🌎 Public Methods
 
   /**
+   * Builds the `node` arguments for a run that is handed its configuration
+   * already resolved, as a batch is.
+   *
+   * Kept shallow on purpose: a batch builds one of these for every run it
+   * starts and for every project it may have to explain, so the long chain that
+   * resolves a configuration path is walked once, by the executor, and never
+   * from here.
+   */
+  public buildBatchArguments(args: BuildBatchArguments): string[] {
+    return this.buildCommandArguments({
+      cliEntryPath: createRequire(import.meta.url).resolve(CLI_ENTRY_SPECIFIER),
+      configurationPath: args.configurationPath,
+      dependencies: args.dependencies,
+      loaderUrl: pathToFileURL(
+        createRequire(import.meta.url).resolve(LOADER_SPECIFIER),
+      ).href,
+      projects: args.projects,
+      tags: args.tags,
+      workspaceRoot: args.workspaceRoot,
+    });
+  }
+
+  /**
    * Builds the `node` arguments one gate runs.
    *
    * `--projects` and `--tags` name what is judged; the command line builds
@@ -148,6 +161,18 @@ export class GateService {
       ...(args.tags.length > 0 ? ["--tags", args.tags.join(",")] : []),
       ...(args.dependencies ? [] : ["--no-dependencies"]),
     ];
+  }
+
+  /** Whether a selection names exactly the project the target belongs to. */
+  public judgesOwnProject(args: {
+    projectName: string | undefined;
+    selection: GateSelection;
+  }): boolean {
+    return (
+      args.selection.tags.length === 0 &&
+      args.selection.projects.length === 1 &&
+      args.selection.projects[0] === args.projectName
+    );
   }
 
   /**
@@ -216,9 +241,7 @@ export class GateService {
     const selection = this.resolveSelection(args);
 
     if (args.cached && !this.judgesOwnProject({ ...args, selection })) {
-      throw new Error(
-        `The codependix gate target judges projects its cache inputs do not cover, so it must set \`cache: false\`.`,
-      );
+      throw new Error(UNCACHEABLE_SELECTION_MESSAGE);
     }
 
     const argv = this.buildCommandArguments({

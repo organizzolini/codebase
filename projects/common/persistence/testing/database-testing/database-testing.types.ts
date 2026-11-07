@@ -17,28 +17,17 @@ import type {
 
 /**
  * How the testing module connects: through the project's own database
- * module, or through the helper's own `PostgresqlModule.forRoot`, which alone
- * takes a naming strategy.
+ * module, or through the helper's own `PostgresqlModule.forRoot`.
  */
-export type DatabaseTestingConnection =
-  | {
-      /**
-       * The project's own database module, imported in place of the
-       * helper's own `PostgresqlModule.forRoot`, so modules under test that
-       * import it share its one connection rather than opening a second.
-       */
-      readonly database: NonNullable<ModuleMetadata["imports"]>[number];
-
-      /** Set on the project's own module instead. */
-      readonly namingStrategy?: never;
-    }
-  | {
-      /** Absent: the helper connects with its own `PostgresqlModule.forRoot`. */
-      readonly database?: never;
-
-      /** Replaces snake case on the helper's own `PostgresqlModule.forRoot`. */
-      readonly namingStrategy?: PostgresqlModuleOptions["namingStrategy"];
-    };
+export interface DatabaseTestingConnection {
+  /**
+   * The project's own database module, imported in place of the helper's own
+   * `PostgresqlModule.forRoot`, so modules under test that import it share
+   * its one connection rather than opening a second. Absent: the helper
+   * connects with its own `PostgresqlModule.forRoot`.
+   */
+  readonly database?: NonNullable<ModuleMetadata["imports"]>[number];
+}
 
 /** A testing module connected to a migrated throwaway database. */
 export interface DatabaseTestingModule {
@@ -66,9 +55,7 @@ export type DatabaseTestingModuleOptions = DatabaseTestingConnection &
 
 /** Every option but how the testing module connects. */
 export interface DatabaseTestingModuleSettings
-  extends
-    Omit<PostgresqlModuleOptions, "entities" | "namingStrategy">,
-    PostgresContainerOptions {
+  extends Omit<PostgresqlModuleOptions, "entities">, PostgresContainerOptions {
   /**
    * The entity classes to register repositories for, and to connect when no
    * `database` module is given.

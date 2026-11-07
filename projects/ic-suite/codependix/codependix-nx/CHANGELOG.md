@@ -1,3 +1,67 @@
+## 0.0.57 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.70
+- Updated codependix-cli to 0.0.71
+
+## 0.0.56 (2026-11-06)
+
+### 🚀 Features
+
+- **compliance,configuration,documentation:** ✨ migrate external-resource commands ([#2058](https://github.com/organizzolini/codebase/pull/2058), [#1980](https://github.com/organizzolini/codebase/issues/1980))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.69
+- Updated codependix-cli to 0.0.70
+
+## 0.0.55 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.68
+- Updated codependix-cli to 0.0.69
+
+## 0.0.54 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.67
+- Updated codependix-cli to 0.0.68
+
+## 0.0.53 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.66
+- Updated codependix-cli to 0.0.67
+
+## 0.0.52 (2026-11-04)
+
+### 🔥 Performance
+
+- **codependix:** ⚡️ judge every project from one batched boundary check ([#2111](https://github.com/organizzolini/codebase/pull/2111))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.65
+- Updated codependix-cli to 0.0.66
+
+## 0.0.51 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.64
+- Updated codependix-cli to 0.0.65
+
+## 0.0.50 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.63
+- Updated codependix-cli to 0.0.64
+
 ## 0.0.49 (2026-11-04)
 
 ### 💅 Refactors

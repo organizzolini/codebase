@@ -67,10 +67,12 @@ const COMMAND_PROJECT_BASELINE = 795 / 798;
  * migration deletes the table.
  */
 const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
+  compliance: NEST_BASELINE,
   documentation: NEST_BASELINE,
   installation: NEST_BASELINE,
   integration: NEST_BASELINE,
   "projects/caelundas/caelundas-cli": NEST_BASELINE,
+  "projects/caelundas/caelundas-db": NEST_BASELINE,
   "projects/caelundas/caelundas-web": {
     application: 748 / 764,
     routes: 137 / 145,
@@ -92,7 +94,7 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/codometer/codometer-languages": NEST_BASELINE,
   "projects/ic-suite/codometer/codometer-measurement": NEST_BASELINE,
   "projects/ic-suite/codometer/codometer-output": NEST_BASELINE,
-  "projects/ic-suite/coinagerie/coinagerie-cli": CLI_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-configuration": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-core": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-languages": NEST_BASELINE,
@@ -171,7 +173,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       type: z
         .string()
         .describe(
-          "Directory the project nests under: projects, a domain folder such as projects/lexico, or a deeper nesting such as projects/ic-suite/callidescope",
+          "Directory the project nests under, with a trailing slash: empty at the workspace root, projects/, a domain folder such as projects/lexico/, or a deeper nesting such as projects/ic-suite/callidescope/",
         ),
       workspaceRelativePrefix: z
         .string()
@@ -183,14 +185,14 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       {
         patterns: ["projects/ic-suite/callidescope/callidescope-cli"],
         substitutions: {
-          type: "projects/ic-suite/callidescope",
+          type: "projects/ic-suite/callidescope/",
           workspaceRelativePrefix: "../../../../",
         },
       },
       {
         patterns: ["projects/ic-suite/codependix/codependix-cli"],
         substitutions: {
-          type: "projects/ic-suite/codependix",
+          type: "projects/ic-suite/codependix/",
           workspaceRelativePrefix: "../../../../",
         },
         threshold: COMMAND_PROJECT_BASELINE,
@@ -198,7 +200,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       {
         patterns: ["projects/ic-suite/codometer/codometer-cli"],
         substitutions: {
-          type: "projects/ic-suite/codometer",
+          type: "projects/ic-suite/codometer/",
           workspaceRelativePrefix: "../../../../",
         },
         threshold: COMMAND_PROJECT_BASELINE,
@@ -206,7 +208,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       {
         patterns: ["projects/ic-suite/coinagerie/coinagerie-cli"],
         substitutions: {
-          type: "projects/ic-suite/coinagerie",
+          type: "projects/ic-suite/coinagerie/",
           workspaceRelativePrefix: "../../../../",
         },
         threshold: COMMAND_PROJECT_BASELINE,
@@ -214,10 +216,18 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       {
         patterns: ["projects/ic-suite/conformetry/conformetry-cli"],
         substitutions: {
-          type: "projects/ic-suite/conformetry",
+          type: "projects/ic-suite/conformetry/",
           workspaceRelativePrefix: "../../../../",
         },
         threshold: COMMAND_PROJECT_BASELINE,
+      },
+      {
+        patterns: ["compliance"],
+        substitutions: {
+          type: "",
+          workspaceRelativePrefix: "../",
+        },
+        threshold: 798 / 801,
       },
     ],
     name: "nestjs-command-project",
@@ -242,7 +252,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       type: z
         .string()
         .describe(
-          "Directory the project nests under: projects, a domain folder such as projects/lexico, or a deeper nesting such as projects/ic-suite/callidescope",
+          "Directory the project nests under, with a trailing slash: empty at the workspace root, projects/, a domain folder such as projects/lexico/, or a deeper nesting such as projects/ic-suite/callidescope/",
         ),
       workspaceRelativePrefix: z
         .string()

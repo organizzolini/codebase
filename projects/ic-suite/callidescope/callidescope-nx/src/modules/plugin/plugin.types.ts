@@ -80,6 +80,24 @@ export interface ResolveTraceScopeArguments {
  */
 export type RunGateArguments = Omit<RunTraceArguments, "format">;
 
+/** Arguments for gating several tasks from one trace. */
+export interface RunGateBatchArguments {
+  /** The workspace configuration file, as this plugin's registration names it. */
+  readonly configurationPath: string;
+  readonly tasks: readonly RunGateBatchTask[];
+  readonly workspaceRoot: string;
+}
+
+/** One task of a gate batch: the projects it reads and the ones it answers for. */
+export interface RunGateBatchTask {
+  /** Workspace-relative directories the task's trace reads. */
+  readonly directories: readonly string[];
+  /** Nx's id for the task, which the result is keyed by. */
+  readonly id: string;
+  /** What the task judges, a subset of its `directories`. */
+  readonly judgedProjectNames: readonly string[];
+}
+
 /** Arguments for tracing one resolved selection. */
 export interface RunTraceArguments {
   /** The workspace configuration file, as this plugin's registration names it. */

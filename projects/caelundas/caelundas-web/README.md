@@ -126,7 +126,7 @@ Call stacks traced through `projects/caelundas/caelundas-web`, deepest first. Ea
 | Measure | Value |
 | --- | --- |
 | Callables | 683 |
-| Files | 289 |
+| Files | 290 |
 | Calls traced | 665 |
 | Call stacks | 102 |
 | Deepest stack | 6 |
@@ -1514,14 +1514,14 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-30657-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-30671-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-1.05_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-47-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-399-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-400-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-399-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-400-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-147-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-2-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
@@ -1540,7 +1540,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-1667-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-263-059669?style=flat-square)
 ![Constants](https://img.shields.io/badge/Constants-1544-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-1197-0284c7?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-1198-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-652-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-1816-64748b?style=flat-square)
 ![Comment Lines](https://img.shields.io/badge/Comment_Lines-3198-475569?style=flat-square)
@@ -1564,16 +1564,16 @@ What this project is judged against, as declared in its own `callidescope.config
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-184-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-185-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-47-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-15-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-117-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-99-16a34a?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-100-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-2-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-49-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-169-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-50-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-170-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML
@@ -1726,710 +1726,198 @@ What this project is judged against, as declared in its own `callidescope.config
 
 The words this project uses that the root glossary does not define, regenerated with `nx run caelundas-web:coinagerie-check:write`.
 
-- **above**:
-- **act**:
-- **advance**:
-- **after**:
-- **agenda**:
-- **air**:
-- **align**:
-- **alt**:
-- **altitude**:
-- **ancestor**:
-- **anchor**:
-- **angle**:
-- **animation**:
-- **answer**:
-- **anything**:
-- **apoapsi**:
-- **appearance**:
-- **append**:
-- **april**:
-- **aquarius**:
-- **argv**:
-- **aria**:
-- **arity**:
-- **array**:
-- **arrow**:
-- **article**:
-- **ary**:
-- **ascension**:
-- **asin**:
-- **aspect**:
-- **assemble**:
-- **assembly**:
-- **assign**:
-- **astraea**:
-- **astronomical**:
-- **atan2**:
-- **axi**:
-- **azimuth**:
-- **back**:
-- **backdrop**:
-- **background**:
-- **badge**:
-- **bar**:
-- **bare**:
-- **below**:
-- **beltane**:
-- **bind**:
-- **binovile**:
-- **biquintile**:
-- **biseptile**:
-- **blue**:
-- **boomerang**:
-- **border**:
-- **bottom**:
-- **bound**:
-- **boundary**:
-- **box**:
-- **breadth**:
-- **bright**:
-- **brightness**:
-- **browser**:
-- **buffer**:
-- **builder**:
-- **busy**:
-- **butterfly**:
-- **button**:
-- **byte**:
-- **calendar**:
-- **call**:
-- **callback**:
-- **cancer**:
-- **capi**:
-- **capricorn**:
-- **card**:
-- **cardinal**:
-- **cascade**:
-- **cascader**:
-- **cell**:
-- **center**:
-- **cere**:
-- **channel**:
-- **character**:
-- **chart**:
-- **checkbox**:
-- **chevron**:
-- **child**:
-- **chip**:
-- **chiron**:
-- **chrome**:
-- **circle**:
-- **civil**:
-- **clamp**:
-- **clear**:
-- **click**:
-- **clip**:
-- **close**:
-- **closest**:
-- **cluster**:
-- **co**:
-- **collection**:
-- **color**:
-- **columns3**:
-- **combinator**:
-- **combine**:
-- **compact**:
-- **compare**:
-- **comparison**:
-- **compile**:
-- **compiler**:
-- **composite**:
-- **compound**:
-- **compute**:
-- **condition**:
-- **configurable**:
-- **conjunct**:
-- **conjunction**:
-- **console**:
-- **constant**:
-- **constellation**:
-- **contraparallel**:
-- **count**:
-- **cover**:
-- **cradle**:
-- **crescent**:
-- **crowd**:
-- **css**:
-- **custom**:
-- **cut**:
-- **cycle**:
-- **dangerously**:
-- **dataset**:
-- **dawn**:
-- **daylight**:
-- **db**:
-- **debounce**:
-- **debug**:
-- **decan**:
-- **decile**:
-- **decimal**:
-- **declination**:
-- **decuple**:
-- **define**:
-- **definition**:
-- **degree**:
-- **delay**:
-- **dep**:
-- **derive**:
-- **describe**:
-- **desktop**:
-- **detail**:
-- **deterministic**:
-- **device**:
-- **dialog**:
-- **digit**:
-- **dignity**:
-- **direction**:
-- **disconnect**:
-- **display**:
-- **distance**:
-- **div**:
-- **domain**:
-- **down**:
-- **drag**:
-- **draw**:
-- **drawer**:
-- **dropdown**:
-- **duodecuple**:
-- **duration**:
-- **dusk**:
-- **each**:
-- **eager**:
-- **earth**:
-- **east**:
-- **eclipse**:
-- **ecliptic**:
-- **effect**:
-- **effective**:
-- **element**:
-- **eleventh**:
-- **elongation**:
-- **emptiness**:
-- **empty**:
-- **encode**:
-- **enter**:
-- **entry**:
-- **envelope**:
-- **epoch**:
-- **equal**:
-- **eris**:
-- **even**:
-- **exactly**:
-- **exp**:
-- **expand**:
-- **expression**:
-- **extent**:
-- **eye**:
-- **facet**:
-- **factor**:
-- **failure**:
-- **faint**:
-- **faintest**:
-- **fake**:
-- **fewer**:
-- **field**:
-- **fieldset**:
-- **fifteenth**:
-- **fifth**:
-- **figure**:
-- **fill**:
-- **finite**:
-- **fire**:
-- **flag**:
-- **flat**:
-- **flatten**:
-- **flip**:
-- **float**:
-- **floor**:
-- **focal**:
-- **focus**:
-- **follow**:
-- **footer**:
-- **force**:
-- **form**:
-- **fov**:
-- **fraction**:
-- **frame**:
-- **free**:
-- **func**:
-- **galaxy**:
-- **gantt**:
-- **gap**:
-- **gemini**:
-- **gen**:
-- **geocentric**:
-- **geometry**:
-- **gibbous**:
-- **glow**:
-- **glyph**:
-- **gonggong**:
-- **grand**:
-- **greater**:
-- **green**:
-- **greenwich**:
-- **grid**:
-- **grind**:
-- **gte**:
-- **gutter**:
-- **h1**:
-- **h2**:
-- **half**:
-- **hammer**:
-- **handle**:
-- **harmonic**:
-- **haumean**:
-- **hebe**:
-- **height**:
-- **hexadecan**:
-- **hexadecimal**:
-- **hexagram**:
-- **high**:
-- **highest**:
-- **history**:
-- **hoist**:
-- **horizon**:
-- **hour**:
-- **hourglass**:
-- **href**:
-- **html**:
-- **hydrate**:
-- **hygiea**:
-- **hypot**:
-- **i18**:
-- **icon**:
-- **imbolc**:
-- **implementation**:
-- **incomplete**:
-- **indent**:
-- **indeterminate**:
-- **indicator**:
-- **infinite**:
-- **infinity**:
-- **ingest**:
-- **ingress**:
-- **inline**:
-- **inscribe**:
-- **inside**:
-- **instant**:
-- **int**:
-- **integer**:
-- **interaction**:
-- **interpolate**:
-- **intl**:
-- **invalidate**:
-- **inverse**:
-- **iso**:
-- **item**:
-- **ixion**:
-- **j2000**:
-- **julian**:
-- **jump**:
-- **juno**:
-- **jupiter**:
-- **keep**:
-- **keyboard**:
-- **keycap**:
-- **kind**:
-- **kite**:
-- **know**:
-- **labelledby**:
-- **lamma**:
-- **lane**:
-- **lang**:
-- **last**:
-- **lat**:
-- **late**:
-- **later**:
-- **latitude**:
-- **lead**:
-- **leaf**:
-- **least**:
-- **legend**:
-- **length**:
-- **leo**:
-- **less**:
-- **level**:
-- **li**:
-- **libra**:
-- **lilith**:
-- **link**:
-- **literal**:
-- **litha**:
-- **load**:
-- **loader**:
-- **locale**:
-- **location**:
-- **lon**:
-- **longitude**:
-- **loose**:
-- **low**:
-- **lower**:
-- **lowest**:
-- **lte**:
-- **lunar**:
-- **mabon**:
-- **mag**:
-- **magnitude**:
-- **makemake**:
-- **many**:
-- **mar**:
-- **march**:
-- **margin**:
-- **marker**:
-- **markup**:
-- **mask**:
-- **math**:
-- **maximum**:
-- **mean**:
-- **measure**:
-- **measurement**:
-- **member**:
-- **memo**:
-- **menu**:
-- **mercury**:
-- **meta**:
-- **metric**:
-- **middle**:
-- **millisecond**:
-- **min**:
-- **mismatch**:
-- **miss**:
-- **mock**:
-- **modality**:
-- **month**:
-- **moon**:
-- **more**:
-- **morning**:
-- **motion**:
-- **mount**:
-- **move**:
-- **ms**:
-- **multiple**:
-- **multiselectable**:
-- **mutable**:
-- **mutation**:
-- **mystic**:
-- **na**:
-- **nadir**:
-- **narrow**:
-- **native**:
-- **nature**:
-- **nautical**:
-- **nav**:
-- **navigate**:
-- **navigation**:
-- **needle**:
-- **negate**:
-- **negative**:
-- **neptune**:
-- **neq**:
-- **nessus**:
-- **night**:
-- **ninth**:
-- **nonuple**:
-- **normal**:
-- **normalize**:
-- **north**:
-- **nothing**:
-- **notify**:
-- **novile**:
-- **nullable**:
-- **numeric**:
-- **obliquity**:
-- **observe**:
-- **observer**:
-- **occurrence**:
-- **octile**:
-- **octuple**:
-- **off**:
-- **offer**:
-- **ok**:
-- **oldest**:
-- **omit**:
-- **once**:
-- **onchange**:
-- **ongoing**:
-- **oo1**:
-- **opacity**:
-- **operand**:
-- **operator**:
-- **ophicus**:
-- **opposition**:
-- **optional**:
-- **orcus**:
-- **original**:
-- **ostara**:
-- **other**:
-- **overflow**:
-- **overlie**:
-- **overscan**:
-- **pad**:
-- **pair**:
-- **palette**:
-- **palla**:
-- **parameter**:
-- **part**:
-- **partial**:
-- **passive**:
-- **peak**:
-- **pending**:
-- **pentagram**:
-- **per**:
-- **periapsi**:
-- **period**:
-- **phase**:
-- **pholus**:
-- **pi**:
-- **pick**:
-- **pill**:
-- **pisce**:
-- **pixel**:
-- **place**:
-- **plain**:
-- **planet**:
-- **plural**:
-- **pluto**:
-- **point**:
-- **polar**:
-- **polarity**:
-- **pole**:
-- **polyline**:
-- **pop**:
-- **popover**:
-- **position**:
-- **positive**:
-- **posix**:
-- **prefer**:
-- **preload**:
-- **prerender**:
-- **presentation**:
-- **press**:
-- **prev**:
-- **prevent**:
-- **preview**:
-- **previous**:
-- **prograde**:
-- **projection**:
-- **promise**:
-- **prop**:
-- **propagation**:
-- **prototype**:
-- **quadruple**:
-- **quaoar**:
-- **quarter**:
-- **quiet**:
-- **quincunx**:
-- **quintile**:
-- **quintuple**:
-- **radial**:
-- **radian**:
-- **radio**:
-- **radius**:
-- **ratio**:
-- **reach**:
-- **readdir**:
-- **real**:
-- **recover**:
-- **rect**:
-- **rectangle**:
-- **recursive**:
-- **red**:
-- **reduce**:
-- **reg**:
-- **reject**:
-- **rel**:
-- **reload**:
-- **rem**:
-- **removable**:
-- **remove**:
-- **rename**:
-- **replace**:
-- **rerender**:
-- **resize**:
-- **resolution**:
-- **respond**:
-- **rest**:
-- **restoration**:
-- **retrograde**:
-- **reverse**:
-- **ring**:
-- **rise**:
-- **role**:
-- **rotation**:
-- **round**:
-- **route**:
-- **safe**:
-- **sagitarius**:
-- **same**:
-- **samhain**:
-- **sample**:
-- **saturn**:
-- **scale**:
-- **scheme**:
-- **scorpio**:
-- **scorpius**:
-- **screen**:
-- **scroll**:
-- **scrollbar**:
-- **search**:
-- **season**:
-- **second**:
-- **section**:
-- **sedna**:
-- **segment**:
-- **selector**:
-- **semisextile**:
-- **separator**:
-- **septile**:
-- **septuple**:
-- **seventh**:
-- **sextile**:
-- **sextuple**:
-- **sheet**:
-- **should**:
-- **sibling**:
-- **side**:
-- **sidereal**:
-- **sin**:
-- **single**:
-- **skeleton**:
-- **sky**:
-- **slice**:
-- **slider**:
-- **slot**:
-- **slow**:
-- **some**:
-- **sort**:
-- **south**:
-- **spa**:
-- **space**:
-- **span**:
-- **speak**:
-- **spin**:
-- **spirit**:
-- **split**:
-- **spread**:
-- **spy**:
-- **square**:
-- **ssr**:
-- **stamp**:
-- **stand**:
-- **star**:
-- **station**:
-- **stellium**:
-- **still**:
-- **store**:
-- **strict**:
-- **stringify**:
-- **stroke**:
-- **structural**:
-- **sub**:
-- **subscribe**:
-- **subtree**:
-- **success**:
-- **summarize**:
-- **summary**:
-- **sun**:
-- **sunday**:
-- **surface**:
-- **svg**:
-- **svgsvg**:
-- **swipe**:
-- **symbolic**:
-- **synodic**:
-- **tab**:
-- **tablet**:
-- **tan**:
-- **tangent**:
-- **task**:
-- **taurus**:
-- **temporality**:
-- **ten**:
-- **testid**:
-- **text**:
-- **than**:
-- **third**:
-- **thirteenth**:
-- **three**:
-- **through**:
-- **thursday**:
-- **timeline**:
-- **timer**:
-- **today**:
-- **toggle**:
-- **toolbar**:
-- **tooltip**:
-- **top**:
-- **trace**:
-- **track**:
-- **trail**:
-- **transform**:
-- **transition**:
-- **trapeze**:
-- **tridecile**:
-- **trim**:
-- **trine**:
-- **trioctile**:
-- **triple**:
-- **triseptile**:
-- **tune**:
-- **twelve**:
-- **twice**:
-- **twilight**:
-- **typhon**:
-- **uint8**:
-- **ul**:
-- **undecile**:
-- **undecuple**:
-- **unfiltered**:
-- **ungrouped**:
-- **unix**:
-- **unmeasured**:
-- **unobserve**:
-- **unreadable**:
-- **unsupported**:
-- **up**:
-- **uranus**:
-- **ursa**:
-- **valid**:
-- **variant**:
-- **variation**:
-- **vector**:
-- **vendored**:
-- **venu**:
-- **vertical**:
-- **vesta**:
-- **vi**:
-- **viewport**:
-- **vigintile**:
-- **virgo**:
-- **visibility**:
-- **visible**:
-- **wan**:
-- **want**:
-- **warn**:
-- **water**:
-- **wax**:
-- **weak**:
-- **webkit**:
-- **week**:
-- **weekday**:
-- **west**:
-- **whole**:
-- **wide**:
-- **width**:
-- **window**:
-- **within**:
-- **without**:
-- **wrap**:
-- **year**:
-- **yod**:
-- **yule**:
-- **zenith**:
-- **zodiac**:
-- **zone**:
-- **zoom**:
+- **air**: One of the four sign elements used as a filter field, with a value of fire, earth, air or water.
+- **alt**: Short form in the sky settings key altBottom, the lowest altitude the night sky draws, beneath the horizon.
+- **altitude**: Height of a star above the horizon in degrees, where the pole observer sees altitude equal declination, shown by the night sky.
+- **anchor**: Names a date or position a calendar timeline is laid out from, passed as the anchor date prop to the timeline.
+- **angle**: Degree rotation the night sky star group is drawn at, derived from sidereal time as the sky turns.
+- **appearance**: Order of first sighting used to list distinct whole numbers in a filter rule, where an empty list marks an unfinished rule.
+- **aquarius**: Zodiac sign and constellation name whose sign glyph maps to its icon file in the calendar glyphs.
+- **ascension**: Sky coordinate in hours from 0 to 24, with declination, that positions each star the night sky draws.
+- **aspect**: Angular relationship between two bodies, such as a conjunction or a harmonic, filtered and colored as a tag root.
+- **astraea**: Asteroid whose name the project does not use in code; it appears only in the glossary list here.
+- **astronomical**: Twilight stage, such as Astronomical Dawn or Dusk, that the calendar labels and draws with a glyph icon.
+- **azimuth**: Compass bearing of a body along the horizon, used by night sky tests to tell the west half from the east.
+- **beltane**: Cross-quarter festival date, which the calendar marks with a flower glyph and its own icon image.
+- **binovile**: Harmonic aspect at two novile steps that appears in the glossary list but has no code or icon in this project.
+- **biquintile**: Aspect of 144 degrees, two quintile steps, drawn with a dedicated 144-degree icon in calendar glyphs.
+- **biseptile**: Aspect of about 103 degrees, two septile steps, that the project lists only in its glossary.
+- **boomerang**: Emoji-keyed glyph image that the calendar draws for one event category, mapped from the boomerang emoji.
+- **border**: Outline drawn around agenda date and group surfaces, through class names that set their edges in the calendar.
+- **boundary**: Index splitting an event summary into its glyph symbols and English name, so the name is cut at that index.
+- **breadth**: Callidescope limit on how many calls a callable fans out to, declared as maximumBreadth in its configuration.
+- **brightness**: Glyph for the maximum brightness event, keyed by a bright emoji and drawn from maximum-brightness-icon.svg.
+- **butterfly**: Emoji-keyed icon image, butterfly-icon.png, the calendar shows for one of its event label symbols.
+- **cancer**: Zodiac sign whose ingress event, such as event-sun-ingress-cancer, the filter tests and collections reference by id.
+- **capricorn**: Zodiac sign whose glyph maps to capricorn-icon.svg, which the calendar icon utilities test checks by name.
+- **cardinal**: Modality value for a zodiac sign, one of cardinal, fixed or mutable, offered as a filter value.
+- **cascade**: Tag picker prop that, when true, makes ticking a parent tag tick the tags beneath it; group picker sets it false.
+- **chiron**: Centaur asteroid whose symbol maps to chiron-icon.svg in the calendar glyph constants and utility tests.
+- **civil**: Twilight stage of dawn or dusk labeled Civil Dawn or Civil Dusk, each with its own calendar glyph icon.
+- **conjunct**: Aspect name in event summaries, such as Mars Conjunct Venus, used as sample data in calendar row tests.
+- **conjunction**: Aspect at zero degrees between two bodies, with harmonic 1 and its own conjunction-0 icon in the glyph map.
+- **constellation**: Named star pattern the night sky draws with its own lines, from catalog records, listed as folders in the sky menu.
+- **contraparallel**: Aspect between bodies with equal declination on opposite sides of the equator; the project lists it only here.
+- **cradle**: Calendar glyph mapped from the bed emoji to cradle-icon.png, used for one event label in the glyph map.
+- **crescent**: Moon phase between new and quarter, offered as a filter value and drawn with waxing or waning crescent icons.
+- **cut**: Verb for removing or trimming: a view is added or cut from the list, and night sky rings are cut at the window edge.
+- **dawn**: Twilight start of morning, labeled Astronomical or Civil Dawn, each with its glyph in calendar icon constants.
+- **daylight**: Event label for the sun above the horizon, mapped to day-icon.svg as its calendar glyph.
+- **db**: Handle to the events SQLite database that the worker opens read-only through the sqlite3 interface.
+- **decan**: Ten-degree third of a zodiac sign, numbered and drawn with the decan digit keycap in calendar glyphs.
+- **decile**: Aspect of 36 degrees, one tenth of the circle, drawn with its own decile-36 icon image in calendar glyphs.
+- **declination**: Angle north or south of the celestial equator, used as the vertical star coordinate, equal to altitude at the pole.
+- **decuple**: Tenth-harmonic group of 36-degree aspects, labeled a stellium in the CLI symbol map and absent from this project.
+- **degree**: Angle unit for all night sky coordinates, such as the 90-degree default vertical field and full turns.
+- **dignity**: Filter field for planet strength in a sign, such as domicile or exaltation, used as a tag root.
+- **domain**: Tag group recording whether an event belongs to the solar, lunar or planetary sphere, and the Nx domain tag this project carries.
+- **duodecuple**: Twelfth-harmonic group of 30-degree aspects, labeled a stellium in the CLI symbol map and absent from this project.
+- **dusk**: Evening twilight stage, labeled Astronomical Dusk, Astronomical Twilight Evening or Civil Dusk, each with its own icon.
+- **earth**: Earth-centered reference in the Eclipse Frame filter, and the element name of earth signs in the Element filter.
+- **eclipse**: Event type for solar or lunar eclipses, colored red in the Type color scheme and offered in the Eclipse Frame filter.
+- **ecliptic**: Yearly path the Sun appears to follow across the sky, drawn as a line with style keys for color and width.
+- **element**: Classification of a zodiac sign as fire, earth, air or water, offered as a filter field and tag group.
+- **elongation**: Angular distance of a planet from the Sun, its stage shown by east or west arrow glyphs on the calendar.
+- **epoch**: The reference instant that night-sky code counts astronomical time from: the Unix epoch and J2000.
+- **eris**: Dwarf planet Eris, a body whose aspects the CLI's triple-aspect tests tag; the web app never names it.
+- **fire**: A value of the Element filter that marks a sign as belonging to the fire element.
+- **focal**: The body a pattern points at, such as a T-square's apex, named in the event filter's Focal Body field.
+- **fov**: The vertical angle in degrees the night sky shows, set by the sky.vFov link key read from the page link.
+- **gap**: The spacing between a flex or grid layout's items, set with Tailwind gap utilities such as gap-2 in the calendar.
+- **gemini**: The zodiac sign of the twins, mapped from ♊ to its icon and drawn as a night-sky constellation figure.
+- **geocentric**: An Earth-centered eclipse marker, drawn as a globe emoji with its own SVG icon in the event glyph table.
+- **gibbous**: The Moon's phase between quarter and full, as the phase filter and its waxing and waning icons name it.
+- **gonggong**: A trans-Neptunian dwarf planet whose name no source or test file uses; only the glossary mentions it.
+- **grand**: Part of a three-or-more-body aspect pattern name, like grand trine or grand cross, in the collections and icon table.
+- **greenwich**: The mean sidereal time at Greenwich, in hours, which night-sky code computes by hand to place stars.
+- **hammer**: The event glyph for the hammer emoji, mapped to its PNG icon file in the calendar icon table.
+- **harmonic**: A numbered aspect family, such as Harmonic 4, whose tags the calendar filters and agenda group under Type.
+- **hebe**: A main-belt asteroid whose name no source or test file uses, leaving only the glossary headword.
+- **hexadecan**: A sixteenth-harmonic point of the zodiac, named by ordinal such as Fifth Hexadecan, which the CLI emits as an event.
+- **hexagram**: The dotted six-pointed star emoji, mapped to its PNG icon in the calendar icon table.
+- **horizon**: The zero-altitude line the night sky's view is cut by, with sky.altBottom allowed to reach just below it.
+- **hourglass**: The ⏳ emoji event glyph, mapped to its PNG icon in the calendar icon table.
+- **hygiea**: A main-belt asteroid no source or test file names, so this headword lives only in the glossary.
+- **imbolc**: The cross-quarter festival of early February, mapped to its PNG icon in the event glyph table.
+- **ingest**: The caelundas-cli step that calculates and stores events, which the web build's ingested configuration then copies.
+- **ingress**: A planet's entry into a new zodiac sign, tagged Type / Ingress so the calendar can color and filter it.
+- **instant**: A zero-length event: a moment with no duration, which the duration filter and legend list as Instant.
+- **ixion**: A trans-Neptunian plutino dwarf planet, not named in any source or test file, so only the glossary records it.
+- **j2000**: The standard astronomical reference date of 1 January 2000 that the night-sky star catalog's coordinates are measured from.
+- **julian**: Day-number system, counting Julian days from a fixed origin, that the night sky converts instants into.
+- **juno**: The asteroid symbol ⚵ mapped to juno-icon.svg in the event glyph table, so that body's events get an icon.
+- **jupiter**: The planet symbol ♃ mapped to jupiter-icon.svg in the event glyph table, and named in glyph test event titles.
+- **kite**: An aspect pattern shape named in the focal body filter, whose emoji 🪁 maps to kite-icon.png.
+- **lamma**: The cross-quarter festival at 135 degrees, emitted as a CLI event and mapped to a PNG icon in the web glyph table.
+- **latitude**: The observer's north-south angle, read from sky.lat to place the night sky, and a column of each calendar event.
+- **leaf**: A tag or group with no children, which stands for itself: a leaf is its own group at any depth below it.
+- **leo**: The zodiac sign of the lion, whose ♌ glyph maps to leo-icon.svg and tags events as Sign / Leo.
+- **libra**: The scales sign of the zodiac, ♎ mapped to libra-icon.svg, and a constellation folder the night-sky picker lists.
+- **lilith**: The Black Moon point, the lunar apogee body whose ⚸ glyph maps to its SVG icon in the glyph table.
+- **litha**: The summer solstice festival whose 🌞 emoji maps to litha-icon.png in the event glyph table.
+- **longitude**: The observer's east-west angle, read from sky.lon to place the night sky, and the zodiacal longitude of an event.
+- **lunar**: Tied to the Moon: the daily and monthly lunar cycle tags, colored by the calendar's color-by scheme.
+- **mabon**: The autumn equinox festival whose 🍂 emoji maps to mabon-icon.png in the calendar's event glyph table.
+- **mag**: The magnitude unit suffix, written as mag after a star's brightness value in the night-sky menu's labels.
+- **magnitude**: A star's brightness on the astronomical scale, lower being brighter, stored per star and capped by the faintest-star setting.
+- **makemake**: A dwarf planet of the Kuiper belt that no source or test file names, leaving only this glossary entry.
+- **mercury**: The innermost planet, named in the calendar's color scheme tests and in a Mercury retrograde filter fixture.
+- **modality**: A zodiac sign's quality, cardinal, fixed or mutable, offered as a filter field and tag group for events.
+- **moon**: Tag path naming the Moon, whose events a without-the-Moon collection excludes from its planetary aspect set.
+- **mutable**: One of the three sign modalities, alongside cardinal and fixed, offered as a value in the event filters.
+- **mystic**: Name root of the aspect pattern whose door emoji maps to a PNG icon in the event glyph set.
+- **nadir**: Event name for the lowest point of the Sun or a planet below the horizon, shown with a down-arrow icon.
+- **nautical**: Sun-altitude twilight events, the Dawn, Dusk and Evening variants, each mapped to its own SVG icon.
+- **negative**: The polarity of a sign, either positive or negative, offered as a filter value.
+- **neptune**: A planet whose glyph and icon label its events, as in Moon sextile Neptune.
+- **nessus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **nonuple**: Stellium label for a cluster of nine bodies, mapped to a symbol in the stellium constants.
+- **north**: The lunar north node glyph, mapped to its own SVG icon, and the north pole facing the sky view.
+- **novile**: Harmonic aspect at 40 degrees, the ninth harmonic, named in event labels such as Sun novile Pluto.
+- **obliquity**: Tilt of the Earth axis, a constant that turns ecliptic longitude into equatorial coordinates.
+- **observer**: The viewer position on Earth, from which local times, horizons and eclipses are measured.
+- **octile**: An aspect at 45 degrees, the eighth harmonic, mapped to its own PNG icon.
+- **octuple**: Stellium label for a cluster of eight bodies, mapped to a symbol in the stellium constants.
+- **ophicus**: Constellation name for a body or sign outside the twelve zodiac signs, unused by any code here.
+- **opposition**: The 180-degree aspect, harmonic 2, mapped to its own PNG icon in the glyph set.
+- **orcus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **ostara**: Seasonal festival event, the spring equinox name here, mapped to a PNG icon in the glyph set.
+- **palla**: Asteroid Pallas, named in event labels such as Mars biquintile Pallas, with its own glyph.
+- **pentagram**: The star glyph for a five-pointed pattern, mapped to its own PNG icon in the glyph set.
+- **phase**: Lunar or planetary cycle stage, a filter and color field grouping events by cycle position.
+- **pholus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **pisce**: Zodiac sign whose glyph maps to its own SVG icon, and a constellation listed in the sky menu.
+- **place**: A position in a color legend where values without one take their color from their own text.
+- **planet**: A celestial body whose glyph, name and events the calendar shows, such as Mars or Jupiter.
+- **pluto**: Dwarf-planet body whose glyph maps to its own SVG icon and appears in event names.
+- **polar**: Relating to a celestial pole such as the bottom polar degrees the night-sky projection computes.
+- **polarity**: Whether a zodiac sign is positive or negative, offered as a filter field and a color group.
+- **pole**: The north celestial pole at the top of the night-sky view, where altitude equals declination.
+- **presentation**: The shared UI primitives package of Button and Skeleton, which the app imports from.
+- **prograde**: Direction of a planet moving forward through the zodiac, mapped to its own SVG icon.
+- **prop**: React inputs passed to a component, named as properties in this codebase rather than props.
+- **quadruple**: Stellium label for four bodies clustered together, mapped to a PNG icon in the glyph set.
+- **quaoar**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **quarter**: Calendar quarter of the year, a group field keying events like 2026-Q1, and a Moon phase.
+- **quiet**: Class string that hides the timeline bar labels, keeping the timeline uncluttered.
+- **quincunx**: The 150-degree minor aspect, mapped to its own PNG icon in the glyph set.
+- **quintile**: The 72-degree aspect, a fifth-harmonic, mapped to its own PNG icon in the glyph set.
+- **quintuple**: Label for the CLI quintuple aspects module, computing five-fold harmonic aspect groupings.
+- **radial**: A radialGradient SVG fill, the star glow and ground shading drawn behind the night sky.
+- **radius**: Distance from the pole to a declination ring, in pixels, used when drawing the night sky.
+- **rectangle**: Shape word in the Mystic Rectangle aspect name, mapped to its own PNG icon via a door emoji.
+- **retrograde**: Apparent backward motion of a planet, a station event with its own icon in the glyph set.
+- **rise**: A planet stage relative to the Sun, such as rising or setting, in the planetary phase filter.
+- **role**: ARIA attribute on a status or alert region, so screen readers announce empty and error states.
+- **rotation**: The sidereal rotation rate of the Earth, in radians per second, a constant for the sky clock.
+- **samhain**: Seasonal festival event at a cross-quarter day, mapped to its own PNG icon in the glyph set.
+- **saturn**: Ringed planet whose glyph and aspect events, such as Mars squares, appear across the calendar.
+- **scorpio**: Zodiac sign of the scorpion, whose glyph maps to its own SVG icon in the glyph set.
+- **scorpius**: Constellation figure name in the sky menu and tests, drawn as one of the star-line figures.
+- **season**: A filter and color field giving the time of year an event falls in, such as spring.
+- **sedna**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **selector**: A control that picks one option from a list, such as the view or scale menu in the toolbar.
+- **semisextile**: The 30-degree minor aspect, mapped to its own PNG icon in the glyph set.
+- **septile**: The 51.43-degree aspect, a seventh harmonic, mapped to its own PNG icon in the glyph set.
+- **septuple**: Stellium label for a cluster of seven bodies, mapped to a symbol in the stellium constants.
+- **sextile**: The 60-degree aspect, a harmonic-six pattern, shown in event names with the star glyph.
+- **sextuple**: Stellium label for six bodies clustered together, mapped to its own PNG icon in the glyph set.
+- **sibling**: A neighboring element under the same parent, which focus moves between in the tag picker.
+- **sidereal**: Star-based clock, computed per observer, that sets which part of the night sky is overhead.
+- **sky**: The night-sky backdrop behind the calendar and its settings, such as sky.top, sky.lat and sky.lon.
+- **south**: The descending lunar node glyph, mapped to its own SVG icon beside the north node.
+- **square**: The 90-degree aspect, a harmonic-four pattern, shown in event names beside its glyph.
+- **star**: Celestial point in the night sky, as in the morning-star and evening-star icons and the sky backdrop.
+- **station**: Point where a planet turns between direct and retrograde motion, a Type and Motion value.
+- **stellium**: Cluster of three or more bodies in one sign or spot, named by its count and given a glyph icon.
+- **sun**: Central body of the solar system, whose glyph and events label Sun-relative stages and twilight.
+- **synodic**: Planet-with-Sun cycle label, a filter field and tag group for each planet stage.
+- **taurus**: Zodiac sign of the bull, whose glyph maps to its own SVG icon, and a constellation in the sky menu.
+- **temporality**: Derived filter field classing an event as past, ongoing or upcoming relative to the current time.
+- **trace**: Function that walks the night-sky ecliptic and returns its sky points for drawing.
+- **trapeze**: Four-body aspect pattern that no code in this project uses, so only this glossary names it.
+- **tridecile**: The 108-degree aspect, mapped to its own PNG icon in the glyph set.
+- **trine**: The 120-degree aspect, a harmonic-three pattern, shown in event names with a triangle glyph.
+- **trioctile**: The 135-degree aspect, mapped to its own PNG icon in the glyph set.
+- **triple**: Compound aspect group of three bodies, mapped to the three-body stellium icon.
+- **triseptile**: A 154.29-degree aspect in the seventh-harmonic family, which no code in this project uses.
+- **twilight**: Sun-altitude dusk and dawn stage, a Type value with civil, nautical and astronomical bands.
+- **typhon**: Centaur body name that no code in this project uses, so it survives only as a glossary entry.
+- **undecile**: The 32.7-degree aspect, an eleventh-harmonic pattern, shown in event names with its own SVG icon.
+- **undecuple**: Stellium label for eleven bodies clustered together, mapped to a symbol in the stellium constants.
+- **unmeasured**: Stand-in size used before a virtual list is measured, a 720 by 640 default height and width.
+- **uranus**: Ice giant body whose glyph maps to its own SVG icon in the glyph set.
+- **ursa**: Constellation prefix in names such as Ursa Major, a figure the sky menu can draw.
+- **vesta**: Asteroid body whose glyph maps to its own SVG icon in the event glyph set.
+- **vigintile**: A 18-degree aspect, a twentieth-harmonic division, which no code in this project uses.
+- **virgo**: Zodiac sign of the maiden, whose glyph maps to its own SVG icon, and a constellation in the sky menu.
+- **visibility**: Eclipse filter field saying whether an eclipse is measured from Earth center or the observer.
+- **visible**: Shown on screen, such as the visible rows the virtual list computes for its window.
+- **water**: Elemental class of a zodiac sign, one of fire, earth, air or water, offered as a filter value.
+- **weekday**: Calendar day of the week as a grouping and color field, such as Monday through Sunday.
+- **yod**: Compound aspect pattern, the Yod, a Compound Aspect variant in the color path tests.
+- **yule**: Seasonal festival event at the winter solstice, mapped to its own PNG icon in the glyph set.
+- **zenith**: Point directly overhead, shown as an upward-arrow event glyph with its own SVG icon.
+- **zodiac**: Twelve signs along the ecliptic, the sky backdrop default constellation set and a filter group.
 
 <!-- coinagerie:end -->

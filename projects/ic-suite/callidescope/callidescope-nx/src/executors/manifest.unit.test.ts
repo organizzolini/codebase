@@ -136,6 +136,34 @@ describe("executors.json", () => {
     },
   );
 
+  // The build names its entry points one by one, so a file `executors.json`
+  // points at but `vite.config.ts` does not list is in the source and missing
+  // from the tarball: the plugin then fails to load in every consumer, with
+  // nothing in the workspace's own runs to say so.
+  it.each(
+    Object.keys(executors).flatMap((executorName) =>
+      ["implementation", "batchImplementation"]
+        .filter((field) => field in readExecutor(executorName))
+        .map((field): [string, string] => [executorName, field]),
+    ),
+  )("builds and ships the %s executor's %s", (executorName, field) => {
+    expect.hasAssertions();
+
+    const specifier = String(readExecutor(executorName)[field]);
+    const subpath = specifier.slice(`${String(name)}/`.length);
+
+    expect(specifier.startsWith(`${String(name)}/src/executors/`)).toBe(true);
+    expect(resolveExport(publishedExports, `./${subpath}`)).toBe(
+      `./dist/${subpath}.js`,
+    );
+    expect(existsSync(path.join(PACKAGE_DIRECTORY, `${subpath}.ts`))).toBe(
+      true,
+    );
+    expect(
+      readFileSync(path.join(PACKAGE_DIRECTORY, "vite.config.ts"), "utf8"),
+    ).toContain(`"${subpath}":`);
+  });
+
   it.each(Object.keys(executors))(
     "ships the %s schema in the tarball",
     (executorName) => {

@@ -51,6 +51,7 @@ const BINARY_DIRECTORY = path.join(os.homedir(), ".local", "bin");
 const APT_SCRATCH = path.join(os.tmpdir(), "postgresql-apt");
 const APT_SOURCE_SCRATCH = `${APT_SCRATCH}.list`;
 const APT_KEYRING_SCRATCH = `${APT_SCRATCH}.gpg`;
+const APT_KEY_SCRATCH = `${APT_SCRATCH}.asc`;
 
 /** Builds the service over a fake machine, and returns it with the command lines it ran. */
 async function build(machine: FakeMachine = {}): Promise<{
@@ -156,6 +157,9 @@ describe(SoftwareDatabaseService, () => {
       );
       expect(commands).toContain(
         `install -m 644 ${APT_KEYRING_SCRATCH} /etc/apt/trusted.gpg.d/postgresql.gpg`,
+      );
+      expect(commands).toContain(
+        `curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 -o ${APT_KEY_SCRATCH} https://www.postgresql.org/media/keys/ACCC4CF8.asc`,
       );
       expect(commands).toContain("apt-get install -y -qq postgresql-client-18");
       expect(commands.some((line) => line.startsWith("sudo "))).toBe(false);

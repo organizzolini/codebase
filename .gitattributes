@@ -93,7 +93,6 @@ dist/** linguist-generated
 .agents/skills/implement/** linguist-vendored
 .agents/skills/improve-codebase-architecture/** linguist-vendored
 .agents/skills/link-workspace-packages/** linguist-vendored
-.agents/skills/monitor-ci/** linguist-vendored
 .agents/skills/nx-generate/** linguist-vendored
 .agents/skills/nx-import/** linguist-vendored
 .agents/skills/nx-plugins/** linguist-vendored

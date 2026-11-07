@@ -15,6 +15,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { OptionsService } from "../options/options.service";
 import { ProjectsService } from "../projects/projects.service";
 import { RunConfigurationService } from "../run-configuration/run-configuration.service";
+import { VerdictService } from "../verdict/verdict.service";
 
 import { EMPTY_TRACE_REPORT } from "./plugin.constants";
 import { PluginService } from "./plugin.service";
@@ -100,6 +101,9 @@ describe(PluginService, () => {
         // configuration a run resolves is the thing several cases below pin,
         // and a stub of it would pin the stub instead.
         RunConfigurationService,
+        // The real one, over the mocked `ProjectReportsService`: the verdicts
+        // below are its output, and a stub of it would pin the stub instead.
+        VerdictService,
       ],
     }));
   });
@@ -176,9 +180,11 @@ describe(PluginService, () => {
         ProjectsService,
       ],
       providers: [
-        OptionsService, // The real one, over the mocked `ConfigurationService` beside it: what
-        // configuration a run resolves is the thing several cases below pin, // and a stub of it would pin the stub instead.
+        OptionsService,
+        // The real one, over the mocked `ConfigurationService` beside it.
         RunConfigurationService,
+        // The real one, over the mocked `ProjectReportsService` beside it.
+        VerdictService,
       ],
     });
 
@@ -934,6 +940,125 @@ describe(PluginService, () => {
       expect(configurationService.loadConfigurationFile).toHaveBeenCalledWith({
         configurationPath: "elsewhere.ts",
       });
+    });
+  });
+
+  describe("runGateBatch", () => {
+    const TASKS = [
+      {
+        directories: ["packages/alpha", "packages/beta"],
+        id: "alpha:callidescope-restrict",
+        judgedProjectNames: ["packages/alpha"],
+      },
+      {
+        directories: ["packages/beta"],
+        id: "beta:callidescope-restrict",
+        judgedProjectNames: ["packages/beta"],
+      },
+    ];
+
+    beforeEach(() => {
+      stubOutcome({ callableCount: 143, deepStacks: [], wideCallables: [] });
+      markdownReportService.renderFindings.mockReturnValue("## Findings");
+      callidescopeService.trace.mockClear();
+    });
+
+    it("traces the union of every task's directories once", async () => {
+      expect.hasAssertions();
+
+      await service.runGateBatch({
+        configurationPath: CONFIGURATION_PATH,
+        tasks: TASKS,
+        workspaceRoot: "/workspace",
+      });
+
+      // One trace for the batch is the whole point: each task used to trace
+      // the same workspace on its own.
+      expect(callidescopeService.trace).toHaveBeenCalledTimes(1);
+      expect(callidescopeService.trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          directories: ["packages/alpha", "packages/beta"],
+        }),
+      );
+    });
+
+    it("gives each task a verdict from the projects it alone judges", async () => {
+      expect.hasAssertions();
+
+      // Only `beta` owns a finding, so only `beta`'s task may fail: a breach
+      // found by the shared trace must never fail a task that did not own it.
+      projectReportsService.findOwnedFindings.mockImplementation(
+        ({ projectNames }) => {
+          return projectNames.includes("packages/beta")
+            ? {
+                deepStacks: [createMock<DeepStackFinding>()],
+                wideCallables: [],
+              }
+            : { deepStacks: [], wideCallables: [] };
+        },
+      );
+
+      const results = await service.runGateBatch({
+        configurationPath: CONFIGURATION_PATH,
+        tasks: TASKS,
+        workspaceRoot: "/workspace",
+      });
+
+      expect(results["alpha:callidescope-restrict"]?.ok).toBe(true);
+      expect(results["beta:callidescope-restrict"]?.ok).toBe(false);
+    });
+
+    it("fails only the task whose own project went unread", async () => {
+      expect.hasAssertions();
+
+      projectReportsService.findUnreadProjects.mockImplementation(
+        ({ projectNames }) => {
+          return projectNames.filter((name) => name === "packages/alpha");
+        },
+      );
+
+      const results = await service.runGateBatch({
+        configurationPath: CONFIGURATION_PATH,
+        tasks: TASKS,
+        workspaceRoot: "/workspace",
+      });
+
+      expect(results["alpha:callidescope-restrict"]?.ok).toBe(false);
+      expect(results["alpha:callidescope-restrict"]?.report).toContain(
+        "Read nothing of its own",
+      );
+      expect(results["beta:callidescope-restrict"]?.ok).toBe(true);
+    });
+
+    it("fails every task when the shared run read no code at all", async () => {
+      expect.hasAssertions();
+
+      stubOutcome({ callableCount: 0, deepStacks: [], wideCallables: [] });
+
+      const results = await service.runGateBatch({
+        configurationPath: CONFIGURATION_PATH,
+        tasks: TASKS,
+        workspaceRoot: "/workspace",
+      });
+
+      expect(Object.values(results).map((result) => result.ok)).toStrictEqual([
+        false,
+        false,
+      ]);
+    });
+
+    it("answers a batch of no tasks without tracing", async () => {
+      expect.hasAssertions();
+
+      await expect(
+        service.runGateBatch({
+          configurationPath: CONFIGURATION_PATH,
+          tasks: [],
+          workspaceRoot: "/workspace",
+        }),
+      ).resolves.toStrictEqual({});
+
+      expect(callidescopeService.trace).not.toHaveBeenCalled();
     });
   });
 });
