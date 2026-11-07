@@ -271,9 +271,11 @@ patterns:
   - name: database-tooling-vocabulary
     pattern: /\w*POSTGRES_DB\b/g
   # The caelundas-db library's name, which the spec fixes and which spells the
-  # banned `db` as one segment of a kebab-case project name.
+  # banned `db` as one segment of a kebab-case project name, and the identifiers
+  # the generated mermaid blocks derive from it (`caelundas_db`,
+  # `module_caelundas_db_PostgresqlModule`).
   - name: caelundas-db-project-name
-    pattern: /\bcaelundas-db\b/g
+    pattern: /\w*caelundas[-_]db\w*/g
   # Hexadecimal color literals, which can spell a banned abbreviation. Six letters with no
   # digit is an English word (`decade`, `facade`), not a color, so it stays checked.
   - name: hexadecimal-color
@@ -361,12 +363,6 @@ overrides:
   - filename: "**/configuration/codebase-structure.json"
     ignoreRegExpList:
       - /\(\?![^)]*\)/g
-  # The IAU's three-letter constellation designations are data, and two of them
-  # are banned abbreviations: Columba is `Col` and Reticulum is `Ret`. Only the
-  # quoted designations of the night sky seed are let through.
-  - filename: "**/caelundas-cli/data/night-sky-seed.sql"
-    ignoreRegExpList:
-      - /'(?:Col|Ret)'/g
 # cspell:enable
 words:
   # A headword the coinagerie singularizer or lemmatizer makes of a word the
