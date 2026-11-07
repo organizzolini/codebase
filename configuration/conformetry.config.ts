@@ -72,6 +72,12 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   integration: NEST_BASELINE,
   "projects/caelundas/caelundas-db": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-configuration": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-core": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-languages": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-nx": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-output": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-vocabulary": NEST_BASELINE,
   publication: NEST_BASELINE,
 };
 
