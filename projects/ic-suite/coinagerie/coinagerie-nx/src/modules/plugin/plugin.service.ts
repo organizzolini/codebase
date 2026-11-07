@@ -52,16 +52,13 @@ export class PluginService {
     return {
       [pluginOptions.checkTargetName]: {
         cache: true,
-        executor: "nx:run-commands",
+        executor: "@coinagerie/nx:check",
         inputs: [
           ...CONFIGURATION_FILE_NAMES.map((name) => `{projectRoot}/${name}`),
           PROJECT_FILES_INPUT,
           ...pluginOptions.inputs,
         ],
-        options: {
-          command: `${pluginOptions.command} --check`,
-          cwd: "{projectRoot}",
-        },
+        options: { command: pluginOptions.command },
       },
     };
   }

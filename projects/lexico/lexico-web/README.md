@@ -112,7 +112,7 @@ Call stacks traced through `projects/lexico/lexico-web`, deepest first. Each fra
 | Measure | Value |
 | --- | --- |
 | Callables | 137 |
-| Files | 89 |
+| Files | 90 |
 | Calls traced | 83 |
 | Call stacks | 21 |
 | Deepest stack | 6 |
@@ -389,15 +389,11 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  configuration["configuration"]
   interface["interface"]
   lexico_web["lexico-web"]
   presentation["presentation"]
-  testing["testing"]
-  lexico_web --> configuration
   lexico_web --> interface
   lexico_web --> presentation
-  lexico_web --> testing
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_web subject
 ```
@@ -412,6 +408,7 @@ graph LR
   file_codegen_ts["codegen.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_client_tsx["src/client.tsx"]
   file_src_components_adjective_forms_adjective_forms_constants_ts["src/components/adjective-forms/adjective-forms.constants.ts"]
@@ -660,21 +657,21 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-7276-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-249.00_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-7290-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-249.41_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-27-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-121-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-122-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-185.76_kB_gzip-6b7280?style=flat-square)
+![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-186.53_kB_gzip-6b7280?style=flat-square)
 ![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-51.95_kB_gzip-6b7280?style=flat-square)
 ![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.93_kB_gzip-6b7280?style=flat-square)
-![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-201.83_kB_gzip-6b7280?style=flat-square)
+![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-206.49_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-119-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-120-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-47-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-17-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-2-f97316?style=flat-square)
@@ -693,7 +690,7 @@ graph LR
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-273-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-25-059669?style=flat-square)
 ![Constants](https://img.shields.io/badge/Constants-183-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-290-0284c7?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-291-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-314-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-627-64748b?style=flat-square)
 ![Comment Lines](https://img.shields.io/badge/Comment_Lines-880-475569?style=flat-square)
@@ -717,16 +714,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-204-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-205-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-41-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-15-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-134-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-123-16a34a?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-124-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-2-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-10-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-54-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-191-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-55-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-192-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
@@ -879,296 +876,25 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run lexico-web:coinagerie-check:write`.
 
-- **abbreviation**:
-- **ablative**:
-- **accusative**:
-- **addon**:
-- **adjectival**:
-- **adjective**:
-- **advance**:
-- **adverb**:
-- **after**:
-- **align**:
-- **alt**:
-- **analysis**:
-- **answer**:
-- **aria**:
-- **array**:
-- **axe**:
-- **axi**:
-- **background**:
-- **badge**:
-- **bar**:
-- **best**:
-- **breadth**:
-- **breakpoint**:
-- **button**:
-- **call**:
-- **callback**:
-- **card**:
-- **cell**:
-- **character**:
-- **chevron**:
-- **child**:
-- **click**:
-- **collapsible**:
-- **commonj**:
-- **compare**:
-- **compiler**:
-- **compress**:
-- **compression**:
-- **condition**:
-- **conjugation**:
-- **connection**:
-- **constant**:
-- **count**:
-- **css**:
-- **custom**:
-- **dark**:
-- **dative**:
-- **dd**:
-- **debounce**:
-- **debounced**:
-- **declension**:
-- **decline**:
-- **define**:
-- **definition**:
-- **degree**:
-- **dep**:
-- **describe**:
-- **describer**:
-- **detail**:
-- **determiner**:
-- **dictionary**:
-- **disambiguator**:
-- **display**:
-- **distance**:
-- **div**:
-- **dl**:
-- **down**:
-- **each**:
-- **edge**:
-- **effect**:
-- **element**:
-- **empty**:
-- **enclitic**:
-- **english**:
-- **entry**:
-- **equal**:
-- **es**:
-- **etymology**:
-- **exact**:
-- **exactly**:
-- **extent**:
-- **favicon**:
-- **feminine**:
-- **field**:
-- **finite**:
-- **fire**:
-- **flat**:
-- **float**:
-- **focus**:
-- **follow**:
-- **footer**:
-- **foreground**:
-- **form**:
-- **fulltext**:
-- **future**:
-- **fuzzy**:
-- **gen**:
-- **gender**:
-- **genitive**:
-- **gerund**:
-- **gitkeep**:
-- **grammar**:
-- **grid**:
-- **h1**:
-- **handle**:
-- **handler**:
-- **headword**:
-- **height**:
-- **hint**:
-- **history**:
-- **href**:
-- **html**:
-- **hydrate**:
-- **icon**:
-- **identifier**:
-- **img**:
-- **imperative**:
-- **imperfect**:
-- **implicit**:
-- **incremental**:
-- **indicative**:
-- **infinitive**:
-- **inflection**:
-- **inset**:
-- **int**:
-- **invalidate**:
-- **is2**:
-- **item**:
-- **kind**:
-- **land**:
-- **landmark**:
-- **lang**:
-- **last**:
-- **latin**:
-- **least**:
-- **lemma**:
-- **length**:
-- **letter**:
-- **level**:
-- **lexeme**:
-- **lg**:
-- **li**:
-- **link**:
-- **literal**:
-- **literature**:
-- **load**:
-- **loader**:
-- **locative**:
-- **logo**:
-- **lower**:
-- **make**:
-- **masculine**:
-- **math**:
-- **maximum**:
-- **maybe**:
-- **md**:
-- **measure**:
-- **memo**:
-- **menu**:
-- **meta**:
-- **method**:
-- **metric**:
-- **millisecond**:
-- **mix**:
-- **mock**:
-- **mood**:
-- **narrow**:
-- **native**:
-- **navigate**:
-- **navigation**:
-- **neuter**:
-- **nominal**:
-- **nominative**:
-- **non**:
-- **normalize**:
-- **noun**:
-- **nullable**:
-- **nullish**:
-- **numeral**:
-- **omit**:
-- **once**:
-- **optional**:
-- **original**:
-- **other**:
-- **outlet**:
-- **parameter**:
-- **part**:
-- **partial**:
-- **participle**:
-- **passive**:
-- **pathname**:
-- **perfect**:
-- **person**:
-- **phoneme**:
-- **phonemic**:
-- **phonetic**:
-- **pick**:
-- **pluperfect**:
-- **plural**:
-- **popover**:
-- **position**:
-- **preload**:
-- **preposition**:
-- **present**:
-- **presentation**:
-- **prevent**:
-- **preview**:
-- **previous**:
-- **principal**:
-- **promise**:
-- **pronoun**:
-- **pronunciation**:
-- **proper**:
-- **punctuation**:
-- **ql**:
-- **redirect**:
-- **refine**:
-- **reject**:
-- **rel**:
-- **remove**:
-- **replace**:
-- **rerender**:
-- **resolution**:
-- **restoration**:
-- **reverse**:
-- **ring**:
-- **role**:
-- **rolldown**:
-- **route**:
-- **scalar**:
-- **scan**:
-- **score**:
-- **screen**:
-- **scroll**:
-- **search**:
-- **second**:
-- **section**:
-- **selection**:
-- **selector**:
-- **sidebar**:
-- **singular**:
-- **slice**:
-- **slug**:
-- **some**:
-- **sourcemap**:
-- **span**:
-- **speech**:
-- **spinner**:
-- **split**:
-- **ssr**:
-- **stack**:
-- **stand**:
-- **statement**:
-- **strict**:
-- **stringify**:
-- **stub**:
-- **sub**:
-- **subjunctive**:
-- **submit**:
-- **supine**:
-- **synthetic**:
-- **tab**:
-- **tan**:
-- **testid**:
-- **text**:
-- **third**:
-- **threshold**:
-- **timer**:
-- **toggle**:
-- **tooltip**:
-- **transform**:
-- **transition**:
-- **translation**:
-- **trim**:
-- **typename**:
-- **ul**:
-- **uninflected**:
-- **uniq**:
-- **unstub**:
-- **validator**:
-- **variable**:
-- **variant**:
-- **verb**:
-- **vi**:
-- **viewport**:
-- **visible**:
-- **vocative**:
-- **voice**:
-- **wide**:
-- **width**:
-- **xl**:
+- **alt**: Alternate text on the Lexico logo image, so screen readers announce the brand name rather than the file.
+- **breadth**: Callidescope measure of how many callees one frame fans out to, bounded by maximumBreadth in each project's config.
+- **degree**: Comparison grade of an adjective or adverb, such as positive, shown in lexeme inflection data and header details.
+- **dictionary**: Latin reference the app searches in Latin and English, shown as the sidebar brand and as each lexeme entry.
+- **disambiguator**: Float field on GraphQL search results giving a numeric index that tells apart lexemes sharing a headword.
+- **element**: Generic DOM node in tests, such as a found link whose href is checked to confirm navigation to a route.
+- **fire**: Test verb: fireEvent dispatches a DOM event, such as click or focus, on an element rendered under test.
+- **grammar**: Word in code comments naming grammar-book conventions, such as the short labels and case order in form tables.
+- **headword**: Dictionary entry's main Latin form, the lemma a search matches exactly, shown as exact-headword in match kinds.
+- **letter**: Count of extra letters in a fuzzy headword match, shown in the tooltip for a prefix match beyond the query.
+- **lexeme**: Dictionary entry for one headword with its forms, pronunciations and etymology, the core record every card shows.
+- **literature**: GraphQL type for literature search results, present in generated mocks and operations but not yet rebuilt as a page.
+- **perfect**: Verb tense name for the perfect, abbreviated PERF in identifiers and listed among the finite verb tenses.
+- **presentation**: Shared component library package @codebase/presentation, built on shadcn/ui, supplying Card, Badge, Tabs and Button.
+- **pronunciation**: Spoken form of a lexeme, a list of phonetic variants with their variant label, rendered in the lexeme pronunciations section.
+- **role**: ARIA role attribute set to navigation on the application sidebar and to search on the search bar form.
+- **selector**: Not used in lexico-web source; tests find elements by role and test id rather than through any selector abstraction.
+- **translation**: English or Latin rendering of a lexeme, listed as bullets by LexemeTranslations and matched by search.
+- **verb**: Part of speech whose forms render as a conjugation table, routed to the VerbForms component when partOfSpeech is verb.
+- **visible**: Tailwind overflow-visible class on the search bar card, so content can extend past the card edges.
 
 <!-- coinagerie:end -->

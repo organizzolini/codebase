@@ -32,4 +32,4 @@ same wherever you start it.
 
 ## Next
 
-[folding](../folding/README.md) — merge word forms into one headword.
+[exclusion-patterns](../exclusion-patterns/README.md) — leave out a family of words with a pattern.

@@ -21,7 +21,6 @@ export {
   prepositionCases,
   verbConjugationValues,
 } from "./modules/database/database.constants";
-export { LexicoNamingStrategy } from "./modules/database/database.constants";
 export {
   DatabaseModule,
   DatabaseModule as LexicoDatabaseModule,

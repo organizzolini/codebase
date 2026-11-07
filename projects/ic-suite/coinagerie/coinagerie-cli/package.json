@@ -15,6 +15,8 @@
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:ic-suite",
     "nest-commander": "catalog:",
+    "pino": "catalog:",
+    "pino-pretty": "catalog:",
     "reflect-metadata": "catalog:",
     "zod": "catalog:"
   },
@@ -36,6 +38,12 @@
     ".": "./src/index.ts",
     "./package.json": "./package.json"
   },
+  "files": [
+    "CHANGELOG.md",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "homepage": "https://github.com/organizzolini/codebase/tree/main/projects/ic-suite/coinagerie/coinagerie-cli#readme",
   "keywords": [
     "cli",
@@ -46,7 +54,22 @@
   "license": "MIT",
   "main": "src/index.ts",
   "name": "@coinagerie/cli",
-  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "bin": {
+      "coinagerie": "./dist/src/coinagerie-cli.main.js"
+    },
+    "exports": {
+      ".": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/src/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/src/index.js",
+    "registry": "https://registry.npmjs.org",
+    "types": "./dist/src/index.d.ts"
+  },
   "repository": {
     "directory": "projects/ic-suite/coinagerie/coinagerie-cli",
     "type": "git",
@@ -58,5 +81,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.0"
+  "version": "0.0.8"
 }

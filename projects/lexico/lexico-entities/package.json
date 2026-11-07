@@ -5,17 +5,14 @@
     "@nestjs/common": "catalog:",
     "@nestjs/typeorm": "catalog:",
     "pg": "catalog:",
-    "pluralize": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
     "typeorm": "catalog:",
-    "typeorm-naming-strategies": "catalog:",
     "vitest": "catalog:"
   },
   "devDependencies": {
     "@nestjs/testing": "catalog:",
     "@types/node": "catalog:",
-    "@types/pluralize": "catalog:",
     "typescript": "catalog:"
   },
   "exports": {
