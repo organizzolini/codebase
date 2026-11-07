@@ -270,12 +270,11 @@ patterns:
   # applications prefix.
   - name: database-tooling-vocabulary
     pattern: /\w*POSTGRES_DB\b/g
-  # The caelundas-db library's name, which the spec fixes and which spells the
-  # banned `db` as one segment of a kebab-case project name, and the identifiers
-  # the generated mermaid blocks derive from it (`caelundas_db`,
-  # `module_caelundas_db_PostgresqlModule`).
-  - name: caelundas-db-project-name
-    pattern: /\w*caelundas[-_]db\w*/g
+  # A database library's name, such as `caelundas-db` or `lexico-db`, which spells
+  # the banned `db` as the last segment of a kebab-case project name, and as a
+  # snake-case identifier, with any prefix or suffix, in the generated Mermaid graphs.
+  - name: database-project-name
+    pattern: /\w*[a-z]+[-_]db(?![a-z])\w*/g
   # Hexadecimal color literals, which can spell a banned abbreviation. Six letters with no
   # digit is an English word (`decade`, `facade`), not a color, so it stays checked.
   - name: hexadecimal-color
@@ -329,7 +328,7 @@ ignoreRegExpList:
   - typeorm-constraint-identifier
   - jsdoc-parameter-tag
   - database-tooling-vocabulary
-  - caelundas-db-project-name
+  - database-project-name
   - hexadecimal-color
   - lint-rule-name
   - external-identifier
