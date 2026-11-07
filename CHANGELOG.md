@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.58.1](https://github.com/organizzolini/codebase/compare/v3.58.0...v3.58.1) (2026-11-07)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 ignore any database library name in spell-check ([#2183](https://github.com/organizzolini/codebase/issues/2183)) ([638d741](https://github.com/organizzolini/codebase/commit/638d74156f580ec8dc043d58a45b2ac43c71681f)), closes [#2182](https://github.com/organizzolini/codebase/issues/2182)
+
 ## [3.58.0](https://github.com/organizzolini/codebase/compare/v3.57.0...v3.58.0) (2026-11-06)
 
 ### ✨ Features
