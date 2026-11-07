@@ -67,11 +67,11 @@ const COMMAND_PROJECT_BASELINE = 795 / 798;
  */
 const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   compliance: NEST_BASELINE,
-  "projects/caelundas/caelundas-db": NEST_BASELINE,
-  "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
   documentation: NEST_BASELINE,
   installation: NEST_BASELINE,
   integration: NEST_BASELINE,
+  "projects/caelundas/caelundas-db": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
   publication: NEST_BASELINE,
   synchronization: NEST_BASELINE,
 };
