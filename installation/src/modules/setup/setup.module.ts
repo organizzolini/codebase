@@ -6,6 +6,7 @@ import { DependenciesModule } from "../dependencies/dependencies.module";
 import { EnvironmentFilesModule } from "../environment-files/environment-files.module";
 import { LocalServicesModule } from "../local-services/local-services.module";
 import { ProcessRunnerModule } from "../process-runner/process-runner.module";
+import { RemoteCacheModule } from "../remote-cache/remote-cache.module";
 import { ReporterModule } from "../reporter/reporter.module";
 import { ShellConfigurationModule } from "../shell-configuration/shell-configuration.module";
 import { SoftwareModule } from "../software/software.module";
@@ -23,6 +24,7 @@ import { SetupService } from "./setup.service";
     LocalServicesModule,
     LoggerModule,
     ProcessRunnerModule,
+    RemoteCacheModule,
     ReporterModule,
     ShellConfigurationModule,
     SoftwareModule,

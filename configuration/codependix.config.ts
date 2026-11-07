@@ -90,7 +90,7 @@ const codependixConfiguration: CodependixConfiguration = {
    *
    * The ic-suite rules are stated twice on purpose, and the two statements
    * catch different mistakes. Five generic rules keyed on `layer:*` say the
-   * spine once for all four toolchains — a layer reaches its own layer and
+   * spine once for all five toolchains — a layer reaches its own layer and
    * every layer beneath it — and gate a package nobody wrote a name rule for.
    * The per-package `name:*` rules below them stay, and catch what a generic
    * rule waves through: a package tagged into the wrong layer, and a

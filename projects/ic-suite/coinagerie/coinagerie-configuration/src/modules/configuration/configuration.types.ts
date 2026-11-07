@@ -31,8 +31,10 @@ export interface CoinagerieExclusions {
   /**
    * Words left out of the glossary, as a list or as a function returning one,
    * synchronously or not — the function is where a configuration reads
-   * whatever else it wants to exclude. Exclusion applies after folding, so
-   * excluding `service` also covers `services`. Defaults to none.
+   * whatever else it wants to exclude. A string leaves out that exact word.
+   * A regular expression leaves out every word it matches, tested against the
+   * lowercase word and against its folded headword. Exclusion applies after
+   * folding, so excluding `service` also covers `services`. Defaults to none.
    */
   words?: ExcludedWords | undefined;
 }
@@ -84,8 +86,24 @@ export interface ConfigurationOverrides {
   outputMarkdown?: string | undefined;
 }
 
-/** A list of words, or a function that returns one. */
-export type ExcludedWords = (() => Promise<string[]> | string[]) | string[];
+/** The entries of `exclude.words`, split into exact words and patterns. */
+export interface ExcludedEntries {
+  /**
+   * Every regular expression entry, copied without its `g` and `y` flags:
+   * those make `test` stateful, so a pattern would match a word on one call
+   * and miss it on the next.
+   */
+  patterns: RegExp[];
+  words: string[];
+}
+
+/** One entry of `exclude.words`: an exact word, or a pattern matching many. */
+export type ExcludedWord = RegExp | string;
+
+/** A list of excluded words or patterns, or a function that returns one. */
+export type ExcludedWords =
+  | (() => ExcludedWord[] | Promise<ExcludedWord[]>)
+  | ExcludedWord[];
 
 /** A function from a word to the headword it is folded into. */
 export type FoldWord = (word: string) => string;
@@ -104,11 +122,11 @@ export interface LoadConfigurationArguments {
   workingDirectory: string;
 }
 
-/** What reading a configuration file yields: its export and its excluded words. */
+/** What reading a configuration file yields: its export and its excluded entries. */
 export interface LoadedConfiguration {
   configuration: CoinagerieConfiguration;
-  /** `exclude.words` once any function in it has been called. */
-  words: string[];
+  /** `exclude.words` once any function in it has been called, split. */
+  excluded: ExcludedEntries;
 }
 
 /**
@@ -123,8 +141,11 @@ export interface ResolvedCoinagerieConfiguration {
   /** The root the run scans: the configuration file's folder, or the
    * working directory when there is no file. */
   directory: string;
-  /** `words` is the resolved list: a function in the file has been called. */
-  exclude: { paths: string[]; words: string[] };
+  /**
+   * `words` and `patterns` are resolved: a function in the file has been
+   * called, and every entry is either an exact word or a pattern.
+   */
+  exclude: { paths: string[]; patterns: RegExp[]; words: string[] };
   /**
    * The configured fold, wrapped so that a throw or an empty or non-string
    * result raises an `InvalidConfigurationError` naming the file; `undefined`

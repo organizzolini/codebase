@@ -439,58 +439,7 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-core:coinagerie-check:write`.
 
-- **actual**:
-- **adapter**:
-- **after**:
-- **breadth**:
-- **bug**:
-- **capture**:
-- **compile**:
-- **compiler**:
-- **constant**:
-- **controller**:
-- **count**:
-- **decorator**:
-- **define**:
-- **definition**:
-- **describe**:
-- **descriptor**:
-- **difference**:
-- **each**:
-- **entry**:
-- **equal**:
-- **experimental**:
-- **fake**:
-- **filename**:
-- **filesystem**:
-- **gitkeep**:
-- **homepage**:
-- **injectable**:
-- **instance**:
-- **inventoried**:
-- **java**:
-- **least**:
-- **make**:
-- **maximum**:
-- **meta**:
-- **metric**:
-- **mock**:
-- **ok**:
-- **pair**:
-- **payload**:
-- **promise**:
-- **publish**:
-- **ratio**:
-- **real**:
-- **resolution**:
-- **score**:
-- **strict**:
-- **substitution**:
-- **synthetic**:
-- **threshold**:
-- **timer**:
-- **validator**:
-- **vi**:
-- **weight**:
+- **breadth**: The number of distinct callees one callable calls directly, which callidescope gates in each project; core reports none, since it only declares types.
+- **inventoried**: Discovered and paired as an instance or template, such as the InventoriedInstance and InventoriedPairing types carry them.
 
 <!-- coinagerie:end -->

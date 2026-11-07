@@ -1,6 +1,9 @@
 import {
+  commonWordExclusions,
+  externalWordExclusions,
   foldRepositoryWord,
   keywordExclusions,
+  patternExclusions,
 } from "./configuration/coinagerie.config.js";
 
 import type { CoinagerieConfiguration } from "@coinagerie/configuration";
@@ -27,6 +30,7 @@ export default {
       // Editor settings name the editor's vocabulary, not this repository's.
       ".vscode/**",
       // Folders that are projects.
+      "compliance/**",
       "configuration/**",
       "documentation/**",
       "infrastructure/**",
@@ -40,7 +44,12 @@ export default {
       "docs/**",
       "openwiki/**",
     ],
-    words: keywordExclusions,
+    words: [
+      ...keywordExclusions,
+      ...commonWordExclusions,
+      ...externalWordExclusions,
+      ...patternExclusions,
+    ],
   },
   fold: foldRepositoryWord,
   outputs: [

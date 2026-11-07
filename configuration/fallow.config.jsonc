@@ -8,9 +8,7 @@
   },
   "duplicates": {
     "crossLanguage": true,
-    "ignore": [
-      "projects/**/src/modules/*-database/migrations/**/*.ts",
-    ],
+    "ignore": ["projects/**/src/modules/*-database/migrations/**/*.ts"],
     "ignoreDefaults": true,
     "ignoreImports": true,
     "minLines": 12,
@@ -31,9 +29,9 @@
   ],
   "entry": [
     "**/scripts/**/*.{js,mjs,ts,sh}",
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/index.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/src/index.ts",
     // The one file each application bootstraps from, named for its project.
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/*.main.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/src/*.main.ts",
     // Vendored shadcn and ReUI source in components, written by `shadcn add`
     // and mostly not imported by anything yet. Each file is an entry point so
     // none reads as unused, and the packages it imports still count as used —
@@ -41,19 +39,19 @@
     "projects/common/presentation/src/components/**/*.{ts,tsx}",
     "projects/common/presentation/src/hooks/**/*.{ts,tsx}",
     "projects/common/presentation/src/lib/**/*.ts",
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/modules/**/*.module.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/src/modules/**/*.module.ts",
     // Nx resolves these from executors.json and generators.json, which is not
     // an import, so nothing reaches them through the module graph.
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/executors/**/executor.ts",
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/generators/**/generator.ts",
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/generators.ts",
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/*.repl.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/src/executors/**/executor.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/src/generators/**/generator.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/src/generators.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/src/*.repl.ts",
     // A worker thread's entry point is spawned by URL, never imported.
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/worker.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/src/worker.ts",
     // So is a browser Web Worker's, which the bundler emits from the
     // `new Worker(new URL(…))` that starts it.
     "projects/**/src/**/*.worker.ts",
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/testing/**/*.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/testing/**/*.ts",
     // conformetry-examples: every example is read and run rather than imported,
     // so nothing in the module graph reaches one. knip names the same paths in
     // its own entry list for the same reason.
@@ -61,13 +59,13 @@
     // codometer finds these by walking up from the project it is measuring,
     // never by importing them, so nothing in the module graph reaches one.
     // knip names the root file in its own entry list for the same reason.
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/codometer.config.cjs",
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/codometer.config.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/codometer.config.cjs",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/codometer.config.ts",
     "codometer.config.ts",
     // coinagerie reads a configuration by name from the folder a run starts
     // in, so nothing in the module graph reaches one either: one per project,
     // and the root file that writes the root glossary.
-    "{projects/**,documentation,infrastructure,installation,integration,publication,synchronization,validation}/coinagerie.config.ts",
+    "{projects/**,compliance,documentation,infrastructure,installation,integration,publication,synchronization,validation}/coinagerie.config.ts",
     "coinagerie.config.ts",
     // Read by the codometer command line, one per documented behavior, and
     // reached by nothing in the module graph for the same reason.
@@ -76,12 +74,12 @@
     // resolves one beside every project it traces, by name, never by import.
     // The workspace file this repository passes with `--config` sits under
     // `configuration/` and is already covered by the entry below.
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/callidescope.config.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/callidescope.config.ts",
     // A project's own codependix configuration, found the same way: a run
     // resolves one beside every project it maps, by name, never by import.
     // The workspace file this repository passes with `--config` sits under
     // `configuration/` and is already covered by the entry below.
-    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/codependix.config.ts",
+    "{projects/**,compliance,documentation,installation,integration,publication,synchronization,validation}/codependix.config.ts",
     "configuration/**",
     // Every fixture in the callidescope examples package exists to be traced,
     // not imported — an orphan-root fixture is *defined* by having no caller.
@@ -96,6 +94,8 @@
     "projects/lexico/lexico-web/src/client.tsx",
     "projects/lexico/lexico-web/src/routeTree.gen.ts",
     "projects/lexico/lexico-web/src/router.tsx",
+    "projects/caelundas/caelundas-db/src/modules/caelundas-database/data-source.constants.ts",
+    "projects/caelundas/caelundas-db/src/modules/caelundas-database/migrations/**/*.ts",
     "projects/caelundas/caelundas-cli/src/modules/database/migrations/**/*.ts",
     "projects/lexico/lexico-entities/src/modules/database/migrations/**/*.ts",
     "projects/meanderaw/meanderaw-cli/src/modules/database/migrations/**/*.ts",
@@ -252,7 +252,7 @@
   "ignorePatterns": [
     // pnpm-workspace.yaml's `projects/*` glob matches every direct child of
     // `projects/`, including the pure grouping folders that hold no
-    // package.json of their own — `projects/ic-suite` nests the four IC-suite
+    // package.json of their own — `projects/ic-suite` nests the five IC-suite
     // toolchains, and `projects/caelundas`, `projects/lexico`, and
     // `projects/meanderaw` each nest one domain's projects. Their projects are
     // matched by separate, more specific patterns.

@@ -1,3 +1,87 @@
+## 0.0.72 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.72
+- Updated conformetry-generation to 0.0.72
+- Updated conformetry-validation to 0.0.71
+- Updated conformetry-output to 0.0.71
+- Updated conformetry-core to 0.0.70
+
+## 0.0.71 (2026-11-06)
+
+### 🚀 Features
+
+- **compliance,configuration,documentation:** ✨ migrate external-resource commands ([#2058](https://github.com/organizzolini/codebase/pull/2058), [#1980](https://github.com/organizzolini/codebase/issues/1980))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.71
+- Updated conformetry-generation to 0.0.71
+- Updated conformetry-validation to 0.0.70
+- Updated conformetry-output to 0.0.70
+- Updated conformetry-core to 0.0.69
+
+## 0.0.70 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.70
+- Updated conformetry-generation to 0.0.70
+- Updated conformetry-validation to 0.0.69
+- Updated conformetry-output to 0.0.69
+- Updated conformetry-core to 0.0.68
+
+## 0.0.69 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.69
+- Updated conformetry-generation to 0.0.69
+- Updated conformetry-validation to 0.0.68
+- Updated conformetry-output to 0.0.68
+- Updated conformetry-core to 0.0.67
+
+## 0.0.68 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.68
+- Updated conformetry-generation to 0.0.68
+- Updated conformetry-validation to 0.0.67
+- Updated conformetry-output to 0.0.67
+- Updated conformetry-core to 0.0.66
+
+## 0.0.67 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.67
+- Updated conformetry-generation to 0.0.67
+- Updated conformetry-validation to 0.0.66
+- Updated conformetry-output to 0.0.66
+- Updated conformetry-core to 0.0.65
+
+## 0.0.66 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.66
+- Updated conformetry-generation to 0.0.66
+- Updated conformetry-validation to 0.0.65
+- Updated conformetry-output to 0.0.65
+- Updated conformetry-core to 0.0.64
+
+## 0.0.65 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.65
+- Updated conformetry-generation to 0.0.65
+- Updated conformetry-validation to 0.0.64
+- Updated conformetry-output to 0.0.64
+- Updated conformetry-core to 0.0.63
+
 ## 0.0.64 (2026-11-04)
 
 ### 🧱 Updated Dependencies

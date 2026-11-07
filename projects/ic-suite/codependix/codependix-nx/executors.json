@@ -2,8 +2,10 @@
   "$schema": "../../../../node_modules/nx/schemas/executors.json",
   "executors": {
     "gate": {
+      "batchImplementation": "@codependix/nx/src/executors/gate/batch-executor",
       "description": "Fail a project whose dependency graphs break a codependix boundary rule charged to it, built over the project and its Nx dependencies.",
       "implementation": "@codependix/nx/src/executors/gate/executor",
+      "preferBatch": true,
       "schema": "./src/executors/gate/schema.json"
     }
   }

@@ -310,8 +310,8 @@ tool's other `--check` name is its own gating word — `depth`, `limits`,
 
 ## IC-Suite Layers
 
-The four ic-suite toolchains — conformetry, codometer, callidescope, and
-codependix — will share one five-layer spine, each layer depending only
+The five ic-suite toolchains — conformetry, codometer, callidescope,
+codependix, and coinagerie — will share one five-layer spine, each layer depending only
 downward, plus an optional `nx` plugin layer above `cli` where one exists
 (callidescope, codependix, and conformetry). This pull request lands the vocabulary
 first, by design: the `layer:*` tags below arrive with each toolchain's own
@@ -320,13 +320,13 @@ pull request, not with this one, so no package carries one yet. See
 decides layer membership, the rejected alternative, and the no-shared-package
 constraint.
 
-| Layer | Tag | Holds | Never holds |
-| --- | --- | --- | --- |
-| **core** | `layer:core` | Domain vocabulary only: result and finding types, error classes, shared enums and unions, analyzer and validator contracts | Services, modules, anything executable |
-| **configuration** | `layer:configuration` | The config file's schema, loading, defaults, and override resolution, **plus CLI flag resolution**, producing one resolved configuration object | Domain result types |
-| **analysis** | `layer:analysis` | What the tool actually does. Per-suite names and per-suite shape | Rendering, command wiring |
-| **output** | `layer:output` | Every render target: JSON, markdown, mermaid, anchor blocks, destination routing, delivery | Analysis |
-| **cli** | `layer:cli` | `*.command.ts` modules and nothing else | Any logic |
+| Layer             | Tag                   | Holds                                                                                                                                           | Never holds                            |
+| ----------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| **core**          | `layer:core`          | Domain vocabulary only: result and finding types, error classes, shared enums and unions, analyzer and validator contracts                      | Services, modules, anything executable |
+| **configuration** | `layer:configuration` | The config file's schema, loading, defaults, and override resolution, **plus CLI flag resolution**, producing one resolved configuration object | Domain result types                    |
+| **analysis**      | `layer:analysis`      | What the tool actually does. Per-suite names and per-suite shape                                                                                | Rendering, command wiring              |
+| **output**        | `layer:output`        | Every render target: JSON, markdown, mermaid, anchor blocks, destination routing, delivery                                                      | Analysis                               |
+| **cli**           | `layer:cli`           | `*.command.ts` modules and nothing else                                                                                                         | Any logic                              |
 
 **Core-versus-configuration test**:
 Whether a type belongs in `core` or `configuration`: if it describes what the
@@ -341,8 +341,8 @@ layer tag; neither is in the runtime chain.
 ## Publishing
 
 **Suite**:
-One of the four toolchains this repository publishes — conformetry, codometer,
-callidescope, codependix — named for the command a reader runs. A suite is a
+One of the five toolchains this repository publishes — conformetry, codometer,
+callidescope, codependix, coinagerie — named for the command a reader runs. A suite is a
 product, not a directory: its packages version independently but are documented
 and discovered as one thing.
 _Avoid_: Toolchain family, package group, monorepo project

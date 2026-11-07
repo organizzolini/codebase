@@ -247,25 +247,25 @@ What this project is judged against, as declared in its own `callidescope.config
 **1. `GenerationService.listDirectory`** — depth 2 · orphan-root
 
 ```text
-🚀 GenerationService.listDirectory(directoryPath: string): Promise<DirectoryEntry[]> [projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:38]
-  └─> GenerationService.map(…)(entry: Dirent<string>): { isDirectory: boolean; name: string; } [projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:41]
+🚀 GenerationService.listDirectory(directoryPath: string): Promise<DirectoryEntry[]> [projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:40]
+  └─> GenerationService.map(…)(entry: Dirent<string>): { isDirectory: boolean; name: string; } [projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:43]
 ```
 
 ### Breadth
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `GenerationService.runGenerator` | 4 | `GenerationService.resolveAdapters`, `GenerationService.normalizeInputs`, `GenerationService.buildSubstitutions`, `GenerationService.renderDirectory` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:190` |
-| `GenerationService.renderDirectory` | 2 | `ConfigurationService.renderPath`, `GenerationService.renderFile` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:104` |
-| `GenerationService.listDirectory` | 1 | `GenerationService.map(…)` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:38` |
+| `GenerationService.runGenerator` | 4 | `GenerationService.resolveAdapters`, `GenerationService.normalizeInputs`, `GenerationService.buildSubstitutions`, `GenerationService.renderDirectory` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:193` |
+| `GenerationService.renderDirectory` | 2 | `ConfigurationService.renderPath`, `GenerationService.renderFile` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:106` |
+| `GenerationService.listDirectory` | 1 | `GenerationService.map(…)` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:40` |
 
 <details>
 <summary>2 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `GenerationService.buildSubstitutions` | 1 | `ConfigurationService.buildNameSubstitutions` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:74` |
-| `GenerationService.renderFile` | 1 | `ConfigurationService.renderContent` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:153` |
+| `GenerationService.buildSubstitutions` | 1 | `ConfigurationService.buildNameSubstitutions` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:76` |
+| `GenerationService.renderFile` | 1 | `ConfigurationService.renderContent` | `projects/ic-suite/conformetry/conformetry-generation/src/modules/generation/generation.service.ts:155` |
 
 </details>
 <!-- callidescope:end -->
@@ -572,62 +572,8 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-generation:coinagerie-check:write`.
 
-- **adapter**:
-- **after**:
-- **alpha**:
-- **beta**:
-- **breadth**:
-- **bug**:
-- **call**:
-- **camel**:
-- **compile**:
-- **compiler**:
-- **constant**:
-- **controller**:
-- **decorator**:
-- **define**:
-- **definition**:
-- **describe**:
-- **each**:
-- **entry**:
-- **equal**:
-- **experimental**:
-- **fake**:
-- **filesystem**:
-- **formatter**:
-- **gamma**:
-- **generation**:
-- **gitkeep**:
-- **homepage**:
-- **injectable**:
-- **instance**:
-- **java**:
-- **kebab**:
-- **least**:
-- **make**:
-- **maximum**:
-- **meta**:
-- **metric**:
-- **mock**:
-- **normalize**:
-- **pascal**:
-- **promise**:
-- **provide**:
-- **publish**:
-- **readdir**:
-- **real**:
-- **receive**:
-- **recursive**:
-- **reject**:
-- **resolution**:
-- **snake**:
-- **sort**:
-- **spy**:
-- **strict**:
-- **substitution**:
-- **synthetic**:
-- **temporary**:
-- **timer**:
-- **vi**:
+- **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
+- **gamma**: Third placeholder input in the generation unit test, kept in the hook input while beta is dropped.
+- **generation**: Runtime phase that walks a template tree, renders every path and file, and writes the instance output.
 
 <!-- coinagerie:end -->

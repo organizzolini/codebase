@@ -2,8 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { postgresEnvironmentKeys } from "@codebase/persistence";
 
-import { LexicoNamingStrategy } from "./database.constants";
-
 import type { DataSourceOptions } from "typeorm";
 
 /**
@@ -86,7 +84,7 @@ describe("lexico data source", () => {
     });
   });
 
-  it("never synchronizes or runs migrations, and keeps lexico's naming strategy", async () => {
+  it("never synchronizes or runs migrations, and keeps the plural snake-case naming strategy", async () => {
     const options = await loadDataSourceOptions();
 
     expect(options.synchronize).toBe(false);
@@ -94,8 +92,11 @@ describe("lexico data source", () => {
     expect(options.migrations).toStrictEqual([
       "src/modules/database/migrations/*.ts",
     ]);
-    expect(options.namingStrategy?.constructor.name).toBe(
-      LexicoNamingStrategy.name,
+    expect(options.namingStrategy?.tableName("CalendarEvent", "")).toBe(
+      "calendar_events",
     );
+    expect(
+      options.namingStrategy?.joinTableName("words", "lexemes", "", ""),
+    ).toBe("lexemes_words");
   });
 });
