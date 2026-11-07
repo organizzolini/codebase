@@ -11,10 +11,11 @@ import {
   vi,
 } from "vitest";
 
+import gateBatchExecutor from "./batch-executor";
 import gateExecutor from "./executor";
 
 import type { GateExecutorOptions } from "./executor.types";
-import type { ExecutorContext } from "@nx/devkit";
+import type { ExecutorContext, TaskGraph } from "@nx/devkit";
 
 /**
  * Where fixture workspaces are written: inside this package, never the
@@ -149,6 +150,39 @@ describe("gate executor against a fixture workspace", () => {
     );
   }
 
+  /** Runs the real batch executor over one task per named project. */
+  async function runBatch(
+    projectNames: string[],
+  ): Promise<Record<string, { success: boolean; terminalOutput: string }>> {
+    const taskGraph: TaskGraph = {
+      continuousDependencies: {},
+      dependencies: {},
+      roots: [],
+      tasks: Object.fromEntries(
+        projectNames.map((project) => [
+          `${project}:codependix-bound`,
+          {
+            cache: true,
+            id: `${project}:codependix-bound`,
+            outputs: [],
+            overrides: {},
+            parallelism: true,
+            target: { project, target: "codependix-bound" },
+          },
+        ]),
+      ),
+    };
+
+    return await gateBatchExecutor(
+      taskGraph,
+      Object.fromEntries(
+        projectNames.map((project) => [`${project}:codependix-bound`, {}]),
+      ),
+      {},
+      buildContext({ projectName: "a", workspaceRoot }),
+    );
+  }
+
   beforeAll(() => {
     workspaceRoot = writeFixtureWorkspace();
   });
@@ -247,5 +281,42 @@ describe("gate executor against a fixture workspace", () => {
       expect(printed).toContain("a-is-a-leaf");
     },
     RUN_TIMEOUT,
+  );
+
+  it(
+    "judges every project from one batch, failing only the one a forbidden edge leaves",
+    async () => {
+      expect.hasAssertions();
+
+      const results = await runBatch(["a", "b", "c"]);
+
+      expect(results["a:codependix-bound"]?.success).toBe(false);
+      expect(results["a:codependix-bound"]?.terminalOutput).toContain(
+        "a-is-a-leaf",
+      );
+      expect(results["b:codependix-bound"]?.success).toBe(true);
+      expect(results["c:codependix-bound"]?.success).toBe(true);
+    },
+    RUN_TIMEOUT,
+  );
+
+  it(
+    "gives each project in a batch the verdict its own gate gives it",
+    async () => {
+      expect.hasAssertions();
+
+      const batched = await runBatch(["a", "b", "c"]);
+
+      // The equivalence the batch rests on: batching changes how many times
+      // the command line starts, never what any project is told.
+      for (const projectName of ["a", "b", "c"]) {
+        const alone = await runGate({ projectName });
+
+        expect(batched[`${projectName}:codependix-bound`]?.success).toBe(
+          alone.success,
+        );
+      }
+    },
+    RUN_TIMEOUT * 2,
   );
 });

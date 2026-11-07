@@ -1,3 +1,13 @@
+# @coinagerie/nx
+
+[![npm](https://img.shields.io/npm/v/@coinagerie/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/nx)
+
+An Nx plugin that infers a coinagerie check target for every project that holds a `coinagerie.config.ts`.
+
+```bash
+npm install --save-dev @coinagerie/nx @coinagerie/cli
+```
+
 ## Usage
 
 An Nx plugin that gives every project holding a coinagerie configuration its
@@ -58,70 +68,8 @@ This project was generated from the [nestjs-service-project](../../configuration
 
 The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-nx:coinagerie-check:write`.
 
-- **abort**:
-- **absolute**:
-- **after**:
-- **alpha**:
-- **array**:
-- **assertion**:
-- **beta**:
-- **breadth**:
-- **bug**:
-- **callback**:
-- **clear**:
-- **close**:
-- **compile**:
-- **compiler**:
-- **console**:
-- **constant**:
-- **controller**:
-- **decorator**:
-- **define**:
-- **describe**:
-- **each**:
-- **entry**:
-- **equal**:
-- **experimental**:
-- **factory**:
-- **fake**:
-- **filename**:
-- **fixture**:
-- **flat**:
-- **force**:
-- **gamma**:
-- **gitkeep**:
-- **homepage**:
-- **implementation**:
-- **injectable**:
-- **instance**:
-- **least**:
-- **length**:
-- **logger**:
-- **manifest**:
-- **maximum**:
-- **meta**:
-- **mj**:
-- **mkdtemp**:
-- **mock**:
-- **non**:
-- **nullable**:
-- **posix**:
-- **promise**:
-- **real**:
-- **recursive**:
-- **relative**:
-- **remove**:
-- **resolution**:
-- **sample**:
-- **second**:
-- **slice**:
-- **sort**:
-- **spy**:
-- **strict**:
-- **synthetic**:
-- **temporary**:
-- **timer**:
-- **trim**:
-- **vi**:
+- **batch**: Group of coinagerie-check tasks Nx hands to one executor call, which starts the command line once and names every project to it.
+- **breadth**: The maximumBreadth limit in this package's callidescope.config.ts, set to four callees per callable.
+- **gamma**: A fixture package name in the plugin's unit tests, standing for a project with a project.json but no configuration.
 
 <!-- coinagerie:end -->

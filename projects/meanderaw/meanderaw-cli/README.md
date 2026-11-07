@@ -328,7 +328,7 @@ Call stacks traced through `projects/meanderaw/meanderaw-cli`, deepest first. Ea
 | Measure | Value |
 | --- | --- |
 | Callables | 819 |
-| Files | 251 |
+| Files | 252 |
 | Calls traced | 700 |
 | Call stacks | 112 |
 | Deepest stack | 16 |
@@ -3186,6 +3186,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_meanderaw_cli_constants_ts["src/meanderaw-cli.constants.ts"]
   file_src_meanderaw_cli_main_end_to_end_test_ts["src/meanderaw-cli.main.end-to-end.test.ts"]
@@ -5509,10 +5510,10 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-45788-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-45802-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-1.52_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-36-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-439-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-440-3178c6?style=flat-square)
 
 ### Measured Targets
 
@@ -5520,7 +5521,7 @@ graph LR
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-439-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-440-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-50-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-7-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
@@ -5539,7 +5540,7 @@ graph LR
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-2591-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-483-059669?style=flat-square)
 ![Constants](https://img.shields.io/badge/Constants-1329-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2589-0284c7?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2590-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-342-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-1638-64748b?style=flat-square)
 ![Comment Lines](https://img.shields.io/badge/Comment_Lines-4901-475569?style=flat-square)
@@ -5563,16 +5564,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-176-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-177-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-49-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-15-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-116-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-86-16a34a?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-87-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-9-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-40-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-160-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-41-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-161-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML
@@ -5725,581 +5726,61 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run meanderaw-cli:coinagerie-check:write`.
 
-- **0004f**:
-- **006a**:
-- **01x**:
-- **02x**:
-- **02y**:
-- **03x**:
-- **03y**:
-- **04b**:
-- **04x**:
-- **04y**:
-- **05x**:
-- **06a**:
-- **06x**:
-- **06y**:
-- **07c**:
-- **07fb**:
-- **08y**:
-- **0ba**:
-- **1125d**:
-- **12b**:
-- **1a**:
-- **233353331a**:
-- **2335635cc**:
-- **23535a**:
-- **2525251a**:
-- **255aa**:
-- **255e**:
-- **26e**:
-- **2752d**:
-- **2754c**:
-- **29ca**:
-- **2b**:
-- **35634884a**:
-- **356369a**:
-- **37375a**:
-- **396963b**:
-- **39a**:
-- **3b**:
-- **3bb**:
-- **3cc**:
-- **3f**:
-- **3fa**:
-- **4040b**:
-- **444488a**:
-- **44a**:
-- **44ad**:
-- **44ed**:
-- **4658cc**:
-- **48c**:
-- **4b**:
-- **4ca**:
-- **4eb**:
-- **5252f**:
-- **56cca**:
-- **5a**:
-- **5ab**:
-- **6354c**:
-- **6548a**:
-- **65635c**:
-- **6754488ab**:
-- **67565a**:
-- **67710abb**:
-- **69c**:
-- **71c**:
-- **7528e**:
-- **752ca**:
-- **75a**:
-- **777c**:
-- **77bb**:
-- **7b**:
-- **7fb**:
-- **7fd**:
-- **7fff**:
-- **81a**:
-- **87fb**:
-- **89a**:
-- **8a**:
-- **8c**:
-- **8cb**:
-- **93550a**:
-- **944a**:
-- **9ab**:
-- **a08**:
-- **a3**:
-- **ab**:
-- **absolute**:
-- **across**:
-- **actual**:
-- **address**:
-- **adjacency**:
-- **admit**:
-- **advance**:
-- **ae6**:
-- **after**:
-- **agree**:
-- **ain**:
-- **alef**:
-- **alike**:
-- **ao**:
-- **arabic**:
-- **arc**:
-- **arcade**:
-- **argv**:
-- **arm**:
-- **array**:
-- **arrival**:
-- **assertion**:
-- **assign**:
-- **b6**:
-- **b7**:
-- **b754**:
-- **back**:
-- **band**:
-- **bar**:
-- **bare**:
-- **batch**:
-- **beh**:
-- **below**:
-- **beside**:
-- **best**:
-- **betti**:
-- **beyond**:
-- **bite**:
-- **bl**:
-- **bootstrap**:
-- **border**:
-- **bottom**:
-- **bound**:
-- **box**:
-- **br**:
-- **breadth**:
-- **budget**:
-- **buffer**:
-- **builder**:
-- **byte**:
-- **c023**:
-- **c15**:
-- **c81**:
-- **call**:
-- **callback**:
-- **canonical**:
-- **canva**:
-- **caption**:
-- **capture**:
-- **category**:
-- **cause**:
-- **cd6**:
-- **ceil**:
-- **cell**:
-- **chain**:
-- **channel**:
-- **character**:
-- **characteristic**:
-- **choice**:
-- **chunk**:
-- **clasp**:
-- **clear**:
-- **clockwise**:
-- **close**:
-- **coalesce**:
-- **coerce**:
-- **collaborator**:
-- **collision**:
-- **color**:
-- **comb**:
-- **comment**:
-- **comparable**:
-- **compare**:
-- **compile**:
-- **compiler**:
-- **complete**:
-- **compound**:
-- **compute**:
-- **configure**:
-- **connection**:
-- **connectivity**:
-- **constant**:
-- **continuation**:
-- **controller**:
-- **coordinate**:
-- **corner**:
-- **corpus**:
-- **count**:
-- **cover**:
-- **cycle**:
-- **d9**:
-- **dal**:
-- **dalet**:
-- **dd3**:
-- **dd79**:
-- **decode**:
-- **decorator**:
-- **deep**:
-- **def2**:
-- **define**:
-- **definition**:
-- **degree**:
-- **delta**:
-- **density**:
-- **departure**:
-- **describe**:
-- **destroy**:
-- **detect**:
-- **digit**:
-- **direction**:
-- **directional**:
-- **discover**:
-- **discovery**:
-- **display**:
-- **distance**:
-- **dot**:
-- **double**:
-- **down**:
-- **draft**:
-- **draw**:
-- **driver**:
-- **e0**:
-- **e37**:
-- **each**:
-- **east**:
-- **eastward**:
-- **edge**:
-- **edges3**:
-- **element**:
-- **embed**:
-- **emitter**:
-- **encode**:
-- **entity**:
-- **entry**:
-- **enumerate**:
-- **enumeration**:
-- **equal**:
-- **evaluator**:
-- **exact**:
-- **exactly**:
-- **exp**:
-- **experimental**:
-- **extname**:
-- **f6**:
-- **factory**:
-- **fake**:
-- **family**:
-- **fe8**:
-- **feh**:
-- **field**:
-- **figure**:
-- **final**:
-- **fixture**:
-- **flag**:
-- **flat**:
-- **flip**:
-- **floor**:
-- **fork**:
-- **form**:
-- **formula**:
-- **free**:
-- **fresh**:
-- **frontier**:
-- **geometry**:
-- **gin**:
-- **gitkeep**:
-- **glyph**:
-- **greater**:
-- **greek**:
-- **grid**:
-- **hah**:
-- **half**:
-- **handler**:
-- **hangul**:
-- **hanzi**:
-- **hardcoded**:
-- **harness**:
-- **hebrew**:
-- **heh**:
-- **height**:
-- **hexadecimal**:
-- **historical**:
-- **hit**:
-- **hoist**:
-- **hold**:
-- **horizontal**:
-- **horizontally**:
-- **html**:
-- **identifier**:
-- **identity**:
-- **idx**:
-- **immediate**:
-- **implementation**:
-- **incidence**:
-- **incident**:
-- **incomplete**:
-- **infinity**:
-- **inflection**:
-- **ingest**:
-- **inject**:
-- **injectable**:
-- **ink**:
-- **instance**:
-- **int**:
-- **integer**:
-- **invalid**:
-- **invocation**:
-- **irreducible**:
-- **isolate**:
-- **item**:
-- **iterable**:
-- **itself**:
-- **java**:
-- **jia**:
-- **jing**:
-- **jsonb**:
-- **junction**:
-- **kaf**:
-- **kappa**:
-- **katakana**:
-- **kieuk**:
-- **lam**:
-- **last**:
-- **latin**:
-- **lattice**:
-- **least**:
-- **length**:
-- **less**:
-- **letter**:
-- **level**:
-- **linecap**:
-- **locale**:
-- **lock**:
-- **logger**:
-- **longest**:
-- **lower**:
-- **make**:
-- **malformation**:
-- **malformed**:
-- **many**:
-- **mark**:
-- **mask**:
-- **math**:
-- **matrix3**:
-- **maximum**:
-- **maybe**:
-- **meanderaw**:
-- **medial**:
-- **meem**:
-- **member**:
-- **mesh**:
-- **meta**:
-- **metric**:
-- **migration1791160950069**:
-- **migration1791414023001**:
-- **millisecond**:
-- **min**:
-- **minima**:
-- **mirror**:
-- **mismatch**:
-- **miss**:
-- **mock**:
-- **monotonic**:
-- **mu**:
-- **na**:
-- **narrow**:
-- **negative**:
-- **neighbor**:
-- **non**:
-- **nonnegative**:
-- **noon**:
-- **north**:
-- **northeast**:
-- **now**:
-- **nullable**:
-- **number0**:
-- **number1**:
-- **numeric**:
-- **off**:
-- **omega**:
-- **omit**:
-- **once**:
-- **one**:
-- **opposite**:
-- **orbit**:
-- **ordinal**:
-- **orientation**:
-- **origin**:
-- **original**:
-- **orm**:
-- **other**:
-- **oversized**:
-- **own**:
-- **pad**:
-- **pair**:
-- **parallelism**:
-- **parameter**:
-- **part**:
-- **partial**:
-- **pending**:
-- **per**:
-- **permutation**:
-- **permute**:
-- **persistence**:
-- **persistent**:
-- **phase**:
-- **phi**:
-- **pick**:
-- **piece**:
-- **pieup**:
-- **pk**:
-- **place**:
-- **po**:
-- **point**:
-- **pool**:
-- **pop**:
-- **port1**:
-- **port2**:
-- **position**:
-- **positive**:
-- **preserve**:
-- **previous**:
-- **promise**:
-- **provide**:
-- **psi**:
-- **pure**:
-- **qaf**:
-- **quarter**:
-- **queue**:
-- **rag**:
-- **rank**:
-- **reach**:
-- **reason**:
-- **rectangle**:
-- **rectangular**:
-- **recursive**:
-- **reduce**:
-- **reducibility**:
-- **reducible**:
-- **reflection**:
-- **reg**:
-- **regenerate**:
-- **regeneration**:
-- **reh**:
-- **reject**:
-- **relative**:
-- **repeat**:
-- **replace**:
-- **reply**:
-- **representative**:
-- **resolution**:
-- **rest**:
-- **retrace**:
-- **reversal**:
-- **reverse**:
-- **rho**:
-- **rightmost**:
-- **rightward**:
-- **ring**:
-- **rotate**:
-- **rotation**:
-- **round**:
-- **runner**:
-- **sad**:
-- **safe**:
-- **save**:
-- **score**:
-- **seam**:
-- **second**:
-- **section**:
-- **segment**:
-- **send**:
-- **sentence**:
-- **shallow**:
-- **shang**:
-- **shen**:
-- **side**:
-- **sigma**:
-- **since**:
-- **single**:
-- **slice**:
-- **smallest**:
-- **snake**:
-- **soil**:
-- **some**:
-- **sort**:
-- **south**:
-- **southeast**:
-- **southwest**:
-- **spawn**:
-- **split**:
-- **spy**:
-- **square**:
-- **stack**:
-- **statement**:
-- **stem**:
-- **store**:
-- **straight**:
-- **strand**:
-- **strict**:
-- **stroke**:
-- **structural**:
-- **stub**:
-- **submatrix**:
-- **sum**:
-- **svg**:
-- **swirl**:
-- **symmetrical**:
-- **symmetry**:
-- **synthetic**:
-- **tah**:
-- **task**:
-- **tav**:
-- **terminate**:
-- **text**:
-- **than**:
-- **thread**:
-- **three**:
-- **thrice**:
-- **tian**:
-- **tidy**:
-- **tight**:
-- **tightest**:
-- **tile**:
-- **tl**:
-- **tolerance**:
-- **top**:
-- **topology**:
-- **touch**:
-- **tr**:
-- **trace**:
-- **track**:
-- **transform**:
-- **transformer**:
-- **trim**:
-- **trip**:
-- **truth**:
-- **tu**:
-- **turn**:
-- **two**:
-- **uint32**:
-- **unanswered**:
-- **unconfigured**:
-- **unreduced**:
-- **unstub**:
-- **unvisited**:
-- **unwrap**:
-- **up**:
-- **updatable**:
-- **upper**:
-- **uuid**:
-- **uuidv7**:
-- **variable**:
-- **variant**:
-- **vertical**:
-- **vertically**:
-- **vi**:
-- **visit**:
-- **walk**:
-- **wang**:
-- **waterfall**:
-- **wave**:
-- **waw**:
-- **weak**:
-- **well**:
-- **west**:
-- **whirl**:
-- **wide**:
-- **widest**:
-- **width**:
-- **wind**:
-- **window**:
-- **without**:
-- **wrap**:
-- **ya**:
-- **yeh**:
-- **yeo**:
-- **yo**:
-- **you**:
-- **yu**:
-- **zone**:
+- **arcade**: A pattern characteristic for a unit with no cross or bare dot, computed by IsArcadeCharacteristicService for each unit.
+- **arm**: One arm of a letter's ink, a stroke end the letter utilities count and sum through LetterUtilitiesService.reduce.
+- **band**: The cyclic strip of a Code's repeating unit that characteristics read as a graph, and that drawing cuts at a width.
+- **batch**: A fixed-size chunk of pattern rows that the database patterns service streams back to a caller one group at a time.
+- **border**: An edge of the unit's grid, which the top and bottom border touch-count characteristics check for ink touching it.
+- **br**: Bottom-right corner digit of the 2x2 window that EmbeddedUCountCharacteristicService reads when counting embedded U shapes.
+- **breadth**: Callidescope's count of the direct calls a callable makes, recorded in the project's Breadth table for the gate.
+- **budget**: The edge budget capping how many edges a Code may hold, which bounds enumeration and sets the corpus's fixed historical cutoff.
+- **canonical**: The phase-normalized form of a Code, the lowest rotation chosen as its identity, scored by the canonical-phase scorer.
+- **category**: A grouping of characteristic evaluators, each in its own service under a category folder and shown with a display name.
+- **characteristic**: A measured property of a Code's repeating unit, computed by one evaluator service from a shared context and stored in the database.
+- **comb**: A pattern characteristic named for a comb-shaped ink layout, computed for each unit by IsCombCharacteristicService.
+- **coordinate**: A band or pixel position rounded and trimmed before drawing, as the draw index and drawing services format each path coordinate.
+- **corpus**: The historical set of meander Codes ingested from the retired file tree, split by CorpusService into preserved and enumerated halves.
+- **degree**: The number of ink edges meeting a point, which path and end characteristics read to find degree-one ends and degree-two runs.
+- **element**: An HTML element as the draw index builds it, such as the nav sectioning element that wraps the jump list of pages.
+- **enumeration**: The walk over every structurally distinct repeat a shape admits under the edge budget, implemented by EnumerationService.
+- **evaluator**: A characteristic service that computes one value for a Code's unit from a shared context, registered for discovery.
+- **family**: A group of related meanders, such as the waterfalls family in the historical corpus, which draw index pages gather together.
+- **fork**: A point with three branches of ink, which IsForkCharacteristicService and the fork submatrix count for each unit.
+- **hebrew**: The Hebrew script, whose letter shapes such as dalet get their own letter characteristics services with orientation evaluators.
+- **historical**: Adjective for the retired corpus of meanders, kept as hardcoded rows and ingested by CorpusService before enumeration.
+- **horizontal**: Adjective for left-to-right runs and rectangles, such as horizontal rectangle counts and the longest horizontal run length.
+- **ingest**: CorpusService.ingest, which takes the historical corpus entries and writes them into the database before the draw run.
+- **ink**: The inked points of a unit, the strokes a Code draws, which nearly every characteristic counts, walks, or measures.
+- **lattice**: The rows-by-columns grid of points and edges that a Code spells, the structure every meander and characteristic is measured on.
+- **letter**: A script glyph whose ink is characterized by a letter service with sixteen orientation evaluators, held in the letter submatrix folder.
+- **meanderaw**: The project name, the NestJS CLI that draws meanders into Postgres rows, and the meanderaw web application beside it.
+- **mesh**: A pattern characteristic named for a mesh of crossed strands, computed for each unit by IsMeshCharacteristicService.
+- **minima**: The canonical orbit minimum of each symmetry class, which draw pool cuts into batches for worker threads to draw.
+- **mirror**: A reflected orientation of a letter's base, such as its north-south mirror, that the letter characteristics module derives.
+- **negative**: Adjective for a shift below zero, which the Code service reduces modulo the column span rather than refusing.
+- **north**: The top side of a lattice point or unit, one of the four compass sides the Code bits and edge flags name.
+- **orientation**: One of the sixteen orientation names a letter's glyph is evaluated under, such as a flip or a mirror of its base.
+- **phase**: A rotation offset of a Code's repeating unit, which canonical-phase scoring compares to choose the one identity.
+- **piece**: A connected piece of ink that a pattern characteristic counts, such as one branching at exactly three points in the fork check.
+- **place**: A position in a Code's band or grid where a cut or read happens, such as a different cut of the same band.
+- **pure**: Adjective for a tree-shaped ink unit with no loops, as IsPureTreeCharacteristicService checks, and for pure value computation.
+- **quarter**: Suffix in corner keys such as Quarter and ThreeQuarter, naming a partial corner count, and also a quarter turn of a unit.
+- **rectangle**: A solid block of inked points, which the rectangle submatrix characteristics count and measure across each unit.
+- **reply**: A DrawWorkerReply message a draw worker posts back to the pool, handled by DrawPoolService when a batch finishes or fails.
+- **representative**: The canonical member standing for a symmetry class, from which the draw worker builds the class and its stored Code.
+- **rotation**: A column shift of a Code's repeating unit, one of the phases that canonical-phase scoring compares to pick an identity.
+- **south**: The bottom side of a lattice point or unit, one of the four compass sides the Code bits and edge flags name.
+- **square**: Adjective for a square-shaped unit or wave in the test fixtures, such as a square wave whose turns the inflection test counts.
+- **stem**: The part of a letter service class name before its script suffix, which the letter module test extracts with a named regex group.
+- **strand**: A maximal run of ink through degree-two points, which StrandUtilitiesService cuts out of a repeat for the strand characteristics.
+- **submatrix**: A folder of characteristic evaluators that read one sub-window of a Code's unit, such as point, letter, corner, or rectangle.
+- **swirl**: A pattern characteristic for a unit whose strands wind one way, computed by IsSwirlCharacteristicService for each Code.
+- **tian**: Romanized name of a Hanzi glyph whose orientations get a letter characteristics service class with sixteen evaluators.
+- **tile**: A square cell of the lattice with its four direction bits, handled by TileService and TileCrossingCharacteristicsModule.
+- **trace**: A callidescope trace, the call-stack walk the gate measures, or a motif trace that path-data test helpers split out of a unit.
+- **tu**: Romanized name of a Hanzi glyph whose orientations get a letter characteristics service class with sixteen evaluators.
+- **updatable**: Stray fragment with no source hit, so the glossary lists it without any meanderaw concept behind it.
+- **waterfall**: A pattern characteristic named for a waterfall of stacked strands, computed by IsWaterfallsCharacteristicService for each unit.
+- **whirl**: A pattern characteristic for a unit whose strands wind in a whirl, computed by IsWhirlCharacteristicService for each Code.
 
 <!-- coinagerie:end -->

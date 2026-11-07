@@ -11,7 +11,7 @@ function configure(
   return {
     configurationPath: "/project/coinagerie.config.ts",
     directory: "/project",
-    exclude: { paths: [], words: [] },
+    exclude: { paths: [], patterns: [], words: [] },
     fold,
     include: ["**"],
     outputs: [],

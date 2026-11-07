@@ -125,6 +125,20 @@ describe("every example this package ships", () => {
     });
   });
 
+  describe("exclusion-patterns", () => {
+    it("leaves out every word a pattern matches, and keeps the rest", () => {
+      const staged = stage("exclusion-patterns");
+      const result = runCoinagerie(staged, []);
+
+      expect(result.exitCode).toBe(0);
+      expect(readWords(result.standardOutput)).toStrictEqual([
+        "check",
+        "mdx",
+        "src",
+      ]);
+    });
+  });
+
   describe("folding", () => {
     it("folds forms, merges a configured family, and excludes after folding", () => {
       const result = runCoinagerie(stage("folding"), []);

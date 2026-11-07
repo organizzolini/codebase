@@ -24,6 +24,7 @@ import { EnvironmentFilesService } from "../environment-files/environment-files.
 import { LocalServicesService } from "../local-services/local-services.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReleaseArchivesService } from "../release-archives/release-archives.service";
+import { RemoteCacheService } from "../remote-cache/remote-cache.service";
 import { ReporterService } from "../reporter/reporter.service";
 import { ShellConfigurationService } from "../shell-configuration/shell-configuration.service";
 import { SoftwareBrewService } from "../software/software-brew.service";
@@ -72,6 +73,7 @@ describe(SetupCommand, () => {
         EnvironmentFilesService,
         ReleaseArchivesService,
         LocalServicesService,
+        RemoteCacheService,
         SetupCommand,
         SetupService,
         ShellConfigurationService,
@@ -125,7 +127,7 @@ describe(SetupCommand, () => {
     expect(logger.setContext).toHaveBeenCalledWith("SetupCommand");
   });
 
-  it("runs shell configuration, software, environment files, then dependencies", async () => {
+  it("runs shell configuration, software, environment files, the remote cache, then dependencies", async () => {
     expect.hasAssertions();
 
     enterWorkspace(workspace, "/bin/zsh");
@@ -146,8 +148,11 @@ describe(SetupCommand, () => {
       report.indexOf("🔍 Setting up environment files..."),
     );
     expect(report.indexOf("🔍 Setting up environment files...")).toBeLessThan(
-      report.indexOf("📦 Installing Node dependencies..."),
+      report.findIndex((line) => line.includes("remote Nx cache")),
     );
+    expect(
+      report.findIndex((line) => line.includes("remote Nx cache")),
+    ).toBeLessThan(report.indexOf("📦 Installing Node dependencies..."));
     expect(commands).toContain("pnpm install");
     expect(fs.existsSync(path.join(workspace.root, ".env"))).toBe(true);
   });

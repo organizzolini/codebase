@@ -15,6 +15,10 @@ export default createViteLibraryConfig({
       packageDirectory,
       "src/executors/depth/executor.ts",
     ),
+    "src/executors/gate/batch-executor": path.resolve(
+      packageDirectory,
+      "src/executors/gate/batch-executor.ts",
+    ),
     "src/executors/gate/executor": path.resolve(
       packageDirectory,
       "src/executors/gate/executor.ts",

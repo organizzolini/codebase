@@ -2,6 +2,8 @@
 
 Supersedes the naming, environment, and synchronize parts of [ADR 0020](0020-store-meanders-in-postgres.md). Its choice of Postgres over a committed SQLite file, its `uuidv7()` ids, its snake case, and its Testcontainers suites stand.
 
+Completed for Caelundas by [ADR 0031](0031-move-caelundas-from-sqlite-to-postgres.md), which records its move off SQLite and why the table-naming strategy is shared.
+
 ## Context
 
 Every project that keeps data in Postgres did it its own way. Lexico kept its tables in the default `postgres` database under `public`, named that schema on every entity, ran real migrations from its command-line data source, and synchronized from its runtime module. Meanderaw, after [ADR 0020](0020-store-meanders-in-postgres.md), kept its table in a database and a schema both named `meanderaw_development`, and synchronized rather than migrated. Caelundas, about to store the events it detects, had no database yet. Each wrote its own environment variables, connection wiring, naming strategy, and Testcontainers harness.

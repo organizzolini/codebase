@@ -53,7 +53,7 @@ describe(VocabularyService, () => {
     return {
       configurationPath: undefined,
       directory: root,
-      exclude: { paths: [], words: [] },
+      exclude: { paths: [], patterns: [], words: [] },
       fold: undefined,
       include: [...DEFAULT_INCLUDE],
       outputs: [],
@@ -120,7 +120,7 @@ describe(VocabularyService, () => {
     await expect(
       service.collect(
         configure({
-          exclude: { paths: ["**/*.test.ts"], words: [] },
+          exclude: { paths: ["**/*.test.ts"], patterns: [], words: [] },
           include: ["src/**"],
         }),
       ),
@@ -166,7 +166,7 @@ describe(VocabularyService, () => {
 
     await expect(
       service.collect(
-        configure({ exclude: { paths: [], words: ["service"] } }),
+        configure({ exclude: { paths: [], patterns: [], words: ["service"] } }),
       ),
     ).resolves.toStrictEqual(["gate", "main", "src"]);
   });
@@ -177,7 +177,11 @@ describe(VocabularyService, () => {
     await expect(
       service.collect(
         configure({
-          exclude: { paths: [], words: ["Services", "implements"] },
+          exclude: {
+            paths: [],
+            patterns: [],
+            words: ["Services", "implements"],
+          },
         }),
       ),
     ).resolves.toStrictEqual(["gate", "main", "src"]);
@@ -191,7 +195,7 @@ describe(VocabularyService, () => {
     await expect(
       service.collect(
         configure({
-          exclude: { paths: [], words: ["configuration"] },
+          exclude: { paths: [], patterns: [], words: ["configuration"] },
           fold,
         }),
       ),
@@ -214,7 +218,11 @@ describe(VocabularyService, () => {
     await expect(
       service.collect(
         configure({
-          exclude: { paths: [], words: [...typescriptKeywords, "options"] },
+          exclude: {
+            paths: [],
+            patterns: [],
+            words: [...typescriptKeywords, "options"],
+          },
         }),
       ),
     ).resolves.toStrictEqual(["aspect", "main", "src"]);
@@ -225,7 +233,102 @@ describe(VocabularyService, () => {
 
     await expect(
       service.collect(
-        configure({ exclude: { paths: [], words: ["bound", "box"] } }),
+        configure({
+          exclude: { paths: [], patterns: [], words: ["bound", "box"] },
+        }),
+      ),
+    ).resolves.toStrictEqual(["main", "src"]);
+  });
+
+  it("removes every headword a pattern matches and keeps the rest", async () => {
+    writeTree({
+      "src/main.ts": "export const md001 = 1;\nexport const mdx = 2;\n",
+    });
+
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], patterns: [/^md\d{3}$/], words: [] },
+        }),
+      ),
+    ).resolves.toStrictEqual(["main", "mdx", "src"]);
+  });
+
+  it("keeps string exclusions to whole words while a pattern runs beside them", async () => {
+    writeTree({
+      "src/main.ts": "export const md001 = 1;\nexport const md = 2;\n",
+    });
+
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], patterns: [/^md\d{3}$/], words: ["md"] },
+        }),
+      ),
+    ).resolves.toStrictEqual(["main", "src"]);
+    await expect(
+      service.collect(
+        configure({ exclude: { paths: [], patterns: [], words: ["md0"] } }),
+      ),
+    ).resolves.toStrictEqual(["main", "md", "md001", "src"]);
+  });
+
+  it("tests a pattern against the folded headword, so a pattern for the singular covers its plural", async () => {
+    writeTree({
+      "src/main.ts": "const services = 1;\nconst gate = 2;\n",
+    });
+
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], patterns: [/^service$/], words: [] },
+        }),
+      ),
+    ).resolves.toStrictEqual(["gate", "main", "src"]);
+  });
+
+  it("tests a pattern against the raw lowercase word, so a pattern written for the plural works too", async () => {
+    writeTree({
+      "src/main.ts": "const services = 1;\nconst gate = 2;\n",
+    });
+
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], patterns: [/^services$/], words: [] },
+        }),
+      ),
+    ).resolves.toStrictEqual(["gate", "main", "src"]);
+  });
+
+  it("tests a pattern against the headword the configured fold gives", async () => {
+    writeTree({ "src/main.ts": "const configuration = configure;\n" });
+
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], patterns: [/^configure$/], words: [] },
+          fold: (word) => (word === "configuration" ? "configure" : word),
+        }),
+      ),
+    ).resolves.toStrictEqual(["main", "src"]);
+  });
+
+  it("matches the lowercase words case-sensitively unless the pattern is case-insensitive", async () => {
+    writeTree({ "src/main.ts": "export const md001 = 1;\n" });
+
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], patterns: [/^MD\d{3}$/], words: [] },
+        }),
+      ),
+    ).resolves.toStrictEqual(["main", "md001", "src"]);
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], patterns: [/^MD\d{3}$/i], words: [] },
+        }),
       ),
     ).resolves.toStrictEqual(["main", "src"]);
   });

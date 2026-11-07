@@ -67,6 +67,12 @@ nx run infrastructure:postgres:up
 docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh
 ```
 
+For caelundas, the project that most recently joined the list:
+
+```bash
+docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb.d/databases.sh
+```
+
 The script stops at the first object that already exists, so name only the
 projects the volume lacks. Never use `infrastructure:postgres:recreate` for this:
 it deletes the volume and every row in it. See
@@ -112,103 +118,10 @@ The `terraform/linode` root imports the state bucket (`organizzolini`, region `u
 
 The words this project uses that the root glossary does not define, regenerated with `nx run infrastructure:coinagerie-check:write`.
 
-- **account**:
-- **acl**:
-- **actor**:
-- **affinity**:
-- **after**:
-- **alert**:
-- **analysis**:
-- **annotation**:
-- **approval**:
-- **approve**:
-- **archive**:
-- **assignment**:
-- **autoscaler**:
-- **backend**:
-- **backoff**:
-- **bypass**:
-- **chart**:
-- **claim**:
-- **cluster**:
-- **completion**:
-- **condition**:
-- **count**:
-- **destroy**:
-- **dismiss**:
-- **dockerignore**:
-- **down**:
-- **driver**:
-- **dynamic**:
-- **each**:
-- **enforcement**:
-- **entry**:
-- **fullname**:
-- **guardrail**:
-- **healthcheck**:
-- **history**:
-- **jsonencode**:
-- **k8**:
-- **kind**:
-- **kubernete**:
-- **last**:
-- **length**:
-- **lifecycle**:
-- **linear**:
-- **lke**:
-- **method**:
-- **min**:
-- **modelfile**:
-- **mount**:
-- **non**:
-- **one**:
-- **parallelism**:
-- **period**:
-- **persistence**:
-- **persistent**:
-- **plaintext**:
-- **plan**:
-- **pod**:
-- **policy**:
-- **pool**:
-- **preset**:
-- **prevent**:
-- **protection**:
-- **provisioner**:
-- **pvc**:
-- **queue**:
-- **rebase**:
-- **recreate**:
-- **region**:
-- **replace**:
-- **replica**:
-- **resolution**:
-- **restart**:
-- **review**:
-- **ruleset**:
-- **scan**:
-- **second**:
-- **selector**:
-- **sensitive**:
-- **signoff**:
-- **slug**:
-- **spec**:
-- **squash**:
-- **stale**:
-- **strict**:
-- **thread**:
-- **threshold**:
-- **toleration**:
-- **topic**:
-- **ttl**:
-- **unsupported**:
-- **up**:
-- **usd**:
-- **variable**:
-- **visibility**:
-- **vulnerability**:
-- **websocket**:
-- **webui**:
-- **wiki**:
+- **account**: Owner, a user or organization, of the GitHub repository that the github Terraform root manages.
+- **preset**: OpenRouter ranked-model profile named by slug, which the refresh-documentation workflow calls as preset/slug.
+- **selector**: Label pair, name and instance, that matches pods to their Helm release for the Job.
+- **visibility**: Repository setting that makes the GitHub repository public, set to public in the github root.
+- **wiki**: GitHub documentation area for the repository, enabled by has_wiki, separate from the OpenWiki pages.
 
 <!-- coinagerie:end -->

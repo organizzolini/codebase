@@ -48,6 +48,7 @@ export const EXAMPLE_RUNS: ExampleRun[] = [
     exitCode: 0,
     extraFiles: EXCLUSIONS_SCRATCH_FILES,
   },
+  { args: [], example: "exclusion-patterns", exitCode: 0 },
   { args: [], example: "folding", exitCode: 0 },
   {
     args: ["--config", "coinagerie.config.ts", "--check"],
