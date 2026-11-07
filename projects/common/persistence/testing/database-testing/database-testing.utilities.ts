@@ -44,7 +44,6 @@ export async function startDatabaseTestingModule({
   database,
   entities,
   imports = [],
-  namingStrategy,
   providers = [],
   validate,
   ...containerOptions
@@ -63,12 +62,7 @@ export async function startDatabaseTestingModule({
           isGlobal: true,
           ...(validate === undefined ? {} : { validate }),
         }),
-        database ??
-          PostgresqlModule.forRoot({
-            entities,
-            project,
-            ...(namingStrategy === undefined ? {} : { namingStrategy }),
-          }),
+        database ?? PostgresqlModule.forRoot({ entities, project }),
         TypeOrmModule.forFeature(entities),
         ...imports,
       ],

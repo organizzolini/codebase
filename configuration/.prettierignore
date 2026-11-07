@@ -120,7 +120,6 @@ projectStructure.cache.json
 **/.agents/skills/implement/**
 **/.agents/skills/improve-codebase-architecture/**
 **/.agents/skills/link-workspace-packages/**
-**/.agents/skills/monitor-ci/**
 **/.agents/skills/nx-generate/**
 **/.agents/skills/nx-import/**
 **/.agents/skills/nx-plugins/**

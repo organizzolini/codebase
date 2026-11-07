@@ -22,14 +22,21 @@ permissions:
 # Never cancel a deployment/release run. Concurrency is scoped per-ref so
 # releases and applies on main queue sequentially without colliding. Pull
 # requests run Continuous Integration, not this workflow.
-# Nx Cloud's remote cache. Only a trusted run gets the read-write token: a run
-# for a pull request, or a manual run off `main`, gets the read-only one, whose
-# results stay in a cache of their own and cannot reach what `main` reads. The
-# token is the join of two expressions, one of them always empty, so a missing
-# read-only secret leaves it empty rather than falling back to the read-write one.
+# The shared Nx cache's bucket. Only a trusted run gets the read-write key and
+# `NX_SHARED_CACHE_REMOTE_WRITABLE`: a run for a pull request, or a manual run
+# off `main`, gets the read-only key, which cannot write whatever the cache
+# server is told. Each key is the join of two expressions, one of them always
+# empty, so a missing read-only secret leaves it empty rather than falling back
+# to the read-write one.
 env:
-  NX_CLOUD_ACCESS_TOKEN: >-
-    ${{ (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main') && secrets.NX_CLOUD_READ_ONLY_TOKEN || '' }}${{ !((github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && secrets.NX_CLOUD_READ_WRITE_TOKEN || '' }}
+  NX_SHARED_CACHE_REMOTE_ACCESS_KEY_ID: >-
+    ${{ (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main') && secrets.NX_CACHE_READ_ONLY_ACCESS_KEY_ID || '' }}${{ !((github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && secrets.NX_CACHE_READ_WRITE_ACCESS_KEY_ID || '' }}
+  NX_SHARED_CACHE_REMOTE_BUCKET: ${{ vars.NX_CACHE_BUCKET }}
+  NX_SHARED_CACHE_REMOTE_ENDPOINT: ${{ vars.NX_CACHE_ENDPOINT }}
+  NX_SHARED_CACHE_REMOTE_REGION: ${{ vars.NX_CACHE_REGION }}
+  NX_SHARED_CACHE_REMOTE_SECRET_ACCESS_KEY: >-
+    ${{ (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main') && secrets.NX_CACHE_READ_ONLY_SECRET_ACCESS_KEY || '' }}${{ !((github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && secrets.NX_CACHE_READ_WRITE_SECRET_ACCESS_KEY || '' }}
+  NX_SHARED_CACHE_REMOTE_WRITABLE: ${{ !((github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -326,6 +333,17 @@ jobs:
             --exclude=configuration
           pnpm exec nx run configuration:codometer:write
 
+      - name: 🪙 Coin Vocabulary
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.target.id == 'push-releases' &&
+          env.RELEASE_SUPERSEDED != 'true'
+        run: |
+          pnpm exec nx run-many \
+            --target=coinagerie \
+            --target=coinagerie-check \
+            --configuration=write
+
       # semantic-release versions and tags the codebase itself, and creates the
       # `v*` release the README badge shows, never an ic-suite package. Its one
       # `chore(release): 🔖 tag codebase` commit also carries the package
@@ -428,13 +446,11 @@ jobs:
           TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
           TF_VAR_linode_token: ${{ secrets.LINODE_TOKEN }}
-          TF_VAR_nx_cloud_read_only_token: ${{ secrets.NX_CLOUD_READ_ONLY_TOKEN }}
-          TF_VAR_nx_cloud_read_write_token: ${{ secrets.NX_CLOUD_READ_WRITE_TOKEN }}
         # OpenRouter first: the GitHub root reads its outputs.
         run: |
           pnpm exec nx run infrastructure:terraform-apply:openrouter
-          pnpm exec nx run infrastructure:terraform-apply:github
           pnpm exec nx run infrastructure:terraform-apply:linode
+          pnpm exec nx run infrastructure:terraform-apply:github
 
       # The only save of this workflow's Nx cache, which the next release
       # restores. Every project is built above, at the versions the release

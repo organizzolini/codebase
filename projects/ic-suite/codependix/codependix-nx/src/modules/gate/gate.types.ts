@@ -1,5 +1,14 @@
 // 🏷️ Types
 
+/** Arguments for building the command line of a run whose configuration is resolved. */
+export interface BuildBatchArguments {
+  readonly configurationPath: string;
+  readonly dependencies: boolean;
+  readonly projects: string[];
+  readonly tags: string[];
+  readonly workspaceRoot: string;
+}
+
 /** Arguments for building the command line one gate runs. */
 export interface BuildCommandArguments extends GateSelection {
   /** Filesystem path of the codependix command line's entry. */

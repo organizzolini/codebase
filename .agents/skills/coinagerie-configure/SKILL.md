@@ -60,9 +60,10 @@ against the folder of the configuration that was loaded, not the base's.
 
 ## exclude.words
 
-A list of words, or a synchronous or asynchronous function returning one. The
-function is where a configuration reads any other file, a parent glossary or a
-JSON file, because coinagerie never reads another glossary itself:
+A list of entries, or a synchronous or asynchronous function returning one. An
+entry is a word, a string, or a regular expression. The function is where a
+configuration reads any other file, a parent glossary or a JSON file, because
+coinagerie never reads another glossary itself:
 
 ```ts
 import { readFile } from "node:fs/promises";
@@ -83,8 +84,20 @@ export default { exclude: { words: parentWords } };
 - Exclusion runs **after folding**, and each entry is lowercased and folded the
   way the code's words are: excluding `service` also covers `services`, and
   excluding `implements` covers the `implement` it folds into.
-- An entry is one word. It is never split, so `"fooBar"` never excludes `foo`
-  or `bar`; list each.
+- A string is one word, matched exactly. It is never split, so `"fooBar"` never
+  excludes `foo` or `bar`; list each.
+- A regular expression excludes every word it matches, so one pattern covers a
+  family such as plan IDs: `/^(task|test|risk)\d{3}$/`, hash fragments
+  `/^(?=.*\d)[0-9a-f]{2,}$/`, or lint rule IDs `/^md\d{3}$/`. It is tested
+  against two forms of each word, and a match on either leaves the headword out
+  as a string would: the lowercase word as the code wrote it (`MD001` is
+  `md001`), and the headword after folding and `fold`. Words are lowercase, so
+  write the pattern for lowercase text or add the `i` flag. The `g` and `y`
+  flags are dropped, since they make a pattern stateful. Only a TypeScript or
+  JavaScript configuration can hold one, since JSON cannot.
+- Words never hold a separator. In `task-001` the `001` is a number, not a
+  term, so only `task` remains and no pattern matches it; `TASK001` is the one
+  word `task001`, which `/^(task|test|risk)\d{3}$/` matches.
 - An excluded word leaves the glossary, and the next `--write` deletes its
   definition. Exclude a word because it carries no meaning of its own, not
   because its definition is missing.
@@ -161,7 +174,7 @@ anything.
 | ------------------------------------------- | -------------------------------------------------------------------- |
 | `expected object, received function`        | the file exports a function; export a plain object                   |
 | `Unrecognized key: "<name>"`                | a misspelled or misplaced field; fix the key                         |
-| `Invalid input` at `exclude.words`          | it holds something other than a list or a function                   |
+| `Invalid input` at `exclude.words`          | an entry is neither a word nor a pattern, or it is not a list        |
 | `fold must return a non-empty string...`    | the function returned `""`, a space, `*`, a promise, or a non-string |
 | `exclude.words boom`                        | the function threw; the error carries the configuration's path       |
 | `Cannot find module`                        | install the package beside the configuration                         |

@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 
+import { BatchModule } from "./modules/batch/batch.module";
 import { GateModule } from "./modules/gate/gate.module";
 import { PluginModule } from "./modules/plugin/plugin.module";
 
@@ -12,8 +13,8 @@ import { PluginModule } from "./modules/plugin/plugin.module";
  */
 @Module({
   controllers: [],
-  exports: [GateModule, PluginModule],
-  imports: [GateModule, PluginModule],
+  exports: [BatchModule, GateModule, PluginModule],
+  imports: [BatchModule, GateModule, PluginModule],
   providers: [],
 })
 export class MainModule {}

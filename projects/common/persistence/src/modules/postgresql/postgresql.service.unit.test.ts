@@ -1,14 +1,15 @@
 import { ConfigModule } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
-import { DefaultNamingStrategy } from "typeorm";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { DATABASE_OPTIONS } from "./postgresql.constants";
+import {
+  DATABASE_OPTIONS,
+  PluralSnakeNamingStrategy,
+} from "./postgresql.constants";
 import { PostgresqlService } from "./postgresql.service";
 
 describe(PostgresqlService, () => {
   let service: PostgresqlService;
-  const namingStrategy = new DefaultNamingStrategy();
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -19,7 +20,6 @@ describe(PostgresqlService, () => {
           provide: DATABASE_OPTIONS,
           useValue: {
             entities: [],
-            namingStrategy,
             project: "fixture",
           },
         },
@@ -61,11 +61,13 @@ describe(PostgresqlService, () => {
     });
   });
 
-  it("builds TypeORM's options with the naming strategy it was given and no migrations", () => {
-    expect(service.createTypeOrmOptions()).toMatchObject({
+  it("builds TypeORM's options with the plural snake-case naming strategy and no migrations", () => {
+    const options = service.createTypeOrmOptions();
+
+    expect(options.namingStrategy).toBeInstanceOf(PluralSnakeNamingStrategy);
+    expect(options).toMatchObject({
       migrations: [],
       migrationsRun: false,
-      namingStrategy,
       synchronize: false,
     });
   });

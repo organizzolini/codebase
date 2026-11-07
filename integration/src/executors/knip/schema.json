@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "additionalProperties": false,
+  "description": "Fail a project when knip reports an issue in its workspace. Batched, so one knip run judges every project Nx hands it.",
+  "properties": {
+    "configuration": {
+      "description": "Workspace-relative path of the knip configuration.",
+      "type": "string"
+    },
+    "fix": {
+      "default": false,
+      "description": "Let knip fix what it can. A task that fixes is never batched.",
+      "type": "boolean"
+    }
+  },
+  "required": ["configuration"],
+  "title": "Knip",
+  "type": "object"
+}
