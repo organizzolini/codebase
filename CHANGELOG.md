@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.58.0](https://github.com/organizzolini/codebase/compare/v3.57.0...v3.58.0) (2026-11-06)
+
+### ✨ Features
+
+* **caelundas,documentation:** ✨ store the calendar and its read model in Postgres through caelundas-db ([#2119](https://github.com/organizzolini/codebase/issues/2119)) ([ea2ff03](https://github.com/organizzolini/codebase/commit/ea2ff03d2db7e9e1cd6546c552b5ac06505edc03)), closes [#2134](https://github.com/organizzolini/codebase/issues/2134) [#1905](https://github.com/organizzolini/codebase/issues/1905) [#1886](https://github.com/organizzolini/codebase/issues/1886) [#2117](https://github.com/organizzolini/codebase/issues/2117) [#2135](https://github.com/organizzolini/codebase/issues/2135) [#2136](https://github.com/organizzolini/codebase/issues/2136) [#2137](https://github.com/organizzolini/codebase/issues/2137) [#2138](https://github.com/organizzolini/codebase/issues/2138) [#2139](https://github.com/organizzolini/codebase/issues/2139) [#2140](https://github.com/organizzolini/codebase/issues/2140)
+* **caelundas,infrastructure:** ✨ scaffold the caelundas-db library and register its database ([#2117](https://github.com/organizzolini/codebase/issues/2117)) ([7caf6c3](https://github.com/organizzolini/codebase/commit/7caf6c363442d4c9510f4d5781af8196e0082f57)), closes [#1898](https://github.com/organizzolini/codebase/issues/1898) [#2130](https://github.com/organizzolini/codebase/issues/2130) [#1886](https://github.com/organizzolini/codebase/issues/1886) [#1899](https://github.com/organizzolini/codebase/issues/1899) [#1900](https://github.com/organizzolini/codebase/issues/1900) [#2131](https://github.com/organizzolini/codebase/issues/2131) [#2132](https://github.com/organizzolini/codebase/issues/2132) [#2133](https://github.com/organizzolini/codebase/issues/2133)
+
+### ♻️ Code Refactoring
+
+* **compliance,configuration,documentation:** ♻️ move the compliance project to the workspace root ([#2170](https://github.com/organizzolini/codebase/issues/2170)) ([fdf7f2f](https://github.com/organizzolini/codebase/commit/fdf7f2f62cc04f21347a4353264641298dca0ef3)), closes [#2169](https://github.com/organizzolini/codebase/issues/2169) [organizzolini/codebase#2058](https://github.com/organizzolini/codebase/issues/2058)
+* **persistence,lexico-entities:** ♻️ share one plural snake-case naming strategy across projects ([#2152](https://github.com/organizzolini/codebase/issues/2152)) ([02990cc](https://github.com/organizzolini/codebase/commit/02990cc0b6357bfe6caac0791c2bf75d218356bd)), closes [#2126](https://github.com/organizzolini/codebase/issues/2126) [#1886](https://github.com/organizzolini/codebase/issues/1886) [#2127](https://github.com/organizzolini/codebase/issues/2127) [#2128](https://github.com/organizzolini/codebase/issues/2128) [#2129](https://github.com/organizzolini/codebase/issues/2129)
+
 ## [3.57.0](https://github.com/organizzolini/codebase/compare/v3.56.0...v3.57.0) (2026-11-06)
 
 ### ✨ Features
