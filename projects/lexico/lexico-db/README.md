@@ -16,7 +16,7 @@ lexico-cli, never depends on `@nestjs/graphql`.
 ## Usage
 
 ```ts
-import { DatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
+import { DatabaseModule, Lexeme, Word } from "@codebase/lexico-db";
 ```
 
 `DatabaseModule` connects to `lexico_development`.`lexico` as
@@ -98,11 +98,11 @@ predictable across migrations.
 ## Migrations
 
 ```bash
-nx run lexico-entities:migration:generate           # Diff entities → new migration
-nx run lexico-entities:migration:run                # Apply pending migrations
-nx run lexico-entities:migration:revert             # Roll back the last one
-nx run lexico-entities:migration:show               # List applied and pending
-nx run lexico-entities:migration:extract-sql-all    # Emit .sql alongside each migration
+nx run lexico-db:migration:generate           # Diff entities → new migration
+nx run lexico-db:migration:run                # Apply pending migrations
+nx run lexico-db:migration:revert             # Roll back the last one
+nx run lexico-db:migration:show               # List applied and pending
+nx run lexico-db:migration:extract-sql-all    # Emit .sql alongside each migration
 ```
 
 The `migration` target is the shared one from the root `nx.json` target
@@ -158,7 +158,7 @@ maintainer's call once the counts below match.
 4. **Build the empty schema** with the migration, as `lexico_username`:
 
    ```bash
-   nx run lexico-entities:migration:run
+   nx run lexico-db:migration:run
    ```
 
 5. **Restore the rows into `lexico`.** `pg_restore` cannot rename a schema, so
@@ -205,8 +205,8 @@ Restored rows keep their version 4 ids; rows written afterwards get the
 ## Testing
 
 ```bash
-nx run lexico-entities:vitest:unit
-nx run lexico-entities:vitest:integration   # Against a Testcontainers PostgreSQL
+nx run lexico-db:vitest:unit
+nx run lexico-db:vitest:integration   # Against a Testcontainers PostgreSQL
 ```
 
 Integration tests start a throwaway Postgres 18 through
@@ -230,7 +230,7 @@ MIT — see [LICENSE](../../../LICENSE).
 
 ## 🔭 Callidescope
 
-Call stacks traced through `projects/lexico/lexico-entities`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+Call stacks traced through `projects/lexico/lexico-db`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 
 | Measure | Value |
 | --- | --- |
@@ -271,13 +271,13 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 graph LR
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
-  lexico_entities["lexico-entities"]
+  lexico_db["lexico-db"]
   persistence["persistence"]
-  lexico_api --> lexico_entities
-  lexico_cli --> lexico_entities
-  lexico_entities --> persistence
+  lexico_api --> lexico_db
+  lexico_cli --> lexico_db
+  lexico_db --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
-  class lexico_entities subject
+  class lexico_db subject
 ```
 <!-- codependix:end name="codependix-nx-projects" -->
 
@@ -695,7 +695,7 @@ graph LR
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run lexico-entities:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with `nx run lexico-db:coinagerie-check:write`.
 
 - **breadth**: Heading of the callidescope breadth section in this README, currently None, so no breadth limit is measured here.
 - **cascade**: Foreign-key behavior in the migrations, ON DELETE CASCADE, so deleting a parent row also removes its dependent rows.

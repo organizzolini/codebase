@@ -9,7 +9,7 @@ import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { createConnection, createEdge } from "@codebase/interface";
-import { Lexeme } from "@codebase/lexico-entities";
+import { Lexeme } from "@codebase/lexico-db";
 
 import { LexemeType } from "../lexemes/lexeme.entities";
 import { ORPHANED_GRAPHQL_TYPES } from "../lexemes/lexemes.constants";

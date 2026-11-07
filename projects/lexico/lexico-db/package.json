@@ -29,7 +29,7 @@
     "README.md"
   ],
   "main": "./src/index.ts",
-  "name": "@codebase/lexico-entities",
+  "name": "@codebase/lexico-db",
   "private": true,
   "publishConfig": {
     "exports": {

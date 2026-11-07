@@ -97,7 +97,7 @@
     "projects/caelundas/caelundas-db/src/modules/caelundas-database/data-source.constants.ts",
     "projects/caelundas/caelundas-db/src/modules/caelundas-database/migrations/**/*.ts",
     "projects/caelundas/caelundas-cli/src/modules/database/migrations/**/*.ts",
-    "projects/lexico/lexico-entities/src/modules/database/migrations/**/*.ts",
+    "projects/lexico/lexico-db/src/modules/database/migrations/**/*.ts",
     "projects/meanderaw/meanderaw-cli/src/modules/database/migrations/**/*.ts",
     "configuration/release.config.cjs",
     "validate-branch-name.config.cjs",
@@ -245,7 +245,11 @@
     },
     {
       "exports": ["*"],
-      "file": "**/src/modules/entities/entities.module.ts",
+      "file": "**/src/modules/dictionary/dictionary.module.ts",
+    },
+    {
+      "exports": ["*"],
+      "file": "**/src/modules/literature/literature.module.ts",
     },
   ],
   "ignoreExportsUsedInFile": true,

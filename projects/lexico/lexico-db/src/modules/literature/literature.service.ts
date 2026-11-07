@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
 /**
- * TODO: Document the entities service.
+ * TODO: Document the literature service.
  */
 @Injectable()
-export class EntitiesService {
+export class LiteratureService {
   // 🏗 Dependency Injection
 
   constructor() {}

@@ -20,7 +20,7 @@ import type {
   PrincipalPart,
   Pronunciation,
   Translation,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /** Maps a lexeme entity, and each relation it loaded, to its GraphQL type. */
 export function toLexemeType(lexeme: Lexeme): LexemeType {

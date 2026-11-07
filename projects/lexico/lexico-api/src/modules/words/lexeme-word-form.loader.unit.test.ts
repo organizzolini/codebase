@@ -4,7 +4,7 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { LexemeWordFormLoader } from "./lexeme-word-form.loader";
 import { WordsService } from "./words.service";
 
-import type { WordForm } from "@codebase/lexico-entities";
+import type { WordForm } from "@codebase/lexico-db";
 
 /**
  * Builds a word-form link whose form belongs to the given lexeme.

@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import "reflect-metadata";
 import { DataSource, getMetadataArgsStorage } from "typeorm";
 import { beforeAll, describe, expect, it } from "vitest";
@@ -13,10 +12,13 @@ import {
   getEntityRelations,
   getEntityTableMetadata,
 } from "../../../testing/entity-definition-assertions";
+import { partsOfSpeech } from "../dictionary/entities/part-of-speech.entity";
+import { pronunciationVariants } from "../dictionary/entities/pronunciation.entity";
+
 import {
   LEXICO_DATABASE_ENTITIES,
   lexicoDataSource,
-} from "../database/data-source.constants";
+} from "./data-source.constants";
 import {
   adjectiveDegreeValues,
   adverbDegrees,
@@ -33,11 +35,7 @@ import {
   nounGenders,
   prepositionCases,
   verbConjugationValues,
-} from "../database/database.constants";
-
-import { partsOfSpeech } from "./dictionary/part-of-speech.entity";
-import { pronunciationVariants } from "./dictionary/pronunciation.entity";
-import { EntitiesService } from "./entities.service";
+} from "./database.constants";
 
 class MetadataDataSource extends DataSource {
   public async buildMetadataForTests(): Promise<void> {
@@ -1110,21 +1108,7 @@ const ENTITY_INHERITANCE_EXPECTATIONS = {
   }),
 } satisfies Readonly<Record<string, EntityInheritanceExpectation>>;
 
-describe(EntitiesService, () => {
-  let service: EntitiesService;
-
-  beforeAll(async (): Promise<void> => {
-    const module = await Test.createTestingModule({
-      providers: [EntitiesService],
-    }).compile();
-
-    service = await module.resolve(EntitiesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
-  });
-
+describe("lexico database entities", () => {
   describe("eNTITY_EXPECTATIONS", () => {
     beforeAll(async (): Promise<void> => {
       if (metadataDataSource.entityMetadatas.length > 0) {

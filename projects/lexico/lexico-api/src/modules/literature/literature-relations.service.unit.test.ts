@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { In, Line, Text, Token } from "@codebase/lexico-entities";
+import { In, Line, Text, Token } from "@codebase/lexico-db";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 

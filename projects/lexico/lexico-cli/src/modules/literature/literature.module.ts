@@ -8,7 +8,7 @@ import {
   Text,
   Token,
   Word,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 import { LoggerModule } from "@codebase/observability";
 
 import { NumeralsModule } from "../numerals/numerals.module";

@@ -10,7 +10,7 @@ import type {
   PronunciationEcclesiasticalCharacterContext,
   PronunciationUpdateVariantContext,
 } from "./pronunciation.types";
-import type { Pronunciation } from "@codebase/lexico-entities";
+import type { Pronunciation } from "@codebase/lexico-db";
 import type { AnyNode } from "domhandler";
 
 /**

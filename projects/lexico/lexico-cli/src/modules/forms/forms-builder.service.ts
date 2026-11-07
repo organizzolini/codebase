@@ -15,7 +15,7 @@ import {
   NominalForm,
   type PartOfSpeech,
   SupineForm,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { FormsBuilderGuardsService } from "./forms-builder-guards.service";
 import { FormsBuilderVerbService } from "./forms-builder-verb.service";

@@ -10,7 +10,7 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { createRepositoryMock } from "../../../testing/mocks";

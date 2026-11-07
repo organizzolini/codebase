@@ -1,8 +1,8 @@
 {
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "name": "lexico-entities",
+  "name": "lexico-db",
   "projectType": "library",
-  "sourceRoot": "projects/lexico/lexico-entities",
+  "sourceRoot": "projects/lexico/lexico-db",
   "tags": [
     "domain:lexico",
     "framework:nestjs",
@@ -17,14 +17,14 @@
         "assets": [
           {
             "glob": "README.md",
-            "input": "projects/lexico/lexico-entities",
+            "input": "projects/lexico/lexico-db",
             "output": "."
           }
         ],
         "generatePackageJson": false,
-        "main": "projects/lexico/lexico-entities/src/index.ts",
-        "outputPath": "projects/lexico/lexico-entities/dist",
-        "tsConfig": "projects/lexico/lexico-entities/tsconfig.build.json"
+        "main": "projects/lexico/lexico-db/src/index.ts",
+        "outputPath": "projects/lexico/lexico-db/dist",
+        "tsConfig": "projects/lexico/lexico-db/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },

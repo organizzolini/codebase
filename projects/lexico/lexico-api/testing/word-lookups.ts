@@ -12,7 +12,7 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import type { ObjectLiteral, Repository } from "typeorm";
 

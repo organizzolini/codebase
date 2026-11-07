@@ -3,7 +3,7 @@ import DataLoader from "dataloader";
 
 import { WordsService } from "./words.service";
 
-import type { WordForm } from "@codebase/lexico-entities";
+import type { WordForm } from "@codebase/lexico-db";
 
 /**
  * Request-scoped DataLoader resolving each lexeme to the word-form links of

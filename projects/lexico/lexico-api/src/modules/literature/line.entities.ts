@@ -7,7 +7,7 @@ import { TextType } from "./text.entities";
 
 import type { LineRelationField, LineResolvedField } from "./literature.types";
 import type { GraphQLObjectOf, Related } from "@codebase/interface";
-import type { Line } from "@codebase/lexico-entities";
+import type { Line } from "@codebase/lexico-db";
 
 /** One line of a classical Latin text. */
 @ObjectType("Line")

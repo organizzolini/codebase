@@ -68,9 +68,9 @@ describe(TypeormMigrationSqlCommand, () => {
     expect(command.parseModule("src/modules/database")).toBe(
       "src/modules/database",
     );
-    expect(command.parseProject("lexico-entities")).toBe("lexico-entities");
-    expect(command.parseProjectRoot("projects/lexico/lexico-entities")).toBe(
-      "projects/lexico/lexico-entities",
+    expect(command.parseProject("lexico-db")).toBe("lexico-db");
+    expect(command.parseProjectRoot("projects/lexico/lexico-db")).toBe(
+      "projects/lexico/lexico-db",
     );
   });
 
@@ -183,8 +183,7 @@ describe(TypeormMigrationSqlCommand, () => {
     vi.spyOn(extractorService, "synchronize").mockResolvedValueOnce(true);
 
     const result = await command.synchronize("check", {
-      directory:
-        "projects/lexico/lexico-entities/src/modules/database/migrations",
+      directory: "projects/lexico/lexico-db/src/modules/database/migrations",
     });
 
     expect(result).toBe(true);
@@ -192,8 +191,7 @@ describe(TypeormMigrationSqlCommand, () => {
       logger,
       mode: "check",
       options: {
-        directory:
-          "projects/lexico/lexico-entities/src/modules/database/migrations",
+        directory: "projects/lexico/lexico-db/src/modules/database/migrations",
       },
     });
   });
