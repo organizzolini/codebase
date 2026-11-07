@@ -792,6 +792,7 @@
   },
   "material-icon-theme.folders.associations": {
     "common": "core",
+    "compliance": "guard",
     "datasources": "database",
     "entities": "bloc",
     "executors": "tools",
