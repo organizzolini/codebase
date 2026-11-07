@@ -48,6 +48,7 @@ const OPTIONS = {
 };
 
 describe(ReportingService, () => {
+  let readExitCode: () => typeof process.exitCode;
   let service: ReportingService;
   let loggerService: BuiltTestingModule<unknown>["logger"];
 
@@ -60,8 +61,7 @@ describe(ReportingService, () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    captureExitCode();
-    process.exitCode = 0;
+    readExitCode = captureExitCode();
   });
 
   it("resolves with its dependencies", async () => {
@@ -270,7 +270,7 @@ describe(ReportingService, () => {
     it("never fails the run", () => {
       service.reportUnmatchedSelection({ projects: ["typo"], tags: [] });
 
-      expect(process.exitCode).toBe(0);
+      expect(readExitCode() ?? 0).toBe(0);
     });
   });
 
@@ -301,7 +301,7 @@ describe(ReportingService, () => {
         undefined,
         { reason: "bad flag" },
       );
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it("reports any other Error as a failed run", () => {
@@ -312,7 +312,7 @@ describe(ReportingService, () => {
         undefined,
         { reason: "boom" },
       );
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it("reports a non-Error rejection as its string form", () => {

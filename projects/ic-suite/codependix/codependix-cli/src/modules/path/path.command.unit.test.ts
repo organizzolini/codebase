@@ -8,6 +8,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
+import { captureExitCode } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PathCommand } from "./path.command";
@@ -16,6 +17,7 @@ import { PATH_MISSING_ARGUMENTS_ERROR } from "./path.constants";
 import type { LoggerService } from "@codebase/observability";
 
 describe(PathCommand, () => {
+  let readExitCode: () => typeof process.exitCode;
   let command: PathCommand;
   let configurationService: ConfigurationService;
   let loggerService: LoggerService;
@@ -67,7 +69,7 @@ describe(PathCommand, () => {
       runContextService,
     );
 
-    process.exitCode = 0;
+    readExitCode = captureExitCode();
   });
 
   it("resolves with its dependencies", async () => {
@@ -149,7 +151,7 @@ describe(PathCommand, () => {
         undefined,
         { reasons: [PATH_MISSING_ARGUMENTS_ERROR] },
       );
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it("rejects when format is invalid", async () => {
@@ -164,7 +166,7 @@ describe(PathCommand, () => {
           ],
         },
       );
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it("executes query and prints report to stdout", async () => {
@@ -202,7 +204,7 @@ describe(PathCommand, () => {
       expect(writeSpy).toHaveBeenCalledWith(
         expect.stringContaining("`app` → `lib`"),
       );
-      expect(process.exitCode).toBe(0);
+      expect(readExitCode() ?? 0).toBe(0);
 
       writeSpy.mockRestore();
     });
