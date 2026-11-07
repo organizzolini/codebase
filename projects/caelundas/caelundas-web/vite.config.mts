@@ -6,12 +6,6 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  // sqlite-wasm finds its `.wasm` file relative to its own module. Bundling it
-  // into the dependency cache in development would move the module away from
-  // that file, so it is served as is.
-  optimizeDeps: {
-    exclude: ["@sqlite.org/sqlite-wasm"],
-  },
   plugins: [
     tailwindcss(),
     // The generated route tree lives under `src/`. Test files sit beside the
@@ -52,8 +46,5 @@ export default defineConfig({
   server: {
     host: "localhost",
     port: 8967,
-  },
-  worker: {
-    format: "es",
   },
 });

@@ -14,7 +14,7 @@ import {
   TAG_ROOT_DESCRIPTIONS,
 } from "./event-filters.constants";
 
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type { EventFilterField } from "./event-filters.types";
 import type { FilterOption } from "@codebase/presentation";
 

@@ -3,7 +3,7 @@ import _ from "lodash";
 
 import { LoggerService } from "@codebase/observability";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 /**
  * Utility service for pairing progressive events.

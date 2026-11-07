@@ -134,6 +134,7 @@
 
 Swiss Ephemeris calendar generator that turns astronomical events into an `.ics` file
 
+**[caelundas-api](projects/caelundas/caelundas-api)** - NestJS GraphQL API that will serve the astronomical events caelundas-cli detects\
 **[caelundas-db](projects/caelundas/caelundas-db)** - TypeORM entities, read model, and migration shared by caelundas-cli and caelundas-api\
 **[caelundas-cli](projects/caelundas/caelundas-cli)** - Command-line application that detects astronomical events with Swiss Ephemeris and writes them to an `.ics` file\
 **[caelundas-web](projects/caelundas/caelundas-web)** - TanStack Start web application for browsing the astronomical events caelundas-cli detects
@@ -16257,7 +16258,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Repository
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-72575-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-5.08_MB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-5.16_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-170-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-693-3178c6?style=flat-square)
 
@@ -16306,7 +16307,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-55-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-8102-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-8103-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-1290-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-469-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-3071-0284c7?style=flat-square)
@@ -16321,7 +16322,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3512-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3513-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-467-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-91-8b5cf6?style=flat-square)
@@ -16329,7 +16330,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3373-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-687-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-688-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -16441,23 +16442,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-147-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-28749-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-28864-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-140-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-864-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-779-a78bfa?style=flat-square)
+![H2](https://img.shields.io/badge/H2-863-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-776-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-82-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6650-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6646-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-978-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-4789-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-60-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-290-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2859-0ea5e9?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-287-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2913-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-964-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1177-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-590-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15742-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-588-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-16017-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->

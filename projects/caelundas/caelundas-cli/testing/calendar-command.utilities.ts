@@ -18,7 +18,7 @@ import { InputModule } from "../src/modules/input/input.module";
 import { PerfectiveService } from "../src/modules/perfective/perfective.service";
 import { ProgressiveService } from "../src/modules/progressive/progressive.service";
 
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 import type { Input } from "../src/modules/input/input.types";
 import type {
   CalendarCommandOutput,
@@ -41,8 +41,8 @@ export function detectable(
 }
 
 /**
- * Runs the real `CaelundasCommand` once, against the SQLite file the caller
- * has already pointed `CAELUNDAS_SQLITE_DATABASE` at, and reads back the ICS
+ * Runs the real `CaelundasCommand` once, against the Postgres database the
+ * caller has already pointed `CAELUNDAS_POSTGRES_*` at, and reads back the ICS
  * and JSON files it wrote.
  *
  * Only the two detectors are replaced, because Swiss Ephemeris detection is

@@ -4,36 +4,51 @@
 nx run caelundas-web:start
 ```
 
-The dev and preview servers listen on port 8967, derived from the project name
-with `scripts/shell/text-to-port.sh caelundas-web` as every other application's
-is, and `nx run caelundas-web:stop` frees it.
-
-This serves the committed seed: a handful of events from `data/events-seed.sql`.
-
-## Build with real events
-
-The app bundles one SQLite file, `output/events.sqlite`, which is gitignored
-and rebuilt before every build by `scripts/build-events-database.ts`. To fill
-it with the events `caelundas-cli` calculates instead of the seed:
+The app holds no data of its own: every event, facet, filter collection,
+calendar window and night-sky star comes from the `caelundas-api` GraphQL
+API, which reads the Caelundas Postgres. Bring those up first, then the app:
 
 ```bash
-# 1. Ingest events; the first run creates caelundas-cli/output/database.sqlite,
-#    and every run leaves the read model this app queries up to date in it
+# 1. Start the local Postgres (docker compose) and create the schema
+nx run caelundas-db:migration:run
+
+# 2. Fill it with events and the night sky, as caelundas-cli's README describes
 nx run caelundas-cli:download-ephemeris
 cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
 nx run caelundas-cli:start
 
-# 2. Copy that file and build
-nx run caelundas-web:build:ingested
-nx run caelundas-web:preview:ingested   # or start:ingested for the dev server
+# 3. Serve the API on port 6173, then the app
+cp projects/caelundas/caelundas-api/.env.default projects/caelundas/caelundas-api/.env
+nx run caelundas-api:start
 ```
 
-The `ingested` configuration of `build-database`, which `build`, `start` and
-`preview` pass down, copies `caelundas-cli/output/database.sqlite` to
-`output/events.sqlite`, and stops, naming the file, when it does not exist yet.
-Without it the build creates a database from `caelundas-cli`'s migration and
-the committed rows in `caelundas-cli/data/events-seed.sql`, which tests and CI
-rely on.
+The dev and preview servers listen on port 8967, derived from the project name
+with `scripts/shell/text-to-port.sh caelundas-web` as every other application's
+is, and `nx run caelundas-web:stop` frees it.
+
+The API's address is the `VITE_CAELUNDAS_API_URL` variable, read when the app
+is built or served, `http://localhost:6173/graphql` when unset. Point it at
+another API before a build:
+
+```bash
+VITE_CAELUNDAS_API_URL=https://api.example.test/graphql nx run caelundas-web:build
+```
+
+The browser calls the API directly, so the API must allow this app's origin.
+
+## Generate the API client
+
+`src/graphql/generated/` is committed output of GraphQL Code Generator, from
+the documents in `src/graphql/operations/` and the schema `caelundas-api` writes
+to the gitignored `caelundas-api/src/schema.gql` each time it boots. Boot the
+API once before generating. The build never needs it: it reads the committed
+files.
+
+```bash
+nx run caelundas-web:codegen          # Regenerate from the API's schema
+nx run caelundas-web:codegen:check    # Fail when a committed file is stale
+nx run caelundas-web:codegen-watch    # Start the API and regenerate on change
+```
 
 ## Test
 
@@ -96,13 +111,10 @@ to the default.
 
 ## Stars and constellations
 
-The night sky reads its stars and constellation figures from the same SQLite
-file as the events: the `star`, `constellation` and `constellation_line` tables
-that `caelundas-cli`'s `night-sky` command fills. The default build loads the
-committed seed in `caelundas-cli/data/night-sky-seed.sql`: all 88
-constellations and their figures, with only the stars those figures join and
-the brightest; `build:ingested` copies the full catalog a `night-sky` run
-wrote.
+The API draws the night sky from its `stars`, `constellations` and
+`constellation_lines` tables, which `caelundas-cli`'s `night-sky` command fills,
+and this app shows the SVG its `nightSky` query returns. The list of all 88
+constellations in the Sky menu is a constant in `night-sky.constants.ts`.
 
 The stars are the [HYG star database](https://github.com/astronexus/HYG-Database)
 v4.1, stored to magnitude 6.5 at declination -45 degrees or north, plus any

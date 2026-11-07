@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { EVENT_COLOR_RULES } from "./calendar-colors.constants";
 import { colorEvents, getEventColor } from "./calendar-colors.utilities";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 
 function colorOf(path: string): null | string {
   return EVENT_COLOR_RULES.find((rule) => rule.path === path)?.color ?? null;

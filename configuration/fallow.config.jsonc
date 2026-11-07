@@ -96,7 +96,6 @@
     "projects/lexico/lexico-web/src/router.tsx",
     "projects/caelundas/caelundas-db/src/modules/caelundas-database/data-source.constants.ts",
     "projects/caelundas/caelundas-db/src/modules/caelundas-database/migrations/**/*.ts",
-    "projects/caelundas/caelundas-cli/src/modules/database/migrations/**/*.ts",
     "projects/lexico/lexico-db/src/modules/database/migrations/**/*.ts",
     "projects/meanderaw/meanderaw-cli/src/modules/database/migrations/**/*.ts",
     "configuration/release.config.cjs",
@@ -280,6 +279,8 @@
     // They are intentionally excluded from static dead-code analysis.
     "**/projects/lexico/lexico-web/src/graphql/generated/**",
     "**/projects/lexico/lexico-web/src/graphql/operations/**",
+    "**/projects/caelundas/caelundas-web/src/graphql/generated/**",
+    "**/projects/caelundas/caelundas-web/src/graphql/operations/**",
     "**/build/**",
     "**/conformetry-templates/**",
     // 🕸️ Codependix example subjects: input to be graphed, unreachable from any
