@@ -1,0 +1,283 @@
+import { spawnSync } from "node:child_process";
+
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { IssueGithubService } from "./issue-github.service";
+import { GITHUB_CLI_BINARY } from "./issue-metadata.constants";
+
+vi.mock("node:child_process", () => ({
+  spawnSync: vi.fn<typeof spawnSync>(),
+}));
+
+/** What `spawnSync` hands back, as much of it as this service reads. */
+interface SpawnCompletion {
+  error?: Error;
+  status?: null | number;
+  stderr?: string;
+  stdout?: string;
+}
+
+describe(IssueGithubService, () => {
+  let service: IssueGithubService;
+
+  /** Makes the next `spawnSync` call complete like this. */
+  const completeWith = (completion: SpawnCompletion): void => {
+    vi.mocked(spawnSync).mockReturnValue({
+      output: [],
+      pid: 1,
+      signal: null,
+      status: completion.status ?? 0,
+      stderr: completion.stderr ?? "",
+      stdout: completion.stdout ?? "",
+      ...(completion.error === undefined ? {} : { error: completion.error }),
+    });
+  };
+
+  beforeAll(async () => {
+    const built = await buildTestingModule(IssueGithubService);
+
+    service = built.instance;
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(IssueGithubService);
+
+    expect(instance).toBeInstanceOf(IssueGithubService);
+  });
+
+  describe("run", () => {
+    it("invokes gh with the arguments it was given", () => {
+      expect.hasAssertions();
+
+      completeWith({ stdout: "{}" });
+
+      expect(service.run(["issue", "view", "7"])).toStrictEqual({
+        available: true,
+        standardError: "",
+        standardOutput: "{}",
+        succeeded: true,
+      });
+      expect(spawnSync).toHaveBeenCalledWith(
+        GITHUB_CLI_BINARY,
+        ["issue", "view", "7"],
+        { encoding: "utf8" },
+      );
+    });
+
+    it("keeps a notice on standard error out of the captured document", () => {
+      expect.hasAssertions();
+
+      completeWith({ stderr: "A new release of gh\n", stdout: '{"a":1}' });
+
+      expect(service.run(["issue", "view", "7"])).toStrictEqual({
+        available: true,
+        standardError: "A new release of gh",
+        standardOutput: '{"a":1}',
+        succeeded: true,
+      });
+    });
+
+    it("reports a non-zero exit as a failed call", () => {
+      expect.hasAssertions();
+
+      completeWith({ status: 1, stderr: "no such issue" });
+
+      expect(service.run(["issue", "view", "7"]).succeeded).toBe(false);
+    });
+
+    it("reports a missing binary as unavailable", () => {
+      expect.hasAssertions();
+
+      completeWith({ error: new Error("spawnSync gh ENOENT") });
+
+      expect(service.run(["--version"])).toStrictEqual({
+        available: false,
+        standardError: "spawnSync gh ENOENT",
+        standardOutput: "",
+        succeeded: false,
+      });
+    });
+  });
+
+  describe("listOpenIssues", () => {
+    it("returns parsed open issues when gh succeeds", () => {
+      expect.hasAssertions();
+
+      const sampleIssues = [
+        {
+          body: "Part of #100",
+          labels: [{ name: "type:feat" }],
+          number: 101,
+          title: "feat(auth): add login",
+        },
+      ];
+      completeWith({ stdout: JSON.stringify(sampleIssues) });
+
+      expect(service.listOpenIssues()).toStrictEqual({
+        issues: sampleIssues,
+        success: true,
+      });
+    });
+
+    it("returns error when gh fails", () => {
+      expect.hasAssertions();
+
+      completeWith({ status: 1, stderr: "auth required" });
+
+      expect(service.listOpenIssues()).toStrictEqual({
+        error: "auth required",
+        success: false,
+      });
+    });
+
+    it("returns error when json output is invalid", () => {
+      expect.hasAssertions();
+
+      completeWith({ stdout: "not valid json" });
+
+      const result = service.listOpenIssues();
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("Unable to parse gh issue list output");
+    });
+
+    it("returns error when JSON parsing throws a non-Error object", () => {
+      expect.hasAssertions();
+
+      completeWith({ stdout: "{}" });
+      vi.spyOn(JSON, "parse").mockImplementationOnce(() => {
+        throw new Error("string-error");
+      });
+
+      const result = service.listOpenIssues();
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("string-error");
+    });
+  });
+
+  describe("isAvailable", () => {
+    it.each([
+      ["true when gh runs", undefined, true],
+      ["false when gh cannot be executed", new Error("ENOENT"), false],
+    ])("is %s", (_description, error, expected) => {
+      expect.hasAssertions();
+
+      completeWith(error === undefined ? {} : { error });
+
+      expect(service.isAvailable()).toBe(expected);
+    });
+  });
+
+  describe("describeFailure", () => {
+    it.each([
+      [
+        "both streams",
+        "stderr line",
+        "stdout line ",
+        "stderr line stdout line",
+      ],
+      ["standard error alone", "stderr line", "", "stderr line"],
+      ["standard output alone", "", "stdout line", "stdout line"],
+      ["neither", "", "", "no output"],
+    ])("reads %s", (_description, standardError, standardOutput, expected) => {
+      expect.hasAssertions();
+      expect(
+        service.describeFailure({
+          available: true,
+          standardError,
+          standardOutput,
+          succeeded: false,
+        }),
+      ).toBe(expected);
+    });
+  });
+
+  describe("addLabel and assignIssue", () => {
+    it("adds a label to an issue", () => {
+      expect.hasAssertions();
+
+      completeWith({});
+
+      expect(service.addLabel("17", "type:feat")).toMatchObject({
+        succeeded: true,
+      });
+      expect(spawnSync).toHaveBeenCalledWith(
+        GITHUB_CLI_BINARY,
+        ["issue", "edit", "17", "--add-label", "type:feat"],
+        { encoding: "utf8" },
+      );
+    });
+
+    it("assigns an issue to the repository owner", () => {
+      expect.hasAssertions();
+
+      completeWith({});
+
+      expect(service.assignIssue("17")).toMatchObject({ succeeded: true });
+      expect(spawnSync).toHaveBeenCalledWith(
+        GITHUB_CLI_BINARY,
+        ["issue", "edit", "17", "--add-assignee", "JimmyPaolini"],
+        { encoding: "utf8" },
+      );
+    });
+  });
+
+  describe("listUnassignedOpenIssueNumbers", () => {
+    it("finds unassigned issues across every page and excludes pull requests", () => {
+      expect.hasAssertions();
+
+      completeWith({
+        stdout: JSON.stringify([
+          { assignees: [], number: 17, pull_request: null },
+          {
+            assignees: [{ login: "JimmyPaolini" }],
+            number: 18,
+            pull_request: null,
+          },
+          { assignees: [], number: 20 },
+          { assignees: [], number: 19, pull_request: { url: "u" } },
+        ]),
+      });
+
+      expect(service.listUnassignedOpenIssueNumbers()).toStrictEqual({
+        issueNumbers: [17, 20],
+        success: true,
+      });
+    });
+
+    it("returns GitHub CLI failures to the caller", () => {
+      expect.hasAssertions();
+
+      completeWith({ status: 1, stderr: "authentication required" });
+
+      expect(service.listUnassignedOpenIssueNumbers()).toStrictEqual({
+        error: "authentication required",
+        success: false,
+      });
+    });
+
+    it.each([
+      ["malformed JSON", "not-json"],
+      ["invalid data", JSON.stringify([{ assignees: [], number: 0 }])],
+    ])("reports %s as a failed listing", (_name, stdout) => {
+      expect.hasAssertions();
+
+      completeWith({ stdout });
+
+      const result = service.listUnassignedOpenIssueNumbers();
+
+      expect(result.success ? undefined : result.error).toContain(
+        "Unable to parse gh api output",
+      );
+    });
+  });
+});

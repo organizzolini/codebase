@@ -6,6 +6,7 @@ import { ConfigService } from "@nestjs/config";
 
 import { LoggerService } from "@codebase/observability";
 
+import { SharedNxCacheRemoteService } from "./shared-nx-cache-remote.service";
 import { SharedNxCacheStorageService } from "./shared-nx-cache-storage.service";
 import {
   BEARER_PATTERN,
@@ -21,6 +22,7 @@ import type {
   Exchange,
   RunningServer,
   ServerOptions,
+  WriteOutcome,
 } from "./shared-nx-cache.types";
 
 /**
@@ -31,6 +33,8 @@ import type {
  *   token compared in constant time.
  * - Bound to 127.0.0.1 only, and the hash is checked against a pattern that
  *   admits no path separator, so a request cannot leave the cache directory.
+ * - A miss is answered from the bucket behind it, when one is configured, and
+ *   a stored upload goes to it only when it is writable.
  * - Evicts on startup and then hourly, until it is closed.
  */
 @Injectable()
@@ -39,6 +43,7 @@ export class SharedNxCacheServerService {
 
   constructor(
     private readonly storage: SharedNxCacheStorageService,
+    private readonly remote: SharedNxCacheRemoteService,
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
   ) {
@@ -83,7 +88,10 @@ export class SharedNxCacheServerService {
   private async get(exchange: Exchange, hash: string): Promise<void> {
     const { directory, response } = exchange;
 
-    if (!(await this.storage.exists(directory, hash))) {
+    if (
+      !(await this.storage.exists(directory, hash)) &&
+      !(await this.pull(directory, hash))
+    ) {
       this.reply(response, 404, "The record was not found");
 
       return;
@@ -108,6 +116,24 @@ export class SharedNxCacheServerService {
       exchange.request.resume();
       this.reply(exchange.response, 405, "Method not allowed");
     }
+  }
+
+  /** Copies an entry the bucket holds into the local directory; whether it is there now. */
+  private async pull(directory: string, hash: string): Promise<boolean> {
+    const entry = await this.remote.fetch(hash);
+
+    if (entry === undefined) {
+      return false;
+    }
+
+    const outcome = await this.storage.write({
+      body: entry.body,
+      directory,
+      hash,
+      length: entry.length,
+    });
+
+    return outcome !== "length-mismatch";
   }
 
   /** Stores the body of a `PUT`. */
@@ -136,13 +162,7 @@ export class SharedNxCacheServerService {
       length: Number(declared),
     });
 
-    if (outcome === "created") {
-      this.reply(response, 200, "Successfully uploaded the output");
-    } else if (outcome === "exists") {
-      this.reply(response, 409, "Cannot override an existing record");
-    } else {
-      this.reply(response, 400, "The body does not match Content-Length");
-    }
+    await this.settle(exchange, hash, outcome);
   }
 
   /** Answers with a plain text message. */
@@ -153,6 +173,27 @@ export class SharedNxCacheServerService {
   ): void {
     response.writeHead(status, { "Content-Type": "text/plain" });
     response.end(message);
+  }
+
+  /** Copies a stored upload to a writable bucket, then answers for its outcome. */
+  private async settle(
+    exchange: Exchange,
+    hash: string,
+    outcome: WriteOutcome,
+  ): Promise<void> {
+    const { directory, response } = exchange;
+
+    if (outcome === "created") {
+      if (this.remote.writable()) {
+        await this.remote.store(hash, this.storage.read(directory, hash));
+      }
+
+      this.reply(response, 200, "Successfully uploaded the output");
+    } else if (outcome === "exists") {
+      this.reply(response, 409, "Cannot override an existing record");
+    } else {
+      this.reply(response, 400, "The body does not match Content-Length");
+    }
   }
 
   /** Answers 404, 401, or 400 to a request that cannot be served; otherwise returns its hash. */

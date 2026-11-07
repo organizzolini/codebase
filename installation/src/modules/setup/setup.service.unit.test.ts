@@ -9,6 +9,7 @@ import { DependenciesService } from "../dependencies/dependencies.service";
 import { EnvironmentFilesService } from "../environment-files/environment-files.service";
 import { LocalServicesService } from "../local-services/local-services.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { RemoteCacheService } from "../remote-cache/remote-cache.service";
 import { ReporterService } from "../reporter/reporter.service";
 import { ShellConfigurationService } from "../shell-configuration/shell-configuration.service";
 import { SoftwareService } from "../software/software.service";
@@ -22,6 +23,7 @@ interface Steps {
   dependencies: DeepMocked<DependenciesService>;
   environmentFiles: DeepMocked<EnvironmentFilesService>;
   localServices: DeepMocked<LocalServicesService>;
+  remoteCache: DeepMocked<RemoteCacheService>;
   service: SetupService;
   shell: DeepMocked<ShellConfigurationService>;
   software: DeepMocked<SoftwareService>;
@@ -32,6 +34,7 @@ async function createSteps(platform: NodeJS.Platform): Promise<Steps> {
   const dependencies = createMock<DependenciesService>();
   const environmentFiles = createMock<EnvironmentFilesService>();
   const localServices = createMock<LocalServicesService>();
+  const remoteCache = createMock<RemoteCacheService>();
   const shell = createMock<ShellConfigurationService>();
   const software = createMock<SoftwareService>();
   const module = await Test.createTestingModule({
@@ -44,6 +47,7 @@ async function createSteps(platform: NodeJS.Platform): Promise<Steps> {
         provide: ProcessRunnerService,
         useValue: createFakeProcessRunner({ platform }).runner,
       },
+      { provide: RemoteCacheService, useValue: remoteCache },
       { provide: ShellConfigurationService, useValue: shell },
       { provide: SoftwareService, useValue: software },
       { provide: ReporterService, useValue: createMock<ReporterService>() },
@@ -55,6 +59,7 @@ async function createSteps(platform: NodeJS.Platform): Promise<Steps> {
     dependencies,
     environmentFiles,
     localServices,
+    remoteCache,
     service: await module.resolve(SetupService),
     shell,
     software,
@@ -85,6 +90,10 @@ describe(SetupService, () => {
           useValue: createMock<ProcessRunnerService>(),
         },
         {
+          provide: RemoteCacheService,
+          useValue: createMock<RemoteCacheService>(),
+        },
+        {
           provide: ShellConfigurationService,
           useValue: createMock<ShellConfigurationService>(),
         },
@@ -102,7 +111,7 @@ describe(SetupService, () => {
     expect(service).toBeDefined();
   });
 
-  it("sets up a Mac with the shell, software, files, and dependencies", async () => {
+  it("sets up a Mac with the shell, software, files, remote cache, and dependencies", async () => {
     expect.hasAssertions();
 
     const steps = await createSteps("darwin");
@@ -114,6 +123,7 @@ describe(SetupService, () => {
     expect(
       steps.environmentFiles.createEnvironmentFiles,
     ).toHaveBeenCalledWith();
+    expect(steps.remoteCache.setUpRemoteCache).toHaveBeenCalledWith();
     expect(steps.dependencies.installDependencies).toHaveBeenCalledWith();
     expect(steps.localServices.startLocalServices).not.toHaveBeenCalled();
   });
@@ -131,6 +141,7 @@ describe(SetupService, () => {
     expect(steps.software.installSoftware).toHaveBeenCalledWith();
     expect(steps.localServices.startLocalServices).toHaveBeenCalledWith();
     expect(steps.shell.configureShell).not.toHaveBeenCalled();
+    expect(steps.remoteCache.setUpRemoteCache).not.toHaveBeenCalled();
     expect(steps.dependencies.installDependencies).not.toHaveBeenCalled();
   });
 

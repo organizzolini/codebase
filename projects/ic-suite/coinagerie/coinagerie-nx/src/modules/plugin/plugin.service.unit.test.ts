@@ -176,8 +176,8 @@ describe(PluginService, () => {
       expect(targets).toMatchObject({
         "coinagerie-check": {
           cache: true,
-          executor: "nx:run-commands",
-          options: { command: "coinagerie --check", cwd: "{projectRoot}" },
+          executor: "@coinagerie/nx:check",
+          options: { command: "coinagerie" },
         },
       });
     });
@@ -246,8 +246,7 @@ describe(PluginService, () => {
 
       expect(Object.keys(targets ?? {})).toStrictEqual(["glossary"]);
       expect(targets?.["glossary"]?.options).toStrictEqual({
-        command: "pnpm exec coinagerie --check",
-        cwd: "{projectRoot}",
+        command: "pnpm exec coinagerie",
       });
     });
   });

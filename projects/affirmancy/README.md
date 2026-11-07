@@ -228,14 +228,14 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4373-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-220.35_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4387-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-220.73_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-3-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-17-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-18-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-2-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-3-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-0-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
@@ -254,7 +254,7 @@ graph LR
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-0-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-0-059669?style=flat-square)
 ![Constants](https://img.shields.io/badge/Constants-0-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2-0284c7?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-3-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-0-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-0-64748b?style=flat-square)
 ![Comment Lines](https://img.shields.io/badge/Comment_Lines-0-475569?style=flat-square)
@@ -440,254 +440,28 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run affirmancy:coinagerie-check:write`.
 
-- **abc**:
-- **affirmation**:
-- **aleph**:
-- **analysis**:
-- **analyze**:
-- **angle**:
-- **annotation**:
-- **aorist**:
-- **append**:
-- **aspect**:
-- **asteroid**:
-- **astrology**:
-- **autocomplete**:
-- **backend**:
-- **ban**:
-- **benedictive**:
-- **bind**:
-- **bool**:
-- **callable**:
-- **captcha**:
-- **card**:
-- **category**:
-- **cf**:
-- **chakra**:
-- **chat**:
-- **cl**:
-- **classmethod**:
-- **close**:
-- **collection**:
-- **color**:
-- **commissive**:
-- **compute**:
-- **conditional**:
-- **connection**:
-- **construction**:
-- **count**:
-- **daemon**:
-- **debitive**:
-- **debug**:
-- **deixi**:
-- **deny**:
-- **describe**:
-- **dict**:
-- **distal**:
-- **dual**:
-- **dubitative**:
-- **dump**:
-- **element**:
-- **empty**:
-- **encode**:
-- **energetic**:
-- **enumerate**:
-- **episodic**:
-- **evaluate**:
-- **ex**:
-- **example**:
-- **exception**:
-- **exclusive**:
-- **existential**:
-- **experiential**:
-- **far**:
-- **fence**:
-- **field**:
-- **filename**:
-- **finite**:
-- **fixture**:
-- **flake8**:
-- **float**:
-- **fool**:
-- **forever**:
-- **form**:
-- **fraction**:
-- **future**:
-- **gemstone**:
-- **general**:
-- **gerund**:
-- **getresponse**:
-- **getsockname**:
-- **gnomic**:
-- **grammar**:
-- **habitual**:
-- **handler**:
-- **hatch**:
-- **hebrew**:
-- **high**:
-- **hortative**:
-- **house**:
-- **human**:
-- **immediate**:
-- **imperative**:
-- **imperfective**:
-- **inceptive**:
-- **inclusive**:
-- **indent**:
-- **indicative**:
-- **inferential**:
-- **infinitive**:
-- **ini**:
-- **instance**:
-- **int**:
-- **interpreter**:
-- **interrogative**:
-- **invalid**:
-- **ipynb**:
-- **isinstance**:
-- **iterator**:
-- **jussive**:
-- **kabbalah**:
-- **kebab**:
-- **lang**:
-- **langchain**:
-- **large**:
-- **len**:
-- **lenormand**:
-- **letter**:
-- **limiter**:
-- **load**:
-- **locale**:
-- **low**:
-- **lower**:
-- **make**:
-- **many**:
-- **mark**:
-- **marker**:
-- **medial**:
-- **medium**:
-- **member**:
-- **metal**:
-- **minimal**:
-- **miss**:
-- **modality**:
-- **monkey**:
-- **monkeypatch**:
-- **mood**:
-- **near**:
-- **necessitative**:
-- **negative**:
-- **netloc**:
-- **non**:
-- **nonfuture**:
-- **nonpast**:
-- **ok**:
-- **omit**:
-- **optative**:
-- **outgo**:
-- **parametrize**:
-- **participle**:
-- **passive**:
-- **past**:
-- **pathlib**:
-- **paucal**:
-- **per**:
-- **perfect**:
-- **perfective**:
-- **period**:
-- **permissive**:
-- **person**:
-- **planet**:
-- **pluperfect**:
-- **plural**:
-- **polarity**:
-- **positive**:
-- **potential**:
-- **precative**:
-- **predefined**:
-- **present**:
-- **presumptive**:
-- **price**:
-- **primitive**:
-- **priority**:
-- **progressive**:
-- **prohibitive**:
-- **prospective**:
-- **proximal**:
-- **proximate**:
-- **py**:
-- **pydantic**:
-- **pyproject**:
-- **re**:
-- **reachable**:
-- **reason**:
-- **recaptcha**:
-- **recent**:
-- **remove**:
-- **replace**:
-- **reproducible**:
-- **roundtrip**:
-- **rstrip**:
-- **rune**:
-- **runtime**:
-- **safe**:
-- **scheme**:
-- **search**:
-- **searx**:
-- **second**:
-- **self**:
-- **send**:
-- **sephiroth**:
-- **serialization**:
-- **setattr**:
-- **shortcut**:
-- **simple**:
-- **singular**:
-- **slug**:
-- **small**:
-- **sock**:
-- **socket**:
-- **solfeggio**:
-- **speculative**:
-- **startswith**:
-- **staticmethod**:
-- **stative**:
-- **still**:
-- **str**:
-- **stub**:
-- **sub**:
-- **subheading**:
-- **subjunctive**:
-- **success**:
-- **superplural**:
-- **supine**:
-- **suspend**:
-- **sxng**:
-- **tarot**:
-- **temporal**:
-- **terminative**:
-- **testpath**:
-- **text**:
-- **third**:
-- **thread**:
-- **tmp**:
-- **too**:
-- **trail**:
-- **triple**:
-- **tuple**:
-- **universal**:
-- **unreachable**:
-- **urllib**:
-- **urlsplit**:
-- **valid**:
-- **validator**:
-- **variable**:
-- **venv**:
-- **voice**:
-- **weekday**:
-- **weight**:
-- **wheel**:
-- **whitelist**:
-- **world**:
+- **affirmation**: Pydantic model in src/models.py holding one generated sentence of text, which the output writer numbers into per-grammar lists.
+- **aleph**: A Subject in the Hebrew Letter category, first in order, whose metadata carries the character alef.
+- **angle**: Metadata key on astrology aspects giving the degree separation between two bodies, such as zero for a conjunction.
+- **aspect**: Grammatical axis in grammars.py for how an event unfolds over time, distinct from the astrology aspect category.
+- **asteroid**: Subject category in subjects.py for small bodies such as Ceres and Pallas, which a Greek mythology search source covers.
+- **callable**: Annotation type in test_services.py for the serve fixture, which yields a callable that takes an int and returns a str.
+- **category**: SubjectCategory model in subjects.py grouping subjects, whose slug names the output folder and whose name feeds prompts.
+- **element**: Subject category in subjects.py grouping elemental subjects, one of several categories the pipeline iterates over.
+- **grammar**: Pydantic model in grammars.py combining one value from each grammatical axis into the combination the model writes in.
+- **hebrew**: Subject category in subjects.py grouping Hebrew Letter subjects, with alef as the first in order.
+- **large**: Number member in grammars.py for a large, abundant number of subjects, which English expresses only with large-quantity quantifiers.
+- **letter**: Lenormand card entry in subjects.py, separate from the Hebrew Letter category of alphabet characters.
+- **modality**: Subject category in subjects.py grouping possibility and necessity subjects that the grammars express.
+- **negative**: Polarity member in grammars.py for a proposition that is denied, also a subject under the Polarity category.
+- **perfect**: Tense subdivision in grammars.py such as future perfect, for an event completed before a reference point in time.
+- **planet**: Astrology subject category in subjects.py for the bodies whose meanings the pipeline turns into affirmations.
+- **polarity**: Grammatical axis in grammars.py recording whether a proposition is affirmed or negated, plus a subject category.
+- **progressive**: Imperfective-group value in grammars.py for an event in progress at the reference time, such as continuous action.
+- **self**: The speaker's own person in grammar descriptions, where affirmations address the self, another, or beyond the self.
+- **subheading**: Heading below a section title in generated Markdown, which the prompts ban because model replies must be plain flowing prose.
+- **triple**: Number member in grammars.py for exactly three referents, one of the extended values beside paucal, universal, and superplural.
+- **weekday**: Subject category of the seven days Monday through Sunday, declared as _WEEKDAY in subjects.py and used for output filenames.
+- **world**: Subject category of the four Kabbalistic realms, Atziluth through Assiah, declared as _KABBALAH_WORLD in subjects.py.
 
 <!-- coinagerie:end -->

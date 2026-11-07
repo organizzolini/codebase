@@ -271,6 +271,22 @@ runs:
       run: CI=true pnpm install --frozen-lockfile --reporter=append-only
       shell: bash
 
+    # The server inherits this job's `NX_SHARED_CACHE_REMOTE_*` settings, so it
+    # reads and, for a trusted run, writes the bucket behind it. The script
+    # does nothing and exits 0 when the server cannot start, which only costs
+    # the cache; a job without a bucket configured still works from `.nx`.
+    - name: 🗄️ Start Nx Shared Cache
+      if: inputs.install == 'true'
+      run: |
+        eval "$(scripts/git/seed-session-nx-cache.sh env)"
+        if [[ -n "${NX_SELF_HOSTED_REMOTE_CACHE_SERVER:-}" ]]; then
+          {
+            echo "NX_SELF_HOSTED_REMOTE_CACHE_SERVER=${NX_SELF_HOSTED_REMOTE_CACHE_SERVER}"
+            echo "NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN=${NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN}"
+          } >> "$GITHUB_ENV"
+        fi
+      shell: bash
+
     # gitleaks and Trivy are single binaries the `software` command downloads
     # into `~/.local/bin`, so that is all this keeps. Exact match only: the key
     # names the pinned versions through the file that holds them, so a version

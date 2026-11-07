@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { captureExitCode } from "@codebase/testing";
 
-import type { IssueLabelsModule } from "./modules/issue-labels/issue-labels.module";
 import type { SynchronizationModule } from "./modules/synchronization/synchronization.module";
 import type { LoggerService } from "@codebase/observability";
 
@@ -19,7 +18,6 @@ type CommandFactoryRun = (
 const run = vi.fn<CommandFactoryRun>().mockResolvedValue(undefined);
 const loggerServiceMock = createMock<LoggerService>();
 const logToStandardError = vi.fn<() => void>();
-const issueLabelsModuleMock = createMock<IssueLabelsModule>();
 const synchronizationModuleMock = createMock<SynchronizationModule>();
 
 vi.mock("nest-commander", () => ({
@@ -46,12 +44,6 @@ vi.mock("@codebase/observability", () => ({
     setContext(context: string): void {
       loggerServiceMock.setContext(context);
     }
-  },
-}));
-
-vi.mock("./modules/issue-labels/issue-labels.module", () => ({
-  IssueLabelsModule: function IssueLabelsModule() {
-    return issueLabelsModuleMock;
   },
 }));
 

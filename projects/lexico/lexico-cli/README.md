@@ -136,7 +136,7 @@ Call stacks traced through `projects/lexico/lexico-cli`, deepest first. Each fra
 | Measure | Value |
 | --- | --- |
 | Callables | 578 |
-| Files | 111 |
+| Files | 112 |
 | Calls traced | 645 |
 | Call stacks | 26 |
 | Deepest stack | 17 |
@@ -959,6 +959,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_lexico_cli_constants_ts["src/lexico-cli.constants.ts"]
   file_src_lexico_cli_main_end_to_end_test_ts["src/lexico-cli.main.end-to-end.test.ts"]
@@ -1427,10 +1428,10 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-33641-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-33655-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-1.92_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-31-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-159-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-160-3178c6?style=flat-square)
 
 ### Measured Targets
 
@@ -1438,7 +1439,7 @@ graph LR
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-159-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-160-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-36-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-7-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
@@ -1457,7 +1458,7 @@ graph LR
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-1245-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-530-059669?style=flat-square)
 ![Constants](https://img.shields.io/badge/Constants-2430-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-809-0284c7?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-810-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-177-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-614-64748b?style=flat-square)
 ![Comment Lines](https://img.shields.io/badge/Comment_Lines-1111-475569?style=flat-square)
@@ -1481,16 +1482,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-206-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-207-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-48-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-13-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-142-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-111-16a34a?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-112-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-9-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-36-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-182-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-37-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-183-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML
@@ -1643,583 +1644,78 @@ graph LR
 
 The words this project uses that the root glossary does not define, regenerated with `nx run lexico-cli:coinagerie-check:write`.
 
-- **abbreviation**:
-- **ablative**:
-- **absolute**:
-- **accusative**:
-- **actual**:
-- **additional**:
-- **adjectival**:
-- **adjective**:
-- **advance**:
-- **adverb**:
-- **ae**:
-- **after**:
-- **agr**:
-- **ahead**:
-- **ambrogio**:
-- **ammianus**:
-- **anchor**:
-- **anything**:
-- **ap**:
-- **apicius**:
-- **append**:
-- **appendicula**:
-- **apuleius**:
-- **argv**:
-- **array**:
-- **assertion**:
-- **assign**:
-- **ast**:
-- **attr**:
-- **au**:
-- **augusta**:
-- **augustus**:
-- **aurelius**:
-- **axi**:
-- **backoff**:
-- **basename**:
-- **batch**:
-- **bible**:
-- **bind**:
-- **birth**:
-- **boilerplate**:
-- **bold**:
-- **book**:
-- **bootstrap**:
-- **bracket**:
-- **breadth**:
-- **brevi**:
-- **buffer**:
-- **builder**:
-- **caesar**:
-- **caeso**:
-- **call**:
-- **capital**:
-- **capitalize**:
-- **capture**:
-- **category**:
-- **cato**:
-- **catullus**:
-- **cell**:
-- **ch**:
-- **character**:
-- **chdir**:
-- **child**:
-- **choice**:
-- **chorographia**:
-- **chunk**:
-- **ciborum**:
-- **cicero**:
-- **circumfix**:
-- **classical**:
-- **classifier**:
-- **classify**:
-- **claudian**:
-- **clauss**:
-- **clean**:
-- **clear**:
-- **clone**:
-- **close**:
-- **closest**:
-- **combine**:
-- **compact**:
-- **comparative**:
-- **compare**:
-- **compile**:
-- **compiler**:
-- **completion**:
-- **compute**:
-- **configurable**:
-- **conflict**:
-- **conjugation**:
-- **conjunction**:
-- **console**:
-- **consonant**:
-- **constant**:
-- **controller**:
-- **convert**:
-- **coquinaria**:
-- **corner**:
-- **corpus**:
-- **count**:
-- **csel**:
-- **ct**:
-- **curtius**:
-- **custom**:
-- **datenbank**:
-- **dative**:
-- **db**:
-- **de**:
-- **death**:
-- **debug**:
-- **decimal**:
-- **declension**:
-- **decorator**:
-- **deduplicate**:
-- **deep**:
-- **define**:
-- **degree**:
-- **delay**:
-- **delegate**:
-- **deletion**:
-- **describe**:
-- **descriptor**:
-- **determiner**:
-- **devocalize**:
-- **dictionary**:
-- **digit**:
-- **direct**:
-- **dirent**:
-- **disambiguator**:
-- **discovery**:
-- **disorganize**:
-- **download**:
-- **duration**:
-- **each**:
-- **eager**:
-- **ecclesiastical**:
-- **ecclesiasticorum**:
-- **edc**:
-- **ef**:
-- **ei**:
-- **element**:
-- **elt**:
-- **empty**:
-- **english**:
-- **ennius**:
-- **enqueue**:
-- **enrich**:
-- **ensure**:
-- **entity**:
-- **entry**:
-- **epigraphik**:
-- **equal**:
-- **era**:
-- **errno**:
-- **esse**:
-- **etymology**:
-- **eu**:
-- **eutropius**:
-- **exception**:
-- **excerpta**:
-- **execute**:
-- **existing1**:
-- **existing2**:
-- **exp**:
-- **expand**:
-- **experimental**:
-- **extname**:
-- **extraction**:
-- **factory**:
-- **failure**:
-- **fake**:
-- **fastorum**:
-- **feminine**:
-- **final**:
-- **finite**:
-- **fixture**:
-- **flaccus**:
-- **flag**:
-- **flat**:
-- **floor**:
-- **florus**:
-- **fm**:
-- **force**:
-- **form**:
-- **form1**:
-- **fracco**:
-- **frontinus**:
-- **fui**:
-- **future**:
-- **gellius**:
-- **gender**:
-- **gendered**:
-- **generic**:
-- **genitive**:
-- **genre**:
-- **gerund**:
-- **getter**:
-- **gitkeep**:
-- **gn**:
-- **greater**:
-- **greek**:
-- **h1**:
-- **h2**:
-- **handle**:
-- **handler**:
-- **harness**:
-- **headword**:
-- **hic**:
-- **hierarchy**:
-- **hint**:
-- **historia**:
-- **hoist**:
-- **horace**:
-- **href**:
-- **html**:
-- **iace**:
-- **iact**:
-- **iacu**:
-- **iacē**:
-- **identifier**:
-- **identity**:
-- **idiom**:
-- **iect**:
-- **ien**:
-- **ier**:
-- **ille**:
-- **imperfect**:
-- **implementation**:
-- **incoming**:
-- **indicative**:
-- **infinitive**:
-- **inflection**:
-- **ingest**:
-- **ingestion**:
-- **inject**:
-- **injectable**:
-- **inschriften**:
-- **inscription**:
-- **instance**:
-- **int**:
-- **inter**:
-- **interactive**:
-- **interfix**:
-- **interjection**:
-- **internal**:
-- **invalid**:
-- **irregular**:
-- **iso**:
-- **isolate**:
-- **italicus**:
-- **item**:
-- **iud**:
-- **iue**:
-- **iug**:
-- **iun**:
-- **iur**:
-- **iut**:
-- **iuv**:
-- **iūd**:
-- **iūe**:
-- **iūg**:
-- **iūn**:
-- **iūr**:
-- **iūt**:
-- **iūv**:
-- **java**:
-- **junction**:
-- **justin**:
-- **juvenal**:
-- **kebab**:
-- **keep**:
-- **last**:
-- **latin**:
-- **latinorum**:
-- **law**:
-- **lead**:
-- **leaf**:
-- **least**:
-- **lemma**:
-- **length**:
-- **letter**:
-- **lexeme**:
-- **li**:
-- **libri**:
-- **link**:
-- **literal**:
-- **literature**:
-- **livy**:
-- **load**:
-- **locale**:
-- **logger**:
-- **low**:
-- **lower**:
-- **lucan**:
-- **lucretius**:
-- **macronized**:
-- **mai**:
-- **maior**:
-- **make**:
-- **mam**:
-- **many**:
-- **mark**:
-- **martial**:
-- **masculine**:
-- **math**:
-- **maximum**:
-- **maximus**:
-- **mela**:
-- **memoized**:
-- **meta**:
-- **meter**:
-- **metric**:
-- **mid**:
-- **millisecond**:
-- **min**:
-- **mino**:
-- **miss**:
-- **mkdtemp**:
-- **mock**:
-- **mood**:
-- **multi**:
-- **nc**:
-- **nepo**:
-- **neuter**:
-- **ng**:
-- **nickname**:
-- **nominal**:
-- **nominative**:
-- **non**:
-- **normalizable**:
-- **normalization**:
-- **normalize**:
-- **noun**:
-- **novidio**:
-- **now**:
-- **nq**:
-- **nth**:
-- **nullable**:
-- **numeral**:
-- **obj**:
-- **oct**:
-- **oe**:
-- **ok**:
-- **old**:
-- **omni**:
-- **once**:
-- **one**:
-- **opet**:
-- **optional**:
-- **original**:
-- **orm**:
-- **other**:
-- **ovid**:
-- **own**:
-- **p1**:
-- **palatalize**:
-- **para**:
-- **paragraph**:
-- **parameter**:
-- **parsable**:
-- **parsetable**:
-- **part**:
-- **partial**:
-- **participle**:
-- **particle**:
-- **pathname**:
-- **payload**:
-- **pending**:
-- **per**:
-- **percent**:
-- **perfect**:
-- **performance**:
-- **period**:
-- **perseus**:
-- **persistence**:
-- **persius**:
-- **person**:
-- **petronius**:
-- **ph**:
-- **phaedrus**:
-- **phase**:
-- **phoneme**:
-- **phonemic**:
-- **phonetic**:
-- **phonic**:
-- **phrase**:
-- **pick**:
-- **pimentorum**:
-- **plain**:
-- **plautus**:
-- **pliny**:
-- **pluperfect**:
-- **plural**:
-- **po**:
-- **pomponius**:
-- **pop**:
-- **positive**:
-- **pp**:
-- **pp1**:
-- **pp2**:
-- **pp3**:
-- **pr**:
-- **praenoman**:
-- **preposition**:
-- **present**:
-- **preserve**:
-- **prev**:
-- **previous**:
-- **principal**:
-- **priority**:
-- **pro**:
-- **promise**:
-- **pron**:
-- **pronoun**:
-- **pronunciation**:
-- **pronunciation1**:
-- **proper**:
-- **propertius**:
-- **protocol**:
-- **prototype**:
-- **prov**:
-- **proverb**:
-- **provide**:
-- **province**:
-- **provinz**:
-- **publisher**:
-- **punctuation**:
-- **qu**:
-- **question**:
-- **queue**:
-- **quintilian**:
-- **re**:
-- **readdir**:
-- **real**:
-- **reason**:
-- **recursive**:
-- **reg**:
-- **regex**:
-- **region**:
-- **reject**:
-- **relation**:
-- **relative**:
-- **remainder**:
-- **remove**:
-- **repeat**:
-- **replace**:
-- **replacement**:
-- **resolution**:
-- **rest**:
-- **roman**:
-- **rufus**:
-- **runner**:
-- **rusticae**:
-- **sacrorum**:
-- **safe**:
-- **sallust**:
-- **save**:
-- **sc**:
-- **scan**:
-- **scoped**:
-- **scriptorum**:
-- **second**:
-- **section**:
-- **segment**:
-- **selection**:
-- **selector**:
-- **self**:
-- **seneca**:
-- **seq**:
-- **ser**:
-- **sert**:
-- **sex**:
-- **should**:
-- **silius**:
-- **simple**:
-- **singular**:
-- **slaby**:
-- **slice**:
-- **slug**:
-- **some**:
-- **sort**:
-- **sp**:
-- **sparse**:
-- **speech**:
-- **splice**:
-- **split**:
-- **spy**:
-- **st**:
-- **stack**:
-- **statius**:
-- **stdin**:
-- **str**:
-- **strict**:
-- **stringify**:
-- **strong**:
-- **stub**:
-- **subjunctive**:
-- **substitution**:
-- **subtype**:
-- **success**:
-- **suetonius**:
-- **sulpicia**:
-- **sum**:
-- **superlative**:
-- **supine**:
-- **synthetic**:
-- **t1**:
-- **t2**:
-- **tacitus**:
-- **take**:
-- **tc**:
-- **temporary**:
-- **terence**:
-- **terentius**:
-- **terminal**:
-- **testament**:
-- **text**:
-- **th**:
-- **than**:
-- **thelatinlibrary**:
-- **third**:
-- **ti**:
-- **tibullus**:
-- **tidy**:
-- **timer**:
-- **timestamped**:
-- **tmpdir**:
-- **top**:
-- **tr**:
-- **trace**:
-- **transient**:
-- **translation**:
-- **trim**:
-- **two**:
-- **uninflected**:
-- **unmock**:
-- **unstub**:
-- **unsupported**:
-- **upper**:
-- **upsert**:
-- **urn**:
-- **v2**:
-- **valerius**:
-- **valid**:
-- **variant**:
-- **varro**:
-- **vellius**:
-- **verb**:
-- **verbal**:
-- **vergil**:
-- **vi**:
-- **victor**:
-- **virgil**:
-- **visit**:
-- **vitruvius**:
-- **vocal**:
-- **vocalic**:
-- **vocative**:
-- **voice**:
-- **vol**:
-- **vop**:
-- **vowel**:
-- **vulgar**:
-- **vulgate**:
-- **walk**:
-- **warn**:
-- **weak**:
-- **whitespace**:
-- **wikipedia**:
-- **wiktionary**:
-- **without**:
-- **word1**:
-- **word2**:
-- **writable**:
-- **xii**:
-- **xml**:
-- **xs**:
-- **year**:
+- **agr**: Abbreviated praenomen key for Agrippa in the manual praenomen table, expanded only to its masculine form.
+- **ammianus**: Short literature slug that the literature constants map to the full author name Ammianus Marcellinus.
+- **anchor**: HTML link element the Latin Library builder reads, using its text and nearby headings to label a work or book.
+- **ap**: Abbreviated praenomen key for Appius, which the manual praenomen table expands to feminine Appia or masculine Appius.
+- **apicius**: Author slug for the Roman cookery writer Apicius, whose appendicula and excerpta texts the library ingests from Open Greek and Latin.
+- **apuleius**: Short literature slug mapped by the literature constants to the full name Lucius Apuleius Madaurensis.
+- **batch**: Group of rows written in one database operation, such as the single upsert of all Word and form rows.
+- **book**: Work-level grouping unit in ingested texts, set as type book or text by the Latin Library builder and the EDCS provider.
+- **breadth**: Callidescope limit measuring the widest fan-out of direct callees, set as maximumBreadth in the project config.
+- **category**: Grouping page or part-of-speech class; Latin Library category links become Author entities, and the forms builder builds Forms per category.
+- **conjunction**: Part-of-speech tag for conjunctions, which the part-of-speech constants also assign to idioms, particles, and phrases.
+- **coquinaria**: Title of the Apicius text De Re Coquinaria, an ingested Latin cookery book under the apicius data folder.
+- **corpus**: Ingested collection of Latin texts, such as the data/library corpus from Open Greek and Latin, and the Corpus Scriptorum provider.
+- **csel**: Short name for the Corpus Scriptorum Ecclesiasticorum Latinorum, the ecclesiastical corpus whose XML this command downloads and caches.
+- **curtius**: Literature constants slug for Curtius Rufus, expanded to quintus curtius rufus for literature ingestion lookups.
+- **datenbank**: German noun part of Epigraphik-Datenbank, the EDCS name the project's command and provider use for the inscription database.
+- **db**: Stray fragment of the db.edcs.eu source URL, which the EDCS library provider records as text metadata.
+- **degree**: Comparison grade of an adjective or adverb, such as positive, comparative, or superlative, set on manual inflections.
+- **dictionary**: Main ingestion stage that parses cached Wiktionary pages into lexemes, forms, and translations, run by the dictionary command.
+- **disambiguator**: Numeric index that tells apart lexemes sharing a lemma, saved on each lexeme and used to reload it by lemma.
+- **ecclesiastical**: Pronunciation mode for Ecclesiastical Latin, with its own phoneme map and service used beside the classical one.
+- **ecclesiasticorum**: Part of the Corpus Scriptorum Ecclesiasticorum Latinorum name, the CSEL corpus command and its ingestion module.
+- **element**: Cheerio node a parser callback receives while walking Wiktionary or library HTML, passed to $(element) for selection.
+- **epigraphik**: Prefix of Epigraphik-Datenbank Clauss-Slaby, the inscription source whose command, provider, and chunk schema this CLI reads.
+- **headword**: Wiktionary heading marker, the strong.headword element whose paragraph the lexemes parser iterates to find each lexeme.
+- **iacē**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jacē before phonemes are mapped.
+- **ingest**: Verb for loading one source into the database, as in provider.ingest for each library author the library command selects.
+- **inscription**: Stone-text record from the Epigraphik-Datenbank, whose text the EDCS provider skips when missing and turns into a work.
+- **iūd**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūd before phonemes are mapped.
+- **iūe**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūe before phonemes are mapped.
+- **iūg**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūg before phonemes are mapped.
+- **iūn**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūn before phonemes are mapped.
+- **iūr**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūr before phonemes are mapped.
+- **iūt**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūt before phonemes are mapped.
+- **iūv**: Classical substitution key matching a Latin stem fragment, rewritten to the j form jūv before phonemes are mapped.
+- **justin**: Literature constants slug for Justin, expanded to marcus iunianus iustinus, the epitomist whose name the constants spell out.
+- **juvenal**: Literature constants slug expanded to decimus iunius iuvenalis, the satirist whose full Latin name the constants supply.
+- **law**: Path segment /law/ that the Latin Library crawler matches, and part of the roman-law literature slug mapped to ius romanum.
+- **leaf**: Terminal node of the Perseus text tree that writes one markdown file, using p or l nodes or a fallback.
+- **letter**: Part-of-speech value that the lexemes service skips entirely, because a letter entry is not ingested as a lexeme.
+- **lexeme**: Core entity for one dictionary entry, saved per lemma and disambiguator, holding translations, forms, and principal parts.
+- **literature**: Lexico-cli stage that ingests lines and tokens of each text loaded from the library, run by the literature command.
+- **livy**: Literature constants slug for Livy, expanded to titus livius, the historian whose name the literature ingestion uses.
+- **lucan**: Literature constants slug for Lucan, expanded to marcus annaeus lucanus, the epic poet whose name the constants supply.
+- **lucretius**: Literature constants slug expanded to titus lucretius carus, the philosopher-poet whose text the literature ingestion loads.
+- **martial**: Literature constants slug for Martial, expanded to marcus valerius martialis, the epigrammatist the literature ingestion loads.
+- **mela**: Second half of the author slug pomponius-mela, whose De chorographia the library ingests as a work.
+- **perfect**: Verb tense family covering perfect, future perfect, and pluperfect, which the part-of-speech forms service maps by name.
+- **perseus**: Source and command for the Perseus Digital Library, which the perseus stage converts from XML into markdown library works.
+- **phase**: Stage of a multi-step chunk run, such as the chunk phase in EDCS ingestion, where undefined entries are skipped.
+- **pronunciation**: Module and service that derive phonemic and phonetic spellings for each Wiktionary entry, in classical or ecclesiastical mode.
+- **selector**: CSS selector string passed to the test mock Cheerio helper, which selects one element from loaded HTML for assertions.
+- **self**: Adjective for a link that points back to its own page, which the Latin Library builder skips as self-referential.
+- **slaby**: Name part of Epigraphik-Datenbank Clauss-Slaby, the EDCS source whose command and chunk schema live in this project.
+- **splice**: Array method that removes matched items from existing forms, used in the forms service to reuse saved row IDs.
+- **terence**: Literature constants slug expanded to publius terentius afer, the comic playwright whose name the constants supply.
+- **tibullus**: Literature constants slug expanded to albius tibullus, the elegiac poet whose name the constants supply for lookups.
+- **trace**: Stack-trace text the logger records with an error, and the call chain callidescope follows when measuring depth.
+- **translation**: Gloss entity for one meaning of a lexeme, saved per lexeme and parsed from the Wiktionary translations list.
+- **valerius**: Name part shared by the Catullus, Martial, and Valerius Flaccus literature slugs, which each expand to a full Valerius name.
+- **varro**: Literature constants slug for Varro, expanded to marcus terentius varro, whose Res rusticae the library ingests.
+- **vellius**: Literature constants slug expanded to gaius velleius patereculus, the historian whose name the constants supply.
+- **verb**: Part-of-speech tag for verbs, which the forms builder uses to build finite and non-finite verb forms through the verb builder service.
+- **vergil**: Literature constants slug expanded to publius vergilius maro, also a Latin Library path segment for Vergil's works.
+- **victor**: Second word of the aurelius-victor literature slug, which the constants expand to sextus aurelius victor.
+- **virgil**: Path segment and literature name for Virgil, a spelling variant of vergil that the Latin Library crawler matches.
+- **vitruvius**: Literature constants slug expanded to marcus vitruvius pollio, the architectural writer whose name the constants supply.
+- **vol**: Praenomen abbreviation key vol, expanded to feminine volusa or masculine volesus in the manual praenomen table.
+- **vop**: Praenomen abbreviation key vop, expanded to feminine vopisca or masculine vopiscus in the manual praenomen table.
+- **vulgate**: Literature constants slug part for the Vulgate Bible, expanded to biblia sacra vulgata testamentum novum or vetum.
+- **whitespace**: Character class of spaces and tabs that the library utilities strip from lines, such as padded end-of-line poetry numbers.
+- **wikipedia**: Source dump, a data/wikipedia folder kept out of git, whose extraction the dictionary command requires first.
+- **wiktionary**: Dictionary source of raw HTML lemma pages that the stage downloads and caches under data/wiktionary.
 
 <!-- coinagerie:end -->

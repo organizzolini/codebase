@@ -7,6 +7,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
+import { SharedNxCacheRemoteService } from "./shared-nx-cache-remote.service";
 import { SharedNxCacheServerService } from "./shared-nx-cache-server.service";
 import { SharedNxCacheStorageService } from "./shared-nx-cache-storage.service";
 import {
@@ -39,6 +40,14 @@ describe(SharedNxCacheServerService, () => {
       providers: [
         SharedNxCacheServerService,
         { provide: SharedNxCacheStorageService, useValue: storage },
+        {
+          provide: SharedNxCacheRemoteService,
+          useValue: createMock<SharedNxCacheRemoteService>({
+            fetch: vi
+              .fn<SharedNxCacheRemoteService["fetch"]>()
+              .mockResolvedValue(undefined),
+          }),
+        },
         {
           provide: ConfigService,
           useValue: {
@@ -85,6 +94,10 @@ describe(SharedNxCacheServerService, () => {
         {
           provide: SharedNxCacheStorageService,
           useValue: createMock<SharedNxCacheStorageService>(),
+        },
+        {
+          provide: SharedNxCacheRemoteService,
+          useValue: createMock<SharedNxCacheRemoteService>(),
         },
         { provide: ConfigService, useValue: createMock<ConfigService>() },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
