@@ -73,7 +73,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/caelundas/caelundas-db": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
   publication: NEST_BASELINE,
-  synchronization: NEST_BASELINE,
 };
 
 /**

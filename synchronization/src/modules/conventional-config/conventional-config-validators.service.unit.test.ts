@@ -2,6 +2,7 @@ import path from "node:path";
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConventionalConfigIoService } from "./conventional-config-io.service";
@@ -62,6 +63,15 @@ describe(ConventionalConfigValidatorsService, () => {
     );
 
     expect(instance).toBeInstanceOf(ConventionalConfigValidatorsService);
+  });
+
+  it("sets logger context", async () => {
+    expect.hasAssertions();
+
+    await expectLoggerContext(
+      ConventionalConfigValidatorsService,
+      moduleOptions,
+    );
   });
 
   it("validates matching settings scopes", () => {
