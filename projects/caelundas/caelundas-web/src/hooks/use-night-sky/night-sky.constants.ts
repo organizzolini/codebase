@@ -1,29 +1,4 @@
-import type { ColorSegment } from "./night-sky.types";
-
-// 🌍 Astronomy
-
-/**
- * Earth's sidereal rotation rate, in radians per second.
- */
-export const EARTH_ROTATION_RADIANS_PER_SECOND = 7.2921159e-5;
-
-/**
- * Seconds in one sidereal day.
- */
-export const SIDEREAL_DAY_SECONDS = 86_164.0905;
-
-export const DEGREES_PER_HOUR = 15;
-
-export const RADIANS_PER_DEGREE = Math.PI / 180;
-
-export const MILLISECONDS_PER_DAY = 86_400_000;
-
-/**
- * Julian day of the Unix epoch, and of the J2000 epoch the star catalog uses.
- */
-export const UNIX_EPOCH_JULIAN_DAY = 2_440_587.5;
-
-export const J2000_JULIAN_DAY = 2_451_545;
+import type { ConstellationListing } from "./night-sky.types";
 
 // 🔭 Defaults
 
@@ -60,20 +35,14 @@ export const DEFAULT_OBSERVER = {
 // ⏱ Page
 
 /**
- * How long the window must stay the same size before the sky is rebuilt to
- * fit it.
+ * How long the window must stay the same size before the sky is asked for
+ * again to fit it.
  */
 export const RESIZE_DEBOUNCE_MILLISECONDS = 250;
 
 export const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 // 📐 Geometry
-
-/**
- * Extra pixels kept on either side of the ring of visible stars, so a dot
- * near the edge is not dropped.
- */
-export const RING_MARGIN = 24;
 
 /**
  * The pole stays at least this many degrees beyond the top edge.
@@ -87,69 +56,11 @@ export const POLE_MARGIN_DEGREES = 1;
  */
 export const MINIMUM_BOTTOM_ALTITUDE_DEGREES = -45;
 
-export const MINIMUM_FIELD_OF_VIEW_DEGREES = 2;
-
-// ✨ Stars
-
-export const STAR_RADIUS_BASE = 2.9;
-
-export const STAR_RADIUS_PER_MAGNITUDE = 0.34;
-
-export const STAR_RADIUS_FLOOR = 0.55;
-
-/**
- * Stars brighter than this get a soft glow behind them.
- */
-export const GLOW_MAGNITUDE_LIMIT = 2.8;
-
-export const GLOW_RADIUS_FACTOR = 4.2;
-
-/**
- * Dots are drawn this much larger in the zoomed-out tuning view.
- */
-export const DEBUG_STAR_FACTOR = 2.4;
-
-export const DEBUG_MARGIN = 30;
-
 // 🎨 Color
 
 // Three or six hexadecimal digits, with or without the leading `#`, which a
 // link can only carry as `%23`.
 export const COLOR_DIGITS_PATTERN = /^#?(?:[\da-f]{3}|[\da-f]{6})$/iu;
-
-export const COLOR_BUCKETS_PER_UNIT = 10;
-
-export const COLOR_BUCKET_LOWEST = -4;
-
-export const COLOR_BUCKET_HIGHEST = 20;
-
-/**
- * The orange end of the color ramp, also the fallback for any color index the
- * lookup does not place.
- */
-export const LAST_COLOR_SEGMENT: ColorSegment = {
-  from: 1.5,
-  fromColor: [255, 184, 119],
-  to: 2,
-  toColor: [255, 154, 85],
-};
-
-/**
- * B−V color index to display color, from blue-white to orange, as a blackbody
- * ramp.
- */
-export const COLOR_SEGMENTS: readonly ColorSegment[] = [
-  { from: -0.4, fromColor: [155, 176, 255], to: 0, toColor: [202, 215, 255] },
-  { from: 0, fromColor: [202, 215, 255], to: 0.4, toColor: [248, 247, 255] },
-  { from: 0.4, fromColor: [248, 247, 255], to: 0.7, toColor: [255, 244, 234] },
-  { from: 0.7, fromColor: [255, 244, 234], to: 1, toColor: [255, 217, 176] },
-  { from: 1, fromColor: [255, 217, 176], to: 1.5, toColor: [255, 184, 119] },
-  LAST_COLOR_SEGMENT,
-];
-
-export const COLOR_INDEX_LOWEST = -0.4;
-
-export const COLOR_INDEX_HIGHEST = 2;
 
 // ✳️ Constellations
 
@@ -165,58 +76,104 @@ export const CONSTELLATION_WORDS = ["all", "none", "zodiac"] as const;
  */
 export const DEFAULT_CONSTELLATIONS: readonly string[] = ["zodiac"];
 
-/**
- * The steps each figure segment is drawn in along its great circle, enough
- * for the longest segment to bend smoothly with the projection.
- */
-export const CONSTELLATION_SEGMENT_STEPS = 8;
-
-/**
- * How the figures are drawn besides their color, opacity and width: unfilled
- * round-ended lines, the same width however far the tuning view zooms out.
- */
-export const CONSTELLATION_LINE_ATTRIBUTES =
-  'fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"';
-
 /** The opacities `sky.lineOpacity` is clamped to. */
 export const LINE_OPACITY_RANGE = { maximum: 1, minimum: 0 } as const;
 
 /** The widths, in on-screen pixels, `sky.lineWidth` is clamped to. */
 export const LINE_WIDTH_RANGE = { maximum: 10, minimum: 0 } as const;
 
-// ☀️ Ecliptic
-
 /**
- * The tilt of the Earth's axis, the angle between the ecliptic and the
- * celestial equator, at J2000.
+ * Every constellation the night sky has a figure for, by its Latin name, with
+ * whether it is one of the twelve of the zodiac, as the figure picker lists
+ * them.
  */
-export const OBLIQUITY_DEGREES = 23.44;
-
-/**
- * The degrees of ecliptic longitude between the points the ecliptic is drawn
- * through, fine enough for its curve under the projection.
- */
-export const ECLIPTIC_STEP_DEGREES = 5;
-
-/**
- * How the ecliptic is drawn besides its color, opacity and width: dashed, so
- * it reads as a path and not a figure, the same however far the tuning view
- * zooms out.
- */
-export const ECLIPTIC_ATTRIBUTES =
-  'fill="none" stroke-dasharray="6 4" stroke-linecap="round" vector-effect="non-scaling-stroke"';
-
-// 🖼 Markup
-
-export const STAR_GLOW_DEFINITION =
-  '<radialGradient id="star-glow">' +
-  '<stop offset="0" stop-color="#cfd9ff" stop-opacity=".42"/>' +
-  '<stop offset="1" stop-color="#cfd9ff" stop-opacity="0"/>' +
-  "</radialGradient>";
-
-export const DEBUG_LINE_ATTRIBUTES =
-  'fill="none" stroke="#ffb877" vector-effect="non-scaling-stroke"';
-
-export const DEBUG_LABEL_ATTRIBUTES =
-  'fill="#ffb877" font-family="IBM Plex Mono, ui-monospace, monospace" ' +
-  'font-size="64"';
+export const CONSTELLATIONS: readonly ConstellationListing[] = [
+  { name: "Andromeda", zodiac: false },
+  { name: "Antlia", zodiac: false },
+  { name: "Apus", zodiac: false },
+  { name: "Aquarius", zodiac: true },
+  { name: "Aquila", zodiac: false },
+  { name: "Ara", zodiac: false },
+  { name: "Aries", zodiac: true },
+  { name: "Auriga", zodiac: false },
+  { name: "Boötes", zodiac: false },
+  { name: "Caelum", zodiac: false },
+  { name: "Camelopardalis", zodiac: false },
+  { name: "Cancer", zodiac: true },
+  { name: "Canes Venatici", zodiac: false },
+  { name: "Canis Major", zodiac: false },
+  { name: "Canis Minor", zodiac: false },
+  { name: "Capricornus", zodiac: true },
+  { name: "Carina", zodiac: false },
+  { name: "Cassiopeia", zodiac: false },
+  { name: "Centaurus", zodiac: false },
+  { name: "Cepheus", zodiac: false },
+  { name: "Cetus", zodiac: false },
+  { name: "Chamaeleon", zodiac: false },
+  { name: "Circinus", zodiac: false },
+  { name: "Columba", zodiac: false },
+  { name: "Coma Berenices", zodiac: false },
+  { name: "Corona Austrina", zodiac: false },
+  { name: "Corona Borealis", zodiac: false },
+  { name: "Corvus", zodiac: false },
+  { name: "Crater", zodiac: false },
+  { name: "Crux", zodiac: false },
+  { name: "Cygnus", zodiac: false },
+  { name: "Delphinus", zodiac: false },
+  { name: "Dorado", zodiac: false },
+  { name: "Draco", zodiac: false },
+  { name: "Equuleus", zodiac: false },
+  { name: "Eridanus", zodiac: false },
+  { name: "Fornax", zodiac: false },
+  { name: "Gemini", zodiac: true },
+  { name: "Grus", zodiac: false },
+  { name: "Hercules", zodiac: false },
+  { name: "Horologium", zodiac: false },
+  { name: "Hydra", zodiac: false },
+  { name: "Hydrus", zodiac: false },
+  { name: "Indus", zodiac: false },
+  { name: "Lacerta", zodiac: false },
+  { name: "Leo", zodiac: true },
+  { name: "Leo Minor", zodiac: false },
+  { name: "Lepus", zodiac: false },
+  { name: "Libra", zodiac: true },
+  { name: "Lupus", zodiac: false },
+  { name: "Lynx", zodiac: false },
+  { name: "Lyra", zodiac: false },
+  { name: "Mensa", zodiac: false },
+  { name: "Microscopium", zodiac: false },
+  { name: "Monoceros", zodiac: false },
+  { name: "Musca", zodiac: false },
+  { name: "Norma", zodiac: false },
+  { name: "Octans", zodiac: false },
+  { name: "Ophiuchus", zodiac: false },
+  { name: "Orion", zodiac: false },
+  { name: "Pavo", zodiac: false },
+  { name: "Pegasus", zodiac: false },
+  { name: "Perseus", zodiac: false },
+  { name: "Phoenix", zodiac: false },
+  { name: "Pictor", zodiac: false },
+  { name: "Pisces", zodiac: true },
+  { name: "Piscis Austrinus", zodiac: false },
+  { name: "Puppis", zodiac: false },
+  { name: "Pyxis", zodiac: false },
+  { name: "Reticulum", zodiac: false },
+  { name: "Sagitta", zodiac: false },
+  { name: "Sagittarius", zodiac: true },
+  { name: "Scorpius", zodiac: true },
+  { name: "Sculptor", zodiac: false },
+  { name: "Scutum", zodiac: false },
+  { name: "Serpens", zodiac: false },
+  { name: "Sextans", zodiac: false },
+  { name: "Taurus", zodiac: true },
+  { name: "Telescopium", zodiac: false },
+  { name: "Triangulum", zodiac: false },
+  { name: "Triangulum Australe", zodiac: false },
+  { name: "Tucana", zodiac: false },
+  { name: "Ursa Major", zodiac: false },
+  { name: "Ursa Minor", zodiac: false },
+  { name: "Vela", zodiac: false },
+  { name: "Virgo", zodiac: true },
+  { name: "Volans", zodiac: false },
+  { name: "Vulpecula", zodiac: false },
+];

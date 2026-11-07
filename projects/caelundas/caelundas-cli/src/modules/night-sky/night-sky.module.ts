@@ -1,8 +1,7 @@
 import { Module } from "@nestjs/common";
 
+import { CaelundasDatabaseModule } from "@codebase/caelundas-db";
 import { LoggerModule } from "@codebase/observability";
-
-import { DatabaseModule } from "../database/database.module";
 
 import { NightSkyCommand } from "./night-sky.command";
 import { NightSkyService } from "./night-sky.service";
@@ -14,7 +13,7 @@ import { NightSkyService } from "./night-sky.service";
 @Module({
   controllers: [],
   exports: [NightSkyCommand, NightSkyService],
-  imports: [LoggerModule, DatabaseModule],
+  imports: [LoggerModule, CaelundasDatabaseModule],
   providers: [NightSkyCommand, NightSkyService],
 })
 export class NightSkyModule {}

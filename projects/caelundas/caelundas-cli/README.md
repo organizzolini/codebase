@@ -4,7 +4,7 @@
 
 Caelundas computes planetary positions minute by minute over a date range,
 detects the astronomical events in them — aspects, phases, eclipses,
-retrogrades, ingresses, solstices, twilights — stores them in a SQLite file, and
+retrogrades, ingresses, solstices, twilights — stores them in Postgres, and
 renders an iCalendar file you can subscribe to in Google Calendar, Apple
 Calendar, or anything else that reads `.ics`, plus a JSON file of the same
 events.
@@ -15,10 +15,13 @@ events.
 # 1. Download the Swiss Ephemeris data files (one-time, about 2 MB)
 nx run caelundas-cli:download-ephemeris
 
-# 2. Configure your observer location and date range
+# 2. Configure your observer location, date range and database
 cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
 
-# 3. Generate the calendar; the first run creates output/database.sqlite and its tables
+# 3. Start the local Postgres (docker compose) and create the schema
+nx run caelundas-db:migration:run
+
+# 4. Generate the calendar and store its events
 nx run caelundas-cli:start
 ```
 
@@ -37,10 +40,13 @@ END_DATE="2026-07-31"         # YYYY-MM-DD
 OUTPUT_DIRECTORY="./output"
 ```
 
-Every field is optional. The database is the SQLite file `CAELUNDAS_SQLITE_DATABASE`
-names, or `:memory:`; by default it is `output/database.sqlite` in this project's
-folder, wherever the command runs from, and is gitignored with the rest of `output/`. Location defaults to
-Philadelphia, and the date range to a two-month window centered on today.
+Every field is optional. Location defaults to Philadelphia, and the date range
+to a two-month window centered on today.
+
+The database is the `caelundas` schema of `caelundas_development`, read through
+`CAELUNDAS_POSTGRES_*` only (database, host, password, port, schema and
+username, each defaulting to the local Docker Postgres, as `.env.default`
+lists). The unprefixed `POSTGRES_*` admin login is never read.
 
 The **timezone is derived from your coordinates** rather than configured
 separately — a calendar whose location and timezone could disagree is a
@@ -182,7 +188,7 @@ the database never disagree.
 | `timezone` | The IANA zone derived from that location, such as `America/New_York`, to render local time in |
 | `id`, `created_at`, `updated_at`, … | `uuidv7()` id and audit columns |
 
-An event is unique on `(summary, start, latitude, longitude)`:
+An event is unique on `(summary, start, end, latitude, longitude)`:
 
 - Re-running a range updates rows in place. `updated_at` advances; `created_at`
   does not.
@@ -230,33 +236,32 @@ under, and carries the nodes above through the closure table. The `.ics`
 output keeps the `CATEGORIES` property, and the JSON output a `tags` array,
 both holding the linked tags' names.
 
-Coordinates are stored as text, fixed to six decimals, so the natural key
-compares them exactly; compare them as such. `start` and `end` are ISO 8601
-text in UTC, such as `2026-03-04T15:20:00.000Z`, which sorts as the instants
-it names.
+Coordinates are `numeric(9, 6)`: the driver returns them as strings, such as
+`"39.949309"`, and a number is written fixed to six decimals, so the natural key
+compares them exactly. `start` and `end` are `timestamptz`, read back in UTC.
+Ids are `uuidv7()` values the database assigns, so a run never derives one.
 
-A run creates `output/database.sqlite` and applies the migration when the
-table is missing, and adds to it on later runs: the same event for the same
-place updates its row. The schema comes from a generated migration:
-`nx run caelundas-cli:migration:generate` creates the next one, and
-`migration:run`, `migration:revert` and `migration:show` work on the file
-directly. They read the data source and migrations from
-`src/modules/database/`, the folder the `migration` target's `module` option
-names. The same file is what the web application, `caelundas-web`, reads: the
-migration creates the read model it queries (`tag_nodes`,
-`calendar_event_tag_nodes` and the `calendar_events_derived` view), and every
-run ends by rewriting those tables with `data/events-read-model.sql`, so there
-is no separate build step. Build the web application with
-`nx run caelundas-web:build:ingested`, which copies the file.
+A run adds to the database, and the same event for the same place updates its
+row, through `INSERT … ON CONFLICT (summary, start, end, latitude, longitude)
+DO UPDATE`, so re-running an ingest never duplicates it. Rows go in batches
+sized by their columns to stay under Postgres's 65,535 bind parameters per
+statement. The entities, the one migration, and the read model come from the
+`caelundas-db` library: apply the migration with
+`nx run caelundas-db:migration:run` before the first run (`migration:generate`
+creates the next one). Every run ends by rebuilding the read model
+(`tag_nodes`, `calendar_event_tag_nodes`, and the `calendar_event_derived_times`
+view the API queries) with `CaelundasDatabaseService.refreshReadModel`, in the
+same transaction that wrote the events, so a failed refresh stores nothing and
+there is no separate build step.
 
-SQLite takes one writer at a time, so run one ingestion against a file at a
-time; a second waits five seconds and then fails with `SQLITE_BUSY`.
+Postgres takes concurrent writers, but two runs that insert the same missing
+tag at once make the second fail on the tag's unique name; run it again.
 
 ## Night sky
 
 The `night-sky` command fills the tables `caelundas-web`'s night sky reads,
-`star`, `constellation` and `constellation_line`, in the same file, replacing
-what an earlier run wrote. It reads three files downloaded beforehand, never
+`stars`, `constellations` and `constellation_lines`, in the same database,
+replacing what an earlier run wrote, in one transaction. It reads three files downloaded beforehand, never
 committed:
 
 ```bash
@@ -272,15 +277,11 @@ keyed by Hipparcos number, plus any fainter star a figure joins; the 88 IAU
 constellations, the twelve of the zodiac flagged; and each figure's segments
 between two stored stars. d3-celestial draws its figures by position, so each
 vertex is matched to the catalog star within 0.05 degrees of it, and a segment
-south of the stored sky is left out. `data/night-sky-seed.sql` holds all 88
-constellations and their figures, with only the stars those figures join and
-those brighter than magnitude 3, for `caelundas-web`'s tests and seeded build;
-the full catalog stays an ingest step.
+south of the stored sky is left out.
 
 The stars are the [HYG star database](https://github.com/astronexus/HYG-Database)
 v4.1, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), David
-Nash and the HYG contributors; the stored catalog and the seed are derived
-works under the same license. The constellations and figures are
+Nash and the HYG contributors; the stored catalog is a derived work under the same license. The constellations and figures are
 [d3-celestial](https://github.com/ofrohn/d3-celestial)'s, BSD-3-Clause, Olaf
 Frohn, after the IAU's constellation charts.
 
@@ -296,7 +297,6 @@ src/
     ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena
     ├── perfective/          # Exact-moment detection across every event service
     ├── progressive/         # Spans derived from those moments
-    ├── database/            # SQLite connection, entities, migrations
     ├── night-sky/           # Stars and constellation figures for the web's night sky
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── tags/                # Resolving raw tag strings to nodes of the tag tree
@@ -317,8 +317,8 @@ nx run caelundas-cli:start
 
 ## Test
 
-Integration and end-to-end suites use an in-memory or temporary SQLite file,
-so they need no container.
+Integration and end-to-end suites start a throwaway Postgres in a Testcontainers
+container and run the real migration against it, so Docker must be running.
 
 ```bash
 nx run caelundas-cli:vitest
@@ -326,8 +326,8 @@ nx run caelundas-cli:vitest
 
 ```bash
 nx run caelundas-cli:vitest:unit          # Fast tests only
-nx run caelundas-cli:vitest:end-to-end    # Full pipeline, against a temporary SQLite file
-nx run caelundas-cli:vitest:integration   # Calendar events service, against an in-memory SQLite file
+nx run caelundas-cli:vitest:end-to-end    # Full pipeline, against a Testcontainers Postgres
+nx run caelundas-cli:vitest:integration   # Ingest services, against a Testcontainers Postgres
 ```
 
 ## Development
@@ -1712,7 +1712,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `AnnualSolarCycleEventsService.getWinterEvents` | 8 | `AnnualSolarCycleEventsService.isWinterSolstice`, `AnnualSolarCycleEventsService.buildWinterSolsticeEvent`, `AnnualSolarCycleEventsService.isThirteenthHexadecan`, `AnnualSolarCycleEventsService.buildThirteenthHexadecanEvent`, `AnnualSolarCycleEventsService.isImbolc`, `AnnualSolarCycleEventsService.buildImbolcEvent`, `AnnualSolarCycleEventsService.isFifteenthHexadecan`, `AnnualSolarCycleEventsService.buildFifteenthHexadecanEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:123` |
 | `PerfectiveService.detectOrbitalEvents` | 8 | `RetrogradesService.detect`, `IngressesService.detect`, `MonthlyLunarCycleService.detect`, `MonthlyLunarCycleService.detectApsides`, `AnnualSolarCycleService.detect`, `PhasesService.getMartianPhaseEvents`, `PhasesService.getMercurianPhaseEvents`, `PhasesService.getVenusianPhaseEvents` | `projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:171` |
 | `ProgressiveService.detect` | 8 | `AspectsService.detectProgressive`, `RetrogradesService.detectProgressive`, `EclipsesService.detectProgressive`, `IngressesService.detectProgressive`, `MonthlyLunarCycleService.detectProgressive`, `TwilightsService.detectProgressive`, `PhasesService.detectProgressive`, `AnnualSolarCycleService.detectProgressive` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive.service.ts:47` |
-| `CalendarEventsService.transaction(…)` | 7 | `TagsService.resolve`, `CalendarEventsService.flatMap(…)`, `CalendarEventsService.writeRows`, `CalendarEventsService.map(…)`, `CalendarEventsService.replaceTagLinks`, `CalendarEventsService.toTagLinks`, `DatabaseService.refreshReadModel` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:379` |
+| `CalendarEventsService.transaction(…)` | 7 | `TagsService.resolve`, `CalendarEventsService.flatMap(…)`, `CalendarEventsService.writeRows`, `CalendarEventsService.map(…)`, `CalendarEventsService.replaceTagLinks`, `CalendarEventsService.toTagLinks`, `CaelundasDatabaseService.refreshReadModel` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:379` |
 | `PhasesService.detectProgressive` | 7 | `PhasesService.filter(…)`, `PhasesService.filter(…)`, `VenusianPhaseService.getVenusianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MercurianPhaseService.getMercurianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MartianPhaseService.getMartianPhaseProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:97` |
 | `classifyEvent` | 6 | `flatMap(…)`, `pruneAncestorPaths`, `flatMap(…)`, `ingressPaths`, `eclipsePaths`, `isInstant` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:20` |
 | `dignityPaths` | 6 | `find(…)`, `map(…)`, `find(…)`, `map(…)`, `isSign`, `find(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:57` |
@@ -2386,7 +2386,7 @@ flowchart LR
   CalendarModule
   ConfigModule([ConfigModule])
   DailyCyclesModule
-  DatabaseModule
+  CaelundasDatabaseModule
   DatetimeModule
   DiscoveryModule
   EclipsesModule
@@ -2432,7 +2432,7 @@ flowchart LR
   CaelundasModule --> CalendarEventsModule
   CaelundasModule --> CalendarModule
   CaelundasModule --> DailyCyclesModule
-  CaelundasModule --> DatabaseModule
+  CaelundasModule --> CaelundasDatabaseModule
   CaelundasModule --> EclipsesModule
   CaelundasModule --> EphemerisModule
   CaelundasModule --> IngressesModule
@@ -2452,13 +2452,13 @@ flowchart LR
   CaelundasModule --> StelliumModule
   CaelundasModule --> TripleAspectsModule
   CaelundasModule --> TwilightsModule
-  CalendarEventsModule --> DatabaseModule
+  CalendarEventsModule --> CaelundasDatabaseModule
   CalendarEventsModule --> TagsModule
   DailyCyclesModule --> CalendarModule
   DailyCyclesModule --> EphemerisModule
   DailyCyclesModule --> MathModule
-  DatabaseModule --> SqliteModule
-  DatabaseModule --> TypeOrmModule
+  CaelundasDatabaseModule --> SqliteModule
+  CaelundasDatabaseModule --> TypeOrmModule
   EclipsesModule --> EphemerisModule
   EclipsesModule --> MathModule
   EclipsesModule --> ProgressiveUtilitiesModule
@@ -2475,7 +2475,7 @@ flowchart LR
   MinorAspectsModule --> ProgressiveUtilitiesModule
   MonthlyLunarCycleModule --> CalendarModule
   MonthlyLunarCycleModule --> EphemerisModule
-  NightSkyModule --> DatabaseModule
+  NightSkyModule --> CaelundasDatabaseModule
   PerfectiveModule --> AnnualSolarCycleModule
   PerfectiveModule --> AspectsModule
   PerfectiveModule --> DailyCyclesModule

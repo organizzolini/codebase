@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { getEventLabel } from "./calendar-glyphs.utilities";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 
 function event(summary: string, description = ""): CalendarEventRecord {
   return {

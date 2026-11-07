@@ -6,24 +6,8 @@ import {
   isFieldOfViewCut,
   normalizeConstellationName,
   readNightSkyOverrides,
-  selectConstellationSegments,
+  toNightSkyInput,
 } from "./use-night-sky.utilities";
-
-import type { ConstellationSegment } from "./night-sky.types";
-
-const URSA_MAJOR: ConstellationSegment = {
-  from: [11.0621, 61.751],
-  name: "Ursa Major",
-  to: [11.0307, 56.382],
-  zodiac: false,
-};
-
-const SCORPIUS: ConstellationSegment = {
-  from: [16.4901, -26.432],
-  name: "Scorpius",
-  to: [16.0056, -22.622],
-  zodiac: true,
-};
 
 describe("use-night-sky utilities", () => {
   describe(readNightSkyOverrides, () => {
@@ -213,30 +197,17 @@ describe("use-night-sky utilities", () => {
     });
   });
 
-  describe(selectConstellationSegments, () => {
-    const segments = [URSA_MAJOR, SCORPIUS];
-
-    it("selects every figure, the zodiac's, or the ones named", () => {
-      expect(selectConstellationSegments(segments, ["all"])).toStrictEqual(
-        segments,
-      );
-      expect(selectConstellationSegments(segments, ["zodiac"])).toStrictEqual([
-        SCORPIUS,
-      ]);
-      expect(
-        selectConstellationSegments(segments, ["zodiac", "ursa_major"]),
-      ).toStrictEqual(segments);
-      expect(selectConstellationSegments(segments, [])).toStrictEqual([]);
-    });
-  });
-
   describe(findUnknownConstellationNames, () => {
     it("names what is neither a word it knows nor a constellation", () => {
       expect(
-        findUnknownConstellationNames(
-          [URSA_MAJOR],
-          ["all", "zodiac", "ursa_major", "narnia"],
-        ),
+        findUnknownConstellationNames([
+          "all",
+          "none",
+          "zodiac",
+          "ursa_major",
+          "corona_borealis",
+          "narnia",
+        ]),
       ).toStrictEqual(["narnia"]);
     });
   });
@@ -253,6 +224,62 @@ describe("use-night-sky utilities", () => {
       expect(
         isFieldOfViewCut({ ...measurements, fieldOfViewClamped: false }, 120),
       ).toBe(false);
+    });
+  });
+
+  describe(toNightSkyInput, () => {
+    const view = { size: { height: 600.4, width: 800 }, still: false };
+
+    it("writes every setting of the backdrop, the window it fills and the pose", () => {
+      expect(toNightSkyInput(readNightSkyOverrides({}), view)).toStrictEqual({
+        backgroundBottomColor: "#0d1533",
+        backgroundTopColor: "#04060f",
+        bottomAltitudeDegrees: 0,
+        constellations: ["zodiac"],
+        debug: false,
+        ecliptic: true,
+        eclipticColor: "#ffffff",
+        eclipticOpacity: 0.12,
+        eclipticWidth: 1,
+        faintestMagnitude: 6.5,
+        height: 600,
+        latitudeDegrees: 90,
+        lineColor: "#ffffff",
+        lineOpacity: 0.24,
+        lineWidth: 0.8,
+        longitudeDegrees: -74,
+        pixelsPerSecond: 3,
+        starScale: 1,
+        still: false,
+        verticalFieldOfViewDegrees: 90,
+        width: 800,
+      });
+    });
+
+    it("writes the link's values, and no figure as none", () => {
+      expect(
+        toNightSkyInput(
+          readNightSkyOverrides({
+            "sky.constellations": "",
+            "sky.debug": true,
+            "sky.lat": 51.5,
+            "sky.maxMag": 4,
+          }),
+          { ...view, still: true },
+        ),
+      ).toMatchObject({
+        constellations: ["none"],
+        debug: true,
+        faintestMagnitude: 4,
+        latitudeDegrees: 51.5,
+        still: true,
+      });
+      expect(
+        toNightSkyInput(
+          readNightSkyOverrides({ "sky.constellations": "ursa_major,leo" }),
+          view,
+        ).constellations,
+      ).toStrictEqual(["ursa_major", "leo"]);
     });
   });
 });

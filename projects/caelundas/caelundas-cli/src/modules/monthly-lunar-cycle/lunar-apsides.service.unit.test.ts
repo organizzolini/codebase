@@ -8,7 +8,7 @@ import { CalendarService } from "../calendar/calendar.service";
 
 import { LunarApsidesService } from "./lunar-apsides.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { DistanceEphemeris } from "../ephemeris/ephemeris.types";
 
 vi.mock("fs", () => ({

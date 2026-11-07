@@ -2,7 +2,7 @@ import { getEventLabel } from "../event-glyphs/calendar-glyphs.utilities";
 
 import { MINUTE_MILLISECONDS } from "./calendar-events.constants";
 
-import type { CalendarEventRecord } from "./events-database.types";
+import type { CalendarEventRecord } from "./calendar-records.types";
 import type { CalendarEvent } from "@codebase/presentation";
 
 /**

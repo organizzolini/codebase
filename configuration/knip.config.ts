@@ -170,6 +170,19 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // caelundas-api: NestJS GraphQL API
+    "projects/caelundas/caelundas-api": {
+      ignoreDependencies: [
+        // Apollo 5's Express integration, which @nestjs/apollo resolves by
+        // name at startup; without it GraphQLModule refuses to boot.
+        "@as-integrations/express5",
+        // Named only by testing/mocks.ts, a conformance-scaffolded placeholder
+        // that knip ignores, so no import reaches it.
+        "typeorm",
+      ],
+      project: "src/**/*.ts",
+    },
+
     // caelundas-db: Shared TypeORM entities, migration, and read model
     "projects/caelundas/caelundas-db": {
       // The data source and the migration are read by the TypeORM command

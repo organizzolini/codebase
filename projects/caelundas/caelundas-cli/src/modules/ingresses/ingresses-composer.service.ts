@@ -25,7 +25,7 @@ import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { DECAN_TAG_BY_DECAN } from "./ingresses.constants";
 
 import type { Body, Decan, Sign } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 
