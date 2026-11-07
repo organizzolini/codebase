@@ -57,7 +57,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       type: z
         .string()
         .describe(
-          "Directory the project nests under: projects, a domain folder such as projects/lexico, or a deeper nesting such as projects/ic-suite/callidescope",
+          "Directory the project nests under, with a trailing slash: empty at the workspace root, projects/, a domain folder such as projects/lexico/, or a deeper nesting such as projects/ic-suite/callidescope/",
         ),
       workspaceRelativePrefix: z
         .string()
@@ -69,36 +69,43 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       {
         patterns: ["projects/ic-suite/callidescope/callidescope-cli"],
         substitutions: {
-          type: "projects/ic-suite/callidescope",
+          type: "projects/ic-suite/callidescope/",
           workspaceRelativePrefix: "../../../../",
         },
       },
       {
         patterns: ["projects/ic-suite/codependix/codependix-cli"],
         substitutions: {
-          type: "projects/ic-suite/codependix",
+          type: "projects/ic-suite/codependix/",
           workspaceRelativePrefix: "../../../../",
         },
       },
       {
         patterns: ["projects/ic-suite/codometer/codometer-cli"],
         substitutions: {
-          type: "projects/ic-suite/codometer",
+          type: "projects/ic-suite/codometer/",
           workspaceRelativePrefix: "../../../../",
         },
       },
       {
         patterns: ["projects/ic-suite/coinagerie/coinagerie-cli"],
         substitutions: {
-          type: "projects/ic-suite/coinagerie",
+          type: "projects/ic-suite/coinagerie/",
           workspaceRelativePrefix: "../../../../",
         },
       },
       {
         patterns: ["projects/ic-suite/conformetry/conformetry-cli"],
         substitutions: {
-          type: "projects/ic-suite/conformetry",
+          type: "projects/ic-suite/conformetry/",
           workspaceRelativePrefix: "../../../../",
+        },
+      },
+      {
+        patterns: ["compliance"],
+        substitutions: {
+          type: "",
+          workspaceRelativePrefix: "../",
         },
       },
     ],
@@ -124,7 +131,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       type: z
         .string()
         .describe(
-          "Directory the project nests under: projects, a domain folder such as projects/lexico, or a deeper nesting such as projects/ic-suite/callidescope",
+          "Directory the project nests under, with a trailing slash: empty at the workspace root, projects/, a domain folder such as projects/lexico/, or a deeper nesting such as projects/ic-suite/callidescope/",
         ),
       workspaceRelativePrefix: z
         .string()

@@ -1,0 +1,17 @@
+// 🏷️ Types
+
+/**
+ * What one `gh` invocation produced.
+ *
+ * Standard output and standard error are kept apart rather than merged. `gh`
+ * writes its own notices to standard error even when the call succeeds, so a
+ * merged stream leaves a successful call returning a document that no longer
+ * parses as JSON.
+ */
+export interface GithubCliResult {
+  /** Whether the `gh` binary could be executed at all. */
+  readonly available: boolean;
+  readonly standardError: string;
+  readonly standardOutput: string;
+  readonly succeeded: boolean;
+}

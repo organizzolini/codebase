@@ -1,0 +1,12 @@
+{
+  "$schema": "../../../../node_modules/nx/schemas/executors.json",
+  "executors": {
+    "check": {
+      "batchImplementation": "@coinagerie/nx/src/executors/check/batch-executor",
+      "description": "Judge a project's glossaries against the words its code uses, or rewrite them.",
+      "implementation": "@coinagerie/nx/src/executors/check/executor",
+      "preferBatch": true,
+      "schema": "./src/executors/check/schema.json"
+    }
+  }
+}

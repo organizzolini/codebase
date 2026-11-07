@@ -7,6 +7,10 @@ const packageDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 export default createViteLibraryConfig({
   entry: {
+    "src/executors/gate/batch-executor": path.resolve(
+      packageDirectory,
+      "src/executors/gate/batch-executor.ts",
+    ),
     "src/executors/gate/executor": path.resolve(
       packageDirectory,
       "src/executors/gate/executor.ts",

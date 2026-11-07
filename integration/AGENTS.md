@@ -117,6 +117,40 @@ it knows, which can be older than one the repository already uses.
 Run one locally with `nx run integration:start:<command>`, setting the
 variables it reads (`TARGET`, `NX_BASE`, `NX_HEAD`, and so on).
 
+### Executors
+
+The project also holds Nx executors, registered in `executors.json` and resolved
+by Nx as `integration:<name>`: the one place this repository keeps an executor
+for a third-party tool. They exist to be **batched**. Nx only batches an executor
+that names a `batchImplementation`, and `nx:run-commands` has none, so a tool run
+once per project pays its start-up once per project.
+
+| Executor      | Replaces                                    | Source                       |
+| ------------- | ------------------------------------------- | ---------------------------- |
+| `knip`        | `knip --workspace <root>`, once per project | `src/executors/knip`         |
+| `spell-check` | `cspell '<root>/**'`, once per project      | `src/executors/spell-check`  |
+
+`knip` runs one `knip --reporter json --workspace <root> --workspace <root> …` for
+every task Nx batches, reads which workspace each issue's file sits in, and fails
+a task only when an issue is in its own workspace. A failed task is run again by
+itself to get knip's own report, and the batch executor prints each failure under
+its task id, because Nx stores a batch task's output but never prints it. Nothing
+is read as a pass it did not earn: output that is not a report, or a failing exit
+with no issue in any workspace asked about, fails every task. A task asked to fix
+(`-c write`) is run on its own. Each task is still hashed, cached and replayed by
+itself, and `--batch=false` turns batching off.
+
+`spell-check` runs one `cspell` over every task's root, reads the file each
+finding names, and charges it to every root that holds it — a nested project's
+files are also under its parent's, as they are when each is run alone. A clean
+exit passes every task; a failing exit with no finding under any root asked about
+fails every task. A failed task is run again by itself for cspell's own report,
+which the batch executor prints under the task id.
+
+An executor here is plain functions rather than a NestJS service, since Nx calls
+it directly, and it declares only the fields of Nx's context it reads, so this
+project needs no dependency on `@nx/devkit`.
+
 Steps that run before `pnpm install` cannot live here, because a command needs
 the installed dependencies; see
 [ADR 0029](../documentation/adr/0029-keep-the-ci-steps-in-the-integration-project.md).
