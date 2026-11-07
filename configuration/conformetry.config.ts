@@ -151,7 +151,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/codometer/",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/coinagerie/coinagerie-cli"],
@@ -159,6 +158,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/coinagerie/",
           workspaceRelativePrefix: "../../../../",
         },
+        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/conformetry/conformetry-cli"],
