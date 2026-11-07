@@ -8,6 +8,7 @@ import { DependenciesService } from "../dependencies/dependencies.service";
 import { EnvironmentFilesService } from "../environment-files/environment-files.service";
 import { LocalServicesService } from "../local-services/local-services.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { RemoteCacheService } from "../remote-cache/remote-cache.service";
 import { ReporterService } from "../reporter/reporter.service";
 import { ShellConfigurationService } from "../shell-configuration/shell-configuration.service";
 import { SoftwareService } from "../software/software.service";
@@ -18,9 +19,10 @@ import { STARTUP_FILES } from "./setup.constants";
  * Runs every step of a machine's setup that comes after Node.
  *
  * A developer's Mac runs them in the order they have always run in: shell
- * configuration, software, environment files, then dependencies. Shell
- * configuration comes first, so completions for tools the software step
- * installs later are only wired when setup is run a second time.
+ * configuration, software, environment files, the remote Nx cache key, then
+ * dependencies. Shell configuration comes first, so completions for tools the
+ * software step installs later are only wired when setup is run a second time.
+ * The cache key follows the software step because it needs `linode-cli`.
  *
  * Linux is what a Claude Code cloud session and the devcontainer run. It has
  * no Homebrew and no shell of its own to configure, and `scripts/installation.sh`
@@ -37,6 +39,7 @@ export class SetupService {
     private readonly environmentFilesService: EnvironmentFilesService,
     private readonly dependenciesService: DependenciesService,
     private readonly localServicesService: LocalServicesService,
+    private readonly remoteCacheService: RemoteCacheService,
     private readonly processRunner: ProcessRunnerService,
     private readonly reporter: ReporterService,
     private readonly logger: LoggerService,
@@ -88,6 +91,7 @@ export class SetupService {
     this.shellConfigurationService.configureShell();
     await this.softwareService.installSoftware();
     this.environmentFilesService.createEnvironmentFiles();
+    this.remoteCacheService.setUpRemoteCache();
     this.dependenciesService.installDependencies();
     this.printCompletion();
   }
