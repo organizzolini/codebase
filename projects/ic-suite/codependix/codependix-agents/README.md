@@ -308,3 +308,13 @@ _This project has no internal file imports._
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-2-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run codependix-agents:coinagerie-check:write`.
+
+- **triage**: Skill for acting on a codependix run that failed or reported drift, one of the three skills this package ships.
+
+<!-- coinagerie:end -->

@@ -57,7 +57,16 @@ Only files a tool insists on finding there: `nx.json`, `package.json`,
 for tools that require a root entrypoint), `.gitignore`, `.gitattributes`,
 `.gitmodules`, `.editorconfig`, `.nxignore`, `.openwikiignore`,
 `.node-version`, `.nvmrc`, `skills-lock.json`, and
-`validate-branch-name.config.cjs`, whose tool takes no config path.
+`validate-branch-name.config.cjs`, whose tool takes no config path. The root
+`coinagerie.config.ts` is the one exception to "named in `nx.json`": the folder
+holding a coinagerie configuration is the root its run scans, so the root
+glossary's configuration has to sit at the root, and it writes the
+`GLOSSARY.md` beside it. Every project's own `coinagerie.config.ts` spreads
+`coinagerieConfiguration` from `configuration/coinagerie.config.ts`.
+No hook or pull request judges a glossary: the release workflow writes every
+glossary on the default branch, adding new words and removing stale ones, the
+way it writes the callidescope, codependix, and codometer reports. To see a
+project's words sooner, run `nx run <project>:coinagerie-check:write`.
 
 ## In the graph, and out of releases
 
@@ -71,7 +80,7 @@ tool configs import it. Keep that: it is true, and `nx affected` uses it.
 - **The boundary rules know it.** The project carries the `name:configuration`
   tag. Each `allow` rule in `codependix.config.ts` lists it as a permitted
   target, and the `*-is-a-leaf` rules reach every project but it. A new rule
-  must do the same, or every project's `codependix-gate` fails.
+  must do the same, or every project's `codependix-bound` fails.
 - **Releases ignore it.** A change here would otherwise patch-bump every
   package. the `publication` project's `version-packages` command appends this folder to
   `.nxignore` for the `nx release` command and restores the file on exit. Do not
@@ -80,9 +89,9 @@ tool configs import it. Keep that: it is true, and `nx affected` uses it.
 
 ## Where each caller names these targets
 
-| Caller                       | Targets                                                                                                           |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `continuous-integration.yml` | `lint-code`, `format-code`, `deprecate-code`, `guard-code`, `secure-code`, `build-projects` through `nx affected` |
-| `continuous-deployment.yml`  | `callidescope:write`, `codependix:write`, `codometer:write`                                                       |
-| `lint-staged.config.ts`      | `sherif`, `syncpack` through `nx run-many`, the rest through `nx affected`                                        |
-| `.husky/*`                   | `commitlint`, `validate-branch-name`, `lint-staged`, invoked directly                                             |
+| Caller                       | Targets                                                                                                                                                                                                                                                             |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `continuous-integration.yml` | `lint-code`, `format-code`, `deprecate-code`, `secure-code`, `build-projects`, and the leaves of `guard-code` (a leg each for `callidescope-restrict`, `codependix-bound`, `conformetry-validate` and `coinagerie-check`, the rest in Guard), through `nx affected` |
+| `continuous-deployment.yml`  | `callidescope:write`, `codependix:write`, `codometer:write`                                                                                                                                                                                                         |
+| `lint-staged.config.ts`      | `sherif`, `syncpack` through `nx run-many`, the rest through `nx affected`                                                                                                                                                                                          |
+| `.husky/*`                   | `commitlint`, `validate-branch-name`, `lint-staged`, invoked directly                                                                                                                                                                                               |

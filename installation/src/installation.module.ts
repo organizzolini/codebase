@@ -8,8 +8,10 @@ import { environmentSchema } from "./installation.constants";
 import { DependenciesModule } from "./modules/dependencies/dependencies.module";
 import { EnvironmentFilesModule } from "./modules/environment-files/environment-files.module";
 import { LocalServicesModule } from "./modules/local-services/local-services.module";
+import { RemoteCacheModule } from "./modules/remote-cache/remote-cache.module";
 import { ReporterModule } from "./modules/reporter/reporter.module";
 import { SetupModule } from "./modules/setup/setup.module";
+import { SharedNxCacheModule } from "./modules/shared-nx-cache/shared-nx-cache.module";
 import { ShellConfigurationModule } from "./modules/shell-configuration/shell-configuration.module";
 import { SoftwareModule } from "./modules/software/software.module";
 import { UpdateReuiSkillModule } from "./modules/update-reui-skill/update-reui-skill.module";
@@ -30,8 +32,10 @@ import { UpdateReuiSkillModule } from "./modules/update-reui-skill/update-reui-s
     EnvironmentFilesModule,
     LocalServicesModule,
     LoggerModule,
+    RemoteCacheModule,
     ReporterModule,
     SetupModule,
+    SharedNxCacheModule,
     ShellConfigurationModule,
     SoftwareModule,
     UpdateReuiSkillModule,

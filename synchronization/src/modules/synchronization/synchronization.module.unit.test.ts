@@ -7,7 +7,6 @@ import { ConventionalConfigModule } from "../conventional-config/conventional-co
 import { DevcontainerConfigurationModule } from "../devcontainer-configuration/devcontainer-configuration.module";
 import { InstalledSkillsModule } from "../installed-skills/installed-skills.module";
 import { ProjectPortsModule } from "../project-ports/project-ports.module";
-import { PullRequestLabelsModule } from "../pull-request-labels/pull-request-labels.module";
 import { PullRequestTemplateModule } from "../pull-request-template/pull-request-template.module";
 import { SkillExclusionsModule } from "../skill-exclusions/skill-exclusions.module";
 import { TypeormMigrationSqlModule } from "../typeorm-migration-sql/typeorm-migration-sql.module";
@@ -35,7 +34,6 @@ describe(SynchronizationModule, () => {
     expect(imports).toContain(DevcontainerConfigurationModule);
     expect(imports).toContain(InstalledSkillsModule);
     expect(imports).toContain(ProjectPortsModule);
-    expect(imports).toContain(PullRequestLabelsModule);
     expect(imports).toContain(PullRequestTemplateModule);
     expect(imports).toContain(SkillExclusionsModule);
     expect(imports).toContain(TypeormMigrationSqlModule);

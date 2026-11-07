@@ -297,3 +297,13 @@ _This project has no internal file imports._
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run codometer-agents:coinagerie-check:write`.
+
+- **triage**: Name of the skill for acting on a breached limit or a stale committed report, the third of this package's three skills.
+
+<!-- coinagerie:end -->

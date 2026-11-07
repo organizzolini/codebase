@@ -5,6 +5,15 @@ on:
     - cron: 18 8 * * 5 # Weekly Friday 8:18am UTC
   workflow_dispatch:
 
+# The shared Nx cache's bucket, read-only: a scheduled documentation run has no
+# reason to write to what `main` reads.
+env:
+  NX_SHARED_CACHE_REMOTE_ACCESS_KEY_ID: ${{ secrets.NX_CACHE_READ_ONLY_ACCESS_KEY_ID }}
+  NX_SHARED_CACHE_REMOTE_BUCKET: ${{ vars.NX_CACHE_BUCKET }}
+  NX_SHARED_CACHE_REMOTE_ENDPOINT: ${{ vars.NX_CACHE_ENDPOINT }}
+  NX_SHARED_CACHE_REMOTE_REGION: ${{ vars.NX_CACHE_REGION }}
+  NX_SHARED_CACHE_REMOTE_SECRET_ACCESS_KEY: ${{ secrets.NX_CACHE_READ_ONLY_SECRET_ACCESS_KEY }}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

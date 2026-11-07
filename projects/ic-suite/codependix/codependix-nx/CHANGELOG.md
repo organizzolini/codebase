@@ -1,3 +1,134 @@
+## 0.0.57 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.70
+- Updated codependix-cli to 0.0.71
+
+## 0.0.56 (2026-11-06)
+
+### 🚀 Features
+
+- **compliance,configuration,documentation:** ✨ migrate external-resource commands ([#2058](https://github.com/organizzolini/codebase/pull/2058), [#1980](https://github.com/organizzolini/codebase/issues/1980))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.69
+- Updated codependix-cli to 0.0.70
+
+## 0.0.55 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.68
+- Updated codependix-cli to 0.0.69
+
+## 0.0.54 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.67
+- Updated codependix-cli to 0.0.68
+
+## 0.0.53 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.66
+- Updated codependix-cli to 0.0.67
+
+## 0.0.52 (2026-11-04)
+
+### 🔥 Performance
+
+- **codependix:** ⚡️ judge every project from one batched boundary check ([#2111](https://github.com/organizzolini/codebase/pull/2111))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.65
+- Updated codependix-cli to 0.0.66
+
+## 0.0.51 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.64
+- Updated codependix-cli to 0.0.65
+
+## 0.0.50 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.63
+- Updated codependix-cli to 0.0.64
+
+## 0.0.49 (2026-11-04)
+
+### 💅 Refactors
+
+- **callidescope,codependix,configuration,validation:** ♻️ rename gate targets to restrict and bound ([#2100](https://github.com/organizzolini/codebase/pull/2100))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.62
+- Updated codependix-cli to 0.0.63
+
+## 0.0.48 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.61
+- Updated codependix-cli to 0.0.62
+
+## 0.0.47 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.60
+- Updated codependix-cli to 0.0.61
+
+## 0.0.46 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.59
+- Updated codependix-cli to 0.0.60
+
+## 0.0.45 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.58
+- Updated codependix-cli to 0.0.59
+
+## 0.0.44 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.57
+- Updated codependix-cli to 0.0.58
+
+## 0.0.43 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.56
+- Updated codependix-cli to 0.0.57
+
+## 0.0.42 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.55
+- Updated codependix-cli to 0.0.56
+
+## 0.0.41 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.54
+- Updated codependix-cli to 0.0.55
+
 ## 0.0.40 (2026-10-27)
 
 ### 🧱 Updated Dependencies

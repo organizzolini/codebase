@@ -3,8 +3,7 @@ import { projectDefaults } from "../configuration/callidescope.config.js";
 /**
  * What validation is held to, measured rather than assumed.
  *
- * Eight frames down `PullRequestMetadataCommand.run`, the deepest of this
- * project's one-sided checks.
+ * Eight frames is the maximum call depth configured for this project.
  *
  * Measured by a run scoped to this project and its dependency closure, and set
  * **at** what it measured rather than above it: a stack or a callable at either

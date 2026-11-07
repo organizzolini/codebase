@@ -101,9 +101,21 @@
     {
       "options": {
         "configurationPath": "configuration/codependix.config.ts",
-        "gateTargetName": "codependix-gate"
+        "gateTargetName": "codependix-bound"
       },
       "plugin": "@codependix/nx"
+    },
+    {
+      "exclude": ["coinagerie.config.ts"],
+      "options": {
+        "command": "SWC_NODE_PROJECT=\"$NX_WORKSPACE_ROOT/configuration/tsconfig.json\" node --import @swc-node/register/esm-register \"$NX_WORKSPACE_ROOT/projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts\"",
+        "inputs": [
+          "{workspaceRoot}/configuration/coinagerie.config.ts",
+          "{workspaceRoot}/GLOSSARY.md",
+          "{workspaceRoot}/projects/ic-suite/coinagerie/*/src/**/!(*.test.*|*.spec.*)"
+        ]
+      },
+      "plugin": "@coinagerie/nx"
     }
   ],
   "pluginsConfig": {
@@ -161,6 +173,8 @@
       "!codependix-examples",
       "!codometer-agents",
       "!codometer-examples",
+      "!coinagerie-agents",
+      "!coinagerie-examples",
       "!conformetry-agents",
       "!conformetry-examples"
     ],
@@ -358,6 +372,15 @@
             "codometer-languages",
             "codometer-measurement",
             "codometer-output",
+            "coinagerie-agents",
+            "coinagerie-cli",
+            "coinagerie-configuration",
+            "coinagerie-core",
+            "coinagerie-examples",
+            "coinagerie-languages",
+            "coinagerie-nx",
+            "coinagerie-output",
+            "coinagerie-vocabulary",
             "conformetry-agents",
             "conformetry-cli",
             "conformetry-configuration",
@@ -424,6 +447,21 @@
         ]
       }
     ],
+    "coinagerie-check": {
+      "configurations": {
+        "write": {
+          "write": true
+        }
+      },
+      "dependsOn": [
+        {
+          "projects": ["configuration"],
+          "target": "coinagerie"
+        }
+      ],
+      "description": "Two things the `@coinagerie/nx` inference does not declare. The `write` configuration of the check target it infers for every project holding a `coinagerie.config.ts`, which writes the glossary instead of judging it. And a dependency on the root glossary's own target, `configuration:coinagerie`, so that the root `GLOSSARY.md` is checked, or written, before any project's glossary is: every project excludes the words the root glossary lists, so a project judged against a stale root glossary would be judged wrongly. Nx forwards an explicit configuration down `dependsOn`, so `-c write` writes the root first and `-c check` checks it first. The plugin infers only the check, so the `write` configuration is added here: it sets the executor's `write` option, which rewrites each glossary instead of judging it.",
+      "outputs": ["{projectRoot}/README.md"]
+    },
     "dependency-cruiser": [
       {
         "cache": true,
@@ -639,16 +677,16 @@
       },
       "defaultConfiguration": "check",
       "dependsOn": [
-        "callidescope-gate",
+        "callidescope-restrict",
         "catalog-manifests",
-        "codependix-gate",
+        "codependix-bound",
         "conformetry-validate",
         "lockfile",
         "project-ports",
         "readme-projects",
         "vscode-extensions"
       ],
-      "description": "Aggregator for guard-code. `callidescope-gate` and `codependix-gate` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-gate` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
+      "description": "Aggregator for guard-code. `callidescope-restrict` and `codependix-bound` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. The glossary targets are not reachable from here: no pull request or commit is judged on its glossary, so a word without an entry blocks nothing. The release workflow writes every glossary on the default branch, the way it writes the call-stack, dependency, and size reports. `codependix-bound` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
       "executor": "nx:noop",
       "inputs": ["default"]
     },
@@ -656,28 +694,29 @@
       {
         "cache": true,
         "configurations": {
-          "check": {
-            "command": "knip --config configuration/knip.config.ts --workspace {projectRoot}"
-          },
+          "check": {},
           "write": {
-            "command": "knip --fix --config configuration/knip.config.ts --workspace {projectRoot}"
+            "fix": true
           }
         },
         "defaultConfiguration": "check",
-        "executor": "nx:run-commands",
+        "description": "Fail a project when knip reports an issue in its workspace. Runs through the `integration:knip` executor rather than `nx:run-commands`, because that executor is a batch executor: `nx affected -t knip` hands it every workspace at once and one knip run judges them all, where a run per project loaded the whole repository's module graph each time. Each task still passes, fails and is cached by itself. The executor's own sources are inputs, so changing how knip is run re-runs every project's check, and `--batch=false` turns batching off.",
+        "executor": "integration:knip",
         "filter": {
           "projects": ["tag:language:typescript"]
         },
         "inputs": [
           "{workspaceRoot}/configuration/knip.config.ts",
+          "{workspaceRoot}/integration/executors.json",
+          "{workspaceRoot}/integration/src/executors/knip/**/!(*.test.*|*.spec.*)",
+          "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
           "default",
           {
             "externalDependencies": ["knip", "typescript"]
           }
         ],
         "options": {
-          "command": "knip --config configuration/knip.config.ts --workspace {projectRoot}",
-          "cwd": "{workspaceRoot}"
+          "configuration": "configuration/knip.config.ts"
         }
       }
     ],
@@ -1039,7 +1078,8 @@
     "spell-check": [
       {
         "cache": true,
-        "executor": "nx:run-commands",
+        "description": "Fail a project when cspell finds a misspelling under its root. Runs through the `integration:spell-check` executor rather than `nx:run-commands`, because that executor is a batch executor: `nx affected -t spell-check` hands it every project at once and one cspell run judges them all, where a run per project paid cspell's start-up and dictionary load each time. Each task still passes, fails and is cached by itself. The executor's own sources are inputs, so changing how cspell is run re-runs every project's check, and `--batch=false` turns batching off.",
+        "executor": "integration:spell-check",
         "filter": {
           "projects": [
             "tag:language:infrastructure",
@@ -1051,14 +1091,16 @@
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
           "{workspaceRoot}/configuration/.cspell/**",
           "{workspaceRoot}/configuration/cspell.config.yaml",
+          "{workspaceRoot}/integration/executors.json",
+          "{workspaceRoot}/integration/src/executors/spell-check/**/!(*.test.*|*.spec.*)",
+          "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
           "shared-globals",
           {
             "externalDependencies": ["cspell"]
           }
         ],
         "options": {
-          "command": "cspell --config configuration/cspell.config.yaml '{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}' --no-progress --gitignore --gitignore-root .",
-          "cwd": "{workspaceRoot}"
+          "configuration": "configuration/cspell.config.yaml"
         }
       }
     ],

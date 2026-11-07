@@ -37,3 +37,14 @@ export const NX_CONFIGURATION_FILENAME = "nx.json";
  * option is blank.
  */
 export const EXECUTOR_OPTION_SURFACE = "`configuration` executor option";
+
+/**
+ * Why a cached target may not judge anything but its own project.
+ *
+ * The target's inputs cover only its own project and that project's
+ * dependencies, so Nx could replay a pass after an edit to a project the run
+ * judges and they do not reach. `cache` is fixed per target, so the target
+ * must opt out of it.
+ */
+export const UNCACHEABLE_SELECTION_MESSAGE =
+  "The codependix gate target judges projects its cache inputs do not cover, so it must set `cache: false`.";

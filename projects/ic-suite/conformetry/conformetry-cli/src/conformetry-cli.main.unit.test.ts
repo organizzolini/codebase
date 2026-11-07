@@ -87,7 +87,7 @@ describe("main", () => {
       "conformetry",
       "generate",
       "--name",
-      "react-component",
+      "react-component-folder",
       "--project",
       "lexico-components",
     ];
@@ -101,7 +101,7 @@ describe("main", () => {
       "conformetry",
       "generate",
       "--name",
-      "react-component",
+      "react-component-folder",
       "--project",
       "lexico-components",
     ]);

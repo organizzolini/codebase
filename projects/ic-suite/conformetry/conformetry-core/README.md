@@ -432,3 +432,14 @@ graph LR
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-core:coinagerie-check:write`.
+
+- **breadth**: The number of distinct callees one callable calls directly, which callidescope gates in each project; core reports none, since it only declares types.
+- **inventoried**: Discovered and paired as an instance or template, such as the InventoriedInstance and InventoriedPairing types carry them.
+
+<!-- coinagerie:end -->

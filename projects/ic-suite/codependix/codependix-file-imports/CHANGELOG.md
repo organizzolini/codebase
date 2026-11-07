@@ -1,3 +1,73 @@
+## 0.0.68 (2026-11-06)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.67 (2026-11-06)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.66 (2026-11-06)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.65 (2026-11-06)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.64 (2026-11-04)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.63 (2026-11-04)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.62 (2026-11-04)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.61 (2026-11-04)
+
+### 🩹 Fixes
+
+- **configuration:** 🐛 stop disabling Nx Cloud so the remote cache connects ([#2101](https://github.com/organizzolini/codebase/pull/2101))
+
+## 0.0.60 (2026-11-04)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.59 (2026-11-03)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.58 (2026-11-03)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.57 (2026-11-03)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.56 (2026-11-03)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.55 (2026-11-03)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.54 (2026-11-03)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.53 (2026-11-03)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.52 (2026-11-03)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
 ## 0.0.51 (2026-10-27)
 
 This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.

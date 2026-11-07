@@ -99,6 +99,10 @@ projectStructure.cache.json
 **/.agents/skills/codometer-configure/**
 **/.agents/skills/codometer-measure/**
 **/.agents/skills/codometer-triage/**
+**/.agents/skills/coinagerie-collect/**
+**/.agents/skills/coinagerie-configure/**
+**/.agents/skills/coinagerie-define/**
+**/.agents/skills/coinagerie-triage/**
 **/.agents/skills/conformetry-configure/**
 **/.agents/skills/conformetry-generate/**
 **/.agents/skills/conformetry-validate/**
@@ -116,7 +120,6 @@ projectStructure.cache.json
 **/.agents/skills/implement/**
 **/.agents/skills/improve-codebase-architecture/**
 **/.agents/skills/link-workspace-packages/**
-**/.agents/skills/monitor-ci/**
 **/.agents/skills/nx-generate/**
 **/.agents/skills/nx-import/**
 **/.agents/skills/nx-plugins/**

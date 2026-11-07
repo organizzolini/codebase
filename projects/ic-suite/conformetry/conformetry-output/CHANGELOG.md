@@ -1,3 +1,132 @@
+## 0.0.71 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.71
+- Updated conformetry-core to 0.0.70
+
+## 0.0.70 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.70
+- Updated conformetry-core to 0.0.69
+
+## 0.0.69 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.69
+- Updated conformetry-core to 0.0.68
+
+## 0.0.68 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.68
+- Updated conformetry-core to 0.0.67
+
+## 0.0.67 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.67
+- Updated conformetry-core to 0.0.66
+
+## 0.0.66 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.66
+- Updated conformetry-core to 0.0.65
+
+## 0.0.65 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.65
+- Updated conformetry-core to 0.0.64
+
+## 0.0.64 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.64
+- Updated conformetry-core to 0.0.63
+
+## 0.0.63 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.63
+- Updated conformetry-core to 0.0.62
+
+## 0.0.62 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.62
+- Updated conformetry-core to 0.0.61
+
+## 0.0.61 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.61
+- Updated conformetry-core to 0.0.60
+
+## 0.0.60 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.60
+- Updated conformetry-core to 0.0.59
+
+## 0.0.59 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.59
+- Updated conformetry-core to 0.0.58
+
+## 0.0.58 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.58
+- Updated conformetry-core to 0.0.57
+
+## 0.0.57 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.57
+- Updated conformetry-core to 0.0.56
+
+## 0.0.56 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.56
+- Updated conformetry-core to 0.0.55
+
+## 0.0.55 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.55
+- Updated conformetry-core to 0.0.54
+
+## 0.0.54 (2026-11-03)
+
+### 💅 Refactors
+
+- **configuration,caelundas,lexico,meanderaw,documentation,conformetry:** ♻️ hold every web app to one file shape ([#1951](https://github.com/organizzolini/codebase/pull/1951))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.54
+
 ## 0.0.53 (2026-10-27)
 
 ### 🧱 Updated Dependencies

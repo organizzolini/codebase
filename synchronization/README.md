@@ -1355,3 +1355,18 @@ graph LR
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run synchronization:coinagerie-check:write`.
+
+- **breadth**: Callidescope measure of how many direct callees a frame fans out to, gated for every traced project in the workspace.
+- **corrupt**: Fake behavior flag corruptsLockfile that simulates a restore which damages the lockfile, testing the safety check.
+- **preset**: Semantic-release preset configuration whose types list conventional-config appends missing commit types into.
+- **rewrite**: Verb for sync replacing dropdown options, markdown tables, or scope arrays inside marked blocks of source files.
+- **scenario**: Name field for each parameterized test case, such as scenarioName in the conformetry generator command tests.
+- **synchronizable**: Interface implemented by each synchronizer command, such as conformetry generators, so one run can dispatch to all of them.
+
+<!-- coinagerie:end -->

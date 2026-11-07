@@ -32,7 +32,7 @@ Register it in `nx.json`:
       "plugin": "@codependix/nx",
       "options": {
         "configurationPath": "configuration/codependix.config.ts",
-        "gateTargetName": "codependix-gate"
+        "gateTargetName": "codependix-bound"
       }
     }
   ]
@@ -42,7 +42,7 @@ Register it in `nx.json`:
 | Option | Meaning |
 | ------ | ------- |
 | `configurationPath` | **Required.** Where the codependix configuration lives. Registering the plugin without it fails inference, naming the option; there is no default path |
-| `gateTargetName` | Name of the inferred gate target. `codependix-gate` when omitted |
+| `gateTargetName` | Name of the inferred gate target. `codependix-bound` when omitted |
 
 The gate runs the command line under the `@swc-node/register` hooks, which
 this plugin depends on and registers itself — the workspace does not need to
@@ -59,9 +59,9 @@ project Nx infers from a `package.json` alone gets no gate until it is given
 a `project.json` as well.
 
 ```bash
-nx run lexico-entities:codependix-gate          # one project
-nx run-many -t codependix-gate                  # every project
-nx affected -t codependix-gate                  # only what changed
+nx run lexico-entities:codependix-bound          # one project
+nx run-many -t codependix-bound                  # every project
+nx affected -t codependix-bound                  # only what changed
 ```
 
 ### The gate
@@ -169,8 +169,8 @@ stays cached.
 ### Executor options
 
 ```bash
-nx run lexico-api:codependix-gate --projects=lexico-entities,lexico-api
-nx run logging:codependix-gate --tags=type:package --dependencies=false
+nx run lexico-api:codependix-bound --projects=lexico-entities,lexico-api
+nx run logging:codependix-bound --tags=type:package --dependencies=false
 ```
 
 | Option | Meaning |
@@ -554,3 +554,18 @@ graph LR
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nx:coinagerie-check:write`.
+
+- **batch**: Group of gate tasks Nx hands to one executor call, which runs one boundary check and reads each project's verdict from it.
+- **boundary**: Codependix rule check run per project, failing the gate when a dependency graph breaks a configured rule charged to it.
+- **breadth**: Count of calls one function makes, which callidescope caps per callable so the plugin merges map and filter into one pass.
+- **budget**: Comment-length allowance codometer enforces per language, shown as the Comment Budget badges in this package's readme.
+- **charge**: Assign a boundary finding to the project it belongs to, so only a finding charged to a project fails that project's gate.
+- **explain**: Produce the report of why a project failed, by running that project alone again to get exactly what a single run prints.
+
+<!-- coinagerie:end -->

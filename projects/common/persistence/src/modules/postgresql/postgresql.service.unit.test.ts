@@ -1,23 +1,24 @@
 import { ConfigModule } from "@nestjs/config";
-import { DefaultNamingStrategy } from "typeorm";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { overrideEnvironment } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { DATABASE_OPTIONS } from "./postgresql.constants";
+import {
+  DATABASE_OPTIONS,
+  PluralSnakeNamingStrategy,
+} from "./postgresql.constants";
 import { PostgresqlService } from "./postgresql.service";
 
 describe(PostgresqlService, () => {
   let service: PostgresqlService;
-  const namingStrategy = new DefaultNamingStrategy();
 
-  const options = {
+  const moduleOptions = {
     imports: [ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true })],
     providers: [
       {
         provide: DATABASE_OPTIONS,
-        useValue: { entities: [], namingStrategy, project: "fixture" },
+        useValue: { entities: [], project: "fixture" },
       },
     ],
   };
@@ -25,12 +26,15 @@ describe(PostgresqlService, () => {
   beforeAll(async () => {
     ({ instance: service } = await buildTestingModule(
       PostgresqlService,
-      options,
+      moduleOptions,
     ));
   });
 
   it("resolves with its dependencies", async () => {
-    const { instance } = await buildTestingModule(PostgresqlService, options);
+    const { instance } = await buildTestingModule(
+      PostgresqlService,
+      moduleOptions,
+    );
 
     expect(instance).toBeInstanceOf(PostgresqlService);
   });
@@ -60,11 +64,13 @@ describe(PostgresqlService, () => {
     });
   });
 
-  it("builds TypeORM's options with the naming strategy it was given and no migrations", () => {
-    expect(service.createTypeOrmOptions()).toMatchObject({
+  it("builds TypeORM's options with the plural snake-case naming strategy and no migrations", () => {
+    const options = service.createTypeOrmOptions();
+
+    expect(options.namingStrategy).toBeInstanceOf(PluralSnakeNamingStrategy);
+    expect(options).toMatchObject({
       migrations: [],
       migrationsRun: false,
-      namingStrategy,
       synchronize: false,
     });
   });

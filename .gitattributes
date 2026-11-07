@@ -72,6 +72,10 @@ dist/** linguist-generated
 .agents/skills/codometer-configure/** linguist-vendored
 .agents/skills/codometer-measure/** linguist-vendored
 .agents/skills/codometer-triage/** linguist-vendored
+.agents/skills/coinagerie-collect/** linguist-vendored
+.agents/skills/coinagerie-configure/** linguist-vendored
+.agents/skills/coinagerie-define/** linguist-vendored
+.agents/skills/coinagerie-triage/** linguist-vendored
 .agents/skills/conformetry-configure/** linguist-vendored
 .agents/skills/conformetry-generate/** linguist-vendored
 .agents/skills/conformetry-validate/** linguist-vendored
@@ -89,7 +93,6 @@ dist/** linguist-generated
 .agents/skills/implement/** linguist-vendored
 .agents/skills/improve-codebase-architecture/** linguist-vendored
 .agents/skills/link-workspace-packages/** linguist-vendored
-.agents/skills/monitor-ci/** linguist-vendored
 .agents/skills/nx-generate/** linguist-vendored
 .agents/skills/nx-import/** linguist-vendored
 .agents/skills/nx-plugins/** linguist-vendored

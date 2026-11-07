@@ -1,3 +1,187 @@
+## 0.0.71 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.70
+- Updated callidescope-output to 0.0.69
+- Updated callidescope-graph to 0.0.69
+- Updated callidescope-core to 0.0.69
+- Updated callidescope-cli to 0.0.70
+
+## 0.0.70 (2026-11-06)
+
+### 🚀 Features
+
+- **compliance,configuration,documentation:** ✨ migrate external-resource commands ([#2058](https://github.com/organizzolini/codebase/pull/2058), [#1980](https://github.com/organizzolini/codebase/issues/1980))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.69
+- Updated callidescope-output to 0.0.68
+- Updated callidescope-graph to 0.0.68
+- Updated callidescope-core to 0.0.68
+- Updated callidescope-cli to 0.0.69
+
+## 0.0.69 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.68
+- Updated callidescope-output to 0.0.67
+- Updated callidescope-graph to 0.0.67
+- Updated callidescope-core to 0.0.67
+- Updated callidescope-cli to 0.0.68
+
+## 0.0.68 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.67
+- Updated callidescope-output to 0.0.66
+- Updated callidescope-graph to 0.0.66
+- Updated callidescope-core to 0.0.66
+- Updated callidescope-cli to 0.0.67
+
+## 0.0.67 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.66
+- Updated callidescope-output to 0.0.65
+- Updated callidescope-graph to 0.0.65
+- Updated callidescope-core to 0.0.65
+- Updated callidescope-cli to 0.0.66
+
+## 0.0.66 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.65
+- Updated callidescope-output to 0.0.64
+- Updated callidescope-graph to 0.0.64
+- Updated callidescope-core to 0.0.64
+- Updated callidescope-cli to 0.0.65
+
+## 0.0.65 (2026-11-04)
+
+### 🔥 Performance
+
+- **callidescope:** ⚡️ gate every project from one batched trace ([#2107](https://github.com/organizzolini/codebase/pull/2107))
+
+## 0.0.64 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.64
+- Updated callidescope-output to 0.0.63
+- Updated callidescope-graph to 0.0.63
+- Updated callidescope-core to 0.0.63
+- Updated callidescope-cli to 0.0.64
+
+## 0.0.63 (2026-11-04)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.63
+- Updated callidescope-output to 0.0.62
+- Updated callidescope-graph to 0.0.62
+- Updated callidescope-core to 0.0.62
+- Updated callidescope-cli to 0.0.63
+
+## 0.0.62 (2026-11-04)
+
+### 💅 Refactors
+
+- **callidescope,codependix,configuration,validation:** ♻️ rename gate targets to restrict and bound ([#2100](https://github.com/organizzolini/codebase/pull/2100))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.62
+- Updated callidescope-output to 0.0.61
+- Updated callidescope-graph to 0.0.61
+- Updated callidescope-core to 0.0.61
+- Updated callidescope-cli to 0.0.62
+
+## 0.0.61 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.61
+- Updated callidescope-output to 0.0.60
+- Updated callidescope-graph to 0.0.60
+- Updated callidescope-core to 0.0.60
+- Updated callidescope-cli to 0.0.61
+
+## 0.0.60 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.60
+- Updated callidescope-output to 0.0.59
+- Updated callidescope-graph to 0.0.59
+- Updated callidescope-core to 0.0.59
+- Updated callidescope-cli to 0.0.60
+
+## 0.0.59 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.59
+- Updated callidescope-output to 0.0.58
+- Updated callidescope-graph to 0.0.58
+- Updated callidescope-core to 0.0.58
+- Updated callidescope-cli to 0.0.59
+
+## 0.0.58 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.58
+- Updated callidescope-output to 0.0.57
+- Updated callidescope-graph to 0.0.57
+- Updated callidescope-core to 0.0.57
+- Updated callidescope-cli to 0.0.58
+
+## 0.0.57 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.57
+- Updated callidescope-output to 0.0.56
+- Updated callidescope-graph to 0.0.56
+- Updated callidescope-core to 0.0.56
+- Updated callidescope-cli to 0.0.57
+
+## 0.0.56 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.56
+- Updated callidescope-output to 0.0.55
+- Updated callidescope-graph to 0.0.55
+- Updated callidescope-core to 0.0.55
+- Updated callidescope-cli to 0.0.56
+
+## 0.0.55 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.55
+- Updated callidescope-output to 0.0.54
+- Updated callidescope-graph to 0.0.54
+- Updated callidescope-core to 0.0.54
+- Updated callidescope-cli to 0.0.55
+
+## 0.0.54 (2026-11-03)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.54
+- Updated callidescope-output to 0.0.53
+- Updated callidescope-graph to 0.0.53
+- Updated callidescope-core to 0.0.53
+- Updated callidescope-cli to 0.0.54
+
 ## 0.0.53 (2026-10-27)
 
 ### 🧱 Updated Dependencies

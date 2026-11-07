@@ -1,11 +1,10 @@
-import { writeFile } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 
+import { Test } from "@nestjs/testing";
 import ts from "typescript";
 import { beforeAll, describe, expect, it } from "vitest";
-
-import { createTemporaryDirectory } from "@codebase/testing";
-import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 
@@ -20,22 +19,21 @@ describe(CompilerHostService, () => {
   let service: CompilerHostService;
 
   beforeAll(async () => {
-    ({ instance: service } = await buildTestingModule(CompilerHostService, {
+    const module = await Test.createTestingModule({
       imports: [...ANALYSIS_MODULES],
-    }));
+      providers: [CompilerHostService],
+    }).compile();
+
+    service = await module.resolve(CompilerHostService);
   });
 
-  it("resolves with its dependencies", async () => {
-    const { instance } = await buildTestingModule(CompilerHostService, {
-      imports: [...ANALYSIS_MODULES],
-    });
-
-    expect(instance).toBeInstanceOf(CompilerHostService);
+  it("is defined", () => {
+    expect(service).toBeDefined();
   });
 
   /** Writes a source file and returns its path. */
   async function writeSource(text: string): Promise<string> {
-    const directory = createTemporaryDirectory("callidescope-host");
+    const directory = await mkdtemp(path.join(tmpdir(), "callidescope-host-"));
     const filePath = path.join(directory, "a.ts");
 
     await writeFile(filePath, text, "utf8");
@@ -96,8 +94,8 @@ describe(CompilerHostService, () => {
     ).toBeDefined();
   });
 
-  it("returns nothing for a file that does not exist", () => {
-    const directory = createTemporaryDirectory("callidescope-host");
+  it("returns nothing for a file that does not exist", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "callidescope-host-"));
     const host = new CompilerHostService().createHost({
       options: OPTIONS,
       workspaceRoot: directory,
@@ -125,5 +123,59 @@ describe(CompilerHostService, () => {
         .createHost({ options: OPTIONS, workspaceRoot })
         .getSourceFile(filePath, ts.ScriptTarget.ES2022),
     ).not.toBe(first);
+  });
+
+  it("remembers whether a file existed across hosts", async () => {
+    // Module resolution asks this of the same paths once per program, which is
+    // where a cold run spent most of its time.
+    const filePath = await writeSource("export const a = 1;\n");
+    const subject = new CompilerHostService();
+    const workspaceRoot = path.dirname(filePath);
+    const first = subject.createHost({ options: OPTIONS, workspaceRoot });
+
+    expect(first.fileExists(filePath)).toBe(true);
+
+    await rm(filePath);
+
+    expect(
+      subject
+        .createHost({ options: OPTIONS, workspaceRoot })
+        .fileExists(filePath),
+    ).toBe(true);
+  });
+
+  it("remembers a directory and a file's text across hosts", async () => {
+    const filePath = await writeSource("export const a = 1;\n");
+    const subject = new CompilerHostService();
+    const workspaceRoot = path.dirname(filePath);
+    const host = subject.createHost({ options: OPTIONS, workspaceRoot });
+
+    expect(host.directoryExists?.(workspaceRoot)).toBe(true);
+    expect(host.readFile(filePath)).toBe("export const a = 1;\n");
+
+    await rm(filePath);
+
+    const later = subject.createHost({ options: OPTIONS, workspaceRoot });
+
+    expect(later.readFile(filePath)).toBe("export const a = 1;\n");
+  });
+
+  it("remembers a real path, and forgets every answer on clear", async () => {
+    const filePath = await writeSource("export const a = 1;\n");
+    const subject = new CompilerHostService();
+    const workspaceRoot = path.dirname(filePath);
+    const host = subject.createHost({ options: OPTIONS, workspaceRoot });
+
+    expect(host.realpath?.(filePath)).toBeDefined();
+    expect(host.fileExists(filePath)).toBe(true);
+
+    await rm(filePath);
+    subject.clear();
+
+    expect(
+      subject
+        .createHost({ options: OPTIONS, workspaceRoot })
+        .fileExists(filePath),
+    ).toBe(false);
   });
 });

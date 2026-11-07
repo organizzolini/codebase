@@ -1,6 +1,6 @@
 ---
 name: codependix-triage
-description: Act on a codependix run that failed or reported drift — a boundary violation, a --check reports run that found stale exports, a project that failed its export, a missing anchor block, a NestJS container that failed to boot, a rejected command line, or a --write that produced no files at all. Use when codependix exits non-zero, when a codependix-gate target fails, when an edge or a cycle breaks a declared rule, when a committed Mermaid block disagrees with a fresh run, when a graph export is missing for one project but not others, or before hand-editing an exported diagram or loosening a rule to make a check pass.
+description: Act on a codependix run that failed or reported drift — a boundary violation, a --check reports run that found stale exports, a project that failed its export, a missing anchor block, a NestJS container that failed to boot, a rejected command line, or a --write that produced no files at all. Use when codependix exits non-zero, when a codependix-bound target fails, when an edge or a cycle breaks a declared rule, when a committed Mermaid block disagrees with a fresh run, when a graph export is missing for one project but not others, or before hand-editing an exported diagram or loosening a rule to make a check pass.
 license: MIT
 ---
 
@@ -20,7 +20,7 @@ rule, both endpoints, the project or projects it is charged to, and whatever
 the rule says about why it exists.
 
 **Start from the project the failure names.** In an Nx workspace each project
-has its own `codependix-gate` target, so a red `nx run <project>:codependix-gate`
+has its own `codependix-bound` target, so a red `nx run <project>:codependix-bound`
 means a finding is charged to that project: a forbidden edge to the project
 owning its source, a cycle to every project on it. Reproduce it with the same
 target, or with `codependix map --check boundaries --projects <project>
