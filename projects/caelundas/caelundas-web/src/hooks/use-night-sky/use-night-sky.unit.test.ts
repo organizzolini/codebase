@@ -1,45 +1,60 @@
 import { renderHook, waitFor } from "@testing-library/react";
+import { HttpResponse } from "msw";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createTestEventsDatabase } from "../../../testing/events-database";
+import { serveCalendarApi } from "../../../testing/calendar-api";
+import { serveGraphqlApi } from "../../../testing/graphql-api";
+import { mockNightSkyQuery } from "../../graphql/generated/mocks";
 
 import { useNightSky } from "./use-night-sky";
 
-import type { EventsDatabase } from "../../components/events-calendar/events-database.types";
-
 /**
- * The link the router reads, and the database its context holds, which each
- * test sets.
+ * The link the router reads, which each test sets, and the last state a
+ * select returned, kept as the router's structural sharing keeps it so the
+ * hook sees the same settings until the link changes.
  */
 const router = vi.hoisted(() => {
-  const context: { eventsDatabase?: EventsDatabase } = {};
+  const state: {
+    previous: string | undefined;
+    search: Record<string, unknown>;
+    shared: unknown;
+  } = { previous: undefined, search: {}, shared: undefined };
 
-  return { context, search: {} };
+  return state;
 });
 
 vi.mock(import("@tanstack/react-router"), () => ({
-  useRouter: (() => ({ options: { context: router.context } })) as never,
   useRouterState: ((options: {
     select: (state: {
       location: { search: Readonly<Record<string, unknown>> };
     }) => unknown;
-  }) => options.select({ location: { search: router.search } })) as never,
+  }) => {
+    const selected = options.select({ location: { search: router.search } });
+    const written = JSON.stringify(selected);
+
+    if (written !== router.previous) {
+      router.previous = written;
+      router.shared = selected;
+    }
+
+    return router.shared;
+  }) as never,
 }));
 
 /**
- * Renders the hook for a link and waits for the sky it builds.
+ * Renders the hook for a link and waits for the sky the API draws.
  */
 async function renderSky(
   search: Readonly<Record<string, unknown>>,
 ): Promise<string> {
-  router.context.eventsDatabase = createTestEventsDatabase();
-  router.search = search;
+  router.search = { ...search };
+  router.previous = undefined;
 
   const { result } = renderHook(() => useNightSky());
 
   return waitFor(() => {
     if (result.current.sky === undefined) {
-      throw new Error("The sky is not built yet");
+      throw new Error("The sky is not drawn yet");
     }
 
     return result.current.sky;
@@ -52,7 +67,7 @@ describe(useNightSky, () => {
   });
 
   it("returns its result", () => {
-    router.context.eventsDatabase = createTestEventsDatabase();
+    serveCalendarApi();
     router.search = { sky: "off" };
 
     const { result } = renderHook(() => useNightSky());
@@ -61,37 +76,63 @@ describe(useNightSky, () => {
   });
 
   it("draws nothing for a latitude the northern view cannot show", () => {
-    router.context.eventsDatabase = createTestEventsDatabase();
+    const api = serveCalendarApi();
     router.search = { "sky.lat": 0 };
 
     const { result } = renderHook(() => useNightSky());
 
     expect(result.current.sky).toBeUndefined();
+    expect(api.requests.nightSky).toHaveLength(0);
   });
 
-  it("draws the zodiac's figures by default, and none when asked for none", async () => {
-    // The default view, from the pole, holds the zodiac's band.
-    await expect(renderSky({ "sky.ecliptic": false })).resolves.toContain(
-      "<polyline",
-    );
-    await expect(
-      renderSky({ "sky.constellations": "none", "sky.ecliptic": false }),
-    ).resolves.not.toContain("<polyline");
-    await expect(
-      renderSky({ "sky.constellations": "", "sky.ecliptic": false }),
-    ).resolves.not.toContain("<polyline");
+  it("asks the API for the sky the link describes, the size of the window", async () => {
+    const api = serveCalendarApi();
+
+    const sky = await renderSky({ "sky.lat": 51.5, "sky.pixelsPerSecond": 9 });
+
+    expect(sky).toContain("<svg");
+    expect(api.requests.nightSky).toHaveLength(1);
+    expect(api.requests.nightSky[0]).toMatchObject({
+      constellations: ["zodiac"],
+      height: window.innerHeight,
+      latitudeDegrees: 51.5,
+      pixelsPerSecond: 9,
+      still: false,
+      width: window.innerWidth,
+    });
   });
 
-  it("draws the figures the link asks for beneath the stars", async () => {
-    const sky = await renderSky({ "sky.constellations": "all" });
+  it("asks for none when the link names no figure", async () => {
+    const api = serveCalendarApi();
 
-    expect(sky).toContain("<polyline");
-    expect(sky.indexOf("<polyline")).toBeLessThan(sky.indexOf("<circle"));
+    await renderSky({ "sky.constellations": "" });
+
+    expect(api.requests.nightSky[0]?.constellations).toStrictEqual(["none"]);
+  });
+
+  it("says why when the API cannot draw the sky, and leaves the page without one", async () => {
+    const report = vi.spyOn(console, "error").mockImplementation(() => {});
+    const api = serveCalendarApi();
+
+    api.fail("The sky answered 500");
+    router.search = {};
+
+    const { result } = renderHook(() => useNightSky());
+
+    await waitFor(() => {
+      expect(report).toHaveBeenCalledWith(
+        "The night sky could not be loaded",
+        expect.any(Error),
+      );
+    });
+
+    expect(result.current.sky).toBeUndefined();
   });
 
   it("warns once of each name it has no figure for", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
+    serveCalendarApi();
     await renderSky({ "sky.constellations": "zodiac,narnia,narnia" });
 
     await waitFor(() => {
@@ -105,15 +146,13 @@ describe(useNightSky, () => {
     ).toHaveLength(1);
   });
 
-  it("warns once of a line style it cannot read, and draws the default", async () => {
+  it("warns once of a line style it cannot read, and asks for the default", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const api = serveCalendarApi();
 
-    const sky = await renderSky({
-      "sky.constellations": "all",
-      "sky.lineColor": "pink",
-    });
+    await renderSky({ "sky.lineColor": "pink" });
 
-    expect(sky).toContain('stroke="#ffffff"');
+    expect(api.requests.nightSky[0]?.lineColor).toBe("#ffffff");
     expect(
       warn.mock.calls.filter(([message]) =>
         String(message).includes("sky.lineColor"),
@@ -121,5 +160,77 @@ describe(useNightSky, () => {
     ).toStrictEqual([
       ["The night sky ignored sky.lineColor, whose value does not parse"],
     ]);
+  });
+
+  it("says when the API reduced a field of view that would put the pole on screen", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    serveGraphqlApi(
+      mockNightSkyQuery(({ variables }) =>
+        HttpResponse.json({
+          data: {
+            nightSky: {
+              measurements: {
+                bottomAltitudeDegrees: 0,
+                fieldOfViewClamped: true,
+                fieldOfViewLimitDegrees: 60,
+                periodSeconds: 600,
+                poleDistanceAboveScreen: 0,
+                realTimeMultiple: 1,
+                segmentsDrawn: 0,
+                starsDrawn: 0,
+                starsInCatalog: 0,
+                svgLength: 5,
+                topAltitudeDegrees: 60,
+                verticalFieldOfViewDegrees: variables.input.height,
+              },
+              svg: "<svg />",
+            },
+          },
+        }),
+      ),
+    );
+    await renderSky({ "sky.vFov": 90 });
+
+    await waitFor(() => {
+      expect(warn).toHaveBeenCalledWith(
+        "The night sky's field of view was reduced to 60.0 degrees to keep the pole off screen",
+      );
+    });
+  });
+
+  it("stands still when the page asks for reduced motion", async () => {
+    const api = serveCalendarApi();
+
+    vi.spyOn(globalThis, "matchMedia").mockImplementation(
+      (query) =>
+        ({
+          addEventListener: () => {},
+          matches: true,
+          media: query,
+          removeEventListener: () => {},
+        }) as unknown as MediaQueryList,
+    );
+    await renderSky({});
+
+    expect(api.requests.nightSky[0]?.still).toBe(true);
+  });
+
+  it("sets nothing when the page has gone before the API answers", async () => {
+    const api = serveCalendarApi();
+
+    router.search = {};
+
+    const { unmount } = renderHook(() => useNightSky());
+
+    unmount();
+    await waitFor(() => {
+      expect(api.requests.nightSky).toHaveLength(1);
+    });
+    await new Promise((resolve) => {
+      setTimeout(resolve, 50);
+    });
+
+    expect(api.requests.nightSky).toHaveLength(1);
   });
 });

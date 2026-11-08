@@ -10,7 +10,7 @@ import {
 import { MAXIMUM_GROUP_LEVELS } from "./event-groups.constants";
 import { GroupLevelRow } from "./group-level-row";
 
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type { EventGroupLevel } from "./event-groups.types";
 import type { ReactNode } from "react";
 

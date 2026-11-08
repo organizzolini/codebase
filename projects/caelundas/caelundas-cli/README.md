@@ -4,7 +4,7 @@
 
 Caelundas computes planetary positions minute by minute over a date range,
 detects the astronomical events in them — aspects, phases, eclipses,
-retrogrades, ingresses, solstices, twilights — stores them in a SQLite file, and
+retrogrades, ingresses, solstices, twilights — stores them in Postgres, and
 renders an iCalendar file you can subscribe to in Google Calendar, Apple
 Calendar, or anything else that reads `.ics`, plus a JSON file of the same
 events.
@@ -15,10 +15,13 @@ events.
 # 1. Download the Swiss Ephemeris data files (one-time, about 2 MB)
 nx run caelundas-cli:download-ephemeris
 
-# 2. Configure your observer location and date range
+# 2. Configure your observer location, date range and database
 cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
 
-# 3. Generate the calendar; the first run creates output/database.sqlite and its tables
+# 3. Start the local Postgres (docker compose) and create the schema
+nx run caelundas-db:migration:run
+
+# 4. Generate the calendar and store its events
 nx run caelundas-cli:start
 ```
 
@@ -37,10 +40,13 @@ END_DATE="2026-07-31"         # YYYY-MM-DD
 OUTPUT_DIRECTORY="./output"
 ```
 
-Every field is optional. The database is the SQLite file `CAELUNDAS_SQLITE_DATABASE`
-names, or `:memory:`; by default it is `output/database.sqlite` in this project's
-folder, wherever the command runs from, and is gitignored with the rest of `output/`. Location defaults to
-Philadelphia, and the date range to a two-month window centered on today.
+Every field is optional. Location defaults to Philadelphia, and the date range
+to a two-month window centered on today.
+
+The database is the `caelundas` schema of `caelundas_development`, read through
+`CAELUNDAS_POSTGRES_*` only (database, host, password, port, schema and
+username, each defaulting to the local Docker Postgres, as `.env.default`
+lists). The unprefixed `POSTGRES_*` admin login is never read.
 
 The **timezone is derived from your coordinates** rather than configured
 separately — a calendar whose location and timezone could disagree is a
@@ -182,7 +188,7 @@ the database never disagree.
 | `timezone` | The IANA zone derived from that location, such as `America/New_York`, to render local time in |
 | `id`, `created_at`, `updated_at`, … | `uuidv7()` id and audit columns |
 
-An event is unique on `(summary, start, latitude, longitude)`:
+An event is unique on `(summary, start, end, latitude, longitude)`:
 
 - Re-running a range updates rows in place. `updated_at` advances; `created_at`
   does not.
@@ -230,33 +236,32 @@ under, and carries the nodes above through the closure table. The `.ics`
 output keeps the `CATEGORIES` property, and the JSON output a `tags` array,
 both holding the linked tags' names.
 
-Coordinates are stored as text, fixed to six decimals, so the natural key
-compares them exactly; compare them as such. `start` and `end` are ISO 8601
-text in UTC, such as `2026-03-04T15:20:00.000Z`, which sorts as the instants
-it names.
+Coordinates are `numeric(9, 6)`: the driver returns them as strings, such as
+`"39.949309"`, and a number is written fixed to six decimals, so the natural key
+compares them exactly. `start` and `end` are `timestamptz`, read back in UTC.
+Ids are `uuidv7()` values the database assigns, so a run never derives one.
 
-A run creates `output/database.sqlite` and applies the migration when the
-table is missing, and adds to it on later runs: the same event for the same
-place updates its row. The schema comes from a generated migration:
-`nx run caelundas-cli:migration:generate` creates the next one, and
-`migration:run`, `migration:revert` and `migration:show` work on the file
-directly. They read the data source and migrations from
-`src/modules/database/`, the folder the `migration` target's `module` option
-names. The same file is what the web application, `caelundas-web`, reads: the
-migration creates the read model it queries (`tag_nodes`,
-`calendar_event_tag_nodes` and the `calendar_events_derived` view), and every
-run ends by rewriting those tables with `data/events-read-model.sql`, so there
-is no separate build step. Build the web application with
-`nx run caelundas-web:build:ingested`, which copies the file.
+A run adds to the database, and the same event for the same place updates its
+row, through `INSERT … ON CONFLICT (summary, start, end, latitude, longitude)
+DO UPDATE`, so re-running an ingest never duplicates it. Rows go in batches
+sized by their columns to stay under Postgres's 65,535 bind parameters per
+statement. The entities, the one migration, and the read model come from the
+`caelundas-db` library: apply the migration with
+`nx run caelundas-db:migration:run` before the first run (`migration:generate`
+creates the next one). Every run ends by rebuilding the read model
+(`tag_nodes`, `calendar_event_tag_nodes`, and the `calendar_event_derived_times`
+view the API queries) with `CaelundasDatabaseService.refreshReadModel`, in the
+same transaction that wrote the events, so a failed refresh stores nothing and
+there is no separate build step.
 
-SQLite takes one writer at a time, so run one ingestion against a file at a
-time; a second waits five seconds and then fails with `SQLITE_BUSY`.
+Postgres takes concurrent writers, but two runs that insert the same missing
+tag at once make the second fail on the tag's unique name; run it again.
 
 ## Night sky
 
 The `night-sky` command fills the tables `caelundas-web`'s night sky reads,
-`star`, `constellation` and `constellation_line`, in the same file, replacing
-what an earlier run wrote. It reads three files downloaded beforehand, never
+`stars`, `constellations` and `constellation_lines`, in the same database,
+replacing what an earlier run wrote, in one transaction. It reads three files downloaded beforehand, never
 committed:
 
 ```bash
@@ -272,15 +277,11 @@ keyed by Hipparcos number, plus any fainter star a figure joins; the 88 IAU
 constellations, the twelve of the zodiac flagged; and each figure's segments
 between two stored stars. d3-celestial draws its figures by position, so each
 vertex is matched to the catalog star within 0.05 degrees of it, and a segment
-south of the stored sky is left out. `data/night-sky-seed.sql` holds all 88
-constellations and their figures, with only the stars those figures join and
-those brighter than magnitude 3, for `caelundas-web`'s tests and seeded build;
-the full catalog stays an ingest step.
+south of the stored sky is left out.
 
 The stars are the [HYG star database](https://github.com/astronexus/HYG-Database)
 v4.1, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), David
-Nash and the HYG contributors; the stored catalog and the seed are derived
-works under the same license. The constellations and figures are
+Nash and the HYG contributors; the stored catalog is a derived work under the same license. The constellations and figures are
 [d3-celestial](https://github.com/ofrohn/d3-celestial)'s, BSD-3-Clause, Olaf
 Frohn, after the IAU's constellation charts.
 
@@ -296,7 +297,6 @@ src/
     ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena
     ├── perfective/          # Exact-moment detection across every event service
     ├── progressive/         # Spans derived from those moments
-    ├── database/            # SQLite connection, entities, migrations
     ├── night-sky/           # Stars and constellation figures for the web's night sky
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── tags/                # Resolving raw tag strings to nodes of the tag tree
@@ -317,8 +317,8 @@ nx run caelundas-cli:start
 
 ## Test
 
-Integration and end-to-end suites use an in-memory or temporary SQLite file,
-so they need no container.
+Integration and end-to-end suites start a throwaway Postgres in a Testcontainers
+container and run the real migration against it, so Docker must be running.
 
 ```bash
 nx run caelundas-cli:vitest
@@ -326,8 +326,8 @@ nx run caelundas-cli:vitest
 
 ```bash
 nx run caelundas-cli:vitest:unit          # Fast tests only
-nx run caelundas-cli:vitest:end-to-end    # Full pipeline, against a temporary SQLite file
-nx run caelundas-cli:vitest:integration   # Calendar events service, against an in-memory SQLite file
+nx run caelundas-cli:vitest:end-to-end    # Full pipeline, against a Testcontainers Postgres
+nx run caelundas-cli:vitest:integration   # Ingest services, against a Testcontainers Postgres
 ```
 
 ## Development
@@ -361,9 +361,9 @@ Call stacks traced through `projects/caelundas/caelundas-cli`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 1075 |
-| Files | 202 |
-| Calls traced | 1348 |
+| Callables | 1055 |
+| Files | 188 |
+| Calls traced | 1343 |
 | Call stacks | 106 |
 | Deepest stack | 15 |
 | Stacks through recursion | 0 |
@@ -442,7 +442,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 NightSkyCommand.run(_passedParameters: string[], options?: NightSkyCommandOptions): Promise<void> [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.command.ts:91]
    ↳ Ingests the three files.
-  └─> NightSkyService.ingest(files: NightSkyFiles): Promise<NightSkyRows> [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:81]
+  └─> NightSkyService.ingest(files: NightSkyFiles): Promise<NightSkyRows> [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:88]
      ↳ Reads the three files, builds the rows and replaces the tables' rows with them, returning what was written.
     └─> buildNightSkyRows(sources: NightSkySources): NightSkyRows [projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:37]
        ↳ Builds the rows the night sky's tables hold from the three files: the catalog's stars as bright as the eye sees, and…
@@ -1712,11 +1712,10 @@ What this project is judged against, as declared in its own `callidescope.config
 | `AnnualSolarCycleEventsService.getWinterEvents` | 8 | `AnnualSolarCycleEventsService.isWinterSolstice`, `AnnualSolarCycleEventsService.buildWinterSolsticeEvent`, `AnnualSolarCycleEventsService.isThirteenthHexadecan`, `AnnualSolarCycleEventsService.buildThirteenthHexadecanEvent`, `AnnualSolarCycleEventsService.isImbolc`, `AnnualSolarCycleEventsService.buildImbolcEvent`, `AnnualSolarCycleEventsService.isFifteenthHexadecan`, `AnnualSolarCycleEventsService.buildFifteenthHexadecanEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:123` |
 | `PerfectiveService.detectOrbitalEvents` | 8 | `RetrogradesService.detect`, `IngressesService.detect`, `MonthlyLunarCycleService.detect`, `MonthlyLunarCycleService.detectApsides`, `AnnualSolarCycleService.detect`, `PhasesService.getMartianPhaseEvents`, `PhasesService.getMercurianPhaseEvents`, `PhasesService.getVenusianPhaseEvents` | `projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:171` |
 | `ProgressiveService.detect` | 8 | `AspectsService.detectProgressive`, `RetrogradesService.detectProgressive`, `EclipsesService.detectProgressive`, `IngressesService.detectProgressive`, `MonthlyLunarCycleService.detectProgressive`, `TwilightsService.detectProgressive`, `PhasesService.detectProgressive`, `AnnualSolarCycleService.detectProgressive` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive.service.ts:47` |
-| `CalendarEventsService.transaction(…)` | 7 | `TagsService.resolve`, `CalendarEventsService.flatMap(…)`, `CalendarEventsService.writeRows`, `CalendarEventsService.map(…)`, `CalendarEventsService.replaceTagLinks`, `CalendarEventsService.toTagLinks`, `DatabaseService.refreshReadModel` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:379` |
+| `CalendarEventsService.transaction(…)` | 7 | `TagsService.resolve`, `CalendarEventsService.flatMap(…)`, `CalendarEventsService.writeRows`, `CalendarEventsService.map(…)`, `CalendarEventsService.replaceTagLinks`, `CalendarEventsService.toTagLinks`, `CaelundasDatabaseService.refreshReadModel` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:362` |
 | `PhasesService.detectProgressive` | 7 | `PhasesService.filter(…)`, `PhasesService.filter(…)`, `VenusianPhaseService.getVenusianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MercurianPhaseService.getMercurianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MartianPhaseService.getMartianPhaseProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:97` |
 | `classifyEvent` | 6 | `flatMap(…)`, `pruneAncestorPaths`, `flatMap(…)`, `ingressPaths`, `eclipsePaths`, `isInstant` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:20` |
 | `dignityPaths` | 6 | `find(…)`, `map(…)`, `find(…)`, `map(…)`, `isSign`, `find(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:57` |
-| `CalendarEventsService.writeRows` | 6 | `CalendarEventsService.map(…)`, `CalendarEventsService.formatCoordinate`, `CalendarEventsService.map(…)`, `CalendarEventsService.map(…)`, `CalendarEventsService.mapWrittenIds`, `CalendarEventsService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:168` |
 | `AspectsService.detectCompositeAspects` | 6 | `QuadrupleAspectsService.detect`, `QuintupleAspectsService.detect`, `SextupleAspectsService.detect`, `StelliumService.detect`, `TripleAspectsService.detect`, `AspectsService.compoundEventKey` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:82` |
 | `EclipseClassificationService.getSolarEclipseType` | 6 | `EclipseClassificationService.isInProgress(…)`, `EclipseClassificationService.isInProgress`, `EclipseClassificationService.getClosestApproach(…)`, `EclipseClassificationService.getClosestApproach`, `EclipseClassificationService.getGamma`, `EclipseClassificationService.getUmbralRadius` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-classification.service.ts:205` |
 | `EclipseCalculationService.getGeocentricEvents` | 6 | `EclipseCalculationService.getSolarEclipsePhases`, `EclipseCalculationService.getLunarEclipsePhases`, `EclipseCalculationService.continueOccurrence`, `EclipseClassificationService.getSolarEclipseType`, `EclipseClassificationService.getLunarEclipseType`, `EclipseCalculationService.buildGeocentricEclipseEvents` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-calculation.service.ts:178` |
@@ -1743,8 +1742,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TripleAspectsDetectorService.composeYods` | 5 | `AspectGraphService.unionAspectBodies`, `TripleAspectsDetectorService.groupAspectsByType`, `TripleAspectsDetectorService.canonicalPair`, `TripleAspectsComposerService.findBodiesWithAspectTo`, `TripleAspectsDetectorService.checkYodApexBody` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:432` |
 | `flatMap(…)` | 4 | `one`, `mapEach(…)`, `mapEach`, `map(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:24` |
 | `pruneAncestorPaths` | 4 | `map(…)`, `map(…)`, `toSorted(…)`, `filter(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:161` |
-| `CalendarEventsService.findInRange` | 4 | `CalendarEventsService.formatCoordinate`, `CalendarEventsService.findTagNames`, `CalendarEventsService.map(…)`, `CalendarEventsService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:236` |
-| `CalendarEventsService.upsert` | 4 | `CalendarEventsService.tidyText`, `CalendarEventsService.calendarEventKey`, `classifyEvent`, `CalendarEventsService.transaction(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:354` |
+| `CalendarEventsService.findInRange` | 4 | `CalendarEventsService.formatCoordinate`, `CalendarEventsService.findTagNames`, `CalendarEventsService.map(…)`, `CalendarEventsService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:219` |
+| `CalendarEventsService.upsert` | 4 | `CalendarEventsService.tidyText`, `CalendarEventsService.calendarEventKey`, `classifyEvent`, `CalendarEventsService.transaction(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:337` |
 | `CalendarService.buildTimezoneContent` | 4 | `CalendarService.flatMap(…)`, `CalendarService.buildObservance`, `CalendarService.map(…)`, `CalendarService.findTransitions` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:80` |
 | `EphemerisPhenomenaService.computeIlluminationForBody` | 4 | `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays`, `assertSwissEphemerisResult` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-phenomena.service.ts:55` |
 | `EphemerisAggregationService.accumulateBodyEphemeris` | 4 | `EphemerisConstantsService.isNode`, `EphemerisCoordinateService.computeNodeBodyMinutes`, `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `EphemerisAggregationService.computeNonNodeBodyMinutes` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts:158` |
@@ -1842,6 +1841,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `map(…)` | 2 | `mapEach(…)`, `mapEach` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:257` |
 | `ingressPaths` | 2 | `ingressKind`, `dignityPaths` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:123` |
 | `mapRawTag` | 2 | `filter(…)`, `flatMap(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:147` |
+| `CalendarEventsService.writeRows` | 2 | `CalendarEventsService.mapWrittenIds`, `CalendarEventsService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:167` |
 | `assertEphemerisFilesPresent` | 2 | `findMissingEphemerisFiles`, `EphemerisFilesMissingError.constructor` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts:20` |
 | `EphemerisCoordinateService.computeBodyCoordinates` | 2 | `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `assertSwissEphemerisResult` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:43` |
 | `EphemerisCoordinateService.computeNodeCoordinate` | 2 | `EphemerisCoordinateService.computeLunarPerigeeCoordinate`, `EphemerisCoordinateService.computeRegularNodeCoordinate` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:91` |
@@ -1930,7 +1930,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TripleAspectsService.groupAspectsByType` | 2 | `TripleAspectsService.groupByToMap(…)`, `groupByToMap` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:55` |
 | `traceConstellationLines` | 2 | `map(…)`, `toSorted(…)` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:145` |
 | `readCatalogStar` | 2 | `some(…)`, `roundStar` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:204` |
-| `NightSkyService.ingest` | 2 | `buildNightSkyRows`, `NightSkyService.transaction(…)` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:81` |
+| `NightSkyService.ingest` | 2 | `buildNightSkyRows`, `NightSkyService.transaction(…)` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:88` |
 | `NightSkyCommand.run` | 2 | `NightSkyService.ingest`, `NightSkyCommand.requireFiles` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.command.ts:91` |
 | `MinorAspectsComposerService.assembleMinorAspectEvent` | 2 | `bodyDisplayName`, `MinorAspectsComposerService.resolvePhaseDetails` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:60` |
 | `MinorAspectsComposerService.buildGroupKey` | 2 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:99` |
@@ -1960,11 +1960,11 @@ What this project is judged against, as declared in its own `callidescope.config
 | `filter(…)` | 1 | `some(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:166` |
 | `TagsService.ensurePath` | 1 | `tagNodeKey` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.service.ts:31` |
 | `TagsService.map(…)` | 1 | `tagNodeKey` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.service.ts:78` |
-| `CalendarEventsService.toRow` | 1 | `CalendarEventsService.formatCoordinate` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:139` |
-| `CalendarEventsService.map(…)` | 1 | `CalendarEventsService.calendarEventKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:206` |
-| `CalendarEventsService.mapWrittenIds` | 1 | `CalendarEventsService.calendarEventKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:283` |
-| `CalendarEventsService.toTagLinks` | 1 | `tagPathKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:315` |
-| `CalendarEventsService.map(…)` | 1 | `CalendarEventsService.toRow` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:393` |
+| `CalendarEventsService.toRow` | 1 | `CalendarEventsService.formatCoordinate` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:142` |
+| `CalendarEventsService.map(…)` | 1 | `CalendarEventsService.calendarEventKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:189` |
+| `CalendarEventsService.mapWrittenIds` | 1 | `CalendarEventsService.calendarEventKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:266` |
+| `CalendarEventsService.toTagLinks` | 1 | `tagPathKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:298` |
+| `CalendarEventsService.map(…)` | 1 | `CalendarEventsService.toRow` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:376` |
 | `CalendarService.buildObservance` | 1 | `CalendarService.formatOffset` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:57` |
 | `CalendarService.map(…)` | 1 | `CalendarService.buildObservance` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:105` |
 | `CalendarService.findTransitions` | 1 | `CalendarService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:127` |
@@ -2331,8 +2331,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `map(…)` | 1 | `measureSeparation` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:64` |
 | `indexStars` | 1 | `toBand` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:76` |
 | `map(…)` | 1 | `findStar` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.utilities.ts:153` |
-| `NightSkyService.replace` | 1 | `NightSkyService.insertInBatches` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:63` |
-| `NightSkyService.transaction(…)` | 1 | `NightSkyService.replace` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:89` |
+| `NightSkyService.replace` | 1 | `NightSkyService.insertInBatches` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:70` |
+| `NightSkyService.transaction(…)` | 1 | `NightSkyService.replace` | `projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.ts:96` |
 | `EphemerisDownloadCommand.run` | 1 | `EphemerisDownloadService.download` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.ts:42` |
 | `MinorAspectsComposerService.filter(…)` | 1 | `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:101` |
 | `MinorAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:103` |
@@ -2364,10 +2364,10 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ```mermaid
 graph LR
   caelundas_cli["caelundas-cli"]
-  configuration["configuration"]
+  caelundas_db["caelundas-db"]
   observability["observability"]
   persistence["persistence"]
-  caelundas_cli --> configuration
+  caelundas_cli --> caelundas_db
   caelundas_cli --> observability
   caelundas_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
@@ -2383,12 +2383,12 @@ flowchart LR
   AnnualSolarCycleModule
   AspectsModule
   AspectsUtilitiesModule
+  CaelundasDatabaseModule
   CaelundasModule
   CalendarEventsModule
   CalendarModule
   ConfigModule([ConfigModule])
   DailyCyclesModule
-  DatabaseModule
   DatetimeModule
   DiscoveryModule
   EclipsesModule
@@ -2404,6 +2404,7 @@ flowchart LR
   NightSkyModule
   PerfectiveModule
   PhasesModule
+  PostgresqlModule
   ProgressiveModule
   ProgressiveUtilitiesModule
   QuadrupleAspectsModule
@@ -2411,7 +2412,6 @@ flowchart LR
   RetrogradesModule
   SextupleAspectsModule
   SpecialtyAspectsModule
-  SqliteModule
   StelliumModule
   TagsModule
   TripleAspectsModule
@@ -2429,12 +2429,14 @@ flowchart LR
   AspectsModule --> TripleAspectsModule
   AspectsUtilitiesModule --> EphemerisModule
   AspectsUtilitiesModule --> MathModule
+  CaelundasDatabaseModule --> PostgresqlModule
+  CaelundasDatabaseModule --> TypeOrmModule
   CaelundasModule --> AnnualSolarCycleModule
   CaelundasModule --> AspectsModule
+  CaelundasModule --> CaelundasDatabaseModule
   CaelundasModule --> CalendarEventsModule
   CaelundasModule --> CalendarModule
   CaelundasModule --> DailyCyclesModule
-  CaelundasModule --> DatabaseModule
   CaelundasModule --> EclipsesModule
   CaelundasModule --> EphemerisModule
   CaelundasModule --> IngressesModule
@@ -2454,13 +2456,11 @@ flowchart LR
   CaelundasModule --> StelliumModule
   CaelundasModule --> TripleAspectsModule
   CaelundasModule --> TwilightsModule
-  CalendarEventsModule --> DatabaseModule
+  CalendarEventsModule --> CaelundasDatabaseModule
   CalendarEventsModule --> TagsModule
   DailyCyclesModule --> CalendarModule
   DailyCyclesModule --> EphemerisModule
   DailyCyclesModule --> MathModule
-  DatabaseModule --> SqliteModule
-  DatabaseModule --> TypeOrmModule
   EclipsesModule --> EphemerisModule
   EclipsesModule --> MathModule
   EclipsesModule --> ProgressiveUtilitiesModule
@@ -2477,7 +2477,7 @@ flowchart LR
   MinorAspectsModule --> ProgressiveUtilitiesModule
   MonthlyLunarCycleModule --> CalendarModule
   MonthlyLunarCycleModule --> EphemerisModule
-  NightSkyModule --> DatabaseModule
+  NightSkyModule --> CaelundasDatabaseModule
   PerfectiveModule --> AnnualSolarCycleModule
   PerfectiveModule --> AspectsModule
   PerfectiveModule --> DailyCyclesModule
@@ -2492,6 +2492,7 @@ flowchart LR
   PhasesModule --> EphemerisModule
   PhasesModule --> MathModule
   PhasesModule --> ProgressiveUtilitiesModule
+  PostgresqlModule --> TypeOrmModule
   ProgressiveModule --> AnnualSolarCycleModule
   ProgressiveModule --> AspectsModule
   ProgressiveModule --> EclipsesModule
@@ -2514,7 +2515,6 @@ flowchart LR
   SpecialtyAspectsModule --> AspectsUtilitiesModule
   SpecialtyAspectsModule --> EphemerisModule
   SpecialtyAspectsModule --> ProgressiveUtilitiesModule
-  SqliteModule --> TypeOrmModule
   StelliumModule --> AspectsUtilitiesModule
   StelliumModule --> ProgressiveUtilitiesModule
   TripleAspectsModule --> AspectsUtilitiesModule
@@ -2584,6 +2584,7 @@ graph LR
   file_src_modules_caelundas_caelundas_utilities_ts["src/modules/caelundas/caelundas.utilities.ts"]
   file_src_modules_caelundas_symbol_caelundas_constants_ts["src/modules/caelundas/symbol-caelundas.constants.ts"]
   file_src_modules_calendar_events_calendar_events_constants_ts["src/modules/calendar-events/calendar-events.constants.ts"]
+  file_src_modules_calendar_events_calendar_events_constants_unit_test_ts["src/modules/calendar-events/calendar-events.constants.unit.test.ts"]
   file_src_modules_calendar_events_calendar_events_module_ts["src/modules/calendar-events/calendar-events.module.ts"]
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts["src/modules/calendar-events/calendar-events.service.integration.test.ts"]
   file_src_modules_calendar_events_calendar_events_service_ts["src/modules/calendar-events/calendar-events.service.ts"]
@@ -2601,24 +2602,6 @@ graph LR
   file_src_modules_daily_cycles_daily_cycles_service_ts["src/modules/daily-cycles/daily-cycles.service.ts"]
   file_src_modules_daily_cycles_daily_cycles_service_unit_test_ts["src/modules/daily-cycles/daily-cycles.service.unit.test.ts"]
   file_src_modules_daily_cycles_daily_cycles_types_ts["src/modules/daily-cycles/daily-cycles.types.ts"]
-  file_src_modules_database_data_source_constants_ts["src/modules/database/data-source.constants.ts"]
-  file_src_modules_database_data_source_constants_unit_test_ts["src/modules/database/data-source.constants.unit.test.ts"]
-  file_src_modules_database_database_constants_integration_test_ts["src/modules/database/database.constants.integration.test.ts"]
-  file_src_modules_database_database_constants_ts["src/modules/database/database.constants.ts"]
-  file_src_modules_database_database_module_ts["src/modules/database/database.module.ts"]
-  file_src_modules_database_database_service_ts["src/modules/database/database.service.ts"]
-  file_src_modules_database_database_service_unit_test_ts["src/modules/database/database.service.unit.test.ts"]
-  file_src_modules_database_database_types_ts["src/modules/database/database.types.ts"]
-  file_src_modules_database_database_utilities_ts["src/modules/database/database.utilities.ts"]
-  file_src_modules_database_database_utilities_unit_test_ts["src/modules/database/database.utilities.unit.test.ts"]
-  file_src_modules_database_entities_calendar_event_tag_entity_ts["src/modules/database/entities/calendar-event-tag.entity.ts"]
-  file_src_modules_database_entities_calendar_event_entity_ts["src/modules/database/entities/calendar-event.entity.ts"]
-  file_src_modules_database_entities_constellation_line_entity_ts["src/modules/database/entities/constellation-line.entity.ts"]
-  file_src_modules_database_entities_constellation_entity_ts["src/modules/database/entities/constellation.entity.ts"]
-  file_src_modules_database_entities_star_entity_ts["src/modules/database/entities/star.entity.ts"]
-  file_src_modules_database_entities_tag_entity_ts["src/modules/database/entities/tag.entity.ts"]
-  file_src_modules_database_migrations_1793045891250_migration_ts["src/modules/database/migrations/1793045891250-migration.ts"]
-  file_src_modules_database_migrations_1793628422000_migration_ts["src/modules/database/migrations/1793628422000-migration.ts"]
   file_src_modules_datetime_datetime_constants_ts["src/modules/datetime/datetime.constants.ts"]
   file_src_modules_datetime_datetime_module_ts["src/modules/datetime/datetime.module.ts"]
   file_src_modules_datetime_datetime_service_ts["src/modules/datetime/datetime.service.ts"]
@@ -2723,6 +2706,7 @@ graph LR
   file_src_modules_night_sky_night_sky_command_unit_test_ts["src/modules/night-sky/night-sky.command.unit.test.ts"]
   file_src_modules_night_sky_night_sky_constants_ts["src/modules/night-sky/night-sky.constants.ts"]
   file_src_modules_night_sky_night_sky_module_ts["src/modules/night-sky/night-sky.module.ts"]
+  file_src_modules_night_sky_night_sky_service_integration_test_ts["src/modules/night-sky/night-sky.service.integration.test.ts"]
   file_src_modules_night_sky_night_sky_service_ts["src/modules/night-sky/night-sky.service.ts"]
   file_src_modules_night_sky_night_sky_service_unit_test_ts["src/modules/night-sky/night-sky.service.unit.test.ts"]
   file_src_modules_night_sky_night_sky_types_ts["src/modules/night-sky/night-sky.types.ts"]
@@ -2844,6 +2828,7 @@ graph LR
   file_testing_calendar_command_utilities_ts["testing/calendar-command.utilities.ts"]
   file_testing_compound_aspect_seeding_end_to_end_test_ts["testing/compound-aspect-seeding.end-to-end.test.ts"]
   file_testing_compound_aspects_end_to_end_test_ts["testing/compound-aspects.end-to-end.test.ts"]
+  file_testing_database_ts["testing/database.ts"]
   file_testing_eclipse_test_constants_ts["testing/eclipse-test.constants.ts"]
   file_testing_eclipse_test_utilities_ts["testing/eclipse-test.utilities.ts"]
   file_testing_major_aspects_utilities_ts["testing/major-aspects.utilities.ts"]
@@ -2871,14 +2856,9 @@ graph LR
   file_testing_setup_ts["testing/setup.ts"]
   file_testing_stellium_cliques_unit_test_ts["testing/stellium-cliques.unit.test.ts"]
   file_testing_stellium_reference_unit_test_ts["testing/stellium-reference.unit.test.ts"]
-  file_testing_temporary_database_types_ts["testing/temporary-database.types.ts"]
-  file_testing_temporary_database_utilities_ts["testing/temporary-database.utilities.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_caelundas_cli_constants_ts --> file_src_modules_database_database_constants_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_caelundas_cli_constants_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_calendar_calendar_service_ts
-  file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_database_database_constants_ts
-  file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_ingresses_ingresses_service_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_input_input_constants_ts
@@ -2887,9 +2867,8 @@ graph LR
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_calendar_command_types_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_calendar_command_utilities_ts
+  file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_database_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_major_aspects_utilities_ts
-  file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_temporary_database_types_ts
-  file_src_caelundas_cli_main_end_to_end_test_ts --> file_testing_temporary_database_utilities_ts
   file_src_caelundas_cli_main_ts --> file_src_caelundas_cli_module_ts
   file_src_caelundas_cli_main_unit_test_ts --> file_src_caelundas_cli_module_ts
   file_src_caelundas_cli_module_ts --> file_src_caelundas_cli_constants_ts
@@ -2900,7 +2879,7 @@ graph LR
   file_src_ephemeris_download_cli_module_ts --> file_src_modules_ephemeris_download_ephemeris_download_module_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_constants_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_types_ts
-  file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_unit_test_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_module_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_module_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
@@ -2909,14 +2888,14 @@ graph LR
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_constants_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_types_ts
-  file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
-  file_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
@@ -2935,7 +2914,7 @@ graph LR
   file_src_modules_aspects_aspect_event_formatting_service_ts --> file_src_modules_aspects_aspects_constants_ts
   file_src_modules_aspects_aspect_event_formatting_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_aspects_aspect_event_formatting_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_aspects_aspect_event_formatting_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_aspects_aspect_event_formatting_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_aspects_aspect_event_formatting_service_unit_test_ts --> file_src_modules_aspects_aspect_event_formatting_service_ts
   file_src_modules_aspects_aspect_graph_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_aspects_aspect_graph_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
@@ -2986,7 +2965,7 @@ graph LR
   file_src_modules_aspects_aspects_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_aspects_aspects_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_aspects_aspects_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_aspects_aspects_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_aspects_aspects_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_aspects_aspects_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_aspects_aspect_ephemeris_service_ts
   file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_aspects_aspect_event_formatting_service_ts
@@ -2999,7 +2978,7 @@ graph LR
   file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_aspects_progressive_compound_event_service_ts
   file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_major_aspects_major_aspect_event_service_ts
@@ -3028,7 +3007,7 @@ graph LR
   file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_triple_aspects_triple_aspects_detector_service_ts
   file_src_modules_aspects_aspects_service_unit_test_ts --> file_src_modules_triple_aspects_triple_aspects_service_ts
   file_src_modules_aspects_aspects_types_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_aspects_aspects_types_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_aspects_aspects_types_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_aspects_aspects_types_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_aspects_compound_phase_service_ts --> file_src_modules_aspects_aspect_calculation_support_service_ts
   file_src_modules_aspects_compound_phase_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
@@ -3043,8 +3022,8 @@ graph LR
   file_src_modules_caelundas_caelundas_command_ts --> file_src_modules_progressive_progressive_service_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_caelundas_caelundas_command_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_calendar_events_calendar_events_service_ts
+  file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_calendar_calendar_service_ts
-  file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_database_database_types_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_input_input_service_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_input_input_types_ts
@@ -3058,7 +3037,6 @@ graph LR
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_calendar_events_calendar_events_module_ts
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_calendar_calendar_module_ts
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_daily_cycles_daily_cycles_module_ts
-  file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_database_database_module_ts
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_eclipses_eclipses_module_ts
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_ingresses_ingresses_module_ts
@@ -3078,50 +3056,41 @@ graph LR
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_stellium_stellium_module_ts
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_triple_aspects_triple_aspects_module_ts
   file_src_modules_caelundas_caelundas_module_ts --> file_src_modules_twilights_twilights_module_ts
-  file_src_modules_caelundas_caelundas_module_unit_test_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_caelundas_caelundas_types_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_caelundas_caelundas_types_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
   file_src_modules_caelundas_caelundas_types_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_caelundas_caelundas_types_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
+  file_src_modules_calendar_events_calendar_events_constants_ts --> file_src_caelundas_cli_constants_ts
+  file_src_modules_calendar_events_calendar_events_constants_unit_test_ts --> file_src_caelundas_cli_constants_ts
+  file_src_modules_calendar_events_calendar_events_constants_unit_test_ts --> file_src_modules_calendar_events_calendar_events_constants_ts
   file_src_modules_calendar_events_calendar_events_module_ts --> file_src_modules_calendar_events_calendar_events_service_ts
-  file_src_modules_calendar_events_calendar_events_module_ts --> file_src_modules_database_database_module_ts
   file_src_modules_calendar_events_calendar_events_module_ts --> file_src_modules_tags_tags_module_ts
-  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_caelundas_cli_constants_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_constants_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_module_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_service_ts
-  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_database_types_ts
-  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
-  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_entities_tag_entity_ts
+  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
+  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_testing_database_ts
+  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_caelundas_cli_constants_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_calendar_events_calendar_events_constants_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
-  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_database_service_ts
-  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_database_types_ts
-  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_entities_calendar_event_tag_entity_ts
-  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_tags_tags_service_ts
+  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_tags_tags_types_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_tags_tags_utilities_ts
   file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_service_ts
-  file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_database_database_service_ts
-  file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_tags_tags_service_ts
   file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_tags_tags_types_ts
   file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_tags_tags_utilities_ts
-  file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_database_database_types_ts
-  file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_database_entities_calendar_event_tag_entity_ts
-  file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_database_entities_calendar_event_entity_ts
-  file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_tags_tags_types_ts
   file_src_modules_calendar_calendar_module_ts --> file_src_modules_calendar_calendar_service_ts
+  file_src_modules_calendar_calendar_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_calendar_calendar_service_ts --> file_src_modules_calendar_calendar_constants_ts
   file_src_modules_calendar_calendar_service_ts --> file_src_modules_calendar_calendar_types_ts
-  file_src_modules_calendar_calendar_service_ts --> file_src_modules_database_database_types_ts
   file_src_modules_calendar_calendar_service_ts --> file_src_modules_input_input_types_ts
+  file_src_modules_calendar_calendar_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_calendar_calendar_service_unit_test_ts --> file_src_modules_calendar_calendar_service_ts
-  file_src_modules_calendar_calendar_service_unit_test_ts --> file_src_modules_database_database_types_ts
   file_src_modules_calendar_calendar_service_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_calendar_calendar_types_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_calendar_calendar_types_ts --> file_src_modules_calendar_events_calendar_events_types_ts
+  file_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_src_modules_calendar_calendar_service_ts
-  file_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_src_modules_database_database_types_ts
   file_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_src_modules_ephemeris_ephemeris_constants_ts
   file_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
@@ -3134,8 +3103,8 @@ graph LR
   file_src_modules_daily_cycles_daily_cycles_module_ts --> file_src_modules_daily_cycles_daily_cycles_service_ts
   file_src_modules_daily_cycles_daily_cycles_module_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_daily_cycles_daily_cycles_module_ts --> file_src_modules_math_math_module_ts
+  file_src_modules_daily_cycles_daily_cycles_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_daily_cycles_daily_cycles_service_ts --> file_src_modules_daily_cycles_daily_cycles_builder_service_ts
-  file_src_modules_daily_cycles_daily_cycles_service_ts --> file_src_modules_database_database_types_ts
   file_src_modules_daily_cycles_daily_cycles_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_daily_cycles_daily_cycles_service_ts --> file_src_modules_math_math_service_ts
   file_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_src_modules_calendar_calendar_service_ts
@@ -3144,32 +3113,10 @@ graph LR
   file_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_src_modules_math_math_service_ts
-  file_src_modules_database_data_source_constants_ts --> file_src_modules_database_database_constants_ts
-  file_src_modules_database_data_source_constants_unit_test_ts --> file_src_modules_database_database_constants_ts
-  file_src_modules_database_database_constants_integration_test_ts --> file_src_modules_database_database_constants_ts
-  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_calendar_event_tag_entity_ts
-  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_calendar_event_entity_ts
-  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_constellation_line_entity_ts
-  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_constellation_entity_ts
-  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_star_entity_ts
-  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_tag_entity_ts
-  file_src_modules_database_database_constants_ts --> file_src_modules_database_migrations_1793045891250_migration_ts
-  file_src_modules_database_database_constants_ts --> file_src_modules_database_migrations_1793628422000_migration_ts
-  file_src_modules_database_database_module_ts --> file_src_modules_database_database_constants_ts
-  file_src_modules_database_database_module_ts --> file_src_modules_database_database_service_ts
-  file_src_modules_database_database_service_ts --> file_src_modules_database_database_constants_ts
-  file_src_modules_database_database_service_unit_test_ts --> file_src_modules_database_database_service_ts
-  file_src_modules_database_database_types_ts --> file_src_modules_database_entities_calendar_event_entity_ts
-  file_src_modules_database_database_utilities_unit_test_ts --> file_src_modules_database_database_utilities_ts
-  file_src_modules_database_entities_calendar_event_tag_entity_ts --> file_src_modules_database_entities_calendar_event_entity_ts
-  file_src_modules_database_entities_calendar_event_tag_entity_ts --> file_src_modules_database_entities_tag_entity_ts
-  file_src_modules_database_entities_calendar_event_entity_ts --> file_src_modules_database_database_utilities_ts
-  file_src_modules_database_entities_constellation_line_entity_ts --> file_src_modules_database_entities_constellation_entity_ts
-  file_src_modules_database_entities_constellation_line_entity_ts --> file_src_modules_database_entities_star_entity_ts
   file_src_modules_datetime_datetime_module_ts --> file_src_modules_datetime_datetime_service_ts
   file_src_modules_datetime_datetime_service_unit_test_ts --> file_src_modules_datetime_datetime_service_ts
   file_src_modules_eclipses_eclipse_calculation_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_eclipses_eclipse_calculation_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_eclipses_eclipse_calculation_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_eclipses_eclipse_calculation_service_ts --> file_src_modules_eclipses_eclipse_classification_service_ts
   file_src_modules_eclipses_eclipse_calculation_service_ts --> file_src_modules_eclipses_eclipse_event_service_ts
   file_src_modules_eclipses_eclipse_calculation_service_ts --> file_src_modules_eclipses_eclipse_geometry_service_ts
@@ -3179,7 +3126,7 @@ graph LR
   file_src_modules_eclipses_eclipse_calculation_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_eclipses_eclipse_calculation_service_ts --> file_src_modules_math_math_service_ts
   file_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_src_modules_eclipses_eclipse_calculation_service_ts
   file_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_src_modules_eclipses_eclipse_classification_service_ts
   file_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_src_modules_eclipses_eclipse_event_service_ts
@@ -3198,11 +3145,11 @@ graph LR
   file_src_modules_eclipses_eclipse_classification_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_eclipses_eclipse_classification_service_unit_test_ts --> file_testing_eclipse_test_utilities_ts
   file_src_modules_eclipses_eclipse_event_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_eclipses_eclipse_event_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_eclipses_eclipse_event_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_eclipses_eclipse_event_service_ts --> file_src_modules_eclipses_eclipses_constants_ts
   file_src_modules_eclipses_eclipse_event_service_ts --> file_src_modules_eclipses_eclipses_types_ts
   file_src_modules_eclipses_eclipse_event_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
-  file_src_modules_eclipses_eclipse_event_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_eclipses_eclipse_event_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_eclipses_eclipse_event_service_unit_test_ts --> file_src_modules_eclipses_eclipse_event_service_ts
   file_src_modules_eclipses_eclipse_event_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_eclipses_eclipse_geometry_service_ts --> file_src_modules_eclipses_eclipses_constants_ts
@@ -3214,7 +3161,7 @@ graph LR
   file_src_modules_eclipses_eclipse_geometry_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_eclipses_eclipse_geometry_service_unit_test_ts --> file_testing_eclipse_test_utilities_ts
   file_src_modules_eclipses_eclipse_topocentric_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_eclipses_eclipse_topocentric_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_eclipses_eclipse_topocentric_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_eclipses_eclipse_topocentric_service_ts --> file_src_modules_eclipses_eclipse_event_service_ts
   file_src_modules_eclipses_eclipse_topocentric_service_ts --> file_src_modules_eclipses_eclipse_geometry_service_ts
   file_src_modules_eclipses_eclipse_topocentric_service_ts --> file_src_modules_eclipses_eclipses_constants_ts
@@ -3222,7 +3169,7 @@ graph LR
   file_src_modules_eclipses_eclipse_topocentric_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_eclipses_eclipse_topocentric_service_ts --> file_src_modules_math_math_service_ts
   file_src_modules_eclipses_eclipse_topocentric_service_ts --> file_src_modules_math_math_types_ts
-  file_src_modules_eclipses_eclipse_topocentric_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_eclipses_eclipse_topocentric_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_eclipses_eclipse_topocentric_service_unit_test_ts --> file_src_modules_eclipses_eclipse_event_service_ts
   file_src_modules_eclipses_eclipse_topocentric_service_unit_test_ts --> file_src_modules_eclipses_eclipse_geometry_service_ts
   file_src_modules_eclipses_eclipse_topocentric_service_unit_test_ts --> file_src_modules_eclipses_eclipse_topocentric_service_ts
@@ -3241,12 +3188,12 @@ graph LR
   file_src_modules_eclipses_eclipses_module_ts --> file_src_modules_math_math_module_ts
   file_src_modules_eclipses_eclipses_module_ts --> file_src_modules_progressive_progressive_utilities_module_ts
   file_src_modules_eclipses_eclipses_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_eclipses_eclipses_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_eclipses_eclipses_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_eclipses_eclipses_service_ts --> file_src_modules_eclipses_eclipse_calculation_service_ts
   file_src_modules_eclipses_eclipses_service_ts --> file_src_modules_eclipses_eclipse_event_service_ts
   file_src_modules_eclipses_eclipses_service_ts --> file_src_modules_eclipses_eclipses_types_ts
   file_src_modules_eclipses_eclipses_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
-  file_src_modules_eclipses_eclipses_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_eclipses_eclipses_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_eclipses_eclipses_service_unit_test_ts --> file_src_modules_eclipses_eclipse_calculation_service_ts
   file_src_modules_eclipses_eclipses_service_unit_test_ts --> file_src_modules_eclipses_eclipse_event_service_ts
   file_src_modules_eclipses_eclipses_service_unit_test_ts --> file_src_modules_eclipses_eclipses_service_ts
@@ -3364,7 +3311,7 @@ graph LR
   file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_ingresses_ingresses_constants_ts
@@ -3376,7 +3323,7 @@ graph LR
   file_src_modules_ingresses_ingresses_module_ts --> file_src_modules_ingresses_ingresses_service_ts
   file_src_modules_ingresses_ingresses_service_integration_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_ingresses_ingresses_service_integration_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_ingresses_ingresses_service_integration_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_ingresses_ingresses_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_ingresses_ingresses_service_integration_test_ts --> file_src_modules_ephemeris_ephemeris_aggregation_service_ts
   file_src_modules_ingresses_ingresses_service_integration_test_ts --> file_src_modules_ephemeris_ephemeris_constants_service_ts
   file_src_modules_ingresses_ingresses_service_integration_test_ts --> file_src_modules_ephemeris_ephemeris_coordinate_service_ts
@@ -3389,12 +3336,12 @@ graph LR
   file_src_modules_ingresses_ingresses_service_integration_test_ts --> file_src_modules_ingresses_ingresses_service_ts
   file_src_modules_ingresses_ingresses_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_ingresses_ingresses_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_ingresses_ingresses_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_ingresses_ingresses_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_ingresses_ingresses_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_ingresses_ingresses_service_ts --> file_src_modules_ingresses_ingresses_composer_service_ts
   file_src_modules_ingresses_ingresses_service_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_ingresses_ingresses_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_ingresses_ingresses_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_ingresses_ingresses_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_ingresses_ingresses_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_ingresses_ingresses_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_ingresses_ingresses_service_unit_test_ts --> file_src_modules_ingresses_ingresses_composer_service_ts
@@ -3415,19 +3362,19 @@ graph LR
   file_src_modules_major_aspects_major_aspect_event_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_major_aspects_major_aspect_event_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_major_aspects_major_aspect_event_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_major_aspects_major_aspect_event_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_major_aspects_major_aspect_event_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_major_aspects_major_aspect_event_service_unit_test_ts --> file_src_modules_aspects_aspects_utilities_service_ts
   file_src_modules_major_aspects_major_aspect_event_service_unit_test_ts --> file_src_modules_major_aspects_major_aspect_event_service_ts
   file_src_modules_major_aspects_major_aspect_event_service_unit_test_ts --> file_src_modules_math_math_service_ts
   file_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_src_modules_progressive_progressive_aspect_service_ts
   file_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_src_modules_aspects_aspects_utilities_service_ts
   file_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_src_modules_major_aspects_major_aspect_event_service_ts
   file_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_src_modules_major_aspects_major_aspect_progressive_service_ts
   file_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_src_modules_math_math_service_ts
@@ -3456,7 +3403,7 @@ graph LR
   file_src_modules_major_aspects_major_aspects_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_major_aspects_major_aspects_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_major_aspects_major_aspects_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_major_aspects_major_aspects_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_major_aspects_major_aspects_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_major_aspects_major_aspects_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_major_aspects_major_aspects_service_ts --> file_src_modules_major_aspects_major_aspect_event_service_ts
   file_src_modules_major_aspects_major_aspects_service_ts --> file_src_modules_major_aspects_major_aspect_progressive_service_ts
@@ -3484,7 +3431,7 @@ graph LR
   file_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_src_modules_minor_aspects_minor_aspects_types_ts
   file_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
@@ -3497,7 +3444,7 @@ graph LR
   file_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_minor_aspects_minor_aspects_event_service_unit_test_ts --> file_src_modules_aspects_aspect_ephemeris_service_ts
   file_src_modules_minor_aspects_minor_aspects_event_service_unit_test_ts --> file_src_modules_aspects_aspect_event_formatting_service_ts
@@ -3505,10 +3452,10 @@ graph LR
   file_src_modules_minor_aspects_minor_aspects_event_service_unit_test_ts --> file_src_modules_minor_aspects_minor_aspects_event_service_ts
   file_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_src_modules_progressive_progressive_aspect_service_ts
   file_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
-  file_src_modules_minor_aspects_minor_aspects_progressive_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_minor_aspects_minor_aspects_progressive_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_minor_aspects_minor_aspects_progressive_service_unit_test_ts --> file_src_modules_minor_aspects_minor_aspects_progressive_service_ts
   file_src_modules_minor_aspects_minor_aspects_progressive_service_unit_test_ts --> file_src_modules_progressive_progressive_aspect_service_ts
   file_src_modules_minor_aspects_minor_aspects_progressive_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
@@ -3535,7 +3482,7 @@ graph LR
   file_src_modules_minor_aspects_minor_aspects_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_minor_aspects_minor_aspects_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_minor_aspects_minor_aspects_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_minor_aspects_minor_aspects_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_minor_aspects_minor_aspects_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_minor_aspects_minor_aspects_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_minor_aspects_minor_aspects_service_ts --> file_src_modules_minor_aspects_minor_aspects_event_service_ts
   file_src_modules_minor_aspects_minor_aspects_service_ts --> file_src_modules_minor_aspects_minor_aspects_progressive_service_ts
@@ -3545,7 +3492,7 @@ graph LR
   file_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_src_modules_aspects_aspects_utilities_service_ts
   file_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_src_modules_math_math_service_ts
@@ -3556,12 +3503,12 @@ graph LR
   file_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_minor_aspects_minor_aspects_types_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_minor_aspects_minor_aspects_types_ts --> file_src_modules_ephemeris_ephemeris_types_ts
+  file_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts --> file_src_modules_calendar_calendar_service_ts
-  file_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts --> file_src_modules_database_database_types_ts
   file_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts --> file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_constants_ts
+  file_src_modules_monthly_lunar_cycle_lunar_apsides_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_monthly_lunar_cycle_lunar_apsides_service_unit_test_ts --> file_src_modules_calendar_calendar_service_ts
-  file_src_modules_monthly_lunar_cycle_lunar_apsides_service_unit_test_ts --> file_src_modules_database_database_types_ts
   file_src_modules_monthly_lunar_cycle_lunar_apsides_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_monthly_lunar_cycle_lunar_apsides_service_unit_test_ts --> file_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_constants_ts --> file_src_modules_caelundas_caelundas_types_ts
@@ -3578,8 +3525,8 @@ graph LR
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_src_modules_calendar_calendar_service_ts
-  file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_src_modules_database_database_types_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts
@@ -3587,8 +3534,8 @@ graph LR
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_types_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_src_modules_calendar_calendar_service_ts
-  file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_src_modules_database_database_types_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_src_modules_math_math_service_ts
@@ -3601,16 +3548,16 @@ graph LR
   file_src_modules_night_sky_night_sky_command_unit_test_ts --> file_src_modules_night_sky_night_sky_command_ts
   file_src_modules_night_sky_night_sky_command_unit_test_ts --> file_src_modules_night_sky_night_sky_constants_ts
   file_src_modules_night_sky_night_sky_command_unit_test_ts --> file_src_modules_night_sky_night_sky_service_ts
-  file_src_modules_night_sky_night_sky_module_ts --> file_src_modules_database_database_module_ts
   file_src_modules_night_sky_night_sky_module_ts --> file_src_modules_night_sky_night_sky_command_ts
   file_src_modules_night_sky_night_sky_module_ts --> file_src_modules_night_sky_night_sky_service_ts
-  file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_database_entities_constellation_line_entity_ts
-  file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_database_entities_constellation_entity_ts
-  file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_database_entities_star_entity_ts
-  file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_night_sky_night_sky_constants_ts
+  file_src_modules_night_sky_night_sky_service_integration_test_ts --> file_src_modules_night_sky_night_sky_module_ts
+  file_src_modules_night_sky_night_sky_service_integration_test_ts --> file_src_modules_night_sky_night_sky_service_ts
+  file_src_modules_night_sky_night_sky_service_integration_test_ts --> file_src_modules_night_sky_night_sky_types_ts
+  file_src_modules_night_sky_night_sky_service_integration_test_ts --> file_testing_database_ts
+  file_src_modules_night_sky_night_sky_service_ts --> file_src_caelundas_cli_constants_ts
   file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_night_sky_night_sky_types_ts
   file_src_modules_night_sky_night_sky_service_ts --> file_src_modules_night_sky_night_sky_utilities_ts
-  file_src_modules_night_sky_night_sky_service_unit_test_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_night_sky_night_sky_service_unit_test_ts --> file_src_caelundas_cli_constants_ts
   file_src_modules_night_sky_night_sky_service_unit_test_ts --> file_src_modules_night_sky_night_sky_service_ts
   file_src_modules_night_sky_night_sky_service_unit_test_ts --> file_src_modules_night_sky_night_sky_types_ts
   file_src_modules_night_sky_night_sky_utilities_ts --> file_src_modules_night_sky_night_sky_constants_ts
@@ -3634,8 +3581,8 @@ graph LR
   file_src_modules_perfective_perfective_service_ts --> file_src_modules_aspects_aspects_service_ts
   file_src_modules_perfective_perfective_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_perfective_perfective_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
+  file_src_modules_perfective_perfective_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_perfective_perfective_service_ts --> file_src_modules_daily_cycles_daily_cycles_service_ts
-  file_src_modules_perfective_perfective_service_ts --> file_src_modules_database_database_types_ts
   file_src_modules_perfective_perfective_service_ts --> file_src_modules_datetime_datetime_service_ts
   file_src_modules_perfective_perfective_service_ts --> file_src_modules_eclipses_eclipses_service_ts
   file_src_modules_perfective_perfective_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
@@ -3651,8 +3598,8 @@ graph LR
   file_src_modules_perfective_perfective_service_unit_test_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
   file_src_modules_perfective_perfective_service_unit_test_ts --> file_src_modules_aspects_aspects_service_ts
   file_src_modules_perfective_perfective_service_unit_test_ts --> file_src_modules_aspects_aspects_types_ts
+  file_src_modules_perfective_perfective_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_perfective_perfective_service_unit_test_ts --> file_src_modules_daily_cycles_daily_cycles_service_ts
-  file_src_modules_perfective_perfective_service_unit_test_ts --> file_src_modules_database_database_types_ts
   file_src_modules_perfective_perfective_service_unit_test_ts --> file_src_modules_datetime_datetime_service_ts
   file_src_modules_perfective_perfective_service_unit_test_ts --> file_src_modules_eclipses_eclipses_service_ts
   file_src_modules_perfective_perfective_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
@@ -3667,13 +3614,13 @@ graph LR
   file_src_modules_perfective_perfective_types_ts --> file_src_modules_perfective_perfective_constants_ts
   file_src_modules_phases_martian_phase_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_phases_martian_phase_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_phases_martian_phase_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_phases_martian_phase_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_phases_martian_phase_service_ts --> file_src_modules_phases_phase_calculation_service_ts
   file_src_modules_phases_martian_phase_service_ts --> file_src_modules_phases_phases_constants_ts
   file_src_modules_phases_martian_phase_service_ts --> file_src_modules_phases_phases_types_ts
   file_src_modules_phases_martian_phase_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_phases_martian_phase_service_unit_test_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_phases_martian_phase_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_phases_martian_phase_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_phases_martian_phase_service_unit_test_ts --> file_src_modules_phases_martian_phase_service_ts
   file_src_modules_phases_martian_phase_service_unit_test_ts --> file_src_modules_phases_phase_calculation_service_ts
   file_src_modules_phases_martian_phase_service_unit_test_ts --> file_src_modules_phases_phases_constants_ts
@@ -3681,13 +3628,13 @@ graph LR
   file_src_modules_phases_martian_phase_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_phases_mercurian_phase_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_phases_mercurian_phase_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_phases_mercurian_phase_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_phases_mercurian_phase_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_phases_mercurian_phase_service_ts --> file_src_modules_phases_phase_calculation_service_ts
   file_src_modules_phases_mercurian_phase_service_ts --> file_src_modules_phases_phases_constants_ts
   file_src_modules_phases_mercurian_phase_service_ts --> file_src_modules_phases_phases_types_ts
   file_src_modules_phases_mercurian_phase_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_src_modules_phases_mercurian_phase_service_ts
   file_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_src_modules_phases_phase_calculation_service_ts
   file_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_src_modules_phases_phases_constants_ts
@@ -3700,7 +3647,7 @@ graph LR
   file_src_modules_phases_phase_calculation_service_integration_test_ts --> file_src_modules_phases_phase_calculation_service_ts
   file_src_modules_phases_phase_calculation_service_integration_test_ts --> file_src_modules_phases_phases_types_ts
   file_src_modules_phases_phase_calculation_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
-  file_src_modules_phases_phase_calculation_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_phases_phase_calculation_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_phases_phase_calculation_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_phases_phase_calculation_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_phases_phase_calculation_service_ts --> file_src_modules_math_math_service_ts
@@ -3726,13 +3673,13 @@ graph LR
   file_src_modules_phases_phases_service_integration_test_ts --> file_src_modules_phases_phases_service_ts
   file_src_modules_phases_phases_service_integration_test_ts --> file_src_modules_phases_venusian_phase_service_ts
   file_src_modules_phases_phases_service_integration_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
-  file_src_modules_phases_phases_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_phases_phases_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_phases_phases_service_ts --> file_src_modules_phases_martian_phase_service_ts
   file_src_modules_phases_phases_service_ts --> file_src_modules_phases_mercurian_phase_service_ts
   file_src_modules_phases_phases_service_ts --> file_src_modules_phases_phases_constants_ts
   file_src_modules_phases_phases_service_ts --> file_src_modules_phases_phases_types_ts
   file_src_modules_phases_phases_service_ts --> file_src_modules_phases_venusian_phase_service_ts
-  file_src_modules_phases_phases_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_phases_phases_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_phases_phases_service_unit_test_ts --> file_src_modules_phases_martian_phase_service_ts
   file_src_modules_phases_phases_service_unit_test_ts --> file_src_modules_phases_mercurian_phase_service_ts
   file_src_modules_phases_phases_service_unit_test_ts --> file_src_modules_phases_phases_service_ts
@@ -3741,13 +3688,13 @@ graph LR
   file_src_modules_phases_phases_types_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_phases_venusian_phase_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_phases_venusian_phase_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_phases_venusian_phase_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_phases_venusian_phase_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_phases_venusian_phase_service_ts --> file_src_modules_phases_phase_calculation_service_ts
   file_src_modules_phases_venusian_phase_service_ts --> file_src_modules_phases_phases_constants_ts
   file_src_modules_phases_venusian_phase_service_ts --> file_src_modules_phases_phases_types_ts
   file_src_modules_phases_venusian_phase_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_phases_venusian_phase_service_unit_test_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_phases_venusian_phase_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_phases_venusian_phase_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_phases_venusian_phase_service_unit_test_ts --> file_src_modules_phases_phase_calculation_service_ts
   file_src_modules_phases_venusian_phase_service_unit_test_ts --> file_src_modules_phases_phases_constants_ts
   file_src_modules_phases_venusian_phase_service_unit_test_ts --> file_src_modules_phases_phases_types_ts
@@ -3755,14 +3702,14 @@ graph LR
   file_src_modules_phases_venusian_phase_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_progressive_progressive_aspect_service_ts --> file_src_modules_aspects_aspects_constants_ts
   file_src_modules_progressive_progressive_aspect_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_progressive_progressive_aspect_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_progressive_progressive_aspect_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_progressive_progressive_aspect_service_ts --> file_src_modules_progressive_progressive_types_ts
-  file_src_modules_progressive_progressive_aspect_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_progressive_progressive_aspect_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_progressive_progressive_aspect_service_unit_test_ts --> file_src_modules_progressive_progressive_aspect_service_ts
   file_src_modules_progressive_progressive_utilities_module_ts --> file_src_modules_progressive_progressive_aspect_service_ts
   file_src_modules_progressive_progressive_utilities_module_ts --> file_src_modules_progressive_progressive_utilities_service_ts
-  file_src_modules_progressive_progressive_utilities_service_ts --> file_src_modules_database_database_types_ts
-  file_src_modules_progressive_progressive_utilities_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_progressive_progressive_utilities_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
+  file_src_modules_progressive_progressive_utilities_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_progressive_progressive_utilities_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_progressive_progressive_module_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_module_ts
   file_src_modules_progressive_progressive_module_ts --> file_src_modules_aspects_aspects_module_ts
@@ -3773,7 +3720,7 @@ graph LR
   file_src_modules_progressive_progressive_module_ts --> file_src_modules_progressive_progressive_service_ts
   file_src_modules_progressive_progressive_module_ts --> file_src_modules_retrogrades_retrogrades_module_ts
   file_src_modules_progressive_progressive_module_ts --> file_src_modules_twilights_twilights_module_ts
-  file_src_modules_progressive_progressive_service_integration_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_progressive_progressive_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_progressive_progressive_service_integration_test_ts --> file_src_modules_major_aspects_major_aspect_event_service_ts
   file_src_modules_progressive_progressive_service_integration_test_ts --> file_src_modules_progressive_progressive_module_ts
   file_src_modules_progressive_progressive_service_integration_test_ts --> file_src_modules_progressive_progressive_service_ts
@@ -3781,7 +3728,7 @@ graph LR
   file_src_modules_progressive_progressive_service_integration_test_ts --> file_src_modules_twilights_twilights_service_ts
   file_src_modules_progressive_progressive_service_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
   file_src_modules_progressive_progressive_service_ts --> file_src_modules_aspects_aspects_service_ts
-  file_src_modules_progressive_progressive_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_progressive_progressive_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_progressive_progressive_service_ts --> file_src_modules_eclipses_eclipses_service_ts
   file_src_modules_progressive_progressive_service_ts --> file_src_modules_ingresses_ingresses_service_ts
   file_src_modules_progressive_progressive_service_ts --> file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts
@@ -3790,7 +3737,7 @@ graph LR
   file_src_modules_progressive_progressive_service_ts --> file_src_modules_twilights_twilights_service_ts
   file_src_modules_progressive_progressive_service_unit_test_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
   file_src_modules_progressive_progressive_service_unit_test_ts --> file_src_modules_aspects_aspects_service_ts
-  file_src_modules_progressive_progressive_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_progressive_progressive_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_progressive_progressive_service_unit_test_ts --> file_src_modules_eclipses_eclipses_service_ts
   file_src_modules_progressive_progressive_service_unit_test_ts --> file_src_modules_ingresses_ingresses_service_ts
   file_src_modules_progressive_progressive_service_unit_test_ts --> file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts
@@ -3806,19 +3753,19 @@ graph LR
   file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_src_modules_aspects_aspect_graph_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_src_modules_aspects_aspect_phase_emoji_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_src_modules_aspects_aspect_graph_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_src_modules_aspects_aspect_graph_service_ts
@@ -3826,7 +3773,7 @@ graph LR
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts
@@ -3839,14 +3786,14 @@ graph LR
   file_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_src_modules_aspects_aspect_phase_emoji_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_src_modules_aspects_compound_phase_service_ts
-  file_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_src_modules_aspects_aspect_graph_service_ts
@@ -3854,7 +3801,7 @@ graph LR
   file_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts
@@ -3867,7 +3814,7 @@ graph LR
   file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_src_modules_math_math_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_src_modules_quintuple_aspects_quintuple_aspects_types_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_unit_test_ts --> file_src_modules_aspects_compound_phase_service_ts
@@ -3883,19 +3830,19 @@ graph LR
   file_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_src_modules_aspects_progressive_compound_event_service_ts
-  file_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_src_modules_math_math_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_src_modules_quintuple_aspects_quintuple_aspects_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_ts --> file_src_modules_aspects_aspects_types_ts
-  file_src_modules_quintuple_aspects_quintuple_aspects_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quintuple_aspects_quintuple_aspects_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_ts --> file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_src_modules_aspects_progressive_compound_event_service_ts
-  file_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_src_modules_math_math_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts
@@ -3916,14 +3863,14 @@ graph LR
   file_src_modules_retrogrades_retrogrades_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_retrogrades_retrogrades_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_retrogrades_retrogrades_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_retrogrades_retrogrades_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_retrogrades_retrogrades_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_retrogrades_retrogrades_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_retrogrades_retrogrades_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_retrogrades_retrogrades_service_ts --> file_src_modules_math_math_service_ts
   file_src_modules_retrogrades_retrogrades_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_src_modules_math_math_service_ts
@@ -3935,7 +3882,7 @@ graph LR
   file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_src_modules_sextuple_aspects_sextuple_aspects_types_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_unit_test_ts --> file_src_modules_aspects_progressive_compound_event_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
@@ -3948,7 +3895,7 @@ graph LR
   file_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_src_modules_aspects_progressive_compound_event_service_ts
-  file_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_src_modules_math_math_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts
@@ -3956,7 +3903,7 @@ graph LR
   file_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_src_modules_math_math_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts
@@ -3965,7 +3912,7 @@ graph LR
   file_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_src_modules_aspects_progressive_compound_event_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_src_modules_math_math_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts
@@ -3975,7 +3922,7 @@ graph LR
   file_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_src_modules_aspects_aspects_constants_ts
   file_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_composer_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
@@ -3985,7 +3932,7 @@ graph LR
   file_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_event_service_unit_test_ts --> file_src_modules_aspects_aspect_event_formatting_service_ts
@@ -3994,10 +3941,10 @@ graph LR
   file_src_modules_specialty_aspects_specialty_aspects_event_service_unit_test_ts --> file_src_modules_specialty_aspects_specialty_aspects_event_service_ts
   file_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_src_modules_progressive_progressive_aspect_service_ts
   file_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
-  file_src_modules_specialty_aspects_specialty_aspects_progressive_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_specialty_aspects_specialty_aspects_progressive_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_progressive_service_unit_test_ts --> file_src_modules_progressive_progressive_aspect_service_ts
   file_src_modules_specialty_aspects_specialty_aspects_progressive_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_specialty_aspects_specialty_aspects_progressive_service_unit_test_ts --> file_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts
@@ -4011,7 +3958,7 @@ graph LR
   file_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_src_modules_specialty_aspects_specialty_aspects_event_service_ts
   file_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts
@@ -4019,7 +3966,7 @@ graph LR
   file_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_src_modules_aspects_aspects_utilities_service_ts
   file_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_src_modules_math_math_service_ts
@@ -4039,7 +3986,7 @@ graph LR
   file_src_modules_stellium_stellium_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_stellium_stellium_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_stellium_stellium_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_stellium_stellium_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_stellium_stellium_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_stellium_stellium_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_stellium_stellium_service_ts --> file_src_modules_stellium_stellium_constants_ts
   file_src_modules_stellium_stellium_service_ts --> file_src_modules_stellium_stellium_types_ts
@@ -4048,7 +3995,7 @@ graph LR
   file_src_modules_stellium_stellium_service_unit_test_ts --> file_src_modules_aspects_progressive_compound_event_service_ts
   file_src_modules_stellium_stellium_service_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_stellium_stellium_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_stellium_stellium_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_stellium_stellium_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_stellium_stellium_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_stellium_stellium_service_unit_test_ts --> file_src_modules_stellium_stellium_service_ts
   file_src_modules_tags_tag_dimensions_constants_ts --> file_src_modules_caelundas_caelundas_types_ts
@@ -4074,11 +4021,10 @@ graph LR
   file_src_modules_tags_tag_map_functions_ts --> file_src_modules_tags_tags_constants_ts
   file_src_modules_tags_tag_map_functions_ts --> file_src_modules_tags_tags_types_ts
   file_src_modules_tags_tags_module_ts --> file_src_modules_tags_tags_service_ts
-  file_src_modules_tags_tags_service_ts --> file_src_modules_database_entities_tag_entity_ts
   file_src_modules_tags_tags_service_ts --> file_src_modules_tags_tags_types_ts
   file_src_modules_tags_tags_service_ts --> file_src_modules_tags_tags_utilities_ts
   file_src_modules_tags_tags_service_unit_test_ts --> file_src_modules_tags_tags_service_ts
-  file_src_modules_tags_tags_types_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_tags_tags_types_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_tags_tags_utilities_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_tags_tags_utilities_ts --> file_src_modules_tags_tag_dimensions_constants_ts
   file_src_modules_tags_tags_utilities_ts --> file_src_modules_tags_tag_map_constants_ts
@@ -4093,20 +4039,20 @@ graph LR
   file_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
-  file_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_src_modules_triple_aspects_triple_aspects_types_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_src_modules_aspects_aspect_graph_service_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_src_modules_aspects_compound_phase_service_ts
-  file_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_src_modules_aspects_aspect_graph_service_ts
   file_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_src_modules_triple_aspects_triple_aspects_detector_service_unit_test_ts --> file_src_modules_aspects_aspect_graph_service_ts
   file_src_modules_triple_aspects_triple_aspects_detector_service_unit_test_ts --> file_src_modules_aspects_aspects_types_ts
@@ -4123,37 +4069,37 @@ graph LR
   file_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_src_modules_aspects_aspect_graph_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_src_modules_aspects_compound_phase_service_ts
-  file_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_src_modules_triple_aspects_triple_aspects_detector_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_src_modules_triple_aspects_triple_aspects_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_triple_aspects_triple_aspects_service_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_triple_aspects_triple_aspects_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_triple_aspects_triple_aspects_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_triple_aspects_triple_aspects_service_ts --> file_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_ts --> file_src_modules_triple_aspects_triple_aspects_detector_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_src_modules_aspects_aspect_graph_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_src_modules_aspects_compound_phase_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_src_modules_triple_aspects_triple_aspects_detector_service_ts
   file_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_src_modules_triple_aspects_triple_aspects_service_ts
   file_src_modules_triple_aspects_triple_aspects_types_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_src_modules_twilights_twilights_builder_service_ts --> file_src_modules_database_database_types_ts
-  file_src_modules_twilights_twilights_builder_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_twilights_twilights_builder_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
+  file_src_modules_twilights_twilights_builder_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_twilights_twilights_builder_service_unit_test_ts --> file_src_modules_twilights_twilights_builder_service_ts
-  file_src_modules_twilights_twilights_composer_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_twilights_twilights_composer_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_twilights_twilights_composer_service_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_twilights_twilights_composer_service_ts --> file_src_modules_twilights_twilights_builder_service_ts
-  file_src_modules_twilights_twilights_composer_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_twilights_twilights_composer_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_twilights_twilights_composer_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_twilights_twilights_composer_service_unit_test_ts --> file_src_modules_twilights_twilights_builder_service_ts
   file_src_modules_twilights_twilights_composer_service_unit_test_ts --> file_src_modules_twilights_twilights_composer_service_ts
-  file_src_modules_twilights_twilights_detector_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_twilights_twilights_detector_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_twilights_twilights_detector_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_twilights_twilights_detector_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_twilights_twilights_detector_service_ts --> file_src_modules_twilights_twilights_builder_service_ts
@@ -4169,14 +4115,14 @@ graph LR
   file_src_modules_twilights_twilights_module_ts --> file_src_modules_twilights_twilights_composer_service_ts
   file_src_modules_twilights_twilights_module_ts --> file_src_modules_twilights_twilights_detector_service_ts
   file_src_modules_twilights_twilights_module_ts --> file_src_modules_twilights_twilights_service_ts
-  file_src_modules_twilights_twilights_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_twilights_twilights_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_twilights_twilights_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_twilights_twilights_service_ts --> file_src_modules_math_math_service_ts
   file_src_modules_twilights_twilights_service_ts --> file_src_modules_twilights_twilights_builder_service_ts
   file_src_modules_twilights_twilights_service_ts --> file_src_modules_twilights_twilights_composer_service_ts
   file_src_modules_twilights_twilights_service_ts --> file_src_modules_twilights_twilights_detector_service_ts
   file_src_modules_twilights_twilights_service_ts --> file_src_modules_twilights_twilights_types_ts
-  file_src_modules_twilights_twilights_service_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_twilights_twilights_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_twilights_twilights_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_twilights_twilights_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_twilights_twilights_service_unit_test_ts --> file_src_modules_math_math_service_ts
@@ -4187,13 +4133,13 @@ graph LR
   file_src_modules_twilights_twilights_service_unit_test_ts --> file_src_modules_twilights_twilights_service_ts
   file_testing_aspect_test_utilities_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_testing_aspect_test_utilities_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_testing_aspect_test_utilities_ts --> file_src_modules_database_database_types_ts
+  file_testing_aspect_test_utilities_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_testing_aspect_test_utilities_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_testing_calendar_command_utilities_ts --> file_src_caelundas_cli_constants_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_caelundas_caelundas_command_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_calendar_events_calendar_events_module_ts
+  file_testing_calendar_command_utilities_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_calendar_calendar_module_ts
-  file_testing_calendar_command_utilities_ts --> file_src_modules_database_database_types_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_input_input_module_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_input_input_types_ts
@@ -4203,15 +4149,16 @@ graph LR
   file_testing_compound_aspect_seeding_end_to_end_test_ts --> file_src_modules_aspects_aspects_utilities_service_ts
   file_testing_compound_aspect_seeding_end_to_end_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_testing_compound_aspect_seeding_end_to_end_test_ts --> file_src_modules_caelundas_caelundas_types_ts
-  file_testing_compound_aspect_seeding_end_to_end_test_ts --> file_src_modules_database_database_types_ts
+  file_testing_compound_aspect_seeding_end_to_end_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_testing_compound_aspect_seeding_end_to_end_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_testing_compound_aspect_seeding_end_to_end_test_ts --> file_testing_pipeline_window_constants_ts
   file_testing_compound_aspect_seeding_end_to_end_test_ts --> file_testing_pipeline_window_functions_ts
   file_testing_compound_aspect_seeding_end_to_end_test_ts --> file_testing_pipeline_window_module_ts
   file_testing_compound_aspects_end_to_end_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
-  file_testing_compound_aspects_end_to_end_test_ts --> file_src_modules_database_database_types_ts
+  file_testing_compound_aspects_end_to_end_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_testing_compound_aspects_end_to_end_test_ts --> file_testing_pipeline_window_constants_ts
   file_testing_compound_aspects_end_to_end_test_ts --> file_testing_pipeline_window_functions_ts
+  file_testing_database_ts --> file_src_caelundas_cli_constants_ts
   file_testing_eclipse_test_utilities_ts --> file_src_modules_eclipses_eclipses_types_ts
   file_testing_eclipse_test_utilities_ts --> file_testing_eclipse_test_constants_ts
   file_testing_major_aspects_utilities_ts --> file_src_modules_aspects_aspect_ephemeris_service_ts
@@ -4223,7 +4170,7 @@ graph LR
   file_testing_major_aspects_utilities_ts --> file_src_modules_math_math_service_ts
   file_testing_major_aspects_utilities_ts --> file_src_modules_progressive_progressive_aspect_service_ts
   file_testing_major_aspects_utilities_ts --> file_src_modules_progressive_progressive_utilities_service_ts
-  file_testing_moon_phases_reference_end_to_end_test_ts --> file_src_modules_database_database_types_ts
+  file_testing_moon_phases_reference_end_to_end_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_testing_moon_phases_reference_end_to_end_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_testing_moon_phases_reference_end_to_end_test_ts --> file_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts
   file_testing_moon_phases_reference_end_to_end_test_ts --> file_testing_pipeline_window_constants_ts
@@ -4248,7 +4195,7 @@ graph LR
   file_testing_pipeline_window_functions_ts --> file_testing_pipeline_window_types_ts
   file_testing_pipeline_window_module_ts --> file_src_modules_perfective_perfective_module_ts
   file_testing_pipeline_window_module_ts --> file_src_modules_progressive_progressive_module_ts
-  file_testing_pipeline_window_types_ts --> file_src_modules_database_database_types_ts
+  file_testing_pipeline_window_types_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_testing_pipeline_window_types_ts --> file_src_modules_input_input_types_ts
   file_testing_pipeline_window_types_ts --> file_src_modules_perfective_perfective_types_ts
   file_testing_reference_families_constants_ts --> file_src_modules_perfective_perfective_types_ts
@@ -4257,12 +4204,12 @@ graph LR
   file_testing_reference_families_utilities_ts --> file_testing_reference_fixtures_types_ts
   file_testing_reference_families_utilities_unit_test_ts --> file_testing_reference_families_utilities_ts
   file_testing_reference_families_utilities_unit_test_ts --> file_testing_reference_fixtures_types_ts
-  file_testing_reference_fixtures_types_ts --> file_src_modules_database_database_types_ts
+  file_testing_reference_fixtures_types_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_testing_reference_fixtures_types_ts --> file_testing_reference_fixtures_constants_ts
-  file_testing_reference_fixtures_utilities_ts --> file_src_modules_database_database_types_ts
+  file_testing_reference_fixtures_utilities_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_testing_reference_fixtures_utilities_ts --> file_testing_reference_fixtures_constants_ts
   file_testing_reference_fixtures_utilities_ts --> file_testing_reference_fixtures_types_ts
-  file_testing_reference_fixtures_utilities_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_testing_reference_fixtures_utilities_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_testing_reference_fixtures_utilities_unit_test_ts --> file_testing_reference_fixtures_types_ts
   file_testing_reference_fixtures_utilities_unit_test_ts --> file_testing_reference_fixtures_utilities_ts
   file_testing_reference_longitudes_constants_ts --> file_src_modules_caelundas_caelundas_constants_ts
@@ -4277,12 +4224,10 @@ graph LR
   file_testing_stellium_reference_unit_test_ts --> file_src_modules_aspects_aspects_types_ts
   file_testing_stellium_reference_unit_test_ts --> file_src_modules_aspects_progressive_compound_event_service_ts
   file_testing_stellium_reference_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
-  file_testing_stellium_reference_unit_test_ts --> file_src_modules_database_database_types_ts
+  file_testing_stellium_reference_unit_test_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_testing_stellium_reference_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_testing_stellium_reference_unit_test_ts --> file_src_modules_stellium_stellium_service_ts
   file_testing_stellium_reference_unit_test_ts --> file_testing_reference_longitudes_constants_ts
-  file_testing_temporary_database_utilities_ts --> file_src_modules_database_database_constants_ts
-  file_testing_temporary_database_utilities_ts --> file_testing_temporary_database_types_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
@@ -4292,40 +4237,40 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-58472-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-2.04_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-38-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-342-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-57827-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-1.96_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-34-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-325-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-200.47_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-190.29_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-342-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-325-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-94-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-15-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-186-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1012-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-132-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-970-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-20-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-118-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-116-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-22-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-125-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2718-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-876-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-3360-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-234-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3992-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2273-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-512-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-2082-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-4381-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-115-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2707-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-860-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-3339-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-228-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3993-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2207-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-494-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2031-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-4219-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -4346,16 +4291,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-52-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-2635-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-475-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-2623-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-471-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-91-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1802-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1010-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1796-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1008-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-555-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-10-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-287-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-2141-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-2135-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML
@@ -4398,17 +4343,17 @@ graph LR
 
 ### SQL
 
-![SQL Files](https://img.shields.io/badge/SQL_Files-7-e38c00?style=flat-square)
-![SQL Lines](https://img.shields.io/badge/SQL_Lines-1734-f29111?style=flat-square)
-![SQL Statements](https://img.shields.io/badge/SQL_Statements-45-7c3aed?style=flat-square)
-![SQL Selects](https://img.shields.io/badge/SQL_Selects-10-16a34a?style=flat-square)
-![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-10-22c55e?style=flat-square)
-![SQL Updates](https://img.shields.io/badge/SQL_Updates-8-0ea5e9?style=flat-square)
-![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-10-dc2626?style=flat-square)
-![SQL Creates](https://img.shields.io/badge/SQL_Creates-20-0284c7?style=flat-square)
-![SQL Joins](https://img.shields.io/badge/SQL_Joins-3-8b5cf6?style=flat-square)
+![SQL Files](https://img.shields.io/badge/SQL_Files-0-e38c00?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-0-f29111?style=flat-square)
+![SQL Statements](https://img.shields.io/badge/SQL_Statements-0-7c3aed?style=flat-square)
+![SQL Selects](https://img.shields.io/badge/SQL_Selects-0-16a34a?style=flat-square)
+![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-0-22c55e?style=flat-square)
+![SQL Updates](https://img.shields.io/badge/SQL_Updates-0-0ea5e9?style=flat-square)
+![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-0-dc2626?style=flat-square)
+![SQL Creates](https://img.shields.io/badge/SQL_Creates-0-0284c7?style=flat-square)
+![SQL Joins](https://img.shields.io/badge/SQL_Joins-0-8b5cf6?style=flat-square)
 ![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-0-059669?style=flat-square)
-![SQL Comments](https://img.shields.io/badge/SQL_Comments-24-64748b?style=flat-square)
+![SQL Comments](https://img.shields.io/badge/SQL_Comments-0-64748b?style=flat-square)
 
 ### HCL
 
@@ -4436,14 +4381,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-35-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-75-0284c7?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-34-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-74-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-3-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-41-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-35-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-13-0ea5e9?style=flat-square)
-![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-6-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-94-ca8a04?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-39-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-33-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-11-0ea5e9?style=flat-square)
+![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-92-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-15-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-9-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -4481,23 +4426,23 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-454-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-445-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-11-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-23-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-132-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-131-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-19-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-80-22c55e?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-81-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-2-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-10-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-22-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-21-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-18-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-255-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-17-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-238-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -4544,7 +4489,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **cancer**: Zodiac sign Cancer, used as a sign name in ingress seed rows such as event-sun-ingress-cancer.
 - **canonical**: The fixed key order for a body pair, so an aspect key is the same regardless of which body comes first.
 - **capricorn**: Zodiac sign Capricorn, the sign name the ingresses service returns for longitude 270 degrees in the end-to-end test.
-- **cascade**: Database delete rule that removes dependent calendar_event_tag rows when their event or tag row is deleted.
 - **chiron**: The body Chiron, tracked alongside the planets in aspects and listed in the caelundas body constants.
 - **civil**: First of three twilight kinds, with nautical and astronomical, that the twilight module emits to mark dawn and dusk.
 - **conjunct**: Aspect of zero degrees between two bodies, the first of the major aspects and the conjunct tag in the seed data.
@@ -4557,6 +4501,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **danjon**: Limit named for Danjon in eclipse geometry comments, the angular threshold where the Moon's limb touches the shadow boundary.
 - **dawn**: The twilight moment when the Sun rises through a depression angle, opening civil, nautical, or astronomical morning light.
 - **daylight**: Span from civil dawn to civil dusk, treated as a separate interval in the twilight events alongside Night.
+- **db**:
 - **decan**: One of three 10-degree thirds of a zodiac sign, numbered 1 to 3, whose ingresses the ingresses module detects.
 - **decile**: Harmonic aspect at 36 degrees, one tenth of a full circle, drawn with a perpendicular symbol.
 - **declination**: Angle north or south of the celestial equator, used as the star catalog's dec coordinate in night-sky figures.
@@ -4571,6 +4516,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **dubhe**: Alpha Ursae Majoris, a bright catalog star that night-sky unit tests use as a fixture.
 - **duodecuple**: Stellium of twelve bodies in conjunction, labeled duodecuple stellium and assigned its own symbol in the stellium constants.
 - **dusk**: Evening twilight moment when the Sun sinks through a depression angle, closing civil, nautical, or astronomical evening light.
+- **early**:
 - **earth**: Home planet of the observer, whose orbit sets perihelion and aphelion and whose shadow causes lunar eclipses.
 - **eclipse**: Obscuration of the Sun or Moon by Earth's or the Moon's shadow, detected as begin, maximum, and end moments.
 - **ecliptic**: Plane of Earth's orbit against which every body's longitude and latitude are measured, the zodiac's reference frame.
@@ -4672,6 +4618,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ra**: Right ascension column in the night-sky star catalog, the equatorial coordinate that positions each star.
 - **radial**: Describes motion along the line from Earth to a body, whose sign change marks each lunar or solar apsis.
 - **radius**: Apparent angular size of the Sun or Moon's disc, which the daily-cycle timing accounts for at rise and set.
+- **rebuild**:
 - **rectangle**: Compound configuration formed by two oppositions joined by four sextiles, named in the aspect constants.
 - **refraction**: Atmospheric bending of light near the horizon, a 34 arcminute correction applied to rise and set times.
 - **retrograde**: Apparent backward motion of a planet across the sky, detected as stations and the periods between them.
@@ -4692,7 +4639,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **sextile**: Major aspect at 60 degrees of separation, one of the five major aspects alongside conjunct, opposite, square, and trine.
 - **sextuple**: Compound pattern of six bodies, such as a hexagram, that the sextuple-aspects module detects from its hexagon arrangement.
 - **shadow**: Umbra or penumbra cone that Earth or the Moon casts, whose geometry decides eclipse type and the totality of each eclipse.
-- **sibling**: Tag sharing a parent with another tag, where names must be unique among siblings through partial unique indexes in the tags table.
 - **sky**: The night-sky module's catalog of stars, constellations, and figure lines, and the command that renders that stored sky.
 - **solar**: Relating to the Sun, naming the solar eclipse kind, the annual solar cycle module, and the solar events of daily cycles.
 - **solstice**: One of the two annual points where the Sun reaches its extreme declination, emitted as summer and winter solstice events by the annual-solar-cycle module.
@@ -4738,7 +4684,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **visibility**: Morning or evening star visibility span of Mercury, Venus, or Mars, the time a planet is seen before sunrise or after sunset.
 - **visible**: Adjective for a solar eclipse seen from the observer's location, which keeps its local type while the Sun is above horizon.
 - **water**: Element that the tag dimensions assign to the cancer, scorpio, and pisces signs, tagging their events as water-sign events.
-- **weekday**: Day-of-week number of an event start, computed in migration SQL with strftime and stored as start_weekday.
 - **winter**: Season label for the winter solstice and the autumn-to-winter half of the annual solar cycle events.
 - **yod**: Three-body aspect pattern of a sextile base with two quincunxes meeting at an apex, detected by the triple-aspects service.
 - **zenith**: Highest altitude a body reaches each day, which daily cycles turn into solar noon and lunar culmination calendar events.

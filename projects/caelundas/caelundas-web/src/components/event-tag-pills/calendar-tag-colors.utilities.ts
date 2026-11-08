@@ -5,7 +5,7 @@ import {
   TAG_ROOT_ORDER,
 } from "./calendar-tag-colors.constants";
 
-import type { CalendarEventTag } from "../events-calendar/events-database.types";
+import type { CalendarEventTag } from "../events-calendar/calendar-records.types";
 
 // 🌎 Public Functions
 

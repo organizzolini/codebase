@@ -16,7 +16,7 @@ import { TwilightsService } from "../twilights/twilights.service";
 import { ProgressiveUtilitiesService } from "./progressive-utilities.service";
 import { ProgressiveService } from "./progressive.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 function makeEvent(summary: string): DetectedCalendarEvent {
   return {

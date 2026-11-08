@@ -41,22 +41,6 @@ describe(CalendarFilters, () => {
   });
 
   describe("collections", () => {
-    // The seed-like facets the collection is resolved from: one ingress tag.
-    const FACETS = [
-      {
-        id: "tag-type",
-        name: "Type",
-        values: [
-          {
-            count: 3,
-            depth: 1,
-            id: "tag-ingress",
-            name: "Ingress",
-            path: "Ingress",
-          },
-        ],
-      },
-    ];
     const COLLECTION = {
       description: "Every ingress.",
       filter: {
@@ -80,7 +64,7 @@ describe(CalendarFilters, () => {
     it("offers the collections at the top of the filter panel", async () => {
       render(
         <CalendarFilters
-          facets={FACETS}
+          collections={[COLLECTION]}
           fields={[]}
           filter={COLLECTION.filter}
           onFilterChange={vi.fn<(filter: unknown) => void>()}
@@ -100,7 +84,7 @@ describe(CalendarFilters, () => {
 
       render(
         <CalendarFilters
-          facets={FACETS}
+          collections={[COLLECTION]}
           fields={[]}
           filter={{ ...COLLECTION.filter, rules: [] }}
           onFilterChange={onFilterChange}
@@ -125,7 +109,7 @@ describe(CalendarFilters, () => {
 
       render(
         <CalendarFilters
-          facets={FACETS}
+          collections={[COLLECTION]}
           fields={[]}
           filter={COLLECTION.filter}
           onFilterChange={onFilterChange}
@@ -141,7 +125,7 @@ describe(CalendarFilters, () => {
     it("leaves Clear off while nothing is filtered", () => {
       render(
         <CalendarFilters
-          facets={FACETS}
+          collections={[COLLECTION]}
           fields={[]}
           filter={{ ...COLLECTION.filter, rules: [] }}
           onFilterChange={vi.fn<(filter: unknown) => void>()}
@@ -156,7 +140,7 @@ describe(CalendarFilters, () => {
 
     it("goes back to the default collection when the link's filter is dropped", () => {
       const properties = {
-        facets: FACETS,
+        collections: [COLLECTION],
         fields: [],
         onFilterChange: vi.fn<(filter: unknown) => void>(),
       };
@@ -174,8 +158,8 @@ describe(CalendarFilters, () => {
         />,
       );
 
-      // The default collection is the one the seed's tags cannot serve, so
-      // nothing is left filtered.
+      // The collection offered is not the default one, so nothing is left
+      // filtered.
       expect(screen.getByRole("button", { name: "Clear" })).toHaveProperty(
         "disabled",
         true,

@@ -10,7 +10,7 @@ import { EphemerisDownloadService } from "./ephemeris-download.service";
  * `data/ephemeris`, skipping any already there.
  *
  * Runs from its own entry point, `ephemeris-download-cli.main.ts`, because the
- * main application opens its SQLite database as it starts, and fetching three files
+ * main application connects to its database as it starts, and fetching three files
  * should not need a database. Safe to run again.
  */
 @Command({
