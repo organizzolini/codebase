@@ -1,7 +1,7 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { Form } from "@codebase/lexico-entities";
+import { Form } from "@codebase/lexico-db";
 
 import { FormsTransientWordsService } from "./forms-transient-words.service";
 

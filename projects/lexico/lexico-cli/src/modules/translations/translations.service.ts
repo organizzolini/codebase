@@ -4,12 +4,12 @@ import * as cheerio from "cheerio";
 import _ from "lodash";
 import { Like, Repository } from "typeorm";
 
-import { Translation } from "@codebase/lexico-entities";
+import { Translation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { translationSkipRegex } from "./translations.constants";
 
-import type { Lexeme } from "@codebase/lexico-entities";
+import type { Lexeme } from "@codebase/lexico-db";
 import type { AnyNode } from "domhandler";
 
 /**

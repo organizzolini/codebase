@@ -2,7 +2,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { describe, expect, it, vi } from "vitest";
 
-import { Text } from "@codebase/lexico-entities";
+import { Text } from "@codebase/lexico-db";
 
 import { LiteratureRelationsLoader } from "./literature-relations.loader";
 import { LiteratureRelationsService } from "./literature-relations.service";

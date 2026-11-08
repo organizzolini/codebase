@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { Form } from "@codebase/lexico-entities";
+import { Form } from "@codebase/lexico-db";
 
 import { WordsModule } from "../words/words.module";
 

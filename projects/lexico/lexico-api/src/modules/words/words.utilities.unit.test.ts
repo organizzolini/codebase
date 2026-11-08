@@ -8,7 +8,7 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { NominalFormType } from "../lexemes/forms/nominal-form.entities";
 import { LexemeType } from "../lexemes/lexeme.entities";

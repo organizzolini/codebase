@@ -178,7 +178,7 @@ const scopes = [
   },
   {
     description: "Shared TypeORM entities and GraphQL types",
-    name: "lexico-entities",
+    name: "lexico-db",
   },
   {
     description: "Data ingestion scripts for Lexico",

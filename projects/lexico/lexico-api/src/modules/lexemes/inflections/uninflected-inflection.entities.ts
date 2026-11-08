@@ -4,7 +4,7 @@ import { InflectionType } from "./inflection.entities";
 
 import type { InflectionDatabaseOnlyField } from "./inflections.types";
 import type { GraphQLObjectOf } from "@codebase/interface";
-import type { UninflectedInflection } from "@codebase/lexico-entities";
+import type { UninflectedInflection } from "@codebase/lexico-db";
 
 /** The marker for a lexeme that does not inflect. */
 @ObjectType("UninflectedInflection", { implements: InflectionType })

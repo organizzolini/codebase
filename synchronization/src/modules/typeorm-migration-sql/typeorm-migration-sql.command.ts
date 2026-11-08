@@ -53,7 +53,7 @@ export class TypeormMigrationSqlCommand
   /** Parses `--directory`, the migrations directory to process. */
   @Option({
     description:
-      "Migrations directory to process, e.g. projects/lexico/lexico-entities/src/modules/database/migrations",
+      "Migrations directory to process, e.g. projects/lexico/lexico-db/src/modules/database/migrations",
     flags: "--directory <path>",
   })
   parseDirectory(value: string): string {

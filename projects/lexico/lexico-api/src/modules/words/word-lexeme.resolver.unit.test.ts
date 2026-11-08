@@ -4,7 +4,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Word } from "@codebase/lexico-entities";
+import { Word } from "@codebase/lexico-db";
 
 import { WordLexemeType } from "./word-lexeme.entities";
 import { WordLexemeResolver } from "./word-lexeme.resolver";

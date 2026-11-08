@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { Lexeme, TypeOrmModule } from "@codebase/lexico-entities";
+import { Lexeme, TypeOrmModule } from "@codebase/lexico-db";
 
 import { LexemesResolver } from "./lexemes.resolver";
 import { LexemesService } from "./lexemes.service";

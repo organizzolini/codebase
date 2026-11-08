@@ -10,7 +10,7 @@ The interface half of the [Lexico](../lexico/lexico-web/README.md) suite:
 | ------- | ---- |
 | 🐺 [lexico-web](../lexico/lexico-web/README.md) | The SSR web application |
 | 🎨 [presentation](README.md) | This package — shared React components |
-| 📖 [lexico-entities](../lexico/lexico-entities/README.md) | TypeORM entities and migrations |
+| 📖 [lexico-db](../lexico/lexico-db/README.md) | TypeORM entities and migrations |
 | 🚰 [lexico-cli](../lexico/lexico-cli/README.md) | Dictionary and literature ingestion |
 
 ## Features

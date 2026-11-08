@@ -9,7 +9,7 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,

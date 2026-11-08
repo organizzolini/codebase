@@ -9,7 +9,7 @@
 
 Lexico is a server-side rendered web application built with TanStack Start and
 React 19. It is the front end of a small suite: the dictionary's shape lives in
-[lexico-entities](../lexico-entities/README.md), the data that
+[lexico-db](../lexico-db/README.md), the data that
 fills it is gathered by
 [lexico-cli](../lexico-cli/README.md), and the interface is built
 from [presentation](../../common/presentation/README.md).
@@ -20,7 +20,7 @@ from [presentation](../../common/presentation/README.md).
 | ------- | ---- |
 | 🐺 [lexico-web](README.md) | The SSR web application — routes, server functions, pages |
 | 🎨 [presentation](../../common/presentation/README.md) | Shared React component library on shadcn/ui and Base UI primitives |
-| 📖 [lexico-entities](../lexico-entities/README.md) | TypeORM entities and migrations for the dictionary and literature schema |
+| 📖 [lexico-db](../lexico-db/README.md) | TypeORM entities and migrations for the dictionary and literature schema |
 | 🚰 [lexico-cli](../lexico-cli/README.md) | CLI that scrapes and loads dictionary, literature, and etymology sources |
 
 ## Quick Start

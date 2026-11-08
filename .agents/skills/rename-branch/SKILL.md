@@ -71,7 +71,7 @@ Using the repository's naming convention (`<type>/<scope>-<description>`):
 | `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
 | `lexico` | TanStack Start SSR Latin dictionary web app |
 | `presentation` | Shared React/shadcn component library |
-| `lexico-entities` | Shared TypeORM entities and GraphQL types |
+| `lexico-db` | Shared TypeORM entities and GraphQL types |
 | `lexico-cli` | Data ingestion scripts for Lexico |
 | `meanderaw` | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads |
 | `sempientor` | Lexical gap discovery CLI for English morphological and phonotactic gaps |

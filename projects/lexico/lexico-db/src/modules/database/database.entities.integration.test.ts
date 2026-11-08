@@ -4,15 +4,15 @@ import "reflect-metadata";
 import { createDataSource } from "@codebase/persistence";
 import { startPostgresContainer } from "@codebase/persistence/testing";
 
+import { Author } from "../literature/entities/author.entity";
+import { Line } from "../literature/entities/line.entity";
+import { Text } from "../literature/entities/text.entity";
+import { Token } from "../literature/entities/token.entity";
+
 import {
   LEXICO_DATABASE_ENTITIES,
   LEXICO_DATABASE_MIGRATIONS,
-} from "../database/data-source.constants";
-
-import { Author } from "./literature/author.entity";
-import { Line } from "./literature/line.entity";
-import { Text } from "./literature/text.entity";
-import { Token } from "./literature/token.entity";
+} from "./data-source.constants";
 
 import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 import type { DataSource } from "typeorm";
