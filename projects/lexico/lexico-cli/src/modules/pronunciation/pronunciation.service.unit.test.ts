@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Lexeme, Pronunciation } from "@codebase/lexico-entities";
+import { Lexeme, Pronunciation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { loadCheerioWithRoot } from "../../../testing/mocks";

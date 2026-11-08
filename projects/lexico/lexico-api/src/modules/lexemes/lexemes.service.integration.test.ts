@@ -9,7 +9,7 @@ import {
   PrincipalPart,
   Pronunciation,
   Translation,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,

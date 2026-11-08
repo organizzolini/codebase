@@ -4,7 +4,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import * as cheerio from "cheerio";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Lexeme, PrincipalPart } from "@codebase/lexico-entities";
+import { Lexeme, PrincipalPart } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { createRepositoryMock } from "../../../testing/mocks";

@@ -7,7 +7,7 @@ import type { GraphQLObjectOf } from "@codebase/interface";
 import type {
   PrepositionCase,
   PrepositionInflection,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /** The case a preposition governs. */
 @ObjectType("PrepositionInflection", { implements: InflectionType })

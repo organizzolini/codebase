@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import numberToWords from "number-to-words";
 import { Repository } from "typeorm";
 
-import { Lexeme, Translation } from "@codebase/lexico-entities";
+import { Lexeme, Translation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { NumeralsService } from "../numerals/numerals.service";

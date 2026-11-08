@@ -1,3 +1,18 @@
+## 0.0.72 (2026-11-08)
+
+### 💅 Refactors
+
+- **lexico-db,lexico,lexico-cli,configuration:** ♻️ rename lexico-entities to lexico-db and split its modules ([#2185](https://github.com/organizzolini/codebase/pull/2185), [#2184](https://github.com/organizzolini/codebase/issues/2184))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.70
+- Updated codependix-configuration to 0.0.72
+- Updated codependix-file-imports to 0.0.70
+- Updated codependix-nx-projects to 0.0.71
+- Updated codependix-boundaries to 0.0.72
+- Updated codependix-core to 0.0.70
+
 ## 0.0.71 (2026-11-07)
 
 ### 🧱 Updated Dependencies

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { createConnection, createEdge } from "@codebase/interface";
-import { Text } from "@codebase/lexico-entities";
+import { Text } from "@codebase/lexico-db";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 

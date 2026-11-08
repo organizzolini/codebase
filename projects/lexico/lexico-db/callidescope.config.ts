@@ -1,7 +1,7 @@
 import { projectDefaults } from "../../../configuration/callidescope.config.js";
 
 /**
- * What lexico-entities is held to, measured rather than assumed.
+ * What lexico-db is held to, measured rather than assumed.
  *
  * Three frames. Entities and GraphQL types, so there is little here to call.
  *

@@ -2,7 +2,7 @@ import { Column, Entity, Index, ManyToOne, OneToMany } from "typeorm";
 
 import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
-import { BIGINT_NUMBER_TRANSFORMER } from "../entities.constants";
+import { BIGINT_NUMBER_TRANSFORMER } from "../literature.constants";
 
 import type { Author } from "./author.entity";
 import type { Text } from "./text.entity";

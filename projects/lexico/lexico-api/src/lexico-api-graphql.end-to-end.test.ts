@@ -17,7 +17,7 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 import { LoggerModule } from "@codebase/observability";
 
 import { DATABASE_TIMEOUT_MILLISECONDS } from "../testing/database";

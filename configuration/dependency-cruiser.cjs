@@ -26,7 +26,8 @@ module.exports = {
         // TypeORM bidirectional entity relations (ManyToMany, OneToMany) require
         // value imports of the related entity class for decorator callbacks.
         // These intra-package cycles are intentional and unavoidable.
-        pathNot: "^projects/lexico/lexico-entities/src/modules/entities/",
+        pathNot:
+          "^projects/lexico/lexico-db/src/modules/(?:dictionary|literature)/entities/",
       },
       name: "no-circular",
       severity: "error",

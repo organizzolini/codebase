@@ -10,7 +10,7 @@ import {
   Token,
   Translation,
   Word,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { ClearCommand } from "./clear.command";
 

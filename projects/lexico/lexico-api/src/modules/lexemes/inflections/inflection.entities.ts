@@ -2,7 +2,7 @@ import { Field, ID, InterfaceType } from "@nestjs/graphql";
 
 import type { InflectionDatabaseOnlyField } from "./inflections.types";
 import type { GraphQLObjectOf } from "@codebase/interface";
-import type { Inflection } from "@codebase/lexico-entities";
+import type { Inflection } from "@codebase/lexico-db";
 
 /**
  * How a lexeme inflects. Each part of speech's inflection is its own object

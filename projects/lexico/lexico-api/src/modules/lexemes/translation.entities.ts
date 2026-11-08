@@ -4,7 +4,7 @@ import { DeletableType } from "../../deletable.entities";
 
 import type { TranslationDatabaseOnlyField } from "./lexemes.types";
 import type { GraphQLObjectOf } from "@codebase/interface";
-import type { Translation } from "@codebase/lexico-entities";
+import type { Translation } from "@codebase/lexico-db";
 
 /** One English translation of a lexeme. */
 @ObjectType("Translation")

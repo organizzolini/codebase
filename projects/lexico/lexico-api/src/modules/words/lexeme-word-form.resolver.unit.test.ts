@@ -1,7 +1,7 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { NominalForm, Word, WordForm } from "@codebase/lexico-entities";
+import { NominalForm, Word, WordForm } from "@codebase/lexico-db";
 
 import { LexemeWordFormLoader } from "./lexeme-word-form.loader";
 import { LexemeWordFormResolver } from "./lexeme-word-form.resolver";

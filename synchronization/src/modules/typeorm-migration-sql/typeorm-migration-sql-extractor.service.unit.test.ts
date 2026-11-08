@@ -319,7 +319,7 @@ describe(TypeormMigrationSqlExtractorService, () => {
     const result = await service.synchronize({
       logger,
       mode: "check",
-      options: { projectRoot: "projects/lexico/lexico-entities" },
+      options: { projectRoot: "projects/lexico/lexico-db" },
     });
 
     expect(result).toBe(false);
@@ -470,7 +470,7 @@ describe(TypeormMigrationSqlExtractorService, () => {
 
   it("throws when only project-root is provided without module", async () => {
     await expect(
-      service.targets({ projectRoot: "projects/lexico/lexico-entities" }),
+      service.targets({ projectRoot: "projects/lexico/lexico-db" }),
     ).rejects.toThrow(
       "Pass --directory <path>, or pass both --project-root <path> and --module <path>, or pass --project <name>.",
     );
