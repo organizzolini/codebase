@@ -12,7 +12,7 @@ import {
 } from "./aspects.constants";
 
 import type { Aspect, Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type {
   AspectBodies,

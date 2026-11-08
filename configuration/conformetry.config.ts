@@ -71,6 +71,11 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   documentation: NEST_BASELINE,
   installation: NEST_BASELINE,
   integration: NEST_BASELINE,
+  "projects/caelundas/caelundas-api": {
+    modules: 89 / 121,
+    resolvers: 46 / 78,
+    services: 47 / 79,
+  },
   "projects/caelundas/caelundas-cli": NEST_BASELINE,
   "projects/caelundas/caelundas-db": NEST_BASELINE,
   "projects/caelundas/caelundas-web": {

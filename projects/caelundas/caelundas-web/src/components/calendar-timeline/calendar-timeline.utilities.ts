@@ -11,7 +11,7 @@ import type {
   EventGroupField,
   EventGrouping,
 } from "../calendar-group-by/event-groups.types";
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { TimelineRowBox } from "./calendar-timeline-window.types";
 import type {
   PendingGroup,

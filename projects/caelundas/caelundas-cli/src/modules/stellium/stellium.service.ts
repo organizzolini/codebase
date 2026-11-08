@@ -16,7 +16,7 @@ import { stelliumNameBySize } from "./stellium.constants";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { Aspect, Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { StelliumPhase } from "./stellium.types";
 import type { Moment } from "moment-timezone";
 

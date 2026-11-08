@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { createTestEventsDatabase } from "../../../testing/events-database";
+import { serveCalendarApi } from "../../../testing/calendar-api";
+import { findFixtureFacets } from "../../../testing/calendar-facets";
+import { FIXTURE_TAGS } from "../../../testing/calendar-fixture";
+import { findFacets } from "../events-calendar/events-api.utilities";
 
 import { createEventFilterFields } from "./event-filter-fields.utilities";
 
@@ -14,38 +17,30 @@ const DERIVED_FIELDS = [
   ["text", "Text"],
 ];
 
-// A dimension the seed does not have, added the way a new export would add
-// it: as rows, with no change to the app.
-const MOTION_ROOT_SQL = `
-  insert into tags (id, created_at, updated_at, "name", parent_id) values
-    ('tag-motion', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Motion', null),
-    ('tag-direct', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Direct', 'tag-motion');
-  insert into tags_closure (ancestor_id, descendant_id) values
-    ('tag-motion', 'tag-motion'),
-    ('tag-direct', 'tag-direct'),
-    ('tag-motion', 'tag-direct');
-`;
+// A dimension the fixture does not have, added the way a new export would add
+// it: as tags, with no change to the app.
+const MOTION_TAGS = [
+  ...FIXTURE_TAGS,
+  { id: "tag-motion", name: "Motion", parentId: null },
+  { id: "tag-direct", name: "Direct", parentId: "tag-motion" },
+];
 
 // A root whose tags are named for the numbers they stand for.
-const HARMONIC_ROOT_SQL = `
-  insert into tags (id, created_at, updated_at, "name", parent_id) values
-    ('tag-harmonic', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Aspect Harmonic', null),
-    ('tag-harmonic-4', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Harmonic 4', 'tag-harmonic');
-  insert into tags_closure (ancestor_id, descendant_id) values
-    ('tag-harmonic', 'tag-harmonic'),
-    ('tag-harmonic-4', 'tag-harmonic-4'),
-    ('tag-harmonic', 'tag-harmonic-4');
-`;
+const HARMONIC_TAGS = [
+  ...FIXTURE_TAGS,
+  { id: "tag-harmonic", name: "Aspect Harmonic", parentId: null },
+  { id: "tag-harmonic-4", name: "Harmonic 4", parentId: "tag-harmonic" },
+];
 
 // A root that names a dimension the app already derives from each event.
-const TEMPORALITY_ROOT_SQL = MOTION_ROOT_SQL.replaceAll(
-  "Motion",
-  "Temporality",
-);
+const TEMPORALITY_TAGS = MOTION_TAGS.map((tag) => ({
+  ...tag,
+  name: tag.name.replace("Motion", "Temporality"),
+}));
 
 describe(createEventFilterFields, () => {
   it("makes one field per tag root, valued with the tags beneath it", async () => {
-    const facets = await createTestEventsDatabase().findFacets();
+    const facets = await findFixtureFacets();
     const fields = createEventFilterFields(facets);
 
     expect(fields.map((field) => [field.id, field.label])).toStrictEqual([
@@ -70,7 +65,7 @@ describe(createEventFilterFields, () => {
   });
 
   it("counts the events each tag matches, its descendants' included", async () => {
-    const facets = await createTestEventsDatabase().findFacets();
+    const facets = await findFixtureFacets();
     const typeField = createEventFilterFields(facets).find(
       (field) => field.id === "tag:tag-type",
     );
@@ -86,7 +81,7 @@ describe(createEventFilterFields, () => {
   });
 
   it("offers is any of, has all of, and is none of on a tag field", async () => {
-    const facets = await createTestEventsDatabase().findFacets();
+    const facets = await findFixtureFacets();
     const [field] = createEventFilterFields(facets);
     const operators =
       typeof field?.operators === "function" ? [] : (field?.operators ?? []);
@@ -99,9 +94,7 @@ describe(createEventFilterFields, () => {
   });
 
   it("offers a number field for a root whose tags are named for numbers", async () => {
-    const facets = await createTestEventsDatabase({
-      extraSql: HARMONIC_ROOT_SQL,
-    }).findFacets();
+    const facets = await findFixtureFacets({ tags: HARMONIC_TAGS });
     const field = createEventFilterFields(facets).find(
       (candidate) => candidate.label === "Aspect Harmonic",
     );
@@ -117,9 +110,7 @@ describe(createEventFilterFields, () => {
   });
 
   it("offers the hour and the duration in minutes as numbers", async () => {
-    const fields = createEventFilterFields(
-      await createTestEventsDatabase().findFacets(),
-    );
+    const fields = createEventFilterFields(await findFixtureFacets());
 
     for (const id of ["hour", "duration-minutes"]) {
       expect(fields.find((field) => field.id === id)?.type).toBe("number");
@@ -127,9 +118,7 @@ describe(createEventFilterFields, () => {
   });
 
   it("adds a field for a new tag root with no code change", async () => {
-    const facets = await createTestEventsDatabase({
-      extraSql: MOTION_ROOT_SQL,
-    }).findFacets();
+    const facets = await findFixtureFacets({ tags: MOTION_TAGS });
 
     expect(
       createEventFilterFields(facets).find((field) => field.label === "Motion")
@@ -140,9 +129,7 @@ describe(createEventFilterFields, () => {
   });
 
   it("leaves a tag root named like a derived field to the derived one", async () => {
-    const facets = await createTestEventsDatabase({
-      extraSql: TEMPORALITY_ROOT_SQL,
-    }).findFacets();
+    const facets = await findFixtureFacets({ tags: TEMPORALITY_TAGS });
 
     expect(
       createEventFilterFields(facets)
@@ -152,7 +139,7 @@ describe(createEventFilterFields, () => {
   });
 
   it("makes only the derived fields for an empty database", async () => {
-    const facets = await createTestEventsDatabase({ empty: true }).findFacets();
+    const facets = await findFixtureFacets({ events: [], tags: [] });
 
     expect(
       createEventFilterFields(facets).map((field) => [field.id, field.label]),
@@ -160,9 +147,7 @@ describe(createEventFilterFields, () => {
   });
 
   it("picks the tags with the checkbox editor, each indented by its depth", async () => {
-    const fields = createEventFilterFields(
-      await createTestEventsDatabase().findFacets(),
-    );
+    const fields = createEventFilterFields(await findFixtureFacets());
     const type = fields.find((field) => field.id === "tag:tag-type");
 
     expect(type?.editor).toBe("tag-options");
@@ -213,8 +198,9 @@ describe(createEventFilterFields, () => {
   });
 
   it("counts each tag's events in the window the facets were read for", async () => {
-    const database = createTestEventsDatabase();
-    const march = await database.findFacets({
+    serveCalendarApi();
+
+    const march = await findFacets({
       end: new Date("2026-03-06T00:00:00.000Z"),
       start: new Date("2026-03-03T00:00:00.000Z"),
     });
@@ -234,9 +220,7 @@ describe(createEventFilterFields, () => {
 
   it("describes every field, those of the data's roots and the derived ones", async () => {
     const fields = createEventFilterFields(
-      await createTestEventsDatabase({
-        extraSql: MOTION_ROOT_SQL,
-      }).findFacets(),
+      await findFixtureFacets({ tags: MOTION_TAGS }),
     );
 
     for (const field of fields) {
@@ -249,9 +233,7 @@ describe(createEventFilterFields, () => {
 
   it("describes a known root in its own words and a new one by its name", async () => {
     const fields = createEventFilterFields(
-      await createTestEventsDatabase({
-        extraSql: MOTION_ROOT_SQL,
-      }).findFacets(),
+      await findFixtureFacets({ tags: MOTION_TAGS }),
     );
     const describe = (label: string): string | undefined =>
       fields.find((field) => field.label === label)?.description;

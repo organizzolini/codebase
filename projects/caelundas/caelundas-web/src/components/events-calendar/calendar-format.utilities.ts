@@ -5,7 +5,7 @@ import {
 } from "./calendar-format.constants";
 
 import type { DurationUnit } from "./calendar-format.types";
-import type { CalendarEventRecord } from "./events-database.types";
+import type { CalendarEventRecord } from "./calendar-records.types";
 
 /**
  * Spells out an event's tag paths and its duration, for the screen readers

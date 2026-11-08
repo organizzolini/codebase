@@ -31,9 +31,6 @@ export const MISSING_COLOR_INDEX = 0.6;
 /** The HYG columns read, in the order a catalog row is built from. */
 export const CATALOG_COLUMNS = ["id", "hip", "ra", "dec", "mag", "ci"] as const;
 
-/** The rows inserted per statement, well under SQLite's parameter limit. */
-export const INSERT_BATCH_SIZE = 500;
-
 /** The IAU designations of the twelve zodiac constellations. */
 export const ZODIAC_DESIGNATIONS: ReadonlySet<string> = new Set([
   "Aqr",

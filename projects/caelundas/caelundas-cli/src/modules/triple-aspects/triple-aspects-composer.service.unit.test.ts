@@ -12,7 +12,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { TripleAspectsComposerService } from "./triple-aspects-composer.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 describe(TripleAspectsComposerService, () => {
   let service: TripleAspectsComposerService;
