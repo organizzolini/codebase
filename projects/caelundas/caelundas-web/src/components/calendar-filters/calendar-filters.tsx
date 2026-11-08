@@ -15,7 +15,7 @@ import { countActiveEventFilterRules } from "./event-filter-tree.utilities";
 import { FilterChipRow } from "./filter-chip-row";
 import { FilterSurface } from "./filter-surface";
 
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { ResolvedEventFilterCollection } from "./event-filter-collections.types";
 import type {
   EventFilterField,
   EventFilterQuery,
@@ -32,10 +32,10 @@ import type { ReactNode } from "react";
 export interface CalendarFiltersProperties {
   className?: string;
   /**
-   * The tags of the data, from which the collections the menu applies in one
-   * step are resolved, and the default one the calendar opens on.
+   * The named filters the menu applies in one step, which include the
+   * default one the calendar opens on.
    */
-  facets?: readonly EventFacet[];
+  collections?: readonly ResolvedEventFilterCollection[];
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
   /**
@@ -59,12 +59,21 @@ export interface CalendarFiltersProperties {
 export function CalendarFilters(
   properties: Readonly<CalendarFiltersProperties>,
 ): ReactNode {
-  const { className, facets = [], fields, filter, onFilterChange } = properties;
+  const {
+    className,
+    collections = [],
+    fields,
+    filter,
+    onFilterChange,
+  } = properties;
 
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
-  const { collections, handleCollectionSelect, handleQueryChange, query } =
-    useFilterQuery(filter, facets, onFilterChange);
+  const { handleCollectionSelect, handleQueryChange, query } = useFilterQuery(
+    filter,
+    collections,
+    onFilterChange,
+  );
   const activeCount = countActiveEventFilterRules(query);
 
   // 🏗 Setup

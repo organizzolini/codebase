@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { CalendarClusterDialog } from "./calendar-cluster-dialog";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 
 const MEMBER: CalendarEventRecord = {
   color: "#f43f5e",

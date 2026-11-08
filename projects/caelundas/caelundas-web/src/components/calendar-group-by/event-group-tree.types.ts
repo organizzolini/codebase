@@ -1,7 +1,7 @@
 import type {
   CalendarEventGroupKey,
   CalendarEventRecord,
-} from "../events-calendar/events-database.types";
+} from "../events-calendar/calendar-records.types";
 import type { EventGroupNode } from "./event-groups.types";
 
 /**

@@ -6,10 +6,12 @@
 
 **Build**: Fully static, in TanStack Start's single-page mode: the build
 renders one shell page ahead of time, every route renders in the browser, and
-there are no server functions and no API
+there are no server functions. All data comes from the `caelundas-api` GraphQL
+API, which the browser calls directly
 
 **Purpose**: Browse the astronomical events `caelundas-cli` calculates, as a
-calendar over a SQLite database that ships inside the static build
+calendar over the `caelundas-api` GraphQL API, which reads the Caelundas
+Postgres
 
 ### Run Locally
 
@@ -17,47 +19,63 @@ calendar over a SQLite database that ships inside the static build
 nx run caelundas-web:start
 ```
 
+It needs the API, which needs a migrated and ingested Postgres:
+
+```bash
+nx run caelundas-db:migration:run   # Local Postgres and its schema
+nx run caelundas-cli:start          # Ingest events (see caelundas-cli)
+nx run caelundas-api:start          # The API, on port 6173
+```
+
+The app reads the API at `VITE_CAELUNDAS_API_URL`, `http://localhost:6173/graphql`
+when unset. The API must allow this app's origin (CORS), as the browser calls it
+directly.
+
 ## Data Pipeline
 
-The app reads one SQLite file in the browser. Nothing is fetched from a server
-but that file:
+Nothing is bundled and nothing is built from data: `build` and `start` run Vite
+and nothing else, and the project holds no schema, seed, or database. The data
+flows one way:
 
-1. `caelundas-cli` owns the database and leaves it web-ready, so this project
-   holds no schema or seed. The migration there creates the read model this
-   app queries, and every ingestion run ends by rewriting it with
-   `caelundas-cli/data/events-read-model.sql`: `tag_nodes` (each tag's depth,
-   root, and path), `calendar_event_tag_nodes` (one row per event and tag,
-   ancestors included, `is_direct` marking the tags given), and the view
-   `calendar_events_derived` (each event with its duration, temporality, and
-   UTC time parts). The first two are stored tables rather than views, as every
-   grouping and tag filter recomputed the tree's depth, root, and path per tag
-   as views, which made a grouped read twenty to fifty times slower.
-2. `scripts/build-events-database.ts` writes `output/events.sqlite`. With the
-   `ingested` configuration (`build:ingested`, `start:ingested` and
-   `preview:ingested` pass it down) it copies
-   `caelundas-cli/output/database.sqlite`, and fails naming it when it is
-   missing. By default, which CI and `start` use, it creates a database from
-   the latest migration's generated `-up.sql`, the seed
-   `caelundas-cli/data/events-seed.sql` and the read-model SQL. The tests
-   build the same database in memory the same way, so the web application
-   cannot drift from the tables the CLI writes. This project's `namedInputs`
-   list those files so a change to them reruns its tests.
-3. `nx run caelundas-web:build-database` writes the result to
-   `output/events.sqlite`, which is gitignored. `build` and `start` depend on
-   it, and Vite emits it, the worker, and sqlite-wasm's `.wasm` file as
-   fingerprinted assets. `build-database` is never cached, since the ingested
-   configuration reads a file Nx cannot hash; `build` hashes the file it wrote through a
-   `dependentTasksOutputFiles` input, so a build from new data never restores
-   the build of the old.
-4. In the browser, `events-database.worker.ts` downloads the file, opens it
-   read-only in memory with sqlite-wasm, and answers selects. No persistent
-   storage is used, so no cross-origin isolation headers are needed.
+1. `caelundas-cli` ingests events into the Caelundas Postgres and rewrites its
+   read model; `caelundas-db` owns the schema.
+2. `caelundas-api` answers GraphQL over that read model: the events in a
+   window, the facets, the filter collections, the calendar windows (a view's
+   visible days and the window a load must read), grouping, and the night sky.
+   Filters and groupings are compiled to SQL there, not here.
+3. The browser sends one generated document per query through `queryApi`. The
+   client holds only what the API cannot know: lane packing, clustering, and
+   the tree of groups a view draws.
 
-Every query lives in `src/components/events-calendar/events-database.utilities.ts`, behind the
-`EventsDatabase` interface, over a `SqlExecutor`. The browser's executor posts
-each select to the worker; the tests' executor runs it on `node:sqlite` over
-the same three SQL files. The route reads the database from the router
-context, which is how a test hands it another one.
+Tests run on the mocked API: `serveGraphqlApi(...handlers)` from
+`testing/graphql-api.ts` registers the generated MSW handlers on the shared
+server in `testing/setup.ts`, with fixtures from `testing/calendar-api.ts`.
+
+## GraphQL Code Generation
+
+The web app reads the `caelundas-api` schema through typed operations, as
+`lexico-web` does. `codegen.ts` reads the documents in `src/graphql/operations/` (one per query:
+dataset, events with filter and grouping, facets, filter collections, calendar
+windows, night sky) and writes `operations.ts` (types and typed documents) and
+`mocks.ts` (MSW handlers) to `src/graphql/generated/`. The generated files are
+committed and never edited. It does not use `@codebase/interface/client`'s
+shared configuration, which also emits the schema's own types and Zod
+validators: those redeclare the enums and inputs these operations take.
+
+```bash
+nx run caelundas-web:codegen          # Regenerate from the API's schema
+nx run caelundas-web:codegen:check    # Fail when a committed file is stale
+nx run caelundas-web:codegen-watch    # Start the API and regenerate on change
+```
+
+The API emits its schema to the gitignored `caelundas-api/src/schema.gql` each
+time it boots, so boot it first (`nx run caelundas-api:start`) when the file is
+missing.
+
+`src/components/events-calendar/events-api.utilities.ts` sends a generated
+document to the API with `queryApi`. The API's address is the
+`VITE_CAELUNDAS_API_URL` build variable, `http://localhost:6173/graphql` when
+unset.
 
 ## Architecture Overview
 
@@ -68,7 +86,7 @@ context, which is how a test hands it another one.
 - **UI**: React 19 with Tailwind CSS 4
 - **Calendar**: the vendored ReUI event calendar from `@codebase/presentation`,
   composed here and never edited
-- **Data**: sqlite-wasm in a Web Worker, over a SQLite file bundled at build
+- **Data**: the `caelundas-api` GraphQL API, through typed documents generated from its schema
 - **Testing**: Vitest and React Testing Library under jsdom
 
 ### Directory Layout
@@ -107,52 +125,47 @@ testing/
   setup.ts                       # Shared test setup
 ```
 
-The calendar adds its data layer and the files that build its database:
+The calendar adds its data layer:
 
 ```text
 src/
   components/
     events-calendar/             # The calendar, its views, windows, loader, and the
-                                 # events database with its worker and client
-    calendar-filters/            # The filter builder and the SQL it compiles to
+                                 # API client and the record types the views share
+    calendar-filters/            # The filter builder and the filter tree it sends
     calendar-group-by/           # The grouping picker and the event groups it builds
     calendar-timeline/           # The timeline and its clusters, lanes, and window
     night-sky-backdrop/          # The night sky behind every page, and its mount
+  graphql/
+    operations/                  # One .graphql document per query
+    generated/                   # Generated typed documents and MSW handlers
   hooks/
-    use-night-sky/               # The night sky's stars and figures read, generator,
-                                 # colors, constellation lines, and link overrides
-scripts/
-  build-events-database.ts       # Writes output/events.sqlite, from the seed or --ingested
-output/                          # Gitignored build artifact
+    use-night-sky/               # The night sky's link overrides, settings, and request
 testing/
-  events-database.ts             # node:sqlite EventsDatabase over caelundas-cli's SQL
+  graphql-api.ts                 # Serves generated MSW handlers over the shared server
+  calendar-api.ts, calendar-fixture.ts
+                                 # Fixtures the mocked API answers with
 ```
 
 ### Night Sky Data
 
-The night sky reads the `star`, `constellation` and `constellation_line`
-tables through `EventsDatabase.findNightSky`, the same worker and SQL path the
-events take; `caelundas-cli`'s `night-sky` command fills them, and the seeded
-build and the tests load `caelundas-cli/data/night-sky-seed.sql`: every
-constellation and figure, with only the stars the figures join and the
-brightest.
-`use-night-sky.schemas.ts` validates each row as it is read. The stars are the
-HYG star database v4.1 (CC BY-SA 4.0, David Nash and the HYG contributors,
-<https://github.com/astronexus/HYG-Database>), stored to magnitude 6.5 and
-declination -45 degrees or north; the stored catalog is a derived work under
-the same license, so keep this credit wherever it is documented. The figures
-are d3-celestial's (BSD-3-Clause, Olaf Frohn,
-<https://github.com/ofrohn/d3-celestial>). `sky.constellations` (the zodiac when absent, none for `none` or empty) selects which
-figures `night-sky-lines.utilities.ts` draws, beneath the stars inside the
-turning group, cut where they leave the ring the window can show, and
-`sky.lineColor`, `sky.lineOpacity` and `sky.lineWidth` set their stroke:
-`readNightSkyOverrides` reads the color like `sky.top` and clamps the opacity
-to 0–1 and the width to 0–10 pixels, and a value it cannot read falls back to
-the `DEFAULT_OPTIONS` default and is warned of once, as an unknown
-constellation name is. `sky.ecliptic` and its three style keys draw the
-ecliptic through `night-sky-ecliptic.utilities.ts`, which turns ecliptic
-longitude into right ascension and declination by the obliquity and cuts the
-path with the same `splitIntoRuns` the figures use. `src/components/night-sky-menu/`
+The API draws the night sky: its `nightSky` query reads the `stars`,
+`constellations` and `constellation_lines` tables that `caelundas-cli`'s
+`night-sky` command fills and returns an SVG, which `useNightSky` hands to the
+backdrop. The stars are the HYG star database v4.1 (CC BY-SA 4.0, David Nash
+and the HYG contributors, <https://github.com/astronexus/HYG-Database>), stored
+to magnitude 6.5 and declination -45 degrees or north; the stored catalog is a
+derived work under the same license, so keep this credit wherever it is
+documented. The figures are d3-celestial's (BSD-3-Clause, Olaf Frohn,
+<https://github.com/ofrohn/d3-celestial>). The 88 constellations the menu
+lists are a constant in `night-sky.constants.ts`. This app owns the link:
+`readNightSkyOverrides` reads `sky.*` keys, reading a color like `sky.top`,
+clamping the opacity to 0-1 and the width to 0-10 pixels, and falling back to
+the `DEFAULT_OPTIONS` default with one console warning for a value it cannot
+read, as for an unknown constellation name; `toNightSkyInput` turns them into
+the query's input. `sky.constellations` (the zodiac when absent, none for `none`
+or empty) selects the figures, and `sky.ecliptic` with its three style keys
+the ecliptic, both drawn by the API. `src/components/night-sky-menu/`
 is the toolbar's Sky menu, with no headings: each control's label says what
 it sets ("Sky top color", "Star drift speed", "Ecliptic line width"), and
 `NightSkySection` names its group with a hidden legend. Four columns on a wide
@@ -287,9 +300,9 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   from before tags could be picked still names a `depth`. A level may instead
   be a year, quarter, month, week, day, weekday, hour, or duration bucket
   read in each event's own zone.
-  `compileEventGrouping` in `src/components/calendar-group-by/` turns a grouping into one
-  SQL source of group keys per level, which `findEvents` reads into each
-  event's `groups`; `buildEventGroups` builds the tree from them. An event
+  `toEventGroupingInput` in `src/components/calendar-group-by/` turns a grouping
+  into the query's grouping input, and the API returns each event's group keys
+  in its `groups`; `buildEventGroups` builds the tree from them. An event
   falls in every group of a level it has a key for, so an event of two
   planets is listed under both, and a group counts its distinct events. A
   tag above the chosen depth stands for itself, and events with no key at a
@@ -337,7 +350,7 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   the count stands for them. `CalendarFilters` holds
   the tree being edited, so an edit shows before the link catches up, and
   writes it to the link only when the compiled query changes: an unfinished
-  rule does not reload the calendar. The facets are read once per database.
+  rule does not reload the calendar. The facets are read per window and filter.
 - Collections are named sets of filters, applied in one step from the menu
   beside the Filters button (`event-filter-collections.ts`). They are written
   by tag names, such as `Type` and `Aspect / Simple Aspect / Major Aspect`,
@@ -362,19 +375,16 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   weekday, hour, duration bucket, duration in minutes, temporality, and text
   search follow them; a tag root
   named like one of those is left to the derived field.
-- Date, weekday, and hour are read in each event's own zone through the
-  `event_local_*` SQL functions in
-  `src/components/events-calendar/events-database-local-time.utilities.ts`, which the worker
-  and the tests' executor both register: SQLite itself knows no zones.
+- Date, weekday, and hour are read in each event's own zone by the API, from
+  the read model's `start_local_day` and `start_local_hour`.
 
-- While the database loads, `CalendarSkeleton` stands in for the page: a
+- While the API answers, `CalendarSkeleton` stands in for the page: a
   grid of days from a tablet's width, a list of rows on a phone, which opens
   on the agenda.
-- A failed load shows `CalendarError`, announced as an alert, with Retry; a
-  browser without WebAssembly or Web Workers gets an explanation and no
-  retry.
+- A failed load, including an API that cannot be reached, shows
+  `CalendarError`, announced as an alert, with Retry.
 - Days with no events keep the calendar and lay `CalendarEmpty` over it:
-  "No events yet" for an empty database, "Outside the data" with a jump to the
+  "No events yet" for an empty dataset, "Outside the data" with a jump to the
   first covered day, or "No events this month" (or week, or day) inside the
   covered dates. It is announced as a status. When the filters are what
   emptied the period, "No events match the filters" offers Clear filters.
@@ -383,13 +393,13 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   one that does not parse falls back to today.
 - The `filter` search parameter holds the ReUI filter tree as JSON, validated
   by the schemas in `src/hooks/use-calendar-search/calendar-search.constants.ts`; one that does not parse is
-  dropped. `compileEventFilter` in `src/components/calendar-filters/` turns it into the
-  SQL condition `findEvents` applies, leaving out unfinished rules, and a
+  dropped. `toEventFilterInput` in `src/components/calendar-filters/` turns it into the
+  query's filter input, leaving out unfinished rules, and a
   month the filters empty says so apart from one with no events at all.
 
 ### Verified at each width
 
-Checked by hand in the browser against the seeded data, at 320 and 375 pixels
+Checked by hand in the browser against a seeded local API, at 320 and 375 pixels
 (a phone), 768 and 800 (a tablet), and 1024 and 1280 (a desktop). At each,
 the toolbar's buttons sit inside the width, the page never scrolls sideways,
 and the title shows whole. The Filters button opens its popover on a desktop,
@@ -408,7 +418,7 @@ No view is withheld at any width. One that stops working at some width is
 cut by deleting it from `CALENDAR_VIEWS` and the records keyed by it in
 `src/components/events-calendar/calendar-views.constants.ts`, which the compiler then follows to
 every other place that names it. Not checked: the "+N more" list of a busy
-month, as the seed holds no busy day, and keyboard-only scrolling of the
+month, as the seeded data holds no busy day, and keyboard-only scrolling of the
 agenda and the timeline in browsers that do not make a scrollable region
 focusable by themselves.
 
@@ -418,7 +428,9 @@ focusable by themselves.
 - [src/routes/\_\_root.tsx](src/routes/__root.tsx): Document shell
 - [vite.config.mts](vite.config.mts): TanStack Start, Tailwind, and React plugins
 - [vitest.config.ts](vitest.config.ts): Test configuration
-- [src/components/events-calendar/events-database.types.ts](src/components/events-calendar/events-database.types.ts):
-  The `EventsDatabase` interface
+- [src/components/events-calendar/calendar-records.types.ts](src/components/events-calendar/calendar-records.types.ts):
+  The event, facet, dataset and window types the views share
+- [src/components/events-calendar/events-api.utilities.ts](src/components/events-calendar/events-api.utilities.ts):
+  `queryApi`, the one way the app reaches the API
+- [codegen.ts](codegen.ts): GraphQL Code Generator configuration
 - [src/routes/index.tsx](src/routes/index.tsx): The calendar page
-- [events-read-model.sql](../caelundas-cli/data/events-read-model.sql): The SQL that rewrites the read-model tables
