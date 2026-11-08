@@ -12,11 +12,11 @@ import { createEventGroupFields } from "../calendar-group-by/event-group-fields.
 import { CalendarScaleSelect } from "../calendar-scale-select/calendar-scale-select";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type {
   CalendarViewName,
   TimelineScale,
 } from "../events-calendar/calendar-views.types";
-import type { EventFacet } from "../events-calendar/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

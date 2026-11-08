@@ -20,7 +20,6 @@ describe(useFilterQuery, () => {
 
     expect(result.current.query).toStrictEqual(EMPTY_EVENT_FILTER);
     expect(result.current).toStrictEqual({
-      collections: [],
       handleCollectionSelect: expect.any(Function),
       handleQueryChange: expect.any(Function),
       query: EMPTY_EVENT_FILTER,
