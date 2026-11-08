@@ -19,8 +19,8 @@ import { getViewLayout } from "./events-calendar.utilities";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
 import type { CalendarNavigation } from "../calendar-navigation-group/calendar-navigation-group.types";
+import type { CalendarEventRecord, EventFacet } from "./calendar-records.types";
 import type { CalendarViewName } from "./calendar-views.types";
-import type { CalendarEventRecord, EventFacet } from "./events-database.types";
 import type { EventCalendarRenderEventProps } from "@codebase/presentation";
 import type { ReactNode } from "react";
 

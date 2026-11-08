@@ -1,4 +1,3 @@
-import type { ResolvedEventFilterCollection } from "../../components/calendar-filters/event-filter-collections.types";
 import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
 
 // 🏷️ Types
@@ -8,9 +7,8 @@ import type { EventFilterQuery } from "../../components/calendar-filters/event-f
  */
 export interface UseFilterQueryResult {
   /**
-   * The collections a whole tree can be replaced with.
+   * Replaces the whole tree with a collection's, and writes it to the link.
    */
-  collections: ResolvedEventFilterCollection[];
   handleCollectionSelect: (next: EventFilterQuery) => void;
   handleQueryChange: (next: EventFilterQuery) => void;
   query: EventFilterQuery;

@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@codebase/presentation";
 
-import { compileEventFilter } from "../calendar-filters/event-filter-compiler.utilities";
+import { toEventFilterInput } from "../calendar-filters/event-filter-input.utilities";
 import { EMPTY_EVENT_FILTER } from "../calendar-filters/event-filter-tree.constants";
 
 import {
@@ -47,12 +47,13 @@ export function CalendarCollectionPicker(
   // 🪝 Hooks
 
   // 🏗 Setup
-  // The compiled SQL says whether two trees filter alike, whatever their ids.
-  const current = JSON.stringify(compileEventFilter(query));
+  // The input the API is sent says whether two trees filter alike, whatever
+  // their ids.
+  const current = JSON.stringify(toEventFilterInput(query));
   let value = current === "null" ? ALL_EVENTS_ID : CUSTOM_ID;
 
   for (const collection of collections) {
-    if (JSON.stringify(compileEventFilter(collection.filter)) === current) {
+    if (JSON.stringify(toEventFilterInput(collection.filter)) === current) {
       value = collection.id;
     }
   }

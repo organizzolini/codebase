@@ -11,7 +11,7 @@ import { runPipelineWindow } from "./pipeline-window.functions";
 import { PipelineWindowModule } from "./pipeline-window.module";
 
 import type { Aspect, Body } from "../src/modules/caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 import type { INestApplicationContext } from "@nestjs/common";
 
 const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };
