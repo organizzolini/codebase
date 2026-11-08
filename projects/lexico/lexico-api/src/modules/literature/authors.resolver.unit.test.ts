@@ -6,7 +6,7 @@ import {
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Author, Text } from "@codebase/lexico-entities";
+import { Author, Text } from "@codebase/lexico-db";
 
 import { AuthorsResolver } from "./authors.resolver";
 import { LiteratureRelationsLoader } from "./literature-relations.loader";

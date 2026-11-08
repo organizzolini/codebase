@@ -11,8 +11,8 @@ import { CalendarGrid } from "./calendar-grid";
 import { DEFAULT_TIMELINE_SCALE } from "./calendar-views.constants";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
+import type { CalendarEventRecord, EventFacet } from "./calendar-records.types";
 import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
-import type { CalendarEventRecord, EventFacet } from "./events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

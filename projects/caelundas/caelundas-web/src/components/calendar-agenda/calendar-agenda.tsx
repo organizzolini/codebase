@@ -15,7 +15,7 @@ import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
 import type {
   CalendarEventRecord,
   EventFacet,
-} from "../events-calendar/events-database.types";
+} from "../events-calendar/calendar-records.types";
 import type { AgendaListRow, AgendaRange } from "./calendar-agenda.types";
 import type { ReactNode } from "react";
 

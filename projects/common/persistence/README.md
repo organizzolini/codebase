@@ -1,13 +1,13 @@
 # 🐘 Persistence
 
-The shared package every database-backed project connects through, to Postgres or to a SQLite file, and a command line that moves tables between Postgres databases.
+The shared package every database-backed project connects through, to Postgres, and a command line that moves tables between Postgres databases.
 
 ## Purpose
 
-Lexico and meanderaw each keep their tables in Postgres, and caelundas writes
-a SQLite file, [below](#sqlite). This package holds the one way they connect,
-so the environment variables, the connection options, and the naming of each
-Postgres project's database, schema, and role are written once:
+Lexico, meanderaw, and caelundas each keep their tables in Postgres. This
+package holds the one way they connect, so the environment variables, the
+connection options, and the naming of each Postgres project's database,
+schema, and role are written once:
 
 | Context        | Database                | Schema      | Role                                        |
 | -------------- | ----------------------- | ----------- | ------------------------------------------- |
@@ -31,12 +31,6 @@ Key exports and responsibilities:
   exports, from the same options
 - `PostgresqlIdentifiableEntity` …: Base entities: a `uuidv7()` id, then created,
   updated, and soft-deleted columns
-- `SqliteModule.forRoot`: The same for a SQLite file, from one
-  `<PROJECT>_SQLITE_DATABASE` variable; see [SQLite](#sqlite)
-- `createSqliteDataSource`, `sqliteEnvironmentSchema`: The SQLite twins of
-  `createDataSource` and `postgresEnvironmentSchema`
-- `SqliteIdentifiableEntity` …: The SQLite base entities: a `uuid` id the
-  application generates, and `datetime` columns
 - `startPostgresContainer`: From `@codebase/persistence/testing`: a migrated
   Postgres 18 container laid out like local Docker
 - `startDatabaseTestingModule`: From `@codebase/persistence/testing`: a Nest
@@ -273,68 +267,6 @@ Docker must be running.
 A project name must be lowercase letters, digits, and underscores, starting
 with a letter, so it can prefix a variable and name a database unquoted.
 
-## SQLite
-
-`SqliteModule.forRoot` connects a project to its own SQLite file through
-TypeORM's `better-sqlite3` driver, the way `PostgresqlModule.forRoot` connects
-one to Postgres: the options name the entities, and the file comes from the
-project's prefixed variable through `ConfigService`.
-
-```ts
-SqliteModule.forRoot({
-  entities: [CalendarEvent],
-  migrations: [CreateCalendarEvents1767225600000],
-  project: "caelundas",
-});
-```
-
-| Variable                    | Default            | Meaning                          |
-| --------------------------- | ------------------ | -------------------------------- |
-| `<PROJECT>_SQLITE_DATABASE` | `<project>.sqlite` | The database file, or `:memory:` |
-
-An unprefixed `SQLITE_DATABASE` is never read. Spread
-`sqliteEnvironmentSchema({ project })` into the application's environment
-schema, and export `createSqliteDataSource({ entities, migrations, project })`
-from a `data-source.constants.ts` for the TypeORM command line.
-
-### How SQLite differs from Postgres
-
-The options are shared (snake case, `synchronize` off, no logging); these are
-not:
-
-- **The folder is created on start**: `SqliteModule` and `createSqliteDataSource` make a file database's missing folders, so `output/database.sqlite` needs no `output/` first.
-- **Migrations run on start** when `forRoot` is given any. Postgres runs them
-  as their own step because several processes starting together would race on
-  one schema; a SQLite file has one writer. `createSqliteDataSource` still
-  never runs them.
-- **One writer.** better-sqlite3 is synchronous and holds one connection, so
-  keep a project's writes on the module's connection; a second one writing
-  waits `timeout` (5 s) and then fails with `SQLITE_BUSY`. Write-ahead logging
-  stays off, so a finished database is one file rather than three.
-- **No schema, role, or host.** The path is the whole connection, so there is
-  no search path to pin and no credentials to mask. TypeORM's driver turns
-  `PRAGMA foreign_keys` on itself.
-- **No native `uuid`, `timestamptz`, or `numeric`**, and TypeORM refuses
-  those column types at connect time. The Postgres base entities therefore
-  cannot be shared; the SQLite ones sit beside them. Store a decimal that must
-  survive exactly, such as a latitude or longitude, as `text`.
-- **No column comments**, so the SQLite entities carry none.
-- **Ids are version 4, not `uuidv7()`.** TypeORM reads a database-generated
-  key back only from `rowid`, so a text key with a SQL default throws on
-  `insert`. `SqliteIdentifiableEntity` uses `@PrimaryGeneratedColumn("uuid")`,
-  which TypeORM fills in the application on `save`, bulk `insert`, and
-  `upsert` alike, but which does not sort by insertion time. Without
-  `RETURNING`, TypeORM reads the new keys back with a select that answers in
-  key order, so a bulk `insert`'s `identifiers` are the new ids but not in the
-  order the rows were given: match rows by a natural key, never by position.
-- **Timestamps are `datetime`**: UTC text in `YYYY-MM-DD HH:MM:SS[.SSS]`
-  form, which is ISO 8601 with a space for the `T`, sorts as text, and is what
-  SQLite's date functions and TypeORM's own `CURRENT_TIMESTAMP` updates write.
-  An ISO string with `T` and `Z` would mix two formats in one column.
-  Properties stay `Date`.
-- **Partial indexes** take the same `WHERE` as Postgres, but write it as
-  SQLite does: no `::` casts, no `now()`, `1` and `0` for booleans.
-
 ## Moving data between databases
 
 The package is also a command line, `database`, that copies selected tables
@@ -448,14 +380,14 @@ graph LR
   configuration["configuration"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
-  lexico_entities["lexico-entities"]
+  lexico_db["lexico-db"]
   meanderaw_cli["meanderaw-cli"]
   observability["observability"]
   persistence["persistence"]
   caelundas_cli --> persistence
   lexico_api --> persistence
   lexico_cli --> persistence
-  lexico_entities --> persistence
+  lexico_db --> persistence
   meanderaw_cli --> persistence
   persistence --> configuration
   persistence --> observability

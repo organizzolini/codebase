@@ -8,7 +8,7 @@ import {
   type Repository,
   Text,
   Token,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { createEmptyConnection, paginateQuery } from "./literature.utilities";
 

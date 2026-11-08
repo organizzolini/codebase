@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-import { resolveEventFilterCollections } from "../../components/calendar-filters/event-filter-collections.utilities";
-import { compileEventFilter } from "../../components/calendar-filters/event-filter-compiler.utilities";
+import { toEventFilterInput } from "../../components/calendar-filters/event-filter-input.utilities";
 import {
   isSameEventFilter,
   toLinkedEventFilter,
@@ -9,8 +8,8 @@ import {
 
 import { getDefaultFilter } from "./use-filter-query.utilities";
 
+import type { ResolvedEventFilterCollection } from "../../components/calendar-filters/event-filter-collections.types";
 import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
-import type { EventFacet } from "../../components/events-calendar/events-database.types";
 import type { UseFilterQueryResult } from "./use-filter-query.types";
 
 // 🧩 Hook
@@ -26,14 +25,10 @@ import type { UseFilterQueryResult } from "./use-filter-query.types";
  */
 export function useFilterQuery(
   filter: EventFilterQuery | undefined,
-  facets: readonly EventFacet[],
+  collections: readonly ResolvedEventFilterCollection[],
   onFilterChange: (filter: EventFilterQuery) => void,
 ): UseFilterQueryResult {
   // 🪝 Hooks
-  const collections = useMemo(
-    () => resolveEventFilterCollections(facets),
-    [facets],
-  );
   const defaultFilter = getDefaultFilter(collections);
   const [query, setQuery] = useState(filter ?? defaultFilter);
   const [seenFilter, setSeenFilter] = useState(filter);
@@ -52,8 +47,8 @@ export function useFilterQuery(
     setQuery(next);
 
     if (
-      JSON.stringify(compileEventFilter(next)) !==
-      JSON.stringify(compileEventFilter(query))
+      JSON.stringify(toEventFilterInput(next)) !==
+      JSON.stringify(toEventFilterInput(query))
     ) {
       onFilterChange(toLinkedEventFilter(next));
     }
@@ -67,7 +62,6 @@ export function useFilterQuery(
 
   // 🎁 Result
   return {
-    collections,
     handleCollectionSelect,
     handleQueryChange,
     query,

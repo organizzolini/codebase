@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { Lexeme, Word, WordForm, WordLexeme } from "@codebase/lexico-entities";
+import { Lexeme, Word, WordForm, WordLexeme } from "@codebase/lexico-db";
 
 import { WordsService } from "./words.service";
 

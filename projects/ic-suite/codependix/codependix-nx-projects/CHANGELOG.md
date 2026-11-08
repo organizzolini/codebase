@@ -1,3 +1,13 @@
+## 0.0.71 (2026-11-08)
+
+### 💅 Refactors
+
+- **lexico-db,lexico,lexico-cli,configuration:** ♻️ rename lexico-entities to lexico-db and split its modules ([#2185](https://github.com/organizzolini/codebase/pull/2185), [#2184](https://github.com/organizzolini/codebase/issues/2184))
+
+## 0.0.70 (2026-11-07)
+
+This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.
+
 ## 0.0.69 (2026-11-06)
 
 This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.

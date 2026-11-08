@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import type { Form } from "@codebase/lexico-entities";
+import type { Form } from "@codebase/lexico-db";
 
 /**
  * Service for managing transient words associated with Form entities during the ingestion process.

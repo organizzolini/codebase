@@ -4,10 +4,7 @@ import { InflectionType } from "./inflection.entities";
 
 import type { InflectionDatabaseOnlyField } from "./inflections.types";
 import type { GraphQLObjectOf } from "@codebase/interface";
-import type {
-  VerbConjugation,
-  VerbInflection,
-} from "@codebase/lexico-entities";
+import type { VerbConjugation, VerbInflection } from "@codebase/lexico-db";
 
 /** How a verb inflects: its conjugation. */
 @ObjectType("VerbInflection", { implements: InflectionType })

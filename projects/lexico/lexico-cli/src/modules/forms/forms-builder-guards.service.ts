@@ -26,7 +26,7 @@ import type {
   FormTense,
   formVoiceValues,
   PartOfSpeech,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /**
  * Type guard provider for raw form parsing inputs.

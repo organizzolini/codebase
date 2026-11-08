@@ -2,7 +2,7 @@
 
 import type { SearchMatchSource } from "./search.entities";
 import type { Connection } from "@codebase/interface";
-import type { Lexeme } from "@codebase/lexico-entities";
+import type { Lexeme } from "@codebase/lexico-db";
 
 /**
  * Result of Latin enclitic decomposition.

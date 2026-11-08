@@ -67,7 +67,7 @@ const config: KnipConfig = {
     "@nx/web", // Nx web plugin (auto-detected by Nx)
     // Declared at the root only so pnpm resolves @nestjs/core's optional peer
     // the same way for every workspace package; without it lexico-api and
-    // lexico-entities load two copies of @nestjs/core and DI breaks.
+    // lexico-db load two copies of @nestjs/core and DI breaks.
     "@nestjs/platform-express",
     "@semantic-release/commit-analyzer", // semantic-release plugin, referenced in release.config.cjs
     "@semantic-release/github", // semantic-release plugin
@@ -170,6 +170,19 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // caelundas-api: NestJS GraphQL API
+    "projects/caelundas/caelundas-api": {
+      ignoreDependencies: [
+        // Apollo 5's Express integration, which @nestjs/apollo resolves by
+        // name at startup; without it GraphQLModule refuses to boot.
+        "@as-integrations/express5",
+        // Named only by testing/mocks.ts, a conformance-scaffolded placeholder
+        // that knip ignores, so no import reaches it.
+        "typeorm",
+      ],
+      project: "src/**/*.ts",
+    },
+
     // caelundas-db: Shared TypeORM entities, migration, and read model
     "projects/caelundas/caelundas-db": {
       // The data source and the migration are read by the TypeORM command
@@ -262,15 +275,16 @@ const config: KnipConfig = {
       project: ["src/**/*.ts", "scripts/**/*.ts"],
     },
 
-    // lexico-entities: Shared TypeORM entities
-    "projects/lexico/lexico-entities": {
+    // lexico-db: Shared TypeORM entities
+    "projects/lexico/lexico-db": {
       entry: [
         "src/index.ts",
         "src/modules/database/data-source.constants.ts",
         "src/modules/database/migrations/**/*.ts",
       ],
       ignore: [
-        "src/modules/entities/entities.module.ts", // Conformance-generated module stub, not yet exported
+        "src/modules/dictionary/dictionary.module.ts", // Conformance-generated module stub, not yet exported
+        "src/modules/literature/literature.module.ts", // Conformance-generated module stub, not yet exported
       ],
       project: ["src/**/*.ts"],
     },

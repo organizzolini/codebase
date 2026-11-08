@@ -119,7 +119,7 @@ describe(BoundaryOutcomeReportService, () => {
         judgedProjects: ["lexico-cli"],
         outcome: {
           failures: [
-            buildFailure({ ownerProject: "lexico-entities" }),
+            buildFailure({ ownerProject: "lexico-db" }),
             buildFailure({ projects: ["lexico-api"] }),
           ],
           violations: [],
@@ -130,7 +130,7 @@ describe(BoundaryOutcomeReportService, () => {
         {
           error: "Cannot access 'Word' before initialization",
           level: "nestjsModules",
-          ownerProject: "lexico-entities",
+          ownerProject: "lexico-db",
           projects: ["lexico-cli"],
           verdict: "fail",
         },
@@ -166,22 +166,22 @@ describe(BoundaryOutcomeReportService, () => {
     it("names the project owning the code a failure broke on", () => {
       expect(
         service.renderFailures(
-          [buildFailure({ ownerProject: "lexico-entities" })],
+          [buildFailure({ ownerProject: "lexico-db" })],
           [],
         ),
       ).toStrictEqual([
-        "nestjsModules lexico-cli: Cannot access 'Word' before initialization (failed in code owned by lexico-entities)",
+        "nestjsModules lexico-cli: Cannot access 'Word' before initialization (failed in code owned by lexico-db)",
       ]);
     });
 
     it("marks a note as not failing and names the dependency it lives in", () => {
       expect(
         service.renderFailures(
-          [buildFailure({ projects: ["lexico-entities"], verdict: "note" })],
+          [buildFailure({ projects: ["lexico-db"], verdict: "note" })],
           [],
         ),
       ).toStrictEqual([
-        "nestjsModules in dependency lexico-entities, not failing: Cannot access 'Word' before initialization",
+        "nestjsModules in dependency lexico-db, not failing: Cannot access 'Word' before initialization",
       ]);
     });
   });
@@ -380,9 +380,9 @@ describe(BoundaryOutcomeReportService, () => {
           judgedProjects: ["lexico-cli"],
           outcome: {
             failures: [
-              buildFailure({ ownerProject: "lexico-entities" }),
+              buildFailure({ ownerProject: "lexico-db" }),
               buildFailure({
-                projects: ["lexico-entities"],
+                projects: ["lexico-db"],
                 verdict: "note",
               }),
             ],
@@ -398,11 +398,11 @@ describe(BoundaryOutcomeReportService, () => {
           "#### lexico-cli",
           "",
           "- **fail** nxProjects lexico-cli: layers: a must not depend on b.",
-          "- **fail** nestjsModules lexico-cli: Cannot access 'Word' before initialization (failed in code owned by lexico-entities)",
+          "- **fail** nestjsModules lexico-cli: Cannot access 'Word' before initialization (failed in code owned by lexico-db)",
           "",
-          "#### lexico-entities",
+          "#### lexico-db",
           "",
-          "- **note** nestjsModules in dependency lexico-entities, not failing: Cannot access 'Word' before initialization",
+          "- **note** nestjsModules in dependency lexico-db, not failing: Cannot access 'Word' before initialization",
         ].join("\n"),
       );
     });

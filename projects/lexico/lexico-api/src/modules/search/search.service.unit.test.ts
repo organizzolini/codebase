@@ -5,7 +5,7 @@ import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { Lexeme, Translation, Word } from "@codebase/lexico-entities";
+import { Lexeme, Translation, Word } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { createRepositoryMock } from "../../../testing/mocks";

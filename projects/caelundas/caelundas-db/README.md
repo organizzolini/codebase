@@ -122,8 +122,8 @@ Call stacks traced through `projects/caelundas/caelundas-db`, deepest first. Eac
 | Callables | 20 |
 | Files | 22 |
 | Calls traced | 1 |
-| Call stacks | 1 |
-| Deepest stack | 2 |
+| Call stacks | 0 |
+| Deepest stack | 0 |
 | Stacks through recursion | 0 |
 | Unfollowable calls | 0 |
 
@@ -138,13 +138,7 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-**1. `CaelundasDatabaseService.refreshReadModel`** — depth 2 · orphan-root
-
-```text
-🚀 CaelundasDatabaseService.refreshReadModel(manager: EntityManager): Promise<void> [projects/caelundas/caelundas-db/src/modules/caelundas-database/caelundas-database.service.ts:45]
-   ↳ Rebuilds the derived tag tables, `tag_nodes` and `calendar_event_tag_nodes`, from the tags, their closure and the…
-  └─> CaelundasDatabaseService.transaction(…)(transaction: EntityManager): Promise<void> [projects/caelundas/caelundas-db/src/modules/caelundas-database/caelundas-database.service.ts:46]
-```
+None.
 
 ### Breadth
 
@@ -162,8 +156,12 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  caelundas_api["caelundas-api"]
+  caelundas_cli["caelundas-cli"]
   caelundas_db["caelundas-db"]
   persistence["persistence"]
+  caelundas_api --> caelundas_db
+  caelundas_cli --> caelundas_db
   caelundas_db --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class caelundas_db subject
@@ -270,7 +268,7 @@ graph LR
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-1724-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-78.78_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-78.77_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-6-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-29-3178c6?style=flat-square)
 

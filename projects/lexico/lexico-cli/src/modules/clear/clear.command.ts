@@ -12,7 +12,7 @@ import {
   Token,
   Translation,
   Word,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import type { ClearCommandOptions, ClearPromptResponse } from "./clear.types";

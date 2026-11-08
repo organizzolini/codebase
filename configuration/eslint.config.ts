@@ -1295,7 +1295,7 @@ export default [
       "**/projects/lexico/lexico-cli/src/modules/forms/forms.constants.ts",
       "**/projects/lexico/lexico-cli/src/modules/manual/manual.constants.ts",
       "**/projects/lexico/lexico-cli/src/modules/part-of-speech/part-of-speech.constants.ts",
-      "**/projects/lexico/lexico-entities/src/modules/database/database.constants.ts",
+      "**/projects/lexico/lexico-db/src/modules/database/database.constants.ts",
       "**/src/modules/caelundas/caelundas.constants.ts",
       "**/src/modules/postgresql/postgresql.constants.ts",
       "**/src/modules/ephemeris/ephemeris.constants.ts",

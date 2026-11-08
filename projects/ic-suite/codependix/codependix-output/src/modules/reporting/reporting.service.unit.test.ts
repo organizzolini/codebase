@@ -37,7 +37,7 @@ const FAILURE: JudgedBoundaryFinding<BoundaryCheckFailure> = {
 };
 
 /** The projects the findings above are charged to, judged by the run. */
-const JUDGED_PROJECTS = ["a", "b", "lexico-cli", "lexico-entities"];
+const JUDGED_PROJECTS = ["a", "b", "lexico-cli", "lexico-db"];
 
 describe(ReportingService, () => {
   let service: ReportingService;
@@ -120,7 +120,7 @@ describe(ReportingService, () => {
     it("names the project owning the code a failure broke on", () => {
       service.reportBoundaries(
         {
-          failures: [{ ...FAILURE, ownerProject: "lexico-entities" }],
+          failures: [{ ...FAILURE, ownerProject: "lexico-db" }],
           violations: [],
         },
         JUDGED_PROJECTS,
@@ -131,7 +131,7 @@ describe(ReportingService, () => {
         undefined,
         {
           failures: [
-            "nestjsModules lexico-cli: Cannot access 'Word' before initialization (failed in code owned by lexico-entities)",
+            "nestjsModules lexico-cli: Cannot access 'Word' before initialization (failed in code owned by lexico-db)",
           ],
         },
       );
@@ -140,9 +140,7 @@ describe(ReportingService, () => {
     it("passes on findings that are only notes, warning about each", () => {
       const passed = service.reportBoundaries(
         {
-          failures: [
-            { ...FAILURE, projects: ["lexico-entities"], verdict: "note" },
-          ],
+          failures: [{ ...FAILURE, projects: ["lexico-db"], verdict: "note" }],
           violations: [{ ...VIOLATION, projects: ["b"], verdict: "note" }],
         },
         JUDGED_PROJECTS,
@@ -155,7 +153,7 @@ describe(ReportingService, () => {
         undefined,
         {
           failures: [
-            "nestjsModules in dependency lexico-entities, not failing: Cannot access 'Word' before initialization",
+            "nestjsModules in dependency lexico-db, not failing: Cannot access 'Word' before initialization",
           ],
           violations: [
             "nxProjects in dependency b, not failing: layers: a must not depend on b.",

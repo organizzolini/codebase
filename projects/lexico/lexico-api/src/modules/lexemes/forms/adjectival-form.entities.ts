@@ -9,7 +9,7 @@ import type {
   FormCase,
   FormGender,
   FormNumber,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /** A declined form of an adjective: gender, case, and number. */
 @ObjectType("AdjectivalForm", { implements: FormType })

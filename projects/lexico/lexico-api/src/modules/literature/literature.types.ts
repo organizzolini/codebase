@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 import type { PaginationArguments } from "../search/pagination-arguments.entities";
-import type { Repository } from "@codebase/lexico-entities";
+import type { Repository } from "@codebase/lexico-db";
 
 /**
  * The `Author` column the API does not expose: its unstructured ingestion
