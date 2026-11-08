@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { useBarDialog } from "./use-bar-dialog";
 
 import type { TimelineBar } from "../../components/calendar-timeline/calendar-timeline.types";
-import type { CalendarEventRecord } from "../../components/events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../../components/events-calendar/calendar-records.types";
 import type { GanttOccurrence } from "@codebase/presentation";
 
 const RECORD: CalendarEventRecord = {

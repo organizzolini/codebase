@@ -10,7 +10,7 @@ import { PICKER_NAME } from "./calendar-color-by.constants";
 import { createColorScheme } from "./calendar-color-schemes.utilities";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

@@ -1,0 +1,8 @@
+query Dataset {
+  dataset {
+    count
+    end
+    start
+    timezone
+  }
+}

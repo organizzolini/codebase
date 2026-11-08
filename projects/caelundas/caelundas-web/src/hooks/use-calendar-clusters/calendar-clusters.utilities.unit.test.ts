@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { CLUSTER_ID_PREFIX } from "./calendar-clusters.constants";
 import { clusterEvents } from "./calendar-clusters.utilities";
 
-import type { CalendarEventRecord } from "../../components/events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../../components/events-calendar/calendar-records.types";
 
 const ZONE = "UTC";
 const OPTIONS = {

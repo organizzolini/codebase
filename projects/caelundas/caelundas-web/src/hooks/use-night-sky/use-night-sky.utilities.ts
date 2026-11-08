@@ -4,6 +4,7 @@ import { normalizeHexadecimalColor } from "./night-sky-colors.utilities";
 import {
   COLOR_DIGITS_PATTERN,
   CONSTELLATION_WORDS,
+  CONSTELLATIONS,
   DEFAULT_CONSTELLATIONS,
   DEFAULT_OBSERVER,
   DEFAULT_OPTIONS,
@@ -14,11 +15,10 @@ import {
   REDUCED_MOTION_QUERY,
 } from "./night-sky.constants";
 
-import type {
-  ConstellationSegment,
-  NightSkyMeasurements,
-} from "./night-sky.types";
+import type { NightSkyInput } from "../../graphql/generated/operations";
+import type { FieldOfViewMeasurements } from "./night-sky.types";
 import type { NightSkyOverrides } from "./use-night-sky.types";
+import type { WindowSize } from "./use-window-size.types";
 
 // 🔏 Private Functions
 
@@ -45,13 +45,13 @@ export function describeNightSkyProblems(
  * a constellation with a figure.
  */
 export function findUnknownConstellationNames(
-  segments: readonly ConstellationSegment[],
   names: readonly string[],
 ): string[] {
-  const known = new Set([
-    ...CONSTELLATION_WORDS,
-    ...segments.map((segment) => normalizeConstellationName(segment.name)),
-  ]);
+  const known = new Set<string>(CONSTELLATION_WORDS);
+
+  for (const constellation of CONSTELLATIONS) {
+    known.add(normalizeConstellationName(constellation.name));
+  }
 
   return names.filter((name) => !known.has(name));
 }
@@ -62,9 +62,7 @@ export function findUnknownConstellationNames(
  * only that degree.
  */
 export function isFieldOfViewCut(
-  measurements: Readonly<
-    Pick<NightSkyMeasurements, "fieldOfViewClamped" | "fieldOfViewLimitDegrees">
-  >,
+  measurements: Readonly<FieldOfViewMeasurements>,
   requestedDegrees: number,
 ): boolean {
   return (
@@ -157,24 +155,6 @@ export function readNightSkyOverrides(
 }
 
 /**
- * The figure segments the link asks for: every one for `all`, the twelve
- * zodiac constellations' for `zodiac`, and those of each constellation named.
- */
-export function selectConstellationSegments(
-  segments: readonly ConstellationSegment[],
-  names: readonly string[],
-): ConstellationSegment[] {
-  const wanted = new Set(names);
-
-  return segments.filter(
-    (segment) =>
-      wanted.has("all") ||
-      (segment.zodiac && wanted.has("zodiac")) ||
-      wanted.has(normalizeConstellationName(segment.name)),
-  );
-}
-
-/**
  * Calls back when the preference changes, in the shape
  * `useSyncExternalStore` subscribes with, returning how to stop.
  */
@@ -185,6 +165,44 @@ export function subscribeToReducedMotion(onChange: () => void): () => void {
 
   return () => {
     list.removeEventListener("change", onChange);
+  };
+}
+
+/**
+ * Writes the backdrop's settings, the window it fills and whether it stands
+ * still as the API's night sky input. No figure is `none`, which is what an
+ * empty list of names means; the moment is left out, so the API draws the sky
+ * for now.
+ */
+export function toNightSkyInput(
+  overrides: NightSkyOverrides,
+  view: Readonly<{ size: WindowSize; still: boolean }>,
+): NightSkyInput {
+  return {
+    backgroundBottomColor: overrides.backgroundBottomColor,
+    backgroundTopColor: overrides.backgroundTopColor,
+    bottomAltitudeDegrees: overrides.bottomAltitudeDegrees,
+    constellations:
+      overrides.constellations.length === 0
+        ? ["none"]
+        : [...overrides.constellations],
+    debug: overrides.debug,
+    ecliptic: overrides.ecliptic,
+    eclipticColor: overrides.eclipticColor,
+    eclipticOpacity: overrides.eclipticOpacity,
+    eclipticWidth: overrides.eclipticWidth,
+    faintestMagnitude: overrides.faintestMagnitude,
+    height: Math.round(view.size.height),
+    latitudeDegrees: overrides.latitudeDegrees,
+    lineColor: overrides.lineColor,
+    lineOpacity: overrides.lineOpacity,
+    lineWidth: overrides.lineWidth,
+    longitudeDegrees: overrides.longitudeDegrees,
+    pixelsPerSecond: overrides.pixelsPerSecond,
+    starScale: overrides.starScale,
+    still: view.still,
+    verticalFieldOfViewDegrees: overrides.verticalFieldOfViewDegrees,
+    width: Math.round(view.size.width),
   };
 }
 

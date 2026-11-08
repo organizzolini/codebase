@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { getTagColor } from "./calendar-tag-colors.utilities";
 
-import type { CalendarEventTag } from "../events-calendar/events-database.types";
+import type { CalendarEventTag } from "../events-calendar/calendar-records.types";
 
 const tag = (path: string): CalendarEventTag => ({
   depth: 0,

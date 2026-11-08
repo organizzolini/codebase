@@ -1,4 +1,4 @@
-import { compileEventFilter } from "./event-filter-compiler.utilities";
+import { toEventFilterInput } from "./event-filter-input.utilities";
 
 import type { LooseEventFilterGroup } from "./event-filter-tree.types";
 import type { EventFilterNode, EventFilterQuery } from "./event-filters.types";
@@ -9,7 +9,7 @@ import type { EventFilterNode, EventFilterQuery } from "./event-filters.types";
  */
 export function countActiveEventFilterRules(node: EventFilterNode): number {
   if (node.type === "rule") {
-    return compileEventFilter(node) === null ? 0 : 1;
+    return toEventFilterInput(node) === null ? 0 : 1;
   }
 
   let count = 0;
