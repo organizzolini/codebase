@@ -1,7 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { z } from "zod";
 
-import { Author, Line, Text } from "@codebase/lexico-entities";
+import { Author, Line, Text } from "@codebase/lexico-db";
 
 import {
   type AuthorTextCatalog,

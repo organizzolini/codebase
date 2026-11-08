@@ -1,4 +1,4 @@
-import { Author, Line, Text, Token } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token } from "@codebase/lexico-db";
 
 import { LiteratureRelationsLoader } from "../src/modules/literature/literature-relations.loader";
 import { LiteratureRelationsService } from "../src/modules/literature/literature-relations.service";

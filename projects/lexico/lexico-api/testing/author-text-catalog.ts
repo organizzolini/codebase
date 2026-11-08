@@ -1,6 +1,6 @@
 /* cspell:words arma cano carmina fato iactatus italiam laviniaque profugus terris troiae venit virumque */
 
-import { Author, Line, Text } from "@codebase/lexico-entities";
+import { Author, Line, Text } from "@codebase/lexico-db";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 

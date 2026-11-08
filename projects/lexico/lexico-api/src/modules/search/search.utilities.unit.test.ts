@@ -14,7 +14,7 @@ import {
   NominalForm,
   ParticipleForm,
   SupineForm,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { LexemeType } from "../lexemes/lexeme.entities";
 

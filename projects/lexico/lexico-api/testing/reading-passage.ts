@@ -1,6 +1,6 @@
 /* cspell:words multa arma virumque cano Troiae primus oris Italiam fato profugus Laviniaque venit litora multum ille terris iactatus alto superum saevae memorem Iunonis iram quoque bello passus conderet urbem Georgica quid faciat laetas segetes */
 
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import type { DataSource } from "typeorm";
 

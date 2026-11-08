@@ -67,7 +67,7 @@ const config: KnipConfig = {
     "@nx/web", // Nx web plugin (auto-detected by Nx)
     // Declared at the root only so pnpm resolves @nestjs/core's optional peer
     // the same way for every workspace package; without it lexico-api and
-    // lexico-entities load two copies of @nestjs/core and DI breaks.
+    // lexico-db load two copies of @nestjs/core and DI breaks.
     "@nestjs/platform-express",
     "@semantic-release/commit-analyzer", // semantic-release plugin, referenced in release.config.cjs
     "@semantic-release/github", // semantic-release plugin
@@ -281,15 +281,16 @@ const config: KnipConfig = {
       ],
     },
 
-    // lexico-entities: Shared TypeORM entities
-    "projects/lexico/lexico-entities": {
+    // lexico-db: Shared TypeORM entities
+    "projects/lexico/lexico-db": {
       entry: [
         "src/index.ts",
         "src/modules/database/data-source.constants.ts",
         "src/modules/database/migrations/**/*.ts",
       ],
       ignore: [
-        "src/modules/entities/entities.module.ts", // Conformance-generated module stub, not yet exported
+        "src/modules/dictionary/dictionary.module.ts", // Conformance-generated module stub, not yet exported
+        "src/modules/literature/literature.module.ts", // Conformance-generated module stub, not yet exported
       ],
       project: ["src/**/*.ts"],
     },

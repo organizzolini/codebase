@@ -10,7 +10,7 @@ import {
   Pronunciation,
   Translation,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { NominalFormType } from "./forms/nominal-form.entities";
 import { NounInflectionType } from "./inflections/noun-inflection.entities";

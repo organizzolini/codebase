@@ -21,7 +21,7 @@ nx run lexico-cli:start
 
 - **Framework**: NestJS (modules, dependency injection, providers)
 - **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
-- **Database**: PostgreSQL via TypeORM (`@codebase/lexico-entities`)
+- **Database**: PostgreSQL via TypeORM (`@codebase/lexico-db`)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
 - **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Language**: Strict TypeScript

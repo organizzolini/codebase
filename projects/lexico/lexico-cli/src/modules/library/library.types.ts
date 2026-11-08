@@ -1,5 +1,5 @@
 import type { CommandOptionValue } from "../lexico-ingestion/lexico-ingestion.types";
-import type { Author } from "@codebase/lexico-entities";
+import type { Author } from "@codebase/lexico-db";
 
 // 🏷️ Types
 

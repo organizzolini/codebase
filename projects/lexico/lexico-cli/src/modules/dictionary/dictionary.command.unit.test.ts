@@ -4,7 +4,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { Lexeme, Translation } from "@codebase/lexico-entities";
+import { Lexeme, Translation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import {

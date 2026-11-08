@@ -59,7 +59,7 @@ project Nx infers from a `package.json` alone gets no gate until it is given
 a `project.json` as well.
 
 ```bash
-nx run lexico-entities:codependix-bound          # one project
+nx run lexico-db:codependix-bound          # one project
 nx run-many -t codependix-bound                  # every project
 nx affected -t codependix-bound                  # only what changed
 ```
@@ -169,7 +169,7 @@ stays cached.
 ### Executor options
 
 ```bash
-nx run lexico-api:codependix-bound --projects=lexico-entities,lexico-api
+nx run lexico-api:codependix-bound --projects=lexico-db,lexico-api
 nx run logging:codependix-bound --tags=type:package --dependencies=false
 ```
 

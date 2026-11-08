@@ -8,7 +8,7 @@ import type {
   FormNonFiniteTense,
   FormVoice,
   ParticipleForm,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /** A participle in one voice and tense. */
 @ObjectType("ParticipleForm", { implements: FormType })

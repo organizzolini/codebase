@@ -17,7 +17,7 @@ This package may import one workspace package, `@codebase/observability`, for it
 command line's logger, and never any other, or every database-backed project
 inherits that edge. Logging has no workspace dependencies, so the edge makes
 no cycle, and lexico-cli, lexico-api, meanderaw-cli, and caelundas-cli
-already depend on it; lexico-entities gains it only transitively.
+already depend on it; lexico-db gains it only transitively.
 
 ## Architecture Overview
 

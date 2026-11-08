@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Lexeme, Word, WordForm, WordLexeme } from "@codebase/lexico-entities";
+import { Lexeme, Word, WordForm, WordLexeme } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { createRepositoryMock } from "../../../testing/mocks";

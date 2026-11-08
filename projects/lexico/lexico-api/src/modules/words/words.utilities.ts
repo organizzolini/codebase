@@ -15,7 +15,7 @@ import type {
   WordRelationField,
 } from "./words.types";
 import type { MappedFields } from "@codebase/interface";
-import type { Word, WordForm, WordLexeme } from "@codebase/lexico-entities";
+import type { Word, WordForm, WordLexeme } from "@codebase/lexico-db";
 
 /**
  * Maps a word-form link, with its form and word joined, to the type a lexeme
