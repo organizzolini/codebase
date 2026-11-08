@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "name": "caelundas-api",
+  "projectType": "application",
+  "sourceRoot": "projects/caelundas/caelundas-api",
+  "tags": [
+    "domain:caelundas",
+    "framework:nestjs",
+    "generator:nestjs-graphql-application",
+    "language:graphql",
+    "language:typescript",
+    "type:application"
+  ],
+  "targets": {
+    "await-health": {
+      "options": {
+        "url": "http://localhost:${CAELUNDAS_API_PORT:-6173}/graphql"
+      }
+    },
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "start": {
+      "continuous": true,
+      "description": "Start the CaelundasApi GraphQL API with restart on change",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --watch --import @swc-node/register/esm-register src/caelundas-api.ts",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "stop": {
+      "options": {
+        "port": "${CAELUNDAS_API_PORT:-6173}"
+      }
+    },
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

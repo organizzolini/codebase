@@ -1,4 +1,4 @@
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { FilterOption } from "@codebase/presentation";
 
 /**

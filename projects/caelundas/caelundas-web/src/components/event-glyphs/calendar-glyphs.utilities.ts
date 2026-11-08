@@ -2,7 +2,7 @@ import { CLUSTER_ID_PREFIX } from "../../hooks/use-calendar-clusters/calendar-cl
 
 import { SPACES, WORD_START } from "./calendar-glyphs.constants";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { EventLabel } from "./calendar-glyphs.types";
 
 // 🌎 Public Functions

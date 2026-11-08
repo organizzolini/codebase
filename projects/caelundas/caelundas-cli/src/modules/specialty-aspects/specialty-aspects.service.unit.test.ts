@@ -16,7 +16,7 @@ import { SpecialtyAspectsProgressiveService } from "./specialty-aspects-progress
 import { SpecialtyAspectsService } from "./specialty-aspects.service";
 
 import type { Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 
 describe(SpecialtyAspectsService, () => {

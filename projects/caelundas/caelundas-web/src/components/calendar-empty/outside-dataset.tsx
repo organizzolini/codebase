@@ -9,7 +9,7 @@ import {
 
 import { SURFACE_CLASS_NAMES } from "../events-calendar/calendar-surfaces.constants";
 
-import type { EventsDataset } from "../events-calendar/events-database.types";
+import type { EventsDataset } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

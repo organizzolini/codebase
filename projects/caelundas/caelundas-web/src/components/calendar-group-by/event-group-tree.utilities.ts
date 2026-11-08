@@ -7,7 +7,7 @@ import { DERIVED_GROUP_IDS } from "./event-groups.constants";
 import type {
   CalendarEventGroupKey,
   CalendarEventRecord,
-} from "../events-calendar/events-database.types";
+} from "../events-calendar/calendar-records.types";
 import type {
   GroupBucket,
   GroupDescription,
@@ -98,7 +98,7 @@ function collectGroups(
 }
 
 /**
- * Orders text by code point, the way SQLite orders the facets' paths.
+ * Orders text by code point, the way the API orders the facets' paths.
  */
 function compareText(left: string, right: string): number {
   return left < right ? -1 : Number(left > right);

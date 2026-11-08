@@ -8,7 +8,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { TwilightsBuilderService } from "./twilights-builder.service";
 import { TwilightsComposerService } from "./twilights-composer.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 describe(TwilightsComposerService, () => {
   let service: TwilightsComposerService;

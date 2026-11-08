@@ -8,7 +8,7 @@ import { SextupleAspectsComposerService } from "./sextuple-aspects-composer.serv
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { ComposeHexagramsArguments } from "./sextuple-aspects.types";
 import type { Moment } from "moment-timezone";
 

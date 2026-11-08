@@ -11,7 +11,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CalendarService } from "./calendar.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 vi.mock("node:fs/promises", () => ({
   mkdir: vi.fn<typeof mkdir>(),

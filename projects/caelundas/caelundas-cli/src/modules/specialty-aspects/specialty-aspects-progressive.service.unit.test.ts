@@ -10,7 +10,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 
 import { SpecialtyAspectsProgressiveService } from "./specialty-aspects-progressive.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { LoggerService } from "@codebase/observability";
 
 describe(SpecialtyAspectsProgressiveService, () => {

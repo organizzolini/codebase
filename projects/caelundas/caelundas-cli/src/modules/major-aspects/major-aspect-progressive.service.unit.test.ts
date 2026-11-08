@@ -17,7 +17,7 @@ import { MajorAspectEventService } from "./major-aspect-event.service";
 import { MajorAspectProgressiveService } from "./major-aspect-progressive.service";
 
 import type { Body, MajorAspect } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 describe(MajorAspectProgressiveService, () => {
   let service: MajorAspectProgressiveService;

@@ -1,27 +1,6 @@
-import {
-  COLOR_DIGITS_PATTERN,
-  DEFAULT_OPTIONS,
-  STAR_GLOW_DEFINITION,
-} from "./night-sky.constants";
+import { COLOR_DIGITS_PATTERN } from "./night-sky.constants";
 
 // 🌎 Public Functions
-
-/**
- * Builds the SVG definitions: the vertical gradient of the sky's background
- * and the glow of the brightest stars. The colors are read as hexadecimal
- * and written as `#rrggbb`, so nothing else can reach the markup.
- */
-export function formatSkyDefinitions(
-  topColor: string,
-  bottomColor: string,
-): string {
-  return (
-    '<defs><linearGradient id="sky-background" x1="0" y1="0" x2="0" y2="1">' +
-    `<stop offset="0" stop-color="${normalizeHexadecimalColor(topColor, DEFAULT_OPTIONS.backgroundTopColor)}"/>` +
-    `<stop offset="1" stop-color="${normalizeHexadecimalColor(bottomColor, DEFAULT_OPTIONS.backgroundBottomColor)}"/>` +
-    `</linearGradient>${STAR_GLOW_DEFINITION}</defs>`
-  );
-}
 
 /**
  * Reads a hexadecimal color of three or six digits, with or without the `#`,

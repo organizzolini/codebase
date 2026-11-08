@@ -6,7 +6,7 @@ export default [
 
   // 🚫 Project Ignores
   {
-    ignores: ["src/routeTree.gen.ts"],
+    ignores: ["codegen.ts", "src/graphql/generated/**", "src/routeTree.gen.ts"],
   },
 
   // 📦 Dependency Checks
@@ -22,6 +22,8 @@ export default [
             "{projectRoot}/vite.config.{js,ts,mjs,mts}",
             "{projectRoot}/vitest.config.{js,ts,mjs,mts}",
           ],
+          // Named only by `testing/`, which dependency checks skip.
+          ignoredDependencies: ["@codebase/interface"],
         },
       ],
     },

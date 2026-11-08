@@ -14,7 +14,7 @@ import { SextupleAspectsService } from "./sextuple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 /** Builds one hexagram boundary event for the shared progressive-step tests. */
 function buildHexagramBoundary(

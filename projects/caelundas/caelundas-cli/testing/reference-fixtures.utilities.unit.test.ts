@@ -12,7 +12,7 @@ import {
   loadReferenceFixture,
 } from "./reference-fixtures.utilities";
 
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 import type { ReferenceFixture } from "./reference-fixtures.types";
 
 function detected(

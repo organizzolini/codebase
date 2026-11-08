@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "@codebase/testing/react";
 
+import { readServedApi, serveCalendarApi } from "../../testing/calendar-api";
 import {
   BUILDER_TEST,
   BUILDER_WAIT,
@@ -16,28 +17,11 @@ import {
   filterLink,
   tagRule,
 } from "../../testing/event-filters";
-import {
-  createFailingEventsDatabase,
-  createTestEventsDatabase,
-} from "../../testing/events-database";
 import { renderCalendarRoute } from "../../testing/render-route";
 import { setViewportWidth } from "../../testing/viewport";
-import { UnsupportedBrowserError } from "../components/events-calendar/events-database.constants";
 import { getRouter } from "../router";
 
 import { Route } from "./index";
-
-// The router starts with the database that runs in a browser's worker, which
-// jsdom is not, so the router a test builds gets the seeded one instead.
-vi.mock(
-  import("../components/events-calendar/events-database-browser.utilities"),
-  async () => {
-    const { createTestEventsDatabase: createSeeded } =
-      await import("../../testing/events-database");
-
-    return { createBrowserEventsDatabase: createSeeded };
-  },
-);
 
 // The route helper builds its own router, so the one it built is kept for
 // a test that navigates it.
@@ -68,6 +52,8 @@ vi.setConfig({ testTimeout: 45_000 });
 
 describe("index", () => {
   it("renders its page", async () => {
+    serveCalendarApi();
+
     await renderRoute(getRouter(), "/");
 
     await expect(
@@ -180,15 +166,9 @@ describe("index", () => {
     expect(screen.queryByText("Outside the data")).toBeNull();
   });
 
-  it("shows a skeleton while the database loads", async () => {
+  it("shows a skeleton while the API answers", async () => {
     await renderCalendarRoute("/?date=2026-03-01", {
-      eventsDatabase: {
-        describeDataset: async () => new Promise(() => {}),
-        findConstellations: async () => new Promise(() => {}),
-        findEvents: async () => new Promise(() => {}),
-        findFacets: async () => new Promise(() => {}),
-        findNightSky: async () => new Promise(() => {}),
-      },
+      api: { hang: true },
       waitForLoad: false,
     });
 
@@ -197,40 +177,22 @@ describe("index", () => {
     ).resolves.toBeDefined();
   });
 
-  it("shows an error that retries when the database fails", async () => {
-    const { database, recover } = createFailingEventsDatabase(
-      new Error("The events database answered 404"),
-    );
+  it("shows an error that retries when the API fails", async () => {
+    const api = serveCalendarApi();
 
-    await renderCalendarRoute("/?date=2026-03-01", {
-      eventsDatabase: database,
-    });
+    api.fail("The API answered 404");
+    await renderCalendarRoute("/?date=2026-03-01", { api });
 
     await expect(
       screen.findByText("The events could not be loaded"),
     ).resolves.toBeDefined();
 
-    recover();
+    api.recover();
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
 
     await expect(
       screen.findByRole("grid", { name: "March 2026" }),
     ).resolves.toBeDefined();
-  });
-
-  it("explains a browser without WebAssembly or Workers", async () => {
-    const { database } = createFailingEventsDatabase(
-      new UnsupportedBrowserError(),
-    );
-
-    await renderCalendarRoute("/?date=2026-03-01", {
-      eventsDatabase: database,
-    });
-
-    await expect(
-      screen.findByText("This browser cannot run the calendar"),
-    ).resolves.toBeDefined();
-    expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
   });
 
   it("opens on today when the date in the link is not a date", async () => {
@@ -246,9 +208,9 @@ describe("index", () => {
     ).resolves.toBeDefined();
   });
 
-  it("says when the database holds no events at all", async () => {
+  it("says when the API holds no events at all", async () => {
     await renderCalendarRoute("/?date=2026-03-01", {
-      eventsDatabase: createTestEventsDatabase({ empty: true }),
+      api: { events: [], tags: [] },
     });
 
     await screen.findByRole("grid", { name: "March 2026" });
@@ -595,47 +557,41 @@ describe("index", () => {
     });
 
     it("does not run the loader again for a change to them alone", async () => {
-      const database = createTestEventsDatabase();
-      // The loader caches its event reads, so it is the dataset read, made on
-      // every load, that shows the loader ran.
-      const loads = vi.spyOn(database, "describeDataset");
-      await renderCalendarRoute("/?date=2026-03-01", {
-        eventsDatabase: database,
-      });
-
+      await renderCalendarRoute("/?date=2026-03-01");
+      const api = readServedApi();
       const router = getRenderedRouter();
 
       await screen.findByRole("grid", { name: "March 2026" });
-      loads.mockClear();
+
+      // The loader caches its event reads, so it is the windows it asks the
+      // API for, on every load, that show the loader ran.
+      const loads = api.requests.windows.length;
+
       await router.navigate({
         search: (previous) => ({ ...previous, "sky.lat": 51.5 }),
         to: "/",
       });
 
-      expect(loads).not.toHaveBeenCalled();
+      expect(api.requests.windows).toHaveLength(loads);
       expect(router.state.location.search).toMatchObject({ "sky.lat": 51.5 });
     });
 
     it("still runs the loader for a change to the calendar", async () => {
-      const database = createTestEventsDatabase();
-      // The loader caches its event reads, so it is the dataset read, made on
-      // every load, that shows the loader ran.
-      const loads = vi.spyOn(database, "describeDataset");
-      await renderCalendarRoute("/?date=2026-03-01&sky.lat=51.5", {
-        eventsDatabase: database,
-      });
-
+      await renderCalendarRoute("/?date=2026-03-01&sky.lat=51.5");
+      const api = readServedApi();
       const router = getRenderedRouter();
 
       await screen.findByRole("grid", { name: "March 2026" });
-      loads.mockClear();
+
+      const loads = api.requests.windows.length;
+
       await router.navigate({
         search: (previous) => ({ ...previous, date: "2026-04-01" }),
         to: "/",
       });
 
       await waitFor(() => {
-        expect(loads).toHaveBeenCalledWith();
+        expect(api.requests.windows.length).toBeGreaterThan(loads);
       });
     });
   });
