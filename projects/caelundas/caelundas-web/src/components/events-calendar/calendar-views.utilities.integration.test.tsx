@@ -5,16 +5,31 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { findToolbar } from "../../../testing/calendar-page";
+import { readServedApi } from "../../../testing/calendar-api";
 import {
-  createBusyEventsSql,
-  createRecordingEventsDatabase,
-  createTestEventsDatabase,
-} from "../../../testing/events-database";
+  createBusyEvents,
+  FIXTURE_EVENTS,
+} from "../../../testing/calendar-fixture";
+import { findToolbar } from "../../../testing/calendar-page";
 import { renderRoute } from "../../../testing/render-route";
 import { setViewportWidth } from "../../../testing/viewport";
+
+/**
+ * The fixture's events with a run of busy ones from an instant.
+ */
+function withBusyEvents(
+  start: string,
+  count: number,
+): { events: typeof FIXTURE_EVENTS } {
+  return { events: [...FIXTURE_EVENTS, ...createBusyEvents(start, count)] };
+}
+
+// Each test renders the whole route; a loaded continuous integration runner
+// took 5 to 7 seconds for the slowest of them, past the default 5, so the limit
+// follows the other integration suites'.
+vi.setConfig({ testTimeout: 30_000 });
 
 // The agenda's own behavior is tested ungrouped; grouping it has its own
 // tests.
@@ -85,9 +100,7 @@ describe("calendar views", () => {
 
   it("renders only the agenda rows on screen", async () => {
     await renderRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
-      eventsDatabase: createTestEventsDatabase({
-        extraSql: createBusyEventsSql("2026-03-10T14:00:00.000Z", 500),
-      }),
+      api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
     });
 
     const agenda = await screen.findByRole("region", { name: "Agenda" });
@@ -100,9 +113,7 @@ describe("calendar views", () => {
 
   it("opens a busy day's overflow as a windowed list", async () => {
     await renderRoute("/?date=2026-03-01", {
-      eventsDatabase: createTestEventsDatabase({
-        extraSql: createBusyEventsSql("2026-03-12T14:00:00.000Z", 400),
-      }),
+      api: withBusyEvents("2026-03-12T14:00:00.000Z", 400),
     });
 
     fireEvent.click(await screen.findByRole("button", { name: /more/u }));
@@ -184,28 +195,22 @@ describe("calendar views", () => {
       start: "2026-03-03",
     },
   ])("reads only the days the $link view shows", async (expected) => {
-    const { database, queries } = createRecordingEventsDatabase();
+    await renderRoute(`/?view=${expected.link}`);
+    const api = readServedApi();
 
-    await renderRoute(`/?view=${expected.link}`, { eventsDatabase: database });
-
-    expect(queries.map(({ window }) => window)).toStrictEqual([
+    expect(api.requests.events.map(({ window }) => window)).toStrictEqual([
       {
-        end: new Date(`${expected.end}T00:00:00.000Z`),
-        start: new Date(`${expected.start}T00:00:00.000Z`),
+        end: `${expected.end}T00:00:00.000Z`,
+        start: `${expected.start}T00:00:00.000Z`,
       },
     ]);
   });
 
   it("never reads more than a year of agenda at once", async () => {
-    const { database, queries } = createRecordingEventsDatabase();
+    await renderRoute("/?view=agenda&date=2026-03-04&days=2557");
+    const api = readServedApi();
 
-    await renderRoute("/?view=agenda&date=2026-03-04&days=2557", {
-      eventsDatabase: database,
-    });
-
-    expect(queries[0]?.window.end).toStrictEqual(
-      new Date("2026-04-04T00:00:00.000Z"),
-    );
+    expect(api.requests.events[0]?.window.end).toBe("2026-04-04T00:00:00.000Z");
   });
 
   it("loads later events into the agenda on request", async () => {
@@ -230,9 +235,7 @@ describe("calendar views", () => {
   });
 
   it("keeps the calendar on screen while a slow move reloads", async () => {
-    const { database } = createRecordingEventsDatabase(600);
-
-    await renderRoute("/?date=2026-03-01", { eventsDatabase: database });
+    await renderRoute("/?date=2026-03-01", { api: { delay: 600 } });
     fireEvent.click(
       within(await findToolbar()).getByRole("button", { name: /Next/u }),
     );
@@ -260,9 +263,7 @@ describe("calendar views", () => {
 
   it("loads later events into the agenda when scrolled to its end", async () => {
     await renderRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
-      eventsDatabase: createTestEventsDatabase({
-        extraSql: createBusyEventsSql("2026-03-10T14:00:00.000Z", 60),
-      }),
+      api: withBusyEvents("2026-03-10T14:00:00.000Z", 60),
     });
 
     const agenda = await screen.findByRole("region", { name: "Agenda" });
@@ -296,9 +297,8 @@ describe("calendar views", () => {
   });
 
   it("reads a window already seen only once", async () => {
-    const { database, queries } = createRecordingEventsDatabase();
-
-    await renderRoute("/?date=2026-03-04", { eventsDatabase: database });
+    await renderRoute("/?date=2026-03-04");
+    const api = readServedApi();
 
     const toolbar = await findToolbar();
 
@@ -307,7 +307,7 @@ describe("calendar views", () => {
     fireEvent.click(within(toolbar).getByRole("button", { name: /Previous/u }));
     await screen.findByRole("grid", { name: "March 2026" });
 
-    expect(queries).toHaveLength(2);
+    expect(api.requests.events).toHaveLength(2);
   });
 
   it("scrolls a phone's week sideways under a sticky hour column", async () => {
@@ -327,9 +327,7 @@ describe("calendar views", () => {
   });
 
   it("hides the last window's empty notice while the next one loads", async () => {
-    const { database } = createRecordingEventsDatabase(600);
-
-    await renderRoute("/?date=2026-05-01", { eventsDatabase: database });
+    await renderRoute("/?date=2026-05-01", { api: { delay: 600 } });
     await screen.findByText("No events this month");
     fireEvent.click(
       within(await findToolbar()).getByRole("button", { name: /Previous/u }),
@@ -345,28 +343,17 @@ describe("calendar views", () => {
   });
 
   it("keeps extending the agenda each time it is scrolled to its end", async () => {
-    const { database, queries } = createRecordingEventsDatabase();
-    const busy = createTestEventsDatabase({
-      extraSql: createBusyEventsSql("2026-03-10T14:00:00.000Z", 60),
-    });
-
     await renderRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
-      eventsDatabase: {
-        ...database,
-        findEvents: async (query) => {
-          await database.findEvents(query);
-
-          return busy.findEvents(query);
-        },
-      },
+      api: withBusyEvents("2026-03-10T14:00:00.000Z", 60),
     });
+    const api = readServedApi();
 
     const agenda = await screen.findByRole("region", { name: "Agenda" });
 
     for (const count of [2, 3, 4]) {
       fireEvent.scroll(agenda, { target: { scrollTop: 100_000 + count } });
       await waitFor(() => {
-        expect(queries).toHaveLength(count);
+        expect(api.requests.events).toHaveLength(count);
       });
     }
 

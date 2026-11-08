@@ -8,7 +8,7 @@ import { beforeAll, beforeEach, vi } from "vitest";
  * This file is executed before all tests.
  */
 
-// Ensure output directory exists for database files (needed for integration tests)
+// Ensure the output directory exists (needed for the end-to-end tests)
 beforeAll(() => {
   const outputDirectory = "./output";
   if (!fs.existsSync(outputDirectory)) {

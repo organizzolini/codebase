@@ -12,9 +12,9 @@ import {
   WEEK_DAYS,
 } from "./calendar-window.constants";
 
+import type { EventsWindow } from "./calendar-records.types";
 import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
 import type { ViewWindowOptions, ViewWindows } from "./calendar-window.types";
-import type { EventsWindow } from "./events-database.types";
 
 /**
  * The calendar day a number of days after a `YYYY-MM-DD` one, or before it

@@ -12,7 +12,7 @@ import { objectEntries } from "../caelundas/caelundas.types";
 import { IngressesComposerService } from "./ingresses-composer.service";
 
 import type { Body, Sign } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 
