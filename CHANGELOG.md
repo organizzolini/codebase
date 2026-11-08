@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.59.2](https://github.com/organizzolini/codebase/compare/v3.59.1...v3.59.2) (2026-11-08)
+
+### 🐛 Bug Fixes
+
+* **conformetry,dependencies:** 🐛 align notebook dependency template ([#2188](https://github.com/organizzolini/codebase/issues/2188)) ([4f94366](https://github.com/organizzolini/codebase/commit/4f94366f1df826022ceee166890e7132a9c2f1dc)), closes [#2187](https://github.com/organizzolini/codebase/issues/2187) [#2174](https://github.com/organizzolini/codebase/issues/2174)
+
 ## [3.59.1](https://github.com/organizzolini/codebase/compare/v3.59.0...v3.59.1) (2026-11-08)
 
 ### ♻️ Code Refactoring
