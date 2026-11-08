@@ -5,7 +5,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProgressiveUtilitiesService } from "./progressive-utilities.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 describe(ProgressiveUtilitiesService, () => {

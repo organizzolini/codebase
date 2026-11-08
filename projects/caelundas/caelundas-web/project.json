@@ -7,8 +7,6 @@
       "!{projectRoot}/conformetry-templates/**",
       "!{projectRoot}/cspell.config.yaml",
       "{projectRoot}/**/*",
-      "{workspaceRoot}/projects/caelundas/caelundas-cli/data/*.sql",
-      "{workspaceRoot}/projects/caelundas/caelundas-cli/src/modules/database/migrations/*.sql",
       "shared-globals"
     ]
   },
@@ -24,40 +22,46 @@
   ],
   "targets": {
     "build": {
-      "configurations": {
-        "ingested": {}
-      },
-      "dependsOn": ["build-database"],
       "description": "Build the application for production",
       "executor": "nx:run-commands",
-      "inputs": [
-        "^production",
-        "dependency-versions",
-        "production",
-        {
-          "dependentTasksOutputFiles": "**/events.sqlite"
-        }
-      ],
+      "inputs": ["^production", "dependency-versions", "production"],
       "options": {
         "command": "vite build",
         "cwd": "{projectRoot}"
       },
       "outputs": ["{projectRoot}/dist"]
     },
-    "build-database": {
-      "cache": false,
+    "codegen": {
       "configurations": {
-        "ingested": {
-          "command": "node scripts/build-events-database.ts --ingested"
+        "check": {
+          "command": "pnpm run codegen --check"
         }
       },
-      "description": "Write the SQLite file the static build bundles into output/, from caelundas-cli's migration and committed seed rows, or with the ingested configuration by copying the output/database.sqlite a caelundas-cli run wrote",
+      "description": "Generate typed GraphQL operations and test mocks",
       "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/codegen.ts",
+        "{projectRoot}/src/graphql/operations/**/*.graphql",
+        "{workspaceRoot}/projects/caelundas/caelundas-api/src/schema.gql"
+      ],
       "options": {
-        "command": "node scripts/build-events-database.ts",
+        "command": "pnpm run codegen",
         "cwd": "{projectRoot}"
       },
-      "outputs": ["{projectRoot}/output/events.sqlite"]
+      "outputs": [
+        "{projectRoot}/src/graphql/generated/mocks.ts",
+        "{projectRoot}/src/graphql/generated/operations.ts"
+      ]
+    },
+    "codegen-watch": {
+      "continuous": true,
+      "dependsOn": ["caelundas-api:await-health", "caelundas-api:start"],
+      "description": "Regenerate GraphQL artifacts when schema or operations change",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run codegen:watch",
+        "cwd": "{projectRoot}"
+      }
     },
     "codometer": {},
     "dependency-cruiser": {},
@@ -71,9 +75,6 @@
     "oxlint": {},
     "prettier": {},
     "preview": {
-      "configurations": {
-        "ingested": {}
-      },
       "dependsOn": ["build"],
       "description": "Serve the production build locally",
       "executor": "nx:run-commands",
@@ -84,10 +85,6 @@
     },
     "spell-check": {},
     "start": {
-      "configurations": {
-        "ingested": {}
-      },
-      "dependsOn": ["build-database"],
       "description": "Start the development server with hot reload",
       "executor": "nx:run-commands",
       "options": {

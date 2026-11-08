@@ -10,7 +10,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { AnnualSolarCycleEventsService } from "./annual-solar-cycle-events.service";
 import { AnnualSolarCycleService } from "./annual-solar-cycle.service";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type {
   CoordinateEphemeris,
   DistanceEphemeris,

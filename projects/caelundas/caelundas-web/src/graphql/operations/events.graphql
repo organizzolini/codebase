@@ -1,0 +1,30 @@
+query Events(
+  $window: EventsWindowInput!
+  $filter: EventFilterGroupInput
+  $grouping: EventGroupingInput
+) {
+  events(window: $window, filter: $filter, grouping: $grouping) {
+    color
+    description
+    durationMinutes
+    end
+    id
+    location
+    start
+    startLocalDay
+    startLocalHour
+    summary
+    timezone
+    groups {
+      key
+      label
+      path
+    }
+    tags {
+      depth
+      id
+      name
+      path
+    }
+  }
+}

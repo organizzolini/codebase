@@ -1,8 +1,8 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { readServedApi } from "../../../testing/calendar-api";
 import { findToolbar } from "../../../testing/calendar-page";
-import { createRecordingEventsDatabase } from "../../../testing/events-database";
 import { renderCalendarRoute } from "../../../testing/render-route";
 
 /**
@@ -61,11 +61,9 @@ describe("event grouping", () => {
   });
 
   it("reads the events again with the grouping picked", async () => {
-    const { database, queries } = createRecordingEventsDatabase();
+    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
+    const api = readServedApi();
 
-    await renderCalendarRoute("/?view=agenda&date=2026-03-04", {
-      eventsDatabase: database,
-    });
     fireEvent.click(
       within(await openGroupBy()).getByRole("button", {
         name: "Add sub-group",
@@ -73,14 +71,13 @@ describe("event grouping", () => {
     );
 
     await waitFor(() => {
-      expect(queries.at(-1)?.groups).toHaveLength(2);
+      expect(api.requests.events.at(-1)?.grouping?.levels).toHaveLength(2);
     });
 
-    expect(queries.at(-1)?.groups?.[1]?.parameters).toStrictEqual([
-      "tag-element",
-      1,
-      1,
-    ]);
+    expect(api.requests.events.at(-1)?.grouping?.levels?.[1]).toStrictEqual({
+      depth: 1,
+      field: "tag:tag-element",
+    });
 
     await waitFor(() => {
       expect(screen.getByText(/^Group by: /u).textContent).toBe(

@@ -23,7 +23,7 @@ import type {
 import type {
   CalendarEventRecord,
   CalendarEventTag,
-} from "../events-calendar/events-database.types";
+} from "../events-calendar/calendar-records.types";
 import type {
   AgendaListRow,
   AgendaRange,

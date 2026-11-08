@@ -1,12 +1,12 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { findToolbar } from "../../../testing/calendar-page";
+import { readServedApi } from "../../../testing/calendar-api";
 import {
-  createBusyEventsSql,
-  createRecordingEventsDatabase,
-  createTestEventsDatabase,
-} from "../../../testing/events-database";
+  createBusyEvents,
+  FIXTURE_EVENTS,
+} from "../../../testing/calendar-fixture";
+import { findToolbar } from "../../../testing/calendar-page";
 import { renderCalendarRoute } from "../../../testing/render-route";
 
 /**
@@ -20,6 +20,16 @@ async function findTimelineRows(): Promise<string[]> {
       '[data-slot="gantt-tree-pane"] [data-slot="gantt-row-group"]',
     ),
   ].map((row) => row.textContent);
+}
+
+/**
+ * The fixture's events with a run of busy ones from an instant.
+ */
+function withBusyEvents(
+  start: string,
+  count: number,
+): { events: typeof FIXTURE_EVENTS } {
+  return { events: [...FIXTURE_EVENTS, ...createBusyEvents(start, count)] };
 }
 
 // The timeline is tested through the `/` route, the way the page uses it;
@@ -88,19 +98,15 @@ describe("calendar timeline", () => {
     { end: "2026-04-06", scale: "quarter", start: "2025-12-27" },
     { end: "2027-01-02", scale: "year", start: "2025-12-31" },
   ])("reads only the days the $scale scale shows", async (expected) => {
-    const { database, queries } = createRecordingEventsDatabase();
-
     await renderCalendarRoute(
       `/?view=timeline&scale=${expected.scale}&date=2026-03-04`,
-      {
-        eventsDatabase: database,
-      },
     );
+    const api = readServedApi();
 
-    expect(queries.map(({ window }) => window)).toStrictEqual([
+    expect(api.requests.events.map(({ window }) => window)).toStrictEqual([
       {
-        end: new Date(`${expected.end}T00:00:00.000Z`),
-        start: new Date(`${expected.start}T00:00:00.000Z`),
+        end: `${expected.end}T00:00:00.000Z`,
+        start: `${expected.start}T00:00:00.000Z`,
       },
     ]);
   });
@@ -169,9 +175,7 @@ describe("calendar timeline", () => {
 
   it("clusters crowded markers into a count", async () => {
     await renderCalendarRoute("/?view=timeline&date=2026-03-10", {
-      eventsDatabase: createTestEventsDatabase({
-        extraSql: createBusyEventsSql("2026-03-10T14:00:00.000Z", 500),
-      }),
+      api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
     });
 
     const timeline = await screen.findByTestId("calendar-timeline");
@@ -189,9 +193,7 @@ describe("calendar timeline", () => {
 
   it("lists the events behind a count when it is clicked", async () => {
     await renderCalendarRoute("/?view=timeline&date=2026-03-10", {
-      eventsDatabase: createTestEventsDatabase({
-        extraSql: createBusyEventsSql("2026-03-10T14:00:00.000Z", 500),
-      }),
+      api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
     });
 
     const timeline = await screen.findByTestId("calendar-timeline");

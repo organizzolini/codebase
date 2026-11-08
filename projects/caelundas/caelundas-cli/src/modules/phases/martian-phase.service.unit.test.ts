@@ -13,7 +13,7 @@ import {
   MARS_MORNING_VISIBILITY_DESCRIPTION,
 } from "./phases.constants";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { PhaseParameters } from "./phases.types";
 import type { createMock } from "@golevelup/ts-vitest";
 

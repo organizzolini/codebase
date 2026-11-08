@@ -10,7 +10,7 @@ import { QuadrupleAspectsBaseService } from "./quadruple-aspects-base.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { Body } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 describe(QuadrupleAspectsBaseService, () => {
   let service: QuadrupleAspectsBaseService;

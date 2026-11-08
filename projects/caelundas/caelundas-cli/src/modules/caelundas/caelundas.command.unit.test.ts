@@ -17,7 +17,7 @@ import { CaelundasCommand } from "./caelundas.command";
 import type {
   DetectedCalendarEvent,
   StoredCalendarEvent,
-} from "../database/database.types";
+} from "../calendar-events/calendar-events.types";
 import type { Input } from "../input/input.types";
 
 const input: Input = {
