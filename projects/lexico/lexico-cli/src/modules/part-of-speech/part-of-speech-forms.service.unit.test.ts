@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import * as cheerio from "cheerio";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -24,11 +23,9 @@ describe(PartOfSpeechFormsService, () => {
   // Re-resolved per test: the parser accumulates state across a parse, so a
   // shared instance would let one case's forms leak into the next.
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PartOfSpeechFormsService],
-    }).compile();
-
-    service = await module.resolve(PartOfSpeechFormsService);
+    ({ instance: service } = await buildTestingModule(
+      PartOfSpeechFormsService,
+    ));
   });
 
   it("resolves with its dependencies", async () => {

@@ -1,3 +1,7 @@
+## 0.0.70 (2026-11-07)
+
+This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.
+
 ## 0.0.69 (2026-11-06)
 
 This was a version bump only for codependix-nx-projects to align it with other projects, there were no code changes.

@@ -1,4 +1,4 @@
-import type { CalendarEventRecord } from "../../components/events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../../components/events-calendar/calendar-records.types";
 
 // 🏷️ Types
 

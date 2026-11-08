@@ -1,9 +1,6 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import * as cheerio from "cheerio";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -68,20 +65,7 @@ describe(WiktionaryCommand, () => {
   it("should create output directory when missing", async () => {
     existsSyncMock.mockReturnValueOnce(false);
 
-    const module = await Test.createTestingModule({
-      providers: [
-        WiktionaryCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(WiktionaryCommand);
-    const isolatedLogger = await module.resolve(LoggerService);
-
-    expect(isolatedLogger).toBeDefined();
+    await buildTestingModule(WiktionaryCommand);
 
     expect(mkdirSyncMock).toHaveBeenCalledTimes(1);
   });

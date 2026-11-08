@@ -1,6 +1,6 @@
 import { EVENT_COLOR_RULES } from "./calendar-colors.constants";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { EventColorRule } from "./calendar-colors.types";
 
 // 🌎 Public Functions
