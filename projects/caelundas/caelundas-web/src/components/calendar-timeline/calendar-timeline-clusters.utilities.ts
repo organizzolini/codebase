@@ -6,7 +6,7 @@ import {
   TIMELINE_UNIT_WIDTHS,
 } from "./calendar-timeline-clusters.constants";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { TimelineBar } from "./calendar-timeline.types";
 import type { GanttEvent, GanttScale } from "@codebase/presentation";
 

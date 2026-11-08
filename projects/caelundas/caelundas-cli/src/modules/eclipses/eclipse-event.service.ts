@@ -8,7 +8,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { eclipseTypeLabelByType } from "./eclipses.constants";
 
 import type { EclipsePhase } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type {
   EclipseFrame,
   EclipseType,

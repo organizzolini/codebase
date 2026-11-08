@@ -9,7 +9,7 @@ import {
   referenceFixtureSchema,
 } from "./reference-fixtures.constants";
 
-import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
+import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 import type {
   ReferenceComparison,
   ReferenceEvent,

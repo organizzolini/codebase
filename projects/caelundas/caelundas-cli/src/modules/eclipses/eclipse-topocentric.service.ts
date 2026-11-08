@@ -12,7 +12,7 @@ import {
 } from "./eclipses.constants";
 
 import type { EclipsePhase } from "../caelundas/caelundas.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { AzimuthElevationEphemeris } from "../ephemeris/ephemeris.types";
 import type { NeighborValues } from "../math/math.types";
 import type {
