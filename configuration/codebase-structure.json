@@ -1151,7 +1151,7 @@
         "name": "projects"
       },
       {
-        "name": "publication",
+        "name": "deployment",
         "ruleId": "codebase-project"
       },
       {

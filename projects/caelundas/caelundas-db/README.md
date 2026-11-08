@@ -159,9 +159,11 @@ graph LR
   caelundas_api["caelundas-api"]
   caelundas_cli["caelundas-cli"]
   caelundas_db["caelundas-db"]
+  configuration["configuration"]
   persistence["persistence"]
   caelundas_api --> caelundas_db
   caelundas_cli --> caelundas_db
+  caelundas_db --> configuration
   caelundas_db --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class caelundas_db subject

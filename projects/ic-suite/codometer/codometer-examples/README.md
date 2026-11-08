@@ -485,6 +485,7 @@ _Dashed edges are dependencies Nx inferred from configuration rather than from c
 graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_examples_compression_brotli_config_ts["examples/compression/brotli.config.ts"]
   file_examples_compression_gzip_config_ts["examples/compression/gzip.config.ts"]

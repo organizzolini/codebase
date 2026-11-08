@@ -454,9 +454,11 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 graph LR
   caelundas_api["caelundas-api"]
   caelundas_db["caelundas-db"]
+  configuration["configuration"]
   observability["observability"]
   persistence["persistence"]
   caelundas_api --> caelundas_db
+  caelundas_api --> configuration
   caelundas_api --> observability
   caelundas_api --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px

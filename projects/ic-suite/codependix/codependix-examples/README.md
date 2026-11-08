@@ -232,6 +232,7 @@ _Dashed edges are dependencies Nx inferred from configuration rather than from c
 graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_testing_boundary_attribution_integration_test_ts["testing/boundary-attribution.integration.test.ts"]
   file_testing_examples_integration_test_ts["testing/examples.integration.test.ts"]

@@ -638,7 +638,7 @@ Call stacks traced through `projects/ic-suite/codometer/codometer-cli`, deepest 
 | Measure | Value |
 | --- | --- |
 | Callables | 41 |
-| Files | 24 |
+| Files | 25 |
 | Calls traced | 47 |
 | Call stacks | 11 |
 | Deepest stack | 15 |
@@ -993,6 +993,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_codometer_cli_constants_ts["src/codometer-cli.constants.ts"]
   file_src_codometer_cli_main_end_to_end_test_ts["src/codometer-cli.main.end-to-end.test.ts"]

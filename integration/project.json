@@ -49,6 +49,9 @@
         "merge-task-cache": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts merge-task-cache"
         },
+        "publishable-packages-gate": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts publishable-packages-gate"
+        },
         "report-codometer-changes": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts report-codometer-changes"
         },

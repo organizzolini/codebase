@@ -42,8 +42,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **probe**: Diagnostic experiment in diagnosing-bugs, which must map to a prediction and change one variable at a time.
 - **producer**: Impeccable subagent role that turns approved mock references into clean reusable raster assets without redesigning them.
 - **prompt**: A Markdown instruction file under the prompts folders or an agent brief, handed to a model to drive one repeatable task.
-- **publication**: The CLI project that runs the CI release steps and enforces the publishable-packages gate, listed in the CONTRIBUTING project table.
-- **publishable**: A package the publication gate verifies and packs for release, including every publishable ic-suite package that CI tarballs and installs.
+- **publishable**: A package the deployment gate verifies and packs for release, including every publishable ic-suite package that CI tarballs and installs.
 - **refresh**: The Refresh Documentation workflow that regenerates the repository wiki on a schedule, and the reload step after instruction changes.
 - **relationship**: The link between an agent prompt and the chat mode whose tools it inherits, which prompt instructions must mention when it applies.
 - **reviewer**: The agent role that checks a finished change against its contract and returns an ordered list of fixes, such as the impeccable finish reviewer.

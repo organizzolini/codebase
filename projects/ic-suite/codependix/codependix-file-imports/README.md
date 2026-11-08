@@ -52,6 +52,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_file_imports_workspace_graph_file_imports_workspace_graph_constants_ts["src/modules/file-imports-workspace-graph/file-imports-workspace-graph.constants.ts"]
@@ -165,7 +166,7 @@ Call stacks traced through `projects/ic-suite/codependix/codependix-file-imports
 | Measure | Value |
 | --- | --- |
 | Callables | 100 |
-| Files | 26 |
+| Files | 27 |
 | Calls traced | 100 |
 | Call stacks | 0 |
 | Deepest stack | 0 |

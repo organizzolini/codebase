@@ -44,13 +44,13 @@ Call stacks traced through `projects/ic-suite/callidescope/callidescope-graph`, 
 
 | Measure | Value |
 | --- | --- |
-| Callables | 207 |
-| Files | 63 |
-| Calls traced | 197 |
+| Callables | 209 |
+| Files | 64 |
+| Calls traced | 201 |
 | Call stacks | 4 |
 | Deepest stack | 5 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 5 |
+| Unfollowable calls | 6 |
 
 ### Limits
 
@@ -69,11 +69,11 @@ What this project is judged against, as declared in its own `callidescope.config
 🚀 ProgramService.resolveProjectFiles(project: WorkspaceProject): readonly string[] [projects/ic-suite/callidescope/callidescope-graph/src/modules/program/program.service.ts:262]
   └─> ProgramService.buildProgram(args: { project: WorkspaceProject; workspaceRoot: string; }): ProjectProgram [projects/ic-suite/callidescope/callidescope-graph/src/modules/program/program.service.ts:115]
      ↳ Builds one project's program, checker, and owned-file set.
-    └─> CompilerHostService.createHost(args: { options: ts.CompilerOptions; workspaceRoot: string; }): ts.CompilerHost [projects/ic-suite/callidescope/callidescope-graph/src/modules/program/compiler-host.service.ts:76]
+    └─> CompilerHostService.createHost(args: { options: ts.CompilerOptions; workspaceRoot: string; }): ts.CompilerHost [projects/ic-suite/callidescope/callidescope-graph/src/modules/program/compiler-host.service.ts:119]
        ↳ Creates a compiler host that reuses already-parsed source files. `setParentNodes` is on because the rest of the package…
-      └─> CompilerHostService.resolveModuleCache(options: ts.CompilerOptions, workspaceRoot: string): ts.ModuleResolutionCache [projects/ic-suite/callidescope/callidescope-graph/src/modules/program/compiler-host.service.ts:40]
+      └─> CompilerHostService.resolveModuleCache(options: ts.CompilerOptions, workspaceRoot: string): ts.ModuleResolutionCache [projects/ic-suite/callidescope/callidescope-graph/src/modules/program/compiler-host.service.ts:79]
          ↳ Returns the module resolution cache for one working directory.
-        └─> CompilerHostService.createModuleResolutionCache(…)(fileName: string): string [projects/ic-suite/callidescope/callidescope-graph/src/modules/program/compiler-host.service.ts:52]
+        └─> CompilerHostService.createModuleResolutionCache(…)(fileName: string): string [projects/ic-suite/callidescope/callidescope-graph/src/modules/program/compiler-host.service.ts:91]
 ```
 
 **2. `CallablesService.visit`** — depth 5 · orphan-root
@@ -150,6 +150,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `WorkspaceService.findProjectDirectories` | 2 | `WorkspaceService.toWorkspaceRelative`, `WorkspaceService.isExcludedFromScan` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/workspace/workspace.service.ts:66` |
 | `WorkspaceService.walkImportedProjectClosure` | 2 | `WorkspaceService.resolveOwningProject`, `WorkspaceService.isClosureDestination` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/workspace/workspace.service.ts:342` |
 | `FileFilterService.isExcludedByOwningProject` | 2 | `WorkspaceService.resolveOwningProject`, `FileFilterService.some(…)` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/workspace/file-filter.service.ts:60` |
+| `CompilerHostService.createHost` | 2 | `CompilerHostService.resolveModuleCache`, `CompilerHostService.memoize` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/program/compiler-host.service.ts:119` |
 | `ProgramService.readPulledInPaths` | 2 | `ProgramService.toRealPath`, `WorkspaceService.toWorkspaceRelative` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/program/program.service.ts:195` |
 | `ProgramService.resolveProjectFiles` | 2 | `ProgramService.buildProgram`, `ProgramService.readPulledInPaths` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/program/program.service.ts:262` |
 | `CallablesService.visit` | 2 | `CallablesService.isCallableDeclaration`, `CallablesService.describe` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/callables/callables.service.ts:49` |
@@ -187,8 +188,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `FileFilterService.buildFileFilter` | 1 | `FileFilterService.listIgnoredFiles` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/workspace/file-filter.service.ts:137` |
 | `FileFilterService.isExcluded` | 1 | `FileFilterService.some(…)` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/workspace/file-filter.service.ts:161` |
 | `FileFilterService.isExcluded` | 1 | `FileFilterService.isExcludedByOwningProject` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/workspace/file-filter.service.ts:206` |
-| `CompilerHostService.resolveModuleCache` | 1 | `CompilerHostService.createModuleResolutionCache(…)` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/program/compiler-host.service.ts:40` |
-| `CompilerHostService.createHost` | 1 | `CompilerHostService.resolveModuleCache` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/program/compiler-host.service.ts:76` |
+| `CompilerHostService.resolveModuleCache` | 1 | `CompilerHostService.createModuleResolutionCache(…)` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/program/compiler-host.service.ts:79` |
 | `ProgramService.map(…)` | 1 | `ProgramService.toRealPath` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/program/program.service.ts:133` |
 | `CallablesService.collect` | 1 | `CallablesService.collectFromProgram` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/callables/callables.service.ts:191` |
 | `ExternalService.isExternal` | 1 | `ExternalService.computeVerdict` | `projects/ic-suite/callidescope/callidescope-graph/src/modules/classes/external.service.ts:64` |
@@ -295,6 +295,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_callables_address_constants_ts["src/modules/callables/address.constants.ts"]

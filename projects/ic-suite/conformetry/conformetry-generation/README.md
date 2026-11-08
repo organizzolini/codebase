@@ -226,7 +226,7 @@ Call stacks traced through `projects/ic-suite/conformetry/conformetry-generation
 | Measure | Value |
 | --- | --- |
 | Callables | 13 |
-| Files | 11 |
+| Files | 12 |
 | Calls traced | 10 |
 | Call stacks | 1 |
 | Deepest stack | 2 |
@@ -330,6 +330,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_generation_generation_constants_ts["src/modules/generation/generation.constants.ts"]

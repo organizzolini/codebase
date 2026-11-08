@@ -240,8 +240,8 @@ Symbols and logic shared across projects
 **📚 [documentation](documentation)** - NestJS CLI that refreshes the repository documentation from code, and is what the scheduled 🧑‍🏫 Refresh Documentation workflow runs\
 **🏗️ [infrastructure](infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
 **🛠️ [installation](installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
-**🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run and the Nx task-cache database\
-**📤 [publication](publication)** - NestJS CLI for the CI Nx plumbing steps: the affected run and base, the task cache and its database, and the publishable-packages gate\
+**🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run, the Nx task-cache database, and the publishable-packages gate\
+**📤 [deployment](deployment)** - NestJS CLI for the Continuous Deployment release steps: versioning, tagging, publishing, and linking the ic-suite packages\
 **↔️ [synchronization](synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
 **✅ [validation](validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate
 
@@ -364,6 +364,7 @@ graph LR
   conformetry_nx["conformetry-nx"]
   conformetry_output["conformetry-output"]
   conformetry_validation["conformetry-validation"]
+  deployment["deployment"]
   documentation["documentation"]
   infrastructure["infrastructure"]
   installation["installation"]
@@ -378,51 +379,68 @@ graph LR
   observability["observability"]
   persistence["persistence"]
   presentation["presentation"]
-  publication["publication"]
   synchronization["synchronization"]
   validation["validation"]
+  affirmancy --> configuration
   caelundas_api --> caelundas_db
+  caelundas_api --> configuration
   caelundas_api --> observability
   caelundas_api --> persistence
   caelundas_cli --> caelundas_db
+  caelundas_cli --> configuration
   caelundas_cli --> observability
   caelundas_cli --> persistence
+  caelundas_db --> configuration
   caelundas_db --> persistence
+  caelundas_web --> configuration
   caelundas_web --> interface
   caelundas_web --> presentation
+  callidescope_agents --> configuration
   callidescope_cli --> callidescope_configuration
   callidescope_cli --> callidescope_core
   callidescope_cli --> callidescope_graph
   callidescope_cli --> callidescope_output
+  callidescope_cli --> configuration
   callidescope_cli --> observability
   callidescope_configuration --> callidescope_core
+  callidescope_configuration --> configuration
+  callidescope_core --> configuration
   callidescope_examples -.-> callidescope_cli
   callidescope_examples --> callidescope_configuration
   callidescope_examples --> callidescope_core
+  callidescope_examples --> configuration
   callidescope_graph --> callidescope_configuration
   callidescope_graph --> callidescope_core
+  callidescope_graph --> configuration
   callidescope_graph --> observability
   callidescope_nx --> callidescope_cli
   callidescope_nx --> callidescope_configuration
   callidescope_nx --> callidescope_core
   callidescope_nx --> callidescope_graph
   callidescope_nx --> callidescope_output
+  callidescope_nx --> configuration
   callidescope_nx --> observability
   callidescope_output --> callidescope_configuration
   callidescope_output --> callidescope_core
   callidescope_output --> callidescope_graph
+  callidescope_output --> configuration
   callidescope_output --> observability
+  codependix_agents --> configuration
   codependix_boundaries --> codependix_configuration
   codependix_boundaries --> codependix_core
   codependix_boundaries --> codependix_file_imports
   codependix_boundaries --> codependix_nestjs_modules
   codependix_boundaries --> codependix_nx_projects
+  codependix_boundaries --> configuration
   codependix_cli --> codependix_boundaries
   codependix_cli --> codependix_configuration
   codependix_cli --> codependix_core
   codependix_cli --> codependix_output
+  codependix_cli --> configuration
   codependix_cli --> observability
   codependix_configuration --> codependix_core
+  codependix_configuration --> configuration
+  codependix_core --> configuration
   codependix_examples --> codependix_boundaries
   codependix_examples -.-> codependix_cli
   codependix_examples --> codependix_configuration
@@ -431,96 +449,147 @@ graph LR
   codependix_examples --> codependix_nestjs_modules
   codependix_examples --> codependix_nx_projects
   codependix_examples --> codependix_output
+  codependix_examples --> configuration
   codependix_examples --> observability
+  codependix_file_imports --> configuration
+  codependix_nestjs_modules --> configuration
   codependix_nestjs_modules --> observability
   codependix_nx --> codependix_cli
   codependix_nx --> codependix_configuration
+  codependix_nx --> configuration
+  codependix_nx_projects --> configuration
   codependix_output --> codependix_boundaries
   codependix_output --> codependix_configuration
   codependix_output --> codependix_core
   codependix_output --> codependix_file_imports
   codependix_output --> codependix_nestjs_modules
   codependix_output --> codependix_nx_projects
+  codependix_output --> configuration
   codependix_output --> observability
+  codometer_agents --> configuration
   codometer_cli --> codometer_configuration
   codometer_cli --> codometer_core
   codometer_cli --> codometer_measurement
   codometer_cli --> codometer_output
+  codometer_cli --> configuration
   codometer_cli --> observability
   codometer_configuration --> codometer_core
+  codometer_configuration --> configuration
+  codometer_core --> configuration
   codometer_examples -.-> codometer_cli
   codometer_examples --> codometer_configuration
   codometer_examples --> codometer_core
+  codometer_examples --> configuration
   codometer_languages --> codometer_configuration
   codometer_languages --> codometer_core
+  codometer_languages --> configuration
   codometer_languages --> observability
   codometer_measurement --> codometer_configuration
   codometer_measurement --> codometer_core
   codometer_measurement --> codometer_languages
+  codometer_measurement --> configuration
   codometer_measurement --> observability
   codometer_output --> codometer_configuration
   codometer_output --> codometer_core
   codometer_output --> codometer_measurement
+  codometer_output --> configuration
   codometer_output --> observability
+  coinagerie_agents --> configuration
   coinagerie_cli --> coinagerie_configuration
   coinagerie_cli --> coinagerie_core
   coinagerie_cli --> coinagerie_output
   coinagerie_cli --> coinagerie_vocabulary
+  coinagerie_cli --> configuration
   coinagerie_cli --> observability
   coinagerie_configuration --> coinagerie_core
+  coinagerie_configuration --> configuration
+  coinagerie_core --> configuration
   coinagerie_examples -.-> coinagerie_cli
+  coinagerie_examples --> configuration
+  coinagerie_languages --> configuration
   coinagerie_nx --> coinagerie_configuration
+  coinagerie_nx --> configuration
   coinagerie_output --> coinagerie_configuration
   coinagerie_output --> coinagerie_core
+  coinagerie_output --> configuration
   coinagerie_vocabulary --> coinagerie_configuration
   coinagerie_vocabulary --> coinagerie_languages
+  coinagerie_vocabulary --> configuration
+  compliance --> configuration
   compliance --> observability
+  conformetry_agents --> configuration
+  conformetry_cli --> configuration
   conformetry_cli --> conformetry_configuration
   conformetry_cli --> conformetry_core
   conformetry_cli --> conformetry_generation
   conformetry_cli --> conformetry_output
   conformetry_cli --> conformetry_validation
   conformetry_cli --> observability
+  conformetry_configuration --> configuration
   conformetry_configuration --> conformetry_core
+  conformetry_core --> configuration
+  conformetry_examples --> configuration
   conformetry_examples -.-> conformetry_cli
   conformetry_examples --> conformetry_configuration
   conformetry_examples --> conformetry_generation
   conformetry_examples --> conformetry_nx
   conformetry_examples --> conformetry_output
   conformetry_examples --> conformetry_validation
+  conformetry_generation --> configuration
   conformetry_generation --> conformetry_configuration
   conformetry_generation --> conformetry_core
+  conformetry_languages --> configuration
   conformetry_languages --> conformetry_configuration
   conformetry_languages --> conformetry_core
+  conformetry_nx --> configuration
   conformetry_nx --> conformetry_configuration
   conformetry_nx --> conformetry_generation
   conformetry_nx --> conformetry_output
   conformetry_nx --> conformetry_validation
   conformetry_nx --> observability
+  conformetry_output --> configuration
   conformetry_output --> conformetry_core
   conformetry_output --> conformetry_languages
+  conformetry_validation --> configuration
   conformetry_validation --> conformetry_configuration
   conformetry_validation --> conformetry_core
   conformetry_validation --> conformetry_languages
+  deployment --> configuration
+  deployment --> observability
+  documentation --> configuration
   documentation --> observability
+  infrastructure --> configuration
+  installation --> configuration
   installation --> observability
+  integration --> configuration
   integration --> observability
+  interface --> configuration
+  lexico_api --> configuration
   lexico_api --> interface
   lexico_api --> lexico_entities
   lexico_api --> observability
   lexico_api --> persistence
+  lexico_cli --> configuration
   lexico_cli --> lexico_entities
   lexico_cli --> observability
   lexico_cli --> persistence
+  lexico_entities --> configuration
   lexico_entities --> persistence
+  lexico_web --> configuration
   lexico_web --> interface
   lexico_web --> presentation
+  meanderaw_cli --> configuration
   meanderaw_cli --> observability
   meanderaw_cli --> persistence
+  meanderaw_web --> configuration
+  observability --> configuration
+  persistence --> configuration
   persistence --> observability
-  publication --> observability
+  presentation --> configuration
+  synchronization --> configuration
   synchronization --> conformetry_configuration
   synchronization --> observability
+  validation --> configuration
   validation --> observability
 ```
 
@@ -1017,6 +1086,17 @@ graph LR
   module_conformetry_validation_TextModule["conformetry-validation/TextModule"]
   module_conformetry_validation_TypescriptModule["conformetry-validation/TypescriptModule"]
   module_conformetry_validation_ValidationModule["conformetry-validation/ValidationModule"]
+  module_deployment_DiscoveryModule["deployment/DiscoveryModule"]
+  module_deployment_LinkPackagesModule["deployment/LinkPackagesModule"]
+  module_deployment_LoggerModule["deployment/LoggerModule"]
+  module_deployment_MainModule["deployment/MainModule"]
+  module_deployment_MainTipModule["deployment/MainTipModule"]
+  module_deployment_ProcessRunnerModule["deployment/ProcessRunnerModule"]
+  module_deployment_PublishPackagesModule["deployment/PublishPackagesModule"]
+  module_deployment_ReleaseGroupModule["deployment/ReleaseGroupModule"]
+  module_deployment_TagCodebaseModule["deployment/TagCodebaseModule"]
+  module_deployment_TagPackagesModule["deployment/TagPackagesModule"]
+  module_deployment_VersionPackagesModule["deployment/VersionPackagesModule"]
   module_documentation_DiscoveryModule["documentation/DiscoveryModule"]
   module_documentation_LoggerModule["documentation/LoggerModule"]
   module_documentation_MainModule["documentation/MainModule"]
@@ -1049,6 +1129,7 @@ graph LR
   module_integration_MergeTaskCacheModule["integration/MergeTaskCacheModule"]
   module_integration_PackageManifestModule["integration/PackageManifestModule"]
   module_integration_ProcessRunnerModule["integration/ProcessRunnerModule"]
+  module_integration_PublishablePackagesGateModule["integration/PublishablePackagesGateModule"]
   module_integration_ReportCodometerChangesModule["integration/ReportCodometerChangesModule"]
   module_integration_RunAffectedModule["integration/RunAffectedModule"]
   module_integration_SetupCodebaseModule["integration/SetupCodebaseModule"]
@@ -1147,18 +1228,6 @@ graph LR
   module_persistence_PostgresqlImportModule["persistence/PostgresqlImportModule"]
   module_persistence_PostgresqlModule["persistence/PostgresqlModule"]
   module_persistence_PostgresqlUtilitiesModule["persistence/PostgresqlUtilitiesModule"]
-  module_publication_DiscoveryModule["publication/DiscoveryModule"]
-  module_publication_LinkPackagesModule["publication/LinkPackagesModule"]
-  module_publication_LoggerModule["publication/LoggerModule"]
-  module_publication_MainModule["publication/MainModule"]
-  module_publication_MainTipModule["publication/MainTipModule"]
-  module_publication_ProcessRunnerModule["publication/ProcessRunnerModule"]
-  module_publication_PublishablePackagesGateModule["publication/PublishablePackagesGateModule"]
-  module_publication_PublishPackagesModule["publication/PublishPackagesModule"]
-  module_publication_ReleaseGroupModule["publication/ReleaseGroupModule"]
-  module_publication_TagCodebaseModule["publication/TagCodebaseModule"]
-  module_publication_TagPackagesModule["publication/TagPackagesModule"]
-  module_publication_VersionPackagesModule["publication/VersionPackagesModule"]
   module_synchronization_ConfigModule["synchronization/ConfigModule"]
   module_synchronization_ConfigurationModule["synchronization/ConfigurationModule"]
   module_synchronization_ConformetryGeneratorsModule["synchronization/ConformetryGeneratorsModule"]
@@ -1920,6 +1989,26 @@ graph LR
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_LanguagesModule
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_RunnerModule
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_ScoringModule
+  module_deployment_LinkPackagesModule --> module_deployment_ProcessRunnerModule
+  module_deployment_LinkPackagesModule --> module_deployment_ReleaseGroupModule
+  module_deployment_MainModule --> module_deployment_DiscoveryModule
+  module_deployment_MainModule --> module_deployment_LinkPackagesModule
+  module_deployment_MainModule --> module_deployment_PublishPackagesModule
+  module_deployment_MainModule --> module_deployment_TagCodebaseModule
+  module_deployment_MainModule --> module_deployment_TagPackagesModule
+  module_deployment_MainModule --> module_deployment_VersionPackagesModule
+  module_deployment_MainTipModule --> module_deployment_ProcessRunnerModule
+  module_deployment_PublishPackagesModule --> module_deployment_ProcessRunnerModule
+  module_deployment_PublishPackagesModule --> module_deployment_ReleaseGroupModule
+  module_deployment_ReleaseGroupModule --> module_deployment_ProcessRunnerModule
+  module_deployment_TagCodebaseModule --> module_deployment_MainTipModule
+  module_deployment_TagCodebaseModule --> module_deployment_ProcessRunnerModule
+  module_deployment_TagPackagesModule --> module_deployment_MainTipModule
+  module_deployment_TagPackagesModule --> module_deployment_ProcessRunnerModule
+  module_deployment_TagPackagesModule --> module_deployment_ReleaseGroupModule
+  module_deployment_VersionPackagesModule --> module_deployment_MainTipModule
+  module_deployment_VersionPackagesModule --> module_deployment_ProcessRunnerModule
+  module_deployment_VersionPackagesModule --> module_deployment_TagPackagesModule
   module_documentation_MainModule --> module_documentation_DiscoveryModule
   module_documentation_MainModule --> module_documentation_RefreshDocumentationModule
   module_installation_DependenciesModule --> module_installation_ProcessRunnerModule
@@ -1975,12 +2064,14 @@ graph LR
   module_integration_MainModule --> module_integration_ImportPrTaskCacheModule
   module_integration_MainModule --> module_integration_KeepTaskDatabaseModule
   module_integration_MainModule --> module_integration_MergeTaskCacheModule
+  module_integration_MainModule --> module_integration_PublishablePackagesGateModule
   module_integration_MainModule --> module_integration_ReportCodometerChangesModule
   module_integration_MainModule --> module_integration_RunAffectedModule
   module_integration_MainModule --> module_integration_SetupCodebaseModule
   module_integration_MainModule --> module_integration_UpgradeDependenciesModule
   module_integration_MainModule --> module_integration_VerifyTaskDatabaseModule
   module_integration_MergeTaskCacheModule --> module_integration_TaskDatabaseModule
+  module_integration_PublishablePackagesGateModule --> module_integration_ProcessRunnerModule
   module_integration_ReportCodometerChangesModule --> module_integration_ProcessRunnerModule
   module_integration_RunAffectedModule --> module_integration_ProcessRunnerModule
   module_integration_SetupCodebaseModule --> module_integration_BoundBaseToPushModule
@@ -2138,28 +2229,6 @@ graph LR
   module_persistence_MainModule --> module_persistence_PostgresqlImportModule
   module_persistence_PostgresqlExportModule --> module_persistence_PostgresqlUtilitiesModule
   module_persistence_PostgresqlImportModule --> module_persistence_PostgresqlUtilitiesModule
-  module_publication_LinkPackagesModule --> module_publication_ProcessRunnerModule
-  module_publication_LinkPackagesModule --> module_publication_ReleaseGroupModule
-  module_publication_MainModule --> module_publication_DiscoveryModule
-  module_publication_MainModule --> module_publication_LinkPackagesModule
-  module_publication_MainModule --> module_publication_PublishablePackagesGateModule
-  module_publication_MainModule --> module_publication_PublishPackagesModule
-  module_publication_MainModule --> module_publication_TagCodebaseModule
-  module_publication_MainModule --> module_publication_TagPackagesModule
-  module_publication_MainModule --> module_publication_VersionPackagesModule
-  module_publication_MainTipModule --> module_publication_ProcessRunnerModule
-  module_publication_PublishablePackagesGateModule --> module_publication_ProcessRunnerModule
-  module_publication_PublishPackagesModule --> module_publication_ProcessRunnerModule
-  module_publication_PublishPackagesModule --> module_publication_ReleaseGroupModule
-  module_publication_ReleaseGroupModule --> module_publication_ProcessRunnerModule
-  module_publication_TagCodebaseModule --> module_publication_MainTipModule
-  module_publication_TagCodebaseModule --> module_publication_ProcessRunnerModule
-  module_publication_TagPackagesModule --> module_publication_MainTipModule
-  module_publication_TagPackagesModule --> module_publication_ProcessRunnerModule
-  module_publication_TagPackagesModule --> module_publication_ReleaseGroupModule
-  module_publication_VersionPackagesModule --> module_publication_MainTipModule
-  module_publication_VersionPackagesModule --> module_publication_ProcessRunnerModule
-  module_publication_VersionPackagesModule --> module_publication_TagPackagesModule
   module_synchronization_ConfigurationModule --> module_synchronization_InputModule
   module_synchronization_ConfigurationModule --> module_synchronization_InstanceDiscoveryModule
   module_synchronization_ConfigurationModule --> module_synchronization_InstanceGroupModule
@@ -4953,6 +5022,83 @@ graph LR
   file_conformetry_validation_testing_setup_ts["conformetry-validation/testing/setup.ts"]
   file_conformetry_validation_vite_config_ts["conformetry-validation/vite.config.ts"]
   file_conformetry_validation_vitest_config_ts["conformetry-validation/vitest.config.ts"]
+  file_deployment_callidescope_config_ts["deployment/callidescope.config.ts"]
+  file_deployment_codependix_config_ts["deployment/codependix.config.ts"]
+  file_deployment_codometer_config_ts["deployment/codometer.config.ts"]
+  file_deployment_coinagerie_config_ts["deployment/coinagerie.config.ts"]
+  file_deployment_eslint_config_ts["deployment/eslint.config.ts"]
+  file_deployment_src_deployment_constants_ts["deployment/src/deployment.constants.ts"]
+  file_deployment_src_deployment_main_end_to_end_test_ts["deployment/src/deployment.main.end-to-end.test.ts"]
+  file_deployment_src_deployment_main_ts["deployment/src/deployment.main.ts"]
+  file_deployment_src_deployment_main_unit_test_ts["deployment/src/deployment.main.unit.test.ts"]
+  file_deployment_src_deployment_module_ts["deployment/src/deployment.module.ts"]
+  file_deployment_src_deployment_repl_ts["deployment/src/deployment.repl.ts"]
+  file_deployment_src_deployment_repl_unit_test_ts["deployment/src/deployment.repl.unit.test.ts"]
+  file_deployment_src_deployment_types_ts["deployment/src/deployment.types.ts"]
+  file_deployment_src_modules_link_packages_link_packages_command_ts["deployment/src/modules/link-packages/link-packages.command.ts"]
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts["deployment/src/modules/link-packages/link-packages.command.unit.test.ts"]
+  file_deployment_src_modules_link_packages_link_packages_constants_ts["deployment/src/modules/link-packages/link-packages.constants.ts"]
+  file_deployment_src_modules_link_packages_link_packages_module_ts["deployment/src/modules/link-packages/link-packages.module.ts"]
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts["deployment/src/modules/link-packages/link-packages.module.unit.test.ts"]
+  file_deployment_src_modules_link_packages_link_packages_service_ts["deployment/src/modules/link-packages/link-packages.service.ts"]
+  file_deployment_src_modules_link_packages_link_packages_service_unit_test_ts["deployment/src/modules/link-packages/link-packages.service.unit.test.ts"]
+  file_deployment_src_modules_link_packages_link_packages_types_ts["deployment/src/modules/link-packages/link-packages.types.ts"]
+  file_deployment_src_modules_main_tip_main_tip_constants_ts["deployment/src/modules/main-tip/main-tip.constants.ts"]
+  file_deployment_src_modules_main_tip_main_tip_module_ts["deployment/src/modules/main-tip/main-tip.module.ts"]
+  file_deployment_src_modules_main_tip_main_tip_module_unit_test_ts["deployment/src/modules/main-tip/main-tip.module.unit.test.ts"]
+  file_deployment_src_modules_main_tip_main_tip_service_ts["deployment/src/modules/main-tip/main-tip.service.ts"]
+  file_deployment_src_modules_main_tip_main_tip_service_unit_test_ts["deployment/src/modules/main-tip/main-tip.service.unit.test.ts"]
+  file_deployment_src_modules_main_tip_main_tip_types_ts["deployment/src/modules/main-tip/main-tip.types.ts"]
+  file_deployment_src_modules_process_runner_process_runner_constants_ts["deployment/src/modules/process-runner/process-runner.constants.ts"]
+  file_deployment_src_modules_process_runner_process_runner_module_ts["deployment/src/modules/process-runner/process-runner.module.ts"]
+  file_deployment_src_modules_process_runner_process_runner_module_unit_test_ts["deployment/src/modules/process-runner/process-runner.module.unit.test.ts"]
+  file_deployment_src_modules_process_runner_process_runner_service_integration_test_ts["deployment/src/modules/process-runner/process-runner.service.integration.test.ts"]
+  file_deployment_src_modules_process_runner_process_runner_service_ts["deployment/src/modules/process-runner/process-runner.service.ts"]
+  file_deployment_src_modules_process_runner_process_runner_service_unit_test_ts["deployment/src/modules/process-runner/process-runner.service.unit.test.ts"]
+  file_deployment_src_modules_process_runner_process_runner_types_ts["deployment/src/modules/process-runner/process-runner.types.ts"]
+  file_deployment_src_modules_process_runner_process_runner_utilities_ts["deployment/src/modules/process-runner/process-runner.utilities.ts"]
+  file_deployment_src_modules_process_runner_process_runner_utilities_unit_test_ts["deployment/src/modules/process-runner/process-runner.utilities.unit.test.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_command_ts["deployment/src/modules/publish-packages/publish-packages.command.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts["deployment/src/modules/publish-packages/publish-packages.command.unit.test.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_constants_ts["deployment/src/modules/publish-packages/publish-packages.constants.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_module_ts["deployment/src/modules/publish-packages/publish-packages.module.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts["deployment/src/modules/publish-packages/publish-packages.module.unit.test.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts["deployment/src/modules/publish-packages/publish-packages.service.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_service_unit_test_ts["deployment/src/modules/publish-packages/publish-packages.service.unit.test.ts"]
+  file_deployment_src_modules_publish_packages_publish_packages_types_ts["deployment/src/modules/publish-packages/publish-packages.types.ts"]
+  file_deployment_src_modules_release_group_release_group_constants_ts["deployment/src/modules/release-group/release-group.constants.ts"]
+  file_deployment_src_modules_release_group_release_group_module_ts["deployment/src/modules/release-group/release-group.module.ts"]
+  file_deployment_src_modules_release_group_release_group_module_unit_test_ts["deployment/src/modules/release-group/release-group.module.unit.test.ts"]
+  file_deployment_src_modules_release_group_release_group_service_ts["deployment/src/modules/release-group/release-group.service.ts"]
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts["deployment/src/modules/release-group/release-group.service.unit.test.ts"]
+  file_deployment_src_modules_release_group_release_group_types_ts["deployment/src/modules/release-group/release-group.types.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_ts["deployment/src/modules/tag-codebase/tag-codebase.command.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts["deployment/src/modules/tag-codebase/tag-codebase.command.unit.test.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_constants_ts["deployment/src/modules/tag-codebase/tag-codebase.constants.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_ts["deployment/src/modules/tag-codebase/tag-codebase.module.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts["deployment/src/modules/tag-codebase/tag-codebase.module.unit.test.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_ts["deployment/src/modules/tag-codebase/tag-codebase.service.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_unit_test_ts["deployment/src/modules/tag-codebase/tag-codebase.service.unit.test.ts"]
+  file_deployment_src_modules_tag_codebase_tag_codebase_types_ts["deployment/src/modules/tag-codebase/tag-codebase.types.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_command_ts["deployment/src/modules/tag-packages/tag-packages.command.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts["deployment/src/modules/tag-packages/tag-packages.command.unit.test.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_constants_ts["deployment/src/modules/tag-packages/tag-packages.constants.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts["deployment/src/modules/tag-packages/tag-packages.module.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts["deployment/src/modules/tag-packages/tag-packages.module.unit.test.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts["deployment/src/modules/tag-packages/tag-packages.service.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_service_unit_test_ts["deployment/src/modules/tag-packages/tag-packages.service.unit.test.ts"]
+  file_deployment_src_modules_tag_packages_tag_packages_types_ts["deployment/src/modules/tag-packages/tag-packages.types.ts"]
+  file_deployment_src_modules_version_packages_version_packages_command_ts["deployment/src/modules/version-packages/version-packages.command.ts"]
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts["deployment/src/modules/version-packages/version-packages.command.unit.test.ts"]
+  file_deployment_src_modules_version_packages_version_packages_constants_ts["deployment/src/modules/version-packages/version-packages.constants.ts"]
+  file_deployment_src_modules_version_packages_version_packages_module_ts["deployment/src/modules/version-packages/version-packages.module.ts"]
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts["deployment/src/modules/version-packages/version-packages.module.unit.test.ts"]
+  file_deployment_src_modules_version_packages_version_packages_service_ts["deployment/src/modules/version-packages/version-packages.service.ts"]
+  file_deployment_src_modules_version_packages_version_packages_service_unit_test_ts["deployment/src/modules/version-packages/version-packages.service.unit.test.ts"]
+  file_deployment_src_modules_version_packages_version_packages_types_ts["deployment/src/modules/version-packages/version-packages.types.ts"]
+  file_deployment_testing_mocks_ts["deployment/testing/mocks.ts"]
+  file_deployment_testing_setup_ts["deployment/testing/setup.ts"]
+  file_deployment_vitest_config_ts["deployment/vitest.config.ts"]
   file_documentation_callidescope_config_ts["documentation/callidescope.config.ts"]
   file_documentation_codependix_config_ts["documentation/codependix.config.ts"]
   file_documentation_codometer_config_ts["documentation/codometer.config.ts"]
@@ -5199,6 +5345,14 @@ graph LR
   file_integration_src_modules_process_runner_process_runner_types_ts["integration/src/modules/process-runner/process-runner.types.ts"]
   file_integration_src_modules_process_runner_process_runner_utilities_ts["integration/src/modules/process-runner/process-runner.utilities.ts"]
   file_integration_src_modules_process_runner_process_runner_utilities_unit_test_ts["integration/src/modules/process-runner/process-runner.utilities.unit.test.ts"]
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts["integration/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts"]
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts["integration/src/modules/publishable-packages-gate/publishable-packages-gate.command.unit.test.ts"]
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts["integration/src/modules/publishable-packages-gate/publishable-packages-gate.constants.ts"]
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts["integration/src/modules/publishable-packages-gate/publishable-packages-gate.module.ts"]
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts["integration/src/modules/publishable-packages-gate/publishable-packages-gate.module.unit.test.ts"]
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts["integration/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts"]
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts["integration/src/modules/publishable-packages-gate/publishable-packages-gate.service.unit.test.ts"]
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_types_ts["integration/src/modules/publishable-packages-gate/publishable-packages-gate.types.ts"]
   file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.command.ts"]
   file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_unit_test_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.command.unit.test.ts"]
   file_integration_src_modules_report_codometer_changes_report_codometer_changes_constants_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.constants.ts"]
@@ -6510,91 +6664,6 @@ graph LR
   file_presentation_src_index_ts["presentation/src/index.ts"]
   file_presentation_src_lib_utils_ts["presentation/src/lib/utils.ts"]
   file_presentation_vite_config_mts["presentation/vite.config.mts"]
-  file_publication_callidescope_config_ts["publication/callidescope.config.ts"]
-  file_publication_codependix_config_ts["publication/codependix.config.ts"]
-  file_publication_codometer_config_ts["publication/codometer.config.ts"]
-  file_publication_coinagerie_config_ts["publication/coinagerie.config.ts"]
-  file_publication_eslint_config_ts["publication/eslint.config.ts"]
-  file_publication_src_modules_link_packages_link_packages_command_ts["publication/src/modules/link-packages/link-packages.command.ts"]
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts["publication/src/modules/link-packages/link-packages.command.unit.test.ts"]
-  file_publication_src_modules_link_packages_link_packages_constants_ts["publication/src/modules/link-packages/link-packages.constants.ts"]
-  file_publication_src_modules_link_packages_link_packages_module_ts["publication/src/modules/link-packages/link-packages.module.ts"]
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts["publication/src/modules/link-packages/link-packages.module.unit.test.ts"]
-  file_publication_src_modules_link_packages_link_packages_service_ts["publication/src/modules/link-packages/link-packages.service.ts"]
-  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts["publication/src/modules/link-packages/link-packages.service.unit.test.ts"]
-  file_publication_src_modules_link_packages_link_packages_types_ts["publication/src/modules/link-packages/link-packages.types.ts"]
-  file_publication_src_modules_main_tip_main_tip_constants_ts["publication/src/modules/main-tip/main-tip.constants.ts"]
-  file_publication_src_modules_main_tip_main_tip_module_ts["publication/src/modules/main-tip/main-tip.module.ts"]
-  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts["publication/src/modules/main-tip/main-tip.module.unit.test.ts"]
-  file_publication_src_modules_main_tip_main_tip_service_ts["publication/src/modules/main-tip/main-tip.service.ts"]
-  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts["publication/src/modules/main-tip/main-tip.service.unit.test.ts"]
-  file_publication_src_modules_main_tip_main_tip_types_ts["publication/src/modules/main-tip/main-tip.types.ts"]
-  file_publication_src_modules_process_runner_process_runner_constants_ts["publication/src/modules/process-runner/process-runner.constants.ts"]
-  file_publication_src_modules_process_runner_process_runner_module_ts["publication/src/modules/process-runner/process-runner.module.ts"]
-  file_publication_src_modules_process_runner_process_runner_module_unit_test_ts["publication/src/modules/process-runner/process-runner.module.unit.test.ts"]
-  file_publication_src_modules_process_runner_process_runner_service_integration_test_ts["publication/src/modules/process-runner/process-runner.service.integration.test.ts"]
-  file_publication_src_modules_process_runner_process_runner_service_ts["publication/src/modules/process-runner/process-runner.service.ts"]
-  file_publication_src_modules_process_runner_process_runner_service_unit_test_ts["publication/src/modules/process-runner/process-runner.service.unit.test.ts"]
-  file_publication_src_modules_process_runner_process_runner_types_ts["publication/src/modules/process-runner/process-runner.types.ts"]
-  file_publication_src_modules_process_runner_process_runner_utilities_ts["publication/src/modules/process-runner/process-runner.utilities.ts"]
-  file_publication_src_modules_process_runner_process_runner_utilities_unit_test_ts["publication/src/modules/process-runner/process-runner.utilities.unit.test.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_command_ts["publication/src/modules/publish-packages/publish-packages.command.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts["publication/src/modules/publish-packages/publish-packages.command.unit.test.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_constants_ts["publication/src/modules/publish-packages/publish-packages.constants.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_module_ts["publication/src/modules/publish-packages/publish-packages.module.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts["publication/src/modules/publish-packages/publish-packages.module.unit.test.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_service_ts["publication/src/modules/publish-packages/publish-packages.service.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts["publication/src/modules/publish-packages/publish-packages.service.unit.test.ts"]
-  file_publication_src_modules_publish_packages_publish_packages_types_ts["publication/src/modules/publish-packages/publish-packages.types.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.command.unit.test.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.constants.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.module.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.module.unit.test.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.service.unit.test.ts"]
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_types_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.types.ts"]
-  file_publication_src_modules_release_group_release_group_constants_ts["publication/src/modules/release-group/release-group.constants.ts"]
-  file_publication_src_modules_release_group_release_group_module_ts["publication/src/modules/release-group/release-group.module.ts"]
-  file_publication_src_modules_release_group_release_group_module_unit_test_ts["publication/src/modules/release-group/release-group.module.unit.test.ts"]
-  file_publication_src_modules_release_group_release_group_service_ts["publication/src/modules/release-group/release-group.service.ts"]
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts["publication/src/modules/release-group/release-group.service.unit.test.ts"]
-  file_publication_src_modules_release_group_release_group_types_ts["publication/src/modules/release-group/release-group.types.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_command_ts["publication/src/modules/tag-codebase/tag-codebase.command.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.command.unit.test.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_constants_ts["publication/src/modules/tag-codebase/tag-codebase.constants.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_module_ts["publication/src/modules/tag-codebase/tag-codebase.module.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.module.unit.test.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_service_ts["publication/src/modules/tag-codebase/tag-codebase.service.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.service.unit.test.ts"]
-  file_publication_src_modules_tag_codebase_tag_codebase_types_ts["publication/src/modules/tag-codebase/tag-codebase.types.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_command_ts["publication/src/modules/tag-packages/tag-packages.command.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts["publication/src/modules/tag-packages/tag-packages.command.unit.test.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_constants_ts["publication/src/modules/tag-packages/tag-packages.constants.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_module_ts["publication/src/modules/tag-packages/tag-packages.module.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts["publication/src/modules/tag-packages/tag-packages.module.unit.test.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_service_ts["publication/src/modules/tag-packages/tag-packages.service.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts["publication/src/modules/tag-packages/tag-packages.service.unit.test.ts"]
-  file_publication_src_modules_tag_packages_tag_packages_types_ts["publication/src/modules/tag-packages/tag-packages.types.ts"]
-  file_publication_src_modules_version_packages_version_packages_command_ts["publication/src/modules/version-packages/version-packages.command.ts"]
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts["publication/src/modules/version-packages/version-packages.command.unit.test.ts"]
-  file_publication_src_modules_version_packages_version_packages_constants_ts["publication/src/modules/version-packages/version-packages.constants.ts"]
-  file_publication_src_modules_version_packages_version_packages_module_ts["publication/src/modules/version-packages/version-packages.module.ts"]
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts["publication/src/modules/version-packages/version-packages.module.unit.test.ts"]
-  file_publication_src_modules_version_packages_version_packages_service_ts["publication/src/modules/version-packages/version-packages.service.ts"]
-  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts["publication/src/modules/version-packages/version-packages.service.unit.test.ts"]
-  file_publication_src_modules_version_packages_version_packages_types_ts["publication/src/modules/version-packages/version-packages.types.ts"]
-  file_publication_src_publication_constants_ts["publication/src/publication.constants.ts"]
-  file_publication_src_publication_main_end_to_end_test_ts["publication/src/publication.main.end-to-end.test.ts"]
-  file_publication_src_publication_main_ts["publication/src/publication.main.ts"]
-  file_publication_src_publication_main_unit_test_ts["publication/src/publication.main.unit.test.ts"]
-  file_publication_src_publication_module_ts["publication/src/publication.module.ts"]
-  file_publication_src_publication_repl_ts["publication/src/publication.repl.ts"]
-  file_publication_src_publication_repl_unit_test_ts["publication/src/publication.repl.unit.test.ts"]
-  file_publication_src_publication_types_ts["publication/src/publication.types.ts"]
-  file_publication_testing_mocks_ts["publication/testing/mocks.ts"]
-  file_publication_testing_setup_ts["publication/testing/setup.ts"]
-  file_publication_vitest_config_ts["publication/vitest.config.ts"]
   file_synchronization_callidescope_config_ts["synchronization/callidescope.config.ts"]
   file_synchronization_codependix_config_ts["synchronization/codependix.config.ts"]
   file_synchronization_codometer_config_ts["synchronization/codometer.config.ts"]
@@ -11686,6 +11755,205 @@ graph LR
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_module_ts
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_service_ts
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_types_ts
+  file_deployment_src_deployment_main_end_to_end_test_ts --> file_deployment_src_deployment_constants_ts
+  file_deployment_src_deployment_main_ts --> file_deployment_src_deployment_module_ts
+  file_deployment_src_deployment_main_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_module_ts
+  file_deployment_src_deployment_main_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_module_ts
+  file_deployment_src_deployment_main_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_module_ts
+  file_deployment_src_deployment_main_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_module_ts
+  file_deployment_src_deployment_main_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_module_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_deployment_constants_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_modules_link_packages_link_packages_module_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_modules_publish_packages_publish_packages_module_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_module_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_modules_tag_packages_tag_packages_module_ts
+  file_deployment_src_deployment_module_ts --> file_deployment_src_modules_version_packages_version_packages_module_ts
+  file_deployment_src_deployment_repl_ts --> file_deployment_src_deployment_module_ts
+  file_deployment_src_deployment_types_ts --> file_deployment_src_deployment_constants_ts
+  file_deployment_src_modules_link_packages_link_packages_command_ts --> file_deployment_src_modules_link_packages_link_packages_service_ts
+  file_deployment_src_modules_link_packages_link_packages_command_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_command_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_service_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_link_packages_link_packages_command_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_link_packages_link_packages_module_ts --> file_deployment_src_modules_link_packages_link_packages_command_ts
+  file_deployment_src_modules_link_packages_link_packages_module_ts --> file_deployment_src_modules_link_packages_link_packages_service_ts
+  file_deployment_src_modules_link_packages_link_packages_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_link_packages_link_packages_module_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_command_ts
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_module_ts
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_service_ts
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_link_packages_link_packages_module_unit_test_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_link_packages_link_packages_constants_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_link_packages_link_packages_types_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_release_group_release_group_constants_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_link_packages_link_packages_service_ts --> file_deployment_src_modules_release_group_release_group_types_ts
+  file_deployment_src_modules_link_packages_link_packages_service_unit_test_ts --> file_deployment_src_modules_link_packages_link_packages_service_ts
+  file_deployment_src_modules_link_packages_link_packages_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_link_packages_link_packages_service_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_main_tip_main_tip_module_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_main_tip_main_tip_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_main_tip_main_tip_module_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_main_tip_main_tip_module_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_main_tip_main_tip_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_main_tip_main_tip_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_main_tip_main_tip_service_ts --> file_deployment_src_modules_main_tip_main_tip_constants_ts
+  file_deployment_src_modules_main_tip_main_tip_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_main_tip_main_tip_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_main_tip_main_tip_service_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_main_tip_main_tip_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_main_tip_main_tip_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_main_tip_main_tip_service_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_process_runner_process_runner_module_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_process_runner_process_runner_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_process_runner_process_runner_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_process_runner_process_runner_service_integration_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_process_runner_process_runner_service_integration_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_process_runner_process_runner_service_ts --> file_deployment_src_modules_process_runner_process_runner_constants_ts
+  file_deployment_src_modules_process_runner_process_runner_service_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_process_runner_process_runner_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_process_runner_process_runner_utilities_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_process_runner_process_runner_utilities_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_ts --> file_deployment_src_modules_publish_packages_publish_packages_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_command_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_ts --> file_deployment_src_modules_publish_packages_publish_packages_command_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_ts --> file_deployment_src_modules_publish_packages_publish_packages_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_command_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_module_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_publish_packages_publish_packages_constants_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_publish_packages_publish_packages_types_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_release_group_release_group_constants_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_ts --> file_deployment_src_modules_release_group_release_group_types_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_deployment_src_modules_publish_packages_publish_packages_service_ts
+  file_deployment_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_release_group_release_group_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_release_group_release_group_module_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_release_group_release_group_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_release_group_release_group_module_unit_test_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_release_group_release_group_module_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_release_group_release_group_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_release_group_release_group_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_release_group_release_group_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_release_group_release_group_service_ts --> file_deployment_src_modules_release_group_release_group_constants_ts
+  file_deployment_src_modules_release_group_release_group_service_ts --> file_deployment_src_modules_release_group_release_group_types_ts
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts --> file_deployment_src_modules_release_group_release_group_types_ts
+  file_deployment_src_modules_release_group_release_group_service_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_command_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_command_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_command_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_module_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_constants_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_deployment_src_modules_tag_codebase_tag_codebase_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_command_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts --> file_deployment_src_modules_tag_packages_tag_packages_command_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_release_group_release_group_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_command_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_module_ts
+  file_deployment_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_release_group_release_group_types_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_tag_packages_tag_packages_constants_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_ts --> file_deployment_src_modules_tag_packages_tag_packages_types_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_version_packages_version_packages_command_ts --> file_deployment_src_modules_version_packages_version_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_release_group_release_group_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_command_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_command_unit_test_ts --> file_deployment_testing_mocks_ts
+  file_deployment_src_modules_version_packages_version_packages_module_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_ts --> file_deployment_src_modules_tag_packages_tag_packages_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_ts --> file_deployment_src_modules_version_packages_version_packages_command_ts
+  file_deployment_src_modules_version_packages_version_packages_module_ts --> file_deployment_src_modules_version_packages_version_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_command_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_module_ts
+  file_deployment_src_modules_version_packages_version_packages_module_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_deployment_types_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_modules_process_runner_process_runner_utilities_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_ts --> file_deployment_src_modules_version_packages_version_packages_constants_ts
+  file_deployment_src_modules_version_packages_version_packages_service_unit_test_ts --> file_deployment_src_modules_main_tip_main_tip_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_unit_test_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_unit_test_ts --> file_deployment_src_modules_tag_packages_tag_packages_service_ts
+  file_deployment_src_modules_version_packages_version_packages_service_unit_test_ts --> file_deployment_src_modules_version_packages_version_packages_service_ts
+  file_deployment_testing_mocks_ts --> file_deployment_src_modules_process_runner_process_runner_service_ts
+  file_deployment_testing_mocks_ts --> file_deployment_src_modules_process_runner_process_runner_types_ts
   file_documentation_src_documentation_main_end_to_end_test_ts --> file_documentation_src_documentation_constants_ts
   file_documentation_src_documentation_main_ts --> file_documentation_src_documentation_module_ts
   file_documentation_src_documentation_main_unit_test_ts --> file_documentation_src_documentation_module_ts
@@ -12144,6 +12412,7 @@ graph LR
   file_integration_src_integration_module_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
   file_integration_src_integration_module_ts --> file_integration_src_modules_keep_task_database_keep_task_database_module_ts
   file_integration_src_integration_module_ts --> file_integration_src_modules_merge_task_cache_merge_task_cache_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
   file_integration_src_integration_module_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_ts
   file_integration_src_integration_module_ts --> file_integration_src_modules_run_affected_run_affected_module_ts
   file_integration_src_integration_module_ts --> file_integration_src_modules_setup_codebase_setup_codebase_module_ts
@@ -12258,6 +12527,26 @@ graph LR
   file_integration_src_modules_process_runner_process_runner_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
   file_integration_src_modules_process_runner_process_runner_utilities_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
   file_integration_src_modules_process_runner_process_runner_utilities_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_utilities_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_integration_testing_mocks_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_integration_src_integration_types_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_types_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts --> file_integration_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
   file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts
   file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_unit_test_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_ts
   file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_unit_test_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts
@@ -15832,227 +16121,6 @@ graph LR
   file_presentation_src_components_ui_sidebar_tsx --> file_presentation_src_components_ui_tooltip_tsx
   file_presentation_src_components_ui_sidebar_tsx --> file_presentation_src_hooks_use_mobile_ts
   file_presentation_src_components_ui_toggle_group_tsx --> file_presentation_src_components_ui_toggle_tsx
-  file_publication_src_modules_link_packages_link_packages_command_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
-  file_publication_src_modules_link_packages_link_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_command_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_link_packages_link_packages_command_ts
-  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
-  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_command_ts
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_link_packages_link_packages_constants_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_link_packages_link_packages_types_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_release_group_release_group_constants_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
-  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
-  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_main_tip_main_tip_module_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_main_tip_main_tip_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_modules_main_tip_main_tip_constants_ts
-  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_process_runner_process_runner_module_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_process_runner_process_runner_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_process_runner_process_runner_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_process_runner_process_runner_service_integration_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_process_runner_process_runner_service_integration_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_process_runner_process_runner_service_ts --> file_publication_src_modules_process_runner_process_runner_constants_ts
-  file_publication_src_modules_process_runner_process_runner_service_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_process_runner_process_runner_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_process_runner_process_runner_utilities_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_process_runner_process_runner_utilities_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_command_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_publish_packages_publish_packages_command_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_command_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_publish_packages_publish_packages_constants_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_publish_packages_publish_packages_types_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_release_group_release_group_constants_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
-  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_types_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
-  file_publication_src_modules_release_group_release_group_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_release_group_release_group_module_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_release_group_release_group_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_release_group_release_group_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_release_group_release_group_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_release_group_release_group_constants_ts
-  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
-  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_types_ts
-  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_command_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_command_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_command_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_ts --> file_publication_src_modules_tag_codebase_tag_codebase_constants_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_command_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_tag_packages_tag_packages_command_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_command_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_tag_packages_tag_packages_constants_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_tag_packages_tag_packages_types_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_version_packages_version_packages_command_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_command_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_version_packages_version_packages_command_ts
-  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_command_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
-  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_version_packages_version_packages_constants_ts
-  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
-  file_publication_src_publication_main_end_to_end_test_ts --> file_publication_src_publication_constants_ts
-  file_publication_src_publication_main_ts --> file_publication_src_publication_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_publication_constants_ts
-  file_publication_src_publication_repl_ts --> file_publication_src_publication_module_ts
-  file_publication_src_publication_types_ts --> file_publication_src_publication_constants_ts
-  file_publication_testing_mocks_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_testing_mocks_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_types_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
@@ -16648,6 +16716,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
 | `compliance` | 8 | 8 | 0 | 9 |
+| `deployment` | 6 | 6 | 0 | 8 |
 | `integration` | 6 | 6 | 0 | 8 |
 | `projects/caelundas/caelundas-web` | 6 | 6 | 0 | 8 |
 | `projects/common/observability` | 4 | 4 | 0 | 2 |
@@ -16665,7 +16734,6 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
 | `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
 | `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
-| `publication` | 6 | 6 | 0 | 8 |
 | `synchronization` | 10 | 10 | 0 | 8 |
 | `validation` | 8 | 8 | 0 | 8 |
 | `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |

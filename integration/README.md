@@ -36,13 +36,13 @@ Call stacks traced through `integration`, deepest first. Each frame shows what i
 
 | Measure | Value |
 | --- | --- |
-| Callables | 170 |
-| Files | 92 |
-| Calls traced | 190 |
-| Call stacks | 12 |
+| Callables | 206 |
+| Files | 110 |
+| Calls traced | 232 |
+| Call stacks | 17 |
 | Deepest stack | 6 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 12 |
+| Unfollowable calls | 13 |
 
 ### Limits
 
@@ -106,9 +106,41 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>9 more call stacks</summary>
+<summary>14 more call stacks</summary>
 
-**4. `AdoptTaskDatabaseCommand.run`** — depth 5 · decorated-method
+**4. `knipBatchExecutor`** — depth 6 · orphan-root
+
+```text
+🚀 knipBatchExecutor(…): Promise<Record<string, KnipTaskResult>> [integration/src/executors/knip/batch-executor.ts:28]
+   ↳ Judges every knip task Nx batched from one run per configuration.
+  └─> judgeGroup(…): Promise<Record<string, KnipTaskResult>> [integration/src/executors/knip/batch-executor.ts:119]
+     ↳ Judges one configuration's tasks from a single knip run over all of their workspaces.
+    └─> explain(…): Promise<KnipTaskResult> [integration/src/executors/knip/batch-executor.ts:77]
+       ↳ Gets a failed task's own report by running its workspace alone.
+      └─> runKnip(…): Promise<CapturedProcess> [integration/src/executors/knip/knip.runner.ts:19]
+         ↳ Runs knip over the given workspaces and returns what it printed.
+        └─> buildKnipArguments(args: BuildKnipArguments): string[] [integration/src/executors/knip/knip.utilities.ts:40]
+           ↳ Builds the arguments of one knip run over the given workspaces.
+          └─> flatMap(…)(this: undefined, root: string): string[] [integration/src/executors/knip/knip.utilities.ts:48]
+```
+
+**5. `spellCheckBatchExecutor`** — depth 6 · orphan-root
+
+```text
+🚀 spellCheckBatchExecutor(…): Promise<Record<string, SpellCheckTaskResult>> [integration/src/executors/spell-check/batch-executor.ts:20]
+   ↳ Judges every spell-check task Nx batched from one run per configuration.
+  └─> judgeGroup(…): Promise<Record<string, SpellCheckTaskResult>> [integration/src/executors/spell-check/batch-executor.ts:94]
+     ↳ Judges one configuration's tasks from a single cspell run over all of their roots.
+    └─> explain(…): Promise<SpellCheckTaskResult> [integration/src/executors/spell-check/batch-executor.ts:64]
+       ↳ Gets a failed task's own report by running its project alone.
+      └─> runCspell(…): Promise<CapturedProcess> [integration/src/executors/spell-check/spell-check.runner.ts:19]
+         ↳ Runs cspell over the given project roots and returns what it printed.
+        └─> buildCspellArguments(args: BuildCspellArguments): string[] [integration/src/executors/spell-check/spell-check.utilities.ts:8]
+           ↳ Builds the arguments of one cspell run over the given project roots.
+          └─> map(…)(root: string): string [integration/src/executors/spell-check/spell-check.utilities.ts:12]
+```
+
+**6. `AdoptTaskDatabaseCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 AdoptTaskDatabaseCommand.run(): Promise<void> [integration/src/modules/adopt-task-database/adopt-task-database.command.ts:42]
@@ -122,7 +154,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> TaskDatabaseService.filter(…)(file: string): boolean [integration/src/modules/task-database/task-database.service.ts:322]
 ```
 
-**5. `MergeTaskCacheCommand.run`** — depth 5 · decorated-method
+**7. `MergeTaskCacheCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 MergeTaskCacheCommand.run(parameters: string[]): Promise<void> [integration/src/modules/merge-task-cache/merge-task-cache.command.ts:45]
@@ -136,7 +168,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> TaskDatabaseService.map(…)(name: string): string [integration/src/modules/task-database/task-database.service.ts:218]
 ```
 
-**6. `RunAffectedCommand.run`** — depth 5 · decorated-method
+**8. `RunAffectedCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 RunAffectedCommand.run(): Promise<void> [integration/src/modules/run-affected/run-affected.command.ts:57]
@@ -151,7 +183,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Runs a command to completion and returns what it printed.
 ```
 
-**7. `CleanupCodebaseCommand.run`** — depth 4 · decorated-method
+**9. `CleanupCodebaseCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 CleanupCodebaseCommand.run(): Promise<void> [integration/src/modules/cleanup-codebase/cleanup-codebase.command.ts:49]
@@ -163,7 +195,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> TaskDatabaseService.map(…)(name: string): string [integration/src/modules/task-database/task-database.service.ts:218]
 ```
 
-**8. `CollectCodometerBaselineCommand.run`** — depth 4 · decorated-method
+**10. `CollectCodometerBaselineCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 CollectCodometerBaselineCommand.run(): Promise<void> [integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.command.ts:42]
@@ -175,7 +207,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> CollectCodometerBaselineService.toSorted(…)(left: fs.Dirent<string>, right: fs.Dirent<string>): number [integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.service.ts:40]
 ```
 
-**9. `KeepTaskDatabaseCommand.run`** — depth 4 · decorated-method
+**11. `KeepTaskDatabaseCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 KeepTaskDatabaseCommand.run(): Promise<void> [integration/src/modules/keep-task-database/keep-task-database.command.ts:41]
@@ -187,7 +219,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> TaskDatabaseService.map(…)(name: string): string [integration/src/modules/task-database/task-database.service.ts:218]
 ```
 
-**10. `ReportCodometerChangesCommand.run`** — depth 4 · decorated-method
+**12. `ReportCodometerChangesCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 ReportCodometerChangesCommand.run(): Promise<void> [integration/src/modules/report-codometer-changes/report-codometer-changes.command.ts:43]
@@ -200,7 +232,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Runs a command to completion and returns what it printed.
 ```
 
-**11. `VerifyTaskDatabaseCommand.run`** — depth 4 · decorated-method
+**13. `VerifyTaskDatabaseCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 VerifyTaskDatabaseCommand.run(): Promise<void> [integration/src/modules/verify-task-database/verify-task-database.command.ts:39]
@@ -212,7 +244,31 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> TaskDatabaseService.map(…)(name: string): string [integration/src/modules/task-database/task-database.service.ts:218]
 ```
 
-**12. `BoundBaseToPushCommand.run`** — depth 3 · decorated-method
+**14. `knipExecutor`** — depth 4 · orphan-root
+
+```text
+🚀 knipExecutor(…): Promise<{ success: boolean; }> [integration/src/executors/knip/executor.ts:16]
+   ↳ Fails one project's task when knip reports an issue in that project's workspace.
+  └─> runKnip(…): Promise<CapturedProcess> [integration/src/executors/knip/knip.runner.ts:19]
+     ↳ Runs knip over the given workspaces and returns what it printed.
+    └─> buildKnipArguments(args: BuildKnipArguments): string[] [integration/src/executors/knip/knip.utilities.ts:40]
+       ↳ Builds the arguments of one knip run over the given workspaces.
+      └─> flatMap(…)(this: undefined, root: string): string[] [integration/src/executors/knip/knip.utilities.ts:48]
+```
+
+**15. `spellCheckExecutor`** — depth 4 · orphan-root
+
+```text
+🚀 spellCheckExecutor(…): Promise<{ success: boolean; }> [integration/src/executors/spell-check/executor.ts:18]
+   ↳ Fails one project's task when cspell finds a misspelling under its root.
+  └─> runCspell(…): Promise<CapturedProcess> [integration/src/executors/spell-check/spell-check.runner.ts:19]
+     ↳ Runs cspell over the given project roots and returns what it printed.
+    └─> buildCspellArguments(args: BuildCspellArguments): string[] [integration/src/executors/spell-check/spell-check.utilities.ts:8]
+       ↳ Builds the arguments of one cspell run over the given project roots.
+      └─> map(…)(root: string): string [integration/src/executors/spell-check/spell-check.utilities.ts:12]
+```
+
+**16. `BoundBaseToPushCommand.run`** — depth 3 · decorated-method
 
 ```text
 🚀 BoundBaseToPushCommand.run(): Promise<void> [integration/src/modules/bound-base-to-push/bound-base-to-push.command.ts:41]
@@ -221,6 +277,17 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Decides the push's base, and writes a moved one to `GITHUB_ENV` for the later steps of the job.
     └─> BoundBaseToPushService.read(name: "BEFORE" | "GITHUB_ENV" | "NX_BASE" | "NX_HEAD"): string [integration/src/modules/bound-base-to-push/bound-base-to-push.service.ts:49]
        ↳ Reads one variable, an absent one as empty.
+```
+
+**17. `PublishablePackagesGateCommand.run`** — depth 3 · decorated-method
+
+```text
+🚀 PublishablePackagesGateCommand.run(): Promise<void> [integration/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts:49]
+   ↳ Decides whether the check is affected, then runs it whole or skips it.
+  └─> PublishablePackagesGateService.decide(): PublishablePackagesGateOutcome [integration/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts:47]
+     ↳ Asks Nx which gated projects the change between `NX_BASE` and `NX_HEAD` affects.
+    └─> ProcessRunnerService.capture(executable: string, args: readonly string[]): CapturedProcess [integration/src/modules/process-runner/process-runner.service.ts:42]
+       ↳ Runs a command to completion and returns what it printed.
 ```
 
 </details>
@@ -234,12 +301,13 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TaskDatabaseService.planMerge` | 6 | `TaskDatabaseService.cacheDirectory`, `TaskDatabaseService.directory`, `TaskDatabaseService.list`, `TaskDatabaseService.newest`, `schemaOf`, `schemaMismatchReason` | `integration/src/modules/task-database/task-database.service.ts:280` |
 
 <details>
-<summary>64 more callables</summary>
+<summary>84 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `TaskDatabaseService.adopt` | 6 | `TaskDatabaseService.list`, `TaskDatabaseService.planAdoption`, `TaskDatabaseService.discardOthers`, `TaskDatabaseService.rename`, `adoptedMessage`, `TaskDatabaseService.countCachedResults` | `integration/src/modules/task-database/task-database.service.ts:359` |
 | `ImportPrTaskCacheService.import` | 6 | `ImportPrTaskCacheService.read`, `ImportPrTaskCacheService.locate`, `ImportPrTaskCacheService.download`, `importingMessage`, `TaskDatabaseService.merge`, `couldNotImportMessage` | `integration/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:177` |
+| `judgeGroup` | 6 | `map(…)`, `runKnip`, `attributeIssues`, `failAll`, `filter(…)`, `explain` | `integration/src/executors/knip/batch-executor.ts:119` |
 | `TaskDatabaseService.checkSource` | 5 | `TaskDatabaseService.list`, `TaskDatabaseService.newest`, `TaskDatabaseService.integrityOf`, `TaskDatabaseService.query`, `TaskDatabaseService.every(…)` | `integration/src/modules/task-database/task-database.service.ts:87` |
 | `TaskDatabaseService.mergeRows` | 5 | `TaskDatabaseService.query`, `TaskDatabaseService.copyMissingOutputs`, `TaskDatabaseService.cacheDirectory`, `TaskDatabaseService.insertRows`, `mergedMessage` | `integration/src/modules/task-database/task-database.service.ts:227` |
 | `TaskDatabaseService.keep` | 5 | `TaskDatabaseService.list`, `TaskDatabaseService.newest`, `TaskDatabaseService.discardOthers`, `duplicateMessage`, `TaskDatabaseService.map(…)` | `integration/src/modules/task-database/task-database.service.ts:391` |
@@ -247,6 +315,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `BoundBaseToPushService.bound` | 5 | `BoundBaseToPushService.read`, `noPreviousTipMessage`, `ProcessRunnerService.capture`, `notAncestorMessage`, `boundingMessage` | `integration/src/modules/bound-base-to-push/bound-base-to-push.service.ts:59` |
 | `ImportPrTaskCacheService.locate` | 5 | `ImportPrTaskCacheService.findPullRequest`, `ImportPrTaskCacheService.require`, `ImportPrTaskCacheService.api`, `artifactQuery`, `noArtifactMessage` | `integration/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:132` |
 | `UpgradePythonService.upgrade` | 5 | `UpgradePythonService.newest`, `currentVersion`, `withRequiredVersion`, `withToolVersions`, `ProcessRunnerService.captureSequence` | `integration/src/modules/upgrade-python/upgrade-python.service.ts:77` |
+| `judgeGroup` | 5 | `runCspell`, `map(…)`, `chargedRoots`, `map(…)`, `explain` | `integration/src/executors/spell-check/batch-executor.ts:94` |
 | `TaskDatabaseService.planAdoption` | 4 | `TaskDatabaseService.readMachineId`, `TaskDatabaseService.newest`, `noSchemaMessage`, `TaskDatabaseService.directory` | `integration/src/modules/task-database/task-database.service.ts:253` |
 | `TaskDatabaseService.verify` | 4 | `TaskDatabaseService.list`, `TaskDatabaseService.integrityOf`, `corruptMessage`, `TaskDatabaseService.discard` | `integration/src/modules/task-database/task-database.service.ts:454` |
 | `ImportPrTaskCacheService.findPullRequest` | 4 | `ImportPrTaskCacheService.read`, `ImportPrTaskCacheService.require`, `ImportPrTaskCacheService.api`, `untrustedMessage` | `integration/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:105` |
@@ -256,10 +325,14 @@ What this project is judged against, as declared in its own `callidescope.config
 | `UpgradeDependenciesService.work` | 4 | `ProcessRunnerService.captureSequence`, `UpgradeNodeService.upgrade`, `UpgradePnpmService.upgrade`, `UpgradePythonService.upgrade` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.service.ts:144` |
 | `UpgradeDependenciesCommand.run` | 4 | `UpgradeDependenciesService.attempt`, `UpgradeDependenciesCommand.conclude`, `UpgradeDependenciesService.finish`, `UpgradeDependenciesCommand.some(…)` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.command.ts:85` |
 | `TaskDatabaseService.adoptSource` | 3 | `TaskDatabaseService.cacheDirectory`, `TaskDatabaseService.directory`, `nothingToMergeIntoMessage` | `integration/src/modules/task-database/task-database.service.ts:67` |
+| `PublishablePackagesGateCommand.run` | 3 | `PublishablePackagesGateService.decide`, `affectedMessage`, `PublishablePackagesGateService.execute` | `integration/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts:49` |
 | `ReportCodometerChangesService.rewriteBody` | 3 | `ProcessRunnerService.capture`, `failedMessage`, `ProcessRunnerService.stream` | `integration/src/modules/report-codometer-changes/report-codometer-changes.service.ts:109` |
 | `ReportCodometerChangesService.report` | 3 | `ReportCodometerChangesService.fetchBaseline`, `ReportCodometerChangesService.rewriteBody`, `baselineFoundMessage` | `integration/src/modules/report-codometer-changes/report-codometer-changes.service.ts:184` |
 | `RunAffectedService.plan` | 3 | `RunAffectedService.readInputs`, `RunAffectedService.templatesChanged`, `RunAffectedService.runOf` | `integration/src/modules/run-affected/run-affected.service.ts:164` |
 | `UpgradeDependenciesService.undo` | 3 | `ProcessRunnerService.capture`, `ProcessRunnerService.captureSequence`, `UpgradeDependenciesService.tail` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.service.ts:114` |
+| `runKnip` | 3 | `ProcessRunnerService.captureAsync`, `ProcessRunnerService.constructor`, `buildKnipArguments` | `integration/src/executors/knip/knip.runner.ts:19` |
+| `knipBatchExecutor` | 3 | `runAlone`, `judgeGroup`, `printFailures` | `integration/src/executors/knip/batch-executor.ts:28` |
+| `runCspell` | 3 | `ProcessRunnerService.captureAsync`, `ProcessRunnerService.constructor`, `buildCspellArguments` | `integration/src/executors/spell-check/spell-check.runner.ts:19` |
 | `TaskDatabaseService.list` | 2 | `TaskDatabaseService.map(…)`, `TaskDatabaseService.filter(…)` | `integration/src/modules/task-database/task-database.service.ts:209` |
 | `CleanupCodebaseCommand.run` | 2 | `TaskDatabaseService.verify`, `TaskDatabaseService.keep` | `integration/src/modules/cleanup-codebase/cleanup-codebase.command.ts:49` |
 | `CollectCodometerBaselineService.collect` | 2 | `CollectCodometerBaselineService.findReports`, `collectedMessage` | `integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.service.ts:67` |
@@ -271,6 +344,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `warningsOf` | 2 | `filter(…)`, `map(…)` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.utilities.ts:86` |
 | `skippedBullet` | 2 | `code`, `reasonOf` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.utilities.ts:129` |
 | `UpgradeDependenciesService.finish` | 2 | `UpgradeDependenciesService.git`, `renderPullRequestBody` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.service.ts:219` |
+| `attributeIssues` | 2 | `readIssueFiles`, `ownerOf` | `integration/src/executors/knip/knip.utilities.ts:13` |
+| `ownerOf` | 2 | `toSorted(…)`, `filter(…)` | `integration/src/executors/knip/knip.utilities.ts:63` |
+| `spellCheckBatchExecutor` | 2 | `judgeGroup`, `printFailures` | `integration/src/executors/spell-check/batch-executor.ts:20` |
 | `TaskDatabaseService.countCachedResults` | 1 | `TaskDatabaseService.query` | `integration/src/modules/task-database/task-database.service.ts:141` |
 | `TaskDatabaseService.discardOthers` | 1 | `TaskDatabaseService.discard` | `integration/src/modules/task-database/task-database.service.ts:164` |
 | `TaskDatabaseService.integrityOf` | 1 | `TaskDatabaseService.query` | `integration/src/modules/task-database/task-database.service.ts:197` |
@@ -285,6 +361,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ImportPrTaskCacheCommand.run` | 1 | `ImportPrTaskCacheService.import` | `integration/src/modules/import-pr-task-cache/import-pr-task-cache.command.ts:43` |
 | `KeepTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.keep` | `integration/src/modules/keep-task-database/keep-task-database.command.ts:41` |
 | `MergeTaskCacheCommand.run` | 1 | `TaskDatabaseService.merge` | `integration/src/modules/merge-task-cache/merge-task-cache.command.ts:45` |
+| `PublishablePackagesGateService.decide` | 1 | `ProcessRunnerService.capture` | `integration/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts:47` |
+| `PublishablePackagesGateService.execute` | 1 | `ProcessRunnerService.stream` | `integration/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts:92` |
 | `ReportCodometerChangesCommand.run` | 1 | `ReportCodometerChangesService.report` | `integration/src/modules/report-codometer-changes/report-codometer-changes.command.ts:43` |
 | `RunAffectedService.readInputs` | 1 | `RunAffectedService.filter(…)` | `integration/src/modules/run-affected/run-affected.service.ts:79` |
 | `RunAffectedService.execute` | 1 | `ProcessRunnerService.stream` | `integration/src/modules/run-affected/run-affected.service.ts:147` |
@@ -302,6 +380,15 @@ What this project is judged against, as declared in its own `callidescope.config
 | `UpgradeDependenciesService.snapshot` | 1 | `UpgradeDependenciesService.git` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.service.ts:84` |
 | `UpgradeDependenciesCommand.conclude` | 1 | `skippedAnnotation` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.command.ts:57` |
 | `VerifyTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.verify` | `integration/src/modules/verify-task-database/verify-task-database.command.ts:39` |
+| `buildKnipArguments` | 1 | `flatMap(…)` | `integration/src/executors/knip/knip.utilities.ts:40` |
+| `readIssueFiles` | 1 | `isRecord` | `integration/src/executors/knip/knip.utilities.ts:75` |
+| `explain` | 1 | `runKnip` | `integration/src/executors/knip/batch-executor.ts:77` |
+| `failAll` | 1 | `map(…)` | `integration/src/executors/knip/batch-executor.ts:101` |
+| `runAlone` | 1 | `runKnip` | `integration/src/executors/knip/batch-executor.ts:182` |
+| `knipExecutor` | 1 | `runKnip` | `integration/src/executors/knip/executor.ts:16` |
+| `buildCspellArguments` | 1 | `map(…)` | `integration/src/executors/spell-check/spell-check.utilities.ts:8` |
+| `explain` | 1 | `runCspell` | `integration/src/executors/spell-check/batch-executor.ts:64` |
+| `spellCheckExecutor` | 1 | `runCspell` | `integration/src/executors/spell-check/executor.ts:18` |
 
 </details>
 <!-- callidescope:end -->
@@ -342,6 +429,7 @@ flowchart LR
   MergeTaskCacheModule
   PackageManifestModule
   ProcessRunnerModule
+  PublishablePackagesGateModule
   ReportCodometerChangesModule
   RunAffectedModule
   SetupCodebaseModule
@@ -365,12 +453,14 @@ flowchart LR
   MainModule --> ImportPrTaskCacheModule
   MainModule --> KeepTaskDatabaseModule
   MainModule --> MergeTaskCacheModule
+  MainModule --> PublishablePackagesGateModule
   MainModule --> ReportCodometerChangesModule
   MainModule --> RunAffectedModule
   MainModule --> SetupCodebaseModule
   MainModule --> UpgradeDependenciesModule
   MainModule --> VerifyTaskDatabaseModule
   MergeTaskCacheModule --> TaskDatabaseModule
+  PublishablePackagesGateModule --> ProcessRunnerModule
   ReportCodometerChangesModule --> ProcessRunnerModule
   RunAffectedModule --> ProcessRunnerModule
   SetupCodebaseModule --> BoundBaseToPushModule
@@ -398,7 +488,26 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
+  file_src_executors_knip_batch_executor_ts["src/executors/knip/batch-executor.ts"]
+  file_src_executors_knip_batch_executor_unit_test_ts["src/executors/knip/batch-executor.unit.test.ts"]
+  file_src_executors_knip_executor_ts["src/executors/knip/executor.ts"]
+  file_src_executors_knip_executor_unit_test_ts["src/executors/knip/executor.unit.test.ts"]
+  file_src_executors_knip_knip_constants_ts["src/executors/knip/knip.constants.ts"]
+  file_src_executors_knip_knip_runner_ts["src/executors/knip/knip.runner.ts"]
+  file_src_executors_knip_knip_types_ts["src/executors/knip/knip.types.ts"]
+  file_src_executors_knip_knip_utilities_ts["src/executors/knip/knip.utilities.ts"]
+  file_src_executors_knip_knip_utilities_unit_test_ts["src/executors/knip/knip.utilities.unit.test.ts"]
+  file_src_executors_spell_check_batch_executor_ts["src/executors/spell-check/batch-executor.ts"]
+  file_src_executors_spell_check_batch_executor_unit_test_ts["src/executors/spell-check/batch-executor.unit.test.ts"]
+  file_src_executors_spell_check_executor_ts["src/executors/spell-check/executor.ts"]
+  file_src_executors_spell_check_executor_unit_test_ts["src/executors/spell-check/executor.unit.test.ts"]
+  file_src_executors_spell_check_spell_check_constants_ts["src/executors/spell-check/spell-check.constants.ts"]
+  file_src_executors_spell_check_spell_check_runner_ts["src/executors/spell-check/spell-check.runner.ts"]
+  file_src_executors_spell_check_spell_check_types_ts["src/executors/spell-check/spell-check.types.ts"]
+  file_src_executors_spell_check_spell_check_utilities_ts["src/executors/spell-check/spell-check.utilities.ts"]
+  file_src_executors_spell_check_spell_check_utilities_unit_test_ts["src/executors/spell-check/spell-check.utilities.unit.test.ts"]
   file_src_integration_constants_ts["src/integration.constants.ts"]
   file_src_integration_main_end_to_end_test_ts["src/integration.main.end-to-end.test.ts"]
   file_src_integration_main_ts["src/integration.main.ts"]
@@ -469,6 +578,14 @@ graph LR
   file_src_modules_process_runner_process_runner_types_ts["src/modules/process-runner/process-runner.types.ts"]
   file_src_modules_process_runner_process_runner_utilities_ts["src/modules/process-runner/process-runner.utilities.ts"]
   file_src_modules_process_runner_process_runner_utilities_unit_test_ts["src/modules/process-runner/process-runner.utilities.unit.test.ts"]
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts["src/modules/publishable-packages-gate/publishable-packages-gate.command.ts"]
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts["src/modules/publishable-packages-gate/publishable-packages-gate.command.unit.test.ts"]
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts["src/modules/publishable-packages-gate/publishable-packages-gate.constants.ts"]
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts["src/modules/publishable-packages-gate/publishable-packages-gate.module.ts"]
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts["src/modules/publishable-packages-gate/publishable-packages-gate.module.unit.test.ts"]
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts["src/modules/publishable-packages-gate/publishable-packages-gate.service.ts"]
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts["src/modules/publishable-packages-gate/publishable-packages-gate.service.unit.test.ts"]
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_types_ts["src/modules/publishable-packages-gate/publishable-packages-gate.types.ts"]
   file_src_modules_report_codometer_changes_report_codometer_changes_command_ts["src/modules/report-codometer-changes/report-codometer-changes.command.ts"]
   file_src_modules_report_codometer_changes_report_codometer_changes_command_unit_test_ts["src/modules/report-codometer-changes/report-codometer-changes.command.unit.test.ts"]
   file_src_modules_report_codometer_changes_report_codometer_changes_constants_ts["src/modules/report-codometer-changes/report-codometer-changes.constants.ts"]
@@ -535,6 +652,43 @@ graph LR
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
+  file_src_executors_knip_batch_executor_ts --> file_src_executors_knip_knip_runner_ts
+  file_src_executors_knip_batch_executor_ts --> file_src_executors_knip_knip_types_ts
+  file_src_executors_knip_batch_executor_ts --> file_src_executors_knip_knip_utilities_ts
+  file_src_executors_knip_batch_executor_unit_test_ts --> file_src_executors_knip_batch_executor_ts
+  file_src_executors_knip_batch_executor_unit_test_ts --> file_src_executors_knip_knip_types_ts
+  file_src_executors_knip_batch_executor_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_executors_knip_executor_ts --> file_src_executors_knip_knip_runner_ts
+  file_src_executors_knip_executor_ts --> file_src_executors_knip_knip_types_ts
+  file_src_executors_knip_executor_unit_test_ts --> file_src_executors_knip_executor_ts
+  file_src_executors_knip_executor_unit_test_ts --> file_src_executors_knip_knip_types_ts
+  file_src_executors_knip_executor_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_executors_knip_knip_runner_ts --> file_src_executors_knip_knip_constants_ts
+  file_src_executors_knip_knip_runner_ts --> file_src_executors_knip_knip_types_ts
+  file_src_executors_knip_knip_runner_ts --> file_src_executors_knip_knip_utilities_ts
+  file_src_executors_knip_knip_runner_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_executors_knip_knip_runner_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_executors_knip_knip_utilities_ts --> file_src_executors_knip_knip_types_ts
+  file_src_executors_knip_knip_utilities_unit_test_ts --> file_src_executors_knip_knip_utilities_ts
+  file_src_executors_spell_check_batch_executor_ts --> file_src_executors_spell_check_spell_check_runner_ts
+  file_src_executors_spell_check_batch_executor_ts --> file_src_executors_spell_check_spell_check_types_ts
+  file_src_executors_spell_check_batch_executor_ts --> file_src_executors_spell_check_spell_check_utilities_ts
+  file_src_executors_spell_check_batch_executor_unit_test_ts --> file_src_executors_spell_check_batch_executor_ts
+  file_src_executors_spell_check_batch_executor_unit_test_ts --> file_src_executors_spell_check_spell_check_types_ts
+  file_src_executors_spell_check_batch_executor_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_executors_spell_check_executor_ts --> file_src_executors_spell_check_spell_check_runner_ts
+  file_src_executors_spell_check_executor_ts --> file_src_executors_spell_check_spell_check_types_ts
+  file_src_executors_spell_check_executor_unit_test_ts --> file_src_executors_spell_check_executor_ts
+  file_src_executors_spell_check_executor_unit_test_ts --> file_src_executors_spell_check_spell_check_types_ts
+  file_src_executors_spell_check_executor_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_executors_spell_check_spell_check_runner_ts --> file_src_executors_spell_check_spell_check_constants_ts
+  file_src_executors_spell_check_spell_check_runner_ts --> file_src_executors_spell_check_spell_check_types_ts
+  file_src_executors_spell_check_spell_check_runner_ts --> file_src_executors_spell_check_spell_check_utilities_ts
+  file_src_executors_spell_check_spell_check_runner_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_executors_spell_check_spell_check_runner_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_executors_spell_check_spell_check_utilities_ts --> file_src_executors_spell_check_spell_check_constants_ts
+  file_src_executors_spell_check_spell_check_utilities_ts --> file_src_executors_spell_check_spell_check_types_ts
+  file_src_executors_spell_check_spell_check_utilities_unit_test_ts --> file_src_executors_spell_check_spell_check_utilities_ts
   file_src_integration_main_end_to_end_test_ts --> file_src_integration_constants_ts
   file_src_integration_main_ts --> file_src_integration_module_ts
   file_src_integration_main_unit_test_ts --> file_src_modules_run_affected_run_affected_module_ts
@@ -546,6 +700,7 @@ graph LR
   file_src_integration_module_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
   file_src_integration_module_ts --> file_src_modules_keep_task_database_keep_task_database_module_ts
   file_src_integration_module_ts --> file_src_modules_merge_task_cache_merge_task_cache_module_ts
+  file_src_integration_module_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
   file_src_integration_module_ts --> file_src_modules_report_codometer_changes_report_codometer_changes_module_ts
   file_src_integration_module_ts --> file_src_modules_run_affected_run_affected_module_ts
   file_src_integration_module_ts --> file_src_modules_setup_codebase_setup_codebase_module_ts
@@ -660,6 +815,26 @@ graph LR
   file_src_modules_process_runner_process_runner_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_process_runner_process_runner_utilities_ts --> file_src_modules_process_runner_process_runner_types_ts
   file_src_modules_process_runner_process_runner_utilities_unit_test_ts --> file_src_modules_process_runner_process_runner_utilities_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_src_integration_types_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_types_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
   file_src_modules_report_codometer_changes_report_codometer_changes_command_ts --> file_src_modules_report_codometer_changes_report_codometer_changes_service_ts
   file_src_modules_report_codometer_changes_report_codometer_changes_command_unit_test_ts --> file_src_modules_report_codometer_changes_report_codometer_changes_command_ts
   file_src_modules_report_codometer_changes_report_codometer_changes_command_unit_test_ts --> file_src_modules_report_codometer_changes_report_codometer_changes_service_ts

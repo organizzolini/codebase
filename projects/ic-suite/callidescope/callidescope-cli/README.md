@@ -631,7 +631,7 @@ Call stacks traced through `projects/ic-suite/callidescope/callidescope-cli`, de
 | Measure | Value |
 | --- | --- |
 | Callables | 113 |
-| Files | 34 |
+| Files | 35 |
 | Calls traced | 153 |
 | Call stacks | 42 |
 | Deepest stack | 15 |
@@ -1439,6 +1439,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_callidescope_cli_constants_ts["src/callidescope-cli.constants.ts"]
   file_src_callidescope_cli_main_end_to_end_test_ts["src/callidescope-cli.main.end-to-end.test.ts"]

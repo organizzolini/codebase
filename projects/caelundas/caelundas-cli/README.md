@@ -2365,9 +2365,11 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 graph LR
   caelundas_cli["caelundas-cli"]
   caelundas_db["caelundas-db"]
+  configuration["configuration"]
   observability["observability"]
   persistence["persistence"]
   caelundas_cli --> caelundas_db
+  caelundas_cli --> configuration
   caelundas_cli --> observability
   caelundas_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px

@@ -376,7 +376,9 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  caelundas_api["caelundas-api"]
   caelundas_cli["caelundas-cli"]
+  caelundas_db["caelundas-db"]
   configuration["configuration"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
@@ -384,7 +386,9 @@ graph LR
   meanderaw_cli["meanderaw-cli"]
   observability["observability"]
   persistence["persistence"]
+  caelundas_api --> persistence
   caelundas_cli --> persistence
+  caelundas_db --> persistence
   lexico_api --> persistence
   lexico_cli --> persistence
   lexico_entities --> persistence
@@ -408,7 +412,6 @@ flowchart LR
   PostgresqlImportModule
   PostgresqlModule
   PostgresqlUtilitiesModule
-  SqliteModule
   MainModule --> DiscoveryModule
   MainModule --> PostgresqlExportModule
   MainModule --> PostgresqlImportModule
@@ -427,6 +430,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_postgresql_export_postgresql_export_arguments_command_integration_test_ts["src/modules/postgresql-export/postgresql-export-arguments.command.integration.test.ts"]
@@ -479,6 +483,7 @@ graph LR
   file_src_modules_postgresql_postgresql_container_utilities_ts["src/modules/postgresql/postgresql-container.utilities.ts"]
   file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts["src/modules/postgresql/postgresql-testing.utilities.integration.test.ts"]
   file_src_modules_postgresql_postgresql_constants_ts["src/modules/postgresql/postgresql.constants.ts"]
+  file_src_modules_postgresql_postgresql_constants_unit_test_ts["src/modules/postgresql/postgresql.constants.unit.test.ts"]
   file_src_modules_postgresql_postgresql_module_integration_test_ts["src/modules/postgresql/postgresql.module.integration.test.ts"]
   file_src_modules_postgresql_postgresql_module_ts["src/modules/postgresql/postgresql.module.ts"]
   file_src_modules_postgresql_postgresql_service_ts["src/modules/postgresql/postgresql.service.ts"]
@@ -486,18 +491,6 @@ graph LR
   file_src_modules_postgresql_postgresql_types_ts["src/modules/postgresql/postgresql.types.ts"]
   file_src_modules_postgresql_postgresql_utilities_ts["src/modules/postgresql/postgresql.utilities.ts"]
   file_src_modules_postgresql_postgresql_utilities_unit_test_ts["src/modules/postgresql/postgresql.utilities.unit.test.ts"]
-  file_src_modules_sqlite_entities_creatable_entity_ts["src/modules/sqlite/entities/creatable.entity.ts"]
-  file_src_modules_sqlite_entities_deletable_entity_ts["src/modules/sqlite/entities/deletable.entity.ts"]
-  file_src_modules_sqlite_entities_identifiable_entity_ts["src/modules/sqlite/entities/identifiable.entity.ts"]
-  file_src_modules_sqlite_entities_updatable_entity_ts["src/modules/sqlite/entities/updatable.entity.ts"]
-  file_src_modules_sqlite_sqlite_constants_ts["src/modules/sqlite/sqlite.constants.ts"]
-  file_src_modules_sqlite_sqlite_module_integration_test_ts["src/modules/sqlite/sqlite.module.integration.test.ts"]
-  file_src_modules_sqlite_sqlite_module_ts["src/modules/sqlite/sqlite.module.ts"]
-  file_src_modules_sqlite_sqlite_service_ts["src/modules/sqlite/sqlite.service.ts"]
-  file_src_modules_sqlite_sqlite_service_unit_test_ts["src/modules/sqlite/sqlite.service.unit.test.ts"]
-  file_src_modules_sqlite_sqlite_types_ts["src/modules/sqlite/sqlite.types.ts"]
-  file_src_modules_sqlite_sqlite_utilities_ts["src/modules/sqlite/sqlite.utilities.ts"]
-  file_src_modules_sqlite_sqlite_utilities_unit_test_ts["src/modules/sqlite/sqlite.utilities.unit.test.ts"]
   file_src_persistence_main_end_to_end_test_ts["src/persistence.main.end-to-end.test.ts"]
   file_src_persistence_main_ts["src/persistence.main.ts"]
   file_src_persistence_main_unit_test_ts["src/persistence.main.unit.test.ts"]
@@ -511,12 +504,10 @@ graph LR
   file_testing_fixtures_gadget_entity_ts["testing/fixtures/gadget.entity.ts"]
   file_testing_fixtures_migrations_1767225600000_create_widgets_ts["testing/fixtures/migrations/1767225600000-create-widgets.ts"]
   file_testing_fixtures_migrations_1767225600001_create_parts_ts["testing/fixtures/migrations/1767225600001-create-parts.ts"]
-  file_testing_fixtures_migrations_1767225600002_create_sprockets_ts["testing/fixtures/migrations/1767225600002-create-sprockets.ts"]
   file_testing_fixtures_sample_greeting_constants_ts["testing/fixtures/sample-greeting.constants.ts"]
   file_testing_fixtures_sample_greeting_module_ts["testing/fixtures/sample-greeting.module.ts"]
   file_testing_fixtures_sample_widgets_module_ts["testing/fixtures/sample-widgets.module.ts"]
   file_testing_fixtures_sample_widgets_service_ts["testing/fixtures/sample-widgets.service.ts"]
-  file_testing_fixtures_sprocket_entity_ts["testing/fixtures/sprocket.entity.ts"]
   file_testing_fixtures_widget_entity_ts["testing/fixtures/widget.entity.ts"]
   file_testing_index_ts["testing/index.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
@@ -659,6 +650,7 @@ graph LR
   file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_fixtures_widget_entity_ts
   file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_persistence_testing_types_ts
   file_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_testing_persistence_testing_utilities_ts
+  file_src_modules_postgresql_postgresql_constants_unit_test_ts --> file_src_modules_postgresql_postgresql_constants_ts
   file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_src_modules_postgresql_postgresql_container_types_ts
   file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_src_modules_postgresql_postgresql_container_utilities_ts
   file_src_modules_postgresql_postgresql_module_integration_test_ts --> file_src_modules_postgresql_postgresql_module_ts
@@ -677,29 +669,9 @@ graph LR
   file_src_modules_postgresql_postgresql_types_ts --> file_src_modules_postgresql_postgresql_constants_ts
   file_src_modules_postgresql_postgresql_utilities_ts --> file_src_modules_postgresql_postgresql_constants_ts
   file_src_modules_postgresql_postgresql_utilities_ts --> file_src_modules_postgresql_postgresql_types_ts
+  file_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_src_modules_postgresql_postgresql_constants_ts
   file_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_src_modules_postgresql_postgresql_types_ts
   file_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_src_modules_postgresql_postgresql_utilities_ts
-  file_src_modules_sqlite_entities_creatable_entity_ts --> file_src_modules_sqlite_entities_identifiable_entity_ts
-  file_src_modules_sqlite_entities_deletable_entity_ts --> file_src_modules_sqlite_entities_updatable_entity_ts
-  file_src_modules_sqlite_entities_updatable_entity_ts --> file_src_modules_sqlite_entities_creatable_entity_ts
-  file_src_modules_sqlite_sqlite_module_integration_test_ts --> file_src_modules_sqlite_sqlite_module_ts
-  file_src_modules_sqlite_sqlite_module_integration_test_ts --> file_src_modules_sqlite_sqlite_utilities_ts
-  file_src_modules_sqlite_sqlite_module_integration_test_ts --> file_testing_fixtures_migrations_1767225600002_create_sprockets_ts
-  file_src_modules_sqlite_sqlite_module_integration_test_ts --> file_testing_fixtures_sprocket_entity_ts
-  file_src_modules_sqlite_sqlite_module_ts --> file_src_modules_sqlite_sqlite_constants_ts
-  file_src_modules_sqlite_sqlite_module_ts --> file_src_modules_sqlite_sqlite_service_ts
-  file_src_modules_sqlite_sqlite_module_ts --> file_src_modules_sqlite_sqlite_types_ts
-  file_src_modules_sqlite_sqlite_service_ts --> file_src_modules_sqlite_sqlite_constants_ts
-  file_src_modules_sqlite_sqlite_service_ts --> file_src_modules_sqlite_sqlite_types_ts
-  file_src_modules_sqlite_sqlite_service_ts --> file_src_modules_sqlite_sqlite_utilities_ts
-  file_src_modules_sqlite_sqlite_service_unit_test_ts --> file_src_modules_sqlite_sqlite_constants_ts
-  file_src_modules_sqlite_sqlite_service_unit_test_ts --> file_src_modules_sqlite_sqlite_service_ts
-  file_src_modules_sqlite_sqlite_service_unit_test_ts --> file_testing_fixtures_migrations_1767225600002_create_sprockets_ts
-  file_src_modules_sqlite_sqlite_types_ts --> file_src_modules_sqlite_sqlite_constants_ts
-  file_src_modules_sqlite_sqlite_utilities_ts --> file_src_modules_postgresql_postgresql_constants_ts
-  file_src_modules_sqlite_sqlite_utilities_ts --> file_src_modules_sqlite_sqlite_constants_ts
-  file_src_modules_sqlite_sqlite_utilities_ts --> file_src_modules_sqlite_sqlite_types_ts
-  file_src_modules_sqlite_sqlite_utilities_unit_test_ts --> file_src_modules_sqlite_sqlite_utilities_ts
   file_src_persistence_main_ts --> file_src_persistence_module_ts
   file_src_persistence_module_ts --> file_src_modules_postgresql_export_postgresql_export_module_ts
   file_src_persistence_module_ts --> file_src_modules_postgresql_import_postgresql_import_module_ts
@@ -719,7 +691,6 @@ graph LR
   file_testing_fixtures_sample_widgets_module_ts --> file_testing_fixtures_sample_widgets_service_ts
   file_testing_fixtures_sample_widgets_module_ts --> file_testing_fixtures_widget_entity_ts
   file_testing_fixtures_sample_widgets_service_ts --> file_testing_fixtures_widget_entity_ts
-  file_testing_fixtures_sprocket_entity_ts --> file_src_modules_sqlite_entities_deletable_entity_ts
   file_testing_fixtures_widget_entity_ts --> file_src_modules_postgresql_entities_deletable_entity_ts
   file_testing_persistence_testing_types_ts --> file_src_modules_postgresql_postgresql_container_types_ts
   file_testing_persistence_testing_types_ts --> file_src_modules_postgresql_postgresql_types_ts
@@ -737,10 +708,10 @@ Call stacks traced through `projects/common/persistence`, deepest first. Each fr
 
 | Measure | Value |
 | --- | --- |
-| Callables | 146 |
-| Files | 45 |
-| Calls traced | 158 |
-| Call stacks | 10 |
+| Callables | 132 |
+| Files | 37 |
+| Calls traced | 139 |
+| Call stacks | 6 |
 | Deepest stack | 7 |
 | Stacks through recursion | 0 |
 | Unfollowable calls | 19 |
@@ -789,18 +760,18 @@ What this project is judged against, as declared in its own `callidescope.config
 **3. `postgresEnvironmentSchema`** — depth 4 · orphan-root
 
 ```text
-🚀 postgresEnvironmentSchema(…): PostgresEnvironmentShape<Project> [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:200]
+🚀 postgresEnvironmentSchema(…): PostgresEnvironmentShape<Project> [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:199]
    ↳ The zod fragment for a project's `<PROJECT>_POSTGRES_*` variables, which each application spreads into its own…
   └─> assertPostgresEnvironmentKeys(…): void [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:35]
      ↳ Holds `shape` to having a key for every one of `project`'s `<PROJECT>_POSTGRES_*` variables, which is what types {@link…
-    └─> postgresEnvironmentKeys(project: string): string[] [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:176]
+    └─> postgresEnvironmentKeys(project: string): string[] [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:175]
        ↳ The `<PROJECT>_POSTGRES_*` variable names a project reads.
-      └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:162]
+      └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:161]
          ↳ The variable a project reads `field` from, for example `LEXICO_POSTGRES_DATABASE` for lexico's `database`.
 ```
 
 <details>
-<summary>7 more call stacks</summary>
+<summary>3 more call stacks</summary>
 
 **4. `PostgresqlService.createTypeOrmOptions`** — depth 4 · orphan-root
 
@@ -811,76 +782,30 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Where the project's database is, read from its prefixed variables and defaulted from its name.
     └─> postgresConnection({ environment, project, }: PostgresConnectionSource): PostgresConnection [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:86]
        ↳ The connection a project's prefixed variables describe, defaulted the way `postgresEnvironmentSchema` defaults them.
-      └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:162]
+      └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:161]
          ↳ The variable a project reads `field` from, for example `LEXICO_POSTGRES_DATABASE` for lexico's `database`.
 ```
 
-**5. `sqliteEnvironmentSchema`** — depth 4 · orphan-root
-
-```text
-🚀 sqliteEnvironmentSchema(…): SqliteEnvironmentShape<Project> [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:203]
-   ↳ The zod fragment for a project's `<PROJECT>_SQLITE_*` variables, which each application spreads into its own…
-  └─> assertSqliteEnvironmentKeys(…): void [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:39]
-     ↳ Holds `shape` to having a key for every one of `project`'s `<PROJECT>_SQLITE_*` variables, which is what types {@link…
-    └─> sqliteEnvironmentKeys(project: string): string[] [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:179]
-       ↳ The `<PROJECT>_SQLITE_*` variable names a project reads.
-      └─> sqliteEnvironmentKey(project: string, field: SqliteConnectionField): string [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:165]
-         ↳ The variable a project reads `field` from, for example `CAELUNDAS_SQLITE_DATABASE` for caelundas's `database`.
-```
-
-**6. `SqliteService.createTypeOrmOptions`** — depth 4 · orphan-root
-
-```text
-🚀 SqliteService.createTypeOrmOptions(): SqliteDataSourceOptions [projects/common/persistence/src/modules/sqlite/sqlite.service.ts:79]
-   ↳ TypeORM's options for the project's connection, after creating the database's folder when it is missing.
-  └─> SqliteService.connection(): SqliteConnection [projects/common/persistence/src/modules/sqlite/sqlite.service.ts:59]
-     ↳ Where the project's database file is, read from its prefixed variable and defaulted from its name.
-    └─> sqliteConnection({ environment, project, }: SqliteConnectionSource): SqliteConnection [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:99]
-       ↳ The connection a project's prefixed variables describe, defaulted the way `sqliteEnvironmentSchema` defaults them.
-      └─> sqliteEnvironmentKey(project: string, field: SqliteConnectionField): string [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:165]
-         ↳ The variable a project reads `field` from, for example `CAELUNDAS_SQLITE_DATABASE` for caelundas's `database`.
-```
-
-**7. `createDataSource`** — depth 3 · orphan-root
+**5. `createDataSource`** — depth 3 · orphan-root
 
 ```text
 🚀 createDataSource(…): DataSource [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:69]
    ↳ The `DataSource` a project's TypeORM command-line entry exports, built from the same options as…
-  └─> postgresDataSourceOptions(…): PostgresDataSourceOptions [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:116]
+  └─> postgresDataSourceOptions(…): PostgresDataSourceOptions [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:115]
      ↳ The TypeORM options for `connection`, shared by every runtime module and command-line data source so a generated…
-    └─> postgresSearchPathOption(schema: string): string [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:230]
+    └─> postgresSearchPathOption(schema: string): string [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:229]
        ↳ The startup parameter pg sends as `options` on each pooled connection, setting the session's `search_path` to `schema`…
 ```
 
-**8. `createSqliteDataSource`** — depth 3 · orphan-root
-
-```text
-🚀 createSqliteDataSource(…): DataSource [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:74]
-   ↳ The `DataSource` a project's TypeORM command-line entry exports, built from the same options as `SqliteModule.forRoot`…
-  └─> sqliteConnection({ environment, project, }: SqliteConnectionSource): SqliteConnection [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:99]
-     ↳ The connection a project's prefixed variables describe, defaulted the way `sqliteEnvironmentSchema` defaults them.
-    └─> sqliteEnvironmentKey(project: string, field: SqliteConnectionField): string [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:165]
-       ↳ The variable a project reads `field` from, for example `CAELUNDAS_SQLITE_DATABASE` for caelundas's `database`.
-```
-
-**9. `startPostgresContainer`** — depth 3 · orphan-root
+**6. `startPostgresContainer`** — depth 3 · orphan-root
 
 ```text
 🚀 startPostgresContainer(…): Promise<StartedPostgresContainer> [projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts:33]
    ↳ Starts a throwaway Postgres 18 laid out the way the local Docker one is — a `<project>_username` role owning a…
   └─> postgresConnection({ environment, project, }: PostgresConnectionSource): PostgresConnection [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:86]
      ↳ The connection a project's prefixed variables describe, defaulted the way `postgresEnvironmentSchema` defaults them.
-    └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:162]
+    └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:161]
        ↳ The variable a project reads `field` from, for example `LEXICO_POSTGRES_DATABASE` for lexico's `database`.
-```
-
-**10. `sqliteEnvironment`** — depth 2 · orphan-root
-
-```text
-🚀 sqliteEnvironment({ connection, project, }: SqliteEnvironmentSource): Record<string, string> [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:147]
-   ↳ `connection` as the project's `<PROJECT>_SQLITE_*` variables: what to stub into the environment for a `SqliteModule` to…
-  └─> sqliteEnvironmentKey(project: string, field: SqliteConnectionField): string [projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:165]
-     ↳ The variable a project reads `field` from, for example `CAELUNDAS_SQLITE_DATABASE` for caelundas's `database`.
 ```
 
 </details>
@@ -894,14 +819,12 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PostgresqlExportCommand.run` | 6 | `PostgresqlExportCommand.plan`, `PostgresqlUtilitiesService.ensureTool`, `PostgresqlExportCommand.logDryRun`, `describePostgresContent`, `PostgresqlUtilitiesService.dump`, `PostgresqlExportCommand.explain` | `projects/common/persistence/src/modules/postgresql-export/postgresql-export.command.ts:241` |
 
 <details>
-<summary>58 more callables</summary>
+<summary>50 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `PostgresqlImportCommand.run` | 5 | `PostgresqlImportCommand.check`, `PostgresqlImportCommand.logDryRun`, `describePostgresContent`, `PostgresqlImportCommand.truncate`, `PostgresqlImportCommand.restore` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:357` |
 | `PostgresqlService.connection` | 4 | `PostgresqlService.databaseOptions`, `postgresConnection`, `PostgresqlService.map(…)`, `postgresEnvironmentKeys` | `projects/common/persistence/src/modules/postgresql/postgresql.service.ts:61` |
-| `SqliteService.connection` | 4 | `SqliteService.sqliteOptions`, `sqliteConnection`, `SqliteService.map(…)`, `sqliteEnvironmentKeys` | `projects/common/persistence/src/modules/sqlite/sqlite.service.ts:59` |
-| `SqliteService.createTypeOrmOptions` | 4 | `SqliteService.sqliteOptions`, `SqliteService.connection`, `ensureSqliteDirectory`, `sqliteDataSourceOptions` | `projects/common/persistence/src/modules/sqlite/sqlite.service.ts:79` |
 | `selectPostgresDumpEntries` | 4 | `map(…)`, `every(…)`, `filter(…)`, `every(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:85` |
 | `truncatePostgresTables` | 4 | `map(…)`, `postgresErrorCode`, `map(…)`, `PostgresReferencedTablesError.constructor` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts:31` |
 | `PostgresqlUtilitiesService.restore` | 4 | `PostgresqlUtilitiesService.map(…)`, `selectPostgresDumpEntries`, `PostgresqlUtilitiesService.run`, `postgresContentFlags` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:200` |
@@ -910,10 +833,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PostgresqlImportCommand.restore` | 4 | `PostgresqlUtilitiesService.restore`, `PostgresqlImportRestoreError.constructor`, `truncatedMessage`, `rolledBackMessage` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:200` |
 | `PostgresqlImportCommand.truncate` | 4 | `PostgresqlUtilitiesService.truncate`, `PostgresqlImportCleanError.constructor`, `referencedTablesMessage`, `notTruncatedMessage` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:243` |
 | `startPostgresContainer` | 4 | `postgresConnection`, `startFirstAvailableImage`, `postgresDataSourceOptions`, `postgresEnvironment` | `projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts:33` |
-| `postgresEnvironmentSchema` | 3 | `postgresSettingsSchema`, `postgresEnvironmentKey`, `assertPostgresEnvironmentKeys` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:200` |
+| `postgresEnvironmentSchema` | 3 | `postgresSettingsSchema`, `postgresEnvironmentKey`, `assertPostgresEnvironmentKeys` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:199` |
 | `PostgresqlService.createTypeOrmOptions` | 3 | `postgresDataSourceOptions`, `PostgresqlService.connection`, `PostgresqlService.databaseOptions` | `projects/common/persistence/src/modules/postgresql/postgresql.service.ts:76` |
-| `createSqliteDataSource` | 3 | `sqliteConnection`, `ensureSqliteDirectory`, `sqliteDataSourceOptions` | `projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:74` |
-| `sqliteEnvironmentSchema` | 3 | `sqliteSettingsSchema`, `sqliteEnvironmentKey`, `assertSqliteEnvironmentKeys` | `projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:203` |
 | `qualifyTableNames` | 3 | `filter(…)`, `PostgresTableNameError.constructor`, `map(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts:136` |
 | `PostgresqlUtilitiesService.dump` | 3 | `PostgresqlUtilitiesService.run`, `postgresContentFlags`, `PostgresqlUtilitiesService.map(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:105` |
 | `PostgresqlUtilitiesService.ensureTool` | 3 | `PostgresqlUtilitiesService.anonymous`, `PostgresClientToolError.constructor`, `parsePostgresMajorVersion` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:134` |
@@ -922,7 +843,6 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PostgresqlImportCommand.logDryRun` | 3 | `dumpedTables`, `PostgresqlImportCommand.map(…)`, `dryRunMessages` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:121` |
 | `createDataSource` | 2 | `postgresDataSourceOptions`, `postgresConnection` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:69` |
 | `postgresConnection` | 2 | `postgresEnvironmentKey`, `postgresSettingsSchema` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:86` |
-| `sqliteConnection` | 2 | `sqliteEnvironmentKey`, `sqliteSettingsSchema` | `projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:99` |
 | `parsePostgresDumpContents` | 2 | `describeEntry`, `dependencyIds` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:46` |
 | `parsePostgresUri` | 2 | `PostgresUriError.constructor`, `postgresUriProblem` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts:63` |
 | `PostgresqlUtilitiesService.anonymous` | 2 | `PostgresqlUtilitiesService.execFile(…)`, `postgresProcessEnvironment` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:69` |
@@ -932,12 +852,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.constants.ts:122` |
 | `PostgresqlImportCommand.missing` | 2 | `dumpedTables`, `PostgresqlImportCommand.filter(…)` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:103` |
 | `assertPostgresEnvironmentKeys` | 1 | `postgresEnvironmentKeys` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:35` |
-| `postgresDataSourceOptions` | 1 | `postgresSearchPathOption` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:116` |
-| `postgresEnvironment` | 1 | `postgresEnvironmentKey` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:142` |
-| `postgresEnvironmentKeys` | 1 | `postgresEnvironmentKey` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:176` |
-| `assertSqliteEnvironmentKeys` | 1 | `sqliteEnvironmentKeys` | `projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:39` |
-| `sqliteEnvironment` | 1 | `sqliteEnvironmentKey` | `projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:147` |
-| `sqliteEnvironmentKeys` | 1 | `sqliteEnvironmentKey` | `projects/common/persistence/src/modules/sqlite/sqlite.utilities.ts:179` |
+| `postgresDataSourceOptions` | 1 | `postgresSearchPathOption` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:115` |
+| `postgresEnvironment` | 1 | `postgresEnvironmentKey` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:141` |
+| `postgresEnvironmentKeys` | 1 | `postgresEnvironmentKey` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:175` |
 | `dumpedTables` | 1 | `flatMap(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:21` |
 | `missingDumpTables` | 1 | `map(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:36` |
 | `dependencyIds` | 1 | `filter(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:112` |

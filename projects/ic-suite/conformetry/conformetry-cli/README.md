@@ -575,7 +575,7 @@ Call stacks traced through `projects/ic-suite/conformetry/conformetry-cli`, deep
 | Measure | Value |
 | --- | --- |
 | Callables | 61 |
-| Files | 27 |
+| Files | 28 |
 | Calls traced | 76 |
 | Call stacks | 16 |
 | Deepest stack | 15 |
@@ -1024,6 +1024,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_conformetry_cli_constants_ts["src/conformetry-cli.constants.ts"]
   file_src_conformetry_cli_main_end_to_end_test_ts["src/conformetry-cli.main.end-to-end.test.ts"]

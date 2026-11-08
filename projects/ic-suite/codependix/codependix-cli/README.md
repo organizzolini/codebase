@@ -380,6 +380,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_codependix_cli_constants_ts["src/codependix-cli.constants.ts"]
   file_src_codependix_cli_main_end_to_end_test_ts["src/codependix-cli.main.end-to-end.test.ts"]
@@ -444,7 +445,7 @@ Call stacks traced through `projects/ic-suite/codependix/codependix-cli`, deepes
 | Measure | Value |
 | --- | --- |
 | Callables | 48 |
-| Files | 19 |
+| Files | 20 |
 | Calls traced | 44 |
 | Call stacks | 19 |
 | Deepest stack | 15 |

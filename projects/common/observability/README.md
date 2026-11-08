@@ -87,7 +87,7 @@ Call stacks traced through `projects/common/observability`, deepest first. Each 
 | Measure | Value |
 | --- | --- |
 | Callables | 26 |
-| Files | 11 |
+| Files | 12 |
 | Calls traced | 5 |
 | Call stacks | 1 |
 | Deepest stack | 4 |
@@ -135,6 +135,7 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  caelundas_api["caelundas-api"]
   caelundas_cli["caelundas-cli"]
   callidescope_cli["callidescope-cli"]
   callidescope_graph["callidescope-graph"]
@@ -148,10 +149,12 @@ graph LR
   codometer_languages["codometer-languages"]
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
+  coinagerie_cli["coinagerie-cli"]
   compliance["compliance"]
   configuration["configuration"]
   conformetry_cli["conformetry-cli"]
   conformetry_nx["conformetry-nx"]
+  deployment["deployment"]
   documentation["documentation"]
   installation["installation"]
   integration["integration"]
@@ -160,9 +163,9 @@ graph LR
   meanderaw_cli["meanderaw-cli"]
   observability["observability"]
   persistence["persistence"]
-  publication["publication"]
   synchronization["synchronization"]
   validation["validation"]
+  caelundas_api --> observability
   caelundas_cli --> observability
   callidescope_cli --> observability
   callidescope_graph --> observability
@@ -176,9 +179,11 @@ graph LR
   codometer_languages --> observability
   codometer_measurement --> observability
   codometer_output --> observability
+  coinagerie_cli --> observability
   compliance --> observability
   conformetry_cli --> observability
   conformetry_nx --> observability
+  deployment --> observability
   documentation --> observability
   installation --> observability
   integration --> observability
@@ -187,7 +192,6 @@ graph LR
   meanderaw_cli --> observability
   observability --> configuration
   persistence --> observability
-  publication --> observability
   synchronization --> observability
   validation --> observability
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
@@ -212,6 +216,7 @@ graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_lib_conventional_log_message_eslint_rule_ts["src/lib/conventional-log-message.eslint-rule.ts"]
