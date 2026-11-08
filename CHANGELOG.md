@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.59.1](https://github.com/organizzolini/codebase/compare/v3.59.0...v3.59.1) (2026-11-08)
+
+### ♻️ Code Refactoring
+
+* **lexico-db,lexico,lexico-cli,configuration:** ♻️ rename lexico-entities to lexico-db and split its modules ([#2185](https://github.com/organizzolini/codebase/issues/2185)) ([da2974e](https://github.com/organizzolini/codebase/commit/da2974e13b259606fe855e6360e7e3e4ec7e8549)), closes [#2184](https://github.com/organizzolini/codebase/issues/2184)
+
 ## [3.59.0](https://github.com/organizzolini/codebase/compare/v3.58.1...v3.59.0) (2026-11-07)
 
 ### ✨ Features
