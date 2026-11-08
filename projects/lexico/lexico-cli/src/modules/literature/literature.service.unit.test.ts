@@ -1,5 +1,4 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -270,9 +269,8 @@ describe(LiteratureService, () => {
   it("should create output directory when it does not exist", async () => {
     existsSyncMock.mockReturnValue(false);
 
-    const module = await Test.createTestingModule({
+    await buildTestingModule(LiteratureService, {
       providers: [
-        LiteratureService,
         { provide: getRepositoryToken(Author), useValue: authorRepository },
         { provide: getRepositoryToken(Line), useValue: lineRepository },
         { provide: NumeralsService, useValue: numeralsService },
@@ -291,11 +289,8 @@ describe(LiteratureService, () => {
           provide: LiteratureWordNormalizationService,
           useValue: literatureWordNormalizationService,
         },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
-
-    module.get(LiteratureService);
+    });
 
     expect(mkdirSyncMock).toHaveBeenCalledWith(expect.any(String), {
       recursive: true,
