@@ -195,7 +195,9 @@ describe("literature search end-to-end suite", () => {
       const body = await execute(`{ searchAuthors { totalCount } }`);
 
       expect(body.data).toBeUndefined();
-      expect(body.errors?.[0]?.message).toContain('"query"');
+      expect(body.errors?.[0]?.message).toMatch(
+        /query.*required.*not provided/iu,
+      );
     });
   });
 

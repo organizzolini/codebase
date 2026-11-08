@@ -231,7 +231,9 @@ describe("words resolver end-to-end suite", () => {
       const response = await application.query("{ word { data } }");
 
       expect(response.data).toBeUndefined();
-      expect(response.errors?.[0]?.message).toMatch(/argument "data"/u);
+      expect(response.errors?.[0]?.message).toMatch(
+        /data.*required.*not provided/iu,
+      );
     });
   });
 
