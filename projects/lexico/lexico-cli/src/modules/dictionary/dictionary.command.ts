@@ -4,7 +4,7 @@ import path from "node:path";
 import { Injectable } from "@nestjs/common";
 import { Command, CommandRunner, Option } from "nest-commander";
 
-import { Lexeme, Translation } from "@codebase/lexico-entities";
+import { Lexeme, Translation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { LexemesService } from "../lexemes/lexemes.service";

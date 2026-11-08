@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,

@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as cheerio from "cheerio";
 import { Repository } from "typeorm";
 
-import { Lexeme, PrincipalPart } from "@codebase/lexico-entities";
+import { Lexeme, PrincipalPart } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import type { AnyNode } from "domhandler";

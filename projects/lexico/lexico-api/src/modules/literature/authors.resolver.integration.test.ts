@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import {
   AUTHOR_NAMES_IN_ORDER,

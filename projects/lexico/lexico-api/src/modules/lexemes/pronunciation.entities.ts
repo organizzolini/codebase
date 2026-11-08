@@ -4,10 +4,7 @@ import { DeletableType } from "../../deletable.entities";
 
 import type { PronunciationDatabaseOnlyField } from "./lexemes.types";
 import type { GraphQLObjectOf } from "@codebase/interface";
-import type {
-  Pronunciation,
-  PronunciationVariant,
-} from "@codebase/lexico-entities";
+import type { Pronunciation, PronunciationVariant } from "@codebase/lexico-db";
 
 /** How a lexeme is pronounced in one tradition. */
 @ObjectType("Pronunciation")

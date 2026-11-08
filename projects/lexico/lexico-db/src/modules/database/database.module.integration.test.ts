@@ -5,12 +5,12 @@ import { pathToFileURL } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-const ENTITIES_DIRECTORY = import.meta.dirname;
+const MODULES_DIRECTORY = path.resolve(import.meta.dirname, "..");
 
-const WORKSPACE_ROOT = path.resolve(ENTITIES_DIRECTORY, "../../../../../..");
+const WORKSPACE_ROOT = path.resolve(MODULES_DIRECTORY, "../../../../..");
 
 const ENTITY_FILES = globSync("**/*.entity.ts", {
-  cwd: ENTITIES_DIRECTORY,
+  cwd: MODULES_DIRECTORY,
 }).toSorted();
 
 const IMPORT_TIMEOUT_MILLISECONDS = 120_000;
@@ -55,7 +55,7 @@ describe("entities module graph", () => {
     async (entityFile) => {
       expect.hasAssertions();
       await expect(
-        importInFreshProcess(path.join(ENTITIES_DIRECTORY, entityFile)),
+        importInFreshProcess(path.join(MODULES_DIRECTORY, entityFile)),
       ).resolves.not.toContain("Error");
     },
     IMPORT_TIMEOUT_MILLISECONDS,
@@ -66,9 +66,7 @@ describe("entities module graph", () => {
     async () => {
       expect.hasAssertions();
       await expect(
-        importInFreshProcess(
-          path.resolve(ENTITIES_DIRECTORY, "../../index.ts"),
-        ),
+        importInFreshProcess(path.resolve(MODULES_DIRECTORY, "../index.ts")),
       ).resolves.not.toContain("Error");
     },
     IMPORT_TIMEOUT_MILLISECONDS,

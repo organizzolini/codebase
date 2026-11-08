@@ -5,7 +5,7 @@ import {
   InjectRepository,
   Lexeme,
   type Repository,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /**
  * Service providing dictionary lexeme lookup queries.

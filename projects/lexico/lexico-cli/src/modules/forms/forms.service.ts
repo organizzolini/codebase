@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { Form, type Lexeme } from "@codebase/lexico-entities";
+import { Form, type Lexeme } from "@codebase/lexico-db";
 
 import { WordsService } from "../words/words.service";
 

@@ -8,7 +8,7 @@ import {
   NominalForm,
   ParticipleForm,
   SupineForm,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { AdjectivalFormType } from "./adjectival-form.entities";
 import { AdverbFormType } from "./adverb-form.entities";

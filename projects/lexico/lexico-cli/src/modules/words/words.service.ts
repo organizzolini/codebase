@@ -2,13 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 
-import {
-  Form,
-  Lexeme,
-  Word,
-  WordForm,
-  WordLexeme,
-} from "@codebase/lexico-entities";
+import { Form, Lexeme, Word, WordForm, WordLexeme } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { LEXICO_INGESTION_BY_ID } from "../lexico-ingestion/lexico-ingestion.constants";

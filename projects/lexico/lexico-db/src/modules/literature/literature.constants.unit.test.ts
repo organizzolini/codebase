@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { BIGINT_NUMBER_TRANSFORMER } from "./entities.constants";
+import { BIGINT_NUMBER_TRANSFORMER } from "./literature.constants";
 
 describe("bIGINT_NUMBER_TRANSFORMER", () => {
   it("reads the string Postgres returns for a bigint as a number, and keeps null", () => {

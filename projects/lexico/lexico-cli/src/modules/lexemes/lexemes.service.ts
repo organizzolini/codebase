@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as cheerio from "cheerio";
 import { Repository } from "typeorm";
 
-import { Lexeme } from "@codebase/lexico-entities";
+import { Lexeme } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { EtymologyService } from "../etymology/etymology.service";
@@ -19,7 +19,7 @@ import { WordsService } from "../words/words.service";
 import { skipPOS, validPOS } from "./lexemes.constants";
 
 import type { WiktionaryPage } from "../lexico-ingestion/lexico-ingestion.types";
-import type { PartOfSpeech } from "@codebase/lexico-entities";
+import type { PartOfSpeech } from "@codebase/lexico-db";
 import type { AnyNode } from "domhandler";
 
 /**

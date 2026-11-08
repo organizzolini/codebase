@@ -31,7 +31,7 @@ import type {
   TokenRelationField,
 } from "./literature.types";
 import type { Connection, MappedFields } from "@codebase/interface";
-import type { Author, Line, Text, Token } from "@codebase/lexico-entities";
+import type { Author, Line, Text, Token } from "@codebase/lexico-db";
 
 /** Returns a connection holding no edges and counting nothing. */
 export function createEmptyConnection<T>(): Connection<T> {
