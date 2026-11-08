@@ -11,7 +11,7 @@ import { getEventLabel } from "../event-glyphs/calendar-glyphs.utilities";
 import { EventGlyphs } from "../event-glyphs/event-glyphs";
 import { EventTagPills } from "../event-tag-pills/event-tag-pills";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

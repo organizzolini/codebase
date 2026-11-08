@@ -10,7 +10,7 @@ import {
 import type {
   CalendarEventRecord,
   CalendarEventTag,
-} from "../events-calendar/events-database.types";
+} from "../events-calendar/calendar-records.types";
 
 function event(id: string, summary: string): CalendarEventRecord {
   const at = new Date("2026-03-04T10:00:00.000Z");

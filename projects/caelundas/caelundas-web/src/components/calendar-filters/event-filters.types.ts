@@ -1,16 +1,9 @@
-import type { SqlCondition } from "../events-calendar/events-database.types";
 import type {
   FilterField,
   FilterNode,
   FilterQuery,
   FilterRule,
 } from "@codebase/presentation";
-
-/**
- * A filter compiled to a boolean SQL expression over the derived events
- * view, the condition `EventsDatabase.findEvents` applies.
- */
-export type CompiledEventFilter = SqlCondition;
 
 /**
  * A field the filter builder offers, holding the calendar's rule values.

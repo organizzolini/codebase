@@ -12,9 +12,8 @@ import {
   MAXIMUM_GROUP_LEVELS,
 } from "./event-groups.constants";
 
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type {
-  DerivedGroupId,
   EventGroupField,
   EventGrouping,
   EventGroupLevel,
@@ -85,13 +84,6 @@ export function getDefaultGrouping(
   }
 
   return grouping;
-}
-
-/**
- * Whether a field id names one of the derived fields.
- */
-export function isDerivedGroupId(id: string): id is DerivedGroupId {
-  return (DERIVED_GROUP_ORDER as readonly string[]).includes(id);
 }
 
 /**

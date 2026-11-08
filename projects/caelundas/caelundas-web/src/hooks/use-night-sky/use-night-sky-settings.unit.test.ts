@@ -1,7 +1,5 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-
-import { createTestEventsDatabase } from "../../../testing/events-database";
 
 import { useNightSkySettings } from "./use-night-sky-settings";
 
@@ -23,9 +21,6 @@ const router = vi.hoisted(() => ({
 
 vi.mock(import("@tanstack/react-router"), () => ({
   useNavigate: () => router.navigate as never,
-  useRouter: (() => ({
-    options: { context: { eventsDatabase: createTestEventsDatabase() } },
-  })) as never,
   useRouterState: ((options: {
     select: (state: {
       location: { search: Readonly<Record<string, unknown>> };
@@ -34,21 +29,21 @@ vi.mock(import("@tanstack/react-router"), () => ({
 }));
 
 describe(useNightSkySettings, () => {
-  it("returns its result", async () => {
+  it("returns its result", () => {
     router.search = { "sky.lat": 51.5 };
 
     const { result } = renderHook(() => useNightSkySettings());
 
     expect(result.current).toStrictEqual({
       change: expect.any(Function),
-      constellations: [],
+      constellations: expect.any(Array),
       settings: expect.objectContaining({ latitudeDegrees: 51.5 }),
     });
     expect(result.current.settings.constellations).toStrictEqual(["zodiac"]);
-
-    await waitFor(() => {
-      expect(result.current.constellations).toHaveLength(88);
-    });
+    expect(result.current.constellations).toHaveLength(88);
+    expect(
+      result.current.constellations.filter(({ zodiac }) => zodiac),
+    ).toHaveLength(12);
   });
 
   it("writes a change over the link, replacing its history entry", () => {

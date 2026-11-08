@@ -888,6 +888,10 @@ const codependixConfiguration: CodependixConfiguration = {
    */
   nestjsModules: {
     rootModules: {
+      "caelundas-api": {
+        export: "CaelundasApiModule",
+        file: "src/caelundas-api.module.ts",
+      },
       "caelundas-cli": {
         export: "MainModule",
         file: "src/caelundas-cli.module.ts",

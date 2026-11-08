@@ -1,6 +1,6 @@
 import { getEventRowHeight } from "../calendar-agenda/calendar-agenda.utilities";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 
 // 🔏 Private Functions
 
