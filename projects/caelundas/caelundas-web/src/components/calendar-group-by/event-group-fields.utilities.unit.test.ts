@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { createTestEventsDatabase } from "../../../testing/events-database";
+import { serveCalendarApi } from "../../../testing/calendar-api";
+import { findFacets } from "../events-calendar/events-api.utilities";
 
 import {
   createEventGroupFields,
@@ -8,11 +9,14 @@ import {
   resolveEventGrouping,
 } from "./event-group-fields.utilities";
 
-const fields = createEventGroupFields(
-  await createTestEventsDatabase().findFacets(),
-);
+let fields: ReturnType<typeof createEventGroupFields> = [];
 
 describe("event group fields", () => {
+  beforeAll(async () => {
+    serveCalendarApi();
+    fields = createEventGroupFields(await findFacets());
+  });
+
   describe(createEventGroupFields, () => {
     it("offers each tag root with the names at each depth, then the derived fields", () => {
       expect(fields.map(({ id }) => id)).toStrictEqual([

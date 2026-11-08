@@ -1,5 +1,5 @@
+import type { CalendarEventRecord } from "../../components/events-calendar/calendar-records.types";
 import type { CalendarViewName } from "../../components/events-calendar/calendar-views.types";
-import type { CalendarEventRecord } from "../../components/events-calendar/events-database.types";
 import type { EventCalendarOccurrence } from "@codebase/presentation";
 import type { ReactNode } from "react";
 

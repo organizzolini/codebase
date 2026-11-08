@@ -17,7 +17,7 @@ import { keepKeysInPanel } from "../night-sky-menu/night-sky-menu.utilities";
 import { PANEL_CLASS_NAME } from "./calendar-color-menu.constants";
 
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
-import type { EventFacet } from "../events-calendar/events-database.types";
+import type { EventFacet } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
