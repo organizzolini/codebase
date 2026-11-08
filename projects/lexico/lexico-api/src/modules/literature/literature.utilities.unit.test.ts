@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { toCursor } from "@codebase/interface";
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { WordType } from "../words/word.entities";

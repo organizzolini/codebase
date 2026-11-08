@@ -6,7 +6,7 @@ import { loadCheerioElement } from "../../../testing/mocks";
 
 import { PartOfSpeechFormsService } from "./part-of-speech-forms.service";
 
-import type { Lexeme } from "@codebase/lexico-entities";
+import type { Lexeme } from "@codebase/lexico-db";
 import type { CheerioAPI } from "cheerio";
 import type { AnyNode } from "domhandler";
 

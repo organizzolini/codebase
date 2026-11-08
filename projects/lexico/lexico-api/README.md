@@ -12,7 +12,7 @@ nx run lexico-api:vitest
 
 ## GraphQL types
 
-The API's object types are its own, not lexico-entities' TypeORM entities.
+The API's object types are its own, not lexico-db' TypeORM entities.
 Each one, such as `LexemeType` in `src/modules/lexemes/lexeme.entities.ts`,
 implements `GraphQLObjectOf<Entity, Self, DatabaseOnlyField, RelationField>`
 from `src/lexico-api.types.ts`, which fails the typecheck when the type and its
@@ -50,11 +50,11 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 graph LR
   interface["interface"]
   lexico_api["lexico-api"]
-  lexico_entities["lexico-entities"]
+  lexico_db["lexico-db"]
   observability["observability"]
   persistence["persistence"]
   lexico_api --> interface
-  lexico_api --> lexico_entities
+  lexico_api --> lexico_db
   lexico_api --> observability
   lexico_api --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px

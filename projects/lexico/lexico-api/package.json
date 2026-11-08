@@ -3,7 +3,7 @@
     "@apollo/server": "catalog:",
     "@as-integrations/express5": "catalog:",
     "@codebase/interface": "workspace:*",
-    "@codebase/lexico-entities": "workspace:*",
+    "@codebase/lexico-db": "workspace:*",
     "@codebase/observability": "workspace:*",
     "@codebase/persistence": "workspace:*",
     "@nestjs/apollo": "catalog:",

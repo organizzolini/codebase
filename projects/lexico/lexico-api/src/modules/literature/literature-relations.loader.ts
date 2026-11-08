@@ -5,7 +5,7 @@ import { LiteratureRelationsService } from "./literature-relations.service";
 import { createConnectionLoader } from "./literature-relations.utilities";
 import { LOAD_CHUNK_SIZE } from "./literature.constants";
 
-import type { Line, Text, Token } from "@codebase/lexico-entities";
+import type { Line, Text, Token } from "@codebase/lexico-db";
 
 /**
  * Request-scoped DataLoaders resolving the relations beneath a page of

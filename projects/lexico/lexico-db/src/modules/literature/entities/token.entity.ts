@@ -2,9 +2,9 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 
 import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
-import { BIGINT_NUMBER_TRANSFORMER } from "../entities.constants";
+import { BIGINT_NUMBER_TRANSFORMER } from "../literature.constants";
 
-import type { Word } from "../dictionary/word.entity";
+import type { Word } from "../../dictionary/entities/word.entity";
 import type { Author } from "./author.entity";
 import type { Line } from "./line.entity";
 import type { Text } from "./text.entity";

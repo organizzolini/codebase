@@ -3,7 +3,7 @@
 **Where the dictionary comes from.** A NestJS command-line application that
 scrapes, parses, and loads the sources behind
 [Lexico](../lexico-web/README.md) into the schema defined by
-[lexico-entities](../lexico-entities/README.md).
+[lexico-db](../lexico-db/README.md).
 
 ## Quick Start
 
@@ -85,7 +85,7 @@ with [cheerio](https://cheerio.js.org) and wiki markup through mdast, so a
 change to one site's layout is contained to one module.
 
 Nothing here defines the schema. Entities and migrations come from
-[`@codebase/lexico-entities`](../lexico-entities/README.md), so the
+[`@codebase/lexico-db`](../lexico-db/README.md), so the
 shape ingestion writes and the shape the application reads cannot drift.
 
 ## Start
@@ -110,13 +110,13 @@ nx run lexico-cli:lint-codebase --configuration=write
 Run migrations before a first ingestion:
 
 ```bash
-nx run lexico-entities:migration:run
+nx run lexico-db:migration:run
 ```
 
 ## Related
 
 - 🐺 [lexico-web](../lexico-web/README.md) — the web application
-- 📖 [lexico-entities](../lexico-entities/README.md) — the schema this writes to
+- 📖 [lexico-db](../lexico-db/README.md) — the schema this writes to
 - 🎨 [presentation](../../common/presentation/README.md) — the interface
 
 ## License
@@ -855,10 +855,10 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ```mermaid
 graph LR
   lexico_cli["lexico-cli"]
-  lexico_entities["lexico-entities"]
+  lexico_db["lexico-db"]
   observability["observability"]
   persistence["persistence"]
-  lexico_cli --> lexico_entities
+  lexico_cli --> lexico_db
   lexico_cli --> observability
   lexico_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px

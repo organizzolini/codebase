@@ -6,7 +6,7 @@ import {
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Lexeme } from "@codebase/lexico-entities";
+import { Lexeme } from "@codebase/lexico-db";
 
 import { LexemeType } from "./lexeme.entities";
 import { ORPHANED_GRAPHQL_TYPES } from "./lexemes.constants";
