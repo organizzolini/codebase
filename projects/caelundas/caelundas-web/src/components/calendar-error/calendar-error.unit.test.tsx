@@ -8,7 +8,7 @@ describe(CalendarError, () => {
     render(
       <CalendarError
         className="calendar-error"
-        error={new Error("The events database answered 404")}
+        error={new Error("The API answered 404")}
         onRetry={() => {}}
       />,
     );
@@ -21,7 +21,7 @@ describe(CalendarError, () => {
   it("announces the failure, and offers to retry it", () => {
     render(
       <CalendarError
-        error={new Error("The events database answered 404")}
+        error={new Error("The API answered 404")}
         onRetry={() => {}}
       />,
     );

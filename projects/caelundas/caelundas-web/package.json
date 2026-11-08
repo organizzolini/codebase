@@ -1,16 +1,22 @@
 {
   "dependencies": {
+    "@codebase/interface": "workspace:*",
     "@codebase/presentation": "workspace:*",
-    "@sqlite.org/sqlite-wasm": "catalog:",
+    "@graphql-codegen/cli": "catalog:",
+    "@graphql-typed-document-node/core": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
-    "astronomy-engine": "catalog:",
+    "graphql": "catalog:",
     "lucide-react": "catalog:",
+    "msw": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@graphql-codegen/typed-document-node": "catalog:",
+    "@graphql-codegen/typescript-msw": "catalog:",
+    "@graphql-codegen/typescript-operations": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@testing-library/react": "catalog:",
@@ -27,6 +33,10 @@
   },
   "name": "caelundas-web",
   "private": true,
+  "scripts": {
+    "codegen": "graphql-codegen --config codegen.ts",
+    "codegen:watch": "graphql-codegen --config codegen.ts --watch"
+  },
   "type": "module",
   "typeCoverage": {
     "atLeast": 100,
@@ -34,6 +44,7 @@
     "ignoreFiles": [
       "**/*.test.ts",
       "**/*.test.tsx",
+      "src/graphql/generated/**",
       "src/router.tsx",
       "src/routeTree.gen.ts",
       "testing/render-route.tsx"

@@ -1,153 +1,162 @@
 import { describe, expect, it } from "vitest";
 
-import { findMatchingEventIds } from "../../../testing/event-filters";
-import { createTestEventsDatabase } from "../../../testing/events-database";
+import { toEventFilterCollection } from "./event-filter-collections.utilities";
+import { toEventFilterInput } from "./event-filter-input.utilities";
 
-import {
-  DEFAULT_EVENT_FILTER_COLLECTION_ID,
-  EVENT_FILTER_COLLECTIONS,
-} from "./event-filter-collections.constants";
-import {
-  resolveEventFilterCollection,
-  resolveEventFilterCollections,
-} from "./event-filter-collections.utilities";
-
-import type { EventFacet } from "../events-calendar/events-database.types";
-
-function facet(id: string, name: string, paths: string[]): EventFacet {
-  return {
-    id,
-    name,
-    values: paths.map((path) => ({
-      count: 1,
-      depth: path.split(" / ").length,
-      id: `${id}:${path}`,
-      name: path.split(" / ").at(-1) ?? path,
-      path,
-    })),
-  };
-}
-
-const FACETS = [
-  facet("type", "Type", [
-    "Aspect / Simple Aspect / Major Aspect",
-    "Ingress / Sign Ingress",
-    "Direction",
-  ]),
-  facet("planet", "Planet", ["Moon", "Sun"]),
-];
-
-function getCollection(id: string): (typeof EVENT_FILTER_COLLECTIONS)[number] {
-  const collection = EVENT_FILTER_COLLECTIONS.find(
-    (candidate) => candidate.id === id,
-  );
-
-  if (collection === undefined) {
-    throw new Error(`No collection ${id}`);
-  }
-
-  return collection;
-}
-
-describe("event filter collections", () => {
-  describe(resolveEventFilterCollection, () => {
-    it("names the tags of the data in place of the names it was written with", () => {
-      const resolved = resolveEventFilterCollection(
-        getCollection(DEFAULT_EVENT_FILTER_COLLECTION_ID),
-        FACETS,
-      );
-
-      expect(resolved?.filter).toMatchObject({
-        combinator: "or",
-        rules: [
+describe(toEventFilterCollection, () => {
+  it("reads a collection the API answered as the builder's tree, rules first then groups", () => {
+    const collection = toEventFilterCollection({
+      description: "Planets and signs.",
+      filter: {
+        combinator: "OR",
+        groups: [
           {
-            combinator: "and",
+            combinator: "AND",
+            groups: null,
             rules: [
               {
-                operator: "is_any_of",
-                path: ["tag:type"],
-                value: [
-                  "type:Aspect / Simple Aspect / Major Aspect",
-                  "type:Ingress / Sign Ingress",
-                ],
-              },
-              {
+                negated: true,
                 operator: "is_none_of",
-                path: ["tag:planet"],
-                value: ["planet:Moon"],
+                path: ["tag:tag-planet"],
+                values: ["tag-moon"],
               },
             ],
           },
+        ],
+        rules: [
           {
+            negated: false,
             operator: "is_any_of",
-            path: ["tag:type"],
-            value: ["type:Direction"],
+            path: ["tag:tag-type"],
+            values: ["tag-ingress"],
           },
         ],
-      });
+      },
+      id: "planet-sign-events",
+      name: "Planet-sign events",
     });
 
-    it("leaves out an and whose condition the data cannot name", () => {
-      const resolved = resolveEventFilterCollection(
-        getCollection("major-aspects"),
-        FACETS.slice(0, 1),
-      );
-
-      expect(resolved).toBeNull();
-    });
-
-    it("keeps the or's other conditions when one cannot be named", () => {
-      const resolved = resolveEventFilterCollection(
-        getCollection(DEFAULT_EVENT_FILTER_COLLECTION_ID),
-        FACETS.slice(0, 1),
-      );
-
-      expect(resolved?.filter.rules).toHaveLength(1);
-    });
-
-    it("answers nothing for data that has none of the tags", () => {
-      expect(
-        resolveEventFilterCollection(getCollection("daily-cycles"), []),
-      ).toBeNull();
-    });
-
-    it("filters the events of a real database through the tags it names", async () => {
-      const facets = await createTestEventsDatabase().findFacets();
-      const resolved = resolveEventFilterCollection(
-        getCollection("planet-sign-events"),
-        facets,
-      );
-
-      expect(resolved).not.toBeNull();
-      await expect(
-        findMatchingEventIds(resolved?.filter as never),
-      ).resolves.toStrictEqual([
-        "event-sun-ingress-aries",
-        "event-sun-ingress-cancer",
-        "event-venus-ingress-aries",
-      ]);
+    expect(collection).toStrictEqual({
+      description: "Planets and signs.",
+      filter: {
+        combinator: "or",
+        id: "planet-sign-events-0",
+        rules: [
+          {
+            id: "planet-sign-events-0-0",
+            operator: "is_any_of",
+            path: ["tag:tag-type"],
+            type: "rule",
+            value: ["tag-ingress"],
+          },
+          {
+            combinator: "and",
+            id: "planet-sign-events-0-1",
+            rules: [
+              {
+                id: "planet-sign-events-0-1-0",
+                negated: true,
+                operator: "is_none_of",
+                path: ["tag:tag-planet"],
+                type: "rule",
+                value: ["tag-moon"],
+              },
+            ],
+            type: "group",
+          },
+        ],
+        type: "group",
+      },
+      id: "planet-sign-events",
+      name: "Planet-sign events",
     });
   });
 
-  describe(resolveEventFilterCollections, () => {
-    it("lists the collections the data can serve, in menu order", () => {
-      expect(
-        resolveEventFilterCollections(FACETS).map(
-          (collection) => collection.id,
-        ),
-      ).toStrictEqual(["highlights", "major-aspects", "planetary-cycles"]);
+  it("writes back to the input it was read from", () => {
+    const filter = {
+      combinator: "AND" as const,
+      rules: [
+        {
+          negated: false,
+          operator: "is_any_of",
+          path: ["tag:tag-type"],
+          values: ["tag-ingress"],
+        },
+      ],
+    };
+
+    expect(
+      toEventFilterInput(
+        toEventFilterCollection({
+          description: "",
+          filter: { ...filter, groups: null },
+          id: "any",
+          name: "Any",
+        }).filter,
+      ),
+    ).toStrictEqual({
+      combinator: "AND",
+      rules: [
+        {
+          operator: "is_any_of",
+          path: ["tag:tag-type"],
+          values: ["tag-ingress"],
+        },
+      ],
+    });
+  });
+
+  it("reads a rule with no values as one with none to pick from", () => {
+    const { filter } = toEventFilterCollection({
+      description: "",
+      filter: {
+        combinator: "AND",
+        groups: null,
+        rules: [
+          { negated: null, operator: "eq", path: ["text"], values: null },
+        ],
+      },
+      id: "empty",
+      name: "Empty",
     });
 
-    it("offers each collection once, with a name and a description", () => {
-      const ids = EVENT_FILTER_COLLECTIONS.map((collection) => collection.id);
+    expect(filter.rules).toStrictEqual([
+      {
+        id: "empty-0-0",
+        operator: "eq",
+        path: ["text"],
+        type: "rule",
+        value: [],
+      },
+    ]);
+  });
 
-      expect(new Set(ids).size).toBe(ids.length);
-      expect(ids).toContain(DEFAULT_EVENT_FILTER_COLLECTION_ID);
-
-      for (const collection of EVENT_FILTER_COLLECTIONS) {
-        expect(collection.name).not.toBe("");
-        expect(collection.description).not.toBe("");
-      }
+  it("reads a group that holds only nested groups", () => {
+    const { filter } = toEventFilterCollection({
+      description: "",
+      filter: {
+        combinator: "OR",
+        groups: [
+          {
+            combinator: "AND",
+            groups: null,
+            rules: [
+              {
+                negated: false,
+                operator: "is_any_of",
+                path: ["tag:tag-type"],
+                values: ["tag-ingress"],
+              },
+            ],
+          },
+        ],
+        rules: null,
+      },
+      id: "nested",
+      name: "Nested",
     });
+
+    expect(filter.rules).toHaveLength(1);
+    expect(filter.rules[0]).toMatchObject({ id: "nested-0-0", type: "group" });
   });
 });

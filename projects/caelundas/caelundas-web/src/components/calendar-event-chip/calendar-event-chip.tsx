@@ -5,7 +5,7 @@ import { CalendarEventTooltip } from "../calendar-event-tooltip/calendar-event-t
 import { getEventLabel } from "../event-glyphs/calendar-glyphs.utilities";
 import { EventGlyphs } from "../event-glyphs/event-glyphs";
 
-import type { CalendarEventRecord } from "../events-calendar/events-database.types";
+import type { CalendarEventRecord } from "../events-calendar/calendar-records.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

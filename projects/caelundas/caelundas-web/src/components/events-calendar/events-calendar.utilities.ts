@@ -3,8 +3,8 @@ import {
   SCROLLING_WEEK_CLASS_NAMES,
 } from "./events-calendar.constants";
 
+import type { EventsDataset } from "./calendar-records.types";
 import type { CalendarViewName } from "./calendar-views.types";
-import type { EventsDataset } from "./events-database.types";
 
 // 🔏 Private Functions
 

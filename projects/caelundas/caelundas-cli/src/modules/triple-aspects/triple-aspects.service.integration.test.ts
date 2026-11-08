@@ -12,7 +12,7 @@ import { TripleAspectsDetectorService } from "./triple-aspects-detector.service"
 import { TripleAspectsService } from "./triple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../database/database.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
 /**
  * Integration tests for Triple Aspect pattern detection
