@@ -84,11 +84,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/coinagerie/coinagerie-output": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-vocabulary": NEST_BASELINE,
   "projects/lexico/lexico-db": NEST_BASELINE,
-  "projects/meanderaw/meanderaw-cli": NEST_BASELINE,
-  "projects/meanderaw/meanderaw-web": {
-    application: 742 / 764,
-    routes: 131 / 145,
-  },
   publication: NEST_BASELINE,
 };
 

@@ -1,6 +1,8 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
 import { CharacteristicContextService } from "../../characteristic-context.service";
@@ -29,10 +31,6 @@ describe(IsParallelCharacteristicService, () => {
 
       contextService = await module.resolve(CharacteristicContextService);
       service = await module.resolve(IsParallelCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
     });
 
     it.each([
@@ -68,10 +66,9 @@ describe(IsParallelCharacteristicService, () => {
     let service: IsParallelCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsParallelCharacteristicService, {
         providers: [
           CompoundUtilitiesService,
-          IsParallelCharacteristicService,
           {
             provide: CrossCountCharacteristicService,
             useValue: { compute: (): number => values.crossCount },
@@ -93,9 +90,9 @@ describe(IsParallelCharacteristicService, () => {
             useValue: { compute: (): number => values.maxMonotonicTurnLength },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsParallelCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {
