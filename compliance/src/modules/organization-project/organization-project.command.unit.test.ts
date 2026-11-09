@@ -1,5 +1,3 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -10,7 +8,8 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 import { PullRequestGithubService } from "../pull-request/pull-request-github.service";
@@ -19,28 +18,25 @@ import { OrganizationProjectCommand } from "./organization-project.command";
 import { ORGANIZATION_PROJECT_ITEM_LIMIT } from "./organization-project.constants";
 
 import type { GithubCliResult } from "../pull-request/pull-request-github.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** What OrganizationProjectCommand is built with. */
+const DEPENDENCIES = {
+  mocks: [PullRequestGithubService],
+} satisfies TestingModuleOptions;
 
 describe(OrganizationProjectCommand, () => {
   let command: OrganizationProjectCommand;
   let githubService: PullRequestGithubService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        OrganizationProjectCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PullRequestGithubService,
-          useValue: createMock<PullRequestGithubService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      OrganizationProjectCommand,
+      DEPENDENCIES,
+    );
 
-    command = await module.resolve(OrganizationProjectCommand);
-    githubService = await module.resolve(PullRequestGithubService);
+    command = built.instance;
+    githubService = built.mock(PullRequestGithubService);
   });
 
   beforeEach(() => {
@@ -89,30 +85,17 @@ describe(OrganizationProjectCommand, () => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      OrganizationProjectCommand,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(OrganizationProjectCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        OrganizationProjectCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: PullRequestGithubService,
-          useValue: createMock<PullRequestGithubService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "OrganizationProjectCommand",
-    );
+    await expectLoggerContext(OrganizationProjectCommand, DEPENDENCIES);
   });
 
   it("adds missing repository issues and pull requests to the organization project", async () => {

@@ -66,7 +66,6 @@ const COMMAND_PROJECT_BASELINE = 795 / 798;
  * migration deletes the table.
  */
 const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
-  compliance: NEST_BASELINE,
   documentation: NEST_BASELINE,
   installation: NEST_BASELINE,
   integration: NEST_BASELINE,
@@ -186,7 +185,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "",
           workspaceRelativePrefix: "../",
         },
-        threshold: 798 / 801,
       },
     ],
     name: "nestjs-command-project",

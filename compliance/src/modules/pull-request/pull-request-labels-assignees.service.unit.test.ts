@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestLabelsAssigneesService } from "./pull-request-labels-assignees.service";
 
@@ -19,16 +20,17 @@ describe(PullRequestLabelsAssigneesService, () => {
   let service: PullRequestLabelsAssigneesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PullRequestLabelsAssigneesService],
-    }).compile();
+    const built = await buildTestingModule(PullRequestLabelsAssigneesService);
 
-    service = await module.resolve(PullRequestLabelsAssigneesService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PullRequestLabelsAssigneesService,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestLabelsAssigneesService);
   });
 
   /** Runs every check against one pull request's metadata. */

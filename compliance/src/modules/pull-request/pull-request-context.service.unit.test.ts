@@ -1,14 +1,15 @@
 import { appendFileSync } from "node:fs";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestContextService } from "./pull-request-context.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 
 import type { PullRequestContext } from "./pull-request-context.types";
 import type { GithubCliResult } from "./pull-request-github.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 vi.mock("node:fs", () => ({ appendFileSync: vi.fn() }));
 
@@ -31,23 +32,23 @@ function succeeded(standardOutput: string): GithubCliResult {
   };
 }
 
+/** What PullRequestContextService is built with. */
+const DEPENDENCIES = {
+  mocks: [PullRequestGithubService],
+} satisfies TestingModuleOptions;
+
 describe(PullRequestContextService, () => {
   let service: PullRequestContextService;
   let github: PullRequestGithubService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestContextService,
-        {
-          provide: PullRequestGithubService,
-          useValue: createMock<PullRequestGithubService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestContextService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(PullRequestContextService);
-    github = await module.resolve(PullRequestGithubService);
+    service = built.instance;
+    github = built.mock(PullRequestGithubService);
   });
 
   beforeEach(() => {
@@ -55,8 +56,13 @@ describe(PullRequestContextService, () => {
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 404");
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PullRequestContextService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestContextService);
   });
 
   describe("fetch", () => {

@@ -1,10 +1,17 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueGithubService } from "./issue-github.service";
 import { IssueLabelingService } from "./issue-labeling.service";
 import { IssueLabelsService } from "./issue-labels.service";
+
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** What IssueLabelingService is built with. */
+const DEPENDENCIES = {
+  mocks: [IssueGithubService, IssueLabelsService],
+} satisfies TestingModuleOptions;
 
 describe(IssueLabelingService, () => {
   let service: IssueLabelingService;
@@ -12,23 +19,11 @@ describe(IssueLabelingService, () => {
   let labels: IssueLabelsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        IssueLabelingService,
-        {
-          provide: IssueGithubService,
-          useValue: createMock<IssueGithubService>(),
-        },
-        {
-          provide: IssueLabelsService,
-          useValue: createMock<IssueLabelsService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(IssueLabelingService, DEPENDENCIES);
 
-    service = await module.resolve(IssueLabelingService);
-    github = await module.resolve(IssueGithubService);
-    labels = await module.resolve(IssueLabelsService);
+    service = built.instance;
+    github = built.mock(IssueGithubService);
+    labels = built.mock(IssueLabelsService);
   });
 
   beforeEach(() => {
@@ -39,8 +34,13 @@ describe(IssueLabelingService, () => {
 
   const options = { body: "", existingLabelNames: [], issueNumber: "9" };
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      IssueLabelingService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(IssueLabelingService);
   });
 
   it("says nothing when no label is missing", () => {
