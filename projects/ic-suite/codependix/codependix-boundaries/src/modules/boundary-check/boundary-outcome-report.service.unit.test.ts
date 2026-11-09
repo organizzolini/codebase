@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { BoundaryReportService } from "../boundaries/boundary-report.service";
 
@@ -49,15 +50,19 @@ describe(BoundaryOutcomeReportService, () => {
   let service: BoundaryOutcomeReportService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [BoundaryOutcomeReportService, BoundaryReportService],
-    }).compile();
-
-    service = await module.resolve(BoundaryOutcomeReportService);
+    ({ instance: service } = await buildTestingModule(
+      BoundaryOutcomeReportService,
+      { providers: [BoundaryReportService] },
+    ));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      BoundaryOutcomeReportService,
+      { providers: [BoundaryReportService] },
+    );
+
+    expect(instance).toBeInstanceOf(BoundaryOutcomeReportService);
   });
 
   describe("buildReport", () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { BoundaryGraphService } from "./boundary-graph.service";
 
@@ -7,15 +8,13 @@ describe(BoundaryGraphService, () => {
   let service: BoundaryGraphService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [BoundaryGraphService],
-    }).compile();
-
-    service = await module.resolve(BoundaryGraphService);
+    ({ instance: service } = await buildTestingModule(BoundaryGraphService));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(BoundaryGraphService);
+
+    expect(instance).toBeInstanceOf(BoundaryGraphService);
   });
 
   it("carries an Nx project's tags, root, and name", () => {

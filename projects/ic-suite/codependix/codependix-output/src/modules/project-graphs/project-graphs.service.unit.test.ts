@@ -1,5 +1,4 @@
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { ConfigurationService } from "@codependix/configuration";
@@ -10,8 +9,10 @@ import {
 } from "@codependix/nestjs-modules";
 import { NeighborhoodService } from "@codependix/nx-projects";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnchorsService } from "../anchors/anchors.service";
 import { DeliveryService } from "../delivery/delivery.service";
@@ -110,10 +111,9 @@ describe(ProjectGraphsService, () => {
     nestjsProjectService = createMock<NestjsProjectService>();
     typescriptService = createMock<TypescriptService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(ProjectGraphsService, {
       providers: [
         AnchorsService,
-        ProjectGraphsService,
         DeliveryService,
         {
           provide: ConfigurationService,
@@ -124,13 +124,11 @@ describe(ProjectGraphsService, () => {
         { provide: NestjsProjectService, useValue: nestjsProjectService },
         { provide: TypescriptService, useValue: typescriptService },
       ],
-    }).compile();
-
-    service = await module.resolve(ProjectGraphsService);
+    }));
   });
 
-  beforeEach(async () => {
-    projectRoot = await mkdtemp(path.join(tmpdir(), "project-graphs-service-"));
+  beforeEach(() => {
+    projectRoot = createTemporaryDirectory("project-graphs-service");
 
     vi.mocked(neighborhoodService.renderMermaid).mockReturnValue(
       "```mermaid\ngraph LR\n```",
@@ -166,8 +164,23 @@ describe(ProjectGraphsService, () => {
     );
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ProjectGraphsService, {
+      providers: [
+        AnchorsService,
+        DeliveryService,
+        {
+          provide: ConfigurationService,
+          useValue: configurationService,
+        },
+        { provide: ModuleGraphService, useValue: moduleGraphService },
+        { provide: NeighborhoodService, useValue: neighborhoodService },
+        { provide: NestjsProjectService, useValue: nestjsProjectService },
+        { provide: TypescriptService, useValue: typescriptService },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(ProjectGraphsService);
   });
 
   describe("runNxProjectsGraphs", () => {
