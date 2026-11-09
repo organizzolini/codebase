@@ -20,10 +20,13 @@ export default [
           // typescript: a peer of @callidescope/cli and @callidescope/graph,
           // declared here so a consumer installs it; nothing in this package
           // imports it.
+          // @codebase/testing: a devDependency whose shared setup the project's
+          // `testing/` folder imports, outside the build's scope.
           // vitest: referenced via tsconfig "types" array; it's a devDependency and
           // the @nx/dependency-checks rule misidentifies it as a production dependency.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "@golevelup/ts-vitest",
             "pino",
             "pino-pretty",
