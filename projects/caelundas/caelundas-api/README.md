@@ -25,6 +25,7 @@ This project was generated from the [nestjs-graphql-application](../../../config
 The words this project uses that the root glossary does not define, regenerated with `nx run caelundas-api:coinagerie-check:write`.
 
 - **accept**:
+- **alioth**:
 - **altitude**:
 - **anchor**:
 - **angle**:
@@ -41,6 +42,8 @@ The words this project uses that the root glossary does not define, regenerated 
 - **db**:
 - **declination**:
 - **degree**:
+- **designation**:
+- **dubhe**:
 - **early**:
 - **earth**:
 - **ecliptic**:
@@ -48,6 +51,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **equinox**:
 - **greenwich**:
 - **harmonic**:
+- **hip**:
 - **horizon**:
 - **ingress**:
 - **instant**:
@@ -56,6 +60,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **july**:
 - **latitude**:
 - **longitude**:
+- **lyra**:
 - **magnitude**:
 - **middleware**:
 - **moon**:
@@ -84,6 +89,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **tuesday**:
 - **unfinished**:
 - **ursa**:
+- **vega**:
 - **visible**:
 - **weekday**:
 - **zodiac**:
@@ -98,9 +104,9 @@ Call stacks traced through `projects/caelundas/caelundas-api`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 300 |
+| Callables | 302 |
 | Files | 77 |
-| Calls traced | 217 |
+| Calls traced | 219 |
 | Call stacks | 15 |
 | Deepest stack | 9 |
 | Stacks through recursion | 0 |
@@ -301,8 +307,8 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ```text
 🚀 NightSkyService.onModuleInit(): Promise<void> [projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.service.ts:115]
-   ↳ Reads and validates the bundled catalog, and sorts its stars brightest first, which is the order the builder draws them…
-  └─> NightSkyService.toSorted(…)(…): number [projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.service.ts:122]
+   ↳ Reads the stars and constellation figures from the database, and sorts the stars brightest first, which is the order…
+  └─> NightSkyService.flatMap(…)(…): { from: [number, number]; name: string; to: [number, number]; zodiac: boolean; }[] [projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.service.ts:124]
 ```
 
 **13. `encodeOffsetCursor`** — depth 2 · orphan-root
@@ -362,6 +368,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `selectStars` | 3 | `filter(…)`, `filter(…)`, `map(…)` | `projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.utilities.ts:455` |
 | `NightSkyService.draw` | 3 | `buildNightSky`, `selectConstellationSegments`, `computeStartingSiderealDegrees` | `projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.service.ts:50` |
 | `NightSkyService.build` | 3 | `canonicalizeNightSkyInput`, `parseNightSkyInput`, `NightSkyService.draw` | `projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.service.ts:88` |
+| `NightSkyService.onModuleInit` | 3 | `NightSkyService.flatMap(…)`, `NightSkyService.toSorted(…)`, `NightSkyService.map(…)` | `projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.service.ts:115` |
 | `createEdgeType` | 2 | `Field(…)`, `Field(…)` | `projects/caelundas/caelundas-api/src/caelundas-api.utilities.ts:50` |
 | `paginateArray` | 2 | `findIndex(…)`, `map(…)` | `projects/caelundas/caelundas-api/src/caelundas-api.utilities.ts:134` |
 | `transform(…)` | 2 | `filter(…)`, `map(…)` | `projects/caelundas/caelundas-api/src/caelundas-api.constants.ts:13` |
@@ -437,7 +444,6 @@ What this project is judged against, as declared in its own `callidescope.config
 | `from(…)` | 1 | `colorFromIndex` | `projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.utilities.ts:389` |
 | `map(…)` | 1 | `renderStar` | `projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.utilities.ts:463` |
 | `filter(…)` | 1 | `isRendered` | `projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.utilities.ts:464` |
-| `NightSkyService.onModuleInit` | 1 | `NightSkyService.toSorted(…)` | `projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.service.ts:115` |
 | `NightSkyResolver.nightSky` | 1 | `NightSkyService.build` | `projects/caelundas/caelundas-api/src/modules/night-sky/night-sky.resolver.ts:24` |
 
 </details>
@@ -609,6 +615,7 @@ graph LR
   file_src_modules_night_sky_night_sky_utilities_unit_test_ts["src/modules/night-sky/night-sky.utilities.unit.test.ts"]
   file_testing_events_application_ts["testing/events-application.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
+  file_testing_no_database_constants_ts["testing/no-database.constants.ts"]
   file_testing_no_database_module_ts["testing/no-database.module.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
@@ -815,6 +822,7 @@ graph LR
   file_src_modules_night_sky_night_sky_utilities_unit_test_ts --> file_src_modules_night_sky_night_sky_utilities_ts
   file_testing_events_application_ts --> file_src_caelundas_api_constants_ts
   file_testing_events_application_ts --> file_src_modules_events_events_module_ts
+  file_testing_no_database_module_ts --> file_testing_no_database_constants_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
@@ -824,19 +832,19 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10953-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-427.31_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-7-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-111-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-11132-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-336.70_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-6-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-112-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-111-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-112-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-40-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-11-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-3-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-160-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-291-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-161-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-294-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
@@ -846,14 +854,14 @@ graph LR
 ![External Packages](https://img.shields.io/badge/External_Packages-24-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-35-7c3aed?style=flat-square)
 ![Functions](https://img.shields.io/badge/Functions-589-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-147-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-582-4ade80?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-149-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-584-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-154-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-667-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-363-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-231-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-414-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-849-475569?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-675-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-369-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-230-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-420-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-856-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -873,17 +881,17 @@ graph LR
 
 ### JSON
 
-![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-4353-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-632-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-1826-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-2491-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-673-16a34a?style=flat-square)
-![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-4865-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-606-0ea5e9?style=flat-square)
+![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-136-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-32-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-9-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-93-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-74-16a34a?style=flat-square)
+![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-7-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-6107-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-8602-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-27-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-123-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
@@ -967,7 +975,7 @@ graph LR
 ![Module Files](https://img.shields.io/badge/Module_Files-5-7c3aed?style=flat-square)
 ![Service Files](https://img.shields.io/badge/Service_Files-3-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-0-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-11-ea580c?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-12-ea580c?style=flat-square)
 ![Types Files](https://img.shields.io/badge/Types_Files-8-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-19-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
