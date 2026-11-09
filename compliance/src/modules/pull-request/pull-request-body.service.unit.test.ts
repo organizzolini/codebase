@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestBodyService } from "./pull-request-body.service";
 
@@ -70,11 +71,9 @@ describe(PullRequestBodyService, () => {
   let service: PullRequestBodyService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PullRequestBodyService],
-    }).compile();
+    const built = await buildTestingModule(PullRequestBodyService);
 
-    service = await module.resolve(PullRequestBodyService);
+    service = built.instance;
   });
 
   beforeEach(() => {
@@ -82,9 +81,10 @@ describe(PullRequestBodyService, () => {
     templateDocument = templateBody;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PullRequestBodyService);
+
+    expect(instance).toBeInstanceOf(PullRequestBodyService);
   });
 
   describe("extractTemplateComments", () => {

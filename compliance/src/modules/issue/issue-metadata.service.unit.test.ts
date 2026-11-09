@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import { IssueMetadataService } from "./issue-metadata.service";
@@ -9,6 +10,7 @@ import type {
   IssueMetadata,
   MetadataVerdict,
 } from "./issue-metadata.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** A rendered `issue.yml` body naming this Type and Scope. */
 const formBody = (type: string, scope: string): string =>
@@ -33,20 +35,27 @@ const validMetadata: IssueMetadata = {
   labelNames: ["scope:lexico", "source:human", "type:feat"],
 };
 
+/** What IssueMetadataService is built with. */
+const DEPENDENCIES = {
+  providers: [IssueMetadataTypeService],
+} satisfies TestingModuleOptions;
+
 describe(IssueMetadataService, () => {
   let service: IssueMetadataService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [IssueMetadataService, IssueMetadataTypeService],
-    }).compile();
+    const built = await buildTestingModule(IssueMetadataService, DEPENDENCIES);
 
-    service = await module.resolve(IssueMetadataService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      IssueMetadataService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(IssueMetadataService);
   });
 
   /** Runs the check for one issue's metadata. */

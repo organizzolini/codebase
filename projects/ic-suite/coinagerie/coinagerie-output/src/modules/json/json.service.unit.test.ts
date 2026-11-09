@@ -1,6 +1,7 @@
 import { MalformedGlossaryError } from "@coinagerie/core";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { JsonService } from "./json.service";
 
@@ -10,15 +11,13 @@ describe(JsonService, () => {
   let service: JsonService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [JsonService],
-    }).compile();
-
-    service = await module.resolve(JsonService);
+    ({ instance: service } = await buildTestingModule(JsonService));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(JsonService);
+
+    expect(instance).toBeInstanceOf(JsonService);
   });
 
   describe("render", () => {
