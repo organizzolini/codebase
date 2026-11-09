@@ -1640,6 +1640,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ostara**: Seasonal festival event, the spring equinox name here, mapped to a PNG icon in the glyph set.
 - **palla**: Asteroid Pallas, named in event labels such as Mars biquintile Pallas, with its own glyph.
 - **pentagram**: The star glyph for a five-pointed pattern, mapped to its own PNG icon in the glyph set.
+- **period**: A range of dates, start inclusive and end exclusive, that the calendar shows and reads events for, titled in the toolbar and colored by its own text.
 - **phase**: Lunar or planetary cycle stage, a filter and color field grouping events by cycle position.
 - **pholus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
 - **pisce**: Zodiac sign whose glyph maps to its own SVG icon, and a constellation listed in the sky menu.
@@ -1705,6 +1706,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **visible**: Shown on screen, such as the visible rows the virtual list computes for its window.
 - **water**: Elemental class of a zodiac sign, one of fire, earth, air or water, offered as a filter value.
 - **weekday**: Calendar day of the week as a grouping and color field, such as Monday through Sunday.
+- **window**: A calendar layout the UI calls a View: agenda, day, three-day, week, month or timeline; also the range of dates (a period) a view reads events for.
 - **yod**: Compound aspect pattern, the Yod, a Compound Aspect variant in the color path tests.
 - **york**:
 - **yule**: Seasonal festival event at the winter solstice, mapped to its own PNG icon in the glyph set.

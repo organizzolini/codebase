@@ -68,6 +68,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **north**:
 - **obliquity**:
 - **observer**:
+- **period**: A range of dates, start inclusive and end exclusive, that a read of events covers. In night sky, the seconds one animation cycle takes.
 - **phase**:
 - **planet**:
 - **polar**:
@@ -92,6 +93,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **vega**:
 - **visible**:
 - **weekday**:
+- **window**: A calendar layout the UI calls a View: agenda, day, three-day, week, month or timeline. In night sky, the viewport size the sky is drawn to fit.
 - **zodiac**:
 
 <!-- coinagerie:end -->
