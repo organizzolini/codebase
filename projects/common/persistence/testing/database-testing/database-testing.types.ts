@@ -1,10 +1,10 @@
 // 🏷️ Types
 
+import type { PostgresqlModuleOptions } from "../../src/modules/postgresql/postgresql.types";
 import type {
   PostgresContainerOptions,
   StartedPostgresContainer,
-} from "../src/modules/postgresql/postgresql-container.types";
-import type { PostgresqlModuleOptions } from "../src/modules/postgresql/postgresql.types";
+} from "../postgres-container/postgres-container.types";
 import type { ModuleMetadata } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
 import type { TypeOrmModule } from "@nestjs/typeorm";

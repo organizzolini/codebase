@@ -2,20 +2,21 @@ import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import { DataSource } from "typeorm";
 
 import {
-  POSTGRES_CONTAINER_IMAGES,
-  POSTGRES_CONTAINER_INITIALIZATION_PATH,
-} from "./postgresql-container.constants";
-import {
   postgresConnection,
   postgresDataSourceOptions,
   postgresEnvironment,
-} from "./postgresql.utilities";
+} from "../../src/modules/postgresql/postgresql.utilities";
 
+import {
+  POSTGRES_CONTAINER_IMAGES,
+  POSTGRES_CONTAINER_INITIALIZATION_PATH,
+} from "./postgres-container.constants";
+
+import type { PostgresConnection } from "../../src/modules/postgresql/postgresql.types";
 import type {
   PostgresContainerOptions,
   StartedPostgresContainer,
-} from "./postgresql-container.types";
-import type { PostgresConnection } from "./postgresql.types";
+} from "./postgres-container.types";
 import type { StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 
 // 🌎 Utilities

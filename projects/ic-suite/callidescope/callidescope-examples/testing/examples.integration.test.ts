@@ -627,6 +627,7 @@ describe("callidescope examples (integration)", () => {
         result.projects.map((project) => project.projectName),
       ).toStrictEqual([
         "projects/common/observability",
+        "projects/common/testing",
         "projects/ic-suite/callidescope/callidescope-configuration",
         "projects/ic-suite/callidescope/callidescope-core",
         EXAMPLES_DIRECTORY,
