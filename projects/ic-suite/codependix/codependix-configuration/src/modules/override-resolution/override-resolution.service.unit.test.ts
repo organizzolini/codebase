@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { OverrideResolutionService } from "./override-resolution.service";
 
@@ -26,15 +27,15 @@ describe(OverrideResolutionService, () => {
   let service: OverrideResolutionService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [OverrideResolutionService],
-    }).compile();
-
-    service = await module.resolve(OverrideResolutionService);
+    ({ instance: service } = await buildTestingModule(
+      OverrideResolutionService,
+    ));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(OverrideResolutionService);
+
+    expect(instance).toBeInstanceOf(OverrideResolutionService);
   });
 
   it("leaves the resolved configuration untouched when no overrides are given", () => {
