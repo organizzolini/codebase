@@ -990,6 +990,9 @@ importers:
       '@codebase/observability':
         specifier: workspace:*
         version: link:../projects/common/observability
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../projects/common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0

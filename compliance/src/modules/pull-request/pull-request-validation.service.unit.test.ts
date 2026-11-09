@@ -1,6 +1,6 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestAncestorIssuesService } from "./pull-request-ancestor-issues.service";
 import { PullRequestBodyService } from "./pull-request-body.service";
@@ -11,6 +11,7 @@ import { PullRequestTitleService } from "./pull-request-title.service";
 import { PullRequestValidationService } from "./pull-request-validation.service";
 
 import type { PullRequestContext } from "./pull-request-context.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const context: PullRequestContext = {
   assignees: ["owner"],
@@ -22,6 +23,18 @@ const context: PullRequestContext = {
   title: "feat(scope): add",
 };
 
+/** What PullRequestValidationService is built with. */
+const DEPENDENCIES = {
+  mocks: [
+    PullRequestAncestorIssuesService,
+    PullRequestBodyService,
+    PullRequestGithubService,
+    PullRequestLabelsAssigneesService,
+    PullRequestReleaseSignificanceService,
+    PullRequestTitleService,
+  ],
+} satisfies TestingModuleOptions;
+
 describe(PullRequestValidationService, () => {
   let service: PullRequestValidationService;
   let ancestors: PullRequestAncestorIssuesService;
@@ -32,43 +45,18 @@ describe(PullRequestValidationService, () => {
   let title: PullRequestTitleService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestValidationService,
-        {
-          provide: PullRequestAncestorIssuesService,
-          useValue: createMock<PullRequestAncestorIssuesService>(),
-        },
-        {
-          provide: PullRequestBodyService,
-          useValue: createMock<PullRequestBodyService>(),
-        },
-        {
-          provide: PullRequestGithubService,
-          useValue: createMock<PullRequestGithubService>(),
-        },
-        {
-          provide: PullRequestLabelsAssigneesService,
-          useValue: createMock<PullRequestLabelsAssigneesService>(),
-        },
-        {
-          provide: PullRequestReleaseSignificanceService,
-          useValue: createMock<PullRequestReleaseSignificanceService>(),
-        },
-        {
-          provide: PullRequestTitleService,
-          useValue: createMock<PullRequestTitleService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestValidationService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(PullRequestValidationService);
-    ancestors = await module.resolve(PullRequestAncestorIssuesService);
-    body = await module.resolve(PullRequestBodyService);
-    github = await module.resolve(PullRequestGithubService);
-    metadata = await module.resolve(PullRequestLabelsAssigneesService);
-    significance = await module.resolve(PullRequestReleaseSignificanceService);
-    title = await module.resolve(PullRequestTitleService);
+    service = built.instance;
+    ancestors = built.mock(PullRequestAncestorIssuesService);
+    body = built.mock(PullRequestBodyService);
+    github = built.mock(PullRequestGithubService);
+    metadata = built.mock(PullRequestLabelsAssigneesService);
+    significance = built.mock(PullRequestReleaseSignificanceService);
+    title = built.mock(PullRequestTitleService);
   });
 
   beforeEach(() => {
@@ -121,8 +109,13 @@ describe(PullRequestValidationService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PullRequestValidationService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestValidationService);
   });
 
   it("runs all five checks and passes when nothing is wrong", () => {
