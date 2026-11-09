@@ -5,9 +5,8 @@ export default [
   ...baseConfig,
 
   // 🙈 Draw Run Output
-  // The draw run's index and pattern pages: gitignored, and gigabytes at the
-  // default edge budget, past the 2 GiB one file read can hold. The base
-  // config's root-relative ignore cannot match them from this project directory.
+  // Gitignored draw pages, gigabytes at the default edge budget. The base
+  // config's root-relative ignore cannot match them from the project directory.
   { ignores: ["output/**"] },
 
   // 📦 Dependency Checks
@@ -18,9 +17,8 @@ export default [
         "error",
         {
           // pg: TypeORM resolves its driver by name at runtime, so nothing imports it.
-          // vitest: a devDependency imported by the harnesses in `testing/`, which the
-          // build check counts as source.
-          ignoredDependencies: ["pg", "vitest"],
+          // Test devDependencies: `testing/` harnesses count as source to the build check.
+          ignoredDependencies: ["@codebase/testing", "pg", "vitest"],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
         },
       ],

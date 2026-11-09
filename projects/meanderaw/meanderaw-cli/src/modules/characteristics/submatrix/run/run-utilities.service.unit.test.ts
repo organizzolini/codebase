@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -12,17 +13,12 @@ describe(RunUtilitiesService, () => {
   let service: RunUtilitiesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(RunUtilitiesService, {
       imports: [CodeModule, MatrixModule],
-      providers: [RunUtilitiesService],
-    }).compile();
+    });
 
-    matrixService = await module.resolve(MatrixService);
-    service = await module.resolve(RunUtilitiesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    matrixService = await built.module.resolve(MatrixService);
+    service = built.instance;
   });
 
   describe("longestHorizontalRunLength", () => {

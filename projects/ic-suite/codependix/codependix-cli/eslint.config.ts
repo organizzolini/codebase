@@ -16,8 +16,10 @@ export default [
           // which the rule misreads as a production dependency.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "pino",
             "pino-pretty",
+            "reflect-metadata",
             "vitest",
           ],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],

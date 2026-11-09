@@ -1,9 +1,8 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   getTestContactLimit,
@@ -148,27 +147,30 @@ describe(EclipseTopocentricService, () => {
     kind: "solar",
   });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EclipseTopocentricService,
-        EclipseGeometryService,
-        MathService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: EphemerisService, useValue: createMock<EphemerisService>() },
-        {
-          provide: EclipseEventService,
-          useValue: createMock<EclipseEventService>({
-            buildLunarEclipseEvent:
-              vi.fn<EclipseEventService["buildLunarEclipseEvent"]>(),
-            buildSolarEclipseEvent:
-              vi.fn<EclipseEventService["buildSolarEclipseEvent"]>(),
-          }),
-        },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    mocks: [EphemerisService],
+    providers: [
+      EclipseGeometryService,
+      MathService,
+      {
+        provide: EclipseEventService,
+        useValue: createMock<EclipseEventService>({
+          buildLunarEclipseEvent:
+            vi.fn<EclipseEventService["buildLunarEclipseEvent"]>(),
+          buildSolarEclipseEvent:
+            vi.fn<EclipseEventService["buildSolarEclipseEvent"]>(),
+        }),
+      },
+    ],
+  };
 
-    service = await module.resolve(EclipseTopocentricService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      EclipseTopocentricService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     eclipseGeometryService = module.get(EclipseGeometryService);
     eclipseEventService = module.get(EclipseEventService);
   });
@@ -178,8 +180,13 @@ describe(EclipseTopocentricService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EclipseTopocentricService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EclipseTopocentricService);
   });
 
   describe("getSolarTopocentricPhases", () => {

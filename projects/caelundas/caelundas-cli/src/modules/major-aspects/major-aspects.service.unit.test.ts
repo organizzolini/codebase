@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
@@ -19,32 +18,29 @@ import { MajorAspectsService } from "./major-aspects.service";
 import type { Body } from "../caelundas/caelundas.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 describe(MajorAspectsService, () => {
   let service: MajorAspectsService;
   let aspectsUtilitiesService: AspectsUtilitiesService;
 
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [
+      MajorAspectEventService,
+      MajorAspectProgressiveService,
+      AspectEphemerisService,
+      AspectsUtilitiesService,
+      MathService,
+      ProgressiveAspectService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        LoggerService,
-        MajorAspectsService,
-        MajorAspectEventService,
-        MajorAspectProgressiveService,
-        AspectEphemerisService,
-        AspectsUtilitiesService,
-        MathService,
-        ProgressiveAspectService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
-    service = await module.resolve(MajorAspectsService);
+    const { instance, module } = await buildTestingModule(
+      MajorAspectsService,
+      testingModuleOptions,
+    );
+    service = instance;
     aspectsUtilitiesService = await module.resolve(AspectsUtilitiesService);
   });
 
@@ -305,8 +301,13 @@ describe(MajorAspectsService, () => {
   // - major-aspect-event.service.unit.test.ts
   // - major-aspect-progressive.service.unit.test.ts
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MajorAspectsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MajorAspectsService);
   });
 
   describe("isAspect", () => {

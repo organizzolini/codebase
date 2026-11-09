@@ -1,9 +1,8 @@
-import { Test } from "@nestjs/testing";
 import _ from "lodash";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
 import {
@@ -19,12 +18,6 @@ import { MajorAspectProgressiveService } from "./major-aspect-progressive.servic
 
 import type { Body, MajorAspect } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
 
 describe(MajorAspectProgressiveService, () => {
   let service: MajorAspectProgressiveService;
@@ -47,20 +40,23 @@ describe(MajorAspectProgressiveService, () => {
     ) => DetectedCalendarEvent[];
   };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LoggerService,
-        AspectsUtilitiesService,
-        MajorAspectEventService,
-        MathService,
-        ProgressiveAspectService,
-        ProgressiveUtilitiesService,
-        MajorAspectProgressiveService,
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [
+      AspectsUtilitiesService,
+      MajorAspectEventService,
+      MathService,
+      ProgressiveAspectService,
+      ProgressiveUtilitiesService,
+    ],
+  };
 
-    service = await module.resolve(MajorAspectProgressiveService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      MajorAspectProgressiveService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     eventService = await module.resolve(MajorAspectEventService);
     privateService = service as unknown as {
       castAspectPartsToTypes: (args: {
@@ -81,8 +77,13 @@ describe(MajorAspectProgressiveService, () => {
     };
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MajorAspectProgressiveService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MajorAspectProgressiveService);
   });
 
   describe("detectProgressive", () => {

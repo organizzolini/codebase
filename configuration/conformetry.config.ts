@@ -52,7 +52,6 @@ interface TestTemplateBaseline {
 
 /** What each untouched project of a shape measures, shared to stay short. */
 const NEST_BASELINE = { modules: 89 / 121, services: 47 / 79 };
-const CLI_BASELINE = { modules: 149 / 191 };
 /** Each ic-suite CLI's `nestjs-command-project` score, set on its own group. */
 const COMMAND_PROJECT_BASELINE = 795 / 798;
 
@@ -71,21 +70,7 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
     resolvers: 46 / 78,
     services: 47 / 79,
   },
-  "projects/caelundas/caelundas-cli": NEST_BASELINE,
   "projects/caelundas/caelundas-db": NEST_BASELINE,
-  "projects/caelundas/caelundas-web": {
-    application: 748 / 764,
-    routes: 137 / 145,
-  },
-  "projects/ic-suite/codependix/codependix-boundaries": NEST_BASELINE,
-  "projects/ic-suite/codependix/codependix-cli": CLI_BASELINE,
-  "projects/ic-suite/codependix/codependix-configuration": NEST_BASELINE,
-  "projects/ic-suite/codependix/codependix-core": NEST_BASELINE,
-  "projects/ic-suite/codependix/codependix-file-imports": NEST_BASELINE,
-  "projects/ic-suite/codependix/codependix-nestjs-modules": NEST_BASELINE,
-  "projects/ic-suite/codependix/codependix-nx": NEST_BASELINE,
-  "projects/ic-suite/codependix/codependix-nx-projects": NEST_BASELINE,
-  "projects/ic-suite/codependix/codependix-output": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-configuration": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-core": NEST_BASELINE,
@@ -94,11 +79,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/coinagerie/coinagerie-output": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-vocabulary": NEST_BASELINE,
   "projects/lexico/lexico-db": NEST_BASELINE,
-  "projects/meanderaw/meanderaw-cli": NEST_BASELINE,
-  "projects/meanderaw/meanderaw-web": {
-    application: 742 / 764,
-    routes: 131 / 145,
-  },
   publication: NEST_BASELINE,
 };
 
@@ -171,7 +151,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/codependix/",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/codometer/codometer-cli"],

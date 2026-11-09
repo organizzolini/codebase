@@ -1,6 +1,6 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { meanderRecord } from "../../../testing/meanders";
 import { PATTERN_CHARACTERISTIC_KEYS } from "../characteristics/characteristics.constants";
@@ -13,6 +13,29 @@ import { DrawIndexService } from "./draw-index.service";
 
 import type { Meander } from "../database/entities/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** A mocked database plus fixed-answer stand-ins for the code parser and the drawing. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  mocks: [DatabaseService],
+  providers: [
+    GeometryService,
+    {
+      provide: CodeService,
+      useValue: {
+        parse: (c: string) => ({
+          columns: 3,
+          digits: c,
+          rows: 4,
+        }),
+      },
+    },
+    {
+      provide: DrawingService,
+      useValue: { render: () => '<path d="M1 1"/>' },
+    },
+  ],
+};
 
 /**
  * Covers `DrawIndexService.render` in isolation, against a small, hand-built
@@ -37,37 +60,19 @@ describe(DrawIndexService, () => {
   });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DrawIndexService,
-        GeometryService,
-        {
-          provide: DatabaseService,
-          useValue: createMock<DatabaseService>(),
-        },
-        {
-          provide: CodeService,
-          useValue: {
-            parse: (c: string) => ({
-              columns: 3,
-              digits: c,
-              rows: 4,
-            }),
-          },
-        },
-        {
-          provide: DrawingService,
-          useValue: { render: () => '<path d="M1 1"/>' },
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(DrawIndexService, MODULE_OPTIONS);
 
-    service = await module.resolve(DrawIndexService);
-    databaseService = await module.resolve(DatabaseService);
+    service = built.instance;
+    databaseService = built.mock(DatabaseService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DrawIndexService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(DrawIndexService);
   });
 
   describe("render", () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SvgService } from "./svg.service";
 
@@ -7,15 +8,15 @@ describe(SvgService, () => {
   let service: SvgService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [SvgService],
-    }).compile();
+    const built = await buildTestingModule(SvgService);
 
-    service = await module.resolve(SvgService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SvgService);
+
+    expect(instance).toBeInstanceOf(SvgService);
   });
 
   describe("render", () => {

@@ -17,10 +17,12 @@ export default [
           // @golevelup/ts-vitest: a devDependency used only in test files.
           // vitest: named in tsconfig "types"; this rule misreads it as a production dependency.
           ignoredDependencies: [
+            "@codebase/testing",
             "@codependix/cli",
             "@golevelup/ts-vitest",
             "@swc-node/register",
             "@swc/core",
+            "reflect-metadata",
             "typescript",
             "vitest",
           ],

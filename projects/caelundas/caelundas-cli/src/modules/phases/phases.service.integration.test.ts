@@ -1,6 +1,6 @@
 import { createMock } from "@golevelup/ts-vitest";
 import moment, { type Moment } from "moment-timezone";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
@@ -14,12 +14,6 @@ import { MercurianPhaseService } from "./mercurian-phase.service";
 import { PhaseCalculationService } from "./phase-calculation.service";
 import { PhasesService } from "./phases.service";
 import { VenusianPhaseService } from "./venusian-phase.service";
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
 
 const mathService = new MathService();
 const ephemerisService = new EphemerisService(

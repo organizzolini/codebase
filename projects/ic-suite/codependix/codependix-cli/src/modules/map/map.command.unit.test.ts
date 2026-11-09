@@ -20,13 +20,15 @@ import {
   ReportingService,
 } from "@codependix/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { captureExitCode } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MapCommand } from "./map.command";
 
+import type { LoggerService } from "@codebase/observability";
 import type { MapCommandOptions } from "@codependix/configuration";
 import type { GraphRunOutcome, RunMode } from "@codependix/core";
 import type { CombinedGraphExports } from "@codependix/output";
@@ -65,7 +67,7 @@ const VIOLATION: JudgedBoundaryFinding<BoundaryViolation> = {
 };
 
 describe(MapCommand, () => {
-  let command: MapCommand;
+  let readExitCode: () => typeof process.exitCode;
   let boundaryCheckService: BoundaryCheckService;
   let codependixService: GraphRunService;
   let combinedOutputService: CombinedOutputService;
@@ -141,40 +143,8 @@ describe(MapCommand, () => {
     return mode;
   }
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MapCommand,
-        {
-          provide: BoundaryCheckService,
-          useValue: createMock<BoundaryCheckService>(),
-        },
-        { provide: GraphRunService, useValue: createMock<GraphRunService>() },
-        {
-          provide: CombinedOutputService,
-          useValue: createMock<CombinedOutputService>(),
-        },
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: ReportingService,
-          useValue: createMock<ReportingService>(),
-        },
-        {
-          provide: RunContextService,
-          useValue: createMock<RunContextService>(),
-        },
-      ],
-    }).compile();
-
-    command = await module.resolve(MapCommand);
-  });
-
   beforeEach(() => {
-    process.exitCode = 0;
+    readExitCode = captureExitCode();
     boundaryCheckService = createMock<BoundaryCheckService>();
     codependixService = createMock<GraphRunService>();
     combinedOutputService = createMock<CombinedOutputService>();
@@ -221,8 +191,19 @@ describe(MapCommand, () => {
     selectMode();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MapCommand, {
+      mocks: [
+        BoundaryCheckService,
+        GraphRunService,
+        CombinedOutputService,
+        ConfigurationService,
+        ReportingService,
+        RunContextService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(MapCommand);
   });
 
   describe("an empty project selection", () => {
@@ -277,37 +258,16 @@ describe(MapCommand, () => {
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MapCommand,
-        {
-          provide: BoundaryCheckService,
-          useValue: createMock<BoundaryCheckService>(),
-        },
-        { provide: GraphRunService, useValue: createMock<GraphRunService>() },
-        {
-          provide: CombinedOutputService,
-          useValue: createMock<CombinedOutputService>(),
-        },
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: ReportingService,
-          useValue: createMock<ReportingService>(),
-        },
-        {
-          provide: RunContextService,
-          useValue: createMock<RunContextService>(),
-        },
+    await expectLoggerContext(MapCommand, {
+      mocks: [
+        BoundaryCheckService,
+        GraphRunService,
+        CombinedOutputService,
+        ConfigurationService,
+        ReportingService,
+        RunContextService,
       ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("MapCommand");
+    });
   });
 
   it("reports a rejected command line without attempting anything", async () => {
@@ -318,7 +278,7 @@ describe(MapCommand, () => {
 
     await run({ check: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(codependixService.run).not.toHaveBeenCalled();
     expect(boundaryCheckService.run).not.toHaveBeenCalled();
     expect(loggerService.error).toHaveBeenCalledWith(
@@ -335,7 +295,7 @@ describe(MapCommand, () => {
 
     await run({});
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(codependixService.run).not.toHaveBeenCalled();
     expect(loggerService.error).toHaveBeenCalledWith(
       "🕸️ Rejected the command line",
@@ -354,7 +314,7 @@ describe(MapCommand, () => {
 
     await run({});
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -426,7 +386,7 @@ describe(MapCommand, () => {
 
     expect(codependixService.run).not.toHaveBeenCalled();
     expect(boundaryCheckService.run).toHaveBeenCalledTimes(1);
-    expect(process.exitCode).toBe(0);
+    expect(readExitCode() ?? 0).toBe(0);
     expect(loggerService.info).toHaveBeenCalledWith(
       "🕸️ Verified every declared codependix boundary holds",
     );
@@ -438,7 +398,7 @@ describe(MapCommand, () => {
     await run({ check: "reports" });
 
     expect(boundaryCheckService.run).not.toHaveBeenCalled();
-    expect(process.exitCode).toBe(0);
+    expect(readExitCode() ?? 0).toBe(0);
     expect(loggerService.info).toHaveBeenCalledWith(
       "🕸️ Verified every configured codependix export is current",
       undefined,
@@ -449,7 +409,7 @@ describe(MapCommand, () => {
   it("succeeds when every result is current and nothing failed", async () => {
     await run({ write: true });
 
-    expect(process.exitCode).toBe(0);
+    expect(readExitCode() ?? 0).toBe(0);
   });
 
   it("fails in check mode when a result is stale", async () => {
@@ -475,7 +435,7 @@ describe(MapCommand, () => {
 
     await run({ check: "reports" });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
   });
 
   it("fails and logs when a project fails, without a thrown error", async () => {
@@ -494,7 +454,7 @@ describe(MapCommand, () => {
 
     await run({ write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -525,7 +485,7 @@ describe(MapCommand, () => {
 
     await run({ check: "reports" });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -558,7 +518,7 @@ describe(MapCommand, () => {
 
     await run({ check: "boundaries" });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "🕸️ Found codependix boundary violations",
       undefined,
@@ -585,7 +545,7 @@ describe(MapCommand, () => {
 
     await run({ check: "boundaries" });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -621,7 +581,7 @@ describe(MapCommand, () => {
 
     await run({ check: "boundaries", write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "🕸️ Found stale codependix exports",
       undefined,
@@ -649,7 +609,7 @@ describe(MapCommand, () => {
 
     await run({ write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -662,7 +622,7 @@ describe(MapCommand, () => {
 
     await run({ write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(loggerService.error).toHaveBeenCalledWith(
       "💥 Failed running codependix",
       undefined,
@@ -794,7 +754,7 @@ describe(MapCommand, () => {
           tags: ["scope:nothing"],
         },
       );
-      expect(process.exitCode).toBe(0);
+      expect(readExitCode() ?? 0).toBe(0);
     });
   });
 
@@ -807,7 +767,7 @@ describe(MapCommand, () => {
 
     await run({ include: ["applications/**"], write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(codependixService.run).not.toHaveBeenCalled();
     expect(loggerService.error).toHaveBeenCalledWith(
       "🕸️ Rejected the command line",
@@ -913,7 +873,7 @@ describe(MapCommand, () => {
 
     await run({ format: "yaml", write: true });
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(codependixService.run).not.toHaveBeenCalled();
     expect(loggerService.error).toHaveBeenCalledWith(
       "🕸️ Rejected the command line",
@@ -1038,7 +998,7 @@ describe(MapCommand, () => {
       await run({ check: "boundaries", format: "json" });
 
       expect(combinedOutputService.run).toHaveBeenCalledTimes(1);
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it.each([

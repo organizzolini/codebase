@@ -1,6 +1,7 @@
 import { DiscoveryService } from "@nestjs/core";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../code/code.module";
 import { MatrixModule } from "../matrix/matrix.module";
@@ -16,6 +17,7 @@ import {
 import { CharacteristicsService } from "./characteristics.service";
 import { TileCrossingComponentDeltaCountCharacteristicService } from "./path/tile-crossing/tile-crossing-component-delta-count-characteristic.service";
 
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { ModuleMetadata } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
 
@@ -72,6 +74,16 @@ function isBooleanKey(key: string): boolean {
   return BOOLEAN_CHARACTERISTIC_KEY_SET.has(key);
 }
 
+/** What the service is built with: the real code and matrix modules, and stand-ins for every evaluator that `getProviders` lists. */
+function moduleOptions(
+  getProviders: () => readonly Provider[],
+): TestingModuleOptions {
+  return {
+    imports: [CodeModule, MatrixModule],
+    providers: [...collaborators(getProviders)],
+  };
+}
+
 describe(CharacteristicsService, () => {
   let service: CharacteristicsService;
   let contextService: CharacteristicContextService;
@@ -80,10 +92,12 @@ describe(CharacteristicsService, () => {
 
   /** A compiled, uninitialized module over whatever `providers` holds at the time. */
   async function compiled(): Promise<TestingModule> {
-    return Test.createTestingModule({
-      imports: [CodeModule, MatrixModule],
-      providers: [CharacteristicsService, ...collaborators(getProviders)],
-    }).compile();
+    const { module } = await buildTestingModule(
+      CharacteristicsService,
+      moduleOptions(getProviders),
+    );
+
+    return module;
   }
 
   /** A fresh service over whatever `providers` holds at the time. */
@@ -95,13 +109,13 @@ describe(CharacteristicsService, () => {
 
   beforeAll(async () => {
     const complete = completeRegistry();
-    const module = await Test.createTestingModule({
-      imports: [CodeModule, MatrixModule],
-      providers: [CharacteristicsService, ...collaborators(() => complete)],
-    }).compile();
+    const built = await buildTestingModule(
+      CharacteristicsService,
+      moduleOptions(() => complete),
+    );
 
-    contextService = module.get(CharacteristicContextService);
-    service = await module.resolve(CharacteristicsService);
+    contextService = built.module.get(CharacteristicContextService);
+    service = built.instance;
   });
 
   beforeEach(() => {
@@ -109,8 +123,14 @@ describe(CharacteristicsService, () => {
     getProviders = vi.fn<() => readonly Provider[]>(() => providers);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const complete = completeRegistry();
+    const { instance } = await buildTestingModule(
+      CharacteristicsService,
+      moduleOptions(() => complete),
+    );
+
+    expect(instance).toBeInstanceOf(CharacteristicsService);
   });
 
   it("lists metadata in key-list order whatever order discovery returns", async () => {

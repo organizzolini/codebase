@@ -1,7 +1,7 @@
 import { createMemoryHistory, RouterProvider } from "@tanstack/react-router";
 import { render } from "@testing-library/react";
 
-import type { AnyRoute, Router } from "@tanstack/react-router";
+import type { AnyRoute, AnyRouter } from "@tanstack/react-router";
 import type { RenderResult } from "@testing-library/react";
 import type { ReactNode } from "react";
 
@@ -10,10 +10,12 @@ import type { ReactNode } from "react";
  * with the page alone, since `<html>` cannot mount in a `<div>`.
  */
 export async function renderRoute(
-  router: Router<AnyRoute>,
+  router: AnyRouter,
   path: string,
 ): Promise<RenderResult> {
-  Object.assign(router.routeTree.options, { shellComponent: PageOnly });
+  const rootRoute = router.routeTree as AnyRoute;
+
+  Object.assign(rootRoute.options, { shellComponent: PageOnly });
   router.update({
     ...router.options,
     history: createMemoryHistory({ initialEntries: [path] }),

@@ -1,14 +1,13 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getDataSourceToken } from "@nestjs/typeorm";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Constellation, ConstellationLine, Star } from "@codebase/caelundas-db";
-import { LoggerService } from "@codebase/observability";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 
@@ -46,12 +45,25 @@ const LINES = JSON.stringify({
 
 describe(NightSkyService, () => {
   const manager = createMock<EntityManager>();
-  let directory: string;
+  const getDirectory = useTemporaryDirectory("night-sky");
   let files: NightSkyFiles;
   let service: NightSkyService;
 
+  const testingModuleOptions = {
+    providers: [
+      {
+        provide: getDataSourceToken(),
+        useValue: {
+          transaction: async (
+            work: (transaction: EntityManager) => Promise<unknown>,
+          ): Promise<unknown> => work(manager),
+        },
+      },
+    ],
+  };
+
   beforeAll(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "night-sky-"));
+    const directory = getDirectory();
     files = {
       constellations: path.join(directory, "constellations.json"),
       lines: path.join(directory, "constellations.lines.json"),
@@ -61,30 +73,19 @@ describe(NightSkyService, () => {
     fs.writeFileSync(files.lines, LINES);
     fs.writeFileSync(files.stars, CATALOG);
 
-    const module = await Test.createTestingModule({
-      providers: [
-        NightSkyService,
-        {
-          provide: getDataSourceToken(),
-          useValue: {
-            transaction: async (
-              work: (transaction: EntityManager) => Promise<unknown>,
-            ): Promise<unknown> => work(manager),
-          },
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(NightSkyService);
+    ({ instance: service } = await buildTestingModule(
+      NightSkyService,
+      testingModuleOptions,
+    ));
   });
 
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      NightSkyService,
+      testingModuleOptions,
+    );
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkyService);
   });
 
   it("empties the tables segments first, then writes the stars before the segments that join them", async () => {

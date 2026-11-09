@@ -7,7 +7,7 @@ import {
   FIXTURE_EVENTS,
 } from "../../../testing/calendar-fixture";
 import { findToolbar } from "../../../testing/calendar-page";
-import { renderRoute } from "../../../testing/render-route";
+import { renderCalendarRoute } from "../../../testing/render-route";
 
 /**
  * The timeline's tree of rows, as each row's title reads, in order.
@@ -37,7 +37,7 @@ vi.setConfig({ testTimeout: 30_000 });
 
 describe("calendar timeline", () => {
   it("switches to the timeline from the toolbar", async () => {
-    await renderRoute("/?date=2026-03-04");
+    await renderCalendarRoute("/?date=2026-03-04");
 
     fireEvent.click(
       within(await findToolbar()).getByRole("button", { name: "Timeline" }),
@@ -52,7 +52,7 @@ describe("calendar timeline", () => {
   });
 
   it("nests a row per planet under each type, counting their events", async () => {
-    await renderRoute("/?view=timeline&date=2026-03-04");
+    await renderCalendarRoute("/?view=timeline&date=2026-03-04");
 
     await expect(findTimelineRows()).resolves.toStrictEqual([
       "Aspect1",
@@ -67,7 +67,7 @@ describe("calendar timeline", () => {
   });
 
   it("collapses and expands a group", async () => {
-    await renderRoute("/?view=timeline&date=2026-03-04");
+    await renderCalendarRoute("/?view=timeline&date=2026-03-04");
 
     const aspect = await screen.findByRole("button", { name: "Aspect" });
 
@@ -95,7 +95,7 @@ describe("calendar timeline", () => {
     { end: "2026-04-06", scale: "quarter", start: "2025-12-27" },
     { end: "2027-01-02", scale: "year", start: "2025-12-31" },
   ])("reads only the days the $scale scale shows", async (expected) => {
-    await renderRoute(
+    await renderCalendarRoute(
       `/?view=timeline&scale=${expected.scale}&date=2026-03-04`,
     );
     const api = readServedApi();
@@ -114,7 +114,7 @@ describe("calendar timeline", () => {
     { scale: "Quarter", title: "Q1 2026" },
     { scale: "Year", title: "2026" },
   ])("zooms out from a day to the $scale", async ({ scale, title }) => {
-    await renderRoute("/?view=timeline&scale=day&date=2026-03-04");
+    await renderCalendarRoute("/?view=timeline&scale=day&date=2026-03-04");
 
     fireEvent.click(
       within(await findToolbar()).getByRole("button", {
@@ -138,7 +138,7 @@ describe("calendar timeline", () => {
   });
 
   it("rolls a whole year's events into its rows", async () => {
-    await renderRoute("/?view=timeline&scale=year&date=2026-03-04");
+    await renderCalendarRoute("/?view=timeline&scale=year&date=2026-03-04");
 
     await expect(findTimelineRows()).resolves.toStrictEqual([
       "Aspect2",
@@ -154,7 +154,7 @@ describe("calendar timeline", () => {
   });
 
   it("draws an instant as a circle and a span as a bar", async () => {
-    await renderRoute("/?view=timeline&date=2026-03-04");
+    await renderCalendarRoute("/?view=timeline&date=2026-03-04");
 
     // Under Mars and under Venus.
     const instants = await screen.findAllByRole("button", {
@@ -171,7 +171,7 @@ describe("calendar timeline", () => {
   });
 
   it("clusters crowded markers into a count", async () => {
-    await renderRoute("/?view=timeline&date=2026-03-10", {
+    await renderCalendarRoute("/?view=timeline&date=2026-03-10", {
       api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
     });
 
@@ -189,7 +189,7 @@ describe("calendar timeline", () => {
   });
 
   it("lists the events behind a count when it is clicked", async () => {
-    await renderRoute("/?view=timeline&date=2026-03-10", {
+    await renderCalendarRoute("/?view=timeline&date=2026-03-10", {
       api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
     });
 
@@ -216,7 +216,7 @@ describe("calendar timeline", () => {
   });
 
   it("opens one event by its name when its marker is clicked", async () => {
-    await renderRoute("/?view=timeline&date=2026-03-04");
+    await renderCalendarRoute("/?view=timeline&date=2026-03-04");
 
     fireEvent.click(
       await screen.findByRole("button", { name: /^Mercury Retrograde/u }),
@@ -228,7 +228,7 @@ describe("calendar timeline", () => {
   });
 
   it("draws every event in one row when not grouped", async () => {
-    await renderRoute("/?view=timeline&date=2026-03-04&group=%5B%5D");
+    await renderCalendarRoute("/?view=timeline&date=2026-03-04&group=%5B%5D");
 
     // The events that overlap in time are drawn in a second lane beneath,
     // a row with no title.
@@ -243,7 +243,7 @@ describe("calendar timeline", () => {
       JSON.stringify([{ depth: 3, field: "tag:tag-type" }]),
     );
 
-    await renderRoute(
+    await renderCalendarRoute(
       `/?view=timeline&scale=year&date=2026-03-04&group=${grouping}`,
     );
 

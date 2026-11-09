@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { readServedApi } from "../../../testing/calendar-api";
 import { findToolbar } from "../../../testing/calendar-page";
-import { renderRoute } from "../../../testing/render-route";
+import { renderCalendarRoute } from "../../../testing/render-route";
 
 /**
  * The agenda's headings at one level, as they read.
@@ -49,7 +49,7 @@ vi.setConfig({ testTimeout: 30_000 });
 
 describe("event grouping", () => {
   it("groups the agenda by type unless told otherwise", async () => {
-    await renderRoute("/?view=agenda&date=2026-03-04");
+    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
     const groupBy = await findGroupBy();
 
@@ -57,7 +57,7 @@ describe("event grouping", () => {
   });
 
   it("reads the events again with the grouping picked", async () => {
-    await renderRoute("/?view=agenda&date=2026-03-04");
+    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
     const api = readServedApi();
 
     fireEvent.click(
@@ -83,7 +83,7 @@ describe("event grouping", () => {
   });
 
   it("sections the agenda by type, counting each group's events", async () => {
-    await renderRoute("/?view=agenda&date=2026-03-04");
+    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
     await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
       "Aspect 1 event",
@@ -96,7 +96,7 @@ describe("event grouping", () => {
   });
 
   it("lists a two-planet event under each planet but counts it once", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       groupedAgendaLink("2026-03-04", [
         { depth: 1, field: "tag:tag-type" },
         { depth: 1, field: "tag:tag-planet" },
@@ -126,7 +126,9 @@ describe("event grouping", () => {
   });
 
   it("groups by a period, in time order", async () => {
-    await renderRoute(groupedAgendaLink("2026-03-04", [{ field: "weekday" }]));
+    await renderCalendarRoute(
+      groupedAgendaLink("2026-03-04", [{ field: "weekday" }]),
+    );
 
     await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
       "Wednesday 2 events",
@@ -136,7 +138,7 @@ describe("event grouping", () => {
   });
 
   it("restores the grouping a link holds", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       groupedAgendaLink("2026-03-04", [
         { depth: 1, field: "tag:tag-planet" },
         { depth: 2, field: "tag:tag-type" },
@@ -157,7 +159,7 @@ describe("event grouping", () => {
   });
 
   it("keeps the grouping picked in the link", async () => {
-    await renderRoute("/?view=agenda&date=2026-03-04");
+    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
     fireEvent.click(
       within(await openGroupBy()).getByRole("button", {
@@ -210,7 +212,7 @@ describe("event grouping", () => {
   ])(
     "falls back quietly from a stale grouping to $expected",
     async ({ expected, group }) => {
-      await renderRoute(
+      await renderCalendarRoute(
         `/?view=agenda&date=2026-03-04&group=${encodeURIComponent(JSON.stringify(group))}`,
       );
 
@@ -221,7 +223,9 @@ describe("event grouping", () => {
   );
 
   it("carries the grouping from the agenda to the timeline", async () => {
-    await renderRoute(groupedAgendaLink("2026-03-04", [{ field: "month" }]));
+    await renderCalendarRoute(
+      groupedAgendaLink("2026-03-04", [{ field: "month" }]),
+    );
 
     fireEvent.click(
       within(await findToolbar()).getByRole("button", { name: "Timeline" }),
@@ -237,7 +241,7 @@ describe("event grouping", () => {
   });
 
   it("offers grouping only in the views that group", async () => {
-    await renderRoute("/?view=month&date=2026-03-04");
+    await renderCalendarRoute("/?view=month&date=2026-03-04");
 
     fireEvent.click(
       within(await findToolbar()).getByRole("button", {

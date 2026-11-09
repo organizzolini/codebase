@@ -1,8 +1,6 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   getTrackCoordinates,
@@ -16,21 +14,27 @@ import { EclipseGeometryService } from "./eclipse-geometry.service";
 describe(EclipseClassificationService, () => {
   let service: EclipseClassificationService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EclipseClassificationService,
-        EclipseGeometryService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: EphemerisService, useValue: createMock<EphemerisService>() },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    mocks: [EphemerisService],
+    providers: [EclipseGeometryService],
+  };
 
-    service = await module.resolve(EclipseClassificationService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      EclipseClassificationService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EclipseClassificationService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EclipseClassificationService);
   });
 
   describe("getLunarEclipseType", () => {

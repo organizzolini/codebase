@@ -2,8 +2,9 @@ import { ChildProcess, spawn } from "node:child_process";
 import { PassThrough } from "node:stream";
 
 import { ConfigurationModule } from "@codependix/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GateService } from "../gate/gate.service";
 import { PluginService } from "../plugin/plugin.service";
@@ -57,12 +58,10 @@ describe(BatchService, () => {
   let service: BatchService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(BatchService, {
       imports: [ConfigurationModule],
-      providers: [BatchService, GateService, PluginService],
-    }).compile();
-
-    service = await module.resolve(BatchService);
+      providers: [GateService, PluginService],
+    }));
   });
 
   beforeEach(() => {
@@ -72,9 +71,13 @@ describe(BatchService, () => {
     vi.spyOn(process.stderr, "write").mockReturnValue(true);
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(BatchService, {
+      imports: [ConfigurationModule],
+      providers: [GateService, PluginService],
+    });
+
+    expect(instance).toBeInstanceOf(BatchService);
   });
 
   describe("runBatch", () => {

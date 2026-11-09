@@ -2,6 +2,8 @@ import { createMemoryHistory, RouterProvider } from "@tanstack/react-router";
 import { render } from "@testing-library/react";
 import { vi } from "vitest";
 
+import { renderRoute } from "@codebase/testing/react";
+
 import { getRouter } from "../src/router";
 
 import {
@@ -38,10 +40,10 @@ export interface RenderRouteOptions {
 // which `readServedApi` hands back for what it was asked.
 
 /**
- * Renders the application's router at a path, running that route's loader and
- * head the way a navigation would.
+ * Renders the application's router at a path through the shared route
+ * renderer, against the API a test hands it or the mocked API's fixture.
  */
-export async function renderRoute(
+export async function renderCalendarRoute(
   path: string,
   options: RenderRouteOptions = {},
 ): Promise<void> {
@@ -51,18 +53,18 @@ export async function renderRoute(
 
   const router = getRouter();
 
-  router.update({
-    ...router.options,
-    history: createMemoryHistory({ initialEntries: [path] }),
-    scrollRestoration: false,
-  });
   if (options.waitForLoad === false) {
+    // The shared renderer settles the load first, which an API that never
+    // answers would hold forever, so this renders on the pending state.
+    router.update({
+      ...router.options,
+      history: createMemoryHistory({ initialEntries: [path] }),
+      scrollRestoration: false,
+    });
     render(<RouterProvider router={router} />);
 
     return;
   }
 
-  await router.load();
-
-  render(<RouterProvider router={router} />);
+  await renderRoute(router, path);
 }

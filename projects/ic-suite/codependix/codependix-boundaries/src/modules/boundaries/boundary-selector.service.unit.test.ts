@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { BoundarySelectorService } from "./boundary-selector.service";
 
@@ -24,15 +25,13 @@ describe(BoundarySelectorService, () => {
   let service: BoundarySelectorService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [BoundarySelectorService],
-    }).compile();
-
-    service = await module.resolve(BoundarySelectorService);
+    ({ instance: service } = await buildTestingModule(BoundarySelectorService));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(BoundarySelectorService);
+
+    expect(instance).toBeInstanceOf(BoundarySelectorService);
   });
 
   it("matches an identifier glob", () => {

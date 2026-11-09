@@ -18,9 +18,11 @@ export default [
           // vitest: named in tsconfig "types"; this rule misreads it as a production dependency.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "@golevelup/ts-vitest",
             "pino",
             "pino-pretty",
+            "reflect-metadata",
             "vitest",
           ],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],

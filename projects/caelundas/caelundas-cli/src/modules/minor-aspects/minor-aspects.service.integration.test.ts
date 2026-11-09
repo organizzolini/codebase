@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
 import { AspectEventFormattingService } from "../aspects/aspect-event-formatting.service";
@@ -50,12 +49,6 @@ import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
  *   - Dissolving: current inside orb, next outside orb
  */
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 let service: MinorAspectsService;
 
 /**
@@ -94,11 +87,9 @@ function createAspectEphemeris(
 
 describe("minor-aspects.events integration", () => {
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { instance } = await buildTestingModule(MinorAspectsService, {
       imports: [EphemerisModule],
       providers: [
-        LoggerService,
-        MinorAspectsService,
         MinorAspectsEventService,
         MinorAspectsProgressiveService,
         AspectEphemerisService,
@@ -108,8 +99,8 @@ describe("minor-aspects.events integration", () => {
         ProgressiveAspectService,
         ProgressiveUtilitiesService,
       ],
-    }).compile();
-    service = await module.resolve(MinorAspectsService);
+    });
+    service = instance;
   });
 
   const minute = moment.utc("2024-03-21T12:00:00.000Z");

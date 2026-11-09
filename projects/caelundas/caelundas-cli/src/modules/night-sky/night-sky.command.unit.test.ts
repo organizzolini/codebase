@@ -1,58 +1,40 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkyCommand } from "./night-sky.command";
 import { NightSkySourceError } from "./night-sky.constants";
 import { NightSkyService } from "./night-sky.service";
 
+import type { DeepMocked } from "@golevelup/ts-vitest";
+
 describe(NightSkyCommand, () => {
+  const testingModuleOptions = { mocks: [NightSkyService] };
   let command: NightSkyCommand;
-  let nightSkyService: NightSkyService;
+  let nightSkyService: DeepMocked<NightSkyService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        NightSkyCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: NightSkyService,
-          useValue: createMock<NightSkyService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      NightSkyCommand,
+      testingModuleOptions,
+    );
 
-    command = await module.resolve(NightSkyCommand);
-    nightSkyService = await module.resolve(NightSkyService);
+    command = built.instance;
+    nightSkyService = built.mock(NightSkyService);
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      NightSkyCommand,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(NightSkyCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        NightSkyCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: NightSkyService,
-          useValue: createMock<NightSkyService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("NightSkyCommand");
+    await expectLoggerContext(NightSkyCommand, testingModuleOptions);
   });
 
   it("passes each option through as it was given", () => {
