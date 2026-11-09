@@ -68,10 +68,6 @@ const COMMAND_PROJECT_BASELINE = 795 / 798;
 const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   documentation: NEST_BASELINE,
   integration: NEST_BASELINE,
-  "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
-  "projects/ic-suite/coinagerie/coinagerie-configuration": NEST_BASELINE,
-  "projects/ic-suite/coinagerie/coinagerie-core": NEST_BASELINE,
-  "projects/ic-suite/coinagerie/coinagerie-nx": NEST_BASELINE,
   "projects/lexico/lexico-db": NEST_BASELINE,
   publication: NEST_BASELINE,
 };
@@ -159,7 +155,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/coinagerie/",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/conformetry/conformetry-cli"],

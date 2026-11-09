@@ -403,11 +403,11 @@ const MODULE_BOUNDARIES = {
     // `core <- configuration <- languages <- vocabulary <- output <- cli`.
     // No coinagerie package depends on another toolchain.
     {
-      onlyDependOnLibsWithTags: [],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:coinagerie-core",
     },
     {
-      onlyDependOnLibsWithTags: ["name:coinagerie-core"],
+      onlyDependOnLibsWithTags: ["name:coinagerie-core", "name:testing"],
       sourceTag: "name:coinagerie-configuration",
     },
     {
@@ -446,6 +446,7 @@ const MODULE_BOUNDARIES = {
         "name:coinagerie-output",
         "name:coinagerie-vocabulary",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:coinagerie-cli",
     },
@@ -460,6 +461,7 @@ const MODULE_BOUNDARIES = {
         "name:coinagerie-output",
         "name:coinagerie-vocabulary",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:coinagerie-nx",
     },
