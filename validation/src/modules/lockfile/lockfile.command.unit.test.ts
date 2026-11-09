@@ -1,13 +1,14 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
 import { LockfileCommand } from "./lockfile.command";
 import { LockfileService } from "./lockfile.service";
+
+const moduleOptions = { mocks: [LockfileService] };
 
 describe(LockfileCommand, () => {
   let command: LockfileCommand;
@@ -15,16 +16,10 @@ describe(LockfileCommand, () => {
   let reportLines: string[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LockfileCommand,
-        { provide: LockfileService, useValue: createMock<LockfileService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(LockfileCommand, moduleOptions);
 
-    command = await module.resolve(LockfileCommand);
-    lockfileService = await module.resolve(LockfileService);
+    command = built.instance;
+    lockfileService = built.mock(LockfileService);
   });
 
   beforeEach(() => {
@@ -41,24 +36,21 @@ describe(LockfileCommand, () => {
     });
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      LockfileCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(LockfileCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        LockfileCommand,
-        { provide: LockfileService, useValue: createMock<LockfileService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("LockfileCommand");
+    await expectLoggerContext(LockfileCommand, moduleOptions);
   });
 
   it("reports a lockfile that is in sync", async () => {

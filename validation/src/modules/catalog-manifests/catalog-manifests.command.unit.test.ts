@@ -1,13 +1,14 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
 import { CatalogManifestsCommand } from "./catalog-manifests.command";
 import { CatalogManifestsService } from "./catalog-manifests.service";
+
+const moduleOptions = { mocks: [CatalogManifestsService] };
 
 describe(CatalogManifestsCommand, () => {
   let command: CatalogManifestsCommand;
@@ -15,19 +16,13 @@ describe(CatalogManifestsCommand, () => {
   let reportLines: string[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CatalogManifestsCommand,
-        {
-          provide: CatalogManifestsService,
-          useValue: createMock<CatalogManifestsService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      CatalogManifestsCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(CatalogManifestsCommand);
-    catalogManifestsService = await module.resolve(CatalogManifestsService);
+    command = built.instance;
+    catalogManifestsService = built.mock(CatalogManifestsService);
   });
 
   beforeEach(() => {
@@ -48,27 +43,21 @@ describe(CatalogManifestsCommand, () => {
     vi.mocked(catalogManifestsService.readManifest).mockReturnValue({});
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      CatalogManifestsCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(CatalogManifestsCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        CatalogManifestsCommand,
-        {
-          provide: CatalogManifestsService,
-          useValue: createMock<CatalogManifestsService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("CatalogManifestsCommand");
+    await expectLoggerContext(CatalogManifestsCommand, moduleOptions);
   });
 
   it("reports how many manifests passed", async () => {

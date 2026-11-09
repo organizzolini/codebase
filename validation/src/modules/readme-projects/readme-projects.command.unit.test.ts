@@ -1,13 +1,14 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
 import { ReadmeProjectsCommand } from "./readme-projects.command";
 import { ReadmeProjectsService } from "./readme-projects.service";
+
+const moduleOptions = { mocks: [ReadmeProjectsService] };
 
 describe(ReadmeProjectsCommand, () => {
   let command: ReadmeProjectsCommand;
@@ -15,19 +16,13 @@ describe(ReadmeProjectsCommand, () => {
   let reportLines: string[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ReadmeProjectsCommand,
-        {
-          provide: ReadmeProjectsService,
-          useValue: createMock<ReadmeProjectsService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      ReadmeProjectsCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(ReadmeProjectsCommand);
-    readmeProjectsService = await module.resolve(ReadmeProjectsService);
+    command = built.instance;
+    readmeProjectsService = built.mock(ReadmeProjectsService);
   });
 
   beforeEach(() => {
@@ -47,27 +42,21 @@ describe(ReadmeProjectsCommand, () => {
     );
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      ReadmeProjectsCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(ReadmeProjectsCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        ReadmeProjectsCommand,
-        {
-          provide: ReadmeProjectsService,
-          useValue: createMock<ReadmeProjectsService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("ReadmeProjectsCommand");
+    await expectLoggerContext(ReadmeProjectsCommand, moduleOptions);
   });
 
   it("reports how many projects the README documents", async () => {

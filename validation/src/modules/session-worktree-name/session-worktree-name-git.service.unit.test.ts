@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SessionWorktreeNameGitService } from "./session-worktree-name-git.service";
 
@@ -7,19 +8,23 @@ describe(SessionWorktreeNameGitService, () => {
   let service: SessionWorktreeNameGitService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [SessionWorktreeNameGitService],
-    }).compile();
+    const built = await buildTestingModule(SessionWorktreeNameGitService);
 
-    service = await module.resolve(SessionWorktreeNameGitService);
+    service = built.instance;
   });
 
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      SessionWorktreeNameGitService,
+    );
+
+    expect(instance).toBeInstanceOf(SessionWorktreeNameGitService);
   });
 
   it("reports what git printed and the status it exited with", () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ReadmeProjectsService } from "./readme-projects.service";
 
@@ -34,11 +35,9 @@ describe(ReadmeProjectsService, () => {
   let service: ReadmeProjectsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ReadmeProjectsService],
-    }).compile();
+    const built = await buildTestingModule(ReadmeProjectsService);
 
-    service = await module.resolve(ReadmeProjectsService);
+    service = built.instance;
   });
 
   beforeEach(() => {
@@ -49,9 +48,12 @@ describe(ReadmeProjectsService, () => {
     readmeDocument = "";
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(ReadmeProjectsService);
+
+    expect(instance).toBeInstanceOf(ReadmeProjectsService);
   });
 
   describe("resolveWorkspaceProjectPaths", () => {
