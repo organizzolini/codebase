@@ -68,7 +68,7 @@ export type GraphQLObjectOf<
 
 /**
  * Why a GraphQL object differs from its entity, or `never` when it does not. A
- * new, unexcluded column counts as missing.
+ * new, non-excluded column counts as missing.
  */
 export type GraphQLObjectViolations<
   Entity,

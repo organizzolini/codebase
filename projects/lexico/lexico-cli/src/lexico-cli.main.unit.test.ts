@@ -1,6 +1,8 @@
 import { CommandFactory } from "nest-commander";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureExitCode } from "@codebase/testing";
+
 const setContextMock = vi.fn<(context: string) => void>();
 const loggerConstructorMock = vi.fn<() => void>();
 const errorMock =
@@ -55,7 +57,7 @@ describe("main bootstrap", () => {
 
   it("fails the process when a command throws", async () => {
     const runSpy = vi.spyOn(CommandFactory, "run").mockResolvedValue(undefined);
-    const previousExitCode = process.exitCode;
+    const readExitCode = captureExitCode();
 
     await import("./lexico-cli.main");
 
@@ -70,20 +72,16 @@ describe("main bootstrap", () => {
         : undefined;
     const error = new Error('Start lemma "nope" not found in the dataset.');
 
-    try {
-      await serviceErrorHandler?.(error);
+    await serviceErrorHandler?.(error);
 
-      expect(serviceErrorHandler).toBeTypeOf("function");
-      expect(process.exitCode).toBe(1);
-      expect(errorMock).toHaveBeenCalledWith(
-        "💥 Failed running command",
-        error.stack,
-        {
-          message: error.message,
-        },
-      );
-    } finally {
-      process.exitCode = previousExitCode;
-    }
+    expect(serviceErrorHandler).toBeTypeOf("function");
+    expect(readExitCode()).toBe(1);
+    expect(errorMock).toHaveBeenCalledWith(
+      "💥 Failed running command",
+      error.stack,
+      {
+        message: error.message,
+      },
+    );
   }, 15_000);
 });

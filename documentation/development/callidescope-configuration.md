@@ -11,7 +11,7 @@ overrides.
 number out of this object at run time any more: a project's own file is the
 complete statement of how that project is traced and judged, and these
 numbers reach it by being spread into it, where a reader can see them. A
-project declaring a number *higher* than one of these keeps its own —
+project declaring a number _higher_ than one of these keeps its own —
 nothing clamps it. That has to be true for the numbers below to mean
 anything: a workspace limit is pinned by the single worst stack anywhere in
 the repository, so reading it as a ceiling would hold every project to the
@@ -122,9 +122,9 @@ still tracking this file.
 ## What a project's own `callidescope.config.ts` spreads, and then overrides
 
 The second of this file's two exports, and the second of its two roles. The
-default export below is the *workspace run's* own configuration — the
+default export below is the _workspace run's_ own configuration — the
 directories it traces, the ignore file it reads, and the destinations it
-writes — and is what a run loads. This object is what one *project* is held
+writes — and is what a run loads. This object is what one _project_ is held
 to, and nothing here belongs to the run: a project spreading it cannot
 accidentally adopt the workspace's own output destinations, because none of
 them is in here to adopt.

@@ -27,7 +27,7 @@ export const REJECTED_PROJECT_CONFIGURATION =
 export const buildUnknownCommandMessage = (name: string): string =>
   `${name} is not a callidescope command, and the trace takes no positional arguments. Run one of depth, breadth, or limits, or drop the argument to trace the workspace.`;
 
-/** The headline a refusable error is reported under, or nothing. Free function, since mocked services would classify nothing. */
+/** The headline a refused error is reported under, or nothing. Free function, since mocked services would classify nothing. */
 export const readRefusalHeadline = (error: unknown): string | undefined => {
   if (error instanceof ProgramConfigurationError) {
     return REJECTED_PROJECT;

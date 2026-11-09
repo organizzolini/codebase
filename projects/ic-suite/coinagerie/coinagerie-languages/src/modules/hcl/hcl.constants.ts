@@ -8,7 +8,7 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 export const HCL_EXTENSIONS: readonly string[] = [".hcl", ".tf", ".tfvars"];
 
 /**
- * Comments, quoted strings, and heredocs in HCL. A quoted key or block label is
+ * Comments, quoted strings, and here-documents in HCL. A quoted key or block label is
  * a name; an interpolation stays inside its string.
  */
 export const HCL_GRAMMAR: LexicalGrammar = {

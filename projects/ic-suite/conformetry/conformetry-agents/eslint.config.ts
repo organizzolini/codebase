@@ -11,9 +11,14 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // vitest: referenced via tsconfig "types" array; it's a devDependency and
-          // the @nx/dependency-checks rule misidentifies it as a production dependency.
-          ignoredDependencies: ["vitest"],
+          // vitest: named in tsconfig "types"; the rule misreads it as production.
+          // @codebase/testing: test-only devDependency.
+          // reflect-metadata: Nest decorators need it at runtime.
+          ignoredDependencies: [
+            "@codebase/testing",
+            "reflect-metadata",
+            "vitest",
+          ],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
         },
       ],

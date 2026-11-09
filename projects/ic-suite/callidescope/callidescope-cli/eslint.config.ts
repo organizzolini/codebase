@@ -12,7 +12,7 @@ export default [
         "error",
         {
           // Ignored as build-time or test-only: pino rides inside observability, which Vite
-          // inlines; testing and ts-vitest serve tests; vitest is referenced via tsconfig
+          // inlined; testing and ts-vitest serve tests; vitest is referenced via tsconfig
           // "types", which the rule misreads as production use.
           ignoredDependencies: [
             "@codebase/observability",

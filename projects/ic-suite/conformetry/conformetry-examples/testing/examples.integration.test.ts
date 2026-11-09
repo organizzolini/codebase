@@ -1,10 +1,11 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 /** This package's root, and the workspace root every command runs from. */
 const packageDirectory = path.resolve(
@@ -312,8 +313,8 @@ describe("the examples this package ships", () => {
     it.each(ROUND_TRIPS)(
       "$directory generates its committed instance byte for byte",
       ({ directory, generator, inputs, instance }) => {
-        const outputDirectory = fs.mkdtempSync(
-          path.join(os.tmpdir(), `conformetry-examples-${directory}-`),
+        const outputDirectory = createTemporaryDirectory(
+          `examples-${directory}`,
         );
         const result = spawnSync(
           "node",
@@ -344,8 +345,6 @@ describe("the examples this package ships", () => {
             path.join(examplesDirectory, directory, "instances", instance),
           ),
         );
-
-        fs.rmSync(outputDirectory, { force: true, recursive: true });
       },
     );
   });

@@ -12,7 +12,7 @@ export const SOURCE_LABEL_PREFIX = "source:";
 export const TYPE_LABEL_PREFIX = "type:";
 
 /**
- * Scope is optional here because commitlint's `scope-empty` rejects scopeless
+ * Scope is optional here because commitlint's `scope-empty` rejects a title with no scope,
  * titles first; this keeps a by-hand run correct. Subject is required.
  */
 export const CONVENTIONAL_TITLE_PATTERN =

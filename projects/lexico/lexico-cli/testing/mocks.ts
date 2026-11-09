@@ -5,43 +5,14 @@
 
 import { createMock } from "@golevelup/ts-vitest";
 import * as cheerio from "cheerio";
-import { afterEach, beforeEach, onTestFinished, vi } from "vitest";
+import { onTestFinished, vi } from "vitest";
 
 import type { AnyNode } from "domhandler";
 import type { ObjectLiteral, QueryBuilder, Repository } from "typeorm";
 
 /**
- * Default test date used across time-sensitive tests.
- */
-export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
-
-// 🧪 Prompts Helpers
-
-/**
- * A typed mock function for the `prompts` default export.
- * Use this type annotation in `vi.hoisted` declarations in test files.
- */
-export type PromptsMock<Response extends Record<string, unknown>> = ReturnType<
-  typeof vi.fn<() => Promise<Response>>
->;
-
-/**
- * Fakes timers at a fixed system time before each test and restores real
- * timers after.
- */
-export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(date);
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-}
-
-/**
- * Lets a test set whether `process.stdin` reads as a terminal, restoring the real value when the test finishes.
+ * Returns a setter that makes `process.stdin.isTTY` read as `isTerminal` for the current test.
+ * The real value is restored when the test finishes.
  */
 export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
   const original = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
@@ -64,26 +35,8 @@ export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
 }
 
 /**
- * Sets a default resolved value for a `prompts` mock function.
- */
-export function setPromptsMockResponse<
-  Response extends Record<string, unknown>,
->(promptsMock: PromptsMock<Response>, response: Awaited<Response>): void {
-  promptsMock.mockResolvedValue(response);
-}
-
-/**
- * Queues a one-time resolved value for a `prompts` mock function.
- */
-export function setPromptsMockResponseOnce<
-  Response extends Record<string, unknown>,
->(promptsMock: PromptsMock<Response>, response: Awaited<Response>): void {
-  promptsMock.mockResolvedValueOnce(response);
-}
-
-/**
- * Mocks TypeORM's `Repository` with a chainable `createQueryBuilder`; configure
- * terminal methods per test with `.mockResolvedValue`.
+ * Mocks TypeORM's `Repository`, with a `createQueryBuilder` whose chain methods return the same mock.
+ * Terminal methods stay unimplemented; configure them per test.
  */
 export const createRepositoryMock = <
   Entity extends ObjectLiteral = ObjectLiteral,
@@ -135,7 +88,8 @@ export const createRepositoryMock = <
 // 🧭 Cheerio Helpers
 
 /**
- * Loads HTML and selects one element by CSS selector, returning its CheerioAPI and element. Throws when nothing matches.
+ * Parses HTML and returns the first element matching `selector`, with its CheerioAPI.
+ * Throws when nothing matches.
  */
 export function loadCheerioElement(
   html: string,
@@ -154,7 +108,8 @@ export function loadCheerioElement(
 }
 
 /**
- * Loads HTML and returns its CheerioAPI and root element. Throws when the root cannot be extracted.
+ * Parses HTML and returns the CheerioAPI with its root element.
+ * Throws when the root cannot be extracted.
  */
 export function loadCheerioWithRoot(html: string): {
   $: cheerio.CheerioAPI;
@@ -171,7 +126,8 @@ export function loadCheerioWithRoot(html: string): {
 }
 
 /**
- * Loads XML and selects one element by CSS selector, returning its CheerioAPI and element. Throws when nothing matches.
+ * Parses XML and returns the first element matching `selector`, with its CheerioAPI.
+ * Throws when nothing matches.
  */
 export function loadCheerioXmlElement(
   xml: string,
@@ -190,7 +146,8 @@ export function loadCheerioXmlElement(
 }
 
 /**
- * Loads XML and returns its CheerioAPI and root element. Throws when the root cannot be extracted.
+ * Parses XML and returns the CheerioAPI with its root element.
+ * Throws when the root cannot be extracted.
  */
 export function loadCheerioXmlWithRoot(xml: string): {
   $: cheerio.CheerioAPI;

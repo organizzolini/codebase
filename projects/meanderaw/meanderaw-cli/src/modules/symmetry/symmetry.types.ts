@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 /**
- * How a point is reached: `0` bare, `1` anchors a southward edge, `2` an eastward one, `3` only a neighbour's edge.
+ * How a point is reached: `0` bare, `1` anchors a southward edge, `2` an eastward one, `3` only an adjacent point's edge.
  */
 export type PointRank = 0 | 1 | 2 | 3;
 

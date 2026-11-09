@@ -1,6 +1,7 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ScoringService } from "../scoring/scoring.service";
 
@@ -49,21 +50,29 @@ describe(TypescriptService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(TypescriptService, {
       providers: [
         ScoringService,
         TypescriptCommentsService,
         TypescriptNodesService,
         TypescriptTreeService,
-        TypescriptService,
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(TypescriptService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TypescriptService, {
+      providers: [
+        ScoringService,
+        TypescriptCommentsService,
+        TypescriptNodesService,
+        TypescriptTreeService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(TypescriptService);
   });
 
   it("weighs a document's requirements whether or not it conforms", () => {
@@ -404,9 +413,8 @@ describe(TypescriptService, () => {
       mockTypeScriptCommentsService = createMock<TypescriptCommentsService>();
       mockTypeScriptTreeService = createMock<TypescriptTreeService>();
 
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(TypescriptService, {
         providers: [
-          TypescriptService,
           {
             provide: TypescriptCommentsService,
             useValue: mockTypeScriptCommentsService,
@@ -416,9 +424,9 @@ describe(TypescriptService, () => {
             useValue: mockTypeScriptTreeService,
           },
         ],
-      }).compile();
+      });
 
-      mockedService = await module.resolve(TypescriptService);
+      mockedService = built.instance;
     });
 
     function validateMocked(): ConformetryDifference[] {

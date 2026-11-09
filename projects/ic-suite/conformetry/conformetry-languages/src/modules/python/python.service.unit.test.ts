@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DifferencesService } from "../differences/differences.service";
 import { ScoringService } from "../scoring/scoring.service";
@@ -45,20 +46,19 @@ describe(PythonService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DifferencesService,
-        PythonBridgeService,
-        PythonService,
-        ScoringService,
-      ],
-    }).compile();
+    const built = await buildTestingModule(PythonService, {
+      providers: [DifferencesService, PythonBridgeService, ScoringService],
+    });
 
-    service = await module.resolve(PythonService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PythonService, {
+      providers: [DifferencesService, PythonBridgeService, ScoringService],
+    });
+
+    expect(instance).toBeInstanceOf(PythonService);
   });
 
   it("claims Python files but not notebooks", () => {

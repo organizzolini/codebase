@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PronunciationEcclesiasticalService } from "./pronunciation-ecclesiastical.service";
 import { PronunciationPhonemesService } from "./pronunciation-phonemes.service";
@@ -16,21 +17,32 @@ describe(PronunciationEcclesiasticalService, () => {
   const isLatinVowel = (letter: string): boolean => vowels.has(letter);
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(PronunciationEcclesiasticalService, {
       providers: [
-        PronunciationEcclesiasticalService,
         {
           provide: PronunciationPhonemesService,
           useValue: { getStringPhoneme },
         },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(PronunciationEcclesiasticalService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PronunciationEcclesiasticalService,
+      {
+        providers: [
+          {
+            provide: PronunciationPhonemesService,
+            useValue: { getStringPhoneme },
+          },
+        ],
+      },
+    );
+
+    expect(instance).toBeInstanceOf(PronunciationEcclesiasticalService);
   });
 
   it("should classify c before e as ch", () => {

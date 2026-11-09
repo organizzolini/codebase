@@ -95,20 +95,11 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/coinagerie/coinagerie-nx": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-output": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-vocabulary": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-cli": CLI_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-configuration": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-core": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-generation": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-languages": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-nx": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-output": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-validation": NEST_BASELINE,
   "projects/lexico/lexico-api": {
     modules: 89 / 121,
     resolvers: 46 / 78,
     services: 47 / 79,
   },
-  "projects/lexico/lexico-cli": NEST_BASELINE,
   "projects/lexico/lexico-db": NEST_BASELINE,
   "projects/lexico/lexico-entities": NEST_BASELINE,
   "projects/lexico/lexico-web": { application: 743 / 764, routes: 131 / 145 },
@@ -118,8 +109,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
     routes: 131 / 145,
   },
   publication: NEST_BASELINE,
-  synchronization: NEST_BASELINE,
-  validation: NEST_BASELINE,
 };
 
 /**

@@ -12,7 +12,7 @@ export default [
         "error",
         {
           // Ignored as build-time or test-only: pino rides inside observability, which Vite
-          // inlines; testing and ts-vitest serve tests; typescript is a peer that consumers
+          // inlined; testing and ts-vitest serve tests; typescript is a peer that consumers
           // install, unimported here; vitest is referenced via tsconfig "types", which the
           // rule misreads as production use.
           ignoredDependencies: [

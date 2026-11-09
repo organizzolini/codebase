@@ -25,5 +25,5 @@ export const EXECUTOR_CONFIGURATION_SURFACE =
 /** Marks a project as one whose directory holds a TypeScript program. */
 export const PROJECT_PROGRAM_FILENAME = "tsconfig.json";
 
-/** Root of the workspace-level project, skipped during inference: a target there would trace everything uncacheably. */
+/** Root of the workspace-level project, skipped during inference: a target there would trace everything, uncached. */
 export const WORKSPACE_PROJECT_ROOT = ".";

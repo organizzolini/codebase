@@ -8,7 +8,7 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 export const CSS_EXTENSIONS: readonly string[] = [".css"];
 
 /**
- * Hex colors are skipped whole, so `#abc` is not a name; a `url(…)` body is a
+ * Hexadecimal colors are skipped whole, so `#abc` is not a name; a `url(…)` body is a
  * path. CSS has no keys.
  */
 export const CSS_GRAMMAR: LexicalGrammar = {

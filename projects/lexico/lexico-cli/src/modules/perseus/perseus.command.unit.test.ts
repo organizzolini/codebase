@@ -1,16 +1,16 @@
-import { mkdtempSync, rmSync } from "node:fs";
-import os from "node:os";
-import path from "node:path";
-
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { PerseusCommand } from "./perseus.command";
+
+import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const { accessMock, appendFileMock, mkdirMock, writeFileMock } = vi.hoisted(
   () => ({
@@ -34,21 +34,13 @@ interface FetchJsonResponse {
 
 describe(PerseusCommand, () => {
   let command: PerseusCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<PerseusCommand>["logger"];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PerseusCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(PerseusCommand);
 
-    command = await module.resolve(PerseusCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
@@ -70,25 +62,14 @@ describe(PerseusCommand, () => {
       "/tmp/perseus-errors.log";
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PerseusCommand);
+
+    expect(instance).toBeInstanceOf(PerseusCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PerseusCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(PerseusCommand);
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("PerseusCommand");
+    await expectLoggerContext(PerseusCommand);
   });
 
   it("should return null and log error when tree fetch fails", async () => {
@@ -368,9 +349,7 @@ describe(PerseusCommand, () => {
 
   it("creates output directory when constructor detects it is missing", () => {
     const previousWorkingDirectory = process.cwd();
-    const temporaryDirectory = mkdtempSync(
-      path.join(os.tmpdir(), "perseus-command-"),
-    );
+    const temporaryDirectory = createTemporaryDirectory("perseus-command");
 
     try {
       process.chdir(temporaryDirectory);
@@ -387,7 +366,6 @@ describe(PerseusCommand, () => {
       );
     } finally {
       process.chdir(previousWorkingDirectory);
-      rmSync(temporaryDirectory, { force: true, recursive: true });
     }
   });
 
