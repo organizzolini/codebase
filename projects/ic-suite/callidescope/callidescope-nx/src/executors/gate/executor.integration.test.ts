@@ -1,23 +1,10 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { MARKDOWN_DEEP_STACKS_HEADING } from "@callidescope/output";
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { captureOutput, useTemporaryDirectory } from "@codebase/testing";
 
 import {
   EMPTY_TRACE_REPORT,
@@ -28,9 +15,13 @@ import { ProjectsService } from "../../modules/projects/projects.service";
 import gateExecutor from "./executor";
 
 import type { GateExecutorOptions } from "./executor.types";
+import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext, ProjectGraph } from "@nx/devkit";
 
-/** Nx project names, deliberately unlike the roots below. A gate given Nx names owns no finding, so the fixture keeps them apart. */
+/**
+ * Nx names, deliberately unlike the roots below. A gate handed Nx names owns no finding
+ * and passes anything, so the fixture forces them apart.
+ */
 const BREACHING_PROJECT_NAME = "the-project-that-breaches";
 const DEPENDENT_PROJECT_NAME = "the-project-that-depends";
 const UNREAD_PROJECT_NAME = "the-project-that-reads-nothing";
@@ -43,7 +34,10 @@ const UNREAD_PROJECT_ROOT = "packages/unread";
 /** The callable whose stack breaches the breaching project's own limit. */
 const BREACHING_ENTRY_POINT = "readBreachingEntryPoint";
 
-/** Filename the workspace and breaching project write limits in. JSON, since a TypeScript import would widen the closure. */
+/**
+ * Filename for the workspace and breaching project limits. JSON, since a TypeScript config
+ * would import its type and add an Nx dependency edge.
+ */
 const CONFIGURATION_FILE_NAME = "callidescope.config.json";
 
 /** The name a project declares itself through, which must spell `undefined`. */
@@ -85,8 +79,8 @@ const PROJECT_PROGRAM = {
 };
 
 /**
- * An executor context for one project of the fixture workspace, built literally since
- * `createMock` fabricates every property.
+ * An executor context for one project of the fixture workspace. Built literally, not mocked,
+ * because `createMock` fabricates every property it is not handed.
  */
 function buildContext(args: {
   projectName: string;
@@ -105,7 +99,7 @@ function buildContext(args: {
 
 /**
  * Gate options every case starts from. The configuration path is named, not searched for,
- * since a search would find this repository's own.
+ * since a search would find this repository's configuration.
  */
 function buildOptions(args: { workspaceRoot: string }): GateExecutorOptions {
   return {
@@ -114,8 +108,8 @@ function buildOptions(args: { workspaceRoot: string }): GateExecutorOptions {
 }
 
 /**
- * The Nx graph a run resolves its scope from, built here because a fixture workspace is in no
- * real project graph.
+ * The Nx graph the run resolves scope from, built here since a fixture is in no real graph.
+ * Downstream code is real.
  */
 function buildProjectGraph(): ProjectGraph {
   return {
@@ -159,7 +153,8 @@ function buildProjectGraph(): ProjectGraph {
 }
 
 /**
- * Reads the depth finding count from a gate's printed output, since the rendering is `callidescope-output`'s to pin.
+ * Reads the depth finding count from a printed report. Asserts which findings a verdict owned;
+ * the heading comes from `callidescope-output`'s exported constant.
  */
 function readDeepStackCount(report: string): number {
   const matched = new RegExp(
@@ -237,16 +232,16 @@ function writeProject(args: {
  *   on the strength of its dependencies' code.
  */
 describe("the gate executor, against a workspace on disk", () => {
-  let printed: string[] = [];
+  let output: CapturedOutput;
   let workspaceRoot = "";
 
+  // Resolved through symlinks: on macOS the temporary directory is a link into /private, and a
+  // run rooted at the link makes every path a ../ climb that no project root contains. The
+  // testing helper returns the real path.
+  const getWorkspaceRoot = useTemporaryDirectory("callidescope-gate");
+
   beforeAll(() => {
-    // Resolved through symlinks: on macOS `tmpdir()` is a link to `/private/var/...`, and a
-    // program reports the real path. A run rooted at the link makes every workspace-relative
-    // path climb out of its project, so project-owned exclusions stop applying.
-    workspaceRoot = realpathSync(
-      mkdtempSync(path.join(tmpdir(), "callidescope-restrict-")),
-    );
+    workspaceRoot = getWorkspaceRoot();
     // High enough that nothing in the fixture reaches it: the breach has to
     // come from the limit the breaching project declared for itself, or the
     // narrowing below proves nothing.
@@ -277,19 +272,10 @@ describe("the gate executor, against a workspace on disk", () => {
   });
 
   beforeEach(() => {
-    printed = [];
     vi.spyOn(ProjectsService.prototype, "readProjectGraph").mockResolvedValue(
       buildProjectGraph(),
     );
-    vi.spyOn(process.stdout, "write").mockImplementation((chunk): boolean => {
-      printed.push(String(chunk));
-
-      return true;
-    });
-  });
-
-  afterAll(() => {
-    rmSync(workspaceRoot, { force: true, recursive: true });
+    output = captureOutput();
   });
 
   it(
@@ -305,7 +291,7 @@ describe("the gate executor, against a workspace on disk", () => {
           workspaceRoot,
         }),
       );
-      const report = printed.join("");
+      const report = output.stdout();
 
       expect(result).toStrictEqual({ success: false });
       expect(readDeepStackCount(report)).toBe(1);
@@ -326,7 +312,7 @@ describe("the gate executor, against a workspace on disk", () => {
           workspaceRoot,
         }),
       );
-      const report = printed.join("");
+      const report = output.stdout();
 
       expect(result).toStrictEqual({ success: true });
       expect(readDeepStackCount(report)).toBe(0);
@@ -354,7 +340,7 @@ describe("the gate executor, against a workspace on disk", () => {
           workspaceRoot,
         }),
       );
-      const report = printed.join("");
+      const report = output.stdout();
 
       expect(result).toStrictEqual({ success: false });
       expect(readDeepStackCount(report)).toBe(1);
@@ -375,7 +361,7 @@ describe("the gate executor, against a workspace on disk", () => {
           workspaceRoot,
         }),
       );
-      const report = printed.join("");
+      const report = output.stdout();
 
       expect(result).toStrictEqual({ success: false });
       // The exact rendering, so the project this gate never read is named back

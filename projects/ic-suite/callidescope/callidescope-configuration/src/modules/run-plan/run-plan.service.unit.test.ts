@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "../configuration/configuration-file.service";
 import { FlagResolutionService } from "../flag-resolution/flag-resolution.service";
@@ -50,22 +51,19 @@ describe(RunPlanService, () => {
   let service: RunPlanService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        RunPlanService,
-        FlagResolutionService,
-        {
-          provide: ConfigurationFileService,
-          useValue: createMock<ConfigurationFileService>(),
-        },
-      ],
-    }).compile();
-
-    service = await module.resolve(RunPlanService);
+    ({ instance: service } = await buildTestingModule(RunPlanService, {
+      mocks: [ConfigurationFileService],
+      providers: [FlagResolutionService],
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(RunPlanService, {
+      mocks: [ConfigurationFileService],
+      providers: [FlagResolutionService],
+    });
+
+    expect(instance).toBeInstanceOf(RunPlanService);
   });
 
   // 🎛️ Reading the check set

@@ -1,10 +1,11 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, realpathSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { environmentSchema } from "./callidescope-cli.constants";
 
@@ -14,18 +15,27 @@ const ENTRY_POINT = path.resolve(
   "callidescope-cli.main.ts",
 );
 
-/** The TypeScript loader as an absolute URL, so runs in a throwaway workspace without `node_modules` still resolve it. */
+/**
+ * The TypeScript loader as an absolute URL. Resolved here, not through `esm-register`,
+ * because runs execute in a workspace with no `node_modules`.
+ */
 const LOADER_HOOK = import.meta.resolve("@swc-node/register/esm");
 
-/** Milliseconds one spawned run may take. Vitest's five-second default is a unit budget; CI runs measured past it. */
+/**
+ * Per-run timeout. Spawned runs build real programs, and CI measured 5.4 and 5.7 seconds,
+ * past Vitest's five-second default.
+ */
 const SPAWNED_RUN_TIMEOUT = 30_000;
 
-/** The tsconfig the spawned run reads. Decorator metadata must come from it, or every injected command loses its dependencies. */
+/**
+ * Compiler options the spawned run reads. Without them, NestJS constructor injection loses
+ * the decorator metadata it needs.
+ */
 const LOADER_PROJECT = path.resolve(import.meta.dirname, "..", "tsconfig.json");
 
 /**
- * Runs `callidescope` in a real process and returns its exit code. In-process,
- * nest-commander would leave it at zero on a thrown error.
+ * Spawns a real process: nest-commander writes a thrown error to stderr and leaves the
+ * exit code at zero, which in-process tests cannot see.
  */
 function runCallidescope(
   workspaceRoot: string,
@@ -62,8 +72,8 @@ function runCallidescope(
 }
 
 /**
- * Writes a project's own config file, in JavaScript because JSON cannot spell `undefined`.
- * A project without one is refused, not judged.
+ * Writes one project's complete configuration file. JavaScript, not JSON, because JSON cannot
+ * spell `undefined`, which the configuration uses to disable breadth and publishing.
  */
 function writeProjectConfiguration(projectRoot: string): void {
   writeFileSync(
@@ -106,8 +116,8 @@ function writeReadableProject(workspaceRoot: string, name: string): void {
 }
 
 /**
- * Writes a project whose `tsconfig.json` names a target TypeScript rejects.
- * Keep this shape: it exists to be unreadable.
+ * Writes a project whose tsconfig names a target TypeScript rejects, mirroring the
+ * unreadable example in `codependix-examples`, which must stay unreadable.
  */
 function writeUnreadableProject(workspaceRoot: string, name: string): void {
   const root = path.join(workspaceRoot, "packages", name);
@@ -130,13 +140,11 @@ function writeUnreadableProject(workspaceRoot: string, name: string): void {
 }
 
 /**
- * Builds a throwaway workspace. The root must be a resolved path: macOS
- * `mkdtemp` returns a symlink, which breaks project ownership.
+ * Workspace with the default config, rooted at the resolved path since macOS temp directories
+ * are symlinks that break ownership. Assert exit codes, not paths.
  */
 function writeWorkspace(): string {
-  const workspaceRoot = realpathSync(
-    mkdtempSync(path.join(tmpdir(), "callidescope-exit-")),
-  );
+  const workspaceRoot = createTemporaryDirectory("callidescope-exit");
 
   writeFileSync(
     path.join(workspaceRoot, "callidescope.config.json"),

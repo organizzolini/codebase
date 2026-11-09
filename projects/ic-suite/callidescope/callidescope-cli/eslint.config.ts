@@ -11,12 +11,12 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // @codebase/observability is inlined at build time, so it is a devDependency.
-          // @golevelup/ts-vitest is used only by test files, outside this check's scope.
-          // pino and pino-pretty are its runtime dependencies, never imported here.
-          // vitest is named in tsconfig "types", so this rule misreads it as production.
+          // Ignored as build-time or test-only: pino rides inside observability, which Vite
+          // inlines; testing and ts-vitest serve tests; vitest is referenced via tsconfig
+          // "types", which the rule misreads as production use.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "@golevelup/ts-vitest",
             "pino",
             "pino-pretty",

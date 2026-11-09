@@ -1,9 +1,10 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationFileService } from "./configuration-file.service";
 import {
@@ -127,9 +128,7 @@ function withoutKey(
 async function writeWorkspace(
   projects: Record<string, object | string>,
 ): Promise<string> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "callidescope-workspace-"),
-  );
+  const workspaceRoot = createTemporaryDirectory("callidescope-workspace");
 
   for (const [project, contents] of Object.entries(projects)) {
     const projectRoot = path.join(workspaceRoot, project);
@@ -152,16 +151,21 @@ describe(ProjectConfigurationService, () => {
   let service: ProjectConfigurationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ConfigurationFileService, ProjectConfigurationService],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      ProjectConfigurationService,
+      { providers: [ConfigurationFileService] },
+    );
 
     configurationService = await module.resolve(ConfigurationFileService);
-    service = await module.resolve(ProjectConfigurationService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ProjectConfigurationService, {
+      providers: [ConfigurationFileService],
+    });
+
+    expect(instance).toBeInstanceOf(ProjectConfigurationService);
   });
 
   // 🗂️ Discovery
@@ -371,9 +375,7 @@ describe(ProjectConfigurationService, () => {
   });
 
   it("names the project when its configuration threw something that is not an error", async () => {
-    const workspaceRoot = await mkdtemp(
-      path.join(tmpdir(), "callidescope-workspace-"),
-    );
+    const workspaceRoot = createTemporaryDirectory("callidescope-workspace");
     const projectRoot = path.join(workspaceRoot, "packages", "broken");
     await mkdir(projectRoot, { recursive: true });
     await writeFile(
@@ -534,9 +536,7 @@ describe(ProjectConfigurationService, () => {
     // breadth, and `mermaid: undefined` says it publishes no diagram. Both are
     // written into the file rather than left out of it, which is the whole
     // distinction completeness buys.
-    const workspaceRoot = await mkdtemp(
-      path.join(tmpdir(), "callidescope-workspace-"),
-    );
+    const workspaceRoot = createTemporaryDirectory("callidescope-workspace");
     const projectRoot = path.join(workspaceRoot, "packages", "quiet");
     await mkdir(projectRoot, { recursive: true });
     await writeFile(

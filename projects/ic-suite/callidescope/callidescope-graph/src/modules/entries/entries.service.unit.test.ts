@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   buildDiscoveredCallable,
@@ -155,19 +156,12 @@ function resolveEntryPoints(
 }
 
 describe(EntriesService, () => {
-  let service: EntriesService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EntriesService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [EntriesService],
-    }).compile();
+    });
 
-    service = await module.resolve(EntriesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(EntriesService);
   });
 
   it("logs how many entry points it resolved, orphans included", () => {
