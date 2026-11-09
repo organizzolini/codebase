@@ -77,8 +77,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
     application: 748 / 764,
     routes: 137 / 145,
   },
-  "projects/common/observability": NEST_BASELINE,
-  "projects/common/persistence": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-boundaries": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-cli": CLI_BASELINE,
   "projects/ic-suite/codependix/codependix-configuration": NEST_BASELINE,
@@ -95,14 +93,7 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/coinagerie/coinagerie-nx": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-output": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-vocabulary": NEST_BASELINE,
-  "projects/lexico/lexico-api": {
-    modules: 89 / 121,
-    resolvers: 46 / 78,
-    services: 47 / 79,
-  },
   "projects/lexico/lexico-db": NEST_BASELINE,
-  "projects/lexico/lexico-entities": NEST_BASELINE,
-  "projects/lexico/lexico-web": { application: 743 / 764, routes: 131 / 145 },
   "projects/meanderaw/meanderaw-cli": NEST_BASELINE,
   "projects/meanderaw/meanderaw-web": {
     application: 742 / 764,
