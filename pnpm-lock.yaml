@@ -3329,6 +3329,9 @@ importers:
       '@codebase/observability':
         specifier: workspace:*
         version: link:../../../common/observability
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3378,6 +3381,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3412,6 +3418,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3507,6 +3516,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0

@@ -9,11 +9,19 @@ import {
   MarkdownModule,
 } from "@coinagerie/output";
 import { VocabularyModule, VocabularyService } from "@coinagerie/vocabulary";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { captureExitCode, captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   createFixtureTree,
@@ -23,16 +31,22 @@ import {
 import { CollectCommand } from "./collect.command";
 
 import type { CollectCommandOptions } from "./collect.types";
+import type {
+  BuiltTestingModule,
+  TestingModuleOptions,
+} from "@codebase/testing/nestjs";
 
 /** The real layers the command composes; only the logger is replaced. */
-const COLLECT_DEPENDENCIES = [
-  ComparisonModule,
-  ConfigurationModule,
-  DeliveryModule,
-  JsonModule,
-  MarkdownModule,
-  VocabularyModule,
-];
+const DEPENDENCIES = {
+  imports: [
+    ComparisonModule,
+    ConfigurationModule,
+    DeliveryModule,
+    JsonModule,
+    MarkdownModule,
+    VocabularyModule,
+  ],
+} satisfies TestingModuleOptions;
 
 const CONFIGURATION = {
   "coinagerie.config.ts": [
@@ -48,27 +62,22 @@ const SOURCE = { "main.ts": "const answerValue = 1;\n" };
 
 describe(CollectCommand, () => {
   let command: CollectCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<CollectCommand>["logger"];
   let root: string | undefined;
+  let readExitCode: () => typeof process.exitCode;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: COLLECT_DEPENDENCIES,
-      providers: [
-        CollectCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    ({ instance: command, logger } = await buildTestingModule(
+      CollectCommand,
+      DEPENDENCIES,
+    ));
+  });
 
-    command = await module.resolve(CollectCommand);
-    logger = await module.resolve(LoggerService);
+  beforeEach(() => {
+    readExitCode = captureExitCode();
   });
 
   afterEach(() => {
-    process.exitCode = undefined;
     vi.restoreAllMocks();
 
     if (root !== undefined) {
@@ -89,25 +98,14 @@ describe(CollectCommand, () => {
     return fixture;
   }
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CollectCommand, DEPENDENCIES);
+
+    expect(instance).toBeInstanceOf(CollectCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      imports: COLLECT_DEPENDENCIES,
-      providers: [
-        CollectCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("CollectCommand");
+    await expectLoggerContext(CollectCommand, DEPENDENCIES);
   });
 
   it("reads its flags", () => {
@@ -131,22 +129,22 @@ describe(CollectCommand, () => {
   });
 
   it("prints the glossary block when given no flag", async () => {
-    const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    const output = captureOutput();
 
     await runIn({ ...CONFIGURATION, ...SOURCE }, {});
 
-    expect(write).toHaveBeenCalledWith(
-      expect.stringContaining("- **answer**:\n- **main**:\n- **value**:"),
+    expect(output.stdout()).toContain(
+      "- **answer**:\n- **main**:\n- **value**:",
     );
-    expect(process.exitCode).toBeUndefined();
+    expect(readExitCode()).toBeUndefined();
   });
 
   it("prints the glossary as flat json when --format json asks", async () => {
-    const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    const output = captureOutput();
 
     await runIn({ ...CONFIGURATION, ...SOURCE }, { format: "json" });
 
-    const printed = String(write.mock.calls[0]?.[0]);
+    const printed = output.stdout();
 
     expect(printed.startsWith('{\n  "answer": "",\n  "main": "",')).toBe(true);
     expect(printed.endsWith("\n}\n")).toBe(true);
@@ -191,7 +189,7 @@ describe(CollectCommand, () => {
 
     await command.run([], { check: true });
 
-    expect(process.exitCode).toBeUndefined();
+    expect(readExitCode()).toBeUndefined();
   });
 
   it.each<[string, Record<string, string>, CollectCommandOptions]>([
@@ -221,7 +219,7 @@ describe(CollectCommand, () => {
   ])("fails %s", async (_case, files, options) => {
     await runIn({ ...files, ...SOURCE }, options);
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
       expect.stringContaining("🪙"),
       undefined,
@@ -274,14 +272,15 @@ describe(CollectCommand, () => {
         { write: true },
       );
 
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(logger.error).toHaveBeenCalledWith(
         expect.stringContaining("🪙"),
         undefined,
-        expect.any(Object),
-      );
-      expect(JSON.stringify(vi.mocked(logger.error).mock.calls)).toContain(
-        path.join(fixture, "coinagerie.config.ts"),
+        expect.objectContaining<{ reason: string }>({
+          reason: expect.stringContaining(
+            path.join(fixture, "coinagerie.config.ts"),
+          ),
+        }),
       );
       expect(existsSync(path.join(fixture, "GLOSSARY.md"))).toBe(false);
     },
