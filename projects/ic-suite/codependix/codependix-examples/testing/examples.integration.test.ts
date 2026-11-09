@@ -230,16 +230,21 @@ describe("codependix examples", () => {
       ).not.toContain("###");
     });
 
-    it("fails outright when the file a destination names does not exist", () => {
+    it("fails outright when checking a file a destination names that does not exist", () => {
       expect.hasAssertions();
-      expect(anchorPlacement.describeMissingReadme("write")).toContain(
+      expect(anchorPlacement.describeMissingReadme("check")).toContain(
         "AnchorNotFoundError",
       );
     });
 
+    it("creates the file a destination names when writing", () => {
+      expect.hasAssertions();
+      expect(anchorPlacement.describeMissingReadme("write")).toBe("delivered");
+    });
+
     it("keeps a throwaway directory out of the committed message", () => {
       expect.hasAssertions();
-      expect(anchorPlacement.describeMissingReadme("write")).toContain(
+      expect(anchorPlacement.describeMissingReadme("check")).toContain(
         "<project>",
       );
     });
