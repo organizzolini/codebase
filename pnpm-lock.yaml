@@ -1313,6 +1313,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -1434,6 +1437,9 @@ importers:
       '@codebase/persistence':
         specifier: workspace:*
         version: link:../../common/persistence
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../common/testing
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)

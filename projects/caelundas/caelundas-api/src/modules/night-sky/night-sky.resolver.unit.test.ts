@@ -1,38 +1,39 @@
-import { Test } from "@nestjs/testing";
 import { getEntityManagerToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { NightSkyResolver } from "./night-sky.resolver";
 import { NightSkyService } from "./night-sky.service";
+
+/** A database holding no stars: the sky it draws is only the ecliptic. */
+const EMPTY_DATABASE = {
+  provide: getEntityManagerToken(),
+  useValue: {
+    getRepository: () => ({
+      find: vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]),
+    }),
+  },
+};
 
 describe(NightSkyResolver, () => {
   let resolver: NightSkyResolver;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        NightSkyResolver,
-        NightSkyService,
-        // A database holding no stars: the sky it draws is only the ecliptic.
-        {
-          provide: getEntityManagerToken(),
-          useValue: {
-            getRepository: () => ({
-              find: vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]),
-            }),
-          },
-        },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(NightSkyResolver, {
+      providers: [NightSkyService, EMPTY_DATABASE],
+    });
 
     await module.get(NightSkyService).onModuleInit();
-    resolver = await module.resolve(NightSkyResolver);
+    resolver = instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyResolver, {
+      providers: [NightSkyService, EMPTY_DATABASE],
+    });
 
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkyResolver);
   });
 
   it("answers the query with the service's sky", () => {

@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { getEntityManagerToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -7,6 +6,7 @@ import {
   type ConstellationLine,
   Star,
 } from "@codebase/caelundas-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NIGHT_SKY_CACHE_SIZE } from "./night-sky.constants";
 import { NightSkyService } from "./night-sky.service";
@@ -79,21 +79,18 @@ describe(NightSkyService, () => {
   let service: NightSkyService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        NightSkyService,
-        { provide: getEntityManagerToken(), useValue: manager },
-      ],
-    }).compile();
-
-    service = await module.resolve(NightSkyService);
+    ({ instance: service } = await buildTestingModule(NightSkyService, {
+      providers: [{ provide: getEntityManagerToken(), useValue: manager }],
+    }));
     await service.onModuleInit();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyService, {
+      providers: [{ provide: getEntityManagerToken(), useValue: manager }],
+    });
 
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkyService);
   });
 
   it("loads the stars from the database as rows, brightest first", () => {
@@ -123,13 +120,9 @@ describe(NightSkyService, () => {
   it("refuses to hand out a catalog before it is loaded", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        NightSkyService,
-        { provide: getEntityManagerToken(), useValue: manager },
-      ],
-    }).compile();
-    const fresh = await module.resolve(NightSkyService);
+    const { instance: fresh } = await buildTestingModule(NightSkyService, {
+      providers: [{ provide: getEntityManagerToken(), useValue: manager }],
+    });
 
     expect(() => fresh.catalog).toThrow("not loaded");
   });
