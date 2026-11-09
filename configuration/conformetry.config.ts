@@ -82,8 +82,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
     application: 748 / 764,
     routes: 137 / 145,
   },
-  "projects/common/observability": NEST_BASELINE,
-  "projects/common/persistence": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-boundaries": NEST_BASELINE,
   "projects/ic-suite/codependix/codependix-cli": CLI_BASELINE,
   "projects/ic-suite/codependix/codependix-configuration": NEST_BASELINE,
