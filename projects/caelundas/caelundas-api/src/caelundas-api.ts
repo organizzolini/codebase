@@ -6,7 +6,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { environmentSchema } from "./caelundas-api.constants";
 import { CaelundasApiModule } from "./caelundas-api.module";
-import { corsOptions } from "./caelundas-api.utilities";
+import { CorsService } from "./cors.service";
 
 import type { INestApplication } from "@nestjs/common";
 
@@ -30,7 +30,9 @@ async function bootstrap(): Promise<void> {
     },
   );
 
-  application.enableCors(corsOptions(environment.CAELUNDAS_API_CORS_ORIGINS));
+  application.enableCors(
+    new CorsService().getOptions(environment.CAELUNDAS_API_CORS_ORIGINS),
+  );
 
   lightship.registerShutdownHandler(async () => {
     await application.close();
