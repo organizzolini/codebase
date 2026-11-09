@@ -1,7 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
@@ -14,27 +14,26 @@ import type { Body } from "../caelundas/caelundas.types";
 describe(QuintupleAspectsComposerService, () => {
   let service: QuintupleAspectsComposerService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        QuintupleAspectsComposerService,
-        {
-          provide: CompoundPhaseService,
-          useValue: createMock<CompoundPhaseService>(),
-        },
-        {
-          provide: ProgressiveCompoundEventService,
-          useValue: createMock<ProgressiveCompoundEventService>(),
-        },
-        { provide: MathService, useValue: createMock<MathService>() },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    mocks: [CompoundPhaseService, ProgressiveCompoundEventService, MathService],
+  };
 
-    service = await module.resolve(QuintupleAspectsComposerService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      QuintupleAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      QuintupleAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(QuintupleAspectsComposerService);
   });
 
   it("returns null when pentagram event does not receive five bodies", () => {

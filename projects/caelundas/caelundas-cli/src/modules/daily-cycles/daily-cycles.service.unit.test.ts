@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CalendarService } from "../calendar/calendar.service";
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
@@ -16,12 +15,6 @@ import type {
   HorizonPosition,
 } from "../ephemeris/ephemeris.types";
 import type { LogData } from "@codebase/observability";
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
 
 /** A horizon sample whose true elevation matches its apparent one unless given. */
 function horizon(
@@ -65,51 +58,49 @@ function riseSetEphemeris(args: {
 describe(DailyCyclesService, () => {
   let service: DailyCyclesService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        {
-          provide: CalendarService,
-          useValue: {
-            buildInstantEvent: (args: {
-              date: Moment;
-              description: string;
-              logger: {
-                info: (
-                  message: string,
-                  context?: string,
-                  data?: LogData,
-                ) => void;
-              };
-              summary: string;
-              tags: string[];
-              timezone: string;
-            }) => {
-              const { date, description, logger, summary, tags, timezone } =
-                args;
-              const dateString = date.clone().tz(timezone).toISOString(true);
-              logger.info("🗓️ Built a calendar event", undefined, {
-                at: dateString,
-                summary,
-              });
-              return {
-                description,
-                end: date,
-                start: date,
-                summary,
-                tags,
-              };
-            },
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [
+      {
+        provide: CalendarService,
+        useValue: {
+          buildInstantEvent: (args: {
+            date: Moment;
+            description: string;
+            logger: {
+              info: (message: string, context?: string, data?: LogData) => void;
+            };
+            summary: string;
+            tags: string[];
+            timezone: string;
+          }) => {
+            const { date, description, logger, summary, tags, timezone } = args;
+            const dateString = date.clone().tz(timezone).toISOString(true);
+            logger.info("🗓️ Built a calendar event", undefined, {
+              at: dateString,
+              summary,
+            });
+            return {
+              description,
+              end: date,
+              start: date,
+              summary,
+              tags,
+            };
           },
         },
-        DailyCyclesBuilderService,
-        DailyCyclesService,
-        LoggerService,
-        MathService,
-      ],
-    }).compile();
-    service = await module.resolve(DailyCyclesService);
+      },
+      DailyCyclesBuilderService,
+      MathService,
+    ],
+  };
+
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      DailyCyclesService,
+      testingModuleOptions,
+    );
+    service = instance;
   });
 
   describe("dailySolarCycle.events", () => {
@@ -244,8 +235,13 @@ describe(DailyCyclesService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DailyCyclesService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(DailyCyclesService);
   });
 
   describe("dailyLunarCycle.events", () => {

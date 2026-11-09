@@ -75,12 +75,7 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
     resolvers: 46 / 78,
     services: 47 / 79,
   },
-  "projects/caelundas/caelundas-cli": NEST_BASELINE,
   "projects/caelundas/caelundas-db": NEST_BASELINE,
-  "projects/caelundas/caelundas-web": {
-    application: 748 / 764,
-    routes: 137 / 145,
-  },
   "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-configuration": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-core": NEST_BASELINE,

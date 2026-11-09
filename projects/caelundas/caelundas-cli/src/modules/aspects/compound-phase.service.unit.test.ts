@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CompoundPhaseService } from "./compound-phase.service";
 
@@ -8,15 +9,15 @@ describe(CompoundPhaseService, () => {
   let service: CompoundPhaseService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [CompoundPhaseService],
-    }).compile();
+    const { instance } = await buildTestingModule(CompoundPhaseService);
 
-    service = await module.resolve(CompoundPhaseService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CompoundPhaseService);
+
+    expect(instance).toBeInstanceOf(CompoundPhaseService);
   });
 
   it("stamps dissolving at the first minute the pattern is gone", () => {

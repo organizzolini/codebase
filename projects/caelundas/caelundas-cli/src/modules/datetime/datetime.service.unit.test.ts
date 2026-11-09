@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DatetimeService } from "./datetime.service";
 
@@ -8,10 +9,8 @@ describe(DatetimeService, () => {
   let service: DatetimeService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [DatetimeService],
-    }).compile();
-    service = await module.resolve(DatetimeService);
+    const { instance } = await buildTestingModule(DatetimeService);
+    service = instance;
   });
 
   describe("generateMinutes", () => {
@@ -53,8 +52,10 @@ describe(DatetimeService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DatetimeService);
+
+    expect(instance).toBeInstanceOf(DatetimeService);
   });
 
   describe("generateDates", () => {
