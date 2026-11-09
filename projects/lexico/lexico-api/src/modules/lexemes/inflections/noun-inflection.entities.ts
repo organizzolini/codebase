@@ -8,7 +8,7 @@ import type {
   NounDeclension,
   NounGender,
   NounInflection,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /** How a noun inflects: its declension and gender. */
 @ObjectType("NounInflection", { implements: InflectionType })

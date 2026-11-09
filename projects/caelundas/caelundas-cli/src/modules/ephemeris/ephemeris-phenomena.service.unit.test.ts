@@ -1,13 +1,14 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { constants, pheno_ut } from "sweph";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisConstantsService } from "./ephemeris-constants.service";
 import { EphemerisPhenomenaService } from "./ephemeris-phenomena.service";
 import { EphemerisTimeService } from "./ephemeris-time.service";
 
+import type { createMock } from "@golevelup/ts-vitest";
 import type * as Sweph from "sweph";
 
 vi.mock("sweph", async (importOriginal) => {
@@ -29,22 +30,17 @@ describe(EphemerisPhenomenaService, () => {
   >;
   let timeService: ReturnType<typeof createMock<EphemerisTimeService>>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EphemerisPhenomenaService,
-        {
-          provide: EphemerisConstantsService,
-          useValue: createMock<EphemerisConstantsService>(),
-        },
-        {
-          provide: EphemerisTimeService,
-          useValue: createMock<EphemerisTimeService>(),
-        },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    mocks: [EphemerisConstantsService, EphemerisTimeService],
+  };
 
-    service = await module.resolve(EphemerisPhenomenaService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      EphemerisPhenomenaService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     constantsService = await module.resolve(EphemerisConstantsService);
     timeService = await module.resolve(EphemerisTimeService);
 
@@ -102,8 +98,13 @@ describe(EphemerisPhenomenaService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EphemerisPhenomenaService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EphemerisPhenomenaService);
   });
 
   describe("computePhenoForMinute", () => {

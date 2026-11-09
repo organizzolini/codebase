@@ -4,7 +4,7 @@ import type {
   CommandOptionChoice,
   CommandOptionValue,
 } from "../lexico-ingestion/lexico-ingestion.types";
-import type { Author, Text } from "@codebase/lexico-entities";
+import type { Author, Text } from "@codebase/lexico-db";
 import type { PhrasingContent } from "mdast";
 
 /**

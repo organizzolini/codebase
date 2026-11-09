@@ -1,25 +1,18 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnnualSolarCycleEventsService } from "./annual-solar-cycle-events.service";
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
 
 describe(AnnualSolarCycleEventsService, () => {
   let service: AnnualSolarCycleEventsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [LoggerService, AnnualSolarCycleEventsService],
-    }).compile();
-    service = await module.resolve(AnnualSolarCycleEventsService);
+    const { instance } = await buildTestingModule(
+      AnnualSolarCycleEventsService,
+    );
+    service = instance;
   });
 
   describe("solar cycle event builders", () => {
@@ -209,8 +202,12 @@ describe(AnnualSolarCycleEventsService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      AnnualSolarCycleEventsService,
+    );
+
+    expect(instance).toBeInstanceOf(AnnualSolarCycleEventsService);
   });
 
   describe("seasonal event groups", () => {

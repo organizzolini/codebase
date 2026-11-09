@@ -7,7 +7,7 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { WORD_RELATIONS } from "./words.constants";
 

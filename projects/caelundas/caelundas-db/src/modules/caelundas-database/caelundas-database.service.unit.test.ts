@@ -1,7 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getDataSourceToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { READ_MODEL_STATEMENTS } from "./caelundas-database.constants";
 import { CaelundasDatabaseService } from "./caelundas-database.service";
@@ -20,18 +21,18 @@ describe(CaelundasDatabaseService, () => {
   let service: CaelundasDatabaseService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CaelundasDatabaseService,
-        { provide: getDataSourceToken(), useValue: dataSource },
-      ],
-    }).compile();
-
-    service = await module.resolve(CaelundasDatabaseService);
+    ({ instance: service } = await buildTestingModule(
+      CaelundasDatabaseService,
+      { providers: [{ provide: getDataSourceToken(), useValue: dataSource }] },
+    ));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CaelundasDatabaseService, {
+      providers: [{ provide: getDataSourceToken(), useValue: dataSource }],
+    });
+
+    expect(instance).toBeInstanceOf(CaelundasDatabaseService);
   });
 
   it("reports an initialized data source as connected", () => {

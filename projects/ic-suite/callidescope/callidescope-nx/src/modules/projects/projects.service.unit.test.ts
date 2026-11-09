@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import { createProjectGraphAsync } from "@nx/devkit";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProjectsService } from "./projects.service";
 
@@ -80,16 +81,15 @@ describe(ProjectsService, () => {
   let service: ProjectsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ProjectsService],
-    }).compile();
-
-    service = await module.resolve(ProjectsService);
+    ({ instance: service } = await buildTestingModule(ProjectsService));
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(ProjectsService);
+
+    expect(instance).toBeInstanceOf(ProjectsService);
   });
 
   describe("readProjectGraph", () => {

@@ -6,15 +6,16 @@ import {
   type JudgedBoundaryFinding,
 } from "@codependix/boundaries";
 import { InputError } from "@codependix/configuration";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { captureExitCode } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ReportingService } from "./reporting.service";
 
 import type { MapRunResult } from "../graph-run/graph-run.types";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { GraphRunOutcome } from "@codependix/core";
 
 const VIOLATION: JudgedBoundaryFinding<BoundaryViolation> = {
@@ -37,50 +38,40 @@ const FAILURE: JudgedBoundaryFinding<BoundaryCheckFailure> = {
 };
 
 /** The projects the findings above are charged to, judged by the run. */
-const JUDGED_PROJECTS = ["a", "b", "lexico-cli", "lexico-entities"];
+const JUDGED_PROJECTS = ["a", "b", "lexico-cli", "lexico-db"];
+
+const OPTIONS = {
+  providers: [
+    BoundaryOutcomeReportService,
+    { provide: BoundaryReportService, useValue: new BoundaryReportService() },
+  ],
+};
 
 describe(ReportingService, () => {
+  let readExitCode: () => typeof process.exitCode;
   let service: ReportingService;
-  let loggerService: LoggerService;
+  let loggerService: BuiltTestingModule<unknown>["logger"];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ReportingService,
-        BoundaryOutcomeReportService,
-        {
-          provide: BoundaryReportService,
-          useValue: new BoundaryReportService(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(ReportingService);
-    loggerService = await module.resolve(LoggerService);
+    ({ instance: service, logger: loggerService } = await buildTestingModule(
+      ReportingService,
+      OPTIONS,
+    ));
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
-    process.exitCode = 0;
+    readExitCode = captureExitCode();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ReportingService, OPTIONS);
+
+    expect(instance).toBeInstanceOf(ReportingService);
   });
 
-  it("sets its own logger context", () => {
-    const freshLogger = createMock<LoggerService>();
-
-    const boundaryReportService = new BoundaryReportService();
-
-    new ReportingService(
-      new BoundaryOutcomeReportService(boundaryReportService),
-      boundaryReportService,
-      freshLogger,
-    );
-
-    expect(freshLogger.setContext).toHaveBeenCalledWith("ReportingService");
+  it("sets its own logger context", async () => {
+    await expectLoggerContext(ReportingService, OPTIONS);
   });
 
   describe("reportBoundaries", () => {
@@ -120,7 +111,7 @@ describe(ReportingService, () => {
     it("names the project owning the code a failure broke on", () => {
       service.reportBoundaries(
         {
-          failures: [{ ...FAILURE, ownerProject: "lexico-entities" }],
+          failures: [{ ...FAILURE, ownerProject: "lexico-db" }],
           violations: [],
         },
         JUDGED_PROJECTS,
@@ -131,7 +122,7 @@ describe(ReportingService, () => {
         undefined,
         {
           failures: [
-            "nestjsModules lexico-cli: Cannot access 'Word' before initialization (failed in code owned by lexico-entities)",
+            "nestjsModules lexico-cli: Cannot access 'Word' before initialization (failed in code owned by lexico-db)",
           ],
         },
       );
@@ -140,9 +131,7 @@ describe(ReportingService, () => {
     it("passes on findings that are only notes, warning about each", () => {
       const passed = service.reportBoundaries(
         {
-          failures: [
-            { ...FAILURE, projects: ["lexico-entities"], verdict: "note" },
-          ],
+          failures: [{ ...FAILURE, projects: ["lexico-db"], verdict: "note" }],
           violations: [{ ...VIOLATION, projects: ["b"], verdict: "note" }],
         },
         JUDGED_PROJECTS,
@@ -155,7 +144,7 @@ describe(ReportingService, () => {
         undefined,
         {
           failures: [
-            "nestjsModules in dependency lexico-entities, not failing: Cannot access 'Word' before initialization",
+            "nestjsModules in dependency lexico-db, not failing: Cannot access 'Word' before initialization",
           ],
           violations: [
             "nxProjects in dependency b, not failing: layers: a must not depend on b.",
@@ -279,7 +268,7 @@ describe(ReportingService, () => {
     it("never fails the run", () => {
       service.reportUnmatchedSelection({ projects: ["typo"], tags: [] });
 
-      expect(process.exitCode).toBe(0);
+      expect(readExitCode() ?? 0).toBe(0);
     });
   });
 
@@ -310,7 +299,7 @@ describe(ReportingService, () => {
         undefined,
         { reason: "bad flag" },
       );
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it("reports any other Error as a failed run", () => {
@@ -321,7 +310,7 @@ describe(ReportingService, () => {
         undefined,
         { reason: "boom" },
       );
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
     });
 
     it("reports a non-Error rejection as its string form", () => {

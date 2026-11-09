@@ -1,7 +1,8 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { assertEphemerisFilesPresent } from "../ephemeris-download/ephemeris-download.utilities";
 
@@ -54,193 +55,193 @@ describe(EphemerisService, () => {
   let ephemerisHorizonService: DeepMocked<EphemerisHorizonService>;
   let ephemerisPhenomenaService: DeepMocked<EphemerisPhenomenaService>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EphemerisService,
-        {
-          provide: EphemerisAggregationService,
-          useValue: createMock<EphemerisAggregationService>({
-            accumulateBodyEphemeris:
-              vi.fn<
-                (args: {
-                  allEntries: EphemerisEntries;
-                  body: string;
-                  end: Moment;
-                  featureSets: EphemerisFeatureSets;
-                  observerLatitude: number;
-                  observerLongitude: number;
-                  start: Moment;
-                }) => void
-              >(),
-            buildEphemerisEntries: vi
-              .fn<() => EphemerisEntries>()
-              .mockReturnValue({
-                azimuthEntries: [],
-                coordinateEntries: [],
-                distanceEntries: [],
-                illuminationEntries: [],
-              }),
-            buildEphemerisFeatureSets: vi
-              .fn<
-                (args: {
-                  azimuthElevationBodies: string[];
-                  distanceBodies: string[];
-                  illuminationBodies: string[];
-                }) => EphemerisFeatureSets
-              >()
-              .mockReturnValue({
-                azimuthElevationSet: new Set(["sun"]),
-                distanceSet: new Set(["sun"]),
-                illuminationSet: new Set(["sun"]),
-              }),
-            entriesToEphemerides: vi
-              .fn<
-                (allEntries: EphemerisEntries) => {
-                  azimuthElevationEphemerisByBody: Record<
-                    string,
-                    AzimuthElevationEphemeris
-                  >;
-                  coordinateEphemerisByBody: Record<
-                    string,
-                    CoordinateEphemeris
-                  >;
-                  distanceEphemerisByBody: Record<string, DistanceEphemeris>;
-                  illuminationEphemerisByBody: Record<
-                    string,
-                    IlluminationEphemeris
-                  >;
-                }
-              >()
-              .mockReturnValue({
-                azimuthElevationEphemerisByBody: {},
-                coordinateEphemerisByBody: {},
-                distanceEphemerisByBody: {},
-                illuminationEphemerisByBody: {},
-              }),
-          }),
-        },
-        {
-          provide: EphemerisCoordinateService,
-          useValue: createMock<EphemerisCoordinateService>({
-            computeBodyCoordinate: vi
-              .fn<
-                (
-                  body: string,
-                  julianDayEphemerisTime: number,
-                ) => { latitude: number; longitude: number }
-              >()
-              .mockReturnValue({ latitude: -1.2, longitude: 120.5 }),
-            computeDistanceForBody: vi
-              .fn<
-                (args: {
-                  body: string;
-                  end: Moment;
-                  start: Moment;
-                }) => DistanceEphemeris
-              >()
-              .mockReturnValue({
-                "2024-03-21T00:00:00.000Z": {
-                  distance: 1.01,
-                  distanceSpeed: 0,
-                },
-              }),
-            computeNodeBodyMinutes: vi
-              .fn<
-                (args: {
-                  body: string;
-                  end: Moment;
-                  start: Moment;
-                }) => CoordinateEphemeris
-              >()
-              .mockReturnValue({
-                "2024-03-21T00:00:00.000Z": { latitude: 0, longitude: 45 },
-              }),
-          }),
-        },
-        {
-          provide: EphemerisConstantsService,
-          useValue: createMock<EphemerisConstantsService>({
-            isNode: vi.fn<(body: string) => boolean>(
-              (body: string) =>
-                body.includes("node") || body === "lunar perigee",
-            ),
-          }),
-        },
-        {
-          provide: EphemerisHorizonService,
-          useValue: createMock<EphemerisHorizonService>({
-            computeAzimuthElevationForBody: vi
-              .fn<
-                (args: {
-                  body: string;
-                  end: Moment;
-                  observerLatitude: number;
-                  observerLongitude: number;
-                  start: Moment;
-                }) => AzimuthElevationEphemeris
-              >()
-              .mockReturnValue({
-                "2024-03-21T00:00:00.000Z": {
-                  azimuth: 180,
-                  eclipticLatitude: 0,
-                  eclipticLongitude: 0,
-                  elevation: 44.8,
-                  semidiameter: 0.27,
-                  trueElevation: 44.8,
-                },
-              }),
-          }),
-        },
-        {
-          provide: EphemerisPhenomenaService,
-          useValue: createMock<EphemerisPhenomenaService>({
-            computeIlluminationForBody: vi
-              .fn<
-                (args: {
-                  body: string;
-                  end: Moment;
-                  start: Moment;
-                }) => IlluminationEphemeris
-              >()
-              .mockReturnValue({
-                "2024-03-21T00:00:00.000Z": {
-                  illumination: 75,
-                  magnitude: 0,
-                  phaseAngle: 0,
-                },
-              }),
-          }),
-        },
-        {
-          provide: EphemerisTimeService,
-          useValue: createMock<EphemerisTimeService>({
-            dateToJulianDays: vi
-              .fn<(date: Moment) => JulianDays>()
-              .mockReturnValue({
-                julianDayEphemerisTime: 2_460_395.5,
-                julianDayUniversalTime: 2_460_395.499_306,
-              }),
-            generateMinutes: vi.fn<
-              (
-                start: moment.Moment,
-                end: moment.Moment,
-              ) => Iterable<moment.Moment>
-            >((start: moment.Moment, end: moment.Moment) => {
-              const values: moment.Moment[] = [];
-              let current = start.clone();
-              while (current.valueOf() <= end.valueOf()) {
-                values.push(current.clone());
-                current = current.clone().add(1, "minute");
-              }
-              return values;
+  const testingModuleOptions = {
+    providers: [
+      {
+        provide: EphemerisAggregationService,
+        useValue: createMock<EphemerisAggregationService>({
+          accumulateBodyEphemeris:
+            vi.fn<
+              (args: {
+                allEntries: EphemerisEntries;
+                body: string;
+                end: Moment;
+                featureSets: EphemerisFeatureSets;
+                observerLatitude: number;
+                observerLongitude: number;
+                start: Moment;
+              }) => void
+            >(),
+          buildEphemerisEntries: vi
+            .fn<() => EphemerisEntries>()
+            .mockReturnValue({
+              azimuthEntries: [],
+              coordinateEntries: [],
+              distanceEntries: [],
+              illuminationEntries: [],
             }),
+          buildEphemerisFeatureSets: vi
+            .fn<
+              (args: {
+                azimuthElevationBodies: string[];
+                distanceBodies: string[];
+                illuminationBodies: string[];
+              }) => EphemerisFeatureSets
+            >()
+            .mockReturnValue({
+              azimuthElevationSet: new Set(["sun"]),
+              distanceSet: new Set(["sun"]),
+              illuminationSet: new Set(["sun"]),
+            }),
+          entriesToEphemerides: vi
+            .fn<
+              (allEntries: EphemerisEntries) => {
+                azimuthElevationEphemerisByBody: Record<
+                  string,
+                  AzimuthElevationEphemeris
+                >;
+                coordinateEphemerisByBody: Record<string, CoordinateEphemeris>;
+                distanceEphemerisByBody: Record<string, DistanceEphemeris>;
+                illuminationEphemerisByBody: Record<
+                  string,
+                  IlluminationEphemeris
+                >;
+              }
+            >()
+            .mockReturnValue({
+              azimuthElevationEphemerisByBody: {},
+              coordinateEphemerisByBody: {},
+              distanceEphemerisByBody: {},
+              illuminationEphemerisByBody: {},
+            }),
+        }),
+      },
+      {
+        provide: EphemerisCoordinateService,
+        useValue: createMock<EphemerisCoordinateService>({
+          computeBodyCoordinate: vi
+            .fn<
+              (
+                body: string,
+                julianDayEphemerisTime: number,
+              ) => { latitude: number; longitude: number }
+            >()
+            .mockReturnValue({ latitude: -1.2, longitude: 120.5 }),
+          computeDistanceForBody: vi
+            .fn<
+              (args: {
+                body: string;
+                end: Moment;
+                start: Moment;
+              }) => DistanceEphemeris
+            >()
+            .mockReturnValue({
+              "2024-03-21T00:00:00.000Z": {
+                distance: 1.01,
+                distanceSpeed: 0,
+              },
+            }),
+          computeNodeBodyMinutes: vi
+            .fn<
+              (args: {
+                body: string;
+                end: Moment;
+                start: Moment;
+              }) => CoordinateEphemeris
+            >()
+            .mockReturnValue({
+              "2024-03-21T00:00:00.000Z": { latitude: 0, longitude: 45 },
+            }),
+        }),
+      },
+      {
+        provide: EphemerisConstantsService,
+        useValue: createMock<EphemerisConstantsService>({
+          isNode: vi.fn<(body: string) => boolean>(
+            (body: string) => body.includes("node") || body === "lunar perigee",
+          ),
+        }),
+      },
+      {
+        provide: EphemerisHorizonService,
+        useValue: createMock<EphemerisHorizonService>({
+          computeAzimuthElevationForBody: vi
+            .fn<
+              (args: {
+                body: string;
+                end: Moment;
+                observerLatitude: number;
+                observerLongitude: number;
+                start: Moment;
+              }) => AzimuthElevationEphemeris
+            >()
+            .mockReturnValue({
+              "2024-03-21T00:00:00.000Z": {
+                azimuth: 180,
+                eclipticLatitude: 0,
+                eclipticLongitude: 0,
+                elevation: 44.8,
+                semidiameter: 0.27,
+                trueElevation: 44.8,
+              },
+            }),
+        }),
+      },
+      {
+        provide: EphemerisPhenomenaService,
+        useValue: createMock<EphemerisPhenomenaService>({
+          computeIlluminationForBody: vi
+            .fn<
+              (args: {
+                body: string;
+                end: Moment;
+                start: Moment;
+              }) => IlluminationEphemeris
+            >()
+            .mockReturnValue({
+              "2024-03-21T00:00:00.000Z": {
+                illumination: 75,
+                magnitude: 0,
+                phaseAngle: 0,
+              },
+            }),
+        }),
+      },
+      {
+        provide: EphemerisTimeService,
+        useValue: createMock<EphemerisTimeService>({
+          dateToJulianDays: vi
+            .fn<(date: Moment) => JulianDays>()
+            .mockReturnValue({
+              julianDayEphemerisTime: 2_460_395.5,
+              julianDayUniversalTime: 2_460_395.499_306,
+            }),
+          generateMinutes: vi.fn<
+            (
+              start: moment.Moment,
+              end: moment.Moment,
+            ) => Iterable<moment.Moment>
+          >((start: moment.Moment, end: moment.Moment) => {
+            const values: moment.Moment[] = [];
+            let current = start.clone();
+            while (current.valueOf() <= end.valueOf()) {
+              values.push(current.clone());
+              current = current.clone().add(1, "minute");
+            }
+            return values;
           }),
-        },
-      ],
-    }).compile();
+        }),
+      },
+    ],
+  };
 
-    service = await module.resolve(EphemerisService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      EphemerisService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     ephemerisAggregationService = module.get(EphemerisAggregationService);
     ephemerisPhenomenaService = module.get(EphemerisPhenomenaService);
     ephemerisHorizonService = module.get(EphemerisHorizonService);
@@ -429,8 +430,13 @@ describe(EphemerisService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EphemerisService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EphemerisService);
   });
 
   describe("facade delegation", () => {

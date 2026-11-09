@@ -4,7 +4,7 @@ import { DeletableType } from "../../deletable.entities";
 
 import type { PrincipalPartDatabaseOnlyField } from "./lexemes.types";
 import type { GraphQLObjectOf } from "@codebase/interface";
-import type { PrincipalPart } from "@codebase/lexico-entities";
+import type { PrincipalPart } from "@codebase/lexico-db";
 
 /** A named principal part a lexeme is cited by, such as its infinitive. */
 @ObjectType("PrincipalPart")

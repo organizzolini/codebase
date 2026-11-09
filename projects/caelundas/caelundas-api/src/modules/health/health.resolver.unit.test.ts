@@ -2,36 +2,29 @@ import {
   GraphQLSchemaBuilderModule,
   GraphQLSchemaFactory,
 } from "@nestjs/graphql";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { HealthResolver } from "./health.resolver";
 import { HealthService } from "./health.service";
 
 describe(HealthResolver, () => {
-  let resolver: HealthResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(HealthResolver, {
+      providers: [HealthService],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [HealthResolver, HealthService],
-    }).compile();
-
-    resolver = await module.resolve(HealthResolver);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(HealthResolver);
   });
 
   it("builds health resolver schema definition", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(HealthResolver, {
       imports: [GraphQLSchemaBuilderModule],
-      providers: [HealthResolver, HealthService],
-    }).compile();
+      providers: [HealthService],
+    });
 
     const schemaFactory = module.get(GraphQLSchemaFactory);
     const schema = await schemaFactory.create([HealthResolver]);
@@ -39,12 +32,13 @@ describe(HealthResolver, () => {
     expect(schema).toBeDefined();
   });
 
-  it("returns health check status from service", () => {
+  it("returns health check status from service", async () => {
     expect.hasAssertions();
 
-    const service = new HealthService();
-    const resolver = new HealthResolver(service);
+    const { instance } = await buildTestingModule(HealthResolver, {
+      providers: [HealthService],
+    });
 
-    expect(resolver.health()).toBe(true);
+    expect(instance.health()).toBe(true);
   });
 });

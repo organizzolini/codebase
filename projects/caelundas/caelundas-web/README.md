@@ -137,8 +137,8 @@ Call stacks traced through `projects/caelundas/caelundas-web`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 553 |
-| Files | 268 |
+| Callables | 555 |
+| Files | 272 |
 | Calls traced | 525 |
 | Call stacks | 89 |
 | Deepest stack | 6 |
@@ -1322,36 +1322,36 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-28133-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-996.85_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-49-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-378-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-28233-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-998.93_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-50-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-383-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-378-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-125-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-383-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-126-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-9-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-734-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-736-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-97-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-98-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-19-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-1-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-1753-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-1758-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-2-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-1518-4ade80?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-1523-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-237-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-1288-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-1131-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-594-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-1712-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-3043-475569?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-1289-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-1137-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-596-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-1726-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-3060-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-1-ca8a04?style=flat-square)
 
 ### Python
@@ -1465,9 +1465,9 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Module Files](https://img.shields.io/badge/Module_Files-0-7c3aed?style=flat-square)
 ![Service Files](https://img.shields.io/badge/Service_Files-0-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-0-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-69-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-62-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-67-0ea5e9?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-70-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-63-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-68-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
 ![Unit Tests](https://img.shields.io/badge/Unit_Tests-37-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-1-7c3aed?style=flat-square)

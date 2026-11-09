@@ -1,15 +1,14 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import * as cheerio from "cheerio";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { WiktionaryCommand } from "./wiktionary.command";
 
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { AnyNode, Element } from "domhandler";
 
 const { appendFileSyncMock, existsSyncMock, mkdirSyncMock, writeFileSyncMock } =
@@ -31,21 +30,13 @@ vi.mock("node:fs", () => ({
 
 describe(WiktionaryCommand, () => {
   let command: WiktionaryCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<WiktionaryCommand>["logger"];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        WiktionaryCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(WiktionaryCommand);
 
-    command = await module.resolve(WiktionaryCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
@@ -61,44 +52,20 @@ describe(WiktionaryCommand, () => {
     return element;
   };
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WiktionaryCommand);
+
+    expect(instance).toBeInstanceOf(WiktionaryCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        WiktionaryCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(WiktionaryCommand);
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("WiktionaryCommand");
+    await expectLoggerContext(WiktionaryCommand);
   });
 
   it("should create output directory when missing", async () => {
     existsSyncMock.mockReturnValueOnce(false);
 
-    const module = await Test.createTestingModule({
-      providers: [
-        WiktionaryCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(WiktionaryCommand);
-    const isolatedLogger = await module.resolve(LoggerService);
-
-    expect(isolatedLogger).toBeDefined();
+    await buildTestingModule(WiktionaryCommand);
 
     expect(mkdirSyncMock).toHaveBeenCalledTimes(1);
   });

@@ -232,7 +232,7 @@ root, under the decorator-preserving loader NestJS needs, which the plugin
 registers from its own dependencies:
 
 ```bash
-nx run lexico-entities:codependix-bound   # one project
+nx run lexico-db:codependix-bound   # one project
 nx affected -t codependix-bound           # only what a change touched
 ```
 
@@ -290,7 +290,7 @@ the report is all it prints. Without one of those flags a boundaries-only run
 prints nothing, and a run that also exports prints its graphs as it always did.
 
 ```bash
-codependix map --check boundaries --projects lexico-entities --format json --config configuration/codependix.config.ts
+codependix map --check boundaries --projects lexico-db --format json --config configuration/codependix.config.ts
 ```
 
 `boundaries.judgedProjects` lists the projects whose findings fail the run.

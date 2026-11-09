@@ -4,7 +4,7 @@ import { type AnyNode, isTag, isText } from "domhandler";
 import _ from "lodash";
 import YAML from "yaml";
 
-import { Author, Text } from "@codebase/lexico-entities";
+import { Author, Text } from "@codebase/lexico-db";
 
 import { authorIdToName } from "../../literature/literature.constants";
 import {

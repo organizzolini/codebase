@@ -7,7 +7,7 @@ import {
   type formPersonValues,
   type Lexeme,
   ParticipleForm,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { FormsBuilderGuardsService } from "./forms-builder-guards.service";
 import { FormsTransientWordsService } from "./forms-transient-words.service";

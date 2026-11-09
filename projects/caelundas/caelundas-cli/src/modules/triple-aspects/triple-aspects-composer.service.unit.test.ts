@@ -1,9 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
@@ -17,26 +15,30 @@ import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.t
 describe(TripleAspectsComposerService, () => {
   let service: TripleAspectsComposerService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TripleAspectsComposerService,
-        AspectGraphService,
-        ProgressiveUtilitiesService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [AspectGraphService, ProgressiveUtilitiesService],
+  };
 
-    service = await module.resolve(TripleAspectsComposerService);
-    await module.resolve(LoggerService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      TripleAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      TripleAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TripleAspectsComposerService);
   });
 
   describe("aspect helpers", () => {

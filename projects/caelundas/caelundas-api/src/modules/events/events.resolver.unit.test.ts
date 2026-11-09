@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CalendarWindow } from "./calendar-window.entities";
 import { EventFilterCombinator } from "./event-filter-combinator.entities";
@@ -23,9 +24,8 @@ describe(EventsResolver, () => {
   let resolver: EventsResolver;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: resolver } = await buildTestingModule(EventsResolver, {
       providers: [
-        EventsResolver,
         {
           provide: EventsService,
           useValue: {
@@ -37,13 +37,15 @@ describe(EventsResolver, () => {
           },
         },
       ],
-    }).compile();
-
-    resolver = await module.resolve(EventsResolver);
+    }));
   });
 
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EventsResolver, {
+      providers: [{ provide: EventsService, useValue: {} }],
+    });
+
+    expect(instance).toBeInstanceOf(EventsResolver);
   });
 
   it("answers the dataset query with the service's description", async () => {

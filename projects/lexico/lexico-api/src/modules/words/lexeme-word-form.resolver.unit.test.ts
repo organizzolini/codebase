@@ -1,32 +1,38 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { NominalForm, Word, WordForm } from "@codebase/lexico-entities";
+import { NominalForm, Word, WordForm } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LexemeWordFormLoader } from "./lexeme-word-form.loader";
 import { LexemeWordFormResolver } from "./lexeme-word-form.resolver";
 
 import type { LexemeType } from "../lexemes/lexeme.entities";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 describe(LexemeWordFormResolver, () => {
   const load = vi.fn<(lexemeId: string) => Promise<WordForm[]>>();
   let resolver: LexemeWordFormResolver;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LexemeWordFormResolver,
-        { provide: LexemeWordFormLoader, useValue: { byLexemeId: { load } } },
-      ],
-    }).compile();
+  const options = {
+    providers: [
+      { provide: LexemeWordFormLoader, useValue: { byLexemeId: { load } } },
+    ],
+  } satisfies TestingModuleOptions;
 
-    resolver = await module.resolve(LexemeWordFormResolver);
+  beforeAll(async () => {
+    ({ instance: resolver } = await buildTestingModule(
+      LexemeWordFormResolver,
+      options,
+    ));
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      LexemeWordFormResolver,
+      options,
+    );
 
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(LexemeWordFormResolver);
   });
 
   it("exposes each link as a form and the word written for it", async () => {

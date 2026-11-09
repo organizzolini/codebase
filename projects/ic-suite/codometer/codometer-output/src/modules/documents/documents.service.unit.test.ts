@@ -1,12 +1,11 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { captureOutput, createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DocumentsService } from "./documents.service";
 
@@ -25,35 +24,24 @@ const OTHER_MARKERS: DocumentMarkers = {
 describe(DocumentsService, () => {
   let service: DocumentsService;
   let logger: LoggerService;
-  const temporaryDirectories: string[] = [];
 
   /** A throwaway directory that cleans itself up after the suite. */
   function makeDirectory(): string {
-    const directory = mkdtempSync(path.join(tmpdir(), "codometer-output-"));
-    temporaryDirectories.push(directory);
+    const directory = createTemporaryDirectory("output");
     return directory;
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DocumentsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(DocumentsService);
 
-    service = await module.resolve(DocumentsService);
+    service = instance;
     logger = await module.resolve(LoggerService);
   });
 
-  afterAll(() => {
-    for (const directory of temporaryDirectories) {
-      rmSync(directory, { force: true, recursive: true });
-    }
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DocumentsService);
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(DocumentsService);
   });
 
   describe("wrap", () => {
@@ -109,7 +97,7 @@ describe(DocumentsService, () => {
 
   describe("emit", () => {
     it("prints the wrapped section when given no destination", async () => {
-      const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+      const output = captureOutput();
 
       await service.emit({
         body: "## Heading\n\ncontent",
@@ -117,8 +105,7 @@ describe(DocumentsService, () => {
         label: "stand-in",
         markers: MARKERS,
       });
-      const printed = String(write.mock.calls[0]?.[0]);
-      write.mockRestore();
+      const printed = output.stdout();
 
       expect(printed).toContain("<!-- report:start -->");
       expect(printed).toContain("## Heading");

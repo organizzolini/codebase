@@ -1,7 +1,8 @@
 /* cspell:words precomposed amabō amabo aër aer cūra cura Rōma */
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MacronsService } from "./macrons.service";
 
@@ -9,17 +10,13 @@ describe(MacronsService, () => {
   let service: MacronsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [MacronsService],
-    }).compile();
-
-    service = await module.resolve(MacronsService);
+    ({ instance: service } = await buildTestingModule(MacronsService));
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MacronsService);
 
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(MacronsService);
   });
 
   describe("removeMacrons", () => {

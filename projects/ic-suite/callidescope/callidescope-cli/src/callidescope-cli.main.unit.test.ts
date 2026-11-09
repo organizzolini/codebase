@@ -1,4 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { captureExitCode } from "@codebase/testing";
 
 interface CommandFactoryRunOptions {
   readonly bufferLogs?: boolean;
@@ -59,18 +61,14 @@ function getRunOptions(): CommandFactoryRunOptions {
 }
 
 describe("main", () => {
-  const originalExitCode = process.exitCode;
+  let exitCode: ReturnType<typeof captureExitCode>;
 
   beforeEach(() => {
     vi.resetModules();
     mockLoggerError.mockClear();
     mockLoggerSetContext.mockClear();
     mockCommandFactoryRun.mockClear();
-    process.exitCode = undefined;
-  });
-
-  afterEach(() => {
-    process.exitCode = originalExitCode;
+    exitCode = captureExitCode();
   });
 
   it("bootstraps the command factory with a buffered logger", async () => {
@@ -97,7 +95,7 @@ describe("main", () => {
     const error = new Error("💥 command exploded");
     serviceErrorHandler(error);
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(mockLoggerError).toHaveBeenCalledWith(error.message, error.stack);
   });
 });

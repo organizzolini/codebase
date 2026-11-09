@@ -1,9 +1,10 @@
-import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { startPostgresContainer } from "@codebase/persistence/testing";
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
@@ -11,16 +12,15 @@ import {
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   postgresUri,
 } from "../../../testing/fixture-persistence";
-import { startPostgresContainer } from "../postgresql/postgresql-container.utilities";
 
-import type { StartedPostgresContainer } from "../postgresql/postgresql-container.types";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 
 describe("postgresql-import --clean --data", () => {
   let source: StartedPostgresContainer;
   let target: StartedPostgresContainer;
   let sourceDataSource: DataSource;
   let targetDataSource: DataSource;
-  let directory: string;
+  const directory = useTemporaryDirectory("import-clean-data");
   let dump: string;
 
   /** Rows of `sql` run against the target. */
@@ -71,8 +71,7 @@ describe("postgresql-import --clean --data", () => {
     await sourceDataSource.query(
       "CREATE SCHEMA archive; CREATE TABLE archive.notes (id integer PRIMARY KEY, body text NOT NULL); INSERT INTO archive.notes VALUES (1, 'first'), (2, 'second'); CREATE TABLE archive.refs (id integer PRIMARY KEY, note_id integer REFERENCES archive.notes (id)); INSERT INTO archive.refs VALUES (10, 2)",
     );
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-clean-data-"));
-    dump = path.join(directory, "archive.dump");
+    dump = path.join(directory(), "archive.dump");
     const exported = await runCliCommandLine({
       argv: [
         "postgresql-export",
@@ -98,7 +97,6 @@ describe("postgresql-import --clean --data", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {
-    fs.rmSync(directory, { force: true, recursive: true });
     await Promise.all([sourceDataSource.destroy(), targetDataSource.destroy()]);
     await Promise.all([source.stop(), target.stop()]);
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);

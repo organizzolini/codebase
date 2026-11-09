@@ -5,13 +5,14 @@ import { HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
 
 import { graphqlMockServer } from "@codebase/interface/testing";
+import { renderRoute } from "@codebase/testing/react";
 
-import { renderRoute } from "../../testing/render-route";
 import {
   mockSearchEnglishQuery,
   mockSearchLatinQuery,
   SearchMatchSource,
 } from "../graphql/generated/mocks";
+import { getRouter } from "../router";
 
 import { Route } from "./search";
 
@@ -85,7 +86,7 @@ function stubSearch(
 
 describe("search", () => {
   it("renders its page", async () => {
-    await renderRoute("/search");
+    await renderRoute(getRouter(), "/search");
 
     await expect(
       screen.findByRole("heading", { level: 1 }),
@@ -100,7 +101,7 @@ describe("search", () => {
       mockSearchEnglishQuery(() => HttpResponse.error()),
     );
 
-    await renderRoute("/search?query=amo");
+    await renderRoute(getRouter(), "/search?query=amo");
 
     await expect(
       screen.findByText("Search is unavailable right now."),
@@ -119,7 +120,7 @@ describe("search", () => {
       ],
     );
 
-    await renderRoute("/search?query=amo");
+    await renderRoute(getRouter(), "/search?query=amo");
 
     const cards = await screen.findAllByTestId("lexeme-card");
 
@@ -133,7 +134,7 @@ describe("search", () => {
   it("shows what a card knows of its lexeme", async () => {
     stubSearch([["rosa", 2]], []);
 
-    await renderRoute("/search?query=rosa");
+    await renderRoute(getRouter(), "/search?query=rosa");
 
     await expect(
       screen.findByText("noun, first declension, feminine"),
@@ -149,7 +150,7 @@ describe("search", () => {
   it("opens a card's forms without making another API request", async () => {
     stubSearch([["rosa", 2]], []);
 
-    await renderRoute("/search?query=rosa");
+    await renderRoute(getRouter(), "/search?query=rosa");
     const declension = await screen.findByText("declension");
 
     fireEvent.click(declension);

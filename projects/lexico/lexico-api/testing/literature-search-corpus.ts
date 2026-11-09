@@ -1,6 +1,6 @@
 /* cspell:words adspirate Amatoria Amores Argonautica argonautica atavis auctor carmina coeptis Cogitanti dicere edite fert Flaccus formas fueramus Horatius illas illi libelli Maecenas meis memoria Metamorphoses mihi mundi mutastis mutatas Naso Nasonis natus nondum nunc omnia Oratore origine Ovidius Peneia Phoebi Poetica praetulit primaque Publius quinque Quintus regibus repetenti saepenumero Satirae sumus Tullius Valerius valerius vetera vincit vinum */
 
-import { Author, Line, Text } from "@codebase/lexico-entities";
+import { Author, Line, Text } from "@codebase/lexico-db";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 

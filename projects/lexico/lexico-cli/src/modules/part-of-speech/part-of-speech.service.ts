@@ -19,7 +19,7 @@ import {
   UninflectedInflection,
   verbConjugationValues,
   VerbInflection,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { PartOfSpeechFormsService } from "./part-of-speech-forms.service";
 import {

@@ -1,10 +1,11 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LexemeWordFormLoader } from "./lexeme-word-form.loader";
 import { WordsService } from "./words.service";
 
-import type { WordForm } from "@codebase/lexico-entities";
+import type { WordForm } from "@codebase/lexico-db";
 
 /**
  * Builds a word-form link whose form belongs to the given lexeme.
@@ -19,23 +20,20 @@ describe(LexemeWordFormLoader, () => {
   let dataloader: LexemeWordFormLoader;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: dataloader } = await buildTestingModule(LexemeWordFormLoader, {
       providers: [
-        LexemeWordFormLoader,
         {
           provide: WordsService,
           useValue: { findWordFormsByLexemeIds },
         },
       ],
-    }).compile();
-
-    dataloader = await module.resolve(LexemeWordFormLoader);
+    }));
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", () => {
     expect.hasAssertions();
 
-    expect(dataloader).toBeDefined();
+    expect(dataloader).toBeInstanceOf(LexemeWordFormLoader);
   });
 
   it("loads every lexeme asked for in one query, each with its own links", async () => {

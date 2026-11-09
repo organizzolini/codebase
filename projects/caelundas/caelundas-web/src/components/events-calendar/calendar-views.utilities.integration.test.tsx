@@ -13,7 +13,7 @@ import {
   FIXTURE_EVENTS,
 } from "../../../testing/calendar-fixture";
 import { findToolbar } from "../../../testing/calendar-page";
-import { renderRoute } from "../../../testing/render-route";
+import { renderCalendarRoute } from "../../../testing/render-route";
 import { setViewportWidth } from "../../../testing/viewport";
 
 /**
@@ -39,7 +39,7 @@ const UNGROUPED = "&group=%5B%5D";
 // they live apart from the route's own tests only to keep each file short.
 describe("calendar views", () => {
   it("switches to the week view from the toolbar", async () => {
-    await renderRoute("/?date=2026-03-04");
+    await renderCalendarRoute("/?date=2026-03-04");
 
     fireEvent.click(
       within(await findToolbar()).getByRole("button", { name: "Week" }),
@@ -61,7 +61,7 @@ describe("calendar views", () => {
     { hidden: "Venus", link: "/?view=day&date=2026-03-20", shown: "Sun" },
     { hidden: "Sun", link: "/?view=three-day&date=2026-03-24", shown: "Venus" },
   ])("shows only the days $link names", async ({ hidden, link, shown }) => {
-    await renderRoute(link);
+    await renderCalendarRoute(link);
 
     await expect(
       screen.findByRole("button", {
@@ -76,7 +76,7 @@ describe("calendar views", () => {
   });
 
   it("lists the next days' events by day in the agenda", async () => {
-    await renderRoute(`/?view=agenda&date=2026-03-04${UNGROUPED}`);
+    await renderCalendarRoute(`/?view=agenda&date=2026-03-04${UNGROUPED}`);
 
     const agenda = await screen.findByRole("region", { name: "Agenda" });
     const days = within(agenda).getAllByRole("heading", { level: 3 });
@@ -99,7 +99,7 @@ describe("calendar views", () => {
   });
 
   it("renders only the agenda rows on screen", async () => {
-    await renderRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
+    await renderCalendarRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
       api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
     });
 
@@ -112,7 +112,7 @@ describe("calendar views", () => {
   });
 
   it("opens a busy day's overflow as a windowed list", async () => {
-    await renderRoute("/?date=2026-03-01", {
+    await renderCalendarRoute("/?date=2026-03-01", {
       api: withBusyEvents("2026-03-12T14:00:00.000Z", 400),
     });
 
@@ -132,7 +132,7 @@ describe("calendar views", () => {
 
   it("opens on the agenda on a phone and on the month wider", async () => {
     setViewportWidth(375);
-    await renderRoute("/?date=2026-03-04");
+    await renderCalendarRoute("/?date=2026-03-04");
 
     await expect(
       screen.findByRole("region", { name: "Agenda" }),
@@ -150,7 +150,7 @@ describe("calendar views", () => {
 
   it("keeps the view the link names whatever the width", async () => {
     setViewportWidth(375);
-    await renderRoute("/?view=agenda&date=2026-03-04");
+    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
     await screen.findByRole("region", { name: "Agenda" });
     act(() => {
@@ -163,7 +163,7 @@ describe("calendar views", () => {
 
   it("picks a view from the toolbar's menu on a phone", async () => {
     setViewportWidth(375);
-    await renderRoute("/?date=2026-03-04");
+    await renderCalendarRoute("/?date=2026-03-04");
 
     fireEvent.click(
       within(await findToolbar()).getByRole("button", {
@@ -195,7 +195,7 @@ describe("calendar views", () => {
       start: "2026-03-03",
     },
   ])("reads only the days the $link view shows", async (expected) => {
-    await renderRoute(`/?view=${expected.link}`);
+    await renderCalendarRoute(`/?view=${expected.link}`);
     const api = readServedApi();
 
     expect(api.requests.events.map(({ period }) => period)).toStrictEqual([
@@ -207,14 +207,14 @@ describe("calendar views", () => {
   });
 
   it("never reads more than a year of agenda at once", async () => {
-    await renderRoute("/?view=agenda&date=2026-03-04&days=2557");
+    await renderCalendarRoute("/?view=agenda&date=2026-03-04&days=2557");
     const api = readServedApi();
 
     expect(api.requests.events[0]?.period.end).toBe("2026-04-04T00:00:00.000Z");
   });
 
   it("loads later events into the agenda on request", async () => {
-    await renderRoute("/?view=agenda&date=2026-03-04");
+    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
     const agenda = await screen.findByRole("region", { name: "Agenda" });
 
@@ -235,7 +235,7 @@ describe("calendar views", () => {
   });
 
   it("keeps the calendar on screen while a slow move reloads", async () => {
-    await renderRoute("/?date=2026-03-01", { api: { delay: 600 } });
+    await renderCalendarRoute("/?date=2026-03-01", { api: { delay: 600 } });
     fireEvent.click(
       within(await findToolbar()).getByRole("button", { name: /Next/u }),
     );
@@ -254,7 +254,7 @@ describe("calendar views", () => {
   });
 
   it("falls back to the month for a view it does not know", async () => {
-    await renderRoute("/?view=year&date=2026-03-01");
+    await renderCalendarRoute("/?view=year&date=2026-03-01");
 
     await expect(
       screen.findByRole("grid", { name: "March 2026" }),
@@ -262,7 +262,7 @@ describe("calendar views", () => {
   });
 
   it("loads later events into the agenda when scrolled to its end", async () => {
-    await renderRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
+    await renderCalendarRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
       api: withBusyEvents("2026-03-10T14:00:00.000Z", 60),
     });
 
@@ -276,7 +276,7 @@ describe("calendar views", () => {
   });
 
   it("says which days hold no events in the view shown", async () => {
-    await renderRoute("/?view=week&date=2026-05-06");
+    await renderCalendarRoute("/?view=week&date=2026-05-06");
 
     await expect(
       screen.findByText("No events this week"),
@@ -284,7 +284,7 @@ describe("calendar views", () => {
   });
 
   it("stops offering later events at a year", async () => {
-    await renderRoute("/?view=agenda&date=2026-03-04&days=366");
+    await renderCalendarRoute("/?view=agenda&date=2026-03-04&days=366");
 
     const agenda = await screen.findByRole("region", { name: "Agenda" });
 
@@ -297,7 +297,7 @@ describe("calendar views", () => {
   });
 
   it("reads a window already seen only once", async () => {
-    await renderRoute("/?date=2026-03-04");
+    await renderCalendarRoute("/?date=2026-03-04");
     const api = readServedApi();
 
     const toolbar = await findToolbar();
@@ -312,7 +312,7 @@ describe("calendar views", () => {
 
   it("scrolls a phone's week sideways under a sticky hour column", async () => {
     setViewportWidth(375);
-    await renderRoute("/?view=week&date=2026-03-04");
+    await renderCalendarRoute("/?view=week&date=2026-03-04");
 
     const event = await screen.findByRole("button", {
       name: /^Mars Conjunct Venus/u,
@@ -327,7 +327,7 @@ describe("calendar views", () => {
   });
 
   it("hides the last window's empty notice while the next one loads", async () => {
-    await renderRoute("/?date=2026-05-01", { api: { delay: 600 } });
+    await renderCalendarRoute("/?date=2026-05-01", { api: { delay: 600 } });
     await screen.findByText("No events this month");
     fireEvent.click(
       within(await findToolbar()).getByRole("button", { name: /Previous/u }),
@@ -343,7 +343,7 @@ describe("calendar views", () => {
   });
 
   it("keeps extending the agenda each time it is scrolled to its end", async () => {
-    await renderRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
+    await renderCalendarRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
       api: withBusyEvents("2026-03-10T14:00:00.000Z", 60),
     });
     const api = readServedApi();

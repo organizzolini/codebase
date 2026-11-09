@@ -1,10 +1,10 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
@@ -46,12 +46,12 @@ const LINES = JSON.stringify({
 
 describe(NightSkyService, () => {
   let database: DatabaseTestingModule;
-  let directory: string;
+  const getDirectory = useTemporaryDirectory("night-sky");
   let files: NightSkyFiles;
   let service: NightSkyService;
 
   beforeAll(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "night-sky-"));
+    const directory = getDirectory();
     files = {
       constellations: path.join(directory, "constellations.json"),
       lines: path.join(directory, "constellations.lines.json"),
@@ -67,11 +67,6 @@ describe(NightSkyService, () => {
 
   afterAll(async () => {
     await database.close();
-    fs.rmSync(directory, { force: true, recursive: true });
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
   });
 
   it("writes the stars, the constellations and their segments", async () => {

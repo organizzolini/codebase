@@ -1,31 +1,19 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { Token } from "@codebase/lexico-entities";
+import { Token } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LiteratureService } from "./literature.service";
 import { TokensResolver } from "./tokens.resolver";
 
 describe(TokensResolver, () => {
-  let resolver: TokensResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TokensResolver, {
+      mocks: [LiteratureService],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TokensResolver,
-        {
-          provide: LiteratureService,
-          useValue: createMock<LiteratureService>(),
-        },
-      ],
-    }).compile();
-
-    resolver = await module.resolve(TokensResolver);
-  });
-
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(TokensResolver);
   });
 
   it("returns a paginated connection for tokens", async () => {

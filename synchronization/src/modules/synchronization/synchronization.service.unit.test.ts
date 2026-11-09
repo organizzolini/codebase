@@ -1,24 +1,19 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SynchronizationService } from "./synchronization.service";
 
 import type { LoggerService } from "@codebase/observability";
 
 describe(SynchronizationService, () => {
-  let service: SynchronizationService;
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [SynchronizationService],
-    }).compile();
+    const { instance } = await buildTestingModule(SynchronizationService);
 
-    service = await module.resolve(SynchronizationService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(SynchronizationService);
   });
 
   it("returns true only for supported synchronization modes", () => {

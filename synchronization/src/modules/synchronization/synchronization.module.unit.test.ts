@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
+import {
+  expectModuleImports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { ConformetryGeneratorsModule } from "../conformetry-generators/conformetry-generators.module";
 import { ConventionalConfigModule } from "../conventional-config/conventional-config.module";
@@ -19,29 +23,26 @@ import { SynchronizationService } from "./synchronization.service";
 
 describe(SynchronizationModule, () => {
   it("registers every synchronization command's module as an import", () => {
-    const imports = Reflect.getMetadata("imports", SynchronizationModule) as
-      | undefined
-      | unknown[];
-    const providers = Reflect.getMetadata(
-      "providers",
+    expect.hasAssertions();
+
+    expectModuleImports(
       SynchronizationModule,
-    ) as undefined | unknown[];
-
-    expect(imports).toBeDefined();
-    expect(imports).toContain(LoggerModule);
-    expect(imports).toContain(ConformetryGeneratorsModule);
-    expect(imports).toContain(ConventionalConfigModule);
-    expect(imports).toContain(DevcontainerConfigurationModule);
-    expect(imports).toContain(InstalledSkillsModule);
-    expect(imports).toContain(ProjectPortsModule);
-    expect(imports).toContain(PullRequestTemplateModule);
-    expect(imports).toContain(SkillExclusionsModule);
-    expect(imports).toContain(TypeormMigrationSqlModule);
-    expect(imports).toContain(VscodeExtensionsModule);
-    expect(imports).toContain(VscodeSettingsModule);
-
-    expect(providers).toBeDefined();
-    expect(providers).toContain(SynchronizationCommand);
-    expect(providers).toContain(SynchronizationService);
+      LoggerModule,
+      ConformetryGeneratorsModule,
+      ConventionalConfigModule,
+      DevcontainerConfigurationModule,
+      InstalledSkillsModule,
+      ProjectPortsModule,
+      PullRequestTemplateModule,
+      SkillExclusionsModule,
+      TypeormMigrationSqlModule,
+      VscodeExtensionsModule,
+      VscodeSettingsModule,
+    );
+    expectModuleProvides(
+      SynchronizationModule,
+      SynchronizationCommand,
+      SynchronizationService,
+    );
   });
 });
