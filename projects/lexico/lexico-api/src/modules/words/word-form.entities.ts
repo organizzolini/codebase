@@ -8,7 +8,7 @@ import type {
   WordFormResolvedField,
 } from "./words.types";
 import type { GraphQLObjectOf, Related } from "@codebase/interface";
-import type { WordForm } from "@codebase/lexico-entities";
+import type { WordForm } from "@codebase/lexico-db";
 
 /** Links a written word to one morphological form it can surface as. */
 @ObjectType("WordForm")

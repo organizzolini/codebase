@@ -1,7 +1,7 @@
 import { cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { renderRoute } from "../../../testing/render-route";
+import { renderCalendarRoute } from "../../../testing/render-route";
 
 import { NightSkyBackdropMount } from "./night-sky-backdrop-mount";
 
@@ -37,7 +37,7 @@ describe("night sky backdrop load failures", () => {
   it("draws nothing and reports a night sky the API cannot draw, leaving the calendar", async () => {
     const report = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    await renderRoute("/?date=2026-03-01", {
+    await renderCalendarRoute("/?date=2026-03-01", {
       api: { nightSkyError: "The catalog could not be read" },
     });
     await screen.findByRole("grid", { name: "March 2026" });

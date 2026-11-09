@@ -1,11 +1,10 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne, mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -19,6 +18,7 @@ import {
 } from "./skill-exclusions.constants";
 
 import type { SkillExclusionFile } from "./skill-exclusions.types";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const fileContents = new Map<string, string>();
 
@@ -39,9 +39,11 @@ vi.mock("node:fs", () => {
   };
 });
 
+const moduleOptions = { providers: [SynchronizationService] };
+
 describe(SkillExclusionsCommand, () => {
   let command: SkillExclusionsCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   const workspaceRoot = process.cwd();
   const lockfile = path.join(workspaceRoot, "skills-lock.json");
@@ -121,16 +123,13 @@ describe(SkillExclusionsCommand, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SkillExclusionsCommand,
-        SynchronizationService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      SkillExclusionsCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(SkillExclusionsCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
@@ -138,21 +137,21 @@ describe(SkillExclusionsCommand, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      SkillExclusionsCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SkillExclusionsCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SkillExclusionsCommand,
-        SynchronizationService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
+    expect.hasAssertions();
 
-    expect(logger.setContext).toHaveBeenCalledWith("SkillExclusionsCommand");
+    await expectLoggerContext(SkillExclusionsCommand, moduleOptions);
   });
 
   describe("files", () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EventsResolver } from "./events.resolver";
 import { EventsService } from "./events.service";
@@ -29,7 +30,7 @@ describe(EventsResolver, () => {
   let resolver: EventsResolver;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: resolver } = await buildTestingModule(EventsResolver, {
       providers: [
         EventFilterCalendarFieldsService,
         EventFilterNumbersService,
@@ -37,7 +38,6 @@ describe(EventsResolver, () => {
         EventFilterService,
         EventFilterValuesService,
         EventGroupingService,
-        EventsResolver,
         {
           provide: EventsService,
           useValue: {
@@ -49,13 +49,23 @@ describe(EventsResolver, () => {
           },
         },
       ],
-    }).compile();
-
-    resolver = await module.resolve(EventsResolver);
+    }));
   });
 
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EventsResolver, {
+      providers: [
+        EventFilterCalendarFieldsService,
+        EventFilterNumbersService,
+        EventFilterParametersService,
+        EventFilterService,
+        EventFilterValuesService,
+        EventGroupingService,
+        { provide: EventsService, useValue: {} },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(EventsResolver);
   });
 
   it("answers the dataset query with the service's description", async () => {

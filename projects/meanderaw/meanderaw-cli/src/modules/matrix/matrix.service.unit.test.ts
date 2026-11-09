@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeService } from "../code/code.service";
 import { SymmetryService } from "../symmetry/symmetry.service";
@@ -8,33 +9,31 @@ import { TileService } from "../tile/tile.service";
 import { BARE_MATRIX_POINT } from "./matrix.constants";
 import { MatrixService } from "./matrix.service";
 
-import type { Submatrix } from "./matrix.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** What the matrix service is built with. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  providers: [CodeService, SymmetryService, TileService],
+};
 
 describe(MatrixService, () => {
   let service: MatrixService;
   let codeService: CodeService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [CodeService, MatrixService, SymmetryService, TileService],
-    }).compile();
+    const built = await buildTestingModule(MatrixService, MODULE_OPTIONS);
 
-    service = await module.resolve(MatrixService);
-    codeService = await module.resolve(CodeService);
+    service = built.instance;
+    codeService = await built.module.resolve(CodeService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MatrixService,
+      MODULE_OPTIONS,
+    );
 
-    const submatrix: Submatrix = {
-      column: 0,
-      height: 1,
-      matrix: [[BARE_MATRIX_POINT]],
-      row: 0,
-      width: 1,
-    };
-
-    expect(submatrix).toBeDefined();
+    expect(instance).toBeInstanceOf(MatrixService);
   });
 
   describe("fromCode and toCode", () => {

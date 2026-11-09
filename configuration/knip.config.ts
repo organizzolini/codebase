@@ -58,7 +58,9 @@ const config: KnipConfig = {
     "@graphql-codegen/typescript-validation-schema",
     "graphql-codegen-typescript-validation-schema",
     "@commitlint/config-conventional", // commitlint preset, referenced as string in extends array
+    "@codebase/testing", // Imported by tests and testing/setup.ts, which knip leaves out of its scope
     "@golevelup/ts-vitest", // Conformance-scaffolded test mock utility — imported in testing/mocks.ts which is in ignoreFiles
+    "@nestjs/testing", // Conformance-scaffolded test dependency — the testing package's module builder imports it for the tests, so no project file does
     "@nx/eslint-plugin", // Loaded dynamically by Nx ESLint integration
     // Kept despite knip hinting it is redundant: the hint comes from a
     // full-workspace run, and the Nx target runs knip scoped to one workspace,
@@ -67,7 +69,7 @@ const config: KnipConfig = {
     "@nx/web", // Nx web plugin (auto-detected by Nx)
     // Declared at the root only so pnpm resolves @nestjs/core's optional peer
     // the same way for every workspace package; without it lexico-api and
-    // lexico-entities load two copies of @nestjs/core and DI breaks.
+    // lexico-db load two copies of @nestjs/core and DI breaks.
     "@nestjs/platform-express",
     "@semantic-release/commit-analyzer", // semantic-release plugin, referenced in release.config.cjs
     "@semantic-release/github", // semantic-release plugin
@@ -265,25 +267,32 @@ const config: KnipConfig = {
     // SQL extraction script is run by name from the `migration` target
     // defaults in nx.json rather than imported, and `start` and `repl` run
     // `src/persistence.main.ts` and `src/persistence.repl.ts` by path, so knip is
-    // told all three are entry points.
+    // told the command entry points are used. Knip discovers both package
+    // exports, including the public testing subpath, from package.json.
     "projects/common/persistence": {
       entry: [
         "scripts/**/*.ts",
         "src/persistence.main.ts",
         "src/persistence.repl.ts",
       ],
-      project: ["src/**/*.ts", "scripts/**/*.ts"],
+      project: [
+        "src/**/*.ts",
+        "scripts/**/*.ts",
+        "testing/database-testing/**/*.ts",
+        "testing/postgres-container/**/*.ts",
+      ],
     },
 
-    // lexico-entities: Shared TypeORM entities
-    "projects/lexico/lexico-entities": {
+    // lexico-db: Shared TypeORM entities
+    "projects/lexico/lexico-db": {
       entry: [
         "src/index.ts",
         "src/modules/database/data-source.constants.ts",
         "src/modules/database/migrations/**/*.ts",
       ],
       ignore: [
-        "src/modules/entities/entities.module.ts", // Conformance-generated module stub, not yet exported
+        "src/modules/dictionary/dictionary.module.ts", // Conformance-generated module stub, not yet exported
+        "src/modules/literature/literature.module.ts", // Conformance-generated module stub, not yet exported
       ],
       project: ["src/**/*.ts"],
     },
@@ -318,9 +327,7 @@ const config: KnipConfig = {
 
     // logger: Shared pino-backed NestJS LoggerService and LoggerModule
     "projects/common/observability": {
-      entry: ["src/index.ts"],
-      ignore: ["src/**/*.test.ts", "testing/**"],
-      project: "src/**/*.ts",
+      project: ["src/**/*.ts", "testing/testing-module/**/*.ts"],
     },
 
     // integration: NestJS CLI tool for the Continuous Integration plumbing steps

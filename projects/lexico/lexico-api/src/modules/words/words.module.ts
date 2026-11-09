@@ -1,11 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import {
-  TypeOrmModule,
-  Word,
-  WordForm,
-  WordLexeme,
-} from "@codebase/lexico-entities";
+import { TypeOrmModule, Word, WordForm, WordLexeme } from "@codebase/lexico-db";
 
 import { LexemeWordFormLoader } from "./lexeme-word-form.loader";
 import { LexemeWordFormResolver } from "./lexeme-word-form.resolver";

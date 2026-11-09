@@ -1,7 +1,8 @@
-import { Test } from "@nestjs/testing";
 import { getEntityManagerToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EventsService } from "./events.service";
 import { EventFilterCalendarFieldsService } from "./filters/event-filter-calendar-fields.service";
@@ -23,7 +24,7 @@ describe(EventsService, () => {
   let service: EventsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(EventsService, {
       providers: [
         EventFilterCalendarFieldsService,
         EventFilterNumbersService,
@@ -31,18 +32,29 @@ describe(EventsService, () => {
         EventFilterService,
         EventFilterValuesService,
         EventGroupingService,
-        EventsService,
         PresetsService,
         WindowsService,
         { provide: getEntityManagerToken(), useValue: { query } },
       ],
-    }).compile();
-
-    service = await module.resolve(EventsService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EventsService, {
+      providers: [
+        EventFilterCalendarFieldsService,
+        EventFilterNumbersService,
+        EventFilterParametersService,
+        EventFilterService,
+        EventFilterValuesService,
+        EventGroupingService,
+        PresetsService,
+        WindowsService,
+        { provide: getEntityManagerToken(), useValue: { query } },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(EventsService);
   });
 
   it("runs the statement with its parameters and parses each row", async () => {

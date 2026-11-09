@@ -1,42 +1,46 @@
-import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import * as cheerio from "cheerio";
 import { Like, type Repository } from "typeorm";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { Lexeme, Translation } from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/observability";
+import { Lexeme, Translation } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 
 import { TranslationsService } from "./translations.service";
+
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 describe(TranslationsService, () => {
   let service: TranslationsService;
   let translationsRepository: DeepMocked<Repository<Translation>>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(TranslationsService, {
       providers: [
-        TranslationsService,
         {
           provide: getRepositoryToken(Translation),
           useValue: createRepositoryMock<Translation>(),
         },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(TranslationsService);
-    translationsRepository = module.get(getRepositoryToken(Translation));
+    service = built.instance;
+    translationsRepository = built.module.get(getRepositoryToken(Translation));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TranslationsService, {
+      providers: [
+        {
+          provide: getRepositoryToken(Translation),
+          useValue: createRepositoryMock<Translation>(),
+        },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(TranslationsService);
   });
 
   describe("extractTranslationReferences", () => {

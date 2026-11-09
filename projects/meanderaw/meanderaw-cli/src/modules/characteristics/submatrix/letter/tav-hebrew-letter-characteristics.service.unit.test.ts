@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -33,10 +32,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(TavHebrewLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    TavHebrewLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(TavHebrewLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

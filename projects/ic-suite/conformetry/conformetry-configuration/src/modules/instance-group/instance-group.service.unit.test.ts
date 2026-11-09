@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InstanceGroupService } from "./instance-group.service";
 
@@ -7,15 +8,15 @@ describe(InstanceGroupService, () => {
   let service: InstanceGroupService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [InstanceGroupService],
-    }).compile();
+    const built = await buildTestingModule(InstanceGroupService);
 
-    service = await module.resolve(InstanceGroupService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(InstanceGroupService);
+
+    expect(instance).toBeInstanceOf(InstanceGroupService);
   });
 
   describe("isProjectScoped", () => {

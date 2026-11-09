@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -49,10 +48,7 @@ const ORIENTATIONS: readonly LetterOrientationFixture[] = [
 ];
 
 describe(LambdaGreekLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    LambdaGreekLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(LambdaGreekLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

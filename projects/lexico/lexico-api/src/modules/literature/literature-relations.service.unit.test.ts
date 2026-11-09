@@ -1,44 +1,51 @@
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { In, Line, Text, Token } from "@codebase/lexico-entities";
+import { In, Line, Text, Token } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 
 import { LiteratureRelationsService } from "./literature-relations.service";
 
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { Repository } from "typeorm";
 
 describe(LiteratureRelationsService, () => {
   let service: LiteratureRelationsService;
   let textRepository: Repository<Text>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LiteratureRelationsService,
-        {
-          provide: getRepositoryToken(Line),
-          useValue: createRepositoryMock<Line>(),
-        },
-        {
-          provide: getRepositoryToken(Text),
-          useValue: createRepositoryMock<Text>(),
-        },
-        {
-          provide: getRepositoryToken(Token),
-          useValue: createRepositoryMock<Token>(),
-        },
-      ],
-    }).compile();
+  const options = {
+    providers: [
+      {
+        provide: getRepositoryToken(Line),
+        useValue: createRepositoryMock<Line>(),
+      },
+      {
+        provide: getRepositoryToken(Text),
+        useValue: createRepositoryMock<Text>(),
+      },
+      {
+        provide: getRepositoryToken(Token),
+        useValue: createRepositoryMock<Token>(),
+      },
+    ],
+  } satisfies TestingModuleOptions;
 
-    service = await module.resolve(LiteratureRelationsService);
-    textRepository = module.get(getRepositoryToken(Text));
+  beforeAll(async () => {
+    const built = await buildTestingModule(LiteratureRelationsService, options);
+
+    service = built.instance;
+    textRepository = built.module.get(getRepositoryToken(Text));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      LiteratureRelationsService,
+      options,
+    );
+
+    expect(instance).toBeInstanceOf(LiteratureRelationsService);
   });
 
   it("finds each text's parent in one lookup, reading an unjoined parent as null", async () => {

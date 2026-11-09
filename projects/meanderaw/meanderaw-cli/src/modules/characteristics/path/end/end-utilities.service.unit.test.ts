@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EndUtilitiesService } from "./end-utilities.service";
 
@@ -7,15 +8,9 @@ describe(EndUtilitiesService, () => {
   let service: EndUtilitiesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [EndUtilitiesService],
-    }).compile();
+    const built = await buildTestingModule(EndUtilitiesService);
 
-    service = await module.resolve(EndUtilitiesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    service = built.instance;
   });
 
   it("finds no free ends over no edges", () => {

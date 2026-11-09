@@ -8,7 +8,7 @@ import type {
   AdverbDegree,
   AdverbFunctionType,
   AdverbInflection,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /** How an adverb inflects: its function and degree. */
 @ObjectType("AdverbInflection", { implements: InflectionType })

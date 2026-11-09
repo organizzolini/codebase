@@ -1,31 +1,43 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SessionWorktreeNameGitService } from "./session-worktree-name-git.service";
 import { SessionWorktreeNameService } from "./session-worktree-name.service";
+
+const moduleOptions = {
+  providers: [
+    {
+      provide: SessionWorktreeNameGitService,
+      useValue: createMock<SessionWorktreeNameGitService>({
+        run: () => ({ available: false, status: null, stdout: "" }),
+      }),
+    },
+  ],
+};
 
 describe(SessionWorktreeNameService, () => {
   let service: SessionWorktreeNameService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SessionWorktreeNameService,
-        {
-          provide: SessionWorktreeNameGitService,
-          useValue: createMock<SessionWorktreeNameGitService>({
-            run: () => ({ available: false, status: null, stdout: "" }),
-          }),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      SessionWorktreeNameService,
+      moduleOptions,
+    );
 
-    service = await module.resolve(SessionWorktreeNameService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      SessionWorktreeNameService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SessionWorktreeNameService);
   });
 
   it("finds nothing to judge without git", () => {

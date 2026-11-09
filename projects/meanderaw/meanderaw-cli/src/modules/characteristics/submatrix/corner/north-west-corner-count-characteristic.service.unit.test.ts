@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -13,21 +14,16 @@ describe(NorthWestCornerCountCharacteristicService, () => {
   let service: NorthWestCornerCountCharacteristicService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CodeModule, MatrixModule],
-      providers: [
-        CharacteristicContextService,
-        NorthWestCornerCountCharacteristicService,
-        SubmatrixUtilitiesService,
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      NorthWestCornerCountCharacteristicService,
+      {
+        imports: [CodeModule, MatrixModule],
+        providers: [CharacteristicContextService, SubmatrixUtilitiesService],
+      },
+    );
 
-    contextService = await module.resolve(CharacteristicContextService);
-    service = await module.resolve(NorthWestCornerCountCharacteristicService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    contextService = await built.module.resolve(CharacteristicContextService);
+    service = built.instance;
   });
 
   it("counts corners whose ink leaves by north and west only", () => {

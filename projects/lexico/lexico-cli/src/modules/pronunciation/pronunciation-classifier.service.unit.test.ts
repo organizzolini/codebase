@@ -1,8 +1,8 @@
-import { Test } from "@nestjs/testing";
 import * as cheerio from "cheerio";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Pronunciation } from "@codebase/lexico-entities";
+import { Pronunciation } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PronunciationClassicalService } from "./pronunciation-classical.service";
 import { PronunciationClassifierService } from "./pronunciation-classifier.service";
@@ -38,9 +38,8 @@ describe(PronunciationClassifierService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(PronunciationClassifierService, {
       providers: [
-        PronunciationClassifierService,
         {
           provide: PronunciationClassicalService,
           useValue: { processClassicalCharacter },
@@ -50,13 +49,29 @@ describe(PronunciationClassifierService, () => {
           useValue: { processEcclesiasticalCharacter },
         },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(PronunciationClassifierService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PronunciationClassifierService,
+      {
+        providers: [
+          {
+            provide: PronunciationClassicalService,
+            useValue: { processClassicalCharacter },
+          },
+          {
+            provide: PronunciationEcclesiasticalService,
+            useValue: { processEcclesiasticalCharacter },
+          },
+        ],
+      },
+    );
+
+    expect(instance).toBeInstanceOf(PronunciationClassifierService);
   });
 
   it("should delegate classical processing", () => {

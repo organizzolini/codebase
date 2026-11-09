@@ -1,9 +1,9 @@
 /* cspell:ignore amans */
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { Lexeme, ParticipleForm } from "@codebase/lexico-entities";
+import { Lexeme, ParticipleForm } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { FormsBuilderGuardsService } from "./forms-builder-guards.service";
 import { FormsBuilderVerbService } from "./forms-builder-verb.service";
@@ -28,21 +28,22 @@ describe(FormsBuilderVerbService, () => {
     });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        FormsBuilderVerbService,
-        FormsBuilderGuardsService,
-        FormsTransientWordsService,
-      ],
-    }).compile();
+    const built = await buildTestingModule(FormsBuilderVerbService, {
+      providers: [FormsBuilderGuardsService, FormsTransientWordsService],
+    });
 
-    service = await module.resolve(FormsBuilderVerbService);
-    transientWordsService = await module.resolve(FormsTransientWordsService);
+    service = built.instance;
+    transientWordsService = await built.module.resolve(
+      FormsTransientWordsService,
+    );
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(FormsBuilderVerbService, {
+      providers: [FormsBuilderGuardsService, FormsTransientWordsService],
+    });
+
+    expect(instance).toBeInstanceOf(FormsBuilderVerbService);
   });
 
   describe("buildFinitePersonForms", () => {

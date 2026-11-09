@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { BoundariesService } from "./boundaries.service";
 import { BoundaryCyclesService } from "./boundary-cycles.service";
@@ -38,19 +39,17 @@ describe(BoundariesService, () => {
   let service: BoundariesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        BoundariesService,
-        BoundaryCyclesService,
-        BoundarySelectorService,
-      ],
-    }).compile();
-
-    service = await module.resolve(BoundariesService);
+    ({ instance: service } = await buildTestingModule(BoundariesService, {
+      providers: [BoundaryCyclesService, BoundarySelectorService],
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(BoundariesService, {
+      providers: [BoundaryCyclesService, BoundarySelectorService],
+    });
+
+    expect(instance).toBeInstanceOf(BoundariesService);
   });
 
   it("reports nothing for a graph with no edges", () => {

@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
@@ -18,21 +17,29 @@ import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.t
 describe(StelliumService, () => {
   let service: StelliumService;
 
+  const testingModuleOptions = {
+    providers: [
+      AspectGraphService,
+      ProgressiveCompoundEventService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        AspectGraphService,
-        LoggerService,
-        ProgressiveCompoundEventService,
-        ProgressiveUtilitiesService,
-        StelliumService,
-      ],
-    }).compile();
-    service = await module.resolve(StelliumService);
+    const { instance } = await buildTestingModule(
+      StelliumService,
+      testingModuleOptions,
+    );
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      StelliumService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(StelliumService);
   });
 
   describe("detect", () => {

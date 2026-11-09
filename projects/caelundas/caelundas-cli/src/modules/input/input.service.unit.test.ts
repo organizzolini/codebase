@@ -1,41 +1,49 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { mockDates } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { mockDates } from "../../../testing/mocks";
 import { environmentSchema } from "../../caelundas-cli.constants";
 
 import { inputSchema } from "./input.constants";
 import { InputService } from "./input.service";
 
 import type { Environment } from "./input.types";
-import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 describe(InputService, () => {
   let service: InputService;
-  let mockLoggerService: DeepMocked<LoggerService>;
+  let mockLoggerService: BuiltTestingModule<InputService>["logger"];
+
+  const testingModuleOptions = {
+    providers: [
+      {
+        provide: ConfigService,
+        useValue: { get: vi.fn<ConfigService["get"]>() },
+      },
+    ],
+  };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        InputService,
-        {
-          provide: ConfigService,
-          useValue: { get: vi.fn<ConfigService["get"]>() },
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    service = await module.resolve(InputService);
-    mockLoggerService = module.get(LoggerService);
+    const { instance, logger } = await buildTestingModule(
+      InputService,
+      testingModuleOptions,
+    );
+    service = instance;
+    mockLoggerService = logger;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      InputService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(InputService);
   });
 
   describe("environmentSchema.parse", () => {

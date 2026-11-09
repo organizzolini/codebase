@@ -3,7 +3,7 @@
 import { NestFactory } from "@nestjs/core";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { Author, Line, Text } from "@codebase/lexico-entities";
+import { Author, Line, Text } from "@codebase/lexico-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
@@ -195,7 +195,9 @@ describe("literature search end-to-end suite", () => {
       const body = await execute(`{ searchAuthors { totalCount } }`);
 
       expect(body.data).toBeUndefined();
-      expect(body.errors?.[0]?.message).toContain('"query"');
+      expect(body.errors?.[0]?.message).toMatch(
+        /query.*required.*not provided/iu,
+      );
     });
   });
 

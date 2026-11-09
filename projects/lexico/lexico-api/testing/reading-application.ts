@@ -26,7 +26,7 @@ import {
   UninflectedInflection,
   VerbInflection,
   Word,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { environmentSchema } from "../src/lexico-api.constants";
 import { LiteratureModule } from "../src/modules/literature/literature.module";

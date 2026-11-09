@@ -8,7 +8,7 @@ import type {
   AdjectiveDeclension,
   AdjectiveDegree,
   AdjectiveInflection,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /** How an adjective inflects: its declension and degree. */
 @ObjectType("AdjectiveInflection", { implements: InflectionType })

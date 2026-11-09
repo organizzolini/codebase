@@ -1,32 +1,25 @@
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { In, Lexeme } from "@codebase/lexico-entities";
+import { In, Lexeme } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 
 import { LexemesService } from "./lexemes.service";
 
 describe(LexemesService, () => {
-  let service: LexemesService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LexemesService, {
       providers: [
-        LexemesService,
         {
           provide: getRepositoryToken(Lexeme),
           useValue: createRepositoryMock<Lexeme>(),
         },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(LexemesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(LexemesService);
   });
 
   it("finds a single lexeme by id with relations", async () => {

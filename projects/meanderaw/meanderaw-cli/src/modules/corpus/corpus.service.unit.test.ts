@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { characteristicRecord } from "../../../testing/meanders";
 import { CharacteristicsService } from "../characteristics/characteristics.service";
@@ -14,8 +15,19 @@ import { CorpusService } from "./corpus.service";
 import type { Meander } from "../database/entities/meander.entity";
 import type { Tile } from "../tile/tile.types";
 import type { CorpusEntry } from "./corpus.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🧪 Tests
+
+/** What the class under test is built with. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  mocks: [
+    CharacteristicsService,
+    DatabaseService,
+    CodeService,
+    TileEnumerationService,
+  ],
+};
 
 describe(CorpusService, () => {
   let service: CorpusService;
@@ -43,33 +55,13 @@ describe(CorpusService, () => {
   });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CorpusService,
-        {
-          provide: CharacteristicsService,
-          useValue: createMock<CharacteristicsService>(),
-        },
-        {
-          provide: DatabaseService,
-          useValue: createMock<DatabaseService>(),
-        },
-        {
-          provide: CodeService,
-          useValue: createMock<CodeService>(),
-        },
-        {
-          provide: TileEnumerationService,
-          useValue: createMock<TileEnumerationService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(CorpusService, MODULE_OPTIONS);
 
-    service = await module.resolve(CorpusService);
-    characteristicsService = await module.resolve(CharacteristicsService);
-    databaseService = await module.resolve(DatabaseService);
-    codeService = await module.resolve(CodeService);
-    tileEnumerationService = await module.resolve(TileEnumerationService);
+    service = built.instance;
+    characteristicsService = built.mock(CharacteristicsService);
+    databaseService = built.mock(DatabaseService);
+    codeService = built.mock(CodeService);
+    tileEnumerationService = built.mock(TileEnumerationService);
   });
 
   beforeEach(() => {
@@ -98,8 +90,13 @@ describe(CorpusService, () => {
     vi.mocked(databaseService.save).mockResolvedValue(savedMeander);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      CorpusService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(CorpusService);
   });
 
   describe("ingest", () => {

@@ -4,7 +4,7 @@ import { FormType } from "./form.entities";
 
 import type { FormDatabaseOnlyField } from "./forms.types";
 import type { GraphQLObjectOf } from "@codebase/interface";
-import type { FormSupineCase, SupineForm } from "@codebase/lexico-entities";
+import type { FormSupineCase, SupineForm } from "@codebase/lexico-db";
 
 /** A supine, the verbal noun, in the accusative or ablative. */
 @ObjectType("SupineForm", { implements: FormType })
