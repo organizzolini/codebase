@@ -1197,6 +1197,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **magnitude**: Size of a relative date offset in the filters date editor, parsed from counted text and signed by past or future direction.
 - **observer**: Browser instance created to react when DOM children or subtrees change, used to re-measure layout after updates.
 - **orientation**: Horizontal or vertical direction of a control such as a slider, separator, or list, exposed as aria-orientation.
+- **period**: Morning or afternoon half of a twelve-hour clock, the am or pm column of the time picker.
 - **place**: Position an item occupies in a layout, such as a spinner that replaces an expander in place within a tree row.
 - **placement**: Where a floating element sits relative to its anchor, such as the header or floating copy button in code block.
 - **presentation**: Name of this package, the shared React component library, and the presentation category used for PowerPoint file types.
@@ -1223,5 +1224,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **visibility**: CSS visibility or content-visibility property, which the code block avoids skipping for measured layout reasons.
 - **visible**: Shown on screen, such as the visible label text that an aria-label would replace in accessible names.
 - **weekday**: Day-of-week value, such as the EEEE formatted weekday heading in the agenda view group header.
+- **window**: The browser's global window object, listened to for keyboard shortcuts and measured for media queries and mobile breakpoints.
 
 <!-- coinagerie:end -->

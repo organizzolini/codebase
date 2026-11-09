@@ -412,6 +412,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **modality**: Subject category in subjects.py grouping possibility and necessity subjects that the grammars express.
 - **negative**: Polarity member in grammars.py for a proposition that is denied, also a subject under the Polarity category.
 - **perfect**: Tense subdivision in grammars.py such as future perfect, for an event completed before a reference point in time.
+- **period**: Full stop at the end of a sentence, which the prompts forbid ending an affirmation with.
 - **planet**: Astrology subject category in subjects.py for the bodies whose meanings the pipeline turns into affirmations.
 - **polarity**: Grammatical axis in grammars.py recording whether a proposition is affirmed or negated, plus a subject category.
 - **progressive**: Imperfective-group value in grammars.py for an event in progress at the reference time, such as continuous action.
