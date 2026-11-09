@@ -1,11 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { Test } from "@nestjs/testing";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import {
-  canonicalizeNightSkyInput,
-  normalizeConstellationName,
-  parseNightSkyInput,
-  selectConstellationSegments,
-} from "./night-sky-input.utilities";
+import { NightSkyColorsService } from "./night-sky-colors.service";
+import { NightSkyInputService } from "./night-sky-input.service";
 
 import type { ConstellationSegment } from "./night-sky.types";
 
@@ -23,12 +20,28 @@ const SCORPIUS: ConstellationSegment = {
   zodiac: true,
 };
 
-describe("night sky input suite", () => {
-  describe(parseNightSkyInput, () => {
+describe(NightSkyInputService, () => {
+  let service: NightSkyInputService;
+
+  beforeAll(async () => {
+    const module = await Test.createTestingModule({
+      providers: [NightSkyColorsService, NightSkyInputService],
+    }).compile();
+
+    service = await module.resolve(NightSkyInputService);
+  });
+
+  it("is defined", () => {
+    expect.hasAssertions();
+
+    expect(service).toBeDefined();
+  });
+
+  describe("parse", () => {
     it("fills the observer, the view and the figures with their defaults", () => {
       expect.hasAssertions();
 
-      const parsed = parseNightSkyInput({ height: 600, width: 800 });
+      const parsed = service.parse({ height: 600, width: 800 });
 
       expect(parsed).toMatchObject({
         backgroundBottomColor: "#0d1533",
@@ -47,10 +60,10 @@ describe("night sky input suite", () => {
       const given = new Date("2026-03-20T04:30:00Z");
 
       expect(
-        parseNightSkyInput({ height: 600, width: 800 }).time.getTime(),
+        service.parse({ height: 600, width: 800 }).time.getTime(),
       ).toBeGreaterThanOrEqual(before);
       expect(
-        parseNightSkyInput({ height: 600, time: given, width: 800 }).time,
+        service.parse({ height: 600, time: given, width: 800 }).time,
       ).toStrictEqual(given);
     });
 
@@ -58,7 +71,7 @@ describe("night sky input suite", () => {
       expect.hasAssertions();
 
       expect(
-        parseNightSkyInput({
+        service.parse({
           backgroundTopColor: "ABC",
           height: 600,
           lineColor: "#FFAA00",
@@ -71,7 +84,7 @@ describe("night sky input suite", () => {
       expect.hasAssertions();
 
       expect(
-        parseNightSkyInput({
+        service.parse({
           constellations: ["Ursa Major", " corona-borealis ", ""],
           height: 600,
           width: 800,
@@ -83,7 +96,7 @@ describe("night sky input suite", () => {
       expect.hasAssertions();
 
       expect(
-        parseNightSkyInput({
+        service.parse({
           constellations: ["zodiac", "none"],
           height: 600,
           width: 800,
@@ -103,33 +116,31 @@ describe("night sky input suite", () => {
     ])("rejects %j", (input, field) => {
       expect.hasAssertions();
 
-      expect(() => parseNightSkyInput(input)).toThrow(field);
+      expect(() => service.parse(input)).toThrow(field);
     });
   });
 
-  describe(canonicalizeNightSkyInput, () => {
+  describe("snap", () => {
     it("snaps the time to the minute and the size up to its bucket", () => {
       expect.hasAssertions();
 
-      const canonical = canonicalizeNightSkyInput(
-        parseNightSkyInput({
+      const snapped = service.snap(
+        service.parse({
           height: 690,
           time: new Date("2026-03-20T04:30:58.500Z"),
           width: 1090,
         }),
       );
 
-      expect(canonical.time).toStrictEqual(new Date("2026-03-20T04:30:00Z"));
-      expect(canonical).toMatchObject({ height: 704, width: 1152 });
+      expect(snapped.time).toStrictEqual(new Date("2026-03-20T04:30:00Z"));
+      expect(snapped).toMatchObject({ height: 704, width: 1152 });
     });
 
     it("keeps a size already on a bucket", () => {
       expect.hasAssertions();
 
       expect(
-        canonicalizeNightSkyInput(
-          parseNightSkyInput({ height: 640, width: 64 }),
-        ),
+        service.snap(service.parse({ height: 640, width: 64 })),
       ).toMatchObject({ height: 640, width: 64 });
     });
 
@@ -137,8 +148,8 @@ describe("night sky input suite", () => {
       expect.hasAssertions();
 
       expect(
-        canonicalizeNightSkyInput(
-          parseNightSkyInput({
+        service.snap(
+          service.parse({
             constellations: ["zodiac", "Ursa Major", "zodiac", "aries"],
             height: 600,
             width: 800,
@@ -148,33 +159,33 @@ describe("night sky input suite", () => {
     });
   });
 
-  describe(normalizeConstellationName, () => {
+  describe("toSlug", () => {
     it("lower-cases and joins words with underscores", () => {
       expect.hasAssertions();
 
-      expect(normalizeConstellationName(" Corona  Borealis ")).toBe(
-        "corona_borealis",
-      );
-      expect(normalizeConstellationName("Ursa-Minor")).toBe("ursa_minor");
+      expect(service.toSlug(" Corona  Borealis ")).toBe("corona_borealis");
+      expect(service.toSlug("Ursa-Minor")).toBe("ursa_minor");
     });
   });
 
-  describe(selectConstellationSegments, () => {
+  describe("selectConstellationSegments", () => {
     const segments = [URSA_MAJOR, SCORPIUS];
 
     it("selects every figure, the zodiac's, or the ones named", () => {
       expect.hasAssertions();
 
-      expect(selectConstellationSegments(segments, ["all"])).toStrictEqual(
-        segments,
-      );
-      expect(selectConstellationSegments(segments, ["zodiac"])).toStrictEqual([
-        SCORPIUS,
-      ]);
       expect(
-        selectConstellationSegments(segments, ["zodiac", "ursa_major"]),
+        service.selectConstellationSegments(segments, ["all"]),
       ).toStrictEqual(segments);
-      expect(selectConstellationSegments(segments, [])).toStrictEqual([]);
+      expect(
+        service.selectConstellationSegments(segments, ["zodiac"]),
+      ).toStrictEqual([SCORPIUS]);
+      expect(
+        service.selectConstellationSegments(segments, ["zodiac", "ursa_major"]),
+      ).toStrictEqual(segments);
+      expect(service.selectConstellationSegments(segments, [])).toStrictEqual(
+        [],
+      );
     });
   });
 });

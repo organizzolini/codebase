@@ -34,8 +34,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **azimuth**:
 - **binder**:
 - **breadth**:
-- **canonical**:
-- **canonicalize**:
 - **conjunct**:
 - **constellation**:
 - **db**:
