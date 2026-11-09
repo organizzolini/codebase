@@ -2,6 +2,8 @@ import { createMock } from "@golevelup/ts-vitest";
 import { NestFactory } from "@nestjs/core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { overrideEnvironment } from "@codebase/testing";
+
 import type { INestApplication } from "@nestjs/common";
 
 const setContextMock = vi.fn<(context: string) => void>();
@@ -101,10 +103,12 @@ describe("caelundas api bootstrap suite", () => {
   it("bootstraps nest application with custom CAELUNDAS_API_PORT and CAELUNDAS_API_LIGHTSHIP_PORT", async () => {
     expect.hasAssertions();
 
-    process.env["CAELUNDAS_API_LIGHTSHIP_PORT"] = "9005";
-    process.env["CAELUNDAS_API_PORT"] = "9999";
-    process.env["CAELUNDAS_API_CORS_ORIGINS"] =
-      "http://localhost:8967, http://127.0.0.1:8967";
+    overrideEnvironment({
+      CAELUNDAS_API_CORS_ORIGINS:
+        "http://localhost:8967, http://127.0.0.1:8967",
+      CAELUNDAS_API_LIGHTSHIP_PORT: "9005",
+      CAELUNDAS_API_PORT: "9999",
+    });
     const enableCorsMock = vi.fn<(options: unknown) => void>();
     const listenMock = vi
       .fn<() => Promise<INestApplication>>()
@@ -128,9 +132,5 @@ describe("caelundas api bootstrap suite", () => {
     expect(enableCorsMock).toHaveBeenCalledWith({
       origin: ["http://localhost:8967", "http://127.0.0.1:8967"],
     });
-
-    delete process.env["CAELUNDAS_API_LIGHTSHIP_PORT"];
-    delete process.env["CAELUNDAS_API_PORT"];
-    delete process.env["CAELUNDAS_API_CORS_ORIGINS"];
   });
 });

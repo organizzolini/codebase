@@ -1,13 +1,20 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
+
+import {
+  expectModuleExports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { HealthModule } from "./health.module";
+import { HealthResolver } from "./health.resolver";
+import { HealthService } from "./health.service";
 
-describe("health module suite", () => {
-  it("instantiates HealthModule", () => {
-    expect.hasAssertions();
+describe(HealthModule, () => {
+  it("provides its resolver and service", () => {
+    expectModuleProvides(HealthModule, HealthResolver, HealthService);
+  });
 
-    const module = new HealthModule();
-
-    expect(module).toBeDefined();
+  it("exports its service", () => {
+    expectModuleExports(HealthModule, HealthService);
   });
 });
