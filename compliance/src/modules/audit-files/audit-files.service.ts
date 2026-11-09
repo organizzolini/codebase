@@ -8,22 +8,22 @@ import {
   CODEOWNERS_HANDLE_PATTERN,
   MAX_WORKFLOW_TIMEOUT_MINUTES,
   WORKFLOWS_DIRECTORY,
-} from "./audit-governance.constants";
+} from "./audit-files.constants";
 
 import type {
-  AuditGovernanceVerdict,
+  AuditFilesVerdict,
   CodeownersVerdict,
   CodeownersViolation,
   WorkflowJobDeclaration,
   WorkflowVerdict,
   WorkflowViolation,
-} from "./audit-governance.types";
+} from "./audit-files.types";
 
 /**
  * Service for auditing repository governance including CODEOWNERS and workflow security.
  */
 @Injectable()
-export class AuditGovernanceService {
+export class AuditFilesService {
   // 🏗 Dependency Injection
 
   constructor() {}
@@ -269,9 +269,7 @@ export class AuditGovernanceService {
   }
 
   /** Runs the complete repository governance audit. */
-  public checkGovernance(
-    workspaceRoot: string = process.cwd(),
-  ): AuditGovernanceVerdict {
+  public checkFiles(workspaceRoot: string = process.cwd()): AuditFilesVerdict {
     const codeowners = this.checkCodeowners(workspaceRoot);
     const workflows = this.checkWorkflows(workspaceRoot);
 

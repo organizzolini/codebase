@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 /** Aggregated repository governance audit verdict. */
-export interface AuditGovernanceVerdict {
+export interface AuditFilesVerdict {
   readonly codeowners: CodeownersVerdict;
   readonly valid: boolean;
   readonly workflows: WorkflowVerdict;

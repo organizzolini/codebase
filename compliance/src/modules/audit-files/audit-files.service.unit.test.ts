@@ -3,7 +3,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AuditGovernanceService } from "./audit-governance.service";
+import { AuditFilesService } from "./audit-files.service";
 
 vi.mock("node:fs", () => ({
   existsSync: vi.fn<(target: string) => boolean>(),
@@ -11,15 +11,15 @@ vi.mock("node:fs", () => ({
   readFileSync: vi.fn<(target: string, encoding?: string) => string>(),
 }));
 
-describe(AuditGovernanceService, () => {
-  let service: AuditGovernanceService;
+describe(AuditFilesService, () => {
+  let service: AuditFilesService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      providers: [AuditGovernanceService],
+      providers: [AuditFilesService],
     }).compile();
 
-    service = await module.resolve(AuditGovernanceService);
+    service = await module.resolve(AuditFilesService);
   });
 
   beforeEach(() => {
@@ -311,7 +311,7 @@ jobs:
     });
   });
 
-  describe("checkGovernance", () => {
+  describe("checkFiles", () => {
     it("returns aggregated verdict correctly", () => {
       expect.hasAssertions();
 
@@ -333,7 +333,7 @@ jobs:
 `;
       });
 
-      const verdict = service.checkGovernance("/mock/workspace");
+      const verdict = service.checkFiles("/mock/workspace");
 
       expect(verdict.valid).toBe(true);
       expect(verdict.codeowners.valid).toBe(true);

@@ -6,21 +6,21 @@ import { LoggerService } from "@codebase/observability";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
-import { AuditGovernanceCommand } from "./audit-governance.command";
-import { AuditGovernanceService } from "./audit-governance.service";
+import { AuditFilesCommand } from "./audit-files.command";
+import { AuditFilesService } from "./audit-files.service";
 
-describe(AuditGovernanceCommand, () => {
-  let command: AuditGovernanceCommand;
-  let service: AuditGovernanceService;
+describe(AuditFilesCommand, () => {
+  let command: AuditFilesCommand;
+  let service: AuditFilesService;
   let logger: LoggerService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        AuditGovernanceCommand,
+        AuditFilesCommand,
         {
-          provide: AuditGovernanceService,
-          useValue: createMock<AuditGovernanceService>(),
+          provide: AuditFilesService,
+          useValue: createMock<AuditFilesService>(),
         },
         {
           provide: LoggerService,
@@ -29,8 +29,8 @@ describe(AuditGovernanceCommand, () => {
       ],
     }).compile();
 
-    command = await module.resolve(AuditGovernanceCommand);
-    service = await module.resolve(AuditGovernanceService);
+    command = await module.resolve(AuditFilesCommand);
+    service = await module.resolve(AuditFilesService);
     logger = await module.resolve(LoggerService);
   });
 
@@ -49,10 +49,10 @@ describe(AuditGovernanceCommand, () => {
 
     const module = await Test.createTestingModule({
       providers: [
-        AuditGovernanceCommand,
+        AuditFilesCommand,
         {
-          provide: AuditGovernanceService,
-          useValue: createMock<AuditGovernanceService>(),
+          provide: AuditFilesService,
+          useValue: createMock<AuditFilesService>(),
         },
         {
           provide: LoggerService,
@@ -63,7 +63,7 @@ describe(AuditGovernanceCommand, () => {
 
     const logger = await module.resolve(LoggerService);
 
-    expect(logger.setContext).toHaveBeenCalledWith("AuditGovernanceCommand");
+    expect(logger.setContext).toHaveBeenCalledWith("AuditFilesCommand");
   });
 
   it("logs success and does not exit when governance is valid", async () => {
@@ -71,7 +71,7 @@ describe(AuditGovernanceCommand, () => {
 
     const exitSpy = mockProcessExit();
 
-    vi.mocked(service.checkGovernance).mockReturnValue({
+    vi.mocked(service.checkFiles).mockReturnValue({
       codeowners: {
         filePath: ".github/CODEOWNERS",
         ruleCount: 1,
@@ -99,7 +99,7 @@ describe(AuditGovernanceCommand, () => {
 
     const exitSpy = mockProcessExit();
 
-    vi.mocked(service.checkGovernance).mockReturnValue({
+    vi.mocked(service.checkFiles).mockReturnValue({
       codeowners: {
         ruleCount: 0,
         valid: false,
@@ -131,7 +131,7 @@ describe(AuditGovernanceCommand, () => {
 
     const exitSpy = mockProcessExit();
 
-    vi.mocked(service.checkGovernance).mockReturnValue({
+    vi.mocked(service.checkFiles).mockReturnValue({
       codeowners: {
         filePath: ".github/CODEOWNERS",
         ruleCount: 1,
@@ -164,7 +164,7 @@ describe(AuditGovernanceCommand, () => {
 
     const exitSpy = mockProcessExit();
 
-    vi.mocked(service.checkGovernance).mockReturnValue({
+    vi.mocked(service.checkFiles).mockReturnValue({
       codeowners: {
         ruleCount: 2,
         valid: true,

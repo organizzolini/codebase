@@ -9,7 +9,7 @@ commands:
   body, labels, assignees, and release significance together.
 - `issue` — labels and assigns a new issue, audits one issue, or audits every
   open issue, chosen by event or arguments.
-- `audit-governance` — CODEOWNERS and workflow security.
+- `audit-files` — CODEOWNERS and workflow security.
 - `organization-project` — adds issues and pull requests to the project.
 
 ## Run a command
@@ -20,7 +20,7 @@ Run the CLI directly through Nx:
 nx run compliance:start:pull-request          # CI: reads the event environment
 nx run compliance:start:issue
 nx run compliance:start:issue-audit           # issue --all
-nx run compliance:start:audit-governance
+nx run compliance:start:audit-files
 nx run compliance:start:organization-project
 ```
 
