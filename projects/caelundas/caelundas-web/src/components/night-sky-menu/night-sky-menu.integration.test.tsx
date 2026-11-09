@@ -150,9 +150,28 @@ describe("night sky menu", () => {
     });
   });
 
+  it("steps the sky's opacity from the keyboard and writes it to the link", async () => {
+    await renderRoute("/?date=2026-03-01&sky.opacity=0.5");
+    await openNightSkyMenu();
+
+    const [opacity] = screen.getAllByLabelText("Sky opacity", {
+      selector: "input",
+    });
+
+    if (opacity === undefined) {
+      throw new Error("No slider is labelled Sky opacity");
+    }
+
+    fireEvent.keyDown(opacity, { key: "ArrowLeft" });
+
+    await waitFor(() => {
+      expect(readSearch()).toMatchObject({ "sky.opacity": 0.49 });
+    });
+  });
+
   it("resets every setting it holds, and keeps the tuning view", async () => {
     await renderRoute(
-      "/?date=2026-03-01&sky.lat=51.5&sky.top=%23102040&sky.eclipticOpacity=0.5&sky.debug=true",
+      "/?date=2026-03-01&sky.lat=51.5&sky.top=%23102040&sky.eclipticOpacity=0.5&sky.opacity=0.3&sky.surfaceOpacity=0.4&sky.debug=true",
     );
     await openNightSkyMenu();
 
@@ -164,6 +183,8 @@ describe("night sky menu", () => {
 
     expect(readSearch()).not.toHaveProperty("sky.top");
     expect(readSearch()).not.toHaveProperty("sky.eclipticOpacity");
+    expect(readSearch()).not.toHaveProperty("sky.opacity");
+    expect(readSearch()).not.toHaveProperty("sky.surfaceOpacity");
     expect(readSearch()).toMatchObject({ "sky.debug": true });
   });
 

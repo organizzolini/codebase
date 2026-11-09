@@ -8,6 +8,10 @@ import type { ReactNode } from "react";
 export interface NightSkyBackdropProperties {
   className?: string;
   /**
+   * How opaque the sky is drawn, from 0 to 1; opaque without it.
+   */
+  opacity?: number | undefined;
+  /**
    * The sky's SVG markup, from `useNightSky`; nothing is drawn without it.
    */
   sky?: string | undefined;
@@ -21,7 +25,7 @@ export interface NightSkyBackdropProperties {
 export function NightSkyBackdrop(
   properties: Readonly<NightSkyBackdropProperties>,
 ): ReactNode {
-  const { className, sky } = properties;
+  const { className, opacity, sky } = properties;
 
   // 🪝 Hooks
 
@@ -39,6 +43,7 @@ export function NightSkyBackdrop(
       aria-hidden="true"
       className={className}
       data-testid="night-sky-backdrop"
+      style={opacity === undefined ? undefined : { opacity }}
     >
       <div
         className="size-full"
