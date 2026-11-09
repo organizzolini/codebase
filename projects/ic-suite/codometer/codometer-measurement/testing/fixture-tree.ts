@@ -1,17 +1,9 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 /**
- * Fixture files keyed by path relative to the tree root.
- *
- * Written to disk, not mocked: symlinks and ignore files are under test.
+ * The fixture tree's contents by relative path, written to a real directory
+ * because the behavior under test is what the filesystem reports.
  */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
   // `README.md` is not named here on purpose. Codometer splices into it, so
@@ -45,13 +37,10 @@ const FIXTURE_FILES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Writes the fixture tree to a fresh temporary directory and returns its root.
- *
- * Pass the root to `removeFixtureTree` afterwards.
+ * Writes the fixture tree into a directory and returns that root. `CLAUDE.md`
+ * is a symlink to `AGENTS.md`, like the repository's own tree.
  */
-export function createFixtureTree(): string {
-  const root = mkdtempSync(path.join(tmpdir(), "codometer-fixture-"));
-
+export function createFixtureTree(root: string): string {
   for (const [relativePath, contents] of Object.entries(FIXTURE_FILES)) {
     const absolutePath = path.join(root, relativePath);
     mkdirSync(path.dirname(absolutePath), { recursive: true });
@@ -61,9 +50,4 @@ export function createFixtureTree(): string {
   symlinkSync(path.join(root, "AGENTS.md"), path.join(root, "CLAUDE.md"));
 
   return root;
-}
-
-/** Removes a fixture tree, whether or not the suite that made it succeeded. */
-export function removeFixtureTree(root: string): void {
-  rmSync(root, { force: true, recursive: true });
 }

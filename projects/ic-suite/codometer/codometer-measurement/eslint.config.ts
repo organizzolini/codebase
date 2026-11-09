@@ -18,7 +18,9 @@ export default [
           // vitest: named in tsconfig "types"; the rule misreads it as production.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "@golevelup/ts-vitest",
+            "reflect-metadata",
             "ignore",
             "pino",
             "pino-pretty",

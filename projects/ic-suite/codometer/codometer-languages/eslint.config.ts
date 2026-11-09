@@ -17,7 +17,9 @@ export default [
           // vitest and @golevelup/ts-vitest are test-only devDependencies.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "@golevelup/ts-vitest",
+            "reflect-metadata",
             "pino",
             "pino-pretty",
             "vitest",

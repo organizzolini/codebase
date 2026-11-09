@@ -334,11 +334,11 @@ const MODULE_BOUNDARIES = {
     // and measurement do the measuring; output owns every render target; the
     // command-line host wires them together.
     {
-      onlyDependOnLibsWithTags: [],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:codometer-core",
     },
     {
-      onlyDependOnLibsWithTags: ["name:codometer-core"],
+      onlyDependOnLibsWithTags: ["name:codometer-core", "name:testing"],
       sourceTag: "name:codometer-configuration",
     },
     {
@@ -346,6 +346,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-configuration",
         "name:codometer-core",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-languages",
     },
@@ -355,6 +356,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-core",
         "name:codometer-languages",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-measurement",
     },
@@ -364,6 +366,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-core",
         "name:codometer-measurement",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-output",
     },
@@ -374,6 +377,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-measurement",
         "name:codometer-output",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-cli",
     },

@@ -1,12 +1,12 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ChangesService } from "./changes.service";
 
@@ -66,16 +66,12 @@ function buildReport(targets: ReportTarget[]): CodometerReport {
 describe(ChangesService, () => {
   let service: ChangesService;
   let logger: LoggerService;
-  const temporaryDirectories: string[] = [];
 
   /** Lays out codometer reports inside a throwaway workspace. */
   function writeWorkspace(
     reports: Record<string, CodometerReport | string>,
   ): string {
-    const workingDirectory = mkdtempSync(
-      path.join(tmpdir(), "codometer-changes-"),
-    );
-    temporaryDirectories.push(workingDirectory);
+    const workingDirectory = createTemporaryDirectory("changes");
 
     for (const [reportPath, report] of Object.entries(reports)) {
       const absolute = path.join(workingDirectory, reportPath);
@@ -91,39 +87,20 @@ describe(ChangesService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ChangesService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(ChangesService);
 
-    service = await module.resolve(ChangesService);
+    service = instance;
     logger = await module.resolve(LoggerService);
   });
 
-  afterAll(() => {
-    for (const directory of temporaryDirectories) {
-      rmSync(directory, { force: true, recursive: true });
-    }
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ChangesService);
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(ChangesService);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ChangesService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    await module.resolve(ChangesService);
-    const freshLogger = await module.resolve(LoggerService);
-
-    expect(freshLogger.setContext).toHaveBeenCalledWith("ChangesService");
+    await expectLoggerContext(ChangesService);
   });
 
   it("logs how many reports it found on each side", () => {

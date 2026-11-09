@@ -18,7 +18,9 @@ export default [
           // test-only devDependencies.
           ignoredDependencies: [
             "@codebase/observability",
+            "@codebase/testing",
             "@golevelup/ts-vitest",
+            "reflect-metadata",
             "mdast",
             "pino",
             "pino-pretty",

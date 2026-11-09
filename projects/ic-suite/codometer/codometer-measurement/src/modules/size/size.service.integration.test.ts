@@ -1,10 +1,8 @@
 import { gzipSync } from "node:zlib";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   createTargetTree,
@@ -51,14 +49,9 @@ describe(`${SizeService.name} over real files`, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SizeService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance } = await buildTestingModule(SizeService);
 
-    service = await module.resolve(SizeService);
+    service = instance;
     workingDirectory = createTargetTree();
   });
 

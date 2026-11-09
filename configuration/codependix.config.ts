@@ -474,7 +474,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "The codometer chain is the ic-suite five-layer spine: `core <- configuration <- measurement <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, measurement counts, output owns every render target including report diffing, and the command-line host composes all of them.",
         name: "codometer-core-is-a-leaf",
-        to: { id: ["!(configuration)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["name:codometer-configuration"] },
@@ -483,7 +483,7 @@ const codependixConfiguration: CodependixConfiguration = {
           "The codometer chain is the ic-suite five-layer spine: `core <- configuration <- measurement <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, measurement counts, output owns every render target including report diffing, and the command-line host composes all of them.",
         name: "codometer-configuration-layer",
         to: {
-          tags: ["name:configuration", "name:codometer-core"],
+          tags: ["name:configuration", "name:codometer-core", "name:testing"],
         },
       },
       {
@@ -498,6 +498,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codometer-configuration",
             "name:codometer-core",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -514,6 +515,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codometer-core",
             "name:codometer-languages",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -530,6 +532,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codometer-core",
             "name:codometer-measurement",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -547,6 +550,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codometer-measurement",
             "name:codometer-output",
             "name:observability",
+            "name:testing",
           ],
         },
       },

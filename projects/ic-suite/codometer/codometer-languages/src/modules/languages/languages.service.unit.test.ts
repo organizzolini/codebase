@@ -1,8 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CommentsService } from "../comments/comments.service";
 import { CssCommentsService } from "../comments/css-comments.service";
@@ -28,6 +27,7 @@ import { LanguagesService } from "./languages.service";
 
 import type { CommentCounter } from "../comments/comments.types";
 import type { DiscoveredLanguageFiles } from "./languages.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { ResolvedCodometerConfiguration } from "@codometer/configuration";
 
 const configuration = createMock<ResolvedCodometerConfiguration>({
@@ -71,6 +71,33 @@ const discoveredFiles: DiscoveredLanguageFiles = {
   yamlFiles: [".github/workflows/ci.yml"],
 };
 
+/** What the LanguagesService is built with. */
+const DEPENDENCIES = {
+  mocks: [
+    CssService,
+    HclService,
+    JsonService,
+    JupyterService,
+    MarkdownService,
+    PythonService,
+    ShellService,
+    SqlService,
+    TomlService,
+    TypescriptService,
+    YamlService,
+  ],
+  providers: [
+    CommentsService,
+    CssCommentsService,
+    HashCommentsService,
+    HclCommentsService,
+    LanguageCommentsService,
+    SqlCommentsService,
+    TypescriptCommentsService,
+    YamlCommentsService,
+  ],
+} satisfies TestingModuleOptions;
+
 describe(LanguagesService, () => {
   let service: LanguagesService;
   let cssService: CssService;
@@ -79,36 +106,12 @@ describe(LanguagesService, () => {
   let yamlService: YamlService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CommentsService,
-        CssCommentsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        HashCommentsService,
-        HclCommentsService,
-        LanguageCommentsService,
-        SqlCommentsService,
-        TypescriptCommentsService,
-        YamlCommentsService,
-        LanguagesService,
-        { provide: CssService, useValue: createMock<CssService>() },
-        { provide: HclService, useValue: createMock<HclService>() },
-        { provide: JsonService, useValue: createMock<JsonService>() },
-        { provide: JupyterService, useValue: createMock<JupyterService>() },
-        { provide: MarkdownService, useValue: createMock<MarkdownService>() },
-        { provide: PythonService, useValue: createMock<PythonService>() },
-        { provide: ShellService, useValue: createMock<ShellService>() },
-        { provide: SqlService, useValue: createMock<SqlService>() },
-        { provide: TomlService, useValue: createMock<TomlService>() },
-        {
-          provide: TypescriptService,
-          useValue: createMock<TypescriptService>(),
-        },
-        { provide: YamlService, useValue: createMock<YamlService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      LanguagesService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(LanguagesService);
+    service = instance;
     cssService = await module.resolve(CssService);
     jupyterService = await module.resolve(JupyterService);
     pythonService = await module.resolve(PythonService);
@@ -125,8 +128,13 @@ describe(LanguagesService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      LanguagesService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(LanguagesService);
   });
 
   it("gives each analyzer only the files of its own language", () => {
@@ -155,35 +163,10 @@ describe(LanguagesService, () => {
   });
 
   it("hands every counter to both the comment readers and typescript", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LanguagesService,
-        {
-          provide: LanguageCommentsService,
-          useValue: createMock<LanguageCommentsService>(),
-        },
-        { provide: CssService, useValue: createMock<CssService>() },
-        { provide: HclService, useValue: createMock<HclService>() },
-        { provide: JsonService, useValue: createMock<JsonService>() },
-        { provide: JupyterService, useValue: createMock<JupyterService>() },
-        { provide: MarkdownService, useValue: createMock<MarkdownService>() },
-        { provide: PythonService, useValue: createMock<PythonService>() },
-        { provide: ShellService, useValue: createMock<ShellService>() },
-        { provide: SqlService, useValue: createMock<SqlService>() },
-        { provide: TomlService, useValue: createMock<TomlService>() },
-        {
-          provide: TypescriptService,
-          useValue: createMock<TypescriptService>(),
-        },
-        { provide: YamlService, useValue: createMock<YamlService>() },
-      ],
-    }).compile();
-
-    const isolatedService = await module.resolve(LanguagesService);
-    const isolatedLanguageComments = await module.resolve(
-      LanguageCommentsService,
+    const { instance: isolatedService, mock } = await buildTestingModule(
+      LanguagesService,
+      { mocks: [...DEPENDENCIES.mocks, LanguageCommentsService] },
     );
-    const isolatedTypescriptService = await module.resolve(TypescriptService);
 
     isolatedService.analyze({
       commentCounters,
@@ -193,10 +176,10 @@ describe(LanguagesService, () => {
       workingDirectory: "/repo",
     });
 
-    expect(isolatedTypescriptService.analyze).toHaveBeenCalledWith(
+    expect(mock(TypescriptService).analyze).toHaveBeenCalledWith(
       expect.objectContaining({ commentCounters }),
     );
-    expect(isolatedLanguageComments.measure).toHaveBeenCalledWith(
+    expect(mock(LanguageCommentsService).measure).toHaveBeenCalledWith(
       expect.objectContaining({ counters: commentCounters }),
     );
   });
