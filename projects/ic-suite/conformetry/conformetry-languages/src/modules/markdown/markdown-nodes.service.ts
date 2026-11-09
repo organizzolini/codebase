@@ -23,11 +23,9 @@ export class MarkdownNodesService {
   // 🔐 Private Fields
 
   /**
-   * How to decide that two nodes of a given type are "the same node".
+   * How two nodes of a given type are judged the same node.
    *
-   * A table rather than a switch so each rule stays its own small function —
-   * one branch per markdown type in a single method is unreadable, and the
-   * types that need no special rule fall through to a text comparison.
+   * Types with no special rule fall through to a text comparison.
    */
   private readonly matchersByType: Record<
     string,
@@ -106,12 +104,9 @@ export class MarkdownNodesService {
   // 🌎 Public Methods
 
   /**
-   * Matches an instance node against a template node, returning what any
-   * placeholder value in the template node's text captured, or `undefined`
-   * when the instance node does not satisfy it.
+   * Matches an instance node against a template node, returning placeholder captures.
    *
-   * A node failing its ordinary rule is tried once more with its plain text
-   * as a pattern, provided the type and heading depth agree.
+   * Returns `undefined` when the instance node fails to match.
    */
   public capture(args: {
     instanceNode: MarkdownNode;
@@ -142,15 +137,9 @@ export class MarkdownNodesService {
   }
 
   /**
-   * Counts a node and every countable node beneath it.
+   * Counts a node and its countable descendants: what a missing node costs.
    *
-   * This is what a missing node costs. Comparison reports a vanished section
-   * once, but the template asked for the section and everything inside it, so
-   * weighing the finding by its subtree keeps a deleted table from scoring the
-   * same as a deleted heading.
-   *
-   * Skipped types are excluded on both sides of the fraction, so nodes the
-   * comparison never checks cannot dilute a score.
+   * Skipped types are excluded, so they cannot dilute a score.
    */
   public countSubtree(node: MarkdownNode): number {
     if (SKIPPED_TYPES.has(node.type)) {

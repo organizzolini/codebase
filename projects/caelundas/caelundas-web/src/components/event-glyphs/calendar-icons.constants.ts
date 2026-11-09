@@ -113,9 +113,7 @@ export const FILE_BY_SYMBOL: Readonly<Record<string, string>> = {
 };
 
 /**
- * The symbols drawn as more than one icon: the moon at its farthest and its
- * nearest, which are the moon with the apsis beside it, and the dragon of an
- * eclipse, which is the lunar nodes, its head and its tail.
+ * Symbols drawn as more than one icon: the moon at its nearest and farthest, and the eclipse dragon, the lunar nodes.
  */
 export const FILES_BY_COMPOSITE_SYMBOL: Readonly<
   Record<string, readonly string[]>
@@ -136,10 +134,7 @@ export const FILE_BY_DECAN: Readonly<Record<string, string>> = {
 };
 
 /**
- * The icon of an event that is nothing but its one symbol, by its name, where
- * the symbol alone is shared with another event: the day, the night, each of the
- * of the hexadecans, whose emoji are a season's, and the dawns, dusks and
- * twilights, whose emoji the inner planets' phases and the daily cycle share.
+ * The icon of an event that is only its symbol, by name, where that symbol is shared with another event.
  */
 export const FILE_BY_EVENT_NAME: Readonly<Record<string, string>> = {
   "Astronomical Dawn": "astronomical-dawn-icon.svg",
@@ -169,9 +164,7 @@ export const FILE_BY_EVENT_NAME: Readonly<Record<string, string>> = {
 export const KEYCAP = "\u20E3";
 
 /**
- * The icons of the arrows that open an aspect's name: forming and
- * dissolving. Elsewhere the same arrows mean east and west, which draw the
- * elongation's own.
+ * Icons of the arrows opening an aspect's name, forming and dissolving; elsewhere the arrows mean east and west.
  */
 export const FILE_BY_LEADING_SYMBOL: Readonly<Record<string, string>> = {
   "➡": "waxing-icon.png",

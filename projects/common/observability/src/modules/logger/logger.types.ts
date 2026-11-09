@@ -1,15 +1,8 @@
 // 🏷️ Types
 
 /**
- * Structured values that belong beside a log line rather than inside it.
- *
- * Counts, percentages, and durations are the values that change on every
- * occurrence, so they are carried as fields: the message stays constant and
- * groupable in telemetry, and the numbers stay queryable instead of having to
- * be parsed back out of prose.
- *
- * The named members are the recurring ones; the index signature keeps the
- * argument open for whatever a given call site needs to attach.
+ * Values beside a log line rather than inside it: counts and durations change
+ * per occurrence, so they stay queryable fields.
  */
 export interface LogData {
   [key: string]: unknown;

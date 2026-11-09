@@ -35,11 +35,7 @@ export async function collectDocuments(): Promise<ExampleDocument[]> {
 }
 
 /**
- * Puts the built documents into reading order, refusing any disagreement.
- *
- * A document whose `id` is missing from `EXAMPLE_ORDER` would otherwise be
- * silently dropped from the run — rendered nowhere, checked by nothing, and
- * invisible until a reader followed a link that was never written.
+ * Puts documents into reading order, refusing any disagreement. A document missing from `EXAMPLE_ORDER` would otherwise vanish from the run silently.
  */
 export function orderDocuments(
   documents: ExampleDocument[],

@@ -26,13 +26,10 @@ import {
 } from "./remote-cache.constants";
 
 /**
- * Gives this machine a key that can only read the shared Nx cache bucket, and
- * keeps it where the session hook looks for it.
+ * Gives this machine a key that can only read the shared Nx cache bucket.
  *
- * The key is made with `linode-cli`, because the CI secrets cannot be read back,
- * and goes in a file only its owner can read. A machine that already has the
- * file is left alone. Nothing here ever fails setup: without `linode-cli`, or
- * when it refuses, the machine only goes without the remote tier.
+ * The key comes from `linode-cli` and is stored in a file only its owner can read.
+ * Nothing here fails setup: without `linode-cli`, the machine just lacks the remote tier.
  */
 @Injectable()
 export class RemoteCacheService {

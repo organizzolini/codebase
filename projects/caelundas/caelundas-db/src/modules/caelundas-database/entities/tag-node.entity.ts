@@ -3,14 +3,7 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 import { createBigintTransformer } from "../caelundas-database.utilities";
 
 /**
- * One row of the `tag_nodes` table: a tag with its place in the tag tree, kept
- * as a table rather than a view because deriving the depth, root, and path of
- * a tag takes a join over the closure that every grouping and filter on a tag
- * would pay again.
- *
- * The table is derived: `CaelundasDatabaseService.refreshReadModel` rebuilds
- * it from `tags` and `tags_closure`, so nothing else writes it. Its `id` is
- * the tag's own, copied rather than assigned.
+ * One row of the `tag_nodes` table: a tag with its depth, root and path, derived by `refreshReadModel` from the tag closure.
  */
 @Entity()
 export class TagNode {

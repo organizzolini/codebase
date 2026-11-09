@@ -18,9 +18,7 @@ export const DAY_MILLISECONDS = 86_400_000;
 const DAY_MINUTES = 1440;
 
 /**
- * How long one column of each scale lasts, in minutes, as the Gantt lays its
- * axis out: the fifteen minutes the timeline asks of a day, a day in a week
- * or a month, a week in a quarter, and an average month in a year.
+ * How long one column of each scale lasts, in minutes, on the Gantt's axis.
  */
 export const COLUMN_MINUTES: Readonly<Record<TimelineScale, number>> = {
   [TimelineScale.DAY]: 15,

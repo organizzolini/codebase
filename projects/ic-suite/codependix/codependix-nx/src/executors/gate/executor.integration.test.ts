@@ -18,11 +18,8 @@ import type { GateExecutorOptions } from "./executor.types";
 import type { ExecutorContext, TaskGraph } from "@nx/devkit";
 
 /**
- * Where fixture workspaces are written: inside this package, never the
- * operating system's temporary directory. The command line runs under the
- * `@swc-node/register` loader, which resolves its own helpers from the
- * importing file's directory — so a fixture outside the workspace passes on
- * macOS and fails on every Linux runner.
+ * Fixture workspaces live inside this package, never the OS temp directory: the
+ * loader resolves helpers from the importing file's directory.
  */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
@@ -30,10 +27,8 @@ const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 const RUN_TIMEOUT = 180_000;
 
 /**
- * An executor context for a run against one project of the fixture workspace.
- *
- * Built literally rather than mocked, because `createMock` fabricates every
- * property it is not handed.
+ * An executor context for one project of the fixture workspace, built literally because
+ * `createMock` fabricates every property it is not handed.
  */
 function buildContext(args: {
   projectName: string;
@@ -51,13 +46,8 @@ function buildContext(args: {
 }
 
 /**
- * Writes a fixture workspace: `a → b` is forbidden, and `c` depends on `a`.
- *
- * The configuration path is named only in the fixture's `nx.json`, which is
- * what proves the executor reads its registration back rather than assuming
- * a conventional path — none of the conventional names exist here. The Nx
- * graph is a file the configuration points at, so no Nx workspace has to be
- * built underneath the fixture.
+ * Writes a fixture workspace: `a → b` is forbidden, `c` depends on `a`. The configuration
+ * path is named only in `nx.json`.
  */
 function writeFixtureWorkspace(): string {
   mkdirSync(FIXTURE_ROOT, { recursive: true });

@@ -39,9 +39,7 @@ export class DeliveryService {
   // 🔐 Private Fields
 
   /**
-   * Each destination type to the format that reads and writes it. A record
-   * rather than a map, so adding a destination type fails to compile until
-   * its format is registered here.
+   * Each destination type's format. A record, so a new destination type fails to compile until its format is registered.
    */
   private readonly handlers: Readonly<
     Record<ResolvedCoinagerieOutput["type"], GlossaryFormatHandler>
@@ -106,9 +104,7 @@ export class DeliveryService {
   }
 
   /**
-   * Rewrites every destination to hold exactly the vocabulary, keeping every
-   * definition still in use. A file already holding exactly that is not
-   * touched, so a second write changes nothing.
+   * Rewrites every destination to exactly the vocabulary, keeping definitions still in use. Untouched when already exact, so a second write changes nothing.
    */
   write(args: DeliverArguments): DeliveryResult[] {
     return this.readAll(args.destinations).map((read) => {

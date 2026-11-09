@@ -39,16 +39,7 @@ export class AddressLookupService {
 
   /**
    * States why a resolution cannot be acted on, or nothing when it can.
-   *
-   * One message per failure kind rather than a generic "not found": an
-   * invalid address, an address matching nothing, and an address matching
-   * several declarations are each fixed a different way, and only the message
-   * for the one that actually happened tells the caller which.
-   *
-   * The candidates of an ambiguous address are rendered by `AddressService`,
-   * the same renderer the workspace run's own refusal prints, so one concept
-   * reaches a reader one way — as an address they can paste back, rather than
-   * a file location they cannot.
+   * One message per failure kind.
    */
   public describeProblem(args: {
     address: string;
@@ -74,10 +65,8 @@ export class AddressLookupService {
   }
 
   /**
-   * Every callable the trace found, written as an address that resolves to it.
-   *
-   * What a prompt completes against, so a caller picks from what is actually
-   * there rather than recalling a qualified name it has no way to look up.
+   * Every traced callable, as an address that resolves to it.
+   * Lets a caller pick from what exists, not recall a name.
    */
   public listAddresses(workspace: LocatedWorkspace): string[] {
     return this.addressService.listAddresses(workspace.located.callablesById);

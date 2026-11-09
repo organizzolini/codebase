@@ -1,9 +1,8 @@
 // ♟️ Constants
 
 /**
- * Compiler options at the consumer's root. The codependix gate's loader reads
- * them from the working directory, and the boundary check boots NestJS
- * containers whose constructor injection needs decorator metadata.
+ * Consumer root compiler options: the codependix loader reads them from the
+ * working directory, and NestJS injection needs decorator metadata.
  */
 const ROOT_TSCONFIG = {
   compilerOptions: {
@@ -101,13 +100,8 @@ const toJson = (value: unknown): string =>
   `${JSON.stringify(value, undefined, 2)}\n`;
 
 /**
- * Every file of the consumer that does not depend on the packages being
- * verified, keyed by its path relative to the consumer's root.
- *
- * `healthy` passes every gate. `broken` fails each for a reason its gate must
- * name: a four-deep call chain held to depth 2, an implicit dependency on
- * `healthy` that the codependix rule forbids, and a greeting drifted from its
- * template.
+ * Consumer files independent of the packages under test. `healthy` passes every
+ * gate; `broken` fails each for a reason its gate names.
  */
 export const CONSUMER_FIXTURE_FILES: Readonly<Record<string, string>> = {
   ".gitignore": ".conformetry\n.nx\nnode_modules\n",

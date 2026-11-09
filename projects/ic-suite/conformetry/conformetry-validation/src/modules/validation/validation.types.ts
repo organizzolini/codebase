@@ -26,8 +26,7 @@ export interface PlaceholderInference {
 /** Arguments for one validation run. */
 export interface RunValidationArguments {
   /**
-   * The directories and files to validate. Callers expand their own globs —
-   * an Nx plugin filters by project tags, the CLI reads the config — so this
+   * Directories and files to validate. Callers expand their own globs, so this
    * package never needs to know what a workspace is.
    */
   readonly instances: Instance[];
@@ -37,9 +36,8 @@ export interface RunValidationArguments {
    */
   readonly languageNames?: string[];
   /**
-   * The templates instances are matched against. Supplied rather than read
-   * from a root directory, because a template's location is a property of the
-   * generator that owns it.
+   * Templates instances are matched against. Supplied, not read from a root,
+   * since each template's location belongs to its generator.
    */
   readonly templates: TemplateDefinition[];
   /**
@@ -58,10 +56,8 @@ export interface RunValidationResult {
   /** One score per matched instance, in the order they were matched. */
   readonly scores: InstanceScore[];
   /**
-   * Instances that matched no template, or matched two equally well. These
-   * are findings in their own right: a glob is the caller asserting the path
-   * is an instance, so matching nothing means the instance has drifted or the
-   * glob is wrong.
+   * Instances matching no template, or two equally well. Matching nothing means
+   * the instance drifted or the glob is wrong.
    */
   readonly unmatched: UnmatchedInstance[];
 }

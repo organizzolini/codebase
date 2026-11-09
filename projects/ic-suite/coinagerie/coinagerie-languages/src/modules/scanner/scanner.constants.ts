@@ -3,11 +3,8 @@
 import type { LexicalRule } from "./scanner.types";
 
 /**
- * A number, with its suffix or radix: `42`, `0x1F`, `10px`, `1e9`.
- *
- * Skipped by every programming grammar so the letters inside a literal are
- * not read as a name, and listed after a grammar's own rules, so a rule that
- * starts with a digit still wins.
+ * A number and its suffix, such as `10px`. Skipped so `0x1F` letters are not
+ * names; listed last, so digit-led rules still win.
  */
 export const NUMBER_RULE: LexicalRule = {
   kind: "comment",

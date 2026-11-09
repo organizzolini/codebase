@@ -21,9 +21,7 @@ export const environmentSchema = z.object({
 });
 
 /**
- * Where GraphQLModule emits the code-first schema: beside the root module,
- * rather than under `process.cwd()`. Anything that boots the module from the
- * repository root, such as codependix exploring the container from the root
- * project's `codependix` target, otherwise wrote a stray `src/schema.gql` there.
+ * Emits the code-first schema beside the root module, so booting from the
+ * repository root never writes a stray `src/schema.gql`.
  */
 export const GRAPHQL_SCHEMA_FILE = path.join(import.meta.dirname, "schema.gql");

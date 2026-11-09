@@ -17,8 +17,7 @@ export interface WalkInputArguments {
   /**
    * The literal path prefix of each include glob.
    *
-   * A glob's prefix is where its matches can begin, so a directory neither
-   * leading to a prefix nor sitting inside one holds nothing the input wants.
+   * A directory holding nothing under that prefix can be skipped.
    */
   includeBases: readonly string[];
   input: ResolvedCodometerInput;

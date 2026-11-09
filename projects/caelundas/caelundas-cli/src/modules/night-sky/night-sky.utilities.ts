@@ -30,9 +30,8 @@ import type {
 // 🔏 Private Functions
 
 /**
- * Builds the rows the night sky's tables hold from the three files: the
- * catalog's stars as bright as the eye sees, and any fainter star a figure
- * joins, the constellations, and the figures' segments between stored stars.
+ * Builds the night sky's rows from the three files: stars as bright as the eye
+ * sees, plus any fainter one a figure joins.
  */
 export function buildNightSkyRows(sources: NightSkySources): NightSkyRows {
   const catalog = parseStarCatalog(sources.stars);
@@ -109,10 +108,8 @@ export function parseConstellations(text: string): ConstellationRow[] {
 }
 
 /**
- * Reads the HYG CSV's stars that carry a Hipparcos number, at -45 degrees or
- * north, whatever their magnitude.
- *
- * @throws NightSkySourceError when the CSV lacks a column it reads.
+ * Reads the HYG CSV's Hipparcos-numbered stars at -45° or north, of any
+ * magnitude; throws when a column is missing.
  */
 export function parseStarCatalog(text: string): CatalogStar[] {
   const [header = "", ...lines] = text.split(/\r?\n/u);
@@ -138,9 +135,8 @@ export function parseStarCatalog(text: string): CatalogStar[] {
 // 🌎 Public Functions
 
 /**
- * Reads d3-celestial's figures as segments between catalog stars by
- * Hipparcos number. A segment whose end matches no star, such as one south
- * of the stored sky, is left out, and a segment drawn twice is kept once.
+ * Reads figures as segments between catalog stars by Hipparcos number,
+ * dropping ends with no matching star and duplicate segments.
  */
 export function traceConstellationLines(
   text: string,
@@ -198,8 +194,8 @@ function measureSeparation(
 }
 
 /**
- * Reads one catalog row, or nothing for the Sun, a star without a
- * Hipparcos number, one south of the stored sky, or an unreadable row.
+ * Reads one catalog row; undefined for the Sun, an unnumbered or southern star,
+ * or an unreadable row.
  */
 function readCatalogStar(fields: readonly string[]): CatalogStar | undefined {
   const [id, hip, ra, dec, mag, ci] = fields;

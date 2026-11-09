@@ -251,10 +251,8 @@ export class AspectsUtilitiesService {
   // 🌎 Public Methods
 
   /**
-   * Lists each body pair held in one of `aspects` at the previous, current and
-   * next minute: the registry a sweep would hold had it started earlier. A
-   * pair entering or leaving orb at the current minute is left out, since its
-   * own forming or dissolving event fires there.
+   * Body pairs in an aspect across the previous, current and next minute,
+   * leaving out pairs whose own events fire now.
    */
   getActiveAspectBodies(args: {
     aspects: readonly Aspect[];
@@ -297,14 +295,8 @@ export class AspectsUtilitiesService {
   }
 
   /**
-   * Returns a phase-detection function bound to a specific set of aspects.
-   *
-   * The returned function checks three consecutive minute positions (previous,
-   * current, next) to classify a moment as "forming", "perfective", or
-   * "dissolving". Conjunction and opposition are perfective when the signed
-   * separation crosses 0° or 180°; other aspects use the unsigned separation.
-   *
-   * @returns Phase-detection function for the given aspect set.
+   * Returns a phase detector for the aspects, reading three minutes;
+   * conjunctions and oppositions are perfective on a signed crossing.
    */
   getIsAspect(
     aspectsToDetect: Aspect[],

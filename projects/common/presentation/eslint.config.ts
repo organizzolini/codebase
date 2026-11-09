@@ -11,11 +11,9 @@ export default [
   },
 
   // 🧭 Self-referential path alias
-  // The base config forbids aliases that point back into a project's own
-  // directory, but this package is managed by the shadcn CLI: `components.json`
-  // declares `@/components`, `@/hooks` and `@/lib`, and the CLI emits `@/`
-  // imports every time a component is added. Rewriting the alias to relative
-  // paths would be undone on the next `shadcn add`, so it stays.
+  // The base config forbids aliases back into a project's own directory, but
+  // `components.json` declares `@/components`, `@/hooks`, and `@/lib`, and the
+  // shadcn CLI emits `@/` imports on every add. Relative paths would be undone.
   {
     files: ["tsconfig.json"],
     rules: {

@@ -50,10 +50,7 @@ export class WawArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright و (final Arabic waw) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
+  /** The upright و (final Arabic waw) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ┌┐
    * └┼╴
@@ -68,10 +65,7 @@ export class WawArabicLetterCharacteristicsService implements CharacteristicEval
     "8..",
   ];
 
-  /**
-   * The upright و (isolated Arabic waw) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+  /** The upright و (isolated Arabic waw) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ┌┐
    * └┤

@@ -62,10 +62,7 @@ export class TypescriptService implements Language {
   // 🌎 Public Methods
 
   /**
-   * Every identifier in a source file, in the order written, repeats kept.
-   *
-   * Matches the tokenizer contract `(content, path) => string[]`: the path
-   * only chooses the dialect — TSX, JSX, or plain — and is never read.
+   * Every identifier in a source file, in order, repeats kept. The path only picks the dialect (TSX, JSX, or plain).
    */
   tokenize(content: string, filePath: string): string[] {
     const sourceFile = ts.createSourceFile(

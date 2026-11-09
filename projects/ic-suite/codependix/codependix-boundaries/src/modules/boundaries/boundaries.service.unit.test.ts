@@ -9,10 +9,7 @@ import type { BoundaryGraph, BoundaryNode } from "./boundaries.types";
 import type { CodependixBoundaryRule } from "@codependix/configuration";
 
 /**
- * Builds a project-level graph from `"a>b"` shorthand.
- *
- * Each default node is its own project, as every node in a real Nx-level
- * graph is — see `BoundaryGraphService.buildNxGraph`.
+ * Builds a project-level graph from `"a>b"` shorthand, each node its own project.
  */
 function buildGraph(args: {
   edges: string[];

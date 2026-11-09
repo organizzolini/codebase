@@ -20,10 +20,8 @@ export interface JsonComparison {
 }
 
 /**
- * Which validator is asking for the comparison.
- *
- * The walk is shared between JSON files and Jupyter notebooks, and the differences
- * it emits must be attributed to whichever one raised them.
+ * Which validator asks for the comparison. The walk is shared between JSON and
+ * Jupyter, so differences are attributed to whichever raised them.
  */
 export type JsonComparisonLanguage = "json" | "python";
 

@@ -68,11 +68,8 @@ export class UpgradePythonService {
   // 🌎 Public Methods
 
   /**
-   * Moves every Python version setting to the newest stable release, then
-   * locks again and syncs to prove the dependencies install on it.
-   *
-   * @returns The version now in use, as a summary line.
-   * @throws When uv cannot report a version, or the lock or the sync fails.
+   * Moves Python settings to the newest stable release, then locks and syncs.
+   * @throws When uv, the lock or the sync fails.
    */
   public upgrade(): string {
     const latest = this.newest();

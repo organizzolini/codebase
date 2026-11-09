@@ -51,9 +51,9 @@ export class ValidationFindingsService {
   }
 
   /**
-   * The directory the templates share, used as the "template" line of an
-   * unmatched finding — there is no single template to point at, and the set
-   * they were drawn from is the most useful thing to name.
+   * The directory the templates share, shown on unmatched findings.
+   *
+   * No single template explains an unmatched instance.
    */
   private resolveTemplatesRootPath(templates: TemplateDefinition[]): string {
     const parentPaths = templates.map((template) => {
@@ -102,9 +102,7 @@ export class ValidationFindingsService {
   /**
    * Adds one finding per placeholder nothing in the instance revealed.
    *
-   * `missing` maps each such placeholder to the random value it was still
-   * rendered with. Differences quoting that value are dropped: they restate
-   * the same gap in terms of a value nobody wrote, and the finding names it.
+   * Differences quoting a stand-in value are dropped.
    */
   public reportMissingPlaceholders(args: {
     group: InstanceFileResults;

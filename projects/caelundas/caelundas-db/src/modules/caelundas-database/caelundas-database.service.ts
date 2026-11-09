@@ -34,13 +34,7 @@ export class CaelundasDatabaseService {
   }
 
   /**
-   * Rebuilds the derived tag tables, `tag_nodes` and
-   * `calendar_event_tag_nodes`, from the tags, their closure and the events'
-   * tags, through `manager` in one transaction: a reader never sees them
-   * half rebuilt. A manager that is already inside a transaction nests this
-   * one in it, so the caller's transaction decides when it commits. The
-   * derived-times view needs no refresh, since Postgres reads it from the
-   * events on every query.
+   * Rebuilds the derived tag tables through `manager`, so a reader never sees them half rebuilt. The derived-times view needs no refresh.
    */
   async refreshReadModel(manager: EntityManager): Promise<void> {
     await manager.transaction(async (transaction) => {

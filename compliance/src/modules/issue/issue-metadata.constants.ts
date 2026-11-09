@@ -1,11 +1,6 @@
 // ♟️ Constants
 
-/**
- * The client a live read goes through.
- *
- * Named rather than spelled at the call site, so what a PATH-shadowed
- * executable in a test has to be called is stated in one place.
- */
+/** The `gh` binary a live read runs through, named so a test can shadow it on PATH. */
 export const GITHUB_CLI_BINARY = "gh";
 
 /** The variable GitHub Actions sets to the file a step's summary is read from. */
@@ -24,12 +19,8 @@ export const SOURCE_LABEL_PREFIX = "source:";
 export const TYPE_LABEL_PREFIX = "type:";
 
 /**
- * The exact field labels `issue.yml` gives its Type and Scope dropdowns.
- *
- * GitHub renders a submitted issue form field as `### <label>` followed by
- * the answer, using the field's authored `label:` verbatim — so these must
- * track `.github/ISSUE_TEMPLATE/issue.yml` exactly, not the conventional
- * config's own naming.
+ * Exact labels of the `issue.yml` Type and Scope dropdowns. GitHub renders
+ * them as `### <label>`, so these must match that file exactly.
  */
 export const TYPE_FIELD_LABEL = "Type";
 export const SCOPE_FIELD_LABEL = "Scope";
@@ -52,11 +43,7 @@ export const CONVENTIONAL_ISSUE_TITLE_PATTERN =
 /** Maximum allowed nesting depth in the issue hierarchy (Spec -\> PR -\> Commit). */
 export const MAX_HIERARCHY_DEPTH = 3;
 
-/**
- * The GitHub Issue Types a root issue (one with no parent) may carry.
- *
- * A root is a spec or a standalone report, so it is a Feature or a Bug.
- */
+/** Issue Types a root issue (one with no parent) may carry: a spec or standalone report. */
 export const ROOT_ISSUE_TYPES = ["Bug", "Feature"];
 
 /** The GitHub Issue Type every sub-issue carries, at any depth. */

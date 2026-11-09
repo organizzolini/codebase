@@ -48,10 +48,8 @@ const MISSING_CONFIGURATION_FILE = "codependix.config.missing.ts";
 const PER_PROJECT_FILES = "per-project-files";
 
 /**
- * The refusals a configuration file can be rejected with.
- *
- * Each is a real configuration object handed to `codependixConfigurationSchema`,
- * so the message rendered into the example is the message a reader would get.
+ * The refusals a configuration file can be rejected with. Each is handed to
+ * `codependixConfigurationSchema`, so the rendered message is the real one.
  */
 const REFUSED_CONFIGURATIONS = [
   {
@@ -206,10 +204,7 @@ export async function loadConfiguration(
 }
 
 /**
- * Replaces an absolute path with a repository-relative one.
- *
- * A committed example that carried the absolute path of whichever machine
- * rendered it would fail `examples --check` everywhere else.
+ * Replaces an absolute path with a repository-relative one, so committed examples do not carry one machine's path.
  */
 export function redactPath(message: string): string {
   return message.replaceAll(

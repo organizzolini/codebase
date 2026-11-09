@@ -33,10 +33,7 @@ export class ProcessRunnerService {
   // 🌎 Public Methods
 
   /**
-   * Runs a command to completion and returns what it printed.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
+   * Runs a command to completion with no shell, returning what it printed.
    * @returns Both output streams and the exit code.
    */
   public capture(executable: string, args: readonly string[]): CapturedProcess {
@@ -55,11 +52,7 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command without blocking, so several can run at once, and returns
-   * what it printed once it ends. Its standard input is closed at once.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
+   * Runs a command without blocking, so several can run at once.
    * @returns Both output streams and the exit code.
    */
   public async captureAsync(
@@ -96,11 +89,8 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs commands one after another, stopping at the first that fails.
-   *
-   * @param commands - The commands to run, in order.
-   * @returns What they all printed, and the exit code of the one that failed,
-   *   or 0 when none did.
+   * Runs commands in order, stopping at the first that fails.
+   * @returns Their combined output, and the failing exit code or 0.
    */
   public captureSequence(commands: readonly Command[]): CapturedProcess {
     const finished: CapturedProcess = { status: 0, stderr: "", stdout: "" };
@@ -121,13 +111,8 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command to completion with its standard output written to a file,
-   * byte for byte, which suits a download that is not text.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
-   * @param file - The file its standard output replaces.
-   * @returns The error stream and the exit code; `stdout` is always empty.
+   * Runs a command to completion, writing stdout byte for byte to a file,
+   * which suits binary downloads. Returns the exit code.
    */
   public captureToFile(
     executable: string,
@@ -156,12 +141,7 @@ export class ProcessRunnerService {
 
   /**
    * Runs a command with this process's own output streams, so its output
-   * appears as it would from the shell step that used to run it.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
-   * @param input - Text to write to its standard input, when it reads any.
-   * @returns The exit code.
+   * reads as the shell step's did. Returns the exit code.
    */
   public stream(
     executable: string,

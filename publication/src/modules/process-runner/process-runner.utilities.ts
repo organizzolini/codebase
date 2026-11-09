@@ -1,22 +1,13 @@
 import type { CapturedProcess } from "./process-runner.types";
 
-/**
- * Says what went wrong, from anything a failed step threw.
- *
- * @param error - What was thrown.
- * @returns Its message, or the thing itself as text.
- */
+/** Says what went wrong, from anything a failed step threw. */
 export function describeError(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
 /**
- * Returns what a finished process printed, or fails the way `set -e` failed
- * the shell scripts these commands replace: at once, naming the command.
- *
- * @param result - The finished process.
- * @param commandLine - The command line, as the error names it.
- * @returns Its standard output.
+ * Returns what a finished process printed, or throws naming the command, as
+ * `set -e` did in the old shell scripts.
  */
 export function requireSuccess(
   result: CapturedProcess,
@@ -34,12 +25,7 @@ export function requireSuccess(
 }
 
 /**
- * Fails, naming the variable, when a required input is unset or empty, as
- * the shell scripts' `${NAME:?}` did.
- *
- * @param name - The variable's name.
- * @param value - Its value, if any.
- * @returns The value.
+ * Returns a required input, failing with its name when it is unset or empty.
  */
 export function requireVariable(
   name: string,

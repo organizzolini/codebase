@@ -91,13 +91,7 @@ function buildConfiguration(
 }
 
 /**
- * One loaded configuration file, as the loader answers with it.
- *
- * The resolved limits are derived from the authored ones rather than supplied
- * beside them, so a fixture cannot pair a number a file wrote with a different
- * number resolution reports — which is the very disagreement the workspace row
- * is built to survive. `maximumDepth` is defaulted exactly as resolution
- * defaults it; `maximumBreadth` has no default and stays absent.
+ * One loaded configuration file. Resolved limits are derived from the authored ones, so a fixture cannot disagree with resolution.
  */
 function buildLoadedFile(args: {
   authored: CallidescopeConfiguration;
@@ -221,12 +215,7 @@ describe(LimitsService, () => {
   });
 
   /**
-   * Answers each traced project's own complete file, and the workspace's.
-   *
-   * Keyed on the path asked for rather than queued in call order, because
-   * every traced project declares a file now: a queue would have to be as long
-   * as the walk, and would answer the wrong file the moment a test discovered
-   * a different set.
+   * Answers each traced project's file, and the workspace's, keyed by the path asked for.
    */
   function declareProjectLimits(limits: CallidescopeLimits): void {
     const byPath = new Map([

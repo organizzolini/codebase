@@ -4,10 +4,7 @@ import type { DetectorFamily } from "../src/modules/perfective/perfective.types"
 import type { ReferenceFixture } from "./reference-fixtures.types";
 
 /**
- * The detector families a fixture's own summaries need, so its sweep can skip
- * the rest. Every summary the fixture expects, forbids or counts is read, so
- * a fixture that checks something is absent still runs the detector that
- * would have produced it.
+ * Detector families a fixture's summaries need, so its sweep can skip the rest, including for absent and counted summaries.
  */
 export function detectorFamiliesFor(
   fixture: ReferenceFixture,

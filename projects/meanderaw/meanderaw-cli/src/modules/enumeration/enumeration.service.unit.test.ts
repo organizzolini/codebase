@@ -67,12 +67,9 @@ describe(EnumerationService, () => {
   });
 
   describe("shapes", () => {
-    // 🎯 The whole draw run, as the two numbers that decide it: the edge budget,
+    // 🎯 The whole draw run, as the two numbers that decide it: the edge budget
     // and the shallowest repeat worth walking. Eleven of these twenty-five
-    // shapes are the ones the `mosaic` half of the corpus already commits;
-    // the rest are what a budget of twenty-four admits past that generator's own
-    // row and column ceilings — eight columns at two rows, and single
-    // columns down to twelve rows.
+    // shapes are the `mosaic` corpus's own; the rest are what the budget admits.
     it("draws every shape the edge budget admits, from the shallowest repeat upward", () => {
       expect(
         service.shapes().map(({ columns, rows }) => `${rows}r${columns}c`),
@@ -208,12 +205,10 @@ describe(EnumerationService, () => {
       },
     );
 
-    // 🎯 The whole space at its smallest shape, spelled out: two inked dots,
-    // one vertical bar, one wrapped rule, a bar beside a rule, two rules —
-    // which is the `lines` region — and every edge there is, which is
-    // `mesh`. The order is the canonical edge key's, which is what makes the
-    // draw run stable across runs rather than dependent on which member of a
-    // symmetry class the walk happened to reach first.
+    // 🎯 The whole space at its smallest shape: two dots, a vertical bar, a
+    // wrapped rule, a bar beside a rule, and two rules (the `lines` region),
+    // and every edge there is (`mesh`). Canonical edge-key order keeps the
+    // draw run stable across runs.
     it("spells each one by its Code, at the shape it was enumerated at", () => {
       expect(service.enumerate({ columns: 1, rows: 2 })).toStrictEqual([
         { code: "01x02y00", columns: 1, rows: 2 },

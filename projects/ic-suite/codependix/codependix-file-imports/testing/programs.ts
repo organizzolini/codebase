@@ -13,16 +13,8 @@ export const FIXTURE_PROJECT = {
 };
 
 /**
- * Builds a real program over files that only exist in memory, resolved under
- * NodeNext module resolution.
- *
- * Mirrors `callidescope-cli`'s `buildFixtureProgram`: `noLib` keeps fixtures
- * fast and focused, and a hand-built compiler host stands in for the real
- * file system so `ts.resolveModuleName` still runs its real resolution
- * algorithm against files that were never written to disk. NodeNext is what
- * this workspace's own projects use, so a fixture importing `"./helper.js"`
- * exercises the same `.js`-to-`.ts` extension mapping `ImportGraphService`
- * has to get right against real projects.
+ * Builds a real program over in-memory files, resolved under NodeNext like this
+ * workspace's own projects. A hand-built host replaces the file system.
  */
 export function buildFixtureProgram(
   files: Record<string, string>,

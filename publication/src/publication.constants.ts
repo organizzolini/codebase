@@ -1,13 +1,8 @@
 import { z } from "zod";
 
 /**
- * The variables the publication commands read.
- *
- * Each is optional, or carries the default Nx itself uses (an empty value
- * takes it too, as the shell's `${VAR:-default}` did), because a command,
- * not the application, decides which it needs and what to say when one is
- * missing — the workflows and composite actions that call these commands set
- * them per step.
+ * Input variables the publication commands read. Each is optional or carries
+ * Nx's own default; each command decides what a missing input means.
  */
 export const environmentSchema = z.object({
   GITHUB_ENV: z.string().optional(),

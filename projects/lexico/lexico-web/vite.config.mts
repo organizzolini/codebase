@@ -26,11 +26,8 @@ export default defineConfig({
     // routes they test, so the route generator is told to skip them rather than
     // treat them as routes.
 
-    // The client entry is kept at its conventional `src/client.tsx` rather than
-    // deleted even though TanStack would supply an identical virtual one: it
-    // holds the only static `react-dom/client` import in the workspace, and
-    // without it every dependency check strips `react-dom` from this project's
-    // manifest and from the catalog.
+    // Skip test files beside the routes, so the route generator does not treat
+    // them as routes.
     tanstackStart({
       router: {
         generatedRouteTree: "routeTree.gen.ts",

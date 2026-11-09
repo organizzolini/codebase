@@ -27,14 +27,7 @@ import type { UseNightSkyResult } from "./use-night-sky.types";
 // 🧩 Hook
 
 /**
- * Asks the API for the night sky behind the page as an SVG, or nothing while
- * it is on its way, when the link turns it off, and for a latitude of zero or
- * below, which the northern view cannot draw. The sky already drawn stays
- * until the next one arrives, so a change to the link or a resize does not
- * blank the page. It reads only its own keys of the link, so a change
- * elsewhere does not render it and a change to them does not render the page.
- * A failed request leaves the page without a sky and says why, rather than
- * failing unseen.
+ * Asks the API for the night sky behind the page as an SVG, keeping the last one until the next arrives.
  */
 export function useNightSky(): UseNightSkyResult {
   // 🪝 Hooks

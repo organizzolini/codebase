@@ -235,12 +235,8 @@ export class PerfectiveService {
   /**
    * Detects all perfective (instantaneous) astronomical events within the given date range.
    *
-   * Iterates day-by-day, computes per-day ephemerides, then scans minute-by-minute
-   * to identify aspects, eclipses, retrogrades, ingresses, daily solar/lunar cycle events,
-   * monthly lunar phases, annual solar cycle events, and twilight transitions.
-   *
-   * A caller that checks one kind of event can name just those detector
-   * families in `options.families`; the rest are skipped.
+   * Detects all events at the input's minutes; `options.families` limits which
+   * detector families run.
    */
   detect(
     input: Input,

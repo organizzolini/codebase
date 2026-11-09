@@ -23,13 +23,9 @@ import type {
 } from "./event-filter.types";
 
 /**
- * Compiles the filter tree to one parameterized boolean expression over the
- * derived events view, aliased `e`, whose placeholders are numbered after the
- * `offset` parameters the query already binds. A rule that is not finished,
- * such as one with no known operator, no values, or a field this calendar
- * does not know, is left out rather than failing, and so is a group left
- * with nothing in it; a tree with nothing left compiles to `null`, meaning
- * no filter.
+ * Compiles a filter tree to one parameterized SQL expression, numbering
+ * placeholders after `offset`. Unfinished rules are left out; nothing left
+ * yields `null`.
  */
 export function compileEventFilter(
   filter: EventFilterGroup | null | undefined,
@@ -46,9 +42,8 @@ export function compileEventFilter(
 }
 
 /**
- * Joins a group's compiled rules and nested groups under its combinator, in
- * parentheses so that nesting keeps its meaning, or answers `null` for one
- * with nothing finished in it.
+ * Joins a group's compiled parts under its combinator, in parentheses so
+ * nesting keeps its meaning; `null` when none is finished.
  */
 function compileGroup(
   group: EventFilterGroup,
@@ -107,9 +102,8 @@ function compileRule(
 }
 
 /**
- * Compiles a rule on a tag field. Each picked tag also matches every tag
- * beneath it, because the tag view lists each event's ancestors too. A pick
- * that is no tag id matches nothing, as a tag the data lacks would.
+ * Each picked tag also matches tags beneath it, since the tag view lists
+ * ancestors too; a non-UUID pick matches nothing.
  */
 function compileTagRule(
   operator: string,

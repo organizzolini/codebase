@@ -20,9 +20,8 @@ import type { EventFilterBinder, EventFilterRule } from "./event-filter.types";
 // none of them calls on to another: the filters' call stacks stay shallow.
 
 /**
- * Compiles a rule on a field derived from the event's own columns: its date
- * range, weekday, hour, duration, temporality, or text. Answers `null` for a
- * field it does not know and for a rule that is not finished.
+ * Compiles a rule on a field derived from the event's own columns; `null`
+ * for an unknown field or an unfinished rule.
  */
 export function compileDerivedRule(
   rule: EventFilterRule,
@@ -60,8 +59,8 @@ export function compileDerivedRule(
 }
 
 /**
- * Keeps the events that overlap any day of a range, or with "is not between"
- * drops them, the days read in each event's own zone.
+ * Keeps events overlapping a day in the range, or drops them for "is not
+ * between"; days are read in each event's zone.
  */
 function compileDateRule(
   operator: string,
@@ -167,9 +166,8 @@ function compileTemporalityRule(
 }
 
 /**
- * Keeps the events whose summary or description contains a piece of text,
- * ignoring case, or drops them. The text's own wildcards match literally,
- * and text of nothing but spaces leaves the rule unfinished.
+ * Keeps events whose summary or description contains the text, ignoring
+ * case, or drops them. Wildcards match literally; blank text is unfinished.
  */
 function compileTextRule(
   operator: string,
@@ -198,8 +196,8 @@ function compileTextRule(
 }
 
 /**
- * Keeps the events whose weekday, numbered from Sunday, is any of the chosen
- * ones, or none of them, the weekday read in each event's own zone.
+ * Keeps events whose weekday, numbered from Sunday, is any chosen one, or
+ * none; read in each event's zone.
  */
 function compileWeekdayRule(
   operator: string,

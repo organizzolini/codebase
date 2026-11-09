@@ -9,14 +9,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
 /**
- * Each distinct orientation of the د (final Arabic dal) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╶┐
- * ╶─┴╴
- * ```
+ * Each distinct orientation of the د (final Arabic dal) as a Code holding one isolated copy.
  */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
@@ -63,14 +56,7 @@ const FINAL_FORM: LetterFormFixture = {
 };
 
 /**
- * Each distinct orientation of the د (isolated Arabic dal) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╶┐
- * ╶─┘
- * ```
+ * Each distinct orientation of the د (isolated Arabic dal) as a Code holding one isolated copy.
  */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [

@@ -3,11 +3,8 @@
 import type { DependencySectionName } from "./catalog-manifests.types";
 
 /**
- * The dependency sections the catalog policy covers.
- *
- * All four rather than the two most manifests use: a version pinned in
- * `peerDependencies` or `optionalDependencies` drifts from the catalog exactly
- * as easily as one pinned in `dependencies`.
+ * Dependency sections the catalog policy covers, all four: a version pinned in
+ * `peerDependencies` drifts as easily as one in `dependencies`.
  */
 export const DEPENDENCY_SECTION_NAMES: DependencySectionName[] = [
   "dependencies",
@@ -20,17 +17,14 @@ export const DEPENDENCY_SECTION_NAMES: DependencySectionName[] = [
 export const WORKSPACE_SCOPES = ["projects"];
 
 /**
- * Workspace root directories that never hold a project of their own: the
- * dependency install, and `projects/`, which is searched through
- * `WORKSPACE_SCOPES` instead. Hidden directories are skipped by name.
+ * Root directories that never hold a project: the install, and `projects/`,
+ * searched through `WORKSPACE_SCOPES` instead. Hidden ones are skipped.
  */
 export const NON_PROJECT_ROOT_DIRECTORIES = ["node_modules", "projects"];
 
 /**
- * The scopes a package name carries when it is one of this workspace's own.
- *
- * A name under one of them must be pinned `workspace:*`; anything else must be
- * pinned `catalog:`.
+ * The scopes a workspace package name carries. Those must be pinned
+ * `workspace:*`; anything else must be pinned `catalog:`.
  */
 export const INTERNAL_PACKAGE_SCOPES = [
   "@callidescope/",
@@ -49,10 +43,7 @@ export const WORKSPACE_PROTOCOL_PREFIX = "workspace:";
 export const CATALOG_PROTOCOL = "catalog:";
 
 /**
- * A pin to the default catalog, or to a named catalog such as
- * `catalog:ic-suite`.
- *
- * A name is a word, never a version range, so a range smuggled in after the
- * protocol (`catalog:^3.0.0`) is still reported as written out by hand.
+ * Pins the default catalog or a named one. A name is a word, never a range, so
+ * `catalog:^3.0.0` is still reported.
  */
 export const CATALOG_PIN_PATTERN = /^catalog:(?:[a-z][\w-]*)?$/i;

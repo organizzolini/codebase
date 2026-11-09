@@ -27,9 +27,7 @@ export interface NestjsProject {
   readonly rootModuleExport: string | undefined;
   /**
    * Absolute path of the project's root module file, when it has one.
-   *
-   * Undefined for a library package, whose container is rooted in a
-   * synthetic module built from every module the package defines.
+   * Undefined for a library, whose container is synthetic.
    */
   readonly rootModuleFile: string | undefined;
 }

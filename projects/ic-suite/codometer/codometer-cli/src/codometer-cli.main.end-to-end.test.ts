@@ -20,16 +20,9 @@ import type { CodometerReport } from "@codometer/core";
 const COMMAND_PATH = path.resolve(import.meta.dirname, "codometer-cli.main.ts");
 
 /**
- * Where a spawned run's own fixture tree is rooted, inside this project
- * rather than the system temporary directory.
+ * Fixture tree a spawned run measures, kept inside the workspace.
  *
- * A spawned run no longer takes a `--directory` flag — it always measures the
- * process's own working directory — so a suite pointing one at a fixture tree
- * spawns with that tree as `cwd`. `@swc-node/register` resolves both its own
- * dependencies and this project's TypeScript path aliases from `cwd` upward
- * through each ancestor's `node_modules` and `tsconfig.json`, and a tree
- * outside the workspace entirely never reaches either. `tmp/` is gitignored
- * everywhere in this repository, so a fixture rooted here is never committed.
+ * `@swc-node/register` resolves from the spawn's `cwd`, so a tree outside it fails.
  */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
@@ -164,10 +157,9 @@ describe("main end-to-end suite", () => {
     });
   });
 
-  // The listing this command exists to produce has to survive a configuration
-  // that cannot be read — a `--config` naming a file that is not there. Run as
-  // a real process because the exit code is half of what is under test, and
-  // nothing beneath the command line reports one.
+  // The listing must survive an unreadable configuration, such as a `--config`
+  // naming a missing file. Runs as a real process because the exit code is under
+  // test, and nothing beneath the command line reports one.
   describe("the configuration command given a configuration that cannot be read", () => {
     let standardOutput: string;
     let standardError: string;

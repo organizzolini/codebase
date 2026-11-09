@@ -9,9 +9,7 @@ import type { FilterOption } from "@codebase/presentation";
 export type TagCheckState = "checked" | "partial" | "unchecked";
 
 /**
- * What a tag option carries beyond its label: how deep the tag sits beneath
- * its root, and its own name, which its row shows in place of the path the
- * chip is labeled with.
+ * What a tag option carries beyond its label: its depth beneath the root, and its own name, which its row shows.
  */
 export interface TagOptionData {
   depth: number;

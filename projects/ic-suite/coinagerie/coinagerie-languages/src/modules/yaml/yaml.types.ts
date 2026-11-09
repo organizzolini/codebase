@@ -1,10 +1,8 @@
 // 🏷️ Types
 
 /**
- * What reading a token does to the scan of its line.
- *
- * A `key` is kept, a `skip` is passed over, and a `block` opens a block
- * scalar, whose indented lines are text and are not read at all.
+ * A token's effect on its line: `key` is kept, `skip` is passed over, `block`
+ * opens a block scalar whose lines are not read.
  */
 export type YamlEffect = "block" | "key" | "skip";
 

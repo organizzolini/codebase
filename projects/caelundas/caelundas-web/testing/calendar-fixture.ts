@@ -1,7 +1,5 @@
-// The calendar the mocked API serves: a few weeks of events around March
-// 2026, then a gap until late June, for one observer in New York, under a tag
-// tree of types, planets, signs and elements. The ids are short names, so a
-// test reads `tag-mars` where a database would hold a uuid.
+// The calendar the mocked API serves: a few weeks around March 2026 with a gap until late June, one New York observer, a tag tree.
+// Short ids, such as `tag-mars`, stand in for database uuids.
 
 /**
  * One event as the mocked API stores it, with the tags it was given directly.
@@ -115,8 +113,7 @@ export const FIXTURE_EVENTS: readonly FixtureEvent[] = [
   },
 ];
 /**
- * A run of instant events in the fixture's zone, `count` of them a minute
- * apart from a UTC instant, named "Busy Event 1" onward and carrying no tag.
+ * A run of `count` instant events a minute apart from a UTC instant, named "Busy Event 1" onward, with no tag.
  */
 export function createBusyEvents(start: string, count: number): FixtureEvent[] {
   const first = new Date(start).getTime();

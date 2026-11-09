@@ -7,9 +7,8 @@ export const ATTESTATION_SUBJECTS_FILE = "attestation-subjects.txt";
 export const ATTEST_OUTPUT_LINE = "attest=true\n";
 
 /**
- * How the tarball download retries, because npm can trail a publish by
- * minutes: in v2.34.0 npm served each new tarball about 4 minutes after pnpm
- * reported it published, and answered 404 until then. Up to 8 minutes in all.
+ * Tarball download retries, since npm can trail a publish by minutes: v2.34.0
+ * answered 404 for about 4 minutes. Eight minutes in all.
  */
 export const TARBALL_DOWNLOAD_FLAGS = [
   "--silent",

@@ -6,8 +6,7 @@ import type { ResolvedEventFilterCollection } from "./event-filter-collections.t
 import type { EventFilterNode, EventFilterQuery } from "./event-filters.types";
 
 /**
- * Reads a collection the API answered as the calendar's own: the ReUI filter
- * tree the builder edits, each node given an id from the collection's.
+ * Reads an API collection as the calendar's own ReUI filter tree, with each node given an id.
  */
 export function toEventFilterCollection(
   collection: FilterCollectionFieldsFragment,
@@ -21,8 +20,7 @@ export function toEventFilterCollection(
 }
 
 /**
- * Reads a group of the API's filter as a ReUI group, its rules first and its
- * nested groups after, where `position` says where it sits in the collection.
+ * Reads an API filter group as a ReUI group, rules first then nested groups; `position` locates it in the collection.
  */
 function toGroup(
   group: FilterGroupFieldsFragment & {

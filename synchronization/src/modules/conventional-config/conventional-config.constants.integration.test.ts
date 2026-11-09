@@ -21,10 +21,8 @@ const MARKER_PAIRS = [
 ] as const;
 
 /**
- * Every markdown file a reader could plausibly put the tables in: the
- * workspace root, and each skill's own `SKILL.md`. Deliberately not a
- * recursive walk of the whole repository — `node_modules` and `coverage`
- * dwarf it, and no other directory has ever carried these markers.
+ * Lists the markdown files that may hold the markers: the root, `.github`, and
+ * each skill's `SKILL.md`, never a recursive walk.
  */
 function findMarkerBearingFiles(): string[] {
   const rootMarkdownFiles = fs

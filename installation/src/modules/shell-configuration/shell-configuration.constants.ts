@@ -20,12 +20,7 @@ export const LEGACY_PROCESSES_SCRIPT = "scripts/shell/processes.sh";
 export const NODE_OPTIONS_BLOCK =
   'export NODE_OPTIONS="--max-old-space-size=2048"';
 
-/**
- * Exports the terminal gpg-agent shows its passphrase prompt on.
- *
- * Written as the shell text it is, so the `$(tty)` is evaluated when the
- * terminal starts rather than once, here.
- */
+/** Exports the terminal gpg-agent prompts on. Written as shell text so `$(tty)` runs when each terminal starts, not once here. */
 export const GPG_TTY_BLOCK = "export GPG_TTY=$(tty)";
 
 /** Puts pnpm's global bin directory on `PATH` once. */

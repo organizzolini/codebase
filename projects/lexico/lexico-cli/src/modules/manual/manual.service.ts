@@ -155,9 +155,7 @@ export class ManualService {
 
   // 🌎 Public Methods
 
-  /** Deletes any existing row with the same lemma and disambiguator then saves `manual` and
-   * re-ingests its word search records. The save keeps TypeORM's reload on: the
-   * cascaded forms need the lexeme's generated id for their `lexeme_id`. */
+  /** Replaces any row with the same lemma and disambiguator, then saves `manual`. The reload is kept: cascaded forms need the generated id. */
   async createManual(manual: Lexeme): Promise<void> {
     await this.deleteManual(manual.lemma, manual.disambiguator);
     this.logger.info("✏️ Creating lemma:disambiguator", undefined, {

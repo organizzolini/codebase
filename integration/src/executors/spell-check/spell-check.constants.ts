@@ -1,12 +1,6 @@
 // ♟️ Constants
 
-/**
- * Where the cspell binary sits, relative to the workspace root.
- *
- * Run from the workspace's own `node_modules` rather than imported, so this
- * project needs no dependency on cspell and always runs the version the rest of
- * the workspace does.
- */
+/** Path to cspell, run from the workspace's own `node_modules`, so this project needs no cspell dependency. */
 export const CSPELL_BINARY = "node_modules/.bin/cspell";
 
 /** The files a project's spelling is checked in, as a brace glob suffix. */

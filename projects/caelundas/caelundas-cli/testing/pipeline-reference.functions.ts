@@ -10,12 +10,7 @@ import {
 } from "./reference-fixtures.utilities";
 
 /**
- * Registers one reference case per fixture in one slice of the list.
- *
- * Vitest runs test files in parallel but the cases inside one file in turn,
- * so the list is dealt across several files, one per `shard`, to use every
- * core. Slice `shard` of `shards` takes each `shards`-th fixture, which keeps
- * the slow aspect and eclipse fixtures spread out.
+ * Registers one reference case per fixture in one shard of the list, so tests spread across cores; each shard takes every `shards`-th fixture.
  */
 export function describeReferenceShard(shard: number, shards: number): void {
   const names = referenceFixtureNames.filter(

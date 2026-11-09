@@ -10,13 +10,8 @@ const DEFAULT_CACHE_DIRECTORY = ".nx/cache";
 const DEFAULT_MACHINE_ID_FILES = "/var/lib/dbus/machine-id /etc/machine-id";
 
 /**
- * The variables the integration commands read.
- *
- * Each is optional, or carries the default Nx itself uses (an empty value
- * takes it too, as the shell's `${VAR:-default}` did), because a command,
- * not the application, decides which it needs and what to say when one is
- * missing — the workflows and composite actions that call these commands set
- * them per step.
+ * Input variables the integration commands read. Each is optional or carries
+ * Nx's own default, since each command decides what its missing input means.
  */
 export const environmentSchema = z.object({
   ARGUMENTS: z.string().optional(),

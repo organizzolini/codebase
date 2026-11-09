@@ -1,13 +1,11 @@
 import { Injectable } from "@nestjs/common";
 
 /**
- * Two roots in one class, promoted for two different reasons.
+ * Two roots, promoted for different reasons.
  *
- * `publish` is an `orphan-root`: nothing calls it, so the safety net picks it
- * up. `collect` has a caller — `publish` — and would therefore head no stack at
- * all, which is what a package's real surface usually looks like from the
- * inside. It is a root because this package's own `callidescope.config.ts`
- * names its address, and the report calls that kind `declared`.
+ * `publish` is an `orphan-root`: nothing calls it. `collect` has a caller, yet is a
+ * root because this package's `callidescope.config.ts` names its address, the
+ * `declared` kind.
  */
 @Injectable()
 export class DeclaredEntryPointsService {

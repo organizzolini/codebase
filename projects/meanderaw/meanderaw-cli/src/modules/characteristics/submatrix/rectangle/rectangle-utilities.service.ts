@@ -25,9 +25,7 @@ export class RectangleUtilitiesService {
   // 🔏 Private Methods
 
   /**
-   * Whether an isolated rectangle has its north-west corner at `origin` and a
-   * size `isCounted` accepts: the top and left sides are walked to their far
-   * corners, and the bottom and right sides must then close the ring exactly.
+   * Whether a rectangle with its north-west corner at `origin`, of a size `isCounted` accepts, closes its ring exactly.
    */
   private isIsolatedRectangleAt(
     matrix: Matrix,
@@ -66,9 +64,7 @@ export class RectangleUtilitiesService {
   }
 
   /**
-   * Whether the bottom and right sides of a ring whose top and left sides
-   * already reach their corners are exactly straights meeting at a south-east
-   * corner (┘).
+   * Whether the bottom and right sides of a ring, with top and left at their corners, are straights meeting at a south-east corner (┘).
    */
   private ringCloses(
     matrix: Matrix,
@@ -104,10 +100,7 @@ export class RectangleUtilitiesService {
   }
 
   /**
-   * How many edges a ring's side runs from its north-west corner at `origin`
-   * along `side.step` — east for the top side, south for the left — crossing
-   * only `side.straight` points until it reaches a `side.corner`, or 0 when it
-   * breaks first or runs past `side.limit` edges.
+   * Edges a ring's side runs from `origin` along `side.step`, crossing only `side.straight` points until `side.corner`; 0 if it breaks first or exceeds `side.limit`.
    */
   private sideLength(
     matrix: Matrix,
@@ -139,21 +132,7 @@ export class RectangleUtilitiesService {
   // 🌎 Public Methods
 
   /**
-   * Counts the isolated rectangles of a matrix whose size `isCounted` accepts.
-   *
-   * A rectangle is a closed rectangular ring of ink whose every point carries
-   * exactly its ring's arms — corners two, sides a straight pair — so nothing
-   * branches off it and nothing divides it; what lies inside is not read. It is
-   * found from its north-west corner, measured in edges as `width` by
-   * `height`, and may cross the tile's seam, since columns wrap. A ring is at
-   * most `columns - 1` edges wide, because a wider one would overlap its own
-   * repeat.
-   *
-   * "Nothing branches off it and nothing divides it" assumes the agreement
-   * invariant: every arm is reciprocated by its neighbor, the way
-   * {@link TileService.assertWellFormed} checks. A context built from a
-   * malformed Code can disagree with itself, and this function does not detect
-   * that.
+   * Counts the isolated rectangles of a matrix whose size `isCounted` accepts. Assumes every arm is reciprocated, as `TileService.assertWellFormed` checks.
    */
   public countIsolatedRectangles(
     matrix: Matrix,

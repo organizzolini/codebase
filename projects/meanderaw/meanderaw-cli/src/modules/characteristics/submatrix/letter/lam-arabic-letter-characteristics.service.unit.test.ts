@@ -9,16 +9,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
 /**
- * Each distinct orientation of the ل (final Arabic lam) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *   ╷
- *   │
- * ╷ │
- * └─┴╴
- * ```
+ * Each distinct orientation of the ل (final Arabic lam) as a Code holding one isolated copy.
  */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [],
@@ -60,16 +51,7 @@ const FINAL_FORM: LetterFormFixture = {
 };
 
 /**
- * Each distinct orientation of the ل (initial Arabic lam) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╷
- *  │
- *  │
- * ╶┘
- * ```
+ * Each distinct orientation of the ل (initial Arabic lam) as a Code holding one isolated copy.
  */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [],
@@ -111,16 +93,7 @@ const INITIAL_FORM: LetterFormFixture = {
 };
 
 /**
- * Each distinct orientation of the ل (isolated Arabic lam) as a Code holding
- * one isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *   ╷
- *   │
- * ╷ │
- * └─┘
- * ```
+ * Each distinct orientation of the ل (isolated Arabic lam) as a Code holding one isolated copy.
  */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [],
@@ -162,16 +135,7 @@ const ISOLATED_FORM: LetterFormFixture = {
 };
 
 /**
- * Each distinct orientation of the ل (medial Arabic lam) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- *  ╷
- *  │
- *  │
- * ╶┴╴
- * ```
+ * Each distinct orientation of the ل (medial Arabic lam) as a Code holding one isolated copy.
  */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [],

@@ -8,10 +8,7 @@ import type { ExecutorContext } from "@nx/devkit";
 /**
  * Validates one project's instances against their conformetry templates.
  *
- * Inferred onto every project holding at least one instance, so
- * `nx run-many -t conformetry-validate` covers the workspace and
- * `nx affected -t conformetry-validate` covers only what changed — which the
- * single workspace-wide command it replaces could not do.
+ * Inferred onto every project holding an instance, so `nx affected` covers only what changed.
  */
 export default async function validateExecutor(
   options: ValidateExecutorOptions,

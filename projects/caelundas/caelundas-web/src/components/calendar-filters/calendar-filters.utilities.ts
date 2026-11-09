@@ -12,10 +12,7 @@ import type { ReactElement } from "react";
 // 🌎 Public Functions
 
 /**
- * The Filters button, badged with the number of finished rules, which its
- * accessible name also says. It is an element rather than a component
- * because the surface hands it to its trigger's `render`, which must clone
- * the button itself.
+ * The Filters button, badged with the count of finished rules; an element, not a component, so the surface's trigger can clone it.
  */
 export function renderFiltersButton(activeCount: number): ReactElement {
   return createElement(

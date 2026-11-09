@@ -60,10 +60,8 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command to completion.
-   *
-   * Never throws. A command that is missing or killed reports a `null` status,
-   * so the caller decides whether that is a failure.
+   * Runs a command. Never throws: a missing or killed command reports a
+   * `null` status, so the caller decides whether that is a failure.
    */
   public run(
     command: string,
@@ -89,10 +87,8 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command and throws when it does not exit 0.
-   *
-   * This is what a script's `set -e` was: the first failing step ends setup,
-   * and the error names the command line that failed.
+   * Runs a command and throws unless it exits 0, as `set -e` would.
+   * The error names the command.
    */
   public runOrThrow(
     command: string,

@@ -6,12 +6,8 @@ import type {
 } from "./publishable-packages.types";
 
 /**
- * Environment variable naming the directory a consumer is created beneath.
- *
- * Unset, the operating system's temporary directory is used. It must sit
- * outside every package and workspace: a consumer beneath one resolves the
- * packages that holds instead of its own, which hides the install bugs this
- * check exists to catch.
+ * Directory a consumer is created beneath; unset, the OS temp directory. Keep it
+ * outside every package, or it resolves the wrong packages.
  */
 export const CONSUMER_ROOT_VARIABLE = "PUBLISHABLE_PACKAGES_CONSUMER_ROOT";
 
@@ -19,21 +15,15 @@ export const CONSUMER_ROOT_VARIABLE = "PUBLISHABLE_PACKAGES_CONSUMER_ROOT";
 export const CONSUMER_DIRECTORY_PREFIX = "publishable-packages-consumer-";
 
 /**
- * Environment variables a consumer command never inherits.
- *
- * `NX_*` from a parent Nx task would point the consumer's Nx at this
- * workspace, `npm_*` and `pnpm_config_*` carry this workspace's package
- * manager settings and any registry token, and `NODE_OPTIONS` could load
- * this workspace's TypeScript hooks.
+ * Variables a consumer never inherits: `NX_*` aims its Nx at this workspace;
+ * `npm_*`, `pnpm_config_*` and `NODE_OPTIONS` carry its settings, tokens or hooks.
  */
 export const INHERITED_VARIABLE_PATTERN =
   /^(?:npm_|nx_|pnpm_config_|force_color$|node_auth_token$|node_options$)/i;
 
 /**
- * A terminal control sequence, such as the colors pino and Nx print even
- * under `FORCE_COLOR=0`, so output is matched as the text a person reads.
- * Built from the escape character's code point, which a regular expression
- * literal could only spell as a control character.
+ * Matches terminal color codes, which print even under `FORCE_COLOR=0`, so
+ * output compares as the text a person reads.
  */
 export const ESCAPE_SEQUENCE_PATTERN = new RegExp(
   String.raw`${String.fromCodePoint(0x1b)}\[[\d;?]*[ -/]*[@-~]`,
@@ -44,9 +34,8 @@ export const ESCAPE_SEQUENCE_PATTERN = new RegExp(
 export const INSTALL_TIMEOUT = 600_000;
 
 /**
- * Largest output a consumer command may print. Node's default of 1 MiB is
- * within reach of an append-only install log, which would then read as a
- * failed install.
+ * Largest output a consumer command may print. Node's 1 MiB default is too
+ * small for an install log, which would read as failure.
  */
 export const MAXIMUM_OUTPUT_BYTES = 64 * 1024 * 1024;
 
@@ -75,9 +64,8 @@ export const GENERATED_INSTANCE = "generated";
 export const CONSUMER_GENERATOR = "greeting";
 
 /**
- * One inferred target per Nx plugin, each with the text its failing fixture
- * prints when the gate itself ran: a depth breach, a forbidden edge, and an
- * instance drifted from its template.
+ * One inferred target per Nx plugin, with the text its failing fixture prints
+ * when the gate itself ran.
  */
 export const PLUGIN_TARGET_EXPECTATIONS: readonly PluginTargetExpectation[] = [
   {
@@ -104,10 +92,8 @@ export const TYPECHECK_DIRECTORY = "typecheck";
 export const TYPECHECK_CONFIGURATION = "tsconfig.typecheck.json";
 
 /**
- * What {@link TYPECHECK_CONFIGURATION} holds: every import file, strictly.
- * Written as JSON text because its keys are TypeScript's own option names.
- * Library checking stays off: with it on, `nx`'s and `thread-stream`'s own
- * declarations fail, which says nothing about the packages under test.
+ * The typecheck config: every import file, strictly. Library checking stays
+ * off, or `nx`'s own declarations fail and say nothing about the packages.
  */
 export const TYPECHECK_CONFIGURATION_CONTENT = `{
   "compilerOptions": {

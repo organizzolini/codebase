@@ -3,10 +3,7 @@ import path from "node:path";
 /**
  * Whether a workspace-relative directory is one a pattern admits.
  *
- * `*` stands for part of one folder name, never a separator, so
- * `projects/*` admits `projects/caelundas` and not `projects/caelundas/web`.
- * A `**` segment stands for any number of folders, none included, which is how
- * a pattern states that depth does not matter.
+ * `*` matches part of one folder name, while `**` matches any number of folders.
  */
 export function matchesDirectoryPattern(args: {
   directory: string;

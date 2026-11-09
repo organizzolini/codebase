@@ -21,14 +21,8 @@ type ResolvedTask =
   | { failure: GateBatchTaskResult; taskId: string };
 
 /**
- * Gates every task Nx batched for this executor from one trace.
- *
- * One `gate` task per project used to trace the whole workspace on its own, so
- * the cold run of a workspace of ~60 projects traced it ~60 times. A batch
- * traces the combined scope once and judges each task by its own project's
- * findings, so each still passes or fails alone and is still cached alone —
- * Nx hashes and replays batched tasks one by one. Tasks that name different
- * configuration files cannot share a trace, so they are batched per file.
+ * Gates every task Nx batched from one shared trace, judging each task by its own
+ * project's findings.
  */
 export default async function gateBatchExecutor(
   ...[taskGraph, options, overrides, context]: GateBatchExecutorArguments
@@ -78,12 +72,7 @@ export default async function gateBatchExecutor(
 }
 
 /**
- * Prints what each failed task found, under the task's id.
- *
- * Nx keeps a batch task's output for the cache but does not print it, where
- * the single executor writes its report to stdout. Without this a failed gate
- * is a red task that never says which stack broke. Passing tasks print
- * nothing: their report is "none", repeated for every project in the batch.
+ * Prints what each failed task found under its id, since Nx caches batch output without printing it.
  */
 function printFailures(results: Record<string, GateBatchTaskResult>): void {
   for (const [taskId, result] of Object.entries(results)) {
@@ -94,12 +83,7 @@ function printFailures(results: Record<string, GateBatchTaskResult>): void {
 }
 
 /**
- * Resolves one task's scope, or the failed result that scope earns it.
- *
- * A task Nx batched is still its own project's gate, so what it traces and
- * what it judges are resolved exactly as the single executor resolves them. A
- * refusal fails that task alone: a bad selection on one project must not take
- * down the verdicts of the others it was batched with.
+ * Resolves one task's scope, or the failed result it earns; a refusal fails that task alone.
  */
 async function resolveTask(args: {
   context: ExecutorContext;

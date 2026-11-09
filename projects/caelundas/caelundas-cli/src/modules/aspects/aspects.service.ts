@@ -70,9 +70,8 @@ export class AspectsService {
   }
 
   /**
-   * Identifies a compound event by its minute and its sorted tags, which
-   * hold its bodies, pattern, phase and focal body but not the body order its
-   * title happened to use.
+   * Keys a compound event by minute and sorted tags, ignoring the body order
+   * its title used.
    */
   private compoundEventKey(event: DetectedCalendarEvent): string {
     return [event.start.valueOf(), ...event.tags.toSorted()].join("\u001F");
@@ -166,11 +165,8 @@ export class AspectsService {
   // 🌎 Public Methods
 
   /**
-   * Incrementally updates the active 2-body aspect registry from the current minute's events.
-   *
-   * Starting from `previousAspectBodies`, adds any new forming aspects and removes any
-   * aspects that have dissolved, based on the "Simple Aspect" events in `events`.
-   *
+   * Updates the active two-body aspect registry from the minute's Simple Aspect
+   * events: forming adds, dissolving removes.
    */
   computeAspectBodies(
     previousAspectBodies: AspectBodies[],
@@ -190,12 +186,8 @@ export class AspectsService {
   }
 
   /**
-   * Detects all aspect events at a single minute, including 2-body and multi-body patterns.
-   *
-   * Runs simple-aspect detection first (major, minor, specialty), then computes the
-   * updated active-aspect registry and uses it to detect composite configurations
-   * (triple, quadruple, quintuple, sextuple, stellium).
-   *
+   * Detects all aspect events at a minute: simple aspects first, then composites
+   * (triple through stellium) from the updated registry.
    */
   detect(args: {
     coordinateEphemerisByBody: Record<Body, CoordinateEphemeris>;
@@ -227,11 +219,8 @@ export class AspectsService {
   }
 
   /**
-   * Pairs forming and dissolving events into progressive (duration) events for all aspect types.
-   *
-   * Delegates to each sub-service so that every aspect tag produces progressive
-   * events spanning its full in-orb period.
-   *
+   * Pairs forming and dissolving events into duration events, delegating to each
+   * aspect type's detector.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const progressiveEvents: DetectedCalendarEvent[] = [];
@@ -247,11 +236,8 @@ export class AspectsService {
   }
 
   /**
-   * Seeds the active-aspect registry for a sweep whose first minute is `minute`.
-   *
-   * Returns every simple aspect already in orb, so composers see the legs that
-   * formed before the window opened, and the compound aspects those legs make,
-   * as forming at the first minute. It emits no simple-aspect events.
+   * For a sweep starting at `minute`, aspects already in orb and composites they
+   * make count as forming; no simple-aspect events are emitted.
    */
   seed(args: SimpleAspectDetectorArguments): {
     aspectBodies: AspectBodies[];

@@ -35,12 +35,9 @@ import type { Moment } from "moment-timezone";
 import type { EntityManager } from "typeorm";
 
 /**
- * Persists the events a run detects and reads them back for rendering.
- *
- * An event is keyed by its summary, start, and the location it was computed
- * for, so writing the same event again updates its row instead of adding one.
- * Its raw tags are classified into paths of the tag tree, and it is stored
- * linked to the nodes {@link TagsService} resolves those paths to.
+ * Persists detected events and reads them back for rendering. An event is
+ * keyed by summary, start, and location, and links to the tag tree nodes its
+ * tags classify under.
  */
 @Injectable()
 export class CalendarEventsService {
@@ -63,10 +60,8 @@ export class CalendarEventsService {
   // 🔏 Private Methods
 
   /**
-   * The names of the tags each event is linked to directly, ordered by code
-   * point, so the order never depends on a locale or the database's
-   * collation. The ids go in batches that stay under the database's
-   * bind-parameter limit.
+   * Names of each event's direct tags, ordered by code point, not locale or
+   * collation; ids go in batches under the bind-parameter limit.
    */
   private async findTagNames(
     eventIds: readonly string[],
@@ -107,9 +102,8 @@ export class CalendarEventsService {
   }
 
   /**
-   * Replaces the tag links of the written events with `links`: every link
-   * those events already had is deleted first, so a tag a re-run no longer
-   * reports is dropped, and a repeated link is inserted once.
+   * Replaces the written events' tag links: old links are deleted first, so a
+   * dropped tag goes and a repeated link is inserted once.
    */
   private async replaceTagLinks(
     manager: EntityManager,
@@ -157,12 +151,8 @@ export class CalendarEventsService {
   }
 
   /**
-   * Writes one batch of rows, updating any already stored on the natural key,
-   * and returns the id each was written under, by {@link calendarEventKey}.
-   * The database assigns the id and both audit stamps, and a conflicting
-   * insert takes the new `updated_at` and keeps `created_at`. `RETURNING`
-   * answers for the inserted and the updated rows alike, so the ids need no
-   * second read.
+   * Writes a batch of rows, updating those already stored, and returns each
+   * written id by {@link calendarEventKey}.
    */
   private async writeRows(
     manager: EntityManager,
@@ -196,10 +186,8 @@ export class CalendarEventsService {
   // 🌎 Public Methods
 
   /**
-   * The key an event is told apart by within one observer's upsert: its
-   * summary and the instants it starts and ends, the natural key less the
-   * coordinates every event in the upsert shares. A boundary and a span may
-   * share a title and a start, so the end tells them apart.
+   * Keys an event by summary and instants; the end tells apart a boundary and
+   * span sharing a title and start.
    */
   calendarEventKey(
     summary: string,
@@ -210,11 +198,8 @@ export class CalendarEventsService {
   }
 
   /**
-   * Returns the stored events at one location that overlap a range, ordered
-   * by start, each with the names of the tags it is linked to directly. An event overlaps when it
-   * starts before the range ends and ends after the range starts, so one
-   * spanning either edge, like a retrograde, is included; an instant is
-   * included when it falls inside the range.
+   * Stored events at one location overlapping a range, by start, with tag
+   * names; events spanning an edge count, and an instant counts inside.
    */
   async findInRange(
     parameters: FindInRangeParameters,
@@ -250,18 +235,16 @@ export class CalendarEventsService {
   }
 
   /**
-   * A coordinate rounded to the decimals the column stores, as the text the
-   * column holds, so what is written and what is looked up compare exactly.
+   * A coordinate rounded to the stored decimals, as the text the column holds,
+   * so writes and lookups compare exactly.
    */
   formatCoordinate(coordinate: number): string {
     return coordinate.toFixed(COORDINATE_DECIMAL_PLACES);
   }
 
   /**
-   * The id each stored row is stored under, by {@link calendarEventKey}, from
-   * the summary, start and end each row reads back with its id, so the order
-   * the database answers in does not matter. Only the rows whose key is in
-   * `wanted` are included.
+   * Maps each stored row's key (by {@link calendarEventKey}) to its id, ignoring
+   * the database's answer order; keeps only `wanted` keys.
    */
   mapWrittenIds(
     stored: readonly WrittenCalendarEvent[],
@@ -281,19 +264,16 @@ export class CalendarEventsService {
   }
 
   /**
-   * Text with no leading or trailing whitespace and each run of whitespace
-   * inside it collapsed to one space, so a title never begins with a space or
-   * carries a double one, whatever a detector built it from.
+   * Trims text and collapses each run of whitespace to one space, so titles
+   * never start with or carry a double space.
    */
   tidyText(text: string): string {
     return text.replaceAll(/\s+/gu, " ").trim();
   }
 
   /**
-   * The links a written batch of events makes to the tag tree: one for each
-   * path each event is classified under, to the node `tagIds` resolved it to,
-   * each pair once. Throws for an event the write did not read back an id
-   * for, or a path `tagIds` lacks, either of which would lose its tags.
+   * Links each written event to its tag nodes, once per pair; throws if an id
+   * or node is missing, losing tags.
    */
   toTagLinks(
     batch: readonly (readonly [string, ClassifiedCalendarEvent])[],
@@ -327,12 +307,8 @@ export class CalendarEventsService {
   }
 
   /**
-   * Writes events for one observer, with its timezone, updating the row of
-   * any event already stored, and replaces each one's tag links with links
-   * to the nodes of the tag tree {@link classifyEvent} classifies it under,
-   * inserting any node that is missing, then rebuilds the read model. It all runs in one transaction. Rows go in batches that stay under the
-   * database's bind-parameter limit, and a repeated key within the input keeps its last
-   * occurrence, as one statement may not update the same row twice.
+   * Writes one observer's events in a single transaction, then rebuilds the read
+   * model. A repeated key keeps its last occurrence.
    */
   async upsert(
     events: DetectedCalendarEvent[],

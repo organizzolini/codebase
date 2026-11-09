@@ -32,13 +32,8 @@ export interface ViteLibraryConfigOptions {
 }
 
 /**
- * Creates a shared Vite library build configuration for publishable packages.
- *
- * Emits ESM output into each project's own `dist/` directory, bundles declaration
- * files using API Extractor, and bundles internal utilities like `@codebase/observability`.
- *
- * @param options - Configuration options for the library build.
- * @returns Vite user configuration object.
+ * Creates the shared Vite library build for publishable packages. Emits ESM into each
+ * project's `dist/`, and bundles declarations with API Extractor.
  */
 export function createViteLibraryConfig(
   options: ViteLibraryConfigOptions,

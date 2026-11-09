@@ -298,12 +298,10 @@ describe(LoggerService, () => {
     });
 
     it("exempts @nestjs/core's uncaught bootstrap exception handler", () => {
-      // `ExceptionHandler` is @nestjs/core's catch-all for any unhandled
-      // exception during dependency initialization — a native module ABI
-      // mismatch, a database driver failing to load, anything. It logs the
-      // raw exception with no message convention of its own, and Nest's
-      // default `abortOnError` turns a throw here into a fatal
-      // `process.abort()`, so this path must never throw either.
+      // `ExceptionHandler` is @nestjs/core's catch-all for unhandled exceptions
+      // during dependency initialization. It logs with no message convention,
+      // and `abortOnError` turns a throw here into a fatal `process.abort()`,
+      // so this path must never throw either.
       expect(() => {
         service.error(
           new Error("The module was compiled against a different version"),

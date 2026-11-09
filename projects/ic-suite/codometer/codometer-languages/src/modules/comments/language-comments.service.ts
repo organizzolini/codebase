@@ -26,19 +26,7 @@ import type { CodometerCommentLanguage } from "@codometer/configuration";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Measures the comment blocks every `comment`-selector custom statistic asks
- * for, one counter at a time.
- *
- * Files are read here rather than inside each language analyzer, which is
- * what lets Python be measured at all: its analysis runs in a subprocess and
- * returns zeros when the interpreter is unreachable, so a gate that lived
- * there would stop gating on any machine without `uv` and say nothing about
- * it. Reading the sources directly makes the budget independent of that.
- *
- * A counter is measured on its own rather than merged with every other one
- * that shares a language: two custom statistics can watch the same language
- * with different maxima, and keeping them apart is what lets each one's own
- * breaches be counted back against its own label.
+ * Measures the comment blocks each `comment`-selector counter asks for, one counter at a time. Files are read here, not in each analyzer, so a gate does not depend on an analyzer that can be unreachable.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -153,11 +141,7 @@ export class LanguageCommentsService {
   }
 
   /**
-   * Measures Python's comments, which its own analyzer already found.
-   *
-   * The tokens arrive grouped by nothing, so they are split per file before
-   * measuring — a block never spans two files, and `groupIntoBlocks` compares
-   * line numbers that would otherwise run together.
+   * Measures Python's comments, already found by its analyzer. Tokens are split per file, since a block never spans two files.
    */
   private measurePython(
     budget: CommentCounter["budget"],
@@ -202,12 +186,7 @@ export class LanguageCommentsService {
   // 🌎 Public Methods
 
   /**
-   * Measures every counter that names no declaration kind, keyed by the custom
-   * statistic's label.
-   *
-   * A counter naming no language measures every one of them; one naming a
-   * language measures only that one. Either way its results land under its
-   * own label, never merged with another counter's.
+   * Measures every counter that names no `kind`, keyed by label. A counter naming no language measures all of them.
    */
   measure(
     args: MeasureLanguageCommentsArguments,
@@ -216,12 +195,8 @@ export class LanguageCommentsService {
     const results: Record<string, CommentMeasurement[]> = {};
 
     for (const counter of counters) {
-      // `kind` takes precedence over `language`: a counter naming one is a
-      // budget over a declaration's JSDoc, measured by the TypeScript walk —
-      // the only place the declaration node it needs exists — and its
-      // `language` is never read. Naming both is unusual, but the schema does
-      // not forbid it, so this guard and the walk's own selection are the
-      // tie-break.
+      // `kind` takes precedence over `language`: a `kind` counter is measured as JSDoc by the TypeScript walk, which never reads `language`.
+      // Naming both is unusual but allowed, so the walk's selection breaks the tie.
       if (counter.kind !== undefined) {
         continue;
       }

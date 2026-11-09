@@ -16,17 +16,11 @@ import type { CallableId, StackFrame } from "@callidescope/core";
 /**
  * Enumerates every simple path above or below one callable.
  *
- * `PathsService` materializes a single deepest path below an entry point,
- * which is the right answer when the question is "how deep can this go".
- * An address-centered lookup asks a different question — everything that
- * calls this, everything this calls — so it walks every path in each
- * direction instead of folding them into one, using `calleeIdsByCaller` for
- * what lies below and `callerIdsByCallee` for what lies above.
+ * `PathsService` keeps one deepest path per entry point, which answers "how deep".
+ * An address lookup needs every path in each direction, so this walks them all.
  *
- * The walk is iterative, on an explicit stack of partly consumed frames,
- * rather than recursive: the same reasoning `ComponentsService` gives for
- * condensing on an explicit stack applies here, and a widely-called utility
- * can sit many frames deep in a caller chain.
+ * It is iterative, on an explicit stack, since a widely called utility can sit
+ * many frames deep in a caller chain.
  */
 @Injectable()
 export class AddressDepthService {
@@ -133,12 +127,8 @@ export class AddressDepthService {
   }
 
   /**
-   * Walks every simple path from `startId` through `adjacency`, capped at
-   * `MAXIMUM_CALL_ADDRESS_STACKS`.
-   *
-   * A neighbor already on the current path closes a cycle rather than being
-   * followed again: the path so far, plus that repeated neighbor, is emitted
-   * as one complete stack, and the walk backtracks instead of looping forever.
+   * Walks every simple path from `startId`, capped at `MAXIMUM_CALL_ADDRESS_STACKS`.
+   * A neighbor already on the path closes a cycle, and the walk backtracks.
    */
   private traverse(
     context: AddressDepthTraversalContext & { startId: CallableId },

@@ -1,6 +1,6 @@
 /**
- * Writes an instant the GraphQL `DateTime` scalar parsed, or a string it left
- * as is, as the ISO 8601 text Postgres reads as a `timestamptz`.
+ * Converts a `Date` or string to ISO 8601 text, which Postgres reads as
+ * `timestamptz`.
  */
 export function toIsoString(instant: Date | string): string {
   return new Date(instant).toISOString();

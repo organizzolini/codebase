@@ -40,12 +40,9 @@ export function requireChoice(
 }
 
 /**
- * Asks the user to pick one of `choices`, with a leading `noSelectionTitle`
- * entry that means "no filter". Returns `undefined` for that entry, and
- * without asking at all when standard input is not a terminal, so a piped or
- * scheduled run takes the documented default instead of hanging or aborting.
+ * Asks the user to pick one of `choices`; `noSelectionTitle` means no filter. Returns `undefined` without a terminal.
  *
- * @throws When the prompt is cancelled or aborted, so the command fails loudly.
+ * @throws When cancelled.
  */
 export async function selectChoice({
   choices,

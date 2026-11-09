@@ -22,14 +22,7 @@ import type { CallGraphResult } from "@callidescope/core";
 /** A workspace file no traced project sits beside, so none is skipped as the run's own. */
 const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
 
-/**
- * The depth `ApplicationCommand` measures once the closure resolves its call
- * into the library: `run` → `Repository.find` → `Repository.open`.
- *
- * Written out rather than compared between two runs and left at that, so the
- * scoped-and-unscoped agreement this suite asserts is agreement on a number
- * somebody checked instead of on two absent lookups.
- */
+/** The depth `ApplicationCommand` measures once the closure resolves into the library, written out rather than compared between runs. */
 const SCOPED_COMMAND_DEPTH = 3;
 
 /** The configuration file name a project declares itself through. */
@@ -43,12 +36,7 @@ const LIBRARY_CONFIGURATION_PATH = path.join(
 );
 
 /**
- * Adds a second project whose `tsconfig.json` names a compiler target
- * TypeScript rejects.
- *
- * The shape of the one already committed in `codependix-examples`: a fixture
- * that exists to be unreadable and must stay that way, sitting in the same
- * workspace as every project a run is meant to trace.
+ * Adds a project whose `tsconfig.json` names a target TypeScript rejects. It must stay unreadable.
  */
 async function addUnreadableProject(workspaceRoot: string): Promise<void> {
   const root = path.join(workspaceRoot, "packages", "broken");
@@ -96,12 +84,8 @@ function buildConfiguration(): ResolvedCallidescopeConfiguration {
 }
 
 /**
- * Writes two projects, and gives the one nothing points the run at a
- * configuration file of its own.
- *
- * The shape criterion the per-project resolution has to satisfy: `library` is
- * reached only through `application`'s imports, so a run started anywhere else
- * still has to judge its callables by the rules it declared for itself.
+ * Writes two projects; `library` is reached only through `application`'s imports, so a run
+ * started elsewhere still judges it by its own rules.
  */
 async function buildConfiguredWorkspace(
   libraryConfiguration: Record<string, unknown>,
@@ -144,12 +128,7 @@ async function buildConfiguredWorkspace(
 }
 
 /**
- * Writes four projects: one that calls into a second, one that calls into the
- * first, and one nothing touches.
- *
- * The shape a scoped run has to get right in three directions at once — down
- * into a dependency, not up into a dependent, and not sideways into a package
- * neither of them mentions.
+ * Writes four projects, one a dependency of another. A scoped run must trace down, not up or sideways.
  */
 async function buildLayeredWorkspace(): Promise<string> {
   const workspaceRoot = await makeWorkspaceRoot("callidescope-closure-");
@@ -276,20 +255,7 @@ async function buildWorkspace(): Promise<string> {
 }
 
 /**
- * A temporary directory every fixture here roots its workspace at.
- *
- * Resolved through the symlink `mkdtemp` hands back on macOS, where the
- * temporary directory really lives under `/private`. A program's source files
- * come back under that real path, so an unresolved root leaves every
- * workspace-relative path a `../../…` climb out of the workspace — no project
- * root contains one, `resolveOwningProject` answers nothing, and a project's
- * own `exclude` silently applies to nothing. Files are still collected under a
- * different keying, so the only symptom is a fixture that cannot reproduce a
- * behavior the real workspace has: it misleads rather than failing.
- *
- * One helper rather than the two calls written out per builder, because a
- * fixture added without them is that defect back, and it has been back three
- * times.
+ * Creates a fixture's temporary workspace root, resolved, since macOS `mkdtemp` returns a symlink that breaks project ownership.
  */
 async function makeWorkspaceRoot(prefix: string): Promise<string> {
   return realpath(await mkdtemp(path.join(tmpdir(), prefix)));
@@ -309,11 +275,8 @@ function readStackDepth(args: {
 }
 
 /**
- * Writes one project into a workspace, with the fixture compiler options.
- *
- * A `package.json` comes with it unless `omitManifest` says otherwise — a
- * project root without one is a directory of shared settings rather than
- * something another project depends on, and no closure reaches it.
+ * Writes one project into a workspace. Adds a `package.json` unless `omitManifest` is set;
+ * no closure reaches a project without one.
  */
 async function writeProject(args: {
   name: string;
@@ -350,12 +313,8 @@ async function writeProject(args: {
 }
 
 /**
- * Writes one project's own complete configuration file.
- *
- * Complete by construction, because an incomplete one is refused: a fixture
- * that wants to declare one field still has to say what it does with the rest,
- * and `undefined` is what says "nothing". Written as JavaScript rather than
- * JSON for exactly that reason — JSON cannot spell `undefined`.
+ * Writes one project's own complete configuration file, in JavaScript because JSON cannot spell `undefined`.
+ * An incomplete one is refused.
  */
 async function writeProjectConfiguration(args: {
   overrides?: Record<string, unknown> | undefined;
@@ -625,11 +584,8 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   // 📏 A limit the command line overrode
 
   it("judges a project by the limit the command line overrode", async () => {
-    // Through the real chain rather than against `resolveLimits` directly: a
-    // limit is enforced out of each project's own file, and the defect this
-    // covers was an override that reached the run's own configuration and
-    // stopped — every unit on either side of that hop passing while
-    // `--maximum-depth` gated nothing at all.
+    // Runs through the real chain, not `resolveLimits` directly: the defect this covers
+    // was an override that reached the run's configuration and stopped, gating nothing.
     const workspaceRoot = await buildWorkspace();
 
     await writeProjectConfiguration({
@@ -749,10 +705,8 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   });
 
   it("traces the rest of a workspace whose broken project is excluded", async () => {
-    // The regression this exists for. Excluding the same project only from
-    // the collected files came too late — opening its configuration is the
-    // step that fails — so `.callidescopeignore` could not keep a run away
-    // from a fixture written to be broken, and the whole trace died on it.
+    // Regression guard: excluding a project only from collected files came too late,
+    // since opening its configuration is the step that fails.
     const workspaceRoot = await buildWorkspace();
 
     await addUnreadableProject(workspaceRoot);

@@ -268,12 +268,7 @@ export class PullRequestValidationService {
 
   /**
    * Every check that applies to this pull request.
-   *
-   * Dependabot writes its own title and body and appends a tail to the title
-   * that no configuration shortens, so those two checks exempt a pull request
-   * it authored. The author is what counts: the actor is whoever last edited.
-   * The linked-issue check exempts Dependabot and draft pull requests, and
-   * the hierarchy check judges what the write phase links.
+   * Dependabot writes its own title and body, so those checks exempt its pull requests.
    */
   public validate(context: PullRequestContext): CheckOutcome[] {
     const authoredByDependabot = context.author === DEPENDABOT_LOGIN;

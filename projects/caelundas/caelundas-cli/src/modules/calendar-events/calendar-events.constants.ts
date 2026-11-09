@@ -3,9 +3,7 @@ import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 // ♟️ Constants
 
 /**
- * The columns an upsert binds a value for, one bind parameter per row each.
- * The database assigns the id and both audit stamps, which are `DEFAULT`
- * keywords in the statement rather than parameters.
+ * Columns an upsert binds, one parameter per row each; the database assigns the id and audit stamps.
  */
 export const CALENDAR_EVENT_INSERT_COLUMNS = [
   "color",

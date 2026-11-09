@@ -10,13 +10,9 @@ import {
 } from "./rendering.constants";
 
 /**
- * Reads what each placeholder value in `templateText` stands for in
- * `instanceText`.
+ * Reads what each placeholder value in `templateText` stands for in `instanceText`.
  *
- * The template text is a pattern: its literal parts must match exactly and
- * each placeholder value captures a non-empty run of text. Returns `undefined`
- * when the template text holds no placeholder value or the instance text does
- * not fit the pattern, so a caller keeps its own equality check as it was.
+ * Returns `undefined` when the instance text does not fit the template pattern.
  */
 export function capturePlaceholderValues(args: {
   instanceText: string;
@@ -50,10 +46,7 @@ export function capturePlaceholderValues(args: {
 }
 
 /**
- * Creates a random stand-in for a placeholder nothing supplied.
- *
- * Validation renders it in place of the missing value, so the comparison can
- * find where the instance holds the real one and capture it.
+ * Creates a random stand-in for a placeholder nothing supplied, so validation can find the real value.
  */
 export function createPlaceholderValue(): string {
   return `${PLACEHOLDER_VALUE_PREFIX}${randomUUID().replaceAll("-", "")}`;

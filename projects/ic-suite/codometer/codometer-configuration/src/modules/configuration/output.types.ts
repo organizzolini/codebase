@@ -3,21 +3,15 @@
 import type { CodeStatisticsResult } from "@codometer/core";
 
 /**
- * The anchor mechanics a `write` function would otherwise have to reimplement.
- *
- * Splicing a generated block between two HTML comments is the common case, so
- * it is one call away even for a writer that picks its own file.
+ * Anchor mechanics a `write` function would otherwise reimplement. Splicing a generated block between HTML comments is the common case.
  */
 export interface MarkdownAnchorHelpers {
   endMarker: string;
   startMarker: string;
   /**
-   * Splices the anchored block into a file, appending it when the markers are
-   * absent, and creating the file when it does not exist.
+   * Splices the anchored block into a file, appending it when absent.
    *
-   * In check mode nothing is written and the return value reports whether the
-   * file already holds the current block. Defaults to the rendered content and
-   * the configured path; pass either to override.
+   * In check mode, returns whether the file is current.
    */
   syncAnchoredBlock: (overrides?: {
     content?: string | undefined;
@@ -28,10 +22,9 @@ export interface MarkdownAnchorHelpers {
 }
 
 /**
- * Decides what the markdown report says, which file it lands in, and how.
+ * Decides what the markdown report says and where it lands.
  *
- * Return `false` to report the destination as stale — in check mode that is
- * what fails the command. Anything else counts as up to date.
+ * Return `false` to mark the destination stale, failing a check run.
  */
 export type WriteMarkdownOutput = (
   args: WriteMarkdownOutputArguments,
@@ -49,8 +42,7 @@ export interface WriteMarkdownOutputArguments {
   /**
    * The built-in badge rendering of these same statistics.
    *
-   * Call it to build the default report's content, or to add to it, rather
-   * than reimplementing it.
+   * Call it to build the default content, or to add to it.
    */
   renderBadges: () => string;
   statistics: CodeStatisticsResult;

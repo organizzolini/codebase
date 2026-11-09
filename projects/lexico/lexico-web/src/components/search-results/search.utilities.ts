@@ -24,10 +24,7 @@ import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 // 🌎 Public Functions
 
 /**
- * Says how a search matched a lexeme from the tier the API ranked it in. A
- * partial headword match on the query's letters is a prefix match, whose
- * distance is how many letters the headword has beyond the query, and a fuzzy
- * match carries the edit distance the API measured.
+ * Says how a search matched a lexeme, from the API's tier. Prefix matches count extra letters; fuzzy matches carry edit distance.
  */
 export function describeMatch(match: {
   distance: null | number;
@@ -51,9 +48,7 @@ export function describeMatch(match: {
 }
 
 /**
- * Searches the dictionary in Latin and in English at once, since a query is
- * not labeled with the language it is written in, and merges what both find,
- * best match first. A lexeme both searches found keeps its higher score.
+ * Searches Latin and English at once, since a query is not labeled with its language, and merges both results, best match first.
  */
 export async function searchDictionary(query: string): Promise<LexemeResult[]> {
   const trimmed = query.trim();

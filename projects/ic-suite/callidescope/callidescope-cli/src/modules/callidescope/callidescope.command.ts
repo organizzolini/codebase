@@ -40,12 +40,8 @@ import type { LogData } from "@codebase/observability";
 /**
  * CLI entry point for the call-stack tracing workflow.
  *
- * `isDefault` is what makes `callidescope --check depth` work, which is the
- * invocation every piece of documentation here has always shown and the only
- * one a reader would think to type — the honest alternative was
- * `callidescope callidescope`. It stays a named command as well, so the Nx
- * targets that spell it out keep working unchanged, and `depth`, `breadth`,
- * and `limits` are still matched by name before anything falls through here.
+ * `isDefault` lets `callidescope --check depth` run without a subcommand name.
+ * The named command stays so the Nx targets that spell it out keep working.
  */
 @Command({
   description: "Run the callidescope command",
@@ -77,17 +73,8 @@ export class CallidescopeCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * States why one declared address failed to resolve, naming the project and
-   * the field that declared it.
-   *
-   * The field is named rather than left to be inferred, matching the sibling
-   * refusal this shares a catch with — which says outright which fields a
-   * project configuration may set instead of leaving the reader to guess.
-   *
-   * An ambiguous address's candidates are rendered by `AddressService`, the
-   * same renderer `depth` and `breadth` print, so what a reader is handed for
-   * a declared entry point and what they are handed for an address they typed
-   * are one thing said one way.
+   * Explains why a declared address failed to resolve, naming its project and field.
+   * Candidates are rendered by `AddressService`, as in `depth` and `breadth`.
    */
   private describeUnresolvedAddress(
     unresolvedAddress: UnresolvedEntryPointAddress,
@@ -110,13 +97,8 @@ export class CallidescopeCommand extends CommandRunner {
   }
 
   /**
-   * Logs one refusal under its own headline, and fails the run.
-   *
-   * One method for four refusal channels, because they are one act: a message
-   * rather than a stack trace, because every one of them is about a file
-   * somebody wrote or a command line somebody typed. Each is reached before
-   * anything has been printed and before any destination has been touched, so
-   * a refused run leaves the checkout exactly as it found it.
+   * Logs one refusal under its headline and fails the run.
+   * Shows a message, not a stack trace, since the cause is user input.
    */
   private reject(headline: string, data: LogData): void {
     this.logger.error(headline, undefined, data);
@@ -124,13 +106,8 @@ export class CallidescopeCommand extends CommandRunner {
   }
 
   /**
-   * Prints the run in the requested format.
-   *
-   * Markdown unless asked otherwise: it is the one rendering that reads well
-   * in a terminal, pastes into an issue, and is already what the file
-   * destinations write, so there is no second format to keep in step. A
-   * diagram printed to a terminal is mermaid source, which is what someone
-   * asking for one at a prompt wants to paste somewhere that renders it.
+   * Prints the run in the requested format. Markdown unless asked otherwise, since it
+   * reads well in a terminal and matches the file destinations.
    */
   private report(args: {
     configuration: ResolvedCallidescopeConfiguration;
@@ -264,12 +241,7 @@ export class CallidescopeCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Parses the set of things the run fails on.
-   *
-   * The parser runs only when `--check` carries a value, so anything reaching
-   * it is a written set. A `--check` with no value never arrives here and is
-   * refused later: a set with nothing in it is indistinguishable from the flag
-   * having been left off, which is how one flag came to gate two findings.
+   * Parses the set of checks that fail the run. A `--check` with no value is refused later.
    */
   @Option({
     description: `Fail on a comma-separated set drawn from ${CHECK_NAMES.map((name) => `"${name}"`).join(" and ")}`,
@@ -339,11 +311,7 @@ export class CallidescopeCommand extends CommandRunner {
   }
 
   /**
-   * Parses `--format`, which decides what the run prints.
-   *
-   * Carried through as written rather than narrowed here: which values exist
-   * is the resolver's to decide, and a value nobody recognizes has to reach
-   * it to be refused rather than quietly rewritten to markdown on the way.
+   * Parses `--format`, which decides what the run prints. Carried through as written, so the resolver refuses unknown values.
    */
   @Option({
     description: "What to print: markdown, mermaid, or json",
@@ -354,10 +322,7 @@ export class CallidescopeCommand extends CommandRunner {
   }
 
   /**
-   * Parses `--include-exported-functions`, overriding the entry-point rule.
-   *
-   * Carried through as written, like `--format`: the resolver that knows what
-   * a switch accepts is the one that refuses a value nobody recognizes.
+   * Parses `--include-exported-functions`, carried through as written like `--format`.
    */
   @Option({
     description: 'Treat every src/index.ts export as a root: "true" or "false"',
@@ -408,11 +373,8 @@ export class CallidescopeCommand extends CommandRunner {
   }
 
   /**
-   * Parses `--maximum-breadth`, overriding `limits.maximumBreadth`.
-   *
-   * A required value rather than an optional one, unlike every flag above: a
-   * limit written with nothing after it is a mistake commander refuses on its
-   * own, in better words than the resolver could.
+   * Parses `--maximum-breadth`, overriding `limits.maximumBreadth`. Its value is required,
+   * so a bare flag is refused by commander.
    */
   @Option({
     description: "Override the configured limits.maximumBreadth",
@@ -442,12 +404,8 @@ export class CallidescopeCommand extends CommandRunner {
   }
 
   /**
-   * Parses `--write`, which asks for every configured destination to be
-   * rewritten.
-   *
-   * A boolean flag reaches the parser as `undefined` when it carries no value,
-   * and the parser runs only when the flag is present, so presence is the whole
-   * signal.
+   * Parses `--write`, which asks for every configured destination to be rewritten.
+   * Presence is the signal: a bare boolean flag arrives as `undefined`.
    */
   @Option({
     description: "Write every configured destination",
@@ -458,18 +416,8 @@ export class CallidescopeCommand extends CommandRunner {
   }
 
   /**
-   * Traces the workspace, reports, and sets the exit code.
-   *
-   * The flags are independent: `--write` writes, `--check reports` fails on a
-   * stale report, `--check depth` fails on a stack that ran too deep, and none
-   * of them turns another on. A run given neither `--write` nor
-   * `--check reports` leaves every file alone.
-   *
-   * A positional argument is refused rather than ignored. This command is the
-   * default one, so anything commander could not match as a subcommand arrives
-   * here as an operand instead of as `unknown command` — and a `deep` typed
-   * where `depth` was meant, quietly tracing the whole workspace and passing,
-   * would be a worse answer than the error it replaced.
+   * Traces the workspace and reports. A positional argument is refused, since a
+   * mistyped subcommand would otherwise trace everything.
    */
   public async run(
     passedParameters: string[],

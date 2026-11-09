@@ -101,11 +101,8 @@ describe(BatchService, () => {
     }
 
     /**
-     * A command line run that finds nothing, new for every spawn.
-     *
-     * A function and not a value: a run that is spawned more than once must be
-     * handed a fresh child each time, and a shared one has already ended by
-     * the second, so it would never end again for anyone waiting on it.
+     * A command line run that finds nothing, new for every spawn; a shared child has already
+     * ended by its second spawn.
      */
     function passingRun(): ChildProcess {
       return buildChild({ exitCode: 0, standardOutput: reportOf() });

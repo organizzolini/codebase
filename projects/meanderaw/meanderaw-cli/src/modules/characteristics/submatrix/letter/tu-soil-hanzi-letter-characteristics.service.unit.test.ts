@@ -11,7 +11,7 @@ import type {
   LetterOrientationFixture,
 } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the 土 (hanzi tu, soil or earth) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of the 土 (hanzi tu, soil or earth) as a Code holding one isolated copy. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x03y04002f102b10",

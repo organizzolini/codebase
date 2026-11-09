@@ -9,14 +9,7 @@ export interface CallableAddressCandidate {
   readonly location: SourceLocation;
 }
 
-/**
- * What resolving a callable address produced.
- *
- * A union rather than an optional id: the four outcomes are told apart by
- * what a caller does next — proceed, or print exactly one of four different
- * messages — and a single `id: CallableId | undefined` cannot carry which of
- * the three failures happened.
- */
+/** What resolving a callable address produced. A union, since each outcome calls for a different next step. */
 export type CallableAddressResolution =
   | {
       readonly candidates: readonly CallableAddressCandidate[];
@@ -40,12 +33,7 @@ export interface ResolveAddressArguments {
   readonly workspaceRoot: string;
 }
 
-/**
- * A resolution that did not name exactly one callable.
- *
- * Derived from `CallableAddressResolution` rather than restated, so anything
- * acting on a failure keeps covering every way one can happen.
- */
+/** A resolution that did not name exactly one callable, derived so every failure stays covered. */
 export type UnresolvedCallableAddress = Exclude<
   CallableAddressResolution,
   { readonly kind: "resolved" }

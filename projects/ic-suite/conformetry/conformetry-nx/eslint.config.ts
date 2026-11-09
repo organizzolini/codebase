@@ -11,13 +11,10 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // @codebase/observability: bundled directly into the build output via the Vite library build.
-          // @golevelup/ts-vitest: a devDependency used only in test files, which
-          // are outside the build dependency check's scope.
-          // pino: runtime dependency imported by the inlined @codebase/observability bundle.
-          // pino-pretty: runtime transport reached only via runtime string in pino configuration.
-          // vitest: referenced via tsconfig "types" array; it's a devDependency and
-          // the @nx/dependency-checks rule misidentifies it as a production dependency.
+          // @codebase/observability: bundled into the build output by Vite.
+          // @golevelup/ts-vitest: test-only devDependency, outside this check's scope.
+          // pino: imported by the bundled observability code. pino-pretty: loaded by string at runtime.
+          // vitest: named in tsconfig "types"; misread as a production dependency.
           ignoredDependencies: [
             "@codebase/observability",
             "@golevelup/ts-vitest",

@@ -3,32 +3,17 @@ import type { Body } from "../caelundas/caelundas.types";
 // 🏷️ Types
 
 /**
- * Time-indexed ephemeris of horizontal coordinates (observer frame).
- *
- * Keys are ISO timestamps, values are {@link HorizonPosition}s. Positions are
- * topocentric: parallax is applied for the observer's location.
- * Used for calculating rise, set, and culmination events.
- *
- * @see {@link getAzimuthElevationFromEphemeris} for data retrieval
+ * Time-indexed topocentric horizon positions by ISO timestamp, for rise, set and culmination.
  */
 export type AzimuthElevationEphemeris = Record<string, HorizonPosition>;
 
 /**
- * Bodies for which azimuth/elevation ephemerides are generated.
- * Limited to Sun and Moon for rise/set calculations.
- *
- * @remarks A copy of this type exists in `caelundas.constants.ts` to avoid a circular
- * import. Update both when the body set changes.
+ * Sun and Moon, the bodies with horizon ephemerides. A copy lives in `caelundas.constants.ts`; keep both in step.
  */
 export type AzimuthElevationEphemerisBody = Extract<Body, "moon" | "sun">;
 
 /**
- * Time-indexed ephemeris of ecliptic coordinates for a celestial body.
- *
- * Keys are ISO 8601 timestamp strings, values contain longitude and latitude
- * in degrees. Used for tracking body positions through the zodiac.
- *
- * @see {@link getCoordinateFromEphemeris} for data retrieval
+ * Time-indexed ecliptic longitude and latitude in degrees for a celestial body, by ISO timestamp.
  */
 export type CoordinateEphemeris = Record<
   string,
@@ -48,14 +33,7 @@ export type CoordinateEphemerisBody = Body;
 export type Coordinates = [Longitude, Latitude];
 
 /**
- * Time-indexed ephemeris of observer-body distance and its rate of change.
- *
- * Keys are ISO timestamps. `distance` is in astronomical units (AU) and
- * `distanceSpeed` is the radial speed in AU per day, positive while the body
- * recedes. Apsis detection (perihelion/aphelion, perigee/apogee) reads the
- * sign of `distanceSpeed`, not the distance itself: the distance series has
- * small steps where the Swiss Ephemeris files change polynomial segment, while
- * the speed stays smooth through them and crosses zero once per apsis.
+ * Time-indexed distance in AU and radial speed in AU per day, positive while receding. Apsides come from the speed's sign.
  */
 export type DistanceEphemeris = Record<
   string,
@@ -63,12 +41,7 @@ export type DistanceEphemeris = Record<
 >;
 
 /**
- * Bodies for which distance ephemerides are generated.
- * Includes Sun (for apsis), Moon (for eclipse parallax and semidiameter) and
- * inner planets with visible orbital variations.
- *
- * @remarks A copy of this type exists in `caelundas.constants.ts` to avoid a circular
- * import. Update both when the body set changes.
+ * Sun for apsides, Moon for parallax and semidiameter, and the inner planets.
  */
 export type DistanceEphemerisBody = Extract<
   Body,
@@ -104,13 +77,7 @@ export interface HorizonPosition {
 }
 
 /**
- * Time-indexed ephemeris of illumination fraction, apparent magnitude and phase angle.
- *
- * Keys are ISO timestamps. `illumination` is the illuminated fraction as a
- * percentage (0-100); `magnitude` is the apparent visual magnitude, smaller
- * meaning brighter; `phaseAngle` is the Sun–body–observer angle in degrees,
- * 0° fully lit and 180° fully dark. All three come from the same phenomena call.
- * Used for lunar phase and planetary phase calculations.
+ * Time-indexed illuminated percentage, apparent magnitude (smaller is brighter), and phase angle in degrees.
  */
 export type IlluminationEphemeris = Record<
   string,
@@ -118,11 +85,7 @@ export type IlluminationEphemeris = Record<
 >;
 
 /**
- * Bodies for which illumination ephemerides are generated.
- * Includes bodies with visible phases: Sun (always 100%), Moon, and inner planets.
- *
- * @remarks A copy of this type exists in `caelundas.constants.ts` to avoid a circular
- * import. Update both when the body set changes.
+ * Bodies with visible phases: the Sun, the Moon, and the inner planets.
  */
 export type IlluminationEphemerisBody = Extract<
   Body,

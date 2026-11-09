@@ -5,20 +5,12 @@ export default [
   ...baseConfig,
 
   // 🧪 Example subjects
-  // Everything nested inside an example is the input being graphed rather than
-  // code this repository authors: a `tsconfig.json` the compiler is meant to
-  // refuse, a module that throws the moment it is imported, a self-referential
-  // path alias, a `require` call, a re-export nothing consumes. Each is a
-  // behavior an example exists to pin down, and each is something this
-  // repository's own rules forbid — so linting them would either force them to
-  // stop demonstrating what they demonstrate or bury them under suppression
-  // comments, which is the one thing this repository never does.
+  // Subjects are the input being graphed, not authored code: intentionally broken tsconfigs, throwing
+  // modules, self-referential aliases, and `require` calls. Linting them would force them to stop
+  // demonstrating their behavior, so they are excluded rather than suppressed.
 
-  // The pattern is what draws the line: one level under `examples/` is the
-  // rendered guide and its JSON exports, which stay in scope, and two levels
-  // down is the subject, which does not. That is why the committed
-  // `codependix-*graph.json` files keep inheriting the `jsonc/sort-array-values`
-  // carve-out the workspace config declares for every graph codependix writes.
+  // The pattern draws the line: one level under `examples/` is the rendered guide, which stays linted;
+  // two levels down is the subject. That is why the committed graph JSON keeps its `jsonc/sort-array-values` carve-out.
   {
     ignores: ["examples/*/*/**"],
   },

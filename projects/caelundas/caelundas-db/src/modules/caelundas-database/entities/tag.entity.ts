@@ -11,19 +11,7 @@ import {
 import { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 /**
- * One node of the `tags` tree: a label an event can carry, such as a planet,
- * a sign, or a kind of event, nested under the broader label it refines.
- *
- * The tree has many roots, one per dimension. A tag's `name` is its own
- * label, unique among its siblings, so two partial unique indexes hold it:
- * one over a parent's children and one over the roots, which have no parent
- * to compare. A tag's full path is derived by walking its ancestors.
- *
- * The tree is a closure table, `tags_closure`, which TypeORM keeps in step
- * as tags are saved through a `TreeRepository`: it holds one row for every
- * ancestor and descendant pair, a tag's pair with itself included, so
- * ancestors, descendants, and depth, the number of ancestors, are plain
- * joins rather than recursive queries.
+ * One node of the `tags` tree: a label an event can carry, nested under the label it refines, with ancestors kept in `tags_closure`.
  */
 @Entity()
 @Index("tags_sibling_name", ["parent", "name"], {

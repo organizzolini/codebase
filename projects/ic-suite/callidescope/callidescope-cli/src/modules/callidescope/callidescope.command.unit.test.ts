@@ -201,11 +201,8 @@ describe(CallidescopeCommand, () => {
   }
 
   /**
-   * Points the loader at a resolved configuration, as if it had read a file.
-   *
-   * The file-aware load rather than the plain one, because the run carries the
-   * path it read forward: the trace resolves a configuration beside every
-   * project it reaches and skips whichever file is already the run's own.
+   * Points the loader at a resolved configuration. Uses the file-aware load,
+   * since the run's own file must be skipped.
    */
   function stubConfiguration(
     configuration: ResolvedCallidescopeConfiguration,

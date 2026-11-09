@@ -97,11 +97,9 @@ export function resetCommandTestHarness({
 }
 
 /**
- * Runs `argv` (e.g. `["dictionary", "--startLemma=amo"]`) through a real
- * nest-commander runner whose container holds only `providers`, so option
- * flags are parsed exactly as the CLI parses them before `run` receives them.
+ * Runs `argv` through a real nest-commander runner holding only `providers`, so flags parse as the CLI parses them.
  *
- * @throws Whatever the command's option parsers or `run` threw.
+ * @throws Whatever the command threw.
  */
 export async function runCommandLine({
   argv,

@@ -12,10 +12,8 @@ const PROJECT_ROOT = path.resolve(import.meta.dirname, "..");
 const SPAWN_TIMEOUT_MILLISECONDS = 60_000;
 
 /**
- * Runs `src/persistence.main.ts` with `argv` as `start` does, in a process of
- * its own and with no Postgres variable in its environment. Nor does it
- * inherit the `LOG_LEVEL` the vitest configuration silences in-process
- * logging with, so it logs at its own default level, as a terminal sees it.
+ * Runs `persistence.main.ts` in its own process, with no Postgres variable and
+ * the default log level.
  */
 function runMain(argv: readonly string[]): {
   readonly output: string;

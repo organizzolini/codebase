@@ -21,14 +21,9 @@ const conformetryConfiguration: ConformetryConfiguration = [
     instances: [
       {
         patterns: [`${EXAMPLE_PATH}/instances/*`],
-        // `owner` is a plain substitution: the template asks for it and nothing
-        // derives it, so this group is where its value comes from.
+        // `owner` has no derived value, so this group supplies it.
         //
-        // `nameCamelCase` is the interesting one. Conformetry derives all four
-        // case variants from the instance's own directory name, which would
-        // make this one `searchBar` — and an explicit value of the same name
-        // wins, so `spelledOutByHand` is what both the generator renders and
-        // validation expects.
+        // `nameCamelCase` would derive `searchBar`; the explicit `spelledOutByHand` wins in both generation and validation.
         substitutions: { nameCamelCase: "spelledOutByHand", owner: "platform" },
       },
     ],

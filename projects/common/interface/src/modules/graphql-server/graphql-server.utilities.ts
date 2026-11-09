@@ -174,10 +174,8 @@ export function mapNullableRelations<Entity extends object, Mapped>(
 }
 
 /**
- * Maps a to-one relation to its GraphQL type. An entity declares a relation
- * as always present, but one its query did not join is left `undefined`; it
- * stays unset here rather than failing the mapping, so a response reports it
- * exactly as it did when resolvers returned entities.
+ * Maps a to-one relation to its GraphQL type. A relation the query did not
+ * join stays `undefined` rather than failing the mapping.
  */
 export function mapRelation<Entity extends object, Mapped>(
   relation: Entity | undefined,
@@ -208,8 +206,8 @@ export function mapRelationConnection<Entity extends object, Mapped>(
 }
 
 /**
- * Maps each row of a to-many relation to its GraphQL type, leaving one its
- * query did not join unset, as {@link mapRelation} does for a to-one relation.
+ * Maps each row of a to-many relation, leaving unjoined relations unset as
+ * {@link mapRelation} does.
  */
 export function mapRelations<Entity extends object, Mapped>(
   relations: readonly Entity[] | undefined,
@@ -219,8 +217,8 @@ export function mapRelations<Entity extends object, Mapped>(
 }
 
 /**
- * Mixin type factory producing a Relay Connection ObjectType for GraphQL schema generation,
- * named after the node's GraphQL type name, which defaults to its class name.
+ * Mixin producing a Relay Connection ObjectType, named after the node's
+ * GraphQL type, which defaults to its class name.
  */
 export function Paginated<T>(
   classReference: ClassConstructor<T>,

@@ -22,17 +22,14 @@ export const CONFIGURATION_FILE_NAMES = [
 ] as const;
 
 /**
- * Globs that together name every file, dot-files included.
- *
- * Three rather than one because `path.matchesGlob` never lets `*` or `**`
- * match a name that starts with a dot: `**` alone would skip `.gitignore` and
- * everything under `.github/`.
+ * Globs naming every file, dot-files included. Three are needed because `*` and
+ * `**` never match a name starting with a dot.
  */
 export const DEFAULT_INCLUDE = ["**", "**/.*", "**/.*/**"] as const;
 
 /**
- * A line a markdown description may not hold: a list item would read back as
- * the start of the bullets, and an HTML comment could be taken for an anchor.
+ * Lines a markdown description may not hold: a list item would read as a bullet,
+ * and an HTML comment as an anchor.
  */
 const DESCRIPTION_FORBIDDEN_LINE_PATTERN = /^\s*(?:[-*+]\s|<!--)/mu;
 
@@ -83,10 +80,8 @@ export const OVERRIDES_SCHEMA = z.strictObject({
 });
 
 /**
- * The shape a configuration file's default export must have.
- *
- * Strict at every level, so a misspelled field fails the run instead of being
- * silently ignored.
+ * The default export of a configuration file. Strict at every level, so a
+ * misspelled field fails the run instead of being ignored.
  */
 export const CONFIGURATION_SCHEMA: z.ZodType<CoinagerieConfiguration> =
   z.strictObject({

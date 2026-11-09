@@ -68,9 +68,8 @@ export class EventsService {
   }
 
   /**
-   * The events that overlap the window and meet the filter, earliest first,
-   * each with the tags it was given and, for each level of the grouping, the
-   * group keys it falls in.
+   * The events overlapping the window that meet the filter, earliest first,
+   * with their tags and each grouping level's keys.
    */
   public async findEvents(
     window: EventsWindowInput,
@@ -113,8 +112,8 @@ export class EventsService {
   }
 
   /**
-   * Every tag root with the tags beneath it, each counting the events that
-   * overlap the window and meet the filter, or every event without a window.
+   * Tag roots with their tags, each counted over the events in the window
+   * that meet the filter; no window counts every event.
    */
   public async findFacets(
     window?: EventsWindowInput,
@@ -163,9 +162,8 @@ export class EventsService {
   }
 
   /**
-   * Runs one statement with its `$n` parameters on the shared connection and
-   * parses every row with `schema`, so a column the database returns in an
-   * unexpected shape fails here rather than reaching a client.
+   * Runs one statement and parses every row with `schema`, so an unexpected
+   * column shape fails here rather than in a client.
    */
   public async select<Row>(
     sql: string,

@@ -17,10 +17,8 @@ export const LIMIT_TABLE_COLUMNS = [
 ] as const;
 
 /**
- * Metric suffix marking a limit whose value is a number of bytes.
+ * Metric suffix marking a limit whose value is bytes.
  *
- * A limit's value is a bare number by the time it is resolved, so nothing left
- * in the configuration says whether `256000` is a size or a count of files.
- * The metric path is what still does: only a size analysis produces `.size`.
+ * Only the `.size` metric path says whether it counts bytes.
  */
 export const SIZE_METRIC_SUFFIX = ".size";

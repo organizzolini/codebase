@@ -24,13 +24,7 @@ import type { CodependixRunMode, ProjectRunResult } from "@codependix/core";
 // 🏷️ Types
 
 /**
- * A throwaway project directory one delivery example writes into.
- *
- * Delivery is file I/O, so an example that demonstrates it has to write
- * somewhere. Writing into a temporary directory rather than into `output/`
- * keeps the committed output to what a reader should read, and keeps every
- * `<!-- codependix:start -->` marker this package produces out of any file the
- * real `configuration:codependix:write` could ever claim.
+ * A throwaway project one delivery example writes into, keeping markers out of any file a real write could claim.
  */
 export interface ScratchProject {
   readonly absoluteRoot: string;
@@ -322,12 +316,7 @@ function deliverTwice(): ProjectRunResult[] {
 }
 
 /**
- * Lists the files a delivery created or changed, project-relative.
- *
- * Compared against a snapshot taken before the delivery rather than simply
- * listed: every scratch project is seeded with a `README.md` already carrying
- * the anchor, so a bare listing would report that file for a `none` target
- * that wrote nothing at all.
+ * Lists files a delivery created or changed, by diffing a snapshot. A bare listing would blame the seeded README for a `none` target.
  */
 function listChangedPaths(
   project: ScratchProject,

@@ -6,17 +6,8 @@ import type { GateExecutorOptions } from "./executor.types";
 import type { ExecutorContext } from "@nx/devkit";
 
 /**
- * Fails one project's task when a codependix boundary finding is charged to it.
- *
- * Inferred onto every project but the workspace root, so
- * `nx affected -t codependix-bound` checks a branch's boundaries by the
- * projects it changed, and the task that fails is named after the project
- * whose boundary broke — which one workspace-wide check never could.
- *
- * The graphs are built over the project and everything it depends on, and
- * only a finding charged to the project fails it: a broken boundary in a
- * dependency is that dependency's gate's business, and is printed here as a
- * note rather than a failure.
+ * Fails a project's task when a boundary finding is charged to that project. A broken
+ * boundary in a dependency is only a note here.
  */
 export default async function gateExecutor(
   options: GateExecutorOptions,

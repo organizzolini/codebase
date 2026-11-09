@@ -10,11 +10,7 @@ import type { AddressExecutorOptions } from "../../executors/address.types";
 import type { ExecutorContext } from "@nx/devkit";
 
 /**
- * Runs the address lookups on behalf of the `depth` or `breadth` executor.
- *
- * The two differ in a single call, so the scoping, the refusals, and the
- * printing are stated once here rather than twice in the executors — which are
- * left thin enough to read as the declarations Nx treats them as.
+ * Runs the address lookup for the `depth` or `breadth` executor, which differ only in one call.
  */
 export async function runAddressExecutor(args: {
   context: ExecutorContext;

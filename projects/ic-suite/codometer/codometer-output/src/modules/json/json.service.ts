@@ -42,22 +42,14 @@ export class JsonService {
   // 🌎 Public Methods
 
   /**
-   * Render the report as the JSON document that gets written.
-   *
-   * Ends with a newline so the file matches what a formatter would leave
-   * behind, and so a staleness comparison does not fail over the one byte
-   * every other tool in the repository adds.
+   * Renders the report as the JSON document to be written, with a trailing newline so formatters and staleness checks agree.
    */
   render<Report>(args: RenderReportArguments<Report>): string {
     return `${JSON.stringify(args.report, null, args.indentation)}\n`;
   }
 
   /**
-   * Sync the JSON file with the current report.
-   *
-   * - **Writing**: writes the file, creating parent directories as needed.
-   * - **Checking**: returns `true` when the file already holds the current
-   *   report, `false` when it is missing or stale, and writes nothing.
+   * Syncs the JSON file with the report: writes it, or in check mode reports whether it is current without writing.
    */
   sync<Report>(args: SyncJsonArguments<Report>): boolean {
     const resolvedPath = path.resolve(args.path);

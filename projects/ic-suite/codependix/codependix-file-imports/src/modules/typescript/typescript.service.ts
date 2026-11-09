@@ -11,16 +11,9 @@ import type {
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * The `typescript` module's public surface: discovers the workspace's
- * TypeScript projects, builds each one's `ts.Program`, and builds and
- * renders its file-level import Graph.
- *
- * A thin facade over `TypescriptProjectService` (project discovery and
- * `ts.Program` construction) and `TypescriptImportGraphService` (walking
- * that program into a graph) — kept as two separate collaborators
- * internally so each stays focused, with this class the one file this
- * repository's conformetry template for a NestJS service module expects a
- * flat module to expose.
+ * The `typescript` module's public surface: discovers TypeScript projects, builds their
+ * `ts.Program`s, and builds and renders their file-level import graphs. A facade over
+ * `TypescriptProjectService` and `TypescriptImportGraphService`.
  */
 @Injectable()
 /* v8 ignore stop */

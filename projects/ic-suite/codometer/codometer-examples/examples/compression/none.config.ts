@@ -1,16 +1,9 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
 /**
- * The same files uncompressed — the bytes on disk.
+ * The same files uncompressed: bytes on disk, the denominator for gzip and brotli.
  *
- * Useful as the denominator: it is what the gzip and brotli numbers are a
- * fraction of, and it is what a limit should be written against when the files
- * are not served over a network at all.
- *
- * ```bash
- * cd projects/ic-suite/codometer/codometer-examples/examples/corpus
- * codometer --config ../compression/none.config.ts
- * ```
+ * Run from the corpus directory with `codometer --config ../compression/none.config.ts`.
  */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",

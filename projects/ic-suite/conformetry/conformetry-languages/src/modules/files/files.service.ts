@@ -43,11 +43,9 @@ export class FilesService {
   // 🌎 Public Methods
 
   /**
-   * Reports a path as a missing directory when the template entry lives under
-   * a directory that does not exist, and as a missing file otherwise.
+   * Reports an absent directory once, and a missing file otherwise.
    *
-   * Reporting the absent directory once is more useful than reporting each of
-   * the twenty files inside it.
+   * Reporting each file inside an absent directory would repeat the same finding.
    */
   private buildMissingDifference(args: {
     expectedFileCount: number;
@@ -87,11 +85,9 @@ export class FilesService {
   }
 
   /**
-   * Reports every file a matched instance's template requires but the instance
-   * lacks.
+   * Reports every file a matched instance's template requires but the instance lacks.
    *
-   * Missing directories are collapsed to one finding each, so deleting a whole
-   * module reports the directory rather than each file within it.
+   * Collapses a missing directory to one finding.
    */
   public checkInstanceFiles(
     args: CheckInstanceFilesArguments,

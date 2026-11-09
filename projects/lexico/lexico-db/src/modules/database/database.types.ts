@@ -58,8 +58,7 @@ export type FormGerundCase =
 export type FormMood = (typeof formMood)[keyof typeof formMood];
 
 /**
- * Temporal aspect of a non-finite verb form (infinitives, participles, gerunds, supines).
- * Restricted to future, perfect, and present — unlike the fuller tense set available to finite forms.
+ * Temporal aspect of a non-finite verb form: future, perfect or present only.
  */
 export type FormNonFiniteTense =
   (typeof formNonFiniteTense)[keyof typeof formNonFiniteTense];

@@ -70,10 +70,8 @@ export const LEXICO_DATABASE_MIGRATIONS = [
 ] as const;
 
 /**
- * The data source the TypeORM command line reads for
- * `nx run lexico-db:migration:*`, built from the same options as the
- * runtime `DatabaseModule`. Reads only `LEXICO_POSTGRES_*`, defaulting to
- * `lexico_development`.`lexico` as `lexico_username`, and never synchronizes.
+ * TypeORM data source for `nx run lexico-db:migration:*`, built like the runtime
+ * `DatabaseModule` but reading only `LEXICO_POSTGRES_*`, and never synchronizing.
  */
 export const lexicoDataSource = createDataSource({
   entities: [...LEXICO_DATABASE_ENTITIES],

@@ -7,9 +7,8 @@ import {
 // 🌎 Public Functions
 
 /**
- * Builds the SVG definitions: the vertical gradient of the sky's background
- * and the glow of the brightest stars. The colors are read as hexadecimal
- * and written as `#rrggbb`, so nothing else can reach the markup.
+ * Builds the sky background gradient and bright-star glow definitions; colors
+ * are normalized to `#rrggbb`, so nothing else reaches the markup.
  */
 export function formatSkyDefinitions(
   topColor: string,
@@ -24,9 +23,8 @@ export function formatSkyDefinitions(
 }
 
 /**
- * Reads a hexadecimal color of three or six digits, with or without the `#`,
- * as lowercase `#rrggbb`, or answers the fallback for anything else. A number
- * is never read: the router turns `1e5` into one, and what it meant is gone.
+ * Reads a three- or six-digit hexadecimal color as lowercase `#rrggbb`, else the
+ * fallback. Never a number: the router turns `1e5` into one.
  */
 export function normalizeHexadecimalColor(
   value: unknown,

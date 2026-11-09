@@ -1,8 +1,7 @@
 // ♟️ Constants
 
 /**
- * Starts every tag field's id, followed by the id of the tag root it
- * filters, so a rule's path alone says which root it is about.
+ * Starts every tag field's id, so a rule's path alone says which tag root it filters.
  */
 export const TAG_FIELD_PREFIX = "tag:";
 

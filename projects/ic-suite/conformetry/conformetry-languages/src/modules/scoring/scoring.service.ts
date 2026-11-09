@@ -31,13 +31,9 @@ export class ScoringService {
   // 🌎 Public Methods
 
   /**
-   * Returns the share of the checked requirements the instance honoured, from
-   * 0 to 1.
+   * Returns the share of checked requirements the instance honoured, from 0 to 1.
    *
-   * Clamped at both ends. A validator that double-counts an overlapping
-   * requirement could otherwise report a failed weight above the total and
-   * produce a negative score, which would read as a much worse instance than
-   * one that is simply entirely wrong.
+   * Clamped at both ends, so a double-count cannot go negative.
    */
   public calculateScore(args: CalculateScoreArguments): number {
     if (args.totalWeight <= 0) {

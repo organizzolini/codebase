@@ -16,7 +16,16 @@ Hard ESLint errors apply to source files. Test files (`*.test.ts`, `testing/**`)
 
 When a file nears 512 lines, split it along the module file suffixes (`*.types.ts`, `*.constants.ts`, another `*.service.ts`) instead of raising the limit. Never add a disable comment or edit the threshold to make a file fit.
 
-**Comment blocks are capped at 128 words**, and shell at 256 — declared in
-`configuration/codometer.config.ts` and enforced by codometer rather than ESLint, so a breach names a file and line rather than a rule. Shell is looser because a script's header, such as `scripts/installation.sh`'s, is one block documenting usage and execution order. The budget is per block, never file-wide, and `maximumCharacters`, `maximumLines`, and `maximumWords` are separate fields rather than one steered by a unit — nothing is defaulted to a number, so a budget nobody wrote is one nobody chose. A `comment` selector can also narrow to a documented declaration's JSDoc-style comment by `kind`, but this repository declares none: gating this prose is not a reason to start gating every JSDoc comment against the same budget. The `codometer-configure` skill covers how a block is delimited and which languages are measured how accurately; `codometer-triage` covers a breach.
+**Comment blocks are budgeted per block**, declared in
+`configuration/codometer.config.ts` and enforced by codometer rather than ESLint, so a breach names a file and line rather than a rule. A block must satisfy its word and line limits together; there is no character limit, because formatters already hold a line to 80 columns.
+
+| Comment | Words | Lines |
+| ------- | ----- | ----- |
+| Plain comment (`//`, `#`, `/* */`), any language but shell | 48 | 8 |
+| Shell comment (looser: a script header documents usage and order) | 256 | — |
+| JSDoc on a class | 64 | 14 |
+| JSDoc on any other declaration (function, method, interface, property, enum, accessor) | 24 | 8 |
+
+Lines include the `/**` and `*/` delimiters. Tags such as `@param` count as words, so keep the why and drop what a type already says. JSDoc on a `const`, type alias, property signature, or file header is not reached by a `kind` and is ungated. The `codometer-configure` skill covers how a block is delimited and which languages are measured how accurately; `codometer-triage` covers a breach.
 
 **Compiled size is gated per project** by each `codometer.config.ts`, and `configuration:codometer` gates the repository-wide limits. Both run through `make-projects` rather than 🧑‍💻 Lint Codebase, because a project has to compile before it can be measured.

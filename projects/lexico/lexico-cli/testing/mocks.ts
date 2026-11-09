@@ -26,18 +26,8 @@ export type PromptsMock<Response extends Record<string, unknown>> = ReturnType<
 >;
 
 /**
- * Sets up fake timers with a fixed system time before each test
- * and restores real timers after each test.
- *
- * Usage in test files:
- * ```ts
- * import { mockDates } from '../testing/mocks'
- *
- * describe('my suite', () => {
- *   mockDates()
- *   // your tests here
- * })
- * ```
+ * Fakes timers at a fixed system time before each test and restores real
+ * timers after.
  */
 export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   beforeEach(() => {
@@ -51,16 +41,7 @@ export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
 }
 
 /**
- * Lets a test decide whether `process.stdin` reads as a terminal. The setter
- * may be called from a test or its `beforeEach`; the real value captured here
- * is restored when that test finishes.
- *
- * Usage in test files:
- * ```ts
- * const setStandardInputTerminal = mockStandardInputTerminal()
- *
- * it('prompts', () => { setStandardInputTerminal(true) })
- * ```
+ * Lets a test set whether `process.stdin` reads as a terminal, restoring the real value when the test finishes.
  */
 export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
   const original = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
@@ -101,13 +82,8 @@ export function setPromptsMockResponseOnce<
 }
 
 /**
- * Creates a vitest mock for TypeORM's `Repository` with a fully configured
- * `createQueryBuilder` mock. Suitable for use as a provider value in NestJS tests.
- *
- * The `createQueryBuilder` mock includes all chainable methods that call
- * `.mockReturnThis()` so the full method chain stays on the same mock instance.
- * Terminal methods are typed via `Entity` and left unimplemented — configure
- * them per-test with `.mockResolvedValue`.
+ * Mocks TypeORM's `Repository` with a chainable `createQueryBuilder`; configure
+ * terminal methods per test with `.mockResolvedValue`.
  */
 export const createRepositoryMock = <
   Entity extends ObjectLiteral = ObjectLiteral,
@@ -159,15 +135,7 @@ export const createRepositoryMock = <
 // 🧭 Cheerio Helpers
 
 /**
- * Load HTML and select a specific element by CSS selector.
- * Returns the CheerioAPI and the first matched element.
- * Throws if no element matches or the element cannot be extracted.
- *
- * Usage:
- * ```ts
- * const { $, element } = loadCheerioElement("<div><p id='entry'>text</p></div>", "p#entry");
- * service.process($, element);
- * ```
+ * Loads HTML and selects one element by CSS selector, returning its CheerioAPI and element. Throws when nothing matches.
  */
 export function loadCheerioElement(
   html: string,
@@ -186,14 +154,7 @@ export function loadCheerioElement(
 }
 
 /**
- * Load HTML and return both the CheerioAPI and the root element.
- * Throws if the root element cannot be extracted.
- *
- * Usage:
- * ```ts
- * const { $, rootElement } = loadCheerioWithRoot("<div>content</div>");
- * service.parse($, rootElement, "argument");
- * ```
+ * Loads HTML and returns its CheerioAPI and root element. Throws when the root cannot be extracted.
  */
 export function loadCheerioWithRoot(html: string): {
   $: cheerio.CheerioAPI;
@@ -210,15 +171,7 @@ export function loadCheerioWithRoot(html: string): {
 }
 
 /**
- * Load XML and select a specific element by CSS selector.
- * Returns the CheerioAPI and the first matched element.
- * Throws if no element matches or the element cannot be extracted.
- *
- * Usage:
- * ```ts
- * const { $, element } = loadCheerioXmlElement("<TEI><div>text</div></TEI>", "div");
- * provider.process($, element);
- * ```
+ * Loads XML and selects one element by CSS selector, returning its CheerioAPI and element. Throws when nothing matches.
  */
 export function loadCheerioXmlElement(
   xml: string,
@@ -237,14 +190,7 @@ export function loadCheerioXmlElement(
 }
 
 /**
- * Load XML and return both the CheerioAPI and the root element.
- * Throws if the root element cannot be extracted.
- *
- * Usage:
- * ```ts
- * const { $, rootElement } = loadCheerioXmlWithRoot("<TEI></TEI>");
- * provider.parse($, rootElement);
- * ```
+ * Loads XML and returns its CheerioAPI and root element. Throws when the root cannot be extracted.
  */
 export function loadCheerioXmlWithRoot(xml: string): {
   $: cheerio.CheerioAPI;

@@ -11,12 +11,7 @@ import { ConfigurationService } from "./configuration.service";
 /**
  * Provides the configuration layer's one public service.
  *
- * The five modules above supply the collaborators `ConfigurationService` is
- * assembled from, and none of them is re-exported: a consumer outside this
- * package injects `ConfigurationService` and nothing else, which is what makes
- * this layer one entry point rather than a bag of services a caller has to
- * know the names of. The three sibling ic-suite toolchains publish exactly
- * this pair, and conformetry now reads as the same shape.
+ * Only `ConfigurationService` is exported; a consumer injects it and nothing else from this package.
  */
 @Module({
   controllers: [],

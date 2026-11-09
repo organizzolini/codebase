@@ -73,9 +73,7 @@ export class SadArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright ص (final Arabic sad) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ص (final Arabic sad) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *    ╷┌┐
    * ╷ ┌┴┴┴╴
@@ -89,9 +87,7 @@ export class SadArabicLetterCharacteristicsService implements CharacteristicEval
   ];
 
   /**
-   * The upright ص (initial Arabic sad) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ص (initial Arabic sad) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷┌┐
    * ╶┴┴┘
@@ -100,9 +96,7 @@ export class SadArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly initialTemplate: readonly string[] = [".465", "2bb9"];
 
   /**
-   * The upright ص (isolated Arabic sad) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ص (isolated Arabic sad) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *    ╷┌┐
    * ╷ ┌┴┴┘
@@ -116,9 +110,7 @@ export class SadArabicLetterCharacteristicsService implements CharacteristicEval
   ];
 
   /**
-   * The upright ص (medial Arabic sad) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ص (medial Arabic sad) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷┌┐
    * ╶┴┴┴╴

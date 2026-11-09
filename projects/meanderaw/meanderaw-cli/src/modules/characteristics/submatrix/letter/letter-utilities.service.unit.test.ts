@@ -21,7 +21,7 @@ import type {
 /** An L: a stem down three points with a foot east, 2 columns by 3 rows, unchanged by no flip or turn. */
 const L: readonly string[] = ["4.", "c.", "a1"];
 
-/** A hook turning south at its east end, 3 columns by 2 rows, a second asymmetric shape so the laws are not tuned to one template. */
+/** A hook turning south at its east end, 3 columns by 2 rows, so the laws are not tuned to one shape. */
 const HOOK: readonly string[] = ["235", "..8"];
 
 /** The orientation named `name`, or undefined — which no expected template or window equals — when the enumeration lacks it. */
@@ -32,7 +32,7 @@ function named(
   return orientations.find((entry) => entry.name === name);
 }
 
-/** The L drawn as a Latin letter, keyed as the real L so its keys are registered ones, with one alias on its Southeast orientation and one on its SoutheastQuarter. */
+/** The L as a Latin letter, keyed as the real L so its keys are registered ones. */
 const L_LETTER: LetterDefinition = {
   aliases: {
     Southeast: "the hangul ㄴ (nieun)",

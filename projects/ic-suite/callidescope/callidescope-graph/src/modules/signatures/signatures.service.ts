@@ -10,11 +10,9 @@ import type { CallableParameter, CallableSignature } from "@callidescope/core";
 /**
  * Reads what a callable takes and what it gives back.
  *
- * Resolved through the type checker rather than read off the syntax, which is
- * what makes it useful on the shapes the graph actually points at. A callback
- * passed to `map` declares no types at all and gets them from the parameter it
- * was passed to; a destructured parameter has no name in the source; an
- * inferred return type is written down nowhere.
+ * Resolved through the type checker, not the syntax. A callback passed to `map`
+ * declares no types and gets them from its parameter; an inferred return type is
+ * written down nowhere.
  */
 @Injectable()
 export class SignaturesService {

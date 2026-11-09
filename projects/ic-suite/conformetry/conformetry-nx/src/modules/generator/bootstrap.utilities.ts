@@ -27,14 +27,9 @@ import {
 import type { EmittedFile } from "./generator.types";
 
 /**
- * Emits the generator plugin and puts it where Nx will find it.
+ * Emits the generator plugin and links it for Nx.
  *
- * Run from a `postinstall`, which is what makes the emitted plugin a build
- * artifact rather than a committed one. `GeneratorService.emitPlugin` is called
- * directly rather than through `nx sync`, which builds the whole project graph
- * before it emits anything — too slow to pay for on every install, and it would
- * fail the install itself whenever any project in the workspace momentarily
- * fails to load.
+ * Calls `emitPlugin` directly; `nx sync` would build the whole graph first.
  */
 export async function bootstrapPlugin(
   workspaceRoot: string,
@@ -62,11 +57,7 @@ export async function bootstrapPlugin(
 /**
  * Bootstraps the plugin, warning rather than failing the install.
  *
- * A `postinstall` that exits non-zero fails `pnpm install` itself, which would
- * leave an unrelated dependency change uninstallable for as long as the
- * conformetry configuration is mid-edit. Nothing is lost by warning: every
- * conformetry command re-checks the emitted plugin against the configuration
- * and refuses to run against a stale one.
+ * A non-zero `postinstall` would fail `pnpm install` itself while the configuration is mid-edit.
  */
 export async function runBootstrapCli(workspaceRoot: string): Promise<void> {
   try {
@@ -88,8 +79,7 @@ export async function runBootstrapCli(workspaceRoot: string): Promise<void> {
 /**
  * Whether a path resolves to the emitted plugin, and so is ours to replace.
  *
- * A link this bootstrap left behind but whose target has since been deleted
- * counts: it resolves to nothing, which no installed package ever does.
+ * A dangling link left by this bootstrap counts too.
  */
 function leadsTo(args: { linkPath: string; outputPath: string }): boolean {
   try {
@@ -100,15 +90,9 @@ function leadsTo(args: { linkPath: string; outputPath: string }): boolean {
 }
 
 /**
- * Links the emitted plugin into the workspace's root `node_modules`.
+ * Links the emitted plugin into the root `node_modules`.
  *
- * Nx resolves `nx g <package>:<generator>` by requiring the package by name,
- * and the emitted directory is gitignored, so it is invisible to project
- * discovery — the link is the only thing that makes the generators
- * addressable. The package manager will not create it: pnpm links a workspace
- * package into the root only when the root manifest depends on it, and a
- * `workspace:*` dependency on a package that has not been emitted yet fails
- * `pnpm install` outright on a fresh clone.
+ * pnpm will not create it; a `workspace:*` dependency fails a fresh install.
  */
 function linkPlugin(workspaceRoot: string): void {
   const linkPath = path.resolve(
@@ -120,12 +104,8 @@ function linkPlugin(workspaceRoot: string): void {
 
   mkdirSync(path.dirname(linkPath), { recursive: true });
 
-  // The plugin's name is unscoped, so this path is one an installed dependency
-  // could legitimately occupy. Refuse it rather than deleting someone's
-  // package: the emitted plugin is replaceable, an installed one is not.
-  // Checked by where the path leads rather than by whether it is a link, since
-  // pnpm installs packages as symlinks into its store and a link is therefore
-  // no evidence that this one is ours.
+  // The plugin's name is unscoped, so an installed dependency could occupy this path.
+  // Refuse rather than delete it. Checks where the path leads, since pnpm symlinks its store.
   if (
     lstatSync(linkPath, { throwIfNoEntry: false }) !== undefined &&
     !leadsTo({ linkPath, outputPath })
@@ -147,10 +127,9 @@ function linkPlugin(workspaceRoot: string): void {
 }
 
 /**
- * Reads the workspace's `nx.json`, or nothing when there is none.
+ * Reads `nx.json`, or nothing when there is none.
  *
- * A missing file yields nothing, which `resolveConfigurationPath` then refuses
- * for want of a registered path.
+ * `resolveConfigurationPath` then refuses for want of a registered path.
  */
 function readNxConfiguration(workspaceRoot: string): unknown {
   const nxConfigurationPath = path.resolve(
@@ -170,9 +149,7 @@ function readNxConfiguration(workspaceRoot: string): unknown {
 /**
  * Writes the emitted files, replacing whatever the last emit left behind.
  *
- * `src` is cleared rather than overwritten so that dropping a generator from
- * the configuration drops its schema too — the drift check compares the files
- * that should exist against disk, and would never notice one that should not.
+ * Clears `src` first, so dropped generators lose their schemas.
  */
 function writePlugin(args: {
   files: EmittedFile[];

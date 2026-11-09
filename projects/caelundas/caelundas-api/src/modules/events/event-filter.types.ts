@@ -36,9 +36,8 @@ export interface EventFilterRule {
 }
 
 /**
- * A comparison over a SQL expression, and whether the rule keeps the events
- * it does not hold for instead: `neq` and "is not between" compare for the
- * positive condition and flip it.
+ * A SQL comparison, negated for `neq` and "is not between", which flip the
+ * positive condition.
  */
 export interface NumberCondition {
   negated: boolean;

@@ -1,18 +1,9 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
 /**
- * The same inputs with every `include` array written backwards.
+ * The same inputs with every `include` written backwards, which changes nothing.
  *
- * Negations form **one set applied to the whole input** rather than being read
- * in order, so putting the `!` first cannot change what the input holds. The
- * test beside these files measures both configurations and asserts the two
- * reports name the same files — which is the only way to state a property
- * about an ordering nobody can see.
- *
- * ```bash
- * cd projects/ic-suite/codometer/codometer-examples/examples/corpus
- * codometer --config ../targets/reordered.config.ts
- * ```
+ * See the [targets guide](./README.md).
  */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",

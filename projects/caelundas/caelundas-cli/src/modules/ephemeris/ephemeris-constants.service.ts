@@ -36,9 +36,8 @@ export class EphemerisConstantsService {
   // 🌎 Public Methods
 
   /**
-   * Looks up the Swiss Ephemeris constant for a non-node body (planet or asteroid).
-   *
-   * @throws When no constant is found for the body or if comets are requested.
+   * Looks up the Swiss Ephemeris constant for a non-node body; throws when none
+   * exists or comets are requested.
    */
   public getSwissEphemerisConstantForBody(body: Exclude<Body, Node>): number {
     const planetConstant = (

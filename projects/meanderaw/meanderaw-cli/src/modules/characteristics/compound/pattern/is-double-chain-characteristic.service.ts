@@ -56,7 +56,7 @@ export class IsDoubleChainCharacteristicService implements CharacteristicEvaluat
 
   // 🌎 Public Methods
 
-  /** Checks the unit is two wrapping, reversing open strands at pitch `2 rows - 2` with runs of `width - 1` and `rows - 2`. */
+  /** Checks the unit is two wrapping, reversing strands at pitch `2 rows - 2`, with runs of `width - 1` and `rows - 2`. */
   public compute(context: CharacteristicContext): boolean {
     const { columns, rows } = context;
 

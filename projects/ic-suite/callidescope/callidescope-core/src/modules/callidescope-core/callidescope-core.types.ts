@@ -1,12 +1,7 @@
 // 🏷️ Types
 
 /**
- * One callable and every distinct callable it calls directly, unfiltered by
- * any limit.
- *
- * Held on a `ProjectReport` the same way `stacks` holds every `CallStack`
- * regardless of `maximumDepth`: computing breadth does not require a
- * configured limit, only reporting a violation does.
+ * One callable and the distinct callables it calls directly, unfiltered by any limit.
  */
 export interface CallableBreadthReport {
   readonly breadth: number;
@@ -21,25 +16,13 @@ export interface CallableBreadthReport {
 /** What the documentation comment above a callable says. */
 export interface CallableDocumentation {
   readonly isDeprecated: boolean;
-  /**
-   * The comment's prose in full, newlines collapsed. Empty when it is all tags.
-   *
-   * Never shortened. How much of it fits belongs to whatever renders it, and
-   * a consumer reading this has no line to fit inside.
-   */
+  /** The comment's prose in full, newlines collapsed. Empty when it is all tags. Never shortened. */
   readonly summary: string;
   /** Tag names present, without the leading `@`, in source order. */
   readonly tags: readonly string[];
 }
 
-/**
- * Stable identifier for one callable: workspace-relative path plus the byte
- * offset its declaration starts at.
- *
- * The offset rather than a line number, because two callables can share a line
- * — an arrow property and its enclosing statement do — while exactly one
- * declaration can start at one offset.
- */
+/** Stable callable id: workspace-relative path plus the byte offset of its declaration, since lines can be shared. */
 export type CallableId = string;
 
 /** The declaration shape a callable was found as. */
@@ -79,13 +62,7 @@ export interface CallableParameter {
 export interface CallableSignature {
   readonly parameters: readonly CallableParameter[];
   readonly returnType: string;
-  /**
-   * The whole signature on one line, as TypeScript writes it.
-   *
-   * Kept alongside the parts because TypeScript renders some shapes better
-   * than reassembling them does — a destructured parameter reads as
-   * `{ alpha, beta }` here and as the synthetic `__0` in `parameters`.
-   */
+  /** The whole signature on one line, as TypeScript writes it. Kept because it renders destructured parameters better than the parts. */
   readonly text: string;
 }
 
@@ -151,14 +128,7 @@ export interface EntryPoint {
   readonly kind: EntryPointKind;
 }
 
-/**
- * What promoted a callable to the root of a call stack.
- *
- * `declared` is the only one a person chose: a configuration named that
- * callable's address outright, saying "this is the surface this package has".
- * Every other kind is inferred — from a decorator, a file name, an export, or
- * from nothing at all having called it.
- */
+/** What promoted a callable to a call-stack root. Only `declared` is a person's choice; the rest are inferred. */
 export type EntryPointKind =
   | "declared"
   | "decorated-method"
@@ -168,10 +138,7 @@ export type EntryPointKind =
   | "orphan-root";
 
 /**
- * Everything one project contributed to a run.
- *
- * Scoped by the project the entry point sits in, so a section embedded in a
- * project's own README describes that project rather than the workspace.
+ * Everything one project contributed to a run, scoped by the project the entry point sits in.
  */
 export interface ProjectReport {
   /** Every callable with at least one direct callee. */
@@ -204,10 +171,7 @@ export interface StackFrame {
 }
 
 /**
- * A call site that produced no edge.
- *
- * Every depth measured through a callable holding one of these is a lower
- * bound, which is why the reason is kept rather than discarded.
+ * A call site that produced no edge. Depths measured through its callable are lower bounds, so the reason is kept.
  */
 export interface UnresolvedCall {
   readonly calleeText: string;

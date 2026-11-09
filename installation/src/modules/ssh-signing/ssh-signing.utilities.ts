@@ -15,13 +15,8 @@ export function formatAllowedSigner(email: string, publicKey: string): string {
 }
 
 /**
- * Reads the public key out of the SSH signature in a commit, as the
- * `<type> <base64>` line `ssh-keygen` lists in an allowed signers file.
- *
- * A signer that holds its private key out of reach still embeds the public
- * half in every signature it makes, which is the only way to learn it.
- * Returns `undefined` for a commit that is not SSH-signed or whose signature
- * is malformed.
+ * Reads the public key from the SSH signature in a commit, as an allowed-signers line.
+ * Returns `undefined` for an unsigned or malformed commit.
  */
 export function readSshPublicKey(commit: string): string | undefined {
   const armor = SSH_SIGNATURE_PATTERN.exec(commit)?.[1];
@@ -50,9 +45,8 @@ export function readSshPublicKey(commit: string): string | undefined {
 }
 
 /**
- * Reads one length-prefixed string from `data` at `offset`, and throws when
- * the length runs past the end: `subarray` would clamp it and return a
- * truncated string as though it were whole.
+ * Reads one length-prefixed string at `offset`, and throws when the length runs past the end.
+ * `subarray` would silently truncate instead.
  */
 function readString(data: Buffer, offset: number): Buffer {
   const start = offset + LENGTH_PREFIX_BYTES;

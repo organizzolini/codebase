@@ -10,13 +10,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Counts the U shapes embedded in a Code's 2×2 windows — three sides of a
- * unit square open on the fourth, in any of its four rotations — whether or
- * not more ink branches off it. Unlike a `countIsolatedGlyphs` template
- * match, this reads only the arms the U itself needs and ignores every
- * other arm a window's four points may also carry, which is what lets the
- * same window count as an embedded U even while a fifth arm running through
- * it also makes it something else.
+ * Counts the U shapes in a Code's 2×2 windows: three sides of a unit square open on the
+ * fourth, in any of four rotations. Other arms on the window's points are ignored, so a
+ * U still counts while another ink runs through it.
  */
 @Injectable()
 export class EmbeddedUCountCharacteristicService implements CharacteristicEvaluator<number> {

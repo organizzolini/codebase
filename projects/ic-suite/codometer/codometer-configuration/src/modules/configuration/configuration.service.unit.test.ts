@@ -58,10 +58,7 @@ async function writeConfigurationFile(
 }
 
 /**
- * Writes a configuration file, and returns a folder two levels beneath it.
- *
- * The nested folder is where a test names a file beside an ancestor's, to
- * show that nothing is searched for or merged from above.
+ * Writes a configuration file and returns a folder two levels beneath it, where nothing is searched for or merged from above.
  */
 async function writeConfigurationTree(
   fileName: string,

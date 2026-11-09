@@ -50,9 +50,7 @@ export class NoonArabicLetterCharacteristicsService implements CharacteristicEva
   // 🔐 Private Fields
 
   /**
-   * The upright ں (final Arabic dotless noon) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ں (final Arabic dotless noon) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╷ ┌╴
    * │ │
@@ -62,9 +60,7 @@ export class NoonArabicLetterCharacteristicsService implements CharacteristicEva
   private readonly finalTemplate: readonly string[] = ["4.61", "c.c.", "a39."];
 
   /**
-   * The upright ں (isolated Arabic dotless noon) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ں (isolated Arabic dotless noon) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╷ ╷
    * │ │

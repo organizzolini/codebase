@@ -17,9 +17,8 @@ import type { EclipticStyle, SkyGeometry, SkyPoint } from "./night-sky.types";
 // 🌎 Public Functions
 
 /**
- * Draws the ecliptic, the Sun's yearly path and the line the zodiac lies
- * along, as a dashed path cut where it leaves the ring the window crosses.
- * Answers nothing when no part of it shows.
+ * Draws the ecliptic as a dashed path cut where it leaves the window's ring;
+ * empty when no part of it shows.
  */
 export function formatEcliptic(
   geometry: SkyGeometry,
@@ -40,9 +39,8 @@ export function formatEcliptic(
 }
 
 /**
- * The point of the ecliptic at an ecliptic longitude in degrees, as right
- * ascension in hours from 0 up to 24 and declination in degrees, turned from
- * the ecliptic's frame to the equator's by the obliquity.
+ * The equatorial point (right ascension in hours, declination in degrees) of
+ * an ecliptic longitude, turned by the obliquity.
  */
 export function toEclipticPoint(longitudeDegrees: number): SkyPoint {
   const longitude = longitudeDegrees * RADIANS_PER_DEGREE;

@@ -174,9 +174,7 @@ export class PronunciationService {
   }
 
   /**
-   * Parses pronunciation data from the Wiktionary HTML element context.
-   * Requires `macronizedWord` to already be resolved (call `parsePrincipalParts`
-   * before this function). Returns one `Pronunciation` entity per variant.
+   * Parses pronunciation from a Wiktionary element, one `Pronunciation` per variant. Requires `macronizedWord`, so call `parsePrincipalParts` first.
    */
   parse(
     $: cheerio.CheerioAPI,

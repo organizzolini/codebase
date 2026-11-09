@@ -58,8 +58,7 @@ export class UnknownConfigurationFileTypeError extends Error {
 /**
  * Badge groups a configured counter may be rendered into.
  *
- * Accepted by name rather than as free text so a misspelled group fails the
- * configuration instead of silently rendering the badge nowhere.
+ * Named rather than free text, so a misspelled group fails the configuration.
  */
 export const CODOMETER_STATISTIC_GROUPS = [
   "conventions",
@@ -87,12 +86,16 @@ export const CODOMETER_SEVERITIES = [
 export const CODOMETER_SYMBOL_KINDS = [
   "class",
   "enum",
+  "file",
   "function",
   "getter",
   "interface",
   "method",
   "property",
   "setter",
+  "signature",
+  "type",
+  "variable",
 ] as const satisfies readonly CodometerSymbolKind[];
 
 /** Modifiers a symbol counter may require of a declaration. */

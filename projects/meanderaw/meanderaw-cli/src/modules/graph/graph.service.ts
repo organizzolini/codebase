@@ -3,21 +3,9 @@ import { Injectable } from "@nestjs/common";
 import type { InkAdjacency } from "./graph.types";
 
 /**
- * The graph primitives, stated over an adjacency and nothing else.
- *
- * Nothing here knows what was counted. A meander's ink is asked "how many
- * pieces is this" in two coordinate systems that share no vocabulary — a
- * rendered document's bounded lattice, and a repeat unit whose ink wraps east
- * into its own first column — and rendering a unit in order to measure it
- * would answer a different question, since a rendering of `N` repeats shows
- * `N` copies of whatever one repeat contains. {@link InkAdjacency} is what
- * both readings can say, so it is what this service takes.
- *
- * It was the generic half of a service that also measured a rendered
- * document against the charter. The two never shared anything but a file:
- * one is a walk over an abstract adjacency, the other reads path data off an
- * SVG. Separating them is what lets a caller reach the walk without reaching
- * a drawing.
+ * The graph primitives, stated over an adjacency and nothing else. Nothing
+ * here knows what was counted: both ink readings are reduced to
+ * {@link InkAdjacency}.
  */
 @Injectable()
 export class GraphService {
@@ -56,13 +44,8 @@ export class GraphService {
   // 🌎 Public Methods
 
   /**
-   * How many connected pieces a graph falls into — the one quantity a
-   * component count, a cycle count, and the forest and tree predicates
-   * cannot be computed without, and the one that costs a walk.
-   *
-   * A node joined to nothing is a piece of its own, which is what makes an
-   * inked dot — a zero-length stroke painting one lattice point — a
-   * component rather than nothing.
+   * How many connected pieces a graph falls into. A node joined to nothing is
+   * its own piece.
    */
   components<Node>(adjacency: InkAdjacency<Node>): number {
     const visited = new Set<string>();

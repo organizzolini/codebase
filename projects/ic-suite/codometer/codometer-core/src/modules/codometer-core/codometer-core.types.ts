@@ -1,12 +1,7 @@
 // 🏷️ Types
 
 /**
- * Aggregated code statistics produced by the measurement pipeline,
- * grouped by the language each counter was measured from.
- *
- * This is the shape every configured callback is handed, which is why it lives
- * beside the configuration types rather than in the CLI that produces it: a
- * `codometer.config.ts` has to be able to name it.
+ * Aggregated code statistics from the measurement pipeline, grouped by language. Lives here so `codometer.config.ts` can name it.
  */
 export interface CodeStatisticsResult {
   css: CssStatistics;
@@ -22,11 +17,7 @@ export interface CodeStatisticsResult {
   /**
    * Byte-precise total of this target's files, uncompressed.
    *
-   * Produced by the same size analysis a declared target's `size` metric
-   * uses — with `none` as its compression — rather than a rounded stat sum,
-   * so the workspace headline moves by the byte instead of by the whole
-   * binary unit and stays comparable with every other size in the workspace,
-   * which are all decimal.
+   * Uses the size analysis with `none` compression, so the headline moves by the byte.
    */
   repositoryBytes: number;
   shell: ShellStatistics;
@@ -38,19 +29,13 @@ export interface CodeStatisticsResult {
 }
 
 /**
- * Everything one run measured, and everything it could not.
- *
- * Codometer's own shape rather than any other tool's. What a consumer needs is
- * every metric's value alongside whatever limits it, and a name it can join a
- * previous run's report on; nothing here is inferred from a field's absence.
+ * Everything one run measured, and what it could not. Each metric carries its limits and a stable name to join on.
  */
 export interface CodometerReport {
   /**
-   * Whatever the run could not do, named. Empty on an ordinary run.
+   * What the run could not do. Empty on an ordinary run.
    *
-   * Present in the report rather than only on the console so that a consumer
-   * reading the file can tell a metric nobody measured from one that measured
-   * zero.
+   * Lets a consumer tell an unmeasured metric from a zero.
    */
   failures: ReportFailure[];
   targets: ReportTarget[];
@@ -59,17 +44,14 @@ export interface CodometerReport {
 /**
  * What a breach costs.
  *
- * `fail` is a gate and `warn` is a report — the difference between a limit
- * that stops a change and one that only says the metric passed it. Both are
- * reported identically; only the consequence differs.
+ * `fail` is a gate and `warn` is a report. Both are reported identically.
  */
 export type CodometerSeverity = "fail" | "warn";
 
 /**
  * A badge group a configured counter can be rendered into.
  *
- * Every group the report renders, plus `conventions` — the group that exists
- * for these counters and appears only when at least one is configured.
+ * Every group the report renders, plus `conventions` for configured counters.
  */
 export type CodometerStatisticGroup =
   | "conventions"
@@ -89,29 +71,26 @@ export type CodometerStatisticGroup =
 /**
  * A kind of declaration a symbol counter can ask for.
  *
- * `function` covers every callable written outside a class body — function
- * declarations, function expressions, and arrow functions alike — while a
- * callable written as a class member is a `method`, a `getter`, or a
- * `setter`. A class field holding an arrow function is a `property`: the
- * arrow carries none of the field's modifiers, so a static one is found by
- * asking for static properties rather than static methods.
+ * `function` covers callables outside a class; class-field arrows are `property`.
  */
 export type CodometerSymbolKind =
   | "class"
   | "enum"
+  | "file"
   | "function"
   | "getter"
   | "interface"
   | "method"
   | "property"
-  | "setter";
+  | "setter"
+  | "signature"
+  | "type"
+  | "variable";
 
 /**
  * A modifier a counted declaration must carry.
  *
- * Read literally, from the syntax: `public` matches members annotated
- * `public` and not members that are public by omission, and `private`
- * likewise does not match a `#name` field, which carries no modifier.
+ * Matched literally: `public` misses members public only by omission.
  */
 export type CodometerSymbolModifier =
   | "abstract"
@@ -140,22 +119,16 @@ export interface CssStatistics {
 }
 
 /**
- * What one configured counter found.
- *
- * `count` is files for a counter matching paths and declarations for one
- * matching symbols, which is why it is not called either.
+ * What one configured counter found. `count` is files for a path counter and declarations for a symbol counter.
  */
 export interface CustomStatisticResult {
   color: string;
   count: number;
   group: CodometerStatisticGroup;
   /**
-   * Where each measured instance was found, for a selector that measures
-   * per-instance rather than only counting matches.
+   * Where each measured instance was found, per instance.
    *
-   * Left unset by a counter that only counts — `patterns`, `symbols` — since
-   * neither measures anything beyond a match. A `comment` selector populates
-   * it with every block that broke its budget.
+   * Unset for a counter that only counts; a `comment` selector fills it.
    */
   instances?: CustomStatisticResultInstance[] | undefined;
   label: string;
@@ -224,12 +197,7 @@ export interface JsonStatistics {
 }
 
 /**
- * Statistics specific to Jupyter notebooks.
- *
- * A notebook is three languages in one file, so the counters come from three
- * analyzers: the notebook document itself is JSON, its code cells are Python,
- * and its markdown cells are prose. Cell and output counts are the notebook's
- * own, belonging to no single language.
+ * Statistics specific to Jupyter notebooks. Counters come from three analyzers: JSON document, Python cells, and markdown cells.
  */
 export interface JupyterStatistics {
   cells: number;
@@ -303,12 +271,7 @@ export interface PythonStatistics {
 }
 
 /**
- * Something the run could not do, and what it was trying to do it to.
- *
- * Declared beside the measurement that produces it rather than beside the
- * report that renders it, so the dependency between the two runs one way. The
- * name says where it surfaces: `CodometerReport.failures` is what a consumer
- * reads it from.
+ * Something the run could not do, and what it was trying to act on. `CodometerReport.failures` is where consumers read it.
  */
 export interface ReportFailure {
   /** Which part of the run it failed in. */
@@ -319,20 +282,14 @@ export interface ReportFailure {
 }
 
 /**
- * Which part of a run a failure belongs to.
+ * Which part of a run a failure belongs to: `input` or `limit`.
  *
- * `input` is a set of files that could not be measured; `limit` is a declared
- * limit that could not be held against anything. Neither is a breach, and a
- * consumer that treats them as one reports a passing gate for a metric nobody
- * ever measured.
+ * Neither is a breach; do not read them as passing.
  */
 export type ReportFailureKind = "input" | "limit";
 
 /**
- * The limit declared on one metric, and whether the metric cleared it.
- *
- * A limit that held is written out exactly like one that did not, so a
- * consumer can render the headroom rather than only the failures.
+ * The limit declared on one metric, and whether the metric cleared it. Held and breached limits are written out alike.
  */
 export interface ReportLimit {
   breached: boolean;
@@ -345,34 +302,21 @@ export interface ReportLimit {
 /** One measured number, and whatever limits it. */
 export interface ReportMetric {
   /**
-   * Where each measured instance was found, for a metric a per-instance
-   * selector produced — a `comment` selector today, and any future selector
-   * that measures more than a count.
+   * Each measured instance and where it was found, if the metric tracks them.
    *
-   * Stays `null` for a metric that only counts, so a consumer can tell "no
-   * instance was found" from "this metric never tracks instances" without
-   * reading the configuration that produced it — the same reasoning
-   * `ReportLimit.label` already follows for a limit nobody named.
+   * `null` for a metric that only counts.
    */
   instances: CustomStatisticResultInstance[] | null;
   /**
-   * Every limit declared on the metric, in the order they were written.
+   * Every limit on the metric, in written order.
    *
-   * A list because the configuration accepts more than one limit on a single
-   * metric on purpose — a `warn` short of a `fail` is how a repository sees a
-   * number coming before it stops a change — and the gate already enforces all
-   * of them. A single field could only carry the last one written, which made
-   * the report unable to say what the gate was actually enforcing.
-   *
-   * Stays an empty array where nothing limits the metric, never absent.
+   * A list, since a `warn` may sit short of a `fail`. Empty, never absent.
    */
   limits: ReportLimit[];
   /**
-   * The metric's name across runs: its target's name, then its path.
+   * The metric's name: its target's name, then its path.
    *
-   * Stable by construction — both halves are written in the configuration —
-   * which is what lets a consumer join this run's report against the last
-   * one's instead of reading every metric as removed and re-added.
+   * Stable across runs, so a consumer can join one report to the next.
    */
   name: string;
   /** The metric's path within its target, with no target name on the front. */
@@ -391,9 +335,7 @@ export interface ReportTarget {
   /**
    * True when the target's globs matched no files.
    *
-   * Said outright rather than left to be read off a missing limit or a zero,
-   * because a target that matched nothing passes every limit written against
-   * it while measuring nothing at all.
+   * Said outright, since a target matching nothing passes every limit while measuring nothing.
    */
   empty: boolean;
   /** How many files the target's globs claimed. */
@@ -403,11 +345,7 @@ export interface ReportTarget {
 }
 
 /**
- * Statistics specific to shell scripts.
- *
- * Counted with patterns rather than a parser: shell has no portable syntax
- * tree available without a native dependency, so these are the constructs a
- * reader recognizes on sight rather than everything the language admits.
+ * Statistics specific to shell scripts, counted with patterns rather than a parser. Only constructs a reader recognizes on sight.
  */
 export interface ShellStatistics {
   commentLines: number;
@@ -465,10 +403,7 @@ export interface TypescriptStatistics {
 }
 
 /**
- * Structural statistics specific to YAML documents.
- *
- * A YAML file is a stream rather than a single value: one file can hold
- * several documents, which is why `documents` is counted apart from `files`.
+ * Structural statistics specific to YAML documents. A file is a stream, so `documents` is counted apart from `files`.
  */
 export interface YamlStatistics {
   aliases: number;

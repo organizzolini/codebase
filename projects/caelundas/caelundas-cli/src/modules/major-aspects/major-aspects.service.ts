@@ -122,8 +122,8 @@ export class MajorAspectsService {
   // 🌎 Public Methods
 
   /**
-   * Resolves the active major aspect for two bodies and assembles a typed event.
-   * Throws when no major aspect is within orb for the supplied longitudes.
+   * Builds the major aspect event for two bodies; throws when none is within
+   * orb.
    */
   buildMajorAspectEvent(args: {
     body1: Body;
@@ -153,8 +153,8 @@ export class MajorAspectsService {
   }
 
   /**
-   * Lists the major aspects in orb at this minute and the minutes either side,
-   * so a sweep can seed its active-aspect registry at the window start.
+   * Major aspects in orb at this minute and adjacent minutes, to seed a sweep's
+   * registry at its start.
    */
   detectActive(args: SimpleAspectDetectorArguments): AspectBodies[] {
     const { coordinateEphemerisByBody, minute } = args;
@@ -188,8 +188,8 @@ export class MajorAspectsService {
   }
 
   /**
-   * Classifies the major aspect phase (forming / perfective / dissolving) between two bodies
-   * across three consecutive minutes, or `null` if no major aspect is in progress.
+   * Classifies a major aspect's phase (forming, perfective, or dissolving) across
+   * three consecutive minutes; null if none is in progress.
    */
   getMajorAspectPhase(args: {
     currentLongitudeBody1: number;

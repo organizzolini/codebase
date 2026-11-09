@@ -47,9 +47,7 @@ export class PythonBridgeService {
   // 🔐 Private Fields
 
   /**
-   * Directory holding the `python` package, resolved from this module rather
-   * than from the workspace root, so the bridge is found the same way whether
-   * conformetry runs from a checkout or from `node_modules`.
+   * Directory holding the `python` package, resolved from this module so the bridge is found wherever conformetry runs.
    */
   private readonly pythonRootPath = path.resolve(
     path.dirname(fileURLToPath(import.meta.url)),
@@ -64,9 +62,7 @@ export class PythonBridgeService {
   /**
    * Wraps a bridge failure as a reportable error rather than throwing.
    *
-   * Weighed as a single failed requirement out of one: the file could not be
-   * checked at all, so claiming any particular proportion of it conforms would
-   * be an invention.
+   * Weighed as one failed requirement, as the file went unchecked.
    */
   private buildBridgeError(message: string): DocumentValidationResult {
     return {
@@ -154,10 +150,7 @@ export class PythonBridgeService {
   /**
    * Compares one Python source against its rendered template.
    *
-   * A missing interpreter, a crashed bridge, or unreadable output are all
-   * reported as conformance differences: they mean this file could not be checked,
-   * which the run should surface, but they must not abort validation of every
-   * other file.
+   * Bridge failures become reported differences, so one broken file does not abort the run.
    */
   public validatePythonSource(
     args: RunPythonBridgeArguments,

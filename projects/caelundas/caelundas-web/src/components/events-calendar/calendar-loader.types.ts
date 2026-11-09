@@ -19,9 +19,7 @@ export interface CalendarData {
    */
   collections: ResolvedEventFilterCollection[];
   /**
-   * The level the events are colored by, read for each event after the
-   * grouping's levels, or nothing when they are colored by type, kind by
-   * kind: the link's, holding only a field the data has.
+   * The level events are colored by, after the grouping's levels; undefined when colored by type.
    */
   colorBy: EventGroupLevel | undefined;
   dataset: EventsDataset | null;
@@ -52,9 +50,7 @@ export interface CalendarData {
 }
 
 /**
- * Why a loaded window shows no events, so the page can say which: the
- * database holds none, the window lies outside the dates it covers, the
- * filters leave nothing, or nothing in the window exists at all.
+ * Why a window shows no events: the data is empty, the window is outside it, or filters leave nothing.
  */
 export type CalendarEmptiness =
   | {

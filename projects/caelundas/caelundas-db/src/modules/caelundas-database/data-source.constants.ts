@@ -31,11 +31,7 @@ export const CAELUNDAS_DATABASE_ENTITIES = [
 export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1793990506900] as const;
 
 /**
- * The data source the TypeORM command line reads for
- * `nx run caelundas-db:migration:*`, built from the same options as the
- * runtime module. Reads only `CAELUNDAS_POSTGRES_*`, defaulting to
- * `caelundas_development`.`caelundas` as `caelundas_username`, and never
- * synchronizes.
+ * Data source for the TypeORM CLI, built from the runtime options; reads only `CAELUNDAS_POSTGRES_*`, never synchronizes.
  */
 export const caelundasDataSource = createDataSource({
   entities: [...CAELUNDAS_DATABASE_ENTITIES],

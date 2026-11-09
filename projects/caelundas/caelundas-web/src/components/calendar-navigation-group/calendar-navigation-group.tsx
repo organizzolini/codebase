@@ -24,10 +24,7 @@ export interface CalendarNavigationGroupProperties {
 // 🧩 Component
 
 /**
- * Renders Today, then the previous and next buttons around the title of the
- * period shown. Today is switched off while the period includes today. The title holds one width
- * for every view, however long the period's name runs, so nothing beside it
- * moves when the view changes.
+ * Renders Today, then previous and next buttons around the period's title; the title holds one width for every view.
  */
 export function CalendarNavigationGroup(
   properties: Readonly<CalendarNavigationGroupProperties>,

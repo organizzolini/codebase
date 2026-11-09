@@ -141,11 +141,9 @@ describe(FileFilterService, () => {
       workspaceRoot,
     });
 
-    // Git only reports paths it tracks, so the assertion names one that
-    // exists rather than one the pattern would merely have matched. The
-    // agent-skill packages are excluded outright rather than by any single
-    // project, so this path stays in the workspace ignore file regardless of
-    // how far project-owned exclusions migrate into their own configurations.
+    // Git only reports tracked paths, so this names one that exists, not one merely
+    // matched. The agent-skill packages are excluded workspace-wide, so this path stays
+    // in the ignore file however project-owned exclusions migrate.
     expect(
       filter.isExcluded(
         "projects/ic-suite/callidescope/callidescope-agents/README.md",

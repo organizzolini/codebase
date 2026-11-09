@@ -112,12 +112,9 @@ export const truncatedMessage = (
   `${detail}\n--clean had already emptied ${tables.join(", ")} in ${target}, so they may now be empty. Re-run the import from the same file to refill them.`;
 
 /**
- * What `postgresql-import --dry-run` prints, one line each: where it would import
- * to, what the dump holds of each selected table (`held`, keyed by the
- * qualified name, in the plan's order), and what `--clean` would drop and
- * recreate (with `--ddl`) or truncate (with `--data` alone). Never
- * carries the password. Each line is a whole log message, so each opens
- * with an emoji and a verb, as `LoggerService` requires.
+ * What `postgresql-import --dry-run` prints, one line each. Never carries the
+ * password; each line opens with an emoji and a verb, as `LoggerService`
+ * requires.
  */
 export const dryRunMessages = (
   {

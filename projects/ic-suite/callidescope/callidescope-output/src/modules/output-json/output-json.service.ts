@@ -43,22 +43,16 @@ export class OutputJsonService {
   // 🌎 Public Methods
 
   /**
-   * Renders the JSON report for the traced findings.
-   *
-   * Ends with a newline so the file matches what a formatter would leave
-   * behind, and so check mode does not fail over the one byte every other tool
-   * in the repository adds.
+   * Renders the JSON report for the traced findings, ending with a newline so formatters and check
+   * mode agree.
    */
   public buildReport(args: BuildReportArguments): string {
     return `${JSON.stringify(args.result, null, args.destination.indentation)}\n`;
   }
 
   /**
-   * Syncs the configured JSON file with the current findings.
-   *
-   * In write mode the report is written, creating parent directories as
-   * needed. In check mode nothing is written and the return value reports
-   * whether the file already holds the current report.
+   * Syncs the configured JSON file with the findings: writes in write mode, and in check mode
+   * reports whether it is current.
    */
   public sync(args: SyncJsonArguments): boolean {
     const resolvedPath = path.resolve(args.destination.path);

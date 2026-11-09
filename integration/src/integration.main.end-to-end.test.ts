@@ -9,10 +9,8 @@ import { environmentSchema } from "./integration.constants";
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../..");
 
 /**
- * How long the one real boot may take. CI run 38950100262 took 20.6s for the
- * first boot of this command line and 12.5s for a second, swc-node
- * transforming the whole module graph cold each time; three times the slower
- * one leaves headroom on a busy runner.
+ * How long the one real boot may take. A cold transform of the module graph
+ * took 20.6s in CI, so this leaves headroom.
  */
 const BOOT_TIMEOUT_MILLISECONDS = 60_000;
 
@@ -33,8 +31,8 @@ const COMMAND_NAMES = [
 ];
 
 /**
- * Runs the real command line once, asking only for its help, with the inputs
- * left out and git pointed at no repository, so nothing it boots can touch one.
+ * Runs the real command line once for its help, with inputs left out and git
+ * pointed at no repository.
  */
 const runHelp = (): { output: string; status: null | number } => {
   const result = spawnSync(
@@ -91,10 +89,9 @@ describe("main end-to-end suite", () => {
   });
 
   // A dependency-injection gap fails only when the real container boots,
-  // which neither the unit tests nor the lint gate do. `--help` boots the
-  // whole container, every command's providers included, before commander
-  // prints anything, so one spawn checks them all: each extra spawn would
-  // pay the whole cold transform again.
+  // which unit tests and the lint gate never do. `--help` boots every
+  // command's providers in one spawn, since each extra spawn repays the
+  // cold transform.
   describe("command boot e2e", () => {
     let boot: { output: string; status: null | number };
 

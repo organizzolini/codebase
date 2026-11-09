@@ -13,11 +13,7 @@ export const MERCURIAN_TAG = "Mercurian";
 export const MARTIAN_TAG = "Martian";
 
 /**
- * The largest phase angle at which a magnitude minimum counts as greatest brilliancy.
- *
- * Near inferior conjunction a thin crescent passes a shallow magnitude
- * minimum at a phase angle near 168°; that is not the brilliancy almanacs
- * publish, which falls near 120°.
+ * The largest phase angle at which a magnitude minimum is greatest brilliancy; thin crescents reach 168°.
  */
 export const MAXIMUM_BRILLIANCY_PHASE_ANGLE_DEGREES = 160;
 

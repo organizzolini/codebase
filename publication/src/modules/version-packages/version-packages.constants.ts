@@ -1,9 +1,8 @@
 // ♟️ Constants
 
 /**
- * Versions the release group and writes its changelogs, committing nothing,
- * through `env` so the Nx daemon stays off for this one run: a daemon would
- * keep the graph it built before the release's `.nxignore` addition.
+ * Versions the release group and writes changelogs, committing nothing.
+ * `NX_DAEMON=false` keeps a stale daemon graph from the `.nxignore` addition.
  */
 export const NX_RELEASE = [
   "NX_DAEMON=false",

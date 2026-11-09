@@ -9,17 +9,11 @@ import { DrawRecordService } from "./draw-record.service";
 import type { MeanderRecord, MeanderShape } from "../database/database.types";
 
 /**
- * Draws one batch of a shape's orbit minima into the rows the database
- * holds for them — the part of a draw run that costs nearly all of its time,
- * and so the part `DrawPoolService` spreads across worker threads.
+ * Draws one batch of a shape's orbit minima into database rows. This is the
+ * costly part of a draw run, so `DrawPoolService` spreads it across threads.
  *
- * Each mask is one symmetry class, kept by
- * `TileEnumerationService.orbitMinima` without building the rest of it.
- * This is where the class is finally built: folded to the representative
- * `SymmetryService.canonicalTile` picks, spelled, and recorded, exactly as
- * a draw run drawn on one thread would record it. Nothing here touches the
- * database or the pool, so the same code runs in a worker thread and, when
- * the pool is configured with no workers, in-process.
+ * Nothing here touches the database or the pool, so the same code runs in a
+ * worker thread or in-process.
  */
 @Injectable()
 export class DrawWorkerService {

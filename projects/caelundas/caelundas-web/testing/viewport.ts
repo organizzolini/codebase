@@ -68,8 +68,7 @@ export function setReducedMotion(reduced: boolean): void {
 }
 
 /**
- * Sets the width media queries see, such as 375 for a phone or 800 for a
- * tablet, telling each listener whose query the change flips.
+ * Sets the width media queries see, such as 375 for a phone or 800 for a tablet, telling each listener whose query flips.
  */
 export function setViewportWidth(width: number): void {
   const before = [...listeners].map((entry) => ({

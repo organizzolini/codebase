@@ -28,8 +28,7 @@ export const EMPTY_MARKDOWN_RESULT: MarkdownResult = {
 /**
  * Maps an mdast node type onto the result field that counts it.
  *
- * Headings and list items are absent because they need the node itself —
- * a heading to read its depth, a list item to see whether it is a checkbox.
+ * Headings and list items need their node, so are absent.
  */
 export const NODE_COUNTER_KEYS: Record<string, keyof MarkdownResult> = {
   blockquote: "blockQuotes",

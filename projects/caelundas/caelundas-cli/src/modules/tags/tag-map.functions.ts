@@ -12,9 +12,7 @@ import type { Sign } from "../caelundas/caelundas.types";
 import type { TagMap, TagPath } from "./tags.types";
 
 /**
- * A map from each class under `parent`, and each name in it, to its node:
- * the class beneath `parent` and each name beneath its class. Names are
- * title-cased, as detectors tag them.
+ * Maps each class under `parent`, and each name in it, to its node; names are title-cased.
  */
 export function mapClasses(
   parent: TagPath,
@@ -57,11 +55,7 @@ export function mapNone(names: readonly string[]): TagMap {
 }
 
 /**
- * The raw tags of one planet's phase events, keyed by the raw tag that marks
- * them as that planet's, such as `Venusian`: the marker types the event as
- * the planet's planetary phase and carries `planetPaths`, the planet's own
- * nodes, and each phase is typed beneath it with its stage of the cycle,
- * from `stageByPhase` where the planet's stages differ.
+ * Raw tags of one planet's phase events, keyed by the marker tag such as `Venusian`; phases take their stage from `stageByPhase` where needed.
  */
 export function mapPlanetaryPhases(args: {
   marker: string;

@@ -10,8 +10,7 @@ export type FormsState =
   | { status: "loading" };
 
 /**
- * One form of a lexeme and the word written for it, as the API reports it. Which
- * fields are filled depends on the kind of form.
+ * One form of a lexeme and the word written for it, from the API: fields depend on the kind of form.
  */
 export interface LexemeFormRow {
   case?: string;

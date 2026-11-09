@@ -152,8 +152,7 @@ export class InputSchemaService {
   /**
    * Validates a value, returning `true` or the reason it failed.
    *
-   * An empty value is only an error when the input is required, so optional
-   * inputs can be skipped by pressing enter at a prompt.
+   * An empty value fails only when the input is required.
    */
   public validateValue(args: {
     input: SchemaInput;

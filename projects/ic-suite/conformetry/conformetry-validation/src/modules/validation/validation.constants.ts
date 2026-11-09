@@ -1,21 +1,19 @@
 // ♟️ Constants
 
 /**
- * Score an instance must reach when no threshold is configured anywhere.
- *
- * A perfect match, which is what conformetry has always demanded: adding
- * scoring must not quietly relax any existing run.
+ * Score an instance must reach when no threshold is configured. A perfect match,
+ * as always demanded, so scoring cannot relax existing runs.
  */
 export const DEFAULT_THRESHOLD = 1;
 
 /**
- * Separator joining an instance path and a template name into a score key.
- * A NUL byte cannot occur in either, so it can never collide.
+ * Joins an instance path and template name into a score key. NUL cannot occur
+ * in either, so it never collides.
  */
 export const SCORE_KEY_SEPARATOR = "\u0000";
 
 /**
- * Separator joining an instance path and a template path into a deduplication
- * key. A NUL byte cannot occur in either, so it can never collide.
+ * Joins an instance path and a template path into a deduplication key. NUL
+ * cannot occur in either, so it never collides.
  */
 export const FINDING_KEY_SEPARATOR = "\u0000";

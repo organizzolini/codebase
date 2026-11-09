@@ -1,12 +1,8 @@
 // ♟️ Constants
 
 /**
- * Option names that select or configure the generator itself, rather than
- * feeding one of its inputs.
- *
- * `name` is deliberately absent: nearly every generator takes a `name` input,
- * and reserving the flag made it impossible to supply from the CLI. The
- * template is selected with `--template` instead.
+ * Option names that configure the generator, not its inputs. `name` is absent
+ * since most generators take a `name` input; `--template` selects instead.
  */
 export const RESERVED_GENERATOR_OPTION_NAMES = new Set([
   "config",
@@ -16,14 +12,8 @@ export const RESERVED_GENERATOR_OPTION_NAMES = new Set([
 ]);
 
 /**
- * How a caller says "every template" to `validate --templates`.
- *
- * A sentinel rather than a second flag, because supplying a value is how this
- * command line opts out of being prompted: omitting `--templates` in a
- * terminal asks, and passing `all` decides without narrowing. It lives beside
- * the other command-line vocabulary because that is what it is — the word a
- * caller types — and `assertNoCollisions` reads it from here so a template can
- * never be named the same thing.
+ * The `validate --templates` value meaning every template. Supplying it skips
+ * the prompt omitting it would show; no template may use this name.
  */
 export const ALL_TEMPLATES_SELECTION = "all";
 
@@ -45,12 +35,8 @@ export class InputError extends Error {
 }
 
 /**
- * A required input that cannot be asked for, because stdin is not a terminal.
- *
- * `prompts` does not fail there — it draws its menu, never resolves, and the
- * process exits 0 having done nothing, which is exactly how this CLI used to
- * hang in non-interactive environments. Naming the flag to pass is the whole
- * remedy, so the message carries it.
+ * Input that cannot be asked for: stdin is not a terminal. `prompts` would hang
+ * and exit 0, so the message names the flag.
  */
 export const missingInputError = (inputName: string): InputError =>
   new InputError(
@@ -58,14 +44,8 @@ export const missingInputError = (inputName: string): InputError =>
   );
 
 /**
- * A run that names no directory, and has nothing else to place its output by.
- *
- * Both hosts refuse this with the same words, which is why it lives here: the
- * command-line host always needs `--directory`, and the Nx plugin needs it
- * only when no `project` or `type` locates the output, so each decides when to
- * raise it and neither words it. A silent fallback is what this replaces —
- * output written somewhere the caller never chose, reported as success. The
- * optional `hint` carries a remedy only one host has.
+ * Refuses a run that gives no output directory. Both hosts share these words;
+ * `hint` carries a remedy only one host has.
  */
 export const missingDirectoryError = (args: {
   generatorName: string | undefined;

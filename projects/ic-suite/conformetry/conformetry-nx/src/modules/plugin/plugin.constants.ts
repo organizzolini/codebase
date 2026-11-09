@@ -1,14 +1,8 @@
 // ♟️ Constants
 
 /**
- * Glob `createNodes` matches.
- *
- * It covers the conformetry configuration as well as every `project.json`,
- * even though only the latter describes a project. Nx re-runs a plugin — and
- * so invalidates cached sync-generator results — when a file matching its glob
- * changes, and the generators a workspace has come from that configuration. A
- * glob of `project.json` alone left the daemon reporting a stale "up to date"
- * after the configuration was edited.
+ * Glob matching the configuration and every `project.json`. A `project.json`
+ * glob alone leaves the daemon stale after a configuration edit.
  */
 export const PROJECT_CONFIGURATION_GLOB =
   "**/{project.json,conformetry.config.*}";
@@ -17,26 +11,20 @@ export const PROJECT_CONFIGURATION_GLOB =
 export const PROJECT_CONFIGURATION_FILENAME = "project.json";
 
 /**
- * Key the plugin's application context is cached under on `globalThis`.
- *
- * Global rather than module-level so that loading this module twice — which
- * Nx's plugin isolation can do — still yields one NestJS context per process.
+ * Global key for the cached application context. A module-level cache would
+ * split in two when Nx's plugin isolation reloads the module.
  */
 export const PLUGIN_CONTEXT_GLOBAL_KEY = "__conformetryPluginContext";
 
 /**
- * Root of the workspace-level project, which is skipped during inference.
- *
- * Every instance in the workspace sits inside it, so inferring a target there
- * would duplicate every other project's work under one uncacheable task.
+ * Root of the workspace-level project, skipped during inference. Inferring a
+ * target there would duplicate every project's work under one uncacheable task.
  */
 export const WORKSPACE_PROJECT_ROOT = ".";
 
 /**
- * Source of the program that hashes template folders. It lists each folder
- * recursively in name order and folds every path and file's bytes into one
- * digest, so a change to any file, including an added or removed one, changes
- * the output. A missing folder contributes nothing.
+ * Source of the program that hashes template folders: each folder recursively,
+ * in name order, folded into one digest. A missing folder contributes nothing.
  */
 export const TEMPLATE_HASH_SOURCE = String.raw`
 const crypto = require("crypto");

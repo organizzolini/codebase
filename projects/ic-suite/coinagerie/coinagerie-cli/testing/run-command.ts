@@ -22,8 +22,8 @@ export interface RunResult {
 }
 
 /**
- * Runs the real command in a fixture tree, as a separate process, because
- * what is under test is its exit code, its streams, and the files it leaves.
+ * Runs the real command in a separate process, since the test checks its exit
+ * code, streams, and written files.
  */
 export function run(root: string, args: string[]): RunResult {
   const result = spawnSync(

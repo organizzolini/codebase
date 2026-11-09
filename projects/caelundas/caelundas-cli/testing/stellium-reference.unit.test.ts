@@ -79,9 +79,7 @@ function loadStelliumFixture(name: string): StelliumLongitudeFixture {
 }
 
 /**
- * Conjunctions in the active-aspect registry at `minute`: a pair within orb
- * then and a minute later, since a leg leaves the registry on its last minute
- * in orb.
+ * Conjunctions in the registry at `minute`: pairs in orb then and a minute later, since legs leave on their last minute in orb.
  */
 function registryAt(
   fixture: StelliumLongitudeFixture,

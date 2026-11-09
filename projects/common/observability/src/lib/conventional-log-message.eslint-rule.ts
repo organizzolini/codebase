@@ -29,12 +29,8 @@ type ConventionalLogMessageViolation =
   | { data?: undefined; messageId: "missingLeadingEmoji" };
 
 /**
- * The narrow slice of a message argument's shape this rule reads.
- *
- * Hand-rolled instead of imported from `@types/estree` — that package isn't
- * part of this package's own dependency graph, and every field here is
- * optional except `type`, so the real `Literal`/`TemplateLiteral`/etc. node
- * ESLint hands the visitor is always structurally assignable to it.
+ * The slice of a message argument's shape this rule reads, hand-rolled because
+ * `@types/estree` is outside this package's graph.
  */
 interface MessageArgumentShape {
   quasis?: readonly { value: { cooked?: null | string | undefined } }[];
@@ -49,13 +45,9 @@ interface ParsedLogMessage {
 }
 
 // 🔏 Message Convention
-// Mirrors `LoggerService`'s own `parseMessage`/`isConventionalVerb`, minus the
-// production and context-exemption branches — those only matter at runtime,
-// never while scanning source text. The AST inspection itself lives directly
-// in the rule's `CallExpression` visitor below rather than in named helpers,
-// so this file never has to name an ESTree node type: `@types/estree` isn't
-// part of this package's own dependency graph, and the visitor's parameter
-// already carries the precise type ESLint infers for it.
+// Mirrors `LoggerService`'s `parseMessage` and `isConventionalVerb`, minus the
+// runtime-only branches. AST inspection lives in the visitor below, so this
+// file never names an ESTree node type.
 
 /** Checks a static message's text against the logging convention. */
 function checkConventionalMessage(
@@ -80,13 +72,8 @@ function checkConventionalMessage(
 }
 
 /**
- * Extracts a message argument's static text, if it has one, and checks it
- * against the logging convention.
- *
- * Only a `Literal` string or a `TemplateLiteral`'s static prefix (the text
- * before its first interpolation) can be checked; anything else — an
- * identifier, a caught error, a non-string literal — has no statically
- * knowable text, so it is left unchecked rather than reported.
+ * Extracts an argument's static text and checks it. Only a string literal or a
+ * template's static prefix is checked; other expressions are skipped.
  */
 function checkMessageArgumentConvention(
   argument: MessageArgumentShape,
@@ -133,17 +120,8 @@ function parseLogMessage(message: string): ParsedLogMessage {
 // 📏 Rule
 
 /**
- * Flags a log call whose message doesn't start with an emoji naming its
- * subject, then a verb in present progressive or past tense — the same
- * convention `LoggerService` enforces at runtime, checked here statically so
- * a violation surfaces at lint time rather than the first time the line runs.
- *
- * A call counts as a log call when its callee is an `info`/`log`/`warn`/
- * `error`/`debug`/`verbose` method on an object whose source text is exactly
- * `logger` or ends with `.logger`. Only a `Literal` string or the static prefix of a
- * `TemplateLiteral` message can be checked; any other expression (an
- * identifier, a caught error, a function call) is skipped silently, since
- * static analysis cannot know its runtime value.
+ * Metadata for the `conventional-log-message` rule. Only a string literal or
+ * template prefix is checked; other arguments are skipped.
  */
 const conventionalLogMessageMeta: {
   documentation: { description: string };

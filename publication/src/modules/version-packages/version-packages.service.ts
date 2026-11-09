@@ -25,24 +25,10 @@ import type { Environment } from "../../publication.types";
  * Versions the ic-suite packages and writes their changelogs, leaving both
  * uncommitted for semantic-release's release commit.
  *
- * `nx release --skip-publish` reads each package's conventional commits,
- * writes the new versions, and prepends the release's entry to each bumped
- * package's `CHANGELOG.md`, which ships inside the package. nx.json's
- * `release.git` turns off Nx's own commit and tags: semantic-release commits
- * these files with the codebase's version, so a release lands on `main` as one
- * commit, and `tag-packages` tags that commit afterwards.
- *
- * `configuration` is in the Nx project graph, so a change to it reaches every
- * project, which is right for CI and wrong here: tooling configuration is not a
- * reason to release a package. Nx drops files matching `.nxignore` from the
- * changes it reads for a commit and from the graph, so for this one command the
- * configuration project is ignored, and a commit that edits only it releases
- * nothing. A commit that also edits a package still releases that package.
- * The ignore file is restored afterwards, before anything commits.
- *
- * Checkout persists no credentials, so the remote is pointed at the release
- * token first. It stays that way for the rest of the job, which is what lets
- * semantic-release and `tag-packages` push afterwards.
+ * Nx's own commit and tags are off (`release.git`), so a release lands as one
+ * commit. The `configuration` project is ignored for this run, so a
+ * tooling-only change releases nothing. Points `origin` at the release token,
+ * which later pushes keep.
  */
 @Injectable()
 export class VersionPackagesService {
@@ -103,16 +89,8 @@ export class VersionPackagesService {
   // 🌎 Public Methods
 
   /**
-   * Points the remote at the release token, pushes any tags an earlier run
-   * left missing, and versions the release group.
-   *
-   * Nx reads each package's current version from its tag, so a version an
-   * earlier run committed but never tagged reads as unreleased and is bumped
-   * again; tagging first prevents that. A run `main` has already moved past
-   * steps aside before versioning, which takes minutes.
-   *
-   * @returns The exit code: Nx's, or the tagging's when that failed, or 0
-   * when the run stepped aside.
+   * Pushes missed tags before versioning, since Nx would otherwise bump an
+   * untagged version again. Steps aside, returning 0, when `main` has moved.
    */
   public async run(): Promise<number> {
     this.pointRemoteAtToken();

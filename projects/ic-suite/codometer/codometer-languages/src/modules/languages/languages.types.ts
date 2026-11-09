@@ -23,11 +23,9 @@ import type { ResolvedCodometerConfiguration } from "@codometer/configuration";
 /** Arguments accepted when running every language analyzer. */
 export interface AnalyzeLanguagesArguments {
   /**
-   * One `comment`-selector custom statistic's budget, per declared statistic.
+   * One `comment` budget per declared statistic, in one list.
    *
-   * Every counter arrives in one list, and every measurer is handed all of
-   * them: a counter naming a `kind` is measured by the TypeScript walk, and
-   * every other one by the comment readers, each selecting for itself.
+   * Each measurer takes the whole list and selects its own counters.
    */
   commentCounters: CommentCounter[];
   configuration: ResolvedCodometerConfiguration;

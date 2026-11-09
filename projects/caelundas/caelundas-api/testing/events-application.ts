@@ -69,9 +69,8 @@ interface SeedEvent {
 }
 
 /**
- * Seeds a small fixture and refreshes the read model: the tag chains
- * Planet / Mars / Retrograde, Aspect / Conjunct and Phase / Forming, and five events,
- * four observed in New York and one in London. Returns the tags by name.
+ * Seeds tag chains and five events, then refreshes the read model; returns the
+ * tags by name.
  */
 export async function seedEvents(
   database: DatabaseTestingModule,
@@ -158,14 +157,8 @@ export async function seedEvents(
 }
 
 /**
- * Adds the tags the filters and collections read to the seeded fixture, and
- * gives them to its events: the Type chains Aspect / Simple Aspect / Major
- * Aspect, Ingress / Sign Ingress and Direction, the planet Moon, and the
- * numbered root Aspect Harmonic with Harmonic 2, Harmonic 6 and Harmonic 12.
- * Moon Conjunct Mars is a Major Aspect with the Moon and Harmonic 2; Sun
- * Enters Aries a Sign Ingress with Harmonic 12; Mars Retrograde a Direction;
- * Equinox Watch has Harmonic 6. Run {@link seedEvents} first. Returns the
- * tags by name.
+ * Adds the tags filters read to the events `seedEvents` made; returns them by
+ * name.
  */
 export async function seedFilterTags(
   database: DatabaseTestingModule,
@@ -242,10 +235,8 @@ export async function seedFilterTags(
 }
 
 /**
- * Serves `EventsModule` the way the API does, Apollo over Express and
- * `CaelundasDatabaseModule` read from `CAELUNDAS_POSTGRES_*`, against a
- * Postgres container built by the real migration, on an ephemeral port.
- * Nothing is seeded: call {@link seedEvents}.
+ * Serves `EventsModule` as the API does, on an ephemeral port against a
+ * migrated Postgres container. Unseeded: call {@link seedEvents}.
  */
 export async function startEventsApplication(): Promise<EventsApplication> {
   const database = await startDatabaseTestingModule({

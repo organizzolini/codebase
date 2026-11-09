@@ -21,12 +21,7 @@ const SOURCE_WORDS = [
 ] as const;
 
 /**
- * Builds source whose compressed size depends on the deflate level.
- *
- * Deliberately varied rather than repetitive: a file that compresses to almost
- * nothing does so at every level, and would pin the algorithm without pinning
- * the level. This one is 782 gzip bytes at level 9 and 881 at zlib's default,
- * so a level left unstated cannot pass the assertions that read it.
+ * Builds source whose gzip size depends on the deflate level, so a level left unstated fails the assertions.
  */
 function createGeneratedSource(functionCount: number): string {
   const lines: string[] = [];
@@ -42,11 +37,9 @@ function createGeneratedSource(functionCount: number): string {
 }
 
 /**
- * Contents of the input fixture tree, keyed by path relative to its root.
+ * Input fixture files, keyed by path relative to the tree root.
  *
- * A build directory rather than a source tree, because that is what an input
- * exists to name: every ignore file in every repository claims it, so nothing
- * but an outright glob can measure it.
+ * Written to disk: only a glob can name a build directory.
  */
 export const INPUT_FIXTURE_FILES: Readonly<Record<string, string>> = {
   ".hidden/secret.js": "export const secret = 1;\n",
@@ -59,14 +52,9 @@ export const INPUT_FIXTURE_FILES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Writes the input fixture tree to a fresh temporary directory.
+ * Writes the fixture tree to a fresh temporary directory, with a looping symlink and a broken one.
  *
- * `dist/link.js` points at a file and `dist/loop` points at its own ancestor —
- * the first is followed the way every glob library follows links, the second
- * is what makes following directories forever a bad idea. `dist/broken.js`
- * points at nothing at all, which a build directory left half-cleaned holds.
- *
- * Every caller owes the tree a `removeInputTree`.
+ * Pass the root to `removeInputTree` afterwards.
  */
 export function createInputTree(): string {
   const root = mkdtempSync(path.join(tmpdir(), "codometer-input-"));

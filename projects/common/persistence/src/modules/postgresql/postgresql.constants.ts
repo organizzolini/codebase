@@ -4,11 +4,9 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 // ♟️ Constants
 
 /**
- * The six variables every database-backed project reads, each named
- * `<PROJECT>_<SUFFIX>` and keyed by the connection field it fills. The
- * prefix is what keeps the root's unprefixed `POSTGRES_*`, the shared
- * container's admin login, from ever reaching an application: Nx loads the
- * root `.env` into every task.
+ * The six variables every project reads, named `<PROJECT>_<SUFFIX>`. The
+ * prefix keeps the root's admin `POSTGRES_*` login, loaded into every task,
+ * out of applications.
  */
 export const POSTGRES_ENVIRONMENT_SUFFIXES = {
   database: "POSTGRES_DATABASE",
@@ -36,9 +34,8 @@ export const DEFAULT_POSTGRES_HOST = "localhost";
 export const DEFAULT_POSTGRES_PORT = 5432;
 
 /**
- * What a project's name may be: lowercase letters, digits, and underscores,
- * starting with a letter, so it can prefix an environment variable and name
- * a database, a schema, and a role without quoting.
+ * Project names: lowercase letters, digits, and underscores, starting with a
+ * letter, so they need no quoting in SQL or environment names.
  */
 export const PROJECT_NAME_PATTERN = /^[a-z][a-z0-9_]*$/;
 
@@ -49,10 +46,8 @@ export const PROJECT_NAME_PATTERN = /^[a-z][a-z0-9_]*$/;
 export const DATABASE_OPTIONS = Symbol("DATABASE_OPTIONS");
 
 /**
- * The naming strategy every Postgres project shares: snake case, plural table
- * names, and join tables named from both plural table names, sorted
- * alphabetically. A raw SQL reader never quotes a name, and a many-to-many
- * join table is the same whichever side declares it.
+ * Shared by every Postgres project: snake case, plural names, and join tables
+ * named from both, sorted, so either side declares the same name.
  */
 export const PluralSnakeNamingStrategy: new () => SnakeNamingStrategy = class extends SnakeNamingStrategy {
   /** Builds a deterministic join table name from both entity table names. */

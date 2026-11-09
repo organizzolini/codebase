@@ -48,19 +48,8 @@ export function readDependencies(directory: string): [string, unknown][] {
 }
 
 /**
- * The cache inputs that tie a gate to the codependix command line it runs.
- *
- * A gate's verdict is decided by `@codependix/cli` and the packages beneath
- * it, none of which a judged project depends on — so without these, a change
- * to the judging logic would replay every cached verdict. Inside this
- * workspace they are `{workspaceRoot}` globs over each package's sources,
- * which is the input form Nx's affected computation follows as well as
- * hashes; an installed command line is pinned by its npm version instead.
- * The compiler options its loader reads are `resolveTsconfigInputs`'s.
- *
- * Nothing here throws: inference runs while Nx builds the project graph,
- * where a throw stops every command in the workspace. What cannot be resolved
- * is left out and named in a warning instead.
+ * Cache inputs tying a gate to the command line it runs. Nothing here throws, since
+ * a throw would stop every command in the workspace.
  */
 export function resolveToolInputs(
   args: ResolveToolInputsArguments,
@@ -93,12 +82,8 @@ export function resolveToolInputs(
 }
 
 /**
- * Collects a workspace package and every workspace package it reaches,
- * development dependencies included: a package this repository bundles at
- * build time, such as its logger, still runs from source here.
- *
- * Each dependency is located on its own, so one that cannot be resolved is
- * reported and skipped rather than costing every other package its inputs.
+ * Collects a workspace package and every workspace package it reaches. One that cannot be
+ * resolved is skipped alone.
  */
 function collectWorkspacePackages(cliDirectory: string): WorkspacePackages {
   const directories = new Set([cliDirectory]);
@@ -135,12 +120,8 @@ function collectWorkspacePackages(cliDirectory: string): WorkspacePackages {
 }
 
 /**
- * Finds the real directory of the package a file would import by name, or
- * nothing when it cannot.
- *
- * Resolves the package's entry and climbs to the manifest that names it,
- * rather than asking for `<name>/package.json` — which only resolves when a
- * package exports its manifest, and nothing obliges one to.
+ * Finds the real directory of a package by name, or nothing. Climbs from the entry, since
+ * a package need not export its manifest.
  */
 function locatePackage(args: {
   fromFile: string;
@@ -167,8 +148,7 @@ function locatePackage(args: {
 }
 
 /**
- * Reads a package directory's manifest, or an empty one when there is none or
- * it cannot be parsed — which leaves that directory naming no package.
+ * Reads a package directory's manifest, or an empty one when it is missing or unparsable.
  */
 function readManifest(directory: string): Record<string, unknown> {
   const manifestPath = path.join(directory, "package.json");
@@ -189,10 +169,8 @@ function readManifest(directory: string): Record<string, unknown> {
 }
 
 /**
- * Pins an installed command line by version: it and the codependix packages
- * it depends on, as npm packages Nx hashes by their locked version. Nx
- * follows an external dependency's own dependencies when it hashes one, so
- * the packages beneath these are covered without being listed.
+ * Pins an installed command line by version, with its codependix packages. Nx hashes
+ * their dependencies too.
  */
 function resolveExternalInputs(cliDirectory: string): InferredInput[] {
   const packages = readDependencies(cliDirectory)

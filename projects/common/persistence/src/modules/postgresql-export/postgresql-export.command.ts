@@ -83,13 +83,8 @@ export class PostgresqlExportCommand extends CommandRunner {
   }
 
   /**
-   * Validates every option and resolves the tables, so nothing runs
-   * against a half-specified command line.
-   *
-   * @throws PostgresqlExportOptionsError naming the first option to fix, or
-   * PostgresUriError when `--source-uri` cannot be used, or
-   * PostgresTableNameError when a `--table` names no schema and no
-   * `--schema` was given.
+   * Validates every option and resolves the tables before anything runs.
+   * @throws On the first option that cannot be used.
    */
   private plan(options: PostgresqlExportCommandOptions): PostgresqlExportPlan {
     const sourceUri = this.requireOption(
@@ -123,10 +118,8 @@ export class PostgresqlExportCommand extends CommandRunner {
   }
 
   /**
-   * `value`, or an `PostgresqlExportOptionsError` with `message` when the option was
-   * not given. A repeatable option given no times arrives as `undefined`.
-   *
-   * @throws PostgresqlExportOptionsError when `value` is `undefined`.
+   * Returns `value`, or throws when the option was not given. A repeatable
+   * option given no times arrives as `undefined`.
    */
   private requireOption<Value>(
     value: undefined | Value,
@@ -233,10 +226,8 @@ export class PostgresqlExportCommand extends CommandRunner {
   }
 
   /**
-   * Validates the options, then dumps the selected tables to the file. An
-   * existing file is refused without `--overwrite`, before any process
-   * starts; a dump that fails leaves --file exactly as it was. `--dry-run`
-   * stops once `pg_dump` is checked, printing the plan instead of dumping.
+   * Validates the options, then dumps the selected tables to `--file`, which a
+   * failed dump leaves untouched. `--dry-run` stops after the tool check.
    */
   async run(
     _passedParameters: string[],

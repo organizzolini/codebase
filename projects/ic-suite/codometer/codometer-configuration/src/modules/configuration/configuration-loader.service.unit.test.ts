@@ -121,11 +121,8 @@ describe(ConfigurationLoaderService, () => {
   });
 
   it("resolves a configuration path relative to the repository root", async () => {
-    // A configuration path written relative to a repository root, read from a
-    // nested working directory — which is what a task runner leaves behind
-    // whenever it sets the cwd to the project rather than the workspace. The
-    // fixture is a temporary repository rather than this one so that loading
-    // it never evaluates this package's own sources a second time.
+    // Resolves a repository-relative config path from a nested cwd, as a task
+    // runner does. A temporary repository keeps this package's own sources from being evaluated twice.
     const repositoryRoot = await mkdtemp(
       path.join(tmpdir(), "codometer-loader-repository-"),
     );

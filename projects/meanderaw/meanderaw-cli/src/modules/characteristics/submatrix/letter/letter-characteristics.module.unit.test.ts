@@ -171,8 +171,7 @@ function isLetterScript(value: string | undefined): value is LetterScript {
 }
 
 /**
- * The glyph a letter formula typesets, with its blank border rows and columns
- * trimmed, so a template padded with blanks reads as the glyph it pads.
+ * The glyph a letter formula typesets, with blank border rows and columns trimmed, so a padded template reads as the glyph it pads.
  */
 function trimmedGlyph(formula: string): string {
   const blank = String.raw`\cdot`;
@@ -239,9 +238,7 @@ function joinedNeighbors(
 }
 
 /**
- * What is wrong with a glyph as ink: every arm with no inked neighbor
- * carrying it back, which covers an arm pointing at a blank or off the edge,
- * and whether its ink falls apart into more than one piece.
+ * What is wrong with a glyph as ink: an arm with no inked neighbor carrying it back, or ink split into several pieces.
  */
 function malformations(glyph: string): string[] {
   const digits = glyphDigits(glyph);

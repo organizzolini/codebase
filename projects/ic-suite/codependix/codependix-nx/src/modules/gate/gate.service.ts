@@ -26,13 +26,10 @@ import type {
 } from "./gate.types";
 
 /**
- * Runs `codependix map --check boundaries` for the projects one gate judges.
+ * Runs `codependix map --check boundaries` for the projects one gate judges, as a child process.
  *
- * The command line runs as a child process rather than in this one, because
- * its boundary check boots the workspace's NestJS containers by importing
- * their TypeScript sources, and constructor injection there needs the
- * decorator metadata the `@swc-node/register` loader emits. Nx loads this
- * plugin under no such loader, so only a fresh `node --import` can provide it.
+ * The check boots NestJS containers from TypeScript sources, which needs the decorator metadata
+ * only the `@swc-node/register` loader emits. Only a fresh `node --import` can provide it.
  */
 @Injectable()
 export class GateService {
@@ -50,12 +47,8 @@ export class GateService {
   // 🔏 Private Methods
 
   /**
-   * Reads a list of names out of an executor's options.
-   *
-   * Entries are split on commas, trimmed, and the blanks dropped, so
-   * `--projects="a, b,"` names two projects rather than three — and the list
-   * reaches the command line joined by commas, where a blank would read as a
-   * project named nothing.
+   * Reads a list of names from an executor option. Entries are split on commas and blanks
+   * dropped, so `--projects="a, b,"` names two projects.
    */
   private readNameList(value: readonly string[] | undefined): string[] {
     return (value ?? [])
@@ -65,10 +58,8 @@ export class GateService {
   }
 
   /**
-   * Reads the workspace's `nx.json`, or nothing when it cannot be read.
-   *
-   * Unreadable or malformed is not an error: the caller falls back to the
-   * conventional paths, which a workspace with no registration gets anyway.
+   * Reads the workspace's `nx.json`, or nothing when it cannot be read. The caller falls back
+   * to the conventional paths.
    */
   private readNxConfiguration(workspaceRoot: string): unknown {
     try {
@@ -84,12 +75,7 @@ export class GateService {
   }
 
   /**
-   * Starts the command line and settles on whether it exited zero.
-   *
-   * Its output is forwarded as it arrives rather than collected, so a long
-   * container boot shows progress and a finding reaches the task log even
-   * when the run is interrupted. Killed by a signal counts as a failure: no
-   * verdict was reached, so none may be recorded as a pass.
+   * Runs the command line, forwarding its output. A signal kill is a failure: no verdict was reached.
    */
   private async spawnCommandLine(args: {
     argv: string[];
@@ -113,13 +99,7 @@ export class GateService {
   // 🌎 Public Methods
 
   /**
-   * Builds the `node` arguments for a run that is handed its configuration
-   * already resolved, as a batch is.
-   *
-   * Kept shallow on purpose: a batch builds one of these for every run it
-   * starts and for every project it may have to explain, so the long chain that
-   * resolves a configuration path is walked once, by the executor, and never
-   * from here.
+   * Builds the `node` arguments for a run whose configuration is already resolved, as a batch's is.
    */
   public buildBatchArguments(args: BuildBatchArguments): string[] {
     return this.buildCommandArguments({
@@ -136,12 +116,8 @@ export class GateService {
   }
 
   /**
-   * Builds the `node` arguments one gate runs.
-   *
-   * `--projects` and `--tags` name what is judged; the command line builds
-   * over their dependency closure and fails only on a finding charged to one
-   * of them, which is what lets a dependency's broken boundary fail that
-   * dependency's own gate rather than every gate downstream of it.
+   * Builds the `node` arguments one gate runs. A finding fails the gate only when charged to a
+   * judged project.
    */
   public buildCommandArguments(args: BuildCommandArguments): string[] {
     return [
@@ -176,12 +152,8 @@ export class GateService {
   }
 
   /**
-   * Resolves the configuration path one gate runs with.
-   *
-   * A `configuration` option the target was given wins, and is refused when
-   * blank. Otherwise the path this plugin was registered with is read back
-   * out of `nx.json`, so the file a gate reads is always the file its cache
-   * inputs named. A gate given neither throws: no default path is assumed.
+   * Resolves the configuration path one gate runs with: the `configuration` option, else the path
+   * read back from `nx.json`.
    */
   public resolveConfigurationPath(args: {
     configuration?: string | undefined;
@@ -202,12 +174,8 @@ export class GateService {
   }
 
   /**
-   * Resolves which projects one gate judges.
-   *
-   * With neither `projects` nor `tags` given, it is the project the target
-   * belongs to. Throws rather than judging nothing, because Nx turns a thrown
-   * executor into a failed task with the message attached, and a gate that
-   * judged nothing has no verdict to record.
+   * Resolves which projects one gate judges: the named `projects` or `tags`, else its own project.
+   * Throws rather than judge nothing.
    */
   public resolveSelection(args: {
     options: GateOptions;
@@ -230,12 +198,7 @@ export class GateService {
   }
 
   /**
-   * Runs one gate, and settles on whether it passed.
-   *
-   * Refuses a cached target that judges any project but its own. The target's
-   * inputs cover only its own project and that project's dependencies, so Nx
-   * could replay a pass after an edit to a project the run judges and they do
-   * not reach. `cache` is fixed per target, so the target must opt out of it.
+   * Runs one gate. A cached target may judge only its own project, since its inputs cover nothing else.
    */
   public async run(args: RunGateArguments): Promise<boolean> {
     const selection = this.resolveSelection(args);

@@ -1,10 +1,9 @@
 // 🏷️ Types
 
 /**
- * One notebook cell, in the subset of the `.ipynb` schema this validator uses.
+ * One notebook cell, in the `.ipynb` subset this validator reads.
  *
- * `source` is a list of lines with their newlines retained, which is how
- * Jupyter stores it.
+ * `source` is a list of lines, newlines retained, as Jupyter stores it.
  */
 export interface NotebookCell {
   readonly cell_type?: unknown;

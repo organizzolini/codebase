@@ -3,12 +3,8 @@
 import type { CodependixBoundaryRule } from "@codependix/configuration";
 
 /**
- * One cycle found in a graph.
- *
- * `source` and `target` are the edge that closed it — the last node walked,
- * and the node already on the path it returned to — so a cycle reports the
- * same two endpoints every other violation does, without a caller having to
- * index into `path` and prove to the compiler that it is non-empty.
+ * One cycle in a graph. `source` and `target` are the edge that closed it, so callers
+ * need not index into `path`.
  */
 export interface BoundaryCycle {
   /** The whole path, with the closing node repeated at the end. */
@@ -18,13 +14,8 @@ export interface BoundaryCycle {
 }
 
 /**
- * One node depending on another, at whatever level the graph is.
- *
- * `implicit` is carried rather than dropped because it is the one fact a lint
- * rule reading import statements cannot reach: an Nx `implicitDependencies`
- * entry creates a project-graph edge with no import statement to flag. Absent
- * at every level that has no such notion, rather than defaulted to `false` —
- * a file import is not "explicitly" anything, it is just an import.
+ * One node depending on another. `implicit` marks Nx `implicitDependencies` edges, which
+ * import-reading lint rules cannot see; absent elsewhere, not `false`.
  */
 export interface BoundaryEdge {
   readonly implicit?: boolean | undefined;
@@ -33,14 +24,8 @@ export interface BoundaryEdge {
 }
 
 /**
- * One built graph, reduced to what rule evaluation needs.
- *
- * Deliberately not `Neighborhood`, `NestjsModuleGraph`, `TypescriptImportGraph`
- * or `PythonImportGraph`: reading any of those would drag `@nx/devkit`,
- * `@nestjs/core` and `typescript` behind anything that wants only rule
- * evaluation. The four already share an identical `{ source, target }` edge
- * shape by construction, so the adapters that flatten them into this live in
- * the host that already builds all four — see `codependix-cli`.
+ * One built graph, reduced to what rule evaluation needs. Deliberately not the builders'
+ * graph types, which would pull their framework dependencies in.
  */
 export interface BoundaryGraph {
   readonly edges: readonly BoundaryEdge[];
@@ -48,26 +33,15 @@ export interface BoundaryGraph {
   readonly level: CodependixBoundaryLevel;
   readonly nodes: readonly BoundaryNode[];
   /**
-   * What the graph covers: an Nx project name, or the workspace itself.
-   *
-   * Reported beside every violation, because the same rule evaluated at file
-   * level fails once per project and a bare pair of file paths does not say
-   * which project's files they are.
+   * What the graph covers: an Nx project name, or the workspace.
+   * Reported beside each violation, since file paths alone omit the project.
    */
   readonly scope: string;
 }
 
 /**
- * One node in a graph, with whatever a level knows about it.
- *
- * One shape for three vocabularies: an Nx project has a name, a root, and
- * tags; a file has a project-relative path and project; a NestJS module has a
- * class name, declaring file path, and project. Every field beyond `id` is
- * therefore optional, and a selector naming one a level does not carry
- * matches nothing there rather than everything — see `BoundarySelectorService`.
- *
- * No `kind` field: the graph already states its `level`, and a second field
- * saying the same thing is a second thing that can be wrong.
+ * One node in a graph. Its fields are optional because levels carry different ones; a selector
+ * naming a missing field matches nothing.
  */
 export interface BoundaryNode {
   readonly id: string;
@@ -79,21 +53,16 @@ export interface BoundaryNode {
 /** One edge, or one cycle, breaking one declared rule. */
 export interface BoundaryViolation {
   /**
-   * The whole cycle, closing node repeated at the end, for an `acyclic` rule.
-   *
-   * Absent for an access rule, which is about one edge and has no path to
-   * report.
+   * The whole cycle, closing node repeated, for an `acyclic` rule.
+   * Absent for an access rule, which has no path.
    */
   readonly cycle: readonly string[] | undefined;
   readonly level: CodependixBoundaryLevel;
   /** The sentence reported, whether the rule's own or the generated one. */
   readonly message: string;
   /**
-   * The projects this violation is charged to, sorted: an access rule's
-   * edge source's project, or every project owning a node on a cycle.
-   *
-   * What decides whether it fails a run — it does when any of these is a
-   * project the run judges — see `BoundaryCheckService.run`.
+   * Projects this violation is charged to, sorted: an access rule's source,
+   * or every project owning a cycle node. Decides whether the run fails.
    */
   readonly projects: readonly string[];
   /** The `name` of the rule that reported it. */
@@ -104,13 +73,8 @@ export interface BoundaryViolation {
 }
 
 /**
- * The level a boundary graph was built at, or a violation was found at.
- *
- * Finer-grained than `CodependixGraphType`: `fileImports` builds one merged
- * graph type per project, but `boundaries.fileImports` still nests rules by
- * language, and a violation has to say which language's graph it came from.
- * `nestjsModules` and `nxProjects` match `CodependixGraphType` one for one,
- * since those two levels carry no such split.
+ * The level a graph was built at, or a violation was found at.
+ * Finer than `CodependixGraphType`: `fileImports` splits into `typescript` and `python`.
  */
 export type CodependixBoundaryLevel =
   | "nestjsModules"
@@ -119,11 +83,8 @@ export type CodependixBoundaryLevel =
   | "typescript";
 
 /**
- * The bookkeeping one depth-first cycle walk carries.
- *
- * Passed as one object rather than as five parameters so the recursive walk
- * stays inside the repository's three-parameter limit, and so a reader sees
- * at a glance that all five belong to the same traversal.
+ * The bookkeeping of one depth-first cycle walk. Passed as one object to stay within the
+ * three-parameter limit.
  */
 export interface CycleWalkState {
   /** Every cycle found so far. */

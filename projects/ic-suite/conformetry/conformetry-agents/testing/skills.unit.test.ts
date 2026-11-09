@@ -39,10 +39,8 @@ interface ShippedSkill {
 }
 
 /**
- * Reads every skill this package ships.
- *
- * The directory is read rather than a list being maintained, so a skill added
- * without a test is impossible.
+ * Reads every shipped skill from disk, so a skill added without a test cannot
+ * slip past these checks.
  */
 const readShippedSkills = (): ShippedSkill[] => {
   const entries = fs

@@ -31,10 +31,8 @@ import type { MapCommandOptions } from "@codependix/configuration";
 import type { MockInstance } from "vitest";
 
 /**
- * A fixture Nx project graph, standing in for `nx graph --file=graph.json` —
- * see `NeighborhoodService.readProjectGraph`. This is what lets the fixture
- * tree below run with no real Nx workspace under it: `codependix.config.ts`'s
- * `projectGraph` field points straight at this file.
+ * A fixture Nx project graph, standing in for `nx graph --file`. The fixture
+ * tree runs with no real Nx workspace under it.
  */
 const PROJECT_GRAPH = {
   dependencies: {},
@@ -639,13 +637,8 @@ describe("map command", () => {
       expect(printed).toContain("## 🕸️ Codependix");
     });
 
-    // `LoggerService` writes through pino's own raw file-descriptor
-    // destination rather than `process.stdout.write`, so `stdoutSpy` cannot
-    // literally interleave the two streams here. What this asserts instead
-    // is the mechanism `MapCommand.runMode` guarantees: the combined-output
-    // print and the normal export pass — which is what produces the log
-    // lines `ReportingService.reportSuccess` emits — both run to completion
-    // in the same invocation, neither short-circuiting the other.
+    // `LoggerService` writes through pino's own file descriptor, so `stdoutSpy` cannot interleave the streams.
+    // This asserts the mechanism `MapCommand.runMode` guarantees: the combined output and the export pass both run to completion in one invocation.
     it("prints the combined output without skipping the export pass's own work", async () => {
       const { exitCode, printed } = await run({
         directory: workingDirectory,

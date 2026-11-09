@@ -18,23 +18,10 @@ import type {
 
 /** What analyzing one run's callables produced. */
 export interface AnalyzeOutcome {
-  /**
-   * The depth and breadth limits each traced project is judged against.
-   *
-   * Held beside the result rather than inside it, the same as
-   * `unresolvedAddresses`: whether `--check breadth` even has a limit to gate
-   * on is a fact about the projects a run reached, not part of the report
-   * every destination writes.
-   */
+  /** Depth and breadth limits each traced project is judged against. Held beside the result, not inside it, as with unresolved addresses. */
   readonly projectLimits: ProjectLimitsLookup;
   readonly result: CallGraphResult;
-  /**
-   * Declared entry-point addresses that named no callable, or more than one.
-   *
-   * Held beside the result rather than inside it: the report shape is what
-   * gets written to every destination, and an address that stopped resolving
-   * is a fact about the configuration rather than about the code it traced.
-   */
+  /** Declared entry-point addresses naming no callable, or more than one. Held beside the result: an unresolved address is a fact about configuration. */
   readonly unresolvedAddresses: readonly UnresolvedEntryPointAddress[];
 }
 
@@ -65,27 +52,11 @@ export interface ProjectDeclarations {
     string,
     ResolvedCallidescopeEntryPoints
   >;
-  /**
-   * Exclusion globs a project declared for itself, keyed by project name and
-   * matched against paths relative to that project's own root.
-   *
-   * A project that declared none is absent rather than present with an empty
-   * array, so an empty map is what says no project in the run excludes
-   * anything.
-   */
+  /** Exclusion globs each project declared, keyed by project name. A project that declared none is absent, so an empty map excludes nothing. */
   readonly excludeByProject: ReadonlyMap<string, readonly string[]>;
   /** The depth and breadth limits each traced project is judged against. */
   readonly projectLimits: ProjectLimitsLookup;
-  /**
-   * The written destinations a project declared for itself, keyed by project
-   * name and read relative to that project's own root.
-   *
-   * A project that declared none is absent rather than present with an empty
-   * one, because presence is what decides the question: a project that spoke
-   * about its own destinations owns them, and the workspace README fan-out
-   * leaves it alone — including when what it said was that it publishes
-   * nothing.
-   */
+  /** Destinations each project declared for itself. A project that declared none is absent; presence means it owns its destinations. */
   readonly writeByProject: ReadonlyMap<
     string,
     ResolvedCallidescopeWriteConfiguration
@@ -94,34 +65,14 @@ export interface ProjectDeclarations {
 
 /** Arguments for one full trace of a workspace. */
 export interface TraceArguments {
-  /**
-   * The limits the workspace file itself wrote down, exactly as authored.
-   *
-   * Carried so the workspace row names the workspace file only when that file
-   * really wrote the number: resolution defaults `maximumDepth` for every run,
-   * and a path stamped from the resolved object alone would name a file for a
-   * number it never mentions.
-   */
+  /** The limits the workspace file wrote, as authored. Resolution defaults `maximumDepth`, so only this names the file for the row. */
   readonly authoredLimits?: CallidescopeLimits | undefined;
   readonly configuration: ResolvedCallidescopeConfiguration;
-  /**
-   * The file `configuration` was read from, always the one `--config` named.
-   *
-   * Carried so the trace can skip it while resolving a configuration beside
-   * every project it reaches: one file holds one role per run, and a package
-   * whose task names its own file would otherwise have it read a second time
-   * as that package's project configuration.
-   */
+  /** The file `configuration` was read from. The trace skips it, since one file holds one role per run. */
   readonly configurationPath: string;
   /** Project directories to trace. Every project in the workspace when empty. */
   readonly directories: readonly string[];
-  /**
-   * The limits this run's command line overrode, if any.
-   *
-   * Carried into the trace because a limit is enforced per project: each
-   * project's own file declares the number its gate reads, so an override that
-   * stopped at the run's own configuration would be a flag no gate looks at.
-   */
+  /** Limits this run's command line overrode. Carried into the trace because each project's gate reads its own declared number. */
   readonly limitOverrides?: CallidescopeLimitOverrides | undefined;
   readonly workspaceRoot: string;
 }
@@ -135,14 +86,7 @@ export interface TraceOutcome extends AnalyzeOutcome {
    * name — the starting projects, not the closure they reached.
    */
   readonly startingProjectRoots: ReadonlyMap<string, string>;
-  /**
-   * The written destinations each project declared for itself, by name.
-   *
-   * Carried out of the trace rather than re-read at write time: the files were
-   * already opened once to decide what the run measures, and reading them a
-   * second time is how a run comes to publish against one answer and measure
-   * against another.
-   */
+  /** The destinations each project declared, read once during the trace, so publishing and measuring share one answer. */
   readonly writeByProject: ReadonlyMap<
     string,
     ResolvedCallidescopeWriteConfiguration

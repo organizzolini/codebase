@@ -129,11 +129,9 @@ async function createWorkspace(): Promise<string> {
 }
 
 /**
- * Writes a configuration declaring the same generator as the JSON one, plus a
- * hook that refuses a name and one that stamps a receipt beside the file.
+ * Writes a configuration whose hooks are functions, so it must be a module.
  *
- * Hooks are functions, so this one has to be a module. The generator itself
- * is unchanged, which keeps the emitted plugin current for both files.
+ * Declares the same generator as the JSON configuration.
  */
 async function writeHooksConfiguration(workspaceRoot: string): Promise<string> {
   const configurationPath = path.join(workspaceRoot, "hooks.config.mjs");

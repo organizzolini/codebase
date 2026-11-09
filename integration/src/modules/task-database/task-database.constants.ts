@@ -1,9 +1,8 @@
 // ♟️ Constants
 
 /**
- * What sits beside a database and belongs to it: the write-ahead log, the
- * shared-memory index, and the rollback journal. Every operation treats the
- * four files as one database.
+ * Files beside a database that belong to it: write-ahead log, shared-memory
+ * index and rollback journal. Operations treat all four as one.
  */
 export const COMPANION_SUFFIXES: readonly string[] = [
   "-wal",

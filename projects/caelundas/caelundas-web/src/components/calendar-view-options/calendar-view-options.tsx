@@ -38,11 +38,7 @@ export interface CalendarViewOptionsProperties {
 // 🧩 Component
 
 /**
- * Renders the View menu's arrangement of the view: a Group by submenu for
- * the agenda and the timeline, which group their events, and a Scale submenu
- * for the timeline, ahead of the menu's other sections. Every other view has
- * nothing to arrange, and this draws nothing for it. It belongs inside a
- * dropdown menu.
+ * Renders the View menu's arrangement of the view: Group by for agenda and timeline, and Scale for the timeline; nothing else draws.
  */
 export function CalendarViewOptions(
   properties: Readonly<CalendarViewOptionsProperties>,

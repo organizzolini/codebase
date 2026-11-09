@@ -11,8 +11,8 @@ export interface CompiledEventGrouping {
 }
 
 /**
- * One validated level of a grouping: the field it groups by and, for a tag
- * root, the tags it makes a group of, or else the depth it reads.
+ * A validated grouping level: its field, and for a tag root either the tags
+ * it groups by or a depth.
  */
 export interface EventGroupLevel {
   depth?: number | undefined;

@@ -1,19 +1,9 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
 /**
- * The corpus measured at gzip, which is what an input compresses with by
- * default. Level 9, stated rather than defaulted.
+ * Gzip level 9, file by file, matching what a browser downloads.
  *
- * Each file is compressed **on its own** and the results summed — never all of
- * them together as one archive. That matters for a bundle-size gate: it is the
- * number a browser pays, file by file over the wire, rather than the smaller
- * number a tar of the whole directory would report by finding redundancy
- * across files nobody downloads together.
- *
- * ```bash
- * cd projects/ic-suite/codometer/codometer-examples/examples/corpus
- * codometer --config ../compression/gzip.config.ts
- * ```
+ * Run from the corpus directory with `codometer --config ../compression/gzip.config.ts`.
  */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",

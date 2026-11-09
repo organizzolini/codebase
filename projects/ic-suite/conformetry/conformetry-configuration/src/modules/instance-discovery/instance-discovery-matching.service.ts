@@ -41,14 +41,10 @@ export class InstanceDiscoveryMatchingService {
   // 🔏 Private Methods
 
   /**
-   * Orders template matches best-first.
+   * Orders matches best-first.
    *
-   * Coverage ratio leads, because absolute count alone lets a large template
-   * win on a weak partial match — a module directory matching three of a
-   * seven-file GraphQL template would beat nothing, and used to. Absolute
-   * count breaks ratio ties, so a five-file module template beats a two-file
-   * service-file template when both match completely. Name makes it
-   * deterministic.
+   * Coverage ratio leads, so a large template cannot win a weak partial match.
+   * Ties break on count, then name.
    */
   private compareMatches(left: TemplateMatch, right: TemplateMatch): number {
     if (left.matchRatio !== right.matchRatio) {
@@ -63,12 +59,9 @@ export class InstanceDiscoveryMatchingService {
   }
 
   /**
-   * Gives every placeholder the substitutions leave out a random stand-in.
+   * Gives each placeholder the substitutions leave out a random stand-in.
    *
-   * Only validation matches instances, and there a missing value is something
-   * to infer from the instance rather than an error: generation renders
-   * without this and still refuses a placeholder nobody supplied. `name` and its
-   * variants are always supplied, so they are never stood in for.
+   * Validation infers the stand-in's value from the instance; generation refuses to render one.
    */
   private fillPlaceholders(args: {
     substitutions: Substitutions;
@@ -91,8 +84,7 @@ export class InstanceDiscoveryMatchingService {
   /**
    * Builds the substitutions an instance's template is rendered with.
    *
-   * Name variants come from the instance's stem; caller-supplied values are
-   * spread last so an explicit `type` or `description` always wins.
+   * Caller-supplied values are spread last, so an explicit `type` wins.
    */
   public buildSubstitutions(instance: Instance): Substitutions {
     return {
@@ -103,17 +95,9 @@ export class InstanceDiscoveryMatchingService {
   }
 
   /**
-   * Resolves every instance to the template — or templates — that explain it.
+   * Resolves every instance to the template, or templates, that explain it.
    *
-   * An instance matching nothing, or matching two templates equally well but
-   * only partially, is returned as unmatched rather than dropped: the caller
-   * asserted these are instances, so silence would hide both a drifted
-   * instance and a pair of indistinguishable templates.
-   *
-   * A complete tie is different, and is matched against every tied template. A
-   * module holding both a command and a service really is an instance of both
-   * `nestjs-command-module` and `nestjs-service-module`; calling that ambiguous
-   * would demand the author narrow a glob that is not wrong.
+   * Unexplained or partially tied instances are reported as unmatched, not dropped.
    */
   public matchInstances(args: {
     instances: Instance[];
@@ -169,13 +153,9 @@ export class InstanceDiscoveryMatchingService {
   }
 
   /**
-   * Weighs every template that shares at least one file with the instance,
-   * best-first.
+   * Weighs every template sharing a file with the instance, best-first.
    *
-   * Public because a caller may need the ranking itself and not just the
-   * verdict: nothing records which template an instance came from, so an
-   * ambiguous or unmatched outcome is only explainable by showing what was
-   * weighed and how well each template fitted.
+   * Public so callers can explain an ambiguous or unmatched outcome.
    */
   public matchTemplates(args: {
     instance: Instance;

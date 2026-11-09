@@ -34,10 +34,7 @@ export interface CalendarCollectionPickerProperties {
 // 🧩 Component
 
 /**
- * Renders the collection the filters below come from, as a dropdown to pick
- * another from. The collection whose filters
- * the tree holds is the one shown, "All events" when the tree filters
- * nothing, and anything else as custom, an edit made in the builder.
+ * Renders the collection the filters come from as a dropdown; shows "All events" when unfiltered, otherwise custom for edits.
  */
 export function CalendarCollectionPicker(
   properties: Readonly<CalendarCollectionPickerProperties>,

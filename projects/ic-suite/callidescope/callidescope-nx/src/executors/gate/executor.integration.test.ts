@@ -30,17 +30,7 @@ import gateExecutor from "./executor";
 import type { GateExecutorOptions } from "./executor.types";
 import type { ExecutorContext, ProjectGraph } from "@nx/devkit";
 
-/**
- * Nx project names, deliberately unlike the roots below.
- *
- * The whole point of this fixture. A report's `projectName` is the
- * workspace-relative root of the project, never its Nx name, and a gate handed
- * Nx names owns no finding at all and passes whatever it read. Nothing forces
- * the two vocabularies apart in this repository — most Nx names are the
- * basename of their root — so the fixture forces them apart itself, and every
- * identifier below flows through the real resolution rather than being written
- * on both sides of a comparison.
- */
+/** Nx project names, deliberately unlike the roots below. A gate given Nx names owns no finding, so the fixture keeps them apart. */
 const BREACHING_PROJECT_NAME = "the-project-that-breaches";
 const DEPENDENT_PROJECT_NAME = "the-project-that-depends";
 const UNREAD_PROJECT_NAME = "the-project-that-reads-nothing";
@@ -53,14 +43,7 @@ const UNREAD_PROJECT_ROOT = "packages/unread";
 /** The callable whose stack breaches the breaching project's own limit. */
 const BREACHING_ENTRY_POINT = "readBreachingEntryPoint";
 
-/**
- * Filename both the workspace and the breaching project write their limits in.
- *
- * JSON rather than TypeScript, which the loader reads either way: a project
- * configuration written as TypeScript has to import its own type to be worth
- * type-checking, and that import is an Nx dependency edge — which would widen
- * the very closure this fixture is built to hold still.
- */
+/** Filename the workspace and breaching project write limits in. JSON, since a TypeScript import would widen the closure. */
 const CONFIGURATION_FILE_NAME = "callidescope.config.json";
 
 /** The name a project declares itself through, which must spell `undefined`. */
@@ -102,10 +85,8 @@ const PROJECT_PROGRAM = {
 };
 
 /**
- * An executor context for a run against one project of the fixture workspace.
- *
- * Built literally rather than mocked, for the reason the unit test beside this
- * gives: `createMock` fabricates every property it is not handed.
+ * An executor context for one project of the fixture workspace, built literally since
+ * `createMock` fabricates every property.
  */
 function buildContext(args: {
   projectName: string;
@@ -123,11 +104,8 @@ function buildContext(args: {
 }
 
 /**
- * The gate options every case here starts from.
- *
- * The configuration path is named rather than searched for, because a search
- * starts at the process's own working directory and would find this
- * repository's configuration instead of the fixture's.
+ * Gate options every case starts from. The configuration path is named, not searched for,
+ * since a search would find this repository's own.
  */
 function buildOptions(args: { workspaceRoot: string }): GateExecutorOptions {
   return {
@@ -136,14 +114,8 @@ function buildOptions(args: { workspaceRoot: string }): GateExecutorOptions {
 }
 
 /**
- * The Nx graph the run resolves its scope from.
- *
- * Built here rather than read, because `readProjectGraph` is the one method in
- * this package that touches Nx at run time and a fixture workspace is in no
- * project graph. Everything downstream of it is the real thing:
- * `resolveProjectNames`, `resolveDependencyClosure`, and `resolveDirectories`
- * turn these nodes into the directories a trace reads and the roots a verdict
- * covers.
+ * The Nx graph a run resolves its scope from, built here because a fixture workspace is in no
+ * real project graph.
  */
 function buildProjectGraph(): ProjectGraph {
   return {
@@ -187,12 +159,7 @@ function buildProjectGraph(): ProjectGraph {
 }
 
 /**
- * Reads the depth finding count out of what a gate printed.
- *
- * The count rather than the whole rendering: this asserts which findings a
- * verdict owned, and how one of them reads is `callidescope-output`'s to pin —
- * which is also why the heading is that package's exported constant rather
- * than prose copied into here.
+ * Reads the depth finding count from a gate's printed output, since the rendering is `callidescope-output`'s to pin.
  */
 function readDeepStackCount(report: string): number {
   const matched = new RegExp(
@@ -274,12 +241,9 @@ describe("the gate executor, against a workspace on disk", () => {
   let workspaceRoot = "";
 
   beforeAll(() => {
-    // Resolved through its symlinks, which matters on macOS: `tmpdir()` there
-    // is `/var/folders/…`, a link to `/private/var/folders/…`, and a program's
-    // source files come back under the real path. A run rooted at the link
-    // then makes every file's workspace-relative path a `../../..` climb that
-    // no project's root contains, so nothing a project excludes for itself is
-    // treated as belonging to it.
+    // Resolved through symlinks: on macOS `tmpdir()` is a link to `/private/var/...`, and a
+    // program reports the real path. A run rooted at the link makes every workspace-relative
+    // path climb out of its project, so project-owned exclusions stop applying.
     workspaceRoot = realpathSync(
       mkdtempSync(path.join(tmpdir(), "callidescope-restrict-")),
     );

@@ -41,20 +41,9 @@ import type { NestjsModuleGraph } from "@codependix/nestjs-modules";
 import type { WorkspaceGraph } from "@codependix/nx-projects";
 
 /**
- * Builds and delivers every whole-workspace graph: the Nx Workspace Graph,
- * the file-imports graph (every TypeScript and Python project's own import
- * graph, combined), and the NestJS module graph (every NestJS project's own
- * module graph, combined).
- *
- * Split out of `GraphRunService` purely to keep that file under this
- * repository's per-file line limit — `GraphRunService` still owns every
- * per-project pass, and hands the whole-workspace pass for each active
- * graph type over to this service instead of building it inline.
- *
- * Each `run*WorkspaceGraph` method also hands back the graph's own rendered
- * data alongside its delivery outcome — see `WorkspaceGraphRunOutcome` — so
- * `GraphRunService.run` can collect it for combined output without building the
- * same graph a second time.
+ * Builds and delivers every whole-workspace graph: the Nx Workspace Graph, the file-imports graph,
+ * and the NestJS module graph. Each run returns its rendered data as well as its delivery outcome,
+ * for combined output.
  */
 @Injectable()
 export class WorkspaceGraphsService {
@@ -84,10 +73,7 @@ export class WorkspaceGraphsService {
   }
 
   /**
-   * Explores and builds every discovered NestJS project's own module graph.
-   *
-   * Kept apart from `runNestjsModulesWorkspaceGraph` so that method's own
-   * direct callees stay under this repository's callidescope breadth limit.
+   * Explores and builds every discovered NestJS project's module graph. Kept apart to stay under the breadth limit.
    */
   private async buildNestjsModuleGraphs(
     selectedProjects: GraphRunContext["selectedProjects"],
@@ -127,13 +113,8 @@ export class WorkspaceGraphsService {
   }
 
   /**
-   * Delivers one already-built whole-workspace graph's configured
-   * destinations, at the workspace root.
-   *
-   * The one place both `runFileImportsWorkspaceGraph` and
-   * `runNestjsModulesWorkspaceGraph` hand off to `DeliveryService`, so
-   * neither of them carries `DeliveryService`'s own three-call shape as
-   * direct callees of its own.
+   * Delivers one already-built whole-workspace graph's configured destinations, at the workspace root.
+   * The one place both builders hand off to `DeliveryService`.
    */
   private deliverWorkspaceGraph(args: {
     jsonExport: unknown;
@@ -165,19 +146,8 @@ export class WorkspaceGraphsService {
   // 🌎 Public Methods
 
   /**
-   * Builds, renders, and delivers the whole-workspace file-level import
-   * graph's configured destinations.
-   *
-   * Built from every discovered TypeScript and Python project's own import
-   * graph, combined by `FileImportsWorkspaceGraphService` — the same "read
-   * once, draw over the selected projects" shape `runNxWorkspaceGraph`
-   * follows for the Nx Workspace Graph, applied to the two file-level import
-   * builders instead of one Nx project graph read.
-   *
-   * The graph is not built at all when the resolved workspace target is
-   * `"none"` — a workspace that never configured this destination pays
-   * nothing for it, matching the target-gated shape every other pass here
-   * follows. Combined output is unavailable for this type in that case too.
+   * Builds, renders, and delivers the whole-workspace file-level import graph. Not built at all
+   * when the target is `"none"`.
    */
   runFileImportsWorkspaceGraph(
     context: GraphRunContext,
@@ -221,15 +191,7 @@ export class WorkspaceGraphsService {
   }
 
   /**
-   * Explores, builds, renders, and delivers the whole-workspace NestJS
-   * module graph's configured destinations.
-   *
-   * Built from every discovered NestJS project's own module graph, combined
-   * by `NestjsModulesWorkspaceGraphService` — the same shape
-   * `runFileImportsWorkspaceGraph` follows, applied to booting every NestJS
-   * project's container instead of building a `ts.Program` or parsing
-   * Python source. Skipped entirely when the resolved target is `"none"`,
-   * for the same reason `runFileImportsWorkspaceGraph` skips its own build.
+   * Builds and delivers the whole-workspace NestJS module graph, skipped when its target is `"none"`.
    */
   async runNestjsModulesWorkspaceGraph(
     context: GraphRunContext,
@@ -268,13 +230,8 @@ export class WorkspaceGraphsService {
   }
 
   /**
-   * Renders and delivers the Nx Workspace Graph's configured destinations.
-   *
-   * Built from the already-read Nx project graph — no discovery pass of its
-   * own, unlike the other two whole-workspace graphs, since `GraphRunService`
-   * already read it once for the whole run. Skipped entirely when the
-   * resolved target is `"none"`, for the same reason
-   * `runFileImportsWorkspaceGraph` skips its own build.
+   * Renders and delivers the Nx Workspace Graph's configured destinations, from the already-read
+   * Nx project graph. Skipped when the resolved target is `"none"`.
    */
   runNxWorkspaceGraph(context: GraphRunContext): WorkspaceGraphRunOutcome {
     const { configuration, graph, mode, workingDirectory } = context;

@@ -28,13 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
-      # The OpenRouter preset that Terraform keeps (infrastructure/terraform),
-      # whose ranked list starts with the free Nemotron 3 Ultra, never billed.
-      # Terraform sets the variable, so change the models there. Free models
-      # are capped at 20 requests a minute and, once $10 of credit has been
-      # bought, 1,000 a day. A free endpoint can go down or be gated to
-      # approved apps, so a failed run is worth checking the model's health.
-      # The retry count is high so that backing off outlasts a spent minute.
+      # The OpenRouter preset Terraform keeps (infrastructure/terraform) starts with a free model.
+      # Free models allow 20 requests a minute, and the high retry count outlasts a spent minute.
+      # A free endpoint can go down or be gated, so check the model's health when a run fails.
       OPENWIKI_PROVIDER: openrouter
       OPENWIKI_MODEL_ID: ${{ vars.OPENWIKI_MODEL_ID }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}

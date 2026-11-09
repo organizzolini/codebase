@@ -4,8 +4,7 @@ import type {
 } from "./calendar-views.constants";
 
 /**
- * A view as the link names it. The app owns this list rather than the
- * vendored calendar's, so a view can be added or cut here alone.
+ * A view as the link names it; the app owns this list, so a view can be added or cut here alone.
  */
 export type CalendarViewName = (typeof CALENDAR_VIEWS)[number];
 

@@ -93,9 +93,8 @@ function isLetterService(
 }
 
 /**
- * The letter module's declared exports, read off its `@Module` metadata. It
- * throws when the metadata holds no exports list, so a letter module that
- * stops declaring one fails every test here rather than exporting nothing.
+ * The letter module's exports list, read from its `@Module` metadata. Throws when
+ * missing, so a letter module that drops it fails the tests.
  */
 function letterModuleExports(): readonly unknown[] {
   const exported: unknown = Reflect.getMetadata(
@@ -109,7 +108,7 @@ function letterModuleExports(): readonly unknown[] {
   return exported;
 }
 
-/** Every letter service a consumer of `CharacteristicsModule` must be able to inject, each providing its letter's sixteen orientation evaluators per positional form: every letter service the letter module exports, so a new letter needs no second list here. */
+/** Every letter service `CharacteristicsModule` must provide, so a new letter needs no second list here. */
 const LETTER_SERVICES: readonly Type<CharacteristicEvaluatorGroup<number>>[] =
   letterModuleExports().filter((value) => isLetterService(value));
 
@@ -185,10 +184,8 @@ const LETTER_SERVICE_NAME = new RegExp(
 );
 
 /**
- * The window, in lattice points, each submatrix evaluator other than a letter
- * glyph reads: 1×1 for a point scan or a sum of point scans, and the smallest
- * window for a variable-size scan. A letter glyph's window is checked against
- * its drawn fixture in the letter module's own test.
+ * The lattice-point window each non-letter submatrix evaluator reads. Letter
+ * glyphs are checked against their fixtures in the letter module's test.
  */
 const WINDOWS: Readonly<Record<string, SubmatrixWindow>> = {
   cornerCount: { columns: 1, rows: 1 },
@@ -233,15 +230,8 @@ function expectedKey(service: Type<CharacteristicEvaluator>): string {
 }
 
 /**
- * The metadata keys a letter service's class name promises, in key-list
- * order: its letter's sixteen orientations, under each positional form the
- * key list gives an Arabic letter. `ALatinLetterCharacteristicsService`
- * fills `aSoutheastLatinCount` through `aNorthwestThreeQuarterLatinCount`,
- * and `BehArabicLetterCharacteristicsService` fills
- * `behFinalSoutheastArabicCount` through
- * `behMedialNorthwestThreeQuarterArabicCount`. Which forms a letter takes is
- * read off the key list rather than pinned here; each letter's own test pins
- * its form set.
+ * The metadata keys a letter service's class name promises, in key-list order.
+ * Forms are read off the key list, not pinned here.
  */
 function expectedLetterKeys(
   service: Type<CharacteristicEvaluatorGroup<number>>,

@@ -39,9 +39,7 @@ describe(resolveTsconfigInputs, () => {
   });
 
   /**
-   * Writes a workspace holding the given files, and links each `links` key to
-   * its value as pnpm links a package, every path relative to the root; then
-   * resolves its inputs.
+   * Writes a workspace holding the given files, linking each `links` key as pnpm links a package.
    */
   function resolveWorkspace(
     files: Record<string, string>,

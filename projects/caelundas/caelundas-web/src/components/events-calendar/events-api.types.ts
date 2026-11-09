@@ -7,8 +7,7 @@ import type { EventsWindow } from "./calendar-records.types";
 // 🏷️ Types
 
 /**
- * What a read of the events asks for: a window, and optionally the filter
- * the events in it must meet and the grouping each is read with keys for.
+ * What an events read asks for: a window, and optionally a filter and a grouping.
  */
 export interface EventsReadQuery {
   filter?: EventFilterGroupInput | null | undefined;

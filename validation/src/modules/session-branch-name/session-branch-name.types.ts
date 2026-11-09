@@ -16,10 +16,8 @@ export interface GitResult {
 }
 
 /**
- * What the current branch's name amounts to.
- *
- * No branch at all — a detached HEAD, a directory outside a repository, or no
- * `git` to ask — is its own answer, since there is nothing to judge.
+ * What the current branch's name amounts to. No branch (detached HEAD, no
+ * repository, or no `git`) is its own answer: nothing to judge.
  */
 export type SessionBranchNameResult =
   | { readonly errorMessage: string; readonly kind: "non-compliant" }

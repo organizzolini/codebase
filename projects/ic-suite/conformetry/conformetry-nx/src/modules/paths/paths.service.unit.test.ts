@@ -431,10 +431,7 @@ describe(PathsService, () => {
 
   describe("resolveGenerationPath with a crafted set of instances", () => {
     /**
-     * Builds a `PathsService` whose collaborators are stubbed, so the
-     * instances fed into it can be shaped by hand instead of by a real glob —
-     * what these tests exercise is the module-parent inference, not
-     * discovery.
+     * Builds a `PathsService` whose collaborators are stubbed, so instances can be shaped by hand.
      */
     function createIsolatedService(instances: Instance[]): PathsService {
       return new PathsService(

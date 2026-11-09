@@ -88,11 +88,8 @@ export class IngressesComposerService {
   // 🌎 Public Methods
 
   /**
-   * Creates a decan ingress calendar event.
-   *
-   * A decan ingress occurs when a body crosses into one of the three 10° subdivisions
-   * within a zodiac sign, each associated with a sub-ruler and decan symbol.
-   *
+   * Creates a decan ingress event: a body crossing into one of the three 10°
+   * decans, each with a sub-ruler and symbol.
    */
   buildDecanIngressEvent(args: {
     body: Body;
@@ -138,11 +135,8 @@ export class IngressesComposerService {
   }
 
   /**
-   * Creates a sign peak ingress calendar event.
-   *
-   * Marks when a celestial body reaches the 15° midpoint of its current zodiac sign,
-   * representing the peak expression of that sign's energy.
-   *
+   * Creates a peak ingress event when a body reaches the 15° midpoint of its
+   * current sign, the peak expression of its energy.
    */
   buildPeakIngressEvent(args: {
     body: Body;
@@ -378,12 +372,8 @@ export class IngressesComposerService {
   }
 
   /**
-   * Returns `true` when longitude crosses the in-sign midpoint threshold (15 degrees),
-   * moving forward or backward within a single sign.
-   *
-   * @remarks
-   * A move between two signs is a sign ingress, never a peak, so a body that
-   * re-enters a sign backwards (retrograde) does not report a spurious peak.
+   * Whether a longitude crosses the 15° in-sign midpoint, forward or backward
+   * within one sign; a move between signs is never a peak.
    */
   isPeakIngress(args: {
     currentLongitude: number;

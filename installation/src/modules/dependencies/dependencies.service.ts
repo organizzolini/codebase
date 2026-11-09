@@ -76,9 +76,8 @@ export class DependenciesService {
   }
 
   /**
-   * Reads a `.env` file the way a shell would `source` it, for the plain
-   * `KEY=value` lines these files hold. Quotes around a value are removed;
-   * nothing is expanded.
+   * Reads a `.env` file's plain `KEY=value` lines the way `source` would, without expanding them.
+   * Quotes around a value are removed.
    */
   private readEnvironmentFile(file: string): EnvironmentVariables {
     const variables: EnvironmentVariables = {};
@@ -129,11 +128,8 @@ export class DependenciesService {
   }
 
   /**
-   * Resets the Nx cache, unless this is running inside an Nx task.
-   *
-   * `nx reset` stops the daemon and deletes the workspace data of the very
-   * Nx process running this, so from `nx run installation:start:*` it would
-   * pull the floor out from under itself.
+   * Resets the Nx cache unless already running inside an Nx task.
+   * `nx reset` would delete the workspace data of the process running it.
    */
   private resetNxCache(): void {
     if (process.env["NX_TASK_TARGET_PROJECT"] !== undefined) {

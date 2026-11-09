@@ -8,14 +8,12 @@ import { describeError } from "../process-runner/process-runner.utilities";
 import { LinkPackagesService } from "./link-packages.service";
 
 /**
- * CLI command that creates a storage record on the organization's Linked
- * artifacts page for every published npm version that has none, and lists the
- * versions this run published for 🔏 Attest Packages, as the 🔗 Link Packages
- * release step.
+ * CLI command that records every published npm version on the Linked artifacts
+ * page and lists the ones this run published for 🔏 Attest Packages, as the
+ * 🔗 Link Packages release step.
  *
  * Reads `GITHUB_REPOSITORY`, `GITHUB_REPOSITORY_OWNER`, `RUNNER_TEMP`, and
- * `GITHUB_OUTPUT`, where `attest=true` is written when there is anything to
- * attest; `gh` reads `GH_TOKEN`. Exits 1 when any package or input failed.
+ * `GITHUB_OUTPUT`; `gh` reads `GH_TOKEN`. Exits 1 when any package or input failed.
  */
 @Command({
   description:

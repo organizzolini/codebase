@@ -8,10 +8,7 @@ import { runPipelineWindow } from "./pipeline-window.functions";
 import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 
 /**
- * Philadelphia, 8–10 October 2026. Ceres comes into opposition with the Lunar
- * Apogee on the 8th, and on the 10th the Moon squares both, completing a
- * T-square that was emitted twice at the minute it formed. The test checks the
- * shape of that occurrence, not its minute, which no outside source pins.
+ * Philadelphia, 8–10 October 2026, where a T-square is emitted twice; the test checks its shape, not its minute.
  */
 const octoberWindow = {
   endDate: "2026-10-10",

@@ -29,9 +29,7 @@ export function addCalendarDays(day: string, count: number): string {
 }
 
 /**
- * Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search
- * parameter, the way the calendar's navigation hands back that zone's
- * midnight.
+ * Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search parameter.
  */
 export function formatCalendarDate(date: Date, timeZone: string): string {
   let format = DATE_FORMATS.get(timeZone);
@@ -46,14 +44,7 @@ export function formatCalendarDate(date: Date, timeZone: string): string {
 }
 
 /**
- * The days a view shows around the day it opens on, as UTC midnights, and
- * the window read for them, a day wider either side: a zone's midnight lies
- * up to a day from UTC's, so the buffer holds every event the zone's days
- * show. Only these days are read, whatever the data spans; the agenda's
- * count of days is clamped where the search is read.
- *
- * With no view, the default rests on the width and changes with it, so the
- * windows cover both defaults and a resize needs no reload.
+ * The days a view shows and the window read for them, a day wider either side so zone midnights are covered.
  */
 export function getViewWindows(
   view: CalendarViewName | undefined,
@@ -129,9 +120,7 @@ function anchorDay(year: number, monthIndex: number, day: number): Date {
 }
 
 /**
- * The days the timeline's axis spans at a scale, as the Gantt lays them
- * out: the day, the week from Sunday, the month, the quarter widened to
- * whole weeks, or otherwise the year.
+ * The days the timeline's axis spans at a scale, as the Gantt lays them out.
  */
 function getTimelineDays(scale: TimelineScale, anchor: Date): EventsWindow {
   const year = anchor.getUTCFullYear();

@@ -15,28 +15,11 @@ import type { Environment } from "../enumeration/enumeration.types";
 import type { DrawWorkerReply, DrawWorkerTask } from "./draw.types";
 
 /**
- * Draws a shape's meanders across worker threads, and hands its rows back a
- * wave of batches at a time, in the one order a single thread would have
- * drawn them in.
+ * Draws a shape's meanders across worker threads and hands its rows back a
+ * wave of batches at a time, in the order a single thread would draw them.
  *
- * Walking a shape's symmetry classes is cheap — `orbitMinima` is a few
- * nanoseconds an assignment, on this thread — but drawing each class's row
- * is about half a millisecond of decoding, rendering, and measuring, with
- * no meander depending on another. So the minima are cut into batches and
- * dealt to `DRAW_WORKERS` threads, each running {@link DrawWorkerService}
- * in its own context booted from `src/worker.ts`, while this thread only
- * deals batches and hands back what returns. With no workers configured the
- * same service runs in-process, which is what the suites pin.
- *
- * Rows are handed back a wave at a time — one batch per thread — rather than
- * a whole shape at a time, and the next wave is already drawing while this
- * one is written. The largest shape at the default budget holds over four
- * million meanders, which as one array of rows would outgrow the machine;
- * as waves, no more than two of them are ever held at once.
- *
- * Threads are spawned on first use and kept for the whole draw run, since
- * booting one costs about a second; {@link close} ends them, and the draw run
- * calls it once its last shape is drawn.
+ * Threads are kept for the whole draw run; {@link close} ends them. With no
+ * workers configured, the same service runs in-process.
  */
 @Injectable()
 export class DrawPoolService implements OnModuleDestroy {
@@ -104,8 +87,7 @@ export class DrawPoolService implements OnModuleDestroy {
 
   /**
    * The pool's threads, spawned on first use. Source runs under the SWC
-   * loader the `start` target uses, which a thread needs passing again;
-   * compiled output runs as plain JavaScript.
+   * loader the `start` target uses, which a thread needs passing again.
    */
   private spawn(): Worker[] {
     if (this.workers === undefined) {
@@ -144,10 +126,8 @@ export class DrawPoolService implements OnModuleDestroy {
   }
 
   /**
-   * Hands back a shape's batches a wave at a time, the next wave already
-   * drawing while this one's rows are written. A wave still drawing when the
-   * reader stops — because a write failed — is awaited before returning, so
-   * its rejection is never left unobserved.
+   * Hands back batches a wave at a time. Any wave still drawing is awaited
+   * before returning, so no rejection is lost.
    */
   private async *waves(
     shape: MeanderShape,
@@ -175,13 +155,8 @@ export class DrawPoolService implements OnModuleDestroy {
   // 🌎 Public Methods
 
   /**
-   * Every meander of one shape as the rows the database holds for them, a
-   * batch at a time, one per symmetry class, in the order the shape's orbit
-   * minima ascend.
-   *
-   * With threads, a wave of batches — one per thread — is drawn at once, and
-   * the next wave starts drawing before this one's rows are handed back, so
-   * writing a wave overlaps drawing the next and at most two are ever held.
+   * Every meander of one shape as database rows, one per symmetry class. At
+   * most two waves are held at once.
    */
   async *batches(
     shape: MeanderShape,

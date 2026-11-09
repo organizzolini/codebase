@@ -4,10 +4,8 @@
 export type ReleaseArchiveFormat = "binary" | "tar.gz" | "zip";
 
 /**
- * A command-line tool installed from its published release on Linux.
- *
- * Every URL and path is a template: `{version}` is the pin, and
- * `{architecture}` is what this tool calls the machine's processor.
+ * A command-line tool installed from its published Linux release. `{version}` is the pin;
+ * `{architecture}` is the machine's processor name.
  */
 export interface ReleaseArchiveTool {
   /** What this tool calls each processor architecture Node reports. */

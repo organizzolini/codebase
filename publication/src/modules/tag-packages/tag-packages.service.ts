@@ -26,23 +26,12 @@ import type { ReleaseGroupMember } from "../release-group/release-group.types";
 import type { LeftoverOutcome } from "./tag-packages.types";
 
 /**
- * Tags each newly versioned ic-suite package on the release commit, and
- * pushes the tags.
+ * Tags each newly versioned ic-suite package on the release commit and pushes
+ * the tags.
  *
- * semantic-release's release commit carries the versions and changelogs that
- * `version-packages` wrote. It makes that commit only when the codebase itself
- * releases, which a package-scoped `no-release` commit can prevent while Nx
- * still bumps the package, so anything left uncommitted is committed here
- * instead, on its own.
- *
- * A package is newly versioned when its `<project>@<version>` tag, the pattern
- * nx.json's `release.releaseTag` sets, does not exist yet. Checkout fetches
- * every tag, so only this release's are missing, and a re-run creates nothing
- * twice. GitHub rejects any push to this repository that updates more than 6
- * refs, so the tags go 6 at a time, and a rejected batch is retried. Tags
- * still missing when the run ends are pushed by the next run, which runs this
- * before versioning. The remote must already carry a token allowed to push,
- * as `version-packages` leaves it.
+ * A package is newly versioned when its `<project>@<version>` tag does not
+ * exist. GitHub rejects pushes that update more than 6 refs, so tags go 6 at a
+ * time, retrying a rejected batch. Tags still missing are pushed by the next run.
  */
 @Injectable()
 export class TagPackagesService {
@@ -200,15 +189,8 @@ export class TagPackagesService {
   }
 
   /**
-   * Gives each never-tagged release-group package a `<project>@0.0.0`
-   * baseline on the commit before the one that added it.
-   *
-   * Nx writes a changelog from a package's previous tag and stops when it has
-   * none. It reads the baseline as the current version, so the first release
-   * versions every commit that touched the package, the one that added it
-   * included. A package with any tag, or a version other than `0.0.0`, is left
-   * alone, so a released package that lost its tag is never restarted from its
-   * first commit; `tagNewVersions` tags it at `HEAD` instead.
+   * Tags each never-tagged package `<project>@0.0.0` on the commit before the
+   * one that added it, so Nx's changelog starts there.
    */
   private tagBaselines(group: readonly ReleaseGroupMember[]): string[] {
     const tags: string[] = [];
@@ -276,11 +258,8 @@ export class TagPackagesService {
   // 🌎 Public Methods
 
   /**
-   * Commits any leftover versions, then tags and pushes every newly
-   * versioned package.
-   *
-   * @returns The exit code: 0 when every tag was pushed or the run stepped
-   * aside, otherwise the last rejected push's.
+   * Commits leftover versions, then tags and pushes each newly versioned
+   * package. Returns the last rejected push's code, or 0.
    */
   public async run(): Promise<number> {
     if (this.commitLeftoverVersions() === "superseded") {

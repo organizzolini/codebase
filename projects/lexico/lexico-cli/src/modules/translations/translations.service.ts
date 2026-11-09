@@ -135,8 +135,7 @@ export class TranslationsService {
     return translations;
   }
 
-  /** Prepares translations to be saved onto the lexeme (preserves IDs of existing ones).
-   * Returns the array of translations to be set on the lexeme parent. */
+  /** Prepares translations for saving onto the lexeme, preserving existing IDs. */
   prepareTranslationsForSave(
     savedLexeme: Lexeme,
     translations: Translation[],

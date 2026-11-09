@@ -24,21 +24,7 @@ import type {
 
 /**
  * Reads a command line and its configuration into what the run will do.
- *
- * A collaborator rather than more of `ConfigurationService`, for the reason
- * every other one here is: resolving flags against a loaded file is its own
- * job, with its own vocabulary of checks and destinations, and a facade that
- * implemented it would be a facade in name only. What the layer publishes is
- * still one object — `ConfigurationService` fronts this the same way it
- * fronts the file loader, the project loader, and prompting.
- *
- * The file read arrives as an argument rather than an injected collaborator,
- * and the facade hands over itself. That is what keeps the whole layer
- * replaceable by a double at its one public object: a caller that stubs
- * `ConfigurationService.loadConfigurationFile` has stubbed what a run plan
- * reads, rather than only what it would have read by asking the facade
- * directly. It is a type-only import, so nothing points back at the facade at
- * module level.
+ * `ConfigurationService` fronts this, so a double of that one object covers it too.
  */
 @Injectable()
 export class RunPlanService {
@@ -58,12 +44,7 @@ export class RunPlanService {
   }
 
   /**
-   * Reads the `--check` value into the set of things the run fails on.
-   *
-   * A flag passed without a value arrives as `true` and is a mistake rather
-   * than a shorthand: it used to mean "fail on a deep stack and on a stale
-   * report at once", and a set with nothing in it looks exactly like the flag
-   * having been left off.
+   * Reads `--check` into the checks the run fails on. A valueless or empty flag is refused, not read as no gate.
    */
   private readCheckNames(
     value: string | true | undefined,
@@ -83,11 +64,8 @@ export class RunPlanService {
       .map((name) => name.trim())
       .filter((name) => name !== "");
 
-    // An empty or comma-only value is the same mistake as a valueless flag and
-    // is refused the same way. Read as "gate nothing" it would be a gate that
-    // cannot fail — `--check "$GATES"` with the variable unset would pass
-    // forever over a stack twice as deep as anything allowed, which is worse
-    // than no gate at all because it looks like protection.
+    // An empty or comma-only value is refused like a valueless flag. Read as no gate,
+    // it would pass forever over any stack.
     if (names.length === 0) {
       errors.push(this.describeAcceptedCheckNames("--check needs a value"));
       return new Set();
@@ -117,31 +95,15 @@ export class RunPlanService {
   // 🌎 Public Methods
 
   /**
-   * Reads `depth` and `breadth`'s scoping flags into a workspace root and a
-   * resolved configuration, with no `--check`/`--write` mode to select.
-   *
-   * A lookup command never writes or compares a destination, so it has no
-   * mode to reject in the first place — only the workspace to trace and the
-   * format to print in, both of which every run already resolves the same
-   * way `prepareRun` does.
-   *
-   * A refused command line is thrown rather than returned: unlike a run,
-   * every caller here needs the resolved workspace to do anything at all, so
-   * there is no half-prepared lookup to hand back. `InputError` is the class
-   * every command already reports as a rejected command line.
+   * Reads a lookup's scoping flags into a workspace root and configuration. A bad command line throws.
    */
   public async prepareLookup(
     options: AddressCommandOptions,
     reader: ConfigurationFileReader,
   ): Promise<PreparedLookup> {
     const workspaceRoot = process.cwd();
-    // The file-aware load rather than the plain one, for the same reason
-    // `prepareRun` uses it: a lookup resolves a configuration beside every
-    // project it reaches, so it has to know which file it has already read as
-    // this run's own. Without the path, a run pointed at a configuration
-    // sitting at some project's root has that file read a second time as that
-    // project's — and refused for the workspace-only fields it legitimately
-    // sets.
+    // The file-aware load, so the lookup knows which file it already read as the run's own.
+    // Otherwise that file is read again as a project's and refused.
     const {
       authored,
       configuration: loaded,
@@ -182,13 +144,7 @@ export class RunPlanService {
   }
 
   /**
-   * Reads the command line and configuration into what the run will do.
-   *
-   * Hands back whatever could not be made sense of rather than reporting it:
-   * two gates can refuse — what `--check` and `--write` mean together, decided
-   * from the command line alone, and whether a destination flag has anything
-   * to override, which needs the configuration loaded first — and both belong
-   * to the host to say out loud, under one headline.
+   * Reads the command line and configuration into what the run will do. Refusals are returned rather than reported.
    */
   public async prepareRun(
     options: CallidescopeCommandOptions,
@@ -260,11 +216,7 @@ export class RunPlanService {
   }
 
   /**
-   * Reads the flags into what the run writes and what it fails on.
-   *
-   * `--write --check reports` is refused rather than obeyed: nothing can be
-   * stale immediately after being written, so a run asking for both has
-   * misunderstood one of them and would pass whatever it was meant to catch.
+   * Reads the flags into what the run writes and fails on. `--write` with `--check reports` is refused.
    */
   public selectMode(
     options: Partial<CallidescopeCommandOptions>,
@@ -279,13 +231,8 @@ export class RunPlanService {
       );
     }
 
-    // A destination with no verb is the one mistake this command used to make
-    // silently: it exited 0, logged a finished trace, and wrote nothing. These
-    // flags are destinations rather than actions — `--write` and
-    // `--check reports` are the verbs — and a run given neither deliberately
-    // leaves every file alone, which is what makes a bare run safe to type
-    // inside somebody's checkout. So the answer is to refuse and name the
-    // missing verb, never to let a destination imply one.
+    // Destination flags with no verb are refused: they used to exit 0 and write nothing.
+    // `--write` and `--check reports` are the verbs.
     const namedDestinations = DESTINATION_FLAG_NAMES.filter(
       (flag) => options[flag] !== undefined,
     );
@@ -310,11 +257,7 @@ export class RunPlanService {
   }
 
   /**
-   * Whether a run reads or rewrites the files its reports live in.
-   *
-   * A run that neither writes nor compares leaves every destination alone: it
-   * prints what it traced and nothing else. That is what makes a bare run safe
-   * to use at a prompt inside somebody's checkout.
+   * Whether a run reads or rewrites its report files. A bare run leaves every destination alone, which makes it safe to type anywhere.
    */
   public touchesFiles(mode: RunMode): boolean {
     return mode.checksReports || mode.writes;

@@ -18,11 +18,10 @@ import type { PackageManifest } from "./catalog-manifests.types";
 /**
  * Reads every workspace manifest and says which dependencies are mis-pinned.
  *
- * The policy is one rule in two directions: a package this workspace publishes
- * is pinned `workspace:*`, and everything else is pinned to a catalog, the
- * default `catalog:` or a named one such as `catalog:ic-suite`. A version
- * range written out in a manifest is the thing being prevented — it puts two
- * projects on two versions of the same dependency with nothing to notice.
+ * Internal packages must be `workspace:*`, and everything else must use a
+ * catalog, the default `catalog:` or a named one. A written-out version range
+ * is what this prevents, since it puts two projects on two versions of one
+ * dependency.
  */
 @Injectable()
 export class CatalogManifestsService {
@@ -37,10 +36,8 @@ export class CatalogManifestsService {
   // 🔏 Private Methods
 
   /**
-   * Every project manifest nested under `directoryPath`, at any depth. A
-   * directory with its own `package.json` is a project and is not descended
-   * into further; a directory without one is a domain or grouping folder and
-   * is searched recursively.
+   * Every project manifest nested under `directoryPath`. A directory with a
+   * `package.json` is a project and is not searched deeper.
    */
   private findManifestPaths(directoryPath: string): string[] {
     const manifestPaths: string[] = [];
@@ -65,10 +62,8 @@ export class CatalogManifestsService {
   }
 
   /**
-   * Every project that sits directly in the workspace root, such as
-   * `validation`: a non-hidden directory with its own `package.json`. Not
-   * searched any deeper, because the root also holds folders that are not
-   * projects.
+   * Every project directly in the workspace root, a non-hidden directory with a
+   * `package.json`. Not searched deeper, since the root holds non-project folders.
    */
   private findRootManifestPaths(workspaceRoot: string): string[] {
     const manifestPaths: string[] = [];

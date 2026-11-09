@@ -20,15 +20,8 @@ import type {
 } from "./calendar-windows.types";
 
 /**
- * The days a view shows around the day it opens on, as UTC midnights, and
- * the window read for them, a day wider either side: a zone's midnight lies
- * up to a day from UTC's, so the buffer holds every event the zone's days
- * show. Only these days are read, whatever the data spans; the agenda's
- * count of days is held to 1 through 366. A timeline also answers how long
- * one column of its axis lasts.
- *
- * With no view, the windows cover the month and the agenda both, so a resize
- * between them needs no reload.
+ * The days a view shows, widened a day for zone midnights. With no view, it
+ * covers month and agenda so resizing needs no reload.
  */
 export function getCalendarWindows(
   view: CalendarView | null | undefined,
@@ -64,9 +57,8 @@ export function getCalendarWindows(
 }
 
 /**
- * The days the timeline's axis spans at a scale, as the Gantt lays them
- * out: the day, the week from Sunday, the month, the quarter widened to
- * whole weeks, or otherwise the year.
+ * The timeline axis's span at a scale: the day, the week from Sunday, the
+ * month, the quarter in whole weeks, or the year.
  */
 function getTimelineDays(scale: TimelineScale, anchor: Date): TimeWindow {
   const year = anchor.getUTCFullYear();

@@ -27,18 +27,10 @@ import type {
 } from "@nestjs/common";
 
 /**
- * Discovers the workspace's `framework:nestjs` projects and explores each
- * one's container.
+ * Discovers the workspace's `framework:nestjs` projects and explores each one's container.
  *
- * Ported from `synchronization`'s `nestjs-module-graphs` command (see
- * issue #242), which this package replaces: exploration still runs the
- * container in NestJS preview mode, which registers every module and
- * provider without instantiating any of them. That is what makes a project
- * safe to graph from a workstation or from CI: a project building a
- * `TypeOrmModule.forRootAsync` options factory never has a database
- * contacted. Project discovery reads the tags each project already carries
- * rather than walking the filesystem for a `project.json`, since whoever
- * read the Nx project graph for the Nx exports has already collected them.
+ * Exploration runs the container in NestJS preview mode, which registers modules and providers
+ * without instantiating them, so no database is contacted. Projects are discovered from Nx tags.
  */
 @Injectable()
 export class NestjsProjectService {
@@ -109,15 +101,8 @@ export class NestjsProjectService {
   }
 
   /**
-   * Lists every module in a container with the modules it imports, both by
-   * class name and in the container's registration order, leaving the ignored
-   * modules out of the list and out of every import.
-   *
-   * Reads the container through its public `ModulesContainer` provider, which
-   * a preview-mode container still hands out because NestJS registers it as a
-   * value. The container's view is what `import` edges report, so a global
-   * module appears as an import of every module rather than only of those
-   * that name it.
+   * Lists every module with its imports, in registration order, skipping ignored ones.
+   * A global module appears as an import of every module.
    */
   private exploreContainer(
     application: INestApplicationContext,
@@ -222,12 +207,7 @@ export class NestjsProjectService {
   }
 
   /**
-   * Filters an already-read list of Nx projects down to the ones tagged
-   * `framework:nestjs`, and describes each one.
-   *
-   * Projects are returned in the order they were given, which callers keep
-   * sorted by name — the same order `codependix-nx-projects`'s `NeighborhoodService`
-   * reads the Nx project graph's own projects in.
+   * Keeps the Nx projects tagged `framework:nestjs`, in input order, and describes each one.
    */
   discoverProjects(
     projects: { absoluteRoot: string; name: string; tags: string[] }[],

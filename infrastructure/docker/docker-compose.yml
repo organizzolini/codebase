@@ -70,20 +70,10 @@ services:
     restart: unless-stopped
 
 configs:
-  # Inline rather than a bind-mounted file, so the shared container never
-  # depends on the checkout or worktree that last recreated it. Runs only
-  # when the volume is empty: `nx run infrastructure:postgres:recreate`.
-  # For an existing volume, run it by hand for the new project instead:
-  # `docker exec -e POSTGRES_PROJECTS=<project> postgres sh
-  # /docker-entrypoint-initdb.d/databases.sh`, as infrastructure/README.md
-  # and documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md
-  # describe.
-  #
-  # For each project in `POSTGRES_PROJECTS`: a `<project>_username` role, a
-  # `<project>_development` database it owns, and, inside that database, a
-  # `<project>` schema it owns. The unprefixed `POSTGRES_*` in the root
-  # `.env` remain the container's admin login, which runs this script. `$$`
-  # escapes Compose's own interpolation, leaving `$` for the shell.
+  # Inline, so the container never depends on a checkout.
+  # Runs only on an empty volume. For an existing one, run the script by hand.
+  # Each project in `POSTGRES_PROJECTS` gets its own role, database, and schema.
+  # `$$` escapes Compose's interpolation, leaving `$` for the shell.
   postgres-databases:
     content: |
       #!/bin/sh

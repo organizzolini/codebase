@@ -28,9 +28,7 @@ export interface FakeProcessRunner {
 
 /**
  * Which locked skills are absent from disk, or why that could not be told.
- *
- * "Nothing is missing" and "nothing could be read" are different answers, so
- * they are different variants rather than one empty list.
+ * Nothing missing and nothing readable are different answers.
  */
 export type MissingSkillsResult =
   | { readonly kind: "no-lockfile" }

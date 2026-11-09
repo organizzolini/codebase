@@ -20,16 +20,8 @@ import type {
 } from "./plugin.types";
 
 /**
- * Reads this plugin's registration and infers the gate from it.
- *
- * Nx calls plugins from module-level functions with no injection of their own,
- * so the bare entry point in `index.ts` builds nothing itself — it resolves this
- * service and hands it the arguments.
- *
- * Nx passes whatever the consumer wrote in `nx.json` with no validation, so
- * every option is checked before use rather than cast. A bad value falls back
- * to its default: a typo in a target name should not stop the project graph
- * from being built.
+ * Reads this plugin's registration and infers the gate from it. Every option is checked
+ * before use, and a bad value falls back to its default rather than stopping the project graph.
  */
 @Injectable()
 export class PluginService {
@@ -83,18 +75,8 @@ export class PluginService {
   // 🌎 Public Methods
 
   /**
-   * Builds the gate for every project Nx matched, keyed by project root.
-   *
-   * Every project gets one, the workspace root excepted. The gate builds over
-   * a project's dependency closure, so its inputs reach the dependencies'
-   * sources through `^default`; the workspace configuration holds the rules,
-   * so editing it invalidates every gate; the project's own configuration is
-   * the one file only this project's gate reads; and the command line's own
-   * code and its loader's tsconfig chain decide every verdict, through the
-   * `toolInputs` the caller resolved with `resolveToolInputs` and
-   * `resolveTsconfigInputs`. No `configurations` are
-   * declared, so an aggregator run with `--configuration=check` falls through
-   * to the defaults rather than failing for a configuration this target lacks.
+   * Builds the gate for every project Nx matched, keyed by project root. No `configurations` are
+   * declared, so aggregator runs fall through.
    */
   public inferTargets(
     args: InferTargetsArguments,
@@ -124,12 +106,7 @@ export class PluginService {
   }
 
   /**
-   * Finds this plugin's own entry in an `nx.json` and returns its options.
-   *
-   * Nx hands plugin options to `createNodes` and to nothing else, so the gate
-   * executor reads them back from the file the workspace registered them in —
-   * the only way a target inferred without options can honor the path the
-   * registration chose.
+   * Returns this plugin's options from its `nx.json` entry. Nx passes them only to `createNodes`.
    */
   public readRegisteredOptions(nxConfiguration: unknown): unknown {
     const { plugins } = this.toRecord(nxConfiguration);
@@ -147,11 +124,8 @@ export class PluginService {
   }
 
   /**
-   * Resolves the effective plugin options from an untrusted value.
-   *
-   * `configurationPath` is required and never searched for: it becomes a cache
-   * input, and a guessed path naming a file that does not exist would leave
-   * every gate cached across an edit to the one that does.
+   * Resolves plugin options from an untrusted value. `configurationPath` is required and never
+   * searched for: a guess would cache gates across real edits.
    */
   public resolvePluginOptions(
     args: ResolvePluginOptionsArguments,

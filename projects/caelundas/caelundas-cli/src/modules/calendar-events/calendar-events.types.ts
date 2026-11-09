@@ -16,13 +16,7 @@ export type CalendarEventTagLink = Pick<
 >;
 
 /**
- * A {@link CalendarEvent} as a detector builds it and a writer reads it:
- * without the fields the database owns, the id and audit columns, or the
- * observer's coordinates and timezone, which `CalendarEventsService.upsert`
- * adds for the observer it stores the event for. Its `tags` are raw strings,
- * which the upsert resolves to nodes of the tag tree. A stored row is one as
- * well, and the writers are passed the stored rows `findInRange` returns, not
- * detected ones.
+ * A detected event, without the id, audit columns, coordinates or timezone the upsert adds; its tags are raw strings.
  */
 export type DetectedCalendarEvent = Omit<
   CalendarEvent,
@@ -47,17 +41,14 @@ export interface Observer extends Coordinates {
 }
 
 /**
- * A stored {@link CalendarEvent} as `findInRange` returns it, with the names
- * of the tags it is linked to directly, ordered by code point. The nodes
- * above them in the tree are not included: the closure table holds those.
+ * A stored event as `findInRange` returns it, with the names of its directly linked tags.
  */
 export type StoredCalendarEvent = CalendarEvent &
   Pick<DetectedCalendarEvent, "tags">;
 
 /**
- * The columns `RETURNING` reads back for a written row: its database-assigned
- * id, and the summary, start and end that identify it within one observer.
- * The driver answers with `Date`s, not the `Moment`s the entity carries.
+ * A `RETURNING` row: its database id, and the summary, start and end that
+ * identify it per observer; `Date`s, not `Moment`s.
  */
 export interface WrittenCalendarEvent {
   end: Date | Moment;

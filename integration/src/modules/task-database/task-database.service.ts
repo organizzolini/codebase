@@ -190,10 +190,7 @@ export class TaskDatabaseService {
     }
   }
 
-  /**
-   * Answers what SQLite itself says of a database: `ok` for a sound one, the
-   * problems found for a damaged one, or why it could not be opened at all.
-   */
+  /** Returns SQLite's integrity verdict: `ok`, the problems found, or why it could not open. */
   private integrityOf(database: string): string {
     try {
       return this.query(database, INTEGRITY_QUERY).join("\n");
@@ -219,10 +216,8 @@ export class TaskDatabaseService {
   }
 
   /**
-   * Copies the outputs this cache lacks, then inserts the rows it lacks, and
-   * reports how many results that added. Outputs go first: a row without its
-   * files restores nothing yet reports a hit, while files without a row are
-   * an ordinary miss.
+   * Copies missing outputs, then inserts missing rows. Outputs go first: a
+   * row without its files would report a false hit.
    */
   private mergeRows(source: string, incoming: string, target: string): string {
     const before = Number(this.query(target, CACHED_RESULTS_QUERY)[0]);
@@ -236,10 +231,8 @@ export class TaskDatabaseService {
   }
 
   /**
-   * Picks the most recently modified of the given databases. `actions/cache`
-   * preserves modification times, so after a restore this is the one the last
-   * job wrote. A later one wins only by being strictly newer, so a tie keeps
-   * the earlier name.
+   * Picks the most recently modified database, as `actions/cache` keeps
+   * modification times through a restore. A tie keeps the earlier name.
    */
   private newest(databases: readonly string[]): string {
     return databases.reduce((newest, database) =>
@@ -348,13 +341,8 @@ export class TaskDatabaseService {
   // 🌎 Public Methods
 
   /**
-   * Renames the newest restored database to this machine's id, and discards
-   * the rest.
-   *
-   * Every hosted runner is a fresh VM with a fresh machine id, so without this
-   * Nx opened an empty database of its own beside the restored one and never
-   * found a row. The schema suffix is kept as restored: a newer Nx ignores an
-   * older schema rather than misreading it.
+   * Renames the newest restored database to this machine's id, which Nx opens,
+   * and discards the rest.
    */
   public adopt(): TaskDatabaseReport {
     const databases = this.list();
@@ -382,11 +370,7 @@ export class TaskDatabaseService {
 
   /**
    * Keeps only the newest database, warning when there was more than one.
-   *
-   * `adopt` renames the restored database to this machine's id, so Nx should
-   * have written into that one file. A second database means Nx opened a name
-   * of its own again, and every hit was lost, which deserves a warning rather
-   * than a quiet return to zero hits.
+   * Several means Nx opened a name of its own again.
    */
   public keep(): TaskDatabaseReport {
     const databases = this.list();
@@ -410,11 +394,8 @@ export class TaskDatabaseService {
   }
 
   /**
-   * Merges another run's Nx cache into this one, so the tasks that run
-   * already finished are hits here too. The source holds `cache/` and
-   * `workspace-data/` as `.nx` lays them out. Entries this cache already has
-   * win, and the merge is skipped with a warning, never failed, when anything
-   * goes wrong: the caller would rather run cold than stop.
+   * Merges another run's Nx cache into this one, so its finished tasks are
+   * hits. A failure skips the merge with a warning.
    */
   public merge(source: string): TaskDatabaseReport {
     try {
@@ -443,13 +424,8 @@ export class TaskDatabaseService {
   }
 
   /**
-   * Discards every database that fails `PRAGMA integrity_check`.
-   *
-   * A cancellation can hit mid-write, leaving a file whose own header claims
-   * it is fine but whose pages are not. Nx fails outright querying such a
-   * file, and saving one is worse than saving none: every later job's
-   * `restore-keys` fallback inherits it. The whole database is discarded
-   * rather than repaired in place.
+   * Discards every database that fails `PRAGMA integrity_check`, since a
+   * damaged one saved would be inherited by later jobs.
    */
   public verify(): TaskDatabaseReport {
     const lines: string[] = [];

@@ -49,9 +49,7 @@ export interface MarkdownComparisonError {
 /**
  * The subset of an mdast node this validator reads.
  *
- * Declared structurally rather than importing mdast's own types because only
- * these fields participate in matching, and a narrow shape keeps the
- * comparison honest about what it actually inspects.
+ * Structural, so only the fields that take part in matching are declared.
  */
 export interface MarkdownNode {
   readonly alt?: string;

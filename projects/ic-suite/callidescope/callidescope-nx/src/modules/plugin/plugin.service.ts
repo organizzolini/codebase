@@ -70,19 +70,8 @@ export class PluginService {
   // 🔏 Private Methods
 
   /**
-   * Builds the predicate deciding which projects the workspace configuration
-   * keeps out of every trace.
-   *
-   * The run's own filter, built from the same two fields
-   * `WorkspaceService.discoverProjects` builds it from and asked the same
-   * question it asks — is this project's `tsconfig.json` excluded — so
-   * inference and discovery can never disagree about which projects a run
-   * covers.
-   *
-   * A configuration that cannot be loaded excludes nothing. This runs while Nx
-   * is building the project graph, where a thrown error stops every command in
-   * the workspace rather than one task; the executor loads the same file again
-   * and refuses there, where a refusal is about the run that asked for it.
+   * Builds the predicate for projects the workspace configuration excludes from every trace.
+   * A configuration that cannot load excludes nothing.
    */
   private async buildExclusionFilter(args: {
     configurationPath: string;
@@ -105,18 +94,8 @@ export class PluginService {
   }
 
   /**
-   * Builds one project's targets, gate included unless it is excluded.
-   *
-   * An excluded project gets the three that print something and not the one
-   * that decides an exit code. Its own code is never traced — discovery drops
-   * it before its `tsconfig.json` is opened — so a gate there would own no
-   * finding at all and report green for a project it never read.
-   * `projects/ic-suite/callidescope/callidescope-examples` is the case: its fixtures exist to breach
-   * the limits, which is why `.callidescopeignore` names it.
-   *
-   * That sentence is what `runTrace`'s exemption from the unread rule keeps
-   * true: such a project reads nothing of its own by definition, so a trace
-   * failing on that would hand it a permanently red target.
+   * Builds one project's targets, with the gate only when the project is not excluded. An
+   * excluded gate would pass without reading anything.
    */
   private buildInferredTargets(args: {
     isExcluded: boolean;
@@ -183,16 +162,8 @@ export class PluginService {
   }
 
   /**
-   * Whether the workspace configuration excludes this project outright.
-   *
-   * The project's own `tsconfig.json` is the path asked about, because that is
-   * the path `WorkspaceService.discoverProjects` asks about — a project is
-   * excluded when the file that makes it a project is.
-   *
-   * Joined with `path.posix` rather than `path.join`, unlike `holdsProgram`
-   * beside it: a filter matches the workspace-relative POSIX paths git and the
-   * exclusion globs are written in, where `holdsProgram` hands `existsSync` a
-   * native absolute path.
+   * Whether the workspace configuration excludes this project, judged by its `tsconfig.json`
+   * path in POSIX form.
    */
   private isExcludedProject(args: {
     fileFilter: FileFilter;
@@ -204,12 +175,8 @@ export class PluginService {
   }
 
   /**
-   * Turns one traced outcome into the gate's result for the projects it judges.
-   *
-   * What to print comes from the verdict: the findings it judged, or, for a
-   * run that read nothing and so has none to show, the reason it failed. The
-   * one thing added to that verdict is the exit code for an unread judged
-   * project, which is the gate's alone — see `VerdictService.judge`.
+   * Turns one traced outcome into the gate's result, printing the verdict's findings or its
+   * reason. A gate alone fails unread projects.
    */
   private renderGateVerdict(args: {
     judgedProjectNames: readonly string[];
@@ -237,11 +204,7 @@ export class PluginService {
   // 🌎 Public Methods
 
   /**
-   * States what a selection asked for that the workspace does not have.
-   *
-   * Both kinds of mistake are named at once, each beside the vocabulary it
-   * was drawn from, so a command line with two typos in it is two typos to
-   * fix rather than two runs.
+   * States what a selection asked for that the workspace does not have, naming every typo at once.
    */
   public describeRefusedScope(scope: ResolvedTraceScope): string {
     return [
@@ -257,19 +220,8 @@ export class PluginService {
   }
 
   /**
-   * Infers this plugin's targets onto every project holding a `tsconfig.json`.
-   *
-   * A project with no program of its own is skipped rather than given a target
-   * that would trace nothing — `callidescope` warns and moves on, so an
-   * inferred target there would be a permanently empty report. The
-   * workspace-root project is skipped for the opposite reason: it contains
-   * every other project, so its target would trace the whole workspace under
-   * one uncacheable task.
-   *
-   * Asynchronous because the gate is only inferred onto a project the
-   * workspace configuration does not exclude, and only that file can say which
-   * projects those are — see `buildExclusionFilter`, which is read once here
-   * rather than once per project for the same reason the plugin options are.
+   * Infers this plugin's targets onto every project holding a `tsconfig.json`, skipping the
+   * workspace root and projects without a program.
    */
   public async inferTargets(
     args: InferTargetsArguments,
@@ -313,13 +265,8 @@ export class PluginService {
   }
 
   /**
-   * Resolves an executor's `projects`/`tags` selection into directories.
-   *
-   * The selection is widened along the Nx dependency graph unless asked not to
-   * be — see `ProjectsService.resolveDependencyClosure` for why a trace that
-   * stops at a project's own boundary measures the wrong thing. Two sets of
-   * directories come back for that reason: what the widened selection reads,
-   * and what the selection itself is answerable for.
+   * Resolves an executor's `projects`/`tags` selection into directories, widened along the Nx
+   * graph unless told not to.
    */
   public async resolveTraceScope(
     args: ResolveTraceScopeArguments,
@@ -355,15 +302,8 @@ export class PluginService {
   }
 
   /**
-   * Traces the resolved directories and judges what it found against the
-   * limits every project in scope declared.
-   *
-   * The verdict is `judge`'s, which is where the rules are written; this
-   * chooses what to print for it — the findings it judged, or, for a run that
-   * read nothing and so has none to show, the reason it failed instead.
-   *
-   * The one thing it adds to that verdict is the exit code for an unread
-   * judged project, which is the gate's alone — see `judge`.
+   * Traces the resolved directories and judges the findings against each in-scope project's
+   * declared limits.
    */
   public async runGate(args: RunGateArguments): Promise<RunTraceResult> {
     const { configuration, path: configurationPath } =
@@ -382,14 +322,8 @@ export class PluginService {
   }
 
   /**
-   * Gates every task of a batch from one trace of their combined scope.
-   *
-   * Each gate used to trace the whole workspace on its own, so a run of ~60
-   * projects traced it ~60 times. The trace reads the union of the tasks'
-   * directories once, then every task is judged by `judge` on the projects it
-   * alone answers for, exactly as `runGate` judges one — a breach the shared
-   * trace found fails only the task whose project owns it, which is what keeps
-   * a batch's verdicts the same as the separate runs' would have been.
+   * Gates every task of a batch from one trace of their combined scope, judging each task by
+   * the projects it owns.
    */
   public async runGateBatch(
     args: RunGateBatchArguments,
@@ -419,21 +353,8 @@ export class PluginService {
   }
 
   /**
-   * Traces the resolved directories and renders the report.
-   *
-   * This is the whole of the "logic on top of core callidescope": the
-   * selection above is Nx's to resolve, and everything below this line is
-   * callidescope's own, reached through the same services the `callidescope`
-   * command uses rather than through a subprocess.
-   *
-   * Judged by the same predicate the gate is, so the two targets cannot come
-   * to disagree about what a passing run is. A run that read nothing keeps its
-   * report and gains the reason underneath it: a summary table of zeroes is
-   * what happened, not why it failed.
-   *
-   * The one rule the two act on differently: a judged project none of whose
-   * own files were read is **printed here and not failed on**, where a gate
-   * fails — see `judge` for why that is the one exemption.
+   * Traces the resolved directories and renders the report, judged by the gate's predicate.
+   * Unread projects print but do not fail.
    */
   public async runTrace(args: RunTraceArguments): Promise<RunTraceResult> {
     const { configuration, path: loadedPath } =

@@ -11,10 +11,7 @@ export interface CalculateScoreArguments {
 /**
  * Anything that carries a weight.
  *
- * Deliberately narrower than `ConformetryDifference`: a language package weighs its
- * own internal findings before they are ever described as conformetry differences,
- * and requiring the full error shape would force it to build messages just to
- * count.
+ * Narrower than `ConformetryDifference`, so a package need not build messages just to count.
  */
 export interface WeightedFinding {
   readonly weight?: number;

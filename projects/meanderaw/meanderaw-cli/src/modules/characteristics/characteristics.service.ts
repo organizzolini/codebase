@@ -31,20 +31,12 @@ import type {
 import type { OnApplicationBootstrap } from "@nestjs/common";
 
 /**
- * Orchestrates every registered characteristic evaluator: finds them all
- * through Nest's `DiscoveryService` rather than a hand-maintained list — a
- * provider that is one evaluator, and each member of a provider that holds a
- * group of them, such as a letter's sixteen orientations —
- * checks them against the key lists in `characteristics.constants` when the
- * application boots, and fills one {@link Characteristics} record per Code
- * from a single shared context.
+ * Orchestrates every registered characteristic evaluator. Discovers them through Nest's
+ * `DiscoveryService`, checks them against the key lists in `characteristics.constants`
+ * at boot, and fills one {@link Characteristics} record per Code from a shared context.
  *
- * It also reduces a record to the sparse map a meander row stores
- * ({@link CharacteristicsService.stored}).
- *
- * It also answers the two questions about a Code as filed rather than about
- * its repeating unit — whether it reduces, and the canonical-phase
- * tile-crossing score — which is why neither is a field of the record.
+ * It also reduces a record to the sparse map a meander row stores, and answers two
+ * questions about a Code as filed, not its repeating unit.
  */
 @Injectable()
 export class CharacteristicsService implements OnApplicationBootstrap {
@@ -64,11 +56,8 @@ export class CharacteristicsService implements OnApplicationBootstrap {
   // 🔐 Private Fields
 
   /**
-   * Every evaluator in key-list order, discovered and checked once. The
-   * real application always reaches this through
-   * {@link onApplicationBootstrap}; the `??=` here only serves a module
-   * that is compiled but never initialized, such as a test that never
-   * calls `module.init()`.
+   * Every evaluator in key-list order, discovered and checked once. Boot reaches this
+   * through {@link onApplicationBootstrap}; the `??=` only serves an uninitialized test module.
    */
   private registered: readonly CharacteristicEvaluator[] | undefined;
 
@@ -92,9 +81,8 @@ export class CharacteristicsService implements OnApplicationBootstrap {
   }
 
   /**
-   * The evaluator candidates one discovered provider holds: itself when it
-   * is shaped like an evaluator, every evaluator-shaped member when it is a
-   * group such as a letter service, and none otherwise.
+   * The evaluator candidates a discovered provider holds: itself when evaluator-shaped,
+   * or each evaluator-shaped member of a group such as a letter service.
    */
   private candidates(instance: unknown): readonly CandidateEvaluator[] {
     if (this.isCandidateEvaluator(instance)) return [instance];
@@ -227,7 +215,7 @@ export class CharacteristicsService implements OnApplicationBootstrap {
     return values;
   }
 
-  /** Whether the Code as filed is wider than its repeating unit — a property of the filing, not of the unit, so not a record field. */
+  /** Whether the Code as filed is wider than its repeating unit: a property of the filing, not a record field. */
   public isReducible(code: Code | CodeObject): boolean {
     const parsed =
       typeof code === "string" ? this.codeService.parse(code) : code;
@@ -241,23 +229,14 @@ export class CharacteristicsService implements OnApplicationBootstrap {
   }
 
   /**
-   * Discovers and checks every evaluator as the application boots, so a key
-   * with no evaluator, an unknown or doubly claimed key, or a mistyped
-   * declaration stops the application before the first Code is measured
-   * rather than partway through a draw run. This is the path the real
-   * application always takes; {@link evaluators}'s lazy `??=` is not a
-   * second production path, only what lets a test compile this module
-   * without booting it.
+   * Discovers and checks every evaluator at boot, so a missing, unknown, doubly claimed or mistyped key stops startup before any Code is measured.
    */
   public onApplicationBootstrap(): void {
     this.evaluators();
   }
 
   /**
-   * A computed record as a meander row's `characteristics` map stores it:
-   * every numeric key whose value is not zero, then `true` under every
-   * boolean key that holds, then `isReducible` when the filed Code is wider
-   * than its unit — each run in key-list order, and no zero or `false` at all.
+   * A record as a meander row stores it: non-zero numbers, held booleans as `true`, and `isReducible` when the Code is wider than its unit.
    */
   public stored(
     characteristics: Characteristics,
@@ -283,9 +262,7 @@ export class CharacteristicsService implements OnApplicationBootstrap {
   }
 
   /**
-   * The tile-crossing component delta of the Code exactly as filed, not of
-   * its repeating unit — the canonical-phase scorer, which compares cuts of
-   * the same band and so must see the width it was cut at.
+   * Tile-crossing component delta of the Code as filed, not its repeating unit: the canonical-phase scorer compares cuts, so it needs their width.
    */
   public tileCrossingComponentDeltaCount(code: Code | CodeObject): number {
     return this.tileCrossingComponentDeltaCountService.compute(

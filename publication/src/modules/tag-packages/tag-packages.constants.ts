@@ -10,9 +10,8 @@ export const PUSH_ATTEMPTS = 4;
 export const DEFAULT_PUSH_RETRY_DELAY = 20;
 
 /**
- * Every file `version-packages` may have written. Globs rather than git path
- * patterns, which fail the whole `git add` when one matches nothing, as the
- * changelog one does until a package's first changelog entry.
+ * Every file `version-packages` may write. Globs, since a git path that matches
+ * nothing fails the whole `git add`.
  */
 export const VERSIONED_FILE_PATTERNS = [
   "projects/ic-suite/*/*/CHANGELOG.md",

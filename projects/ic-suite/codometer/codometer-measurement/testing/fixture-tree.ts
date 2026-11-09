@@ -9,11 +9,9 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 
 /**
- * Contents of the fixture tree, keyed by path relative to its root.
+ * Fixture files keyed by path relative to the tree root.
  *
- * Written to a real directory rather than mocked, because the behavior under
- * test is exactly what the filesystem reports: which entries a directory
- * holds, which of them are symlinks, and which ignore files sit beside them.
+ * Written to disk, not mocked: symlinks and ignore files are under test.
  */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
   // `README.md` is not named here on purpose. Codometer splices into it, so
@@ -49,11 +47,7 @@ const FIXTURE_FILES: Readonly<Record<string, string>> = {
 /**
  * Writes the fixture tree to a fresh temporary directory and returns its root.
  *
- * `CLAUDE.md` is a symlink to `AGENTS.md`, the shape the repository's own tree
- * has and the one that used to be counted twice.
- *
- * Every caller owes the tree a `removeFixtureTree` — a suite that forgets
- * leaves its trees behind in the system temporary directory for good.
+ * Pass the root to `removeFixtureTree` afterwards.
  */
 export function createFixtureTree(): string {
   const root = mkdtempSync(path.join(tmpdir(), "codometer-fixture-"));

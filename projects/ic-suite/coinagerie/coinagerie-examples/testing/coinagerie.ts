@@ -29,13 +29,8 @@ export const examplesDirectory = path.join(packageDirectory, "examples");
 const cliDirectory = path.resolve(packageDirectory, "..", "coinagerie-cli");
 
 /**
- * Where a staged copy of an example is made, inside this package.
- *
- * Not `os.tmpdir()`, and the reason is the loader rather than tidiness: a
- * spawned run resolves `@swc-node/register` from its working directory
- * upward, so a copy outside the workspace dies with `ERR_MODULE_NOT_FOUND` on
- * every Linux runner while passing on macOS. `tmp/` is already ignored by the
- * workspace `.gitignore`.
+ * Staged example copies live here, inside the package: a spawned run resolves
+ * `@swc-node/register` upward, so a copy in `os.tmpdir()` fails on Linux only.
  */
 const stagingDirectory = path.join(packageDirectory, "tmp");
 
@@ -64,12 +59,8 @@ export function removeStagedExample(root: string): void {
 }
 
 /**
- * Runs the real command in a staged example, as a separate process, because
- * what is under test is its exit code, its streams, and the files it leaves.
- *
- * `SWC_NODE_PROJECT` names the command-line host's own `tsconfig.json`, which
- * carries the decorator settings Nest's injection needs, so the staged copy
- * stays exactly the files the guide shows rather than gaining one of its own.
+ * Runs the real command in a staged example as a separate process.
+ * `SWC_NODE_PROJECT` names the host's `tsconfig.json`, for Nest's decorator settings.
  */
 export function runCoinagerie(root: string, args: string[]): RunResult {
   const result = spawnSync(
@@ -100,13 +91,8 @@ export function runCoinagerie(root: string, args: string[]): RunResult {
 }
 
 /**
- * Copies an example's `project/` folder into a fresh staging folder and
- * returns it, so a run can write without touching the committed fixture.
- *
- * Every staged copy is a repository of its own — an empty `.git` folder marks
- * it — so the workspace's own ignore rules never reach it. `extraFiles` is
- * for what an example's guide tells the reader to create, because a file the
- * example's own `.gitignore` hides cannot be committed beside it.
+ * Copies an example's `project/` folder into a fresh staging repository and
+ * returns its path. `extraFiles` adds files the example's `.gitignore` would hide.
  */
 export function stageExample(
   exampleName: string,

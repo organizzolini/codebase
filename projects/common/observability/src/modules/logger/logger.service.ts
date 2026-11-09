@@ -16,20 +16,11 @@ import {
 import type { LogData, ParsedLogMessage } from "./logger.types";
 
 /**
- * Transient-scoped logger so each injecting class gets its own instance.
- * Each consumer calls `setContext(ClassName.name)` to tag every log line
- * with the originating class. Backed by pino for structured JSON output in
- * production and human-readable pretty-print in development.
- *
- * Messages follow one grammar: an emoji naming the subject, a verb in present
- * progressive or past tense, then the object. Values that vary per call —
- * counts, percentages, durations — go in the `data` argument rather than the
- * message, so the message stays constant enough for telemetry to group on.
- *
- * ```ts
- * this.logger.info("📥 Downloading CSEL sources", undefined, { total: 428 });
- * this.logger.info("📥 Downloaded CSEL sources", undefined, { count: 412 });
- * ```
+ * Transient logger, so each injecting class gets its own instance. Each
+ * consumer calls `setContext(ClassName.name)`. Backed by pino: JSON in
+ * production, pretty-printed in development. Messages start with an emoji
+ * naming the subject, then a verb in present progressive or past tense.
+ * Varying values such as counts go in `data`, so messages stay groupable.
  */
 @Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService extends ConsoleLogger {
@@ -44,12 +35,7 @@ export class LoggerService extends ConsoleLogger {
   private static readonly isProduction =
     process.env["NODE_ENV"] === "production";
 
-  /**
-   * Built on first use, not when this file is evaluated.
-   *
-   * A destination fixed at import time could only ever be chosen by this
-   * package, since every consumer's own code runs after its imports.
-   */
+  /** Built on first use, so `logToStandardError` can still choose the destination after import. */
   private static rootLogger: pino.Logger | undefined;
 
   /** Whether lines go to standard error instead of standard output. */
@@ -92,18 +78,8 @@ export class LoggerService extends ConsoleLogger {
   }
 
   /**
-   * Sends every subsequent line to standard error instead of standard output.
-   *
-   * For a command-line application whose standard output *is* its result. A log
-   * line sharing that stream is not a diagnostic beside the data, it is a
-   * corruption of it. Call it before anything logs — the first statement of the
-   * application's bootstrap.
-   *
-   * A call after the first line warns and changes nothing: the destination is
-   * fixed when the pino instance is built, and tearing down a transport
-   * somebody is writing through would be worse than refusing. The warning is
-   * the point — silently leaving the lines on standard output is how a caller
-   * would ship a corrupted pipe without ever being told.
+   * Sends later lines to standard error, for a command whose stdout is its
+   * result. Call it first; later calls warn and change nothing.
    */
   static logToStandardError(): void {
     if (LoggerService.rootLogger !== undefined) {
@@ -117,10 +93,8 @@ export class LoggerService extends ConsoleLogger {
   }
 
   /**
-   * Fails a malformed message in development, and never in production.
-   *
-   * A logger that throws in production turns an observability call into an
-   * outage, so the check runs only where a developer is present to fix it.
+   * Fails a malformed message in development only, since a throw in production
+   * would turn logging into an outage.
    */
   private assertConventionalMessage(args: {
     context: string | undefined;
@@ -180,11 +154,8 @@ export class LoggerService extends ConsoleLogger {
   }
 
   /**
-   * Whether a word is a verb in one of the two tenses the convention allows.
-   *
-   * Present progressive means the operation is under way; past means it
-   * finished. Regular morphology covers both, so a new verb needs no
-   * registration anywhere — only irregular pasts are enumerated.
+   * Whether a word is a present-progressive or past-tense verb. Only irregular
+   * pasts need listing; regular morphology covers the rest.
    */
   private isConventionalVerb(word: string): boolean {
     const lowercased = word.toLowerCase();
@@ -260,11 +231,8 @@ export class LoggerService extends ConsoleLogger {
   }
 
   /**
-   * Logs an error message at the `error` level, optionally including a stack trace.
-   *
-   * `ConsoleLogger.error` spends a third slot on a context string that the
-   * other levels do not have, so this one accepts either: a string keeps
-   * NestJS's meaning, an object is structured data like everywhere else.
+   * Logs at the `error` level. The second argument is a stack, the third a
+   * context string or structured data.
    */
   override error(
     message: unknown,
@@ -295,12 +263,8 @@ export class LoggerService extends ConsoleLogger {
   }
 
   /**
-   * Logs an informational message at the `info` level.
-   *
-   * NestJS and `nest-commander` call this method directly as part of the
-   * framework's own `LoggerService` contract, so it must keep working
-   * exactly as before. Application code should call `info` instead — the
-   * same behavior under a name that says what level it logs at.
+   * Logs at the `info` level, as NestJS and `nest-commander` call it.
+   * Application code should call `info` instead.
    */
   override log(message: unknown, context?: string, data?: LogData): void {
     this.info(message, context, data);

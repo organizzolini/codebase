@@ -26,18 +26,10 @@ import type {
 } from "@conformetry/configuration";
 
 /**
- * Renders a conformetry template from the configured registry.
+ * Renders a conformetry template into a directory.
  *
- * Unknown options are allowed through deliberately: a template's parameters
- * are not known until the template is chosen, so they cannot be declared as
- * flags ahead of time. They are matched against the template's own schema
- * instead. This is also why the template is selected with `--template` rather
- * than `--name` — nearly every template takes a `name` parameter, and
- * reserving that flag made it impossible to supply.
- *
- * `--template` is optional at the parse layer so a bare `generate` reaches
- * this command and can offer a picker instead of failing at argument parsing
- * with a name the reader would have had to look up elsewhere.
+ * Unknown options pass through, since a template's parameters are known only once it is chosen.
+ * `--template` is used rather than `--name`, because most templates take a `name` parameter.
  */
 @Command({
   allowUnknownOptions: true,
@@ -91,12 +83,8 @@ export class GenerateCommand extends CommandRunner {
 
     const directory = this.requireDirectory(options, definition.name);
 
-    // Every input is required, which is what `conformetry-nx` has always told
-    // Nx about the same generators: a conformetry generator substitutes each
-    // of its placeholders, and mustache renders a missing one as empty rather
-    // than failing, so an optional input would silently produce a hole. This
-    // command used to pass `properties` alone, leaving every input optional
-    // and every missing one skipped — the hole nobody was warned about.
+    // Every input is required: mustache renders a missing placeholder as empty
+    // rather than failing, so an optional input would silently leave a hole.
     const schema: JsonSchemaDefinition = {
       properties: definition.inputs,
       required: Object.keys(definition.inputs),
@@ -131,12 +119,7 @@ export class GenerateCommand extends CommandRunner {
   }
 
   /**
-   * Logs a command line the input service refused, and fails the run.
-   *
-   * A required input that could not be asked for is the reader's own typing
-   * to fix, so it is reported as a rejected command line rather than as a
-   * crash. Nothing was generated, and the next move is to pass the flag it
-   * named, not to read a stack trace.
+   * Logs a refused command line and fails the run, rather than crashing on it.
    */
   private rejectCommandLine(error: InputError): void {
     this.logger.error("🚫 Rejected the command line", undefined, {
@@ -146,13 +129,7 @@ export class GenerateCommand extends CommandRunner {
   }
 
   /**
-   * Refuses the flag `--template` replaced, rather than ignoring it.
-   *
-   * Unknown options are allowed through so a template's own inputs can be
-   * passed as flags, which means commander does not reject `--generator` for
-   * this command the way it would for any other. Without this it would be
-   * read as an input nothing declares and quietly discarded, leaving a stale
-   * script to prompt or to fail for the wrong reason.
+   * Refuses the removed `--generator` flag, since ignoring it would silently drop input.
    */
   private rejectRemovedGeneratorOption(rawArguments: readonly string[]): void {
     const isRemovedOption = rawArguments.some((argument) => {
@@ -192,12 +169,9 @@ export class GenerateCommand extends CommandRunner {
   }
 
   /**
-   * The directory to write into, or a refusal when the caller named none.
+   * The directory to write into, or a refusal when none was named.
    *
-   * Required, unlike on the Nx host: nothing here can locate a project, so a
-   * missing flag would otherwise write somewhere the caller never chose. It is
-   * checked before any input is asked for, so nobody answers prompts for a
-   * run that was never going to happen.
+   * Checked before any input is asked for.
    */
   private requireDirectory(
     options: GenerateCommandOptions,
@@ -214,13 +188,9 @@ export class GenerateCommand extends CommandRunner {
   }
 
   /**
-   * Settles which template to render: the one named, the one picked, or none.
+   * Settles which template to render, or none.
    *
-   * The missing case and the unknown case are decided together here rather
-   * than split between argument parsing and the command body, which is what
-   * lets the picker sit between them. Whether anybody can be asked is read
-   * from the one predicate that knows — a non-terminal stdin is what once let
-   * a prompt hang a CI job until it timed out.
+   * Prompts only at a terminal: a non-terminal stdin once hung a CI job.
    */
   private async resolveTemplateName(args: {
     configuration: ConformetryConfiguration;
@@ -279,8 +249,7 @@ export class GenerateCommand extends CommandRunner {
   /**
    * Parses the name of the template to render.
    *
-   * Optional, so a bare `generate` is not rejected at argument parsing with a
-   * name the reader has not been shown yet.
+   * Optional, so a bare `generate` reaches the picker.
    */
   @Option({
     description: "Name of the template to render",
@@ -293,9 +262,7 @@ export class GenerateCommand extends CommandRunner {
   /**
    * Renders the template, reporting a refused command line as one.
    *
-   * Only an `InputError` is caught: a required input nobody could be asked
-   * for is a flag the caller has to pass, where anything else is a genuine
-   * failure and keeps its stack.
+   * Only an `InputError` is caught; other failures keep their stack.
    */
   public async run(
     passedParameters: string[],

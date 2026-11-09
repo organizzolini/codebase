@@ -385,12 +385,7 @@ describe(MeasureService, () => {
       "dist/index.js",
       "dist/nested/deep.js",
     ]);
-    // Language analysis measures its own byte-precise total the same way the
-    // codebase does — with no compression — rather than a declared input's
-    // own compressed `size` metric, which nothing here asked for. Exactly two
-    // calls: the codebase's own, then this input's — never a third, which is
-    // what a declared `size` analysis running alongside "language" here would
-    // look like.
+    // Language analysis measures its own uncompressed total, not a declared input's `size` metric. Exactly two sizeService.analyze calls: the codebase's, then this input's.
     expect(sizeService.analyze).toHaveBeenCalledTimes(2);
     expect(sizeService.analyze).toHaveBeenNthCalledWith(1, {
       compression: "none",

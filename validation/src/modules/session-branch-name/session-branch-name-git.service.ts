@@ -25,10 +25,8 @@ export class SessionBranchNameGitService {
   // 🌎 Public Methods
 
   /**
-   * Runs `git` with these arguments in the current working directory.
-   *
-   * @param args - The arguments after `git`.
-   * @returns Whether it could start, its exit status, and its standard output.
+   * Runs `git` with these arguments in the current directory, returning whether
+   * it started, its status, and its output.
    */
   public run(args: readonly string[]): GitResult {
     const completion = spawnSync("git", [...args], {

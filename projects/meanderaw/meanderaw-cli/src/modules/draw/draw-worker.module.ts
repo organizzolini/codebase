@@ -12,15 +12,11 @@ import { DrawRecordService } from "./draw-record.service";
 import { DrawWorkerService } from "./draw-worker.service";
 
 /**
- * What one draw run worker thread boots: exactly the services that turn an
- * orbit minimum into a row, and nothing that writes one.
+ * What one draw run worker thread boots: the services that turn an orbit
+ * minimum into a row, and nothing that writes one.
  *
- * A worker thread shares no module graph with the main thread, so it boots
- * its own standalone context from `src/worker.ts`. It holds no database
- * connection and no pool — rows travel back to the main thread, which
- * inserts them — and it validates the same environment schema the main
- * thread does, which a worker inherits a copy of, so both read the same
- * edge budget.
+ * A worker holds no database connection; rows travel back to the main thread,
+ * which inserts them.
  */
 @Module({
   controllers: [],

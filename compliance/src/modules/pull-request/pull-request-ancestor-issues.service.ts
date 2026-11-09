@@ -296,9 +296,8 @@ export class PullRequestAncestorIssuesService {
   }
 
   /**
-   * Judges the links the write phase makes: every ancestor of a closed issue
-   * must be named in the description. Draft and Dependabot pull requests are
-   * exempt, like the linked-issue check.
+   * Every ancestor of a closed issue must be named in the description.
+   * Drafts and Dependabot are exempt.
    */
   public verify(context: PullRequestContext): CheckOutcome {
     const base = {

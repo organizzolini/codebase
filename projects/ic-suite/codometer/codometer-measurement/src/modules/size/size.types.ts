@@ -15,9 +15,7 @@ export interface SizeResult {
   /**
    * Total bytes the target's files occupy under the chosen compression.
    *
-   * A sum of separately compressed files rather than one compression of all of
-   * them: a browser fetches each file on its own, so compressing them together
-   * would report a number no client ever receives.
+   * A sum of separately compressed files, as browsers fetch them.
    */
   bytes: number;
   compression: CodometerCompression;

@@ -49,11 +49,7 @@ export class MeasureCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Say which files were left out because codometer writes them.
-   *
-   * Announced rather than left to be noticed. A file missing from the counts
-   * with no explanation reads as a measurement bug, and the last repository to
-   * hit this wrote the exclusion into its ignore file by hand.
+   * Says which files were left out because codometer writes them, so a missing file does not read as a measurement bug.
    */
   private announceOutputPaths(outputPaths: string[]): void {
     if (outputPaths.length === 0) {
@@ -68,12 +64,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Replaces every configured input with the globs `--inputs` named, when it
-   * was passed.
-   *
-   * Not a filter over configured inputs: the run measures exactly the globs
-   * given, running the `language` analysis over them, with no other input —
-   * not even the built-in `codebase` one — active.
+   * Replaces every configured input with the `--inputs` globs, measured as the `language` analysis with no other input active.
    */
   private applyInputsOverride(
     configuration: ResolvedCodometerConfiguration,
@@ -99,13 +90,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Read the configuration, or say why it could not be read.
-   *
-   * `--config` is required: no file is searched for and none is assumed, so a
-   * run without it fails naming the flag, and so does a path that names no
-   * file or a configuration nothing can parse. A shared default object,
-   * spread by each project's own `codometer.config.ts`, is what states
-   * `format` once for a workspace.
+   * Reads the configuration `--config` names. Nothing is searched for, so a missing flag or unreadable file fails the run.
    */
   private async readConfiguration(
     options: MeasureCommandOptions,
@@ -163,13 +148,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Report whatever the run could not do, and say whether it fails the run.
-   *
-   * A failure is neither staleness nor a breach: it is the run not having
-   * finished. It stops any run that produces or gates an output, because a
-   * report built from a partial measurement is not one to publish and a gate
-   * that could not be evaluated has not been passed. A run that does neither
-   * says so and exits clean, exactly as its flags promised.
+   * Reports what the run could not measure. Says whether it fails the run: writing or gating outputs cannot pass on partial data.
    */
   private reportFailures(args: ReportFindingsArguments): boolean {
     if (args.measurement.failures.length === 0) {
@@ -219,12 +198,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Reads the flags into everything the rest of the run needs: the mode, the
-   * resolved configuration, what to print, and where each output goes.
-   *
-   * `undefined` when the run cannot proceed at all — a rejected command line,
-   * or a configuration that failed to load — with the refusal and exit code
-   * already reported, so nothing after this has to check twice.
+   * Reads the flags into the mode, configuration, print format, and output destinations. Returns `undefined` after reporting a refusal, so callers stop there.
    */
   private async resolveRunPlan(
     options: MeasureCommandOptions,
@@ -276,10 +250,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Resolve the directory the run measures, and announce that it started.
-   *
-   * Always the process's working directory: unlike every other flag, there is
-   * no per-run override for it — a run measures where it was invoked.
+   * Returns the process's working directory, the only directory a run can measure: no flag overrides it.
    */
   private resolveWorkingDirectory(): string {
     const workingDirectory = path.resolve(process.cwd());
@@ -294,13 +265,7 @@ export class MeasureCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Parse the set of things the run fails on from command-line input.
-   *
-   * The parser runs only when `--check` carries a value, so anything reaching
-   * it is a written set. A `--check` with no value never arrives here at all
-   * and is refused later, because a set with nothing in it is indistinguishable
-   * from the flag having been left off — which is how check mode once silently
-   * became write mode.
+   * Parses the set of checks to fail on. A `--check` with no value is refused later rather than silently becoming write mode.
    */
   @Option({
     description: `Fail on a comma-separated set drawn from "reports" and "limits"`,
@@ -311,10 +276,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Parse the required configuration path from command-line input.
-   *
-   * Marked required so the command line itself refuses a run without it and
-   * `--help` lists it as mandatory.
+   * Parses the required configuration path, so the command line refuses a run without it.
    */
   @Option({
     description: "Path to the codometer configuration file (required)",
@@ -326,12 +288,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Parse what the run prints from command-line input.
-   *
-   * Says nothing about which files are written — that is each `--output-*`
-   * flag's job. Omitted, it reads the resolved configuration's own required
-   * `format` field rather than inferring one from which other flags are
-   * present.
+   * Parses what the run prints to standard output. Omitted, the configuration's `format` is used, not one inferred from other flags.
    */
   @Option({
     description: `What to print to standard output, one of ${FORMAT_NAMES.join(" and ")}`,
@@ -342,11 +299,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Parse the glob array that replaces every configured input, from
-   * command-line input.
-   *
-   * Each value commander hands the parser is one glob; they accumulate into
-   * one array across the whole `--inputs` invocation.
+   * Parses one glob, accumulating them into the array that replaces every configured input.
    */
   @Option({
     description:
@@ -358,11 +311,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Parse the report's destination from command-line input.
-   *
-   * `true` when the flag was passed with no value, asking this run to write
-   * wherever the resolved configuration's own JSON output says to; a string
-   * when a path was given, which is used for this destination alone.
+   * Parses the JSON report destination. `true` when no path is given, meaning the configured path is used.
    */
   @Option({
     description:
@@ -374,11 +323,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Parse the markdown badge block's destination from command-line input.
-   *
-   * `true` when the flag was passed with no value, asking this run to write
-   * wherever the resolved configuration's own markdown output says to; a
-   * string when a path was given, which is used for this destination alone.
+   * Parses the markdown badge destination. `true` when no path is given, meaning the configured path is used.
    */
   @Option({
     description:
@@ -390,14 +335,7 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Measure the repository and produce every resolved output.
-   *
-   * Flags are independent: `--output-json`/`--output-markdown` each write
-   * their own destination, `--check reports` fails on a stale report,
-   * `--check limits` fails on a breached limit, `--format` prints, and none of
-   * them turns another on. Every output is produced before any finding is
-   * weighed, so a run that writes and gates leaves the report behind even
-   * when the gate trips.
+   * Measures the repository and produces every output. Flags are independent, and every output is written before any finding gates the run.
    */
   async run(
     _passedParameters: string[],

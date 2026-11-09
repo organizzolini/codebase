@@ -5,30 +5,14 @@ import path from "node:path";
 import type { CodependixBoundaryLevel } from "../boundaries/boundaries.types";
 
 /**
- * The `scope` of the whole-workspace Nx graph — what the graph covers, not
- * who a finding in it is charged to.
- *
- * The Nx level is built once for the repository rather than once per
- * project, so its graph has no one project to name. Each finding in it is
- * charged to the projects owning its nodes instead — see
- * `BoundariesService.chargeProjects`.
+ * The `scope` of the whole-workspace Nx graph. Its findings are charged to
+ * the projects owning their nodes, see `BoundariesService.chargeProjects`.
  */
 export const WORKSPACE_SCOPE = "workspace";
 
 /**
- * The order the four graph levels are judged in.
- *
- * Cheapest first, and it is not a small difference: the Nx level reads a graph
- * the run already holds, while the NestJS level boots every container in
- * preview mode and the TypeScript level builds a `ts.Program` per project. A
- * workspace declaring only Nx rules never pays for either, because a level
- * with no rules is not built at all.
- *
- * Written as a list rather than left implicit in the order of four `if`
- * blocks, so the order a report comes out in is stated once, in the place a
- * reader looks for it. `typescript` and `python` are `boundaries.fileImports`'s
- * two nested languages, judged as separate levels here even though
- * `codependix-file-imports` builds and exports them as one merged graph type.
+ * Judging order, cheapest first. Nx reuses a graph the run already holds;
+ * NestJS boots containers and TypeScript builds a `ts.Program`.
  */
 export const BOUNDARY_LEVEL_ORDER = [
   "nxProjects",
@@ -44,20 +28,14 @@ export const BOUNDARY_LEVEL_ORDER = [
 export const STACK_FRAME_PREFIX = "at ";
 
 /**
- * A frame's line or column number.
- *
- * Anchored at both ends with one quantifier, so it runs in linear time on
- * whatever a stack carries — the frame itself is parsed with string
- * operations rather than one regular expression, which would backtrack
- * in polynomial time on a crafted frame.
+ * A frame's line or column number. Anchored at both ends, so a crafted
+ * frame cannot trigger backtracking.
  */
 export const FRAME_POSITION = /^\d+$/u;
 
 /**
- * The path segment marking a frame as third-party code.
- *
- * A frame inside a package's own `node_modules` is not that project's code,
- * even though it sits under the project's root, so it never names an owner.
+ * The path segment marking a frame as third-party code. Such a frame never
+ * names an owner, even under a project's root.
  */
 export const NODE_MODULES_SEGMENT = `${path.sep}node_modules${path.sep}`;
 

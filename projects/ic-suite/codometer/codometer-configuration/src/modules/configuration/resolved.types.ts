@@ -40,10 +40,7 @@ export interface ResolvedCodometerCommentSelector {
 }
 
 /**
- * Configuration with every default applied.
- *
- * Consumers read this shape rather than the authored one, so no analyzer has
- * to know which fields a configuration file may omit.
+ * Configuration with every default applied, so no analyzer has to know which fields a file may omit.
  */
 export interface ResolvedCodometerConfiguration {
   /** Every counter this configuration measures, with defaults applied. */
@@ -71,13 +68,7 @@ export interface ResolvedCodometerCustomStatistic {
 }
 
 /**
- * A named set of files with its compression filled in and its negations
- * collected.
- *
- * `include` holds only patterns that add files and `exclude` only patterns
- * that remove them, whichever list they were authored in. Order carries no
- * meaning in either: a file is in the input when some include glob claims it
- * and no exclude glob does.
+ * A named set of files, with negations collected. A file is in when an include claims it and no exclude does.
  */
 export interface ResolvedCodometerInput {
   analyses: CodometerAnalysis[];
@@ -98,11 +89,7 @@ export interface ResolvedCodometerJsonOutput {
 }
 
 /**
- * A limit with its severity filled in and its value read as a number.
- *
- * The unit is gone by this point: a limit written `"8 KB"` arrives here as
- * 8000, so nothing downstream has to know that limits can be written with
- * units at all.
+ * A limit with severity filled in and its value read as a number. Units are gone: `"8 KB"` arrives as 8000.
  */
 export interface ResolvedCodometerLimit {
   /** Stays `undefined` when none was written; a report falls back to the path. */
@@ -113,11 +100,7 @@ export interface ResolvedCodometerLimit {
 }
 
 /**
- * Markdown output destination with defaults applied.
- *
- * `write` stays `undefined` when the configuration supplies none: the
- * built-in rendering and writing live in the CLI that calls it, so "unset" is
- * what selects it rather than a default named here.
+ * Markdown output destination with defaults applied. `write` stays `undefined` unless configured, selecting the built-in rendering.
  */
 export interface ResolvedCodometerMarkdownOutput {
   custom: ResolvedCodometerCustomStatistic[];

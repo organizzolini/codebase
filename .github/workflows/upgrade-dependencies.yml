@@ -28,11 +28,9 @@ jobs:
         with:
           nx-shas: "false"
 
-      # Runs each upgrade in turn: pnpm, node, Python, the lockfile, Python
-      # dependencies, skills, and Impeccable. One that fails is undone and the
-      # rest still run, and the pull request it writes says which were
-      # skipped. It fails the job only when a failed step could not be undone,
-      # or when skipped steps are all there is to report.
+      # Runs each upgrade in turn (pnpm, node, Python, lockfile, Python dependencies,
+      # skills, Impeccable). A failed upgrade is undone and the rest still run; the pull
+      # request lists what was skipped. The job fails only when an undo fails.
       - name: ⬆️ Upgrade Dependencies
         id: upgrade
         run: NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts upgrade-dependencies
@@ -58,11 +56,9 @@ jobs:
           author: >-
             ${{ steps.import-gpg.outputs.name }}
             <${{ steps.import-gpg.outputs.email }}>
-          # The key imported above signs the commit locally. This step takes
-          # about 20 minutes, nearly all of it the pre-commit hook running
-          # every check on all 58 projects, since the upgrade touches the
-          # lockfile and the Python version. The cache cannot help much: the
-          # hook hit 16% of its tasks with a warm cache.
+          # The key imported above signs the commit locally. This step takes about 20
+          # minutes, almost all in the pre-commit hook, which runs every check on all
+          # 58 projects. The cache helps little: the hook hit 16% of its tasks warm.
           commit-message: "chore(dependencies): ⬆️ upgrade"
           branch: chore/dependencies-upgrade
           delete-branch: true

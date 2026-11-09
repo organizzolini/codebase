@@ -11,11 +11,8 @@ export const DAY_ZOOM = { max: 15, min: 0.5, step: 0.5 };
 
 export const ZOOM = { max: 3, min: 0.5, step: 0.25 };
 
-// Beside a marker, a title runs into its neighbors' at any scale coarser than
-// a day, so there titles are left to each bar's own label and only a day's
-// are drawn.
-// The lanes of one row read as one: the line between a row and the lane
-// beneath it is not drawn.
+// Beside a marker, titles run into neighbors at any scale coarser than a day,
+// so only a day's titles are drawn there; the lanes of a row read as one.
 export const LANE_ROWS =
   "[&_[data-slot=gantt-row-group]:has(+[data-gantt-row-id*='#'])]:border-b-transparent";
 

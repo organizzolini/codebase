@@ -37,9 +37,8 @@ export class EphemerisDownloadService {
   // 🔏 Private Methods
 
   /**
-   * Fetches one file and writes it to `destination`, throwing unless a whole,
-   * non-empty file arrives. The files are small enough to hold in memory, so a
-   * dropped connection fails the read and nothing is written at all.
+   * Fetches one file to `destination`, throwing unless a whole, non-empty file
+   * arrives; nothing is written on a dropped connection.
    */
   private async fetchFile(url: string, destination: string): Promise<void> {
     const response = await fetch(url);

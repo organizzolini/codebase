@@ -27,11 +27,7 @@ export class CssCommentsService {
   // 🔏 Private Methods
 
   /**
-   * A comment's text with the whitespace postcss split off restored.
-   *
-   * `raws.left`/`raws.right` are typed optional, but postcss's own parse
-   * always fills both in — with an empty string for an empty comment, never
-   * `undefined` — so the fallback is unreachable rather than untested.
+   * Restores the whitespace postcss split off a comment's text. Both `raws` fields are always set after a real parse.
    */
   private toBody(comment: Comment): string {
     /* v8 ignore next -- postcss always sets both after a real parse */
@@ -43,11 +39,7 @@ export class CssCommentsService {
   }
 
   /**
-   * Whether only whitespace precedes a comment's opening marker on its line.
-   *
-   * `comment.source` is typed optional because postcss also allows building a
-   * node by hand with none, which never happens here: every comment measured
-   * came from parsing real content, which always carries its position.
+   * Whether only whitespace precedes a comment's marker on its line. Every measured comment came from a parse, so its position is set.
    */
   private toOwnLine(content: string, comment: Comment): boolean {
     /* v8 ignore next -- unreachable: this reader only sees parsed comments */
@@ -61,11 +53,7 @@ export class CssCommentsService {
   // 🌎 Public Methods
 
   /**
-   * Reads every comment postcss's parse finds, in document order.
-   *
-   * Empty for a stylesheet postcss cannot parse at all, the same way
-   * `CssService` skips a file it cannot parse rather than throwing out of the
-   * whole measurement run.
+   * Reads every comment postcss finds, in document order. A stylesheet postcss cannot parse yields none.
    */
   read(content: string): CommentToken[] {
     const tokens: CommentToken[] = [];

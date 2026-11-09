@@ -119,9 +119,8 @@ export class ConventionalConfigService {
   // 🌎 Public Methods
 
   /**
-   * Check mode: validates all configuration files are in sync with
-   * conventional.config.cjs, reporting success rather than exiting so the
-   * aggregate `synchronization` command can collect every result.
+   * Validates the configuration files are in sync with `conventional.config.cjs`,
+   * returning success rather than exiting so the aggregate command collects every result.
    */
   handleCheckMode(context: SyncContext): boolean {
     const { config, scopeNames, settingsScopes, typeNames } = context;

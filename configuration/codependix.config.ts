@@ -4,27 +4,8 @@ import {
 } from "@codependix/configuration";
 
 /**
- * What a project's own `codependix.config.ts` spreads, and then overrides.
- *
- * Mirrors `configuration/callidescope.config.ts`'s `projectDefaults` export:
- * a project gets its own dependency graph spliced into its own `README.md`
- * only by writing a file that spreads this object — `include`/`exclude`
- * below still scope which projects contribute to the workspace-level graphs
- * and get judged by `boundaries`, but no longer imply per-project output on
- * their own. A project with no file of its own participates in both of
- * those, and produces no export of its own.
- *
- * ```ts
- * import { projectDefaults } from "../../../configuration/codependix.config.js";
- *
- * export default {
- *   ...projectDefaults,
- * };
- * ```
- *
- * A relative import resolved by the configuration loader when it reads the
- * file, rather than a package dependency, so spreading this adds no edge to
- * a project's dependency graph.
+ * Settings a project's own `codependix.config.ts` spreads to get its README graph.
+ * Without that file, a project gets no export.
  */
 export const projectDefaults = {
   /**
@@ -64,16 +45,8 @@ export const projectDefaults = {
 } satisfies CodependixProjectConfiguration;
 
 /**
- * `include`/`exclude` scope which projects contribute to the workspace-level
- * graphs below and get judged by `boundaries` — unrelated to per-project
- * output, which a project now opts into by writing its own
- * `codependix.config.ts` spreading `projectDefaults` above.
- *
- * Every field below, and every refusal a configuration can be rejected with, is
- * resolved by the real loader and rendered as a worked example in
- * `projects/ic-suite/codependix/codependix-examples` — see its `README.md`, and the
- * `configuration-resolution` and `refusals` examples in particular. This file is the only production configuration
- * codependix has; those are where the shape is explained.
+ * Workspace-level codependix configuration. Worked examples of every field
+ * live in `projects/ic-suite/codependix/codependix-examples`.
  */
 const codependixConfiguration: CodependixConfiguration = {
   /**

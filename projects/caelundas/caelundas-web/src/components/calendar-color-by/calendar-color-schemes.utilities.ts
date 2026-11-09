@@ -21,13 +21,7 @@ import type {
 // 🌎 Public Functions
 
 /**
- * Builds how events are colored for a level: the way events are grouped, a
- * field and, for a tag root, the tags or the depth of its tree, with a color
- * for each tag or value. Without a level, events are colored by type, kind
- * by kind. An event with more than one value, such as an aspect between two
- * planets, takes the color of the first of them in the legend's order, and
- * one with none keeps the color the data gave it. `index` is where the
- * level's keys sit in an event's `groups`.
+ * Builds how events are colored for a level, a color per tag or value; `index` locates the level's keys in `groups`.
  */
 export function createColorScheme(
   level: EventGroupLevel | undefined,
@@ -89,8 +83,7 @@ function hashColor(key: string): string {
 }
 
 /**
- * The tags a tag root's level makes a color of, each with the next color:
- * those picked, or those at its depth beneath the root.
+ * The tags a tag root's level colors, each with the next color: those picked, or those at its depth.
  */
 function listTags(
   field: EventGroupField,
@@ -118,9 +111,7 @@ function listTags(
 }
 
 /**
- * The values of a derived field that are known ahead, each with the next
- * color: the weekdays, the hours and the duration buckets. A period, such as
- * a month, has too many to list, and none here.
+ * The values of a derived field known ahead, each with the next color: weekdays, hours and duration buckets; periods have too many to list.
  */
 function listValues(field: EventGroupField): ColorLegendEntry[] {
   const keys: { key: string; label: string }[] = [];

@@ -12,10 +12,8 @@ export interface CodependixPluginOptions {
 }
 
 /**
- * What one `extends` entry names: a file the gate's inputs can name, an
- * installed package Nx hashes by version, or what no input can name — a file
- * outside the workspace, an installed package the root manifest does not
- * declare, or a package base that resolves to no file.
+ * What an `extends` entry names: a workspace file, an installed package, or
+ * something no input can name.
  */
 export type ExtendedBase =
   | { readonly file: string; readonly kind: "file" }
@@ -80,8 +78,8 @@ export interface ResolveToolInputsArguments {
   /** Where a package that cannot be resolved is named. */
   readonly logger: ToolInputsLogger;
   /**
-   * The module `@codependix/cli` is resolved from, as a path or file URL —
-   * this plugin's own, unless a caller stands in for an install elsewhere.
+   * Where `@codependix/cli` is resolved from, as a path or file URL. Defaults
+   * to this plugin's own install.
    */
   readonly resolveFrom?: string | undefined;
   readonly workspaceRoot: string;

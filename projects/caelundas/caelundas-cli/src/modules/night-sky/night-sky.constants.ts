@@ -3,8 +3,7 @@ import { z } from "zod";
 // ♟️ Constants
 
 /**
- * The faintest magnitude stored, as faint as the eye sees from a dark site.
- * A fainter star is stored only when a constellation's figure needs it.
+ * The faintest magnitude stored: as faint as the eye sees from a dark site, unless a figure needs more.
  */
 export const MAXIMUM_MAGNITUDE = 6.5;
 
@@ -16,9 +15,7 @@ export const MAXIMUM_MAGNITUDE = 6.5;
 export const MINIMUM_DECLINATION_DEGREES = -45;
 
 /**
- * How far, in degrees, a vertex of d3-celestial's figures may lie from a
- * catalog star and still be that star. The two catalogs agree to within a
- * hundredth of a degree.
+ * How far a figure's vertex may lie from a catalog star and still match it; the catalogs agree to 0.01 degree.
  */
 export const MATCH_TOLERANCE_DEGREES = 0.05;
 

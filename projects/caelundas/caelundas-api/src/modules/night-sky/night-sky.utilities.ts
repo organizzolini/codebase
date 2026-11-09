@@ -1,9 +1,7 @@
-// The night sky's stars are the HYG star database v4.1
-// (https://github.com/astronexus/HYG-Database), stored by caelundas-cli to
-// magnitude 6.5 and declination -45 degrees or north. HYG is licensed
-// CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/); the stored
-// catalog is a derived work and keeps that license and the credit to David
-// Nash and the HYG contributors. The constellation figures are d3-celestial's
+// Stars: HYG database v4.1 (https://github.com/astronexus/HYG-Database),
+// CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/), credit David
+// Nash and the HYG contributors. The stored catalog is a derived work and
+// keeps that license. Constellation figures: d3-celestial
 // (https://github.com/ofrohn/d3-celestial), BSD-3-Clause, Olaf Frohn.
 
 import { SiderealTime } from "astronomy-engine";
@@ -61,9 +59,8 @@ import type {
 // 🌎 Public Functions
 
 /**
- * Builds the night sky for a place and moment: the real fixed stars, drawn
- * about the north celestial pole, which sits above the top edge of the
- * window, turning as one group with a single animation.
+ * Builds the sky for a place and moment: fixed stars turning about the north
+ * celestial pole, above the window's top edge.
  */
 export function buildNightSky(options: NightSkyOptions): NightSky {
   const resolved = resolveOptions(options);
@@ -135,9 +132,8 @@ export function computeLocalSiderealDegrees(
 }
 
 /**
- * The angle the sky starts at for a place and moment, from astronomy-engine's
- * apparent sidereal time. The hand-rolled mean sidereal time above is only the
- * fallback when that is unavailable.
+ * The starting angle from astronomy-engine's sidereal time; the hand-rolled
+ * mean time above is only a fallback.
  */
 export function computeStartingSiderealDegrees(
   date: Date,
@@ -260,9 +256,8 @@ function colorFromIndex(colorIndex: number): string {
 }
 
 /**
- * Projects the sky about the north celestial pole with a stereographic
- * projection, scaled so the window is exactly as tall as the SVG, and finds
- * where the pole falls.
+ * Stereographic projection about the pole, scaled so the window is exactly as
+ * tall as the SVG; finds where the pole falls.
  */
 function computeGeometry(options: ResolvedNightSkyOptions): SkyGeometry {
   const fieldOfView = limitFieldOfView(options);
@@ -289,9 +284,8 @@ function computeGeometry(options: ResolvedNightSkyOptions): SkyGeometry {
 }
 
 /**
- * Linear speed equals angular speed times distance from the pole, so the
- * period that gives the requested pixels per second follows from how far the
- * window center sits below the pole.
+ * Period giving the requested pixels per second, from the window center's
+ * distance below the pole; linear speed is angular speed times distance.
  */
 function computeMotion(
   geometry: SkyGeometry,

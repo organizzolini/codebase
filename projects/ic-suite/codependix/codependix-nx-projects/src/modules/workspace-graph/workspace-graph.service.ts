@@ -15,14 +15,8 @@ import type {
 import type { WorkspaceGraph } from "./workspace-graph.types";
 
 /**
- * Builds the whole-repository Nx dependency graph — every project, every
- * edge — exported once at the workspace root rather than once per project.
- *
- * Reuses `NeighborhoodService`'s node and edge rendering rather than
- * duplicating it: the two graphs draw nodes and edges the same way, and only
- * differ in scope (one project's immediate neighbors versus every project in
- * the workspace) and in that the Workspace Graph highlights no single
- * project.
+ * Builds the whole-repository Nx dependency graph, with every project and edge. It reuses
+ * `NeighborhoodService`'s node and edge rendering, so the two graphs draw them alike.
  */
 @Injectable()
 export class WorkspaceGraphService {

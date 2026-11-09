@@ -18,9 +18,8 @@ import type {
 // 🔏 Private Functions
 
 /**
- * The input a request is really drawn from: the time snapped down to the
- * minute, the size up to its bucket and each figure named once, in order, so
- * every request for the same sky gives the same input and the same cache key.
+ * The input drawn: time snapped to the minute, size rounded up to its bucket,
+ * names deduplicated, so equal skies share a cache key.
  */
 export function canonicalizeNightSkyInput(
   input: ParsedNightSkyInput,

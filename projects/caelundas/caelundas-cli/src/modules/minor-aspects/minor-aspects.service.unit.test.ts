@@ -276,10 +276,7 @@ describe(MinorAspectsService, () => {
       const previousMinute = currentMinute.clone().subtract(1, "minute");
       const nextMinute = currentMinute.clone().add(1, "minute");
 
-      // Create ephemeris with all bodies clustered in a small range to avoid aspects
-      // Minor aspects: 30° (2° orb), 45° (2° orb), 135° (2° orb), 150° (3° orb)
-      // If all bodies are within a ~20° range, no pairs will have angles matching minor aspects
-      // Positions: 50° through 70° (20° span, all angles < 28° which is outside all aspect orbs)
+      // Bodies clustered within 50°–70° form no minor aspect: every angle is under 28°.
       const safeLongitudes = [
         50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 51, 53, 55, 57, 59, 61, 63,
         65,

@@ -78,9 +78,8 @@ export class MatrixService {
   }
 
   /**
-   * Returns the `MatrixPoint` at the given `(row, column)` coordinates,
-   * wrapping columns cyclically modulo the column count, and returning `BARE_MATRIX_POINT`
-   * if `row` is out of bounds.
+   * The `MatrixPoint` at `(row, column)`, wrapping columns modulo the column
+   * count. Out-of-bounds rows give `BARE_MATRIX_POINT`.
    */
   pointAt(matrix: Matrix, row: number, column: number): MatrixPoint {
     const rowCount = matrix.length;

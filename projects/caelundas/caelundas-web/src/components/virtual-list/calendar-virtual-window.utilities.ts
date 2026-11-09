@@ -20,9 +20,7 @@ export function getRowOffsets(heights: readonly number[]): number[] {
 }
 
 /**
- * Picks the rows a viewport scrolled to `scrollTop` shows, plus the
- * overscan on each side, so a list of any length renders only what fits on screen.
- * Both edges are found by binary search over the offsets.
+ * Picks the rows shown for a scroll position, plus overscan on each side, found by binary search over the offsets.
  */
 export function getVirtualWindow(input: VirtualWindowInput): VirtualWindow {
   const { offsets, overscan, scrollTop, viewportHeight } = input;

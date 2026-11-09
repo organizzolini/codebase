@@ -23,9 +23,8 @@ const PROJECT: WorkspaceProject = {
 };
 
 /**
- * Writes a workspace holding a `tsconfig.json` at each relative path, and a
- * `package.json` beside it unless the root is named in `rootsWithoutManifest` —
- * which is what makes that root a project no closure may reach.
+ * Writes a workspace with a `tsconfig.json` per relative path, and a `package.json`
+ * unless `rootsWithoutManifest` names the root, which no closure can reach.
  */
 async function buildWorkspace(
   projectRoots: readonly string[],
@@ -106,14 +105,8 @@ const CLOSURE_PROJECTS: readonly WorkspaceProject[] = [
 ];
 
 /**
- * Builds a fake `resolveProjectFiles` callback from a fixed project graph —
- * no TypeScript program anywhere, exactly what makes the traversal testable
- * on its own.
- *
- * `reached` records the projects the callback was asked about, in the order it
- * was asked, which is the same thing `ProgramService.buildPrograms` collects
- * in the real callback. The traversal returns nothing, so this is how a
- * closure is read here and in production alike.
+ * Builds a fake `resolveProjectFiles` callback from a fixed project graph, with no
+ * TypeScript program. `reached` records the projects asked about, in order.
  */
 function fakeProjectFiles(
   filesByProjectName: Readonly<Record<string, readonly string[]>>,
@@ -553,11 +546,9 @@ describe(WorkspaceService, () => {
   });
 
   it("does not let a file the workspace root owns widen the closure", () => {
-    // A repository keeps files at its own root — a `codometer.config.ts`, a
-    // `scripts/` directory — and the root project's root contains every other
-    // project, so admitting it as a dependency puts the whole workspace in
-    // every closure. It holds a `package.json`, so the manifest rule alone
-    // would let it through.
+    // A repository's root holds files such as `codometer.config.ts` and `scripts/`. Its root
+    // contains every project, so as a dependency it would pull the workspace into every
+    // closure; it has a `package.json`, so the manifest rule alone would not stop it.
     const { reached, resolveProjectFiles } = fakeProjectFiles({
       "packages/starting": ["codometer.config.ts"],
     });

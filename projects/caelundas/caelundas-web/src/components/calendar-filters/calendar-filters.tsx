@@ -48,13 +48,7 @@ export interface CalendarFiltersProperties {
 // 🧩 Component
 
 /**
- * Renders the active filters as chips, then the Filters button with a count
- * of the finished rules, which opens the nested AND/OR filter builder. The
- * chips scroll sideways rather than wrap the toolbar row, and are left out on
- * a phone, where the count stands for them. The tree being edited is held
- * here, so each edit shows at once and only one that changes the query is
- * written to the link; a link that changes to something else, such as one
- * reached with Back, replaces it.
+ * Renders the active filters as chips and the Filters button; edits show at once and only query-changing ones are written to the link.
  */
 export function CalendarFilters(
   properties: Readonly<CalendarFiltersProperties>,

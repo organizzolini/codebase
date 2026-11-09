@@ -22,9 +22,8 @@ import type {
 // 🌎 Public Functions
 
 /**
- * Draws the figures' segments in the style given, as one group of polylines
- * cut where they leave the ring the window crosses, as stars beyond it are
- * left out. Answers nothing when no segment shows.
+ * Draws the figure segments as one group of polylines cut at the window's
+ * ring; empty when no segment shows.
  */
 export function formatConstellationLines(
   geometry: SkyGeometry,

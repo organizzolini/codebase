@@ -223,24 +223,18 @@ export const RESET_SKY_KEYS: readonly SkyParameterKey[] = [
 ];
 
 /**
- * The menu's panel: four columns wide on a wide screen and as wide as a
- * phone allows on one, no taller than the room below the toolbar, scrolling
- * on its own only when even that is too short, as on a phone.
+ * The menu's panel: four columns on a wide screen, one on a phone, scrolling only when short of room.
  */
 export const PANEL_CLASS_NAME =
   "w-[min(20rem,calc(100vw-1rem))] md:w-[min(40rem,calc(100vw-1rem))] lg:w-[min(68rem,calc(100vw-1rem))] max-h-(--available-height) overflow-y-auto";
 
 /**
- * The keys the menu itself reads, which the panel's controls let reach it:
- * Escape closes the menu and Tab leaves the panel. Every other key stays
- * with the slider, switch or list that has focus.
+ * Keys the menu reads, which the panel's controls pass up: Escape closes the menu, Tab leaves the panel.
  */
 export const MENU_KEYS: ReadonlySet<string> = new Set(["Escape", "Tab"]);
 
 /**
- * The slider's own classes size its track by `data-horizontal`, which this
- * version of Base UI writes as `data-orientation`, so the track and its fill
- * are drawn from here, with a thumb large enough to drag by touch.
+ * The slider's track is sized here: its own classes read `data-horizontal`, which this Base UI writes as `data-orientation`.
  */
 export const SLIDER_CLASS_NAME =
   "py-2 [&_[data-slot=slider-track]]:h-1.5 [&_[data-slot=slider-track]]:w-full " +
@@ -259,9 +253,7 @@ export const SECTION_CLASS_NAME = "flex flex-col gap-1 py-2";
 export const COLUMN_CLASS_NAME = "divide-y";
 
 /**
- * The constellation tree's box: as tall as the panel's other columns on a
- * wide screen, where its column takes no height of its own, and bounded on a
- * phone; it scrolls inside either way.
+ * The constellation tree's box: as tall as the other columns on a wide screen, bounded on a phone.
  */
 export const TREE_CLASS_NAME =
   "max-h-80 min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-md border p-1 lg:max-h-none";

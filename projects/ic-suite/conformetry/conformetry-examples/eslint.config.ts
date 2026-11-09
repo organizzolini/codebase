@@ -5,15 +5,9 @@ export default [
   ...baseConfig,
 
   // 🚫 Fixture Trees
-  // A template file holds mustache where an identifier belongs, so it parses as
-  // no language its extension names, and the instances beside it are drifted on
-  // purpose. Declared here rather than in the shared configuration because a
-  // flat config's ignore patterns are relative to the configuration file's own
-  // directory, and this is the file that sits at this package's root.
-  //
-  // Each example's `conformetry.config.ts` and the embedding script sit outside
-  // these two folders on purpose: they are the code a reader copies, so they
-  // are linted and type-checked like any other source.
+  // Templates hold mustache where code belongs, and instances drift on purpose.
+  // Ignored here, since flat-config patterns resolve against this file's directory.
+  // Example configs stay linted, since readers copy them.
   {
     ignores: ["examples/*/instances/**", "examples/*/templates/**"],
   },

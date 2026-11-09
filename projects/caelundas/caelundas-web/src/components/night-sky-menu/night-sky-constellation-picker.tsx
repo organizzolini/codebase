@@ -25,10 +25,7 @@ export interface NightSkyConstellationPickerProperties {
 // 🧩 Component
 
 /**
- * Renders which constellations' figures the sky draws: a tree of two folders,
- * the zodiac's twelve, open, and every other, closed, whose folder checkboxes
- * pick all or none, in a list that scrolls on its own so the menu around it
- * keeps its height.
+ * Renders which constellations' figures the sky draws: a tree of folders in a list that scrolls on its own.
  */
 export function NightSkyConstellationPicker(
   properties: Readonly<NightSkyConstellationPickerProperties>,

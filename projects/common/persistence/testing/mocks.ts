@@ -101,18 +101,8 @@ interface ProcessOutcome {
 type StepOutcome = Pick<ProcessOutcome, "error" | "stderr" | "stdout">;
 
 /**
- * Sets up fake timers with a fixed system time before each test
- * and restores real timers after each test.
- *
- * Usage in test files:
- * ```ts
- * import { mockDates } from '../testing/mocks'
- *
- * describe('my suite', () => {
- *   mockDates()
- *   // your tests here
- * })
- * ```
+ * Fakes timers at a fixed system time before each test and restores real
+ * timers after.
  */
 export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   beforeEach(() => {
@@ -127,18 +117,8 @@ export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
 
 /**
  * Makes every process the mocked `execFile` starts exit as `outcome` says,
- * and returns the list each start is recorded into. The calling test file
- * replaces the module with {@link childProcessMock}:
- *
- * ```ts
- * vi.mock("node:child_process", async () => {
- *   const { childProcessMock } = await import("../../../testing/mocks")
- *   return childProcessMock
- * })
- *
- * const spawned = mockProcesses({ stderr: "pg_dump: error: …", error })
- * expect(spawned[0]?.args).not.toContain(password)
- * ```
+ * returning the list each start is recorded into. Replace `node:child_process`
+ * with `childProcessMock`.
  */
 export function mockProcesses(outcome: ProcessOutcome = {}): SpawnedProcess[] {
   const spawned: SpawnedProcess[] = [];
@@ -148,16 +128,8 @@ export function mockProcesses(outcome: ProcessOutcome = {}): SpawnedProcess[] {
 }
 
 /**
- * Lets a test decide whether `process.stdin` reads as a terminal. The setter
- * may be called from a test or its `beforeEach`; the real value captured here
- * is restored when that test finishes.
- *
- * Usage in test files:
- * ```ts
- * const setStandardInputTerminal = mockStandardInputTerminal()
- *
- * it('reads a terminal', () => { setStandardInputTerminal(true) })
- * ```
+ * Lets a test set whether `process.stdin` reads as a terminal, restoring the
+ * real value after that test.
  */
 export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
   const original = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
@@ -191,9 +163,9 @@ export function processFailure(
 }
 
 /**
- * How `file` run with `args` exits: a `--version` check as
- * `outcome.version` says, else as version 18; a `--list` as `outcome.list`
- * says, else as the rest of the outcome; anything else as the outcome.
+ * The outcome of `file` run with `args`: a `--version` check as
+ * `outcome.version` says, a `--list` as `outcome.list`, and anything else as
+ * the outcome.
  */
 function outcomeFor(
   file: string,

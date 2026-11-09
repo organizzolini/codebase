@@ -30,12 +30,7 @@ export interface CalendarGroupByProperties {
 // 🧩 Component
 
 /**
- * Renders the list of the grouping's levels, each shaped like a filter: a
- * field, the same ones the filter offers, and what to group it by. A tag
- * root opens the filter's own tag tree to pick groups from, so several tags
- * are one pick; with none picked it groups by the root's first level. A
- * sub-group is added beneath the last level and any level removed. The View
- * menu holds it in its Group by submenu.
+ * Renders the grouping's levels, each a field and what to group it by; a tag root opens its tag tree.
  */
 export function CalendarGroupBy(
   properties: Readonly<CalendarGroupByProperties>,

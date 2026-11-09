@@ -1,8 +1,8 @@
 // 🏷️ Types
 
 /**
- * The `Lexeme` column the API does not expose: the junction rows to the
- * words that can represent it, which the API reaches from the word instead.
+ * The `Lexeme` column the API omits: junction rows to the words that represent
+ * it, which the API reaches from the word instead.
  */
 export type LexemeDatabaseOnlyField = "wordLexemes";
 

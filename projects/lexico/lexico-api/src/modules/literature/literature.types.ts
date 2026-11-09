@@ -21,9 +21,8 @@ export type AuthorResolvedField = "texts";
  */
 export interface ConnectionCursor {
   /**
-   * Reads the row a cursor claims to name — its id, and its sort key when the
-   * cursor carries one — or null when it is not a cursor this connection
-   * hands out.
+   * Reads the id, and sort key if present, of the row a cursor names. Null when
+   * the connection did not issue the cursor.
    */
   readonly decode: (cursor: string) => CursorClaim | null;
   /** Writes the cursor of the row at a position. */
@@ -31,10 +30,7 @@ export interface ConnectionCursor {
 }
 
 /**
- * A filtered entity query that Relay pagination pushes its ordering, cursor
- * bounds, and limits into, so only one page of rows is ever read. The rows
- * filtered are `Row`s, and the page's nodes the `Node`s loaded for them, which
- * are the same entity unless a connection pages something built from rows.
+ * A filtered query Relay pagination pushes ordering, cursor bounds, and limits into, so one page of rows is read.
  */
 export interface ConnectionQuery<
   Node extends IdentifiedEntity,
@@ -101,9 +97,7 @@ export interface PageLimits {
 }
 
 /**
- * What one statement reads of a filtered query for a page: the rows it
- * counts, the rows the cursors name, whether any row precedes the `before`
- * cursor's, and the window between them, at most one row past the page.
+ * What one statement reads for a page: the cursor rows, whether any row precedes `before`, and the window between them.
  */
 export interface PageRead {
   readonly after: CursorPosition | null;
@@ -139,9 +133,7 @@ export interface PartitionCounts {
 }
 
 /**
- * The children of many parents at once, such as the tokens of every line on a
- * reader page, which Relay pagination pages within each parent in a fixed
- * number of statements however many parents and children there are.
+ * Children of many parents, paged within each parent in a fixed number of statements, such as line tokens.
  */
 export interface PartitionedConnectionQuery<Entity extends IdentifiedEntity> {
   /** The alias the column names below are written against, such as `token`. */
@@ -187,9 +179,8 @@ export type TextDatabaseOnlyField = "metadata";
 export type TextRelationField = "author" | "parentText";
 
 /**
- * The `Text` relations a resolver exposes instead of the object: its child
- * texts, which `TextsResolver` pages in title order, and its lines, which it
- * pages in index order.
+ * The `Text` relations a resolver serves instead of the object: child texts,
+ * paged in title order, and lines, paged in index order.
  */
 export type TextResolvedField = "childTexts" | "lines";
 

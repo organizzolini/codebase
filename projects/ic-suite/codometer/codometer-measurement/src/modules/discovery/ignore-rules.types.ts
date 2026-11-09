@@ -9,11 +9,7 @@ export interface CreateIgnoreScopeArguments {
 }
 
 /**
- * A gitignore-syntax rule set together with the directory it is anchored to.
- *
- * The directory matters because gitignore patterns are relative to the file
- * they were written in: `/output` in a project's own ignore file claims that
- * project's `output`, not the one at the repository root.
+ * A gitignore rule set and the directory its patterns are relative to, so `/output` claims that project's `output`.
  */
 export interface IgnoreScope {
   /** Directory the patterns are relative to, `/`-separated from the walk root. `""` is the root itself. */

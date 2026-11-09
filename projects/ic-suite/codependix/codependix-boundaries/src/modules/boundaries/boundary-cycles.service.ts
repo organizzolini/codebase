@@ -8,17 +8,9 @@ import type {
 } from "./boundaries.types";
 
 /**
- * Finds the cycles in a graph, within a selected set of nodes.
- *
- * A cycle is the one finding no rule reading a single file can make, which is
- * why it is a rule kind of its own rather than an access rule with a clever
- * selector. Scoped to a node set rather than always the whole graph: a rule
- * covering one directory should not fail because of a cycle running entirely
- * through code it was never asked about.
- *
- * One cycle is reported per distinct set of nodes, keyed on the cycle rotated
- * to start at its smallest node — so a three-node cycle is one finding rather
- * than the same finding printed once per node it passes through.
+ * Finds the cycles in a graph within a node set. Cycles are a rule kind of their own because
+ * no single-file rule can see them. Scoped to a node set, so a directory's rule ignores
+ * unrelated cycles. One cycle is reported per distinct node set.
  */
 @Injectable()
 export class BoundaryCyclesService {
@@ -58,12 +50,7 @@ export class BoundaryCyclesService {
   }
 
   /**
-   * The key every cycle over the same nodes shares.
-   *
-   * The node set rather than the path: `a → b → a` and `b → a → b` are one
-   * finding written two ways, and so are the two directions round a
-   * three-node cycle. Reporting the first path found through a set of nodes
-   * and nothing else is what keeps one tangle from printing as six findings.
+   * The node set a cycle spans. Two walks over the same nodes are one finding, not one per rotation.
    */
   private buildCycleKey(path: readonly string[]): string {
     return [...new Set(path)].toSorted().join(">");
@@ -117,12 +104,7 @@ export class BoundaryCyclesService {
   // 🌎 Public Methods
 
   /**
-   * Every cycle lying entirely inside the given node set.
-   *
-   * Nodes are walked in sorted order and each cycle is reported starting from
-   * the node the walk reached first, so the same graph always produces the
-   * same findings in the same order — a report that reshuffles itself between
-   * runs is one nobody can diff.
+   * Every cycle inside the given node set. Nodes are walked in sorted order, so output is stable.
    */
   public findCycles(args: FindCyclesArguments): BoundaryCycle[] {
     const adjacency = this.buildAdjacency(args);

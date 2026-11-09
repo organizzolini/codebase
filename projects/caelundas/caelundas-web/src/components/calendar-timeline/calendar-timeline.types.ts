@@ -36,9 +36,7 @@ export interface TimelineBar {
 }
 
 /**
- * The timeline's rows and the bars drawn in them: a row per group, nested
- * as the grouping nests, with a tag group nested under each tag above it in
- * its tree, and how many distinct events each row holds.
+ * The timeline's rows and the bars drawn in them, nested as the grouping nests, with each row's count of distinct events.
  */
 export interface TimelineRows {
   counts: ReadonlyMap<string, number>;

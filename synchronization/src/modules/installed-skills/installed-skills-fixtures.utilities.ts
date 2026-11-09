@@ -8,12 +8,8 @@ import type {
 } from "./installed-skills.types";
 
 /**
- * Fakes `git`, `pnpm`, and `skills` over a real workspace on disk.
- *
- * A successful restore installs every skill the lockfile declares, the way
- * `skills experimental_install` does; a failed one installs nothing. A
- * `git diff --quiet` answers from the behavior, flipping to dirty once a
- * restore has run when the behavior says it rewrites something.
+ * Fakes `git`, `pnpm`, and `skills` over a workspace on disk. A successful
+ * restore installs the skills the lockfile declares.
  */
 export function createFakeProcessRunner(
   workspace: string,

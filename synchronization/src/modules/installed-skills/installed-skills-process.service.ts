@@ -25,10 +25,8 @@ export class InstalledSkillsProcessService {
   // 🌎 Public Methods
 
   /**
-   * Runs one process to completion in the current working directory.
-   *
-   * @param command - The executable, its arguments, and whether it prints.
-   * @returns Whether it could start, and the status it exited with.
+   * Runs one process to completion in the current directory, returning whether
+   * it started and its exit status.
    */
   public run(command: ProcessCommand): ProcessResult {
     const completion = spawnSync(command.executable, [...command.args], {

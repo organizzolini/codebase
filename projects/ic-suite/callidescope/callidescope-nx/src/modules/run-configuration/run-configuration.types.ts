@@ -5,13 +5,7 @@ import type { ResolvedCallidescopeConfiguration } from "@callidescope/configurat
 /** A loaded configuration, beside the path the loader settled on. */
 export interface LoadedRunConfiguration {
   readonly configuration: ResolvedCallidescopeConfiguration;
-  /**
-   * Where the configuration was read from.
-   *
-   * The path the loader settled on rather than the one it was handed, since a
-   * relative path is resolved before it is read — and a run resolves a
-   * project's own configuration relative to it.
-   */
+  /** Where the configuration was read from: the path the loader settled on, since a relative one is resolved before reading. */
   readonly path: string;
 }
 

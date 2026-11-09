@@ -13,9 +13,8 @@ export type CombinedOutputFormat = (typeof FORMAT_NAMES)[number];
 /** Arguments for producing every combined output a run asked for. */
 export interface CombinedOutputRunArguments {
   /**
-   * What a `--check boundaries` pass found, carried beside the graph types so
-   * one document holds both. Absent when no boundary pass ran or none was
-   * asked to be printed.
+   * The boundary pass's findings, beside the graph types. Absent unless a
+   * boundary pass ran and was asked to print.
    */
   boundaries?: BoundaryReportArguments | undefined;
   format: CombinedOutputFormat;

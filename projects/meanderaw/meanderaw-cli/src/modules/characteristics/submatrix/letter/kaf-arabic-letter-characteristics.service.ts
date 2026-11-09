@@ -61,9 +61,7 @@ export class KafArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright ك (final Arabic kaf) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ك (final Arabic kaf) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╷
    * │ ╷
@@ -73,9 +71,7 @@ export class KafArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly finalTemplate: readonly string[] = ["4...", "c.4.", "a3b1"];
 
   /**
-   * The upright ك (initial Arabic kaf) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ك (initial Arabic kaf) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╶──┐
    *   ╶┘
@@ -84,9 +80,7 @@ export class KafArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly initialTemplate: readonly string[] = ["2335", "..29"];
 
   /**
-   * The upright ك (isolated Arabic kaf) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ك (isolated Arabic kaf) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╷
    * │ ╷
@@ -96,9 +90,7 @@ export class KafArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly isolatedTemplate: readonly string[] = ["4..", "c.4", "a39"];
 
   /**
-   * The upright ك (medial Arabic kaf) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ك (medial Arabic kaf) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╶──┐
    *   ╶┴╴

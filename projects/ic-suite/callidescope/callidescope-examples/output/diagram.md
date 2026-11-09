@@ -4,13 +4,13 @@
 
 | Measure | Value |
 | --- | --- |
-| Callables | 370 |
-| Files | 154 |
-| Calls traced | 324 |
-| Call stacks | 110 |
+| Callables | 431 |
+| Files | 238 |
+| Calls traced | 365 |
+| Call stacks | 144 |
 | Deepest stack | 9 |
 | Stacks through recursion | 1 |
-| Unfollowable calls | 21 |
+| Unfollowable calls | 30 |
 
 ## Projects
 
@@ -21,9 +21,12 @@
 | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf` | 4 | 3 | -1 | 3 |
 | `projects/ic-suite/codependix/codependix-configuration` | 7 | 7 | 0 | 4 |
 | `projects/ic-suite/codometer/codometer-configuration` | 9 | 9 | 0 | 4 |
+| `projects/ic-suite/coinagerie/coinagerie-configuration` | 3 | 3 | 0 | 3 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 7 | 8 | 1 | 7 |
 | `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/coinagerie/coinagerie-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/coinagerie/coinagerie-languages` | 4 | 6 | 2 | 3 |
 | `projects/ic-suite/callidescope/callidescope-core` | 0 | 17 | 17 | 0 |
 
 ## Depth headroom
@@ -31,11 +34,11 @@
 | Headroom | Projects |
 | --- | --- |
 | over limit | 3 |
-| 0 — at limit | 2 |
+| 0 — at limit | 3 |
 | 1 | 1 |
-| 2–3 | 0 |
+| 2–3 | 1 |
 | 4+ | 0 |
-| no stacks | 3 |
+| no stacks | 4 |
 
 ## Call stacks over the depth limit (11)
 
@@ -71,18 +74,18 @@ flowchart LR
   n27["FrameAnnotationsService.compose"]
   n28["FrameAnnotationsService.collapseThisSignatureBecauseItRunsLong"]
   n29["FrameAnnotationsService.finish"]
-  n30(["ProjectDepthLimitService.judge"])
-  n31["ProjectDepthLimitService.resolveConfiguration"]
-  n32["ProjectDepthLimitService.readLimit"]
-  n33["ProjectDepthLimitService.applyLimit"]
-  n34["ProjectDepthLimitService.reportVerdict"]
-  n35["ProjectDepthLimitService.readDeclaringFile"]
-  n36(["LoggerService.log"])
-  n37["LoggerService.info"]
-  n38["LoggerService.buildBindings"]
-  n39["LoggerService.assertConventionalMessage"]
-  n40["LoggerService.getConventionalMessageViolation"]
-  n41["LoggerService.isConventionalVerb"]
+  n30(["LoggerService.log"])
+  n31["LoggerService.info"]
+  n32["LoggerService.buildBindings"]
+  n33["LoggerService.assertConventionalMessage"]
+  n34["LoggerService.getConventionalMessageViolation"]
+  n35["LoggerService.isConventionalVerb"]
+  n36(["ProjectDepthLimitService.judge"])
+  n37["ProjectDepthLimitService.resolveConfiguration"]
+  n38["ProjectDepthLimitService.readLimit"]
+  n39["ProjectDepthLimitService.applyLimit"]
+  n40["ProjectDepthLimitService.reportVerdict"]
+  n41["ProjectDepthLimitService.readDeclaringFile"]
   n42(["LoggerService.debug"])
   n43(["LoggerService.error"])
   n44(["LoggerService.verbose"])
@@ -128,10 +131,10 @@ flowchart LR
   n38 --> n39
   n39 --> n40
   n40 --> n41
-  n42 --> n38
-  n43 --> n38
-  n44 --> n38
-  n45 --> n38
+  n42 --> n32
+  n43 --> n32
+  n44 --> n32
+  n45 --> n32
   n46 --> n47
   n47 --> n48
   n48 --> n49
@@ -141,6 +144,6 @@ flowchart LR
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `GatedLeafService.read` | 3 | `GatedLeafService.parse`, `GatedLeafService.normalize`, `GatedLeafService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:40` |
+| `GatedLeafService.read` | 3 | `GatedLeafService.parse`, `GatedLeafService.normalize`, `GatedLeafService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:33` |
 
 <!-- callidescope:end -->

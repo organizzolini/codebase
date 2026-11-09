@@ -38,13 +38,7 @@ const EXAMPLES_DIRECTORY =
 /** The one target name every guide's `## Run it` block is supposed to name. */
 const AGGREGATE_TARGET_NAME = "examples";
 
-/**
- * The command every guide's `## Run it` block documents.
- *
- * Composed from the project's own name and the aggregate target's, so renaming
- * either one fails every guide rather than leaving twenty-three copies of a
- * command nothing answers to.
- */
+/** The command every guide's `## Run it` block documents, composed from names so a rename fails every guide. */
 const RUN_IT_COMMAND = `nx run ${readProjectDefinition().name}:${AGGREGATE_TARGET_NAME}`;
 
 /** Every directory under `examples/`, whether or not it is a project. */
@@ -59,25 +53,10 @@ const EXAMPLE_NAMES = readdirSync(
 /** The nested project that carries its own limits, and breaches both. */
 const GATED_LEAF_DIRECTORY = `${EXAMPLES_DIRECTORY}/examples/gated-leaf`;
 
-/**
- * The one guide documenting runs of its own, beyond the aggregate target.
- *
- * Named rather than discovered, because "a guide with a second command" is not
- * a category — this one has two because breadth's refusal can only be shown by
- * running the same check twice at two scopes. A second such guide is a
- * deliberate act, and adding its name here is part of that act.
- */
+/** Guides documenting runs beyond the aggregate target, named rather than discovered. Adding one is a deliberate act. */
 const GUIDES_WITH_DOCUMENTED_RUNS = ["gated-leaf"];
 
-/**
- * Every example directory that is a project of its own — the ones holding a
- * `tsconfig.json`.
- *
- * Read off disk rather than listed, because that is what makes a second
- * nested-project example impossible to add halfway: it appears here the moment
- * its `tsconfig.json` does, and the assertion below then fails until the
- * `examples` target names it too.
- */
+/** Example directories holding their own `tsconfig.json`, read off disk so a new nested project cannot be missed. */
 const NESTED_PROJECT_DIRECTORIES = readdirSync(
   path.join(WORKSPACE_ROOT, EXAMPLES_DIRECTORY, "examples"),
   { withFileTypes: true },
@@ -118,12 +97,7 @@ function readProjectDefinition(): ProjectDefinition {
 }
 
 /**
- * Reads the `--directories` value out of one `examples` target configuration.
- *
- * The target's own command rather than a copy of it: the list this suite
- * traces and the list the target traces have to be one list, and a second
- * spelling of it here is a fixture that goes untraced in CI while every
- * assertion about it still passes.
+ * Reads `--directories` out of one `examples` target configuration, so the suite and the target trace one list.
  */
 function readTargetDirectories(configuration: "check" | "write"): string {
   const command = String(
@@ -140,23 +114,11 @@ function readTargetDirectories(configuration: "check" | "write"): string {
   return value;
 }
 
-/**
- * The roots a run is pointed at, read from the `examples` target itself.
- *
- * More than one, because an example directory holding its own `tsconfig.json`
- * is a project and a project is only measured when a run reaches it. Neither
- * nested one is reached through the closure — a closure destination must hold
- * a `package.json`, and a nested one makes Nx infer a project — so both are
- * named by the target instead.
- */
+/** The roots a run is pointed at, read from the `examples` target. Nested projects are reached only when named there. */
 const STARTING_DIRECTORIES = readTargetDirectories("check");
 
 /**
- * The `dependency-closure` fixture's stack, frame by frame, with the project
- * each frame was declared in.
- *
- * The project is the whole point: two of the four frames are declared outside
- * this package, and are there only because the run traced its closure.
+ * The `dependency-closure` stack, frame by frame, with the project each frame was declared in.
  */
 function readClosureFrames(
   result: CallGraphResult,
@@ -176,13 +138,7 @@ function readClosureFrames(
 }
 
 /**
- * Every deep-stack finding one project is answerable for, deepest first.
- *
- * Selected by the project owning the stack's **root**, which is the attribution
- * the limit resolution itself uses, rather than by the path the root's file
- * sits at. The two part company here: a nested project's files sit under this
- * package's directory, so a path test would charge this package with findings
- * that belong to a project of its own.
+ * Every deep-stack finding one project answers for, by the project owning its root, not its path.
  */
 function readDeepStacksFor(
   result: CallGraphResult,
@@ -199,12 +155,7 @@ function readDeepStacksFor(
 }
 
 /**
- * Every command one guide documents beside the outcome it promises.
- *
- * A `bash` fence and the `text` fence under it, paired by position — the shape
- * every such passage in this package is written in. Read out of the guide
- * rather than restated here, which is the whole point: a command this suite
- * runs from a copy proves nothing about the command a reader will type.
+ * Every command a guide documents beside the outcome it promises, read from the guide rather than restated here.
  */
 function readDocumentedRuns(
   exampleName: string,
@@ -222,12 +173,7 @@ function readDocumentedRuns(
 }
 
 /**
- * Every fenced block of one language in a guide, in the order they appear.
- *
- * Split on the fence opener rather than matched with one expression, because
- * the closing fence of a `bash` block and the opener of the `text` block that
- * follows it are the same three characters — and pairing them by position is
- * exactly what `readDocumentedRuns` needs.
+ * Every fenced block of one language in a guide, in order, split on the opener.
  */
 function readFences(guide: string, language: string): string[] {
   return guide
@@ -238,14 +184,7 @@ function readFences(guide: string, language: string): string[] {
 }
 
 /**
- * The project a frame's file belongs to, named the way the run names it.
- *
- * A `StackFrame` carries no project of its own, so the owner is resolved
- * against the `projectName` values the run itself reported rather than guessed
- * from the shape of the path — the two agree for every project here, and only
- * one of them keeps agreeing when a project root is nested any deeper than two
- * segments. The longest match wins, so a project inside another project is
- * never credited to its parent.
+ * The project a frame's file belongs to, named the way the run names it. The longest match wins.
  */
 function readFileProject(result: CallGraphResult, filePath: string): string {
   const owner = result.projects
@@ -275,17 +214,7 @@ function readGuide(exampleName: string): string {
 }
 
 /**
- * What one example's `## Next` section links to.
- *
- * The section rather than the whole file, because a guide links to its
- * neighbors from its prose as well — reading the whole file would call a
- * broken chain unbroken on the strength of a mention halfway up it.
- *
- * The first `## Next` and only as far as the heading after it. `gated-leaf`
- * carries a generated `## 🔭 Callidescope` block below its `## Next`, so a
- * read taken to either the last marker or the end of the file would answer
- * out of that block instead of out of the reading-order link this assertion
- * exists to check.
+ * What one example's `## Next` section links to: the first `## Next` section, not a generated block below it.
  */
 function readNextLink(exampleName: string): string {
   const [, ...rest] = readGuide(exampleName).split("## Next");
@@ -294,14 +223,7 @@ function readNextLink(exampleName: string): string {
 }
 
 /**
- * This package's own slice of a run.
- *
- * Every count below is read from here rather than from the whole-run summary,
- * because the run covers three dependency packages as well and they are
- * ordinary code that changes for ordinary reasons. A suite about fixtures that
- * failed when `projects/common/observability` gained a method would teach people to update
- * its numbers without reading them, which is the one thing these exact
- * assertions exist to prevent.
+ * This package's own slice of a run, so other packages' ordinary changes do not fail the counts.
  */
 function readOwnReport(result: CallGraphResult): ProjectReport {
   return readProjectReport(result, EXAMPLES_DIRECTORY);
@@ -324,13 +246,7 @@ function readProjectReport(
 }
 
 /**
- * The headline a documented outcome promises, without its JSON payload.
- *
- * The payload carries counts and callable names that a fixture edit may
- * legitimately move; the headline is the run's verdict and is what the guide is
- * really claiming. Asserting the headline and the exit code is what this suite
- * holds every documented run to — see the `## Run it` describe for what is
- * deliberately left out of that.
+ * The headline a documented outcome promises, without its JSON payload, which may legitimately move.
  */
 function readPromisedHeadline(promised: string): string {
   const [firstLine = ""] = promised.split("\n");
@@ -339,11 +255,7 @@ function readPromisedHeadline(promised: string): string {
 }
 
 /**
- * The examples in the order the package guide walks a reader through them.
- *
- * Read out of the guide rather than restated here: a list in this file would
- * be a second reading order, free to agree with the assertions below while
- * disagreeing with the document a reader actually follows.
+ * The examples in the order the package guide walks through them, read out of the guide rather than restated.
  */
 function readReadingOrder(): string[] {
   const guide = readFileSync(
@@ -361,24 +273,15 @@ function readReadingOrder(): string[] {
 }
 
 /**
- * The `## Run it` command one guide documents.
- *
- * The first `bash` fence, because that section opens every guide and the
- * command in it is the aggregate target. A guide documenting nothing runnable
- * yields the empty string and fails the assertion below rather than being
- * skipped.
+ * The `## Run it` command one guide documents: its first `bash` fence. Empty when a guide documents nothing runnable.
  */
 function readRunItCommand(exampleName: string): string {
   return readFences(readGuide(exampleName), "bash")[0] ?? "";
 }
 
 /**
- * Runs one documented command line and reports how it went.
- *
- * The comment lines and the shell continuations are stripped and the rest split
- * on whitespace, so the argument vector really is the one the guide prints.
- * `node` heads every such command and is replaced by this process's own
- * executable, since a spawn resolves no `PATH` here.
+ * Runs one documented command line and reports how it went. Strips comments and continuations,
+ * so the argv is the one the guide prints.
  */
 function runDocumented(command: string): { output: string; status: number } {
   const [, ...args] = command
@@ -400,23 +303,8 @@ function runDocumented(command: string): { output: string; status: number } {
 }
 
 /**
- * Traces the fixtures the way the Nx target does, into a throwaway report.
- *
- * The real configuration is reused rather than restated — only its output is
- * redirected — so a limit changed in `callidescope.workspace.config.ts` changes
- * what this asserts instead of quietly disagreeing with it. The committed
- * reports under `output/` are left exactly where they were.
- *
- * Both overrides exist for a differential, because a rule that narrows
- * something can only be shown to do anything by running the same fixtures again
- * without it. `limits` lifts the implementation cap; `exclude` drops one
- * project out of the run's dependency closure.
- *
- * Writing a derived copy into a temporary directory is also why the file it
- * derives from is not named `callidescope.config.ts`: `--config` then names the
- * temporary file, so the run's "one file, one role" skip has no path to match
- * and would discover the real one at the project root as this package's own
- * project configuration — which sets workspace-only fields and is refused.
+ * Traces the fixtures as the Nx target does, into a throwaway report.
+ * Must not be named `callidescope.config.ts`.
  */
 function traceFixtures(
   overrides: {
@@ -563,12 +451,8 @@ describe("callidescope examples (integration)", () => {
     it.each(EXAMPLE_NAMES)(
       "%s documents the aggregate target this package really has",
       (exampleName) => {
-        // The `## Run it` command is not spawned here, and deliberately: all
-        // twenty-three name the same target, this suite's own `beforeAll`
-        // already runs that trace with that configuration, and every
-        // assertion below it is a claim about the outcome. What no assertion
-        // covered was the command line itself — a renamed project or target
-        // would have left every guide naming something Nx cannot run.
+        // The `## Run it` command is not spawned here: the aggregate trace above already runs that configuration.
+        // What no assertion covered was the command line itself, so a renamed target would go unnoticed.
         expect(readRunItCommand(exampleName)).toBe(RUN_IT_COMMAND);
       },
     );
@@ -608,21 +492,10 @@ describe("callidescope examples (integration)", () => {
 
   describe("what the run measured", () => {
     it("traces this package and the projects its imports reach", () => {
-      // The closure, stated as a set. What is absent asserts the narrowing
-      // rule this run exercises: the package's program really reads five
-      // files under `configuration/` — its own `codependix.config.ts`
-      // scaffold added a fifth, spreading `configuration/codependix.config.ts`
-      // and so reaching `packages/codependix-configuration` alongside the
-      // four it already read — a project root holding a `tsconfig.json` and
-      // no `package.json`, and admitting it would reach every toolchain the
-      // repository configures. The other refusal — the workspace root — is
-      // only reachable through that one here, so this list stands for the
-      // first rule rather than for both.
+      // The closure as a set. Absent projects are the narrowing rule this run exercises:
+      // a project root with a tsconfig.json and no package.json, and the workspace root.
       //
-      // Every `*-core` here arrives behind the `configuration` package above
-      // it: each toolchain moved its result vocabulary down into a contracts
-      // leaf. Neither refusal above is weakened. The coinagerie trio arrives
-      // the same way, via `coinagerie.config.ts`.
+      // Every `*-core` arrives behind its `configuration` package, which moved its result vocabulary into a contracts leaf.
       expect(
         result.projects.map((project) => project.projectName),
       ).toStrictEqual([
@@ -655,11 +528,8 @@ describe("callidescope examples (integration)", () => {
     });
 
     it("credits a nested project's files to the nested project", () => {
-      // Ownership is by containment rather than by whichever program asked
-      // first, so the example directory holding a `tsconfig.json` owns its
-      // own files even though this package's program lists them too. Without
-      // that, a limit written in a nested project would be resolved against a
-      // project that owns none of the code it describes.
+      // Ownership is by containment, so a nested project owns its own files.
+      // Otherwise a limit would be resolved against a project that owns none of its code.
       expect(
         result.projects
           .filter((project) =>
@@ -670,11 +540,8 @@ describe("callidescope examples (integration)", () => {
     });
 
     it("leaves out the file a project excluded", () => {
-      // `gated-leaf` declares `exclude: ["*.generated.ts"]`. Counting what is
-      // on disk against what the run traced is what makes this an assertion
-      // about the exclusion rather than about a fixed number: a glob anchored
-      // to the workspace instead of to the project would match nothing and
-      // the two counts would agree.
+      // `gated-leaf` declares `exclude: ["*.generated.ts"]`. Counting disk against trace makes this an assertion about the exclusion.
+      // A glob anchored to the workspace would match nothing, and the counts would agree.
       const traced = (directory: string): Record<string, number> => ({
         onDisk: readdirSync(path.join(WORKSPACE_ROOT, directory)).filter(
           (name) => name.endsWith(".ts"),
@@ -689,12 +556,8 @@ describe("callidescope examples (integration)", () => {
     });
 
     it("drops the over-cap structural expansion, and only that", () => {
-      // Nine classes satisfy `LineSink` against a cap of eight, so the whole
-      // expansion is dropped and recorded as unfollowable — leaving the
-      // computed member name as the only other one. A cap that stopped
-      // working would resolve those nine edges and drop this count to one, so
-      // the number is what pins the behavior now that the cap is a constant
-      // no run can lift.
+      // Nine classes satisfy `LineSink` against a cap of eight, so the whole expansion is dropped as unfollowable.
+      // The count pins that: a cap that stopped working would resolve those nine edges and drop it to one.
       expect(readOwnReport(result).summary.unresolvedCallCount).toBe(2);
     });
   });
@@ -723,10 +586,7 @@ describe("callidescope examples (integration)", () => {
           displayName: "ConfigurationService.resolveConfiguration",
           project: "projects/ic-suite/callidescope/callidescope-configuration",
         },
-        // Two frames inside the dependency rather than one: that package
-        // publishes a single facade, and the facade forwards to the loader
-        // behind it. Which is the point of the fixture — the trace follows
-        // the call as far as the closure allows, however many hops that is.
+        // Two frames sit inside the dependency: the package's facade forwards to the loader behind it.
         {
           displayName: "ConfigurationFileService.resolveConfiguration",
           project: "projects/ic-suite/callidescope/callidescope-configuration",
@@ -752,12 +612,7 @@ describe("callidescope examples (integration)", () => {
 
   describe("depth findings", () => {
     it("reports every deliberately deep stack this package heads", () => {
-      // Narrowed to the stacks this package heads, so it says nothing about
-      // how many the whole run reports. The closure's three dependency
-      // packages each declare their own limit now, and one of them is still
-      // over it — `projects/common/observability`, which measures five here and four in the
-      // run that ignores calls into it. That is a fact about those packages
-      // rather than about a fixture, and not this suite's to pin.
+      // Narrowed to the stacks this package heads. Another project's own limit is not this suite's to pin.
       expect(
         readDeepStacksFor(result, EXAMPLES_DIRECTORY).map((stack) => ({
           depth: stack.depth,
@@ -866,18 +721,10 @@ describe("callidescope examples (integration)", () => {
 
   describe("per-project limits", () => {
     it("judges each project against the limit its own configuration settles on", () => {
-      // The whole feature in one assertion: three different depth limits in
-      // one report, each declared in a project's own `callidescope.config.ts`
-      // — `gated-leaf`'s three, this package's five, and `@codebase/observability`'s
-      // four, which the closure reaches.
+      // Three depth limits in one report, each from its own project's `callidescope.config.ts`.
       //
-      // `@codebase/observability` is here because it is a real workspace package that
-      // now states its own limit, and this run does not ignore calls to it the
-      // way the workspace run does: four is what the logger measures with
-      // `LoggerService.*` ignored, five is what it measures here, so the same
-      // number is a pass there and a finding in this report. That is the
-      // per-project feature working rather than a fixture misbehaving —
-      // `projects/common/observability/callidescope.config.ts` says so beside the number.
+      // `@codebase/observability` measures five here but four in the workspace run, which ignores
+      // calls into `LoggerService`. The per-project feature working, not a fixture misbehaving.
       expect(
         result.deepStacks.map((stack) => [
           stack.frames[0]?.displayName,

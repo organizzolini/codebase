@@ -10,11 +10,8 @@ const conformetryConfiguration: ConformetryConfiguration = [
     inputs: {
       name: { description: "Document name in kebab-case", type: "string" },
     },
-    // Both templates claim these paths, and only one group declares them. A
-    // run unions every generator's groups into one list of paths, so the same
-    // glob written twice locates the same path twice and every finding about
-    // it is reported once per group. Which template explains a path is
-    // inferred either way, so saying it once is enough.
+    // Both templates claim these paths, but only one group declares them. A
+    // run unions groups into one list, so repeated globs report every finding once per group.
     instances: [{ patterns: [`${EXAMPLE_PATH}/instances/*`] }],
     name: "overview",
     templatePath: `${EXAMPLE_PATH}/templates/overview`,

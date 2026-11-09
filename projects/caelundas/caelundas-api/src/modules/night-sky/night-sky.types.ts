@@ -157,9 +157,7 @@ export interface NightSkyOptions {
 }
 
 /**
- * A `nightSky` query's input with every default applied and every value
- * checked: the builder's options, less what the server supplies, plus the
- * observer's longitude and the figures asked for by name.
+ * A `nightSky` query's input with defaults applied and values checked, plus the observer's longitude.
  */
 export type ParsedNightSkyInput = Omit<
   ResolvedNightSkyOptions,

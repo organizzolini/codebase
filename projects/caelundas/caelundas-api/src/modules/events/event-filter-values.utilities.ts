@@ -51,8 +51,8 @@ export function readIntegerRange(
 }
 
 /**
- * Reads a list of whole numbers from `minimum` to `maximum`, distinct and in
- * order of first appearance. An empty list means the rule is unfinished.
+ * Reads distinct whole numbers within the bounds, in order of first
+ * appearance; an empty list leaves the rule unfinished.
  */
 export function readIntegers(
   values: readonly string[],
@@ -72,8 +72,8 @@ export function readIntegers(
 }
 
 /**
- * Reads the two ends of a range a rule was given, or `null` when either is
- * not written as a number or they run backwards.
+ * Reads a range's two ends, or `null` when either is not a number or they run
+ * backwards.
  */
 export function readNumberRange(
   values: readonly string[],

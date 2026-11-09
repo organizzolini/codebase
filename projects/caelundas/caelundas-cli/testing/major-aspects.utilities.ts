@@ -12,9 +12,7 @@ import { ProgressiveUtilitiesService } from "../src/modules/progressive/progress
 import type { EphemerisService } from "../src/modules/ephemeris/ephemeris.service";
 
 /**
- * A `MajorAspectsService` wired by hand from its real collaborators, over
- * the given `EphemerisService` (a mock, in a test), so angular-separation
- * logic can be checked without booting Nest or reading ephemeris files.
+ * A `MajorAspectsService` wired by hand from real collaborators over the given ephemeris mock, without booting Nest.
  */
 export function createMajorAspectsService(
   ephemerisService: EphemerisService,

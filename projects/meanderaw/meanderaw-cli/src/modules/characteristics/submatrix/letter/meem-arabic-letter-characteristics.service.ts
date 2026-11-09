@@ -9,12 +9,9 @@ import type {
 
 /**
  * Provides the sixteen orientation evaluators of each positional form of the م
- * (Arabic meem) skeleton — final, initial, and medial — one per corner and
- * clockwise rotation, each counting that form's base template, which faces
- * Southwest, drawn that way. A letter sharing a form's skeleton, differing from
- * it only by dots or by other marks, is an alias of that form. The isolated
- * form draws the same glyph as the Greek Ρ (rho), so it is an alias there
- * rather than a form of its own.
+ * (Arabic meem) skeleton: final, initial, and medial. A letter differing from a
+ * form's skeleton only by dots or marks is an alias of that form. The isolated
+ * form is an alias of the Greek Ρ (rho).
  */
 @Injectable()
 export class MeemArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -54,10 +51,7 @@ export class MeemArabicLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /**
-   * The upright م (final Arabic meem) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+  /** The upright م (final Arabic meem) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ┌┬╴
    * ├┘
@@ -73,9 +67,7 @@ export class MeemArabicLetterCharacteristicsService implements CharacteristicEva
   ];
 
   /**
-   * The upright م (initial Arabic meem) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright م (initial Arabic meem) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╶┬┐
    *  └┘
@@ -84,9 +76,7 @@ export class MeemArabicLetterCharacteristicsService implements CharacteristicEva
   private readonly initialTemplate: readonly string[] = ["275", ".a9"];
 
   /**
-   * The upright م (medial Arabic meem) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright م (medial Arabic meem) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╶┬┬╴
    *  └┘

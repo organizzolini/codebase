@@ -17,10 +17,8 @@ export interface AllowedDirectories {
 export interface ResolveGenerationPathArguments {
   readonly configurationPath: string;
   /**
-   * The generator being run, used to find the scope it is confined to.
-   *
-   * Optional so a caller with no generator in hand — anything resolving a path
-   * outside a generator run — still gets the inferred layout.
+   * The generator run, whose scope confines the write. Optional: without one, the
+   * inferred layout applies.
    */
   readonly generatorName?: string | undefined;
   /** The generator's own inputs, such as `project`, `module`, and `name`. */

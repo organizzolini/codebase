@@ -5,12 +5,8 @@ import { InputError } from "@codependix/configuration";
 import type { ResolvedCodependixSelection } from "@codependix/configuration";
 
 /**
- * A `--projects`/`--tags` selection that matched no project at all.
- *
- * Refused rather than run, whatever the mode: a misspelled name would
- * otherwise judge nothing and pass — a green gate that checked nothing — and
- * draw the Workspace Graph over no project. Every pattern is named, since
- * the run cannot tell which of them was the typo.
+ * A `--projects`/`--tags` selection that matched no project. Refused rather
+ * than run: a typo would otherwise judge nothing and pass.
  */
 export const emptySelectionError = (
   selection: ResolvedCodependixSelection,

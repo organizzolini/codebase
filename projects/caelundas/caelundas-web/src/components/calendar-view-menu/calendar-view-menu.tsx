@@ -44,9 +44,7 @@ export interface CalendarViewMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the View menu: how the calendar looks. It arranges the view shown,
- * where that has anything to arrange, then picks how symbols are drawn and
- * turns the merging of crowded days on or off. Coloring is the Color menu's.
+ * Renders the View menu: how the calendar looks, its view arrangement, symbol drawing, and crowded-day merging; coloring is elsewhere.
  */
 export function CalendarViewMenu(
   properties: Readonly<CalendarViewMenuProperties>,

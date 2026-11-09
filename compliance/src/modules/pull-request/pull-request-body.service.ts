@@ -17,12 +17,9 @@ import type { List, RootContent } from "mdast";
 /**
  * Checks a pull request description against the template it started as.
  *
- * Two sources, kept apart: the four sections — their headings, shapes, and word
- * limits — are the convention and are named in this module's constants, while
- * the prompts are whatever the template currently holds and are read from it at
- * runtime. A prompt added to the template tomorrow is therefore checked with no
- * change here — which the previous inline shell, with its hard-coded prefixes,
- * could not manage.
+ * The four sections (headings, shapes, and word limits) are constants in this
+ * module. The prompts are read from the template at runtime, so a prompt added
+ * to the template is checked with no change here.
  */
 @Injectable()
 export class PullRequestBodyService {
@@ -37,11 +34,9 @@ export class PullRequestBodyService {
   // 🔏 Private Methods
 
   /**
-   * The marker of every bulleted item in some lists, nested lists included.
+   * The marker of every bulleted item in a list, nested lists included.
    *
-   * Ordered lists are walked through but contribute no marker of their own.
-   * Walked with a work list rather than by recursion, which would add a frame
-   * per level of nesting to every stack through here.
+   * Walked with a work list, so nesting adds no stack frames.
    */
   private bulletMarkersOf(lists: readonly List[], content: string): string[] {
     const markers: string[] = [];
@@ -95,9 +90,7 @@ export class PullRequestBodyService {
   /**
    * Whether a section's blocks have the shape its rule allows.
    *
-   * Only a leading dash list is open-ended: Related may close with anything
-   * after its links, such as an agent's attribution line. A bulleted list
-   * takes any marker but one throughout, as markdownlint's MD004 does.
+   * Only a leading dash list is open-ended, so Related may close with anything.
    */
   private holdsShape(options: {
     readonly blocks: readonly RootContent[];
@@ -141,10 +134,8 @@ export class PullRequestBodyService {
   }
 
   /**
-   * A section's top-level markdown blocks, less the ones no rule should judge.
-   *
-   * A block that is nothing but comments is dropped, being the unfilled-prompt
-   * check's business.
+   * A section's top-level markdown blocks, less those no rule should judge.
+   * A block that is only comments is dropped.
    */
   private parseBlocks(content: string): RootContent[] {
     return remark()
@@ -157,10 +148,8 @@ export class PullRequestBodyService {
   }
 
   /**
-   * The leading run of a prompt that a description has to still carry.
-   *
-   * Newlines are collapsed so a prompt wrapped across lines in the template is
-   * compared as the one line a description carries it as.
+   * The leading run of a prompt that a description must still carry.
+   * Newlines are collapsed so a wrapped prompt compares as one line.
    */
   private prefixOf(templateComment: string): string {
     return templateComment
@@ -227,9 +216,7 @@ export class PullRequestBodyService {
 
   /**
    * Every section holding a block its shape does not allow.
-   *
-   * A missing or empty section is left to the checks that name those, so one
-   * mistake is never reported twice.
+   * A missing or empty section is left to the checks that name it.
    */
   public findMalformedSections(body: string): string[] {
     const sections = this.splitSections(body);

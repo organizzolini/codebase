@@ -1,8 +1,7 @@
 // 🏷️ Types
 
 /**
- * What an event is called, in the two forms the calendar uses: the glyphs
- * its chip shows, and the English name and description its tooltip says.
+ * What an event is called: the glyphs its chip shows, and the English name and description its tooltip says.
  */
 export interface EventLabel {
   /**

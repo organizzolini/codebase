@@ -27,9 +27,7 @@ export type EventFilterQuery = FilterQuery<EventFilterValue>;
 export type EventFilterRule = FilterRule<EventFilterValue>;
 
 /**
- * What a rule may hold: a list of picks for "is any of", a pair for a range,
- * or one value for text. Anything else in a restored link is treated as a
- * rule that is not finished yet.
+ * A rule's value: a list of picks, a range pair, or one text value; anything else is an unfinished rule.
  */
 export type EventFilterValue =
   | (null | number | string)[]

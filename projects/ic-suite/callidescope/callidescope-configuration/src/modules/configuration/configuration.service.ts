@@ -30,24 +30,8 @@ import type {
 /**
  * The one answer to "what is this run actually configured to do".
  *
- * Every question a caller outside this package can ask about configuration is
- * asked here: what a file declares, what a project is gated by, what a command
- * line resolved to, and what to ask a person for when a flag was left off. A
- * consumer therefore injects this and nothing else from this package, which is
- * what makes the configuration layer one layer rather than a bag of
- * collaborators a caller has to know the names of.
- *
- * Nearly every method here forwards and nothing more. Loading a file, judging
- * a project's own file, planning a run from flags, and prompting are four
- * different jobs and stay four classes in four files behind this one; what
- * they stop being is four public entry points. A facade that implemented any
- * of them would be a facade in name only, and the one-per-job split is what
- * keeps each of them readable.
- *
- * `resolveFormatOption` is the exception, and a small one: deciding whether to
- * offer a prompt at all is a policy over two collaborators rather than work
- * either of them does, and it reads a constant the prompting service must not
- * import. Its whole body is that decision.
+ * Callers inject this rather than the collaborators behind it. Nearly every method forwards;
+ * `resolveFormatOption` is the one with a decision of its own.
  */
 @Injectable()
 export class ConfigurationService implements ConfigurationFileReader {
@@ -151,17 +135,8 @@ export class ConfigurationService implements ConfigurationFileReader {
   }
 
   /**
-   * Returns the given options with `--format` filled in where one is wanted.
-   *
-   * Offered rather than required, which is the one place this differs from
-   * every other missing value: the caller applies its own default when
-   * nobody is at a terminal to ask, so a run proceeds with nothing typed.
-   * Demanding it would fail every scripted run — this repository's own
-   * per-project `gate` among them — over a flag those runs have never needed
-   * to pass.
-   *
-   * Generic over the caller's options type, so a command carries its own
-   * other flags through unchanged.
+   * Fills `--format` in where wanted.
+   * Offered, not required: scripted runs without a terminal keep the caller's default.
    */
   public async resolveFormatOption<Options extends CallidescopeFormatOptions>(
     options: Options,

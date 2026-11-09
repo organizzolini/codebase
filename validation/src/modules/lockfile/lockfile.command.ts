@@ -11,15 +11,11 @@ import {
 import { LockfileService } from "./lockfile.service";
 
 /**
- * CLI command that checks `pnpm-lock.yaml` against the workspace manifests.
+ * CLI command that checks `pnpm-lock.yaml` against the workspace manifests, by
+ * pnpm's own `--frozen-lockfile` refusal.
  *
- * It is pnpm's own `--frozen-lockfile` refusal, reported with the command that
- * fixes it. No Nx target models this, because the thing being checked is not a
- * file's contents but whether a resolution still holds.
- *
- * Exits 0 when the lockfile is in sync, and 0 again when pnpm cannot be found
- * at all — see `PACKAGE_MANAGER_MISSING_MESSAGE`. Exits 1 only when pnpm ran
- * and refused.
+ * Exits 0 when the lockfile is in sync or pnpm cannot be found. Exits 1 only
+ * when pnpm ran and refused.
  */
 @Command({
   description:

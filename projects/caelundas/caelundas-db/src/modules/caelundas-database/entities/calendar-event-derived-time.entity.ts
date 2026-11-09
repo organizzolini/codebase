@@ -1,25 +1,13 @@
 import { ViewColumn, ViewEntity } from "typeorm";
 
-/** The event's start as the wall-clock `timestamp` in the zone the event names, so a reader groups and filters by the observer's local day and hour. */
+/** The event's start as a wall-clock timestamp in the event's own zone, so reads group by local day and hour. */
 const LOCAL_START = `(e."start" at time zone e.timezone)`;
 
 /** The event's start as a UTC wall-clock `timestamp`, which every derived time but the duration reads. */
 const UTC_START = `(e."start" at time zone 'UTC')`;
 
 /**
- * One row of the `calendar_event_derived_times` view: a calendar event with the
- * times derived from its start and end, in UTC: the year, quarter, month,
- * week, weekday, hour and day it starts, how long it lasts in minutes, and
- * whether it is an instant or lasts a while. The day and hour it starts in the
- * observer's own zone, `start_local_day` and `start_local_hour`, come from
- * `start AT TIME ZONE timezone`.
- *
- * It is a plain view rather than a materialized one: the columns are cheap to
- * compute from the event's own row, so a reader pays nothing to keep it
- * current, and it needs no refresh. Every column is plain SQL on the event's
- * own `start`, `end`, and `timezone`, so nothing is registered on the
- * connection. Its name is plural already, so the shared naming strategy
- * leaves it be.
+ * One row of the `calendar_event_derived_times` view: an event with times derived from its start and end. Plain view, so no refresh.
  */
 @ViewEntity({
   expression: `select

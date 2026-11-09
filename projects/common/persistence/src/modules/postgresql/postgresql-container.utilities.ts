@@ -21,14 +21,8 @@ import type { StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 // 🌎 Utilities
 
 /**
- * Starts a throwaway Postgres 18 laid out the way the local Docker one is —
- * a `<project>_username` role owning a `<project>_testing` database with a
- * `<project>` schema inside it — and builds the schema by running the
- * project's real migrations, so every integration suite exercises them.
- *
- * Resolves with the role's connection, never the container's admin login,
- * plus the same connection as `<PROJECT>_POSTGRES_*` variables for a
- * `PostgresqlModule` to read.
+ * Starts a throwaway Postgres 18 with the local layout and the project's real
+ * migrations. Resolves with the role's connection, never the admin login.
  */
 export async function startPostgresContainer({
   images = POSTGRES_CONTAINER_IMAGES,
@@ -80,11 +74,8 @@ export async function startPostgresContainer({
 }
 
 /**
- * The SQL the official image runs on its first start, as its superuser:
- * the same role, database, and schema the local Docker init creates, named
- * for testing. The schema is checked against the project-name pattern by
- * {@link postgresConnection}, and the role and database are derived from the
- * project name it checks, so none needs quoting.
+ * The SQL the image runs on first start: the role, database, and schema the
+ * local Docker init creates, for testing.
  */
 function postgresInitializationSql(connection: PostgresConnection): string {
   return [
@@ -97,9 +88,8 @@ function postgresInitializationSql(connection: PostgresConnection): string {
 }
 
 /**
- * Starts the first image that will start, initialized with `layout`'s role,
- * database, and schema, so a Docker Hub rate limit falls through to the
- * mirror rather than failing the suite.
+ * Starts the first image that will start, so a Docker Hub rate limit falls
+ * through to the mirror rather than failing the suite.
  */
 async function startFirstAvailableImage(
   images: readonly string[],

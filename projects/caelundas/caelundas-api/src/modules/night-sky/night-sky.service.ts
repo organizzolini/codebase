@@ -80,10 +80,8 @@ export class NightSkyService implements OnModuleInit {
   // 🌎 Public Methods
 
   /**
-   * Builds the night sky a query asks for, from the stars and figures held
-   * in memory, refusing input the builder cannot draw. A sky is built from
-   * its canonical input, and kept so that a repeat request, or one for a
-   * moment or size that rounds to the same, costs almost nothing.
+   * Builds the sky for a query, cached by canonical input so repeats and
+   * equivalent requests are nearly free.
    */
   public build(input: NightSkyInput): NightSky {
     const canonical = canonicalizeNightSkyInput(parseNightSkyInput(input));

@@ -38,26 +38,17 @@ ignorePaths:
   - "**/projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts"
   - "**/projects/lexico/lexico-cli/src/modules/library/library.constants.ts"
   - "**/documentation/planning/**"
-  # 🌀 Every meander the `draw` command writes. The SVGs are already covered by
-  # the `*.svg` entry above; the index page listing them is markup, and its link
-  # text is three thousand mosaic tile identifiers — `ddddd-dots` and its
-  # siblings — which are coordinates in a parameter space rather than words.
+  # 🌀 Every meander the `draw` command writes. The SVGs are covered by the `*.svg` entry.
+  # The index lists mosaic tile identifiers, which are coordinates, not words.
   # `.codometerignore` and `.prettierignore` exclude the same directory.
   - "**/projects/meanderaw/meanderaw-cli/output/**"
   # cspell:ignore mermiad
-  # 🔭 Everything callidescope's examples run writes. The report carries each
-  # traced callable's own JSDoc summary verbatim, so a word a source file
-  # deliberately misspells — `mermiad`, the typo'd `--format` value the flag
-  # refusal is written around — arrives here stripped of the `cspell:ignore`
-  # comment that exempts it at the source, and JSON has nowhere to put one
-  # back. Spelling is checked where the prose is authored; this is a copy.
+  # 🔭 Callidescope's example output. Traced JSDoc summaries are copied verbatim, so a deliberate
+  # misspelling such as `mermiad` is ignored here, since the source's ignore comment is not copied.
   - "**/projects/ic-suite/callidescope/callidescope-examples/output/**"
-  # 🧩 Installed agent skills, one entry per skill in skills-lock.json. Owned
-  # upstream rather than authored here, so their prose stays spelled the way
-  # their sources spelled it. Listed individually rather than as
-  # `.agents/skills/` so this repository's own skills in the same directory keep
-  # being checked. Verified by `nx run synchronization:skill-exclusions`, which
-  # also generates the block below.
+  # 🧩 Installed agent skills, one per entry in skills-lock.json. Their prose stays as upstream wrote it.
+  # Listed individually, not as `.agents/skills/`, so this repository's own skills stay checked.
+  # Verified by `nx run synchronization:skill-exclusions`, which also generates the block below.
   - "**/.agents/licenses/**"
   # installed-skills-start
   - "**/.agents/skills/ask-matt/**"
@@ -165,20 +156,9 @@ dictionaryDefinitions:
     path: .cspell/editor.txt
   - name: meanders
     path: .cspell/meanders.txt
-# Abbreviations banned everywhere — prose, comments, and identifiers alike. This
-# is the text-level counterpart to ESLint's `unicorn/prevent-abbreviations`,
-# which only sees TypeScript and JavaScript identifiers; these entries extend
-# the same ban to Markdown, Python, SQL, YAML, and JSON. Where an abbreviation
-# is unavoidable because it belongs to an external vocabulary (Tailwind classes,
-# JSDoc tags, TypeORM identifiers, POSIX paths), it is carved out by a named
-# pattern in `ignoreRegExpList` rather than dropped here.
-#
-# `src` and `auth` are deliberately absent: `src` is the universal
-# source-directory name and appears as a literal path segment in globs, module
-# specifiers, and shell commands, and `auth` belongs to external product and CLI
-# vocabulary (`gh auth`, `AuthGuard`, `auth.guard.ts`). CSpell
-# cannot tell either apart from an identifier, so both stay banned by ESLint
-# alone.
+# Abbreviations banned everywhere, in prose, comments, and identifiers alike.
+# The text-level counterpart to ESLint's `unicorn/prevent-abbreviations`, which sees only JS and TS.
+# `src` and `auth` are absent: `src` is a universal directory name, `auth` is external vocabulary.
 # cspell:disable
 flagWords:
   - arr
@@ -283,11 +263,10 @@ patterns:
   - name: lint-rule-name
     pattern: /\bno-(?:param-reassign|obj-calls|hex-escape|children-prop)\b|\bban-char-field\b|\bprop-drilling\b/g
   # External identifiers that embed a banned abbreviation and cannot be renamed: the
-  # `mdast-util-*` packages, Zod's `RefinementCtx` type, pytest's `tmp_path` fixture,
-  # Python's `secrets.token_hex()`, the `git config --bool` flag, and the Universal
-  # Dependencies `NUM` part-of-speech tag, and ReUI's `CascaderNav` component with
-  # the `cascader-nav` file it lives in. The `char` entry of the coinagerie fold map folds
-  # the `charAt` method of JavaScript's `String` onto the word the code spells out.
+  # `mdast-util-*` packages, Zod's `RefinementCtx`, pytest's `tmp_path`, Python's
+  # `secrets.token_hex()`, the `git config --bool` flag, the `NUM` tag,
+  # and ReUI's `CascaderNav` with its `cascader-nav` file.
+  # The `char` entry folds JavaScript's `charAt` onto the spelled-out word.
   - name: external-identifier
     pattern: /\bmdast-util-[\w-]+|\bRefinementCtx\b|\btmp_path\b|\btoken_hex\b|--bool\b|(?<=")NUM(?=")|\bCascaderNav\b|\bcascader-nav\b|\["char", "character"\]/g
   # A project's glossary block in its README. It lists the words the project's code
@@ -300,11 +279,9 @@ patterns:
   # element rather than an abbreviation anyone here chose.
   - name: react-intrinsic-element
     pattern: /\bComponentProps(?:WithoutRef|WithRef)?<"[a-z][\w-]*">/g
-  # Quoted dotted identifiers in editor configuration: VS Code extension IDs
-  # (`esbenp.prettier-vscode`), setting keys (`git.autofetch`), and command IDs
-  # (`workbench.action.terminal.new`). Publisher handles are not English words, and the
-  # keys are VS Code's vocabulary rather than this workspace's. Only applied to the editor
-  # config files in `overrides` — plain strings in those files stay checked.
+  # Quoted dotted identifiers in editor configuration: VS Code extension IDs, setting keys, and
+  # command IDs. Publisher handles are not English words, and the keys are VS Code's vocabulary.
+  # Applied only to the editor configs in `overrides`; plain strings there stay checked.
   - name: editor-configuration-identifier
     pattern: /"[a-z\d][\w-]*(?:\.[\w-]+)+"/gi
   # A phonetic transcription written between slashes, whose spelling comes from the

@@ -22,20 +22,13 @@ import { RectangleCharacteristicsModule } from "./submatrix/rectangle/rectangle-
 import { RunCharacteristicsModule } from "./submatrix/run/run-characteristics.module";
 
 /**
- * Wires up the Characteristic computation that reads a Code directly — no
- * grid, no SVG, no filesystem, no database — which is what lets
- * `DrawRecordService` fill a row's Characteristics from the same reading it
- * already renders from, with nothing rendered in between.
+ * Wires up the Characteristic computation that reads a Code directly, with no grid,
+ * SVG, filesystem or database. This lets `DrawRecordService` fill a row's
+ * Characteristics from the reading it already renders from.
  *
- * Each characteristic evaluator lives in its own service under a category
- * folder (`submatrix/`, `path/`, `compound/`) and a group folder beneath it.
- * Each group folder holds one small module that provides and exports its
- * services, and this module imports and re-exports every group module, so a
- * consumer of `CharacteristicsModule` can inject any evaluator.
- * `CharacteristicsService` finds every one of them through `DiscoveryModule`
- * rather than through a hand-maintained list, and fills a whole
- * `Characteristics` record from one context built by
- * `CharacteristicContextService` over `CodeModule` and `MatrixModule`.
+ * Each evaluator is a service in a category folder (`submatrix/`, `path/`, `compound/`)
+ * with a group module beneath it, which this module re-exports.
+ * `CharacteristicsService` discovers them through `DiscoveryModule`.
  */
 @Module({
   controllers: [],

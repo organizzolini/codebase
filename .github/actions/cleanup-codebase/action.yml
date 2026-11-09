@@ -36,14 +36,9 @@ inputs:
 runs:
   using: composite
   steps:
-    # A cancellation can hit mid-write to the task-result database, and a
-    # corrupt one saved here is inherited by every later job's `restore-keys`
-    # fallback. The `cleanup-codebase` command of the `integration` project
-    # discards the damaged ones, and warns and keeps only the newest when there
-    # is more than one, which means Nx stopped reading the adopted database. See
-    # the `verify-task-database` and `keep-task-database` commands for why. It
-    # needs the installed dependencies, so a job whose install never finished
-    # skips it rather than failing a second time.
+    # A cancellation can corrupt the task-result database, and a corrupt copy saved here
+    # is inherited by later jobs. The `cleanup-codebase` command of the `integration`
+    # project discards damaged databases. It needs installed dependencies, so a job whose install never finished skips it.
     - name: 🩺 Cleanup Codebase
       if: |
         always() && inputs.nx-cache == 'true' &&
@@ -55,21 +50,12 @@ runs:
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
           integration/src/integration.main.ts cleanup-codebase
 
-    # `.nx/cache` and `.nx/workspace-data/*.db*` hold a result for every task
-    # that finished before a job was cut off, whether by a failure or a
-    # `timeout-minutes` cancellation — Nx writes each task's result as it
-    # completes rather than in one batch at the end. Saving that partial state
-    # means a retry of this commit, or a later commit's `restore-keys`
-    # fallback, starts from real progress instead of a cold run.
+    # `.nx/cache` and the task-result database hold every task that finished before a
+    # cancellation. Saving that partial state lets a retry start from real progress.
 
-    # `always()` here is redundant with the same condition on the calling
-    # step, but cheap insurance: GitHub re-evaluates `if` conditions per step
-    # on a cancellation, and there is no cost to a step that always runs
-    # asking again.
-    # The merge group's run cannot read the caches a pull request run saves,
-    # so it gets the same files by artifact instead; the `import-pr-task-cache`
-    # command of the `publication` project downloads them. Hidden files are
-    # included because `.nx` is one. Three days cover the wait in the queue.
+    # `always()` is redundant with the calling step, but cheap insurance on cancellation.
+    # The merge group cannot read the pull request's caches, so the `import-pr-task-cache`
+    # command of the `publication` project downloads this artifact instead. Three days cover the queue.
     - name: 📤 Share Nx Cache With The Merge Group
       if: |
         always() && inputs.nx-cache == 'true' && inputs.nx-cache-artifact ==

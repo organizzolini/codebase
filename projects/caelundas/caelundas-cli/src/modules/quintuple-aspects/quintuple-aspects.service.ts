@@ -29,11 +29,7 @@ export class QuintupleAspectsService {
   // 🌎 Public Methods
 
   /**
-   * Detects all quintuple aspect patterns from stored 2-body aspect events.
-   *
-   * Currently detects the Pentagram pattern (5 bodies in quintile relationships
-   * forming a 5-pointed star). This is one of the rarest and most significant
-   * configurations in astrology.
+   * Detects Pentagram patterns, five bodies in quintile relationships, from stored 2-body aspect events.
    */
   detect(args: {
     currentAspectBodies: AspectBodies[];
@@ -49,11 +45,7 @@ export class QuintupleAspectsService {
   }
 
   /**
-   * Converts instantaneous quintuple aspect events into progressive events.
-   *
-   * Pairs forming and dissolving events for the same body quintet and
-   * pattern type to create events spanning the entire active period.
-   *
+   * Converts instantaneous quintuple events into progressive events spanning the active period, pairing forming and dissolving events.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const progressiveEvents: DetectedCalendarEvent[] = [];

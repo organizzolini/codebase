@@ -19,11 +19,7 @@ import type { EventFilterField } from "./event-filters.types";
 import type { FilterOption } from "@codebase/presentation";
 
 /**
- * Builds the filter builder's fields: one per tag root in the database's
- * facets, offering every tag beneath it, then the fields derived from each
- * event's time, duration, and text. A root added to the data becomes a field
- * with no change here; one named like a derived field, such as Temporality,
- * is left to the derived one, which needs no tags.
+ * Builds the filter fields: one per tag root in the facets, then the derived fields; a root named like one of those is skipped.
  */
 export function createEventFilterFields(
   facets: readonly EventFacet[],
@@ -44,9 +40,7 @@ export function createEventFilterFields(
 }
 
 /**
- * Lists a tag root's tags as options in tree order. Each is labeled by its own
- * name, as a chip reads best, unless another tag under the root has the same
- * name, when its path tells them apart; its depth is beneath the root.
+ * Lists a tag root's tags as options in tree order, labeled by name, or by path where two tags share a name.
  */
 export function createTagOptions(facet: EventFacet): FilterOption[] {
   const options: FilterOption[] = [];
@@ -72,8 +66,7 @@ export function createTagOptions(facet: EventFacet): FilterOption[] {
 }
 
 /**
- * What a tag root means, for the list of attributes: its own description, or
- * a plain one from its name for a root added to the data.
+ * What a tag root means: its own description, or one derived from its name for a root added to the data.
  */
 export function describeRoot(facet: EventFacet): string {
   return (
@@ -83,9 +76,7 @@ export function describeRoot(facet: EventFacet): string {
 }
 
 /**
- * Whether every tag beneath a root is named for a number it ends in, such as
- * "Harmonic 6", so the root reads as a number to compare rather than a set to
- * pick from.
+ * Whether every tag beneath a root ends in a number, such as "Harmonic 6", so the root reads as a number to compare.
  */
 function isNumericFacet(facet: EventFacet): boolean {
   return facet.values.every((value) => NUMERIC_TAG_NAME.test(value.name));

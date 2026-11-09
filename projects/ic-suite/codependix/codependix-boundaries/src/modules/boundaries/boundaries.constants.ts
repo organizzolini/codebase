@@ -4,11 +4,8 @@
 export const CYCLE_SEPARATOR = " → ";
 
 /**
- * The sentence an `acyclic` rule reports when it names none of its own.
- *
- * Names the whole path rather than only the edge that closed it: a cycle is a
- * statement about a shape, and the two nodes of its closing edge are the
- * least useful two to be handed.
+ * The sentence an `acyclic` rule reports when it names none.
+ * Names the whole path, since the closing edge alone says little.
  */
 export const describeCycle = (args: {
   cycle: readonly string[];
@@ -16,12 +13,8 @@ export const describeCycle = (args: {
 }): string => `${args.rule}: ${args.cycle.join(CYCLE_SEPARATOR)} is a cycle.`;
 
 /**
- * The sentence a violated `allow` rule reports when it names none of its own.
- *
- * Worded as a permitted surface rather than as a forbidden edge, because that
- * is what distinguishes it from `forbid`: the reader's next question is what
- * the rule does allow, and the rule's name is the only place this can point
- * them at without restating the configuration.
+ * The sentence an `allow` rule reports when it names none.
+ * Worded as what is permitted, since readers next ask what the rule allows.
  */
 export const describeDisallowedEdge = (args: {
   rule: string;

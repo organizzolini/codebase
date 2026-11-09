@@ -73,9 +73,7 @@ export class FehArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright ڡ (final Arabic dotless feh) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ڡ (final Arabic dotless feh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╷ ┌┐
    * └─┴┴╴
@@ -84,9 +82,7 @@ export class FehArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly finalTemplate: readonly string[] = ["4.65.", "a3bb1"];
 
   /**
-   * The upright ڡ (initial Arabic dotless feh) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ڡ (initial Arabic dotless feh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ┌┐
    *  └┤
@@ -96,9 +92,7 @@ export class FehArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly initialTemplate: readonly string[] = [".65", ".ad", "239"];
 
   /**
-   * The upright ڡ (isolated Arabic dotless feh) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ڡ (isolated Arabic dotless feh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╷ ┌┐
    * └─┴┘
@@ -107,9 +101,7 @@ export class FehArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly isolatedTemplate: readonly string[] = ["4.65", "a3b9"];
 
   /**
-   * The upright ڡ (medial Arabic dotless feh) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ڡ (medial Arabic dotless feh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ┌┐
    *  └┤

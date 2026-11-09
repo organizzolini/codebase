@@ -122,8 +122,8 @@ export interface PostgresTruncateOptions {
 }
 
 /**
- * Where a client tool connects, parsed from a `postgresql://` URI. Handed to
- * the tool as `PG*` variables, so none of it reaches the process arguments.
+ * Where a client tool connects, parsed from a `postgresql://` URI and handed
+ * over as `PG*` variables, never argv.
  */
 export interface PostgresUriConnection {
   /** The database the URI's path names. */

@@ -18,22 +18,10 @@ export const LIMITS_HEADING = "# 🔭 Callidescope Limits";
 export const LIMITS_SUMMARY =
   "Every project in scope, what it is judged against, and the file each number is written in — which is that project's own `callidescope.config.ts`, every traced project declaring a complete one. The `workspace` row is the starting point those files spread, and the numbers the directory holding this configuration is itself judged by.";
 
-/**
- * What a value cell says when nothing anywhere declares the limit.
- *
- * Breadth has no workspace default and no tool default, so a project that
- * declares none is gated by nothing at all. Printing a number here — the
- * workspace's, or an invented one — would say the opposite.
- */
+/** Shown when nothing declares the limit. Printing a number would wrongly suggest a gate, since breadth has no default. */
 export const NO_LIMIT_LABEL = "none";
 
-/**
- * Names the project rooted at the workspace root itself.
- *
- * Its workspace-relative root is the empty string, which would print as a
- * blank cell — and a blank cell in a listing of what gates what reads as
- * something missing rather than as the directory it is.
- */
+/** Names the workspace-root project. Its empty root would print as a blank cell, which reads as missing data. */
 export const ROOT_PROJECT_LABEL = ".";
 
 /** Names the row carrying the defaults every project's file spreads. */

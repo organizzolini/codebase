@@ -71,8 +71,8 @@ export class AnnualSolarCycleService {
   }
 
   /**
-   * The minute of the pair whose radial speed is nearer zero, so the apsis is
-   * stamped at the nearest minute. A tie goes to the later minute.
+   * The minute whose radial speed is nearer zero, where the apsis is stamped;
+   * ties go later.
    */
   private getNearestApsisMinute(
     minute: Moment,
@@ -148,33 +148,8 @@ export class AnnualSolarCycleService {
   // 🌎 Public Methods
 
   /**
-   * Detects annual solar cycle events at a specific minute.
-   *
-   * Identifies key solar positions throughout the year: solstices (longest/shortest
-   * days), equinoxes (equal day/night), cross-quarter days (Celtic festivals), and
-   * hexadecans (16-part division of the ecliptic). Uses the Sun's ecliptic longitude
-   * to determine precise crossing times.
-   *
-   * @see {@link getCoordinateFromEphemeris} for position retrieval
-   * @see {@link isVernalEquinox} for equinox detection algorithms
-   *
-   * @remarks
-   * Solar longitude markers:
-   * - 0° = Vernal Equinox
-   * - 90° = Summer Solstice
-   * - 180° = Autumnal Equinox
-   * - 270° = Winter Solstice
-   * - Cross-quarters at 45° increments (Beltane, Lammas, Samhain, Imbolc)
-   * - Hexadecans at 22.5° increments
-   *
-   * @example
-   * ```typescript
-   * const events = getAnnualSolarCycleEvents({
-   *   sunCoordinateEphemeris,
-   *   currentMinute: moment('2025-03-20T09:01')
-   * });
-   * Returns [vernalEquinoxEvent] when Sun crosses 0° longitude
-   * ```
+   * Detects annual solar cycle and apsis events at a minute. Solar longitude
+   * markers: 0° equinox, 90° solstice, 180° equinox, 270° solstice.
    */
   detect(args: DetectAnnualSolarCycleArguments): DetectedCalendarEvent[] {
     return [
@@ -184,17 +159,8 @@ export class AnnualSolarCycleService {
   }
 
   /**
-   * Generates progressive events for Earth's orbit between apsis points.
-   *
-   * Creates two types of progressive events based on Earth's orbital position:
-   * - Advancing: Aphelion to Perihelion (Earth moving closer to Sun, speeding up)
-   * - Retreating: Perihelion to Aphelion (Earth moving away from Sun, slowing down).
-   *
-   * @see {@link pairProgressiveEvents} for event pairing logic
-   *
-   * @remarks
-   * Based on Kepler's second law: planets sweep out equal areas in equal times,
-   * so Earth moves faster when closer to the Sun (perihelion).
+   * Pairs apsis events into progressive spans: advancing from aphelion to
+   * perihelion, retreating back. Earth moves fastest at perihelion.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const solarApsisEvents = events.filter((event) =>
@@ -213,12 +179,8 @@ export class AnnualSolarCycleService {
   }
 
   /**
-   * Detects solstice, equinox, cross-quarter, and hexadecan events at a specific minute.
-   *
-   * Compares the Sun's ecliptic longitude against threshold values for all annual solar
-   * cycle markers: the 4 seasonal turning points, 4 Celtic cross-quarter days,
-   * and 8 hexadecan midpoints (22.5° increments).
-   *
+   * Detects solstice, equinox, cross-quarter, and hexadecan events at a minute by
+   * comparing the Sun's ecliptic longitude against each marker.
    */
   getAnnualSolarCycleEvents(
     args: DetectAnnualSolarCycleEventsArguments,
@@ -252,36 +214,8 @@ export class AnnualSolarCycleService {
   }
 
   /**
-   * Detects solar apsis events (perihelion and aphelion).
-   *
-   * Identifies when Earth reaches its closest (perihelion) and farthest (aphelion)
-   * points from the Sun. These occur once per year and affect Earth's orbital speed
-   * and apparent solar diameter. Perihelion typically occurs in early January,
-   * aphelion in early July.
-   *
-   * @see {@link getDistanceSpeedFromEphemeris} for radial speed retrieval
-   *
-   * @remarks
-   * An apsis is a sign change of the Sun's radial speed between two adjacent
-   * minutes, stamped at whichever of the two has the smaller speed magnitude.
-   * The distance series is not used: the Swiss Ephemeris files store polynomial
-   * segments, and the distance steps by about 3e-9 AU where one segment hands
-   * over to the next (light-time correction repeats the step about eight
-   * minutes later). Near an apsis the distance changes by only about 1.5e-9 AU
-   * across half an hour, so such a step fakes or hides an extremum. The
-   * radial speed is smooth through the steps and crosses zero once per apsis.
-   *
-   * Perihelion: ~147.1 million km (Earth moving fastest, ~30.3 km/s)
-   * Aphelion: ~152.1 million km (Earth moving slowest, ~29.3 km/s)
-   *
-   * @example
-   * ```typescript
-   * const events = getSolarApsisEvents({
-   *   currentMinute: moment('2025-01-04T12:00'),
-   *   sunDistanceEphemeris
-   * });
-   * // Returns [perihelionEvent] when Earth is closest to Sun
-   * ```
+   * Detects perihelion and aphelion as sign changes in the Sun's radial speed;
+   * distance has steps that fake extrema.
    */
   getSolarApsisEvents(
     args: DetectSolarApsisEventsArguments,

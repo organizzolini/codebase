@@ -67,12 +67,8 @@ export class ProgressiveUtilitiesService {
   // 🌎 Public Methods
 
   /**
-   * Pairs one compound pattern's forming and dissolving boundaries into
-   * occurrences with {@link pairProgressiveEvents}.
-   *
-   * A boundary repeated at the same minute is the same boundary, so each phase
-   * keeps one per minute first. A pattern that forms and dissolves on the same
-   * minute has no span, so that pair is dropped.
+   * Pairs a compound pattern's forming and dissolving boundaries into occurrences;
+   * a boundary repeated in a minute counts once, and same-minute pairs are dropped.
    */
   pairCompoundBoundaries(
     groupEvents: DetectedCalendarEvent[],
@@ -94,15 +90,8 @@ export class ProgressiveUtilitiesService {
   }
 
   /**
-   * Pairs each beginning with the earliest unused ending at or after it, as
-   * long as that ending comes no later than the next beginning.
-   *
-   * Both lists are ordered by start time first, so an ending before the first
-   * beginning (a window opening mid-occurrence) is dropped instead of shifting
-   * every later span, and no span can end before it starts. A beginning whose
-   * ending is missing is dropped rather than bridged to a later occurrence's
-   * ending, and so is one with no ending in the window. Any unpaired event
-   * logs a warning.
+   * Pairs each beginning with the earliest unused ending no later than the next
+   * beginning; unpaired events are dropped and logged.
    */
   pairProgressiveEvents(
     beginnings: DetectedCalendarEvent[],

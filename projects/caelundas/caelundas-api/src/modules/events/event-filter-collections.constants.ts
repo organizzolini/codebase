@@ -41,8 +41,7 @@ const LONG_CYCLES: CollectionRule = {
 };
 
 /**
- * The collections the calendar offers, in the order its menu lists them. A
- * collection that names tags the data lacks applies to the ones it has.
+ * The calendar's collections in menu order. One naming tags the data lacks applies to the rest.
  */
 export const EVENT_FILTER_COLLECTIONS: readonly EventFilterCollection[] = [
   {

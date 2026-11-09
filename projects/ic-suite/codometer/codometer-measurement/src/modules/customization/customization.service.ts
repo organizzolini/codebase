@@ -12,18 +12,9 @@ import type {
 } from "@codometer/languages";
 
 /**
- * Counts the conventions a repository holds itself to.
+ * Counts the conventions a repository holds itself to. Which counters apply comes from configuration, not this package.
  *
- * The languages a repository is written in are the same everywhere; what a
- * `*.service.ts` means, or whether a static method is something to keep an
- * eye on, is not — which is why these counters come from the configuration
- * rather than from this package.
- *
- * A counter measures files by path, declarations by shape, or a comment
- * budget by length. The file half is done here; the declaration half is
- * tallied by the TypeScript analyzer during the walk it already makes, and
- * the comment half by `@codometer/languages`' comment services — both arrive
- * here as counts to be labelled.
+ * Files are measured here; declaration and comment counts arrive from `@codometer/languages`.
  */
 @Injectable()
 export class CustomizationService {
@@ -60,11 +51,7 @@ export class CustomizationService {
   }
 
   /**
-   * Counts the target's files that at least one of the globs claims.
-   *
-   * A file matching several globs of the same counter is one file, not
-   * several: the counter asks how many files there are, not how many times
-   * they matched.
+   * Counts the files claimed by at least one glob; a file matching several globs counts once.
    */
   private countMatches(files: string[], patterns: string[]): number {
     return files.filter((filePath) =>
@@ -99,14 +86,7 @@ export class CustomizationService {
   }
 
   /**
-   * Pick out the counters `@codometer/languages`' comment services have to
-   * measure.
-   *
-   * Handed to those services rather than measured again here: a `comment`
-   * selector names a language or a documentable kind, and turning that into a
-   * budget is this package's business, not the tokenizer's. One list, mirroring
-   * the selector field for field — which counter a given measurer takes is
-   * decided by each measurer, which selects from the list by reading `kind`.
+   * Picks the counters `@codometer/languages`' comment services measure. Each measurer selects its own by `kind`.
    */
   buildCommentCounters(
     statistics: CustomizationInput["statistics"],
@@ -137,11 +117,7 @@ export class CustomizationService {
   }
 
   /**
-   * Pick out the counters the TypeScript analyzer has to tally.
-   *
-   * Handed to that analyzer rather than parsed again here: it already walks
-   * every source file, and a second walk would double the slowest part of a
-   * run to learn what the first one passed straight over.
+   * Picks the counters the TypeScript analyzer tallies during its existing walk, rather than walking files again.
    */
   buildSymbolCounters(
     statistics: CustomizationInput["statistics"],

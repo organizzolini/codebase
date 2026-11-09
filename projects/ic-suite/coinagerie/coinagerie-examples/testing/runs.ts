@@ -1,11 +1,8 @@
 /**
- * Every command a guide in this package tells the reader to run, and the exit
- * code the guide promises for it.
- *
- * Shared by the `examples` target's runner and by the integration suite, so a
- * run added to a guide has to be written down once and is then both smoke
- * tested and asserted. A run with no entry here fails the runner; an entry
- * with no run fails it too.
+ * Every command a guide tells the reader to run, with the exit code the guide
+ * promises. Shared by the runner and the integration suite, so a guide's run is
+ * written down once and both smoke-tested and asserted. A run without an entry
+ * here, or an entry without a run, fails the runner.
  */
 
 /** One documented command, run in a staged copy of its example's `project/`. */

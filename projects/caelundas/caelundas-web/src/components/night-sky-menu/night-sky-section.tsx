@@ -16,8 +16,7 @@ export interface NightSkySectionProperties {
 // 🧩 Component
 
 /**
- * Renders one group of the Sky menu's controls under a hidden legend, so a
- * screen reader names the group while the eye reads each control's label.
+ * Renders one group of the Sky menu's controls under a hidden legend, so a screen reader names the group.
  */
 export function NightSkySection(
   properties: Readonly<NightSkySectionProperties>,

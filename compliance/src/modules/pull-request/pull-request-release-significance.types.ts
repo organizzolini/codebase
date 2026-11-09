@@ -9,12 +9,8 @@ export interface ConventionalSubject {
 }
 
 /**
- * One commit reachable from the pull request, alongside what it parsed to.
- *
- * `convention` is `undefined` for a subject that does not parse as
- * conventional at all — a merge commit, say — which this check skips rather
- * than fails on, since such a commit carries no significance signal either
- * way.
+ * One commit reachable from the pull request, with its parsed subject.
+ * Subjects that cannot be parsed are skipped.
  */
 export interface PullRequestCommit {
   readonly convention: ConventionalSubject | undefined;

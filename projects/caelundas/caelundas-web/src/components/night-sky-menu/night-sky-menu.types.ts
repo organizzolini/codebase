@@ -42,8 +42,7 @@ export type SkyParameterKey = Extract<keyof CalendarSearch, `sky${string}`>;
 export type SkySearchChange = Partial<Pick<CalendarSearch, SkyParameterKey>>;
 
 /**
- * One number the menu sets with a slider: its link key, the setting it
- * shows, its range and step, and the unit it is read in.
+ * One number the menu sets with a slider: its link key, setting, range, step and unit.
  */
 export interface SkySliderControl {
   field: NumericSkySetting;

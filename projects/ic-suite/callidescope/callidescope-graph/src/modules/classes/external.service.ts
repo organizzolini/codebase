@@ -5,14 +5,9 @@ import type ts from "typescript";
 /**
  * Decides whether a declaration lives outside the code being traced.
  *
- * This is the filter the whole tool rests on. Most call sites in any real file
- * resolve into `lib.es5.d.ts` or a dependency; without this, every `.map()` and
- * `.trim()` becomes a frame, and the deepest stack in the repository turns out
- * to be somewhere inside a standard-library type declaration.
- *
- * The verdict is memoized per source file rather than per call site because it
- * is asked tens of thousands of times per run and the answer only ever depends
- * on the file.
+ * Without this, every `.map()` in a real file becomes a frame, and the deepest
+ * stack would sit inside a standard-library declaration. The verdict is memoized
+ * per source file, since it depends only on the file.
  */
 @Injectable()
 export class ExternalService {

@@ -33,9 +33,8 @@ export interface FixtureDatabase {
 }
 
 /**
- * A test or hook that runs the command line, client tools, or queries
- * against a container: a second or two locally, several times that on a
- * CI runner.
+ * Timeout for a test that runs the command line, client tools, or queries
+ * against a container; CI runners are several times slower.
  */
 export const INTEGRATION_TEST_TIMEOUT_MILLISECONDS = 60_000;
 
@@ -49,16 +48,8 @@ export function postgresUri(connection: PostgresConnection): string {
 }
 
 /**
- * Starts a throwaway Postgres 18 container and builds the `fixture` schema
- * by running the fixture migrations, so a test seeds and reads real tables.
- *
- * ```ts
- * const database = await startFixtureDatabase();
- * await database.query("INSERT INTO widgets (display_name) VALUES ($1)", [
- *   "sprocket",
- * ]);
- * await database.close();
- * ```
+ * Starts a throwaway Postgres 18 with the `fixture` schema built by running
+ * the fixture migrations, so a test seeds and reads real tables.
  */
 export async function startFixtureDatabase(): Promise<FixtureDatabase> {
   const container = await startPostgresContainer({

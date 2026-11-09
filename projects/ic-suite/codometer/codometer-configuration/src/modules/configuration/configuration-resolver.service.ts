@@ -45,13 +45,7 @@ import type {
 import type { CodometerStatisticGroup } from "@codometer/core";
 
 /**
- * Fills a validated configuration in, field by field, with what it left out.
- *
- * Not exported from this package. The configuration layer has exactly one
- * public entry point, and this is the half of it that turns a file's contents
- * into the resolved object every analyzer reads — held apart from
- * `ConfigurationService` so that class states what the layer answers rather
- * than how each default is arrived at.
+ * Fills a validated configuration in, field by field, with what it left out. Not exported; `ConfigurationService` states what the layer answers, and this class holds how each default is arrived at.
  */
 @Injectable()
 export class ConfigurationResolverService {
@@ -66,11 +60,7 @@ export class ConfigurationResolverService {
   // 🔏 Private Methods
 
   /**
-   * Validates a configuration object, refusing it in prose rather than in JSON.
-   *
-   * Every load goes through here — a file's contents and the empty object a
-   * directory with no configuration file stands in with alike — so the two
-   * fail identically and a reader gets the same sentence either way.
+   * Validates a configuration object, refusing it in prose. Loaded files and the empty stand-in fail identically.
    */
   private parseConfigurationInternal(
     configuration: unknown,
@@ -85,11 +75,7 @@ export class ConfigurationResolverService {
   }
 
   /**
-   * Reads a limit's value, in decimal units when it was written as a string.
-   *
-   * Everything unreadable is refused: a negative number, a unit missing its
-   * `b`, a word, an empty string. The tool this replaces coerced an unreadable
-   * limit to nothing and then failed every target holding a single byte.
+   * Reads a limit's value, in decimal units when written as text. Anything unreadable is refused, not coerced to zero.
    */
   private parseLimitValue(limit: CodometerLimit): number {
     if (typeof limit.value !== "number") {
@@ -104,12 +90,7 @@ export class ConfigurationResolverService {
   }
 
   /**
-   * Reads a limit written as a string, unit and all.
-   *
-   * A unit multiplies and then rounds: `"1.5 KB"` is 1500, and the rounding is
-   * what keeps `"0.1 KB"` from arriving as the 100.00000000000001 floating
-   * point makes of it. A string carrying no unit at all is the plain number,
-   * which is what a limit on a count of interfaces or files is written as.
+   * Reads a limit written as text, unit included. The rounding keeps `"0.1 KB"` from arriving as a float artifact.
    */
   private parseLimitValueText(metric: string, text: string): number {
     const [, amount, unit] = LIMIT_VALUE_PATTERN.exec(text.trim()) ?? [];
@@ -132,20 +113,7 @@ export class ConfigurationResolverService {
   }
 
   /**
-   * Gives every configured counter a color and a group, and its `comment`
-   * selector a severity.
-   *
-   * Colors are handed out by position within a group rather than within the
-   * whole list, so adding a counter to one group does not recolor the badges
-   * of another — which would rewrite a report that had not otherwise changed.
-   * A `comment` selector's own defaulting is inlined here rather than given
-   * its own method: this list already runs one call deep inside
-   * `resolveConfiguration`, and a further call would push the whole chain
-   * past what this package's callidescope gate allows.
-   *
-   * Runs once, over the top-level `custom` declaration — never per output.
-   * An output only selects labels back out of what this resolves, so a
-   * counter is never resolved twice just because two outputs both render it.
+   * Gives each counter a color and group, and its `comment` selector a severity. Colors follow position within a group, so additions recolor nothing.
    */
   private resolveCustomStatistics(
     statistics: CodometerCustomStatistic[] | undefined,
@@ -185,13 +153,7 @@ export class ConfigurationResolverService {
   }
 
   /**
-   * Fills in every input's compression and directory, and splits its globs
-   * into what they add and what they remove.
-   *
-   * A `!` prefix in `include` is what the tool this replaced used to subtract
-   * a file, and there it mattered where in the array it sat. Here the
-   * negations join the exclude globs in a single set, so an input holds the
-   * same files however its patterns are arranged.
+   * Fills in an input's compression and directory, and folds `!` include globs into its excludes.
    */
   private resolveInput(input: CodometerInput): ResolvedCodometerInput {
     return {
@@ -214,12 +176,7 @@ export class ConfigurationResolverService {
   }
 
   /**
-   * Resolves every declared input, and the built-in `codebase` one.
-   *
-   * The built-in entry is prepended unless the configuration already declares
-   * one by that name, which replaces it outright — the only way a
-   * configuration reaches the built-in whole-tree scan under a compression or
-   * a different set of analyses.
+   * Resolves every declared input, prepending the built-in `codebase` one unless a declared input replaces it by that name.
    */
   private resolveInputs(
     inputs: CodometerInput[] | undefined,
@@ -249,11 +206,7 @@ export class ConfigurationResolverService {
   }
 
   /**
-   * Gives every limit its severity and a value read as a number.
-   *
-   * Which metric a limit lands on is decided where the measurement is, since
-   * nothing here knows what was measured — the only thing settled at this
-   * point is what the limit says.
+   * Gives every limit its severity and a numeric value. Which metric it lands on is decided at measurement.
    */
   private resolveLimits(
     limits: CodometerLimit[] | undefined,
@@ -297,13 +250,7 @@ export class ConfigurationResolverService {
   }
 
   /**
-   * Picks out the top-level custom statistics an output's own `custom` array
-   * selected, by label.
-   *
-   * The schema already refuses a label naming no top-level declaration, so a
-   * label failing to resolve here is dropped rather than treated as another
-   * way to fail: this method's job is the lookup, not re-validating what the
-   * schema already guarantees.
+   * Picks the top-level custom statistics an output's `custom` array selects, by label. The schema already refuses unknown labels.
    */
   private selectCustomStatistics(
     labels: string[] | undefined,
@@ -328,10 +275,7 @@ export class ConfigurationResolverService {
   }
 
   /**
-   * Fills in every field a configuration file may leave out.
-   *
-   * Exposed so a host embedding codometer can hand over a configuration object
-   * it assembled itself and get the same shape a configuration file produces.
+   * Fills in every field a configuration file may leave out, so a host's own object takes the same shape.
    */
   public resolveConfiguration(
     configuration: CodometerConfiguration,

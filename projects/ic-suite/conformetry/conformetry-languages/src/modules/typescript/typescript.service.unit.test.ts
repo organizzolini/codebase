@@ -394,11 +394,8 @@ describe(TypescriptService, () => {
   });
 
   describe("locations for positions no real parse produces", () => {
-    // readLocation treats a missing or negative position as unresolvable.
-    // A real parse never produces one — every position comes straight from
-    // `Node.getStart()` or a real comment's offset — so these scenarios are
-    // reached by mocking the collaborators that hand positions to the
-    // service, rather than by parsing contrived source.
+    // readLocation treats a missing or negative position as unresolvable, which no real parse produces.
+    // These scenarios therefore mock the collaborators that hand positions to the service.
     let mockedService: TypescriptService;
     let mockTypeScriptCommentsService: DeepMocked<TypescriptCommentsService>;
     let mockTypeScriptTreeService: DeepMocked<TypescriptTreeService>;

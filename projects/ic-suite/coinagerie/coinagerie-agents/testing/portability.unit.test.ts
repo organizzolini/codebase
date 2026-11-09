@@ -13,12 +13,8 @@ const EXPECTED_SKILLS = [
 ];
 
 /**
- * What would tie a skill to the repository it was written in, each with the
- * label that explains a failure.
- *
- * An installed skill is a bare copy dropped into some other repository, where
- * a path, a task runner target, or another toolchain's skill names something
- * that does not exist.
+ * Patterns that tie a skill to this repository. An installed skill runs in
+ * other repositories, where each match would be a broken reference.
  */
 const REPOSITORY_SPECIFICS: { label: string; pattern: RegExp }[] = [
   { label: "a folder of this repository", pattern: /\bprojects\//u },

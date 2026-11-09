@@ -8,16 +8,10 @@ import { Meander } from "./entities/meander.entity";
 
 /**
  * Wires up the Postgres database every meander is persisted to, through the
- * shared `@codebase/persistence` module: the server, credentials, database, and
- * schema the `MEANDERAW_POSTGRES_*` variables name, by default the
- * `meanderaw_development` database, its `meanderaw` schema, and the
- * `meanderaw_username` role.
+ * shared `@codebase/persistence` module and the `MEANDERAW_POSTGRES_*` variables.
  *
  * The table is built by the migrations under `./migrations`, run with
- * `nx run meanderaw-cli:migration:run`; the connection never synchronizes and
- * never runs them on start. A test exercising `DatabaseService`
- * boots this module against a throwaway Postgres container, migrated by the
- * same migrations, through `startDatabaseTestingModule`.
+ * `nx run meanderaw-cli:migration:run`. The connection never synchronizes.
  */
 @Module({
   controllers: [],

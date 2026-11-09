@@ -260,10 +260,7 @@ export class SextupleAspectsComposerService {
   }
 
   /**
-   * Checks if 6 bodies form a valid hexagram (Star of David) pattern.
-   *
-   * A hexagram consists of two interlocking Grand Trines plus sextiles
-   * forming a hexagon: 6 trines (120°) and 6 sextiles (60°).
+   * Checks whether 6 bodies form a hexagram: two interlocking Grand Trines plus sextiles.
    */
   findHexagramPattern(bodies: Body[], edges: AspectBodies[]): Body[] | null {
     const { sextileConnections, trineConnections } =

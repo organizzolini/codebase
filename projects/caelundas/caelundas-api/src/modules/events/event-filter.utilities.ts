@@ -3,8 +3,8 @@ import { eventFilterGroupSchema } from "./event-filter.constants";
 import type { EventFilterGroup } from "./event-filter.types";
 
 /**
- * Validates the filter a query was given, answering `null` for no filter and
- * throwing a `ZodError` that names the offending field for a malformed one.
+ * Validates a query's filter, returning `null` when absent; a malformed one
+ * throws a `ZodError` naming the field.
  */
 export function parseEventFilter(filter: unknown): EventFilterGroup | null {
   return filter === null || filter === undefined

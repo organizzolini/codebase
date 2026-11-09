@@ -13,11 +13,7 @@ export const MARKDOWN_CELL_TYPE = "markdown";
 /**
  * The parts of a notebook cell this analyzer reads.
  *
- * Declared as a schema rather than an interface because these are nbformat's
- * names, not this codebase's: a snake_case key is legal in an object literal
- * and would be a lint error in a type declaration. Every field is optional
- * because a file is only known to be JSON until it has been read, and a
- * notebook missing a field should be measured for what it does have.
+ * A schema, not an interface, since nbformat's snake_case keys would fail lint.
  */
 export const notebookCellSchema = z.object({
   cell_type: z.string().optional(),

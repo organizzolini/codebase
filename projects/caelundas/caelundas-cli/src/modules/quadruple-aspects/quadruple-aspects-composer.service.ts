@@ -135,31 +135,8 @@ export class QuadrupleAspectsComposerService {
   }
 
   /**
-   * Composes Grand Cross patterns from stored 2-body aspects.
-   *
-   * A Grand Cross is an intense configuration consisting of:
-   * - 2 oppositions (180°) at right angles to each other
-   * - 4 squares (90°) connecting adjacent bodies.
-   *
-   * Visual pattern:.
-   * ```
-   *     Body1
-   *       |
-   *       | square
-   *       |
-   * Body4 + Body2
-   *       |
-   *       | square
-   *       |
-   *     Body3
-   * ```
-   *
-   * The four bodies form a cross with all cardinal/fixed/mutable signs.
-   * Represents maximum tension and dynamic energy requiring integration
-   * of four conflicting forces. Often indicates major life challenges
-   * and potential for significant achievement.
-   *
-   * @see {@link determineMultiBodyPhase} for phase calculation
+   * Composes Grand Crosses: two oppositions and four squares, maximum tension
+   * that needs four forces integrated.
    */
   composeGrandCrosses(args: {
     currentAspectBodies: AspectBodies[];
@@ -198,31 +175,8 @@ export class QuadrupleAspectsComposerService {
   }
 
   /**
-   * Composes Kite patterns from stored 2-body aspects.
-   *
-   * A Kite is a mixed configuration consisting of:
-   * - 1 Grand Trine (3 trines forming a triangle)
-   * - 1 opposition from one trine body to a fourth focal body
-   * - 2 sextiles from the focal body to the other two trine bodies.
-   *
-   * Visual pattern:.
-   * ```
-   *        Body1
-   *        /   \
-   *  trine/     \trine
-   *      /       \
-   *  Body2 ----- Body3
-   *      \  trine /
-   * sextile\   /sextile
-   *         \ /
-   *      FocalBody
-   * ```
-   *
-   * The focal body provides direction and motivation to the harmonious
-   * Grand Trine, creating a configuration that balances ease with drive.
-   * Often indicates talent with opportunity for manifestation.
-   *
-   * @see {@link determineMultiBodyPhase} for phase calculation
+   * Composes Kites: a grand trine, an opposition from one trine body to a focal
+   * body, and two sextiles from that focal body.
    */
   composeKites(args: {
     currentAspectBodies: AspectBodies[];

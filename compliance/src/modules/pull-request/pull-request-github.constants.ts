@@ -1,11 +1,6 @@
 // ♟️ Constants
 
-/**
- * The client a live read goes through.
- *
- * Named rather than spelled at the call site, so what a PATH-shadowed
- * executable in a test has to be called is stated in one place.
- */
+/** The `gh` binary a live read runs through, named so a test can shadow it on PATH. */
 export const GITHUB_CLI_BINARY = "gh";
 
 /** The variable GitHub Actions sets to the file a step's summary is read from. */

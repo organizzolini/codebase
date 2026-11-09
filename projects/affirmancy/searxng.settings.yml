@@ -1,10 +1,8 @@
-# SearxNG configuration for the affirmancy application
-# Enables key search engines for spiritual practice research
+# SearxNG configuration for the affirmancy application, enabling key search
+# engines for spiritual practice research.
 #
-# Architecture: this file is mounted into the SearxNG container and layered
-# on top of SearxNG's built-in defaults via `use_default_settings: true`.
-# Only keys specified
-# here override the defaults; everything else inherits the upstream values.
+# Mounted into the SearxNG container and layered on its defaults via
+# `use_default_settings: true`; only keys listed here override upstream values.
 # See: https://docs.searxng.org/admin/settings/settings.html
 
 # Merge with SearxNG's built-in default settings rather than replacing them.
@@ -58,13 +56,12 @@ search:
     cf_SearxEngineAccessDenied: 3600
     recaptcha_SearxEngineCaptcha: 3600
 
-# Hostnames plugin: boost trusted sources to the top of results.
-# The plugin only activates when a `hostnames:` key is present.
-# Patterns are Python regexes matched against the full hostname.
-# Three lists are supported:
-#   high_priority — matching results are sorted to the top
-#   low_priority  — matching results are sorted toward the bottom
-#   remove        — matching results are excluded entirely
+# Hostnames plugin: boost trusted sources to the top of results. It only
+# activates when a `hostnames:` key is present. Patterns are Python regexes
+# matched against the full hostname, in three lists:
+#   high_priority — sorted to the top
+#   low_priority  — sorted toward the bottom
+#   remove        — excluded entirely
 plugins:
   searx.plugins.hostnames.SXNGPlugin:
     active: true

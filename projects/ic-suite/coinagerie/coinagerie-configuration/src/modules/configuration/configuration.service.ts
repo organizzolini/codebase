@@ -57,11 +57,7 @@ export class ConfigurationService {
   }
 
   /**
-   * Wraps the configured fold so that its faults name the file.
-   *
-   * The function is the configuration's own code, and it runs once per word
-   * long after the file was read; wrapping it here keeps every check of what
-   * it did in the one place that knows the file's path.
+   * Wraps the configured fold so its faults name the file, since it runs long after the file was read.
    */
   private guardFold(fold: FoldWord, location: string): FoldWord {
     return (word) => {
@@ -90,11 +86,8 @@ export class ConfigurationService {
   }
 
   /**
-   * The configuration file a run reads, or `undefined` when it uses defaults.
-   *
-   * A named file must exist. An unnamed one is searched for only in the
-   * working directory, never above it, so a run never picks up a
-   * configuration written for some enclosing folder.
+   * Reads the configuration file, or `undefined` for defaults. An unnamed file is
+   * searched only in the working directory, never above it.
    */
   private locate(args: LoadConfigurationArguments): string | undefined {
     if (args.configurationPath !== undefined) {
@@ -116,10 +109,7 @@ export class ConfigurationService {
   }
 
   /**
-   * The configuration with the command line's flags laid over it.
-   *
-   * A flag that is given replaces the field it names, so the file never has
-   * to be edited to try a variation.
+   * Applies command-line flags over the configuration; a given flag replaces its field.
    */
   private override(args: {
     configuration: CoinagerieConfiguration;
@@ -158,13 +148,8 @@ export class ConfigurationService {
   }
 
   /**
-   * Imports a configuration file, validates its default export, and calls
-   * its `exclude.words` function when it has one.
-   *
-   * Any failure — the file throwing, a syntax error, an export of the wrong
-   * shape, a function that throws or returns something else — is reported
-   * with the file's path, which is the one thing a reader needs to find the
-   * fault.
+   * Imports and validates a configuration file, calling its `exclude.words`
+   * function if it has one. Every failure names the file.
    */
   private async read(configurationPath: string): Promise<LoadedConfiguration> {
     let exported: unknown;
@@ -271,11 +256,8 @@ export class ConfigurationService {
   }
 
   /**
-   * The entries a configuration excludes, calling its function when it has
-   * one, split into exact words and patterns.
-   *
-   * Throws a plain error for the caller to name the file in, so that no frame
-   * is spent on building the report here.
+   * Splits excluded entries into exact words and patterns. Throws plain errors
+   * for the caller to annotate, adding no stack frame.
    */
   private async resolveWords(
     words: ExcludedWords | undefined,
@@ -312,10 +294,8 @@ export class ConfigurationService {
   // 🌎 Public Methods
 
   /**
-   * Loads the run's configuration, or the defaults when there is none.
-   *
-   * The scan root is the configuration file's folder, so a run behaves the
-   * same wherever it is invoked from.
+   * Loads the run's configuration, or defaults. The scan root is the configuration
+   * file's folder, so runs behave the same wherever invoked.
    */
   async loadConfiguration(
     args: LoadConfigurationArguments,

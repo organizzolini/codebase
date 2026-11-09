@@ -54,9 +54,8 @@ function getLunarCoordinates(alongTrack: Triple): {
 }
 
 /**
- * Three minutes of the observer's Sun and Moon: the Moon `separations`
- * degrees east of the Sun, each body's upper limb `clearances` degrees
- * above the horizon.
+ * The observer's Sun and Moon over three minutes: the Moon's `separations`
+ * east of the Sun and limb `clearances` above the horizon, in degrees.
  */
 function getTopocentricWindow(args: {
   moonClearances?: Triple;
@@ -92,10 +91,8 @@ const PASSAGE_START = moment.utc("2026-08-12T17:11:00.000Z");
 const PASSAGE_SPEED = 0.01;
 
 /**
- * The observer's Sun and Moon during a straight passage of the Moon past
- * the Sun, `minutes` after {@link PASSAGE_START}: the Moon `crossTrack`
- * degrees north of the Sun's path, 0.527° behind it along the ecliptic at
- * the start, so the limbs of 0.26° and 0.27° discs touch just before it.
+ * The observer's Sun and Moon during a straight passage, `minutes` after the
+ * start: the Moon `crossTrack` degrees north of the Sun's path.
  */
 function getPassageSample(args: {
   crossTrack: number;
@@ -380,8 +377,8 @@ describe(EclipseTopocentricService, () => {
 
   describe("local solar eclipse type", () => {
     /**
-     * Sweeps a test passage minute by minute, as the perfective pass does,
-     * and returns the phase and type of each local solar event it built.
+     * Sweeps a passage minute by minute and returns the phase and type of each
+     * local solar event.
      */
     function sweepPassage(args: {
       crossTrack: number;

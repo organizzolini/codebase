@@ -42,21 +42,7 @@ import type {
 export type Aspect = (typeof aspects)[number];
 
 /**
- * Phase of an aspect's lifecycle (applying, exact, or separating).
- *
- * Describes whether two bodies are approaching, at, or departing from
- * an exact angular relationship.
- *
- * @remarks
- * Phase values:
- * - "applying": Bodies approaching exact aspect angle (within orb)
- * - "perfective": Bodies at precise aspect angle
- * - "separating": Bodies departing from exact aspect angle (within orb)
- *
- * Applying aspects are considered more potent than separating aspects in
- * traditional astrological interpretation.
- *
- * @see {@link getMajorAspectEvents} for aspect phase detection
+ * Whether two bodies approach, sit at, or depart from an exact aspect angle.
  */
 export type AspectPhase = (typeof aspectPhases)[number];
 
@@ -70,10 +56,7 @@ export type AspectPhase = (typeof aspectPhases)[number];
 export type Asteroid = keyof typeof symbolByAsteroid;
 
 /**
- * Union of all celestial body types tracked by caelundas.
- *
- * Encompasses planets, asteroids, comets, and calculated lunar points.
- * Primary type used for ephemeris queries and aspect calculations.
+ * Every celestial body caelundas tracks: planets, asteroids, comets and calculated lunar points.
  */
 export type Body = keyof typeof symbolByBody;
 
@@ -91,18 +74,7 @@ export type Body = keyof typeof symbolByBody;
 export type Decan = keyof typeof symbolByDecan;
 
 /**
- * Phase of an eclipse event (partial, total, annular, or penumbral).
- *
- * Describes the type and magnitude of a solar or lunar eclipse.
- *
- * @remarks
- * Eclipse phase values:
- * - "partial": Moon or Sun partially obscured
- * - "total": Complete obscuration (lunar eclipse or solar totality)
- * - "annular": Ring of light visible around Moon (solar eclipse)
- * - "penumbral": Moon passes through Earth's penumbral shadow only
- *
- * @see {@link getEclipseEvents} for eclipse detection and classification
+ * Obscuration of the Moon or Sun in an eclipse: partial, total, annular, or penumbral.
  */
 export type EclipsePhase = (typeof eclipsePhases)[number];
 
@@ -122,18 +94,12 @@ export type LunarPhase = keyof typeof symbolByLunarPhase;
 export type MajorAspect = keyof typeof symbolByMajorAspect;
 
 /**
- * Mars phase representing its illumination and visibility state from Earth.
- *
- * Mars exhibits limited phase variation (never appears as a crescent) because
- * it orbits outside Earth's orbit.
+ * Mars's illumination and visibility from Earth; it never appears as a crescent.
  */
 export type MartianPhase = keyof typeof symbolByMartianPhase;
 
 /**
- * Mercury phase representing its illumination and visibility state from Earth.
- *
- * Mercury exhibits phases similar to Venus due to its orbit inside Earth's orbit.
- * Phases cycle more quickly than Venus (approximately 116 days per synodic period).
+ * Mercury's illumination and visibility from Earth, cycling faster than Venus's phases.
  */
 export type MercurianPhase = keyof typeof symbolByMercurianPhase;
 
@@ -161,59 +127,22 @@ export type Node = keyof typeof symbolByNode;
 export type OrbitalDirection = keyof typeof symbolByOrbitalDirection;
 
 /**
- * Classical and modern planets tracked for ephemeris calculations.
- *
- * Includes luminaries (Sun, Moon), inner planets (Mercury, Venus, Mars),
- * social planets (Jupiter, Saturn), and outer planets (Uranus, Neptune, Pluto).
+ * Classical and modern planets tracked for ephemeris calculations, including the luminaries.
  */
 export type Planet = keyof typeof symbolByPlanet;
 
 /**
- * Four-body aspect patterns formed by specific angular relationships.
- *
- * Quadruple aspects represent complex geometric configurations involving
- * four celestial bodies in balanced angular relationships.
- *
- * @remarks
- * Pattern definitions:
- * - "grand cross": Four bodies forming two oppositions (180°) and four squares (90°)
- * - "kite": Grand trine with a fourth body opposite one of the trine bodies
- * - "mystic rectangle": Two oppositions (180°) connected by four sextiles (60°)
- *
- * @see {@link getQuadrupleAspectEvents} for pattern detection
+ * Four-body patterns: grand cross (two oppositions, four squares), kite (a grand trine plus an opposing body), and mystic rectangle.
  */
 export type QuadrupleAspect = keyof typeof symbolByQuadrupleAspect;
 
 /**
- * Five-body aspect patterns (rare geometric configurations).
- *
- * Quintuple aspects represent highly complex and rare alignments
- * involving five celestial bodies simultaneously.
- *
- * @remarks
- * These patterns are extremely rare and typically only form with asteroids
- * and lunar nodes included in calculations.
- *
- * @see {@link getQuintupleAspectEvents} for detection algorithm
+ * Five-body aspect patterns, which form rarely and typically only with asteroids or lunar nodes.
  */
 export type QuintupleAspect = keyof typeof symbolByQuintupleAspect;
 
 /**
- * Celestial body that exhibits retrograde motion.
- *
- * Only planets (excluding luminaries Sun and Moon) can appear to move
- * retrograde from Earth's perspective.
- *
- * @remarks
- * Retrograde bodies include:
- * - Inner planets: Mercury, Venus, Mars
- * - Outer planets: Jupiter, Saturn, Uranus, Neptune, Pluto
- *
- * Sun and Moon never go retrograde. Asteroids and nodes can also exhibit
- * retrograde motion but are not currently tracked.
- *
- * @see {@link getRetrogradeEvents} for retrograde detection
- * @see {@link OrbitalDirection} for direction states
+ * Bodies that can appear retrograde from Earth: planets other than the Sun and Moon.
  */
 export type RetrogradeBody = (typeof retrogradeBodies)[number];
 
@@ -222,27 +151,12 @@ export type RetrogradeBody = (typeof retrogradeBodies)[number];
 // ♀️ Venusian Phases
 
 /**
- * Six-body aspect patterns (extremely rare geometric configurations).
- *
- * Sextuple aspects represent the most complex multi-body alignments,
- * requiring all bodies to be in precise angular relationships.
- *
- * @remarks
- * Pattern definitions:
- * - "grand sextile": Six bodies each 60° apart forming a perfect hexagon
- * - "star of david": Two overlapping grand trines 60° apart
- *
- * These patterns are exceedingly rare in actual celestial configurations.
- *
- * @see {@link getSextupleAspectEvents} for detection algorithm
+ * Six-body patterns: grand sextile (six bodies 60° apart) and star of David.
  */
 export type SextupleAspect = keyof typeof symbolBySextupleAspect;
 
 /**
- * Zodiac sign representing a 30-degree segment of the ecliptic.
- *
- * The zodiac is divided into 12 equal signs starting from the vernal equinox (0° Aries).
- * Signs are tropical (aligned with seasons) rather than sidereal.
+ * Zodiac sign: a 30-degree segment of the tropical ecliptic, starting at the vernal equinox.
  */
 export type Sign = keyof typeof symbolBySign;
 
@@ -267,32 +181,20 @@ export type SpecialtyAspectSymbol =
   (typeof symbolBySpecialtyAspect)[SpecialtyAspect];
 
 /**
- * Three-body aspect patterns: grand trine, t-square, yod.
- *
- * Complex geometric configurations formed when multiple planets create
- * specific angular relationships. These patterns are evaluated in real-time
- * for geometric completion with a third body.
- *
- * @see {@link getTripleAspectEvents} for pattern detection algorithm
- * @see {@link getAspectBodiesAt} for retrieving active aspect context
+ * Three-body patterns: grand trine, t-square, and yod.
  */
 export type TripleAspect = keyof typeof symbolByTripleAspect;
 
 // 🔭 Body Types
 
 /**
- * Venus phase representing its illumination and visibility state from Earth.
- *
- * Phases correlate with Venus's synodic cycle and visibility as morning/evening star.
- * Occurs in an 8-year cycle (5 synodic periods = 8 Earth years).
+ * Venus's illumination and visibility from Earth, following its eight-year cycle as morning or evening star.
  */
 export type VenusianPhase = keyof typeof symbolByVenusianPhase;
 
 /**
- * Names a body the way every summary, description, tag and progressive
- * grouping key does: lodash start case ("north lunar node" becomes "North Lunar Node").
- *
- * Define the display name here, once, and invert it with {@link bodyFromDisplayName}.
+ * Names a body as every summary, description, and tag does, via lodash start
+ * case; invert with {@link bodyFromDisplayName}.
  */
 export function bodyDisplayName(body: string): string {
   return _.startCase(body);
@@ -307,15 +209,8 @@ export function bodyFromDisplayName(displayName: string): Body | undefined {
 }
 
 /**
- * Uppercases the first character of a string literal type.
- *
- * Mirrors `Capitalize<T>` at the value level. Prefer this over
- * `_.startCase` + `as Capitalize<T>` — the assertion is confined here.
- * @example
- * ```ts
- * const signCapitalized = capitalize(sign);
- * // ^? Capitalize<Sign>
- * ```
+ * Uppercases the first character, mirroring `Capitalize<T>` at the value
+ * level; prefer it to `as Capitalize<T>` casts.
  */
 export function capitalize<T extends string>(str: T): Capitalize<T> {
   // type-coverage:ignore-next-line
@@ -323,16 +218,8 @@ export function capitalize<T extends string>(str: T): Capitalize<T> {
 }
 
 /**
- * Groups an array of items by a key function and returns a typed `Map`.
- *
- * Fully preserves the key type `K`, avoiding the `string`-widening that
- * `Object.entries(_.groupBy(...))` produces.
- *
- * @example
- * ```ts
- * const byAspect = groupByToMap(edges, (e) => e.aspect);
- * // ^? Map<Aspect, AspectBodies[]>
- * ```
+ * Groups items by a key function into a typed `Map`, preserving the key type
+ * rather than widening it to `string`.
  */
 export function groupByToMap<K extends PropertyKey, T>(
   items: T[],
@@ -373,18 +260,8 @@ export function isDecan(decan: string): decan is Decan {
 }
 
 /**
- * Type guard that checks whether a value is a key of the given object.
- *
- * Use instead of `value as keyof T` when indexing into a `const` object,
- * or in place of `key in object` casts.
- *
- *
- * @example
- * ```ts
- * if (isKeyOf(symbolByStellium, stelliumType)) {
- *   const symbol = symbolByStellium[stelliumType]; // no cast
- * }
- * ```
+ * Type guard for a key of `object`; use instead of `value as keyof T` casts
+ * when indexing `const` objects.
  */
 export function isKeyOf<T extends object>(
   object: T,
@@ -431,17 +308,8 @@ export function isSpecialtyAspect(
 }
 
 /**
- * Returns a typed version of `Object.entries` that preserves the key union.
- *
- * `Object.entries` always returns `[string, V][]` in the standard lib.
- * This wrapper narrows the key to `K` when the record is typed as
- * `Record<K, V>`.
- *
- * @example
- * ```ts
- * const entries = objectEntries(degreeRangeBySign);
- * // ^? [Sign, { min: number; max: number }][]
- * ```
+ * A typed `Object.entries` that keeps the record's key union rather than
+ * widening keys to `string`.
  */
 export function objectEntries<K extends string, V>(
   record: Record<K, V>,
@@ -451,16 +319,8 @@ export function objectEntries<K extends string, V>(
 }
 
 /**
- * Strongly-typed wrapper around `Object.fromEntries()` that preserves the key union type.
- *
- * `Object.fromEntries()` always returns `Record<string, V>` by design, so a cast is
- * required to recover the typed key. This helper centralizes that cast in one place.
- *
- * @example
- * ```ts
- * const record = typedFromEntries(bodies.map(body => [body, compute(body)]));
- * // ^? Record<Body, ComputedType>
- * ```
+ * A typed `Object.fromEntries` that keeps the key union; the cast lives here so
+ * callers need none.
  */
 export function typedFromEntries<K extends string, V>(
   entries: [K, V][],

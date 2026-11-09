@@ -167,11 +167,8 @@ describe(ConfigurationService, () => {
       workspaceConfigurationPath: "/workspace/callidescope.config.ts",
     };
 
-    // Every question a consumer can ask reaches exactly one collaborator, with
-    // the arguments it was given. Stated as a table rather than a test apiece:
-    // what is asserted is that nothing is quietly reinterpreted on the way
-    // through, and a table is where a method added without a forwarding line
-    // shows up as a gap.
+    // Each consumer question reaches exactly one collaborator with the arguments it was given.
+    // A table shows a method added without a forwarding line as a gap.
     const cases: readonly ForwardingCase[] = [
       {
         ask: (subject) => subject.findConfigurationFileAt("/workspace"),

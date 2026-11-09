@@ -24,9 +24,7 @@ const stelliumEventSchema = z.strictObject({
 });
 
 /**
- * Ecliptic longitudes captured around each stellium boundary, with the
- * Horizons COMMAND for every body so the capture can be repeated, and the
- * boundaries and spans those positions imply.
+ * Ecliptic longitudes captured around each stellium boundary, with the Horizons command for every body.
  */
 export const stelliumLongitudeFixtureSchema = z.strictObject({
   boundaries: z.array(stelliumEventSchema).min(1),

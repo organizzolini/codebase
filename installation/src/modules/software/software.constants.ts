@@ -57,13 +57,8 @@ export const NO_KEY_INSTRUCTIONS = [
 ];
 
 /**
- * The infrastructure tools, in install order.
- *
- * gitleaks scans for secrets in the pre-commit hook. terraform manages the
- * LKE cluster, trivy scans images, jq parses JSON in CI
- * scripts, gh drives pull requests, helm deploys caelundas, kubectl
- * inspects the cluster, and linode-cli reads the Linode account the
- * Terraform imports from.
+ * Infrastructure tools, in install order. gitleaks guards the pre-commit hook;
+ * the others serve CI, the cluster and pull requests.
  */
 export const INFRASTRUCTURE_TOOLS: InfrastructureTool[] = [
   { name: "gitleaks" },

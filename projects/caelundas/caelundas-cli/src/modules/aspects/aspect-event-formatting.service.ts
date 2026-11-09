@@ -162,9 +162,8 @@ export class AspectEventFormattingService {
   }
 
   /**
-   * Turns a boundary title into its span's title. A boundary title already
-   * lacks the phase word, so the two read the same; this only guards a title
-   * that still carries one.
+   * Turns a boundary title into its span's title, stripping any phase word the
+   * boundary still carries.
    */
   spanTitle(boundarySummary: string): string {
     return boundarySummary.replace(PHASE_WORD_PATTERN, "");

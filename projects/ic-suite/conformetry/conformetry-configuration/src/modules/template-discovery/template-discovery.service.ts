@@ -13,15 +13,8 @@ import type { PreparedValidationDocument } from "@conformetry/core";
 /**
  * Reads template folders and maps their files onto instance files.
  *
- * A template's tree is laid over the instance path verbatim, so a template
- * that should produce a folder contains that folder — `{{nameKebabCase}}/…` —
- * rather than the runtime inventing one. That keeps the shape of the output
- * visible in the template itself, and lets one template produce a folder while
- * another produces loose files, with nothing but their contents to say so.
- *
- * Rendering goes through `RenderingService` so a template is substituted here
- * exactly as it was when the generator wrote the file — otherwise validation
- * would report differences the generator itself introduced.
+ * A template's tree is laid over the instance path verbatim, so a template creates a folder by containing it.
+ * Rendering goes through `RenderingService` so validation substitutes exactly as generation did.
  */
 @Injectable()
 export class TemplateDiscoveryService {
@@ -114,11 +107,7 @@ export class TemplateDiscoveryService {
   }
 
   /**
-   * Reads every configured generator's template folder.
-   *
-   * Every host needs this before it can match anything, and each was resolving
-   * the configured paths itself. Resolving them once here keeps one answer to
-   * where a generator's template lives.
+   * Reads every configured generator's template folder, resolving each path once.
    */
   public collectTemplates(args: {
     configuration: ConformetryConfiguration;
@@ -139,9 +128,7 @@ export class TemplateDiscoveryService {
   /**
    * Counts how many of a template's files the instance path already has.
    *
-   * When a file scope is given, only files inside it count — that is what lets
-   * a file glob select a template describing exactly those files rather than
-   * the larger template describing the whole directory.
+   * A file scope limits the count to the files it lists.
    */
   public countMatchingFiles(args: {
     fileScope?: string[] | undefined;
@@ -171,9 +158,7 @@ export class TemplateDiscoveryService {
   /**
    * Pairs one template file with its instance, rendering the template.
    *
-   * Returns `undefined` when the instance does not exist — that is a missing
-   * file, which the file-existence pass reports; a language validator has nothing
-   * to compare and should not see the pair at all.
+   * Returns `undefined` when the instance is missing, which the file-existence pass reports instead.
    */
   public prepareDocument(args: {
     instancePath: string;

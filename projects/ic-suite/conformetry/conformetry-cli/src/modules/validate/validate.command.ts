@@ -26,17 +26,9 @@ import type { RunValidationResult } from "@conformetry/validation";
 /**
  * Validates instances against their conformetry templates.
  *
- * Which paths are instances comes from the configuration's `instances` globs,
- * which `--instances` overrides for a one-off run, and `--templates` narrows
- * the other half of the pairing. Neither flag overrides the other: each
- * removes candidates from one side before templates and instances are paired,
- * so a run is their intersection.
+ * `--instances` and `--templates` each remove candidates from one side, so a run covers their intersection.
  *
- * `--templates` is the one option that is asked for when absent, because it
- * is the one whose absence is genuinely a question rather than a default. It
- * is asked only where somebody can answer: with no terminal the run falls
- * back to every template, which is exactly what every invocation predating
- * this flag already did.
+ * `--templates` is asked for only at a terminal; otherwise every template runs.
  */
 @Command({
   description:
@@ -64,11 +56,9 @@ export class ValidateCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Describes why the run failed, naming the instances that fell short.
+   * Names each failed instance and the reason the run failed.
    *
-   * A file count alone stopped being the whole story once thresholds existed:
-   * findings can be printed for an instance that still passed, so the message
-   * has to say which instances actually failed and by how much.
+   * Findings can print for passing instances, so the message names the failures.
    */
   private describeFailure(result: RunValidationResult): string {
     const failed = result.scores.filter((score) => !score.ok);
@@ -87,12 +77,9 @@ export class ValidateCommand extends CommandRunner {
   }
 
   /**
-   * Expands every configured glob group into instances, or the single
-   * override group `--instances` supplies.
+   * Expands each glob group into instances, or the `--instances` override.
    *
-   * Groups exist so that substitutions can differ per glob: `type` is
-   * `packages` for one set of paths and `applications` for another, and no
-   * generic rule can tell them apart.
+   * Groups keep each glob's substitutions separate, since `type` can differ per glob.
    */
   private findInstances(args: {
     groups: ConformetryInstanceGroup[];
@@ -120,16 +107,9 @@ export class ValidateCommand extends CommandRunner {
   }
 
   /**
-   * Offers a picker, or declines to ask where nobody could answer.
+   * Offers a picker, or declines where nobody can answer.
    *
-   * Declining resolves to no selection rather than to a refusal, which is
-   * where this parts company with `generate`: a template that cannot be
-   * chosen leaves that command with nothing to render, where this one still
-   * has a whole workspace to validate.
-   *
-   * The loaded configuration is handed over as-is — a definition already
-   * carries the name and description a choice needs, so mapping it here would
-   * be a second source the picker could disagree with.
+   * Declining selects nothing rather than refusing, so the whole workspace still validates.
    */
   private async promptForTemplateNames(
     configuration: ConformetryConfiguration,
@@ -142,12 +122,9 @@ export class ValidateCommand extends CommandRunner {
   }
 
   /**
-   * Reports a narrowing that matched nothing, as itself.
+   * Reports a narrowing that matched nothing, rather than a clean run.
    *
-   * A run with no instances produces no findings, and a report rendering no
-   * findings is indistinguishable from a clean one — which would turn naming
-   * a real template that happens to have nothing under it into a green
-   * result. The reader is told nothing matched instead.
+   * An empty report would look like a pass.
    */
   private reportEmptySelection(
     selectedTemplates: ConformetryGeneratorDefinition[],
@@ -184,11 +161,9 @@ export class ValidateCommand extends CommandRunner {
   }
 
   /**
-   * Writes the report and fails the run when anything fell short.
+   * Writes the report to stdout and fails the run when anything fell short.
    *
-   * The report is the command's product, not a log line: it is a multi-line
-   * document written for a reader, and routing it through the logger would
-   * both bury it in log framing and force prose no telemetry can group on.
+   * The report is the product, so it skips the logger.
    */
   private reportResult(args: {
     result: RunValidationResult;
@@ -222,11 +197,9 @@ export class ValidateCommand extends CommandRunner {
   }
 
   /**
-   * Pairs the two filters into the instances a run covers.
+   * Intersects the globbed paths with the selected templates' instances.
    *
-   * With both flags supplied the globbed paths are intersected with the
-   * selected templates' own instances, rather than one flag winning: each
-   * simply removes candidates from one side.
+   * Each flag only removes candidates from its own side, so neither wins.
    */
   private selectInstances(args: {
     configuration: ConformetryConfiguration;
@@ -266,10 +239,7 @@ export class ValidateCommand extends CommandRunner {
   /**
    * Narrows the run to the selected templates, or leaves it whole.
    *
-   * `undefined` means no narrowing, which is a different thing from an empty
-   * selection: it is what an absent flag, the `all` sentinel, and a cancelled
-   * picker all mean, and it reproduces the run this command made before the
-   * flag existed.
+   * `undefined` means no narrowing, not an empty selection.
    */
   private async selectTemplates(args: {
     configuration: ConformetryConfiguration;

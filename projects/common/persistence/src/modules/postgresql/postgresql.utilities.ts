@@ -26,11 +26,8 @@ import type {
 // 🌎 Utilities
 
 /**
- * Holds `shape` to having a key for every one of `project`'s
- * `<PROJECT>_POSTGRES_*` variables, which is what types
- * {@link postgresEnvironmentSchema}'s computed keys from the project's name.
- * It checks the keys alone, never the schema under each, and throws, naming
- * each missing variable, when one is absent.
+ * Throws, naming each missing variable, unless `shape` has a key for every
+ * `<PROJECT>_POSTGRES_*` variable. Types {@link postgresEnvironmentSchema}'s keys.
  */
 export function assertPostgresEnvironmentKeys<Project extends string>(
   shape: Readonly<Record<string, z.ZodType>>,
@@ -53,18 +50,8 @@ export function assertPostgresEnvironmentKeys<Project extends string>(
 
 /**
  * The `DataSource` a project's TypeORM command-line entry exports, built from
- * the same options as `PostgresqlModule.forRoot` so a generated migration
- * matches what the application expects. It reads only the project's
- * `<PROJECT>_POSTGRES_*` variables, from `process.env` unless given others:
- *
- * ```ts
- * // src/modules/database/data-source.constants.ts
- * export const meanderawDataSource = createDataSource({
- *   entities: [Meander],
- *   migrations: ["src/modules/database/migrations/*.ts"],
- *   project: "meanderaw",
- * });
- * ```
+ * the same options as `PostgresqlModule.forRoot`. Reads only the project's
+ * `<PROJECT>_POSTGRES_*` variables.
  */
 export function createDataSource(
   { project, ...settings }: PostgresqlOptions,
@@ -97,20 +84,9 @@ export function postgresConnection({
 }
 
 /**
- * The TypeORM options for `connection`, shared by every runtime module and
- * command-line data source so a generated migration matches what the
- * application expects.
- *
- * `synchronize` and `migrationsRun` are hard-coded off and cannot be passed
- * in: the schema changes only through reviewed migrations, run by
- * `nx run <project>:migration:run` rather than on start, where several
- * processes starting together would race on the same DDL. The schema is set
- * on the connection rather than on any entity, so it comes from
- * configuration rather than code, and pinned as every session's search
- * path, so unqualified SQL and TypeORM's `current_schema()` fallback both
- * land in it rather than in `public`. Snake case with plural table names, so a raw SQL reader never quotes a name.
- *
- * Throws when the schema could not be named unquoted.
+ * The TypeORM options for `connection`, shared by runtime and command-line
+ * data sources. Schema changes only via reviewed migrations, so `synchronize`
+ * is off.
  */
 export function postgresDataSourceOptions(
   connection: PostgresConnection,
@@ -154,9 +130,8 @@ export function postgresEnvironment({
 }
 
 /**
- * The variable a project reads `field` from, for example
- * `LEXICO_POSTGRES_DATABASE` for lexico's `database`. Throws when the name
- * could not prefix a variable or name a database, schema, or role unquoted.
+ * The variable a project reads `field` from, such as `LEXICO_POSTGRES_DATABASE`.
+ * Throws when the name cannot prefix a variable unquoted.
  */
 export function postgresEnvironmentKey(
   project: string,
@@ -183,18 +158,8 @@ export function postgresEnvironmentKeys(project: string): string[] {
 }
 
 /**
- * The zod fragment for a project's `<PROJECT>_POSTGRES_*` variables, which
- * each application spreads into its own environment schema:
- *
- * ```ts
- * z.object({ ...postgresEnvironmentSchema({ project: "lexico" }), ... })
- * ```
- *
- * Its keys are typed from the project's name, which computed keys cannot
- * carry on their own, so {@link assertPostgresEnvironmentKeys} checks the
- * one key per connection field it builds.
- *
- * Throws when the name could not prefix a variable or name a database.
+ * The zod fragment for a project's `<PROJECT>_POSTGRES_*` variables, which each
+ * application spreads into its own environment schema.
  */
 export function postgresEnvironmentSchema<Project extends string>({
   project,
@@ -212,19 +177,8 @@ export function postgresEnvironmentSchema<Project extends string>({
 }
 
 /**
- * The startup parameter pg sends as `options` on each pooled connection,
- * setting the session's `search_path` to `schema` alone.
- *
- * `public` is left off on purpose: no project relies on anything in it.
- * `to_tsvector`, `plainto_tsquery`, and the `english` configuration live in
- * `pg_catalog`, which Postgres always searches first; `uuidv7()` is built
- * into Postgres 18; and no migration creates an extension. Kept on, it would
- * let unqualified DDL fall through into `public` whenever the project schema
- * is missing, where now that DDL fails. An extension a project later needs
- * belongs in its own schema.
- *
- * Throws when `schema` could not be named unquoted, which also keeps it from
- * smuggling a second schema or setting into the parameter.
+ * The startup parameter setting the session's `search_path` to `schema` alone.
+ * `public` is left off, so unqualified DDL fails.
  */
 export function postgresSearchPathOption(schema: string): string {
   if (!PROJECT_NAME_PATTERN.test(schema)) {
@@ -237,12 +191,9 @@ export function postgresSearchPathOption(schema: string): string {
 }
 
 /**
- * The project's six connection fields, each defaulted from the project's
- * name: database `<project>_development`, schema `<project>`, role
- * `<project>_username` with password `<project>_password`, and the shared
- * container on `localhost:5432`. A set schema must match the project-name
- * pattern, so a bad `<PROJECT>_POSTGRES_SCHEMA` fails here, by name, rather
- * than when the search path is built.
+ * Connection fields defaulted from the project's name: database
+ * `<project>_development`, schema `<project>`, role `<project>_username`. A set
+ * schema must match the name pattern.
  */
 export function postgresSettingsSchema(
   project: string,

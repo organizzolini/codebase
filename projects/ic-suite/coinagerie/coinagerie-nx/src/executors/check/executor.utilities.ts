@@ -12,12 +12,8 @@ import type {
 } from "./executor.types";
 
 /**
- * Splits a batch into the groups that can share one command-line process.
- *
- * Tasks naming a different command, or a different mode, cannot be judged by
- * the same process. A task whose project the graph does not know fails alone,
- * so one bad task never takes down the verdicts of the others it was batched
- * with.
+ * Groups batch tasks that share a command and mode, so each group shares one
+ * process. A task whose project is unknown fails alone.
  */
 export function groupTasks(
   ...[taskGraph, options, overrides, context]: CheckBatchExecutorArguments
@@ -69,11 +65,8 @@ export async function runBatch(
 }
 
 /**
- * Judges every task of a group from one process, giving each its own verdict.
- *
- * A process that fails as a whole fails every task of the group with the
- * reason, and a task the process printed no verdict for fails too: neither is
- * ever read as a pass.
+ * Judges each task of a group from one process. Failure, or a task with no
+ * verdict, is never read as a pass.
  */
 export async function runGroup(args: {
   group: CheckTaskGroup;
@@ -146,10 +139,7 @@ function isVerdictRecord(value: unknown): value is CheckVerdictRecord {
 }
 
 /**
- * Reads the verdicts a process printed.
- *
- * A run that printed no verdicts at all is an error carrying whatever it did
- * print: there is no pass to report from a process that never judged anything.
+ * Reads the verdicts a process printed. A run that printed none is an error, never a pass.
  */
 function parseVerdicts(output: ProcessOutput): CheckVerdictRecord[] {
   try {
@@ -173,11 +163,8 @@ function quote(argument: string): string {
 }
 
 /**
- * Starts the command line once, for every directory of a group, and reads it
- * to its end.
- *
- * The command is a shell string, because a workspace that runs coinagerie from
- * source names a loader and a path in it.
+ * Starts the command line once for a group. The command is a shell string,
+ * since a source-run workspace names a loader.
  */
 async function runProcess(args: {
   group: CheckTaskGroup;

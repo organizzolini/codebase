@@ -239,11 +239,9 @@ catalog:
   '@types/compression': ^1.8.1
 catalogs:
   # Only the ic-suite packages published to npm use this catalog
-  # (`catalog:ic-suite`); everything else stays on the default one. Their
-  # published manifests must admit NestJS 11: nest-commander pins
-  # @golevelup/nestjs-discovery 7.0.3, whose peers accept only NestJS 11, so
-  # npm needs 11 in range to install one shared copy, and a second copy breaks
-  # every CLI's dependency injection. The lockfile still resolves NestJS 12.
+  # (`catalog:ic-suite`). Their manifests must admit NestJS 11, because
+  # nest-commander pins a discovery package whose peers accept only 11, and a
+  # second copy of NestJS breaks every CLI's dependency injection.
   ic-suite:
     "@nestjs/common": ^11.1.21 || ^12.0.1
     "@nestjs/core": ^11.1.21 || ^12.0.1

@@ -17,21 +17,11 @@ import type {
 } from "./module-graph.types";
 
 /**
- * Reduces an explored NestJS container into a Graph and renders it.
+ * Reduces an explored NestJS container into a graph and renders it.
  *
- * Ported from `synchronization`'s `nestjs-module-graphs` command (see
- * issue #242), which this package replaces: the ambient-module heuristic and
- * mermaid rendering are unchanged, but the cross-project ownership and
- * grouping that command layers on top are not — codependix's Graph describes
- * one project's own container, not the workspace's opinion of who else's
- * modules it touches. `NestjsProjectService.exploreProject` is what supplies
- * the explored tree this service turns into a Graph.
- *
- * `NestjsProjectService.exploreProject` reports the container's view rather than the
- * decorators', which means every `@Global()` module is listed as an import of
- * every other module. Drawn literally, one global module contributes an edge
- * per module in the project and buries the structure worth reading, so those
- * edges are left out and the module is drawn as a rounded node on its own.
+ * `NestjsProjectService.exploreProject` lists every `@Global()` module as an import of
+ * every other module. Drawn literally, that buries the structure, so those edges are
+ * left out and the global module is drawn as a rounded node on its own.
  */
 @Injectable()
 export class ModuleGraphService {
@@ -129,10 +119,7 @@ export class ModuleGraphService {
   }
 
   /**
-   * Names the modules every other module imports.
-   *
-   * A global module is registered into every module in the container, so it
-   * arrives with one inbound edge short of the module count.
+   * Names modules imported by all the others, since a global module is registered into every module.
    */
   private findAmbientModuleNames(tree: NestjsExploredModule[]): Set<string> {
     const ambientModuleNames = new Set<string>();

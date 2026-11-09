@@ -3,16 +3,9 @@ import { Injectable } from "@nestjs/common";
 import type { KeyPattern, LexicalGrammar, LexicalToken } from "./scanner.types";
 
 /**
- * Reads the identifiers of a language that has no parser here, with nothing
- * but its comment, string, and key syntax.
- *
- * A lexical scanner rather than a syntax tree, so it never judges grammar:
- * it walks the text once, skips what the language says is a comment or a
- * string, and reports every name left over. A quoted string that proves to
- * be a key — the grammar says what follows one — is reported too, since a
- * key is a name the author chose. A language can move to a real parser later
- * without any caller changing, because the contract is the same list of raw
- * identifiers.
+ * Reads identifiers from a language with no parser here, using only its comment,
+ * string, and key syntax. It walks the text once and never judges grammar, so a
+ * partial file still yields its names.
  */
 @Injectable()
 export class ScannerService {

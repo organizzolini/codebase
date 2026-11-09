@@ -106,9 +106,7 @@ export class TextService implements ConformetryLanguageValidator {
   /**
    * Reports every template line missing from the instance.
    *
-   * Every template line is one requirement, blank ones included: this
-   * validator matches them literally, so a blank line the instance does not
-   * supply is a real miss and counting it keeps the denominator honest.
+   * Blank template lines count as requirements, keeping the denominator honest.
    */
   public validateDocument(
     document: PreparedValidationDocument,

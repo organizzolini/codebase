@@ -108,15 +108,9 @@ runs:
         echo "NX_PREFER_NODE_STRIP_TYPES=false" >> "$GITHUB_ENV"
       shell: bash
 
-    # Exact match only, and no restore-keys: a partially stale project graph
-    # is worse than rebuilding one. `nx reset` clears it if it ever misbehaves.
-    #
-    # The task-result database travels with `.nx/cache` below, never here: this
-    # key is shared by every job. `path` lists the directory's entries because
-    # an exclusion only drops files the inclusion enumerates; naming the
-    # directory archived the database too, and each graph hit overwrote the
-    # adopted one before any task ran. `v3` retires those tarballs, and running
-    # before the task cache restore means the real database always lands last.
+    # Exact match only: a partly stale project graph is worse than a rebuild. `nx reset`
+    # clears it if it misbehaves. The task-result database stays out of this cache, since
+    # the key is shared by every job; the `v3` key retires tarballs that once held it.
     - name: 🕸️ Sync Nx Graph
       if: inputs.nx-graph-cache == 'true'
       uses: actions/cache@v6
@@ -130,26 +124,14 @@ runs:
           'projects/*/project.json', 'projects/*/*/project.json',
           'projects/ic-suite/*/*/project.json') }}
 
-    # Keyed per check via `nx-cache-scope`, not `github.job`, which every
-    # matrix leg shares: under one key the first leg saved it and the Test
-    # leg restored a tarball holding no test results.
-    #
-    # The task-result database travels with these files, not the graph,
-    # because it indexes them: both must come from one tarball. Nx keeps a
-    # task's outputs in `.nx/cache/<hash>` and its log in
-    # `.nx/cache/terminalOutputs/<hash>`, but decides a hit from the row in
-    # `.nx/workspace-data/*.db` alone. A row without its files reports
-    # `[local cache]`, restores nothing, and exits 0 — a build with no
-    # `dist/`, hit at random, so a green re-run is luck. Files with no row
-    # are an ordinary miss.
+    # Keyed per check via `nx-cache-scope`, not `github.job`, which matrix legs
+    # share. The task-result database must come from the same tarball as the
+    # files it indexes: Nx decides a hit from the database row alone, so a row
+    # without its outputs restores nothing and exits 0.
 
-    # Restore only, saving is `cleanup-codebase`'s job. The combined
-    # `actions/cache` action only saves on a clean exit, and its documented
-    # `save-always` escape hatch is deprecated: its `post-if` cannot see that
-    # input, so it never actually fires on a cancellation. The split
-    # restore/save actions are the combination GitHub documents as saving
-    # through a `timeout-minutes` kill, which is why a job that wants that
-    # calls `cleanup-codebase` itself, last, with `if: always()`.
+    # Restore only: saving belongs to `cleanup-codebase`, which runs last with
+    # `if: always()`. The combined `actions/cache` only saves on a clean exit,
+    # and its `save-always` input cannot fire on a cancellation.
     - name: ♻️ Restore Nx Cache
       if: inputs.nx-cache == 'true'
       id: nx-cache
@@ -187,10 +169,9 @@ runs:
         cache-dependency-glob: configuration/uv.lock
         add-problem-matchers: "false"
 
-    # Pinned so a runner does not move to a new Terraform on its own: the state
-    # file records the version that last wrote it. 1.14.5 is the version the
-    # OpenRouter module was validated with. The wrapper is off so a step's
-    # output is Terraform's own, which the plan comment reads.
+    # Pinned so a runner never upgrades Terraform on its own: the state file records
+    # the version that last wrote it. 1.14.5 is the version the OpenRouter module was
+    # validated with. The wrapper is off so the plan comment reads Terraform's own output.
     - name: 🏗️ Setup Terraform
       if: inputs.terraform == 'true'
       uses: hashicorp/setup-terraform@v4
@@ -217,15 +198,10 @@ runs:
         restore-keys: |
           eslint-cache-${{ runner.os }}-
 
-    # pnpm's bundled node-gyp lands `gyp/gyp_main.py` without an executable bit.
-    # gyp runs it through `python3` itself, so generating a Makefile works — but
-    # the Makefile gyp writes carries a self-regenerating rule that invokes the
-    # same script as an executable, and that rule fires whenever `binding.gyp`
-    # is not older than the Makefile. sweph writes `src/functions.cpp` from a
-    # `preinstall` script, so both land in the same second and make's comparison
-    # goes either way, which is why the install fails intermittently rather than
-    # never or always. The failure reads as `gyp_main.py: Permission denied`
-    # under a native build and looks like a code regression; it is not one.
+    # pnpm's bundled node-gyp lands `gyp/gyp_main.py` without an executable bit, and
+    # the Makefile it generates re-runs that script as an executable. Make sometimes
+    # sees `binding.gyp` as newer, so `sweph` fails intermittently with
+    # `gyp_main.py: Permission denied`. That is not a code regression.
     - name: 🔨 Repair node-gyp Permissions
       if: inputs.install == 'true'
       run: |
@@ -235,11 +211,9 @@ runs:
           || echo "No bundled gyp_main.py found; nothing to repair."
       shell: bash
 
-    # The pnpm store, kept after the install that filled it. `setup-node`'s own
-    # `cache: pnpm` saved whichever job finished first, and the jobs that skip
-    # native builds finish first: the entry held a partial store with no
-    # compiled `sweph` or `cpu-features`, so every job that needs them
-    # downloaded the rest and compiled them again. The `v1` retires that entry.
+    # The pnpm store, kept after the install that filled it. `setup-node`'s own cache
+    # held a partial store from whichever job finished first, so native modules were
+    # compiled again. The `v1` retires that entry.
     - name: 🗄️ Resolve pnpm Store
       if: inputs.install == 'true'
       id: pnpm-store
@@ -255,13 +229,8 @@ runs:
         restore-keys: |
           pnpm-store-v1-${{ runner.os }}-${{ runner.arch }}-
 
-    # The root `postinstall` script already runs `installed-skills write`
-    # after this, which is idempotent and only boots its command, restoring
-    # nothing, when every locked skill is already on disk (true here since
-    # skills are committed).
-    # A separate `skills experimental_install` step used to run redundantly
-    # afterward, bypassing that guard and re-cloning every upstream skill
-    # source on every job — that duplicate work is why this step is gone.
+    # The root `postinstall` runs `installed-skills write` after this. It is idempotent
+    # and restores nothing here, since every locked skill is already on disk and committed.
     - name: 📚 Install Node Dependencies
       if: inputs.install == 'true'
       # node-gyp builds with one make job unless told otherwise; `sweph` takes
@@ -287,14 +256,9 @@ runs:
         fi
       shell: bash
 
-    # gitleaks and Trivy are single binaries the `software` command downloads
-    # into `~/.local/bin`, so that is all this keeps. Exact match only: the key
-    # names the pinned versions through the file that holds them, so a version
-    # bump is a miss and anything else is a hit. A hit makes the command find
-    # both already installed and download nothing, which also takes the
-    # release hosts out of the job. PostgreSQL comes from apt and is not kept.
-    # The caches a pull request saves are readable only by itself, so `main`'s
-    # is what a pull request and a merge group restore.
+    # gitleaks and Trivy are single binaries the `software` command downloads into
+    # `~/.local/bin`. The key names the pinned versions, so a hit skips the download.
+    # Pull requests cannot read each other's caches, so `main`'s is what they restore.
     - name: ♻️ Sync Release Archive Tools Cache
       if: inputs.gitleaks == 'true' || inputs.trivy == 'true'
       uses: actions/cache@v6
@@ -307,11 +271,9 @@ runs:
           'installation/src/modules/release-archives/release-archives.constants.ts')
           }}-gitleaks-${{ inputs.gitleaks }}-trivy-${{ inputs.trivy }}
 
-    # The `software` command of the `installation` project, given names,
-    # installs just the software the job asked for, from the same pinned
-    # release archives and apt repository a developer's Linux machine uses, and
-    # adds it to `PATH` for the steps after. It needs the installed
-    # dependencies, so a job that skips the install skips it too.
+    # The `software` command of the `installation` project installs only the software
+    # named here, from the pinned release archives and apt repository a developer's
+    # Linux machine uses, and adds it to `PATH` for later steps.
     - name: 🧰 Software
       if: |
         (inputs.gitleaks == 'true' || inputs.trivy == 'true'
@@ -325,17 +287,10 @@ runs:
           ${{ inputs.trivy == 'true' && 'trivy' || '' }} \
           ${{ inputs.postgres-client == 'true' && 'postgres-client' || '' }}
 
-    # The `setup-codebase` command of the `integration` project runs these in
-    # order: it bounds a push's base to the push's own previous tip (CI only,
-    # `nx-base: push-before`), imports the pull request's Nx cache into a merge
-    # group, discards a restored task database a cancelled save left damaged,
-    # and renames the restored one to this runner's machine id so Nx reads it.
-    # See the commands of those names for the reasoning of each.
-    #
-    # It needs the installed dependencies, so a job that skips the install skips
-    # it too, rather than failing a second time. None of its steps feeds the
-    # install, and the install opens no Nx task database, so nothing reaches
-    # the restored one first.
+    # The `setup-codebase` command of the `integration` project runs the Nx cache steps:
+    # bounds a push's base, imports a pull request's cache into a merge group, discards
+    # a damaged restored task database, and renames the restored one to this runner's
+    # machine id so Nx reads it.
     - name: 🩺 Setup Codebase
       if: hashFiles('node_modules/.modules.yaml') != ''
       env:

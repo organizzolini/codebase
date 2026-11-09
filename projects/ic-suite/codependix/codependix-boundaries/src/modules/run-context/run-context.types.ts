@@ -9,47 +9,25 @@ import type { CodependixRunMode } from "@codependix/core";
 import type { NxProject, NxProjectGraph } from "@codependix/nx-projects";
 
 /**
- * Everything every graph-type pass reads, resolved once per run rather than
- * once per pass — see `GraphRunService.run`.
- *
- * Stated here, beside `BoundaryCheckContext`, because resolving it is the
- * first thing every run does and the boundary gate is one of its readers:
- * the wider context carries an export mode the gate never looks at, and is
- * structurally assignable to `BoundaryCheckContext`, so nothing is repacked
- * at the call site.
+ * Everything every graph-type pass reads, resolved once per run. The boundary gate reads it too.
  */
 export interface GraphRunContext {
   /**
-   * The projects every boundary graph is built over: `selectedProjects`'
-   * dependency closure in the Nx project graph, or `selectedProjects` alone
-   * under `--no-dependencies`.
-   *
-   * Wider than what is judged, so a finding a selected project inherits from
-   * a dependency is still found — and reported as a note against that
-   * dependency rather than failing the run. Exports never read this.
+   * Projects every boundary graph is built over: the selection and its
+   * dependencies. Wider than what is judged, so inherited findings become notes.
    */
   buildProjects: NxProject[];
   configuration: ResolvedCodependixConfiguration;
   /**
-   * The graph types this run builds, checks, and writes.
-   *
-   * All three unless `--no-file-imports`, `--no-nestjs-modules`, or
-   * `--no-nx-projects` narrowed it — see `RunContextService.build`. Read by
-   * `GraphRunService.run` to skip a whole pass, and by
-   * `BoundaryCheckService.run` to skip a boundary level, so a developer can
-   * run a narrower, faster check locally without editing configuration.
+   * The graph types this run builds, checks, and writes, as narrowed by the
+   * `--no-*` flags. Disabled passes are skipped before any graph is built.
    */
   enabledGraphTypes: ReadonlySet<CodependixGraphType>;
   graph: NxProjectGraph;
   mode: CodependixRunMode;
   /**
-   * Every project's own `codependix.config.ts`, keyed by project name — or
-   * `undefined` for a project naming none of its own.
-   *
-   * Loaded once per run, alongside `projects`, so every pass reads the same
-   * snapshot rather than each re-reading the filesystem for every graph type
-   * it resolves. Read as-is by `ConfigurationService.resolveForProject` — see
-   * that method for why no further merge happens here.
+   * Each project's own `codependix.config.ts`, keyed by name; `undefined` if
+   * it has none. Loaded once per run so every pass sees one snapshot.
    */
   projectConfigurations: Map<
     string,
@@ -58,13 +36,8 @@ export interface GraphRunContext {
   /** Every project the graph knows, apart from the workspace root. */
   projects: NxProject[];
   /**
-   * The projects `--projects` and `--tags` narrowed the run to — the set the
-   * boundary gate judges, and the set the Workspace Graph is drawn over.
-   *
-   * Identical to `projects` when a run named neither, which is what keeps the
-   * Workspace Graph whole and the boundary gate judging every project by
-   * default. `include`/`exclude` never reach this: they decide which projects
-   * have exports written, not which projects a graph is drawn over.
+   * Narrowed projects: judged by the boundary gate and drawn in the Workspace
+   * Graph. Equals `projects` when neither flag is given.
    */
   selectedProjects: NxProject[];
   workingDirectory: string;

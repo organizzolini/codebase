@@ -1,8 +1,8 @@
 // ♟️ Constants
 
 /**
- * The short forms grammar books use for the words the API names forms with.
- * Words with no short form, such as "person", are left out of an identifier.
+ * Grammar-book short forms for the words the API names forms with. Words without
+ * one, such as "person", are left out of an identifier.
  */
 export const ABBREVIATIONS: Readonly<Record<string, string>> = {
   ablative: "ABL",

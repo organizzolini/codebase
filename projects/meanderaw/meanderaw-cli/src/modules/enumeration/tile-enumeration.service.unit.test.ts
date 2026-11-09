@@ -38,15 +38,8 @@ async function createService(
 // 🔧 Configuration
 
 /**
- * The eleven shapes the `mosaic` half of the corpus commits — every shape a
- * budget of sixteen admitted up to five rows — with the tile counts each
- * holds: how many the walk enumerates now, and how many of those the
- * original exact-cover rule would have found. Today's budget admits all of
- * them and more; `enumeration.service.unit.test.ts` lists the rest.
- *
- * Written out rather than derived, because these numbers are the thing being
- * asserted. A change to the enumeration rule that resized the space would
- * pass a derived table and fails this one.
+ * The eleven shapes the mosaic corpus commits, with the tile counts each holds.
+ * Written out, not derived, so a changed rule fails.
  */
 const ADMITTED_SHAPES: readonly {
   readonly columns: number;

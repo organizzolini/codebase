@@ -36,10 +36,7 @@ export interface LexicoGraphqlApplication {
 }
 
 /**
- * Serves the given feature modules the way the API does — Apollo over
- * Express, lexico's `LexicoDatabaseModule` read from `LEXICO_POSTGRES_*` —
- * against a freshly migrated Postgres container, on an ephemeral port, with
- * the schema built in memory rather than written beside the root module.
+ * Serves feature modules as the API does, against a fresh Postgres container on an ephemeral port, with the schema built in memory.
  */
 export async function startLexicoGraphqlApplication(
   modules: NonNullable<ModuleMetadata["imports"]>,

@@ -5,9 +5,7 @@ import type { EventFilterGroup, EventFilterRule } from "./event-filter.types";
 // ♟️ Constants
 
 /**
- * The most conditions, nested groups, path segments or values one filter
- * node may hold, so a request cannot ask the database for an unbounded
- * expression.
+ * Caps each node's conditions, groups, path segments and values, so a request cannot ask for an unbounded expression.
  */
 export const EVENT_FILTER_MAXIMUM_BREADTH = 256;
 

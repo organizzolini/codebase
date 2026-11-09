@@ -8,17 +8,11 @@ import { DrawPoolService } from "./draw-pool.service";
 import type { MeanderShape } from "../database/database.types";
 
 /**
- * The draw run's lattice-first half: it enumerates the whole unit space, builds
- * one row per meander found, and writes them to the database.
+ * The draw run's lattice-first half: enumerates the whole unit space and
+ * writes one row per meander found.
  *
- * Every row it writes is `isHardcoded: false`: found by a search over the
- * space rather than named by a person, which is the whole of what that
- * column distinguishes.
- *
- * Nothing here filters. Enumeration produces every structurally distinct
- * repeat within budget, and what a meander is — which pattern
- * characteristics hold for it, if any — is measured off its own structure
- * afterwards rather than decided before by a generator.
+ * Every row is `isHardcoded: false`, found by a search rather than named by
+ * a person. Nothing here filters; what a meander is gets measured afterwards.
  */
 @Injectable()
 export class DrawEnumerationService {
@@ -47,22 +41,8 @@ export class DrawEnumerationService {
   }
 
   /**
-   * Draws the shapes named and writes every meander they hold, a batch of
-   * rows at a time as the pool hands them back, answering with how many were
-   * written.
-   *
-   * A batch at a time rather than a shape at a time: the largest shape alone
-   * holds 4,196,352 meanders, and holding a shape's rows in memory before
-   * writing any of them is what bounds how far the budget can rise. Each
-   * shape is drawn across `DrawPoolService`'s worker threads, which are ended
-   * once the last shape is written — or the draw run fails — so none
-   * outlives it.
-   *
-   * A meander whose Code a row of its shape already holds is skipped rather
-   * than written: the hardcoded corpus is ingested first, and a hardcoded
-   * row keeps its Code over the enumerated meander
-   * that shares it. Only enumerated meanders are folded by symmetry; a
-   * hardcoded mirror or flip of one stays a row of its own.
+   * Draws the shapes and writes every meander they hold, a batch at a time.
+   * Skips any Code a hardcoded row already holds.
    */
   async persist(shapes: readonly MeanderShape[]): Promise<number> {
     let written = 0;

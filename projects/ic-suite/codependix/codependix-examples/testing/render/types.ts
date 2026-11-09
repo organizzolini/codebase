@@ -1,11 +1,8 @@
 // 🏷️ Types
 
 /**
- * One worked example, rendered as a single Markdown document under `output/`.
- *
- * A document is data rather than prose: `renderDocument` turns it into Markdown,
- * and `render-examples --check` compares that against what is committed. That is
- * what keeps a guide from quoting a diagram the tool no longer draws.
+ * One worked example, rendered as Markdown under `output/`. `--check` compares it with
+ * the committed file, so a guide cannot quote a stale diagram.
  */
 export interface ExampleDocument {
   /** File stem the document is written under, such as `03-ambient-modules`. */
@@ -34,11 +31,8 @@ export interface ExampleJsonExport {
    */
   readonly content: string;
   /**
-   * File name, committed inside the example's own directory.
-   *
-   * Named `codependix-*graph.json` so the committed exports inherit the
-   * carve-outs `configuration/eslint.config.ts` and `configuration/.oxfmtignore`
-   * declare for every graph codependix writes — see the `json-exports` example.
+   * File name, committed in the example's own directory. Named
+   * `codependix-*graph.json` to inherit the codependix lint carve-outs.
    */
   readonly fileName: string;
 }

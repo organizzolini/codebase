@@ -151,9 +151,8 @@ export class EphemerisAggregationService {
   // 🌎 Public Methods
 
   /**
-   * Accumulates ephemeris data for a single body across the date range.
-   * Dispatches to node or non-node handlers based on body classification.
-   * Collects results into the shared ephemeris entries list.
+   * Accumulates one body's ephemeris across the date range into the shared
+   * entries, dispatching on node or non-node.
    */
   public accumulateBodyEphemeris(args: {
     allEntries: EphemerisEntries;

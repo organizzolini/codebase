@@ -18,13 +18,8 @@ import type {
 } from "./event-grouping.types";
 
 /**
- * Compiles a grouping to one select-list column per level, `group_0`
- * onward, each a JSON array of the group keys an event falls in at that
- * level, over the derived events view aliased `e`, whose placeholders are
- * numbered after the `offset` parameters the query already binds. A tag level
- * answers the picked tags, or every tag of that root at its depth, the event
- * is under, so an event with two planets falls in both; a derived level
- * answers one key. A field the calendar does not know answers none.
+ * Compiles grouping to one JSON-array column per level, placeholders numbered
+ * after `offset`; an event can fall in several tag groups.
  */
 export function compileEventGrouping(
   grouping: readonly EventGroupLevel[],

@@ -49,10 +49,8 @@ describe("postgresql-export", () => {
   let directory: string;
 
   /**
-   * Runs `postgresql-export` with `argv` through the real command line, unqualified
-   * `--table` names resolving in the `fixture` schema. Nothing points the
-   * command line at a database of its own: export names its database by
-   * URI and must never open any other.
+   * Runs `postgresql-export` through the real command line, resolving unqualified
+   * `--table` names in the `fixture` schema. It names its database by URI only.
    */
   async function runExport(
     argv: readonly string[],

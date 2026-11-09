@@ -11,11 +11,9 @@ import viteConfiguration from "../vite.config.ts";
 import type { LibraryOptions, UserConfig } from "vite";
 
 /**
- * Sources of a two-module library, keyed by path relative to its root.
+ * Two-module library sources, keyed by path.
  *
- * Both modules declare a class with the same name, so the bundler has to
- * rename one of them, and the minifier then mangles whatever is left. A NestJS
- * logger context is read from `.name`, which is exactly what both steps lose.
+ * Both declare one class name, so bundling and minifying lose the `.name` a logger reads.
  */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
   "src/index.ts": [
@@ -59,14 +57,7 @@ interface FixtureBundle {
 }
 
 /**
- * Builds the fixture with this package's own Vite configuration, pointed at
- * the fixture instead of `src/`.
- *
- * Declaration bundling needs a tsconfig the fixture does not have and says
- * nothing about the JavaScript under test, so the plugins are left out.
- *
- * @param fixtureDirectory - Where the fixture's sources were written.
- * @returns The built entry, imported.
+ * Builds the fixture with this package's Vite configuration. The plugins are left out, since declaration bundling needs a tsconfig the fixture lacks.
  */
 async function buildFixture(fixtureDirectory: string): Promise<FixtureBundle> {
   const outputDirectory = path.join(fixtureDirectory, "dist");

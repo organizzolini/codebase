@@ -34,12 +34,7 @@ export interface DuplicateTargetFinding {
 }
 
 /**
- * What one limit found once it was pointed at its metric.
- *
- * A breach is one of these carrying `breached`, and it reports everything a
- * breach has to: which metric, held to what, and what the metric actually
- * measured. A limit that held is reported the same way, so a report can show
- * the headroom rather than only the failures.
+ * What one limit found once it was pointed at its metric. A breach carries `breached`; a held limit is reported alike.
  */
 export interface EvaluatedLimit {
   /** Whether the measured value came out above the limit. */
@@ -61,11 +56,7 @@ export interface EvaluateLimitsArguments {
 }
 
 /**
- * One limit that could not be held against anything.
- *
- * Collected rather than thrown. A configuration carrying three limits that
- * bind to nothing is three mistakes to fix, and reporting only the first turns
- * one repair into three runs.
+ * One limit that could not be held against anything. Collected rather than thrown, so one run reports every such limit.
  */
 export interface LimitFailure {
   /** The dotted path exactly as the limit was written. */
@@ -74,11 +65,7 @@ export interface LimitFailure {
 }
 
 /**
- * What every declared limit found, alongside the ones that bound to nothing.
- *
- * Both lists are always present. A limit that could not be bound is neither a
- * breach nor a pass, and reporting it as either would be a gate whose verdict
- * nobody could trust.
+ * Every declared limit's result, plus those that bound to nothing. A limit that could not bind is neither a breach nor a pass.
  */
 export interface LimitsEvaluation {
   failures: LimitFailure[];
@@ -86,11 +73,7 @@ export interface LimitsEvaluation {
 }
 
 /**
- * What one target measured, as the limits layer reads it.
- *
- * Declared here rather than imported from the measurement pipeline: gating a
- * number needs the number and its target's name, and nothing about how either
- * was produced.
+ * What one target measured, as the limits layer reads it. Declared here so this layer needs no measurement types.
  */
 export interface MeasuredTarget {
   files: number;
@@ -104,9 +87,7 @@ export interface MetricBinding {
   /**
    * How many files the bound target held.
    *
-   * Carried along because a limit on a target that matched nothing is an
-   * error, and the count is the only way to tell that apart from a target
-   * that genuinely measured zero.
+   * Tells a target that matched nothing, an error, from one that measured zero.
    */
   files: number;
   measured: number;
@@ -134,20 +115,14 @@ export interface TargetMetricIndex {
   /**
    * Paths more than one metric answers to, which no limit may address.
    *
-   * Two configured counters sharing a label is the way this happens. Either
-   * metric would be a defensible binding, which is exactly why neither is.
+   * Two counters sharing a label cause this.
    */
   ambiguous: Set<string>;
   files: number;
   /**
-   * Where each metric's per-instance measurements were found, keyed by the
-   * same dotted path `metrics` uses.
+   * Per-instance measurements of each metric, keyed by its dotted path.
    *
-   * Only a metric a per-instance selector produced has an entry here — a
-   * `comment` selector today, and any future selector that measures more
-   * than a count. A metric with no entry counted matches and nothing more,
-   * so a consumer reading this map can tell the two apart without reading
-   * the configuration that produced either.
+   * Present only for metrics a per-instance selector produced.
    */
   instances: Map<string, CustomStatisticResultInstance[]>;
   metrics: Map<string, number>;

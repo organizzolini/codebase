@@ -12,9 +12,7 @@ import type { BuildKnipArguments } from "./knip.types";
 
 /**
  * Runs knip over the given workspaces and returns what it printed.
- *
- * The one place knip is started, so a single run and a batch run it the same
- * way: from the workspace root, through that workspace's own binary.
+ * The one place knip starts, so single and batch runs match.
  */
 export async function runKnip(
   args: Omit<BuildKnipArguments, "directory"> & { workspaceRoot: string },

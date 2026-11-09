@@ -75,13 +75,8 @@ describe(MapCommand, () => {
   let runContextService: RunContextService;
 
   /**
-   * Builds a command whose collaborators are freshly mocked.
-   *
-   * `reportingService` is a real instance built over the same mocked
-   * `loggerService`/`BoundaryReportService` this file already asserts
-   * against, so every existing assertion on `loggerService.error`/`.warn`/
-   * `.info` still reads what the run actually logged — `ReportingService`'s
-   * own unit tests cover its formatting in isolation.
+   * Builds a command over freshly mocked collaborators. `reportingService` is real, built over the
+   * mocked logger, so assertions on what the run logged still hold.
    */
   function buildCommand(): MapCommand {
     return new MapCommand(
@@ -775,12 +770,8 @@ describe(MapCommand, () => {
     );
   });
 
-  // `ConfigurationService.loadConfiguration` is where `--include`/`--exclude`
-  // are actually refused for a target that never declared the field — see
-  // its own unit tests. This only asserts the refusal reaches the reader
-  // exactly the way every other rejected command line does, matching
-  // callidescope's `depth.command.unit.test.ts` "reports a refused command
-  // line instead of crashing".
+  // `ConfigurationService.loadConfiguration` refuses `--include`/`--exclude` when undeclared; its own
+  // tests cover that. This asserts the refusal reaches the reader like any rejected command line.
   describe("a selection matching only in part", () => {
     beforeEach(() => {
       selectMode({ checksBoundaries: true });

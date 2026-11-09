@@ -115,10 +115,7 @@ export function readServedApi(): CalendarApi {
 }
 
 /**
- * Serves the calendar API for the test that calls it, over the fixture's
- * events and tags unless it hands others. It answers the way the real API
- * does for what the web sends: the window, the tag and text rules of a
- * filter, the grouping and the dataset, and nothing the web does not read.
+ * Serves the calendar API for a test, over the fixture's events and tags unless given others, answering what the web reads.
  */
 export function serveCalendarApi(
   options: CalendarApiOptions = {},
@@ -449,8 +446,7 @@ function listEventTags(event: FixtureEvent, tree: Tree): Set<string> {
 }
 
 /**
- * Whether an event meets a filter's tag and text rules; a rule on another
- * field keeps every event, as the mock reads none of them.
+ * Whether an event meets a filter's tag and text rules; rules on other fields keep every event.
  */
 function matches(
   event: FixtureEvent,

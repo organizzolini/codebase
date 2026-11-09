@@ -37,8 +37,7 @@ export interface CalendarAgendaProperties {
    */
   grouping?: readonly EventGroupLevel[] | undefined;
   /**
-   * Called to list more days, when the agenda is scrolled to its end or its
-   * last row's button is pressed; without it, the agenda lists no more.
+   * Lists more days when the agenda reaches its end; without it, the agenda lists no more.
    */
   onShowLater?: (() => void) | undefined;
   range: AgendaRange;
@@ -47,12 +46,7 @@ export interface CalendarAgendaProperties {
 // 🧩 Component
 
 /**
- * Renders the agenda: each day that has events as a heading over its events
- * in order, in a list that draws only the rows on screen, so a range with
- * thousands of events scrolls as smoothly as one with a handful. Grouped, it
- * is sectioned by each group, with the distinct events it lists counted.
- * Scrolling to the end asks for later days, which arrive under the rows
- * already shown.
+ * Renders the agenda: each day's events under a heading, drawn windowed so large ranges scroll smoothly.
  */
 export function CalendarAgenda(
   properties: Readonly<CalendarAgendaProperties>,

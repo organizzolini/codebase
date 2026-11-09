@@ -69,10 +69,7 @@ export class PythonImportsService {
   }
 
   /**
-   * Resolves one project's export target for this graph type, including its
-   * workspace-relative root and its Nx tags, so `include`/`exclude` globs may
-   * match either and `--tags` reaches the tags — the same resolution
-   * `GraphRunService.resolveProjectOutput` performs for every other graph type.
+   * Resolves one project's export target, matching `include`/`exclude` against its root and tags.
    */
   private resolveProjectOutput(args: {
     context: GraphRunContext;
@@ -124,13 +121,8 @@ export class PythonImportsService {
   // 🌎 Public Methods
 
   /**
-   * Builds and delivers every configured Python file-level import graph
-   * export.
-   *
-   * Only `language:python`-tagged projects participate, discovered from the
-   * tags `context.projects` carry — see `PythonService`. A project that
-   * raises while its own export is being resolved is recorded as a failure
-   * rather than aborting the pass, the same rule `runImportGraphs` follows.
+   * Builds and delivers the Python file-level import graphs. Only `language:python` projects
+   * participate; a project that raises is recorded as a failure, not an abort.
    */
   runGraphs(context: GraphRunContext): GraphRunOutcome {
     const pythonProjects = this.pythonService.discoverProjects(

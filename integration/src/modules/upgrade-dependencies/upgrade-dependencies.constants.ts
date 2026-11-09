@@ -10,8 +10,8 @@ export const TAIL_LINES = 20;
 export const TAIL_CHARACTERS = 2000;
 
 /**
- * Git's empty tree. Naming it as the source of attributes makes a diff ignore
- * `.gitattributes`, whose `-diff` on the lockfile would count its changes as 0.
+ * Git's empty tree. As the attributes source, it stops `.gitattributes`
+ * `-diff` from counting lockfile changes as 0.
  */
 export const EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
 
@@ -33,10 +33,8 @@ export const WARNING_LIMIT = 10;
 export const LINE_CHARACTERS = 160;
 
 /**
- * Formats the files an upgrade wrote. The repository keeps vendored skills
- * formatted, so what upstream ships unformatted would otherwise be reformatted
- * by the commit hook, and the pull request would report changes that the
- * commit does not hold.
+ * Formats what an upgrade wrote, since the commit hook would reformat upstream's
+ * unformatted files and the pull request would misreport them.
  */
 const FORMAT_UPGRADED_FILES: Command = [
   "pnpm",
@@ -51,12 +49,8 @@ export const NOTHING_SHIPPED_MESSAGE =
   "Upgrade steps were skipped and nothing else changed, so there is no pull request to report them in.";
 
 /**
- * The upgrades, in the order they run. A step that fails is undone and
- * reported, and the next one still runs: one broken upgrade must not stop the
- * others, as the Python bump once stopped the skills.
- *
- * Those with logic of their own are tasks, each carried out by a service.
- * The rest are commands, run in order until one fails.
+ * Upgrades. A failed step is undone and reported, and the next still runs.
+ * Steps with logic are tasks; the rest are commands.
  */
 export const UPGRADE_STEPS: readonly UpgradeStep[] = [
   { label: "Upgrade pnpm", task: "pnpm" },
@@ -70,12 +64,10 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
     task: "python",
   },
   {
-    // Per-package npm and GitHub Actions bumps come from Dependabot as their
-    // own pull requests. This only dedupes, which reaches the transitive
-    // dependencies those cannot: a package satisfying its parents' ranges
-    // stays pinned even as they move. `nx show projects` proves the dedupe did
-    // not break Nx, while the diff is still on disk and not inside the husky
-    // pre-commit hook of the commit that opens the pull request.
+    // Per-package npm and GitHub Actions bumps come from Dependabot. This
+    // dedupes the transitive dependencies Dependabot cannot reach. `nx show
+    // projects` proves the dedupe did not break Nx, before the diff is
+    // committed through the pre-commit hook.
     commands: [
       ["pnpm", "dedupe"],
       ["pnpm", "exec", "nx", "show", "projects"],
@@ -88,11 +80,10 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
     label: "Upgrade Python dependencies",
   },
   {
-    // The skills CLI falls back to installing for every agent when none is
-    // detected and --yes is passed. For 'eve' that creates an untracked agent/
-    // folder the project-structure lint rejects, so it is removed. ReUI serves
-    // its skill as a JSON bundle, which `skills update` skips, so the
-    // installation project's command re-fetches and re-pins it.
+    // The skills CLI installs for every agent when none is detected and --yes
+    // is passed, leaving an untracked agent/ folder that lint rejects, so it is
+    // removed. ReUI serves its skill as a JSON bundle that `skills update`
+    // skips, so the installation project re-fetches it.
     commands: [
       ["pnpm", "exec", "skills", "update", "--yes"],
       ["rm", "-rf", "agent/"],

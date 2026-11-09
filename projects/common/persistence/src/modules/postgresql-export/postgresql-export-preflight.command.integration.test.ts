@@ -24,9 +24,8 @@ describe("postgresql-export client-tool preflight", () => {
   });
 
   /**
-   * Puts a `pg_dump` on a PATH of its own that reports `version` and records
-   * every argument list it was run with; the script creates `dumped` if it
-   * is ever run for anything but `--version`.
+   * Puts a fake `pg_dump` on a PATH, reporting `version` and recording each argument list.
+   * A run other than `--version` creates `dumped`.
    */
   function fakePgDump(version: string): {
     readonly dumped: string;

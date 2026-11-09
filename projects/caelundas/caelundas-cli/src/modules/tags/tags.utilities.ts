@@ -11,11 +11,7 @@ import { TAG_ROOT } from "./tags.constants";
 import type { ClassifiableEvent, TagMap, TagPath } from "./tags.types";
 
 /**
- * The tree nodes an event is linked to, each as the path from its root down
- * to it. Each raw tag is looked up in the shared map and in the map of
- * every kind of event the event is marked as; a raw tag no map knows falls
- * back to a root of its own. Paths no single raw tag gives are derived from
- * several, and only the deepest node of each branch is kept.
+ * The tree nodes an event links to, as root-to-node paths; a raw tag no map knows becomes a root of its own.
  */
 export function classifyEvent(event: ClassifiableEvent): TagPath[] {
   const rawTags = new Set(event.tags);
@@ -36,9 +32,7 @@ export function classifyEvent(event: ClassifiableEvent): TagPath[] {
 }
 
 /**
- * The key a node is found by among the nodes already stored: its parent and
- * its own name, which together are unique, because a name is unique among
- * its siblings.
+ * The key a node is found by among stored nodes: its parent and name, unique because names are unique among siblings.
  */
 export function tagNodeKey(parentId: null | string, name: string): string {
   return `${parentId ?? ""}\u0000${name}`;
@@ -50,9 +44,7 @@ export function tagPathKey(path: TagPath): string {
 }
 
 /**
- * The dignity of a traditional planet in the sign an ingress names: the
- * strongest dignity that lists the sign, or peregrine when none does. A body
- * outside the seven traditional planets has no dignity.
+ * The dignity of a traditional planet in the sign an ingress names: the strongest listing dignity, or peregrine.
  */
 function dignityPaths(rawTags: ReadonlySet<string>): TagPath[] {
   const planet = [...rawTags]
@@ -116,9 +108,7 @@ function ingressKind(
 }
 
 /**
- * An ingress's kind, which no one raw tag says: a decan or peak ingress is
- * marked, and a plain sign ingress is an instant where its stay in the sign
- * is a span. A traditional planet's ingress also carries its dignity.
+ * A plain sign ingress is an instant, where its stay is a span; a traditional planet's ingress also carries dignity.
  */
 function ingressPaths(
   event: ClassifiableEvent,
@@ -140,9 +130,7 @@ function isInstant(event: ClassifiableEvent): boolean {
 }
 
 /**
- * The paths a raw tag stands for in the maps that apply to its event, or a
- * root named for itself when no map knows it, so a new detector tag never
- * breaks ingestion.
+ * Paths a raw tag stands for in the maps that apply, or a root named for itself when none knows it.
  */
 function mapRawTag(rawTag: string, maps: readonly TagMap[]): TagPath[] {
   const known = maps.filter((map) => Object.hasOwn(map, rawTag));

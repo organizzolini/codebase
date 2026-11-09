@@ -7,16 +7,11 @@ import type { Code, CodeObject } from "../code/code.types";
 import type { CharacteristicContext } from "./characteristics.types";
 
 /**
- * Prepares the one {@link CharacteristicContext} every characteristic
- * evaluator reads, so the Code is parsed and decoded once per meander rather
- * than once per evaluator. It reduces the Code to its smallest repeating
- * unit first, so a Code drawn at two repeats measures the same as the same
- * Code drawn at one.
+ * Prepares the one {@link CharacteristicContext} every evaluator reads, so a Code is
+ * parsed and decoded once per meander. The Code is reduced to its smallest repeating
+ * unit first, so repeats measure the same as a single drawing.
  *
- * The context's `code` is re-spelled from the decoded matrix through
- * `CodeService.spellDigits`, so every evaluator reads lowercase digits exactly
- * `rows × columns` long, whatever casing or length the caller's parsed Code
- * carried.
+ * The context's `code` is re-spelled as lowercase digits, `rows × columns` long.
  */
 @Injectable()
 export class CharacteristicContextService {
@@ -68,10 +63,8 @@ export class CharacteristicContextService {
   }
 
   /**
-   * Builds the context for a Code exactly as filed, without reducing it to
-   * its repeating unit — for the one reading that depends on where the tile
-   * is cut rather than on the unit, the canonical-phase scorer
-   * `CharacteristicsService.tileCrossingComponentDeltaCount`.
+   * Builds the context for a Code as filed, not reduced to its repeating unit.
+   * Used by the canonical-phase scorer.
    */
   public createUnreduced(code: Code | CodeObject): CharacteristicContext {
     return this.build(this.parse(code));

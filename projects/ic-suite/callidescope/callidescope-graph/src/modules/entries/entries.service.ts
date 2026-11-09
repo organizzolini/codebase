@@ -32,19 +32,10 @@ import type {
 /**
  * Decides which callables are the roots of a call stack.
  *
- * This is where the tool is most likely to be wrong, and the numbers it reports
- * are only as meaningful as this list. Most code in a repository like this one
- * is never called by anything inside it — a framework calls it. So the roots
- * have to be named, and anything missed would silently vanish from every
- * measurement rather than fail loudly.
+ * Most code is called by a framework rather than by anything in the repository,
+ * so roots must be named. A configuration can also name one by address.
  *
- * A configuration can also name a root outright, by the same address the
- * lookup commands take, for the surface no rule here can infer. Those are
- * additive: they never turn a rule off.
- *
- * Orphan promotion is the guard against exactly that. After the named rules
- * run, anything with no caller left in the graph becomes a root anyway, so a
- * rule this list is missing shows up as an orphan instead of as a hole.
+ * Orphan promotion catches misses: anything left with no caller becomes a root.
  */
 @Injectable()
 export class EntriesService {
@@ -153,13 +144,8 @@ export class EntriesService {
   }
 
   /**
-   * Every configuration whose declared addresses a run must resolve, paired
-   * with the project that wrote it.
-   *
-   * The workspace configuration is one of them and has no project to name, so
-   * it is listed once under `undefined` rather than repeated for each project
-   * that inherits it — which would resolve one address as many times as there
-   * are projects, and report one mistake as several.
+   * Every configuration a run resolves addresses for, paired with its project.
+   * The workspace one is listed once, under `undefined`.
    */
   private listDeclaringConfigurations(
     args: ResolveEntriesArguments,
@@ -205,12 +191,8 @@ export class EntriesService {
   }
 
   /**
-   * The rules the project owning a callable is judged by.
-   *
-   * Positional rather than an options object, unlike almost everything else
-   * here: it is asked once per callable in each of two passes, and building an
-   * argument object for every one of them is thousands of allocations to say
-   * what two names already say.
+   * The rules the project owning a callable is judged by. Positional, not an
+   * options object, since it runs once per callable.
    */
   private readRules(
     args: ClassificationPassArguments,
@@ -223,12 +205,7 @@ export class EntriesService {
 
   /**
    * Roots one declared address, or reports why it named no single callable.
-   *
-   * Resolved through the service the `depth` and `breadth` commands use, so
-   * the `:<line>` disambiguator and every refusal behave here exactly as they
-   * do at a prompt. An address landing on a callable something already
-   * claimed adds no second root: the two are one callable under two
-   * spellings, and roots are deduplicated by the callable, never by the text.
+   * Roots are deduplicated by callable, never by the address text.
    */
   private rootDeclaredAddress(
     args: EntryPointPassArguments & {
@@ -297,17 +274,8 @@ export class EntriesService {
   // 🌎 Public Methods
 
   /**
-   * Resolves every root a run will measure depth from.
-   *
-   * Three passes, in this order. The rules run first, so a callable one of
-   * them already rooted keeps the kind saying *why* something calls it.
-   * Declared addresses run next, rooting whatever the rules did not reach.
-   * Orphan promotion runs last, over what neither claimed.
-   *
-   * Every pass reads the rules of the project owning the callable, so a
-   * package's own entry points hold wherever the run started from — a leaf
-   * pulled in through another project's dependency closure is judged by its
-   * own configuration, not by whoever reached it.
+   * Resolves every root a run measures depth from, in three passes: rules, then
+   * declared addresses, then orphan promotion.
    */
   public resolve(args: ResolveEntriesArguments): EntryPointCollection {
     const entryPoints: EntryPoint[] = [];

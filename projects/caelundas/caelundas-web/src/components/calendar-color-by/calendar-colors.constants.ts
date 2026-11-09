@@ -3,12 +3,7 @@ import type { EventColorRule } from "./calendar-colors.types";
 // ♟️ Constants
 
 /**
- * The colors by kind of event, as they are drawn on a dark or a light page.
- * Literal colors rather than theme variables: a stylesheet keeps only the
- * theme variables it uses, so a variable named here could be missing.
- *
- * A tag takes the most specific rule its path falls under, so a rule on a
- * tag beneath another's overrides the one above it.
+ * Event colors by kind, as literal colors since a stylesheet drops unused theme variables. The most specific rule wins.
  */
 export const EVENT_COLOR_RULES: readonly EventColorRule[] = [
   {

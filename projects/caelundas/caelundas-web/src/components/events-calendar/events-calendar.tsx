@@ -92,9 +92,7 @@ export interface EventsCalendarProperties {
 // 🧩 Component
 
 /**
- * Renders a single toolbar row over the view the page picked, filling its
- * container: the timeline as a Gantt, every other view in the event
- * calendar.
+ * Renders one toolbar row over the picked view: the timeline as a Gantt, every other view in the event calendar.
  */
 export function EventsCalendar(
   properties: Readonly<EventsCalendarProperties>,

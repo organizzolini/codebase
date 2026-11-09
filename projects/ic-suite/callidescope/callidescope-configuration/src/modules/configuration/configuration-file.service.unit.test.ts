@@ -247,13 +247,9 @@ describe(ConfigurationFileService, () => {
   });
 
   it("carries an authored heading through the file schema, not only the resolver", async () => {
-    // Resolution is not the whole path a configured value travels: a loaded
-    // file is parsed by the schema first, and a field the schema does not name
-    // is stripped there — silently, with the default appearing in its place
-    // and nothing to say the file asked for anything else. That is how the
-    // heading configured for this repository's own README came out at `#`
-    // while the file said `##`, so the schema is asserted through
-    // `loadConfiguration` rather than only through `resolveConfiguration`.
+    // Resolution is not the whole path: the loaded file is parsed by the schema first, which
+    // strips unknown fields silently. This asserts the schema through `loadConfiguration`,
+    // not only `resolveConfiguration`.
     const configurationPath = await writeConfiguration({
       write: { markdown: { heading: "### Deep", path: "README.md" } },
     });

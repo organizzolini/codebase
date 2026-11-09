@@ -8,14 +8,9 @@ import { ConfigurationService } from "./configuration.service";
 import { FlagResolutionService } from "./flag-resolution.service";
 
 /**
- * Provides everything one run is configured by: the configuration file, the
- * command line resolved over it, and each project's own resolved output.
- *
- * `ConfigurationService` is the only thing this module exports, and the only
- * service `@codependix/configuration` makes public. File loading, override
- * resolution, option parsing, and run-mode selection are providers here
- * rather than modules of their own, so a caller asking what a run is
- * configured to do has exactly one place to ask.
+ * Provides everything one run is configured by: the configuration file, the command line over it,
+ * and each project's own output. `ConfigurationService` is the only export; the rest are providers,
+ * so one place answers what a run does.
  */
 @Module({
   controllers: [],

@@ -79,11 +79,7 @@ export class PluginService {
   /**
    * Fails when the emitted Nx plugin no longer matches the configuration.
    *
-   * `generators.json` and its schemas are derived from `conformetry.config.ts`,
-   * so an edit to the configuration that is not followed by `nx sync` leaves Nx
-   * offering generators that no longer exist, or hiding ones that do. Comparing
-   * here rather than trusting `nx sync:check` means the plugin's own commands
-   * cannot run against a stale plugin.
+   * Compares here, so commands never run against a stale plugin.
    */
   private async assertEmittedPluginCurrent(args: {
     configurationPath: string;
@@ -128,12 +124,9 @@ export class PluginService {
   }
 
   /**
-   * Fails when a configured generator points at a template that is not there.
+   * Fails when a generator's template directory is missing.
    *
-   * Template contents never reach `generators.json`, so a missing template
-   * directory is invisible to the drift check above: the emitted plugin still
-   * matches the configuration, and the failure only surfaces later as an empty
-   * generation or an instance matching nothing.
+   * The drift check cannot see templates, so this catches them.
    */
   private async assertTemplatesExist(args: {
     configurationPath: string;
@@ -182,11 +175,9 @@ export class PluginService {
   }
 
   /**
-   * Finds one configured generator and shapes it the way the runtime takes it.
+   * Finds a configured generator, shaped for the runtime.
    *
-   * The configuration path is resolved once, the way the command line does
-   * it, so the file the definition is loaded from and the directory its hooks
-   * are anchored to are the same file whichever directory `nx g` ran from.
+   * Hooks anchor to the same file the command line reads.
    */
   private async resolveGeneratorDefinition(args: {
     configurationPath: string;
@@ -235,12 +226,7 @@ export class PluginService {
   /**
    * Resolves this plugin's options against the workspace's registration.
    *
-   * Nx passes plugin options to `createNodes` but not to a generator or to an
-   * inferred target's executor, which see only what the caller typed. Reading
-   * `nx.json` here is what supplies the path, which has no default: the
-   * registration is the base, anything Nx did pass wins over it, then the
-   * executor's `configuration` option wins over both. A path given by none is
-   * refused, by the configuration layer.
+   * Nx passes options to `createNodes` but not to a generator, so `nx.json` supplies the path.
    */
   private resolveOptions(args: {
     configuration?: string;
@@ -269,19 +255,9 @@ export class PluginService {
   }
 
   /**
-   * Builds the inputs that invalidate a validation when a template changes: one
-   * glob per configured generator's template folder, and one command hashing
-   * the folders' contents.
+   * Inputs that invalidate validation when a template changes.
    *
-   * A template's own files are not part of `configurationPath` or the emitted
-   * plugin, so without this an instance's validate target would keep a stale
-   * cache hit across an edit to the very template it is measured against —
-   * which is exactly how a broken template placeholder once reached every
-   * matched instance's `package.json` unnoticed.
-   *
-   * The globs read Nx's file map, which leaves out any file the workspace
-   * excludes from it, whether through an ignore file or a plugin. The command
-   * reads the disk instead, so no template file escapes the cache key.
+   * Template files sit outside the configuration, so cache hits would survive edits.
    */
   private async resolveTemplateInputs(args: {
     configurationPath: string;
@@ -324,13 +300,9 @@ export class PluginService {
   // 🌎 Public Methods
 
   /**
-   * Infers a validation target onto every project that holds at least one
-   * instance.
+   * Infers a validation target onto each project with instances.
    *
-   * Projects with nothing to validate get no target at all, rather than a
-   * target that trivially passes — an empty target still costs a task in every
-   * `run-many`, and it makes `nx show project` claim a capability the project
-   * does not have.
+   * Empty targets still cost a task in every `run-many`.
    */
   public async inferTargets(
     args: InferTargetsArguments,
@@ -396,10 +368,7 @@ export class PluginService {
   /**
    * Runs one configured generator against an Nx tree.
    *
-   * Nothing is written to disk here — the tree records the writes and Nx
-   * decides whether to flush them, which is what makes `--dry-run` honest.
-   * The configured hooks are handed the same tree-backed adapter, so a write
-   * through `context.filesystem` is previewed and flushed like any other.
+   * Writes go to the tree, not disk, so `--dry-run` is honest.
    */
   public async runGenerator(args: RunGeneratorArguments): Promise<string[]> {
     const pluginOptions = this.resolveOptions({

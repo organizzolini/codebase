@@ -10,11 +10,9 @@ import type { CallableId, StackFrame } from "@callidescope/core";
 /**
  * Rebuilds the single deepest call stack below an entry point.
  *
- * Only one path per entry point is ever materialized, by following the
- * successor each component already recorded as its deepest. Enumerating every
- * root-to-leaf path instead would be the same answer arrived at by walking a
- * number of paths that grows with the product of the branching factors, and
- * then discarding all but one of them.
+ * Only one path per entry point is materialized, following each component's
+ * recorded deepest successor. Enumerating every path would cost a number that
+ * grows with the branching factors, only to discard all but one.
  */
 @Injectable()
 export class PathsService {
@@ -32,11 +30,8 @@ export class PathsService {
   // 🔏 Private Methods
 
   /**
-   * Orders one component's members so the entered one comes first.
-   *
-   * Within a cycle there is no single true order, but starting at the member
-   * the caller actually reached makes the printed stack match how execution
-   * got there.
+   * Orders one component's members so the entered one comes first, matching how
+   * execution actually reached it.
    */
   private orderMembers(args: {
     enteredId: CallableId | undefined;
@@ -94,11 +89,8 @@ export class PathsService {
   }
 
   /**
-   * Turns one callable into a frame a report can print.
-   *
-   * Public so any traversal over the same `DiscoveredCallable` map — not only
-   * this service's own deepest-path walk — can render a frame the same way,
-   * rather than reading documentation and a signature by a second route.
+   * Turns one callable into a frame a report can print. Public so any traversal
+   * renders frames the same way.
    */
   public buildFrame(args: {
     callable: DiscoveredCallable;

@@ -51,10 +51,7 @@ export class YehArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright ى (final Arabic alef maksura, the dotless yeh) glyph's points
-   * as hexadecimal Code digits, one string per row, `.` outside the glyph,
-   * facing Southwest:
-   *
+   * The upright ى (final Arabic alef maksura, the dotless yeh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *   ┌─╴
    * ╷ └┐
@@ -68,10 +65,7 @@ export class YehArabicLetterCharacteristicsService implements CharacteristicEval
   ];
 
   /**
-   * The upright ى (isolated Arabic alef maksura, the dotless yeh) glyph's
-   * points as hexadecimal Code digits, one string per row, `.` outside the
-   * glyph, facing Southwest:
-   *
+   * The upright ى (isolated Arabic alef maksura, the dotless yeh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *   ┌╴
    * ╷ └┐

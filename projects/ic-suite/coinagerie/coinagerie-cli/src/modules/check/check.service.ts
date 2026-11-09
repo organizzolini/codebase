@@ -12,13 +12,11 @@ import type { CheckVerdict, RunCheckArguments } from "./check.types";
 import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration";
 
 /**
- * Judges or rewrites one project's glossaries, in this process.
+ * Judges or rewrites one project's glossaries in this process, as the
+ * `coinagerie` command does for the working directory.
  *
- * What the `coinagerie` command does for the working directory it is started
- * in, minus the process: the services are built once and each project is a
- * call. A project that cannot be read, collected, or compared fails with the
- * reason rather than throwing, so one project's fault never takes down the
- * verdicts of the others a batch carries.
+ * A project that cannot be read, collected, or compared fails with its reason
+ * instead of throwing, so one failure does not sink the other batch verdicts.
  */
 @Injectable()
 export class CheckService {

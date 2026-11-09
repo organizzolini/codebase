@@ -65,8 +65,7 @@ function createBook(): Text {
 }
 
 /**
- * Builds a line query whose one page statement reads back this row, with the
- * window as positions keyed by their order, and records what it ran.
+ * Builds a line query whose page statement reads back this row, with the window keyed by position.
  */
 function createLineQuery(
   windowIds: string[],

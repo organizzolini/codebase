@@ -6,9 +6,7 @@ export interface LoadedConfigurationModule {
   /**
    * Absolute path of the file it came from.
    *
-   * Carried because a caller listing what a repository configures has to say
-   * where each answer was written: by the time a configuration is resolved, the
-   * file it came from is no longer recoverable from the result.
+   * Carried because a resolved configuration no longer says which file it came from.
    */
   path: string;
 }

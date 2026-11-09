@@ -1,81 +1,8 @@
 /**
- * Semantic Release Configuration
- *
- * Automated versioning and changelog generation using semantic-release
- * with Conventional Commits (https://www.conventionalcommits.org/).
- *
- * Branch strategy: Only `main` triggers releases.
- * NPM publishing: Not handled here — Nx release publishes the ic-suite packages.
- * Versioning: The root codebase version is semantic-release's; each ic-suite
- * package's independent version is Nx release's.
- * Auto-committed files: CHANGELOG.md, package.json, generated README/AGENTS
- * artifacts, and each ic-suite package's version and CHANGELOG.md
- *
- * Usage:
- *   pnpm semantic-release            # Manual release (requires GITHUB_TOKEN)
- *   pnpm semantic-release:dry-run    # Preview without changes
- *
- * Automated: Merging to `main` runs Nx release to version the ic-suite
- * packages without committing, then semantic-release updates CHANGELOG.md,
- * commits everything as one release commit, and creates the GitHub release.
- * The packages are tagged and published after that commit.
- *
- * Per-project releases: Install `semantic-release-codebase` and configure
- * per-project release.config.cjs files if independent versioning is needed.
- *
- * Version Bump Rules:
- * ┌─────────────────────────────┬───────┬──────────────────────────────────────┐
- * │ Commit Type                 │ Bump  │ Example                              │
- * ├─────────────────────────────┼───────┼──────────────────────────────────────┤
- * │ BREAKING CHANGE (or `!`)   │ Major │ feat(api)!: redesign auth            │
- * │ feat                        │ Minor │ feat(caelundas): add moon phases     │
- * │ fix, perf, refactor, build  │ Patch │ fix(lexico): resolve timeout         │
- * │ docs, test, ci, chore       │ None  │ docs(readme): update                 │
- * │ scope: no-release           │ None  │ fix(no-release): temporary debug     │
- * └─────────────────────────────┴───────┴──────────────────────────────────────┘
- *
- * Changelog Sections (visible in release notes):
- *   ✨ Features • 🐛 Bug Fixes • ⚡ Performance • ♻️ Refactoring
- *   📦 Build • 📝 Docs • ⏪ Reverts
- *
- * Hidden from changelog: style, test, ci, chore
- *
- * Examples:
- *   # Minor release (1.2.3 → 1.3.0)
- *   feat(caelundas): add stellium detection
- *   fix(lexico): resolve mobile layout
- *
- *   # Patch release (1.3.0 → 1.3.1)
- *   fix(api): handle null values
- *   perf(database): add index to queries
- *
- *   # Major release (1.3.1 → 2.0.0)
- *   feat(api)!: redesign authentication
- *   BREAKING CHANGE: Auth endpoints now require OAuth2
- *
- *   # No release
- *   docs(readme): fix typos
- *   test(api): add tests
- *   fix(no-release): temporary debug
- *
- * Troubleshooting:
- *   Branch behind remote     → git pull origin main
- *   No release published     → Run pnpm semantic-release:dry-run to check commit analysis
- *   ENOCHANGE                → No new commits since last release (normal)
- *   EINVALIDGHTOKEN          → Set GITHUB_TOKEN environment variable
- *
- * Best Practices:
- *   - Use conventional commits format strictly
- *   - Test with --dry-run before releasing
- *   - Never manually edit CHANGELOG.md or bump versions
- *   - Squash feature branch commits into single conventional commit
- *   - Use BREAKING CHANGE deliberately
- *
- * Resources:
- *   - https://semantic-release.gitbook.io/
- *   - https://www.conventionalcommits.org/
- *   - .agents/skills/commit-code/SKILL.md
- *
+ * semantic-release configuration. Only `main` releases. It versions the root
+ * codebase and commits the release artifacts; Nx release versions the ic-suite
+ * packages. Bump rules are `releaseRules`; commit format is in
+ * `.agents/skills/commit-code/SKILL.md`.
  * @see https://semantic-release.gitbook.io/semantic-release/usage/configuration
  */
 
@@ -149,17 +76,9 @@ module.exports = {
     [
       "@semantic-release/git",
       {
-        // Every markdown file a report is spliced into rides along, because
-        // the steps just before this commit regenerate all of them: codometer
-        // rewrites the root README.md badge block, callidescope rewrites a
-        // call-stack section in each project's README.md, and the module-graph
-        // synchronization rewrites a diagram in each project's README.md and
-        // AGENTS.md. Publishing on a branch instead made every pull request
-        // rewrite the same blocks and conflict with every other one;
-        // publishing on main makes them release artifacts, updated exactly
-        // when the changelog is. The ic-suite packages' versions and
-        // changelogs, which Nx release wrote without committing, ride along
-        // too, so a release lands on main as this one commit.
+        // Markdown a report is spliced into rides along, since earlier steps regenerate it.
+        // Publishing on a branch would make every pull request rewrite the same blocks; on main they are release artifacts.
+        // The ic-suite versions and changelogs ride along too, so a release is one commit.
         assets: [
           "CHANGELOG.md",
           "README.md",

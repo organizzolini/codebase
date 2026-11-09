@@ -9,15 +9,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
 /**
- * Each distinct orientation of the ا (final Arabic alef) as a Code holding one
- * isolated copy, beside every orientation name drawing that ink. The base,
- * facing Southwest, draws:
- *
- * ```text
- * ╷
- * │
- * └─╴
- * ```
+ * Each distinct orientation of the ا (final Arabic alef) as a Code holding one isolated copy.
  */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [

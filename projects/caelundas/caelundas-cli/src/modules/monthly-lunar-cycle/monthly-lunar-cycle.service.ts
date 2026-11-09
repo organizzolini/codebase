@@ -49,30 +49,8 @@ export class MonthlyLunarCycleService {
   // 🔏 Private Methods
 
   /**
-   * Creates a progressive event from consecutive lunar phase events.
-   *
-   * Extracts the lunar phase from the entering event tags and formats a
-   * progressive event showing the span of time Moon remains in that phase.
-   *
-   * @remarks
-   * - Duration spans from entering.start to exiting.start (not exiting.end)
-   * - Extracts phase from tags by matching against {@link lunarPhases}
-   * - Returns null and logs warning if phase tag is missing or invalid
-   * - Summary format: `🌕 [phaseSymbol] [Phase] Moon`
-   * - Uses same format as instantaneous phase events for consistency
-   * - Tags match entering event tags exactly
-   *
-   * @see {@link lunarPhases} for extracting phase tag
-   * @see {@link symbolByLunarPhase} for phase symbols
-   *
-   * @example
-   * ```typescript
-   * const duration = getMonthlyLunarCycleProgressiveEvent(
-   *   { summary: "🌕🌑 New Moon", start: Jan 1, tags: [..., "New"] },
-   *   { summary: "🌕🌓 First Quarter Moon", start: Jan 8, tags: [..., "First"] }
-   * );
-   * // Returns: { summary: "🌕🌑 New Moon", start: Jan 1, end: Jan 8, tags: [..., "New"] }
-   * ```
+   * Reads the lunar phase from entering event tags; null, with a warning, when
+   * the tag is missing or unknown.
    */
   private extractLunarPhaseFromTags(
     tags: string[],
@@ -181,13 +159,8 @@ export class MonthlyLunarCycleService {
   }
 
   /**
-   * Determines whether the Moon's elongation reaches `target` nearer this
-   * minute than either neighbor.
-   *
-   * The signed offset from the target, wrapped to [-180, 180), turns from
-   * negative to non-negative once per lunation. Of the two minutes either
-   * side of that sign change, only the one with the smaller offset reports
-   * it, so each phase is stamped exactly once, at the nearest minute.
+   * Whether the Moon's elongation reaches `target` nearer this minute than
+   * either neighbor, so each phase is stamped once.
    */
   private isElongationReached(
     elongations: ElongationWindow,
@@ -208,32 +181,8 @@ export class MonthlyLunarCycleService {
   // 🌎 Public Methods
 
   /**
-   * Creates a formatted calendar event for a lunar phase.
-   *
-   * Generates a calendar event with Unicode Moon phase symbols and descriptive text.
-   * Each phase has a unique symbol (🌑 new, 🌓 first, 🌕 full, 🌗 third) for visual
-   * distinction in calendar applications.
-   *
-   * @remarks
-   * - Summary format: `🌕 [phaseSymbol] [Phase] Moon`
-   * - Example new: "🌕🌑 New Moon"
-   * - Example full: "🌕🌕 Full Moon"
-   * - Phase symbols from {@link symbolByLunarPhase}: 🌑 (new), 🌓 (first), 🌕 (full), 🌗 (third)
-   * - Tags include capitalized phase name for filtering (e.g., "New", "Full")
-   * - Logs event to console with America/New_York timezone for readability
-   * - Event timestamps use UTC but display shows local time in logs
-   *
-   * @see {@link symbolByLunarPhase} for Moon phase Unicode symbols
-   * @see {@link DetectedCalendarEvent} for calendar event structure
-   *
-   * @example
-   * ```typescript
-   * const event = getMonthlyLunarCycleEvent({
-   *   date: new Date('2026-01-28T20:15:00Z'),
-   *   lunarPhase: "full"
-   * });
-   * // Returns: { summary: "🌕🌕 Full Moon", start: ..., tags: [..., "Full"], ... }
-   * ```
+   * Creates the calendar event for a lunar phase: a Moon-phase symbol, phase
+   * name, and capitalized phase tag.
    */
   buildMonthlyLunarCycleEvent(args: {
     date: Moment;
@@ -262,24 +211,8 @@ export class MonthlyLunarCycleService {
   }
 
   /**
-   * Detects the lunar phases that begin at a minute.
-   *
-   * A phase begins when the Moon's apparent geocentric ecliptic longitude
-   * minus the Sun's reaches its elongation: New 0°, Waxing Crescent 45°,
-   * First Quarter 90°, Waxing Gibbous 135°, Full 180°, Waning Gibbous 225°,
-   * Last Quarter 270° and Waning Crescent 315°. The four primary phases are
-   * the ones USNO and the almanacs publish. Each is stamped at the minute
-   * nearest its instant.
-   *
-   * @example
-   * ```typescript
-   * const events = service.detect({
-   *   minute: moment.utc("2026-10-26T04:12:00Z"),
-   *   moonCoordinateEphemeris,
-   *   sunCoordinateEphemeris,
-   * });
-   * // Returns: [{ summary: "🌙🌕 Full Moon", start: 2026-10-26T04:12Z, ... }]
-   * ```
+   * Detects the lunar phases beginning at a minute, by elongation: New 0°,
+   * First Quarter 90°, Full 180°, Last Quarter 270°.
    */
   detect(args: DetectMonthlyLunarCycleArguments): DetectedCalendarEvent[] {
     const { minute } = args;
@@ -301,45 +234,8 @@ export class MonthlyLunarCycleService {
   }
 
   /**
-   * Generates progressive events showing time spent in each lunar phase.
-   *
-   * Pairs consecutive lunar phase events to create progressive events spanning the
-   * period between phases. This shows how long Moon remains in each phase state
-   * (roughly 3.7 days per phase on average).
-   *
-   * @remarks
-   * - Filters to events with "Monthly Lunar Cycle" tag
-   * - Sorts events chronologically by start time
-   * - Pairs consecutive phase events (new → waxing crescent → first quarter → … → waning crescent → new)
-   * - Progressive event represents time spent **in** the entering phase
-   * - Skips invalid events that lack proper phase tagging
-   * - Returns empty array for unpaired events (e.g., at date range boundaries)
-   * - Average phase duration: ~3.7 days (29.5 day lunar month ÷ 8 phases)
-   *
-   * @see {@link getMonthlyLunarCycleDurationEvent} for event formatting
-   * @see {@link lunarPhases} for phase ordering
-   *
-   * @example
-   * ```typescript
-   * const allEvents = [
-   *   { summary: "🌙🌑 New Moon", start: Oct 10, tags: [..., "New"] },
-   *   { summary: "🌙🌒 Waxing Crescent Moon", start: Oct 14, tags: [..., "Waxing Crescent"] },
-   *   { summary: "🌙🌓 First Quarter Moon", start: Oct 18, tags: [..., "First Quarter"] },
-   *   { summary: "🌙🌔 Waxing Gibbous Moon", start: Oct 22, tags: [..., "Waxing Gibbous"] },
-   *   { summary: "🌙🌕 Full Moon", start: Oct 26, tags: [..., "Full"] },
-   *   { summary: "🌙🌖 Waning Gibbous Moon", start: Oct 29, tags: [..., "Waning Gibbous"] },
-   *   { summary: "🌙🌗 Last Quarter Moon", start: Nov 1, tags: [..., "Last Quarter"] },
-   *   { summary: "🌙🌘 Waning Crescent Moon", start: Nov 5, tags: [..., "Waning Crescent"] },
-   * ];
-   * const durations = service.detectProgressive(allEvents);
-   * // Returns one span per consecutive pair, seven in all:
-   * // [
-   * //   { summary: "🌙🌑 New Moon", start: Oct 10, end: Oct 14, ... },
-   * //   { summary: "🌙🌒 Waxing Crescent Moon", start: Oct 14, end: Oct 18, ... },
-   * //   ...
-   * //   { summary: "🌙🌗 Last Quarter Moon", start: Nov 1, end: Nov 5, ... }
-   * // ]
-   * ```
+   * Pairs consecutive lunar phase events into progressive spans: the time spent
+   * in each phase, roughly 3.7 days on average.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const progressiveEvents: DetectedCalendarEvent[] = [];

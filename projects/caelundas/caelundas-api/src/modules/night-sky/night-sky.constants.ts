@@ -9,9 +9,7 @@ import type { ColorSegment } from "./night-sky.types";
 // 🗂️ Catalog
 
 /**
- * The trimmed star catalog and constellation figures the API serves: HYG stars
- * and d3-celestial figures, as `caelundas-cli` seeds them, bundled so the API
- * needs no database to draw the sky.
+ * The trimmed star catalog and figures `caelundas-cli` seeds, bundled so the API needs no database.
  */
 export const NIGHT_SKY_CATALOG_FILE = path.join(
   import.meta.dirname,
@@ -91,8 +89,7 @@ export const DEFAULT_OPTIONS = {
 export const MAXIMUM_SIZE_PIXELS = 8192;
 
 /**
- * The window sizes the sky is built for, in pixels: a request is drawn at the
- * next multiple, so nearby sizes share one built sky.
+ * The window sizes the sky is built for, in pixels, so nearby sizes share one built sky.
  */
 export const SIZE_BUCKET_PIXELS = 64;
 
@@ -212,9 +209,7 @@ export const OBLIQUITY_DEGREES = 23.44;
 export const ECLIPTIC_STEP_DEGREES = 5;
 
 /**
- * How the ecliptic is drawn besides its color, opacity and width: dashed, so
- * it reads as a path and not a figure, the same however far the tuning view
- * zooms out.
+ * Dashed, so the ecliptic reads as a path rather than a figure, however far the tuning view zooms out.
  */
 export const ECLIPTIC_ATTRIBUTES =
   'fill="none" stroke-dasharray="6 4" stroke-linecap="round" vector-effect="non-scaling-stroke"';

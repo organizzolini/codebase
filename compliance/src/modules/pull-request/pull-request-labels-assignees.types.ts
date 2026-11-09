@@ -11,9 +11,7 @@ export interface GroupedLabels {
 /**
  * Everything wrong with one pull request, and the commands that fix it.
  *
- * Both lists rather than a first failure: a pull request with three problems
- * is three edits, and finding them one run at a time is three round trips
- * through a required check.
+ * All problems are reported in one pass, not one per run.
  */
 export interface MetadataVerdict {
   readonly failures: readonly string[];

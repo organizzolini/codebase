@@ -83,9 +83,8 @@ export class AspectGraphService {
   }
 
   /**
-   * Merges the current and previous registries into one edge set holding each
-   * edge once, however its bodies are ordered. An edge in both snapshots would
-   * otherwise make every pattern through it compose twice.
+   * Merges both registries, holding each edge once regardless of body order; an
+   * edge in both would compose patterns twice.
    */
   unionAspectBodies(
     currentAspectBodies: AspectBodies[],

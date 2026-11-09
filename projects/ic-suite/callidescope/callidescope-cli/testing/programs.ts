@@ -41,11 +41,7 @@ export interface FixtureServices {
 }
 
 /**
- * Builds a real program over files that only exist in memory.
- *
- * `noLib` is what keeps these fast and focused: without it every fixture pulls
- * in the whole standard library, each test costs a second, and every graph is
- * full of frames from `lib.es5.d.ts` that the assertions then have to ignore.
+ * Builds a real program over in-memory files. `noLib` keeps each fixture fast and free of standard library frames.
  */
 export function buildFixtureProgram(
   files: Record<string, string>,
@@ -98,11 +94,7 @@ export function buildFixtureProgram(
 }
 
 /**
- * Wires the analysis services by hand.
- *
- * Constructed directly rather than through a testing module: none of these read
- * anything from Nest, and a container would only make the dependency order
- * harder to see.
+ * Wires the analysis services by hand, since a container would only hide the dependency order.
  */
 export function buildFixtureServices(args: {
   projectProgram: ProjectProgram;
@@ -164,11 +156,7 @@ export function collectFixtureCallables(args: {
 }
 
 /**
- * Finds an abstract method declaration in a fixture.
- *
- * Real rather than fabricated: a method with no body is the one shape the
- * collector filters out, so the services that guard against it can only be
- * shown that guard working by being handed a genuine one.
+ * Finds an abstract method in a fixture. A genuine one is needed, since the collector filters such methods out.
  */
 export function findAbstractMethod(
   projectProgram: ProjectProgram,

@@ -17,11 +17,7 @@ import type {
 export const DATABASE_TIMEOUT_MILLISECONDS = 120_000;
 
 /**
- * Starts a migrated `lexico_testing` database through the shared
- * `startDatabaseTestingModule`, connected the way the API connects: through
- * lexico's own `LexicoDatabaseModule`, from `LEXICO_POSTGRES_*` alone,
- * validated by the API's environment schema, while the root's unprefixed
- * admin login is present and ignored. `close` also removes that login.
+ * Starts a migrated `lexico_testing` database, connected as the API connects, from `LEXICO_POSTGRES_*` alone. `close` also removes the admin login.
  */
 export async function startLexicoDatabaseTestingModule(
   entities: DatabaseTestingModuleOptions["entities"],

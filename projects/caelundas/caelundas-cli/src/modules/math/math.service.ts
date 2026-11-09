@@ -42,10 +42,8 @@ export class MathService {
   // 🌎 Public Methods
 
   /**
-   * Whether a value crosses zero upward nearest the current minute: a
-   * crossing between the previous minute and this one belongs here when it
-   * falls in its second half, and one between this minute and the next when
-   * it falls in its first half. Each crossing lands on exactly one minute.
+   * Whether a value crosses zero upward nearest the current minute: a crossing
+   * belongs to its nearer minute, so each lands on one minute.
    */
   crossesUpwardNearCurrent(args: NeighborValues): boolean {
     const { current, next, previous } = args;
@@ -59,29 +57,8 @@ export class MathService {
   }
 
   /**
-   * Calculates the shortest angular distance between two ecliptic longitudes.
-   *
-   * This function computes the minimum arc length between two positions on the
-   * ecliptic circle. The result is always in the range [0, 180] degrees, as it
-   * measures the shorter of the two possible arcs between the points.
-   *
-   *
-   * @remarks
-   * Algorithm:
-   * 1. Normalize both longitudes to [0, 360)
-   * 2. Calculate absolute difference
-   * 3. If difference \> 180°, take the reflex angle (360° - angle)
-   *
-   * This is used extensively in aspect detection to determine the angular
-   * separation between celestial bodies.
-   *
-   * @example
-   * ```typescript
-   * mathService.getAngle(10, 350);   // Returns 20 (not 340)
-   * mathService.getAngle(0, 180);    // Returns 180
-   * mathService.getAngle(45, 135);   // Returns 90
-   * mathService.getAngle(350, 10);   // Returns 20 (symmetric)
-   * ```
+   * Shortest angular distance between two longitudes, in [0, 180]; wraps around
+   * 0°/360°.
    */
   getAngle(longitude1: Longitude, longitude2: Longitude): number {
     const normalizedLongitude1 = this.normalizeDegrees(longitude1);
@@ -95,19 +72,8 @@ export class MathService {
   }
 
   /**
-   * Calculates the true angular separation between two ecliptic positions.
-   *
-   * Unlike {@link getAngle}, which compares longitudes alone, this measures
-   * the great-circle arc between the two points, so latitude counts. It takes
-   * the arctangent of the cross and dot products, which stays exact for both
-   * tiny and near-antipodal separations where the arccosine form loses
-   * precision. The result is in [0, 180] degrees.
-   *
-   * @example
-   * ```typescript
-   * mathService.getAngularSeparation([10, 0], [350, 0]);  // Returns 20
-   * mathService.getAngularSeparation([100, 30], [100, -15]); // Returns 45
-   * ```
+   * True angular separation between two ecliptic positions, latitude included;
+   * the arctangent form stays exact near 0° and 180°.
    */
   getAngularSeparation(first: Coordinates, second: Coordinates): number {
     const toRadians = Math.PI / 180;
@@ -128,15 +94,7 @@ export class MathService {
   }
 
   /**
-   * Generates all combinations of k elements from an array.
-   *
-   * Uses recursive backtracking algorithm. Time complexity: O(n choose k).
-   *
-   * @example
-   * ```typescript
-   * mathService.getCombinations(['Sun', 'Moon', 'Mars'], 2);
-   * // Returns: [['Sun','Moon'], ['Sun','Mars'], ['Moon','Mars']]
-   * ```
+   * All k-element combinations of an array, by recursive backtracking.
    */
   getCombinations<T>(array: T[], combinationSize: number): T[][] {
     const result: T[][] = [];
@@ -163,14 +121,8 @@ export class MathService {
   }
 
   /**
-   * Determines whether a value is a local maximum in a discrete sequence.
-   *
-   *
-   * @example
-   * ```typescript
-   * mathService.isMaximum({ current: 100, previous: 99, next: 98 });  // true
-   * mathService.isMaximum({ current: 100, previous: 100, next: 99 }); // false
-   * ```
+   * Whether a value is a local maximum: greater than both its previous and next
+   * neighbors.
    */
   isMaximum(args: NeighborValues): boolean {
     const { current, next, previous } = args;
@@ -178,14 +130,8 @@ export class MathService {
   }
 
   /**
-   * Determines whether a value is a local minimum in a discrete sequence.
-   *
-   *
-   * @example
-   * ```typescript
-   * mathService.isMinimum({ current: 10, previous: 15, next: 12 });  // true
-   * mathService.isMinimum({ current: 10, previous: 10, next: 12 });  // false
-   * ```
+   * Whether a value is a local minimum: less than both its previous and next
+   * neighbors.
    */
   isMinimum(args: NeighborValues): boolean {
     const { current, next, previous } = args;
@@ -193,32 +139,15 @@ export class MathService {
   }
 
   /**
-   * Normalizes an angle in degrees to the range [0, 360).
-   *
-   *
-   * @example
-   * ```typescript
-   * mathService.normalizeDegrees(450);  // Returns 90
-   * mathService.normalizeDegrees(-45);  // Returns 315
-   * ```
+   * Normalizes an angle in degrees to [0, 360).
    */
   normalizeDegrees(degrees: number): number {
     return ((degrees % 360) + 360) % 360;
   }
 
   /**
-   * Normalizes a longitude value for continuous comparison with a reference longitude.
-   *
-   * Adjusts longitude to eliminate discontinuities when comparing or interpolating
-   * across the 0°/360° boundary. Essential for root-finding algorithms and aspect
-   * detection. Unlike {@link normalizeDegrees}, can return values outside [0, 360).
-   *
-   *
-   * @example
-   * ```typescript
-   * mathService.normalizeForComparison(10, 350);  // Returns 370
-   * mathService.normalizeForComparison(350, 10);  // Returns -10
-   * ```
+   * Adjusts a longitude to the reference's side of the 0°/360° boundary, so
+   * differences are continuous; may fall outside [0, 360).
    */
   normalizeForComparison(current: Longitude, reference: Longitude): number {
     if (Math.abs(current - reference) > 180) {

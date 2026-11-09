@@ -108,13 +108,7 @@ const customStatistic = {
 };
 
 /**
- * Resolves the real configuration service, whose flag reading these tests
- * exercise rather than mock.
- *
- * `ConfigurationModule` is the only way in: the flag reader behind
- * `selectMode` and `resolveFormat` is a provider of that module rather than a
- * public export, because the configuration layer has exactly one public
- * service. Reading a file is still stubbed per test.
+ * Resolves the real configuration service, since its flag reader is not exported.
  */
 async function buildConfigurationService(): Promise<ConfigurationService> {
   const module = await Test.createTestingModule({

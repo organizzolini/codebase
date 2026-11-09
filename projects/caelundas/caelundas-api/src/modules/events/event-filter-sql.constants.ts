@@ -1,9 +1,7 @@
 // ♟️ Constants
 
 /**
- * The SQL each derived field reads, over the derived events view aliased
- * `e`. Days and hours are read in each event's own zone; a day is text
- * written `YYYY-MM-DD`, which orders like the date it names.
+ * SQL for each derived field, over the events view aliased `e`, in each event's own zone.
  */
 export const DERIVED_FIELD_SQL = {
   durationMinutes: "e.duration_minutes",
@@ -25,8 +23,7 @@ export const EVENT_TAGS_MATCHING_SQL = `
 `;
 
 /**
- * The tag nodes of the event under test, beneath the root bound in place of
- * `{root}`, whose name ends in a number that meets `{condition}`.
+ * Tag nodes of the event under test beneath `{root}` whose name ends in a number meeting `{condition}`.
  */
 export const EVENT_TAG_NUMBERS_SQL = `
   select 1
@@ -37,9 +34,7 @@ export const EVENT_TAG_NUMBERS_SQL = `
 `;
 
 /**
- * The number a tag's name ends in, such as the 6 of "Harmonic 6": the name
- * with its non-digit prefix taken away. Only a name that ends in a digit is
- * numeric, so a root such as "Aspect Harmonic" itself never reads as 0.
+ * The number a tag's name ends in, such as 6 for "Harmonic 6"; "Aspect Harmonic" is not numeric.
  */
 export const TAG_NUMBER_SQL = `(case when t.tag_name ~ '[0-9]$' then replace(t.tag_name, rtrim(t.tag_name, '0123456789'), '')::numeric end)`;
 

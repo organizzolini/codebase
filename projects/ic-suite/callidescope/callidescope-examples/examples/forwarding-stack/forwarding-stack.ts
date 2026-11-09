@@ -5,13 +5,8 @@ import { roundToCents } from "../shared-tail/round-to-cents.js";
 /**
  * Eight frames, six of which only pass the argument along.
  *
- * This is the finding the tool exists to surface. Read one file at a time,
- * every method here looks harmless — a one-line delegation is the least
- * objectionable code there is. Read as a stack, six of the eight frames are
- * pure overhead, and collapsing them costs nothing.
- *
- * The distinction against `DeepStackService` is the whole point: identical
- * depth, opposite remedies. Depth is the question, not the verdict.
+ * Each method looks harmless alone; read as a stack, six frames are pure
+ * overhead. Same depth as `DeepStackService`, opposite remedy.
  */
 @Injectable()
 export class ForwardingStackService {

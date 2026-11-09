@@ -20,8 +20,8 @@ export interface FakeMachine {
    */
   responses?: Record<string, Partial<ProcessResult>>;
   /**
-   * What a command line prints on each successive run, keyed like `responses`.
-   * The last entry repeats once the list is used up. Wins over `responses`.
+   * Output per successive run, keyed like `responses`. The last entry repeats
+   * once the list runs out. Wins over `responses`.
    */
   sequences?: Record<string, Partial<ProcessResult>[]>;
 }
@@ -40,9 +40,7 @@ export interface FakeProcessRunner {
 
 /**
  * Builds a process runner that touches no real process.
- *
- * It answers from the given machine and keeps every command line it was asked
- * to run, so a test reads the whole setup as a list.
+ * It answers from the given machine and records each command line.
  */
 export function createFakeProcessRunner(
   machine: FakeMachine = {},

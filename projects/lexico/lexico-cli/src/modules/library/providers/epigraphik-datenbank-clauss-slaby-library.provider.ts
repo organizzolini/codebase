@@ -12,8 +12,7 @@ import { Author, Text } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 /**
- * Shape of a single record in the raw JSON chunks returned by the EDCS API.
- * `inschriften` is a sparse tuple where index 0 carries the raw inscription text (possibly HTML-tagged).
+ * One raw EDCS API record. `inschriften` is a sparse tuple; index 0 holds the inscription text, possibly HTML-tagged.
  */
 interface EpigraphikDatenbankClaussSlabyRecord {
   obj: {

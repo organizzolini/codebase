@@ -16,29 +16,8 @@ import type { EntityTarget, ObjectLiteral, Repository } from "typeorm";
 // 🌎 Utilities
 
 /**
- * Starts a migrated throwaway Postgres for `project` with
- * {@link startPostgresContainer}, then compiles a Nest testing module
- * connected to it the way the application connects: through
- * `PostgresqlModule.forRoot`, reading the container's
- * `<PROJECT>_POSTGRES_*` variables from a global `ConfigModule`.
- *
- * ```ts
- * const database = await startDatabaseTestingModule({
- *   entities: [Meander],
- *   imports: [DrawingModule],
- *   migrations: [Migration1791160950069],
- *   project: "meanderaw",
- * });
- * const meanders = database.repository(Meander);
- * // …
- * await database.close();
- * ```
- *
- * The variables are set on `process.env` for the module's lifetime, over
- * any already there, and `close` puts the whole environment back as it was,
- * removing whatever `validate` filled in. When the modules
- * under test import the project's own database module, pass it as
- * `database`, so the testing module connects once, through it.
+ * Starts a migrated Postgres for `project` and a Nest testing module connected
+ * as the application connects. Pass `database` to reuse the project's module.
  */
 export async function startDatabaseTestingModule({
   database,
@@ -94,10 +73,8 @@ export async function startDatabaseTestingModule({
 }
 
 /**
- * Sets every one of `environment`'s variables on `process.env`, and returns
- * what puts the whole of `process.env` back as it was: every variable
- * restored, and every one added since removed, including the defaults
- * `ConfigModule` writes there when it validates.
+ * Sets `environment` on `process.env`, and returns what restores the whole
+ * environment as it was, removing variables added since.
  */
 function replaceEnvironment(
   environment: Readonly<Record<string, string>>,

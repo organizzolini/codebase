@@ -19,17 +19,7 @@ import type {
 } from "./configuration.types";
 
 /**
- * Reads the command line `ConfigurationService` answers a run from.
- *
- * Not exported. The configuration layer has one public entry point, and this
- * is the half of it that reads flags rather than files.
- *
- * `codometer`, `changes` and `configuration` share the rules for the flags
- * they hold in common, and those rules are subtle enough to be worth stating
- * once: commander hands a valueless flag through as `true` without ever
- * calling its parser, so a command that narrows text and one that does not
- * disagree about what `--flag "$UNSET"` meant. A flag only one command takes
- * keeps its own parser.
+ * Reads the command-line flags `ConfigurationService` answers a run from. Commander passes a valueless flag as `true` without calling its parser, so flags shared by several commands follow one rule; a flag only one command takes keeps its own parser.
  */
 @Injectable()
 export class ConfigurationFlagsService {
@@ -49,11 +39,7 @@ export class ConfigurationFlagsService {
   }
 
   /**
-   * Reads the `--check` value into the set of things the run fails on.
-   *
-   * A flag passed without a value arrives as `true` and is a mistake rather
-   * than a shorthand: it used to mean "check everything", and a set with
-   * nothing in it looks exactly like the flag having been left off.
+   * Reads `--check` into the set of checks to fail on. A valueless or empty `--check` is refused, never read as gating nothing.
    */
   private readCheckNames(
     value: string | true | undefined,
@@ -73,11 +59,8 @@ export class ConfigurationFlagsService {
       .map((name) => name.trim())
       .filter((name) => name !== "");
 
-    // An empty or comma-only value is the same mistake as a valueless flag and
-    // is refused the same way. Read as "gate nothing" it would be a gate that
-    // cannot fail — `--check "$GATES"` with the variable unset would pass
-    // forever against a stale report, which is worse than no gate at all
-    // because it looks like protection.
+    // An empty or comma-only value is refused like a valueless flag. Read as
+    // gating nothing, an unset `$GATES` would pass forever against a stale report.
     if (names.length === 0) {
       errors.push(this.describeAcceptedCheckNames("--check needs a value"));
       return new Set();
@@ -107,49 +90,28 @@ export class ConfigurationFlagsService {
   // 🌎 Public Methods
 
   /**
-   * Reads an option that carries a default when it was left off.
-   *
-   * The fallback belongs to the command rather than here: two commands that
-   * share the parsing rule for `--format` need not share what they render
-   * when nobody said.
+   * Reads an option, returning `fallback` when it was left off. Each command chooses its own fallback.
    */
   public parseDefaultedOption(value: unknown, fallback: string): string {
     return this.parseOptionalOption(value) ?? fallback;
   }
 
   /**
-   * Reads a directory option, falling back to the working directory.
-   *
-   * The fallback is the process's working directory as it stands when the
-   * option is read, which is what every command means by "here" — no command
-   * changes it mid-run, and one that did would want the new one.
+   * Reads a directory option, falling back to the process's working directory as it stands when read.
    */
   public parseDirectoryOption(value: unknown): string {
     return this.parseDefaultedOption(value, process.cwd());
   }
 
   /**
-   * Reads an option that carries text, or nothing at all.
-   *
-   * A flag written `--baseline-url "$EMPTY"` can reach commander with no
-   * value at all, which it reports as `true` without calling the option's
-   * parser. So anything but a non-empty string counts as absent — passing
-   * that boolean through renders a link to the word `true`.
-   *
-   * Deliberately does not trim, unlike `callidescope`'s same-named method: a
-   * codometer option is a path, and a path whose surrounding spaces were
-   * silently dropped is a different path from the one that was asked for.
+   * Reads an option that carries text. Empty or valueless input counts as absent; the value is not trimmed, since a path's spaces matter.
    */
   public parseOptionalOption(value: unknown): string | undefined {
     return typeof value === "string" && value !== "" ? value : undefined;
   }
 
   /**
-   * Returns the configuration path a run was given, or refuses the run.
-   *
-   * Undefined and blank values are the same omission, so both throw
-   * `ConfigurationPathRequiredError` naming `surface` — the flag or argument
-   * that should have carried the path.
+   * Returns the configuration path a run was given, or throws naming `surface`, the flag that should have carried it.
    */
   public requireConfigurationPath(
     value: string | undefined,
@@ -163,12 +125,7 @@ export class ConfigurationFlagsService {
   }
 
   /**
-   * Reads `--format` into what the run prints, falling back to the resolved
-   * configuration's own `format` when the flag was left off.
-   *
-   * The fallback never infers from which other flags are present — omitting
-   * `--format` always reads the same value the configuration declares,
-   * whether or not this run also writes a file.
+   * Reads `--format`, falling back to the configuration's `format` when left off. Never inferred from other flags.
    */
   public resolveFormat(
     value: string | undefined,
@@ -191,14 +148,7 @@ export class ConfigurationFlagsService {
   }
 
   /**
-   * Reads the flags into what the run writes and what it fails on.
-   *
-   * Writing is answered per output, by whether that output's own
-   * `--output-*` flag was passed at all. `--output-json`/`--output-markdown`
-   * together with `--check reports` is refused rather than obeyed: nothing
-   * can be stale immediately after being written, so a run asking for both on
-   * the same output has misunderstood one of them and would silently compare
-   * instead of writing.
+   * Reads the flags into what the run writes and gates. `--check reports` is refused with `--output-*`, as a fresh report cannot be stale.
    */
   public selectMode(options: MeasureCommandOptions): ModeSelection {
     const errors: string[] = [];

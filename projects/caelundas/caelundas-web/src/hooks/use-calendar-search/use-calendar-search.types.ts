@@ -17,8 +17,7 @@ import type { CalendarSymbols } from "./calendar-symbols.types";
  */
 export interface UseCalendarSearchResult {
   /**
-   * Answers how to list a month more of the agenda, which is written to the
-   * link in place, or nothing once it lists a year.
+   * Lists a month more of the agenda, writing it to the link; nothing once it lists a year.
    */
   getShowLater: (agendaDays: number) => (() => void) | undefined;
   handleClustersChange: (enabled: boolean) => void;

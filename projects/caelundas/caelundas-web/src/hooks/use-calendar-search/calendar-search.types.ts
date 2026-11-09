@@ -18,9 +18,7 @@ export interface CalendarSearch {
    */
   clusters?: false | undefined;
   /**
-   * What the events are colored by, a level like a grouping's: a field and,
-   * for a tag root, the tags or the depth of its tree whose tags each get a
-   * color. Colored by type, kind by kind, when absent.
+   * What events are colored by, a level like a grouping's; colored by type, kind by kind, when absent.
    */
   color?: EventGroupLevel | undefined;
   /**
@@ -50,10 +48,7 @@ export interface CalendarSearch {
    */
   scale?: TimelineScale | undefined;
   /**
-   * The night sky backdrop's overrides, `sky=off` and the `sky.*` keys. The
-   * calendar neither reads nor validates them: the backdrop does, and they
-   * are named here so validating the search does not drop them. Each is a number, a
-   * boolean or text, as the router read it.
+   * The night sky backdrop's overrides, named here so search validation keeps them.
    */
   sky?: SkySearchValue | undefined;
   "sky.altBottom"?: SkySearchValue | undefined;

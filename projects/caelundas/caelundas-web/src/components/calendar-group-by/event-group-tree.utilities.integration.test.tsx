@@ -29,8 +29,7 @@ async function findGroupBy(): Promise<HTMLElement> {
 }
 
 /**
- * The calendar's address for the agenda from a day grouped by levels,
- * written the way the router writes a search parameter that holds a list.
+ * The agenda's address for a day grouped by levels, with the grouping as a JSON search parameter.
  */
 function groupedAgendaLink(date: string, grouping: unknown): string {
   return `/?view=agenda&date=${date}&group=${encodeURIComponent(JSON.stringify(grouping))}`;
@@ -45,10 +44,7 @@ async function openGroupBy(): Promise<HTMLElement> {
   return screen.findByTestId("calendar-group-by");
 }
 
-// Grouping is tested through the `/` route, the way the page uses it; it
-// lives apart from the route's own tests only to keep each file short.
-// Each test renders the whole route and opens the View menu, which a loaded
-// continuous integration runner needs well past the default 5 seconds for.
+// Tested through the `/` route, as the page uses it; each test needs over 5 seconds on a loaded CI runner.
 vi.setConfig({ testTimeout: 30_000 });
 
 describe("event grouping", () => {

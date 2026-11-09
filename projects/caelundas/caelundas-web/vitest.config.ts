@@ -2,15 +2,10 @@ import { defineConfig, mergeConfig } from "vitest/config";
 
 import vitestConfig from "@codebase/configuration/vitest.config";
 
-// Deliberately not merged with `vite.config.mts`: the TanStack Start plugin
-// code-splits every route component into a lazy chunk, which a test would then
-// have to suspend on before it could render the page it imported. Server
-// function files are left out of coverage because `createServerFn` only runs
-// inside the Start runtime; the logic they delegate to is tested in each
-// module's `.utilities.ts`.
-//
-// Tests answer the calendar's GraphQL requests with the mocked API, so they
-// need neither the API nor a database.
+// Not merged with `vite.config.mts`: the TanStack Start plugin lazy-splits
+// route components, which a test would have to suspend on. Server function
+// files are excluded from coverage because `createServerFn` only runs inside
+// Start; their logic is tested in each module's `.utilities.ts`.
 export default mergeConfig(
   vitestConfig,
   defineConfig({

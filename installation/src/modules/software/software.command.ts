@@ -7,17 +7,12 @@ import { SoftwareNamedService } from "./software-named.service";
 import { SoftwareService } from "./software.service";
 
 /**
- * CLI command that installs the developer tools that come after Node, and
- * makes SSH commit signatures verifiable.
+ * CLI command that installs the developer tools that come after Node, and makes SSH commit
+ * signatures verifiable.
  *
- * With no names, on a Mac that is Python, Ollama, Docker, GPG signing, the
- * infrastructure tools, and the database tools, and it starts the Ollama and
- * Docker daemons; on Linux, the release archive tools, Python, squawk, and
- * PostgreSQL 18. With names, such as `software gitleaks trivy postgres-client`,
- * it installs only those, and fails if one cannot be installed.
- *
- * Exits non-zero at the first install that fails. Safe to run again: a tool
- * already present is left alone.
+ * With no names, installs the platform's default set and starts the Ollama and Docker daemons on a Mac.
+ * With names, such as `software gitleaks trivy postgres-client`, installs only those.
+ * Exits non-zero at the first install that fails. Rerunning is safe.
  */
 @Command({
   arguments: "[names...]",

@@ -26,21 +26,16 @@ import {
 // 🗂️ The examples
 
 /**
- * Directories under `examples/` that are fixtures rather than examples.
+ * Fixture directories under `examples/`, not examples.
  *
- * Neither carries a `README.md`, and neither may: the corpus is what every
- * example measures, and a markdown file inside it would move the very counts
- * the guides quote.
+ * They hold no README, so the corpus counts guides quote stay exact.
  */
 const FIXTURE_DIRECTORIES = new Set(["compiled", "corpus"]);
 
 /**
- * The exit code every example configuration produces under `--check limits`.
+ * Exit codes each example gives under `--check limits`, keyed by path.
  *
- * Keyed by path relative to `examples/`. These are the codes the guides state
- * in their own tables — the `limits` guide lists all ten of its own — so a
- * configuration whose outcome changes fails here as well as in the guide that
- * quoted it.
+ * The guides state these codes, so a changed outcome fails here too.
  */
 const EXPECTED_EXIT_CODES: Record<string, number> = {
   "compression/brotli.config.ts": 0,
@@ -153,13 +148,7 @@ function runConfiguration(relativePath: string): boolean {
 }
 
 /**
- * One example: its guide must exist and be linked, and every configuration must
- * hold.
- *
- * The index-table check is the half a guide's own content can never catch. An
- * example whose `README.md` exists but which nothing links to is reachable only
- * by listing the directory, which is exactly the state this package was in
- * before it had per-example guides at all.
+ * Checks one example: its guide must exist and be linked from the index, and every configuration must hold.
  */
 function runExample(exampleName: string, packageGuide: string): boolean {
   console.info(`📁 ${exampleName}`);

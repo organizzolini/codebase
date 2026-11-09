@@ -44,9 +44,7 @@ export interface CalendarViewSelectProperties {
 // 🧩 Component
 
 /**
- * Renders one pressed button per view on a desktop, or on a narrower row, a
- * tablet's included, a menu button naming the current view that lists every
- * view.
+ * Renders one pressed button per view on a desktop, or a menu button naming the current view on narrower rows.
  */
 export function CalendarViewSelect(
   properties: Readonly<CalendarViewSelectProperties>,

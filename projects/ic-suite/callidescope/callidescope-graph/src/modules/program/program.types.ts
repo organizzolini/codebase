@@ -10,11 +10,7 @@ export interface BuildProgramsArguments {
    * and so does every project their imports transitively reach.
    */
   readonly startingProjects: readonly WorkspaceProject[];
-  /**
-   * Every project the workspace holds, which is what lets a file one program
-   * pulled in name the project that owns it — including a project no starting
-   * root mentions. Nothing here is built unless the closure reaches it.
-   */
+  /** Every workspace project, so a file a program pulled in can name its owner, even one no starting root mentions. */
   readonly workspaceProjects: readonly WorkspaceProject[];
   readonly workspaceRoot: string;
 }
@@ -27,11 +23,8 @@ export interface ProgramSet {
 }
 
 /**
- * One project's program, its checker, and the files it owns.
- *
- * A file's declarations are walked exactly once, in the program that owns it.
- * Files pulled in as dependencies are still reachable through the checker, but
- * walking them here as well would double every callable in the graph.
+ * One project's program, its checker, and the files it owns. Each file is walked
+ * once, by its owner.
  */
 export interface ProjectProgram {
   readonly checker: ts.TypeChecker;

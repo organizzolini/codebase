@@ -11,13 +11,9 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // @codebase/observability: bundled directly into the emitted library bundle by Vite,
-          // so it is a build-time devDependency rather than a runtime dependency.
-          // pino: runtime dependency of the inlined logger utility.
-          // pino-pretty: pretty-printing transport reached only through a runtime
-          // string in LoggerService, so invisible to static analysis.
-          // vitest: referenced via tsconfig "types" array; it's a devDependency and
-          // the @nx/dependency-checks rule misidentifies it as a production dependency.
+          // @codebase/observability is bundled into the library by Vite, so it is a devDependency.
+          // pino and pino-pretty back the inlined logger; pino-pretty is loaded by a runtime string.
+          // vitest is named in tsconfig "types" and misread as a production dependency.
           ignoredDependencies: [
             "@codebase/observability",
             "pino",

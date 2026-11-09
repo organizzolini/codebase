@@ -55,8 +55,7 @@ interface Seeded {
 }
 
 /**
- * Seeds one noun with every relation a lexeme exposes, the inflected word
- * that links back to it, and a line of literature whose token is that word.
+ * Seeds one noun with its relations, an inflected word linking back to it, and a literature line using that word.
  */
 async function seed(repository: RepositoryOf): Promise<Seeded> {
   const lexeme = new Lexeme();

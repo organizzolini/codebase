@@ -18,10 +18,7 @@ import type { CallableId, ProjectReport } from "@callidescope/core";
 import type { DiscoveredCallable } from "@callidescope/graph";
 
 /**
- * A two-project graph: `alpha` holds a chain of `depth` callables, `beta` one.
- *
- * The chain is what makes the stacks meaningful — a project whose callables
- * call nothing produces no stack at all, which is itself under test below.
+ * A two-project graph: `alpha` holds a chain of `depth` callables and `beta` one, so stacks exist.
  */
 function buildArguments(depth: number): BuildProjectReportsArguments {
   const chain = Array.from({ length: depth }, (_, index) =>

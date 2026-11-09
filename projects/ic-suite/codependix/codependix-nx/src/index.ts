@@ -31,14 +31,9 @@ export { PluginService } from "./modules/plugin/plugin.service";
 export type { CodependixPluginOptions } from "./modules/plugin/plugin.types";
 
 /**
- * Infers the gate onto every project but the workspace root.
- *
- * The command line's inputs and its loader's compiler options are resolved
- * apart, so a command line that cannot be resolved still leaves the gate
- * hashing the tsconfig chain it compiles with.
- *
- * Nx hands this every matched file at once, which is why inference reads the
- * plugin options a single time rather than once per project.
+ * Infers the gate onto every project but the workspace root, reading the plugin
+ * options once. Unresolvable command-line inputs still leave the tsconfig chain
+ * hashed.
  */
 const createNodes: CreateNodes = [
   PROJECT_CONFIGURATION_GLOB,

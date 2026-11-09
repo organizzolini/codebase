@@ -12,12 +12,8 @@ export interface TemporaryWorkspace {
 }
 
 /**
- * Where temporary workspaces live.
- *
- * Inside the project, never the operating system's temporary directory: a
- * child process spawned from there cannot resolve this workspace's loaders and
- * dies on Linux with a module-not-found error that macOS never shows. This
- * folder sits under `node_modules`, so Git ignores it.
+ * Inside the project, never the OS temp directory: a child spawned from there
+ * cannot resolve the loaders on Linux.
  */
 const TEMPORARY_ROOT = path.resolve(
   import.meta.dirname,

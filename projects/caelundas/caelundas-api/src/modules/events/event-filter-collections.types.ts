@@ -12,9 +12,8 @@ export interface CollectionGroup {
 }
 
 /**
- * Keeps, or with `is_none_of` drops, the events carrying any of the tags
- * whose paths beneath a root are listed, each path written as the tag names
- * joined by " / ".
+ * Keeps events carrying any listed tag path under a root, or drops them for
+ * `is_none_of`. Paths join tag names with " / ".
  */
 export interface CollectionRule {
   operator: typeof TAG_OPERATORS.isAnyOf | typeof TAG_OPERATORS.isNoneOf;
@@ -23,9 +22,8 @@ export interface CollectionRule {
 }
 
 /**
- * A named set of filters the calendar applies in one step, written by tag
- * names rather than ids so it does not depend on the database it is applied
- * to.
+ * A named set of filters applied in one step, written by tag names so it
+ * works on any database.
  */
 export interface EventFilterCollection {
   description: string;

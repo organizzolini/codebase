@@ -13,9 +13,8 @@ export const CONFORMETRY_ERROR_LANGUAGES: readonly ConformetryDifferenceLanguage
   ["javascript", "json", "markdown", "python", "text", "typescript"];
 
 /**
- * Every recognized error category. Payloads carrying an unknown category are
- * coerced to `"code"` rather than rejected, so a validator can never crash the
- * run by emitting an unexpected value.
+ * Every recognized error category. Unknown categories are coerced to `"code"`, so
+ * a validator cannot crash the run by emitting one.
  */
 export const CONFORMETRY_ERROR_TYPES: readonly ConformetryDifferenceType[] = [
   "code",

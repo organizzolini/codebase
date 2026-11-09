@@ -19,9 +19,7 @@ export interface AgendaRange {
 }
 
 /**
- * One row of the agenda: a group's heading, a day's heading, or one event
- * under it. A day or an event in a group carries the group's id, because an
- * event in two groups is listed in both.
+ * A row of the agenda: a group, a day, or an event; an event in two groups is listed in both.
  */
 export type AgendaRow =
   | {

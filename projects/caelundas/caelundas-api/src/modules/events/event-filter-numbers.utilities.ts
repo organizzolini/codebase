@@ -25,9 +25,8 @@ import type {
 // every filter's call stack.
 
 /**
- * Compiles a numeric rule on a field derived from the event's own columns:
- * the hour it starts or its duration in minutes. The hour keeps its own range
- * reader for "is between", so only its comparisons arrive here.
+ * Compiles a numeric rule on the start hour or duration in minutes; the
+ * hour's ranges go to its own compiler.
  */
 export function compileDerivedNumberRule(
   rule: EventFilterRule,
@@ -48,10 +47,8 @@ export function compileDerivedNumberRule(
 }
 
 /**
- * Compiles a numeric comparison over a SQL expression for the events whose
- * number meets it, reading the operands the rule's operator takes: a range
- * of two, or one number. Answers `null` for an operator that compares
- * nothing or operands that were not written as numbers.
+ * Compiles a numeric comparison over a SQL expression; `null` for an operator
+ * that compares nothing or non-numeric operands.
  */
 export function compileNumberCondition(
   expression: string,
@@ -93,9 +90,8 @@ export function compileNumberCondition(
 }
 
 /**
- * Compiles a numeric rule on a tag root whose tags are named for numbers:
- * events with a tag beneath the root whose number meets the comparison, or
- * with `neq` and "is not between", with none that does.
+ * Compiles a numeric rule on a tag root named for numbers: a matching tag
+ * beneath it, or none for negated operators.
  */
 export function compileTagNumberRule(
   rootId: string,
@@ -115,9 +111,8 @@ export function compileTagNumberRule(
 }
 
 /**
- * Whether a rule on a derived field compares a number: any numeric operator
- * on the duration in minutes, and a comparison but not a range on the hour,
- * whose range is read within its bounds.
+ * Whether a derived field's rule compares a number: any numeric operator on
+ * duration, or a comparison (not a range) on hour.
  */
 export function isDerivedNumberRule(
   fieldId: string,

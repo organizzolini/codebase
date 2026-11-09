@@ -40,9 +40,9 @@ function buildCustomStatistic(
 }
 
 /**
- * Every counter `sampleStatistics.custom` below carries, declared as this
- * destination's own — the default a case overrides when it wants to prove one
- * destination renders a different subset than another.
+ * Every counter in `sampleStatistics.custom`, declared as this destination's own.
+ *
+ * A case overrides it to show one destination renders a different subset.
  */
 const DEFAULT_CUSTOM_STATISTICS: ResolvedCodometerCustomStatistic[] = [
   buildCustomStatistic("Service Files"),
@@ -1110,10 +1110,7 @@ describe(MarkdownService, () => {
     expect(block).toContain("![Lines of Code]");
   });
 
-  // The console preview never writes a file, so it never invokes a configured
-  // `write` either — that callback both decides the content and places it,
-  // and placing it is not something a preview does. A destination naming one
-  // still previews the same default badges `sync` would fall back to.
+  // Console preview never writes, so it never calls a configured `write`; it renders the default badges like `sync` would.
   it("ignores a configured write function and renders the default badges", () => {
     const block = service.renderBlock({
       destination: buildDestination("README.md", {

@@ -19,11 +19,7 @@ import type { ConformetryGeneratorDefinition } from "@conformetry/configuration"
 /**
  * Derives an Nx generator plugin from the conformetry configuration.
  *
- * Nx needs a `generators.json`, a factory function per generator, and a JSON
- * schema per generator — none of which it will accept as runtime data. The
- * generators a workspace has are a property of its configuration, so rather
- * than hand-maintaining three files per generator, they are emitted from the
- * configuration and kept honest by `nx sync:check`.
+ * Emits the `generators.json`, factories, and schemas that Nx needs, so none are hand-maintained. `nx sync:check` keeps them honest.
  */
 @Injectable()
 export class GeneratorService {
@@ -43,11 +39,7 @@ export class GeneratorService {
   /**
    * Builds the module Nx calls into for one generator.
    *
-   * One file per generator, each exporting a single `generate`, because Nx
-   * does not pass a generator its own name — the name has to be bound at the
-   * call site. Binding it per file rather than per export in a shared module
-   * means a generator's factory sits next to the schema of the same name, and
-   * removing a generator removes a file rather than editing one.
+   * One file per generator, since Nx does not pass a generator its own name.
    */
   private buildGeneratorModule(
     definition: ConformetryGeneratorDefinition,
@@ -79,9 +71,7 @@ export class GeneratorService {
   /**
    * Builds the `generators.json` Nx reads.
    *
-   * Schemas are referenced by a path inside the emitted plugin, never one that
-   * escapes it — a schema path pointing outside the package resolves to
-   * nothing once the package is installed somewhere else.
+   * Schema paths stay inside the emitted plugin, so they resolve wherever it is installed.
    */
   private buildGeneratorsManifest(args: {
     definitions: ConformetryGeneratorDefinition[];
@@ -115,9 +105,7 @@ export class GeneratorService {
   /**
    * Builds one generator's JSON schema from its configured inputs.
    *
-   * Every input is required: a conformetry generator substitutes each of its
-   * placeholders, and mustache renders a missing one as empty rather than
-   * failing, so an optional input would silently produce a hole.
+   * Every input is required, since mustache would otherwise render a missing one as empty.
    */
   private buildSchema(args: {
     definition: ConformetryGeneratorDefinition;
@@ -136,14 +124,9 @@ export class GeneratorService {
   }
 
   /**
-   * Builds the schema's properties, narrowing the project input to the scope.
+   * Builds the properties, narrowing the project input to the scope.
    *
-   * An `enum` is what makes `nx g` offer only the projects a generator suits,
-   * and what makes it reject one it does not — Nx builds its prompt from the
-   * schema, so constraining the schema constrains the prompt. Left untouched
-   * when the generator names no scope, or when the scope matches nothing: an
-   * empty `enum` would leave the prompt with nothing to pick and read as a
-   * broken generator rather than an unscoped one.
+   * Left alone when no scope applies: an empty `enum` would read as broken.
    */
   private buildSchemaProperties(args: {
     definition: ConformetryGeneratorDefinition;
@@ -205,9 +188,7 @@ export class GeneratorService {
   /**
    * Returns every file the consumer's generator plugin consists of.
    *
-   * Pure with respect to the filesystem: the caller writes these through an Nx
-   * `Tree`, which is what lets `nx sync:check` compare them against what is on
-   * disk without touching it.
+   * Pure with respect to disk; the caller writes them through a `Tree`.
    */
   public async emitPlugin(args: EmitPluginArguments): Promise<EmittedFile[]> {
     const configuration =

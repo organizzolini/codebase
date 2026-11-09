@@ -44,11 +44,9 @@ describe(GeometryService, () => {
   });
 
   describe("borderPath", () => {
-    // 🎯 The run every closed band shares. Each passes its own right edge and
-    // nothing else, so this is the whole of what they have in common — and
-    // the assertion is on the literal path data rather than on a parse of
-    // it, because the committed corpus is bytes and an extraction that
-    // reordered these two runs would rewrite every drawing in it.
+    // 🎯 The run every closed band shares. Each passes only its own right edge,
+    // so the assertion is on the literal path data: the committed corpus is
+    // bytes, and reordering these runs would rewrite every drawing.
     it("rules both border rows from the right edge back to the left", () => {
       expect(service.borderPath(service.compute(4), 123)).toBe(
         "M123 63H3M123 3H3",

@@ -13,11 +13,8 @@ export const SHELL_EXTENSIONS: readonly string[] = [
 ];
 
 /**
- * How shell is read: `#` comments only where a word could begin, single,
- * double, and `$'…'` strings, here-documents, and backslash escapes.
- *
- * The only key shell has is an associative array subscript, `["key"]=value`,
- * so a string followed by `]=` is a key.
+ * A `#` begins a comment only at a word's start. A string followed by `]=` is
+ * a key, the only key shell has.
  */
 export const SHELL_GRAMMAR: LexicalGrammar = {
   identifier: PLAIN_IDENTIFIER,
@@ -38,11 +35,8 @@ export const SHELL_GRAMMAR: LexicalGrammar = {
 };
 
 /**
- * The reserved words and builtin commands of POSIX shell and Bash, lowercased
- * as the vocabulary compares words.
- *
- * A plain array, so a configuration spreads it into `exclude.words` and the
- * tool excludes nothing it was not asked to.
+ * The reserved words and builtin commands of POSIX shell and Bash, lowercased.
+ * A plain array, so spreading it into `exclude.words` excludes nothing extra.
  */
 export const SHELL_KEYWORDS: string[] = [
   "alias",

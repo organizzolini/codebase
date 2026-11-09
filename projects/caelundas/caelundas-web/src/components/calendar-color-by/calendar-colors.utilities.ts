@@ -6,9 +6,7 @@ import type { EventColorRule } from "./calendar-colors.types";
 // 🌎 Public Functions
 
 /**
- * Draws every event in the color `colorOf` gives it, by default that of its
- * kind, or in none: with colors off an event keeps no color, so the views
- * draw it in their default.
+ * Draws each event in the color `colorOf` gives it, or in none when colors are off so views use their default.
  */
 export function colorEvents(
   events: readonly CalendarEventRecord[],

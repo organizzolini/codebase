@@ -40,18 +40,8 @@ export class TypescriptService {
   // 🔐 Private Fields
 
   /**
-   * What to count for each syntax kind the walk cares about.
-   *
-   * Read by `dispatchNode`, which is the only caller: a kind absent from the
-   * table is a node this analyzer counts nothing for, so adding a statistic
-   * means adding a row here rather than another branch inside the walk.
-   *
-   * `dispatchNode` reaches a row by computed member access, which no call
-   * graph can follow — callidescope records the call as unfollowable and
-   * every row here as an entry point nothing calls. So a traced stack stops
-   * at `dispatchNode` and each `handle*` method appears again at the root of
-   * a stack of its own. That is the price of a table over a `switch`, and
-   * worth knowing before reading those roots as dead code.
+   * Handler per syntax kind, reached from `dispatchNode` by computed access,
+   * so each handler traces as its own root.
    */
   private readonly kindDispatch: Partial<
     Record<
@@ -164,11 +154,7 @@ export class TypescriptService {
   }
 
   /**
-   * Tally every configured counter that claims this declaration.
-   *
-   * A declaration is claimed when its kind is one the counter asked for and
-   * it carries every modifier the counter requires; a counter naming no
-   * modifiers asks for the kind alone.
+   * Tallies each counter that claims this declaration: its kind matches and it has every required modifier; no modifiers means kind alone.
    */
   private countSymbols(
     node: tsCompiler.Node,
@@ -195,10 +181,7 @@ export class TypescriptService {
   }
 
   /**
-   * Build the zeroed result every file's counters accumulate into.
-   *
-   * Every configured counter is seeded, so one that matches nothing reports a
-   * zero rather than going missing from the report entirely.
+   * Zeroed result every file accumulates into; every configured counter is seeded so unmatched ones report zero.
    */
   private createEmptyResult(input: TypescriptInput): TypescriptResult {
     const { sourceFiles } = input;
@@ -432,14 +415,7 @@ export class TypescriptService {
   }
 
   /**
-   * Seed one empty list per counter this walk is the measurer for.
-   *
-   * A counter naming a `kind` is one of those, and a counter naming only a
-   * `language` is not: `kind` takes precedence, so a counter naming both is
-   * measured here and its `language` never read, which is the same tie-break
-   * `LanguageCommentsService` makes by skipping it. Written as a guarded loop
-   * rather than a filtered `Object.fromEntries`, which would spend two of
-   * `createEmptyResult`'s direct calls instead of one.
+   * Seeds an empty list per counter naming a `kind`; a counter naming both `kind` and `language` is measured here.
    */
   private seedDeclarationCommentCounts(
     counters: readonly CommentCounter[],
