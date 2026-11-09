@@ -23,6 +23,11 @@ nx run caelundas-db:migration:run
 
 # 4. Generate the calendar and store its events
 nx run caelundas-cli:start
+
+# 5. Ingest the stars and constellation figures the web calendar's night sky
+#    draws (see "Night sky" below for the three files it reads)
+nx run caelundas-cli:start:night-sky --stars hygdata_v41.csv \
+  --constellations constellations.json --lines constellations.lines.json
 ```
 
 The result lands in `output/caelundas_<start>_<end>.ics`, with a `.json` file
@@ -259,8 +264,10 @@ tag at once make the second fail on the tag's unique name; run it again.
 
 ## Night sky
 
-The `night-sky` command fills the tables `caelundas-web`'s night sky reads,
-`stars`, `constellations` and `constellation_lines`, in the same database,
+The `night-sky` command fills the tables the night sky behind `caelundas-web`
+is drawn from, `stars`, `constellations` and `constellation_lines`, in the same
+database. `caelundas-api` reads them once at startup, so run the command before
+starting the API, or restart the API after it. Without it the sky has no stars,
 replacing what an earlier run wrote, in one transaction. It reads three files downloaded beforehand, never
 committed:
 
