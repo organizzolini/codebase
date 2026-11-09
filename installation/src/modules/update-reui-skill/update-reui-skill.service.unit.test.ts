@@ -1,30 +1,17 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ReporterService } from "../reporter/reporter.service";
 
 import { UpdateReuiSkillService } from "./update-reui-skill.service";
 
 describe(UpdateReuiSkillService, () => {
-  let service: UpdateReuiSkillService;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(UpdateReuiSkillService, {
+      mocks: [ReporterService],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        UpdateReuiSkillService,
-        { provide: ReporterService, useValue: createMock<ReporterService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(UpdateReuiSkillService);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(UpdateReuiSkillService);
   });
 });

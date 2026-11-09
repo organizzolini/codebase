@@ -2,19 +2,9 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { enterWorkspace } from "../../../testing/environment";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
@@ -36,27 +26,12 @@ const KEY_RESPONSE = JSON.stringify([
 ]);
 
 describe(RemoteCacheService, () => {
-  let service: RemoteCacheService;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(RemoteCacheService, {
+      mocks: [ProcessRunnerService, ReporterService],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        RemoteCacheService,
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-        { provide: ReporterService, useValue: createMock<ReporterService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(RemoteCacheService);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(RemoteCacheService);
   });
 
   describe("set up", () => {
@@ -69,14 +44,12 @@ describe(RemoteCacheService, () => {
       machine: FakeMachine,
     ): Promise<{ commands: string[]; subject: RemoteCacheService }> => {
       const { commands, runner } = createFakeProcessRunner(machine);
-      const module = await Test.createTestingModule({
+      const { module } = await buildTestingModule(RemoteCacheService, {
         providers: [
-          RemoteCacheService,
           { provide: ProcessRunnerService, useValue: runner },
           ReporterService,
-          { provide: LoggerService, useValue: createMock<LoggerService>() },
         ],
-      }).compile();
+      });
 
       return {
         commands,

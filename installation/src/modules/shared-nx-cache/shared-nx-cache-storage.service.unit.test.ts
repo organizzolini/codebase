@@ -3,7 +3,6 @@ import path from "node:path";
 import { Readable } from "node:stream";
 import { text } from "node:stream/consumers";
 
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -13,6 +12,8 @@ import {
   it,
   vi,
 } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
 
@@ -37,9 +38,7 @@ describe(SharedNxCacheStorageService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [SharedNxCacheStorageService],
-    }).compile();
+    const { module } = await buildTestingModule(SharedNxCacheStorageService);
 
     service = await module.resolve(SharedNxCacheStorageService);
   });
@@ -55,9 +54,10 @@ describe(SharedNxCacheStorageService, () => {
     workspace.remove();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SharedNxCacheStorageService);
+
+    expect(instance).toBeInstanceOf(SharedNxCacheStorageService);
   });
 
   it("stores a body under its hash and leaves no temporary file", async () => {
