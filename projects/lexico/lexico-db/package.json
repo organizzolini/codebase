@@ -1,9 +1,9 @@
 {
   "dependencies": {
     "@codebase/persistence": "workspace:*",
+    "@codebase/testing": "workspace:*",
     "@nestjs/common": "catalog:",
     "@nestjs/typeorm": "catalog:",
-    "lodash": "catalog:",
     "pg": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
