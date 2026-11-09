@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.59.3](https://github.com/organizzolini/codebase/compare/v3.59.2...v3.59.3) (2026-11-09)
+
+### 🐛 Bug Fixes
+
+* **dependencies:** 🐛 align Stylelint core and config versions ([#2194](https://github.com/organizzolini/codebase/issues/2194)) ([01d16c2](https://github.com/organizzolini/codebase/commit/01d16c2a3e4ec23a98ddc7e598e0935ece7e1be5)), closes [#2189](https://github.com/organizzolini/codebase/issues/2189)
+
 ## [3.59.2](https://github.com/organizzolini/codebase/compare/v3.59.1...v3.59.2) (2026-11-08)
 
 ### 🐛 Bug Fixes
