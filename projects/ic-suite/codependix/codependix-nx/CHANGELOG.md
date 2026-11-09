@@ -1,3 +1,21 @@
+## 0.0.60 (2026-11-08)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.73
+- Updated codependix-cli to 0.0.74
+
+## 0.0.59 (2026-11-08)
+
+### 💅 Refactors
+
+- **lexico-db,lexico,lexico-cli,configuration:** ♻️ rename lexico-entities to lexico-db and split its modules ([#2185](https://github.com/organizzolini/codebase/pull/2185), [#2184](https://github.com/organizzolini/codebase/issues/2184))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.72
+- Updated codependix-cli to 0.0.73
+
 ## 0.0.58 (2026-11-07)
 
 ### 🧱 Updated Dependencies

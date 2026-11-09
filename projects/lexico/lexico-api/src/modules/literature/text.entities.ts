@@ -10,7 +10,7 @@ import type {
   TextResolvedField,
 } from "./literature.types";
 import type { GraphQLObjectOf, Related } from "@codebase/interface";
-import type { Text } from "@codebase/lexico-entities";
+import type { Text } from "@codebase/lexico-db";
 
 /** A literary work, or one part of one, such as a book of a poem. */
 @ObjectType("Text")

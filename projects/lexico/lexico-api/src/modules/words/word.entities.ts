@@ -11,7 +11,7 @@ import { WordLexemeType } from "./word-lexeme.entities";
 
 import type { WordRelationField } from "./words.types";
 import type { Connection, GraphQLObjectOf } from "@codebase/interface";
-import type { Word } from "@codebase/lexico-entities";
+import type { Word } from "@codebase/lexico-db";
 
 /** A written Latin word, linked to every form and lexeme it can be. */
 @ObjectType("Word")

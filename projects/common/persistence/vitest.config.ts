@@ -8,7 +8,7 @@ export default mergeConfig(
     test: {
       coverage: {
         /**
-         * Entities as well as tests, as lexico-entities excludes them: an
+         * Entities as well as tests, as lexico-db excludes them: an
          * entity is decorators alone, whose only branches are the
          * `design:type` metadata the compiler emits for each column's type.
          * The integration suite exercises every column against a database.

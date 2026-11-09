@@ -323,7 +323,7 @@ describe(NeighborhoodService, () => {
     it("sorts edges sharing a source by their target", () => {
       const graph = buildGraph({
         lexico: [
-          ["lexico-entities", "static"],
+          ["lexico-db", "static"],
           ["lexico-components", "static"],
         ],
       });
@@ -331,14 +331,14 @@ describe(NeighborhoodService, () => {
       const neighborhood = readNeighborhood(
         service.buildNeighborhoods(
           graph,
-          buildProjects(["lexico", "lexico-components", "lexico-entities"]),
+          buildProjects(["lexico", "lexico-components", "lexico-db"]),
         ),
         "lexico",
       );
 
       expect(neighborhood.edges.map((edge) => edge.target)).toStrictEqual([
         "lexico-components",
-        "lexico-entities",
+        "lexico-db",
       ]);
     });
 

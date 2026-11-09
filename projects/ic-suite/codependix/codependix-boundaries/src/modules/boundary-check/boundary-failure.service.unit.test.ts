@@ -26,12 +26,12 @@ const PROJECTS: NxProject[] = [
     tags: [],
   },
   {
-    absoluteRoot: "/workspace/packages/lexico-entities",
-    name: "lexico-entities",
+    absoluteRoot: "/workspace/packages/lexico-db",
+    name: "lexico-db",
     tags: [],
   },
   {
-    absoluteRoot: "/workspace/packages/lexico-entities/fixtures",
+    absoluteRoot: "/workspace/packages/lexico-db/fixtures",
     name: "lexico-fixtures",
     tags: [],
   },
@@ -45,13 +45,13 @@ const PROJECTS: NxProject[] = [
 const GRAPH: NxProjectGraph = {
   dependencies: {
     "lexico-api": [
-      { source: "lexico-api", target: "lexico-entities", type: "static" },
+      { source: "lexico-api", target: "lexico-db", type: "static" },
     ],
     "lexico-cli": [
-      { source: "lexico-cli", target: "lexico-entities", type: "static" },
+      { source: "lexico-cli", target: "lexico-db", type: "static" },
     ],
-    "lexico-entities": [
-      { source: "lexico-entities", target: "lexico-fixtures", type: "static" },
+    "lexico-db": [
+      { source: "lexico-db", target: "lexico-fixtures", type: "static" },
     ],
   },
   nodes: Object.fromEntries(
@@ -128,30 +128,30 @@ describe(BoundaryFailureService, () => {
   it("names the project owning the first frame of a file URL stack", () => {
     const failure = collect(
       buildError([
-        "file:///workspace/packages/lexico-entities/src/word-form.entity.ts:12:3",
+        "file:///workspace/packages/lexico-db/src/word-form.entity.ts:12:3",
         "ModuleJob.run (node:internal/modules/esm/module_job:271:25)",
       ]),
     );
 
-    expect(failure.ownerProject).toBe("lexico-entities");
+    expect(failure.ownerProject).toBe("lexico-db");
   });
 
   it("names the owner from a frame written as a path in parentheses", () => {
     const failure = collect(
       buildError([
-        "Object.<anonymous> (/workspace/packages/lexico-entities/src/index.ts:4:1)",
+        "Object.<anonymous> (/workspace/packages/lexico-db/src/index.ts:4:1)",
       ]),
     );
 
-    expect(failure.ownerProject).toBe("lexico-entities");
+    expect(failure.ownerProject).toBe("lexico-db");
   });
 
   // A `file:` URL naming a host is not a path on this machine, and
   // `fileURLToPath` throws on it — which must cost the frame, not the run.
   it("reads a malformed file URL frame as no owner instead of throwing", () => {
     const error = buildError([
-      "file://elsewhere/workspace/packages/lexico-entities/src/index.ts:1:1",
-      "file:///workspace/packages/lexico-entities/a%2Fb.ts:1:1",
+      "file://elsewhere/workspace/packages/lexico-db/src/index.ts:1:1",
+      "file:///workspace/packages/lexico-db/a%2Fb.ts:1:1",
     ]);
 
     expect(() => collect(error)).not.toThrow();
@@ -161,31 +161,31 @@ describe(BoundaryFailureService, () => {
   it("keeps reading the stack past a malformed file URL frame", () => {
     const failure = collect(
       buildError([
-        "file://elsewhere/workspace/packages/lexico-entities/src/index.ts:1:1",
-        "/workspace/packages/lexico-entities/src/word.entity.ts:3:1",
+        "file://elsewhere/workspace/packages/lexico-db/src/index.ts:1:1",
+        "/workspace/packages/lexico-db/src/word.entity.ts:3:1",
       ]),
     );
 
-    expect(failure.ownerProject).toBe("lexico-entities");
+    expect(failure.ownerProject).toBe("lexico-db");
   });
 
   it("skips frames inside node_modules and Node's own internals", () => {
     const failure = collect(
       buildError([
         "node:internal/modules/esm/module_job:271:25",
-        "Reflect.decorate (/workspace/packages/lexico-entities/node_modules/typeorm/index.js:1:1)",
-        "/workspace/packages/lexico-entities/src/word.entity.ts:3:1",
+        "Reflect.decorate (/workspace/packages/lexico-db/node_modules/typeorm/index.js:1:1)",
+        "/workspace/packages/lexico-db/src/word.entity.ts:3:1",
       ]),
       ["lexico-api"],
     );
 
-    expect(failure.ownerProject).toBe("lexico-entities");
+    expect(failure.ownerProject).toBe("lexico-db");
   });
 
   it("names the innermost project when one root nests inside another", () => {
     const failure = collect(
       buildError([
-        "/workspace/packages/lexico-entities/fixtures/word.fixture.ts:1:1",
+        "/workspace/packages/lexico-db/fixtures/word.fixture.ts:1:1",
       ]),
     );
 
@@ -195,9 +195,9 @@ describe(BoundaryFailureService, () => {
   it("names no owner when the owner is a project already charged", () => {
     const failure = collect(
       buildError([
-        "/workspace/packages/lexico-entities/src/word-form.entity.ts:12:3",
+        "/workspace/packages/lexico-db/src/word-form.entity.ts:12:3",
       ]),
-      ["lexico-entities"],
+      ["lexico-db"],
     );
 
     expect(failure).not.toHaveProperty("ownerProject");
@@ -221,11 +221,11 @@ describe(BoundaryFailureService, () => {
     const failure = collect(
       buildError([
         "/workspace/packages/ic-suite/codependix/codependix-file-imports/src/index.ts:1:1",
-        "file:///workspace/packages/lexico-entities/src/word-form.entity.ts:12:3",
+        "file:///workspace/packages/lexico-db/src/word-form.entity.ts:12:3",
       ]),
     );
 
-    expect(failure.ownerProject).toBe("lexico-entities");
+    expect(failure.ownerProject).toBe("lexico-db");
   });
 
   // Another project the charged one does not depend on is not its owner,
@@ -233,7 +233,7 @@ describe(BoundaryFailureService, () => {
   it("never names a project that only depends on the charged one", () => {
     const failure = collect(
       buildError(["/workspace/applications/lexico/lexico-api/src/main.ts:1:1"]),
-      ["lexico-entities"],
+      ["lexico-db"],
     );
 
     expect(failure).not.toHaveProperty("ownerProject");
@@ -242,9 +242,9 @@ describe(BoundaryFailureService, () => {
   it("reads no file from a frame missing its line and column", () => {
     const failure = collect(
       buildError([
-        "/workspace/packages/lexico-entities/src/word-form.entity.ts",
-        "Word (/workspace/packages/lexico-entities/src/word.entity.ts:x:1)",
-        "Word (/workspace/packages/lexico-entities/src/word.entity.ts:1:)",
+        "/workspace/packages/lexico-db/src/word-form.entity.ts",
+        "Word (/workspace/packages/lexico-db/src/word.entity.ts:x:1)",
+        "Word (/workspace/packages/lexico-db/src/word.entity.ts:1:)",
       ]),
     );
 
@@ -270,7 +270,7 @@ describe(BoundaryFailureService, () => {
     const failure = collect(
       buildError([
         "/elsewhere/script.ts:1:1",
-        "/workspace/packages/lexico-entities-legacy/src/index.ts:1:1",
+        "/workspace/packages/lexico-db-legacy/src/index.ts:1:1",
       ]),
     );
 

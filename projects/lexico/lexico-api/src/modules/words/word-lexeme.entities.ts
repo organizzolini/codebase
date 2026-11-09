@@ -8,7 +8,7 @@ import type {
   WordLexemeResolvedField,
 } from "./words.types";
 import type { GraphQLObjectOf, Related } from "@codebase/interface";
-import type { WordLexeme } from "@codebase/lexico-entities";
+import type { WordLexeme } from "@codebase/lexico-db";
 
 /** Links a written word to one lexeme it can represent. */
 @ObjectType("WordLexeme")

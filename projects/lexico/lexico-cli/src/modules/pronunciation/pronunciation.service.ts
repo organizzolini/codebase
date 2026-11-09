@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as cheerio from "cheerio";
 import { Repository } from "typeorm";
 
-import { Lexeme, Pronunciation } from "@codebase/lexico-entities";
+import { Lexeme, Pronunciation } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
 import { PronunciationClassifierService } from "./pronunciation-classifier.service";

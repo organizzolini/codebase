@@ -1267,7 +1267,7 @@
             "caelundas-cli",
             "lexico-api",
             "lexico-cli",
-            "lexico-entities",
+            "lexico-db",
             "lexico-web",
             "meanderaw-cli"
           ]

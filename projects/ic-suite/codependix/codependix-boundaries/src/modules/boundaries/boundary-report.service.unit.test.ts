@@ -83,9 +83,9 @@ describe(BoundaryReportService, () => {
 
   it("marks a note as not failing and names the dependency it lives in", () => {
     expect(
-      service.renderNotes([buildViolation({ projects: ["lexico-entities"] })]),
+      service.renderNotes([buildViolation({ projects: ["lexico-db"] })]),
     ).toStrictEqual([
-      "nxProjects in dependency lexico-entities, not failing: layers: a must not depend on b.",
+      "nxProjects in dependency lexico-db, not failing: layers: a must not depend on b.",
     ]);
   });
 

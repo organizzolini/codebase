@@ -4,7 +4,7 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
 import { describe, expect, it, vi } from "vitest";
 
-import { Author, type Text } from "@codebase/lexico-entities";
+import { Author, type Text } from "@codebase/lexico-db";
 
 import { EpigraphikDatenbankClaussSlabyLibraryProvider } from "./epigraphik-datenbank-clauss-slaby-library.provider";
 

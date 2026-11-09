@@ -9,7 +9,7 @@ import {
   PrincipalPart,
   Translation,
   UninflectedInflection,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /**
  * Builds adjectival forms for manual lexeme ingestion.

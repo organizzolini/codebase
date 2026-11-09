@@ -7,7 +7,7 @@ import {
   type Repository,
   Text,
   Token,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { paginateQueryByParent } from "./literature-relations.utilities";
 

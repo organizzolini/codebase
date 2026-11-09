@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.59.3](https://github.com/organizzolini/codebase/compare/v3.59.2...v3.59.3) (2026-11-09)
+
+### 🐛 Bug Fixes
+
+* **dependencies:** 🐛 align Stylelint core and config versions ([#2194](https://github.com/organizzolini/codebase/issues/2194)) ([01d16c2](https://github.com/organizzolini/codebase/commit/01d16c2a3e4ec23a98ddc7e598e0935ece7e1be5)), closes [#2189](https://github.com/organizzolini/codebase/issues/2189)
+
+## [3.59.2](https://github.com/organizzolini/codebase/compare/v3.59.1...v3.59.2) (2026-11-08)
+
+### 🐛 Bug Fixes
+
+* **conformetry,dependencies:** 🐛 align notebook dependency template ([#2188](https://github.com/organizzolini/codebase/issues/2188)) ([4f94366](https://github.com/organizzolini/codebase/commit/4f94366f1df826022ceee166890e7132a9c2f1dc)), closes [#2187](https://github.com/organizzolini/codebase/issues/2187) [#2174](https://github.com/organizzolini/codebase/issues/2174)
+
+## [3.59.1](https://github.com/organizzolini/codebase/compare/v3.59.0...v3.59.1) (2026-11-08)
+
+### ♻️ Code Refactoring
+
+* **lexico-db,lexico,lexico-cli,configuration:** ♻️ rename lexico-entities to lexico-db and split its modules ([#2185](https://github.com/organizzolini/codebase/issues/2185)) ([da2974e](https://github.com/organizzolini/codebase/commit/da2974e13b259606fe855e6360e7e3e4ec7e8549)), closes [#2184](https://github.com/organizzolini/codebase/issues/2184)
+
 ## [3.59.0](https://github.com/organizzolini/codebase/compare/v3.58.1...v3.59.0) (2026-11-07)
 
 ### ✨ Features

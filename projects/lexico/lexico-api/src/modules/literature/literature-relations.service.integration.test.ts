@@ -11,7 +11,7 @@ import {
   paginationMatrix,
   summarize,
 } from "@codebase/interface/testing";
-import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, Word } from "@codebase/lexico-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,

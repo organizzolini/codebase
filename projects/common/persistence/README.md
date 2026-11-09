@@ -380,14 +380,14 @@ graph LR
   configuration["configuration"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
-  lexico_entities["lexico-entities"]
+  lexico_db["lexico-db"]
   meanderaw_cli["meanderaw-cli"]
   observability["observability"]
   persistence["persistence"]
   caelundas_cli --> persistence
   lexico_api --> persistence
   lexico_cli --> persistence
-  lexico_entities --> persistence
+  lexico_db --> persistence
   meanderaw_cli --> persistence
   persistence --> configuration
   persistence --> observability

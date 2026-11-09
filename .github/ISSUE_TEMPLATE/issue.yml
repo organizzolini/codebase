@@ -58,7 +58,7 @@ body:
         - JimmyPaolini
         - lexico
         - presentation
-        - lexico-entities
+        - lexico-db
         - lexico-cli
         - meanderaw
         - sempientor

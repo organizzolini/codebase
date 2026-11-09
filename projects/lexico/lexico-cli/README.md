@@ -3,7 +3,7 @@
 **Where the dictionary comes from.** A NestJS command-line application that
 scrapes, parses, and loads the sources behind
 [Lexico](../lexico-web/README.md) into the schema defined by
-[lexico-entities](../lexico-entities/README.md).
+[lexico-db](../lexico-db/README.md).
 
 ## Quick Start
 
@@ -85,7 +85,7 @@ with [cheerio](https://cheerio.js.org) and wiki markup through mdast, so a
 change to one site's layout is contained to one module.
 
 Nothing here defines the schema. Entities and migrations come from
-[`@codebase/lexico-entities`](../lexico-entities/README.md), so the
+[`@codebase/lexico-db`](../lexico-db/README.md), so the
 shape ingestion writes and the shape the application reads cannot drift.
 
 ## Start
@@ -110,13 +110,13 @@ nx run lexico-cli:lint-codebase --configuration=write
 Run migrations before a first ingestion:
 
 ```bash
-nx run lexico-entities:migration:run
+nx run lexico-db:migration:run
 ```
 
 ## Related
 
 - 🐺 [lexico-web](../lexico-web/README.md) — the web application
-- 📖 [lexico-entities](../lexico-entities/README.md) — the schema this writes to
+- 📖 [lexico-db](../lexico-db/README.md) — the schema this writes to
 - 🎨 [presentation](../../common/presentation/README.md) — the interface
 
 ## License
@@ -572,8 +572,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LatinLibraryProvider.processTextLink` | 6 | `LatinLibraryBuilder.isSkippedHref`, `LatinLibraryBuilder.isTextFileHref`, `LatinLibraryBuilder.isExternalOrSelfLink`, `LatinLibraryBuilder.findRawBookHeading`, `LatinLibraryBuilder.buildTextEntityForLink`, `LatinLibraryProvider.addTextToBook` | `projects/lexico/lexico-cli/src/modules/library/providers/latin-library.provider.ts:211` |
 | `LatinLibraryProvider.writeWorkText` | 6 | `LatinLibraryProvider.getMetadataString`, `LatinLibraryProvider.readSourceCacheFile`, `LatinLibraryBuilder.parseWorkParagraphs`, `hasValidTextContent`, `LatinLibraryBuilder.buildWorkMarkdownContent`, `LatinLibraryProvider.saveWorkTextMarkdown` | `projects/lexico/lexico-cli/src/modules/library/providers/latin-library.provider.ts:368` |
 | `LiteratureService.ingestLines` | 6 | `LiteratureService.getWordsCache`, `LiteratureService.filter(…)`, `LiteratureService.map(…)`, `LiteratureService.upsertAndFetchLines`, `LiteratureService.extractTokensFromLine`, `LiteratureService.upsertTokens` | `projects/lexico/lexico-cli/src/modules/literature/literature.service.ts:241` |
-| `WordsService.ingestLexemeWords` | 5 | `WordsService.getLexemeWords`, `WordsService.filter(…)`, `WordsService.map(…)`, `WordsService.map(…)`, `WordsService.map(…)` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:127` |
-| `WordsService.upsertWordsAndJunctions` | 5 | `WordsService.map(…)`, `WordsService.map(…)`, `WordsService.map(…)`, `WordsService.insertWordFormChunks`, `WordsService.buildWordFormValues` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:175` |
+| `WordsService.ingestLexemeWords` | 5 | `WordsService.getLexemeWords`, `WordsService.filter(…)`, `WordsService.map(…)`, `WordsService.map(…)`, `WordsService.map(…)` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:121` |
+| `WordsService.upsertWordsAndJunctions` | 5 | `WordsService.map(…)`, `WordsService.map(…)`, `WordsService.map(…)`, `WordsService.insertWordFormChunks`, `WordsService.buildWordFormValues` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:169` |
 | `FormsBuilderService.buildVerbFormsFromRaw` | 5 | `FormsBuilderGuardsService.isRecord`, `FormsBuilderGuardsService.isFormMood`, `FormsBuilderService.buildFiniteVoiceForms`, `FormsBuilderService.buildVerbNonFiniteForms`, `FormsBuilderService.buildVerbNounForms` | `projects/lexico/lexico-cli/src/modules/forms/forms-builder.service.ts:394` |
 | `DictionaryCommand.processTranslationReferences` | 5 | `TranslationsService.extractTranslationReferences`, `LexemesService.existsByLemma`, `DictionaryCommand.ingestLexeme`, `TranslationsService.findTranslationsWithReferences`, `DictionaryCommand.ingestTranslationReference` | `projects/lexico/lexico-cli/src/modules/dictionary/dictionary.command.ts:290` |
 | `DictionaryCommand.resolveEndLemma` | 5 | `DictionaryCommand.filter(…)`, `DictionaryCommand.getLemmaChoices`, `getOptionText`, `requireChoice`, `selectChoice` | `projects/lexico/lexico-cli/src/modules/dictionary/dictionary.command.ts:328` |
@@ -646,7 +646,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `WiktionaryCommand.ingestCategory` | 3 | `WiktionaryCommand.fetchCategoryPage`, `WiktionaryCommand.processWiktionaryCategoryLink`, `WiktionaryCommand.handleCategoryError` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:150` |
 | `WiktionaryCommand.ingestWord` | 3 | `WiktionaryCommand.getEntryFilePath`, `WiktionaryCommand.parseLatinSection`, `WiktionaryCommand.saveWiktionaryEntry` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:187` |
 | `WiktionaryCommand.processWiktionaryCategoryLink` | 3 | `WiktionaryCommand.getEntryFilePath`, `WiktionaryCommand.ingestWord`, `WiktionaryCommand.anonymous` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:246` |
-| `WordsService.map(…)` | 2 | `WordsService.escapeCapitals`, `WordsService.normalize` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:136` |
+| `WordsService.map(…)` | 2 | `WordsService.escapeCapitals`, `WordsService.normalize` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:130` |
 | `normalizeStringArray` | 2 | `isNormalizableStringArray`, `filter(…)` | `projects/lexico/lexico-cli/src/modules/forms/forms.constants.ts:21` |
 | `FormsService.findIndex(…)` | 2 | `FormsService.filter(…)`, `FormsService.every(…)` | `projects/lexico/lexico-cli/src/modules/forms/forms.service.ts:80` |
 | `EtymologyService.parse` | 2 | `EtymologyService.filter(…)`, `Translation.constructor` | `projects/lexico/lexico-cli/src/modules/etymology/etymology.service.ts:31` |
@@ -701,8 +701,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LexicoIngestionCommand.run` | 2 | `LexicoIngestionCommand.promptForMissingOptions`, `LexicoIngestionCommand.executeStages` | `projects/lexico/lexico-cli/src/modules/lexico-ingestion/lexico-ingestion.command.ts:219` |
 | `CorpusScriptorumEcclesiasticorumLatinorumCommand.downloadSourceXmlFileIfMissing` | 1 | `CorpusScriptorumEcclesiasticorumLatinorumCommand.fetchAndWriteXmlFile` | `projects/lexico/lexico-cli/src/modules/corpus-scriptorum-ecclesiasticorum-latinorum/corpus-scriptorum-ecclesiasticorum-latinorum.command.ts:47` |
 | `CorpusScriptorumEcclesiasticorumLatinorumCommand.fetchAndWriteXmlFile` | 1 | `CorpusScriptorumEcclesiasticorumLatinorumCommand.anonymous` | `projects/lexico/lexico-cli/src/modules/corpus-scriptorum-ecclesiasticorum-latinorum/corpus-scriptorum-ecclesiasticorum-latinorum.command.ts:76` |
-| `WordsService.escapeCapitals` | 1 | `WordsService.replaceAll(…)` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:67` |
-| `WordsService.getLexemeWords` | 1 | `WordsService.forEach(…)` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:118` |
+| `WordsService.escapeCapitals` | 1 | `WordsService.replaceAll(…)` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:61` |
+| `WordsService.getLexemeWords` | 1 | `WordsService.forEach(…)` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:112` |
 | `FormsBuilderVerbService.buildFiniteVerbForm` | 1 | `FormsTransientWordsService.setTransientWords` | `projects/lexico/lexico-cli/src/modules/forms/forms-builder-verb.service.ts:55` |
 | `FormsBuilderService.buildParticipleFormsFromRaw` | 1 | `FormsBuilderVerbService.buildParticipleFormsFromRaw` | `projects/lexico/lexico-cli/src/modules/forms/forms-builder.service.ts:361` |
 | `FormsBuilderService.createAdjectivalForm` | 1 | `FormsTransientWordsService.setTransientWords` | `projects/lexico/lexico-cli/src/modules/forms/forms-builder.service.ts:459` |
@@ -854,13 +854,11 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  configuration["configuration"]
   lexico_cli["lexico-cli"]
-  lexico_entities["lexico-entities"]
+  lexico_db["lexico-db"]
   observability["observability"]
   persistence["persistence"]
-  lexico_cli --> configuration
-  lexico_cli --> lexico_entities
+  lexico_cli --> lexico_db
   lexico_cli --> observability
   lexico_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
@@ -1428,14 +1426,14 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-33655-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-33647-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-1.92_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-31-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-160-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-98.97_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-98.90_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
