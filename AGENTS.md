@@ -60,7 +60,7 @@ inherit a larger session model.
    (see [Handoffs](#handoffs)) and **stop**.
 5. **Build**: Every pull request closes an issue, so use
    [link-issue](.agents/skills/link-issue/SKILL.md) first: use the planned ticket,
-   or file one before starting ad-hoc work. Set each ticket's board Status to In Progress, and its Size, before testing
+   or file one before starting ad-hoc work. Set each ticket's board Status to In Progress, and its Effort, before testing
    with [manage-project](.agents/skills/manage-project/SKILL.md) (see
    [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)).
    - **Multi-ticket spec**: Dispatch each parent issue to a fresh subagent

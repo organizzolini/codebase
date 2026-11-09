@@ -41,7 +41,7 @@ Pick the Issue Type by position in the hierarchy:
 - No parent (a standalone change): **Bug** when the commit type is `fix`, otherwise **Feature**
 - Under a spec or a parent: **Task**
 
-Take the title from the commit convention, `<type>(<scope>): <gitmoji> <subject>`, and apply the labels the Continuous Compliance issue check expects: one `type:*`, one `scope:*` per scope, and `source:agent`. Then set its board fields with [manage-project](../manage-project/SKILL.md): Size always, and Status In Progress when you are about to start, or are already doing, the work.
+Take the title from the commit convention, `<type>(<scope>): <gitmoji> <subject>`, and apply the labels the Continuous Compliance issue check expects: one `type:*`, one `scope:*` per scope, and `source:agent`. Then set its board fields with [manage-project](../manage-project/SKILL.md): Effort always, and Status In Progress when you are about to start, or are already doing, the work.
 
 ```bash
 gh issue create \

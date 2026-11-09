@@ -19,7 +19,7 @@ The README's Continuous Compliance badge is this workflow's own status badge. It
 
 ### The project board
 
-The organization project [codebase](https://github.com/orgs/organizzolini/projects/1) mirrors the tracker. Built-in workflows add every issue and sub-issue, link a pull request to its issue, and mark an issue Done when it closes; its views are one per project area, filtered on `scope:*` labels. The fields an agent fills — **Status**, **Priority**, **Size** — and how to set them are in [manage-project](../../.agents/skills/manage-project/SKILL.md).
+The organization project [codebase](https://github.com/orgs/organizzolini/projects/1) mirrors the tracker. Built-in workflows add every issue and sub-issue, link a pull request to its issue, and mark an issue Done when it closes; its views are one per project area, filtered on `scope:*` labels. The fields an agent fills — **Status**, **Priority**, **Effort** — and how to set them are in [manage-project](../../.agents/skills/manage-project/SKILL.md).
 
 Reading or writing the board needs the `project` scope on the `gh` token (`gh auth refresh --scopes project`); a token with only `read:org` and `repo` works for issues but not for the board. Projects calls are GraphQL and share one hourly budget across every tool and agent, so set fields for the issues in hand and never sweep the whole board.
 

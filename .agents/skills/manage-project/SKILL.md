@@ -1,6 +1,6 @@
 ---
 name: manage-project
-description: Keep the organizzolini/codebase GitHub Project board filled in — set an issue's Status, Priority, and Size, move work to In Progress, and know when a milestone applies. Use when starting or finishing work on an issue, after filing or triaging issues, when sizing or prioritizing work, when asked what is on the board, or when a board view shows items with no Priority or Size.
+description: Keep the organizzolini/codebase GitHub Project board filled in — set an issue's Status, Priority, and Effort, move work to In Progress, and know when a milestone applies. Use when starting or finishing work on an issue, after filing or triaging issues, when estimating effort or prioritizing work, when asked what is on the board, or when a board view shows items with no Priority or Effort.
 license: MIT
 ---
 
@@ -16,32 +16,30 @@ Its views are one per project area (`caelundas`, `lexico`, `ic-suite`, …), plu
 | -------- | --------------------------------------- | ---------------------------------------------------------- | ------------------------------------ |
 | Status   | Spec, parent issue, and commit sub-issue | Todo, In Progress, Done                                    | Todo and Done are automatic; you set In Progress |
 | Priority | Spec and any standalone issue           | Urgent, High, Medium, Low                                  | The user. An agent proposes, never decides |
-| Size     | Parent issue (one pull request) and any standalone issue | XS, S, M, L, XL                       | The agent that plans or files it     |
+| Effort   | Parent issue (one pull request) and any standalone issue | Low, Medium, High                     | The agent that plans or files it     |
 
 Never invent a value outside the list. If a field has no option you need, say so rather than editing the field.
 
-**Priority is an organization issue field, not a project field.** It lives on the issue and shows on the board as a read-only column, so `set_field` cannot write it (GitHub answers "Only custom fields can be updated"). Status and Size are project fields. The organization also defines **Effort** (High, Medium, Low), **Start date**, and **Target date** issue fields; Size is the one this repository sizes with, so leave Effort empty.
+**Priority and Effort are organization issue fields, not project fields.** They live on the issue, travel with it, and show on the board as read-only columns, so `set_field` cannot write them (GitHub answers "Only custom fields can be updated"). Only Status is a project field. The organization also defines **Start date** and **Target date** issue fields, which this repository does not use.
 
-### Sizing
+### Estimating effort
 
-Size is the work a pull request carries, measured in planned commits and modules touched. It is an estimate for ordering work, so choose fast and move on.
+Effort is the work a pull request carries, measured in planned commits and modules touched. It is an estimate for ordering work, so choose fast and move on.
 
-| Size | Shape                                                          |
-| ---- | -------------------------------------------------------------- |
-| XS   | One commit, one file or a rename; minutes                      |
-| S    | One commit with its tests                                      |
-| M    | Two to four commits in one module                              |
-| L    | Five or more commits, or more than one module in one project   |
-| XL   | Does not fit one reviewable pull request — split it first      |
+| Effort | Shape                                                                         |
+| ------ | ----------------------------------------------------------------------------- |
+| Low    | One commit, with its tests                                                    |
+| Medium | Two to four commits in one module                                             |
+| High   | Five or more commits, or more than one module in one project                  |
 
-An `XL` is a planning defect: split it into parent issues under a spec before anyone builds it.
+A `High` that would not fit one reviewable pull request is a planning defect: split it into parent issues under a spec before anyone builds it.
 
 ## Fill the Board
 
-- **When you file or plan an issue**, set Size on every parent issue and standalone issue. Set Priority only when the user gave one; leave it empty and say so in your report when they did not.
+- **When you file or plan an issue**, set Effort on every parent issue and standalone issue. Set Priority only when the user gave one; leave it empty and say so in your report when they did not.
 - **When you start work**, set Status to **In Progress** on every layer the work is about to move — the spec, the parent issue, and the commit sub-issue. This replaces the retired `status:in-progress` label. Do it before the first failing test.
 - **When work finishes**, close the issue. The board marks it Done; there is nothing to set.
-- **When you find an open item with no Size**, size it. Do not pad: a wrong Size is corrected by the next reader, a missing one is not noticed.
+- **When you find an open item with no Effort**, estimate it. Do not pad: a wrong Effort is corrected by the next reader, a missing one is not noticed.
 
 ## Set a Field
 
@@ -69,16 +67,16 @@ set_field() {
 }
 ```
 
-Priority goes through the issue-field endpoint instead, and takes the option **name**, not its id. Only set it when the user gave a value:
+Priority and Effort go through the issue-field endpoint instead, and take the option **name**, not its id. Set Priority only when the user gave a value:
 
 ```bash
-echo '{"issue_field_values":[{"field_id":46460695,"value":"High"}]}' |
+echo '{"issue_field_values":[{"field_id":46460698,"value":"Medium"}]}' |
   gh api -X PUT repos/Organizzolini/codebase/issues/<number>/issue-field-values --input -
 # clear it
-gh api -X DELETE repos/Organizzolini/codebase/issues/<number>/issue-field-values/46460695
+gh api -X DELETE repos/Organizzolini/codebase/issues/<number>/issue-field-values/46460698
 ```
 
-`46460695` is the Priority field's id; re-read `gh api orgs/organizzolini/issue-fields` if the endpoint rejects it.
+`46460698` is the Effort field's id and `46460695` is Priority's; re-read `gh api orgs/organizzolini/issue-fields` if the endpoint rejects either.
 
 An empty `item` means the issue has not reached the board yet: the auto-add workflow lags a few seconds behind filing, so wait and retry once before reporting it.
 
@@ -88,7 +86,7 @@ Cloud sessions have no `gh`; the GitHub MCP server has no Projects tools, so rep
 
 ## Milestones
 
-**This repository does not use milestones.** The unit of planning is the spec, a root Feature or Bug issue, and it carries what a milestone cannot: an Issue Type, labels, sub-issues with a progress bar, dependencies, a `# Handoff` comment, and its own Status and Size on the board. One milestone has ever existed (`Conformetry Migration`, closed), and nothing reads it.
+**This repository does not use milestones.** The unit of planning is the spec, a root Feature or Bug issue, and it carries what a milestone cannot: an Issue Type, labels, sub-issues with a progress bar, dependencies, a `# Handoff` comment, and its own Status and Effort on the board. One milestone has ever existed (`Conformetry Migration`, closed), and nothing reads it.
 
 Do not set a milestone on an issue or pull request unless the user asks. If one is created, it groups several specs under one shippable outcome and sits **above** them; it never replaces the spec. Assign it to specs only (`gh issue edit <n> --milestone "<name>"`) so the milestone's progress bar counts specs, not every commit.
 
