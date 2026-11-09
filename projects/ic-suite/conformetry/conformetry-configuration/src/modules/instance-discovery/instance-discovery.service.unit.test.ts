@@ -1,9 +1,10 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InstanceGroupService } from "../instance-group/instance-group.service";
 
@@ -24,10 +25,7 @@ const INSTANCE_PATTERN = "packages/*/src/modules/*";
  * no file with it at all, so a template nothing was generated from is covered
  * too.
  */
-async function createWorkspace(): Promise<string> {
-  const workingDirectory = await mkdtemp(
-    path.join(tmpdir(), "conformetry-inventory-"),
-  );
+async function populateWorkspace(workingDirectory: string): Promise<void> {
   const templatesPath = path.join(workingDirectory, "configuration/templates");
 
   // The tree sits under `{{nameKebabCase}}/`, which is how a template says
@@ -63,8 +61,6 @@ async function createWorkspace(): Promise<string> {
       ),
     );
   }
-
-  return workingDirectory;
 }
 
 /** Writes one empty file, creating the directories above it. */
@@ -100,6 +96,7 @@ const CONFIGURATION: ConformetryConfiguration = [
 
 describe(InstanceDiscoveryService, () => {
   let service: InstanceDiscoveryService;
+  const readWorkspace = useTemporaryDirectory("inventory");
   let workingDirectory: string;
 
   /** The inventory arguments every test starts from. */
@@ -111,17 +108,23 @@ describe(InstanceDiscoveryService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(InstanceDiscoveryService, {
       imports: [InstanceDiscoveryModule],
-      providers: [InstanceDiscoveryService, InstanceGroupService],
-    }).compile();
+      providers: [InstanceGroupService],
+    });
 
-    service = await module.resolve(InstanceDiscoveryService);
-    workingDirectory = await createWorkspace();
+    service = built.instance;
+    workingDirectory = readWorkspace();
+    await populateWorkspace(workingDirectory);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(InstanceDiscoveryService, {
+      imports: [InstanceDiscoveryModule],
+      providers: [InstanceGroupService],
+    });
+
+    expect(instance).toBeInstanceOf(InstanceDiscoveryService);
   });
 
   describe("findInstances", () => {

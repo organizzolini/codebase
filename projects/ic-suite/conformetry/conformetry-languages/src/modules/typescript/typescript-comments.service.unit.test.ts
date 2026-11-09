@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import { createSourceFile, ScriptKind, ScriptTarget } from "typescript";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TypescriptCommentsService } from "./typescript-comments.service";
 
@@ -43,15 +44,15 @@ describe(TypescriptCommentsService, () => {
   let service: TypescriptCommentsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [TypescriptCommentsService],
-    }).compile();
+    const built = await buildTestingModule(TypescriptCommentsService);
 
-    service = await module.resolve(TypescriptCommentsService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TypescriptCommentsService);
+
+    expect(instance).toBeInstanceOf(TypescriptCommentsService);
   });
 
   describe("extractComments", () => {

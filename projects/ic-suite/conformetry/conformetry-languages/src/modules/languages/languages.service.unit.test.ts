@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LanguagesModule } from "./languages.module";
 import { LanguagesService } from "./languages.service";
@@ -33,16 +34,19 @@ describe(LanguagesService, () => {
     // The real Languages rather than mocks: resolution is a question about
     // what the engines claim, so mocking their descriptors would test the
     // mock's answer instead of theirs.
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(LanguagesService, {
       imports: [LanguagesModule],
-      providers: [LanguagesService],
-    }).compile();
+    });
 
-    service = await module.resolve(LanguagesService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LanguagesService, {
+      imports: [LanguagesModule],
+    });
+
+    expect(instance).toBeInstanceOf(LanguagesService);
   });
 
   it("resolves an extension to the language that claims it", () => {

@@ -1,13 +1,17 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
   ConfigurationModule,
   ConfigurationService,
 } from "@conformetry/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DifferencesModule } from "../differences/differences.module";
 
@@ -24,7 +28,7 @@ import type {
  */
 async function createNestedTemplatePath(): Promise<string> {
   const templatePath = path.join(
-    await mkdtemp(path.join(tmpdir(), "conformetry-files-nested-")),
+    createTemporaryDirectory("files-nested"),
     "widget",
   );
 
@@ -41,11 +45,8 @@ async function createNestedTemplatePath(): Promise<string> {
 }
 
 /** Writes a flat two-file template and returns its folder. */
-async function createTemplatePath(): Promise<string> {
-  const templatePath = path.join(
-    await mkdtemp(path.join(tmpdir(), "conformetry-files-templates-")),
-    "widget",
-  );
+async function createTemplatePath(templatesRoot: string): Promise<string> {
+  const templatePath = path.join(templatesRoot, "widget");
 
   await mkdir(path.join(templatePath, "nested"), { recursive: true });
   await writeFile(
@@ -59,6 +60,7 @@ async function createTemplatePath(): Promise<string> {
 }
 
 describe(FilesService, () => {
+  const readTemplatesRoot = useTemporaryDirectory("files-templates");
   let configurationService: ConfigurationService;
   let service: FilesService;
   let template: TemplateDefinition;
@@ -74,27 +76,28 @@ describe(FilesService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(FilesService, {
       imports: [ConfigurationModule, DifferencesModule],
-      providers: [FilesService],
-    }).compile();
+    });
 
-    service = await module.resolve(FilesService);
-    configurationService = await module.resolve(ConfigurationService);
+    service = built.instance;
+    configurationService = await built.module.resolve(ConfigurationService);
     template = configurationService.collectTemplate({
       name: "widget",
-      templatePath: await createTemplatePath(),
+      templatePath: await createTemplatePath(readTemplatesRoot()),
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(FilesService, {
+      imports: [ConfigurationModule, DifferencesModule],
+    });
+
+    expect(instance).toBeInstanceOf(FilesService);
   });
 
   it("reports nothing when the instance has every template file", async () => {
-    const instancePath = await mkdtemp(
-      path.join(tmpdir(), "conformetry-files-complete-"),
-    );
+    const instancePath = createTemporaryDirectory("files-complete");
 
     await mkdir(path.join(instancePath, "nested"), { recursive: true });
     await writeFile(
@@ -120,16 +123,12 @@ describe(FilesService, () => {
     ).toStrictEqual([]);
   });
 
-  it("reports nothing when the matched template declares no files", async () => {
+  it("reports nothing when the matched template declares no files", () => {
     const emptyTemplate = configurationService.collectTemplate({
       name: "empty",
-      templatePath: await mkdtemp(
-        path.join(tmpdir(), "conformetry-files-empty-template-"),
-      ),
+      templatePath: createTemporaryDirectory("files-empty-template"),
     });
-    const instancePath = await mkdtemp(
-      path.join(tmpdir(), "conformetry-files-empty-instance-"),
-    );
+    const instancePath = createTemporaryDirectory("files-empty-instance");
     // A matched instance whose template declares no files at all — nothing
     // routes here through `matchInstances`, but resolving it should still be
     // a no-op rather than an error.
@@ -148,9 +147,7 @@ describe(FilesService, () => {
   });
 
   it("reports an extension-less file the template requires", async () => {
-    const instancePath = await mkdtemp(
-      path.join(tmpdir(), "conformetry-files-partial-"),
-    );
+    const instancePath = createTemporaryDirectory("files-partial");
 
     await mkdir(path.join(instancePath, "nested"), { recursive: true });
     await writeFile(
@@ -175,9 +172,7 @@ describe(FilesService, () => {
       name: "widget",
       templatePath: await createNestedTemplatePath(),
     });
-    const instancePath = await mkdtemp(
-      path.join(tmpdir(), "conformetry-files-nested-instance-"),
-    );
+    const instancePath = createTemporaryDirectory("files-nested-instance");
 
     // Present, so the template matches; the nested folder is absent.
     await writeFile(
@@ -199,9 +194,7 @@ describe(FilesService, () => {
   });
 
   it("collapses a missing directory into one finding", async () => {
-    const instancePath = await mkdtemp(
-      path.join(tmpdir(), "conformetry-files-missing-"),
-    );
+    const instancePath = createTemporaryDirectory("files-missing");
 
     await writeFile(
       path.join(instancePath, "my-widget.service.ts"),
