@@ -1,18 +1,15 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProjectsService } from "./projects.service";
 
 /** Writes a workspace holding projects, a template, and a dependency. */
-async function createWorkspace(): Promise<string> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "conformetry-nx-projects-"),
-  );
-
+async function populateWorkspace(workspaceRoot: string): Promise<void> {
   const write = async (
     relativePath: string,
     contents: string,
@@ -38,25 +35,25 @@ async function createWorkspace(): Promise<string> {
   // Dependencies and dot directories are skipped however deep they go.
   await write("node_modules/some-package/project.json", "{}");
   await write(".conformetry/nx-generators/project.json", "{}");
-
-  return workspaceRoot;
 }
 
 describe(ProjectsService, () => {
+  const readWorkspaceRoot = useTemporaryDirectory("nx-projects");
   let service: ProjectsService;
   let workspaceRoot: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ProjectsService],
-    }).compile();
+    const built = await buildTestingModule(ProjectsService);
 
-    service = await module.resolve(ProjectsService);
-    workspaceRoot = await createWorkspace();
+    service = built.instance;
+    workspaceRoot = readWorkspaceRoot();
+    await populateWorkspace(workspaceRoot);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ProjectsService);
+
+    expect(instance).toBeInstanceOf(ProjectsService);
   });
 
   describe("listWorkspaceProjects", () => {

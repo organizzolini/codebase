@@ -1,12 +1,11 @@
 /* cspell:words amō cantoque Cantōque */
 
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { Lexeme, Translation, Word } from "@codebase/lexico-db";
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { MacronsService } from "../macrons/macrons.service";
@@ -14,6 +13,7 @@ import { MacronsService } from "../macrons/macrons.service";
 import { ENGLISH_SEARCH_RESULT_LIMIT } from "./search.constants";
 import { SearchService } from "./search.service";
 
+import type { LoggerService } from "@codebase/observability";
 import type { Repository } from "typeorm";
 
 /**
@@ -51,28 +51,18 @@ function createSearchService(): {
 }
 
 describe(SearchService, () => {
-  let service: SearchService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SearchService, {
       providers: [
-        SearchService,
         MacronsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         ...[Lexeme, Word, Translation].map((entity) => ({
           provide: getRepositoryToken(entity),
           useValue: createRepositoryMock(),
         })),
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(SearchService);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(SearchService);
   });
 
   describe("searchLatin", () => {

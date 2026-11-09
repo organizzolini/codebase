@@ -1,16 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+import { mockDates } from "@codebase/testing";
 
 import { SearchBar } from "./search-bar";
 
 describe(SearchBar, () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  mockDates();
 
   it("applies its class name", () => {
     render(

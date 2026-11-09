@@ -69,8 +69,13 @@ const callidescopeConfiguration: CallidescopeConfiguration = {
    * fields (`excludeCallees`, `excludeFrom`, `write.json`) that a project file
    * must not set. When the closure reaches `configuration`, excluding
    * it here keeps the run scoped to fixture code and toolchain dependencies.
+   *
+   * The shared testing package is excluded for the same reason: every
+   * toolchain package's `testing/setup.ts` imports it, which would otherwise
+   * drag the common packages it wraps into the closure of a run about the
+   * fixtures.
    */
-  exclude: ["configuration/**"],
+  exclude: ["configuration/**", "projects/common/testing/**"],
   limits: {
     /**
      * The tool's own default, so the deliberately deep fixtures are findings.

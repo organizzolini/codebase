@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import {
@@ -42,19 +43,12 @@ function assemble(files: Record<string, string>): AssembledGraph {
 }
 
 describe(GraphAssemblyService, () => {
-  let service: GraphAssemblyService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(GraphAssemblyService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [GraphAssemblyService],
-    }).compile();
+    });
 
-    service = await module.resolve(GraphAssemblyService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(GraphAssemblyService);
   });
 
   it("assembles the call graph from the resolved edges", () => {

@@ -13,7 +13,15 @@ export default [
         {
           // vitest: referenced via tsconfig "types" array; it's a devDependency and
           // the @nx/dependency-checks rule misidentifies it as a production dependency.
-          ignoredDependencies: ["vitest"],
+          // @codebase/testing: a devDependency whose shared setup the project's
+          // `testing/` folder imports, outside the build's scope.
+          // reflect-metadata: the Nest decorators need it at runtime, but only
+          // the shared test setup imports it now.
+          ignoredDependencies: [
+            "@codebase/testing",
+            "reflect-metadata",
+            "vitest",
+          ],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
         },
       ],

@@ -1,8 +1,9 @@
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildEmptyCallGraphResult } from "../../../testing/mocks";
 import { OutputJsonService } from "../output-json/output-json.service";
@@ -142,9 +143,29 @@ describe(WriteDestinationsService, () => {
     outputJsonService = createMock<OutputJsonService>();
     outputMarkdownService = createMock<OutputMarkdownService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(
+      WriteDestinationsService,
+      {
+        providers: [
+          {
+            provide: MarkdownReportService,
+            useValue: new MarkdownReportService(
+              new MermaidReportService(),
+              new ReportService(),
+              new WorkspaceReportService(),
+            ),
+          },
+          { provide: OutputJsonService, useValue: outputJsonService },
+          { provide: OutputMarkdownService, useValue: outputMarkdownService },
+        ],
+      },
+    ));
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WriteDestinationsService, {
+      mocks: [OutputJsonService, OutputMarkdownService],
       providers: [
-        WriteDestinationsService,
         {
           provide: MarkdownReportService,
           useValue: new MarkdownReportService(
@@ -153,16 +174,10 @@ describe(WriteDestinationsService, () => {
             new WorkspaceReportService(),
           ),
         },
-        { provide: OutputJsonService, useValue: outputJsonService },
-        { provide: OutputMarkdownService, useValue: outputMarkdownService },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(WriteDestinationsService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(WriteDestinationsService);
   });
 
   // 📝 A project's own destinations

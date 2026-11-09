@@ -1,20 +1,13 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DictionaryService } from "./dictionary.service";
 
 describe(DictionaryService, () => {
-  let service: DictionaryService;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DictionaryService);
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [DictionaryService],
-    }).compile();
-
-    service = await module.resolve(DictionaryService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(DictionaryService);
   });
 });

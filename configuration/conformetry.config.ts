@@ -53,7 +53,6 @@ interface TestTemplateBaseline {
 
 /** What each untouched project of a shape measures, shared to stay short. */
 const NEST_BASELINE = { modules: 89 / 121, services: 47 / 79 };
-const CLI_BASELINE = { modules: 149 / 191 };
 /** Each ic-suite CLI's `nestjs-command-project` score, set on its own group. */
 const COMMAND_PROJECT_BASELINE = 795 / 798;
 
@@ -82,20 +81,6 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
     application: 748 / 764,
     routes: 137 / 145,
   },
-  "projects/common/observability": NEST_BASELINE,
-  "projects/common/persistence": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-cli": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-configuration": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-core": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-graph": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-nx": NEST_BASELINE,
-  "projects/ic-suite/callidescope/callidescope-output": NEST_BASELINE,
-  "projects/ic-suite/codometer/codometer-cli": CLI_BASELINE,
-  "projects/ic-suite/codometer/codometer-configuration": NEST_BASELINE,
-  "projects/ic-suite/codometer/codometer-core": NEST_BASELINE,
-  "projects/ic-suite/codometer/codometer-languages": NEST_BASELINE,
-  "projects/ic-suite/codometer/codometer-measurement": NEST_BASELINE,
-  "projects/ic-suite/codometer/codometer-output": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-configuration": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-core": NEST_BASELINE,
@@ -103,31 +88,13 @@ const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   "projects/ic-suite/coinagerie/coinagerie-nx": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-output": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-vocabulary": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-cli": CLI_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-configuration": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-core": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-generation": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-languages": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-nx": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-output": NEST_BASELINE,
-  "projects/ic-suite/conformetry/conformetry-validation": NEST_BASELINE,
-  "projects/lexico/lexico-api": {
-    modules: 89 / 121,
-    resolvers: 46 / 78,
-    services: 47 / 79,
-  },
-  "projects/lexico/lexico-cli": NEST_BASELINE,
   "projects/lexico/lexico-db": NEST_BASELINE,
-  "projects/lexico/lexico-entities": NEST_BASELINE,
-  "projects/lexico/lexico-web": { application: 743 / 764, routes: 131 / 145 },
   "projects/meanderaw/meanderaw-cli": NEST_BASELINE,
   "projects/meanderaw/meanderaw-web": {
     application: 742 / 764,
     routes: 131 / 145,
   },
   publication: NEST_BASELINE,
-  synchronization: NEST_BASELINE,
-  validation: NEST_BASELINE,
 };
 
 /**
@@ -199,7 +166,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/codependix/",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/codometer/codometer-cli"],
@@ -207,7 +173,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/codometer/",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/coinagerie/coinagerie-cli"],
