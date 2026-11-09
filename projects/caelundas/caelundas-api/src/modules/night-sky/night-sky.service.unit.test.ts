@@ -1,5 +1,12 @@
 import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { getEntityManagerToken } from "@nestjs/typeorm";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import {
+  type Constellation,
+  type ConstellationLine,
+  Star,
+} from "@codebase/caelundas-db";
 
 import { NightSkyColorsService } from "./night-sky-colors.service";
 import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
@@ -14,6 +21,70 @@ import { NightSkyViewService } from "./night-sky-view.service";
 import { NIGHT_SKY_CACHE_SIZE } from "./night-sky.constants";
 import { NightSkyService } from "./night-sky.service";
 
+// 🌟 Fixtures
+
+/** Stars out of brightness order, as a database may hand them back. */
+const DUBHE: Star = {
+  colorIndex: 0.6,
+  declinationDegrees: 61.7,
+  hip: 54_061,
+  magnitude: 1.8,
+  rightAscensionHours: 11.06,
+};
+
+const ALIOTH: Star = {
+  colorIndex: 0.3,
+  declinationDegrees: 56.4,
+  hip: 62_956,
+  magnitude: 1.77,
+  rightAscensionHours: 12.9,
+};
+
+const STARS: Star[] = [
+  {
+    colorIndex: 1.2,
+    declinationDegrees: 19.2,
+    hip: 69_673,
+    magnitude: -0.05,
+    rightAscensionHours: 14.26,
+  },
+  {
+    colorIndex: 0,
+    declinationDegrees: -16.7,
+    hip: 32_349,
+    magnitude: -1.46,
+    rightAscensionHours: 6.75,
+  },
+  DUBHE,
+  ALIOTH,
+];
+
+const URSA_MAJOR: Constellation = {
+  designation: "UMa",
+  name: "Ursa Major",
+  zodiac: false,
+};
+
+const LINES: ConstellationLine[] = [
+  {
+    constellation: URSA_MAJOR,
+    constellationDesignation: "UMa",
+    fromHip: 54_061,
+    fromStar: DUBHE,
+    toHip: 62_956,
+    toStar: ALIOTH,
+  },
+];
+
+/** Answers a read of stars or of figure lines with the fixtures above. */
+const manager = {
+  getRepository: (target: unknown) => ({
+    find: vi
+      .fn<() => Promise<unknown[]>>()
+      .mockResolvedValue(target === Star ? STARS : LINES),
+  }),
+};
+
 describe(NightSkyService, () => {
   let service: NightSkyService;
 
@@ -26,11 +97,12 @@ describe(NightSkyService, () => {
         NightSkyLinesService,
         NightSkyOptionsService,
         NightSkyProjectionService,
-        NightSkyService,
         NightSkySiderealTimeService,
         NightSkyStarsService,
         NightSkySvgService,
         NightSkyViewService,
+        NightSkyService,
+        { provide: getEntityManagerToken(), useValue: manager },
       ],
     }).compile();
 
@@ -44,21 +116,28 @@ describe(NightSkyService, () => {
     expect(service).toBeDefined();
   });
 
-  it("loads the stars sorted brightest first", () => {
+  it("loads the stars from the database as rows, brightest first", () => {
     expect.hasAssertions();
 
-    const magnitudes = service.catalog.stars.map((star) => star[2]);
-
-    expect(magnitudes.length).toBeGreaterThan(0);
-    expect(magnitudes).toStrictEqual(magnitudes.toSorted((a, b) => a - b));
+    expect(service.catalog.stars).toStrictEqual([
+      [6.75, -16.7, -1.46, 0],
+      [14.26, 19.2, -0.05, 1.2],
+      [12.9, 56.4, 1.77, 0.3],
+      [11.06, 61.7, 1.8, 0.6],
+    ]);
   });
 
-  it("loads the constellation figures", () => {
+  it("loads the constellation figures from the database as segments", () => {
     expect.hasAssertions();
 
-    const names = new Set(service.catalog.segments.map(({ name }) => name));
-
-    expect(names).toContain("Ursa Major");
+    expect(service.catalog.segments).toStrictEqual([
+      {
+        from: [11.06, 61.7],
+        name: "Ursa Major",
+        to: [12.9, 56.4],
+        zodiac: false,
+      },
+    ]);
   });
 
   it("refuses to hand out a catalog before it is loaded", async () => {
@@ -72,11 +151,12 @@ describe(NightSkyService, () => {
         NightSkyLinesService,
         NightSkyOptionsService,
         NightSkyProjectionService,
-        NightSkyService,
         NightSkySiderealTimeService,
         NightSkyStarsService,
         NightSkySvgService,
         NightSkyViewService,
+        NightSkyService,
+        { provide: getEntityManagerToken(), useValue: manager },
       ],
     }).compile();
     const fresh = await module.resolve(NightSkyService);

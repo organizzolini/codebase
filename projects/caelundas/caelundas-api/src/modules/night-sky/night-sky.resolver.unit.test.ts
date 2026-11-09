@@ -1,5 +1,6 @@
 import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { getEntityManagerToken } from "@nestjs/typeorm";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { NightSkyColorsService } from "./night-sky-colors.service";
 import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
@@ -20,18 +21,27 @@ describe(NightSkyResolver, () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
+        NightSkyResolver,
         NightSkyColorsService,
         NightSkyEclipticService,
         NightSkyInputService,
         NightSkyLinesService,
         NightSkyOptionsService,
         NightSkyProjectionService,
-        NightSkyResolver,
-        NightSkyService,
         NightSkySiderealTimeService,
         NightSkyStarsService,
         NightSkySvgService,
         NightSkyViewService,
+        NightSkyService,
+        // A database holding no stars: the sky it draws is only the ecliptic.
+        {
+          provide: getEntityManagerToken(),
+          useValue: {
+            getRepository: () => ({
+              find: vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]),
+            }),
+          },
+        },
       ],
     }).compile();
 

@@ -1,33 +1,34 @@
-import { readFile } from "node:fs/promises";
-
 import { Injectable } from "@nestjs/common";
+import { InjectEntityManager } from "@nestjs/typeorm";
+import { EntityManager } from "typeorm";
+
+import { ConstellationLine, Star } from "@codebase/caelundas-db";
 
 import { NightSkyInputService } from "./night-sky-input.service";
 import { NightSkySiderealTimeService } from "./night-sky-sidereal-time.service";
 import { NightSkySvgService } from "./night-sky-svg.service";
-import {
-  NIGHT_SKY_CACHE_SIZE,
-  NIGHT_SKY_CATALOG_FILE,
-  nightSkyCatalogSchema,
-} from "./night-sky.constants";
+import { NIGHT_SKY_CACHE_SIZE } from "./night-sky.constants";
 
 import type { NightSkyInput } from "./night-sky-input.entities";
 import type {
   NightSky,
   NightSkyCatalog,
   ParsedNightSkyInput,
+  StarRow,
 } from "./night-sky.types";
 import type { OnModuleInit } from "@nestjs/common";
 
 /**
  * Serves the night sky. It holds the stars and constellation figures in
- * memory, read once at startup so no request pays to parse them.
+ * memory, read once at startup from the rows `caelundas-cli night-sky`
+ * ingests into Postgres, so no request pays to query them.
  */
 @Injectable()
 export class NightSkyService implements OnModuleInit {
   // 🏗 Dependency Injection
 
   constructor(
+    @InjectEntityManager() private readonly manager: EntityManager,
     private readonly input: NightSkyInputService,
     private readonly siderealTime: NightSkySiderealTimeService,
     private readonly svg: NightSkySvgService,
@@ -107,17 +108,43 @@ export class NightSkyService implements OnModuleInit {
   }
 
   /**
-   * Reads and validates the bundled catalog, and sorts its stars brightest
-   * first, which is the order the builder draws them in.
+   * Reads the stars and constellation figures from the database, and sorts
+   * the stars brightest first, which is the order the builder draws them in.
    */
   public async onModuleInit(): Promise<void> {
-    const parsed = nightSkyCatalogSchema.parse(
-      JSON.parse(await readFile(NIGHT_SKY_CATALOG_FILE, "utf8")),
-    );
+    const [stars, lines] = await Promise.all([
+      this.manager.getRepository(Star).find(),
+      this.manager.getRepository(ConstellationLine).find({
+        relations: { constellation: true, fromStar: true, toStar: true },
+      }),
+    ]);
 
     this.loaded = {
-      segments: parsed.segments,
-      stars: parsed.stars.toSorted((a, b) => a[2] - b[2]),
+      segments: lines.flatMap(({ constellation, fromStar, toStar }) =>
+        constellation === undefined ||
+        fromStar === undefined ||
+        toStar === undefined
+          ? []
+          : [
+              {
+                from: [
+                  fromStar.rightAscensionHours,
+                  fromStar.declinationDegrees,
+                ],
+                name: constellation.name,
+                to: [toStar.rightAscensionHours, toStar.declinationDegrees],
+                zodiac: constellation.zodiac,
+              },
+            ],
+      ),
+      stars: stars
+        .map((star): StarRow => [
+          star.rightAscensionHours,
+          star.declinationDegrees,
+          star.magnitude,
+          star.colorIndex,
+        ])
+        .toSorted((a, b) => a[2] - b[2]),
     };
   }
 }
