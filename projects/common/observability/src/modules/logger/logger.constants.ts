@@ -51,6 +51,7 @@ export const IRREGULAR_PAST_VERBS = new Set([
 export const UNVALIDATED_LOG_CONTEXTS = new Set([
   "CommandFactory",
   "ExceptionHandler",
+  "ExceptionsHandler",
   "GraphQLModule",
   "InstanceLoader",
   "NestApplication",

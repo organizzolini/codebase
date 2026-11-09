@@ -1,39 +1,6 @@
 // ♟️ Constants
 
-import path from "node:path";
-
-import { z } from "zod";
-
 import type { ColorSegment } from "./night-sky.types";
-
-// 🗂️ Catalog
-
-/**
- * The trimmed star catalog and figures `caelundas-cli` seeds, bundled so the API needs no database.
- */
-export const NIGHT_SKY_CATALOG_FILE = path.join(
-  import.meta.dirname,
-  "data",
-  "night-sky-catalog.json",
-);
-
-const skyPointSchema = z.tuple([z.number(), z.number()]);
-
-/**
- * Validates the bundled catalog: stars as right ascension in hours,
- * declination in degrees, magnitude and B−V color index, and figure segments.
- */
-export const nightSkyCatalogSchema = z.object({
-  segments: z.array(
-    z.object({
-      from: skyPointSchema,
-      name: z.string(),
-      to: skyPointSchema,
-      zodiac: z.boolean(),
-    }),
-  ),
-  stars: z.array(z.tuple([z.number(), z.number(), z.number(), z.number()])),
-});
 
 // 🌍 Astronomy
 
@@ -226,5 +193,4 @@ export const DEBUG_LINE_ATTRIBUTES =
   'fill="none" stroke="#ffb877" vector-effect="non-scaling-stroke"';
 
 export const DEBUG_LABEL_ATTRIBUTES =
-  'fill="#ffb877" font-family="IBM Plex Mono, ui-monospace, monospace" ' +
-  'font-size="64"';
+  'fill="#ffb877" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="64"';

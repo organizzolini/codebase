@@ -1,6 +1,29 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": ["!testing"],
   "name": "observability",
+  "namedInputs": {
+    "default": [
+      "!{projectRoot}/.cspell/**",
+      "!{projectRoot}/.eslintcache/**",
+      "!{projectRoot}/conformetry-templates/**",
+      "!{projectRoot}/cspell.config.yaml",
+      "{projectRoot}/**/*",
+      "shared-globals",
+      "testing-source"
+    ],
+    "testing-source": [
+      "{workspaceRoot}/projects/common/testing/package.json",
+      "{workspaceRoot}/projects/common/testing/src/**/*"
+    ],
+    "typescript-files": [
+      "{projectRoot}/**/*.{ts,tsx,mts,cts}",
+      "{projectRoot}/**/*.json",
+      "{projectRoot}/tsconfig*.json",
+      "shared-globals",
+      "testing-source"
+    ]
+  },
   "projectType": "library",
   "sourceRoot": "projects/common/observability",
   "tags": [
@@ -40,7 +63,19 @@
     "prettier": {},
     "spell-check": {},
     "test-code": {},
-    "type-coverage": {},
+    "type-coverage": {
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{projectRoot}/**/*.tsx",
+        "{projectRoot}/package.json",
+        "{projectRoot}/tsconfig.json",
+        "shared-globals",
+        "testing-source",
+        {
+          "externalDependencies": ["type-coverage", "typescript"]
+        }
+      ]
+    },
     "typecheck": {},
     "typecheck-code": {},
     "yaml-lint": {}
