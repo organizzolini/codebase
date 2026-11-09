@@ -81,7 +81,7 @@ jobs:
           # `dependsOn` of `guard-code` in `nx.json`: a gate added there and
           # named in no leg is checked by nothing in CI.
           - target: guard-code
-            targets: catalog-manifests,lockfile,project-ports,readme-projects,vscode-extensions
+            targets: catalog-manifests,coinagerie-check,lockfile,project-ports,readme-projects,vscode-extensions
             name: Guard
             emoji: 💂
           - target: callidescope-restrict

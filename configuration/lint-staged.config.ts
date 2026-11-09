@@ -55,8 +55,13 @@ function getLocalParallelism(): number {
  * compliance workflows and in the `validate-code` skill, which agents run
  * before submitting. The release commit made in CI runs this same set, so the
  * hook means one thing wherever it fires.
+ *
+ * The glossary check is in the set so that a commit adding a word the code
+ * uses, or removing the last use of one, stops here and not after a push. It
+ * runs the `check` configuration like the rest and writes nothing: the
+ * `validate-code` skill's `write` pass is what regenerates a glossary.
  */
-const ANALYSIS_TARGETS = "typecheck,oxlint,oxfmt";
+const ANALYSIS_TARGETS = "typecheck,oxlint,oxfmt,coinagerie-check";
 
 /**
  * Renders staged paths as one workspace-relative `--files=` flag each.
@@ -214,8 +219,9 @@ const config = {
   // a commit touched, so a commit that deepens one project's call stacks or
   // breaks one project's boundary fails that project's own task.
   // `configuration:codependix` is write-only and is not reached from here.
-  // No glossary target is reached from here either: the release workflow
-  // writes every glossary on the default branch, and nothing judges one.
+  // The glossary check is named in `ANALYSIS_TARGETS` instead: a hook that
+  // judges a glossary writes none, so a commit that leaves one out of step
+  // fails and `validate-code`'s `write` pass is what repairs it.
 
   // There is no aggregate `synchronize` target to name instead: each
   // synchronization is its own Nx target on the `synchronization` project, run
