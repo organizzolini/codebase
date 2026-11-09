@@ -1,7 +1,8 @@
 import * as fs from "node:fs";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IgnoreRulesService } from "./ignore-rules.service";
 
@@ -21,15 +22,14 @@ describe(IgnoreRulesService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [IgnoreRulesService],
-    }).compile();
-    service = await module.resolve(IgnoreRulesService);
+    const { instance } = await buildTestingModule(IgnoreRulesService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(IgnoreRulesService);
+
+    expect(instance).toBeInstanceOf(IgnoreRulesService);
   });
 
   describe("gitignore pattern syntax", () => {

@@ -1,9 +1,10 @@
 // `param` is the name of the JSDoc tag these tests count, not an abbreviation.
 // cspell:ignore param
 
-import { Test } from "@nestjs/testing";
 import tsCompiler from "typescript";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CommentsService } from "../comments/comments.service";
 
@@ -15,6 +16,7 @@ import type {
   CommentMeasurement,
 } from "../comments/comments.types";
 import type { TypescriptSymbolCounter } from "./typescript.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { CodometerSymbolKind } from "@codometer/core";
 
 const { readFileSyncMock } = vi.hoisted(() => ({
@@ -23,26 +25,33 @@ const { readFileSyncMock } = vi.hoisted(() => ({
 
 vi.mock("node:fs", () => ({ readFileSync: readFileSyncMock }));
 
+/** What the TypescriptService is built with. */
+const DEPENDENCIES = {
+  providers: [CommentsService, DeclarationCommentsService],
+} satisfies TestingModuleOptions;
+
 describe(TypescriptService, () => {
   let service: TypescriptService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CommentsService,
-        DeclarationCommentsService,
-        TypescriptService,
-      ],
-    }).compile();
-    service = await module.resolve(TypescriptService);
+    const { instance } = await buildTestingModule(
+      TypescriptService,
+      DEPENDENCIES,
+    );
+    service = instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      TypescriptService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(TypescriptService);
   });
 
   it("counts classes, exported symbols, and methods", () => {

@@ -1,21 +1,22 @@
-import { mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
   ConfigurationModule,
   ConfigurationService,
 } from "@codometer/configuration";
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { removeFixtureTree } from "../../../testing/fixture-tree";
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { buildCodeStatistics } from "../../../testing/mocks";
 
 import { LimitsService } from "./limits.service";
 import { MetricIndexService } from "./metric-index.service";
 
 import type { EvaluatedLimit, MeasuredTarget } from "./limits.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** Two targets holding the metrics the configuration below limits. */
 const TARGETS: MeasuredTarget[] = [
@@ -35,13 +36,21 @@ const TARGETS: MeasuredTarget[] = [
   },
 ];
 
+/** What the LimitsService is built with. */
+const DEPENDENCIES = {
+  imports: [ConfigurationModule],
+  providers: [MetricIndexService],
+} satisfies TestingModuleOptions;
+
 describe("limits written in a configuration file", () => {
   let evaluated: EvaluatedLimit[];
-  let directory: string;
+  const getDirectory = useTemporaryDirectory("limits");
 
   beforeAll(async () => {
-    directory = await mkdtemp(path.join(tmpdir(), "codometer-limits-"));
-    const configurationPath = path.join(directory, "codometer.config.json");
+    const configurationPath = path.join(
+      getDirectory(),
+      "codometer.config.json",
+    );
 
     await writeFile(
       configurationPath,
@@ -60,10 +69,7 @@ describe("limits written in a configuration file", () => {
       "utf8",
     );
 
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [LimitsService, MetricIndexService],
-    }).compile();
+    const { module } = await buildTestingModule(LimitsService, DEPENDENCIES);
     const configuration = await module
       .get(ConfigurationService)
       .loadConfiguration({ configurationPath });
@@ -73,10 +79,6 @@ describe("limits written in a configuration file", () => {
     evaluated = module
       .get(LimitsService)
       .evaluate({ configuration, indexes }).limits;
-  });
-
-  afterAll(() => {
-    removeFixtureTree(directory);
   });
 
   it("holds an unqualified path against the default target", () => {

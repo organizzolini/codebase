@@ -2,16 +2,15 @@ import {
   ConfigurationModule,
   ConfigurationService,
 } from "@codometer/configuration";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createInputTree, removeInputTree } from "../../../testing/input-tree";
 
 import { InputsService } from "./inputs.service";
 
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { ResolvedCodometerInput } from "@codometer/configuration";
 
 /** Builds a resolved input over the fixture tree's build directory. */
@@ -29,6 +28,11 @@ function buildInput(
   };
 }
 
+/** What the InputsService is built with. */
+const DEPENDENCIES = {
+  imports: [ConfigurationModule],
+} satisfies TestingModuleOptions;
+
 describe(`${InputsService.name} over a real directory`, () => {
   let configurationService: ConfigurationService;
   let service: InputsService;
@@ -40,16 +44,13 @@ describe(`${InputsService.name} over a real directory`, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [
-        InputsService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      InputsService,
+      DEPENDENCIES,
+    );
 
     configurationService = await module.resolve(ConfigurationService);
-    service = await module.resolve(InputsService);
+    service = instance;
     workingDirectory = createInputTree();
   });
 
