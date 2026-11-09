@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkyOptionsService } from "./night-sky-options.service";
 import { DEFAULT_OPTIONS } from "./night-sky.constants";
@@ -8,17 +9,15 @@ describe(NightSkyOptionsService, () => {
   let service: NightSkyOptionsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [NightSkyOptionsService],
-    }).compile();
+    const built = await buildTestingModule(NightSkyOptionsService);
 
-    service = await module.resolve(NightSkyOptionsService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyOptionsService);
 
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkyOptionsService);
   });
 
   const required = {

@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import { getEntityManagerToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkyColorsService } from "./night-sky-colors.service";
 import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
@@ -15,13 +16,22 @@ import { NightSkyViewService } from "./night-sky-view.service";
 import { NightSkyResolver } from "./night-sky.resolver";
 import { NightSkyService } from "./night-sky.service";
 
+/** A database holding no stars: the sky it draws is only the ecliptic. */
+const EMPTY_DATABASE = {
+  provide: getEntityManagerToken(),
+  useValue: {
+    getRepository: () => ({
+      find: vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]),
+    }),
+  },
+};
+
 describe(NightSkyResolver, () => {
   let resolver: NightSkyResolver;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { instance, module } = await buildTestingModule(NightSkyResolver, {
       providers: [
-        NightSkyResolver,
         NightSkyColorsService,
         NightSkyEclipticService,
         NightSkyInputService,
@@ -33,26 +43,33 @@ describe(NightSkyResolver, () => {
         NightSkySvgService,
         NightSkyViewService,
         NightSkyService,
-        // A database holding no stars: the sky it draws is only the ecliptic.
-        {
-          provide: getEntityManagerToken(),
-          useValue: {
-            getRepository: () => ({
-              find: vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]),
-            }),
-          },
-        },
+        EMPTY_DATABASE,
       ],
-    }).compile();
+    });
 
     await module.get(NightSkyService).onModuleInit();
-    resolver = await module.resolve(NightSkyResolver);
+    resolver = instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyResolver, {
+      providers: [
+        NightSkyColorsService,
+        NightSkyEclipticService,
+        NightSkyInputService,
+        NightSkyLinesService,
+        NightSkyOptionsService,
+        NightSkyProjectionService,
+        NightSkySiderealTimeService,
+        NightSkyStarsService,
+        NightSkySvgService,
+        NightSkyViewService,
+        NightSkyService,
+        EMPTY_DATABASE,
+      ],
+    });
 
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkyResolver);
   });
 
   it("answers the query with the service's sky", () => {

@@ -2,6 +2,8 @@ import { DiscoveryModule, DiscoveryService } from "@nestjs/core";
 import { Test } from "@nestjs/testing";
 import { describe, expect, it } from "vitest";
 
+import { expectModuleExports } from "@codebase/testing/nestjs";
+
 import { CharacteristicsModule } from "../characteristics.module";
 
 import { PathUtilitiesModule } from "./path-utilities.module";
@@ -11,7 +13,11 @@ import { PathUtilitiesService } from "./path-utilities.service";
 const SHARED = Symbol("SHARED");
 
 describe(PathUtilitiesModule, () => {
-  it("exports PathUtilitiesService to a consumer that imports it", async () => {
+  it("exports PathUtilitiesService", () => {
+    expectModuleExports(PathUtilitiesModule, PathUtilitiesService);
+  });
+
+  it("lets a consumer that imports the module inject PathUtilitiesService", async () => {
     const module = await Test.createTestingModule({
       imports: [PathUtilitiesModule],
       providers: [

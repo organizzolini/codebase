@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import { SiderealTime } from "astronomy-engine";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkySiderealTimeService } from "./night-sky-sidereal-time.service";
 
@@ -10,17 +11,15 @@ describe(NightSkySiderealTimeService, () => {
   let service: NightSkySiderealTimeService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [NightSkySiderealTimeService],
-    }).compile();
+    const built = await buildTestingModule(NightSkySiderealTimeService);
 
-    service = await module.resolve(NightSkySiderealTimeService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkySiderealTimeService);
 
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkySiderealTimeService);
   });
 
   it("matches astronomy-engine to within a few seconds", () => {

@@ -1,12 +1,11 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SqlService } from "./sql.service";
 
@@ -35,15 +34,13 @@ vi.mock("node:fs", async (importOriginal) => {
 describe(SqlService, () => {
   let service: SqlService;
   let loggerService: DeepMocked<LoggerService>;
-  const temporaryDirectories: string[] = [];
 
   /** Writes sources into a fresh directory and returns it with their names. */
   function writeSources(files: Record<string, string>): {
     sqlFiles: string[];
     workingDirectory: string;
   } {
-    const workingDirectory = mkdtempSync(path.join(tmpdir(), "codometer-sql-"));
-    temporaryDirectories.push(workingDirectory);
+    const workingDirectory = createTemporaryDirectory("sql");
 
     for (const [fileName, content] of Object.entries(files)) {
       writeFileSync(path.join(workingDirectory, fileName), content, "utf8");
@@ -53,27 +50,20 @@ describe(SqlService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SqlService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(SqlService);
 
-    service = await module.resolve(SqlService);
+    service = instance;
     loggerService = await module.resolve(LoggerService);
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-
-    for (const temporaryDirectory of temporaryDirectories.splice(0)) {
-      rmSync(temporaryDirectory, { force: true, recursive: true });
-    }
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SqlService);
+
+    expect(instance).toBeInstanceOf(SqlService);
   });
 
   it("counts statements and the clauses inside them", () => {

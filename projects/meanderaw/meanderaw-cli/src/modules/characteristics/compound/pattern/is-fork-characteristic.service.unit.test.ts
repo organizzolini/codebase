@@ -1,6 +1,8 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
 import { CharacteristicContextService } from "../../characteristic-context.service";
@@ -30,10 +32,6 @@ describe(IsForkCharacteristicService, () => {
 
       contextService = await module.resolve(CharacteristicContextService);
       service = await module.resolve(IsForkCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
     });
 
     it.each([
@@ -68,9 +66,8 @@ describe(IsForkCharacteristicService, () => {
     let service: IsForkCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsForkCharacteristicService, {
         providers: [
-          IsForkCharacteristicService,
           {
             provide: BettiNumber0CountCharacteristicService,
             useValue: { compute: (): number => values.bettiNumber0Count },
@@ -100,9 +97,9 @@ describe(IsForkCharacteristicService, () => {
             useValue: { compute: (): boolean => values.isComb },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsForkCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

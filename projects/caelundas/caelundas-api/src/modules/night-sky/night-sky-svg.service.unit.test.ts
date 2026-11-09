@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import { Horizon, Observer, SiderealTime } from "astronomy-engine";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkyColorsService } from "./night-sky-colors.service";
 import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
@@ -87,29 +88,30 @@ describe(NightSkySvgService, () => {
   let sidereal: NightSkySiderealTimeService;
   let service: NightSkySvgService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        NightSkyColorsService,
-        NightSkyEclipticService,
-        NightSkyLinesService,
-        NightSkyOptionsService,
-        NightSkyProjectionService,
-        NightSkySiderealTimeService,
-        NightSkyStarsService,
-        NightSkySvgService,
-        NightSkyViewService,
-      ],
-    }).compile();
+  const providers = [
+    NightSkyColorsService,
+    NightSkyEclipticService,
+    NightSkyLinesService,
+    NightSkyOptionsService,
+    NightSkyProjectionService,
+    NightSkySiderealTimeService,
+    NightSkyStarsService,
+    NightSkyViewService,
+  ];
 
-    sidereal = await module.resolve(NightSkySiderealTimeService);
-    service = await module.resolve(NightSkySvgService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(NightSkySvgService, { providers });
+
+    service = built.instance;
+    sidereal = built.module.get(NightSkySiderealTimeService);
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkySvgService, {
+      providers,
+    });
 
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkySvgService);
   });
 
   describe("build", () => {

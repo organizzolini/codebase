@@ -1,9 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { MathService } from "../math/math.service";
@@ -23,17 +21,15 @@ describe(PhaseCalculationService, () => {
   let service: PhaseCalculationService;
   let mathService: DeepMocked<MathService>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PhaseCalculationService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: EphemerisService, useValue: createMock<EphemerisService>() },
-        { provide: MathService, useValue: createMock<MathService>() },
-      ],
-    }).compile();
+  const testingModuleOptions = { mocks: [EphemerisService, MathService] };
 
-    service = await module.resolve(PhaseCalculationService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      PhaseCalculationService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     mathService = module.get(MathService);
 
     configureMathServiceMock(mathService);
@@ -43,8 +39,13 @@ describe(PhaseCalculationService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PhaseCalculationService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PhaseCalculationService);
   });
 
   it("detects rise and set threshold crossings", () => {

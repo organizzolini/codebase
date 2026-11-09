@@ -1,8 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { UnreadableTargetFileError } from "./size.constants";
 import { SizeService } from "./size.service";
@@ -49,14 +48,9 @@ describe(SizeService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SizeService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(SizeService);
 
-    service = await module.resolve(SizeService);
+    service = instance;
     loggerService = await module.resolve(LoggerService);
   });
 
@@ -73,8 +67,10 @@ describe(SizeService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SizeService);
+
+    expect(instance).toBeInstanceOf(SizeService);
   });
 
   it.each(["brotli", "gzip", "none"] as const)(

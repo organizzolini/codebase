@@ -4,6 +4,8 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
 import { CharacteristicContextService } from "../../characteristic-context.service";
@@ -33,10 +35,6 @@ describe(IsSwirlCharacteristicService, () => {
 
       contextService = await module.resolve(CharacteristicContextService);
       service = await module.resolve(IsSwirlCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
     });
 
     it.each([
@@ -72,10 +70,9 @@ describe(IsSwirlCharacteristicService, () => {
     let service: IsSwirlCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsSwirlCharacteristicService, {
         providers: [
           CompoundUtilitiesService,
-          IsSwirlCharacteristicService,
           {
             provide: BettiNumber1CountCharacteristicService,
             useValue: { compute: (): number => values.bettiNumber1Count },
@@ -101,9 +98,9 @@ describe(IsSwirlCharacteristicService, () => {
             useValue: { compute: (): number => values.tightestTurnCount },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsSwirlCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

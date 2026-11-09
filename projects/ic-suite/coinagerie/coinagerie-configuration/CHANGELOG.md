@@ -1,3 +1,9 @@
+## 0.0.12 (2026-11-09)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-core to 0.0.12
+
 ## 0.0.11 (2026-11-08)
 
 ### 🧱 Updated Dependencies

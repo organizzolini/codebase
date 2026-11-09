@@ -1,8 +1,9 @@
 import { ConfigurationService, InputError } from "@codependix/configuration";
 import { NeighborhoodService } from "@codependix/nx-projects";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RunContextService } from "./run-context.service";
 
@@ -35,15 +36,12 @@ describe(RunContextService, () => {
     configurationService = createMock<ConfigurationService>();
     neighborhoodService = createMock<NeighborhoodService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(RunContextService, {
       providers: [
-        RunContextService,
         { provide: ConfigurationService, useValue: configurationService },
         { provide: NeighborhoodService, useValue: neighborhoodService },
       ],
-    }).compile();
-
-    service = await module.resolve(RunContextService);
+    }));
   });
 
   beforeEach(() => {
@@ -72,8 +70,15 @@ describe(RunContextService, () => {
     );
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(RunContextService, {
+      providers: [
+        { provide: ConfigurationService, useValue: configurationService },
+        { provide: NeighborhoodService, useValue: neighborhoodService },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(RunContextService);
   });
 
   it("hands the named configuration path to the loader", async () => {

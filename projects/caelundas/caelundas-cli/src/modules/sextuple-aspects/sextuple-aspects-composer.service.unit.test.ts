@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 
@@ -10,19 +11,24 @@ import type { Body } from "../caelundas/caelundas.types";
 describe(SextupleAspectsComposerService, () => {
   let service: SextupleAspectsComposerService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ProgressiveCompoundEventService,
-        SextupleAspectsComposerService,
-      ],
-    }).compile();
+  const testingModuleOptions = { providers: [ProgressiveCompoundEventService] };
 
-    service = await module.resolve(SextupleAspectsComposerService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      SextupleAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      SextupleAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SextupleAspectsComposerService);
   });
 
   it("returns false for hexagon sextiles when a sparse arrangement has missing bodies", () => {

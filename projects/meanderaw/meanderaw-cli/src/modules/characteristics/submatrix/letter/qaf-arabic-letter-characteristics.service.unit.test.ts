@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -122,10 +121,7 @@ const ISOLATED_FORM: LetterFormFixture = {
 const FORMS: readonly LetterFormFixture[] = [FINAL_FORM, ISOLATED_FORM];
 
 describe(QafArabicLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    QafArabicLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(QafArabicLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

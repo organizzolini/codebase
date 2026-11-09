@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkyColorsService } from "./night-sky-colors.service";
 import { NightSkyLinesService } from "./night-sky-lines.service";
@@ -51,23 +52,21 @@ describe(NightSkyLinesService, () => {
   let service: NightSkyLinesService;
   let projection: NightSkyProjectionService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        NightSkyColorsService,
-        NightSkyLinesService,
-        NightSkyProjectionService,
-      ],
-    }).compile();
+  const providers = [NightSkyColorsService, NightSkyProjectionService];
 
-    service = await module.resolve(NightSkyLinesService);
-    projection = await module.resolve(NightSkyProjectionService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(NightSkyLinesService, { providers });
+
+    service = built.instance;
+    projection = built.module.get(NightSkyProjectionService);
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyLinesService, {
+      providers,
+    });
 
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkyLinesService);
   });
 
   it("draws a segment whose stars both show from one star to the other", () => {

@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { getEntityManagerToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -7,6 +6,7 @@ import {
   type ConstellationLine,
   Star,
 } from "@codebase/caelundas-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkyColorsService } from "./night-sky-colors.service";
 import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
@@ -89,7 +89,7 @@ describe(NightSkyService, () => {
   let service: NightSkyService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(NightSkyService, {
       providers: [
         NightSkyColorsService,
         NightSkyEclipticService,
@@ -101,19 +101,30 @@ describe(NightSkyService, () => {
         NightSkyStarsService,
         NightSkySvgService,
         NightSkyViewService,
-        NightSkyService,
         { provide: getEntityManagerToken(), useValue: manager },
       ],
-    }).compile();
-
-    service = await module.resolve(NightSkyService);
+    }));
     await service.onModuleInit();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyService, {
+      providers: [
+        NightSkyColorsService,
+        NightSkyEclipticService,
+        NightSkyInputService,
+        NightSkyLinesService,
+        NightSkyOptionsService,
+        NightSkyProjectionService,
+        NightSkySiderealTimeService,
+        NightSkyStarsService,
+        NightSkySvgService,
+        NightSkyViewService,
+        { provide: getEntityManagerToken(), useValue: manager },
+      ],
+    });
 
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkyService);
   });
 
   it("loads the stars from the database as rows, brightest first", () => {
@@ -143,7 +154,7 @@ describe(NightSkyService, () => {
   it("refuses to hand out a catalog before it is loaded", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    const { instance: fresh } = await buildTestingModule(NightSkyService, {
       providers: [
         NightSkyColorsService,
         NightSkyEclipticService,
@@ -155,11 +166,9 @@ describe(NightSkyService, () => {
         NightSkyStarsService,
         NightSkySvgService,
         NightSkyViewService,
-        NightSkyService,
         { provide: getEntityManagerToken(), useValue: manager },
       ],
-    }).compile();
-    const fresh = await module.resolve(NightSkyService);
+    });
 
     expect(() => fresh.catalog).toThrow("not loaded");
   });

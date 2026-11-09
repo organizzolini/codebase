@@ -1,20 +1,11 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { JsonService } from "./json.service";
 
@@ -46,27 +37,20 @@ describe(JsonService, () => {
   let tempDirectory: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        JsonService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(JsonService);
 
-    service = await module.resolve(JsonService);
+    service = instance;
     loggerService = await module.resolve(LoggerService);
   });
 
   beforeEach(() => {
-    tempDirectory = mkdtempSync(path.join(tmpdir(), "codometer-json-"));
+    tempDirectory = createTemporaryDirectory("json");
   });
 
-  afterEach(() => {
-    rmSync(tempDirectory, { force: true, recursive: true });
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(JsonService);
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(JsonService);
   });
 
   it("counts object, array, primitive, and nesting metrics in JSON files", () => {

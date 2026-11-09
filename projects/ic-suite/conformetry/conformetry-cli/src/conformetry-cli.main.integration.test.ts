@@ -1,14 +1,8 @@
 import { Test } from "@nestjs/testing";
 import { CommandFactory } from "nest-commander";
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+
+import { captureOutput } from "@codebase/testing";
 
 import { MainModule } from "./conformetry-cli.module";
 import { GenerateCommand } from "./modules/generate/generate.command";
@@ -78,44 +72,33 @@ describe(MainModule, () => {
 
     afterEach(() => {
       process.argv = originalArguments;
-      vi.restoreAllMocks();
     });
 
     it.each(["generate", "instances", "templates", "validate"])(
       "refuses `%s` when --config is omitted",
       async (commandName) => {
-        const writes: string[] = [];
+        const output = captureOutput();
 
-        vi.spyOn(process.stderr, "write").mockImplementation((chunk) => {
-          writes.push(String(chunk));
-
-          return true;
-        });
         // Commander ends a refused command line with `process.exit(1)`, which
         // Vitest turns into a throw that `CommandFactory` reports on stderr.
         process.argv = ["node", "conformetry", commandName];
 
         await CommandFactory.run(MainModule, { logger: false });
 
-        expect(writes).toContain(
+        expect(output.stderr()).toContain(
           "error: required option '--config <path>' not specified\n",
         );
       },
     );
 
     it("refuses a blank --config in the configuration layer's words", async () => {
-      const writes: string[] = [];
+      const output = captureOutput();
 
-      vi.spyOn(process.stderr, "write").mockImplementation((chunk) => {
-        writes.push(String(chunk));
-
-        return true;
-      });
       process.argv = ["node", "conformetry", "templates", "--config", " "];
 
       await CommandFactory.run(MainModule, { logger: false });
 
-      expect(writes.join("")).toContain(
+      expect(output.stderr()).toContain(
         "A conformetry configuration path is required, but the --config flag is missing or blank.",
       );
     });

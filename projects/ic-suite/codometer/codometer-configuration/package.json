@@ -13,6 +13,7 @@
   },
   "description": "Configuration loader, limit definitions, and counter resolution for Codometer",
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
@@ -67,5 +68,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.72"
+  "version": "0.0.73"
 }

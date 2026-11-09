@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RenderLimitsService } from "./render-limits.service";
 
@@ -25,15 +26,13 @@ describe(RenderLimitsService, () => {
   let service: RenderLimitsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [RenderLimitsService],
-    }).compile();
-
-    service = await module.resolve(RenderLimitsService);
+    ({ instance: service } = await buildTestingModule(RenderLimitsService));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(RenderLimitsService);
+
+    expect(instance).toBeInstanceOf(RenderLimitsService);
   });
 
   it("prints the heading and the column headers above the table", () => {

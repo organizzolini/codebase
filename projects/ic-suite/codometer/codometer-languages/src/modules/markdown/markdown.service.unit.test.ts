@@ -1,12 +1,11 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MarkdownService } from "./markdown.service";
 
@@ -35,30 +34,17 @@ vi.mock("node:fs", async (importOriginal) => {
 describe(MarkdownService, () => {
   let service: MarkdownService;
   let loggerService: DeepMocked<LoggerService>;
-  const temporaryDirectories: string[] = [];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MarkdownService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(MarkdownService);
 
-    service = await module.resolve(MarkdownService);
+    service = instance;
     loggerService = await module.resolve(LoggerService);
-  });
-
-  afterEach(() => {
-    for (const temporaryDirectory of temporaryDirectories.splice(0)) {
-      rmSync(temporaryDirectory, { force: true, recursive: true });
-    }
   });
 
   /** Writes the given documents into a throwaway directory. */
   function writeDocuments(documents: Record<string, string>): string {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "codometer-"));
-    temporaryDirectories.push(temporaryDirectory);
+    const temporaryDirectory = createTemporaryDirectory("markdown");
 
     for (const [name, content] of Object.entries(documents)) {
       writeFileSync(path.join(temporaryDirectory, name), content, "utf8");
@@ -67,8 +53,10 @@ describe(MarkdownService, () => {
     return temporaryDirectory;
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MarkdownService);
+
+    expect(instance).toBeInstanceOf(MarkdownService);
   });
 
   it("counts each heading against its own level", () => {

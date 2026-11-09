@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkyColorsService } from "./night-sky-colors.service";
 import { NightSkyInputService } from "./night-sky-input.service";
@@ -23,18 +24,20 @@ const SCORPIUS: ConstellationSegment = {
 describe(NightSkyInputService, () => {
   let service: NightSkyInputService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [NightSkyColorsService, NightSkyInputService],
-    }).compile();
+  const providers = [NightSkyColorsService];
 
-    service = await module.resolve(NightSkyInputService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(NightSkyInputService, { providers });
+
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyInputService, {
+      providers,
+    });
 
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkyInputService);
   });
 
   describe("parse", () => {

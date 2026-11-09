@@ -1,5 +1,4 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import {
   calc,
@@ -9,6 +8,8 @@ import {
   set_topo,
 } from "sweph";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 vi.mock("sweph", async (importOriginal) => {
   const importedModule = await importOriginal();
@@ -93,21 +94,30 @@ describe(EphemerisCoordinateService, () => {
 
   let service: EphemerisCoordinateService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EphemerisCoordinateService,
-        { provide: EphemerisConstantsService, useValue: constantsService },
-        { provide: MathService, useValue: mathService },
-        { provide: EphemerisTimeService, useValue: timeService },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    providers: [
+      { provide: EphemerisConstantsService, useValue: constantsService },
+      { provide: MathService, useValue: mathService },
+      { provide: EphemerisTimeService, useValue: timeService },
+    ],
+  };
 
-    service = await module.resolve(EphemerisCoordinateService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      EphemerisCoordinateService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EphemerisCoordinateService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EphemerisCoordinateService);
   });
 
   it("throws when a node has no Swiss Ephemeris constant", () => {

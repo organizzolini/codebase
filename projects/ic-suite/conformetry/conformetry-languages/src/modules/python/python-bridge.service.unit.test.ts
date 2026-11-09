@@ -1,22 +1,25 @@
 import { spawnSync } from "node:child_process";
 
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DifferencesModule } from "../differences/differences.module";
 import { ScoringModule } from "../scoring/scoring.module";
 
 import { PythonBridgeService } from "./python-bridge.service";
 
+import type * as Testing from "@codebase/testing";
 import type { ConformetryDifference } from "@conformetry/core";
 import type childProcess from "node:child_process";
 
 // Calls through by default so most tests exercise the real bridge; the
 // failure paths, which need no `python3`, stage a return value instead.
 vi.mock("node:child_process", async (importOriginal) => {
-  const actual = await importOriginal<typeof childProcess>();
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
 
-  return { ...actual, spawnSync: vi.fn(actual.spawnSync) };
+  return mockChildProcess(await importOriginal<typeof childProcess>());
 });
 
 const spawnSyncMock = vi.mocked(spawnSync);
@@ -25,16 +28,19 @@ describe(PythonBridgeService, () => {
   let service: PythonBridgeService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(PythonBridgeService, {
       imports: [DifferencesModule, ScoringModule],
-      providers: [PythonBridgeService],
-    }).compile();
+    });
 
-    service = await module.resolve(PythonBridgeService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PythonBridgeService, {
+      imports: [DifferencesModule, ScoringModule],
+    });
+
+    expect(instance).toBeInstanceOf(PythonBridgeService);
   });
 
   describe("validatePythonSource", () => {

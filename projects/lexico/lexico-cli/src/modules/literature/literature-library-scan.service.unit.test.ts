@@ -1,8 +1,8 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LiteratureLibraryScanService } from "./literature-library-scan.service";
 
@@ -34,15 +34,10 @@ describe(LiteratureLibraryScanService, () => {
   let logger: DeepMocked<LoggerService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LiteratureLibraryScanService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(LiteratureLibraryScanService);
 
-    service = await module.resolve(LiteratureLibraryScanService);
-    logger = await module.resolve(LoggerService);
+    service = built.instance;
+    logger = built.mock(LoggerService);
   });
 
   beforeEach(async () => {
@@ -55,8 +50,10 @@ describe(LiteratureLibraryScanService, () => {
     service = new LiteratureLibraryScanService(logger);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LiteratureLibraryScanService);
+
+    expect(instance).toBeInstanceOf(LiteratureLibraryScanService);
   });
 
   it("sets logger context", () => {

@@ -1,10 +1,10 @@
 /* cspell:words amo */
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { Word } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { WordLexemeType } from "./word-lexeme.entities";
 import { WordLexemeResolver } from "./word-lexeme.resolver";
@@ -14,21 +14,12 @@ import { WordType } from "./word.entities";
 import type { WordsService } from "./words.service";
 
 describe(WordLexemeResolver, () => {
-  let resolver: WordLexemeResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WordLexemeResolver, {
+      mocks: [WordLinkLoader],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        WordLexemeResolver,
-        { provide: WordLinkLoader, useValue: createMock<WordLinkLoader>() },
-      ],
-    }).compile();
-
-    resolver = await module.resolve(WordLexemeResolver);
-  });
-
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(WordLexemeResolver);
   });
 
   it("resolves a word-lexeme link's word through the loader", async () => {

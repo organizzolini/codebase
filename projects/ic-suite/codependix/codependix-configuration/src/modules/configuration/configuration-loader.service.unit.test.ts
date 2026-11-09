@@ -1,9 +1,10 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationLoaderService } from "./configuration-loader.service";
 
@@ -11,22 +12,20 @@ describe(ConfigurationLoaderService, () => {
   let service: ConfigurationLoaderService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ConfigurationLoaderService],
-    }).compile();
-
-    service = await module.resolve(ConfigurationLoaderService);
+    ({ instance: service } = await buildTestingModule(
+      ConfigurationLoaderService,
+    ));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConfigurationLoaderService);
+
+    expect(instance).toBeInstanceOf(ConfigurationLoaderService);
   });
 
   describe("findProjectConfigurationFile", () => {
     it("finds a configuration file colocated with the project", async () => {
-      const directory = await mkdtemp(
-        path.join(tmpdir(), "codependix-loader-"),
-      );
+      const directory = createTemporaryDirectory("codependix-loader");
       const configurationPath = path.join(directory, "codependix.config.json");
 
       await writeFile(configurationPath, "{}", "utf8");
@@ -37,7 +36,7 @@ describe(ConfigurationLoaderService, () => {
     });
 
     it("never walks upward", async () => {
-      const root = await mkdtemp(path.join(tmpdir(), "codependix-loader-"));
+      const root = createTemporaryDirectory("codependix-loader");
       const nested = path.join(root, "nested");
 
       await mkdir(nested, { recursive: true });
@@ -49,9 +48,7 @@ describe(ConfigurationLoaderService, () => {
 
   describe("readAuthoredConfiguration", () => {
     it("reads and parses a JSON configuration file", async () => {
-      const directory = await mkdtemp(
-        path.join(tmpdir(), "codependix-loader-"),
-      );
+      const directory = createTemporaryDirectory("codependix-loader");
 
       await writeFile(
         path.join(directory, "codependix.config.json"),
@@ -67,9 +64,7 @@ describe(ConfigurationLoaderService, () => {
     });
 
     it("refuses a path naming no file rather than resolving to nothing", async () => {
-      const directory = await mkdtemp(
-        path.join(tmpdir(), "codependix-loader-"),
-      );
+      const directory = createTemporaryDirectory("codependix-loader");
 
       await expect(
         service.readAuthoredConfiguration({
@@ -79,9 +74,7 @@ describe(ConfigurationLoaderService, () => {
     });
 
     it("never searches the directory for a file the path did not name", async () => {
-      const directory = await mkdtemp(
-        path.join(tmpdir(), "codependix-loader-"),
-      );
+      const directory = createTemporaryDirectory("codependix-loader");
 
       await writeFile(path.join(directory, "codependix.config.ts"), "", "utf8");
 
@@ -95,9 +88,7 @@ describe(ConfigurationLoaderService, () => {
 
   describe("resolveConfigurationPath", () => {
     it("resolves an existing relative path against the cwd", async () => {
-      const directory = await mkdtemp(
-        path.join(tmpdir(), "codependix-loader-"),
-      );
+      const directory = createTemporaryDirectory("codependix-loader");
       const configurationPath = path.join(directory, "codependix.config.json");
 
       await writeFile(configurationPath, "{}", "utf8");

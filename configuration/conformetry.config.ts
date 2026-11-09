@@ -1,7 +1,12 @@
+import path from "node:path";
+
 import { z } from "zod";
 
 import type { ConformetryGeneratorInputDefinition } from "@conformetry/configuration";
-import type { ConformetryNxConfiguration } from "@conformetry/nx";
+import type {
+  ConformetryNxConfiguration,
+  ConformetryNxInstanceGroup,
+} from "@conformetry/nx";
 
 export const CONFORMETRY_PATTERNS = [
   "configuration/conformetry.config.ts",
@@ -31,6 +36,71 @@ function defineInputs(
   }
 
   return inputs;
+}
+
+/**
+ * A project's baseline per kind of instance. Its `src/modules/*` directories
+ * are one kind whichever module template fits: the first group to find a path
+ * sets its threshold.
+ */
+interface TestTemplateBaseline {
+  readonly application?: number;
+  readonly modules?: number;
+  readonly resolvers?: number;
+  readonly routes?: number;
+  readonly services?: number;
+}
+
+/** What each untouched project of a shape measures, shared to stay short. */
+const NEST_BASELINE = { modules: 89 / 121, services: 47 / 79 };
+/** Each ic-suite CLI's `nestjs-command-project` score, set on its own group. */
+const COMMAND_PROJECT_BASELINE = 795 / 798;
+
+/**
+ * Each project's measured conformance score, written as requirements met over
+ * requirements weighed, from when the test templates moved onto
+ * `@codebase/testing` (#329). A kind holds the lowest score among the
+ * project's instances of it, so validation passes before its tests migrate.
+ * A project's migration deletes its entry, and an ic-suite CLI's also deletes
+ * its `nestjs-command-project` threshold, which raises it back to 1. The last
+ * migration deletes the table.
+ */
+const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
+  compliance: NEST_BASELINE,
+  documentation: NEST_BASELINE,
+  installation: NEST_BASELINE,
+  integration: NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-configuration": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-core": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-languages": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-nx": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-output": NEST_BASELINE,
+  "projects/ic-suite/coinagerie/coinagerie-vocabulary": NEST_BASELINE,
+  "projects/lexico/lexico-db": NEST_BASELINE,
+  publication: NEST_BASELINE,
+};
+
+/**
+ * Puts a group per project in `TEST_TEMPLATE_BASELINES`, held to its measured
+ * score, ahead of `group`, so it finds those projects' instances first.
+ */
+function withBaselines(
+  kind: keyof TestTemplateBaseline,
+  group: ConformetryNxInstanceGroup,
+  patterns: string[] = group.patterns ?? [],
+): ConformetryNxInstanceGroup[] {
+  const entries = Object.entries(TEST_TEMPLATE_BASELINES);
+  const groups = entries.flatMap(([root, baseline]) => {
+    const threshold = baseline[kind];
+    const rooted = patterns.map((pattern) => {
+      return path.posix.join(root, pattern);
+    });
+
+    return threshold === undefined ? [] : [{ patterns: rooted, threshold }];
+  });
+
+  return [...groups, group];
 }
 
 const conformetryConfiguration: ConformetryNxConfiguration = [
@@ -72,6 +142,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/callidescope/",
           workspaceRelativePrefix: "../../../../",
         },
+        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/codependix/codependix-cli"],
@@ -93,6 +164,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/coinagerie/",
           workspaceRelativePrefix: "../../../../",
         },
+        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/conformetry/conformetry-cli"],
@@ -100,6 +172,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/conformetry/",
           workspaceRelativePrefix: "../../../../",
         },
+        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["compliance"],
@@ -107,6 +180,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "",
           workspaceRelativePrefix: "../",
         },
+        threshold: 798 / 801,
       },
     ],
     name: "nestjs-command-project",
@@ -152,14 +226,16 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     // Where existing applications live is also where a new one may be
     // generated. The template reaches the shared configuration by package name,
     // so it states no climb back to the workspace root and no group has to.
-    instances: [
+    instances: withBaselines(
+      "application",
       {
         // The `node_modules` links would otherwise be followed back to the
         // packages they point at.
         exclude: ["projects/**/node_modules/**"],
         patterns: ["projects/**/*-web"],
       },
-    ],
+      ["."],
+    ),
     name: "tanstack-application",
     templatePath: "configuration/conformetry-templates/tanstack-application",
   },
@@ -174,9 +250,10 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       name: z.string().describe("Module name in kebab-case"),
       project: z.string().describe("Parent project name in kebab-case"),
     }),
-    instances: [
-      { patterns: ["src/modules/*"], tags: ["framework:nest-commander"] },
-    ],
+    instances: withBaselines("modules", {
+      patterns: ["src/modules/*"],
+      tags: ["framework:nest-commander"],
+    }),
     name: "nestjs-command-module",
     templatePath: "configuration/conformetry-templates/nestjs-command-module",
   },
@@ -187,12 +264,10 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       name: z.string().describe("Module name in kebab-case"),
       project: z.string().describe("Parent project name in kebab-case"),
     }),
-    instances: [
-      {
-        patterns: ["src/modules/*"],
-        tags: ["framework:nestjs", "language:graphql"],
-      },
-    ],
+    instances: withBaselines("modules", {
+      patterns: ["src/modules/*"],
+      tags: ["framework:nestjs", "language:graphql"],
+    }),
     name: "nestjs-dataloader-module",
     templatePath:
       "configuration/conformetry-templates/nestjs-dataloader-module",
@@ -204,12 +279,10 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       name: z.string().describe("Module name in kebab-case"),
       project: z.string().describe("Parent project name in kebab-case"),
     }),
-    instances: [
-      {
-        patterns: ["src/modules/*"],
-        tags: ["framework:nestjs", "language:graphql"],
-      },
-    ],
+    instances: withBaselines("modules", {
+      patterns: ["src/modules/*"],
+      tags: ["framework:nestjs", "language:graphql"],
+    }),
     name: "nestjs-graphql-module",
     templatePath: "configuration/conformetry-templates/nestjs-graphql-module",
   },
@@ -221,15 +294,13 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       name: z.string().describe("Service name in kebab-case"),
       project: z.string().describe("Parent project name in kebab-case"),
     }),
-    instances: [
-      {
-        patterns: [
-          "src/modules/*/*.service.ts",
-          "src/modules/*/*.service.unit.test.ts",
-        ],
-        tags: ["framework:nestjs"],
-      },
-    ],
+    instances: withBaselines("services", {
+      patterns: [
+        "src/modules/*/*.service.ts",
+        "src/modules/*/*.service.unit.test.ts",
+      ],
+      tags: ["framework:nestjs"],
+    }),
     name: "nestjs-service-file",
     templatePath: "configuration/conformetry-templates/nestjs-service-file",
   },
@@ -241,15 +312,13 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       name: z.string().describe("Resolver name in kebab-case"),
       project: z.string().describe("Parent project name in kebab-case"),
     }),
-    instances: [
-      {
-        patterns: [
-          "src/modules/*/*.resolver.ts",
-          "src/modules/*/*.resolver.unit.test.ts",
-        ],
-        tags: ["framework:nestjs", "language:graphql"],
-      },
-    ],
+    instances: withBaselines("resolvers", {
+      patterns: [
+        "src/modules/*/*.resolver.ts",
+        "src/modules/*/*.resolver.unit.test.ts",
+      ],
+      tags: ["framework:nestjs", "language:graphql"],
+    }),
     name: "nestjs-resolver-file",
     templatePath: "configuration/conformetry-templates/nestjs-resolver-file",
   },
@@ -260,7 +329,10 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       name: z.string().describe("Module name in kebab-case"),
       project: z.string().describe("Parent project name in kebab-case"),
     }),
-    instances: [{ patterns: ["src/modules/*"], tags: ["framework:nestjs"] }],
+    instances: withBaselines("modules", {
+      patterns: ["src/modules/*"],
+      tags: ["framework:nestjs"],
+    }),
     name: "nestjs-service-module",
     templatePath: "configuration/conformetry-templates/nestjs-service-module",
   },
@@ -367,15 +439,13 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
         .string()
         .describe("URL path the route serves, e.g. /, /search, or /word/$id"),
     }),
-    instances: [
-      {
-        patterns: [
-          "src/routes/!(__root|*.integration.test).tsx",
-          "src/routes/*.integration.test.tsx",
-        ],
-        tags: ["framework:tanstack-start"],
-      },
-    ],
+    instances: withBaselines("routes", {
+      patterns: [
+        "src/routes/!(__root|*.integration.test).tsx",
+        "src/routes/*.integration.test.tsx",
+      ],
+      tags: ["framework:tanstack-start"],
+    }),
     name: "tanstack-route",
     templatePath: "configuration/conformetry-templates/tanstack-route",
   },

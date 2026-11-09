@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkyProjectionService } from "./night-sky-projection.service";
 import { NightSkyStarsService } from "./night-sky-stars.service";
@@ -36,18 +37,20 @@ function optionsFor(stars: readonly StarRow[]): ResolvedNightSkyOptions {
 describe(NightSkyStarsService, () => {
   let service: NightSkyStarsService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [NightSkyProjectionService, NightSkyStarsService],
-    }).compile();
+  const providers = [NightSkyProjectionService];
 
-    service = await module.resolve(NightSkyStarsService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(NightSkyStarsService, { providers });
+
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyStarsService, {
+      providers,
+    });
 
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(NightSkyStarsService);
   });
 
   describe("select", () => {

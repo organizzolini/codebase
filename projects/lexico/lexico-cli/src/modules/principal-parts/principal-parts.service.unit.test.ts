@@ -1,16 +1,16 @@
-import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import * as cheerio from "cheerio";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Lexeme, PrincipalPart } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 
 import { PrincipalPartsService } from "./principal-parts.service";
 
+import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { AnyNode } from "domhandler";
 import type { Repository } from "typeorm";
 
@@ -32,27 +32,31 @@ describe(PrincipalPartsService, () => {
   let logger: DeepMocked<LoggerService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(PrincipalPartsService, {
       providers: [
-        PrincipalPartsService,
         {
           provide: getRepositoryToken(Lexeme),
           useValue: createRepositoryMock<Lexeme>(),
         },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(PrincipalPartsService);
-    logger = await module.resolve(LoggerService);
-    lexemeRepository = module.get(getRepositoryToken(Lexeme));
+    service = built.instance;
+    logger = built.mock(LoggerService);
+    lexemeRepository = built.module.get(getRepositoryToken(Lexeme));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PrincipalPartsService, {
+      providers: [
+        {
+          provide: getRepositoryToken(Lexeme),
+          useValue: createRepositoryMock<Lexeme>(),
+        },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(PrincipalPartsService);
   });
 
   it("sets logger context during service construction", () => {

@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import {
@@ -58,19 +59,12 @@ function traceFixture(files: Record<string, string>): {
 }
 
 describe(EdgesService, () => {
-  let service: EdgesService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EdgesService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [EdgesService],
-    }).compile();
+    });
 
-    service = await module.resolve(EdgesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(EdgesService);
   });
 
   it("logs how many edges it built", () => {
