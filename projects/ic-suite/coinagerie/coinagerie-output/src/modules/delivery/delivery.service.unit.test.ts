@@ -1,17 +1,9 @@
 import "reflect-metadata";
 
-import {
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { MalformedGlossaryError } from "@coinagerie/core";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -22,6 +14,9 @@ import {
   vi,
 } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { ComparisonModule } from "../comparison/comparison.module";
 import { JsonModule } from "../json/json.module";
 import { MarkdownModule } from "../markdown/markdown.module";
@@ -30,7 +25,6 @@ import { DeliveryService } from "./delivery.service";
 
 import type { ResolvedCoinagerieOutput } from "@coinagerie/configuration";
 
-const TEMPORARY_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 const START = "<!-- coinagerie:start -->";
 const END = "<!-- coinagerie:end -->";
 
@@ -39,21 +33,13 @@ describe(DeliveryService, () => {
   let directory: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(DeliveryService, {
       imports: [ComparisonModule, JsonModule, MarkdownModule],
-      providers: [DeliveryService],
-    }).compile();
-
-    service = await module.resolve(DeliveryService);
+    }));
   });
 
   beforeEach(() => {
-    mkdirSync(TEMPORARY_ROOT, { recursive: true });
-    directory = mkdtempSync(path.join(TEMPORARY_ROOT, "delivery-"));
-  });
-
-  afterEach(() => {
-    rmSync(directory, { force: true, recursive: true });
+    directory = createTemporaryDirectory("delivery");
   });
 
   function markdown(
@@ -75,8 +61,12 @@ describe(DeliveryService, () => {
     return [START, "", "## 🪙 Coinagerie", "", ...bullets, "", END].join("\n");
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DeliveryService, {
+      imports: [ComparisonModule, JsonModule, MarkdownModule],
+    });
+
+    expect(instance).toBeInstanceOf(DeliveryService);
   });
 
   describe("check", () => {
