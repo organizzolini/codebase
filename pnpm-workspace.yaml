@@ -191,8 +191,8 @@ catalog:
   sonner: ^2.0.7
   squawk-cli: ^2.55.0
   sweph: ^2.10.3-b-1
-  stylelint: ^17.12.0
-  stylelint-config-standard: ^40.0.0
+  stylelint: ^18.0.0
+  stylelint-config-standard: ^41.0.0
   stylelint-config-tailwindcss: ^1.0.1
   syncpack: ^15.3.1
   tailwind-merge: ^3.6.0

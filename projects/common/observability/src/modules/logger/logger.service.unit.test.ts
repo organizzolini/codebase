@@ -314,6 +314,22 @@ describe(LoggerService, () => {
     });
   });
 
+  describe("request exception handler", () => {
+    it("exempts @nestjs/core's per-request exception handler", () => {
+      // `ExceptionsHandler` is the catch-all for an exception thrown while
+      // serving a request or a GraphQL resolver. It logs the raw error, so a
+      // throw here would replace the real failure (a missing table, say) with
+      // a complaint about message format.
+      expect(() => {
+        service.error(
+          'QueryFailedError: relation "calendar_events" does not exist',
+          "error stack",
+          "ExceptionsHandler",
+        );
+      }).not.toThrow();
+    });
+  });
+
   describe("structured data", () => {
     it("carries the emoji as a field and the prose as the message", () => {
       const loggerChildMock = createLoggerChildMock();

@@ -1,3 +1,21 @@
+## 0.0.61 (2026-11-09)
+
+### 🩹 Fixes
+
+- **testing,configuration:** 🐛 add the common testing package with its adapters ([#1877](https://github.com/organizzolini/codebase/pull/1877), [#1831](https://github.com/organizzolini/codebase/issues/1831))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.74
+- Updated codependix-cli to 0.0.75
+
+## 0.0.60 (2026-11-08)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.73
+- Updated codependix-cli to 0.0.74
+
 ## 0.0.59 (2026-11-08)
 
 ### 💅 Refactors

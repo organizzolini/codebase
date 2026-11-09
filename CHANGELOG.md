@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.59.4](https://github.com/organizzolini/codebase/compare/v3.59.3...v3.59.4) (2026-11-09)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 add a not-found page to the web calendar ([#2204](https://github.com/organizzolini/codebase/issues/2204)) ([680a326](https://github.com/organizzolini/codebase/commit/680a326123375cd1d21a0d18f220149d8300a037)), closes [#2201](https://github.com/organizzolini/codebase/issues/2201)
+* **caelundas:** 🐛 draw the night sky from the stars in Postgres ([#2205](https://github.com/organizzolini/codebase/issues/2205)) ([d249016](https://github.com/organizzolini/codebase/commit/d249016aa691369651a83a64dd35df52a74ee246)), closes [#2202](https://github.com/organizzolini/codebase/issues/2202)
+* **configuration:** 🐛 let the request exception handler log raw errors ([#2203](https://github.com/organizzolini/codebase/issues/2203)) ([60e1a66](https://github.com/organizzolini/codebase/commit/60e1a6641a1f8c7d449817dfc6d0c605ee48e6fc)), closes [#2200](https://github.com/organizzolini/codebase/issues/2200)
+* **testing,configuration:** 🐛 add the common testing package with its adapters ([#1877](https://github.com/organizzolini/codebase/issues/1877)) ([ed17e83](https://github.com/organizzolini/codebase/commit/ed17e83ae1a07d3e9d86c17a288bbb10fb130e0d)), closes [#1831](https://github.com/organizzolini/codebase/issues/1831) [#329](https://github.com/organizzolini/codebase/issues/329) [#1844](https://github.com/organizzolini/codebase/issues/1844) [#1845](https://github.com/organizzolini/codebase/issues/1845) [#1846](https://github.com/organizzolini/codebase/issues/1846) [#1847](https://github.com/organizzolini/codebase/issues/1847) [#1848](https://github.com/organizzolini/codebase/issues/1848) [#1849](https://github.com/organizzolini/codebase/issues/1849)
+
+## [3.59.3](https://github.com/organizzolini/codebase/compare/v3.59.2...v3.59.3) (2026-11-09)
+
+### 🐛 Bug Fixes
+
+* **dependencies:** 🐛 align Stylelint core and config versions ([#2194](https://github.com/organizzolini/codebase/issues/2194)) ([01d16c2](https://github.com/organizzolini/codebase/commit/01d16c2a3e4ec23a98ddc7e598e0935ece7e1be5)), closes [#2189](https://github.com/organizzolini/codebase/issues/2189)
+
 ## [3.59.2](https://github.com/organizzolini/codebase/compare/v3.59.1...v3.59.2) (2026-11-08)
 
 ### 🐛 Bug Fixes

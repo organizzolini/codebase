@@ -1,3 +1,11 @@
+## 0.0.12 (2026-11-09)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
+## 0.0.11 (2026-11-08)
+
+This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.
+
 ## 0.0.10 (2026-11-08)
 
 This was a version bump only for coinagerie-languages to align it with other projects, there were no code changes.

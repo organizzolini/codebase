@@ -71,11 +71,13 @@ export const IRREGULAR_PAST_VERBS = new Set([
  * application here — a native module ABI mismatch, a first-attempt database
  * connection failure `TypeOrmModule` logs while retrying, anything — is
  * logged through it. A logging call must not be the thing that turns
- * reporting a failure into a fatal `process.abort()`.
+ * reporting a failure into a fatal `process.abort()`. `ExceptionsHandler` is
+ * its per-request twin, so a failed query reaches the client as itself.
  */
 export const UNVALIDATED_LOG_CONTEXTS = new Set([
   "CommandFactory",
   "ExceptionHandler",
+  "ExceptionsHandler",
   "GraphQLModule",
   "InstanceLoader",
   "NestApplication",
