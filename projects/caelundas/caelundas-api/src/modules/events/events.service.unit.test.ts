@@ -3,9 +3,17 @@ import { getEntityManagerToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
-import { CalendarWindow } from "./calendar-window.entities";
 import { EventsService } from "./events.service";
-import { TimelineScale } from "./timeline-scale.entities";
+import { EventFilterCalendarFieldsService } from "./filters/event-filter-calendar-fields.service";
+import { EventFilterNumbersService } from "./filters/event-filter-numbers.service";
+import { EventFilterParametersService } from "./filters/event-filter-parameters.service";
+import { EventFilterValuesService } from "./filters/event-filter-values.service";
+import { EventFilterService } from "./filters/event-filter.service";
+import { EventGroupingService } from "./grouping/event-grouping.service";
+import { PresetsService } from "./presets/presets.service";
+import { CalendarWindow } from "./windows/calendar-window.entities";
+import { TimelineScale } from "./windows/timeline-scale.entities";
+import { WindowsService } from "./windows/windows.service";
 
 import type { EntityManager } from "typeorm";
 
@@ -17,7 +25,15 @@ describe(EventsService, () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
+        EventFilterCalendarFieldsService,
+        EventFilterNumbersService,
+        EventFilterParametersService,
+        EventFilterService,
+        EventFilterValuesService,
+        EventGroupingService,
         EventsService,
+        PresetsService,
+        WindowsService,
         { provide: getEntityManagerToken(), useValue: { query } },
       ],
     }).compile();
@@ -147,6 +163,22 @@ describe(EventsService, () => {
     expect(query).toHaveBeenLastCalledWith(expect.any(String), [
       "2026-03-06T00:00:00.000Z",
       "2026-03-05T00:00:00.000Z",
+    ]);
+  });
+
+  it("writes the period as ISO 8601 text in UTC for the query", async () => {
+    expect.hasAssertions();
+
+    query.mockResolvedValueOnce([]);
+
+    await service.findEvents({
+      end: "2026-03-05T03:30:00-05:00",
+      start: new Date("2026-03-05T03:30:00Z"),
+    });
+
+    expect(query).toHaveBeenLastCalledWith(expect.any(String), [
+      "2026-03-05T08:30:00.000Z",
+      "2026-03-05T03:30:00.000Z",
     ]);
   });
 

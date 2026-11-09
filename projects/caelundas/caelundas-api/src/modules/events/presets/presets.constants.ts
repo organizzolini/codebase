@@ -1,5 +1,5 @@
-import { EventFilterCombinator } from "./event-filter-combinator.entities";
-import { TAG_OPERATORS } from "./event-filter-fields.constants";
+import { EventFilterCombinator } from "../filters/event-filter-combinator.entities";
+import { TAG_OPERATORS } from "../filters/event-filter-fields.constants";
 
 import type { Preset, PresetRule } from "./presets.types";
 

@@ -4,9 +4,9 @@ import {
   DATABASE_TIMEOUT_MILLISECONDS,
   seedEvents,
   startEventsApplication,
-} from "../../../testing/events-application";
+} from "../../../../testing/events-application";
 
-import type { EventsApplication } from "../../../testing/events-application";
+import type { EventsApplication } from "../../../../testing/events-application";
 
 /** The two windows of one windows answer, as ISO instants. */
 interface Windows {

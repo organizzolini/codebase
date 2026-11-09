@@ -1,7 +1,7 @@
-import type { EventFacetEntity } from "./event-facet.entities";
-import type { EventFilterCombinator } from "./event-filter-combinator.entities";
-import type { TAG_OPERATORS } from "./event-filter-fields.constants";
-import type { EventFilterGroupEntity } from "./event-filter.entities";
+import type { EventFacetEntity } from "../event-facet.entities";
+import type { EventFilterCombinator } from "../filters/event-filter-combinator.entities";
+import type { TAG_OPERATORS } from "../filters/event-filter-fields.constants";
+import type { EventFilterGroupEntity } from "../filters/event-filter.entities";
 
 /**
  * A named set of filters the calendar applies in one step, written by tag

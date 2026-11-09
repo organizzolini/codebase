@@ -1,9 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
 import { EntityManager } from "typeorm";
 
-import { compileEventFilter } from "./event-filter-compiler.utilities";
-import { compileEventGrouping } from "./event-grouping-compiler.utilities";
 import {
   DATASET_SQL,
   datasetRowSchema,
@@ -13,19 +11,20 @@ import {
   FACETS_SQL,
   groupKeysSchema,
 } from "./events.constants";
-import { toIsoString } from "./events.utilities";
-import { resolvePresets } from "./presets.utilities";
-import { getWindows } from "./windows.utilities";
+import { EventFilterService } from "./filters/event-filter.service";
+import { EventGroupingService } from "./grouping/event-grouping.service";
+import { PresetsService } from "./presets/presets.service";
+import { WindowsService } from "./windows/windows.service";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
 import type { EventFacetEntity } from "./event-facet.entities";
-import type { EventFilterGroup } from "./event-filter.types";
-import type { EventGroupLevel } from "./event-grouping.types";
 import type { EventsDatasetEntity } from "./events.entities";
-import type { PeriodInput } from "./period-input.entities";
-import type { ResolvedPreset } from "./presets.types";
-import type { WindowsArguments } from "./windows-arguments.entities";
-import type { Windows } from "./windows.types";
+import type { EventFilterGroup } from "./filters/event-filter.types";
+import type { EventGroupLevel } from "./grouping/event-grouping.types";
+import type { ResolvedPreset } from "./presets/presets.types";
+import type { PeriodInput } from "./windows/period-input.entities";
+import type { WindowsArguments } from "./windows/windows-arguments.entities";
+import type { Windows } from "./windows/windows.types";
 import type { z } from "zod";
 
 /**
@@ -37,13 +36,29 @@ import type { z } from "zod";
 export class EventsService {
   // 🏗 Dependency Injection
 
-  constructor(@InjectEntityManager() private readonly manager: EntityManager) {}
+  constructor(
+    @InjectEntityManager() private readonly manager: EntityManager,
+    @Inject(EventFilterService)
+    private readonly filterService: EventFilterService,
+    @Inject(EventGroupingService)
+    private readonly groupingService: EventGroupingService,
+    @Inject(PresetsService) private readonly presetsService: PresetsService,
+    @Inject(WindowsService) private readonly windowsService: WindowsService,
+  ) {}
 
   // 🔐 Private Fields
 
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * Writes an instant the GraphQL `DateTime` scalar parsed, or a string it
+   * left as is, as the ISO 8601 text Postgres reads as a `timestamptz`.
+   */
+  private toIsoString(instant: Date | string): string {
+    return new Date(instant).toISOString();
+  }
 
   // 🌎 Public Methods
 
@@ -66,16 +81,19 @@ export class EventsService {
     filter?: EventFilterGroup | null,
     grouping: readonly EventGroupLevel[] = [],
   ): Promise<CalendarEventEntity[]> {
-    const compiled = compileEventFilter(filter, 2);
+    const compiled = this.filterService.compile(filter, 2);
     const filterParameters = compiled?.parameters ?? [];
-    const groups = compileEventGrouping(grouping, 2 + filterParameters.length);
+    const groups = this.groupingService.compile(
+      grouping,
+      2 + filterParameters.length,
+    );
     const rows = await this.select(
       EVENTS_IN_PERIOD_SQL.replace("{filter}", () =>
         compiled === null ? "" : `and ${compiled.sql}`,
       ).replace("{groups}", () => groups.sql),
       [
-        toIsoString(period.end),
-        toIsoString(period.start),
+        this.toIsoString(period.end),
+        this.toIsoString(period.start),
         ...filterParameters,
         ...groups.parameters,
       ],
@@ -109,14 +127,14 @@ export class EventsService {
     period?: PeriodInput,
     filter?: EventFilterGroup | null,
   ): Promise<EventFacetEntity[]> {
-    const compiled = compileEventFilter(filter, 2);
+    const compiled = this.filterService.compile(filter, 2);
     const rows = await this.select(
       FACETS_SQL.replace("{filter}", () =>
         compiled === null ? "" : `and ${compiled.sql}`,
       ),
       [
-        period === undefined ? null : toIsoString(period.end),
-        period === undefined ? null : toIsoString(period.start),
+        period === undefined ? null : this.toIsoString(period.end),
+        period === undefined ? null : this.toIsoString(period.start),
         ...(compiled?.parameters ?? []),
       ],
       facetRowSchema,
@@ -146,7 +164,7 @@ export class EventsService {
    * dataset has, in menu order.
    */
   public async findPresets(): Promise<ResolvedPreset[]> {
-    return resolvePresets(await this.findFacets());
+    return this.presetsService.resolve(await this.findFacets());
   }
 
   /**
@@ -154,7 +172,7 @@ export class EventsService {
    * period of events to read for them.
    */
   public findWindows(args: WindowsArguments): Windows {
-    return getWindows(args.window, new Date(args.anchor), {
+    return this.windowsService.getWindows(args.window, new Date(args.anchor), {
       agendaDays: args.agendaDays,
       scale: args.scale,
     });
