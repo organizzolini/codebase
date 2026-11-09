@@ -245,6 +245,33 @@ describe(DeliveryService, () => {
       });
     });
 
+    it("creates the file when an anchor destination names one that does not exist and a markdownSection was given", async () => {
+      const resolvedOutput: ResolvedCodependixGraphOutput = {
+        json: undefined,
+        markdown: { anchor: "nx", path: "codependix.md" },
+        target: "markdown",
+      };
+
+      service.deliverGraphOutput({
+        jsonContent: undefined,
+        markdownContent: "```mermaid\ngraph LR\n```",
+        markdownSection: {
+          introLine: "Dependency graphs exported by codependix.",
+          subheading: "Nx Neighborhood",
+        },
+        mode: "write",
+        project: { absoluteRoot: projectRoot, name: "logger" },
+        resolvedOutput,
+      });
+
+      const written = await readFile(
+        path.join(projectRoot, "codependix.md"),
+        "utf8",
+      );
+
+      expect(written).toContain("graph LR");
+    });
+
     it("throws when an anchor destination names a file that does not exist", () => {
       const resolvedOutput: ResolvedCodependixGraphOutput = {
         json: undefined,

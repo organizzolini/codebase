@@ -295,9 +295,7 @@ describe(ProjectGraphsService, () => {
 
       await mkdir(otherProjectRoot, { recursive: true });
       // No README.md is written for `codependix-nx`'s root here, on purpose:
-      // a missing anchor in a file that exists now auto-creates the section
-      // rather than failing, so the file itself must be absent to still
-      // exercise a hard failure — see `AnchorNotFoundError`'s updated JSDoc.
+      // writing creates an absent file, so only a check still fails on one.
       const twoNeighborhoods = new Map([
         ["codependix-nx", NEIGHBORHOOD],
         ["other-project", { ...NEIGHBORHOOD, projectName: "other-project" }],
@@ -320,6 +318,7 @@ describe(ProjectGraphsService, () => {
 
       const outcome = service.runNxProjectsGraphs({
         context: buildContext({
+          mode: "check",
           projects: [
             { absoluteRoot: projectRoot, name: "codependix-nx", tags: [] },
             { absoluteRoot: otherProjectRoot, name: "other-project", tags: [] },
@@ -336,21 +335,18 @@ describe(ProjectGraphsService, () => {
       ]);
       expect(outcome.results).toStrictEqual([
         {
-          isCurrent: true,
+          isCurrent: false,
           projectName: "other-project",
-          staleExports: [],
-          stalePaths: [],
+          staleExports: [
+            {
+              anchor: undefined,
+              difference: "graph",
+              path: "other-project.json",
+            },
+          ],
+          stalePaths: ["other-project.json"],
         },
       ]);
-
-      const written = JSON.parse(
-        await readFile(
-          path.join(otherProjectRoot, "other-project.json"),
-          "utf8",
-        ),
-      ) as unknown;
-
-      expect(written).toMatchObject({ projectName: "other-project" });
     });
   });
 

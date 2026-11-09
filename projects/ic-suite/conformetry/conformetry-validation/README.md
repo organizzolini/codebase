@@ -95,223 +95,19 @@ MIT — see [LICENSE](../../../../LICENSE).
 
 This project was generated from the [nestjs-service-project](../../../configuration/conformetry-templates/nestjs-service-project) conformetry template.
 
-<!-- callidescope:start -->
+<!-- coinagerie:start -->
 
-## 🔭 Callidescope
+## 🪙 Coinagerie
 
-Call stacks traced through `projects/ic-suite/conformetry/conformetry-validation`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-validation:coinagerie-check:write`.
 
-| Measure | Value |
-| --- | --- |
-| Callables | 58 |
-| Files | 18 |
-| Calls traced | 61 |
-| Call stacks | 0 |
-| Deepest stack | 0 |
-| Stacks through recursion | 0 |
-| Unfollowable calls | 2 |
+- **breadth**: Callidescope measure of how many callables one function calls directly, shown in this package's Breadth tables and gated.
+- **lenient**: Describes a group with a looser threshold; when groups disagree the strictest wins, so a lenient one cannot relax a bar.
+- **stem**: Name portion of an instance, such as aspects, joined to its directory so each module is scored separately.
+- **under**: Nests each finding beneath its file when the runner assembles results, so the report groups defects by the file they belong to.
+- **unrecorded**: Instance whose match recorded no stand-in placeholder values, leaving nothing for inference to fill, so the run stays ok.
 
-### Limits
-
-What this project is judged against, as declared in its own `callidescope.config.ts`.
-
-| Limit | Value |
-| --- | --- |
-| `maximumDepth` | 13 |
-| `maximumBreadth` | 10 |
-
-### Call stacks (depth)
-
-None.
-
-### Breadth
-
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `ValidationService.validate` | 10 | `ConfigurationService.matchInstances`, `ValidationService.selectValidators`, `LanguagesService.resolveValidators`, `ValidationService.readTemplateExtensions`, `ValidationService.map(…)`, `ValidationScoringService.scoreInstances`, `ValidationDeduplicationService.deduplicate`, `ValidationFindingsService.buildUnmatchedResults`, `ValidationService.map(…)`, `ValidationService.every(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts:194` |
-| `ValidationService.compareInstance` | 6 | `ConfigurationService.prepareDocuments`, `ValidationService.readClaimedExtensions`, `FilesService.checkInstanceFiles`, `ValidationService.map(…)`, `ValidationService.flatMap(…)`, `ValidationService.reduce(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts:57` |
-| `ValidationScoringService.scoreInstance` | 5 | `ValidationScoringService.reduce(…)`, `ScoringService.calculateScore`, `ValidationScoringService.resolveThreshold`, `ValidationScoringService.resolveInstancePath`, `ValidationScoringService.some(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-scoring.service.ts:74` |
-
-<details>
-<summary>26 more callables</summary>
-
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `ValidationService.inferPlaceholders` | 5 | `ConfigurationService.prepareDocuments`, `ValidationService.readClaimedExtensions`, `RunnerService.captureDocuments`, `ValidationService.flatMap(…)`, `ValidationService.filter(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts:102` |
-| `RunnerService.runValidator` | 4 | `RunnerService.map(…)`, `RunnerService.filter(…)`, `RunnerService.filter(…)`, `RunnerService.reduce(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts:108` |
-| `ValidationFindingsService.reportMissingPlaceholders` | 3 | `ValidationFindingsService.filter(…)`, `ValidationFindingsService.map(…)`, `ValidationFindingsService.map(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-findings.service.ts:109` |
-| `ValidationService.map(…)` | 3 | `ValidationService.inferPlaceholders`, `ValidationFindingsService.reportMissingPlaceholders`, `ValidationService.compareInstance` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts:205` |
-| `ValidationDeduplicationService.deduplicate` | 2 | `ValidationDeduplicationService.selectOwners`, `ValidationDeduplicationService.flatMap(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-deduplication.service.ts:90` |
-| `ValidationFindingsService.buildUnmatchedResults` | 2 | `ValidationFindingsService.resolveTemplatesRootPath`, `ValidationFindingsService.map(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-findings.service.ts:69` |
-| `ValidationScoringService.scoreInstances` | 2 | `ValidationScoringService.scoreInstance`, `ValidationScoringService.resolveScoreKey` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-scoring.service.ts:119` |
-| `RunnerService.captureDocuments` | 1 | `RunnerService.reduce(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts:75` |
-| `RunnerService.reduce(…)` | 1 | `RunnerService.find(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts:80` |
-| `RunnerService.find(…)` | 1 | `RunnerService.claimsDocument` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts:81` |
-| `RunnerService.filter(…)` | 1 | `RunnerService.claimsDocument` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts:112` |
-| `RunnerService.map(…)` | 1 | `RunnerService.validateDocument` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts:115` |
-| `ValidationDeduplicationService.selectOwners` | 1 | `ValidationDeduplicationService.compareInstances` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-deduplication.service.ts:57` |
-| `ValidationDeduplicationService.flatMap(…)` | 1 | `ValidationDeduplicationService.filter(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-deduplication.service.ts:94` |
-| `ValidationDeduplicationService.filter(…)` | 1 | `ValidationDeduplicationService.resolveFindingKey` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-deduplication.service.ts:95` |
-| `ValidationFindingsService.resolveTemplatesRootPath` | 1 | `ValidationFindingsService.map(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-findings.service.ts:58` |
-| `ValidationFindingsService.map(…)` | 1 | `ValidationFindingsService.describeReason` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-findings.service.ts:75` |
-| `ValidationFindingsService.map(…)` | 1 | `ValidationFindingsService.filter(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-findings.service.ts:121` |
-| `ValidationFindingsService.filter(…)` | 1 | `ValidationFindingsService.some(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-findings.service.ts:124` |
-| `ValidationScoringService.reduce(…)` | 1 | `ScoringService.sumWeights` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-scoring.service.ts:75` |
-| `ValidationScoringService.some(…)` | 1 | `ValidationScoringService.some(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation-scoring.service.ts:92` |
-| `ValidationService.map(…)` | 1 | `RunnerService.runValidator` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts:68` |
-| `ValidationService.readClaimedExtensions` | 1 | `ValidationService.flatMap(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts:142` |
-| `ValidationService.readTemplateExtensions` | 1 | `ValidationService.flatMap(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts:151` |
-| `ValidationService.flatMap(…)` | 1 | `ValidationService.map(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts:154` |
-| `ValidationService.selectValidators` | 1 | `ValidationService.filter(…)` | `projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts:164` |
-
-</details>
-<!-- callidescope:end -->
-
-## 🕸️ Codependix
-
-Dependency graphs exported by [codependix](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-cli), regenerated by `nx run configuration:codependix:write`.
-
-### Nx Neighborhood
-
-<!-- codependix:start name="codependix-nx-projects" -->
-```mermaid
-graph LR
-  configuration["configuration"]
-  conformetry_cli["conformetry-cli"]
-  conformetry_configuration["conformetry-configuration"]
-  conformetry_core["conformetry-core"]
-  conformetry_examples["conformetry-examples"]
-  conformetry_languages["conformetry-languages"]
-  conformetry_nx["conformetry-nx"]
-  conformetry_validation["conformetry-validation"]
-  conformetry_cli --> conformetry_validation
-  conformetry_examples --> conformetry_validation
-  conformetry_nx --> conformetry_validation
-  conformetry_validation --> configuration
-  conformetry_validation --> conformetry_configuration
-  conformetry_validation --> conformetry_core
-  conformetry_validation --> conformetry_languages
-  classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
-  class conformetry_validation subject
-```
-<!-- codependix:end name="codependix-nx-projects" -->
-
-### NestJS Module Graph
-
-<!-- codependix:start name="codependix-nestjs-modules" -->
-```mermaid
-flowchart LR
-  ConfigurationModule
-  DifferencesModule
-  FilesModule
-  InputModule
-  InstanceDiscoveryModule
-  InstanceGroupModule
-  JsonModule
-  JupyterModule
-  LanguagesModule
-  MarkdownModule
-  PythonModule
-  RenderingModule
-  RunnerModule
-  ScoringModule
-  TemplateDiscoveryModule
-  TextModule
-  TypescriptModule
-  ValidationModule
-  ConfigurationModule --> InputModule
-  ConfigurationModule --> InstanceDiscoveryModule
-  ConfigurationModule --> InstanceGroupModule
-  ConfigurationModule --> RenderingModule
-  ConfigurationModule --> TemplateDiscoveryModule
-  FilesModule --> ConfigurationModule
-  FilesModule --> DifferencesModule
-  InstanceDiscoveryModule --> InstanceGroupModule
-  InstanceDiscoveryModule --> RenderingModule
-  InstanceDiscoveryModule --> TemplateDiscoveryModule
-  JsonModule --> ScoringModule
-  JupyterModule --> JsonModule
-  JupyterModule --> MarkdownModule
-  JupyterModule --> PythonModule
-  LanguagesModule --> JsonModule
-  LanguagesModule --> JupyterModule
-  LanguagesModule --> MarkdownModule
-  LanguagesModule --> PythonModule
-  LanguagesModule --> TextModule
-  LanguagesModule --> TypescriptModule
-  MarkdownModule --> ScoringModule
-  PythonModule --> DifferencesModule
-  PythonModule --> ScoringModule
-  TemplateDiscoveryModule --> RenderingModule
-  TypescriptModule --> ScoringModule
-  ValidationModule --> ConfigurationModule
-  ValidationModule --> FilesModule
-  ValidationModule --> LanguagesModule
-  ValidationModule --> RunnerModule
-  ValidationModule --> ScoringModule
-```
-<!-- codependix:end name="codependix-nestjs-modules" -->
-
-### File Imports
-
-<!-- codependix:start name="codependix-file-imports" -->
-```mermaid
-graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
-  file_src_index_ts["src/index.ts"]
-  file_src_modules_runner_runner_constants_ts["src/modules/runner/runner.constants.ts"]
-  file_src_modules_runner_runner_module_ts["src/modules/runner/runner.module.ts"]
-  file_src_modules_runner_runner_module_unit_test_ts["src/modules/runner/runner.module.unit.test.ts"]
-  file_src_modules_runner_runner_service_ts["src/modules/runner/runner.service.ts"]
-  file_src_modules_runner_runner_service_unit_test_ts["src/modules/runner/runner.service.unit.test.ts"]
-  file_src_modules_runner_runner_types_ts["src/modules/runner/runner.types.ts"]
-  file_src_modules_validation_validation_deduplication_service_ts["src/modules/validation/validation-deduplication.service.ts"]
-  file_src_modules_validation_validation_deduplication_service_unit_test_ts["src/modules/validation/validation-deduplication.service.unit.test.ts"]
-  file_src_modules_validation_validation_findings_service_ts["src/modules/validation/validation-findings.service.ts"]
-  file_src_modules_validation_validation_findings_service_unit_test_ts["src/modules/validation/validation-findings.service.unit.test.ts"]
-  file_src_modules_validation_validation_scoring_service_ts["src/modules/validation/validation-scoring.service.ts"]
-  file_src_modules_validation_validation_scoring_service_unit_test_ts["src/modules/validation/validation-scoring.service.unit.test.ts"]
-  file_src_modules_validation_validation_constants_ts["src/modules/validation/validation.constants.ts"]
-  file_src_modules_validation_validation_module_ts["src/modules/validation/validation.module.ts"]
-  file_src_modules_validation_validation_service_ts["src/modules/validation/validation.service.ts"]
-  file_src_modules_validation_validation_service_unit_test_ts["src/modules/validation/validation.service.unit.test.ts"]
-  file_src_modules_validation_validation_types_ts["src/modules/validation/validation.types.ts"]
-  file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
-  file_src_modules_runner_runner_module_ts --> file_src_modules_runner_runner_service_ts
-  file_src_modules_runner_runner_module_unit_test_ts --> file_src_modules_runner_runner_module_ts
-  file_src_modules_runner_runner_module_unit_test_ts --> file_src_modules_runner_runner_service_ts
-  file_src_modules_runner_runner_service_ts --> file_src_modules_runner_runner_types_ts
-  file_src_modules_runner_runner_service_unit_test_ts --> file_src_modules_runner_runner_service_ts
-  file_src_modules_validation_validation_deduplication_service_ts --> file_src_modules_validation_validation_constants_ts
-  file_src_modules_validation_validation_deduplication_service_ts --> file_src_modules_validation_validation_types_ts
-  file_src_modules_validation_validation_deduplication_service_unit_test_ts --> file_src_modules_validation_validation_deduplication_service_ts
-  file_src_modules_validation_validation_deduplication_service_unit_test_ts --> file_src_modules_validation_validation_types_ts
-  file_src_modules_validation_validation_findings_service_ts --> file_src_modules_validation_validation_types_ts
-  file_src_modules_validation_validation_findings_service_unit_test_ts --> file_src_modules_validation_validation_findings_service_ts
-  file_src_modules_validation_validation_scoring_service_ts --> file_src_modules_validation_validation_constants_ts
-  file_src_modules_validation_validation_scoring_service_ts --> file_src_modules_validation_validation_types_ts
-  file_src_modules_validation_validation_scoring_service_unit_test_ts --> file_src_modules_validation_validation_scoring_service_ts
-  file_src_modules_validation_validation_module_ts --> file_src_modules_runner_runner_module_ts
-  file_src_modules_validation_validation_module_ts --> file_src_modules_validation_validation_deduplication_service_ts
-  file_src_modules_validation_validation_module_ts --> file_src_modules_validation_validation_findings_service_ts
-  file_src_modules_validation_validation_module_ts --> file_src_modules_validation_validation_scoring_service_ts
-  file_src_modules_validation_validation_module_ts --> file_src_modules_validation_validation_service_ts
-  file_src_modules_validation_validation_service_ts --> file_src_modules_runner_runner_service_ts
-  file_src_modules_validation_validation_service_ts --> file_src_modules_validation_validation_deduplication_service_ts
-  file_src_modules_validation_validation_service_ts --> file_src_modules_validation_validation_findings_service_ts
-  file_src_modules_validation_validation_service_ts --> file_src_modules_validation_validation_scoring_service_ts
-  file_src_modules_validation_validation_service_ts --> file_src_modules_validation_validation_types_ts
-  file_src_modules_validation_validation_service_unit_test_ts --> file_src_modules_validation_validation_module_ts
-  file_src_modules_validation_validation_service_unit_test_ts --> file_src_modules_validation_validation_service_ts
-  file_src_modules_validation_validation_service_unit_test_ts --> file_src_modules_validation_validation_types_ts
-```
-<!-- codependix:end name="codependix-file-imports" -->
+<!-- coinagerie:end -->
 
 <!-- codometer:start -->
 
@@ -319,40 +115,40 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-1663-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-63.09_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-4-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-18-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-2372-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-116.86_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-5-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-27-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-7.78_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-3.19_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-18-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-5-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-27-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-7-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-5-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-45-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-7-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-59-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-4-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-6-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-11-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-5-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-74-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-31-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-91-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-14-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-84-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-72-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-15-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-88-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-220-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-7-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-104-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-53-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-133-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-24-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-132-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-92-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-19-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-114-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-295-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -373,17 +169,17 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-148-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-32-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-13-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-94-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-79-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-158-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-37-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-12-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-96-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-87-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-8-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-35-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-133-dc2626?style=flat-square)
-![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-43-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-143-dc2626?style=flat-square)
+![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
 
@@ -463,14 +259,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-1-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-4-0284c7?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-2-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-5-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-0-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-1-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-1-db2777?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-2-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-2-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-4-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-6-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-0-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -507,38 +303,24 @@ graph LR
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-222-1f6feb?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-4-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-1035-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-7-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-12-a78bfa?style=flat-square)
+![H2](https://img.shields.io/badge/H2-80-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-96-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-45-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-6-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-25-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-268-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-84-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-244-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-2-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-10-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-6-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-52-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-18-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-11-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-73-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-14-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-196-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
-
-<!-- coinagerie:start -->
-
-## 🪙 Coinagerie
-
-The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-validation:coinagerie-check:write`.
-
-- **breadth**: Callidescope measure of how many callables one function calls directly, shown in this package's Breadth tables and gated.
-- **lenient**: Describes a group with a looser threshold; when groups disagree the strictest wins, so a lenient one cannot relax a bar.
-- **stem**: Name portion of an instance, such as aspects, joined to its directory so each module is scored separately.
-- **under**: Nests each finding beneath its file when the runner assembles results, so the report groups defects by the file they belong to.
-- **unrecorded**: Instance whose match recorded no stand-in placeholder values, leaving nothing for inference to fill, so the run stays ok.
-
-<!-- coinagerie:end -->

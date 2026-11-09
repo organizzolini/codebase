@@ -14,39 +14,16 @@ nx run meanderaw-web:vitest
 
 This project was generated from the [tanstack-application](/configuration/conformetry-templates/tanstack-application) conformetry template.
 
-<!-- callidescope:start -->
+<!-- coinagerie:start -->
 
-## 🔭 Callidescope
+## 🪙 Coinagerie
 
-Call stacks traced through `projects/meanderaw/meanderaw-web`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+The words this project uses that the root glossary does not define, regenerated with `nx run meanderaw-web:coinagerie-check:write`.
 
-| Measure | Value |
-| --- | --- |
-| Callables | 5 |
-| Files | 10 |
-| Calls traced | 0 |
-| Call stacks | 0 |
-| Deepest stack | 0 |
-| Stacks through recursion | 0 |
-| Unfollowable calls | 0 |
+- **breadth**: Callidescope's count of the direct calls a web callable makes, recorded in the project's Breadth table for its gate.
+- **role**: Accessibility role argument in testing-library queries such as findByRole, which the index integration test uses to find the heading.
 
-### Limits
-
-What this project is judged against, as declared in its own `callidescope.config.ts`.
-
-| Limit | Value |
-| --- | --- |
-| `maximumDepth` | 6 |
-| `maximumBreadth` | 8 |
-
-### Call stacks (depth)
-
-None.
-
-### Breadth
-
-None.
-<!-- callidescope:end -->
+<!-- coinagerie:end -->
 
 <!-- codometer:start -->
 
@@ -55,7 +32,7 @@ None.
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-379-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-17.56_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-18.22_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-4-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-14-3178c6?style=flat-square)
 
@@ -238,35 +215,24 @@ None.
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-134-1f6feb?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-2-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-168-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-4-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-7-a78bfa?style=flat-square)
+![H2](https://img.shields.io/badge/H2-5-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-10-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-17-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-21-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-2-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-8-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-0-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-0-0ea5e9?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-2-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-11-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-6-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-5-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-28-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-32-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
-
-<!-- coinagerie:start -->
-
-## 🪙 Coinagerie
-
-The words this project uses that the root glossary does not define, regenerated with `nx run meanderaw-web:coinagerie-check:write`.
-
-- **breadth**: Callidescope's count of the direct calls a web callable makes, recorded in the project's Breadth table for its gate.
-- **role**: Accessibility role argument in testing-library queries such as findByRole, which the index integration test uses to find the heading.
-
-<!-- coinagerie:end -->

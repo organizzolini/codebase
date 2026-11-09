@@ -89,664 +89,22 @@ MIT — see [LICENSE](../../../../LICENSE).
 
 This project was generated from the [nestjs-service-project](../../../configuration/conformetry-templates/nestjs-service-project) conformetry template.
 
-<!-- callidescope:start -->
+<!-- coinagerie:start -->
 
-## 🔭 Callidescope
+## 🪙 Coinagerie
 
-Call stacks traced through `projects/ic-suite/conformetry/conformetry-languages`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-languages:coinagerie-check:write`.
 
-| Measure | Value |
-| --- | --- |
-| Callables | 166 |
-| Files | 55 |
-| Calls traced | 216 |
-| Call stacks | 15 |
-| Deepest stack | 13 |
-| Stacks through recursion | 3 |
-| Unfollowable calls | 0 |
+- **alt**: Alternative text field of a markdown image node, compared so the description must match the template.
+- **anchor**: Offset in an instance file where a TypeScript error is pinned when known, carried on the difference type.
+- **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
+- **callable**: Function or method identified by file and qualified name, the unit callidescope measures for depth and breadth.
+- **leaf**: Node with no children, matched on its own identity without descending into the tree.
+- **perfect**: Full score of 1 that a comparison earns when it has nothing to weigh, exported as PERFECT_SCORE.
+- **stem**: Name of a file without its extension, carried as nameStem by the files service for each instance.
+- **unclaimed**: Extension no Language claims, which LanguagesService widens the Fallback to cover so it still compares.
 
-### Limits
-
-What this project is judged against, as declared in its own `callidescope.config.ts`.
-
-| Limit | Value |
-| --- | --- |
-| `maximumDepth` | 13 |
-| `maximumBreadth` | 11 |
-
-### Call stacks (depth)
-
-**1. `JupyterService.validateDocument`** — depth 13 · orphan-root
-
-```text
-🚀 JupyterService.validateDocument(document: PreparedValidationDocument): DocumentValidationResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter.service.ts:153]
-   ↳ Reports every notebook difference: envelope, missing cells, cell contents.
-  └─> JupyterService.map(…)(…): { error: { differenceType: "code"; expected: string; fix: string; language: "python"; message: string; weight: number; }; weight: number; } [projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter.service.ts:173]
-    └─> JupyterService.weighMissingCell(args: { cell: PairedCells; document: PreparedValidationDocument; }): number [projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter.service.ts:140]
-       ↳ Weighs a cell the notebook does not have.
-      └─> JupyterService.validateCell(…): DocumentValidationResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter.service.ts:90]
-         ↳ Validates one paired cell with the validator matching its kind.
-        └─> MarkdownService.validateDocument(document: PreparedValidationDocument): DocumentValidationResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown.service.ts:48]
-           ↳ Reports every markdown structure the template requires and the file lacks.
-          └─> MarkdownTreeService.compareContainer(args: CompareNodeArguments): CompareNodeResult (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:80]
-             ↳ Matches a container node, then descends into it.
-            └─> MarkdownTreeService.map(…)(…): { captures: { [x: string]: string; }; differences: MarkdownComparisonError[]; lastMatchedNode: MarkdownNode; totalWeight: number; } (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:107]
-              └─> MarkdownTreeService.compareChildren(args: CompareChildrenArguments): CompareChildrenResult (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:170]
-                 ↳ Compares one level of two trees, descending into containers.
-                └─> MarkdownTreeService.compareLeaf(args: CompareNodeArguments): CompareNodeResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:135]
-                   ↳ Matches a leaf node on its own identity, without descending.
-                  └─> MarkdownTreeService.findCandidates(args: CompareNodeArguments): MarkdownNode[] [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:156]
-                     ↳ Finds every instance sibling satisfying the template node.
-                    └─> MarkdownTreeService.filter(…)(instanceNode: MarkdownNode): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:157]
-                      └─> MarkdownNodesService.capture(…): Record<string, string> | undefined [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:116]
-                         ↳ Matches an instance node against a template node, returning what any placeholder value in the template node's text…
-                        └─> MarkdownNodesService.readText(node: MarkdownNode): string [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:190]
-                           ↳ Reads a node's rendered plain text.
-```
-
-**2. `JsonService.validateDocument`** — depth 12 · orphan-root
-
-```text
-🚀 JsonService.validateDocument(document: PreparedValidationDocument): DocumentValidationResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json.service.ts:39]
-   ↳ Reports every key or value the template requires and the instance lacks.
-  └─> JsonComparisonService.compareArrayItem(…): JsonComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:103]
-     ↳ Matches one required array entry against the instance array.
-    └─> JsonComparisonService.map(…)(instanceItem: JsonValue, index: number): JsonComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:158]
-      └─> JsonComparisonService.compare(args: CompareJsonArguments): JsonComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:304]
-         ↳ Compares a template value against an instance value, returning every way the instance fails to contain what the…
-        └─> JsonComparisonService.compareArrays(…): JsonComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:177]
-           ↳ Compares two arrays.
-          └─> JsonComparisonService.map(…)(templateItem: JsonValue): JsonComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:184]
-            └─> JsonComparisonService.compareObjects(…): JsonComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:191]
-               ↳ Compares two objects, requiring every template key to be present.
-              └─> JsonComparisonService.map(…)([key, templateValue]: [string, JsonValue]): JsonComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:200]
-                └─> JsonComparisonService.countNodes(value: JsonValue): number (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:243]
-                   ↳ Counts a JSON value and every value nested inside it.
-                  └─> JsonComparisonService.reduce(…)(total: number, item: JsonValue): number (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:245]
-                    └─> JsonComparisonService.reduce(…)(total: number, nested: JsonValue): number (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:251]
-                      └─> JsonComparisonService.isJsonObject(value: JsonValue): value is Record<string, JsonValue> [projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:271]
-                         ↳ Returns whether a value is a plain JSON object.
-```
-
-**3. `TypescriptService.validateDocument`** — depth 12 · orphan-root
-
-```text
-🚀 TypescriptService.validateDocument(document: PreparedValidationDocument): DocumentValidationResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript.service.ts:170]
-   ↳ Reports every declaration and comment the template requires.
-  └─> TypescriptService.validateStructure(…): DocumentValidationResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript.service.ts:107]
-     ↳ Compares the syntax trees and describes each missing declaration.
-    └─> TypescriptTreeService.compareBestCandidate(…): TreeComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:69]
-       ↳ Descends into whichever candidate explains the template best.
-      └─> TypescriptTreeService.map(…)(…): { captures: { [x: string]: string; }; differences: TypescriptComparisonError[]; totalWeight: number; } (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:74]
-        └─> TypescriptTreeService.compareTree(args: CompareTreeArguments): TreeComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:179]
-           ↳ Compares one level of two trees, descending into every match.
-          └─> TypescriptTreeService.map(…)(templateChild: Node): TreeComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:186]
-            └─> TypescriptTreeService.compareChild(…): TreeComparison (cycle) [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:95]
-               ↳ Matches one template child against the instance's children.
-              └─> TypescriptTreeService.flatMap(…)(…): { captures: Record<string, string>; node: Node; }[] [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:101]
-                └─> TypescriptTreeService.matchKey(…): Record<string, string> | undefined [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:144]
-                   ↳ Matches a template node on its key, returning what any placeholder value in the key captured, or `undefined` when the…
-                  └─> TypescriptNodesService.readKey(node: Node): null | string [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-nodes.service.ts:201]
-                     ↳ Reads a node's identity, or `null` when it has none.
-                    └─> TypescriptNodesService.readDecoratorKey(node: Decorator): null | string [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-nodes.service.ts:75]
-                       ↳ Keys a decorator by its callee, so `@Injectable()` matches `@Injectable`.
-                      └─> TypescriptNodesService.buildDottedName(callee: Node): null | string [projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-nodes.service.ts:46]
-                         ↳ Builds a dotted name such as `Nest.Injectable` from a callee expression.
-```
-
-<details>
-<summary>12 more call stacks</summary>
-
-**4. `PythonService.validateDocument`** — depth 6 · orphan-root
-
-```text
-🚀 PythonService.validateDocument(document: PreparedValidationDocument): DocumentValidationResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python.service.ts:38]
-   ↳ Reports every declaration and comment the template requires.
-  └─> PythonBridgeService.validatePythonSource(args: RunPythonBridgeArguments): DocumentValidationResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts:162]
-     ↳ Compares one Python source against its rendered template.
-    └─> PythonBridgeService.map(…)(error: Readonly<Record<string, unknown>>): ConformetryDifference [projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts:187]
-      └─> PythonBridgeService.toConformetryDifference(error: PythonBridgeError): ConformetryDifference [projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts:134]
-         ↳ Maps one snake_case bridge error onto the shared error shape.
-        └─> PythonBridgeService.readValues(error: PythonBridgeError): Partial<ConformetryDifference> [projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts:123]
-           ↳ Reads the optional expected and actual values.
-          └─> PythonBridgeService.readString(error: PythonBridgeError, key: string): string | undefined [projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts:113]
-             ↳ Narrows an untrusted string field from the bridge payload.
-```
-
-**5. `LanguagesService.validateDocument`** — depth 5 · orphan-root
-
-```text
-🚀 LanguagesService.validateDocument(document: PreparedValidationDocument): DocumentValidationResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts:80]
-  └─> TextService.validateDocument(document: PreparedValidationDocument): DocumentValidationResult [projects/ic-suite/conformetry/conformetry-languages/src/modules/text/text.service.ts:113]
-     ↳ Reports every template line missing from the instance.
-    └─> TextService.findMissingLines(document: PreparedValidationDocument): LineComparison [projects/ic-suite/conformetry/conformetry-languages/src/modules/text/text.service.ts:74]
-       ↳ Finds template lines the instance does not supply often enough.
-      └─> TextService.captureLine(…): Record<string, string> | undefined [projects/ic-suite/conformetry/conformetry-languages/src/modules/text/text.service.ts:39]
-         ↳ Captures what a template line's placeholder values stand for, taking the first unclaimed instance line that fits it as…
-        └─> capturePlaceholderValues(…): Record<string, string> | undefined [projects/ic-suite/conformetry/conformetry-configuration/src/modules/rendering/rendering.utilities.ts:21]
-           ↳ Reads what each placeholder value in `templateText` stands for in `instanceText`.
-```
-
-**6. `MarkdownNodesService.table`** — depth 3 · orphan-root
-
-```text
-🚀 MarkdownNodesService.table(templateNode: MarkdownNode, instanceNode: MarkdownNode): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:69]
-  └─> MarkdownNodesService.readColumnCount(node: MarkdownNode): number [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:92]
-     ↳ Counts a table's columns from its first row.
-    └─> MarkdownNodesService.readChildren(node: MarkdownNode): MarkdownNode[] [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:185]
-       ↳ Reads a node's children, or an empty list for a leaf.
-```
-
-**7. `MarkdownNodesService.matches`** — depth 3 · orphan-root
-
-```text
-🚀 MarkdownNodesService.matches(args: { instanceNode: MarkdownNode; templateNode: MarkdownNode; }): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:177]
-   ↳ Returns whether an instance node satisfies a template node.
-  └─> MarkdownNodesService.capture(…): Record<string, string> | undefined [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:116]
-     ↳ Matches an instance node against a template node, returning what any placeholder value in the template node's text…
-    └─> MarkdownNodesService.readText(node: MarkdownNode): string [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:190]
-       ↳ Reads a node's rendered plain text.
-```
-
-**8. `MarkdownNodesService.code`** — depth 2 · orphan-root
-
-```text
-🚀 MarkdownNodesService.code(templateNode: MarkdownNode, instanceNode: MarkdownNode): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:36]
-  └─> MarkdownNodesService.sameField(leftValue: string | undefined, rightValue: string | undefined): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:99]
-     ↳ Compares two optional string fields, treating absent as empty.
-```
-
-**9. `MarkdownNodesService.heading`** — depth 2 · orphan-root
-
-```text
-🚀 MarkdownNodesService.heading(templateNode: MarkdownNode, instanceNode: MarkdownNode): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:42]
-  └─> MarkdownNodesService.readText(node: MarkdownNode): string [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:190]
-     ↳ Reads a node's rendered plain text.
-```
-
-**10. `MarkdownNodesService.html`** — depth 2 · orphan-root
-
-```text
-🚀 MarkdownNodesService.html(templateNode: MarkdownNode, instanceNode: MarkdownNode): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:48]
-  └─> MarkdownNodesService.sameField(leftValue: string | undefined, rightValue: string | undefined): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:99]
-     ↳ Compares two optional string fields, treating absent as empty.
-```
-
-**11. `MarkdownNodesService.image`** — depth 2 · orphan-root
-
-```text
-🚀 MarkdownNodesService.image(templateNode: MarkdownNode, instanceNode: MarkdownNode): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:51]
-  └─> MarkdownNodesService.sameField(leftValue: string | undefined, rightValue: string | undefined): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:99]
-     ↳ Compares two optional string fields, treating absent as empty.
-```
-
-**12. `MarkdownNodesService.inlineCode`** — depth 2 · orphan-root
-
-```text
-🚀 MarkdownNodesService.inlineCode(templateNode: MarkdownNode, instanceNode: MarkdownNode): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:57]
-  └─> MarkdownNodesService.sameField(leftValue: string | undefined, rightValue: string | undefined): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:99]
-     ↳ Compares two optional string fields, treating absent as empty.
-```
-
-**13. `MarkdownNodesService.link`** — depth 2 · orphan-root
-
-```text
-🚀 MarkdownNodesService.link(templateNode: MarkdownNode, instanceNode: MarkdownNode): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:60]
-  └─> MarkdownNodesService.sameField(leftValue: string | undefined, rightValue: string | undefined): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:99]
-     ↳ Compares two optional string fields, treating absent as empty.
-```
-
-**14. `MarkdownNodesService.tableRow`** — depth 2 · orphan-root
-
-```text
-🚀 MarkdownNodesService.tableRow(templateNode: MarkdownNode, instanceNode: MarkdownNode): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:75]
-  └─> MarkdownNodesService.readChildren(node: MarkdownNode): MarkdownNode[] [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:185]
-     ↳ Reads a node's children, or an empty list for a leaf.
-```
-
-**15. `MarkdownNodesService.text`** — depth 2 · orphan-root
-
-```text
-🚀 MarkdownNodesService.text(templateNode: MarkdownNode, instanceNode: MarkdownNode): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:81]
-  └─> MarkdownNodesService.sameField(leftValue: string | undefined, rightValue: string | undefined): boolean [projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:99]
-     ↳ Compares two optional string fields, treating absent as empty.
-```
-
-</details>
-
-### Breadth
-
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `JupyterService.validateDocument` | 11 | `JupyterNotebookService.parseNotebook`, `JupyterNotebookService.pairCells`, `JsonComparisonService.compare`, `JupyterService.readEnvelope`, `JupyterService.map(…)`, `JupyterService.map(…)`, `JupyterService.map(…)`, `JupyterService.flatMap(…)`, `JupyterService.reduce(…)`, `JupyterService.map(…)`, `JupyterService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter.service.ts:153` |
-| `JsonComparisonService.compareArrayItem` | 8 | `JsonComparisonService.formatPath`, `JsonComparisonService.countNodes`, `JsonComparisonService.isJsonPrimitive`, `JsonComparisonService.find(…)`, `JsonComparisonService.map(…)`, `JsonComparisonService.buildError`, `JsonComparisonService.pickClosestMatch`, `JsonComparisonService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:103` |
-| `JsonComparisonService.compare` | 8 | `JsonComparisonService.countContainer`, `JsonComparisonService.compareArrays`, `JsonComparisonService.isJsonObject`, `JsonComparisonService.compareObjects`, `JsonComparisonService.countNodes`, `JsonComparisonService.captureString`, `JsonComparisonService.formatPath`, `JsonComparisonService.buildError` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:304` |
-
-<details>
-<summary>90 more callables</summary>
-
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `MarkdownTreeService.compareContainer` | 6 | `MarkdownTreeService.findCandidates`, `MarkdownTreeService.buildError`, `MarkdownNodesService.readChildren`, `MarkdownTreeService.captureFirst`, `MarkdownTreeService.reduce(…)`, `MarkdownTreeService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:80` |
-| `PythonBridgeService.toConformetryDifference` | 6 | `PythonBridgeService.readValues`, `PythonBridgeService.readLocations`, `DifferencesService.resolveDifferenceType`, `PythonBridgeService.readString`, `DifferencesService.resolveErrorLanguage`, `PythonBridgeService.readNumber` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts:134` |
-| `TypescriptNodesService.readKey` | 6 | `TypescriptNodesService.readImportKey`, `TypescriptNodesService.readExportKey`, `TypescriptNodesService.readDecoratorKey`, `TypescriptNodesService.readExpressionStatementKey`, `TypescriptNodesService.readLiteralKey`, `TypescriptNodesService.readNamedKey` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-nodes.service.ts:201` |
-| `LanguagesService.resolveValidators` | 5 | `LanguagesService.filter(…)`, `LanguagesService.claimingLanguages`, `LanguagesService.flatMap(…)`, `LanguagesService.filter(…)`, `LanguagesService.widenFallback` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts:95` |
-| `JsonComparisonService.map(…)` | 4 | `JsonComparisonService.formatPath`, `JsonComparisonService.countNodes`, `JsonComparisonService.buildError`, `JsonComparisonService.compare` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:200` |
-| `MarkdownTreeService.compareLeaf` | 4 | `MarkdownTreeService.findCandidates`, `MarkdownNodesService.countSubtree`, `MarkdownTreeService.buildError`, `MarkdownTreeService.captureFirst` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:135` |
-| `TypescriptTreeService.compareChild` | 4 | `TypescriptNodesService.readKey`, `TypescriptTreeService.flatMap(…)`, `TypescriptTreeService.buildError`, `TypescriptTreeService.compareBestCandidate` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:95` |
-| `FilesService.checkInstanceFiles` | 3 | `ConfigurationService.resolveInstanceFiles`, `FilesService.buildMissingDifference`, `FilesService.countExpectedFiles` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/files/files.service.ts:96` |
-| `JsonComparisonService.countNodes` | 3 | `JsonComparisonService.reduce(…)`, `JsonComparisonService.isJsonObject`, `JsonComparisonService.reduce(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:243` |
-| `JupyterNotebookService.pairCells` | 3 | `JupyterNotebookService.groupSourcesByKind`, `JupyterNotebookService.readCellKind`, `JupyterNotebookService.readCellSource` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter-notebook.service.ts:82` |
-| `MarkdownTreeService.map(…)` | 3 | `MarkdownTreeService.compareChildren`, `MarkdownNodesService.readChildren`, `MarkdownTreeService.captureFirst` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:107` |
-| `MarkdownService.validateDocument` | 3 | `MarkdownTreeService.compareChildren`, `MarkdownNodesService.filterNodes`, `MarkdownService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown.service.ts:48` |
-| `PythonBridgeService.validatePythonSource` | 3 | `PythonBridgeService.buildBridgeError`, `PythonBridgeService.map(…)`, `ScoringService.sumWeights` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts:162` |
-| `JupyterService.validateCell` | 3 | `MarkdownService.validateDocument`, `JupyterService.attributeToCell`, `PythonBridgeService.validatePythonSource` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter.service.ts:90` |
-| `TypescriptTreeService.compareTree` | 3 | `TypescriptNodesService.readChildren`, `TypescriptTreeService.reduce(…)`, `TypescriptTreeService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:179` |
-| `TypescriptService.validateDocument` | 3 | `TypescriptService.parseSourceFile`, `TypescriptService.validateStructure`, `TypescriptService.validateComments` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript.service.ts:170` |
-| `FilesService.buildMissingDifference` | 2 | `DifferencesService.buildMissingFileDifference`, `DifferencesService.buildMissingDirectoryDifference` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/files/files.service.ts:52` |
-| `JsonComparisonService.compareArrays` | 2 | `JsonComparisonService.combine`, `JsonComparisonService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:177` |
-| `JsonComparisonService.compareObjects` | 2 | `JsonComparisonService.combine`, `JsonComparisonService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:191` |
-| `JupyterNotebookService.groupSourcesByKind` | 2 | `JupyterNotebookService.readCellKind`, `JupyterNotebookService.readCellSource` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter-notebook.service.ts:31` |
-| `MarkdownNodesService.link` | 2 | `MarkdownNodesService.sameField`, `MarkdownNodesService.readText` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:60` |
-| `MarkdownNodesService.capture` | 2 | `MarkdownNodesService.readText`, `capturePlaceholderValues` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:116` |
-| `MarkdownNodesService.countSubtree` | 2 | `MarkdownNodesService.reduce(…)`, `MarkdownNodesService.readChildren` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:155` |
-| `MarkdownTreeService.buildError` | 2 | `MarkdownNodesService.readText`, `MarkdownNodesService.countSubtree` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:45` |
-| `MarkdownTreeService.compareChildren` | 2 | `MarkdownTreeService.compareContainer`, `MarkdownTreeService.compareLeaf` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:170` |
-| `TextService.findMissingLines` | 2 | `TextService.countLines`, `TextService.captureLine` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/text/text.service.ts:74` |
-| `TextService.validateDocument` | 2 | `TextService.findMissingLines`, `TextService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/text/text.service.ts:113` |
-| `TypescriptCommentsService.compareComments` | 2 | `TypescriptCommentsService.extractComments`, `TypescriptCommentsService.findIndex(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-comments.service.ts:46` |
-| `TypescriptCommentsService.extractComments` | 2 | `TypescriptCommentsService.visit`, `TypescriptCommentsService.toSorted(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-comments.service.ts:87` |
-| `TypescriptNodesService.readExpressionStatementKey` | 2 | `TypescriptNodesService.buildDottedName`, `TypescriptNodesService.readLiteralKey` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-nodes.service.ts:98` |
-| `TypescriptNodesService.countSubtree` | 2 | `TypescriptNodesService.reduce(…)`, `TypescriptNodesService.readChildren` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-nodes.service.ts:176` |
-| `TypescriptTreeService.buildError` | 2 | `TypescriptNodesService.readKindLabel`, `TypescriptNodesService.countSubtree` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:44` |
-| `TypescriptTreeService.compareBestCandidate` | 2 | `TypescriptTreeService.reduce(…)`, `TypescriptTreeService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:69` |
-| `TypescriptTreeService.flatMap(…)` | 2 | `TypescriptTreeService.matchKind`, `TypescriptTreeService.matchKey` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:101` |
-| `TypescriptTreeService.matchKey` | 2 | `TypescriptNodesService.readKey`, `capturePlaceholderValues` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:144` |
-| `TypescriptService.validateComments` | 2 | `TypescriptCommentsService.compareComments`, `TypescriptService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript.service.ts:75` |
-| `TypescriptService.validateStructure` | 2 | `TypescriptTreeService.compareTree`, `TypescriptService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript.service.ts:107` |
-| `DifferencesService.resolveDifferenceType` | 1 | `DifferencesService.find(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/differences/differences.service.ts:78` |
-| `DifferencesService.resolveErrorLanguage` | 1 | `DifferencesService.find(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/differences/differences.service.ts:91` |
-| `FilesService.countExpectedFiles` | 1 | `FilesService.filter(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/files/files.service.ts:78` |
-| `ScoringService.sumWeights` | 1 | `ScoringService.reduce(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.service.ts:53` |
-| `JsonComparisonService.captureString` | 1 | `capturePlaceholderValues` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:71` |
-| `JsonComparisonService.combine` | 1 | `JsonComparisonService.reduce(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:89` |
-| `JsonComparisonService.map(…)` | 1 | `JsonComparisonService.captureString` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:117` |
-| `JsonComparisonService.map(…)` | 1 | `JsonComparisonService.compare` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:158` |
-| `JsonComparisonService.map(…)` | 1 | `JsonComparisonService.compareArrayItem` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:184` |
-| `JsonComparisonService.reduce(…)` | 1 | `JsonComparisonService.countNodes` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:245` |
-| `JsonComparisonService.reduce(…)` | 1 | `JsonComparisonService.countNodes` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:251` |
-| `JsonComparisonService.formatPath` | 1 | `JsonComparisonService.reduce(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:260` |
-| `JsonComparisonService.pickClosestMatch` | 1 | `JsonComparisonService.reduce(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:289` |
-| `JsonComparisonService.reduce(…)` | 1 | `ScoringService.sumWeights` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json-comparison.service.ts:290` |
-| `JsonService.validateDocument` | 1 | `JsonComparisonService.compare` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/json/json.service.ts:39` |
-| `JupyterNotebookService.readCellSource` | 1 | `JupyterNotebookService.filter(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter-notebook.service.ts:57` |
-| `JupyterNotebookService.parseNotebook` | 1 | `JupyterNotebookService.filter(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter-notebook.service.ts:122` |
-| `MarkdownNodesService.code` | 1 | `MarkdownNodesService.sameField` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:36` |
-| `MarkdownNodesService.heading` | 1 | `MarkdownNodesService.readText` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:42` |
-| `MarkdownNodesService.html` | 1 | `MarkdownNodesService.sameField` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:48` |
-| `MarkdownNodesService.image` | 1 | `MarkdownNodesService.sameField` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:51` |
-| `MarkdownNodesService.inlineCode` | 1 | `MarkdownNodesService.sameField` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:57` |
-| `MarkdownNodesService.table` | 1 | `MarkdownNodesService.readColumnCount` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:69` |
-| `MarkdownNodesService.tableRow` | 1 | `MarkdownNodesService.readChildren` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:75` |
-| `MarkdownNodesService.text` | 1 | `MarkdownNodesService.sameField` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:81` |
-| `MarkdownNodesService.readColumnCount` | 1 | `MarkdownNodesService.readChildren` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:92` |
-| `MarkdownNodesService.reduce(…)` | 1 | `MarkdownNodesService.countSubtree` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:160` |
-| `MarkdownNodesService.filterNodes` | 1 | `MarkdownNodesService.filter(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:166` |
-| `MarkdownNodesService.matches` | 1 | `MarkdownNodesService.capture` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-nodes.service.ts:177` |
-| `MarkdownTreeService.captureFirst` | 1 | `MarkdownNodesService.capture` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:60` |
-| `MarkdownTreeService.reduce(…)` | 1 | `ScoringService.sumWeights` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:124` |
-| `MarkdownTreeService.findCandidates` | 1 | `MarkdownTreeService.filter(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:156` |
-| `MarkdownTreeService.filter(…)` | 1 | `MarkdownNodesService.capture` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/markdown/markdown-tree.service.ts:157` |
-| `PythonBridgeService.readLocations` | 1 | `PythonBridgeService.readNumber` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts:86` |
-| `PythonBridgeService.readValues` | 1 | `PythonBridgeService.readString` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts:123` |
-| `PythonBridgeService.map(…)` | 1 | `PythonBridgeService.toConformetryDifference` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python-bridge.service.ts:187` |
-| `PythonService.validateDocument` | 1 | `PythonBridgeService.validatePythonSource` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/python/python.service.ts:38` |
-| `JupyterService.attributeToCell` | 1 | `JupyterService.map(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter.service.ts:52` |
-| `JupyterService.weighMissingCell` | 1 | `JupyterService.validateCell` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter.service.ts:140` |
-| `JupyterService.map(…)` | 1 | `JupyterService.weighMissingCell` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter.service.ts:173` |
-| `JupyterService.map(…)` | 1 | `JupyterService.validateCell` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/jupyter/jupyter.service.ts:188` |
-| `TextService.captureLine` | 1 | `capturePlaceholderValues` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/text/text.service.ts:39` |
-| `TypescriptNodesService.readDecoratorKey` | 1 | `TypescriptNodesService.buildDottedName` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-nodes.service.ts:75` |
-| `TypescriptNodesService.readNamedKey` | 1 | `TypescriptNodesService.isNode` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-nodes.service.ts:143` |
-| `TypescriptNodesService.reduce(…)` | 1 | `TypescriptNodesService.countSubtree` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-nodes.service.ts:177` |
-| `TypescriptNodesService.readChildren` | 1 | `TypescriptNodesService.forEachChild(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-nodes.service.ts:183` |
-| `TypescriptTreeService.map(…)` | 1 | `TypescriptTreeService.compareTree` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:74` |
-| `TypescriptTreeService.reduce(…)` | 1 | `ScoringService.sumWeights` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:86` |
-| `TypescriptTreeService.map(…)` | 1 | `TypescriptTreeService.compareChild` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript-tree.service.ts:186` |
-| `TypescriptService.map(…)` | 1 | `TypescriptService.readLocation` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript.service.ts:81` |
-| `TypescriptService.map(…)` | 1 | `TypescriptService.readLocation` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/typescript/typescript.service.ts:116` |
-| `LanguagesService.validateDocument` | 1 | `TextService.validateDocument` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts:80` |
-| `LanguagesService.filter(…)` | 1 | `LanguagesService.some(…)` | `projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts:98` |
-
-</details>
-<!-- callidescope:end -->
-
-## 🕸️ Codependix
-
-Dependency graphs exported by [codependix](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-cli), regenerated by `nx run configuration:codependix:write`.
-
-### Nx Neighborhood
-
-<!-- codependix:start name="codependix-nx-projects" -->
-```mermaid
-graph LR
-  configuration["configuration"]
-  conformetry_configuration["conformetry-configuration"]
-  conformetry_core["conformetry-core"]
-  conformetry_languages["conformetry-languages"]
-  conformetry_output["conformetry-output"]
-  conformetry_validation["conformetry-validation"]
-  conformetry_languages --> configuration
-  conformetry_languages --> conformetry_configuration
-  conformetry_languages --> conformetry_core
-  conformetry_output --> conformetry_languages
-  conformetry_validation --> conformetry_languages
-  classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
-  class conformetry_languages subject
-```
-<!-- codependix:end name="codependix-nx-projects" -->
-
-### NestJS Module Graph
-
-<!-- codependix:start name="codependix-nestjs-modules" -->
-```mermaid
-flowchart LR
-  ConfigurationModule
-  DifferencesModule
-  FilesModule
-  InputModule
-  InstanceDiscoveryModule
-  InstanceGroupModule
-  JsonModule
-  JupyterModule
-  LanguagesModule
-  MarkdownModule
-  PythonModule
-  RenderingModule
-  ScoringModule
-  TemplateDiscoveryModule
-  TextModule
-  TypescriptModule
-  ConfigurationModule --> InputModule
-  ConfigurationModule --> InstanceDiscoveryModule
-  ConfigurationModule --> InstanceGroupModule
-  ConfigurationModule --> RenderingModule
-  ConfigurationModule --> TemplateDiscoveryModule
-  FilesModule --> ConfigurationModule
-  FilesModule --> DifferencesModule
-  InstanceDiscoveryModule --> InstanceGroupModule
-  InstanceDiscoveryModule --> RenderingModule
-  InstanceDiscoveryModule --> TemplateDiscoveryModule
-  JsonModule --> ScoringModule
-  JupyterModule --> JsonModule
-  JupyterModule --> MarkdownModule
-  JupyterModule --> PythonModule
-  LanguagesModule --> JsonModule
-  LanguagesModule --> JupyterModule
-  LanguagesModule --> MarkdownModule
-  LanguagesModule --> PythonModule
-  LanguagesModule --> TextModule
-  LanguagesModule --> TypescriptModule
-  MarkdownModule --> ScoringModule
-  PythonModule --> DifferencesModule
-  PythonModule --> ScoringModule
-  TemplateDiscoveryModule --> RenderingModule
-  TypescriptModule --> ScoringModule
-```
-<!-- codependix:end name="codependix-nestjs-modules" -->
-
-### File Imports
-
-<!-- codependix:start name="codependix-file-imports" -->
-```mermaid
-graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
-  file_src_index_ts["src/index.ts"]
-  file_src_modules_differences_differences_constants_ts["src/modules/differences/differences.constants.ts"]
-  file_src_modules_differences_differences_module_ts["src/modules/differences/differences.module.ts"]
-  file_src_modules_differences_differences_module_unit_test_ts["src/modules/differences/differences.module.unit.test.ts"]
-  file_src_modules_differences_differences_service_ts["src/modules/differences/differences.service.ts"]
-  file_src_modules_differences_differences_service_unit_test_ts["src/modules/differences/differences.service.unit.test.ts"]
-  file_src_modules_differences_differences_types_ts["src/modules/differences/differences.types.ts"]
-  file_src_modules_files_files_constants_ts["src/modules/files/files.constants.ts"]
-  file_src_modules_files_files_module_ts["src/modules/files/files.module.ts"]
-  file_src_modules_files_files_module_unit_test_ts["src/modules/files/files.module.unit.test.ts"]
-  file_src_modules_files_files_service_ts["src/modules/files/files.service.ts"]
-  file_src_modules_files_files_service_unit_test_ts["src/modules/files/files.service.unit.test.ts"]
-  file_src_modules_files_files_types_ts["src/modules/files/files.types.ts"]
-  file_src_modules_json_json_comparison_service_ts["src/modules/json/json-comparison.service.ts"]
-  file_src_modules_json_json_comparison_service_unit_test_ts["src/modules/json/json-comparison.service.unit.test.ts"]
-  file_src_modules_json_json_constants_ts["src/modules/json/json.constants.ts"]
-  file_src_modules_json_json_module_ts["src/modules/json/json.module.ts"]
-  file_src_modules_json_json_module_unit_test_ts["src/modules/json/json.module.unit.test.ts"]
-  file_src_modules_json_json_service_ts["src/modules/json/json.service.ts"]
-  file_src_modules_json_json_service_unit_test_ts["src/modules/json/json.service.unit.test.ts"]
-  file_src_modules_json_json_types_ts["src/modules/json/json.types.ts"]
-  file_src_modules_jupyter_jupyter_notebook_service_ts["src/modules/jupyter/jupyter-notebook.service.ts"]
-  file_src_modules_jupyter_jupyter_notebook_service_unit_test_ts["src/modules/jupyter/jupyter-notebook.service.unit.test.ts"]
-  file_src_modules_jupyter_jupyter_constants_ts["src/modules/jupyter/jupyter.constants.ts"]
-  file_src_modules_jupyter_jupyter_module_ts["src/modules/jupyter/jupyter.module.ts"]
-  file_src_modules_jupyter_jupyter_module_unit_test_ts["src/modules/jupyter/jupyter.module.unit.test.ts"]
-  file_src_modules_jupyter_jupyter_service_ts["src/modules/jupyter/jupyter.service.ts"]
-  file_src_modules_jupyter_jupyter_service_unit_test_ts["src/modules/jupyter/jupyter.service.unit.test.ts"]
-  file_src_modules_jupyter_jupyter_types_ts["src/modules/jupyter/jupyter.types.ts"]
-  file_src_modules_languages_languages_constants_ts["src/modules/languages/languages.constants.ts"]
-  file_src_modules_languages_languages_module_ts["src/modules/languages/languages.module.ts"]
-  file_src_modules_languages_languages_module_unit_test_ts["src/modules/languages/languages.module.unit.test.ts"]
-  file_src_modules_languages_languages_service_ts["src/modules/languages/languages.service.ts"]
-  file_src_modules_languages_languages_service_unit_test_ts["src/modules/languages/languages.service.unit.test.ts"]
-  file_src_modules_languages_languages_types_ts["src/modules/languages/languages.types.ts"]
-  file_src_modules_markdown_markdown_nodes_service_ts["src/modules/markdown/markdown-nodes.service.ts"]
-  file_src_modules_markdown_markdown_nodes_service_unit_test_ts["src/modules/markdown/markdown-nodes.service.unit.test.ts"]
-  file_src_modules_markdown_markdown_tree_service_ts["src/modules/markdown/markdown-tree.service.ts"]
-  file_src_modules_markdown_markdown_tree_service_unit_test_ts["src/modules/markdown/markdown-tree.service.unit.test.ts"]
-  file_src_modules_markdown_markdown_constants_ts["src/modules/markdown/markdown.constants.ts"]
-  file_src_modules_markdown_markdown_module_ts["src/modules/markdown/markdown.module.ts"]
-  file_src_modules_markdown_markdown_module_unit_test_ts["src/modules/markdown/markdown.module.unit.test.ts"]
-  file_src_modules_markdown_markdown_service_ts["src/modules/markdown/markdown.service.ts"]
-  file_src_modules_markdown_markdown_service_unit_test_ts["src/modules/markdown/markdown.service.unit.test.ts"]
-  file_src_modules_markdown_markdown_types_ts["src/modules/markdown/markdown.types.ts"]
-  file_src_modules_python_python_bridge_service_ts["src/modules/python/python-bridge.service.ts"]
-  file_src_modules_python_python_bridge_service_unit_test_ts["src/modules/python/python-bridge.service.unit.test.ts"]
-  file_src_modules_python_python_constants_ts["src/modules/python/python.constants.ts"]
-  file_src_modules_python_python_module_ts["src/modules/python/python.module.ts"]
-  file_src_modules_python_python_module_unit_test_ts["src/modules/python/python.module.unit.test.ts"]
-  file_src_modules_python_python_service_ts["src/modules/python/python.service.ts"]
-  file_src_modules_python_python_service_unit_test_ts["src/modules/python/python.service.unit.test.ts"]
-  file_src_modules_python_python_types_ts["src/modules/python/python.types.ts"]
-  file_src_modules_scoring_scoring_constants_ts["src/modules/scoring/scoring.constants.ts"]
-  file_src_modules_scoring_scoring_module_ts["src/modules/scoring/scoring.module.ts"]
-  file_src_modules_scoring_scoring_module_unit_test_ts["src/modules/scoring/scoring.module.unit.test.ts"]
-  file_src_modules_scoring_scoring_service_ts["src/modules/scoring/scoring.service.ts"]
-  file_src_modules_scoring_scoring_service_unit_test_ts["src/modules/scoring/scoring.service.unit.test.ts"]
-  file_src_modules_scoring_scoring_types_ts["src/modules/scoring/scoring.types.ts"]
-  file_src_modules_text_text_constants_ts["src/modules/text/text.constants.ts"]
-  file_src_modules_text_text_module_ts["src/modules/text/text.module.ts"]
-  file_src_modules_text_text_module_unit_test_ts["src/modules/text/text.module.unit.test.ts"]
-  file_src_modules_text_text_service_ts["src/modules/text/text.service.ts"]
-  file_src_modules_text_text_service_unit_test_ts["src/modules/text/text.service.unit.test.ts"]
-  file_src_modules_text_text_types_ts["src/modules/text/text.types.ts"]
-  file_src_modules_typescript_typescript_comments_service_ts["src/modules/typescript/typescript-comments.service.ts"]
-  file_src_modules_typescript_typescript_comments_service_unit_test_ts["src/modules/typescript/typescript-comments.service.unit.test.ts"]
-  file_src_modules_typescript_typescript_nodes_service_ts["src/modules/typescript/typescript-nodes.service.ts"]
-  file_src_modules_typescript_typescript_nodes_service_unit_test_ts["src/modules/typescript/typescript-nodes.service.unit.test.ts"]
-  file_src_modules_typescript_typescript_tree_service_ts["src/modules/typescript/typescript-tree.service.ts"]
-  file_src_modules_typescript_typescript_tree_service_unit_test_ts["src/modules/typescript/typescript-tree.service.unit.test.ts"]
-  file_src_modules_typescript_typescript_constants_ts["src/modules/typescript/typescript.constants.ts"]
-  file_src_modules_typescript_typescript_module_ts["src/modules/typescript/typescript.module.ts"]
-  file_src_modules_typescript_typescript_module_unit_test_ts["src/modules/typescript/typescript.module.unit.test.ts"]
-  file_src_modules_typescript_typescript_service_ts["src/modules/typescript/typescript.service.ts"]
-  file_src_modules_typescript_typescript_service_unit_test_ts["src/modules/typescript/typescript.service.unit.test.ts"]
-  file_src_modules_typescript_typescript_types_ts["src/modules/typescript/typescript.types.ts"]
-  file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
-  file_src_modules_differences_differences_module_ts --> file_src_modules_differences_differences_service_ts
-  file_src_modules_differences_differences_module_unit_test_ts --> file_src_modules_differences_differences_module_ts
-  file_src_modules_differences_differences_module_unit_test_ts --> file_src_modules_differences_differences_service_ts
-  file_src_modules_differences_differences_service_ts --> file_src_modules_differences_differences_constants_ts
-  file_src_modules_differences_differences_service_ts --> file_src_modules_differences_differences_types_ts
-  file_src_modules_differences_differences_service_unit_test_ts --> file_src_modules_differences_differences_service_ts
-  file_src_modules_files_files_module_ts --> file_src_modules_differences_differences_module_ts
-  file_src_modules_files_files_module_ts --> file_src_modules_files_files_service_ts
-  file_src_modules_files_files_module_unit_test_ts --> file_src_modules_files_files_module_ts
-  file_src_modules_files_files_module_unit_test_ts --> file_src_modules_files_files_service_ts
-  file_src_modules_files_files_service_ts --> file_src_modules_differences_differences_service_ts
-  file_src_modules_files_files_service_ts --> file_src_modules_files_files_types_ts
-  file_src_modules_files_files_service_unit_test_ts --> file_src_modules_differences_differences_module_ts
-  file_src_modules_files_files_service_unit_test_ts --> file_src_modules_files_files_service_ts
-  file_src_modules_json_json_comparison_service_ts --> file_src_modules_json_json_types_ts
-  file_src_modules_json_json_comparison_service_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_json_json_comparison_service_unit_test_ts --> file_src_modules_json_json_comparison_service_ts
-  file_src_modules_json_json_comparison_service_unit_test_ts --> file_src_modules_json_json_types_ts
-  file_src_modules_json_json_comparison_service_unit_test_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_json_json_module_ts --> file_src_modules_json_json_comparison_service_ts
-  file_src_modules_json_json_module_ts --> file_src_modules_json_json_service_ts
-  file_src_modules_json_json_module_ts --> file_src_modules_scoring_scoring_module_ts
-  file_src_modules_json_json_module_unit_test_ts --> file_src_modules_json_json_module_ts
-  file_src_modules_json_json_module_unit_test_ts --> file_src_modules_json_json_service_ts
-  file_src_modules_json_json_service_ts --> file_src_modules_json_json_comparison_service_ts
-  file_src_modules_json_json_service_ts --> file_src_modules_json_json_constants_ts
-  file_src_modules_json_json_service_ts --> file_src_modules_json_json_types_ts
-  file_src_modules_json_json_service_unit_test_ts --> file_src_modules_json_json_comparison_service_ts
-  file_src_modules_json_json_service_unit_test_ts --> file_src_modules_json_json_service_ts
-  file_src_modules_json_json_service_unit_test_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_jupyter_jupyter_notebook_service_ts --> file_src_modules_jupyter_jupyter_types_ts
-  file_src_modules_jupyter_jupyter_notebook_service_unit_test_ts --> file_src_modules_jupyter_jupyter_notebook_service_ts
-  file_src_modules_jupyter_jupyter_module_ts --> file_src_modules_json_json_module_ts
-  file_src_modules_jupyter_jupyter_module_ts --> file_src_modules_jupyter_jupyter_notebook_service_ts
-  file_src_modules_jupyter_jupyter_module_ts --> file_src_modules_jupyter_jupyter_service_ts
-  file_src_modules_jupyter_jupyter_module_ts --> file_src_modules_markdown_markdown_module_ts
-  file_src_modules_jupyter_jupyter_module_ts --> file_src_modules_python_python_module_ts
-  file_src_modules_jupyter_jupyter_module_unit_test_ts --> file_src_modules_jupyter_jupyter_module_ts
-  file_src_modules_jupyter_jupyter_module_unit_test_ts --> file_src_modules_jupyter_jupyter_service_ts
-  file_src_modules_jupyter_jupyter_service_ts --> file_src_modules_json_json_comparison_service_ts
-  file_src_modules_jupyter_jupyter_service_ts --> file_src_modules_json_json_types_ts
-  file_src_modules_jupyter_jupyter_service_ts --> file_src_modules_jupyter_jupyter_notebook_service_ts
-  file_src_modules_jupyter_jupyter_service_ts --> file_src_modules_jupyter_jupyter_constants_ts
-  file_src_modules_jupyter_jupyter_service_ts --> file_src_modules_jupyter_jupyter_types_ts
-  file_src_modules_jupyter_jupyter_service_ts --> file_src_modules_markdown_markdown_service_ts
-  file_src_modules_jupyter_jupyter_service_ts --> file_src_modules_python_python_bridge_service_ts
-  file_src_modules_jupyter_jupyter_service_unit_test_ts --> file_src_modules_differences_differences_service_ts
-  file_src_modules_jupyter_jupyter_service_unit_test_ts --> file_src_modules_json_json_comparison_service_ts
-  file_src_modules_jupyter_jupyter_service_unit_test_ts --> file_src_modules_jupyter_jupyter_notebook_service_ts
-  file_src_modules_jupyter_jupyter_service_unit_test_ts --> file_src_modules_jupyter_jupyter_service_ts
-  file_src_modules_jupyter_jupyter_service_unit_test_ts --> file_src_modules_markdown_markdown_nodes_service_ts
-  file_src_modules_jupyter_jupyter_service_unit_test_ts --> file_src_modules_markdown_markdown_tree_service_ts
-  file_src_modules_jupyter_jupyter_service_unit_test_ts --> file_src_modules_markdown_markdown_service_ts
-  file_src_modules_jupyter_jupyter_service_unit_test_ts --> file_src_modules_python_python_bridge_service_ts
-  file_src_modules_jupyter_jupyter_service_unit_test_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_languages_languages_module_ts --> file_src_modules_json_json_module_ts
-  file_src_modules_languages_languages_module_ts --> file_src_modules_jupyter_jupyter_module_ts
-  file_src_modules_languages_languages_module_ts --> file_src_modules_languages_languages_service_ts
-  file_src_modules_languages_languages_module_ts --> file_src_modules_markdown_markdown_module_ts
-  file_src_modules_languages_languages_module_ts --> file_src_modules_python_python_module_ts
-  file_src_modules_languages_languages_module_ts --> file_src_modules_text_text_module_ts
-  file_src_modules_languages_languages_module_ts --> file_src_modules_typescript_typescript_module_ts
-  file_src_modules_languages_languages_module_unit_test_ts --> file_src_modules_json_json_module_ts
-  file_src_modules_languages_languages_module_unit_test_ts --> file_src_modules_jupyter_jupyter_module_ts
-  file_src_modules_languages_languages_module_unit_test_ts --> file_src_modules_languages_languages_module_ts
-  file_src_modules_languages_languages_module_unit_test_ts --> file_src_modules_languages_languages_service_ts
-  file_src_modules_languages_languages_module_unit_test_ts --> file_src_modules_markdown_markdown_module_ts
-  file_src_modules_languages_languages_module_unit_test_ts --> file_src_modules_python_python_module_ts
-  file_src_modules_languages_languages_module_unit_test_ts --> file_src_modules_text_text_module_ts
-  file_src_modules_languages_languages_module_unit_test_ts --> file_src_modules_typescript_typescript_module_ts
-  file_src_modules_languages_languages_service_ts --> file_src_modules_json_json_service_ts
-  file_src_modules_languages_languages_service_ts --> file_src_modules_jupyter_jupyter_service_ts
-  file_src_modules_languages_languages_service_ts --> file_src_modules_languages_languages_types_ts
-  file_src_modules_languages_languages_service_ts --> file_src_modules_markdown_markdown_service_ts
-  file_src_modules_languages_languages_service_ts --> file_src_modules_python_python_service_ts
-  file_src_modules_languages_languages_service_ts --> file_src_modules_text_text_service_ts
-  file_src_modules_languages_languages_service_ts --> file_src_modules_typescript_typescript_service_ts
-  file_src_modules_languages_languages_service_unit_test_ts --> file_src_modules_languages_languages_module_ts
-  file_src_modules_languages_languages_service_unit_test_ts --> file_src_modules_languages_languages_service_ts
-  file_src_modules_markdown_markdown_nodes_service_ts --> file_src_modules_markdown_markdown_constants_ts
-  file_src_modules_markdown_markdown_nodes_service_ts --> file_src_modules_markdown_markdown_types_ts
-  file_src_modules_markdown_markdown_nodes_service_unit_test_ts --> file_src_modules_markdown_markdown_nodes_service_ts
-  file_src_modules_markdown_markdown_nodes_service_unit_test_ts --> file_src_modules_markdown_markdown_types_ts
-  file_src_modules_markdown_markdown_tree_service_ts --> file_src_modules_markdown_markdown_nodes_service_ts
-  file_src_modules_markdown_markdown_tree_service_ts --> file_src_modules_markdown_markdown_constants_ts
-  file_src_modules_markdown_markdown_tree_service_ts --> file_src_modules_markdown_markdown_types_ts
-  file_src_modules_markdown_markdown_tree_service_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_markdown_markdown_tree_service_unit_test_ts --> file_src_modules_markdown_markdown_nodes_service_ts
-  file_src_modules_markdown_markdown_tree_service_unit_test_ts --> file_src_modules_markdown_markdown_tree_service_ts
-  file_src_modules_markdown_markdown_tree_service_unit_test_ts --> file_src_modules_markdown_markdown_types_ts
-  file_src_modules_markdown_markdown_tree_service_unit_test_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_markdown_markdown_module_ts --> file_src_modules_markdown_markdown_nodes_service_ts
-  file_src_modules_markdown_markdown_module_ts --> file_src_modules_markdown_markdown_tree_service_ts
-  file_src_modules_markdown_markdown_module_ts --> file_src_modules_markdown_markdown_service_ts
-  file_src_modules_markdown_markdown_module_ts --> file_src_modules_scoring_scoring_module_ts
-  file_src_modules_markdown_markdown_module_unit_test_ts --> file_src_modules_markdown_markdown_module_ts
-  file_src_modules_markdown_markdown_module_unit_test_ts --> file_src_modules_markdown_markdown_service_ts
-  file_src_modules_markdown_markdown_service_ts --> file_src_modules_markdown_markdown_nodes_service_ts
-  file_src_modules_markdown_markdown_service_ts --> file_src_modules_markdown_markdown_tree_service_ts
-  file_src_modules_markdown_markdown_service_ts --> file_src_modules_markdown_markdown_constants_ts
-  file_src_modules_markdown_markdown_service_unit_test_ts --> file_src_modules_markdown_markdown_nodes_service_ts
-  file_src_modules_markdown_markdown_service_unit_test_ts --> file_src_modules_markdown_markdown_tree_service_ts
-  file_src_modules_markdown_markdown_service_unit_test_ts --> file_src_modules_markdown_markdown_service_ts
-  file_src_modules_markdown_markdown_service_unit_test_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_python_python_bridge_service_ts --> file_src_modules_differences_differences_service_ts
-  file_src_modules_python_python_bridge_service_ts --> file_src_modules_python_python_constants_ts
-  file_src_modules_python_python_bridge_service_ts --> file_src_modules_python_python_types_ts
-  file_src_modules_python_python_bridge_service_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_python_python_bridge_service_unit_test_ts --> file_src_modules_differences_differences_module_ts
-  file_src_modules_python_python_bridge_service_unit_test_ts --> file_src_modules_python_python_bridge_service_ts
-  file_src_modules_python_python_bridge_service_unit_test_ts --> file_src_modules_scoring_scoring_module_ts
-  file_src_modules_python_python_module_ts --> file_src_modules_differences_differences_module_ts
-  file_src_modules_python_python_module_ts --> file_src_modules_python_python_bridge_service_ts
-  file_src_modules_python_python_module_ts --> file_src_modules_python_python_service_ts
-  file_src_modules_python_python_module_ts --> file_src_modules_scoring_scoring_module_ts
-  file_src_modules_python_python_module_unit_test_ts --> file_src_modules_python_python_module_ts
-  file_src_modules_python_python_module_unit_test_ts --> file_src_modules_python_python_service_ts
-  file_src_modules_python_python_service_ts --> file_src_modules_python_python_bridge_service_ts
-  file_src_modules_python_python_service_ts --> file_src_modules_python_python_constants_ts
-  file_src_modules_python_python_service_unit_test_ts --> file_src_modules_differences_differences_service_ts
-  file_src_modules_python_python_service_unit_test_ts --> file_src_modules_python_python_bridge_service_ts
-  file_src_modules_python_python_service_unit_test_ts --> file_src_modules_python_python_service_ts
-  file_src_modules_python_python_service_unit_test_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_scoring_scoring_module_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_scoring_scoring_module_unit_test_ts --> file_src_modules_scoring_scoring_module_ts
-  file_src_modules_scoring_scoring_module_unit_test_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_scoring_scoring_service_ts --> file_src_modules_scoring_scoring_constants_ts
-  file_src_modules_scoring_scoring_service_ts --> file_src_modules_scoring_scoring_types_ts
-  file_src_modules_scoring_scoring_service_unit_test_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_text_text_module_ts --> file_src_modules_text_text_service_ts
-  file_src_modules_text_text_module_unit_test_ts --> file_src_modules_text_text_module_ts
-  file_src_modules_text_text_module_unit_test_ts --> file_src_modules_text_text_service_ts
-  file_src_modules_text_text_service_ts --> file_src_modules_text_text_constants_ts
-  file_src_modules_text_text_service_ts --> file_src_modules_text_text_types_ts
-  file_src_modules_text_text_service_unit_test_ts --> file_src_modules_text_text_service_ts
-  file_src_modules_typescript_typescript_comments_service_ts --> file_src_modules_typescript_typescript_constants_ts
-  file_src_modules_typescript_typescript_comments_service_ts --> file_src_modules_typescript_typescript_types_ts
-  file_src_modules_typescript_typescript_comments_service_unit_test_ts --> file_src_modules_typescript_typescript_comments_service_ts
-  file_src_modules_typescript_typescript_nodes_service_unit_test_ts --> file_src_modules_typescript_typescript_nodes_service_ts
-  file_src_modules_typescript_typescript_tree_service_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_typescript_typescript_tree_service_ts --> file_src_modules_typescript_typescript_nodes_service_ts
-  file_src_modules_typescript_typescript_tree_service_ts --> file_src_modules_typescript_typescript_types_ts
-  file_src_modules_typescript_typescript_tree_service_unit_test_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_typescript_typescript_tree_service_unit_test_ts --> file_src_modules_typescript_typescript_nodes_service_ts
-  file_src_modules_typescript_typescript_tree_service_unit_test_ts --> file_src_modules_typescript_typescript_tree_service_ts
-  file_src_modules_typescript_typescript_module_ts --> file_src_modules_scoring_scoring_module_ts
-  file_src_modules_typescript_typescript_module_ts --> file_src_modules_typescript_typescript_comments_service_ts
-  file_src_modules_typescript_typescript_module_ts --> file_src_modules_typescript_typescript_nodes_service_ts
-  file_src_modules_typescript_typescript_module_ts --> file_src_modules_typescript_typescript_tree_service_ts
-  file_src_modules_typescript_typescript_module_ts --> file_src_modules_typescript_typescript_service_ts
-  file_src_modules_typescript_typescript_module_unit_test_ts --> file_src_modules_typescript_typescript_module_ts
-  file_src_modules_typescript_typescript_module_unit_test_ts --> file_src_modules_typescript_typescript_service_ts
-  file_src_modules_typescript_typescript_service_ts --> file_src_modules_typescript_typescript_comments_service_ts
-  file_src_modules_typescript_typescript_service_ts --> file_src_modules_typescript_typescript_tree_service_ts
-  file_src_modules_typescript_typescript_service_ts --> file_src_modules_typescript_typescript_constants_ts
-  file_src_modules_typescript_typescript_service_unit_test_ts --> file_src_modules_scoring_scoring_service_ts
-  file_src_modules_typescript_typescript_service_unit_test_ts --> file_src_modules_typescript_typescript_comments_service_ts
-  file_src_modules_typescript_typescript_service_unit_test_ts --> file_src_modules_typescript_typescript_nodes_service_ts
-  file_src_modules_typescript_typescript_service_unit_test_ts --> file_src_modules_typescript_typescript_tree_service_ts
-  file_src_modules_typescript_typescript_service_unit_test_ts --> file_src_modules_typescript_typescript_service_ts
-```
-<!-- codependix:end name="codependix-file-imports" -->
+<!-- coinagerie:end -->
 
 <!-- codometer:start -->
 
@@ -754,40 +112,40 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6208-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-203.37_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-73-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-7515-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-324.33_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-14-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-94-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-30.46_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-9.03_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-65-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-22-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-86-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-30-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-22-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-150-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-28-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-192-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-22-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-15-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-22-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-312-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-128-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-423-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-17-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-288-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-256-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-70-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-287-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-604-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-28-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-17-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-28-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-366-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-148-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-487-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-27-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-350-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-327-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-90-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-367-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-797-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-5-ca8a04?style=flat-square)
 
 ### Python
@@ -808,17 +166,17 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-149-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-32-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-13-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-95-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-80-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-164-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-37-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-12-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-99-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-93-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-8-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-35-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-134-dc2626?style=flat-square)
-![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-46-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-149-dc2626?style=flat-square)
+![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
 
@@ -898,14 +256,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-7-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-15-0284c7?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-10-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-18-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-0-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-7-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-7-db2777?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-10-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-10-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-22-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-28-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-0-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -942,41 +300,24 @@ graph LR
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-222-1f6feb?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-4-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-1405-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-7-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-12-a78bfa?style=flat-square)
+![H2](https://img.shields.io/badge/H2-80-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-96-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-45-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-6-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-25-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-211-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-84-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-173-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-2-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-10-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-6-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-116-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-18-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-11-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-73-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-29-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-462-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
-
-<!-- coinagerie:start -->
-
-## 🪙 Coinagerie
-
-The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-languages:coinagerie-check:write`.
-
-- **alt**: Alternative text field of a markdown image node, compared so the description must match the template.
-- **anchor**: Offset in an instance file where a TypeScript error is pinned when known, carried on the difference type.
-- **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
-- **callable**: Function or method identified by file and qualified name, the unit callidescope measures for depth and breadth.
-- **leaf**: Node with no children, matched on its own identity without descending into the tree.
-- **perfect**: Full score of 1 that a comparison earns when it has nothing to weigh, exported as PERFECT_SCORE.
-- **stem**: Name of a file without its extension, carried as nameStem by the files service for each instance.
-- **unclaimed**: Extension no Language claims, which LanguagesService widens the Fallback to cover so it still compares.
-
-<!-- coinagerie:end -->

@@ -966,7 +966,16 @@
         "name": "CHANGELOG.md"
       },
       {
+        "name": "callidescope.md"
+      },
+      {
         "name": "codependix-workspace-graph.json"
+      },
+      {
+        "name": "codependix.md"
+      },
+      {
+        "name": "codometer.md"
       },
       {
         "name": "coinagerie.config.ts"

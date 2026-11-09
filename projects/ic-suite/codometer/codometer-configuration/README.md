@@ -443,253 +443,19 @@ MIT — see [LICENSE](../../LICENSE).
 
 This project was generated from the [nestjs-service-project](../../../configuration/conformetry-templates/nestjs-service-project) conformetry template.
 
-<!-- callidescope:start -->
+<!-- coinagerie:start -->
 
-## 🔭 Callidescope
+## 🪙 Coinagerie
 
-Call stacks traced through `projects/ic-suite/codometer/codometer-configuration`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+The words this project uses that the root glossary does not define, regenerated with `nx run codometer-configuration:coinagerie-check:write`.
 
-| Measure | Value |
-| --- | --- |
-| Callables | 75 |
-| Files | 19 |
-| Calls traced | 67 |
-| Call stacks | 6 |
-| Deepest stack | 3 |
-| Stacks through recursion | 0 |
-| Unfollowable calls | 1 |
+- **accept**: The check of a --check or --format value against the names the flags service admits, refusing unknown ones.
+- **anchor**: The marker pair a README block is spliced between, which the anchor helper appends when absent and compares in check mode.
+- **breadth**: A per-callable count of direct calls, the table column that a breadth gate measures against its limit.
+- **selector**: A configured filter on an entry naming the language or declarations it covers, so one limit can target one kind.
+- **statistic**: A custom counter declared under custom in configuration, with its own label, group, and optional comment budget.
 
-### Limits
-
-What this project is judged against, as declared in its own `callidescope.config.ts`.
-
-| Limit | Value |
-| --- | --- |
-| `maximumDepth` | 9 |
-| `maximumBreadth` | 7 |
-
-### Call stacks (depth)
-
-**1. `superRefine(…)`** — depth 3 · orphan-root
-
-```text
-🚀 superRefine(…)(…): void [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:209]
-  └─> find(…)(…): boolean [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:211]
-    └─> findIndex(…)(…): boolean [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:212]
-```
-
-**2. `callbackSchema`** — depth 2 · orphan-root
-
-```text
-🚀 callbackSchema<CallbackType>(): z.ZodType<CallbackType> [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:36]
-   ↳ Accepts a configured callback.
-  └─> custom(…)(value: unknown): value is Function [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:37]
-```
-
-**3. `superRefine(…)`** — depth 2 · orphan-root
-
-```text
-🚀 superRefine(…)(…): void [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:107]
-  └─> some(…)(pattern: string): boolean [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:109]
-```
-
-<details>
-<summary>3 more call stacks</summary>
-
-**4. `refine(…)`** — depth 2 · orphan-root
-
-```text
-🚀 refine(…)(…): boolean [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:166]
-  └─> map(…)(…): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:167]
-```
-
-**5. `refine(…)`** — depth 2 · orphan-root
-
-```text
-🚀 refine(…)(…): boolean [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:182]
-  └─> map(…)(…): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:183]
-```
-
-**6. `superRefine(…)`** — depth 2 · orphan-root
-
-```text
-🚀 superRefine(…)(…): void [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:227]
-  └─> map(…)(…): string [projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:229]
-```
-
-</details>
-
-### Breadth
-
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `ConfigurationFlagsService.readCheckNames` | 4 | `ConfigurationFlagsService.describeAcceptedCheckNames`, `ConfigurationFlagsService.filter(…)`, `ConfigurationFlagsService.map(…)`, `ConfigurationFlagsService.validateCheckNames` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:58` |
-| `ConfigurationResolverService.resolveConfiguration` | 4 | `ConfigurationResolverService.resolveCustomStatistics`, `ConfigurationResolverService.resolveInputs`, `ConfigurationResolverService.resolveLimits`, `ConfigurationResolverService.resolveOutputs` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:336` |
-| `ConfigurationLoaderService.load` | 3 | `ConfigurationLoaderService.resolveConfigurationPath`, `UnknownConfigurationFileTypeError.constructor`, `ConfigurationLoaderService.loadConfigurationModule` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-loader.service.ts:162` |
-
-<details>
-<summary>42 more callables</summary>
-
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `ConfigurationResolverService.resolveInput` | 3 | `ConfigurationResolverService.map(…)`, `ConfigurationResolverService.filter(…)`, `ConfigurationResolverService.filter(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:196` |
-| `ConfigurationService.loadConfigurationFile` | 3 | `ConfigurationLoaderService.load`, `ConfigurationService.resolveConfiguration`, `ConfigurationService.parseConfiguration` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:78` |
-| `ConfigurationFlagsService.resolveFormat` | 2 | `ConfigurationFlagsService.find(…)`, `ConfigurationFlagsService.map(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:173` |
-| `ConfigurationLoaderService.loadConfigurationModule` | 2 | `ConfigurationLoaderService.loadJsonConfiguration`, `ConfigurationLoaderService.readDefaultExport` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-loader.service.ts:75` |
-| `ConfigurationLoaderService.resolveConfigurationPath` | 2 | `ConfigurationLoaderService.findRepositoryRoot`, `ConfigurationFileNotFoundError.constructor` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-loader.service.ts:126` |
-| `ConfigurationResolverService.parseLimitValue` | 2 | `ConfigurationResolverService.parseLimitValueText`, `InvalidLimitValueError.constructor` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:94` |
-| `ConfigurationResolverService.resolveInputs` | 2 | `ConfigurationResolverService.some(…)`, `ConfigurationResolverService.map(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:224` |
-| `ConfigurationResolverService.map(…)` | 2 | `ConfigurationResolverService.resolveJsonOutput`, `ConfigurationResolverService.resolveMarkdownOutput` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:292` |
-| `ConfigurationResolverService.selectCustomStatistics` | 2 | `ConfigurationResolverService.map(…)`, `ConfigurationResolverService.flatMap(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:308` |
-| `callbackSchema` | 1 | `custom(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:36` |
-| `superRefine(…)` | 1 | `some(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:107` |
-| `refine(…)` | 1 | `map(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:166` |
-| `refine(…)` | 1 | `map(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:182` |
-| `superRefine(…)` | 1 | `find(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:209` |
-| `find(…)` | 1 | `findIndex(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:211` |
-| `superRefine(…)` | 1 | `map(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-schema.constants.ts:227` |
-| `ConfigurationFlagsService.describeAcceptedCheckNames` | 1 | `ConfigurationFlagsService.map(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:47` |
-| `ConfigurationFlagsService.validateCheckNames` | 1 | `ConfigurationFlagsService.describeAcceptedCheckNames` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:90` |
-| `ConfigurationFlagsService.parseDefaultedOption` | 1 | `ConfigurationFlagsService.parseOptionalOption` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:116` |
-| `ConfigurationFlagsService.parseDirectoryOption` | 1 | `ConfigurationFlagsService.parseDefaultedOption` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:127` |
-| `ConfigurationFlagsService.requireConfigurationPath` | 1 | `ConfigurationPathRequiredError.constructor` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:154` |
-| `ConfigurationFlagsService.selectMode` | 1 | `ConfigurationFlagsService.readCheckNames` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-flags.service.ts:203` |
-| `ConfigurationLoaderService.findRepositoryRoot` | 1 | `ConfigurationLoaderService.some(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-loader.service.ts:51` |
-| `ConfigurationResolverService.parseConfigurationInternal` | 1 | `InvalidConfigurationError.constructor` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:75` |
-| `ConfigurationResolverService.parseLimitValueText` | 1 | `InvalidLimitValueError.constructor` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:114` |
-| `ConfigurationResolverService.resolveCustomStatistics` | 1 | `ConfigurationResolverService.map(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:150` |
-| `ConfigurationResolverService.map(…)` | 1 | `ConfigurationResolverService.resolveInput` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:235` |
-| `ConfigurationResolverService.resolveJsonOutput` | 1 | `ConfigurationResolverService.selectCustomStatistics` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:239` |
-| `ConfigurationResolverService.resolveLimits` | 1 | `ConfigurationResolverService.map(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:258` |
-| `ConfigurationResolverService.map(…)` | 1 | `ConfigurationResolverService.parseLimitValue` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:261` |
-| `ConfigurationResolverService.resolveMarkdownOutput` | 1 | `ConfigurationResolverService.selectCustomStatistics` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:270` |
-| `ConfigurationResolverService.resolveOutputs` | 1 | `ConfigurationResolverService.map(…)` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:288` |
-| `ConfigurationResolverService.parseConfiguration` | 1 | `ConfigurationResolverService.parseConfigurationInternal` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration-resolver.service.ts:326` |
-| `ConfigurationService.loadConfiguration` | 1 | `ConfigurationService.loadConfigurationFile` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:63` |
-| `ConfigurationService.parseConfiguration` | 1 | `ConfigurationResolverService.parseConfiguration` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:92` |
-| `ConfigurationService.parseDefaultedOption` | 1 | `ConfigurationFlagsService.parseDefaultedOption` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:97` |
-| `ConfigurationService.parseDirectoryOption` | 1 | `ConfigurationFlagsService.parseDirectoryOption` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:102` |
-| `ConfigurationService.parseOptionalOption` | 1 | `ConfigurationFlagsService.parseOptionalOption` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:107` |
-| `ConfigurationService.requireConfigurationPath` | 1 | `ConfigurationFlagsService.requireConfigurationPath` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:112` |
-| `ConfigurationService.resolveConfiguration` | 1 | `ConfigurationResolverService.resolveConfiguration` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:123` |
-| `ConfigurationService.resolveFormat` | 1 | `ConfigurationFlagsService.resolveFormat` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:132` |
-| `ConfigurationService.selectMode` | 1 | `ConfigurationFlagsService.selectMode` | `projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.service.ts:145` |
-
-</details>
-<!-- callidescope:end -->
-
-## 🕸️ Codependix
-
-Dependency graphs exported by [codependix](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-cli), regenerated by `nx run configuration:codependix:write`.
-
-### Nx Neighborhood
-
-<!-- codependix:start name="codependix-nx-projects" -->
-```mermaid
-graph LR
-  codometer_cli["codometer-cli"]
-  codometer_configuration["codometer-configuration"]
-  codometer_core["codometer-core"]
-  codometer_examples["codometer-examples"]
-  codometer_languages["codometer-languages"]
-  codometer_measurement["codometer-measurement"]
-  codometer_output["codometer-output"]
-  configuration["configuration"]
-  codometer_cli --> codometer_configuration
-  codometer_configuration --> codometer_core
-  codometer_configuration --> configuration
-  codometer_examples --> codometer_configuration
-  codometer_languages --> codometer_configuration
-  codometer_measurement --> codometer_configuration
-  codometer_output --> codometer_configuration
-  classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
-  class codometer_configuration subject
-```
-<!-- codependix:end name="codependix-nx-projects" -->
-
-### NestJS Module Graph
-
-<!-- codependix:start name="codependix-nestjs-modules" -->
-```mermaid
-flowchart LR
-  ConfigurationModule
-```
-<!-- codependix:end name="codependix-nestjs-modules" -->
-
-### File Imports
-
-<!-- codependix:start name="codependix-file-imports" -->
-```mermaid
-graph LR
-  file_callidescope_config_ts["callidescope.config.ts"]
-  file_codependix_config_ts["codependix.config.ts"]
-  file_codometer_config_ts["codometer.config.ts"]
-  file_eslint_config_ts["eslint.config.ts"]
-  file_src_index_ts["src/index.ts"]
-  file_src_index_unit_test_ts["src/index.unit.test.ts"]
-  file_src_modules_configuration_configuration_flags_constants_ts["src/modules/configuration/configuration-flags.constants.ts"]
-  file_src_modules_configuration_configuration_flags_service_ts["src/modules/configuration/configuration-flags.service.ts"]
-  file_src_modules_configuration_configuration_flags_service_unit_test_ts["src/modules/configuration/configuration-flags.service.unit.test.ts"]
-  file_src_modules_configuration_configuration_loader_service_ts["src/modules/configuration/configuration-loader.service.ts"]
-  file_src_modules_configuration_configuration_loader_service_unit_test_ts["src/modules/configuration/configuration-loader.service.unit.test.ts"]
-  file_src_modules_configuration_configuration_loader_types_ts["src/modules/configuration/configuration-loader.types.ts"]
-  file_src_modules_configuration_configuration_resolver_service_ts["src/modules/configuration/configuration-resolver.service.ts"]
-  file_src_modules_configuration_configuration_resolver_service_unit_test_ts["src/modules/configuration/configuration-resolver.service.unit.test.ts"]
-  file_src_modules_configuration_configuration_schema_constants_ts["src/modules/configuration/configuration-schema.constants.ts"]
-  file_src_modules_configuration_configuration_constants_ts["src/modules/configuration/configuration.constants.ts"]
-  file_src_modules_configuration_configuration_module_ts["src/modules/configuration/configuration.module.ts"]
-  file_src_modules_configuration_configuration_module_unit_test_ts["src/modules/configuration/configuration.module.unit.test.ts"]
-  file_src_modules_configuration_configuration_service_ts["src/modules/configuration/configuration.service.ts"]
-  file_src_modules_configuration_configuration_service_unit_test_ts["src/modules/configuration/configuration.service.unit.test.ts"]
-  file_src_modules_configuration_configuration_types_ts["src/modules/configuration/configuration.types.ts"]
-  file_src_modules_configuration_output_types_ts["src/modules/configuration/output.types.ts"]
-  file_src_modules_configuration_resolved_types_ts["src/modules/configuration/resolved.types.ts"]
-  file_testing_mocks_ts["testing/mocks.ts"]
-  file_testing_setup_ts["testing/setup.ts"]
-  file_vite_config_ts["vite.config.ts"]
-  file_vitest_config_ts["vitest.config.ts"]
-  file_src_index_unit_test_ts --> file_src_index_ts
-  file_src_modules_configuration_configuration_flags_service_ts --> file_src_modules_configuration_configuration_flags_constants_ts
-  file_src_modules_configuration_configuration_flags_service_ts --> file_src_modules_configuration_configuration_types_ts
-  file_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_src_modules_configuration_configuration_flags_constants_ts
-  file_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_src_modules_configuration_configuration_flags_service_ts
-  file_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_src_modules_configuration_configuration_types_ts
-  file_src_modules_configuration_configuration_loader_service_ts --> file_src_modules_configuration_configuration_loader_types_ts
-  file_src_modules_configuration_configuration_loader_service_ts --> file_src_modules_configuration_configuration_constants_ts
-  file_src_modules_configuration_configuration_loader_service_ts --> file_src_modules_configuration_configuration_types_ts
-  file_src_modules_configuration_configuration_loader_service_unit_test_ts --> file_src_modules_configuration_configuration_loader_service_ts
-  file_src_modules_configuration_configuration_resolver_service_ts --> file_src_modules_configuration_configuration_schema_constants_ts
-  file_src_modules_configuration_configuration_resolver_service_ts --> file_src_modules_configuration_configuration_constants_ts
-  file_src_modules_configuration_configuration_resolver_service_ts --> file_src_modules_configuration_configuration_types_ts
-  file_src_modules_configuration_configuration_resolver_service_ts --> file_src_modules_configuration_resolved_types_ts
-  file_src_modules_configuration_configuration_resolver_service_unit_test_ts --> file_src_modules_configuration_configuration_resolver_service_ts
-  file_src_modules_configuration_configuration_schema_constants_ts --> file_src_modules_configuration_configuration_constants_ts
-  file_src_modules_configuration_configuration_schema_constants_ts --> file_src_modules_configuration_output_types_ts
-  file_src_modules_configuration_configuration_constants_ts --> file_src_modules_configuration_configuration_types_ts
-  file_src_modules_configuration_configuration_module_ts --> file_src_modules_configuration_configuration_flags_service_ts
-  file_src_modules_configuration_configuration_module_ts --> file_src_modules_configuration_configuration_loader_service_ts
-  file_src_modules_configuration_configuration_module_ts --> file_src_modules_configuration_configuration_resolver_service_ts
-  file_src_modules_configuration_configuration_module_ts --> file_src_modules_configuration_configuration_service_ts
-  file_src_modules_configuration_configuration_module_unit_test_ts --> file_src_modules_configuration_configuration_loader_service_ts
-  file_src_modules_configuration_configuration_module_unit_test_ts --> file_src_modules_configuration_configuration_module_ts
-  file_src_modules_configuration_configuration_module_unit_test_ts --> file_src_modules_configuration_configuration_service_ts
-  file_src_modules_configuration_configuration_service_ts --> file_src_modules_configuration_configuration_flags_service_ts
-  file_src_modules_configuration_configuration_service_ts --> file_src_modules_configuration_configuration_loader_service_ts
-  file_src_modules_configuration_configuration_service_ts --> file_src_modules_configuration_configuration_resolver_service_ts
-  file_src_modules_configuration_configuration_service_ts --> file_src_modules_configuration_configuration_types_ts
-  file_src_modules_configuration_configuration_service_ts --> file_src_modules_configuration_resolved_types_ts
-  file_src_modules_configuration_configuration_service_unit_test_ts --> file_src_modules_configuration_configuration_flags_service_ts
-  file_src_modules_configuration_configuration_service_unit_test_ts --> file_src_modules_configuration_configuration_loader_service_ts
-  file_src_modules_configuration_configuration_service_unit_test_ts --> file_src_modules_configuration_configuration_resolver_service_ts
-  file_src_modules_configuration_configuration_service_unit_test_ts --> file_src_modules_configuration_configuration_constants_ts
-  file_src_modules_configuration_configuration_service_unit_test_ts --> file_src_modules_configuration_configuration_service_ts
-  file_src_modules_configuration_configuration_service_unit_test_ts --> file_src_modules_configuration_configuration_types_ts
-  file_src_modules_configuration_configuration_types_ts --> file_src_modules_configuration_configuration_flags_constants_ts
-  file_src_modules_configuration_configuration_types_ts --> file_src_modules_configuration_output_types_ts
-  file_src_modules_configuration_resolved_types_ts --> file_src_modules_configuration_configuration_types_ts
-  file_src_modules_configuration_resolved_types_ts --> file_src_modules_configuration_output_types_ts
-```
-<!-- codependix:end name="codependix-file-imports" -->
+<!-- coinagerie:end -->
 
 <!-- codometer:start -->
 
@@ -697,40 +463,40 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4156-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-145.20_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-5-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-26-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4287-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-183.41_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-4-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-28-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-16.77_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-5.38_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-26-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-38-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-28-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-26-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-1-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-5-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-131-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-157-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-5-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-11-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-9-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-147-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-35-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-106-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-76-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-222-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-70-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-90-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-265-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-757-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-6-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-12-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-6-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-173-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-54-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-154-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-73-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-229-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-95-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-75-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-312-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-884-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -751,17 +517,17 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-147-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-32-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-13-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-93-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-78-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-159-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-37-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-12-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-97-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-88-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-8-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-35-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-132-dc2626?style=flat-square)
-![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-43-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-144-dc2626?style=flat-square)
+![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
 
@@ -841,14 +607,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-2-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-3-0284c7?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-1-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-4-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-0-16a34a?style=flat-square)
 ![Constants Files](https://img.shields.io/badge/Constants_Files-3-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-6-db2777?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-4-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-5-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-6-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-0-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -885,38 +651,24 @@ graph LR
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-222-1f6feb?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-4-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-912-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-7-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-12-a78bfa?style=flat-square)
+![H2](https://img.shields.io/badge/H2-78-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-94-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-45-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-6-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-25-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-130-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-82-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-101-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-2-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-10-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-6-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-68-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-18-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-11-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-73-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-20-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-237-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
-
-<!-- coinagerie:start -->
-
-## 🪙 Coinagerie
-
-The words this project uses that the root glossary does not define, regenerated with `nx run codometer-configuration:coinagerie-check:write`.
-
-- **accept**: The check of a --check or --format value against the names the flags service admits, refusing unknown ones.
-- **anchor**: The marker pair a README block is spliced between, which the anchor helper appends when absent and compares in check mode.
-- **breadth**: A per-callable count of direct calls, the table column that a breadth gate measures against its limit.
-- **selector**: A configured filter on an entry naming the language or declarations it covers, so one limit can target one kind.
-- **statistic**: A custom counter declared under custom in configuration, with its own label, group, and optional comment budget.
-
-<!-- coinagerie:end -->
