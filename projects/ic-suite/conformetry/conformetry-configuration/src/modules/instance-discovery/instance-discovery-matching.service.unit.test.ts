@@ -1,10 +1,11 @@
 import { readdirSync } from "node:fs";
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RenderingService } from "../rendering/rendering.service";
 import { TemplateDiscoveryService } from "../template-discovery/template-discovery.service";
@@ -33,9 +34,7 @@ function collectTemplates(
  * returns its *parent* — the instance path a template's tree is laid over.
  */
 async function createServiceModule(stem: string): Promise<string> {
-  const instancePath = await mkdtemp(
-    path.join(tmpdir(), "conformetry-instance-"),
-  );
+  const instancePath = createTemporaryDirectory("instance");
   const modulePath = path.join(instancePath, stem);
 
   await mkdir(modulePath, { recursive: true });
@@ -61,9 +60,7 @@ async function createTemplates(): Promise<{
   templates: TemplateDefinition[];
   templatesRootPath: string;
 }> {
-  const templatesRootPath = await mkdtemp(
-    path.join(tmpdir(), "conformetry-templates-"),
-  );
+  const templatesRootPath = createTemporaryDirectory("templates");
   const layout: Record<string, string[]> = {
     "nestjs-graphql-module": [
       "{{nameKebabCase}}/{{nameKebabCase}}.constants.ts",
@@ -104,20 +101,21 @@ describe(InstanceDiscoveryMatchingService, () => {
   let templatesService: TemplateDiscoveryService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        InstanceDiscoveryMatchingService,
-        TemplateDiscoveryService,
-        RenderingService,
-      ],
-    }).compile();
+    const built = await buildTestingModule(InstanceDiscoveryMatchingService, {
+      providers: [TemplateDiscoveryService, RenderingService],
+    });
 
-    service = await module.resolve(InstanceDiscoveryMatchingService);
-    templatesService = await module.resolve(TemplateDiscoveryService);
+    service = built.instance;
+    templatesService = await built.module.resolve(TemplateDiscoveryService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      InstanceDiscoveryMatchingService,
+      { providers: [TemplateDiscoveryService, RenderingService] },
+    );
+
+    expect(instance).toBeInstanceOf(InstanceDiscoveryMatchingService);
   });
 
   describe("buildSubstitutions", () => {
@@ -149,9 +147,7 @@ describe(InstanceDiscoveryMatchingService, () => {
 
   describe("matchInstances", () => {
     it("stands in for every placeholder but name and supplied ones", async () => {
-      const templatesRootPath = await mkdtemp(
-        path.join(tmpdir(), "conformetry-templates-"),
-      );
+      const templatesRootPath = createTemporaryDirectory("templates");
       const templatePath = path.join(templatesRootPath, "route");
 
       await mkdir(templatePath, { recursive: true });
@@ -160,7 +156,7 @@ describe(InstanceDiscoveryMatchingService, () => {
         '"{{name}}" "{{path}}" "{{title}}" "{{type}}"',
         "utf8",
       );
-      const instancePath = await mkdtemp(path.join(tmpdir(), "conformetry-"));
+      const instancePath = createTemporaryDirectory("conformetry");
 
       await writeFile(path.join(instancePath, "word.ts"), "", "utf8");
       const { matched } = service.matchInstances({
@@ -238,9 +234,7 @@ describe(InstanceDiscoveryMatchingService, () => {
     it("reports an instance no template explains", async () => {
       const { templatesRootPath } = await createTemplates();
       const templates = collectTemplates(templatesService, templatesRootPath);
-      const instancePath = await mkdtemp(
-        path.join(tmpdir(), "conformetry-empty-"),
-      );
+      const instancePath = createTemporaryDirectory("empty");
 
       const { matched, unmatched } = service.matchInstances({
         instances: [{ nameStem: "nothing", path: instancePath }],
@@ -252,9 +246,7 @@ describe(InstanceDiscoveryMatchingService, () => {
     });
 
     it("reports two partially matching templates that tie as ambiguous", async () => {
-      const templatesRootPath = await mkdtemp(
-        path.join(tmpdir(), "conformetry-templates-"),
-      );
+      const templatesRootPath = createTemporaryDirectory("templates");
       const layout: Record<string, string[]> = {
         // Each shares exactly one file with the instance, so both reach 50%.
         alpha: [
@@ -287,9 +279,7 @@ describe(InstanceDiscoveryMatchingService, () => {
     });
 
     it("breaks an equal-ratio tie by absolute matched file count", async () => {
-      const templatesRootPath = await mkdtemp(
-        path.join(tmpdir(), "conformetry-templates-"),
-      );
+      const templatesRootPath = createTemporaryDirectory("templates");
       const layout: Record<string, string[]> = {
         // Both templates reach a 50% match ratio, so the tiebreaker must fall
         // to whichever matched more files in absolute terms — "larger".
@@ -311,9 +301,7 @@ describe(InstanceDiscoveryMatchingService, () => {
         }
       }
 
-      const instancePath = await mkdtemp(
-        path.join(tmpdir(), "conformetry-instance-"),
-      );
+      const instancePath = createTemporaryDirectory("instance");
 
       // Matches half of "larger" (2 of 4) and half of "smaller" (1 of 2).
       await writeFile(path.join(instancePath, "larger.service.ts"), "", "utf8");
@@ -337,9 +325,7 @@ describe(InstanceDiscoveryMatchingService, () => {
     });
 
     it("matches every template an instance satisfies completely", async () => {
-      const templatesRootPath = await mkdtemp(
-        path.join(tmpdir(), "conformetry-templates-"),
-      );
+      const templatesRootPath = createTemporaryDirectory("templates");
       const layout: Record<string, string> = {
         alpha: "{{nameKebabCase}}/{{nameKebabCase}}.service.ts",
         beta: "{{nameKebabCase}}/{{nameKebabCase}}.module.ts",

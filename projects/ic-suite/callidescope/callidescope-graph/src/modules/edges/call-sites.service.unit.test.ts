@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ANALYSIS_MODULES } from "../../../testing/modules";
 import {
@@ -34,16 +35,17 @@ describe(CallSitesService, () => {
   let service: CallSitesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(CallSitesService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [CallSitesService],
-    }).compile();
-
-    service = await module.resolve(CallSitesService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CallSitesService, {
+      imports: [...ANALYSIS_MODULES],
+    });
+
+    expect(instance).toBeInstanceOf(CallSitesService);
   });
 
   it("finds a call made directly in the body", () => {

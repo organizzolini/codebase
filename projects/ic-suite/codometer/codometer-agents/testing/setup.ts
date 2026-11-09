@@ -1,5 +1,1 @@
-import { beforeEach, vi } from "vitest";
-
-beforeEach(() => {
-  vi.clearAllMocks();
-});
+import "@codebase/testing/setup";

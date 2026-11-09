@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { FormsBuilderGuardsService } from "./forms-builder-guards.service";
 
@@ -7,16 +8,15 @@ describe(FormsBuilderGuardsService, () => {
   let service: FormsBuilderGuardsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [FormsBuilderGuardsService],
-    }).compile();
+    const built = await buildTestingModule(FormsBuilderGuardsService);
 
-    service = await module.resolve(FormsBuilderGuardsService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(FormsBuilderGuardsService);
+
+    expect(instance).toBeInstanceOf(FormsBuilderGuardsService);
   });
 
   it("should identify valid part of speech values", () => {

@@ -1,15 +1,14 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConventionalConfigIoService } from "./conventional-config-io.service";
 
 import type { ReleaseConfig, Type } from "./conventional-config.types";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const fileContents = new Map<string, string>();
 const requiredModules = new Map<string, unknown>();
@@ -46,7 +45,7 @@ vi.mock("node:module", () => {
 });
 
 describe(ConventionalConfigIoService, () => {
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
   let service: ConventionalConfigIoService;
 
   const workspaceRoot = process.cwd();
@@ -57,18 +56,10 @@ describe(ConventionalConfigIoService, () => {
   const settingsFile = path.join(workspaceRoot, ".vscode/settings.json");
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ConventionalConfigIoService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(ConventionalConfigIoService);
 
-    logger = await module.resolve(LoggerService);
-    service = await module.resolve(ConventionalConfigIoService);
+    logger = built.logger;
+    service = built.instance;
   });
 
   beforeEach(() => {
@@ -77,8 +68,12 @@ describe(ConventionalConfigIoService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(ConventionalConfigIoService);
+
+    expect(instance).toBeInstanceOf(ConventionalConfigIoService);
   });
 
   it("formats scopes and markdown tables", () => {
