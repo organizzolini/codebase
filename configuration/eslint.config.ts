@@ -352,11 +352,11 @@ const MODULE_BOUNDARIES = {
     // report diffing included; and the command-line host wires
     // commands over all of them.
     {
-      onlyDependOnLibsWithTags: [],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:codometer-core",
     },
     {
-      onlyDependOnLibsWithTags: ["name:codometer-core"],
+      onlyDependOnLibsWithTags: ["name:codometer-core", "name:testing"],
       sourceTag: "name:codometer-configuration",
     },
     {
@@ -364,6 +364,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-configuration",
         "name:codometer-core",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-languages",
     },
@@ -373,6 +374,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-core",
         "name:codometer-languages",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-measurement",
     },
@@ -382,6 +384,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-core",
         "name:codometer-measurement",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-output",
     },
@@ -392,6 +395,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-measurement",
         "name:codometer-output",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-cli",
     },
