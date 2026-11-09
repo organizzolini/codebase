@@ -1,12 +1,13 @@
-import { Test } from "@nestjs/testing";
 import * as cheerio from "cheerio";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { loadCheerioElement } from "../../../testing/mocks";
 
 import { PartOfSpeechFormsService } from "./part-of-speech-forms.service";
 
-import type { Lexeme } from "@codebase/lexico-entities";
+import type { Lexeme } from "@codebase/lexico-db";
 import type { CheerioAPI } from "cheerio";
 import type { AnyNode } from "domhandler";
 
@@ -14,25 +15,23 @@ describe(PartOfSpeechFormsService, () => {
   let service: PartOfSpeechFormsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PartOfSpeechFormsService],
-    }).compile();
+    const built = await buildTestingModule(PartOfSpeechFormsService);
 
-    service = await module.resolve(PartOfSpeechFormsService);
+    service = built.instance;
   });
 
   // Re-resolved per test: the parser accumulates state across a parse, so a
   // shared instance would let one case's forms leak into the next.
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PartOfSpeechFormsService],
-    }).compile();
-
-    service = await module.resolve(PartOfSpeechFormsService);
+    ({ instance: service } = await buildTestingModule(
+      PartOfSpeechFormsService,
+    ));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PartOfSpeechFormsService);
+
+    expect(instance).toBeInstanceOf(PartOfSpeechFormsService);
   });
 
   it("should initialize the service instance", () => {

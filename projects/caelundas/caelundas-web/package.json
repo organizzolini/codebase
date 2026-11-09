@@ -14,6 +14,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@graphql-codegen/typed-document-node": "catalog:",
     "@graphql-codegen/typescript-msw": "catalog:",
     "@graphql-codegen/typescript-operations": "catalog:",

@@ -1,9 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
+
 import { resolvePluginService } from "../../modules/plugin/plugin-context.utilities";
 
 import validateExecutor from "./executor";
 
+import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext } from "@nx/devkit";
 
 // The plugin service compiles a whole NestJS graph and reads the workspace;
@@ -38,13 +41,15 @@ function createContext(
 }
 
 describe(validateExecutor, () => {
+  let output: CapturedOutput;
+
   beforeEach(() => {
+    output = captureOutput();
     runValidation.mockResolvedValue({ ok: true, report: "All good." });
     // type-coverage:ignore-next-line -- a deliberate stand-in for the service
     vi.mocked(resolvePluginService).mockResolvedValue({
       runValidation,
     } as unknown as Awaited<ReturnType<typeof resolvePluginService>>);
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -80,7 +85,7 @@ describe(validateExecutor, () => {
         workspaceRoot: "/w",
       }),
     );
-    expect(process.stdout.write).toHaveBeenCalledWith("All good.\n");
+    expect(output.stdout()).toBe("All good.\n");
     expect(result).toStrictEqual({ success: true });
   });
 

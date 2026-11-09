@@ -1,12 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import {
-  Author,
-  Line,
-  Text,
-  Token,
-  TypeOrmModule,
-} from "@codebase/lexico-entities";
+import { Author, Line, Text, Token, TypeOrmModule } from "@codebase/lexico-db";
 
 import { AuthorsResolver } from "./authors.resolver";
 import { LinesResolver } from "./lines.resolver";

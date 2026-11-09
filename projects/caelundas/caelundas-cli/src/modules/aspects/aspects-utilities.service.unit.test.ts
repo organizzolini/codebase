@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { majorAspects } from "../caelundas/caelundas.constants";
 import { MathService } from "../math/math.service";
@@ -19,12 +20,15 @@ type LongitudeWindow = readonly [
 describe(AspectsUtilitiesService, () => {
   let service: AspectsUtilitiesService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [AspectsUtilitiesService, MathService],
-    }).compile();
+  const testingModuleOptions = { providers: [MathService] };
 
-    service = await module.resolve(AspectsUtilitiesService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      AspectsUtilitiesService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
   const detect = (args: {
@@ -43,8 +47,13 @@ describe(AspectsUtilitiesService, () => {
     });
   };
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      AspectsUtilitiesService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(AspectsUtilitiesService);
   });
 
   describe("getActiveAspectBodies", () => {

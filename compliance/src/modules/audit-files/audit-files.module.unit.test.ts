@@ -1,24 +1,30 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
+import {
+  expectModuleExports,
+  expectModuleImports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { AuditFilesCommand } from "./audit-files.command";
 import { AuditFilesModule } from "./audit-files.module";
 import { AuditFilesService } from "./audit-files.service";
 
 describe(AuditFilesModule, () => {
-  it("registers expected imports and providers", () => {
-    expect.hasAssertions();
+  it("imports the logger", () => {
+    expectModuleImports(AuditFilesModule, LoggerModule);
+  });
 
-    const imports = Reflect.getMetadata("imports", AuditFilesModule) as
-      | undefined
-      | unknown[];
-    const providers = Reflect.getMetadata("providers", AuditFilesModule) as
-      | undefined
-      | unknown[];
+  it("provides its command and service", () => {
+    expectModuleProvides(
+      AuditFilesModule,
+      AuditFilesCommand,
+      AuditFilesService,
+    );
+  });
 
-    expect(imports).toContain(LoggerModule);
-    expect(providers).toContain(AuditFilesCommand);
-    expect(providers).toContain(AuditFilesService);
+  it("exports its command and service", () => {
+    expectModuleExports(AuditFilesModule, AuditFilesCommand, AuditFilesService);
   });
 });

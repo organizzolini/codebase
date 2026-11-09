@@ -1,6 +1,7 @@
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CodeService } from "../code/code.service";
@@ -11,29 +12,34 @@ import { EnumerationService } from "./enumeration.service";
 import { TileEnumerationService } from "./tile-enumeration.service";
 
 import type { Environment } from "./enumeration.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** Builds a fresh {@link EnumerationService} against a configured environment, defaulting to today's unconfigured values. */
 async function createService(
   overrides: Partial<Environment> = {},
 ): Promise<EnumerationService> {
   const environment = environmentSchema.parse(overrides);
-  const module = await Test.createTestingModule({
+  const { instance } = await buildTestingModule(
+    EnumerationService,
+    moduleOptions((key) => environment[key]),
+  );
+
+  return instance;
+}
+
+/** What the service is built with: its collaborators, and a configuration that answers `get` as `read` does. */
+function moduleOptions(
+  read: (key: keyof Environment) => unknown,
+): TestingModuleOptions {
+  return {
     providers: [
       CodeService,
-      EnumerationService,
       SymmetryService,
-      TileService,
       TileEnumerationService,
-      {
-        provide: ConfigService,
-        useValue: {
-          get: (key: keyof Environment) => environment[key],
-        },
-      },
+      TileService,
+      { provide: ConfigService, useValue: { get: read } },
     ],
-  }).compile();
-
-  return module.resolve(EnumerationService);
+  };
 }
 
 // 🧪 Tests
@@ -43,27 +49,22 @@ describe(EnumerationService, () => {
 
   beforeAll(async () => {
     const environment = environmentSchema.parse({});
-    const module = await Test.createTestingModule({
-      providers: [
-        CodeService,
-        EnumerationService,
-        SymmetryService,
-        TileService,
-        TileEnumerationService,
-        {
-          provide: ConfigService,
-          useValue: {
-            get: (key: keyof Environment) => environment[key],
-          },
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      EnumerationService,
+      moduleOptions((key) => environment[key]),
+    );
 
-    service = await module.resolve(EnumerationService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const environment = environmentSchema.parse({});
+    const { instance } = await buildTestingModule(
+      EnumerationService,
+      moduleOptions((key) => environment[key]),
+    );
+
+    expect(instance).toBeInstanceOf(EnumerationService);
   });
 
   describe("shapes", () => {
@@ -170,20 +171,10 @@ describe(EnumerationService, () => {
     // this exercises the `??` fallback in isolation, as defensive coding
     // against `ConfigService`'s own loosely-typed `get` signature.
     it("falls back to unbounded rows and columns when the environment leaves them unset", async () => {
-      const module = await Test.createTestingModule({
-        providers: [
-          CodeService,
-          EnumerationService,
-          SymmetryService,
-          TileService,
-          TileEnumerationService,
-          {
-            provide: ConfigService,
-            useValue: { get: () => undefined },
-          },
-        ],
-      }).compile();
-      const unset = await module.resolve(EnumerationService);
+      const { instance: unset } = await buildTestingModule(
+        EnumerationService,
+        moduleOptions(() => undefined),
+      );
 
       expect(unset.shapes()).toStrictEqual(service.shapes());
     });

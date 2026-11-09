@@ -8,17 +8,13 @@ export default mergeConfig(
     test: {
       coverage: {
         /**
-         * Entities as well as tests, as lexico-entities excludes them: an
+         * Entities as well as tests, as lexico-db excludes them: an
          * entity is decorators alone, whose only branches are the
          * `design:type` metadata the compiler emits for each column's type.
          * The integration suite exercises every column against a database.
          */
         exclude: ["src/**/*.entity.ts", "src/**/*.test.ts"],
-        /**
-         * The testing entry's Nest helper too: it lives under `testing/`,
-         * where code may import test tooling, but it is shipped code.
-         */
-        include: ["src/**/*.ts", "testing/persistence-testing.utilities.ts"],
+        include: ["src/**/*.ts"],
       },
       /**
        * The command-line runner hands every message to the real

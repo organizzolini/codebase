@@ -1,6 +1,5 @@
 import { execFile } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
@@ -15,6 +14,9 @@ import {
   vi,
 } from "vitest";
 
+import { startPostgresContainer } from "@codebase/persistence/testing";
+import { createTemporaryDirectory } from "@codebase/testing";
+
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
@@ -22,12 +24,11 @@ import {
   startFixtureDatabase,
 } from "../../../testing/fixture-persistence";
 import { postgresProcessEnvironment } from "../postgresql-utilities/postgresql-utilities.utilities";
-import { startPostgresContainer } from "../postgresql/postgresql-container.utilities";
 
 import type { FixtureDatabase } from "../../../testing/fixture-persistence";
 import type { PostgresUriConnection } from "../postgresql-utilities/postgresql-utilities.types";
-import type { StartedPostgresContainer } from "../postgresql/postgresql-container.types";
 import type { PostgresConnection } from "../postgresql/postgresql.types";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 
 // 🎯 The real execFile, wrapped so each test can read the arguments and
 // environment every client tool was started with.
@@ -131,7 +132,7 @@ describe("postgresql-export", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   beforeEach(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-export-"));
+    directory = createTemporaryDirectory("fixture-export");
     vi.mocked(execFile).mockClear();
     await targetDataSource.query(
       "DROP SCHEMA fixture CASCADE; CREATE SCHEMA fixture",

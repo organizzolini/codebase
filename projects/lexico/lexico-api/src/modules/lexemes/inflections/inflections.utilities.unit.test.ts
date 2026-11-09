@@ -9,7 +9,7 @@ import {
   PrepositionInflection,
   UninflectedInflection,
   VerbInflection,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 import { AdjectiveInflectionType } from "./adjective-inflection.entities";
 import { AdverbInflectionType } from "./adverb-inflection.entities";

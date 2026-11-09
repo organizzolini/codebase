@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MathService } from "./math.service";
 
@@ -7,10 +8,8 @@ describe(MathService, () => {
   let service: MathService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [MathService],
-    }).compile();
-    service = await module.resolve(MathService);
+    const { instance } = await buildTestingModule(MathService);
+    service = instance;
   });
 
   describe("static constants", () => {
@@ -21,8 +20,10 @@ describe(MathService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MathService);
+
+    expect(instance).toBeInstanceOf(MathService);
   });
 
   describe("normalizeDegrees", () => {

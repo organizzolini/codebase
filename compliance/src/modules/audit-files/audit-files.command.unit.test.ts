@@ -1,69 +1,49 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
 import { AuditFilesCommand } from "./audit-files.command";
 import { AuditFilesService } from "./audit-files.service";
 
+import type { LoggerServiceContract } from "@codebase/observability";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** What the AuditFilesCommand is built with. */
+const DEPENDENCIES = {
+  mocks: [AuditFilesService],
+} satisfies TestingModuleOptions;
+
 describe(AuditFilesCommand, () => {
   let command: AuditFilesCommand;
   let service: AuditFilesService;
-  let logger: LoggerService;
+  let logger: LoggerServiceContract;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        AuditFilesCommand,
-        {
-          provide: AuditFilesService,
-          useValue: createMock<AuditFilesService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(AuditFilesCommand, DEPENDENCIES);
 
-    command = await module.resolve(AuditFilesCommand);
-    service = await module.resolve(AuditFilesService);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    service = built.mock(AuditFilesService);
+    logger = built.logger;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      AuditFilesCommand,
+      DEPENDENCIES,
+    );
 
-    expect(command).toBeDefined();
+    expect(instance).toBeInstanceOf(AuditFilesCommand);
   });
 
   it("sets logger context", async () => {
-    expect.hasAssertions();
-
-    const module = await Test.createTestingModule({
-      providers: [
-        AuditFilesCommand,
-        {
-          provide: AuditFilesService,
-          useValue: createMock<AuditFilesService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("AuditFilesCommand");
+    await expectLoggerContext(AuditFilesCommand, DEPENDENCIES);
   });
 
   it("logs success and does not exit when governance is valid", async () => {

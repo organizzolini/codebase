@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 import { describe, expect, it } from "vitest";
 
-import { Author, Text } from "@codebase/lexico-entities";
+import { Author, Text } from "@codebase/lexico-db";
 
 import { LatinLibraryBuilder } from "./latin-library.builder";
 

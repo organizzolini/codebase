@@ -1,10 +1,17 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueAuditService } from "./issue-audit.service";
 import { IssueGithubService } from "./issue-github.service";
 import { IssueMetadataService } from "./issue-metadata.service";
+
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** What IssueAuditService is built with. */
+const DEPENDENCIES = {
+  mocks: [IssueGithubService, IssueMetadataService],
+} satisfies TestingModuleOptions;
 
 describe(IssueAuditService, () => {
   let service: IssueAuditService;
@@ -12,23 +19,11 @@ describe(IssueAuditService, () => {
   let metadata: IssueMetadataService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        IssueAuditService,
-        {
-          provide: IssueGithubService,
-          useValue: createMock<IssueGithubService>(),
-        },
-        {
-          provide: IssueMetadataService,
-          useValue: createMock<IssueMetadataService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(IssueAuditService, DEPENDENCIES);
 
-    service = await module.resolve(IssueAuditService);
-    github = await module.resolve(IssueGithubService);
-    metadata = await module.resolve(IssueMetadataService);
+    service = built.instance;
+    github = built.mock(IssueGithubService);
+    metadata = built.mock(IssueMetadataService);
   });
 
   beforeEach(() => {
@@ -37,8 +32,13 @@ describe(IssueAuditService, () => {
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 404");
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      IssueAuditService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(IssueAuditService);
   });
 
   it("fails an audit of everything when gh is missing", () => {

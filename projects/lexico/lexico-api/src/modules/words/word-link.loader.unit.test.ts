@@ -3,7 +3,7 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { describe, expect, it, vi } from "vitest";
 
-import { Word, WordForm, WordLexeme } from "@codebase/lexico-entities";
+import { Word, WordForm, WordLexeme } from "@codebase/lexico-db";
 
 import { WordLinkLoader } from "./word-link.loader";
 

@@ -1,5 +1,3 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it } from "vitest";
 
@@ -10,15 +8,18 @@ import {
   Word,
   WordForm,
   WordLexeme,
-} from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/observability";
+} from "@codebase/lexico-db";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { LEXICO_INGESTION_BY_ID } from "../lexico-ingestion/lexico-ingestion.constants";
 
 import { WordsService } from "./words.service";
 
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type { DeepMocked } from "@golevelup/ts-vitest";
+import type { Provider } from "@nestjs/common";
 import type { InsertResult, Repository } from "typeorm";
 
 describe(WordsService, () => {
@@ -26,7 +27,7 @@ describe(WordsService, () => {
   let wordRepository: DeepMocked<Repository<Word>>;
   let wordLexemeRepository: DeepMocked<Repository<WordLexeme>>;
   let wordFormRepository: DeepMocked<Repository<WordForm>>;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<WordsService>["logger"];
 
   const mockInsertResult: InsertResult = {
     generatedMaps: [],
@@ -34,67 +35,43 @@ describe(WordsService, () => {
     raw: [],
   };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        WordsService,
-        {
-          provide: getRepositoryToken(Word),
-          useValue: createRepositoryMock<Word>(),
-        },
-        {
-          provide: getRepositoryToken(WordLexeme),
-          useValue: createRepositoryMock<WordLexeme>(),
-        },
-        {
-          provide: getRepositoryToken(WordForm),
-          useValue: createRepositoryMock<WordForm>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+  const createProviders = (): Provider[] => [
+    {
+      provide: getRepositoryToken(Word),
+      useValue: createRepositoryMock<Word>(),
+    },
+    {
+      provide: getRepositoryToken(WordLexeme),
+      useValue: createRepositoryMock<WordLexeme>(),
+    },
+    {
+      provide: getRepositoryToken(WordForm),
+      useValue: createRepositoryMock<WordForm>(),
+    },
+  ];
 
-    service = await module.resolve(WordsService);
-    wordRepository = module.get(getRepositoryToken(Word));
-    wordLexemeRepository = module.get(getRepositoryToken(WordLexeme));
-    wordFormRepository = module.get(getRepositoryToken(WordForm));
-    logger = await module.resolve(LoggerService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(WordsService, {
+      providers: createProviders(),
+    });
+
+    service = built.instance;
+    wordRepository = built.module.get(getRepositoryToken(Word));
+    wordLexemeRepository = built.module.get(getRepositoryToken(WordLexeme));
+    wordFormRepository = built.module.get(getRepositoryToken(WordForm));
+    logger = built.logger;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WordsService, {
+      providers: createProviders(),
+    });
+
+    expect(instance).toBeInstanceOf(WordsService);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        WordsService,
-        {
-          provide: getRepositoryToken(Word),
-          useValue: createRepositoryMock<Word>(),
-        },
-        {
-          provide: getRepositoryToken(WordLexeme),
-          useValue: createRepositoryMock<WordLexeme>(),
-        },
-        {
-          provide: getRepositoryToken(WordForm),
-          useValue: createRepositoryMock<WordForm>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(WordsService);
-    const scopedLogger = await module.resolve(LoggerService);
-
-    expect(scopedLogger.setContext).toHaveBeenCalledWith("WordsService");
+    await expectLoggerContext(WordsService, { providers: createProviders() });
   });
 
   describe("getLexemeWords", () => {

@@ -1,9 +1,10 @@
-import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import { startPostgresContainer } from "@codebase/persistence/testing";
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
@@ -11,9 +12,8 @@ import {
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   postgresUri,
 } from "../../../testing/fixture-persistence";
-import { startPostgresContainer } from "../postgresql/postgresql-container.utilities";
 
-import type { StartedPostgresContainer } from "../postgresql/postgresql-container.types";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 
 const PASSWORD = "hunter2-secret";
 
@@ -24,7 +24,7 @@ describe("postgresql-import --dry-run", () => {
   let source: StartedPostgresContainer;
   let target: StartedPostgresContainer;
   let targetDataSource: DataSource;
-  let directory: string;
+  const directory = useTemporaryDirectory("import-dry-run");
   let dump: string;
 
   /** Rows of `sql` run against the target. */
@@ -87,8 +87,7 @@ describe("postgresql-import --dry-run", () => {
     );
     await sourceDataSource.destroy();
 
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-dry-run-"));
-    dump = path.join(directory, "notes.dump");
+    dump = path.join(directory(), "notes.dump");
     const exported = await runCliCommandLine({
       argv: [
         "postgresql-export",
@@ -105,7 +104,6 @@ describe("postgresql-import --dry-run", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {
-    fs.rmSync(directory, { force: true, recursive: true });
     await targetDataSource.destroy();
     await Promise.all([source.stop(), target.stop()]);
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);

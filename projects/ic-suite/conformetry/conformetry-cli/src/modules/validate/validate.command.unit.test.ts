@@ -1,14 +1,15 @@
 import { ConfigurationService } from "@conformetry/configuration";
 import { ReportingService } from "@conformetry/output";
 import { ValidationService } from "@conformetry/validation";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { captureExitCode } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ValidateCommand } from "./validate.command";
 
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 import type {
   ConformetryConfiguration,
   Instance,
@@ -66,38 +67,28 @@ const TWO_TEMPLATES: ConformetryConfiguration = [
 describe(ValidateCommand, () => {
   let command: ValidateCommand;
   let configurationService: ConfigurationService;
-  let commandLogger: LoggerService;
+  let commandLogger: BuiltTestingModule<ValidateCommand>["logger"];
   let reportingService: ReportingService;
   let validationService: ValidationService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ValidateCommand,
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: ReportingService, useValue: createMock<ReportingService>() },
-        {
-          provide: ValidationService,
-          useValue: createMock<ValidationService>(),
-        },
-      ],
-    }).compile();
+  let readExitCode: ReturnType<typeof captureExitCode>;
 
-    command = await module.resolve(ValidateCommand);
-    configurationService = await module.resolve(ConfigurationService);
-    commandLogger = await module.resolve(LoggerService);
-    reportingService = await module.resolve(ReportingService);
-    validationService = await module.resolve(ValidationService);
+  beforeAll(async () => {
+    const built = await buildTestingModule(ValidateCommand, {
+      mocks: [ConfigurationService, ReportingService, ValidationService],
+    });
+
+    command = built.instance;
+    configurationService = built.mock(ConfigurationService);
+    commandLogger = built.logger;
+    reportingService = built.mock(ReportingService);
+    validationService = built.mock(ValidationService);
   });
 
   // The shared setup clears every mock before each test, so the return values
   // are re-applied here rather than alongside the module.
   beforeEach(() => {
-    process.exitCode = undefined;
+    readExitCode = captureExitCode();
     vi.mocked(
       configurationService.loadConformetryConfiguration,
     ).mockResolvedValue(CONFIGURATION);
@@ -122,31 +113,18 @@ describe(ValidateCommand, () => {
     );
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ValidateCommand, {
+      mocks: [ConfigurationService, ReportingService, ValidationService],
+    });
+
+    expect(instance).toBeInstanceOf(ValidateCommand);
   });
 
   it("sets logger context", async () => {
-    // Its own module: the shared setup clears mocks between tests, so a
-    // constructor call recorded during `beforeAll` is no longer observable.
-    const module = await Test.createTestingModule({
-      providers: [
-        ValidateCommand,
-        {
-          provide: ConfigurationService,
-          useValue: createMock<ConfigurationService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: ReportingService, useValue: createMock<ReportingService>() },
-        {
-          provide: ValidationService,
-          useValue: createMock<ValidationService>(),
-        },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("ValidateCommand");
+    await expectLoggerContext(ValidateCommand, {
+      mocks: [ConfigurationService, ReportingService, ValidationService],
+    });
   });
 
   describe("run", () => {
@@ -305,8 +283,6 @@ describe(ValidateCommand, () => {
         undefined,
         { failedCount: 0, unmatchedCount: 1 },
       );
-
-      process.exitCode = undefined;
     });
 
     it("passes a language filter through", async () => {
@@ -358,14 +334,12 @@ describe(ValidateCommand, () => {
       await expect(
         command.run([], { config: CONFIGURATION_PATH }),
       ).rejects.toThrow("Validation failed");
-      expect(process.exitCode).toBe(1);
+      expect(readExitCode()).toBe(1);
       expect(commandLogger.warn).toHaveBeenCalledWith(
         "⚠️ Rejected non-conforming instances",
         undefined,
         { failedCount: 1, unmatchedCount: 0 },
       );
-
-      process.exitCode = undefined;
     });
   });
 
@@ -409,7 +383,7 @@ describe(ValidateCommand, () => {
         expect.stringContaining("No instances belong to widget"),
       );
       expect(validationService.validate).not.toHaveBeenCalled();
-      expect(process.exitCode).toBeUndefined();
+      expect(readExitCode()).toBeUndefined();
     });
 
     // A tagged group's globs are read inside each project its tags select, and
@@ -441,7 +415,7 @@ describe(ValidateCommand, () => {
       expect(write).toHaveBeenCalledWith(
         expect.stringContaining("locates instances by project tag"),
       );
-      expect(process.exitCode).toBeUndefined();
+      expect(readExitCode()).toBeUndefined();
     });
 
     // Expanding it from the working directory would match whatever sat at the

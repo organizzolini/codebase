@@ -1,5 +1,3 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -11,23 +9,18 @@ import {
   Token,
   Translation,
   Word,
-} from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/observability";
+} from "@codebase/lexico-db";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { promptsMock } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
-import {
-  createRepositoryMock,
-  setPromptsMockResponse,
-} from "../../../testing/mocks";
+import { createRepositoryMock } from "../../../testing/mocks";
 
 import { ClearCommand } from "./clear.command";
 
+import type { Provider } from "@nestjs/common";
 import type { Repository } from "typeorm";
-
-const { promptsMock } = vi.hoisted(() => ({
-  promptsMock:
-    vi.fn<() => Promise<{ dictionary: boolean; literature: boolean }>>(),
-}));
 
 vi.mock("prompts", () => ({
   default: promptsMock,
@@ -43,110 +36,70 @@ describe(ClearCommand, () => {
   let authorsRepository: Repository<Author>;
   let tokensRepository: Repository<Token>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ClearCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: getRepositoryToken(Lexeme),
-          useValue: createRepositoryMock<Lexeme>(),
-        },
-        {
-          provide: getRepositoryToken(Translation),
-          useValue: createRepositoryMock<Translation>(),
-        },
-        {
-          provide: getRepositoryToken(Word),
-          useValue: createRepositoryMock<Word>(),
-        },
-        {
-          provide: getRepositoryToken(Line),
-          useValue: createRepositoryMock<Line>(),
-        },
-        {
-          provide: getRepositoryToken(Text),
-          useValue: createRepositoryMock<Text>(),
-        },
-        {
-          provide: getRepositoryToken(Author),
-          useValue: createRepositoryMock<Author>(),
-        },
-        {
-          provide: getRepositoryToken(Token),
-          useValue: createRepositoryMock<Token>(),
-        },
-      ],
-    }).compile();
+  const createProviders = (): Provider[] => [
+    {
+      provide: getRepositoryToken(Lexeme),
+      useValue: createRepositoryMock<Lexeme>(),
+    },
+    {
+      provide: getRepositoryToken(Translation),
+      useValue: createRepositoryMock<Translation>(),
+    },
+    {
+      provide: getRepositoryToken(Word),
+      useValue: createRepositoryMock<Word>(),
+    },
+    {
+      provide: getRepositoryToken(Line),
+      useValue: createRepositoryMock<Line>(),
+    },
+    {
+      provide: getRepositoryToken(Text),
+      useValue: createRepositoryMock<Text>(),
+    },
+    {
+      provide: getRepositoryToken(Author),
+      useValue: createRepositoryMock<Author>(),
+    },
+    {
+      provide: getRepositoryToken(Token),
+      useValue: createRepositoryMock<Token>(),
+    },
+  ];
 
-    command = await module.resolve(ClearCommand);
-    lexemesRepository = module.get(getRepositoryToken(Lexeme));
-    translationsRepository = module.get(getRepositoryToken(Translation));
-    wordsRepository = module.get(getRepositoryToken(Word));
-    linesRepository = module.get(getRepositoryToken(Line));
-    textsRepository = module.get(getRepositoryToken(Text));
-    authorsRepository = module.get(getRepositoryToken(Author));
-    tokensRepository = module.get(getRepositoryToken(Token));
+  beforeAll(async () => {
+    const built = await buildTestingModule(ClearCommand, {
+      providers: createProviders(),
+    });
+
+    command = built.instance;
+    lexemesRepository = built.module.get(getRepositoryToken(Lexeme));
+    translationsRepository = built.module.get(getRepositoryToken(Translation));
+    wordsRepository = built.module.get(getRepositoryToken(Word));
+    linesRepository = built.module.get(getRepositoryToken(Line));
+    textsRepository = built.module.get(getRepositoryToken(Text));
+    authorsRepository = built.module.get(getRepositoryToken(Author));
+    tokensRepository = built.module.get(getRepositoryToken(Token));
   });
 
   beforeEach(() => {
     resetCommandTestHarness({ unstubGlobals: false });
-    setPromptsMockResponse(promptsMock, {
+    promptsMock.mockResolvedValue({
       dictionary: true,
       literature: true,
     });
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ClearCommand, {
+      providers: createProviders(),
+    });
+
+    expect(instance).toBeInstanceOf(ClearCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ClearCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-        {
-          provide: getRepositoryToken(Lexeme),
-          useValue: createRepositoryMock<Lexeme>(),
-        },
-        {
-          provide: getRepositoryToken(Translation),
-          useValue: createRepositoryMock<Translation>(),
-        },
-        {
-          provide: getRepositoryToken(Word),
-          useValue: createRepositoryMock<Word>(),
-        },
-        {
-          provide: getRepositoryToken(Line),
-          useValue: createRepositoryMock<Line>(),
-        },
-        {
-          provide: getRepositoryToken(Text),
-          useValue: createRepositoryMock<Text>(),
-        },
-        {
-          provide: getRepositoryToken(Author),
-          useValue: createRepositoryMock<Author>(),
-        },
-        {
-          provide: getRepositoryToken(Token),
-          useValue: createRepositoryMock<Token>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(ClearCommand);
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("ClearCommand");
+    await expectLoggerContext(ClearCommand, { providers: createProviders() });
   });
 
   it.each([
@@ -222,7 +175,7 @@ describe(ClearCommand, () => {
   });
 
   it("uses prompted boolean values when options are missing", async () => {
-    setPromptsMockResponse(promptsMock, {
+    promptsMock.mockResolvedValue({
       dictionary: false,
       literature: true,
     });

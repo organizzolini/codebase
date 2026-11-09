@@ -1,9 +1,9 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { mapNullableRelation } from "@codebase/interface";
-import { Line, Text } from "@codebase/lexico-entities";
+import { Line, Text } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LiteratureRelationsLoader } from "./literature-relations.loader";
 import { LiteratureService } from "./literature.service";
@@ -34,28 +34,12 @@ function createLine(index: number): Line {
 }
 
 describe(TextsResolver, () => {
-  let resolver: TextsResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TextsResolver, {
+      mocks: [LiteratureService, LiteratureRelationsLoader],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TextsResolver,
-        {
-          provide: LiteratureService,
-          useValue: createMock<LiteratureService>(),
-        },
-        {
-          provide: LiteratureRelationsLoader,
-          useValue: createMock<LiteratureRelationsLoader>(),
-        },
-      ],
-    }).compile();
-
-    resolver = await module.resolve(TextsResolver);
-  });
-
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(TextsResolver);
   });
 
   it("resolves a single text by lookup", async () => {

@@ -1,3 +1,30 @@
+## 0.0.12 (2026-11-09)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.12
+- Updated coinagerie-vocabulary to 0.0.12
+- Updated coinagerie-output to 0.0.12
+- Updated coinagerie-core to 0.0.12
+
+## 0.0.11 (2026-11-08)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.11
+- Updated coinagerie-vocabulary to 0.0.11
+- Updated coinagerie-output to 0.0.11
+- Updated coinagerie-core to 0.0.11
+
+## 0.0.10 (2026-11-08)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.10
+- Updated coinagerie-vocabulary to 0.0.10
+- Updated coinagerie-output to 0.0.10
+- Updated coinagerie-core to 0.0.10
+
 ## 0.0.9 (2026-11-07)
 
 ### 🧱 Updated Dependencies

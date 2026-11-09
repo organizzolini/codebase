@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
 import { AspectEventFormattingService } from "../aspects/aspect-event-formatting.service";
@@ -21,32 +20,29 @@ import type { Body } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
-
 describe(MinorAspectsService, () => {
   let service: MinorAspectsService;
 
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [
+      AspectEphemerisService,
+      MinorAspectsEventService,
+      MinorAspectsProgressiveService,
+      AspectsUtilitiesService,
+      AspectEventFormattingService,
+      MathService,
+      ProgressiveAspectService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        LoggerService,
-        MinorAspectsService,
-        AspectEphemerisService,
-        MinorAspectsEventService,
-        MinorAspectsProgressiveService,
-        AspectsUtilitiesService,
-        AspectEventFormattingService,
-        MathService,
-        ProgressiveAspectService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
-    service = await module.resolve(MinorAspectsService);
+    const { instance } = await buildTestingModule(
+      MinorAspectsService,
+      testingModuleOptions,
+    );
+    service = instance;
   });
 
   describe("detect", () => {
@@ -675,8 +671,13 @@ describe(MinorAspectsService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MinorAspectsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MinorAspectsService);
   });
 
   describe("getMinorAspect", () => {

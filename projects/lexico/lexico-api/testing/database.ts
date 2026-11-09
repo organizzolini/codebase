@@ -3,7 +3,7 @@ import { vi } from "vitest";
 import {
   LEXICO_DATABASE_MIGRATIONS,
   LexicoDatabaseModule,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../src/lexico-api.constants";

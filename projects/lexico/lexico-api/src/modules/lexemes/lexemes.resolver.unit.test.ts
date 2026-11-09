@@ -3,10 +3,10 @@ import {
   GraphQLSchemaBuilderModule,
   GraphQLSchemaFactory,
 } from "@nestjs/graphql";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { Lexeme } from "@codebase/lexico-entities";
+import { Lexeme } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LexemeType } from "./lexeme.entities";
 import { ORPHANED_GRAPHQL_TYPES } from "./lexemes.constants";
@@ -14,21 +14,12 @@ import { LexemesResolver } from "./lexemes.resolver";
 import { LexemesService } from "./lexemes.service";
 
 describe(LexemesResolver, () => {
-  let resolver: LexemesResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LexemesResolver, {
+      mocks: [LexemesService],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LexemesResolver,
-        { provide: LexemesService, useValue: createMock<LexemesService>() },
-      ],
-    }).compile();
-
-    resolver = await module.resolve(LexemesResolver);
-  });
-
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(LexemesResolver);
   });
 
   it("resolves single lexeme by id using lexemes service", async () => {
@@ -80,16 +71,10 @@ describe(LexemesResolver, () => {
   it("generates schema including lexeme and lexemes queries", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(LexemesResolver, {
       imports: [GraphQLSchemaBuilderModule],
-      providers: [
-        LexemesResolver,
-        {
-          provide: LexemesService,
-          useValue: createMock<LexemesService>(),
-        },
-      ],
-    }).compile();
+      mocks: [LexemesService],
+    });
 
     const schemaFactory = module.get(GraphQLSchemaFactory);
     const schema = await schemaFactory.create([LexemesResolver], {

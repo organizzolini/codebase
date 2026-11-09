@@ -1,10 +1,11 @@
 // cspell:ignore cpython -- CPython's real __pycache__ bytecode-cache naming scheme
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PythonProjectService } from "./python-project.service";
 
@@ -12,9 +13,7 @@ import { PythonProjectService } from "./python-project.service";
 async function buildProject(
   files: Record<string, string>,
 ): Promise<{ absoluteRoot: string }> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "codependix-imports-python-"),
-  );
+  const workspaceRoot = createTemporaryDirectory("codependix-imports-python");
 
   for (const [name, text] of Object.entries(files)) {
     await mkdir(path.join(workspaceRoot, path.dirname(name)), {
@@ -38,15 +37,13 @@ describe(PythonProjectService, () => {
   let service: PythonProjectService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PythonProjectService],
-    }).compile();
-
-    service = await module.resolve(PythonProjectService);
+    ({ instance: service } = await buildTestingModule(PythonProjectService));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PythonProjectService);
+
+    expect(instance).toBeInstanceOf(PythonProjectService);
   });
 
   it("describes a project by its root and Nx name", () => {

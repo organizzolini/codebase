@@ -7,7 +7,7 @@ import type {
   AuthorResolvedField,
 } from "./literature.types";
 import type { GraphQLObjectOf } from "@codebase/interface";
-import type { Author } from "@codebase/lexico-entities";
+import type { Author } from "@codebase/lexico-db";
 
 /** An author of Latin literature. */
 @ObjectType("Author")

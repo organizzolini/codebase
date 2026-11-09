@@ -1,6 +1,7 @@
 import { ConfigModule } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
@@ -17,7 +18,7 @@ import type { MeanderRecord, MeanderShape } from "../database/database.types";
 
 /** Compiles a pool over the real drawing services, with `workers` threads. */
 async function compilePool(workers: number): Promise<DrawPoolService> {
-  const module = await Test.createTestingModule({
+  const { instance } = await buildTestingModule(DrawPoolService, {
     imports: [
       ConfigModule.forRoot({
         ignoreEnvFile: true,
@@ -30,10 +31,10 @@ async function compilePool(workers: number): Promise<DrawPoolService> {
       EnumerationModule,
       SymmetryModule,
     ],
-    providers: [DrawPoolService, DrawRecordService, DrawWorkerService],
-  }).compile();
+    providers: [DrawRecordService, DrawWorkerService],
+  });
 
-  return module.resolve(DrawPoolService);
+  return instance;
 }
 
 /** Reads every row a pool draws for one shape, across every batch it hands back. */

@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import prompts from "prompts";
 import {
   afterEach,
@@ -9,6 +8,9 @@ import {
   it,
   vi,
 } from "vitest";
+
+import { overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConfigurationPathRequiredError } from "./input.constants";
 import { InputService } from "./input.service";
@@ -23,11 +25,7 @@ describe(InputService, () => {
   let service: InputService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [InputService],
-    }).compile();
-
-    service = await module.resolve(InputService);
+    ({ instance: service } = await buildTestingModule(InputService));
   });
 
   const originalIsTty = process.stdin.isTTY;
@@ -40,12 +38,13 @@ describe(InputService, () => {
 
   afterEach(() => {
     promptRunner.mockReset();
-    delete process.env["CI"];
     process.stdin.isTTY = originalIsTty;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(InputService);
+
+    expect(instance).toBeInstanceOf(InputService);
   });
 
   // 🎛️ Prompt gating
@@ -83,7 +82,7 @@ describe(InputService, () => {
 
   it("prompts in CI when a terminal is attached, having no policy of its own", async () => {
     process.stdin.isTTY = true;
-    process.env["CI"] = "true";
+    overrideEnvironment({ CI: "true" });
     promptRunner.mockResolvedValue({ value: "json" });
 
     await expect(

@@ -1,9 +1,8 @@
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CalendarService } from "../calendar/calendar.service";
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
@@ -22,12 +21,6 @@ import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
  * longitude minus the Sun's passing 0°, 90°, 180° and 270°. They assert the
  * full event shape — tags, summary, and timestamp.
  */
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
 
 let service: MonthlyLunarCycleService;
 
@@ -68,21 +61,19 @@ function createEphemerides(
 
 describe("monthly-lunar-cycle.events integration", () => {
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { instance } = await buildTestingModule(MonthlyLunarCycleService, {
       imports: [EphemerisModule],
       providers: [
         LunarApsidesService,
-        MonthlyLunarCycleService,
         CalendarService,
         {
           provide: ConfigService,
           useValue: { get: vi.fn<(propertyPath: string) => unknown>() },
         },
-        LoggerService,
         MathService,
       ],
-    }).compile();
-    service = await module.resolve(MonthlyLunarCycleService);
+    });
+    service = instance;
   });
 
   const minute = moment.utc("2026-10-26T04:12:00.000Z");

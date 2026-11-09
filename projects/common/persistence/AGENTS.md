@@ -17,7 +17,7 @@ This package may import one workspace package, `@codebase/observability`, for it
 command line's logger, and never any other, or every database-backed project
 inherits that edge. Logging has no workspace dependencies, so the edge makes
 no cycle, and lexico-cli, lexico-api, meanderaw-cli, and caelundas-cli
-already depend on it; lexico-entities gains it only transitively.
+already depend on it; lexico-db gains it only transitively.
 
 ## Architecture Overview
 
@@ -67,10 +67,9 @@ testing/
 - **Never name a schema in code.** It comes from `<PROJECT>_POSTGRES_SCHEMA`.
 - **Never run migrations from `PostgresqlModule.forRoot`.** It takes none;
   `createDataSource` and `startPostgresContainer` do.
-- **Keep the testing entry under `testing/`.** It imports `@nestjs/testing`,
-  and dependency-cruiser's `no-test-imports-in-app` allows test tooling only
-  from a `testing/` path, in this package and in every consumer that cruises
-  into it.
+- **Keep Postgres testing helpers with this package.** Export them through
+  `@codebase/persistence/testing`; they may use this package's own database
+  APIs but must not depend on `@codebase/testing`.
 - **Never name a real project in this package's tests.** Use `fixture`, and
   `sample` where a second is needed.
 - **Keep the command line connectionless.** `MainModule` holds no

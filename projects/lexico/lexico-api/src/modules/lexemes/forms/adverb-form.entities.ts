@@ -4,7 +4,7 @@ import { FormType } from "./form.entities";
 
 import type { FormDatabaseOnlyField } from "./forms.types";
 import type { GraphQLObjectOf } from "@codebase/interface";
-import type { AdverbForm, FormDegree } from "@codebase/lexico-entities";
+import type { AdverbForm, FormDegree } from "@codebase/lexico-db";
 
 /** An adverb form at one degree of comparison. */
 @ObjectType("AdverbForm", { implements: FormType })

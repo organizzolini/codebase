@@ -1,10 +1,11 @@
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { ConfigurationModule } from "@conformetry/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GenerationService } from "./generation.service";
 
@@ -74,16 +75,19 @@ describe(GenerationService, () => {
   let service: GenerationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(GenerationService, {
       imports: [ConfigurationModule],
-      providers: [GenerationService],
-    }).compile();
+    });
 
-    service = await module.resolve(GenerationService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(GenerationService, {
+      imports: [ConfigurationModule],
+    });
+
+    expect(instance).toBeInstanceOf(GenerationService);
   });
 
   it("renders templates, runs hooks, and formats generated files", async () => {
@@ -218,8 +222,8 @@ describe(GenerationService, () => {
   });
 
   it("falls back to the definition name and default adapters", async () => {
-    const templateDirectoryPath = await mkdtemp(
-      path.join(tmpdir(), "conformetry-generation-default-runtime-"),
+    const templateDirectoryPath = createTemporaryDirectory(
+      "generation-default-runtime",
     );
 
     const result = await service.runGenerator({
@@ -235,12 +239,10 @@ describe(GenerationService, () => {
   });
 
   it("renders nested templates through the default filesystem", async () => {
-    const templateDirectoryPath = await mkdtemp(
-      path.join(tmpdir(), "conformetry-generation-template-runtime-"),
+    const templateDirectoryPath = createTemporaryDirectory(
+      "generation-template-runtime",
     );
-    const instancePath = await mkdtemp(
-      path.join(tmpdir(), "conformetry-generation-output-runtime-"),
-    );
+    const instancePath = createTemporaryDirectory("generation-output-runtime");
     const nestedTemplateDirectoryPath = path.join(
       templateDirectoryPath,
       "{{nameKebabCase}}",
@@ -320,8 +322,8 @@ describe(GenerationService, () => {
     });
 
     it("hands the hooks the disk adapter when the host supplied none", async () => {
-      const templateDirectoryPath = await mkdtemp(
-        path.join(tmpdir(), "conformetry-generation-hook-default-"),
+      const templateDirectoryPath = createTemporaryDirectory(
+        "generation-hook-default",
       );
       let hookContext: GeneratorHookContext | undefined;
 
@@ -339,13 +341,9 @@ describe(GenerationService, () => {
         instancePath: "/output",
       });
 
-      try {
-        await expect(
-          hookContext?.filesystem.listDirectory(templateDirectoryPath),
-        ).resolves.toStrictEqual([]);
-      } finally {
-        await rm(templateDirectoryPath, { force: true, recursive: true });
-      }
+      await expect(
+        hookContext?.filesystem.listDirectory(templateDirectoryPath),
+      ).resolves.toStrictEqual([]);
     });
 
     it("writes nothing and formats nothing when preGenerate throws", async () => {

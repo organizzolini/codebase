@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const createLexicoEntitiesModuleMock = (
+const createLexicoDatabaseModuleMock = (
   formCaseValues: unknown,
 ): {
   formCaseValues: unknown;
@@ -29,13 +29,11 @@ const createLexicoEntitiesModuleMock = (
 describe("forms.constants normalization guards", () => {
   afterEach(() => {
     vi.resetModules();
-    vi.doUnmock("@codebase/lexico-entities");
+    vi.doUnmock("@codebase/lexico-db");
   });
 
   it("returns empty lists when form enums are not arrays", async () => {
-    vi.doMock("@codebase/lexico-entities", () =>
-      createLexicoEntitiesModuleMock({}),
-    );
+    vi.doMock("@codebase/lexico-db", () => createLexicoDatabaseModuleMock({}));
 
     const constants = await import("./forms.constants");
 
@@ -43,8 +41,8 @@ describe("forms.constants normalization guards", () => {
   });
 
   it("filters non-string values from mixed form enums", async () => {
-    vi.doMock("@codebase/lexico-entities", () =>
-      createLexicoEntitiesModuleMock(["nominative", 1, "genitive"]),
+    vi.doMock("@codebase/lexico-db", () =>
+      createLexicoDatabaseModuleMock(["nominative", 1, "genitive"]),
     );
 
     const constants = await import("./forms.constants");

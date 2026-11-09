@@ -11,7 +11,7 @@ import type {
   FormPerson,
   FormTense,
   FormVoice,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /** A finite verb form: indicative, subjunctive, or imperative. */
 @ObjectType("FiniteVerbForm", { implements: FormType })

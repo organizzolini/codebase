@@ -1,6 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectEventFormattingService } from "./aspect-event-formatting.service";
 
@@ -8,15 +9,15 @@ describe(AspectEventFormattingService, () => {
   let service: AspectEventFormattingService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [AspectEventFormattingService],
-    }).compile();
+    const { instance } = await buildTestingModule(AspectEventFormattingService);
 
-    service = await module.resolve(AspectEventFormattingService);
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(AspectEventFormattingService);
+
+    expect(instance).toBeInstanceOf(AspectEventFormattingService);
   });
 
   it("names multi-word bodies in start case for simple aspects", () => {

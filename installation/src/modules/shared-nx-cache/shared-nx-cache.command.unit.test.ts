@@ -1,8 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ReporterService } from "../reporter/reporter.service";
 
@@ -50,14 +50,12 @@ describe(SharedNxCacheCommand, () => {
     });
     reporter = createMock<ReporterService>();
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SharedNxCacheCommand, {
       providers: [
-        SharedNxCacheCommand,
         { provide: SharedNxCacheServerService, useValue: server },
         { provide: ReporterService, useValue: reporter },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     command = await module.resolve(SharedNxCacheCommand);
   });
@@ -67,25 +65,18 @@ describe(SharedNxCacheCommand, () => {
     close.mockClear();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SharedNxCacheCommand, {
+      mocks: [SharedNxCacheServerService, ReporterService],
+    });
+
+    expect(instance).toBeInstanceOf(SharedNxCacheCommand);
   });
 
   it("sets logger context", async () => {
-    expect.hasAssertions();
-
-    const module = await Test.createTestingModule({
-      providers: [
-        SharedNxCacheCommand,
-        { provide: SharedNxCacheServerService, useValue: server },
-        { provide: ReporterService, useValue: reporter },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("SharedNxCacheCommand");
+    await expectLoggerContext(SharedNxCacheCommand, {
+      mocks: [SharedNxCacheServerService, ReporterService],
+    });
   });
 
   it("parses a port", () => {

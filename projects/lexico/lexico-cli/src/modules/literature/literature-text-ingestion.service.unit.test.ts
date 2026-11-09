@@ -1,15 +1,15 @@
 import { appendFile } from "node:fs/promises";
 
-import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { Author, Text } from "@codebase/lexico-entities";
+import { Author, Text } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LiteratureTextIngestionService } from "./literature-text-ingestion.service";
 
 import type { IngestTextArguments, LibraryEntry } from "./literature.types";
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 vi.mock("node:fs/promises", () => ({
   appendFile: vi.fn<() => Promise<void>>(),
@@ -20,18 +20,10 @@ describe(LiteratureTextIngestionService, () => {
   let logger: DeepMocked<LoggerService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LiteratureTextIngestionService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(LiteratureTextIngestionService);
 
-    service = await module.resolve(LiteratureTextIngestionService);
-    logger = await module.resolve(LoggerService);
+    service = built.instance;
+    logger = built.mock(LoggerService);
   });
 
   beforeEach(() => {
@@ -47,8 +39,12 @@ describe(LiteratureTextIngestionService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      LiteratureTextIngestionService,
+    );
+
+    expect(instance).toBeInstanceOf(LiteratureTextIngestionService);
   });
 
   it("sets logger context during construction", () => {

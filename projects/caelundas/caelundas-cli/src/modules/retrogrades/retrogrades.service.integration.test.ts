@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   MARGIN_MINUTES,
@@ -33,12 +32,6 @@ import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
  * station occurs when the planet reaches a longitude maximum (all previous values
  * lower, all next values no higher). A direct station is the inverse minimum.
  */
-
-vi.mock("fs", () => ({
-  default: {
-    writeFileSync: vi.fn<(path: string, data: string) => void>(),
-  },
-}));
 
 let service: RetrogradesService;
 
@@ -101,16 +94,11 @@ function createRetrogradeEphemeris(
 
 describe("retrogrades.events integration", () => {
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { instance } = await buildTestingModule(RetrogradesService, {
       imports: [EphemerisModule],
-      providers: [
-        LoggerService,
-        RetrogradesService,
-        MathService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
-    service = await module.resolve(RetrogradesService);
+      providers: [MathService, ProgressiveUtilitiesService],
+    });
+    service = instance;
   });
 
   const minute = moment.utc("2024-09-09T12:00:00.000Z");

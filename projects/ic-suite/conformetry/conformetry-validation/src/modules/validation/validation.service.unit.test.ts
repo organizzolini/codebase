@@ -1,10 +1,15 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { ConfigurationService } from "@conformetry/configuration";
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import {
+  createTemporaryDirectory,
+  useTemporaryDirectory,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ValidationModule } from "./validation.module";
 import { ValidationService } from "./validation.service";
@@ -18,7 +23,7 @@ async function createInstance(args: {
   withNotes: boolean;
 }): Promise<string> {
   const instancePath = path.join(
-    await mkdtemp(path.join(tmpdir(), "conformetry-validate-instance-")),
+    createTemporaryDirectory("validate-instance"),
     "my-widget",
   );
 
@@ -43,11 +48,8 @@ async function createInstance(args: {
  * Writes a one-template root: a JSON file whose shape the instance must match,
  * plus a file the instance is required to have.
  */
-async function createTemplatePath(): Promise<string> {
-  const templatePath = path.join(
-    await mkdtemp(path.join(tmpdir(), "conformetry-validate-templates-")),
-    "widget",
-  );
+async function createTemplatePath(templatesRoot: string): Promise<string> {
+  const templatePath = path.join(templatesRoot, "widget");
 
   await mkdir(templatePath, { recursive: true });
   await writeFile(
@@ -64,12 +66,12 @@ async function createTemplatePath(): Promise<string> {
   return templatePath;
 }
 
-/** Writes each file under a fresh directory and returns that directory. */
+/** Writes each file under the given directory and returns that directory. */
 async function writeTree(args: {
+  directoryPath: string;
   files: Record<string, string>;
-  prefix: string;
 }): Promise<string> {
-  const directoryPath = await mkdtemp(path.join(tmpdir(), args.prefix));
+  const { directoryPath } = args;
 
   for (const [filePath, content] of Object.entries(args.files)) {
     await mkdir(path.dirname(path.join(directoryPath, filePath)), {
@@ -95,37 +97,42 @@ async function createRouteInstance(args: {
   routePath: string;
 }): Promise<string> {
   return writeTree({
+    directoryPath: createTemporaryDirectory("validate-route"),
     files: {
       "word/word.route.test.ts": `it("renders", async () => {\n  await renderRoute("${args.routePath}");\n  expect(readPath()).toBe("${args.assertedPath}");\n});\n`,
       "word/word.route.ts": `export const Route = createFileRoute("${args.routePath}")({});\n`,
     },
-    prefix: "conformetry-validate-route-",
   });
 }
 
 describe(ValidationService, () => {
+  const readTemplatesRoot = useTemporaryDirectory("validate-templates");
   let service: ValidationService;
   let templates: TemplateDefinition[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(ValidationService, {
       imports: [ValidationModule],
-      providers: [ValidationService],
-    }).compile();
+    });
 
-    service = await module.resolve(ValidationService);
-    const configurationService = await module.resolve(ConfigurationService);
+    service = built.instance;
+    const configurationService =
+      await built.module.resolve(ConfigurationService);
 
     templates = [
       configurationService.collectTemplate({
         name: "widget",
-        templatePath: await createTemplatePath(),
+        templatePath: await createTemplatePath(readTemplatesRoot()),
       }),
     ];
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ValidationService, {
+      imports: [ValidationModule],
+    });
+
+    expect(instance).toBeInstanceOf(ValidationService);
   });
 
   describe("validate", () => {
@@ -193,10 +200,8 @@ describe(ValidationService, () => {
       expect(result.ok).toBe(true);
     });
 
-    it("fails an instance no template explains", async () => {
-      const instancePath = await mkdtemp(
-        path.join(tmpdir(), "conformetry-validate-empty-"),
-      );
+    it("fails an instance no template explains", () => {
+      const instancePath = createTemporaryDirectory("validate-empty");
 
       const result = service.validate({
         instances: [{ nameStem: "nothing", path: instancePath }],
@@ -210,20 +215,23 @@ describe(ValidationService, () => {
   });
 
   describe("placeholders nothing supplied", () => {
+    const readRouteTemplateRoot = useTemporaryDirectory(
+      "validate-route-template",
+    );
     let routeTemplates: TemplateDefinition[];
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const { module } = await buildTestingModule(ValidationService, {
         imports: [ValidationModule],
-      }).compile();
+      });
       const configurationService = await module.resolve(ConfigurationService);
 
       routeTemplates = [
         configurationService.collectTemplate({
           name: "route",
           templatePath: await writeTree({
+            directoryPath: readRouteTemplateRoot(),
             files: ROUTE_TEMPLATE_FILES,
-            prefix: "conformetry-validate-route-template-",
           }),
         }),
       ];
@@ -264,11 +272,11 @@ describe(ValidationService, () => {
 
     it("reports a placeholder no instance node revealed, failing at any threshold", async () => {
       const instancePath = await writeTree({
+        directoryPath: createTemporaryDirectory("validate-route"),
         files: {
           "word/word.route.test.ts": "it();\n",
           "word/word.route.ts": "export const Route = 1;\n",
         },
-        prefix: "conformetry-validate-route-",
       });
 
       const result = service.validate({
@@ -293,13 +301,16 @@ describe(ValidationService, () => {
         assertedPath: "/word/$id",
         routePath: "/word/$id",
       });
-      const realModule = await Test.createTestingModule({
-        imports: [ValidationModule],
-      }).compile();
+      const { module: realModule } = await buildTestingModule(
+        ValidationService,
+        { imports: [ValidationModule] },
+      );
       const real = await realModule.resolve(ConfigurationService);
       const validateWith = async (
         matchInstances: ConfigurationService["matchInstances"],
       ): Promise<RunValidationResult> => {
+        // The override has to reach the collaborators `ValidationModule`
+        // wires, which the builder's root-level providers cannot.
         const module = await Test.createTestingModule({
           imports: [ValidationModule],
         })
@@ -310,7 +321,6 @@ describe(ValidationService, () => {
             resolveInstanceFiles: real.resolveInstanceFiles.bind(real),
           })
           .compile();
-
         const validation = await module.resolve(ValidationService);
 
         return validation.validate({
@@ -401,12 +411,14 @@ describe(ValidationService, () => {
         configuration: '{\n  "kind": "widget",\n  "name": "my-widget"\n}\n',
         withNotes: true,
       });
-      const realModule = await Test.createTestingModule({
-        imports: [ValidationModule],
-        providers: [ValidationService],
-      }).compile();
+      const { module: realModule } = await buildTestingModule(
+        ValidationService,
+        { imports: [ValidationModule] },
+      );
       const realConfigurationService =
         await realModule.resolve(ConfigurationService);
+      // The override has to reach the collaborators `ValidationModule` wires,
+      // which the builder's root-level providers cannot.
       const overriddenModule = await Test.createTestingModule({
         imports: [ValidationModule],
         providers: [ValidationService],

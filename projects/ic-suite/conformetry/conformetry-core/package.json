@@ -9,6 +9,7 @@
   },
   "description": "Core types and structured contracts for the Conformetry code generation and conformance toolchain",
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
@@ -63,5 +64,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.71"
+  "version": "0.0.74"
 }

@@ -9,13 +9,14 @@ import {
   PrepositionInflection,
   UninflectedInflection,
   VerbInflection,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PartOfSpeechFormsService } from "./part-of-speech-forms.service";
 import { PartOfSpeechModule } from "./part-of-speech.module";
 import { PartOfSpeechService } from "./part-of-speech.service";
 
-import type { Lexeme, PrincipalPart } from "@codebase/lexico-entities";
+import type { Lexeme, PrincipalPart } from "@codebase/lexico-db";
 import type { AnyNode } from "domhandler";
 
 describe(PartOfSpeechService, () => {
@@ -50,8 +51,8 @@ describe(PartOfSpeechService, () => {
     });
 
     it("handles non-array enum exports during module initialization", async () => {
-      vi.doMock("@codebase/lexico-entities", async () => {
-        const actualModule = await vi.importActual("@codebase/lexico-entities");
+      vi.doMock("@codebase/lexico-db", async () => {
+        const actualModule = await vi.importActual("@codebase/lexico-db");
 
         return {
           ...actualModule,
@@ -69,8 +70,8 @@ describe(PartOfSpeechService, () => {
     });
 
     it("filters non-string enum values during module initialization", async () => {
-      vi.doMock("@codebase/lexico-entities", async () => {
-        const actualModule = await vi.importActual("@codebase/lexico-entities");
+      vi.doMock("@codebase/lexico-db", async () => {
+        const actualModule = await vi.importActual("@codebase/lexico-db");
 
         return {
           ...actualModule,
@@ -121,15 +122,17 @@ describe(PartOfSpeechService, () => {
   });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PartOfSpeechFormsService, PartOfSpeechService],
-    }).compile();
-
-    service = await module.resolve(PartOfSpeechService);
+    ({ instance: service } = await buildTestingModule(PartOfSpeechService, {
+      providers: [PartOfSpeechFormsService],
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PartOfSpeechService, {
+      providers: [PartOfSpeechFormsService],
+    });
+
+    expect(instance).toBeInstanceOf(PartOfSpeechService);
   });
 
   describe("getPartOfSpeech", () => {

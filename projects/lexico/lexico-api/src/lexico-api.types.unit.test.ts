@@ -28,7 +28,7 @@ import type {
   PrincipalPart,
   Pronunciation,
   Translation,
-} from "@codebase/lexico-entities";
+} from "@codebase/lexico-db";
 
 /** `LexemeType` with its `forms` and `inflection` retyped as one non-null row. */
 type LexemeTypeWithSingleRelations = Omit<

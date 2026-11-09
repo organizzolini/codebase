@@ -1,14 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   buildCodeStatistics,
@@ -20,9 +13,10 @@ import { MarkdownService } from "../markdown/markdown.service";
 import { DeliveryService } from "./delivery.service";
 
 import type { ResolvedMarkdownDestination } from "../destinations/destinations.types";
+import type { CapturedOutput } from "@codebase/testing";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { RunMode } from "@codometer/configuration";
 import type { MeasurementResult } from "@codometer/measurement";
-import type { MockInstance } from "vitest";
 
 const statistics = buildCodeStatistics();
 const report = buildCodometerReport();
@@ -62,41 +56,44 @@ const markdownDestination: ResolvedMarkdownDestination = {
   write: undefined,
 };
 
+/** What the DeliveryService is built with. */
+const DEPENDENCIES = {
+  mocks: [JsonService, MarkdownService],
+} satisfies TestingModuleOptions;
+
 describe(DeliveryService, () => {
   let service: DeliveryService;
   let jsonService: JsonService;
   let markdownService: MarkdownService;
-  let standardOutput: MockInstance<typeof process.stdout.write>;
+  let output: CapturedOutput;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DeliveryService,
-        { provide: JsonService, useValue: createMock<JsonService>() },
-        { provide: MarkdownService, useValue: createMock<MarkdownService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      DeliveryService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(DeliveryService);
+    service = instance;
     jsonService = await module.resolve(JsonService);
     markdownService = await module.resolve(MarkdownService);
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
-    standardOutput = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    output = captureOutput();
     vi.mocked(jsonService.render).mockReturnValue("{}\n");
     vi.mocked(jsonService.sync).mockReturnValue(true);
     vi.mocked(markdownService.renderBlock).mockReturnValue("block");
     vi.mocked(markdownService.sync).mockReturnValue(true);
   });
 
-  afterEach(() => {
-    standardOutput.mockRestore();
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DeliveryService,
+      DEPENDENCIES,
+    );
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(DeliveryService);
   });
 
   it("produces nothing for a run declaring no destinations", () => {
@@ -288,7 +285,7 @@ describe(DeliveryService, () => {
       indentation: 2,
       report,
     });
-    expect(standardOutput).toHaveBeenCalledWith("{}\n");
+    expect(output.stdout()).toBe("{}\n");
   });
 
   it("prints the badges when --format markdown asked for them", () => {
@@ -302,7 +299,7 @@ describe(DeliveryService, () => {
       scope: "project",
     });
 
-    expect(standardOutput).toHaveBeenCalledWith("block\n");
+    expect(output.stdout()).toBe("block\n");
   });
 
   // The regression this exists for: the console used to render whatever
@@ -344,7 +341,7 @@ describe(DeliveryService, () => {
       scope: "project",
     });
 
-    expect(standardOutput).not.toHaveBeenCalled();
+    expect(output.stdout()).toBe("");
   });
 
   it("prints and writes in the same run when both were asked for", () => {
@@ -361,7 +358,7 @@ describe(DeliveryService, () => {
       scope: "project",
     });
 
-    expect(standardOutput).toHaveBeenCalledWith("block\n");
+    expect(output.stdout()).toBe("block\n");
     expect(jsonService.sync).toHaveBeenCalledExactlyOnceWith({
       check: false,
       indentation: 2,

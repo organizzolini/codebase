@@ -4,6 +4,8 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
 import { CharacteristicContextService } from "../../characteristic-context.service";
@@ -30,10 +32,6 @@ describe(IsCrossCharacteristicService, () => {
 
       contextService = await module.resolve(CharacteristicContextService);
       service = await module.resolve(IsCrossCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
     });
 
     it.each([
@@ -81,9 +79,8 @@ describe(IsCrossCharacteristicService, () => {
     let service: IsCrossCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsCrossCharacteristicService, {
         providers: [
-          IsCrossCharacteristicService,
           {
             provide: CrossCountCharacteristicService,
             useValue: { compute: (): number => values.crossCount },
@@ -101,9 +98,9 @@ describe(IsCrossCharacteristicService, () => {
             useValue: { compute: (): number => values.freeEndCount },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsCrossCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {
