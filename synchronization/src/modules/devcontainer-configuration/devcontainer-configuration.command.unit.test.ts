@@ -1,16 +1,17 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne, mockProcessExit } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
 import { DevcontainerConfigurationCommand } from "./devcontainer-configuration.command";
+
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const fileContents = new Map<string, string>();
 
@@ -31,9 +32,11 @@ vi.mock("node:fs", () => {
   };
 });
 
+const moduleOptions = { providers: [SynchronizationService] };
+
 describe(DevcontainerConfigurationCommand, () => {
   let command: DevcontainerConfigurationCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   const workspaceRoot = process.cwd();
   const localConfigFile = path.join(
@@ -46,47 +49,18 @@ describe(DevcontainerConfigurationCommand, () => {
   );
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DevcontainerConfigurationCommand,
-        SynchronizationService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      DevcontainerConfigurationCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(DevcontainerConfigurationCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
     fileContents.clear();
     vi.clearAllMocks();
-  });
-
-  it("is defined", () => {
-    expect(command).toBeDefined();
-  });
-
-  it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DevcontainerConfigurationCommand,
-        SynchronizationService,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "DevcontainerConfigurationCommand",
-    );
   });
 
   it.each([
@@ -138,6 +112,23 @@ describe(DevcontainerConfigurationCommand, () => {
       "📦 Verified the cloud devcontainer config against the local config",
     );
     expect(writeFileSync).not.toHaveBeenCalled();
+  });
+
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      DevcontainerConfigurationCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(DevcontainerConfigurationCommand);
+  });
+
+  it("sets logger context", async () => {
+    expect.hasAssertions();
+
+    await expectLoggerContext(DevcontainerConfigurationCommand, moduleOptions);
   });
 
   it("writes synchronized cloud config in write mode", async () => {
@@ -246,7 +237,9 @@ describe(DevcontainerConfigurationCommand, () => {
 
   it.each([
     {
-      assertLogs: (loggerService: LoggerService): void => {
+      assertLogs: (
+        loggerService: BuiltTestingModule<unknown>["logger"],
+      ): void => {
         expect(loggerService.info).toHaveBeenCalledWith(
           "📦 Detected out-of-sync common fields",
           undefined,
@@ -278,7 +271,9 @@ describe(DevcontainerConfigurationCommand, () => {
       },
     },
     {
-      assertLogs: (loggerService: LoggerService): void => {
+      assertLogs: (
+        loggerService: BuiltTestingModule<unknown>["logger"],
+      ): void => {
         expect(loggerService.info).not.toHaveBeenCalledWith(
           "🔀 Differing field",
           undefined,
@@ -306,7 +301,9 @@ describe(DevcontainerConfigurationCommand, () => {
       },
     },
     {
-      assertLogs: (loggerService: LoggerService): void => {
+      assertLogs: (
+        loggerService: BuiltTestingModule<unknown>["logger"],
+      ): void => {
         expect(loggerService.info).not.toHaveBeenCalledWith(
           "🔀 Differing field",
           undefined,

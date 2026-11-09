@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
+import {
+  expectModuleImports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { SessionWorktreeNameGitService } from "./session-worktree-name-git.service";
 import { SessionWorktreeNameCommand } from "./session-worktree-name.command";
@@ -11,18 +15,12 @@ describe(SessionWorktreeNameModule, () => {
   it("registers expected imports and providers", () => {
     expect.hasAssertions();
 
-    const imports = Reflect.getMetadata(
-      "imports",
+    expectModuleImports(SessionWorktreeNameModule, LoggerModule);
+    expectModuleProvides(
       SessionWorktreeNameModule,
-    ) as undefined | unknown[];
-    const providers = Reflect.getMetadata(
-      "providers",
-      SessionWorktreeNameModule,
-    ) as undefined | unknown[];
-
-    expect(imports).toContain(LoggerModule);
-    expect(providers).toContain(SessionWorktreeNameCommand);
-    expect(providers).toContain(SessionWorktreeNameGitService);
-    expect(providers).toContain(SessionWorktreeNameService);
+      SessionWorktreeNameCommand,
+      SessionWorktreeNameGitService,
+      SessionWorktreeNameService,
+    );
   });
 });
