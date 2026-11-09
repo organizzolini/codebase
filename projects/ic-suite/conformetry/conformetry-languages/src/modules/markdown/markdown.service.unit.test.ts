@@ -1,6 +1,7 @@
 import { createPlaceholderValue } from "@conformetry/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ScoringService } from "../scoring/scoring.service";
 
@@ -39,20 +40,19 @@ describe(MarkdownService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MarkdownNodesService,
-        MarkdownService,
-        MarkdownTreeService,
-        ScoringService,
-      ],
-    }).compile();
+    const built = await buildTestingModule(MarkdownService, {
+      providers: [MarkdownNodesService, MarkdownTreeService, ScoringService],
+    });
 
-    service = await module.resolve(MarkdownService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MarkdownService, {
+      providers: [MarkdownNodesService, MarkdownTreeService, ScoringService],
+    });
+
+    expect(instance).toBeInstanceOf(MarkdownService);
   });
 
   it("claims markdown files", () => {

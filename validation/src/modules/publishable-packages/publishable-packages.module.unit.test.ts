@@ -1,22 +1,29 @@
-import { Test } from "@nestjs/testing";
 import { describe, expect, it } from "vitest";
 
+import { LoggerModule } from "@codebase/observability";
+import {
+  expectModuleImports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
+
+import { PublishablePackagesChecksService } from "./publishable-packages-checks.service";
+import { PublishablePackagesConsumerService } from "./publishable-packages-consumer.service";
+import { PublishablePackagesProcessService } from "./publishable-packages-process.service";
 import { PublishablePackagesCommand } from "./publishable-packages.command";
 import { PublishablePackagesModule } from "./publishable-packages.module";
 import { PublishablePackagesService } from "./publishable-packages.service";
 
 describe(PublishablePackagesModule, () => {
-  it("compiles and exports providers", async () => {
+  it("registers expected imports and providers", () => {
     expect.hasAssertions();
 
-    const moduleRef = await Test.createTestingModule({
-      imports: [PublishablePackagesModule],
-    }).compile();
-
-    expect(moduleRef.get(PublishablePackagesCommand)).toBeInstanceOf(
+    expectModuleImports(PublishablePackagesModule, LoggerModule);
+    expectModuleProvides(
+      PublishablePackagesModule,
+      PublishablePackagesChecksService,
       PublishablePackagesCommand,
-    );
-    expect(moduleRef.get(PublishablePackagesService)).toBeInstanceOf(
+      PublishablePackagesConsumerService,
+      PublishablePackagesProcessService,
       PublishablePackagesService,
     );
   });

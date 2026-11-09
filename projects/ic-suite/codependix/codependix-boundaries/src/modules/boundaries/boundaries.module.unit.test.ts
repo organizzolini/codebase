@@ -1,5 +1,9 @@
-import { MODULE_METADATA } from "@nestjs/common/constants";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
+
+import {
+  expectModuleExports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { BoundariesModule } from "./boundaries.module";
 import { BoundariesService } from "./boundaries.service";
@@ -16,16 +20,7 @@ const SERVICES = [
 
 describe(BoundariesModule, () => {
   it.each(SERVICES)("exports and provides %s", (service) => {
-    const exportsMetadata = Reflect.getMetadata(
-      MODULE_METADATA.EXPORTS,
-      BoundariesModule,
-    ) as undefined | unknown[];
-    const providersMetadata = Reflect.getMetadata(
-      MODULE_METADATA.PROVIDERS,
-      BoundariesModule,
-    ) as undefined | unknown[];
-
-    expect(exportsMetadata).toContain(service);
-    expect(providersMetadata).toContain(service);
+    expectModuleExports(BoundariesModule, service);
+    expectModuleProvides(BoundariesModule, service);
   });
 });

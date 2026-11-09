@@ -1,10 +1,8 @@
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PublishablePackagesChecksService } from "./publishable-packages-checks.service";
 import { PublishablePackagesConsumerService } from "./publishable-packages-consumer.service";
@@ -70,30 +68,24 @@ const FAMILY = `${WORKSPACE}/projects/ic-suite/conformetry`;
 const TARBALLS = `${WORKSPACE}/dist/tarballs`;
 const CONSUMER = { directory: "/tmp/consumer", workspaceRoot: WORKSPACE };
 
+const moduleOptions = {
+  mocks: [PublishablePackagesChecksService, PublishablePackagesConsumerService],
+};
+
 describe(PublishablePackagesService, () => {
   let service: PublishablePackagesService;
   let consumerService: DeepMocked<PublishablePackagesConsumerService>;
   let checksService: DeepMocked<PublishablePackagesChecksService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishablePackagesService,
-        {
-          provide: PublishablePackagesChecksService,
-          useValue: createMock<PublishablePackagesChecksService>(),
-        },
-        {
-          provide: PublishablePackagesConsumerService,
-          useValue: createMock<PublishablePackagesConsumerService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PublishablePackagesService,
+      moduleOptions,
+    );
 
-    service = await module.resolve(PublishablePackagesService);
-    consumerService = module.get(PublishablePackagesConsumerService);
-    checksService = module.get(PublishablePackagesChecksService);
+    service = built.instance;
+    consumerService = built.mock(PublishablePackagesConsumerService);
+    checksService = built.mock(PublishablePackagesChecksService);
   });
 
   beforeEach(() => {
@@ -126,9 +118,15 @@ describe(PublishablePackagesService, () => {
     existingPaths.add(`${TARBALLS}/conformetry-core-0.0.7.tgz`);
   };
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PublishablePackagesService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PublishablePackagesService);
   });
 
   describe("resolvePublishablePackages", () => {

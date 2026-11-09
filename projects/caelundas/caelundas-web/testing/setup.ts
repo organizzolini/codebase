@@ -1,4 +1,4 @@
-import { cleanup } from "@testing-library/react";
+import "@codebase/testing/react/setup";
 import { afterAll, afterEach, beforeAll, beforeEach } from "vitest";
 
 import {
@@ -53,7 +53,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  cleanup();
   clearCalendarCaches();
   resetGraphqlMockServer();
 });

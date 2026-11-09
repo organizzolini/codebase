@@ -1,9 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { symbolByMartianPhase } from "../caelundas/symbol-caelundas.constants";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
@@ -17,6 +15,7 @@ import {
 
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { PhaseParameters } from "./phases.types";
+import type { createMock } from "@golevelup/ts-vitest";
 
 const createTimestamp = (): moment.Moment =>
   moment.utc("2024-06-01T06:00:00.000Z");
@@ -78,24 +77,17 @@ describe(MartianPhaseService, () => {
     typeof createMock<ProgressiveUtilitiesService>
   >;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MartianPhaseService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: PhaseCalculationService,
-          useValue: createMock<PhaseCalculationService>(),
-        },
-        {
-          provide: ProgressiveUtilitiesService,
-          useValue: createMock<ProgressiveUtilitiesService>(),
-        },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    mocks: [PhaseCalculationService, ProgressiveUtilitiesService],
+  };
 
-    service = await module.resolve(MartianPhaseService);
-    await module.resolve(LoggerService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      MartianPhaseService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     phaseCalculationService = await module.resolve(PhaseCalculationService);
     progressiveUtilitiesService = await module.resolve(
       ProgressiveUtilitiesService,
@@ -109,8 +101,13 @@ describe(MartianPhaseService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MartianPhaseService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MartianPhaseService);
   });
 
   describe("buildMartianPhaseEvent", () => {

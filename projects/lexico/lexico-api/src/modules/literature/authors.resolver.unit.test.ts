@@ -3,10 +3,10 @@ import {
   GraphQLSchemaBuilderModule,
   GraphQLSchemaFactory,
 } from "@nestjs/graphql";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { Author, Text } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AuthorsResolver } from "./authors.resolver";
 import { LiteratureRelationsLoader } from "./literature-relations.loader";
@@ -19,28 +19,12 @@ import {
 import { TextsResolver } from "./texts.resolver";
 
 describe(AuthorsResolver, () => {
-  let resolver: AuthorsResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(AuthorsResolver, {
+      mocks: [LiteratureService, LiteratureRelationsLoader],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        AuthorsResolver,
-        {
-          provide: LiteratureService,
-          useValue: createMock<LiteratureService>(),
-        },
-        {
-          provide: LiteratureRelationsLoader,
-          useValue: createMock<LiteratureRelationsLoader>(),
-        },
-      ],
-    }).compile();
-
-    resolver = await module.resolve(AuthorsResolver);
-  });
-
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(AuthorsResolver);
   });
 
   it("resolves a single author by lookup, including nested field data", async () => {
@@ -197,21 +181,11 @@ describe(AuthorsResolver, () => {
   it("exposes authors as a pagination-only listing without a query argument", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(AuthorsResolver, {
       imports: [GraphQLSchemaBuilderModule],
-      providers: [
-        AuthorsResolver,
-        TextsResolver,
-        {
-          provide: LiteratureService,
-          useValue: createMock<LiteratureService>(),
-        },
-        {
-          provide: LiteratureRelationsLoader,
-          useValue: createMock<LiteratureRelationsLoader>(),
-        },
-      ],
-    }).compile();
+      mocks: [LiteratureService, LiteratureRelationsLoader],
+      providers: [TextsResolver],
+    });
 
     const schema = await module
       .get(GraphQLSchemaFactory)

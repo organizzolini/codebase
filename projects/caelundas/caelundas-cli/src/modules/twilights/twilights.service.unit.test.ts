@@ -1,8 +1,8 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
 import { MathService } from "../math/math.service";
@@ -20,24 +20,32 @@ import type { Moment } from "moment-timezone";
 describe(TwilightsService, () => {
   let service: TwilightsService;
 
+  const testingModuleOptions = {
+    imports: [EphemerisModule],
+    providers: [
+      TwilightsBuilderService,
+      TwilightsComposerService,
+      TwilightsDetectorService,
+      MathService,
+      ProgressiveUtilitiesService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [EphemerisModule],
-      providers: [
-        LoggerService,
-        TwilightsBuilderService,
-        TwilightsComposerService,
-        TwilightsDetectorService,
-        TwilightsService,
-        MathService,
-        ProgressiveUtilitiesService,
-      ],
-    }).compile();
-    service = await module.resolve(TwilightsService);
+    const { instance } = await buildTestingModule(
+      TwilightsService,
+      testingModuleOptions,
+    );
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      TwilightsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TwilightsService);
   });
 
   describe("detect", () => {

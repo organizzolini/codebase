@@ -1,9 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 
@@ -16,18 +14,18 @@ describe(TwilightsDetectorService, () => {
   let service: TwilightsDetectorService;
   let ephemerisService: EphemerisService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TwilightsDetectorService,
-        TwilightsBuilderService,
-        { provide: EphemerisService, useValue: createMock<EphemerisService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    mocks: [EphemerisService],
+    providers: [TwilightsBuilderService],
+  };
 
-    service = await module.resolve(TwilightsDetectorService);
-    await module.resolve(LoggerService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      TwilightsDetectorService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     ephemerisService = await module.resolve(EphemerisService);
 
     vi.mocked(
@@ -44,8 +42,13 @@ describe(TwilightsDetectorService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      TwilightsDetectorService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TwilightsDetectorService);
   });
 
   describe("threshold predicates", () => {

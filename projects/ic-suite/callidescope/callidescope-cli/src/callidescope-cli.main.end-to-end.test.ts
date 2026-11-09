@@ -1,10 +1,11 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, realpathSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { environmentSchema } from "./callidescope-cli.constants";
 
@@ -169,7 +170,7 @@ function writeUnreadableProject(workspaceRoot: string, name: string): void {
 /**
  * Builds a throwaway workspace carrying the tool's default configuration.
  *
- * Rooted at a resolved path, because `mkdtempSync` hands back a symlink on
+ * Rooted at a resolved path, because the system hands back a symlink on
  * macOS — `/var/folders/…` for a directory that really lives under
  * `/private/var/folders/…`. A program's source files come back under the real
  * path, so an unresolved root leaves every workspace-relative path a `../../…`
@@ -182,9 +183,7 @@ function writeUnreadableProject(workspaceRoot: string, name: string): void {
  * rendered path would be measuring the wrong thing without this.
  */
 function writeWorkspace(): string {
-  const workspaceRoot = realpathSync(
-    mkdtempSync(path.join(tmpdir(), "callidescope-exit-")),
-  );
+  const workspaceRoot = createTemporaryDirectory("callidescope-exit");
 
   writeFileSync(
     path.join(workspaceRoot, "callidescope.config.json"),

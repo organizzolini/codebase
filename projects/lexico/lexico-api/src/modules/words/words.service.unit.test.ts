@@ -1,8 +1,8 @@
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { In, Word, WordForm, WordLexeme } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 
@@ -10,26 +10,15 @@ import { WORD_RELATIONS } from "./words.constants";
 import { WordsService } from "./words.service";
 
 describe(WordsService, () => {
-  let service: WordsService;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WordsService, {
+      providers: [Word, WordForm, WordLexeme].map((entity) => ({
+        provide: getRepositoryToken(entity),
+        useValue: createRepositoryMock(),
+      })),
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        WordsService,
-        ...[Word, WordForm, WordLexeme].map((entity) => ({
-          provide: getRepositoryToken(entity),
-          useValue: createRepositoryMock(),
-        })),
-      ],
-    }).compile();
-
-    service = await module.resolve(WordsService);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(WordsService);
   });
 
   it("does not query for the word forms of no lexemes", async () => {
