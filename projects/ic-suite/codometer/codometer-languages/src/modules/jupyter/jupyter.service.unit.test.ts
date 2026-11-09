@@ -1,12 +1,11 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { JsonService } from "../json/json.service";
 import { MarkdownService } from "../markdown/markdown.service";
@@ -15,6 +14,7 @@ import { PythonService } from "../python/python.service";
 
 import { JupyterService } from "./jupyter.service";
 
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 import type * as NodeFileSystem from "node:fs";
 
@@ -57,21 +57,24 @@ const sampleNotebook = {
   nbformat_minor: 5,
 };
 
+/** What the JupyterService is built with. */
+const DEPENDENCIES = {
+  providers: [JsonService, MarkdownService, PythonService],
+} satisfies TestingModuleOptions;
+
 describe(JupyterService, () => {
   let service: JupyterService;
   let jsonService: JsonService;
   let markdownService: MarkdownService;
   let pythonService: PythonService;
   let loggerService: DeepMocked<LoggerService>;
-  const temporaryDirectories: string[] = [];
 
   /** Writes notebooks into a fresh directory and returns it with their names. */
   function writeNotebooks(notebooks: Record<string, unknown>): {
     notebookFiles: string[];
     workingDirectory: string;
   } {
-    const workingDirectory = mkdtempSync(path.join(tmpdir(), "codometer-nb-"));
-    temporaryDirectories.push(workingDirectory);
+    const workingDirectory = createTemporaryDirectory("nb");
 
     for (const [fileName, notebook] of Object.entries(notebooks)) {
       writeFileSync(
@@ -85,17 +88,12 @@ describe(JupyterService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        JupyterService,
-        JsonService,
-        MarkdownService,
-        PythonService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      JupyterService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(JupyterService);
+    service = instance;
     jsonService = await module.resolve(JsonService);
     markdownService = await module.resolve(MarkdownService);
     pythonService = await module.resolve(PythonService);
@@ -104,14 +102,12 @@ describe(JupyterService, () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-
-    for (const temporaryDirectory of temporaryDirectories.splice(0)) {
-      rmSync(temporaryDirectory, { force: true, recursive: true });
-    }
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(JupyterService, DEPENDENCIES);
+
+    expect(instance).toBeInstanceOf(JupyterService);
   });
 
   it("skips every analyzer when there are no notebooks", () => {

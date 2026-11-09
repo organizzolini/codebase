@@ -1,6 +1,7 @@
 import { ScoringService } from "@conformetry/languages";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ReportingService } from "./reporting.service";
 
@@ -24,15 +25,19 @@ describe(ReportingService, () => {
   let service: ReportingService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ReportingService, ScoringService],
-    }).compile();
+    const built = await buildTestingModule(ReportingService, {
+      providers: [ScoringService],
+    });
 
-    service = await module.resolve(ReportingService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ReportingService, {
+      providers: [ScoringService],
+    });
+
+    expect(instance).toBeInstanceOf(ReportingService);
   });
 
   it("returns a success message when nothing failed", () => {

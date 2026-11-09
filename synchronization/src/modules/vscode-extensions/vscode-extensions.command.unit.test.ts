@@ -1,11 +1,10 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { expectProcessExitOne } from "../../../testing/mocks";
 import { SynchronizationService } from "../synchronization/synchronization.service";
@@ -35,9 +34,13 @@ vi.mock("node:fs", () => {
   };
 });
 
+const moduleOptions = { providers: [SynchronizationService] };
+
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+
 describe(VscodeExtensionsCommand, () => {
   let command: VscodeExtensionsCommand;
-  let logger: LoggerService;
+  let logger: BuiltTestingModule<unknown>["logger"];
 
   const workspaceRoot = process.cwd();
   const extensionsFile = path.join(workspaceRoot, VSCODE_EXTENSIONS_FILE);
@@ -83,16 +86,13 @@ describe(VscodeExtensionsCommand, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        VscodeExtensionsCommand,
-        SynchronizationService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      VscodeExtensionsCommand,
+      moduleOptions,
+    );
 
-    command = await module.resolve(VscodeExtensionsCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
@@ -100,21 +100,21 @@ describe(VscodeExtensionsCommand, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      VscodeExtensionsCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(VscodeExtensionsCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        VscodeExtensionsCommand,
-        SynchronizationService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
+    expect.hasAssertions();
 
-    expect(logger.setContext).toHaveBeenCalledWith("VscodeExtensionsCommand");
+    await expectLoggerContext(VscodeExtensionsCommand, moduleOptions);
   });
 
   it("passes in check mode when both devcontainers match, in any order", async () => {

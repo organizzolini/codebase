@@ -1,15 +1,15 @@
-import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
+import { createMock } from "@golevelup/ts-vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import {
-  createCommandTestHarness,
-  resetCommandTestHarness,
-} from "../../../testing/command-harness";
+import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { EpigraphikDatenbankClaussSlabyCommand } from "./epigraphik-datenbank-clauss-slaby.command";
+
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const {
   accessMock,
@@ -41,21 +41,15 @@ vi.mock("node:fs/promises", () => ({
 
 describe(EpigraphikDatenbankClaussSlabyCommand, () => {
   let command: EpigraphikDatenbankClaussSlabyCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<EpigraphikDatenbankClaussSlabyCommand>["logger"];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EpigraphikDatenbankClaussSlabyCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      EpigraphikDatenbankClaussSlabyCommand,
+    );
 
-    command = await module.resolve(EpigraphikDatenbankClaussSlabyCommand);
-    logger = module.get(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
@@ -79,26 +73,16 @@ describe(EpigraphikDatenbankClaussSlabyCommand, () => {
       "/tmp/edcs-errors.log";
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EpigraphikDatenbankClaussSlabyCommand,
+    );
+
+    expect(instance).toBeInstanceOf(EpigraphikDatenbankClaussSlabyCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EpigraphikDatenbankClaussSlabyCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "EpigraphikDatenbankClaussSlabyCommand",
-    );
+    await expectLoggerContext(EpigraphikDatenbankClaussSlabyCommand);
   });
 
   it("should create output directory when it does not exist", async () => {
@@ -107,19 +91,14 @@ describe(EpigraphikDatenbankClaussSlabyCommand, () => {
       "/tmp/edcs-errors.log",
     );
 
-    const commandHarness = await createCommandTestHarness({
-      additionalProviders: [
+    await buildTestingModule(EpigraphikDatenbankClaussSlabyCommand, {
+      providers: [
         {
           provide: LoggerService,
           useValue: bootstrapLogger,
         },
       ],
-      commandType: EpigraphikDatenbankClaussSlabyCommand,
     });
-
-    await commandHarness.testingModule.resolve(
-      EpigraphikDatenbankClaussSlabyCommand,
-    );
 
     expect(
       bootstrapLogger.createTimestampedOutputLogFilePath,

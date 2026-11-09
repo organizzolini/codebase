@@ -1,9 +1,7 @@
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -14,6 +12,9 @@ import {
   vi,
 } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { TypeormMigrationSqlExtractorService } from "./typeorm-migration-sql-extractor.service";
 
 import type { LoggerService } from "@codebase/observability";
@@ -23,13 +24,6 @@ describe(TypeormMigrationSqlExtractorService, () => {
   let logger: LoggerService;
 
   let originalCwd = "";
-  let tempDirectories: string[] = [];
-
-  async function createTempDirectory(prefix: string): Promise<string> {
-    const directory = await mkdtemp(path.join(tmpdir(), prefix));
-    tempDirectories.push(directory);
-    return directory;
-  }
 
   async function writeMigrationFile(options: {
     directory: string;
@@ -57,36 +51,34 @@ describe(TypeormMigrationSqlExtractorService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [TypeormMigrationSqlExtractorService],
-    }).compile();
+    const built = await buildTestingModule(TypeormMigrationSqlExtractorService);
 
-    service = await module.resolve(TypeormMigrationSqlExtractorService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     originalCwd = process.cwd();
-    tempDirectories = [];
     logger = createMock<LoggerService>();
     vi.clearAllMocks();
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     process.chdir(originalCwd);
-    await Promise.all(
-      tempDirectories.map(async (directory) =>
-        rm(directory, { force: true, recursive: true }),
-      ),
-    );
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      TypeormMigrationSqlExtractorService,
+    );
+
+    expect(instance).toBeInstanceOf(TypeormMigrationSqlExtractorService);
   });
 
   it("writes extracted sql files for an explicitly selected migration", async () => {
-    const migrationsDirectory = await createTempDirectory(
-      "typeorm-sql-extractor-",
+    const migrationsDirectory = createTemporaryDirectory(
+      "typeorm-sql-extractor",
     );
     await writeMigrationFile({
       directory: migrationsDirectory,
@@ -119,8 +111,8 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("reports false in check mode when extracted sql files are out of sync", async () => {
-    const migrationsDirectory = await createTempDirectory(
-      "typeorm-sql-extractor-",
+    const migrationsDirectory = createTemporaryDirectory(
+      "typeorm-sql-extractor",
     );
     await writeMigrationFile({
       directory: migrationsDirectory,
@@ -157,8 +149,8 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("returns true in check mode when extracted sql files are already in sync", async () => {
-    const migrationsDirectory = await createTempDirectory(
-      "typeorm-sql-extractor-",
+    const migrationsDirectory = createTemporaryDirectory(
+      "typeorm-sql-extractor",
     );
     await writeMigrationFile({
       directory: migrationsDirectory,
@@ -192,8 +184,8 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("processes every migration when selection is all", async () => {
-    const migrationsDirectory = await createTempDirectory(
-      "typeorm-sql-extractor-",
+    const migrationsDirectory = createTemporaryDirectory(
+      "typeorm-sql-extractor",
     );
     await writeMigrationFile({
       directory: migrationsDirectory,
@@ -232,8 +224,8 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("processes only the latest migration when selection is omitted", async () => {
-    const migrationsDirectory = await createTempDirectory(
-      "typeorm-sql-extractor-",
+    const migrationsDirectory = createTemporaryDirectory(
+      "typeorm-sql-extractor",
     );
     await writeMigrationFile({
       directory: migrationsDirectory,
@@ -273,8 +265,8 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("warns and skips unsupported template-expression queries", async () => {
-    const migrationsDirectory = await createTempDirectory(
-      "typeorm-sql-extractor-",
+    const migrationsDirectory = createTemporaryDirectory(
+      "typeorm-sql-extractor",
     );
     await writeFile(
       path.join(migrationsDirectory, "1791255787877-migration.ts"),
@@ -330,7 +322,7 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("returns false when migration directory has no migration files", async () => {
-    const emptyDirectory = await createTempDirectory("typeorm-sql-empty-");
+    const emptyDirectory = createTemporaryDirectory("typeorm-sql-empty");
 
     const result = await service.synchronize({
       logger,
@@ -346,8 +338,8 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("returns false when migration path points to a directory", async () => {
-    const migrationsDirectory = await createTempDirectory(
-      "typeorm-sql-extractor-",
+    const migrationsDirectory = createTemporaryDirectory(
+      "typeorm-sql-extractor",
     );
     const migrationDirectoryPath = path.join(
       migrationsDirectory,
@@ -372,8 +364,8 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("extracts statements even when class includes non-method members", async () => {
-    const migrationsDirectory = await createTempDirectory(
-      "typeorm-sql-extractor-",
+    const migrationsDirectory = createTemporaryDirectory(
+      "typeorm-sql-extractor",
     );
     await writeFile(
       path.join(migrationsDirectory, "1791255787877-migration.ts"),
@@ -411,7 +403,7 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("discovers migration targets from project.json when project name is passed", async () => {
-    const workspaceRoot = await createTempDirectory("typeorm-sql-workspace-");
+    const workspaceRoot = createTemporaryDirectory("typeorm-sql-workspace");
     const projectRoot = path.join(workspaceRoot, "projects", "alpha");
     const modulePath = "src/modules/database";
     const migrationsDirectory = path.join(
@@ -444,7 +436,7 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("throws when project filter does not match a migration-enabled project", async () => {
-    const workspaceRoot = await createTempDirectory("typeorm-sql-workspace-");
+    const workspaceRoot = createTemporaryDirectory("typeorm-sql-workspace");
     const projectRoot = path.join(workspaceRoot, "projects", "alpha");
     await mkdir(projectRoot, { recursive: true });
     await writeFile(
@@ -477,7 +469,7 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("derives project name from project-root when module is provided", async () => {
-    const workspaceRoot = await createTempDirectory("typeorm-sql-workspace-");
+    const workspaceRoot = createTemporaryDirectory("typeorm-sql-workspace");
     const projectRoot = path.join(workspaceRoot, "projects", "alpha");
     const modulePath = "src/modules/database";
     const migrationsDirectory = path.join(
@@ -513,7 +505,7 @@ describe(TypeormMigrationSqlExtractorService, () => {
   });
 
   it("returns false when latest selection runs with no migration files", async () => {
-    const migrationsDirectory = await createTempDirectory("typeorm-empty-");
+    const migrationsDirectory = createTemporaryDirectory("typeorm-empty");
 
     const result = await service.synchronize({
       logger,

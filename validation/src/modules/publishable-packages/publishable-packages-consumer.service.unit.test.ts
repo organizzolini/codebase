@@ -7,19 +7,10 @@ import {
 } from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CONSUMER_ROOT_VARIABLE } from "./publishable-packages-consumer.constants";
 import { PublishablePackagesConsumerService } from "./publishable-packages-consumer.service";
@@ -82,30 +73,25 @@ const written = (relativePath: string): string => {
   return content;
 };
 
+const moduleOptions = { mocks: [PublishablePackagesProcessService] };
+
 describe(PublishablePackagesConsumerService, () => {
   let service: PublishablePackagesConsumerService;
   let processService: DeepMocked<PublishablePackagesProcessService>;
-  const originalEnvironment = { ...process.env };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishablePackagesConsumerService,
-        {
-          provide: PublishablePackagesProcessService,
-          useValue: createMock<PublishablePackagesProcessService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PublishablePackagesConsumerService,
+      moduleOptions,
+    );
 
-    service = await module.resolve(PublishablePackagesConsumerService);
-    processService = module.get(PublishablePackagesProcessService);
+    service = built.instance;
+    processService = built.mock(PublishablePackagesProcessService);
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
-    Reflect.deleteProperty(process.env, CONSUMER_ROOT_VARIABLE);
+    overrideEnvironment({ [CONSUMER_ROOT_VARIABLE]: undefined });
     vi.mocked(readFileSync).mockImplementation((target) => {
       const content = manifests[String(target)];
       if (content === undefined) {
@@ -119,13 +105,15 @@ describe(PublishablePackagesConsumerService, () => {
     processService.run.mockReturnValue({ output: "", status: 0 });
   });
 
-  afterEach(() => {
-    process.env = { ...originalEnvironment };
-  });
-
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PublishablePackagesConsumerService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PublishablePackagesConsumerService);
   });
 
   describe("createConsumer", () => {
@@ -144,7 +132,7 @@ describe(PublishablePackagesConsumerService, () => {
     it("creates the consumer beneath the configured directory", () => {
       expect.hasAssertions();
 
-      process.env[CONSUMER_ROOT_VARIABLE] = "/runner/_temp";
+      overrideEnvironment({ [CONSUMER_ROOT_VARIABLE]: "/runner/_temp" });
       service.createConsumer(options);
 
       expect(mkdirSync).toHaveBeenCalledWith("/runner/_temp", {
@@ -158,7 +146,7 @@ describe(PublishablePackagesConsumerService, () => {
     it("treats an empty configured directory as unset", () => {
       expect.hasAssertions();
 
-      process.env[CONSUMER_ROOT_VARIABLE] = "";
+      overrideEnvironment({ [CONSUMER_ROOT_VARIABLE]: "" });
       service.createConsumer(options);
 
       expect(mkdtempSync).toHaveBeenCalledWith(

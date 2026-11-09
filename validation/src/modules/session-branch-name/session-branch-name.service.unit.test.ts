@@ -1,8 +1,8 @@
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SessionBranchNameGitService } from "./session-branch-name-git.service";
 import { SessionBranchNameService } from "./session-branch-name.service";
@@ -10,29 +10,33 @@ import { SessionBranchNameService } from "./session-branch-name.service";
 /** The repository this suite runs in, whose real branch rules are read. */
 const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "../../../..");
 
+const moduleOptions = { mocks: [SessionBranchNameGitService] };
+
 describe(SessionBranchNameService, () => {
   let service: SessionBranchNameService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SessionBranchNameService,
-        {
-          provide: SessionBranchNameGitService,
-          useValue: createMock<SessionBranchNameGitService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      SessionBranchNameService,
+      moduleOptions,
+    );
 
-    service = await module.resolve(SessionBranchNameService);
+    service = built.instance;
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      SessionBranchNameService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(SessionBranchNameService);
   });
 
   it("reads the pattern the pre-push hook enforces from the workspace root", () => {
