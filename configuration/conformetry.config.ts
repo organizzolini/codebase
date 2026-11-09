@@ -68,7 +68,6 @@ const COMMAND_PROJECT_BASELINE = 795 / 798;
 const TEST_TEMPLATE_BASELINES: Record<string, TestTemplateBaseline> = {
   compliance: NEST_BASELINE,
   documentation: NEST_BASELINE,
-  installation: NEST_BASELINE,
   integration: NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-cli": NEST_BASELINE,
   "projects/ic-suite/coinagerie/coinagerie-configuration": NEST_BASELINE,
