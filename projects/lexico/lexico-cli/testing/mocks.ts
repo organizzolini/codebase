@@ -5,50 +5,10 @@
 
 import { createMock } from "@golevelup/ts-vitest";
 import * as cheerio from "cheerio";
-import { afterEach, beforeEach, onTestFinished, vi } from "vitest";
+import { onTestFinished, vi } from "vitest";
 
 import type { AnyNode } from "domhandler";
 import type { ObjectLiteral, QueryBuilder, Repository } from "typeorm";
-
-/**
- * Default test date used across time-sensitive tests.
- */
-export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
-
-// 🧪 Prompts Helpers
-
-/**
- * A typed mock function for the `prompts` default export.
- * Use this type annotation in `vi.hoisted` declarations in test files.
- */
-export type PromptsMock<Response extends Record<string, unknown>> = ReturnType<
-  typeof vi.fn<() => Promise<Response>>
->;
-
-/**
- * Sets up fake timers with a fixed system time before each test
- * and restores real timers after each test.
- *
- * Usage in test files:
- * ```ts
- * import { mockDates } from '../testing/mocks'
- *
- * describe('my suite', () => {
- *   mockDates()
- *   // your tests here
- * })
- * ```
- */
-export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(date);
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-}
 
 /**
  * Lets a test decide whether `process.stdin` reads as a terminal. The setter
@@ -80,24 +40,6 @@ export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
       }
     });
   };
-}
-
-/**
- * Sets a default resolved value for a `prompts` mock function.
- */
-export function setPromptsMockResponse<
-  Response extends Record<string, unknown>,
->(promptsMock: PromptsMock<Response>, response: Awaited<Response>): void {
-  promptsMock.mockResolvedValue(response);
-}
-
-/**
- * Queues a one-time resolved value for a `prompts` mock function.
- */
-export function setPromptsMockResponseOnce<
-  Response extends Record<string, unknown>,
->(promptsMock: PromptsMock<Response>, response: Awaited<Response>): void {
-  promptsMock.mockResolvedValueOnce(response);
 }
 
 /**
