@@ -3,7 +3,7 @@ import { getEntityManagerToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
-import { CalendarView } from "./calendar-view.entities";
+import { CalendarWindow } from "./calendar-window.entities";
 import { EventsService } from "./events.service";
 import { TimelineScale } from "./timeline-scale.entities";
 
@@ -44,17 +44,17 @@ describe(EventsService, () => {
     expect.hasAssertions();
 
     expect(
-      service.findCalendarWindows({
+      service.findWindows({
         anchor: "2026-10-22T12:00:00.000Z",
         scale: TimelineScale.YEAR,
-        view: CalendarView.TIMELINE,
+        window: CalendarWindow.TIMELINE,
       }).visible,
     ).toStrictEqual({
       end: new Date("2027-01-01T00:00:00.000Z"),
       start: new Date("2026-01-01T00:00:00.000Z"),
     });
     expect(
-      service.findCalendarWindows({ anchor: new Date("2026-10-22T12:00:00Z") })
+      service.findWindows({ anchor: new Date("2026-10-22T12:00:00Z") })
         .columnMinutes,
     ).toBeNull();
   });
@@ -85,7 +85,7 @@ describe(EventsService, () => {
     await expect(service.describeDataset()).resolves.toBeNull();
   });
 
-  it("finds the events in a window, binding its end then its start", async () => {
+  it("finds the events in a period, binding its end then its start", async () => {
     expect.hasAssertions();
 
     const start = new Date("2026-03-05T03:30:00Z");
@@ -150,7 +150,7 @@ describe(EventsService, () => {
     ]);
   });
 
-  it("applies a compiled filter to the events, binding it after the window", async () => {
+  it("applies a compiled filter to the events, binding it after the period", async () => {
     expect.hasAssertions();
 
     query.mockResolvedValueOnce([]);
@@ -243,7 +243,7 @@ describe(EventsService, () => {
     );
   });
 
-  it("applies a compiled filter to the facets, with or without a window", async () => {
+  it("applies a compiled filter to the facets, with or without a period", async () => {
     expect.hasAssertions();
 
     query.mockResolvedValueOnce([]);
@@ -284,7 +284,7 @@ describe(EventsService, () => {
     );
   });
 
-  it("gathers the tags beneath each root into its facet, counting over the window", async () => {
+  it("gathers the tags beneath each root into its facet, counting over the period", async () => {
     expect.hasAssertions();
 
     const row = (
@@ -336,7 +336,7 @@ describe(EventsService, () => {
     ]);
   });
 
-  it("counts over every event when no window is given", async () => {
+  it("counts over every event when no period is given", async () => {
     expect.hasAssertions();
 
     query.mockResolvedValueOnce([]);
@@ -355,7 +355,7 @@ describe(EventsService, () => {
     ).rejects.toThrow(z.ZodError);
   });
 
-  it("resolves the filter collections against the tags of the whole dataset", async () => {
+  it("resolves the presets against the tags of the whole dataset", async () => {
     expect.hasAssertions();
 
     query.mockResolvedValueOnce([
@@ -377,9 +377,9 @@ describe(EventsService, () => {
       },
     ]);
 
-    const collections = await service.findFilterCollections();
+    const presets = await service.findPresets();
 
-    expect(collections.map(({ id }) => id)).toStrictEqual([
+    expect(presets.map(({ id }) => id)).toStrictEqual([
       "highlights",
       "planetary-cycles",
     ]);

@@ -1,37 +1,37 @@
-import { EVENT_FILTER_COLLECTIONS } from "./event-filter-collections.constants";
 import { EventFilterCombinator } from "./event-filter-combinator.entities";
 import { TAG_FIELD_PREFIX } from "./event-filter-fields.constants";
+import { PRESETS } from "./presets.constants";
 
 import type { EventFacetEntity } from "./event-facet.entities";
-import type {
-  CollectionGroup,
-  CollectionRule,
-  ResolveContext,
-  ResolvedEventFilterCollection,
-} from "./event-filter-collections.types";
 import type { EventFilterRuleEntity } from "./event-filter-rule.entities";
 import type { EventFilterGroupEntity } from "./event-filter.entities";
+import type {
+  PresetGroup,
+  PresetRule,
+  ResolveContext,
+  ResolvedPreset,
+} from "./presets.types";
 
 /**
- * Resolves every collection the data's tags can serve, in menu order, each
- * written by tag ids. A collection none of whose tags the data has is left
+ * Resolves every preset the data's tags can serve, in menu order, each
+ * written by tag ids. A preset none of whose tags the data has is left
  * out, and one that names tags the data lacks applies to the ones it has.
  */
-export function resolveEventFilterCollections(
+export function resolvePresets(
   facets: readonly EventFacetEntity[],
-): ResolvedEventFilterCollection[] {
-  const resolved: ResolvedEventFilterCollection[] = [];
+): ResolvedPreset[] {
+  const resolved: ResolvedPreset[] = [];
 
   // A loop rather than a mapping callback keeps the call stacks shallow.
-  for (const collection of EVENT_FILTER_COLLECTIONS) {
-    const filter = resolveGroup(collection.filter, { facets });
+  for (const preset of PRESETS) {
+    const filter = resolveGroup(preset.filter, { facets });
 
     if (filter !== null) {
       resolved.push({
-        description: collection.description,
+        description: preset.description,
         filter,
-        id: collection.id,
-        name: collection.name,
+        id: preset.id,
+        name: preset.name,
       });
     }
   }
@@ -44,7 +44,7 @@ export function resolveEventFilterCollections(
  * tag the data has and any group left with nothing in it.
  */
 function resolveGroup(
-  group: CollectionGroup,
+  group: PresetGroup,
   context: ResolveContext,
 ): EventFilterGroupEntity | null {
   const groups: EventFilterGroupEntity[] = [];
@@ -83,13 +83,13 @@ function resolveGroup(
  * when the data has no such root or none of the paths.
  */
 function resolveRule(
-  rule: CollectionRule,
+  rule: PresetRule,
   facets: readonly EventFacetEntity[],
 ): EventFilterRuleEntity | null {
   let facet: EventFacetEntity | undefined;
 
   // Loops rather than callbacks, which would add a frame beneath every
-  // collection's call stack.
+  // preset's call stack.
   for (const candidate of facets) {
     if (candidate.name === rule.root) {
       facet = candidate;

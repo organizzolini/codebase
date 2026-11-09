@@ -8,19 +8,19 @@ import {
 
 import type { EventsApplication } from "../../../testing/events-application";
 
-/** The two windows of one calendar windows answer, as ISO instants. */
+/** The two windows of one windows answer, as ISO instants. */
 interface Windows {
   columnMinutes: null | number;
+  read: { end: string; start: string };
   visible: { end: string; start: string };
-  window: { end: string; start: string };
 }
 
 /**
- * Sends the calendar windows query over HTTP and reads the events of the
- * window it answers, so a view or a timeline scale reads only the span it
+ * Sends the windows query over HTTP and reads the events of the
+ * period it answers, so a view or a timeline scale reads only the span it
  * shows.
  */
-describe("events calendar windows end-to-end suite", () => {
+describe("events windows end-to-end suite", () => {
   let application: EventsApplication;
 
   /** The windows of one view or scale around an anchor. */
@@ -28,11 +28,11 @@ describe("events calendar windows end-to-end suite", () => {
     variables: Record<string, unknown>,
   ): Promise<Windows> {
     const body = await application.query(
-      `query Windows($anchor: DateTime!, $view: CalendarView, $scale: TimelineScale, $agendaDays: Int) {
-        calendarWindows(anchor: $anchor, view: $view, scale: $scale, agendaDays: $agendaDays) {
+      `query Windows($anchor: DateTime!, $window: CalendarWindow, $scale: TimelineScale, $agendaDays: Int) {
+        windows(anchor: $anchor, window: $window, scale: $scale, agendaDays: $agendaDays) {
           columnMinutes
           visible { start end }
-          window { start end }
+          read { start end }
         }
       }`,
       variables,
@@ -40,20 +40,20 @@ describe("events calendar windows end-to-end suite", () => {
 
     expect(body.errors).toBeUndefined();
 
-    return (body.data as { calendarWindows: Windows }).calendarWindows;
+    return (body.data as { windows: Windows }).windows;
   }
 
-  /** The summaries of the events in the window a timeline scale reads. */
+  /** The summaries of the events in the period a timeline scale reads. */
   async function readTimeline(
     anchor: string,
     scale: string,
   ): Promise<string[]> {
-    const { window } = await windowsOf({ anchor, scale, view: "TIMELINE" });
+    const { read } = await windowsOf({ anchor, scale, window: "TIMELINE" });
     const body = await application.query(
-      `query Events($window: EventsWindowInput!) {
-        events(window: $window) { summary }
+      `query Events($period: PeriodInput!) {
+        events(period: $period) { summary }
       }`,
-      { window },
+      { period: read },
     );
 
     expect(body.errors).toBeUndefined();
@@ -72,20 +72,20 @@ describe("events calendar windows end-to-end suite", () => {
     await application.stop();
   }, DATABASE_TIMEOUT_MILLISECONDS);
 
-  it("answers the days a view shows and the window a day wider either side", async () => {
+  it("answers the days a view shows and the period a day wider either side", async () => {
     expect.hasAssertions();
 
     await expect(
-      windowsOf({ anchor: "2026-10-22T12:00:00.000Z", view: "THREE_DAY" }),
+      windowsOf({ anchor: "2026-10-22T12:00:00.000Z", window: "THREE_DAY" }),
     ).resolves.toStrictEqual({
       columnMinutes: null,
+      read: {
+        end: "2026-10-26T00:00:00.000Z",
+        start: "2026-10-21T00:00:00.000Z",
+      },
       visible: {
         end: "2026-10-25T00:00:00.000Z",
         start: "2026-10-22T00:00:00.000Z",
-      },
-      window: {
-        end: "2026-10-26T00:00:00.000Z",
-        start: "2026-10-21T00:00:00.000Z",
       },
     });
   });
@@ -94,8 +94,12 @@ describe("events calendar windows end-to-end suite", () => {
     expect.hasAssertions();
 
     const anchor = "2026-10-22T12:00:00.000Z";
-    const month = await windowsOf({ anchor, view: "AGENDA" });
-    const year = await windowsOf({ agendaDays: 9999, anchor, view: "AGENDA" });
+    const month = await windowsOf({ anchor, window: "AGENDA" });
+    const year = await windowsOf({
+      agendaDays: 9999,
+      anchor,
+      window: "AGENDA",
+    });
 
     expect(month.visible.end).toBe("2026-11-21T00:00:00.000Z");
     expect(year.visible.end).toBe("2027-10-23T00:00:00.000Z");
@@ -111,7 +115,7 @@ describe("events calendar windows end-to-end suite", () => {
       const { columnMinutes } = await windowsOf({
         anchor,
         scale,
-        view: "TIMELINE",
+        window: "TIMELINE",
       });
 
       columns[scale] = columnMinutes;
@@ -129,7 +133,7 @@ describe("events calendar windows end-to-end suite", () => {
 
     const { visible } = await windowsOf({
       anchor: "2026-10-22T12:00:00.000Z",
-      view: "TIMELINE",
+      window: "TIMELINE",
     });
 
     expect(visible).toStrictEqual({
@@ -156,7 +160,7 @@ describe("events calendar windows end-to-end suite", () => {
     expect.hasAssertions();
 
     const body = await application.query(
-      `query { calendarWindows(anchor: "2026-10-22T12:00:00.000Z", view: FORTNIGHT) { columnMinutes } }`,
+      `query { windows(anchor: "2026-10-22T12:00:00.000Z", window: FORTNIGHT) { columnMinutes } }`,
     );
 
     expect(body.errors?.at(0)?.message).toContain("FORTNIGHT");

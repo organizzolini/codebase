@@ -8,7 +8,7 @@ import { TimelineScale } from "./timeline-scale.entities";
 export const AGENDA_DAY_COUNT = 30;
 
 /**
- * A zone's midnight lies within a day of UTC's, so a window reads one more
+ * A zone's midnight lies within a day of UTC's, so a period reads one more
  * day either side.
  */
 export const BUFFER_DAYS = 1;

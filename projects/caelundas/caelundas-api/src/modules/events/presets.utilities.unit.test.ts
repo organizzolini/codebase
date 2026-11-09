@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  DEFAULT_EVENT_FILTER_COLLECTION_ID,
-  EVENT_FILTER_COLLECTIONS,
-} from "./event-filter-collections.constants";
-import { resolveEventFilterCollections } from "./event-filter-collections.utilities";
+import { DEFAULT_PRESET_ID, PRESETS } from "./presets.constants";
+import { resolvePresets } from "./presets.utilities";
 
 import type { EventFacetEntity } from "./event-facet.entities";
 
@@ -32,11 +29,11 @@ const FACETS = [
   facet("planet", "Planet", ["Moon", "Sun"]),
 ];
 
-describe(resolveEventFilterCollections, () => {
+describe(resolvePresets, () => {
   it("names the tags of the data in place of the names it was written with", () => {
     expect.hasAssertions();
 
-    const [highlights] = resolveEventFilterCollections(FACETS);
+    const [highlights] = resolvePresets(FACETS);
 
     expect(highlights).toMatchObject({
       filter: {
@@ -70,32 +67,34 @@ describe(resolveEventFilterCollections, () => {
           },
         ],
       },
-      id: DEFAULT_EVENT_FILTER_COLLECTION_ID,
+      id: DEFAULT_PRESET_ID,
     });
   });
 
-  it("lists the collections the data can serve, in menu order", () => {
+  it("lists the presets the data can serve, in menu order", () => {
     expect.hasAssertions();
 
-    expect(
-      resolveEventFilterCollections(FACETS).map(({ id }) => id),
-    ).toStrictEqual(["highlights", "major-aspects", "planetary-cycles"]);
+    expect(resolvePresets(FACETS).map(({ id }) => id)).toStrictEqual([
+      "highlights",
+      "major-aspects",
+      "planetary-cycles",
+    ]);
   });
 
   it("leaves out an and whose condition the data cannot name", () => {
     expect.hasAssertions();
 
     expect(
-      resolveEventFilterCollections(FACETS.slice(0, 1)).map(({ id }) => id),
+      resolvePresets(FACETS.slice(0, 1)).map(({ id }) => id),
     ).not.toContain("major-aspects");
   });
 
   it("keeps the or's other conditions when one cannot be named", () => {
     expect.hasAssertions();
 
-    const [highlights] = resolveEventFilterCollections(FACETS.slice(0, 1));
+    const [highlights] = resolvePresets(FACETS.slice(0, 1));
 
-    expect(highlights?.id).toBe(DEFAULT_EVENT_FILTER_COLLECTION_ID);
+    expect(highlights?.id).toBe(DEFAULT_PRESET_ID);
     expect(highlights?.filter.groups).toStrictEqual([]);
     expect(highlights?.filter.rules).toHaveLength(1);
   });
@@ -103,20 +102,20 @@ describe(resolveEventFilterCollections, () => {
   it("answers nothing for data that has none of the tags", () => {
     expect.hasAssertions();
 
-    expect(resolveEventFilterCollections([])).toStrictEqual([]);
+    expect(resolvePresets([])).toStrictEqual([]);
   });
 
-  it("offers each collection once, with a name and a description", () => {
+  it("offers each preset once, with a name and a description", () => {
     expect.hasAssertions();
 
-    const ids = EVENT_FILTER_COLLECTIONS.map(({ id }) => id);
+    const ids = PRESETS.map(({ id }) => id);
 
     expect(new Set(ids).size).toBe(ids.length);
-    expect(ids).toContain(DEFAULT_EVENT_FILTER_COLLECTION_ID);
+    expect(ids).toContain(DEFAULT_PRESET_ID);
 
-    for (const collection of EVENT_FILTER_COLLECTIONS) {
-      expect(collection.name).not.toBe("");
-      expect(collection.description).not.toBe("");
+    for (const preset of PRESETS) {
+      expect(preset.name).not.toBe("");
+      expect(preset.description).not.toBe("");
     }
   });
 });

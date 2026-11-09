@@ -104,7 +104,7 @@ export interface EventsDataset {
 /**
  * A half-open span of time: `start` is included and `end` is not.
  */
-export interface EventsWindow {
+export interface Period {
   end: Date;
   start: Date;
 }

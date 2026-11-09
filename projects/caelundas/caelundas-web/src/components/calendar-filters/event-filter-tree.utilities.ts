@@ -64,7 +64,7 @@ export function normalizeEventFilter(
 
 /**
  * The filter a link should hold for a tree. An empty tree is kept, not
- * dropped: a link with no filter opens on the default collection, so "no
+ * dropped: a link with no filter opens on the default preset, so "no
  * filter at all" has to be written out.
  */
 export function toLinkedEventFilter(query: EventFilterQuery): EventFilterQuery {

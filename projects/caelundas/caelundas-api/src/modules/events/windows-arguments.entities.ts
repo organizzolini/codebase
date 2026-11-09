@@ -1,6 +1,6 @@
 import { ArgsType as ArgumentsType, Field, Int } from "@nestjs/graphql";
 
-import { CalendarView } from "./calendar-view.entities";
+import { CalendarWindow } from "./calendar-window.entities";
 import { TimelineScale } from "./timeline-scale.entities";
 
 // ⚙️ Args
@@ -9,7 +9,7 @@ import { TimelineScale } from "./timeline-scale.entities";
  * What decides the days a view shows around the day it opens on.
  */
 @ArgumentsType()
-export class CalendarWindowsArguments {
+export class WindowsArguments {
   @Field(() => Int, {
     description:
       "How many days the agenda lists from the anchor's day, from 1 to 366; 30 by default. Read for the agenda, or for no view.",
@@ -29,10 +29,10 @@ export class CalendarWindowsArguments {
   })
   scale?: null | TimelineScale;
 
-  @Field(() => CalendarView, {
+  @Field(() => CalendarWindow, {
     description:
-      "The view. With none, the window holds the month and agenda views both, so a resize needs no reload.",
+      "The calendar window. With none, the windows hold the month and agenda views both, so a resize needs no reload.",
     nullable: true,
   })
-  view?: CalendarView | null;
+  window?: CalendarWindow | null;
 }

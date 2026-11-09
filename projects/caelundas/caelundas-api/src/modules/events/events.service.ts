@@ -2,30 +2,30 @@ import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
 import { EntityManager } from "typeorm";
 
-import { getCalendarWindows } from "./calendar-windows.utilities";
-import { resolveEventFilterCollections } from "./event-filter-collections.utilities";
 import { compileEventFilter } from "./event-filter-compiler.utilities";
 import { compileEventGrouping } from "./event-grouping-compiler.utilities";
 import {
   DATASET_SQL,
   datasetRowSchema,
   eventRowSchema,
-  EVENTS_IN_WINDOW_SQL,
+  EVENTS_IN_PERIOD_SQL,
   facetRowSchema,
   FACETS_SQL,
   groupKeysSchema,
 } from "./events.constants";
 import { toIsoString } from "./events.utilities";
+import { resolvePresets } from "./presets.utilities";
+import { getWindows } from "./windows.utilities";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
-import type { CalendarWindowsArguments } from "./calendar-windows-arguments.entities";
-import type { CalendarWindows } from "./calendar-windows.types";
 import type { EventFacetEntity } from "./event-facet.entities";
-import type { ResolvedEventFilterCollection } from "./event-filter-collections.types";
 import type { EventFilterGroup } from "./event-filter.types";
 import type { EventGroupLevel } from "./event-grouping.types";
-import type { EventsWindowInput } from "./events-window-input.entities";
 import type { EventsDatasetEntity } from "./events.entities";
+import type { PeriodInput } from "./period-input.entities";
+import type { ResolvedPreset } from "./presets.types";
+import type { WindowsArguments } from "./windows-arguments.entities";
+import type { Windows } from "./windows.types";
 import type { z } from "zod";
 
 /**
@@ -57,23 +57,12 @@ export class EventsService {
   }
 
   /**
-   * The days a calendar view or a timeline scale shows around a day, and the
-   * window of events to read for them.
-   */
-  public findCalendarWindows(args: CalendarWindowsArguments): CalendarWindows {
-    return getCalendarWindows(args.view, new Date(args.anchor), {
-      agendaDays: args.agendaDays,
-      scale: args.scale,
-    });
-  }
-
-  /**
-   * The events that overlap the window and meet the filter, earliest first,
+   * The events that overlap the period and meet the filter, earliest first,
    * each with the tags it was given and, for each level of the grouping, the
    * group keys it falls in.
    */
   public async findEvents(
-    window: EventsWindowInput,
+    period: PeriodInput,
     filter?: EventFilterGroup | null,
     grouping: readonly EventGroupLevel[] = [],
   ): Promise<CalendarEventEntity[]> {
@@ -81,12 +70,12 @@ export class EventsService {
     const filterParameters = compiled?.parameters ?? [];
     const groups = compileEventGrouping(grouping, 2 + filterParameters.length);
     const rows = await this.select(
-      EVENTS_IN_WINDOW_SQL.replace("{filter}", () =>
+      EVENTS_IN_PERIOD_SQL.replace("{filter}", () =>
         compiled === null ? "" : `and ${compiled.sql}`,
       ).replace("{groups}", () => groups.sql),
       [
-        toIsoString(window.end),
-        toIsoString(window.start),
+        toIsoString(period.end),
+        toIsoString(period.start),
         ...filterParameters,
         ...groups.parameters,
       ],
@@ -114,10 +103,10 @@ export class EventsService {
 
   /**
    * Every tag root with the tags beneath it, each counting the events that
-   * overlap the window and meet the filter, or every event without a window.
+   * overlap the period and meet the filter, or every event without a period.
    */
   public async findFacets(
-    window?: EventsWindowInput,
+    period?: PeriodInput,
     filter?: EventFilterGroup | null,
   ): Promise<EventFacetEntity[]> {
     const compiled = compileEventFilter(filter, 2);
@@ -126,8 +115,8 @@ export class EventsService {
         compiled === null ? "" : `and ${compiled.sql}`,
       ),
       [
-        window === undefined ? null : toIsoString(window.end),
-        window === undefined ? null : toIsoString(window.start),
+        period === undefined ? null : toIsoString(period.end),
+        period === undefined ? null : toIsoString(period.start),
         ...(compiled?.parameters ?? []),
       ],
       facetRowSchema,
@@ -153,13 +142,22 @@ export class EventsService {
   }
 
   /**
-   * The named filter collections resolved against the tags the whole
+   * The named presets resolved against the tags the whole
    * dataset has, in menu order.
    */
-  public async findFilterCollections(): Promise<
-    ResolvedEventFilterCollection[]
-  > {
-    return resolveEventFilterCollections(await this.findFacets());
+  public async findPresets(): Promise<ResolvedPreset[]> {
+    return resolvePresets(await this.findFacets());
+  }
+
+  /**
+   * The days a calendar view or a timeline scale shows around a day, and the
+   * period of events to read for them.
+   */
+  public findWindows(args: WindowsArguments): Windows {
+    return getWindows(args.window, new Date(args.anchor), {
+      agendaDays: args.agendaDays,
+      scale: args.scale,
+    });
   }
 
   /**

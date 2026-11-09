@@ -1,12 +1,12 @@
-query CalendarWindows(
+query Windows(
   $anchor: DateTime!
-  $view: CalendarView
+  $window: CalendarWindow
   $scale: TimelineScale
   $agendaDays: Int
 ) {
-  calendarWindows(
+  windows(
     anchor: $anchor
-    view: $view
+    window: $window
     scale: $scale
     agendaDays: $agendaDays
   ) {
@@ -15,7 +15,7 @@ query CalendarWindows(
       end
       start
     }
-    window {
+    read {
       end
       start
     }

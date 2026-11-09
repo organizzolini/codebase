@@ -1,24 +1,21 @@
 import { EventFilterCombinator } from "./event-filter-combinator.entities";
 import { TAG_OPERATORS } from "./event-filter-fields.constants";
 
-import type {
-  CollectionRule,
-  EventFilterCollection,
-} from "./event-filter-collections.types";
+import type { Preset, PresetRule } from "./presets.types";
 
 // ♟️ Constants
 
 /**
- * The id of the collection the calendar opens on when its link names no
+ * The id of the preset the calendar opens on when its link names no
  * filter.
  */
-export const DEFAULT_EVENT_FILTER_COLLECTION_ID = "highlights";
+export const DEFAULT_PRESET_ID = "highlights";
 
 /**
- * The tags a "without the Moon" collection leaves out: every event the Moon
+ * The tags a "without the Moon" preset leaves out: every event the Moon
  * is part of, whose aspects change several times a day.
  */
-const WITHOUT_THE_MOON: CollectionRule = {
+const WITHOUT_THE_MOON: PresetRule = {
   operator: TAG_OPERATORS.isNoneOf,
   paths: ["Moon"],
   root: "Planet",
@@ -27,7 +24,7 @@ const WITHOUT_THE_MOON: CollectionRule = {
 /**
  * The long cycles, which are few enough to read without a filter on them.
  */
-const LONG_CYCLES: CollectionRule = {
+const LONG_CYCLES: PresetRule = {
   operator: TAG_OPERATORS.isAnyOf,
   paths: [
     "Direction",
@@ -41,10 +38,10 @@ const LONG_CYCLES: CollectionRule = {
 };
 
 /**
- * The collections the calendar offers, in the order its menu lists them. A
- * collection that names tags the data lacks applies to the ones it has.
+ * The presets the calendar offers, in the order its menu lists them. A
+ * preset that names tags the data lacks applies to the ones it has.
  */
-export const EVENT_FILTER_COLLECTIONS: readonly EventFilterCollection[] = [
+export const PRESETS: readonly Preset[] = [
   {
     description:
       "Major aspects between the planets, sign ingresses, stations, eclipses and the long cycles, without the Moon's fast changes. About ten events a day.",
@@ -68,7 +65,7 @@ export const EVENT_FILTER_COLLECTIONS: readonly EventFilterCollection[] = [
         LONG_CYCLES,
       ],
     },
-    id: DEFAULT_EVENT_FILTER_COLLECTION_ID,
+    id: DEFAULT_PRESET_ID,
     name: "Highlights",
   },
   {
