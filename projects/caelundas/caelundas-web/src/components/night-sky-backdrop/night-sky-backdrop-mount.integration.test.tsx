@@ -2,7 +2,7 @@ import { act, cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { readServedApi } from "../../../testing/calendar-api";
-import { renderRoute } from "../../../testing/render-route";
+import { renderCalendarRoute } from "../../../testing/render-route";
 import { setReducedMotion } from "../../../testing/viewport";
 import { getRouter } from "../../router";
 import { EventsCalendar } from "../events-calendar/events-calendar";
@@ -61,7 +61,7 @@ const WINDOW_SIZE = {
  * The sky the page asked the API for last, once the first has arrived.
  */
 async function findRequest(link: string): Promise<NightSkyInput> {
-  await renderRoute(link);
+  await renderCalendarRoute(link);
   const api = readServedApi();
 
   await findSky();
@@ -107,7 +107,7 @@ describe("night sky backdrop", () => {
   });
 
   it("sits behind the page, out of reach of the pointer and of readers", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const svg = await findSky();
     const backdrop = screen.getByTestId("night-sky-backdrop");
@@ -229,7 +229,7 @@ describe("night sky backdrop", () => {
   });
 
   it("draws the sky the API answers", async () => {
-    await renderRoute("/?date=2026-03-01&sky.lat=60&sky.lon=10", {
+    await renderCalendarRoute("/?date=2026-03-01&sky.lat=60&sky.lon=10", {
       api: {
         nightSky: () => ({
           measurements: {
@@ -258,7 +258,7 @@ describe("night sky backdrop", () => {
   });
 
   it("asks for a new sky when the link changes while the page is open", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     const api = readServedApi();
 
     const sky = await findSky();
@@ -291,7 +291,7 @@ describe("night sky backdrop", () => {
   });
 
   it("leaves the calendar alone when only the sky's keys change", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await findSky();
 
     const router = vi.mocked(getRouter).mock.results.at(-1)?.value;
@@ -321,7 +321,7 @@ describe("night sky backdrop", () => {
   it("says nothing of the pole's own one-degree cut at the defaults", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await findSky();
 
     expect(warn).not.toHaveBeenCalledWith(
@@ -334,7 +334,7 @@ describe("night sky backdrop", () => {
   it("says when the API reduced a field of view that would put the pole on screen", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    await renderRoute("/?date=2026-03-01&sky.lat=40&sky.vFov=90", {
+    await renderCalendarRoute("/?date=2026-03-01&sky.lat=40&sky.vFov=90", {
       api: {
         nightSky: (input) => ({
           measurements: {
@@ -366,7 +366,7 @@ describe("night sky backdrop", () => {
   });
 
   it("draws nothing, and asks for nothing, for sky=off", async () => {
-    await renderRoute("/?date=2026-03-01&sky=off");
+    await renderCalendarRoute("/?date=2026-03-01&sky=off");
     const api = readServedApi();
 
     await screen.findByRole("grid", { name: "March 2026" });
@@ -378,7 +378,7 @@ describe("night sky backdrop", () => {
   });
 
   it("draws nothing, and asks for nothing, at a latitude of zero or below", async () => {
-    await renderRoute("/?date=2026-03-01&sky.lat=0");
+    await renderCalendarRoute("/?date=2026-03-01&sky.lat=0");
     const api = readServedApi();
 
     await screen.findByRole("grid", { name: "March 2026" });
@@ -392,7 +392,7 @@ describe("night sky backdrop", () => {
   it("asks for a still sky when the page asks for reduced motion, and follows the setting", async () => {
     setReducedMotion(true);
 
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     const api = readServedApi();
     const still = await findSky();
 
@@ -427,7 +427,7 @@ describe("night sky backdrop", () => {
   });
 
   it("refits after the window is resized, once it settles", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     const api = readServedApi();
 
     const sky = await findSky();
