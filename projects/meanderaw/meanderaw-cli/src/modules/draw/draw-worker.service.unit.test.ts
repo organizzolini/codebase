@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildTile } from "../../../testing/tiles";
 import { CodeService } from "../code/code.service";
@@ -11,6 +12,17 @@ import { DrawRecordService } from "./draw-record.service";
 import { DrawWorkerService } from "./draw-worker.service";
 
 import type { MeanderRecord } from "../database/database.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** What the class under test is built with. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  mocks: [
+    CodeService,
+    DrawRecordService,
+    SymmetryService,
+    TileEnumerationService,
+  ],
+};
 
 describe(DrawWorkerService, () => {
   let service: DrawWorkerService;
@@ -25,27 +37,13 @@ describe(DrawWorkerService, () => {
   const record = createMock<MeanderRecord>({ code: "01x03y048" });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DrawWorkerService,
-        { provide: CodeService, useValue: createMock<CodeService>() },
-        {
-          provide: DrawRecordService,
-          useValue: createMock<DrawRecordService>(),
-        },
-        { provide: SymmetryService, useValue: createMock<SymmetryService>() },
-        {
-          provide: TileEnumerationService,
-          useValue: createMock<TileEnumerationService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(DrawWorkerService, MODULE_OPTIONS);
 
-    service = await module.resolve(DrawWorkerService);
-    codeService = await module.resolve(CodeService);
-    drawRecordService = await module.resolve(DrawRecordService);
-    symmetryService = await module.resolve(SymmetryService);
-    tileEnumerationService = await module.resolve(TileEnumerationService);
+    service = built.instance;
+    codeService = built.mock(CodeService);
+    drawRecordService = built.mock(DrawRecordService);
+    symmetryService = built.mock(SymmetryService);
+    tileEnumerationService = built.mock(TileEnumerationService);
   });
 
   beforeEach(() => {
@@ -55,8 +53,13 @@ describe(DrawWorkerService, () => {
     vi.mocked(drawRecordService.record).mockReturnValue(record);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DrawWorkerService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(DrawWorkerService);
   });
 
   describe("records", () => {

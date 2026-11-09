@@ -1,6 +1,8 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
 import { CharacteristicContextService } from "../../characteristic-context.service";
@@ -29,10 +31,6 @@ describe(IsSingleArcCharacteristicService, () => {
 
       contextService = await module.resolve(CharacteristicContextService);
       service = await module.resolve(IsSingleArcCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
     });
 
     it.each([
@@ -64,10 +62,9 @@ describe(IsSingleArcCharacteristicService, () => {
     let service: IsSingleArcCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsSingleArcCharacteristicService, {
         providers: [
           CompoundUtilitiesService,
-          IsSingleArcCharacteristicService,
           {
             provide: BettiNumber0CountCharacteristicService,
             useValue: { compute: (): number => counts.bettiNumber0Count },
@@ -89,9 +86,9 @@ describe(IsSingleArcCharacteristicService, () => {
             useValue: { compute: (): number => counts.freeEndCount },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsSingleArcCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {
