@@ -2,7 +2,9 @@ import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import { captureOutput } from "@codebase/testing";
 
 import {
   createFixtureTree,
@@ -277,9 +279,7 @@ describe("measure command over a fixture directory", () => {
   // this has to be checked against what actually reads the headline: the
   // markdown badge block printed to standard output.
   it("--inputs produces real, non-zero headline statistics for the console badges, not a name lookup that misses", async () => {
-    const standardOutput = vi
-      .spyOn(process.stdout, "write")
-      .mockReturnValue(true);
+    const output = captureOutput();
 
     await run({
       format: "markdown",
@@ -296,13 +296,7 @@ describe("measure command over a fixture directory", () => {
 
     expect(linesOfCode).toBeGreaterThan(0);
 
-    const printed = standardOutput.mock.calls
-      .map(([chunk]) => String(chunk))
-      .join("");
-
-    expect(printed).toContain(`Lines_of_Code-${linesOfCode}-`);
-
-    standardOutput.mockRestore();
+    expect(output.stdout()).toContain(`Lines_of_Code-${linesOfCode}-`);
   });
 
   // The refusal a run has no way to have produced a destination for, before

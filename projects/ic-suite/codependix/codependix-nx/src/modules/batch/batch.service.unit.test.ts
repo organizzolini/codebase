@@ -4,6 +4,7 @@ import { PassThrough } from "node:stream";
 import { ConfigurationModule } from "@codependix/configuration";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GateService } from "../gate/gate.service";
@@ -69,8 +70,7 @@ describe(BatchService, () => {
   beforeEach(() => {
     vi.mocked(spawn).mockReset();
     vi.mocked(spawn).mockReturnValue(buildChild({ exitCode: 0 }));
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
-    vi.spyOn(process.stderr, "write").mockReturnValue(true);
+    captureOutput();
   });
 
   it("resolves with its dependencies", async () => {

@@ -29,6 +29,7 @@ import { BreadthCommand } from "./breadth.command";
 import type { LocatedWorkspace } from "../address-lookup/address-lookup.types";
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 import type { LoggerService } from "@codebase/observability";
+import type { CapturedOutput } from "@codebase/testing";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** The workspace configuration every run must be pointed at with `--config`. */
@@ -95,6 +96,7 @@ describe(BreadthCommand, () => {
   let addressReportService: ReturnType<typeof createMock<AddressReportService>>;
   let breadthService: ReturnType<typeof createMock<BreadthService>>;
   let command: BreadthCommand;
+  let output: CapturedOutput;
   let exitCode: ReturnType<typeof captureExitCode>;
   let configurationService: ConfigurationService;
   let logger: ReturnType<typeof createMock<LoggerService>>;
@@ -124,7 +126,7 @@ describe(BreadthCommand, () => {
       logger,
     );
 
-    captureOutput();
+    output = captureOutput();
     exitCode = captureExitCode();
   });
 
@@ -292,7 +294,7 @@ describe(BreadthCommand, () => {
         },
       ],
     });
-    expect(process.stdout.write).toHaveBeenCalledWith("rendered breadth\n");
+    expect(output.stdout()).toBe("rendered breadth\n");
     expect(exitCode()).toBeUndefined();
   });
 
@@ -460,7 +462,7 @@ describe(BreadthCommand, () => {
       { reason: error.message },
     );
     expect(exitCode()).toBe(1);
-    expect(process.stdout.write).not.toHaveBeenCalled();
+    expect(output.stdout()).toBe("");
   });
 
   // A lookup traces before it matches, so it loads the configuration of every
@@ -486,7 +488,7 @@ describe(BreadthCommand, () => {
       { reason: error.message },
     );
     expect(exitCode()).toBe(1);
-    expect(process.stdout.write).not.toHaveBeenCalled();
+    expect(output.stdout()).toBe("");
   });
 
   // A lookup traces before it matches, so it can reach a project whose
@@ -513,7 +515,7 @@ describe(BreadthCommand, () => {
       { reason: error.message },
     );
     expect(exitCode()).toBe(1);
-    expect(process.stdout.write).not.toHaveBeenCalled();
+    expect(output.stdout()).toBe("");
   });
 
   // 📚 Several addresses
@@ -552,7 +554,7 @@ describe(BreadthCommand, () => {
     });
 
     expect(exitCode()).toBe(1);
-    expect(process.stdout.write).not.toHaveBeenCalled();
+    expect(output.stdout()).toBe("");
     expect(addressReportService.renderBreadthReports).not.toHaveBeenCalled();
   });
 
