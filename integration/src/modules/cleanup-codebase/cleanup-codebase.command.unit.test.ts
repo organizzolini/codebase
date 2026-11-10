@@ -1,6 +1,4 @@
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -11,7 +9,8 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TaskDatabaseService } from "../task-database/task-database.service";
 
@@ -25,14 +24,12 @@ describe(CleanupCodebaseCommand, () => {
   let informed: string[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(CleanupCodebaseCommand, {
       providers: [
-        CleanupCodebaseCommand,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: TaskDatabaseService, useValue: { keep, verify } },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     command = await module.resolve(CleanupCodebaseCommand);
   });
@@ -59,25 +56,28 @@ describe(CleanupCodebaseCommand, () => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(CleanupCodebaseCommand, {
+      providers: [
+        { provide: ConfigService, useValue: new ConfigService() },
+        { provide: TaskDatabaseService, useValue: { keep, verify } },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(CleanupCodebaseCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    await expectLoggerContext(CleanupCodebaseCommand, {
       providers: [
-        CleanupCodebaseCommand,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: TaskDatabaseService, useValue: { keep, verify } },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("CleanupCodebaseCommand");
+    });
   });
 
   it("verifies the database, then keeps the newest", async () => {

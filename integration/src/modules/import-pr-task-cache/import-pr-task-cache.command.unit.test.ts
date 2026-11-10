@@ -1,20 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   createTaskDatabaseWorkspace,
@@ -54,38 +45,21 @@ const sameRepository = (): Record<string, CapturedProcess> => ({
 });
 
 describe(ImportPrTaskCacheCommand, () => {
+  const moduleOptions = { mocks: [ImportPrTaskCacheService] };
   let workspace: TaskDatabaseWorkspace;
-  let command: ImportPrTaskCacheCommand;
   let printed: string[];
   let runnerTemporary: string;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ImportPrTaskCacheCommand,
-        {
-          provide: ImportPrTaskCacheService,
-          useValue: createMock<ImportPrTaskCacheService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(ImportPrTaskCacheCommand);
-  });
-
   /** Runs the command over the real services and a scripted `gh`. */
   const runCommand = async (runner: FakeProcessRunner): Promise<void> => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(ImportPrTaskCacheCommand, {
       providers: [
-        ImportPrTaskCacheCommand,
         ImportPrTaskCacheService,
         TaskDatabaseService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
 
     const subject = await module.resolve(ImportPrTaskCacheCommand);
 
@@ -131,27 +105,21 @@ describe(ImportPrTaskCacheCommand, () => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      ImportPrTaskCacheCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(ImportPrTaskCacheCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        ImportPrTaskCacheCommand,
-        {
-          provide: ImportPrTaskCacheService,
-          useValue: createMock<ImportPrTaskCacheService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("ImportPrTaskCacheCommand");
+    await expectLoggerContext(ImportPrTaskCacheCommand, moduleOptions);
   });
 
   it("downloads the pull request's artifact and merges it into this cache", async () => {
