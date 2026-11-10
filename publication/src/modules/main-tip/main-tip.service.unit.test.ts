@@ -2,16 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   failed,
@@ -32,35 +25,21 @@ const TIP = "git rev-parse FETCH_HEAD";
 describe(MainTipService, () => {
   const makeDirectory = useTemporaryDirectories();
   let reportLines: string[];
-  let service: MainTipService;
 
   /** Builds the service over a scripted process runner. */
   const createService = async (
     script: Record<string, ScriptedAnswer<CapturedProcess>>,
   ): Promise<{ runner: FakeProcessRunner; service: MainTipService }> => {
     const runner = new FakeProcessRunner(script);
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(MainTipService, {
       providers: [
-        MainTipService,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
 
     return { runner, service: await module.resolve(MainTipService) };
   };
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MainTipService,
-        { provide: ConfigService, useValue: new ConfigService() },
-        { provide: ProcessRunnerService, useValue: new FakeProcessRunner({}) },
-      ],
-    }).compile();
-
-    service = await module.resolve(MainTipService);
-  });
 
   beforeEach(() => {
     reportLines = [];
@@ -73,10 +52,17 @@ describe(MainTipService, () => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
 
-    expect(service).toBeDefined();
+    const { instance } = await buildTestingModule(MainTipService, {
+      providers: [
+        { provide: ConfigService, useValue: new ConfigService() },
+        { provide: ProcessRunnerService, useValue: new FakeProcessRunner({}) },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(MainTipService);
   });
 
   describe("hasMovedFrom", () => {

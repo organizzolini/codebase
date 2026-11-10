@@ -3210,7 +3210,8 @@ export const patternExclusions: RegExp[] = [
  * What every project's `coinagerie.config.ts` spreads.
  *
  * Words the root glossary lists are excluded, so a project's own glossary
- * holds only the words that are its own. The root configuration does not
+ * holds only the words that are its own, and it is written to `coinagerie.md`
+ * beside the project's README. The root configuration does not
  * spread this: it writes the glossary these words are read from, and reading
  * it would exclude every word it was about to write.
  *
@@ -3228,22 +3229,20 @@ export const coinagerieConfiguration = {
     ],
   },
   fold: foldRepositoryWord,
-} satisfies CoinagerieConfiguration;
-
-/**
- * The `configuration` project's own glossary, written into its README.
- *
- * The default export is what the loader reads, so it adds the one output the
- * spread configuration above leaves to each project.
- */
-export default {
-  ...coinagerieConfiguration,
   outputs: [
     {
       description:
-        "The words this project uses that the root glossary does not define, regenerated with `nx run configuration:coinagerie-check:write`.",
-      path: "README.md",
+        "The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.",
+      path: "coinagerie.md",
       type: "markdown",
     },
   ],
 } satisfies CoinagerieConfiguration;
+
+/**
+ * The `configuration` project's own glossary, written into `coinagerie.md`.
+ *
+ * The default export is what the loader reads, and the shared configuration
+ * above already names the output, so it is exported as it is.
+ */
+export default coinagerieConfiguration;
