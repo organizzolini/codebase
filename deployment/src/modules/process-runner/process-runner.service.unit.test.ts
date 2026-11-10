@@ -12,18 +12,15 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProcessRunnerService } from "./process-runner.service";
 
-import type * as childProcess from "node:child_process";
+import type * as Testing from "@codebase/testing";
 
+// `captureAsync` runs real processes in the integration suite; only an
+// output stream that breaks needs a staged `spawn`.
 vi.mock("node:child_process", async (importOriginal) => {
-  const actual = await importOriginal<typeof childProcess>();
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
 
-  return {
-    // `captureAsync` runs real processes in the integration suite; only an
-    // output stream that breaks needs a fake one.
-    ChildProcess: actual.ChildProcess,
-    spawn: vi.fn<typeof spawn>(),
-    spawnSync: vi.fn<typeof spawnSync>(),
-  };
+  return mockChildProcess(await importOriginal());
 });
 
 /** What `spawnSync` hands back, as much of it as this service reads. */

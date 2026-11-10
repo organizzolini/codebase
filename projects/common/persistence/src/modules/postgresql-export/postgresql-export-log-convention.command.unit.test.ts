@@ -9,9 +9,9 @@ import { mockProcesses } from "../../../testing/mocks";
 
 import type * as PostgresqlExportConstants from "./postgresql-export.constants";
 
-vi.mock("node:child_process", async () => {
-  const { childProcessMock } = await import("../../../testing/mocks");
-  return childProcessMock;
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  return mockPostgresChildProcess(await importOriginal());
 });
 
 /** The plan with one line appended that breaks the logging convention. */

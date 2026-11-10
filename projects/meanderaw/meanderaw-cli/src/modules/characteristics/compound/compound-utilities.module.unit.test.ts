@@ -1,16 +1,25 @@
+import { Injectable } from "@nestjs/common";
 import { DiscoveryModule, DiscoveryService } from "@nestjs/core";
-import { Test } from "@nestjs/testing";
 import { describe, expect, it } from "vitest";
 
-import { expectModuleExports } from "@codebase/testing/nestjs";
+import {
+  buildTestingModule,
+  expectModuleExports,
+} from "@codebase/testing/nestjs";
 
+import { CodeModule } from "../../code/code.module";
+import { MatrixModule } from "../../matrix/matrix.module";
+import { CharacteristicContextService } from "../characteristic-context.service";
 import { CharacteristicsModule } from "../characteristics.module";
 
 import { CompoundUtilitiesModule } from "./compound-utilities.module";
 import { CompoundUtilitiesService } from "./compound-utilities.service";
 
-/** The token a consumer module gathers the shared service under, through a factory whose `inject` list only resolves exported providers. */
-const SHARED = Symbol("SHARED");
+/** A consumer module's provider that injects the shared service, which only resolves when the module exports it. */
+@Injectable()
+class Consumer {
+  constructor(readonly service: CompoundUtilitiesService) {}
+}
 
 describe(CompoundUtilitiesModule, () => {
   it("exports CompoundUtilitiesService", () => {
@@ -18,26 +27,22 @@ describe(CompoundUtilitiesModule, () => {
   });
 
   it("lets a consumer that imports the module inject CompoundUtilitiesService", async () => {
-    const module = await Test.createTestingModule({
+    const { instance } = await buildTestingModule(Consumer, {
       imports: [CompoundUtilitiesModule],
-      providers: [
-        {
-          inject: [CompoundUtilitiesService],
-          provide: SHARED,
-          useFactory: (
-            service: CompoundUtilitiesService,
-          ): CompoundUtilitiesService => service,
-        },
-      ],
-    }).compile();
+    });
 
-    expect(module.get(SHARED)).toBeInstanceOf(CompoundUtilitiesService);
+    expect(instance.service).toBeInstanceOf(CompoundUtilitiesService);
   });
 
   it("is the only provider of CompoundUtilitiesService across CharacteristicsModule", async () => {
-    const module = await Test.createTestingModule({
-      imports: [CharacteristicsModule, DiscoveryModule],
-    }).compile();
+    const { module } = await buildTestingModule(CharacteristicContextService, {
+      imports: [
+        CodeModule,
+        MatrixModule,
+        CharacteristicsModule,
+        DiscoveryModule,
+      ],
+    });
     const providers: readonly { readonly instance: unknown }[] = module
       .get(DiscoveryService)
       .getProviders();

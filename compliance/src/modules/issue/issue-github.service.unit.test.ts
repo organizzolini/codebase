@@ -7,9 +7,14 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { IssueGithubService } from "./issue-github.service";
 import { GITHUB_CLI_BINARY } from "./issue-metadata.constants";
 
-vi.mock("node:child_process", () => ({
-  spawnSync: vi.fn<typeof spawnSync>(),
-}));
+import type * as Testing from "@codebase/testing";
+
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
+});
 
 /** What `spawnSync` hands back, as much of it as this service reads. */
 interface SpawnCompletion {

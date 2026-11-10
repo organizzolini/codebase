@@ -15,11 +15,15 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RefreshDocumentationService } from "./refresh-documentation.service";
 
+import type * as Testing from "@codebase/testing";
 import type { Stats } from "node:fs";
 
-vi.mock("node:child_process", () => ({
-  spawnSync: vi.fn<typeof spawnSync>(),
-}));
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
+});
 vi.mock("node:timers/promises", () => ({
   setTimeout: vi.fn<typeof setTimeout>(),
 }));
