@@ -12,6 +12,7 @@
   },
   "description": "Nx plugin that infers a coinagerie check target for every project with a coinagerie configuration",
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",

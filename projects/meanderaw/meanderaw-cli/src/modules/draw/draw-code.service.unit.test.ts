@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DatabaseService } from "../database/database.service";
 
@@ -9,6 +10,7 @@ import { DrawRecordService } from "./draw-record.service";
 
 import type { MeanderRecord } from "../database/database.types";
 import type { Meander } from "../database/entities/meander.entity";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🧪 Tests
 
@@ -20,6 +22,11 @@ import type { Meander } from "../database/entities/meander.entity";
  * `draw-record.service.unit.test.ts`, against the real pipeline rather than
  * against mocks of it.
  */
+/** What the class under test is built with. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  mocks: [DrawRecordService, DatabaseService],
+};
+
 describe(DrawCodeService, () => {
   let drawRecordService: DrawRecordService;
   let databaseService: DatabaseService;
@@ -31,30 +38,23 @@ describe(DrawCodeService, () => {
   });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DrawCodeService,
-        {
-          provide: DrawRecordService,
-          useValue: createMock<DrawRecordService>(),
-        },
-        {
-          provide: DatabaseService,
-          useValue: createMock<DatabaseService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(DrawCodeService, MODULE_OPTIONS);
 
-    service = await module.resolve(DrawCodeService);
-    drawRecordService = await module.resolve(DrawRecordService);
-    databaseService = await module.resolve(DatabaseService);
+    service = built.instance;
+    drawRecordService = built.mock(DrawRecordService);
+    databaseService = built.mock(DatabaseService);
 
     vi.mocked(drawRecordService.record).mockReturnValue(record);
     vi.mocked(databaseService.save).mockResolvedValue(savedMeander);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DrawCodeService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(DrawCodeService);
   });
 
   describe("draw", () => {

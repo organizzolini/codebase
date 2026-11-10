@@ -1,44 +1,56 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
+import path from "node:path";
 
-import { Test } from "@nestjs/testing";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AuditGovernanceService } from "./audit-governance.service";
-
-vi.mock("node:fs", () => ({
-  existsSync: vi.fn<(target: string) => boolean>(),
-  readdirSync: vi.fn<(target: string) => string[]>(),
-  readFileSync: vi.fn<(target: string, encoding?: string) => string>(),
-}));
 
 describe(AuditGovernanceService, () => {
   let service: AuditGovernanceService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [AuditGovernanceService],
-    }).compile();
+    const built = await buildTestingModule(AuditGovernanceService);
 
-    service = await module.resolve(AuditGovernanceService);
+    service = built.instance;
   });
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+  /** A throwaway workspace holding only the governance files given. */
+  function workspace(files: {
+    readonly codeowners?: string;
+    readonly workflows?: Record<string, string>;
+  }): string {
+    const root = createTemporaryDirectory("audit-governance");
 
-  it("is defined", () => {
-    expect.hasAssertions();
+    if (files.codeowners !== undefined) {
+      mkdirSync(path.join(root, ".github"), { recursive: true });
+      writeFileSync(path.join(root, ".github/CODEOWNERS"), files.codeowners);
+    }
 
-    expect(service).toBeDefined();
+    if (files.workflows !== undefined) {
+      const directory = path.join(root, ".github/workflows");
+      mkdirSync(directory, { recursive: true });
+      for (const [name, content] of Object.entries(files.workflows)) {
+        writeFileSync(path.join(directory, name), content);
+      }
+    }
+
+    return root;
+  }
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(AuditGovernanceService);
+
+    expect(instance).toBeInstanceOf(AuditGovernanceService);
   });
 
   describe("checkCodeowners", () => {
     it("returns violation when CODEOWNERS file does not exist", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(false);
-
-      const verdict = service.checkCodeowners("/mock/workspace");
+      const verdict = service.checkCodeowners(workspace({}));
 
       expect(verdict.valid).toBe(false);
       expect(verdict.ruleCount).toBe(0);
@@ -51,12 +63,9 @@ describe(AuditGovernanceService, () => {
     it("returns violation when CODEOWNERS contains no active rules", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readFileSync).mockReturnValue(
-        "# Only comments\n\n   \n# Another comment",
+      const verdict = service.checkCodeowners(
+        workspace({ codeowners: "# Only comments\n\n   \n# Another comment" }),
       );
-
-      const verdict = service.checkCodeowners("/mock/workspace");
 
       expect(verdict.valid).toBe(false);
       expect(verdict.ruleCount).toBe(0);
@@ -67,10 +76,7 @@ describe(AuditGovernanceService, () => {
     it("returns violation when rule has no owner specified", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readFileSync).mockReturnValue("*");
-
-      const verdict = service.checkCodeowners("/mock/workspace");
+      const verdict = service.checkCodeowners(workspace({ codeowners: "*" }));
 
       expect(verdict.valid).toBe(false);
       expect(verdict.violations).toHaveLength(1);
@@ -80,10 +86,9 @@ describe(AuditGovernanceService, () => {
     it("returns violation when owner handle is invalid", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readFileSync).mockReturnValue("* invalid-handle-without-at");
-
-      const verdict = service.checkCodeowners("/mock/workspace");
+      const verdict = service.checkCodeowners(
+        workspace({ codeowners: "* invalid-handle-without-at" }),
+      );
 
       expect(verdict.valid).toBe(false);
       expect(verdict.violations).toHaveLength(1);
@@ -93,12 +98,12 @@ describe(AuditGovernanceService, () => {
     it("accepts valid @user, @org/team, and email owners", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readFileSync).mockReturnValue(
-        "*\t@JimmyPaolini\n/docs/\t@org/docs-team user@example.com\n",
+      const verdict = service.checkCodeowners(
+        workspace({
+          codeowners:
+            "*\t@JimmyPaolini\n/docs/\t@org/docs-team user@example.com\n",
+        }),
       );
-
-      const verdict = service.checkCodeowners("/mock/workspace");
 
       expect(verdict.valid).toBe(true);
       expect(verdict.ruleCount).toBe(2);
@@ -110,9 +115,7 @@ describe(AuditGovernanceService, () => {
     it("returns violation when workflows directory does not exist", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(false);
-
-      const verdict = service.checkWorkflows("/mock/workspace");
+      const verdict = service.checkWorkflows(workspace({}));
 
       expect(verdict.valid).toBe(false);
       expect(verdict.workflowsAudited).toBe(0);
@@ -124,19 +127,19 @@ describe(AuditGovernanceService, () => {
     it("returns violation when workflow is missing a top-level name", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readdirSync as (target: string) => string[]).mockReturnValue([
-        "ci.yml",
-      ]);
-      vi.mocked(readFileSync).mockReturnValue(`
+      const verdict = service.checkWorkflows(
+        workspace({
+          workflows: {
+            "ci.yml": `
 permissions:
   contents: read
 jobs:
   build:
     timeout-minutes: 10
-`);
-
-      const verdict = service.checkWorkflows("/mock/workspace");
+`,
+          },
+        }),
+      );
 
       expect(verdict.valid).toBe(false);
       expect(
@@ -149,13 +152,9 @@ jobs:
     it("returns valid verdict when workflow file has no jobs section", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readdirSync as (target: string) => string[]).mockReturnValue([
-        "empty.yml",
-      ]);
-      vi.mocked(readFileSync).mockReturnValue("name: Empty Workflow\n");
-
-      const verdict = service.checkWorkflows("/mock/workspace");
+      const verdict = service.checkWorkflows(
+        workspace({ workflows: { "empty.yml": "name: Empty Workflow\n" } }),
+      );
 
       expect(verdict.valid).toBe(true);
       expect(verdict.violations).toStrictEqual([]);
@@ -164,18 +163,18 @@ jobs:
     it("returns violation when workflow has neither top-level nor job-level permissions", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readdirSync as (target: string) => string[]).mockReturnValue([
-        "ci.yml",
-      ]);
-      vi.mocked(readFileSync).mockReturnValue(`
+      const verdict = service.checkWorkflows(
+        workspace({
+          workflows: {
+            "ci.yml": `
 name: CI
 jobs:
   build:
     timeout-minutes: 10
-`);
-
-      const verdict = service.checkWorkflows("/mock/workspace");
+`,
+          },
+        }),
+      );
 
       expect(verdict.valid).toBe(false);
       expect(
@@ -188,20 +187,20 @@ jobs:
     it("returns violation when job lacks timeout-minutes", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readdirSync as (target: string) => string[]).mockReturnValue([
-        "ci.yml",
-      ]);
-      vi.mocked(readFileSync).mockReturnValue(`
+      const verdict = service.checkWorkflows(
+        workspace({
+          workflows: {
+            "ci.yml": `
 name: CI
 permissions:
   contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
-`);
-
-      const verdict = service.checkWorkflows("/mock/workspace");
+`,
+          },
+        }),
+      );
 
       expect(verdict.valid).toBe(false);
       expect(
@@ -214,20 +213,20 @@ jobs:
     it("returns violation when job timeout exceeds maximum permitted limit", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readdirSync as (target: string) => string[]).mockReturnValue([
-        "ci.yml",
-      ]);
-      vi.mocked(readFileSync).mockReturnValue(`
+      const verdict = service.checkWorkflows(
+        workspace({
+          workflows: {
+            "ci.yml": `
 name: CI
 permissions:
   contents: read
 jobs:
   long-build:
     timeout-minutes: 400
-`);
-
-      const verdict = service.checkWorkflows("/mock/workspace");
+`,
+          },
+        }),
+      );
 
       expect(verdict.valid).toBe(false);
       expect(
@@ -240,20 +239,20 @@ jobs:
     it("accepts valid workflow with matrix timeout expression and job permissions", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readdirSync as (target: string) => string[]).mockReturnValue([
-        "compliance.yml",
-      ]);
-      vi.mocked(readFileSync).mockReturnValue(`
+      const verdict = service.checkWorkflows(
+        workspace({
+          workflows: {
+            "compliance.yml": `
 name: Compliance
 jobs:
   audit:
     permissions:
       contents: read
     timeout-minutes: \${{ matrix.target.timeout }}
-`);
-
-      const verdict = service.checkWorkflows("/mock/workspace");
+`,
+          },
+        }),
+      );
 
       expect(verdict.valid).toBe(true);
       expect(verdict.violations).toHaveLength(0);
@@ -262,11 +261,10 @@ jobs:
     it("accepts valid workflow with multiple jobs", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readdirSync as (target: string) => string[]).mockReturnValue([
-        "ci.yml",
-      ]);
-      vi.mocked(readFileSync).mockReturnValue(`
+      const verdict = service.checkWorkflows(
+        workspace({
+          workflows: {
+            "ci.yml": `
 name: Multi Job CI
 permissions:
   contents: read
@@ -279,9 +277,10 @@ jobs:
     permissions:
       contents: read
     timeout-minutes: 15
-`);
-
-      const verdict = service.checkWorkflows("/mock/workspace");
+`,
+          },
+        }),
+      );
 
       expect(verdict.valid).toBe(true);
       expect(verdict.violations).toHaveLength(0);
@@ -290,11 +289,10 @@ jobs:
     it("handles non-job lines before the first job declaration in jobs section", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readdirSync as (target: string) => string[]).mockReturnValue([
-        "compliance.yml",
-      ]);
-      vi.mocked(readFileSync).mockReturnValue(`
+      const verdict = service.checkWorkflows(
+        workspace({
+          workflows: {
+            "compliance.yml": `
 name: Compliance
 permissions:
   contents: read
@@ -302,9 +300,10 @@ jobs:
   # comment before first job
   audit:
     timeout-minutes: 10
-`);
-
-      const verdict = service.checkWorkflows("/mock/workspace");
+`,
+          },
+        }),
+      );
 
       expect(verdict.valid).toBe(true);
       expect(verdict.violations).toHaveLength(0);
@@ -315,25 +314,21 @@ jobs:
     it("returns aggregated verdict correctly", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockReturnValue(true);
-      vi.mocked(readdirSync as (target: string) => string[]).mockReturnValue([
-        "ci.yml",
-      ]);
-      vi.mocked(readFileSync).mockImplementation((targetPath) => {
-        if (String(targetPath).includes("CODEOWNERS")) {
-          return "* @JimmyPaolini";
-        }
-        return `
+      const verdict = service.checkGovernance(
+        workspace({
+          codeowners: "* @JimmyPaolini",
+          workflows: {
+            "ci.yml": `
 name: CI
 permissions:
   contents: read
 jobs:
   build:
     timeout-minutes: 10
-`;
-      });
-
-      const verdict = service.checkGovernance("/mock/workspace");
+`,
+          },
+        }),
+      );
 
       expect(verdict.valid).toBe(true);
       expect(verdict.codeowners.valid).toBe(true);

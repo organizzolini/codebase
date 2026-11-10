@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -17,22 +18,17 @@ describe(DensityCharacteristicService, () => {
     let service: DensityCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(DensityCharacteristicService, {
         imports: [CodeModule, MatrixModule],
         providers: [
           CharacteristicContextService,
-          DensityCharacteristicService,
           InkPointCountCharacteristicService,
           PointUtilitiesService,
         ],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(DensityCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
+      contextService = await built.module.resolve(CharacteristicContextService);
+      service = built.instance;
     });
 
     it.each([
@@ -83,17 +79,16 @@ describe(DensityCharacteristicService, () => {
     let service: DensityCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(DensityCharacteristicService, {
         providers: [
-          DensityCharacteristicService,
           {
             provide: InkPointCountCharacteristicService,
             useValue: { compute: (): number => 2 },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(DensityCharacteristicService);
+      service = built.instance;
     });
 
     it("divides the injected ink point count by the total point count", () => {
@@ -109,17 +104,17 @@ describe(DensityCharacteristicService, () => {
       rows: 0,
     };
 
-    const module = await Test.createTestingModule({
-      providers: [
-        DensityCharacteristicService,
-        {
-          provide: InkPointCountCharacteristicService,
-          useValue: { compute: (): number => 0 },
-        },
-      ],
-    }).compile();
-
-    const service = await module.resolve(DensityCharacteristicService);
+    const { instance: service } = await buildTestingModule(
+      DensityCharacteristicService,
+      {
+        providers: [
+          {
+            provide: InkPointCountCharacteristicService,
+            useValue: { compute: (): number => 0 },
+          },
+        ],
+      },
+    );
 
     expect(service.compute(context)).toBe(0);
   });

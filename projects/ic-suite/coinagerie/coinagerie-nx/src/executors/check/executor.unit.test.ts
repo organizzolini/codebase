@@ -3,12 +3,14 @@ import { fileURLToPath } from "node:url";
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
+
 import { FAKE_COMMAND } from "../../../testing/fake-command-line";
 
 import checkExecutor from "./executor";
 
 import type { CheckExecutorContext } from "./executor.types";
-import type { MockInstance } from "vitest";
+import type { CapturedOutput } from "@codebase/testing";
 
 const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -31,11 +33,11 @@ function contextFor(projectName: string | undefined): CheckExecutorContext {
 }
 
 describe(checkExecutor, () => {
-  let write: MockInstance<typeof process.stdout.write>;
+  let output: CapturedOutput;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    output = captureOutput();
   });
 
   it("passes a project the command line passes", async () => {
@@ -52,7 +54,7 @@ describe(checkExecutor, () => {
     await expect(
       checkExecutor(OPTIONS, contextFor("bad-b")),
     ).resolves.toStrictEqual({ success: false });
-    expect(String(write.mock.calls.at(0)?.at(0))).toContain("missing: argv");
+    expect(output.stdout()).toContain("missing: argv");
   });
 
   it("writes when asked to", async () => {
@@ -60,7 +62,7 @@ describe(checkExecutor, () => {
 
     await checkExecutor({ ...OPTIONS, write: true }, contextFor("a"));
 
-    expect(String(write.mock.calls.at(0)?.at(0))).toContain("wrote");
+    expect(output.stdout()).toContain("wrote");
   });
 
   it("refuses to run with no project", async () => {

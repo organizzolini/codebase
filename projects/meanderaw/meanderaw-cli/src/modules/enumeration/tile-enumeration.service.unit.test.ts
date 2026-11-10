@@ -1,6 +1,7 @@
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CodeService } from "../code/code.service";
@@ -11,28 +12,33 @@ import { OversizedTileError } from "./enumeration.constants";
 import { TileEnumerationService } from "./tile-enumeration.service";
 
 import type { Environment } from "./enumeration.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** Builds a fresh {@link TileEnumerationService} against a configured environment, defaulting to today's unconfigured values. */
 async function createService(
   overrides: Partial<Environment> = {},
 ): Promise<TileEnumerationService> {
   const environment = environmentSchema.parse(overrides);
-  const module = await Test.createTestingModule({
+  const { instance } = await buildTestingModule(
+    TileEnumerationService,
+    moduleOptions((key) => environment[key]),
+  );
+
+  return instance;
+}
+
+/** What the service is built with: its collaborators, and a configuration that answers `get` as `read` does. */
+function moduleOptions(
+  read: (key: keyof Environment) => unknown,
+): TestingModuleOptions {
+  return {
     providers: [
       CodeService,
       SymmetryService,
       TileService,
-      TileEnumerationService,
-      {
-        provide: ConfigService,
-        useValue: {
-          get: (key: keyof Environment) => environment[key],
-        },
-      },
+      { provide: ConfigService, useValue: { get: read } },
     ],
-  }).compile();
-
-  return module.resolve(TileEnumerationService);
+  };
 }
 
 // 🔧 Configuration
@@ -77,29 +83,25 @@ describe(TileEnumerationService, () => {
 
   beforeAll(async () => {
     const environment = environmentSchema.parse({});
-    const module = await Test.createTestingModule({
-      providers: [
-        CodeService,
-        SymmetryService,
-        TileService,
-        TileEnumerationService,
-        {
-          provide: ConfigService,
-          useValue: {
-            get: (key: keyof Environment) => environment[key],
-          },
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      TileEnumerationService,
+      moduleOptions((key) => environment[key]),
+    );
 
-    service = await module.resolve(TileEnumerationService);
-    codeService = await module.resolve(CodeService);
-    symmetryService = await module.resolve(SymmetryService);
-    tileService = await module.resolve(TileService);
+    service = built.instance;
+    codeService = await built.module.resolve(CodeService);
+    symmetryService = await built.module.resolve(SymmetryService);
+    tileService = await built.module.resolve(TileService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const environment = environmentSchema.parse({});
+    const { instance } = await buildTestingModule(
+      TileEnumerationService,
+      moduleOptions((key) => environment[key]),
+    );
+
+    expect(instance).toBeInstanceOf(TileEnumerationService);
   });
 
   describe("the edge budget", () => {
@@ -179,19 +181,10 @@ describe(TileEnumerationService, () => {
     // this exercises the `??` fallback in isolation, as defensive coding
     // against `ConfigService`'s own loosely-typed `get` signature.
     it("falls back to today's default when the environment leaves the budget unset", async () => {
-      const module = await Test.createTestingModule({
-        providers: [
-          CodeService,
-          SymmetryService,
-          TileService,
-          TileEnumerationService,
-          {
-            provide: ConfigService,
-            useValue: { get: () => undefined },
-          },
-        ],
-      }).compile();
-      const unset = await module.resolve(TileEnumerationService);
+      const { instance: unset } = await buildTestingModule(
+        TileEnumerationService,
+        moduleOptions(() => undefined),
+      );
 
       expect(unset.isAdmitted({ columns: 8, rows: 2 })).toBe(true);
       expect(unset.isAdmitted({ columns: 9, rows: 2 })).toBe(false);

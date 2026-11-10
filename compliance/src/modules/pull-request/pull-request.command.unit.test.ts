@@ -1,5 +1,3 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -10,7 +8,8 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
@@ -22,6 +21,7 @@ import { PullRequestValidationService } from "./pull-request-validation.service"
 import { PullRequestCommand } from "./pull-request.command";
 
 import type { PullRequestContext } from "./pull-request-context.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const context: PullRequestContext = {
   assignees: [],
@@ -33,6 +33,17 @@ const context: PullRequestContext = {
   title: "feat: add",
 };
 
+/** What PullRequestCommand is built with. */
+const DEPENDENCIES = {
+  mocks: [
+    PullRequestContextService,
+    PullRequestLabelVocabularyService,
+    PullRequestAncestorIssuesService,
+    PullRequestReportService,
+    PullRequestValidationService,
+  ],
+} satisfies TestingModuleOptions;
+
 describe(PullRequestCommand, () => {
   let command: PullRequestCommand;
   let contextService: PullRequestContextService;
@@ -42,39 +53,14 @@ describe(PullRequestCommand, () => {
   let validation: PullRequestValidationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestCommand,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: PullRequestContextService,
-          useValue: createMock<PullRequestContextService>(),
-        },
-        {
-          provide: PullRequestLabelVocabularyService,
-          useValue: createMock<PullRequestLabelVocabularyService>(),
-        },
-        {
-          provide: PullRequestAncestorIssuesService,
-          useValue: createMock<PullRequestAncestorIssuesService>(),
-        },
-        {
-          provide: PullRequestReportService,
-          useValue: createMock<PullRequestReportService>(),
-        },
-        {
-          provide: PullRequestValidationService,
-          useValue: createMock<PullRequestValidationService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(PullRequestCommand, DEPENDENCIES);
 
-    command = await module.resolve(PullRequestCommand);
-    contextService = await module.resolve(PullRequestContextService);
-    vocabulary = await module.resolve(PullRequestLabelVocabularyService);
-    parents = await module.resolve(PullRequestAncestorIssuesService);
-    report = await module.resolve(PullRequestReportService);
-    validation = await module.resolve(PullRequestValidationService);
+    command = built.instance;
+    contextService = built.mock(PullRequestContextService);
+    vocabulary = built.mock(PullRequestLabelVocabularyService);
+    parents = built.mock(PullRequestAncestorIssuesService);
+    report = built.mock(PullRequestReportService);
+    validation = built.mock(PullRequestValidationService);
   });
 
   beforeEach(() => {
@@ -108,40 +94,16 @@ describe(PullRequestCommand, () => {
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestCommand,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: PullRequestContextService,
-          useValue: createMock<PullRequestContextService>(),
-        },
-        {
-          provide: PullRequestLabelVocabularyService,
-          useValue: createMock<PullRequestLabelVocabularyService>(),
-        },
-        {
-          provide: PullRequestAncestorIssuesService,
-          useValue: createMock<PullRequestAncestorIssuesService>(),
-        },
-        {
-          provide: PullRequestReportService,
-          useValue: createMock<PullRequestReportService>(),
-        },
-        {
-          provide: PullRequestValidationService,
-          useValue: createMock<PullRequestValidationService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("PullRequestCommand");
+    await expectLoggerContext(PullRequestCommand, DEPENDENCIES);
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PullRequestCommand,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestCommand);
   });
 
   it("writes, reloads, validates, and exits 0 when everything passes", async () => {

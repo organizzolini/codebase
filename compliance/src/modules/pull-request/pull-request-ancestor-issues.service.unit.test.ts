@@ -1,6 +1,6 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueMetadataService } from "../issue/issue-metadata.service";
 
@@ -11,6 +11,7 @@ import { PullRequestGithubService } from "./pull-request-github.service";
 
 import type { PullRequestContext } from "./pull-request-context.types";
 import type { GithubCliResult } from "./pull-request-github.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const context: PullRequestContext = {
   assignees: [],
@@ -38,6 +39,16 @@ const failed: GithubCliResult = {
   succeeded: false,
 };
 
+/** What PullRequestAncestorIssuesService is built with. */
+const DEPENDENCIES = {
+  mocks: [
+    IssueMetadataService,
+    PullRequestDescendantIssuesService,
+    PullRequestGithubService,
+    PullRequestBodyLinksService,
+  ],
+} satisfies TestingModuleOptions;
+
 describe(PullRequestAncestorIssuesService, () => {
   let service: PullRequestAncestorIssuesService;
   let github: PullRequestGithubService;
@@ -46,33 +57,16 @@ describe(PullRequestAncestorIssuesService, () => {
   let metadata: IssueMetadataService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestAncestorIssuesService,
-        {
-          provide: IssueMetadataService,
-          useValue: createMock<IssueMetadataService>(),
-        },
-        {
-          provide: PullRequestDescendantIssuesService,
-          useValue: createMock<PullRequestDescendantIssuesService>(),
-        },
-        {
-          provide: PullRequestGithubService,
-          useValue: createMock<PullRequestGithubService>(),
-        },
-        {
-          provide: PullRequestBodyLinksService,
-          useValue: createMock<PullRequestBodyLinksService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestAncestorIssuesService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(PullRequestAncestorIssuesService);
-    github = await module.resolve(PullRequestGithubService);
-    children = await module.resolve(PullRequestDescendantIssuesService);
-    links = await module.resolve(PullRequestBodyLinksService);
-    metadata = await module.resolve(IssueMetadataService);
+    service = built.instance;
+    github = built.mock(PullRequestGithubService);
+    children = built.mock(PullRequestDescendantIssuesService);
+    links = built.mock(PullRequestBodyLinksService);
+    metadata = built.mock(IssueMetadataService);
   });
 
   beforeEach(() => {
@@ -110,8 +104,13 @@ describe(PullRequestAncestorIssuesService, () => {
     });
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PullRequestAncestorIssuesService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestAncestorIssuesService);
   });
 
   it("fails when the linked issues cannot be read", () => {
