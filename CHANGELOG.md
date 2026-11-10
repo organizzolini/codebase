@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.61.3](https://github.com/organizzolini/codebase/compare/v3.61.2...v3.61.3) (2026-11-10)
+
+### ♻️ Code Refactoring
+
+* **caelundas:** ♻️ move night-sky utilities into services ([#2215](https://github.com/organizzolini/codebase/issues/2215)) ([af55d43](https://github.com/organizzolini/codebase/commit/af55d43228f18a3dea7dd6cfd4dc35111d15be94)), closes [#2213](https://github.com/organizzolini/codebase/issues/2213) [#2211](https://github.com/organizzolini/codebase/issues/2211)
+* **caelundas:** ♻️ rename the caelundas-api vocabulary to windows, periods and presets ([#2216](https://github.com/organizzolini/codebase/issues/2216)) ([10e62f5](https://github.com/organizzolini/codebase/commit/10e62f5254fee26eebc3a418004273dbb0d263a9)), closes [#2212](https://github.com/organizzolini/codebase/issues/2212) [#2211](https://github.com/organizzolini/codebase/issues/2211)
+
 ## [3.61.2](https://github.com/organizzolini/codebase/compare/v3.61.1...v3.61.2) (2026-11-10)
 
 ## [3.61.1](https://github.com/organizzolini/codebase/compare/v3.61.0...v3.61.1) (2026-11-10)
