@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { useTemporaryDirectories } from "../../../testing/mocks";
 
@@ -12,11 +13,7 @@ describe(ProcessRunnerService, () => {
   let service: ProcessRunnerService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ProcessRunnerService],
-    }).compile();
-
-    service = await module.resolve(ProcessRunnerService);
+    ({ instance: service } = await buildTestingModule(ProcessRunnerService));
   });
 
   describe("capture", () => {
