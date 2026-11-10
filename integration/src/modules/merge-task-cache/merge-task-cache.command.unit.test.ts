@@ -2,20 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   createTaskDatabaseWorkspace,
@@ -30,37 +21,20 @@ import { MergeTaskCacheCommand } from "./merge-task-cache.command";
 import type { TaskDatabaseWorkspace } from "../../../testing/mocks";
 
 describe(MergeTaskCacheCommand, () => {
+  const moduleOptions = { mocks: [TaskDatabaseService] };
   let workspace: TaskDatabaseWorkspace;
-  let command: MergeTaskCacheCommand;
   let printed: string[];
   let cache: string;
   let source: string;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MergeTaskCacheCommand,
-        {
-          provide: TaskDatabaseService,
-          useValue: createMock<TaskDatabaseService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(MergeTaskCacheCommand);
-  });
-
   /** Runs the command over the real service and a real directory. */
   const runCommand = async (...parameters: string[]): Promise<void> => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(MergeTaskCacheCommand, {
       providers: [
-        MergeTaskCacheCommand,
         TaskDatabaseService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     const subject = await module.resolve(MergeTaskCacheCommand);
 
@@ -101,27 +75,21 @@ describe(MergeTaskCacheCommand, () => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      MergeTaskCacheCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MergeTaskCacheCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        MergeTaskCacheCommand,
-        {
-          provide: TaskDatabaseService,
-          useValue: createMock<TaskDatabaseService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("MergeTaskCacheCommand");
+    await expectLoggerContext(MergeTaskCacheCommand, moduleOptions);
   });
 
   it("copies the outputs this cache lacks and inserts the rows it lacks, keeping its own", async () => {

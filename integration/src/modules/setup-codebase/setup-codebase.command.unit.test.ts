@@ -1,6 +1,4 @@
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -11,7 +9,8 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { BoundBaseToPushService } from "../bound-base-to-push/bound-base-to-push.service";
 import { ImportPrTaskCacheService } from "../import-pr-task-cache/import-pr-task-cache.service";
@@ -56,9 +55,8 @@ describe(SetupCodebaseCommand, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SetupCodebaseCommand, {
       providers: [
-        SetupCodebaseCommand,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: BoundBaseToPushService, useValue: { bound } },
         {
@@ -66,9 +64,8 @@ describe(SetupCodebaseCommand, () => {
           useValue: { import: importCache },
         },
         { provide: TaskDatabaseService, useValue: { adopt, verify } },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     command = await module.resolve(SetupCodebaseCommand);
   });
@@ -111,17 +108,11 @@ describe(SetupCodebaseCommand, () => {
     process.exitCode = originalExitCode;
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(command).toBeDefined();
-  });
-
-  it("sets logger context", async () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    const { instance } = await buildTestingModule(SetupCodebaseCommand, {
       providers: [
-        SetupCodebaseCommand,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: BoundBaseToPushService, useValue: { bound } },
         {
@@ -129,12 +120,26 @@ describe(SetupCodebaseCommand, () => {
           useValue: { import: importCache },
         },
         { provide: TaskDatabaseService, useValue: { adopt, verify } },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
+    });
 
-    expect(logger.setContext).toHaveBeenCalledWith("SetupCodebaseCommand");
+    expect(instance).toBeInstanceOf(SetupCodebaseCommand);
+  });
+
+  it("sets logger context", async () => {
+    expect.hasAssertions();
+
+    await expectLoggerContext(SetupCodebaseCommand, {
+      providers: [
+        { provide: ConfigService, useValue: new ConfigService() },
+        { provide: BoundBaseToPushService, useValue: { bound } },
+        {
+          provide: ImportPrTaskCacheService,
+          useValue: { import: importCache },
+        },
+        { provide: TaskDatabaseService, useValue: { adopt, verify } },
+      ],
+    });
   });
 
   it("does nothing for a job that asked for nothing", async () => {

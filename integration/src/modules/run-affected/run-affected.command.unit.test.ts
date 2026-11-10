@@ -1,17 +1,8 @@
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { failed, FakeProcessRunner, succeeded } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
@@ -37,8 +28,8 @@ const changing = (...files: string[]): Record<string, CapturedProcess> => ({
 });
 
 describe(RunAffectedCommand, () => {
+  const moduleOptions = { mocks: [RunAffectedService] };
   const originalExitCode = process.exitCode;
-  let command: RunAffectedCommand;
   let reportLines: string[];
 
   /** Runs the command over the real service and a scripted process runner. */
@@ -60,15 +51,13 @@ describe(RunAffectedCommand, () => {
       vi.stubEnv(name, value);
     }
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(RunAffectedCommand, {
       providers: [
-        RunAffectedCommand,
         RunAffectedService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
 
     const subject = await module.resolve(RunAffectedCommand);
 
@@ -76,21 +65,6 @@ describe(RunAffectedCommand, () => {
   };
 
   const base = { NX_BASE: "base", NX_HEAD: "head", TARGET: "test-code" };
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        RunAffectedCommand,
-        {
-          provide: RunAffectedService,
-          useValue: createMock<RunAffectedService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(RunAffectedCommand);
-  });
 
   beforeEach(() => {
     process.exitCode = undefined;
@@ -108,27 +82,21 @@ describe(RunAffectedCommand, () => {
     process.exitCode = originalExitCode;
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      RunAffectedCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(RunAffectedCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        RunAffectedCommand,
-        {
-          provide: RunAffectedService,
-          useValue: createMock<RunAffectedService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("RunAffectedCommand");
+    await expectLoggerContext(RunAffectedCommand, moduleOptions);
   });
 
   describe("missing inputs", () => {

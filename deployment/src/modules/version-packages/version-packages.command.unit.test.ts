@@ -1,20 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   failed,
@@ -44,8 +35,8 @@ const NXIGNORE = "node_modules\n";
 const ROOT = "projects/ic-suite/tool/bumped";
 
 describe(VersionPackagesCommand, () => {
+  const moduleOptions = { mocks: [VersionPackagesService] };
   const originalExitCode = process.exitCode;
-  let command: VersionPackagesCommand;
   const makeDirectory = useTemporaryDirectories();
   let environmentFile: string;
   let reportLines: string[];
@@ -79,38 +70,21 @@ describe(VersionPackagesCommand, () => {
         }),
       );
     };
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(VersionPackagesCommand, {
       providers: [
         MainTipService,
         ReleaseGroupService,
         TagPackagesService,
-        VersionPackagesCommand,
         VersionPackagesService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
 
     const subject = await module.resolve(VersionPackagesCommand);
 
     await subject.run();
   };
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        VersionPackagesCommand,
-        {
-          provide: VersionPackagesService,
-          useValue: createMock<VersionPackagesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(VersionPackagesCommand);
-  });
 
   beforeEach(() => {
     process.exitCode = undefined;
@@ -147,27 +121,21 @@ describe(VersionPackagesCommand, () => {
     process.exitCode = originalExitCode;
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      VersionPackagesCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(VersionPackagesCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        VersionPackagesCommand,
-        {
-          provide: VersionPackagesService,
-          useValue: createMock<VersionPackagesService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("VersionPackagesCommand");
+    await expectLoggerContext(VersionPackagesCommand, moduleOptions);
   });
 
   it("points the remote at the token, pushes missing tags, then versions", async () => {
