@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PLAIN_IDENTIFIER } from "./scanner.constants";
 import { ScannerService } from "./scanner.service";
@@ -21,15 +22,13 @@ describe(ScannerService, () => {
   let service: ScannerService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ScannerService],
-    }).compile();
-
-    service = await module.resolve(ScannerService);
+    ({ instance: service } = await buildTestingModule(ScannerService));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ScannerService);
+
+    expect(instance).toBeInstanceOf(ScannerService);
   });
 
   it.each([

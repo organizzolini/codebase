@@ -1,41 +1,28 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import {
   ConfigurationFileNotFoundError,
   InvalidConfigurationError,
 } from "@coinagerie/core";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DEFAULT_INCLUDE } from "./configuration.constants";
 import { ConfigurationService } from "./configuration.service";
-
-/**
- * Configuration files are written inside this project's gitignored `tmp/`,
- * because jiti resolves a configuration's imports from where the file sits.
- */
-const TEMPORARY_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
 describe(ConfigurationService, () => {
   let service: ConfigurationService;
   let directory: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ConfigurationService],
-    }).compile();
-
-    service = await module.resolve(ConfigurationService);
+    ({ instance: service } = await buildTestingModule(ConfigurationService));
   });
 
   beforeEach(() => {
-    mkdirSync(TEMPORARY_ROOT, { recursive: true });
-    directory = mkdtempSync(path.join(TEMPORARY_ROOT, "configuration-"));
-  });
-
-  afterEach(() => {
-    rmSync(directory, { force: true, recursive: true });
+    directory = createTemporaryDirectory("configuration");
   });
 
   function writeConfiguration(relativePath: string, source: string): string {
@@ -45,8 +32,10 @@ describe(ConfigurationService, () => {
     return filePath;
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConfigurationService);
+
+    expect(instance).toBeInstanceOf(ConfigurationService);
   });
 
   it("falls back to every default when no configuration file exists", async () => {
