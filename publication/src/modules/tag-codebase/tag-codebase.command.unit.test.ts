@@ -1,20 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   failed,
@@ -45,44 +36,27 @@ const gitScript = (
 });
 
 describe(TagCodebaseCommand, () => {
+  const moduleOptions = { mocks: [TagCodebaseService] };
   const originalExitCode = process.exitCode;
-  let command: TagCodebaseCommand;
   const makeDirectory = useTemporaryDirectories();
   let environmentFile: string;
   let reportLines: string[];
 
   /** Runs the command over the real services and a scripted process runner. */
   const runCommand = async (runner: FakeProcessRunner): Promise<void> => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(TagCodebaseCommand, {
       providers: [
         MainTipService,
-        TagCodebaseCommand,
         TagCodebaseService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
 
     const subject = await module.resolve(TagCodebaseCommand);
 
     await subject.run();
   };
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        TagCodebaseCommand,
-        {
-          provide: TagCodebaseService,
-          useValue: createMock<TagCodebaseService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(TagCodebaseCommand);
-  });
 
   beforeEach(() => {
     process.exitCode = undefined;
@@ -103,27 +77,21 @@ describe(TagCodebaseCommand, () => {
     process.exitCode = originalExitCode;
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      TagCodebaseCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TagCodebaseCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        TagCodebaseCommand,
-        {
-          provide: TagCodebaseService,
-          useValue: createMock<TagCodebaseService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("TagCodebaseCommand");
+    await expectLoggerContext(TagCodebaseCommand, moduleOptions);
   });
 
   it("runs semantic-release while main has not moved", async () => {

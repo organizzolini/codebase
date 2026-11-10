@@ -1,8 +1,8 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RefreshDocumentationCommand } from "./refresh-documentation.command";
 import { RefreshDocumentationService } from "./refresh-documentation.service";
@@ -13,16 +13,11 @@ describe(RefreshDocumentationCommand, () => {
   let logger: LoggerService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(RefreshDocumentationCommand, {
       providers: [
-        RefreshDocumentationCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
         { provide: RefreshDocumentationService, useValue: { refresh } },
       ],
-    }).compile();
+    });
 
     command = await module.resolve(RefreshDocumentationCommand);
     logger = await module.resolve(LoggerService);
@@ -33,29 +28,26 @@ describe(RefreshDocumentationCommand, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(RefreshDocumentationCommand, {
+      providers: [
+        { provide: RefreshDocumentationService, useValue: { refresh } },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(RefreshDocumentationCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
+    expect.hasAssertions();
+
+    await expectLoggerContext(RefreshDocumentationCommand, {
       providers: [
-        RefreshDocumentationCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
         { provide: RefreshDocumentationService, useValue: { refresh } },
       ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    await module.resolve(RefreshDocumentationCommand);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "RefreshDocumentationCommand",
-    );
+    });
   });
 
   it("leaves the exit code alone when the refresh succeeds", async () => {

@@ -9,8 +9,9 @@ import {
 import { setTimeout } from "node:timers/promises";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RefreshDocumentationService } from "./refresh-documentation.service";
 
@@ -66,9 +67,7 @@ describe(RefreshDocumentationService, () => {
   let service: RefreshDocumentationService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [RefreshDocumentationService],
-    }).compile();
+    const { module } = await buildTestingModule(RefreshDocumentationService);
 
     service = await module.resolve(RefreshDocumentationService);
   });
@@ -77,8 +76,12 @@ describe(RefreshDocumentationService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(RefreshDocumentationService);
+
+    expect(instance).toBeInstanceOf(RefreshDocumentationService);
   });
 
   it("runs OpenWiki in the working directory and removes its leftover file", async () => {
