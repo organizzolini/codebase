@@ -7,6 +7,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **breadth**: Heading of the callidescope breadth section in this README, currently None, so no breadth limit is measured here.
 - **cascade**: Foreign-key behavior in the migrations, ON DELETE CASCADE, so deleting a parent row also removes its dependent rows.
 - **conjunction**: Part-of-speech value for conjunctions, stored in the lexemes part_of_speech enum with the other word classes.
+- **db**: The database half of the lexico project's name: the `lexico-db` project that owns the entities, data source and migrations.
 - **degree**: Comparison degree value, comparative, positive, or superlative, stored in the forms and inflections degree enums.
 - **deletable**: Name of the PostgresqlDeletableEntity base class from @codebase/persistence, which gives every entity soft-delete columns.
 - **dictionary**: The src/modules/entities/dictionary folder, holding the Word, Lexeme, Form, Inflection, and Translation entity classes.

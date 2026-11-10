@@ -45,7 +45,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **unbind**: Unused in this folder since no event listener or subscription is unbound here, so the word names nothing configured.
 - **unowned**: A project tagged workspace-unowned in project.json, whose files no Nx project claims, so the workspace root check covers them.
 - **verb**: Grammatical form a log message must use after its subject, present progressive or past tense, checked by the logger convention rule.
-- **vocabulary**:
 - **whitespace**: Conventional-commit type for formatting-only changes, described in conventional.config.cjs as whitespace or code structure changes with no semantic effect.
 
 <!-- coinagerie:end -->

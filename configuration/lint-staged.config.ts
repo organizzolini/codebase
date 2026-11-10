@@ -27,10 +27,9 @@ function getLocalParallelism(): number {
 }
 
 /**
- * Targets every commit runs, locally and in CI. Other gates run in the CI,
- * deployment and compliance workflows, and the `validate-code` skill.
+ * Targets every commit runs, locally and in CI, including a check-only glossary pass. Other gates run in CI and `validate-code`.
  */
-const ANALYSIS_TARGETS = "typecheck,oxlint,oxfmt";
+const ANALYSIS_TARGETS = "typecheck,oxlint,oxfmt,coinagerie-check";
 
 /**
  * Renders staged paths as one `--files=` flag each. One comma-separated value would
@@ -139,9 +138,9 @@ const config = {
   // forwarded down `dependsOn` would let `lint-code --configuration=write` publish from a branch.
 
   // `callidescope-restrict` and `codependix-bound` are reached through `guard-code`'s
-  // `dependsOn`, not named here. Each is inferred per project with no configuration, and
-  // `nx affected` scopes it to the projects a commit touched. `configuration:codependix` is
-  // write-only. No glossary target is reached from here: the release workflow writes them.
+  // `dependsOn`, not named here: each is inferred per project, and `nx affected` scopes it
+  // to the projects a commit touched. `configuration:codependix` is write-only. The
+  // glossary check is in `ANALYSIS_TARGETS`: it writes nothing, so `validate-code` repairs.
 
   // There is no aggregate `synchronize` target to name instead: each
   // synchronization is its own Nx target on the `synchronization` project, run

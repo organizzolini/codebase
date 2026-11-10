@@ -54,14 +54,20 @@ jobs:
       fail-fast: false
       matrix:
         check:
-          # `static-code` runs the static gates in one `nx affected` call with
-          # `--configuration=check`. Keep `targets` equal to `guard-code`'s
-          # `dependsOn` in `nx.json` plus the gates run here, less those with legs
-          # below: a gate named in neither place is checked by nothing in CI.
+          # `static-code` runs typecheck, format, lint and deprecate in one
+          # `nx affected` call with `--configuration=check`, reading `targets` in
+          # place of `target`.
           - target: static-code
-            targets: typecheck-code,format-code,lint-code,deprecate-code,catalog-manifests,lockfile,project-ports,readme-projects,vscode-extensions
+            targets: typecheck-code,format-code,lint-code,deprecate-code
             name: Static
             emoji: 🧑‍⚕️
+          # A leg of its own, since with Static these took past the default limit.
+          # Keep `targets` equal to `guard-code`'s `dependsOn` in `nx.json`, less
+          # the gates with legs below: a gate named in no leg is checked by nothing.
+          - target: guard-code
+            targets: catalog-manifests,coinagerie-check,lockfile,project-ports,readme-projects,vscode-extensions
+            name: Guard
+            emoji: 💂
           - target: callidescope-restrict
             name: Callidescope Restrict
             emoji: 🔭
@@ -97,6 +103,9 @@ jobs:
             emoji: 🧑‍🔬
             exclude: "*,!projects/caelundas/**"
             shard: caelundas
+            # A cold run (no cached test output) takes 8 to 12 minutes, so the
+            # default 12 cancels it on any change that invalidates the cache.
+            timeout-minutes: 15
           - target: test-code
             name: Test IC Suite
             emoji: 🧑‍🔬

@@ -33,6 +33,8 @@ The `lint-code` Nx target hangs every quality tool off `dependsOn`, so one invoc
 | `markdownlint` | Markdown linting | `configuration/markdownlint-cli2.config.jsonc` |
 | `yamllint` | YAML linting | `configuration/yamllint.yaml` |
 
+`guard-code` also runs `coinagerie-check`, which judges each project's glossary (and the root `GLOSSARY.md`) against the words the code uses. Its `write` pass is what you run to repair it: a new word gains a bare `- **word**:` bullet, which you then define with the [coinagerie-define skill](../coinagerie-define/SKILL.md), and a word the code no longer uses loses its bullet and definition. Never hand-edit the generated listing.
+
 ## Validation Workflow
 
 ### Step 1 — Auto-fix
@@ -66,6 +68,7 @@ pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-co
 - **Spell-check**: Either fix the typo, or add the word to the appropriate dictionary in `configuration/.cspell/`.
 - **Knip (unused code)**: Remove the unused export/file/dependency, or add an exception in `configuration/knip.config.ts`.
 - **Fallow dead-code (unused code)**: The same finding from the other direction — `knip` runs once per workspace, `fallow` once over all of them. The two configurations are kept in step, so fix the code and both pass; if an exception is genuinely warranted, add it to `configuration/fallow.config.jsonc` _and_ its counterpart in `configuration/knip.config.ts`, or the next run of the other tool reports what you just excused. Prefer `overrides` to `ignorePatterns` when suppressing a file: `ignorePatterns` also drops what that file imports out of the module graph, which makes reachable files read as dead.
+- **Glossary (`coinagerie-check`)**: Run `pnpm exec nx run <project>:coinagerie-check:write`, then write the definition of any bare bullet it added with the [coinagerie-define skill](../coinagerie-define/SKILL.md). See [coinagerie-triage](../coinagerie-triage/SKILL.md) for a failure that survives the write.
 - **Sync checks**: Run the failing synchronization's own `write` configuration (e.g., `nx run synchronization:conventional-config:write`), or `nx run-many --targets=conformetry-generators,conventional-config,devcontainer-configuration,pull-request-template,skill-exclusions --configuration=write` for every derivation at once.
 - **Check skill exclusions**: Add the exclusion lines the failure names to `configuration/.prettierignore`, `configuration/.codometerignore`, and `.gitattributes`. This leaf has no `write` variant.
 

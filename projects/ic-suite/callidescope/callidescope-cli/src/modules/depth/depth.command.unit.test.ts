@@ -32,6 +32,7 @@ import type { LocatedWorkspace } from "../address-lookup/address-lookup.types";
 import type { LocateOutcome } from "../callidescope/callidescope.types";
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 import type { LoggerService } from "@codebase/observability";
+import type { CapturedOutput } from "@codebase/testing";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** The workspace configuration every run must be pointed at with `--config`. */
@@ -88,6 +89,7 @@ describe(DepthCommand, () => {
   let addressReportService: ReturnType<typeof createMock<AddressReportService>>;
   let addressDepthService: ReturnType<typeof createMock<AddressDepthService>>;
   let command: DepthCommand;
+  let output: CapturedOutput;
   let exitCode: ReturnType<typeof captureExitCode>;
   let configurationService: ConfigurationService;
   let logger: ReturnType<typeof createMock<LoggerService>>;
@@ -117,7 +119,7 @@ describe(DepthCommand, () => {
       logger,
     );
 
-    captureOutput();
+    output = captureOutput();
     exitCode = captureExitCode();
   });
 
@@ -247,7 +249,7 @@ describe(DepthCommand, () => {
       graph: located.graph,
       startId: "a.ts#0",
     });
-    expect(process.stdout.write).toHaveBeenCalledWith("rendered depth\n");
+    expect(output.stdout()).toBe("rendered depth\n");
     expect(exitCode()).toBeUndefined();
   });
 
@@ -415,7 +417,7 @@ describe(DepthCommand, () => {
       { reason: error.message },
     );
     expect(exitCode()).toBe(1);
-    expect(process.stdout.write).not.toHaveBeenCalled();
+    expect(output.stdout()).toBe("");
   });
 
   // A lookup traces before it matches, so it loads the configuration of every
@@ -441,7 +443,7 @@ describe(DepthCommand, () => {
       { reason: error.message },
     );
     expect(exitCode()).toBe(1);
-    expect(process.stdout.write).not.toHaveBeenCalled();
+    expect(output.stdout()).toBe("");
   });
 
   // A lookup traces before it matches, so it can reach a project whose
@@ -468,7 +470,7 @@ describe(DepthCommand, () => {
       { reason: error.message },
     );
     expect(exitCode()).toBe(1);
-    expect(process.stdout.write).not.toHaveBeenCalled();
+    expect(output.stdout()).toBe("");
   });
 
   // 📚 Several addresses
@@ -511,7 +513,7 @@ describe(DepthCommand, () => {
       "a.ts#Foo.bar",
       "b.ts#Bar.baz",
     ]);
-    expect(process.stdout.write).toHaveBeenCalledWith("two reports\n");
+    expect(output.stdout()).toBe("two reports\n");
     expect(exitCode()).toBeUndefined();
   });
 
@@ -538,7 +540,7 @@ describe(DepthCommand, () => {
     });
 
     expect(exitCode()).toBe(1);
-    expect(process.stdout.write).not.toHaveBeenCalled();
+    expect(output.stdout()).toBe("");
     expect(addressReportService.renderDepthReports).not.toHaveBeenCalled();
   });
 

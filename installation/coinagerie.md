@@ -5,7 +5,7 @@
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **bundle**: The ReUI skill JSON payload the update-reui-skill command downloads from reui.io and writes into the vendored skill.
-- **elsewhere**:
+- **elsewhere**: Test-fixture name for a location other than the default: an environment file path, or a workspace folder, that the installation tests point at to prove a setting is honoured.
 - **explain**: Private shared cache storage method, explainFailure, that turns a failed write into an outcome and reason.
 - **infra**: Shortened name of SoftwareInfraService, which installs the DevOps command-line tools and prints their versions.
 - **pipeline**: Promise-based Node stream helper that the shared cache storage uses to write a request body into its temporary file.
