@@ -1,6 +1,6 @@
 ---
 name: manage-project
-description: Keep the organizzolini/codebase GitHub Project board filled in — set an issue's Status, Priority, and Effort, move work to In Progress, and know when a milestone applies. Use when starting or finishing work on an issue, after filing or triaging issues, when estimating effort or prioritizing work, when asked what is on the board, or when a board view shows items with no Priority or Effort.
+description: Keep the organizzolini/codebase GitHub Project board filled in — set an issue's Status, Priority, and Effort, move work to In Progress, and know when a milestone applies. Use when starting or finishing work on an issue, after filing or sorting issues, when estimating effort or prioritizing work, when asked what is on the board, or when a board view shows items with no Priority or Effort.
 license: MIT
 ---
 
@@ -12,11 +12,11 @@ Its views are one per project area (`caelundas`, `lexico`, `ic-suite`, …), plu
 
 ## Fields
 
-| Field    | Set on                                  | Values                                                     | Who sets it                          |
-| -------- | --------------------------------------- | ---------------------------------------------------------- | ------------------------------------ |
-| Status   | Spec, parent issue, and commit sub-issue | Todo, In Progress, Done                                    | Todo and Done are automatic; you set In Progress |
-| Priority | Spec and any standalone issue           | Urgent, High, Medium, Low                                  | The user. An agent proposes, never decides |
-| Effort   | Parent issue (one pull request) and any standalone issue | Low, Medium, High                     | The agent that plans or files it     |
+| Field    | Set on                                                   | Values                    | Who sets it                                      |
+| -------- | -------------------------------------------------------- | ------------------------- | ------------------------------------------------ |
+| Status   | Spec, parent issue, and commit sub-issue                 | Todo, In Progress, Done   | Todo and Done are automatic; you set In Progress |
+| Priority | Spec and any standalone issue                            | Urgent, High, Medium, Low | The user. An agent proposes, never decides       |
+| Effort   | Parent issue (one pull request) and any standalone issue | Low, Medium, High         | The agent that plans or files it                 |
 
 Never invent a value outside the list. If a field has no option you need, say so rather than editing the field.
 
@@ -26,11 +26,11 @@ Never invent a value outside the list. If a field has no option you need, say so
 
 Effort is the work a pull request carries, measured in planned commits and modules touched. It is an estimate for ordering work, so choose fast and move on.
 
-| Effort | Shape                                                                         |
-| ------ | ----------------------------------------------------------------------------- |
-| Low    | One commit, with its tests                                                    |
-| Medium | Two to four commits in one module                                             |
-| High   | Five or more commits, or more than one module in one project                  |
+| Effort | Shape                                                        |
+| ------ | ------------------------------------------------------------ |
+| Low    | One commit, with its tests                                   |
+| Medium | Two to four commits in one module                            |
+| High   | Five or more commits, or more than one module in one project |
 
 A `High` that would not fit one reviewable pull request is a planning defect: split it into parent issues under a spec before anyone builds it.
 
