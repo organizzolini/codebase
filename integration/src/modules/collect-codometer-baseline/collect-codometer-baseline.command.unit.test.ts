@@ -1,8 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CollectCodometerBaselineCommand } from "./collect-codometer-baseline.command";
 import { CollectCodometerBaselineService } from "./collect-codometer-baseline.service";
@@ -12,37 +11,41 @@ describe(CollectCodometerBaselineCommand, () => {
   let command: CollectCodometerBaselineCommand;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CollectCodometerBaselineCommand,
-        { provide: CollectCodometerBaselineService, useValue: { collect } },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(
+      CollectCodometerBaselineCommand,
+      {
+        providers: [
+          { provide: CollectCodometerBaselineService, useValue: { collect } },
+        ],
+      },
+    );
 
     command = await module.resolve(CollectCodometerBaselineCommand);
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      CollectCodometerBaselineCommand,
+      {
+        providers: [
+          { provide: CollectCodometerBaselineService, useValue: { collect } },
+        ],
+      },
+    );
+
+    expect(instance).toBeInstanceOf(CollectCodometerBaselineCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    await expectLoggerContext(CollectCodometerBaselineCommand, {
       providers: [
-        CollectCodometerBaselineCommand,
         { provide: CollectCodometerBaselineService, useValue: { collect } },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "CollectCodometerBaselineCommand",
-    );
+    });
   });
 
   it("prints what the service reports", async () => {

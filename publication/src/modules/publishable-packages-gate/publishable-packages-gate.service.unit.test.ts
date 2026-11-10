@@ -1,32 +1,23 @@
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { PublishablePackagesGateService } from "./publishable-packages-gate.service";
 
 describe(PublishablePackagesGateService, () => {
-  let service: PublishablePackagesGateService;
+  const moduleOptions = { mocks: [ConfigService, ProcessRunnerService] };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishablePackagesGateService,
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-      ],
-    }).compile();
-
-    service = await module.resolve(PublishablePackagesGateService);
-  });
-
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PublishablePackagesGateService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PublishablePackagesGateService);
   });
 });

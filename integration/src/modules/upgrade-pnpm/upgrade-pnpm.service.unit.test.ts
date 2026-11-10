@@ -1,6 +1,6 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PackageManifestService } from "../package-manifest/package-manifest.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
@@ -8,24 +8,18 @@ import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { UpgradePnpmService } from "./upgrade-pnpm.service";
 
 describe(UpgradePnpmService, () => {
+  const moduleOptions = {
+    mocks: [PackageManifestService, ProcessRunnerService],
+  };
   let service: UpgradePnpmService;
   let packageManifest: PackageManifestService;
   let processRunner: ProcessRunnerService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        UpgradePnpmService,
-        {
-          provide: PackageManifestService,
-          useValue: createMock<PackageManifestService>(),
-        },
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(
+      UpgradePnpmService,
+      moduleOptions,
+    );
 
     service = await module.resolve(UpgradePnpmService);
     packageManifest = await module.resolve(PackageManifestService);
@@ -37,8 +31,15 @@ describe(UpgradePnpmService, () => {
     vi.mocked(processRunner.capture).mockReset();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      UpgradePnpmService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(UpgradePnpmService);
   });
 
   it("pins the newest release once pnpm will switch to it", () => {

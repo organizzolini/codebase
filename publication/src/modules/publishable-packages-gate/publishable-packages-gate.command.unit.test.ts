@@ -1,17 +1,8 @@
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { FakeProcessRunner } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
@@ -29,8 +20,8 @@ const shown = (stdout: string): Record<string, CapturedProcess> => ({
 });
 
 describe(PublishablePackagesGateCommand, () => {
+  const moduleOptions = { mocks: [PublishablePackagesGateService] };
   const originalExitCode = process.exitCode;
-  let command: PublishablePackagesGateCommand;
   let reportLines: string[];
 
   /** Runs the command over the real service and a scripted process runner. */
@@ -45,15 +36,16 @@ describe(PublishablePackagesGateCommand, () => {
       vi.stubEnv(name, value);
     }
 
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishablePackagesGateCommand,
-        PublishablePackagesGateService,
-        { provide: ConfigService, useValue: new ConfigService() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: ProcessRunnerService, useValue: runner },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(
+      PublishablePackagesGateCommand,
+      {
+        providers: [
+          PublishablePackagesGateService,
+          { provide: ConfigService, useValue: new ConfigService() },
+          { provide: ProcessRunnerService, useValue: runner },
+        ],
+      },
+    );
 
     const subject = await module.resolve(PublishablePackagesGateCommand);
 
@@ -61,21 +53,6 @@ describe(PublishablePackagesGateCommand, () => {
   };
 
   const revisions = { NX_BASE: "base", NX_HEAD: "head" };
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishablePackagesGateCommand,
-        {
-          provide: PublishablePackagesGateService,
-          useValue: createMock<PublishablePackagesGateService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(PublishablePackagesGateCommand);
-  });
 
   beforeEach(() => {
     process.exitCode = undefined;
@@ -93,29 +70,21 @@ describe(PublishablePackagesGateCommand, () => {
     process.exitCode = originalExitCode;
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(command).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PublishablePackagesGateCommand,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(PublishablePackagesGateCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishablePackagesGateCommand,
-        {
-          provide: PublishablePackagesGateService,
-          useValue: createMock<PublishablePackagesGateService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith(
-      "PublishablePackagesGateCommand",
-    );
+    await expectLoggerContext(PublishablePackagesGateCommand, moduleOptions);
   });
 
   it("fails when a revision is unset", async () => {
