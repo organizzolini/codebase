@@ -2,10 +2,9 @@ import http from "node:http";
 
 import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SharedNxCacheRemoteService } from "./shared-nx-cache-remote.service";
 import { SharedNxCacheServerService } from "./shared-nx-cache-server.service";
@@ -18,7 +17,6 @@ import {
 import type { RunningServer } from "./shared-nx-cache.types";
 
 describe(SharedNxCacheServerService, () => {
-  let service: SharedNxCacheServerService;
   let running: RunningServer | undefined;
 
   /** Builds the service over a mocked storage and a configured token. */
@@ -36,9 +34,8 @@ describe(SharedNxCacheServerService, () => {
         .fn<SharedNxCacheStorageService["exists"]>()
         .mockResolvedValue(false),
     });
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SharedNxCacheServerService, {
       providers: [
-        SharedNxCacheServerService,
         { provide: SharedNxCacheStorageService, useValue: storage },
         {
           provide: SharedNxCacheRemoteService,
@@ -54,9 +51,8 @@ describe(SharedNxCacheServerService, () => {
             get: vi.fn<ConfigService["get"]>().mockReturnValue(token),
           },
         },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     return {
       service: await module.resolve(SharedNxCacheServerService),
@@ -87,35 +83,22 @@ describe(SharedNxCacheServerService, () => {
         .on("error", reject);
     });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SharedNxCacheServerService,
-        {
-          provide: SharedNxCacheStorageService,
-          useValue: createMock<SharedNxCacheStorageService>(),
-        },
-        {
-          provide: SharedNxCacheRemoteService,
-          useValue: createMock<SharedNxCacheRemoteService>(),
-        },
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(SharedNxCacheServerService);
-  });
-
   afterEach(async () => {
     await running?.close();
     running = undefined;
     vi.useRealTimers();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SharedNxCacheServerService, {
+      mocks: [
+        SharedNxCacheStorageService,
+        SharedNxCacheRemoteService,
+        ConfigService,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(SharedNxCacheServerService);
   });
 
   it("accepts the built-in token when none is configured", async () => {

@@ -1,6 +1,7 @@
 import { MalformedGlossaryError } from "@coinagerie/core";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { MarkdownService } from "./markdown.service";
 
@@ -13,11 +14,7 @@ describe(MarkdownService, () => {
   let service: MarkdownService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [MarkdownService],
-    }).compile();
-
-    service = await module.resolve(MarkdownService);
+    ({ instance: service } = await buildTestingModule(MarkdownService));
   });
 
   /** A file holding exactly the given lines, each ended by a newline. */
@@ -25,8 +22,10 @@ describe(MarkdownService, () => {
     return `${lines.join("\n")}\n`;
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MarkdownService);
+
+    expect(instance).toBeInstanceOf(MarkdownService);
   });
 
   describe("render", () => {
