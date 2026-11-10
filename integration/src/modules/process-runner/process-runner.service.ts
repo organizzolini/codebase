@@ -10,7 +10,11 @@ import {
   MAXIMUM_CAPTURED_BYTES,
 } from "./process-runner.constants";
 
-import type { CapturedProcess, Command } from "./process-runner.types";
+import type {
+  CapturedProcess,
+  CaptureLocation,
+  Command,
+} from "./process-runner.types";
 
 /**
  * Runs child processes for the integration commands.
@@ -60,13 +64,17 @@ export class ProcessRunnerService {
    *
    * @param executable - The program to run, looked up on `PATH`.
    * @param args - Its arguments, passed verbatim with no shell between.
+   * @param where - The directory and environment it runs with, which default
+   *   to this process's own.
    * @returns Both output streams and the exit code.
    */
   public async captureAsync(
     executable: string,
     args: readonly string[],
+    where: CaptureLocation = {},
   ): Promise<CapturedProcess> {
     const child = spawn(executable, [...args], {
+      ...where,
       stdio: ["ignore", "pipe", "pipe"],
     });
     const printed = Promise.allSettled([
