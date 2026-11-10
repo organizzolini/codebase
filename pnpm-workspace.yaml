@@ -42,10 +42,20 @@ overrides:
   axios@>=1.15.2 <1.18.0: ^1.18.0
   brace-expansion@>=3.0.0 <5.0.7: ^5.0.7
   conventional-changelog-conventionalcommits: ^9.3.1
-  fast-uri@>=3.0.0 <3.1.6: ^3.1.6
+  fast-uri@>=3.0.0 <3.1.9: ^3.1.9
+  fast-uri@>=4.0.0 <4.2.3: ^4.2.3
+  "@graphql-tools/utils@<=12.0.1": ^12.0.2
+  "@vitest/mocker@<5.0.3": ^5.0.3
+  glob@>=9.0.0 <=14.0.1: ^14.0.2
+  ip-address@<=10.7.3: ^10.7.4
   js-yaml@>=4.0.0 <4.3.1: ^4.3.1
   lodash@<=4.17.23: ^4.18.0
   markdown-it@<=14.1.1: ^14.2.0
+  minimatch@>=7.0.0 <11.0.1: ^11.0.1
+  multer@<2.5.0: ^2.5.0
+  re2js@<2.8.7: ^2.8.7
+  undici@>=6.0.0 <6.29.1: ^6.29.1
+  undici@>=7.0.0 <7.30.1: ^7.30.1
   ws@>=8.0.0 <8.21.0: ^8.21.0
 catalog:
   "@apollo/server": ^5.5.1
@@ -91,9 +101,9 @@ catalog:
   "@swc/helpers": ^0.5.21
   "@tailwindcss/vite": ^4.3.0
   "@photostructure/tz-lookup": ^11.6.0
-  "@tanstack/react-router": ^1.170.7
-  "@tanstack/react-router-devtools": ^1.167.0
-  "@tanstack/react-start": ^1.168.10
+  "@tanstack/react-router": ^1.170.46
+  "@tanstack/react-router-devtools": ^1.167.3
+  "@tanstack/react-start": ^1.169.5
   "@testcontainers/postgresql": ^12.0.3
   "@testing-library/react": ^16.3.2
   "@types/cheerio-tableparser": ^1.0.0
@@ -108,9 +118,9 @@ catalog:
   "@types/react": ^19.2.15
   "@types/react-dom": ^19.2.3
   "@vitejs/plugin-react": ^6.0.2
-  "@vitest/coverage-v8": ^5.0.0
-  "@vitest/eslint-plugin": ^1.6.20
-  "@vitest/ui": ^5.0.0
+  "@vitest/coverage-v8": ^5.1.0
+  "@vitest/eslint-plugin": ^1.6.28
+  "@vitest/ui": ^5.1.0
   autoprefixer: ^10.5.0
   aws4fetch: ^1.0.20
   cheerio: ^1.0.0
@@ -205,7 +215,7 @@ catalog:
   vite-plugin-dts: ^5.0.1
   vite-plugin-static-copy: ^4.1.1
   vite-tsconfig-paths: ^6.1.1
-  vitest: ^5.0.0
+  vitest: ^5.1.0
   wink-lemmatizer: ^3.0.4
   yaml: ^2.9.0
   zod: ^4.4.3
@@ -216,7 +226,7 @@ catalog:
   dataloader: ^2.2.3
   cn: ^0.5.0
   '@base-ui/react': ^1.9.0
-  '@tanstack/react-virtual': ^3.14.17
+  '@tanstack/react-virtual': ^3.14.26
   '@dnd-kit/core': ^6.3.1
   '@dnd-kit/modifiers': ^9.0.0
   '@dnd-kit/sortable': ^10.0.0
@@ -240,3 +250,5 @@ catalogs:
   ic-suite:
     "@nestjs/common": ^11.1.21 || ^12.0.1
     "@nestjs/core": ^11.1.21 || ^12.0.1
+patchedDependencies:
+  nx@24.0.0: patches/nx@24.0.0.patch

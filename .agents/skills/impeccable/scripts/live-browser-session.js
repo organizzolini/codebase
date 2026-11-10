@@ -57,7 +57,14 @@
 
   function createLiveBrowserSessionState({ prefix, storage, idFactory }) {
     if (!prefix) throw new Error("prefix required");
-    const store = storage || root.localStorage;
+    let store = storage;
+    if (!store) {
+      try {
+        store = root.localStorage;
+      } catch {
+        store = null; /* storage denied */
+      }
+    }
     const makeId =
       idFactory ||
       function () {

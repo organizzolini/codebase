@@ -31,11 +31,15 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **impeccable**: Design tooling suite whose agents and skills, such as asset producer and finish reviewer, drive approved visual builds.
 - **infrastructure**: Top-level folder of deployment projects such as Helm charts and Terraform, whose words the root glossary skips.
 - **installation**: Setup process that installs the toolchain and dependencies, run by scripts/installation.sh and the installation project.
+- **ip**: Prefix of the `ip-address` package name in a `pnpm-workspace.yaml` override that raises it to a patched release for a published security advisory.
 - **lexico**: The Latin dictionary product whose web app, ingestion CLI, and entity packages live under projects/lexico.
 - **lookup**: Read-only callidescope query that traces a callable, prints its callers or callees, and never applies a depth or breadth gate.
 - **map**: Wayfinder's planning artifact for a huge effort, a graph of linked decisions that collapses into a buildable spec when cleared.
 - **meander**: Greek key or fret border motif that the meanderaw project generates as SVG from composable motif and modifier definitions.
+- **minimatch**: Glob-matching package that a `pnpm-workspace.yaml` override raises to a patched major release across the whole dependency tree.
+- **mocker**: Last segment of the `@vitest/mocker` package name in a `pnpm-workspace.yaml` override that forces its patched release.
 - **modifier**: Composable transform in meanderaw's motif library that adjusts how a Greek meander motif is drawn.
+- **multer**: Multipart upload middleware package that a `pnpm-workspace.yaml` override raises to a patched release wherever it is pulled in transitively.
 - **notepad**: Scratch SQL file, notepads/notepad.sql, that the query-sql skill writes multiline queries into rather than inline -c flags.
 - **observability**: Shared package at projects/common/observability that provides the pino-backed LoggerService and telemetry used by services.
 - **phone**: Narrowest viewport size that web layouts and published artifacts must work at, with a 16px side gutter and no horizontal scroll.
@@ -51,6 +55,7 @@ The words the repository uses outside its projects, regenerated with `nx run con
 - **suite**: A set of related toolchains or tests, such as the five ic-suite toolchains callidescope, codependix, codometer, coinagerie, and conformetry.
 - **synchronization**: The synchronization project and its Nx target family, which keep VS Code settings, extensions, and devcontainer config matched to their source.
 - **typecheck**: Nx target that runs type checking per project, driven by the typecheck-code gate in validate-code and CI.
+- **undici**: HTTP client package whose two supported major lines each get a `pnpm-workspace.yaml` override to their own patched release.
 - **validation**: Workspace package and CLI, such as validation.main.ts, that checks PR bodies, branch names, and worktree names locally.
 
 <!-- coinagerie:end -->
