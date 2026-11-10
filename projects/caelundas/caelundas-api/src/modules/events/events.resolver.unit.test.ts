@@ -2,22 +2,27 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { CalendarView } from "./calendar-view.entities";
-import { EventFilterCombinator } from "./event-filter-combinator.entities";
 import { EventsResolver } from "./events.resolver";
 import { EventsService } from "./events.service";
+import { EventFilterCalendarFieldsService } from "./filters/event-filter-calendar-fields.service";
+import { EventFilterCombinator } from "./filters/event-filter-combinator.entities";
+import { EventFilterNumbersService } from "./filters/event-filter-numbers.service";
+import { EventFilterParametersService } from "./filters/event-filter-parameters.service";
+import { EventFilterValuesService } from "./filters/event-filter-values.service";
+import { EventFilterService } from "./filters/event-filter.service";
+import { EventGroupingService } from "./grouping/event-grouping.service";
+import { CalendarWindow } from "./windows/calendar-window.entities";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
 import type { EventFacetEntity } from "./event-facet.entities";
-import type { ResolvedEventFilterCollection } from "./event-filter-collections.types";
 import type { EventsDatasetEntity } from "./events.entities";
+import type { ResolvedPreset } from "./presets/presets.types";
 
 const describeDataset = vi.fn<() => Promise<EventsDatasetEntity | null>>();
-const findFilterCollections =
-  vi.fn<() => Promise<ResolvedEventFilterCollection[]>>();
+const findPresets = vi.fn<() => Promise<ResolvedPreset[]>>();
 const findFacets =
   vi.fn<(...parameters: unknown[]) => Promise<EventFacetEntity[]>>();
-const findCalendarWindows = vi.fn<(...parameters: unknown[]) => unknown>();
+const findWindows = vi.fn<(...parameters: unknown[]) => unknown>();
 const findEvents =
   vi.fn<(...parameters: unknown[]) => Promise<CalendarEventEntity[]>>();
 
@@ -27,14 +32,20 @@ describe(EventsResolver, () => {
   beforeAll(async () => {
     ({ instance: resolver } = await buildTestingModule(EventsResolver, {
       providers: [
+        EventFilterCalendarFieldsService,
+        EventFilterNumbersService,
+        EventFilterParametersService,
+        EventFilterService,
+        EventFilterValuesService,
+        EventGroupingService,
         {
           provide: EventsService,
           useValue: {
             describeDataset,
-            findCalendarWindows,
             findEvents,
             findFacets,
-            findFilterCollections,
+            findPresets,
+            findWindows,
           },
         },
       ],
@@ -43,7 +54,15 @@ describe(EventsResolver, () => {
 
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(EventsResolver, {
-      providers: [{ provide: EventsService, useValue: {} }],
+      providers: [
+        EventFilterCalendarFieldsService,
+        EventFilterNumbersService,
+        EventFilterParametersService,
+        EventFilterService,
+        EventFilterValuesService,
+        EventGroupingService,
+        { provide: EventsService, useValue: {} },
+      ],
     });
 
     expect(instance).toBeInstanceOf(EventsResolver);
@@ -64,7 +83,7 @@ describe(EventsResolver, () => {
     await expect(resolver.dataset()).resolves.toBe(dataset);
   });
 
-  it("answers the events query with the events in the window", async () => {
+  it("answers the events query with the events in the period", async () => {
     expect.hasAssertions();
 
     findEvents.mockResolvedValueOnce([]);
@@ -88,7 +107,7 @@ describe(EventsResolver, () => {
   it("validates the filter the events and facets queries take before the service sees it", async () => {
     expect.hasAssertions();
 
-    const window = {
+    const period = {
       end: new Date("2026-03-02T00:00:00Z"),
       start: new Date("2026-03-01T00:00:00Z"),
     };
@@ -112,13 +131,13 @@ describe(EventsResolver, () => {
     findEvents.mockResolvedValue([]);
     findFacets.mockResolvedValue([]);
 
-    await resolver.events(window, filter);
-    await resolver.facets(window, filter);
+    await resolver.events(period, filter);
+    await resolver.facets(period, filter);
 
-    expect(findEvents).toHaveBeenLastCalledWith(window, parsed, []);
-    expect(findFacets).toHaveBeenLastCalledWith(window, parsed);
+    expect(findEvents).toHaveBeenLastCalledWith(period, parsed, []);
+    expect(findFacets).toHaveBeenLastCalledWith(period, parsed);
     await expect(
-      resolver.events(window, {
+      resolver.events(period, {
         combinator: "xor" as EventFilterCombinator,
       }),
     ).rejects.toThrow(/combinator/u);
@@ -127,25 +146,25 @@ describe(EventsResolver, () => {
   it("validates the grouping the events query takes and puts the color level last", async () => {
     expect.hasAssertions();
 
-    const window = {
+    const period = {
       end: new Date("2026-03-02T00:00:00Z"),
       start: new Date("2026-03-01T00:00:00Z"),
     };
 
     findEvents.mockResolvedValue([]);
 
-    await resolver.events(window, null, {
+    await resolver.events(period, null, {
       colorBy: { field: "hour" },
       levels: [{ field: "year" }, { depth: 2, field: "tag:root", tags: ["a"] }],
     });
 
-    expect(findEvents).toHaveBeenLastCalledWith(window, null, [
+    expect(findEvents).toHaveBeenLastCalledWith(period, null, [
       { field: "year", tags: [] },
       { depth: 2, field: "tag:root", tags: ["a"] },
       { field: "hour", tags: [] },
     ]);
     await expect(
-      resolver.events(window, null, {
+      resolver.events(period, null, {
         levels: [
           { field: "year" },
           { field: "month" },
@@ -156,68 +175,65 @@ describe(EventsResolver, () => {
     ).rejects.toThrow(/too_big/u);
   });
 
-  it("answers the calendar windows query with the service's windows", () => {
+  it("answers the windows query with the service's windows", () => {
     expect.hasAssertions();
 
-    const windows = { columnMinutes: null, visible: {}, window: {} };
+    const windows = { columnMinutes: null, read: {}, visible: {} };
 
-    findCalendarWindows.mockReturnValueOnce(windows);
+    findWindows.mockReturnValueOnce(windows);
 
     expect(
-      resolver.calendarWindows({
+      resolver.windows({
         anchor: "2026-10-22T12:00:00.000Z",
-        view: CalendarView.WEEK,
+        window: CalendarWindow.WEEK,
       }),
     ).toBe(windows);
-    expect(findCalendarWindows).toHaveBeenCalledWith({
+    expect(findWindows).toHaveBeenCalledWith({
       anchor: "2026-10-22T12:00:00.000Z",
-      view: "week",
+      window: "week",
     });
   });
 
-  it("answers the facets query over the window, or over everything without one", async () => {
+  it("answers the facets query over the period, or over everything without one", async () => {
     expect.hasAssertions();
 
-    const window = {
+    const period = {
       end: new Date("2026-03-02T00:00:00Z"),
       start: new Date("2026-03-01T00:00:00Z"),
     };
 
     findFacets.mockResolvedValue([]);
 
-    await expect(resolver.facets(window)).resolves.toStrictEqual([]);
-    expect(findFacets).toHaveBeenLastCalledWith(window, null);
+    await expect(resolver.facets(period)).resolves.toStrictEqual([]);
+    expect(findFacets).toHaveBeenLastCalledWith(period, null);
 
     await resolver.facets();
 
     expect(findFacets).toHaveBeenLastCalledWith(undefined, null);
   });
 
-  it("serves the filter collections the service resolved", async () => {
+  it("serves the presets the service resolved", async () => {
     expect.hasAssertions();
 
-    const collection: ResolvedEventFilterCollection = {
+    const preset: ResolvedPreset = {
       description: "Everything notable",
       filter: { combinator: EventFilterCombinator.AND, groups: [], rules: [] },
       id: "highlights",
       name: "Highlights",
     };
-    const other = { ...collection, id: "major-aspects" };
+    const other = { ...preset, id: "major-aspects" };
 
-    findFilterCollections.mockResolvedValue([other, collection]);
+    findPresets.mockResolvedValue([other, preset]);
 
-    await expect(resolver.filterCollections()).resolves.toStrictEqual([
-      other,
-      collection,
-    ]);
-    await expect(resolver.defaultFilterCollection()).resolves.toBe(collection);
+    await expect(resolver.presets()).resolves.toStrictEqual([other, preset]);
+    await expect(resolver.defaultPreset()).resolves.toBe(preset);
   });
 
-  it("answers no default collection when the data cannot serve it", async () => {
+  it("answers no default preset when the data cannot serve it", async () => {
     expect.hasAssertions();
 
-    findFilterCollections.mockResolvedValue([]);
+    findPresets.mockResolvedValue([]);
 
-    await expect(resolver.defaultFilterCollection()).resolves.toBeNull();
+    await expect(resolver.defaultPreset()).resolves.toBeNull();
   });
 });

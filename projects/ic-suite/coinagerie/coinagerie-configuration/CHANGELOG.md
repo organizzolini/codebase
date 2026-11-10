@@ -1,3 +1,19 @@
+## 0.0.15 (2026-11-10)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-core to 0.0.15
+
+## 0.0.14 (2026-11-10)
+
+### 💅 Refactors
+
+- **configuration,deployment,integration:** ♻️ rename publication to deployment and move its gate to integration ([#2193](https://github.com/organizzolini/codebase/pull/2193), [#2192](https://github.com/organizzolini/codebase/issues/2192))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-core to 0.0.14
+
 ## 0.0.13 (2026-11-10)
 
 ### 🚀 Features

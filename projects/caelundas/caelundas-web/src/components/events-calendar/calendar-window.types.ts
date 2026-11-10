@@ -1,4 +1,4 @@
-import type { EventsWindow } from "./calendar-records.types";
+import type { Period } from "./calendar-records.types";
 import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
 
 /**
@@ -11,12 +11,12 @@ export interface ViewWindowOptions {
 }
 
 /**
- * The days a view shows, and the window of events read for them: those days
+ * The days a view shows, and the period of events read for them: those days
  * plus a buffer either side.
  */
 export interface ViewWindows {
-  visible: EventsWindow;
-  window: EventsWindow;
+  read: Period;
+  visible: Period;
 }
 
 /**

@@ -119,6 +119,11 @@ The words this project uses that the root glossary does not define, regenerated 
 - **polarity**: Whether a zodiac sign is positive or negative, offered as a filter field and a color group.
 - **pole**: The north celestial pole at the top of the night-sky view, where altitude equals declination.
 - **presentation**: The shared UI primitives package of Button and Skeleton, which the app imports from.
+- **preset**: A named filter the calendar applies in one step, picked from
+  the Preset dropdown at the top of the filter panel, whose rules the API
+  has already resolved to the tags of the data. The dropdown also offers All
+  events and Custom, neither of which is a preset. Held as `ResolvedPreset`
+  in `presets.types.ts` and drawn by `PresetPicker` in `preset-picker.tsx`.
 - **prograde**: Direction of a planet moving forward through the zodiac, mapped to its own SVG icon.
 - **prop**: React inputs passed to a component, named as properties in this codebase rather than props.
 - **quadruple**: Stellium label for four bodies clustered together, mapped to a PNG icon in the glyph set.

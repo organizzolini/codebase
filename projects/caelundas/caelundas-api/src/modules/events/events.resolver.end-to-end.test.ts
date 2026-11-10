@@ -65,8 +65,8 @@ describe("events resolver end-to-end suite", () => {
 
   describe("events", () => {
     const EVENTS = `
-      query Events($window: EventsWindowInput!) {
-        events(window: $window) {
+      query Events($period: PeriodInput!) {
+        events(period: $period) {
           summary
           start
           end
@@ -81,11 +81,11 @@ describe("events resolver end-to-end suite", () => {
       }
     `;
 
-    it("answers each event that overlaps the window, earliest first, with its tags and local time", async () => {
+    it("answers each event that overlaps the period, earliest first, with its tags and local time", async () => {
       expect.hasAssertions();
 
       const { events } = await query(EVENTS, {
-        window: {
+        period: {
           end: "2026-03-11T00:00:00.000Z",
           start: "2026-03-01T00:00:00.000Z",
         },
@@ -125,11 +125,11 @@ describe("events resolver end-to-end suite", () => {
       ]);
     });
 
-    it("includes an instant at the window's first moment and excludes one at its end", async () => {
+    it("includes an instant at the period's first moment and excludes one at its end", async () => {
       expect.hasAssertions();
 
       const { events } = await query(EVENTS, {
-        window: {
+        period: {
           end: "2026-03-20T09:00:00.000Z",
           start: "2026-03-10T12:00:00.000Z",
         },
@@ -144,7 +144,7 @@ describe("events resolver end-to-end suite", () => {
       expect.hasAssertions();
 
       const { events } = await query(EVENTS, {
-        window: {
+        period: {
           end: "2026-03-11T00:00:00.000Z",
           start: "2026-03-10T00:00:00.000Z",
         },
@@ -155,12 +155,12 @@ describe("events resolver end-to-end suite", () => {
       ).not.toContain("Moon Conjunct Mars Forming");
     });
 
-    it("answers no events for a window the data does not reach", async () => {
+    it("answers no events for a period the data does not reach", async () => {
       expect.hasAssertions();
 
       await expect(
         query(EVENTS, {
-          window: {
+          period: {
             end: "2030-01-02T00:00:00.000Z",
             start: "2030-01-01T00:00:00.000Z",
           },
@@ -171,8 +171,8 @@ describe("events resolver end-to-end suite", () => {
 
   describe("facets", () => {
     const FACETS = `
-      query Facets($window: EventsWindowInput) {
-        facets(window: $window) {
+      query Facets($period: PeriodInput) {
+        facets(period: $period) {
           name
           values { name depth path count }
         }
@@ -197,7 +197,7 @@ describe("events resolver end-to-end suite", () => {
       },
     ];
 
-    it("counts every event under each tag, descendants included, without a window", async () => {
+    it("counts every event under each tag, descendants included, without a period", async () => {
       expect.hasAssertions();
 
       await expect(query(FACETS)).resolves.toStrictEqual({
@@ -205,11 +205,11 @@ describe("events resolver end-to-end suite", () => {
       });
     });
 
-    it("counts only the events that overlap the window", async () => {
+    it("counts only the events that overlap the period", async () => {
       expect.hasAssertions();
 
       const { facets } = await query(FACETS, {
-        window: {
+        period: {
           end: "2026-03-06T00:00:00.000Z",
           start: "2026-03-01T00:00:00.000Z",
         },

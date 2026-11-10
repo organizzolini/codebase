@@ -40,8 +40,8 @@ flows one way:
 1. `caelundas-cli` ingests events into the Caelundas Postgres and rewrites its
    read model; `caelundas-db` owns the schema.
 2. `caelundas-api` answers GraphQL over that read model: the events in a
-   window, the facets, the filter collections, the calendar windows (a view's
-   visible days and the window a load must read), grouping, and the night sky.
+   period, the facets, the presets, the windows (a view's visible days and
+   the period a load must read), grouping, and the night sky.
    Filters and groupings are compiled to SQL there, not here.
 3. The browser sends one generated document per query through `queryApi`. The
    client holds only what the API cannot know: lane packing, clustering, and
@@ -55,8 +55,7 @@ server in `testing/setup.ts`, with fixtures from `testing/calendar-api.ts`.
 
 The web app reads the `caelundas-api` schema through typed operations, as
 `lexico-web` does. `codegen.ts` reads the documents in `src/graphql/operations/` (one per query:
-dataset, events with filter and grouping, facets, filter collections, calendar
-windows, night sky) and writes `operations.ts` (types and typed documents) and
+dataset, events with filter and grouping, facets, presets, windows, night sky) and writes `operations.ts` (types and typed documents) and
 `mocks.ts` (MSW handlers) to `src/graphql/generated/`. The generated files are
 committed and never edited. It does not use `@codebase/interface/client`'s
 shared configuration, which also emits the schema's own types and Zod
@@ -355,13 +354,13 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   the tree being edited, so an edit shows before the link catches up, and
   writes it to the link only when the compiled query changes: an unfinished
   rule does not reload the calendar. The facets are read per window and filter.
-- Collections are named sets of filters, applied in one step from the menu
-  beside the Filters button (`event-filter-collections.ts`). They are written
+- Presets are named sets of filters, applied in one step from the menu
+  beside the Filters button (`presets.ts`). They are written
   by tag names, such as `Type` and `Aspect / Simple Aspect / Major Aspect`,
-  and resolved against the data's facets, so a collection that names a tag
+  and resolved against the data's facets, so a preset that names a tag
   the data lacks applies to the ones it has, and an `and` that loses a
   condition is dropped whole. A link with no `filter` opens on the default
-  collection, Highlights: major aspects and sign ingresses without the Moon,
+  preset, Highlights: major aspects and sign ingresses without the Moon,
   plus stations, eclipses, and the long cycles. "No filter" is therefore
   written to the link as an empty group, never left out.
 - A tag field's value editor (`filter-tag-editor.tsx`) is a searchable list of

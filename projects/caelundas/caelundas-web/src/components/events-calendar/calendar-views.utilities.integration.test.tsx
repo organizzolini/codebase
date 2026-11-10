@@ -198,7 +198,7 @@ describe("calendar views", () => {
     await renderCalendarRoute(`/?view=${expected.link}`);
     const api = readServedApi();
 
-    expect(api.requests.events.map(({ window }) => window)).toStrictEqual([
+    expect(api.requests.events.map(({ period }) => period)).toStrictEqual([
       {
         end: `${expected.end}T00:00:00.000Z`,
         start: `${expected.start}T00:00:00.000Z`,
@@ -210,7 +210,7 @@ describe("calendar views", () => {
     await renderCalendarRoute("/?view=agenda&date=2026-03-04&days=2557");
     const api = readServedApi();
 
-    expect(api.requests.events[0]?.window.end).toBe("2026-04-04T00:00:00.000Z");
+    expect(api.requests.events[0]?.period.end).toBe("2026-04-04T00:00:00.000Z");
   });
 
   it("loads later events into the agenda on request", async () => {

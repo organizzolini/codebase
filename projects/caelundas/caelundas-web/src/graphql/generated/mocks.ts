@@ -4,7 +4,7 @@ type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 import { graphql, type GraphQLResponseResolver, type RequestHandlerOptions } from 'msw'
 /** A view the calendar offers. */
-export type CalendarView =
+export type CalendarWindow =
   | 'AGENDA'
   | 'DAY'
   | 'MONTH'
@@ -50,13 +50,6 @@ export type EventGroupingInput = {
   colorBy?: EventGroupLevelInput | null | undefined;
   /** Up to three levels, outermost first, by tag root or by year, quarter, month, week, day, weekday, hour or duration. */
   levels?: Array<EventGroupLevelInput> | null | undefined;
-};
-
-export type EventsWindowInput = {
-  /** The moment the window stops at, which it does not include. */
-  end: string;
-  /** The first moment the window includes. */
-  start: string;
 };
 
 export type NightSkyInput = {
@@ -106,6 +99,13 @@ export type NightSkyInput = {
   width: number;
 };
 
+export type PeriodInput = {
+  /** The moment the period stops at, which it does not include. */
+  end: string;
+  /** The first moment the period includes. */
+  start: string;
+};
+
 /** The span the timeline shows at once: a day in fifteen-minute columns, a week or a month in days, a quarter in weeks, a year in months. */
 export type TimelineScale =
   | 'DAY'
@@ -114,23 +114,13 @@ export type TimelineScale =
   | 'WEEK'
   | 'YEAR';
 
-export type CalendarWindowsQueryVariables = Exact<{
-  anchor: string;
-  view?: CalendarView | null | undefined;
-  scale?: TimelineScale | null | undefined;
-  agendaDays?: number | null | undefined;
-}>;
-
-
-export type CalendarWindowsQuery = { calendarWindows: { columnMinutes: number | null, visible: { end: string, start: string }, window: { end: string, start: string } } };
-
 export type DatasetQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type DatasetQuery = { dataset: { count: number, end: string, start: string, timezone: string } | null };
 
 export type EventsQueryVariables = Exact<{
-  window: EventsWindowInput;
+  period: PeriodInput;
   filter?: EventFilterGroupInput | null | undefined;
   grouping?: EventGroupingInput | null | undefined;
 }>;
@@ -139,21 +129,12 @@ export type EventsQueryVariables = Exact<{
 export type EventsQuery = { events: Array<{ color: string | null, description: string, durationMinutes: number, end: string, id: string, location: string | null, start: string, startLocalDay: string, startLocalHour: number, summary: string, timezone: string, groups: Array<Array<{ key: string, label: string | null, path: string | null }>>, tags: Array<{ depth: number, id: string, name: string, path: string }> }> };
 
 export type FacetsQueryVariables = Exact<{
-  window?: EventsWindowInput | null | undefined;
+  period?: PeriodInput | null | undefined;
   filter?: EventFilterGroupInput | null | undefined;
 }>;
 
 
 export type FacetsQuery = { facets: Array<{ id: string, name: string, values: Array<{ count: number, depth: number, id: string, name: string, path: string }> }> };
-
-export type FilterCollectionFieldsFragment = { description: string, id: string, name: string, filter: { combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null } };
-
-export type FilterGroupFieldsFragment = { combinator: EventFilterCombinator, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null };
-
-export type FilterCollectionsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type FilterCollectionsQuery = { defaultFilterCollection: { description: string, id: string, name: string, filter: { combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null } } | null, filterCollections: Array<{ description: string, id: string, name: string, filter: { combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null } }> };
 
 export type NightSkyQueryVariables = Exact<{
   input: NightSkyInput;
@@ -162,28 +143,25 @@ export type NightSkyQueryVariables = Exact<{
 
 export type NightSkyQuery = { nightSky: { svg: string, measurements: { bottomAltitudeDegrees: number, fieldOfViewClamped: boolean, fieldOfViewLimitDegrees: number, periodSeconds: number, poleDistanceAboveScreen: number, realTimeMultiple: number, segmentsDrawn: number, starsDrawn: number, starsInCatalog: number, svgLength: number, topAltitudeDegrees: number, verticalFieldOfViewDegrees: number } } };
 
+export type PresetFieldsFragment = { description: string, id: string, name: string, filter: { combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null } };
 
-/**
- * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
- * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockCalendarWindowsQuery(
- *   ({ query, variables }) => {
- *     const { anchor, view, scale, agendaDays } = variables;
- *     return HttpResponse.json({
- *       data: { calendarWindows }
- *     })
- *   },
- *   requestOptions
- * )
- */
-export const mockCalendarWindowsQuery = (resolver: GraphQLResponseResolver<CalendarWindowsQuery, CalendarWindowsQueryVariables>, options?: RequestHandlerOptions) =>
-  graphql.query<CalendarWindowsQuery, CalendarWindowsQueryVariables>(
-    'CalendarWindows',
-    resolver,
-    options
-  )
+export type FilterGroupFieldsFragment = { combinator: EventFilterCombinator, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null };
+
+export type PresetsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PresetsQuery = { defaultPreset: { description: string, id: string, name: string, filter: { combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null } } | null, presets: Array<{ description: string, id: string, name: string, filter: { combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, groups: Array<{ combinator: EventFilterCombinator, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null }> | null, rules: Array<{ negated: boolean | null, operator: string, path: Array<string>, values: Array<string> | null }> | null } }> };
+
+export type WindowsQueryVariables = Exact<{
+  anchor: string;
+  window?: CalendarWindow | null | undefined;
+  scale?: TimelineScale | null | undefined;
+  agendaDays?: number | null | undefined;
+}>;
+
+
+export type WindowsQuery = { windows: { columnMinutes: number | null, visible: { end: string, start: string }, read: { end: string, start: string } } };
+
 
 /**
  * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
@@ -213,7 +191,7 @@ export const mockDatasetQuery = (resolver: GraphQLResponseResolver<DatasetQuery,
  * @example
  * mockEventsQuery(
  *   ({ query, variables }) => {
- *     const { window, filter, grouping } = variables;
+ *     const { period, filter, grouping } = variables;
  *     return HttpResponse.json({
  *       data: { events }
  *     })
@@ -235,7 +213,7 @@ export const mockEventsQuery = (resolver: GraphQLResponseResolver<EventsQuery, E
  * @example
  * mockFacetsQuery(
  *   ({ query, variables }) => {
- *     const { window, filter } = variables;
+ *     const { period, filter } = variables;
  *     return HttpResponse.json({
  *       data: { facets }
  *     })
@@ -246,27 +224,6 @@ export const mockEventsQuery = (resolver: GraphQLResponseResolver<EventsQuery, E
 export const mockFacetsQuery = (resolver: GraphQLResponseResolver<FacetsQuery, FacetsQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<FacetsQuery, FacetsQueryVariables>(
     'Facets',
-    resolver,
-    options
-  )
-
-/**
- * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
- * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockFilterCollectionsQuery(
- *   ({ query, variables }) => {
- *     return HttpResponse.json({
- *       data: { defaultFilterCollection, filterCollections }
- *     })
- *   },
- *   requestOptions
- * )
- */
-export const mockFilterCollectionsQuery = (resolver: GraphQLResponseResolver<FilterCollectionsQuery, FilterCollectionsQueryVariables>, options?: RequestHandlerOptions) =>
-  graphql.query<FilterCollectionsQuery, FilterCollectionsQueryVariables>(
-    'FilterCollections',
     resolver,
     options
   )
@@ -289,6 +246,49 @@ export const mockFilterCollectionsQuery = (resolver: GraphQLResponseResolver<Fil
 export const mockNightSkyQuery = (resolver: GraphQLResponseResolver<NightSkyQuery, NightSkyQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<NightSkyQuery, NightSkyQueryVariables>(
     'NightSky',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockPresetsQuery(
+ *   ({ query, variables }) => {
+ *     return HttpResponse.json({
+ *       data: { defaultPreset, presets }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockPresetsQuery = (resolver: GraphQLResponseResolver<PresetsQuery, PresetsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<PresetsQuery, PresetsQueryVariables>(
+    'Presets',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockWindowsQuery(
+ *   ({ query, variables }) => {
+ *     const { anchor, window, scale, agendaDays } = variables;
+ *     return HttpResponse.json({
+ *       data: { windows }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockWindowsQuery = (resolver: GraphQLResponseResolver<WindowsQuery, WindowsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<WindowsQuery, WindowsQueryVariables>(
+    'Windows',
     resolver,
     options
   )

@@ -2,11 +2,12 @@ import {
   ConfigurationModule,
   ConfigurationService,
 } from "@codometer/configuration";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
+import { useTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { createInputTree, removeInputTree } from "../../../testing/input-tree";
+import { createInputTree } from "../../../testing/input-tree";
 
 import { InputsService } from "./inputs.service";
 
@@ -34,6 +35,7 @@ const DEPENDENCIES = {
 } satisfies TestingModuleOptions;
 
 describe(`${InputsService.name} over a real directory`, () => {
+  const readTemporaryDirectory = useTemporaryDirectory("codometer-input");
   let configurationService: ConfigurationService;
   let service: InputsService;
   let workingDirectory: string;
@@ -51,11 +53,7 @@ describe(`${InputsService.name} over a real directory`, () => {
 
     configurationService = await module.resolve(ConfigurationService);
     service = instance;
-    workingDirectory = createInputTree();
-  });
-
-  afterAll(() => {
-    removeInputTree(workingDirectory);
+    workingDirectory = createInputTree(readTemporaryDirectory());
   });
 
   it("holds every file its globs claim, sorted", () => {

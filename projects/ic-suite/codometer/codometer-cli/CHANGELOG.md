@@ -1,3 +1,25 @@
+## 0.0.77 (2026-11-10)
+
+### 🔥 Performance
+
+- **integration,codometer:** ⚡️ judge every project's codometer limits from one batched run ([#2244](https://github.com/organizzolini/codebase/pull/2244), [#2242](https://github.com/organizzolini/codebase/issues/2242))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.76
+- Updated codometer-measurement to 0.0.76
+- Updated codometer-output to 0.0.76
+- Updated codometer-core to 0.0.76
+
+## 0.0.76 (2026-11-10)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.75
+- Updated codometer-measurement to 0.0.75
+- Updated codometer-output to 0.0.75
+- Updated codometer-core to 0.0.75
+
 ## 0.0.75 (2026-11-10)
 
 ### 🚀 Features

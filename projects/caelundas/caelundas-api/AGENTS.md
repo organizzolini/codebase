@@ -24,7 +24,7 @@ nx run caelundas-api:start
 - **Dataloaders**: `dataloader` (request-scoped, prevents N+1 queries)
 - **Database**: Postgres through `CaelundasDatabaseModule` (`@codebase/caelundas-db`, which wraps the shared `DatabaseModule` from `@codebase/persistence`); no file is opened. Connects as `caelundas_username` to `caelundas_development`.`caelundas` with the `CAELUNDAS_POSTGRES_*` variables, which `environmentSchema` takes from `postgresEnvironmentSchema({ project: "caelundas" })`. Migrations run separately with `nx run caelundas-db:migration:run`
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
-- **CORS**: `application.enableCors(corsOptions(...))` in the bootstrap, with the origins from `CAELUNDAS_API_CORS_ORIGINS` (comma separated, default `*`). The CORS middleware answers the browser's `OPTIONS` preflight before Apollo sees it, so Apollo's CSRF prevention (which would answer it with 400) never runs
+- **CORS**: `application.enableCors(new CorsService().getOptions(...))` in the bootstrap, with the origins from `CAELUNDAS_API_CORS_ORIGINS` (comma separated, default `*`). The CORS middleware answers the browser's `OPTIONS` preflight before Apollo sees it, so Apollo's CSRF prevention (which would answer it with 400) never runs
 - **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Language**: Strict TypeScript
 
@@ -45,7 +45,7 @@ src/
   caelundas-api.ts            # Bootstrap — do not modify
   caelundas-api.module.ts     # Root NestJS module (imports GraphQLModule, CaelundasDatabaseModule, LoggerModule)
   caelundas-api.constants.ts  # Zod environmentSchema for env validation
-  caelundas-api.types.ts      # Application-scoped TypeScript types
+  cors.service.ts             # The CORS options the bootstrap enables
   modules/
     health/                           # The `health` query every API here answers
       health.module.ts

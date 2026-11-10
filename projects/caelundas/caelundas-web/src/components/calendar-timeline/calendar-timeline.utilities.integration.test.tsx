@@ -103,7 +103,7 @@ describe("calendar timeline", () => {
     );
     const api = readServedApi();
 
-    expect(api.requests.events.map(({ window }) => window)).toStrictEqual([
+    expect(api.requests.events.map(({ period }) => period)).toStrictEqual([
       {
         end: `${expected.end}T00:00:00.000Z`,
         start: `${expected.start}T00:00:00.000Z`,

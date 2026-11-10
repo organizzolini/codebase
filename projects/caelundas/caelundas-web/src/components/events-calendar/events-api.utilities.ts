@@ -2,11 +2,11 @@ import { print } from "graphql";
 import { z } from "zod";
 
 import {
-  CalendarWindowsDocument,
   DatasetDocument,
   EventsDocument,
   FacetsDocument,
-  FilterCollectionsDocument,
+  PresetsDocument,
+  WindowsDocument,
 } from "../../graphql/generated/operations";
 
 import {
@@ -19,13 +19,13 @@ import {
 import type {
   EventsQuery,
   FacetsQuery,
-  FilterCollectionsQuery,
+  PresetsQuery,
 } from "../../graphql/generated/operations";
 import type {
   CalendarEventRecord,
   EventFacet,
   EventsDataset,
-  EventsWindow,
+  Period,
 } from "./calendar-records.types";
 import type { ViewWindows, ViewWindowSearch } from "./calendar-window.types";
 import type { EventsReadQuery } from "./events-api.types";
@@ -50,7 +50,7 @@ export async function describeDataset(): Promise<EventsDataset | null> {
 }
 
 /**
- * Reads the events that overlap a window and meet a filter, earliest first,
+ * Reads the events that overlap a period and meet a filter, earliest first,
  * each with the group keys it falls in at every level of the grouping.
  */
 export async function findEvents(
@@ -59,7 +59,7 @@ export async function findEvents(
   const { events } = await queryApi(EventsDocument, {
     filter: query.filter ?? null,
     grouping: query.grouping ?? null,
-    window: toWindowInput(query.window),
+    period: toPeriodInput(query.period),
   });
 
   const records: CalendarEventRecord[] = [];
@@ -74,11 +74,11 @@ export async function findEvents(
 
 /**
  * Reads every tag root and the tags beneath it, each counting the events
- * that overlap the window, or every event without one.
+ * that overlap the period, or every event without one.
  */
-export async function findFacets(window?: EventsWindow): Promise<EventFacet[]> {
+export async function findFacets(period?: Period): Promise<EventFacet[]> {
   const { facets }: FacetsQuery = await queryApi(FacetsDocument, {
-    window: window === undefined ? null : toWindowInput(window),
+    period: period === undefined ? null : toPeriodInput(period),
   });
 
   return facets;
@@ -88,32 +88,32 @@ export async function findFacets(window?: EventsWindow): Promise<EventFacet[]> {
  * Reads the named filters the calendar offers, resolved to the tags of the
  * data, and the one it opens on.
  */
-export async function findFilterCollections(): Promise<FilterCollectionsQuery> {
-  return queryApi(FilterCollectionsDocument, {});
+export async function findPresets(): Promise<PresetsQuery> {
+  return queryApi(PresetsDocument, {});
 }
 
 /**
- * Reads the days a view shows around a day, and the window of events to read
+ * Reads the days a view shows around a day, and the period of events to read
  * for them, a day wider either side.
  */
 export async function findViewWindows(
   search: ViewWindowSearch,
 ): Promise<ViewWindows> {
-  const { calendarWindows } = await queryApi(CalendarWindowsDocument, {
+  const { windows } = await queryApi(WindowsDocument, {
     agendaDays: search.agendaDays ?? null,
     anchor: search.anchor.toISOString(),
     scale: search.scale === undefined ? null : API_SCALES[search.scale],
-    view: search.view === undefined ? null : API_VIEWS[search.view],
+    window: search.view === undefined ? null : API_VIEWS[search.view],
   });
 
   return {
-    visible: {
-      end: new Date(calendarWindows.visible.end),
-      start: new Date(calendarWindows.visible.start),
+    read: {
+      end: new Date(windows.read.end),
+      start: new Date(windows.read.start),
     },
-    window: {
-      end: new Date(calendarWindows.window.end),
-      start: new Date(calendarWindows.window.start),
+    visible: {
+      end: new Date(windows.visible.end),
+      start: new Date(windows.visible.start),
     },
   };
 }
@@ -175,11 +175,11 @@ function toEventRecord(
 }
 
 /**
- * Writes a window as the API's input.
+ * Writes a period as the API's input.
  */
-function toWindowInput(window: EventsWindow): { end: string; start: string } {
+function toPeriodInput(period: Period): { end: string; start: string } {
   return {
-    end: window.end.toISOString(),
-    start: window.start.toISOString(),
+    end: period.end.toISOString(),
+    start: period.start.toISOString(),
   };
 }

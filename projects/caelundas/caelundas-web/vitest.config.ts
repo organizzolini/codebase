@@ -35,6 +35,13 @@ export default mergeConfig(
         include: ["src/**/*.ts", "src/**/*.tsx"],
       },
       environment: "jsdom",
+      /**
+       * Fifteen seconds per test, where Vitest's default is five: a jsdom test
+       * that opens the calendar's menus takes about a second and a half on a
+       * developer's machine, and a CI runner under load has taken more than
+       * five, ejecting a pull request from the merge queue.
+       */
+      testTimeout: 15_000,
     },
   }),
 );

@@ -203,6 +203,97 @@ describe(MeasureCommand, () => {
     await expectLoggerContext(MeasureCommand, DEPENDENCIES);
   });
 
+  describe("named directories", () => {
+    it("measures each one from its own directory with the configuration read there", async () => {
+      await buildCommand().run(["/a", "/b"], {
+        config: "codometer.config.ts",
+      });
+
+      expect(configurationService.loadConfiguration).toHaveBeenNthCalledWith(
+        1,
+        { configurationPath: "/a/codometer.config.ts" },
+      );
+      expect(configurationService.loadConfiguration).toHaveBeenNthCalledWith(
+        2,
+        { configurationPath: "/b/codometer.config.ts" },
+      );
+      expect(measureService.measure).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ workingDirectory: "/a" }),
+      );
+      expect(measureService.measure).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ workingDirectory: "/b" }),
+      );
+      expect(readExitCode()).toBe(0);
+    });
+
+    it("fails the run when one directory breaches a limit but still measures the rest", async () => {
+      vi.mocked(measureService.measure)
+        .mockReturnValueOnce({
+          failures: [],
+          indexes: new Map(),
+          inputs: [],
+          limits: [buildBreach("fail")],
+          statistics,
+        })
+        .mockReturnValueOnce({
+          failures: [],
+          indexes: new Map(),
+          inputs: [],
+          limits: [],
+          statistics,
+        });
+
+      await buildCommand().run(["/a", "/b"], {
+        check: "limits",
+        config: "codometer.config.ts",
+      });
+
+      expect(measureService.measure).toHaveBeenCalledTimes(2);
+      expect(readExitCode()).toBe(1);
+    });
+
+    it("fails the run when a measurement throws and still measures the rest", async () => {
+      vi.mocked(measureService.measure).mockImplementationOnce(() => {
+        throw new Error("empty target");
+      });
+
+      await buildCommand().run(["/a", "/b"], {
+        config: "codometer.config.ts",
+      });
+
+      expect(measureService.measure).toHaveBeenCalledTimes(2);
+      expect(readExitCode()).toBe(1);
+      expect(loggerService.error).toHaveBeenCalledWith(
+        "📊 Failed to measure /a",
+        undefined,
+        { reason: "empty target" },
+      );
+    });
+
+    it("reports a thrown non-Error as a plain string", async () => {
+      vi.mocked(measureService.measure).mockImplementationOnce(() => {
+        throwUnknown("not an Error");
+      });
+
+      await buildCommand().run(["/a"], { config: "codometer.config.ts" });
+
+      expect(loggerService.error).toHaveBeenCalledWith(
+        "📊 Failed to measure /a",
+        undefined,
+        { reason: "not an Error" },
+      );
+    });
+
+    it("still refuses a run that names no --config", async () => {
+      await buildCommand().run(["/a"], {});
+
+      expect(measureService.measure).not.toHaveBeenCalled();
+      expect(readExitCode()).toBe(1);
+    });
+  });
+
   describe("the command line", () => {
     it("refuses an unknown --check value and never measures", async () => {
       await run({ check: "bogus" });
