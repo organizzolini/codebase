@@ -12,6 +12,5 @@ The words this project uses that the root glossary does not define, regenerated 
 - **prop**: Shortened CSS declaration property, read as node.prop so custom properties beginning with a double dash can be counted.
 - **reader**: Per-syntax comment reader that the comments module provides, one for each comment syntax, such as Python or HCL.
 - **selector**: Config key naming which comments a custom statistic counts, such as the comment selector a budget is attached to.
-- **splice**: Array splice call that empties a list of temporary directories in the CSS and language comment tests.
 
 <!-- coinagerie:end -->

@@ -215,6 +215,7 @@ locals {
   required_checks = [
     "🕵️ Secure",
     "🧑‍⚕️ Static",
+    "💂 Guard",
     "🔭 Callidescope Restrict",
     "🕸️ Codependix Bound",
     "👔 Conformetry Validate",
