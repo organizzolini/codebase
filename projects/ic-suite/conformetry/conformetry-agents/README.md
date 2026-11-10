@@ -52,11 +52,3 @@ The skills here are the source of truth. This repository consumes them the same
 way it consumes any installed skill, through `skills-lock.json`, so a copy also
 appears under the repository's agent skills directory — edit the copy in this
 package, never that one.
-
-<!-- coinagerie:start -->
-
-## 🪙 Coinagerie
-
-The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-agents:coinagerie-check:write`.
-
-<!-- coinagerie:end -->

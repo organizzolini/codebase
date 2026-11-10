@@ -460,7 +460,7 @@
         }
       ],
       "description": "Two things the `@coinagerie/nx` inference does not declare. The `write` configuration of the check target it infers for every project holding a `coinagerie.config.ts`, which writes the glossary instead of judging it. And a dependency on the root glossary's own target, `configuration:coinagerie`, so that the root `GLOSSARY.md` is checked, or written, before any project's glossary is: every project excludes the words the root glossary lists, so a project judged against a stale root glossary would be judged wrongly. Nx forwards an explicit configuration down `dependsOn`, so `-c write` writes the root first and `-c check` checks it first. The plugin infers only the check, so the `write` configuration is added here: it sets the executor's `write` option, which rewrites each glossary instead of judging it.",
-      "outputs": ["{projectRoot}/README.md"]
+      "outputs": ["{projectRoot}/coinagerie.md"]
     },
     "dependency-cruiser": [
       {

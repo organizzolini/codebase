@@ -981,6 +981,9 @@
         "name": "coinagerie.config.ts"
       },
       {
+        "name": "coinagerie.md"
+      },
+      {
         "name": "compliance",
         "ruleId": "codebase-project"
       },

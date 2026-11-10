@@ -6,7 +6,7 @@ export default {
     {
       description:
         "The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-output:coinagerie-check:write`.",
-      path: "README.md",
+      path: "coinagerie.md",
       type: "markdown",
     },
   ],
