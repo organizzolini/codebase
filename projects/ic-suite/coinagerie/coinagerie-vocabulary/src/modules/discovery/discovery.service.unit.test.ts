@@ -1,17 +1,9 @@
 import "reflect-metadata";
 
-import {
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { DEFAULT_INCLUDE } from "@coinagerie/configuration";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -22,33 +14,26 @@ import {
   vi,
 } from "vitest";
 
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { DiscoveryService } from "./discovery.service";
 import { IgnoreRulesService } from "./ignore-rules.service";
-
-const TEMPORARY_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
 describe(DiscoveryService, () => {
   let service: DiscoveryService;
   let root: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [DiscoveryService, IgnoreRulesService],
-    }).compile();
-
-    service = await module.resolve(DiscoveryService);
+    ({ instance: service } = await buildTestingModule(DiscoveryService, {
+      providers: [IgnoreRulesService],
+    }));
   });
 
   beforeEach(() => {
-    mkdirSync(TEMPORARY_ROOT, { recursive: true });
-    root = mkdtempSync(path.join(TEMPORARY_ROOT, "discovery-"));
-    // Every tree is its own repository, so the `tmp` pattern in this
-    // workspace's own `.gitignore` never reaches it.
+    root = createTemporaryDirectory("discovery");
+    // Every tree is its own repository, so no `.gitignore` above it applies.
     mkdirSync(path.join(root, ".git"));
-  });
-
-  afterEach(() => {
-    rmSync(root, { force: true, recursive: true });
   });
 
   /** Writes files, keyed by path relative to the temporary root. */
@@ -76,8 +61,12 @@ describe(DiscoveryService, () => {
     });
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(DiscoveryService, {
+      providers: [IgnoreRulesService],
+    });
+
+    expect(instance).toBeInstanceOf(DiscoveryService);
   });
 
   it("lists every file, dot-files included, sorted and relative to the root", () => {
@@ -130,20 +119,16 @@ describe(DiscoveryService, () => {
   it("treats the root as the repository root outside any repository", () => {
     // The one tree written outside the workspace: nothing inside it can be
     // outside a repository, and no process is spawned against it.
-    const outside = mkdtempSync(path.join(tmpdir(), "coinagerie-discovery-"));
+    const outside = createTemporaryDirectory("discovery-outside");
 
-    try {
-      writeFileSync(path.join(outside, ".gitignore"), "*.log\n");
-      writeFileSync(path.join(outside, "debug.log"), "");
-      writeFileSync(path.join(outside, "kept.ts"), "");
+    writeFileSync(path.join(outside, ".gitignore"), "*.log\n");
+    writeFileSync(path.join(outside, "debug.log"), "");
+    writeFileSync(path.join(outside, "kept.ts"), "");
 
-      expect(discover({ directory: outside })).toStrictEqual([
-        ".gitignore",
-        "kept.ts",
-      ]);
-    } finally {
-      rmSync(outside, { force: true, recursive: true });
-    }
+    expect(discover({ directory: outside })).toStrictEqual([
+      ".gitignore",
+      "kept.ts",
+    ]);
   });
 
   it("never reads a .gitignore above the repository root", () => {

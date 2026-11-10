@@ -1,5 +1,3 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -10,7 +8,8 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
@@ -22,6 +21,7 @@ import { IssueReportService } from "./issue-report.service";
 import { IssueCommand } from "./issue.command";
 
 import type { IssuePlan } from "./issue.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const plan: IssuePlan = {
   allIssues: false,
@@ -34,6 +34,17 @@ const plan: IssuePlan = {
 };
 const outcome = { failures: [], lines: ["x"] };
 
+/** What IssueCommand is built with. */
+const DEPENDENCIES = {
+  mocks: [
+    IssueAssigningService,
+    IssueAuditService,
+    IssueLabelingService,
+    IssuePlanService,
+    IssueReportService,
+  ],
+} satisfies TestingModuleOptions;
+
 describe(IssueCommand, () => {
   let command: IssueCommand;
   let assigning: IssueAssigningService;
@@ -43,36 +54,14 @@ describe(IssueCommand, () => {
   let report: IssueReportService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        IssueCommand,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: IssueAssigningService,
-          useValue: createMock<IssueAssigningService>(),
-        },
-        {
-          provide: IssueAuditService,
-          useValue: createMock<IssueAuditService>(),
-        },
-        {
-          provide: IssueLabelingService,
-          useValue: createMock<IssueLabelingService>(),
-        },
-        { provide: IssuePlanService, useValue: createMock<IssuePlanService>() },
-        {
-          provide: IssueReportService,
-          useValue: createMock<IssueReportService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(IssueCommand, DEPENDENCIES);
 
-    command = await module.resolve(IssueCommand);
-    assigning = await module.resolve(IssueAssigningService);
-    audit = await module.resolve(IssueAuditService);
-    labeling = await module.resolve(IssueLabelingService);
-    planning = await module.resolve(IssuePlanService);
-    report = await module.resolve(IssueReportService);
+    command = built.instance;
+    assigning = built.mock(IssueAssigningService);
+    audit = built.mock(IssueAuditService);
+    labeling = built.mock(IssueLabelingService);
+    planning = built.mock(IssuePlanService);
+    report = built.mock(IssueReportService);
   });
 
   beforeEach(() => {
@@ -95,37 +84,13 @@ describe(IssueCommand, () => {
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        IssueCommand,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: IssueAssigningService,
-          useValue: createMock<IssueAssigningService>(),
-        },
-        {
-          provide: IssueAuditService,
-          useValue: createMock<IssueAuditService>(),
-        },
-        {
-          provide: IssueLabelingService,
-          useValue: createMock<IssueLabelingService>(),
-        },
-        { provide: IssuePlanService, useValue: createMock<IssuePlanService>() },
-        {
-          provide: IssueReportService,
-          useValue: createMock<IssueReportService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("IssueCommand");
+    await expectLoggerContext(IssueCommand, DEPENDENCIES);
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(IssueCommand, DEPENDENCIES);
+
+    expect(instance).toBeInstanceOf(IssueCommand);
   });
 
   it("parses the all option", () => {

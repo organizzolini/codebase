@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ScannerModule } from "../scanner/scanner.module";
 
@@ -9,16 +10,17 @@ describe(TomlService, () => {
   let service: TomlService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(TomlService, {
       imports: [ScannerModule],
-      providers: [TomlService],
-    }).compile();
-
-    service = await module.resolve(TomlService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TomlService, {
+      imports: [ScannerModule],
+    });
+
+    expect(instance).toBeInstanceOf(TomlService);
   });
 
   it("declares an Object dependency when the scanner is not loaded yet", async () => {

@@ -1,8 +1,6 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReporterService } from "../reporter/reporter.service";
@@ -10,26 +8,11 @@ import { ReporterService } from "../reporter/reporter.service";
 import { EnvironmentFilesService } from "./environment-files.service";
 
 describe(EnvironmentFilesService, () => {
-  let service: EnvironmentFilesService;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(EnvironmentFilesService, {
+      mocks: [ProcessRunnerService, ReporterService],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EnvironmentFilesService,
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-        { provide: ReporterService, useValue: createMock<ReporterService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(EnvironmentFilesService);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(EnvironmentFilesService);
   });
 });

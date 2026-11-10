@@ -1,11 +1,12 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueAssigningService } from "./issue-assigning.service";
 import { IssueGithubService } from "./issue-github.service";
 
 import type { GithubCliResult } from "./issue-metadata.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const succeeded: GithubCliResult = {
   available: true,
@@ -20,23 +21,20 @@ const failed: GithubCliResult = {
   succeeded: false,
 };
 
+/** What IssueAssigningService is built with. */
+const DEPENDENCIES = {
+  mocks: [IssueGithubService],
+} satisfies TestingModuleOptions;
+
 describe(IssueAssigningService, () => {
   let service: IssueAssigningService;
   let github: IssueGithubService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        IssueAssigningService,
-        {
-          provide: IssueGithubService,
-          useValue: createMock<IssueGithubService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(IssueAssigningService, DEPENDENCIES);
 
-    service = await module.resolve(IssueAssigningService);
-    github = await module.resolve(IssueGithubService);
+    service = built.instance;
+    github = built.mock(IssueGithubService);
   });
 
   beforeEach(() => {
@@ -44,8 +42,13 @@ describe(IssueAssigningService, () => {
     vi.mocked(github.describeFailure).mockReturnValue("HTTP 403");
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      IssueAssigningService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(IssueAssigningService);
   });
 
   it("assigns one issue", () => {

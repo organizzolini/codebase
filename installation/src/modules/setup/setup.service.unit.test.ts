@@ -1,8 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
 import { DependenciesService } from "../dependencies/dependencies.service";
@@ -37,9 +36,9 @@ async function createSteps(platform: NodeJS.Platform): Promise<Steps> {
   const remoteCache = createMock<RemoteCacheService>();
   const shell = createMock<ShellConfigurationService>();
   const software = createMock<SoftwareService>();
-  const module = await Test.createTestingModule({
+  const { module } = await buildTestingModule(SetupService, {
+    mocks: [ReporterService],
     providers: [
-      SetupService,
       { provide: DependenciesService, useValue: dependencies },
       { provide: EnvironmentFilesService, useValue: environmentFiles },
       { provide: LocalServicesService, useValue: localServices },
@@ -50,10 +49,8 @@ async function createSteps(platform: NodeJS.Platform): Promise<Steps> {
       { provide: RemoteCacheService, useValue: remoteCache },
       { provide: ShellConfigurationService, useValue: shell },
       { provide: SoftwareService, useValue: software },
-      { provide: ReporterService, useValue: createMock<ReporterService>() },
-      { provide: LoggerService, useValue: createMock<LoggerService>() },
     ],
-  }).compile();
+  });
 
   return {
     dependencies,
@@ -67,48 +64,21 @@ async function createSteps(platform: NodeJS.Platform): Promise<Steps> {
 }
 
 describe(SetupService, () => {
-  let service: SetupService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SetupService,
-        {
-          provide: DependenciesService,
-          useValue: createMock<DependenciesService>(),
-        },
-        {
-          provide: EnvironmentFilesService,
-          useValue: createMock<EnvironmentFilesService>(),
-        },
-        {
-          provide: LocalServicesService,
-          useValue: createMock<LocalServicesService>(),
-        },
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-        {
-          provide: RemoteCacheService,
-          useValue: createMock<RemoteCacheService>(),
-        },
-        {
-          provide: ShellConfigurationService,
-          useValue: createMock<ShellConfigurationService>(),
-        },
-        { provide: SoftwareService, useValue: createMock<SoftwareService>() },
-        { provide: ReporterService, useValue: createMock<ReporterService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SetupService, {
+      mocks: [
+        DependenciesService,
+        EnvironmentFilesService,
+        LocalServicesService,
+        ProcessRunnerService,
+        RemoteCacheService,
+        ShellConfigurationService,
+        SoftwareService,
+        ReporterService,
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(SetupService);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(SetupService);
   });
 
   it("sets up a Mac with the shell, software, files, remote cache, and dependencies", async () => {

@@ -1,12 +1,13 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestGithubService } from "./pull-request-github.service";
 import { PullRequestLabelVocabularyService } from "./pull-request-label-vocabulary.service";
 import { PullRequestLabelsService } from "./pull-request-labels.service";
 
 import type { GithubCliResult } from "./pull-request-github.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const label = { color: "ffffff", description: "d", name: "type: feat" };
 
@@ -19,29 +20,25 @@ function result(succeeded: boolean): GithubCliResult {
   };
 }
 
+/** What PullRequestLabelVocabularyService is built with. */
+const DEPENDENCIES = {
+  mocks: [PullRequestGithubService, PullRequestLabelsService],
+} satisfies TestingModuleOptions;
+
 describe(PullRequestLabelVocabularyService, () => {
   let service: PullRequestLabelVocabularyService;
   let github: PullRequestGithubService;
   let labels: PullRequestLabelsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestLabelVocabularyService,
-        {
-          provide: PullRequestGithubService,
-          useValue: createMock<PullRequestGithubService>(),
-        },
-        {
-          provide: PullRequestLabelsService,
-          useValue: createMock<PullRequestLabelsService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestLabelVocabularyService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(PullRequestLabelVocabularyService);
-    github = await module.resolve(PullRequestGithubService);
-    labels = await module.resolve(PullRequestLabelsService);
+    service = built.instance;
+    github = built.mock(PullRequestGithubService);
+    labels = built.mock(PullRequestLabelsService);
   });
 
   beforeEach(() => {
@@ -57,8 +54,13 @@ describe(PullRequestLabelVocabularyService, () => {
 
   const options = { write: false, writeHint: "hint" };
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PullRequestLabelVocabularyService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestLabelVocabularyService);
   });
 
   it("warns, without failing, when the labels cannot be listed", () => {
