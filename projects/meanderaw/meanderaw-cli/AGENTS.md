@@ -290,7 +290,7 @@ This creates five files in `src/modules/<domain>/`:
 | `<domain>.service.ts` | Business logic — the only place you write domain code |
 | `<domain>.constants.ts` | Regex, enums, static config — never inline magic values |
 | `<domain>.types.ts` | TypeScript types scoped to this module |
-| `<domain>.service.unit.test.ts` | Unit tests bootstrapped with `Test.createTestingModule` |
+| `<domain>.service.unit.test.ts` | Unit tests bootstrapped with `buildTestingModule` |
 
 ### Module file
 
