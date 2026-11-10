@@ -1,11 +1,4 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 /** Words the generated source cycles through to keep its symbols distinct. */
@@ -52,11 +45,9 @@ export const TARGET_FIXTURE_FILES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Writes the target fixture tree, including a symlink loop that must not be followed, to a temporary directory. Every caller must `removeTargetTree` it.
+ * Writes the target fixture tree into an empty directory, with a looping symlink and a broken one.
  */
-export function createTargetTree(): string {
-  const root = mkdtempSync(path.join(tmpdir(), "codometer-target-"));
-
+export function createTargetTree(root: string): string {
   for (const [relativePath, contents] of Object.entries(TARGET_FIXTURE_FILES)) {
     const absolutePath = path.join(root, relativePath);
     mkdirSync(path.dirname(absolutePath), { recursive: true });
@@ -74,9 +65,4 @@ export function createTargetTree(): string {
   );
 
   return root;
-}
-
-/** Removes a target fixture tree, whether or not the suite that made it passed. */
-export function removeTargetTree(root: string): void {
-  rmSync(root, { force: true, recursive: true });
 }

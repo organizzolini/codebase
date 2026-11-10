@@ -1,12 +1,12 @@
 import { gzipSync } from "node:zlib";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
+import { useTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   createTargetTree,
-  removeTargetTree,
   TARGET_FIXTURE_FILES,
 } from "../../../testing/target-tree";
 
@@ -37,6 +37,7 @@ const PINNED_BYTES: Readonly<Record<CodometerCompression, number>> = {
 const DEFAULT_LEVEL_BYTES = 924;
 
 describe(`${SizeService.name} over real files`, () => {
+  const readTemporaryDirectory = useTemporaryDirectory("codometer-target");
   let service: SizeService;
   let workingDirectory: string;
 
@@ -52,11 +53,7 @@ describe(`${SizeService.name} over real files`, () => {
     const { instance } = await buildTestingModule(SizeService);
 
     service = instance;
-    workingDirectory = createTargetTree();
-  });
-
-  afterAll(() => {
-    removeTargetTree(workingDirectory);
+    workingDirectory = createTargetTree(readTemporaryDirectory());
   });
 
   it.each(["brotli", "gzip", "none"] as const)(
@@ -98,7 +95,11 @@ describe(`${SizeService.name} over real files`, () => {
     expect.hasAssertions();
     expect(
       service.analyze({ compression: "gzip", files: [], workingDirectory }),
-    ).toStrictEqual({ bytes: 0, compression: "gzip", files: 0 });
+    ).toStrictEqual({
+      bytes: 0,
+      compression: "gzip",
+      files: 0,
+    });
   });
 
   it("fails when a matched file has gone missing", () => {

@@ -1,11 +1,4 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 /** Words the generated source cycles through to keep its symbols distinct. */
@@ -52,13 +45,9 @@ export const INPUT_FIXTURE_FILES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Writes the fixture tree to a fresh temporary directory, with a looping symlink and a broken one.
- *
- * Pass the root to `removeInputTree` afterwards.
+ * Writes the input fixture tree into an empty directory, with a looping symlink and a broken one.
  */
-export function createInputTree(): string {
-  const root = mkdtempSync(path.join(tmpdir(), "codometer-input-"));
-
+export function createInputTree(root: string): string {
   for (const [relativePath, contents] of Object.entries(INPUT_FIXTURE_FILES)) {
     const absolutePath = path.join(root, relativePath);
     mkdirSync(path.dirname(absolutePath), { recursive: true });
@@ -76,9 +65,4 @@ export function createInputTree(): string {
   );
 
   return root;
-}
-
-/** Removes an input fixture tree, whether or not the suite that made it passed. */
-export function removeInputTree(root: string): void {
-  rmSync(root, { force: true, recursive: true });
 }

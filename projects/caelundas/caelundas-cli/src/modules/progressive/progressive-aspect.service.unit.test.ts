@@ -22,10 +22,6 @@ describe(ProgressiveAspectService, () => {
     mockLoggerService = logger;
   });
 
-  it("should be defined", () => {
-    expect(service).toBeDefined();
-  });
-
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(ProgressiveAspectService);
 
