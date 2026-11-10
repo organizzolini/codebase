@@ -5,7 +5,7 @@
 The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **account**: Owner, a user or organization, of the GitHub repository that the github Terraform root manages.
-- **expiration**: Lifecycle rule on the Nx cache bucket that deletes an object 30 days after it was written, so unused cache entries do not accumulate.
+- **expiration**: Lifecycle-rule block on the Nx cache bucket in `terraform/linode/main.tf` that deletes an object 30 days after it was written, so unused cache entries do not accumulate.
 - **period**: Compose healthcheck's start_period: the grace time after a container starts during which failed checks do not count against its retries.
 - **preset**: OpenRouter ranked-model profile named by slug, which the refresh-documentation workflow calls as preset/slug.
 - **selector**: Label pair, name and instance, that matches pods to their Helm release for the Job.

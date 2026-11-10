@@ -56,6 +56,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **perseus**: Source and command for the Perseus Digital Library, which the perseus stage converts from XML into markdown library works.
 - **phase**: Stage of a multi-step chunk run, such as the chunk phase in EDCS ingestion, where undefined entries are skipped.
 - **pronunciation**: Module and service that derive phonemic and phonetic spellings for each Wiktionary entry, in classical or ecclesiastical mode.
+- **publication**: Word in the `print_publication_date` metadata key, the year a print edition of a library work appeared, which the Perseus and CSEL providers record from the source record when it carries one.
 - **selector**: CSS selector string passed to the test mock Cheerio helper, which selects one element from loaded HTML for assertions.
 - **self**: Adjective for a link that points back to its own page, which the Latin Library builder skips as self-referential.
 - **slaby**: Name part of Epigraphik-Datenbank Clauss-Slaby, the EDCS source whose command and chunk schema live in this project.
