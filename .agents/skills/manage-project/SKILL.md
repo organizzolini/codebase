@@ -26,11 +26,11 @@ Never invent a value outside the list. If a field has no option you need, say so
 
 Effort is the work a pull request carries, measured in planned commits and modules touched. It is an estimate for ordering work, so choose fast and move on.
 
-| Effort | Shape                                                                         |
-| ------ | ----------------------------------------------------------------------------- |
-| Low    | One commit, with its tests                                                    |
-| Medium | Two to four commits in one module                                             |
-| High   | Five or more commits, or more than one module in one project                  |
+| Effort | Shape                                                        |
+| ------ | ------------------------------------------------------------ |
+| Low    | One commit, with its tests                                   |
+| Medium | Two to four commits in one module                            |
+| High   | Five or more commits, or more than one module in one project |
 
 A `High` that would not fit one reviewable pull request is a planning defect: split it into parent issues under a spec before anyone builds it.
 
