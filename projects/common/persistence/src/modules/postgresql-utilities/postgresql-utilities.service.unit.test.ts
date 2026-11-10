@@ -1,9 +1,10 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcesses, processFailure } from "../../../testing/mocks";
 
@@ -52,33 +53,29 @@ const RESTORE: PostgresRestoreOptions = {
 };
 
 /** Where the mocked pg_dump writes, so no run leaves a file behind. */
-const DUMP_DIRECTORY = fs.mkdtempSync(path.join(os.tmpdir(), "client-dump-"));
-const DUMP_FILE = path.join(DUMP_DIRECTORY, "fixture.dump");
+const DUMP_DIRECTORY = useTemporaryDirectory("client-dump");
 
-const DUMP: PostgresDumpOptions = {
+/** What a dump into the temporary directory is asked for. */
+const dumpOptions = (): PostgresDumpOptions => ({
   connection: CONNECTION,
   content: { data: true, ddl: true },
-  file: DUMP_FILE,
+  file: path.join(DUMP_DIRECTORY(), "fixture.dump"),
   tables: ["fixture.widgets"],
-};
+});
 
 describe(PostgresqlUtilitiesService, () => {
   let service: PostgresqlUtilitiesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PostgresqlUtilitiesService],
-    }).compile();
-
-    service = await module.resolve(PostgresqlUtilitiesService);
+    ({ instance: service } = await buildTestingModule(
+      PostgresqlUtilitiesService,
+    ));
   });
 
-  afterAll(() => {
-    fs.rmSync(DUMP_DIRECTORY, { force: true, recursive: true });
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PostgresqlUtilitiesService);
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(PostgresqlUtilitiesService);
   });
 
   describe("ensureTool", () => {
@@ -139,10 +136,11 @@ describe(PostgresqlUtilitiesService, () => {
     it("runs pg_dump to a custom-format file for exactly the given tables", async () => {
       const spawned = mockProcesses();
 
+      const options = dumpOptions();
+
       await service.dump({
-        ...DUMP,
+        ...options,
         content: { data: true, ddl: false },
-        file: DUMP_FILE,
         tables: ["fixture.widgets", "archive.parts"],
       });
 
@@ -150,7 +148,7 @@ describe(PostgresqlUtilitiesService, () => {
         expect.objectContaining({
           args: [
             "--format=custom",
-            `--file=${DUMP_FILE}`,
+            `--file=${options.file}`,
             "--no-password",
             "--strict-names",
             "--data-only",
@@ -165,7 +163,7 @@ describe(PostgresqlUtilitiesService, () => {
     it("passes the credentials through the environment, never the arguments", async () => {
       const spawned = mockProcesses();
 
-      await service.dump(DUMP);
+      await service.dump(dumpOptions());
 
       expect(spawned[0]?.args.join(" ")).not.toContain(CONNECTION.password);
       expect(spawned[0]?.environment).toMatchObject({
@@ -184,7 +182,7 @@ describe(PostgresqlUtilitiesService, () => {
       });
 
       const failure = service.dump({
-        ...DUMP,
+        ...dumpOptions(),
         content: { data: false, ddl: true },
       });
 
@@ -200,7 +198,7 @@ describe(PostgresqlUtilitiesService, () => {
         error: processFailure("ENOENT", "spawn pg_dump ENOENT"),
       });
 
-      await expect(service.dump(DUMP)).rejects.toThrow(
+      await expect(service.dump(dumpOptions())).rejects.toThrow(
         "pg_dump could not be run: spawn pg_dump ENOENT",
       );
     });

@@ -3,33 +3,22 @@ import {
   GraphQLSchemaBuilderModule,
   GraphQLSchemaFactory,
 } from "@nestjs/graphql";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { Word } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { WordType } from "./word.entities";
 import { WordsResolver } from "./words.resolver";
 import { WordsService } from "./words.service";
 
 describe(WordsResolver, () => {
-  let resolver: WordsResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WordsResolver, {
+      mocks: [WordsService],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        WordsResolver,
-        { provide: WordsService, useValue: createMock<WordsService>() },
-      ],
-    }).compile();
-
-    resolver = await module.resolve(WordsResolver);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(WordsResolver);
   });
 
   it("resolves a single word by data using the words service", async () => {
@@ -82,16 +71,10 @@ describe(WordsResolver, () => {
   it("generates a schema containing the word and words queries", async () => {
     expect.hasAssertions();
 
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(WordsResolver, {
       imports: [GraphQLSchemaBuilderModule],
-      providers: [
-        WordsResolver,
-        {
-          provide: WordsService,
-          useValue: createMock<WordsService>(),
-        },
-      ],
-    }).compile();
+      mocks: [WordsService],
+    });
 
     const schemaFactory = module.get(GraphQLSchemaFactory);
     const schema = await schemaFactory.create([WordsResolver]);

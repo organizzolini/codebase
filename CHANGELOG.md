@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.59.5](https://github.com/organizzolini/codebase/compare/v3.59.4...v3.59.5) (2026-11-09)
+
+### 🐛 Bug Fixes
+
+* **configuration,testing:** 🐛 ratchet conformetry thresholds per project and adopt the testing package in templates ([#1883](https://github.com/organizzolini/codebase/issues/1883)) ([1591212](https://github.com/organizzolini/codebase/commit/159121295ebed0ab9991e4dede93682398dcd2a3)), closes [#1850](https://github.com/organizzolini/codebase/issues/1850) [#1851](https://github.com/organizzolini/codebase/issues/1851) [#1852](https://github.com/organizzolini/codebase/issues/1852) [#1832](https://github.com/organizzolini/codebase/issues/1832) [#329](https://github.com/organizzolini/codebase/issues/329) [#1877](https://github.com/organizzolini/codebase/issues/1877) [#1850](https://github.com/organizzolini/codebase/issues/1850) [#1851](https://github.com/organizzolini/codebase/issues/1851) [#1852](https://github.com/organizzolini/codebase/issues/1852)
+
 ## [3.59.4](https://github.com/organizzolini/codebase/compare/v3.59.3...v3.59.4) (2026-11-09)
 
 ### 🐛 Bug Fixes

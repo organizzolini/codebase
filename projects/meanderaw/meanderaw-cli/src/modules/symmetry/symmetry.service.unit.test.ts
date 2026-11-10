@@ -1,10 +1,16 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildTile } from "../../../testing/tiles";
 import { TileService } from "../tile/tile.service";
 
 import { SymmetryService } from "./symmetry.service";
+
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** What the class under test is built with. */
+const MODULE_OPTIONS: TestingModuleOptions = { providers: [TileService] };
 
 describe(SymmetryService, () => {
   let service: SymmetryService;
@@ -15,15 +21,18 @@ describe(SymmetryService, () => {
   const singleColumn = buildTile(["s", ".", ".", "e", "."]);
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [SymmetryService, TileService],
-    }).compile();
+    const built = await buildTestingModule(SymmetryService, MODULE_OPTIONS);
 
-    service = await module.resolve(SymmetryService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      SymmetryService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(SymmetryService);
   });
 
   describe("canonicalTile", () => {

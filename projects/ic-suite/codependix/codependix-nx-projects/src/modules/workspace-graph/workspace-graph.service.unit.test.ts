@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NeighborhoodService } from "../neighborhood/neighborhood.service";
 
@@ -48,15 +49,17 @@ describe(WorkspaceGraphService, () => {
   let service: WorkspaceGraphService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [NeighborhoodService, WorkspaceGraphService],
-    }).compile();
-
-    service = await module.resolve(WorkspaceGraphService);
+    ({ instance: service } = await buildTestingModule(WorkspaceGraphService, {
+      providers: [NeighborhoodService],
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WorkspaceGraphService, {
+      providers: [NeighborhoodService],
+    });
+
+    expect(instance).toBeInstanceOf(WorkspaceGraphService);
   });
 
   describe("buildWorkspaceGraph", () => {

@@ -1,66 +1,32 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { RemoteCacheCommand } from "./remote-cache.command";
 import { RemoteCacheService } from "./remote-cache.service";
 
 describe(RemoteCacheCommand, () => {
-  let command: RemoteCacheCommand;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(RemoteCacheCommand, {
+      mocks: [RemoteCacheService],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        RemoteCacheCommand,
-        {
-          provide: RemoteCacheService,
-          useValue: createMock<RemoteCacheService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    command = await module.resolve(RemoteCacheCommand);
-  });
-
-  it("is defined", () => {
-    expect(command).toBeDefined();
+    expect(instance).toBeInstanceOf(RemoteCacheCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        RemoteCacheCommand,
-        {
-          provide: RemoteCacheService,
-          useValue: createMock<RemoteCacheService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("RemoteCacheCommand");
+    await expectLoggerContext(RemoteCacheCommand, {
+      mocks: [RemoteCacheService],
+    });
   });
 
   it("sets up the remote cache when it runs", async () => {
     const remoteCache = createMock<RemoteCacheService>();
-    const module = await Test.createTestingModule({
-      providers: [
-        RemoteCacheCommand,
-        { provide: RemoteCacheService, useValue: remoteCache },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(RemoteCacheCommand, {
+      providers: [{ provide: RemoteCacheService, useValue: remoteCache }],
+    });
 
     const subject = await module.resolve(RemoteCacheCommand);
 

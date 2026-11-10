@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildSourceLocation, buildStackFrame } from "../../../testing/mocks";
 import { ANALYSIS_MODULES } from "../../../testing/modules";
@@ -33,16 +34,17 @@ describe(MermaidReportService, () => {
   let service: MermaidReportService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(MermaidReportService, {
       imports: [...ANALYSIS_MODULES],
-      providers: [MermaidReportService],
-    }).compile();
-
-    service = await module.resolve(MermaidReportService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(MermaidReportService, {
+      imports: [...ANALYSIS_MODULES],
+    });
+
+    expect(instance).toBeInstanceOf(MermaidReportService);
   });
 
   // 🕸️ The diagram

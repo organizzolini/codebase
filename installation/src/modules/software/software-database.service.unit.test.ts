@@ -2,18 +2,9 @@ import os from "node:os";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
@@ -61,14 +52,12 @@ async function build(machine: FakeMachine = {}): Promise<{
 }> {
   const { commands, runner } = createFakeProcessRunner(machine);
   const reporter = createMock<ReporterService>();
-  const module = await Test.createTestingModule({
+  const { module } = await buildTestingModule(SoftwareDatabaseService, {
     providers: [
-      SoftwareDatabaseService,
       { provide: ProcessRunnerService, useValue: runner },
       { provide: ReporterService, useValue: reporter },
-      { provide: LoggerService, useValue: createMock<LoggerService>() },
     ],
-  }).compile();
+  });
 
   return {
     commands,
@@ -78,24 +67,6 @@ async function build(machine: FakeMachine = {}): Promise<{
 }
 
 describe(SoftwareDatabaseService, () => {
-  let service: SoftwareDatabaseService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SoftwareDatabaseService,
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-        { provide: ReporterService, useValue: createMock<ReporterService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(SoftwareDatabaseService);
-  });
-
   beforeEach(() => {
     files.written.clear();
     files.osRelease = "NAME=Ubuntu\nVERSION_CODENAME=noble\n";
@@ -106,8 +77,12 @@ describe(SoftwareDatabaseService, () => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SoftwareDatabaseService, {
+      mocks: [ProcessRunnerService, ReporterService],
+    });
+
+    expect(instance).toBeInstanceOf(SoftwareDatabaseService);
   });
 
   describe("on a Mac", () => {

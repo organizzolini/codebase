@@ -1,6 +1,7 @@
 import { ConfigurationModule } from "@conformetry/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ScopeService } from "./scope.service";
 
@@ -22,16 +23,19 @@ describe(ScopeService, () => {
   let service: ScopeService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const built = await buildTestingModule(ScopeService, {
       imports: [ConfigurationModule],
-      providers: [ScopeService],
-    }).compile();
+    });
 
-    service = await module.resolve(ScopeService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ScopeService, {
+      imports: [ConfigurationModule],
+    });
+
+    expect(instance).toBeInstanceOf(ScopeService);
   });
 
   describe("matchesProject", () => {

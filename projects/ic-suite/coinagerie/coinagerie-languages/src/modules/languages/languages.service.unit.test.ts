@@ -1,6 +1,7 @@
 import "reflect-metadata";
-import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CssModule } from "../css/css.module";
 import { HclModule } from "../hcl/hcl.module";
@@ -18,7 +19,7 @@ describe(LanguagesService, () => {
   let service: LanguagesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(LanguagesService, {
       imports: [
         CssModule,
         HclModule,
@@ -30,14 +31,25 @@ describe(LanguagesService, () => {
         TypescriptModule,
         YamlModule,
       ],
-      providers: [LanguagesService],
-    }).compile();
-
-    service = await module.resolve(LanguagesService);
+    }));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LanguagesService, {
+      imports: [
+        CssModule,
+        HclModule,
+        JsonModule,
+        PythonModule,
+        ShellModule,
+        SqlModule,
+        TomlModule,
+        TypescriptModule,
+        YamlModule,
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(LanguagesService);
   });
 
   it.each([

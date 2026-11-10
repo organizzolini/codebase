@@ -7,7 +7,6 @@ import {
 import { BreadthService, ProgramConfigurationError } from "@callidescope/graph";
 import { AddressReportService } from "@callidescope/output";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -18,7 +17,9 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { captureExitCode, captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { buildDiscoveredCallable } from "../../../testing/mocks";
 import { AddressLookupService } from "../address-lookup/address-lookup.service";
@@ -27,6 +28,8 @@ import { BreadthCommand } from "./breadth.command";
 
 import type { LocatedWorkspace } from "../address-lookup/address-lookup.types";
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
+import type { LoggerService } from "@codebase/observability";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 /** The workspace configuration every run must be pointed at with `--config`. */
 const CONFIGURATION_PATH = "callidescope.config.ts";
@@ -81,33 +84,24 @@ function buildLocated(): {
   };
 }
 
+/** What the command is built from in every test that builds it. */
+const COMMAND_MODULE: TestingModuleOptions = {
+  imports: [ConfigurationModule],
+  mocks: [AddressLookupService, AddressReportService, BreadthService],
+};
+
 describe(BreadthCommand, () => {
   let addressLookupService: ReturnType<typeof createMock<AddressLookupService>>;
   let addressReportService: ReturnType<typeof createMock<AddressReportService>>;
   let breadthService: ReturnType<typeof createMock<BreadthService>>;
   let command: BreadthCommand;
+  let exitCode: ReturnType<typeof captureExitCode>;
   let configurationService: ConfigurationService;
   let logger: ReturnType<typeof createMock<LoggerService>>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [
-        BreadthCommand,
-        {
-          provide: AddressLookupService,
-          useValue: createMock<AddressLookupService>(),
-        },
-        {
-          provide: AddressReportService,
-          useValue: createMock<AddressReportService>(),
-        },
-        { provide: BreadthService, useValue: createMock<BreadthService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(BreadthCommand, COMMAND_MODULE);
 
-    command = await module.resolve(BreadthCommand);
     configurationService = await module.resolve(ConfigurationService);
   });
 
@@ -130,42 +124,25 @@ describe(BreadthCommand, () => {
       logger,
     );
 
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
-    process.exitCode = undefined;
+    captureOutput();
+    exitCode = captureExitCode();
   });
 
   afterEach(() => {
-    process.exitCode = undefined;
     process.stdin.isTTY = originalIsTty;
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      BreadthCommand,
+      COMMAND_MODULE,
+    );
+
+    expect(instance).toBeInstanceOf(BreadthCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      imports: [ConfigurationModule],
-      providers: [
-        BreadthCommand,
-        {
-          provide: AddressLookupService,
-          useValue: createMock<AddressLookupService>(),
-        },
-        {
-          provide: AddressReportService,
-          useValue: createMock<AddressReportService>(),
-        },
-        { provide: BreadthService, useValue: createMock<BreadthService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    await module.resolve(BreadthCommand);
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("BreadthCommand");
+    await expectLoggerContext(BreadthCommand, COMMAND_MODULE);
   });
 
   // 🎛️ Option parsing
@@ -207,7 +184,7 @@ describe(BreadthCommand, () => {
   it("rejects a run with no addresses it could ask for", async () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(addressLookupService.resolve).not.toHaveBeenCalled();
   });
 
@@ -216,7 +193,7 @@ describe(BreadthCommand, () => {
   it("ignores a positional argument, asking for the flag instead", async () => {
     await command.run(["a.ts#Foo.bar"], { config: CONFIGURATION_PATH });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(addressLookupService.resolve).not.toHaveBeenCalled();
   });
 
@@ -237,7 +214,7 @@ describe(BreadthCommand, () => {
       config: CONFIGURATION_PATH,
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(breadthService.describeDirectCalls).not.toHaveBeenCalled();
   });
 
@@ -259,7 +236,7 @@ describe(BreadthCommand, () => {
       config: CONFIGURATION_PATH,
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(breadthService.describeDirectCalls).not.toHaveBeenCalled();
   });
 
@@ -316,7 +293,7 @@ describe(BreadthCommand, () => {
       ],
     });
     expect(process.stdout.write).toHaveBeenCalledWith("rendered breadth\n");
-    expect(process.exitCode).toBeUndefined();
+    expect(exitCode()).toBeUndefined();
   });
 
   // 🗣️ Prompting
@@ -482,7 +459,7 @@ describe(BreadthCommand, () => {
       undefined,
       { reason: error.message },
     );
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(process.stdout.write).not.toHaveBeenCalled();
   });
 
@@ -508,7 +485,7 @@ describe(BreadthCommand, () => {
       undefined,
       { reason: error.message },
     );
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(process.stdout.write).not.toHaveBeenCalled();
   });
 
@@ -535,7 +512,7 @@ describe(BreadthCommand, () => {
       undefined,
       { reason: error.message },
     );
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(process.stdout.write).not.toHaveBeenCalled();
   });
 
@@ -574,7 +551,7 @@ describe(BreadthCommand, () => {
       format: "markdown",
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(process.stdout.write).not.toHaveBeenCalled();
     expect(addressReportService.renderBreadthReports).not.toHaveBeenCalled();
   });
@@ -597,7 +574,7 @@ describe(BreadthCommand, () => {
       format: "markdown",
     });
 
-    expect(process.exitCode).toBe(1);
+    expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected a callable address",
       undefined,

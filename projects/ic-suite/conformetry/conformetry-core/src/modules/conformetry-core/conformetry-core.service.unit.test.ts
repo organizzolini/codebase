@@ -1,20 +1,13 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ConformetryCoreService } from "./conformetry-core.service";
 
 describe(ConformetryCoreService, () => {
-  let service: ConformetryCoreService;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ConformetryCoreService);
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [ConformetryCoreService],
-    }).compile();
-
-    service = await module.resolve(ConformetryCoreService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(ConformetryCoreService);
   });
 });

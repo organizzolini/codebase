@@ -16,6 +16,7 @@
   "description": "File discovery, size calculation, and custom metric evaluation engine for Codometer",
   "devDependencies": {
     "@codebase/observability": "workspace:*",
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",

@@ -1,37 +1,55 @@
-import { Test } from "@nestjs/testing";
-import prompts from "prompts";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
+
+import {
+  answerPrompts,
+  overrideEnvironment,
+  promptsMock,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { missingInputError, promptCancelledError } from "./input.constants";
 import { InputService } from "./input.service";
 
+import type * as Testing from "@codebase/testing";
+
 // Mocked at the module boundary so the service's own wiring is exercised and
 // no test ever reaches for a terminal.
-vi.mock("prompts", () => ({ default: vi.fn() }));
+vi.mock("prompts", async () => {
+  const { promptsMock } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
 
-const promptRunner = vi.mocked(prompts);
+  return { default: promptsMock };
+});
 
 describe(InputService, () => {
   let service: InputService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [InputService],
-    }).compile();
-
-    service = await module.resolve(InputService);
+    ({ instance: service } = await buildTestingModule(InputService));
   });
 
   const originalIsTty = process.stdin.isTTY;
 
+  beforeEach(() => {
+    overrideEnvironment({ CI: undefined });
+  });
+
   afterEach(() => {
-    promptRunner.mockReset();
-    delete process.env["CI"];
     process.stdin.isTTY = originalIsTty;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(InputService);
+
+    expect(instance).toBeInstanceOf(InputService);
   });
 
   // 📋 Comma-delimited option
@@ -100,7 +118,7 @@ describe(InputService, () => {
 
   it("resolves a select prompt to the choice the user picked", async () => {
     process.stdin.isTTY = true;
-    promptRunner.mockResolvedValue({ value: "write" });
+    answerPrompts({ value: "write" });
 
     await expect(
       service.promptForSelect({
@@ -113,7 +131,7 @@ describe(InputService, () => {
 
   it("rejects a select prompt that resolved outside its choices", async () => {
     process.stdin.isTTY = true;
-    promptRunner.mockResolvedValue({ value: "nonsense" });
+    answerPrompts({ value: "nonsense" });
 
     await expect(
       service.promptForSelect({
@@ -126,7 +144,7 @@ describe(InputService, () => {
 
   it("reports a dismissed select prompt as cancelled, not as a fault", async () => {
     process.stdin.isTTY = true;
-    promptRunner.mockResolvedValue({});
+    answerPrompts({});
 
     await expect(
       service.promptForSelect({
@@ -149,6 +167,6 @@ describe(InputService, () => {
         subject: "A run mode",
       }),
     ).rejects.toThrow(missingInputError("A run mode").message);
-    expect(promptRunner).not.toHaveBeenCalled();
+    expect(promptsMock).not.toHaveBeenCalled();
   });
 });

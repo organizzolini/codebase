@@ -1,6 +1,6 @@
-import { appendFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -11,33 +11,37 @@ import {
   vi,
 } from "vitest";
 
-import { IssueReportService } from "./issue-report.service";
+import {
+  createTemporaryDirectory,
+  overrideEnvironment,
+} from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
-vi.mock("node:fs", () => ({ appendFileSync: vi.fn() }));
+import { IssueReportService } from "./issue-report.service";
 
 describe(IssueReportService, () => {
   let service: IssueReportService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [IssueReportService],
-    }).compile();
+    const built = await buildTestingModule(IssueReportService);
 
-    service = await module.resolve(IssueReportService);
+    service = built.instance;
   });
 
   beforeEach(() => {
+    overrideEnvironment({ GITHUB_STEP_SUMMARY: undefined });
     vi.spyOn(console, "info").mockImplementation(() => {});
     vi.spyOn(console, "warn").mockImplementation(() => {});
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(IssueReportService);
+
+    expect(instance).toBeInstanceOf(IssueReportService);
   });
 
   it("separates phases with a blank line and counts failures", () => {
@@ -60,16 +64,20 @@ describe(IssueReportService, () => {
   });
 
   it("mirrors the report into the step summary", () => {
-    vi.stubEnv("GITHUB_STEP_SUMMARY", "summary.md");
+    const summary = path.join(createTemporaryDirectory("report"), "summary.md");
+    overrideEnvironment({ GITHUB_STEP_SUMMARY: summary });
     service.publish(["a", "b"]);
 
-    expect(appendFileSync).toHaveBeenCalledWith("summary.md", "a\nb\n", "utf8");
+    expect(readFileSync(summary, "utf8")).toBe("a\nb\n");
   });
 
   it("warns when the step summary cannot be written", () => {
-    vi.stubEnv("GITHUB_STEP_SUMMARY", "summary.md");
-    vi.mocked(appendFileSync).mockImplementationOnce(() => {
-      throw new Error("denied");
+    overrideEnvironment({
+      GITHUB_STEP_SUMMARY: path.join(
+        createTemporaryDirectory("report"),
+        "missing",
+        "summary.md",
+      ),
     });
     service.publish(["a"]);
 

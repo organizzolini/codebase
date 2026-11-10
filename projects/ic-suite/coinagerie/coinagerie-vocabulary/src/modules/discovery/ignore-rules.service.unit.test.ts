@@ -1,35 +1,25 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IgnoreRulesService } from "./ignore-rules.service";
 
 import type { IgnoreScope } from "./discovery.types";
 
-const TEMPORARY_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
-
 describe(IgnoreRulesService, () => {
   let service: IgnoreRulesService;
-  let directory: string;
+  const directory = useTemporaryDirectory("ignore-rules");
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [IgnoreRulesService],
-    }).compile();
-
-    service = await module.resolve(IgnoreRulesService);
-    mkdirSync(TEMPORARY_ROOT, { recursive: true });
-    directory = mkdtempSync(path.join(TEMPORARY_ROOT, "ignore-rules-"));
-  });
-
-  afterAll(() => {
-    rmSync(directory, { force: true, recursive: true });
+    ({ instance: service } = await buildTestingModule(IgnoreRulesService));
   });
 
   function scope(base: string, patterns: string[]): IgnoreScope {
-    const filePath = path.join(directory, `${base || "root"}.gitignore`);
+    const filePath = path.join(directory(), `${base || "root"}.gitignore`);
     writeFileSync(filePath, `${patterns.join("\n")}\n`);
     const read = service.readScope({ base, filePath });
 
@@ -40,15 +30,17 @@ describe(IgnoreRulesService, () => {
     return read;
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(IgnoreRulesService);
+
+    expect(instance).toBeInstanceOf(IgnoreRulesService);
   });
 
   it("reads no scope from an ignore file that does not exist", () => {
     expect(
       service.readScope({
         base: "",
-        filePath: path.join(directory, "missing.gitignore"),
+        filePath: path.join(directory(), "missing.gitignore"),
       }),
     ).toBeUndefined();
   });

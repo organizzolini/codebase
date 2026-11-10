@@ -1,8 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
@@ -36,17 +35,15 @@ async function createSteps(failing: string[] = []): Promise<Steps> {
     platform: "linux",
     responses: Object.fromEntries(failing.map((line) => [line, { status: 1 }])),
   });
-  const module = await Test.createTestingModule({
+  const { module } = await buildTestingModule(SoftwareLinuxService, {
     providers: [
-      SoftwareLinuxService,
       { provide: ReleaseArchivesService, useValue: releases },
       { provide: SoftwarePythonService, useValue: python },
       { provide: SoftwareDatabaseService, useValue: database },
       { provide: ProcessRunnerService, useValue: runner },
       { provide: ReporterService, useValue: reporter },
-      { provide: LoggerService, useValue: createMock<LoggerService>() },
     ],
-  }).compile();
+  });
 
   return {
     commands,
@@ -59,38 +56,18 @@ async function createSteps(failing: string[] = []): Promise<Steps> {
 }
 
 describe(SoftwareLinuxService, () => {
-  let service: SoftwareLinuxService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SoftwareLinuxService,
-        {
-          provide: ReleaseArchivesService,
-          useValue: createMock<ReleaseArchivesService>(),
-        },
-        {
-          provide: SoftwarePythonService,
-          useValue: createMock<SoftwarePythonService>(),
-        },
-        {
-          provide: SoftwareDatabaseService,
-          useValue: createMock<SoftwareDatabaseService>(),
-        },
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-        { provide: ReporterService, useValue: createMock<ReporterService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SoftwareLinuxService, {
+      mocks: [
+        ReleaseArchivesService,
+        SoftwarePythonService,
+        SoftwareDatabaseService,
+        ProcessRunnerService,
+        ReporterService,
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(SoftwareLinuxService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(SoftwareLinuxService);
   });
 
   it("installs every release tool, then Python, its environment, and the database tools", async () => {
