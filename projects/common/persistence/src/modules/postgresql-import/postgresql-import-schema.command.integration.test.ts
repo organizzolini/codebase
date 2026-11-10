@@ -22,12 +22,15 @@ import {
 } from "../../../testing/fixture-persistence";
 
 import type { FixtureDatabase } from "../../../testing/fixture-persistence";
+import type * as Testing from "@codebase/testing";
 
 // 🎯 The real execFile, wrapped so a test can see whether any client tool
 // was started at all.
 vi.mock("node:child_process", async (importOriginal) => {
-  const actual = await importOriginal<{ execFile: typeof execFile }>();
-  return { ...actual, execFile: vi.fn<typeof execFile>(actual.execFile) };
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
 });
 
 describe("--schema across export and import", () => {

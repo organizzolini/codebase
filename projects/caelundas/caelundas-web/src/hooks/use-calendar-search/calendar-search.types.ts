@@ -70,8 +70,10 @@ export interface CalendarSearch {
   "sky.lineWidth"?: SkySearchValue | undefined;
   "sky.lon"?: SkySearchValue | undefined;
   "sky.maxMag"?: SkySearchValue | undefined;
+  "sky.opacity"?: SkySearchValue | undefined;
   "sky.pixelsPerSecond"?: SkySearchValue | undefined;
   "sky.starScale"?: SkySearchValue | undefined;
+  "sky.surfaceOpacity"?: SkySearchValue | undefined;
   "sky.top"?: SkySearchValue | undefined;
   "sky.vFov"?: SkySearchValue | undefined;
   /**

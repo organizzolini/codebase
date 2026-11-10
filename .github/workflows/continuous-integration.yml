@@ -58,32 +58,17 @@ jobs:
       fail-fast: false
       matrix:
         check:
-          - target: typecheck-code
-            name: Typecheck
-            emoji: 🧑‍🎓
-          - target: format-code
-            name: Format
-            emoji: 🧑‍🎨
-          - target: lint-code
-            name: Lint
+          # `static-code` runs typecheck, format, lint and deprecate, then the six
+          # Guard gates that need no leg of their own, in one `nx affected` call
+          # with `--configuration=check`, as the `validate-code` skill runs them.
+          # The run reads `targets` in place of `target`. Keep `targets` equal to
+          # those four plus the `dependsOn` of `guard-code` in `nx.json`, less the
+          # three gates with legs below: a gate named in neither place is checked
+          # by nothing in CI.
+          - target: static-code
+            targets: typecheck-code,format-code,lint-code,deprecate-code,catalog-manifests,coinagerie-check,lockfile,project-ports,readme-projects,vscode-extensions
+            name: Static
             emoji: 🧑‍⚕️
-          - target: deprecate-code
-            name: Deprecate
-            emoji: 🧟
-          # `guard-code` is the local aggregate of these five legs. It ran as one
-          # leg until its per-project gates, one task per project each, made up
-          # nearly all of a cold run (callidescope 1,443s, codependix 1,364s,
-          # coinagerie 168s, conformetry 110s of task time, against under 20s
-          # for everything else), and a cold run took up to 15 minutes. Run as
-          # legs of their own they share the runner pool and each stays well
-          # inside the default limit.
-          # Keep `targets` here, and the legs below it, equal to the
-          # `dependsOn` of `guard-code` in `nx.json`: a gate added there and
-          # named in no leg is checked by nothing in CI.
-          - target: guard-code
-            targets: catalog-manifests,coinagerie-check,lockfile,project-ports,readme-projects,vscode-extensions
-            name: Guard
-            emoji: 💂
           - target: callidescope-restrict
             name: Callidescope Restrict
             emoji: 🔭
@@ -145,7 +130,7 @@ jobs:
           # into a consumer outside the checkout, then runs its command lines
           # and one inferred target per Nx plugin. Runs whole, and only when an
           # ic-suite package or the check is affected — see the
-          # `publishable-packages-gate` command of the `publication` project.
+          # `publishable-packages-gate` command of the `integration` project.
           # Never authenticates to a registry: no step is given an npm token,
           # and setup-node is given no `registry-url`. Its first run on #1473
           # took 4m05s with nothing cached: 2m49s to pack and check, 34s of
@@ -276,7 +261,7 @@ jobs:
           # `terraform-validate` run as part of lint-code, and the runner image
           # no longer ships terraform.
           terraform: >-
-            ${{ (matrix.check.target == 'lint-code' ||
+            ${{ (matrix.check.target == 'static-code' ||
             matrix.check.target == 'plan-terraform') && 'true' || 'false' }}
           nx-cache: "true"
           nx-cache-scope: >-
@@ -285,7 +270,7 @@ jobs:
           nx-graph-cache: "true"
           nx-shas: "true"
           nx-base: push-before
-          eslint-cache: ${{ matrix.check.target == 'lint-code' && 'true' || 'false' }}
+          eslint-cache: ${{ matrix.check.target == 'static-code' && 'true' || 'false' }}
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
@@ -358,7 +343,7 @@ jobs:
           PUBLISHABLE_PACKAGES_CONSUMER_ROOT: ${{ runner.temp }}/publishable-packages
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts publishable-packages-gate
+            integration/src/integration.main.ts publishable-packages-gate
 
       - name: 🗂️ Setup Environment File
         if: >-
@@ -450,7 +435,7 @@ jobs:
           always() &&
           steps.check-skip.outputs.skip != 'true' &&
           (matrix.check.target == 'build-projects' ||
-          matrix.check.target == 'typecheck-code' ||
+          matrix.check.target == 'static-code' ||
           matrix.check.target == 'test-code')
         uses: ./.github/actions/report-integration
         with:
@@ -460,7 +445,6 @@ jobs:
           run-outcome: ${{ steps.run-check.outcome }}
           pull-request-number: ${{ github.event.pull_request.number }}
           target: ${{ matrix.check.target }}
-          shard: ${{ matrix.check.shard }}
 
       # A merge group runs on its own `gh-readonly-queue/...` ref, new for every
       # group, and a cache saved there is readable by no later run: later
@@ -485,5 +469,5 @@ jobs:
             github.event.pull_request.head.repo.full_name == github.repository
             && 'true' || 'false' }}
           eslint-cache: >-
-            ${{ matrix.check.target == 'lint-code' &&
+            ${{ matrix.check.target == 'static-code' &&
             github.event_name != 'merge_group' && 'true' || 'false' }}

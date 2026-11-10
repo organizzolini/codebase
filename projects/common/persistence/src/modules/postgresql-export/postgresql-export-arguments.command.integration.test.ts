@@ -9,11 +9,15 @@ import { createTemporaryDirectory } from "@codebase/testing";
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
 
+import type * as Testing from "@codebase/testing";
+
 // 🎯 The real execFile, wrapped so each test can see whether any client tool
 // was started at all.
 vi.mock("node:child_process", async (importOriginal) => {
-  const actual = await importOriginal<{ execFile: typeof execFile }>();
-  return { ...actual, execFile: vi.fn<typeof execFile>(actual.execFile) };
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
 });
 
 /** Nothing listens on port 1, so any connection attempt would fail loudly. */

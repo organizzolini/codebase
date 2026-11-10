@@ -12,7 +12,7 @@ are a reading of the tracker rather than a plan for it.
 
 ## The `status:` family
 
-Five labels, all sharing the `fbca04` color so the family reads as one:
+Four labels, all sharing the `fbca04` color so the family reads as one:
 
 | Label                    | Meaning                                        |
 | ------------------------ | ---------------------------------------------- |
@@ -20,14 +20,14 @@ Five labels, all sharing the `fbca04` color so the family reads as one:
 | `status:needs-info`      | Waiting on reporter for more information       |
 | `status:ready-for-agent` | Fully specified, ready for an unattended agent |
 | `status:ready-for-human` | Requires human implementation                  |
-| `status:in-progress`     | Issue is actively being implemented            |
 
 `wontfix` sits outside the family, keeping the canonical name the skills and
 GitHub's own default vocabulary both use, and GitHub's default `ffffff` with it.
 
-Those six are the whole triage vocabulary. There is no `status:todo` and no
-`status:done`: an open issue carrying no `status:` label is the backlog, and a
-closed issue is the done signal.
+Those five are the whole triage vocabulary. There is no `status:todo`,
+`status:in-progress`, or `status:done`: an open issue carrying no `status:` label
+is the backlog, and a closed issue is the done signal. Work in flight is the
+In Progress value of the project board's Status field, not a label.
 
 Re-read the live set rather than trusting the table:
 
@@ -73,17 +73,17 @@ gh issue edit <number> \
   --add-label "status:needs-info" --remove-label "status:needs-triage"
 ```
 
-## `status:in-progress` and triage
+## In-progress work and triage
 
-`/triage` neither reads nor writes `status:in-progress`, which is why no triage
-role maps onto it. It belongs to the implementation workflow, which applies it
-to a spec, the parent issue for a pull request, and the sub-issue being worked
-on — see
+`/triage` neither reads nor writes the board's Status field, which is why no
+triage role maps onto it. It belongs to the implementation workflow, which sets
+In Progress on a spec, the parent issue for a pull request, and the sub-issue
+being worked on — see
 [Marking work in progress](./issue-tracker.md#marking-work-in-progress).
 
-A triage agent that meets an in-progress issue should leave that label alone and
-not add a `status:ready-for-*` label to it: the ticket has already been picked
-up, so neither "ready for" role is true of it any more.
+A triage agent that meets an issue whose Status is In Progress should not add a
+`status:ready-for-*` label to it: the ticket has already been picked up, so
+neither "ready for" role is true of it any more.
 
 ## Related label families
 

@@ -110,10 +110,6 @@ describe(DrawEnumerationService, () => {
     await database.close();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
-  });
-
   describe("drawAll", () => {
     // 🎯 The acceptance criterion, as one number: every structurally
     // distinct meander the pinned test budget admits, at every shape it

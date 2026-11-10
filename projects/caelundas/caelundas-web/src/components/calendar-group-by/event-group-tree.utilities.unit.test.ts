@@ -31,7 +31,7 @@ async function group(grouping: EventGrouping): Promise<EventGroupNode[]> {
         tags: [...(level.tags ?? [])],
       })),
     },
-    window: WINDOW,
+    period: WINDOW,
   });
 
   return buildEventGroups(events, grouping, fields);
@@ -94,7 +94,7 @@ describe("event group tree", () => {
     it("puts events read without keys in a field's last group", async () => {
       serveCalendarApi();
 
-      const events = await findEvents({ window: WINDOW });
+      const events = await findEvents({ period: WINDOW });
 
       expect(
         summarize(
@@ -106,7 +106,7 @@ describe("event group tree", () => {
     it("counts an event once in a group it is keyed to twice", async () => {
       serveCalendarApi();
 
-      const [first] = await findEvents({ window: WINDOW });
+      const [first] = await findEvents({ period: WINDOW });
       const twice = { key: "tag-x", label: null, path: "Type / X" };
 
       expect(

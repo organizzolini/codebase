@@ -1,7 +1,12 @@
 import { MODULE_METADATA } from "@nestjs/common/constants";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { CodeModule } from "../code/code.module";
+import { MatrixModule } from "../matrix/matrix.module";
+
+import { CharacteristicContextService } from "./characteristic-context.service";
 import {
   BOOLEAN_CHARACTERISTIC_KEY_SET,
   CHARACTERISTIC_KEYS,
@@ -262,8 +267,8 @@ describe(CharacteristicsModule, () => {
   let letters: readonly CharacteristicEvaluatorGroup<number>[];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CharacteristicsModule],
+    const { module } = await buildTestingModule(CharacteristicContextService, {
+      imports: [CodeModule, MatrixModule, CharacteristicsModule],
       providers: [
         {
           inject: [...CHARACTERISTIC_SERVICES],
@@ -280,7 +285,7 @@ describe(CharacteristicsModule, () => {
           ): CharacteristicEvaluatorGroup<number>[] => injected,
         },
       ],
-    }).compile();
+    });
 
     letters = module.get<CharacteristicEvaluatorGroup<number>[]>(LETTERS);
     evaluators = [

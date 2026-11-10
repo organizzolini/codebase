@@ -53,4 +53,24 @@ describe(NightSkyMenu, () => {
     expect(screen.queryByRole("button", { name: "Full" })).toBeNull();
     expect(screen.getByRole("button", { name: "Default" })).toBeDefined();
   });
+
+  it("offers an opacity slider for the sky and one for the calendar over it", async () => {
+    render(<NightSkyMenu />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Sky options" }));
+
+    await screen.findByRole("group", { name: "Night sky settings" });
+
+    // Base UI keeps the range input visually hidden, which jsdom reads as
+    // hidden from the accessibility tree, so it is found by its label.
+    const [sky] = screen.getAllByLabelText("Sky opacity", {
+      selector: "input",
+    });
+    const [calendar] = screen.getAllByLabelText("Calendar opacity", {
+      selector: "input",
+    });
+
+    expect(sky?.getAttribute("value")).toBe("0.6");
+    expect(calendar?.getAttribute("value")).toBe("0.7");
+  });
 });

@@ -158,7 +158,7 @@ export async function seedEvents(
 }
 
 /**
- * Adds the tags the filters and collections read to the seeded fixture, and
+ * Adds the tags the filters and presets read to the seeded fixture, and
  * gives them to its events: the Type chains Aspect / Simple Aspect / Major
  * Aspect, Ingress / Sign Ingress and Direction, the planet Moon, and the
  * numbered root Aspect Harmonic with Harmonic 2, Harmonic 6 and Harmonic 12.

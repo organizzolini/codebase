@@ -1,3 +1,37 @@
+## 0.0.78 (2026-11-10)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.77
+- Updated callidescope-output to 0.0.76
+- Updated callidescope-graph to 0.0.76
+- Updated callidescope-core to 0.0.76
+- Updated callidescope-cli to 0.0.77
+
+## 0.0.77 (2026-11-10)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.76
+- Updated callidescope-output to 0.0.75
+- Updated callidescope-graph to 0.0.75
+- Updated callidescope-core to 0.0.75
+- Updated callidescope-cli to 0.0.76
+
+## 0.0.76 (2026-11-10)
+
+### 🚀 Features
+
+- **callidescope,codependix,codometer,coinagerie,configuration:** ✨ write tool markdown to adjacent files ([#2225](https://github.com/organizzolini/codebase/pull/2225), [#2224](https://github.com/organizzolini/codebase/issues/2224))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.75
+- Updated callidescope-output to 0.0.74
+- Updated callidescope-graph to 0.0.74
+- Updated callidescope-core to 0.0.74
+- Updated callidescope-cli to 0.0.75
+
 ## 0.0.75 (2026-11-09)
 
 ### 🧱 Updated Dependencies

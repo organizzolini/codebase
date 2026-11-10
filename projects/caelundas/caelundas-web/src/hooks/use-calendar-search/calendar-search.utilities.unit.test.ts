@@ -67,8 +67,10 @@ describe(validateCalendarSearch, () => {
       "sky.lineWidth": 2,
       "sky.lon": -0.1,
       "sky.maxMag": 5,
+      "sky.opacity": 0.4,
       "sky.pixelsPerSecond": 20,
       "sky.starScale": 1.5,
+      "sky.surfaceOpacity": 0.7,
       "sky.top": "04060f",
       "sky.vFov": 30,
     };

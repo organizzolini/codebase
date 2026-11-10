@@ -26,12 +26,15 @@ import {
 
 import type { FixtureDatabase } from "../../../testing/fixture-persistence";
 import type { StartedPostgresContainer } from "@codebase/persistence/testing";
+import type * as Testing from "@codebase/testing";
 
 // 🎯 The real execFile, wrapped so a test can read the arguments and
 // environment every client tool was started with.
 vi.mock("node:child_process", async (importOriginal) => {
-  const actual = await importOriginal<{ execFile: typeof execFile }>();
-  return { ...actual, execFile: vi.fn<typeof execFile>(actual.execFile) };
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
 });
 
 /** Nothing listens on port 1, so any connection attempt would fail loudly. */

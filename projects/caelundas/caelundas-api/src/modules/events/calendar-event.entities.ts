@@ -1,7 +1,7 @@
 import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
 
 import { CalendarEventTagEntity } from "./calendar-event-tag.entities";
-import { EventGroupKeyEntity } from "./event-group-key.entities";
+import { EventGroupKeyEntity } from "./grouping/event-group-key.entities";
 
 // 🧬 Entities
 

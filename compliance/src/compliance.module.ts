@@ -5,7 +5,7 @@ import { DiscoveryModule } from "@nestjs/core";
 import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "./compliance.constants";
-import { AuditGovernanceModule } from "./modules/audit-governance/audit-governance.module";
+import { AuditFilesModule } from "./modules/audit-files/audit-files.module";
 import { IssueModule } from "./modules/issue/issue.module";
 import { OrganizationProjectModule } from "./modules/organization-project/organization-project.module";
 import { PullRequestModule } from "./modules/pull-request/pull-request.module";
@@ -21,7 +21,7 @@ import { PullRequestModule } from "./modules/pull-request/pull-request.module";
       validate: (config: Record<string, unknown>) =>
         environmentSchema.parse(config),
     }),
-    AuditGovernanceModule,
+    AuditFilesModule,
     DiscoveryModule,
     IssueModule,
     LoggerModule,

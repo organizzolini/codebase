@@ -20,7 +20,7 @@ describe(useFilterQuery, () => {
 
     expect(result.current.query).toStrictEqual(EMPTY_EVENT_FILTER);
     expect(result.current).toStrictEqual({
-      handleCollectionSelect: expect.any(Function),
+      handlePresetSelect: expect.any(Function),
       handleQueryChange: expect.any(Function),
       query: EMPTY_EVENT_FILTER,
     });
@@ -35,7 +35,7 @@ describe(useFilterQuery, () => {
     expect(result.current.query).toStrictEqual(filter);
   });
 
-  it("writes a collection picked to the link at once", () => {
+  it("writes a preset picked to the link at once", () => {
     const onFilterChange = vi.fn<(filter: EventFilterQuery) => void>();
     const filter = filterGroup("and", fieldRule("hour", "between", [22, 23]));
     const { result } = renderHook(() =>
@@ -43,7 +43,7 @@ describe(useFilterQuery, () => {
     );
 
     act(() => {
-      result.current.handleCollectionSelect(filter);
+      result.current.handlePresetSelect(filter);
     });
 
     expect(result.current.query).toStrictEqual(filter);
