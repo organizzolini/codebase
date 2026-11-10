@@ -44,28 +44,31 @@ export class DeclarationCommentsService {
   }
 
   /**
-   * Finds the node's leading JSDoc range, the last if several.
-   *
-   * A blank line detaches it, leaving it to the file header.
+   * Finds the node's leading JSDoc range, the last if several. A blank line detaches it, leaving it to the file header. Walked in a loop to keep a frame off the stack.
    */
   private getJsDocRange(
     node: tsCompiler.Node,
     sourceFile: tsCompiler.SourceFile,
   ): tsCompiler.CommentRange | undefined {
     const isFile = node.kind === tsCompiler.SyntaxKind.SourceFile;
-
-    return (
+    const ranges =
       tsCompiler.getLeadingCommentRanges(
         sourceFile.text,
         node.getFullStart(),
-      ) ?? []
-    ).findLast(
-      (candidate) =>
+      ) ?? [];
+
+    for (const candidate of ranges.toReversed()) {
+      if (
         candidate.kind === tsCompiler.SyntaxKind.MultiLineCommentTrivia &&
         sourceFile.text.slice(candidate.pos, candidate.pos + 3) === "/**" &&
         DETACHED_COMMENT_REGEX.test(sourceFile.text.slice(candidate.end)) ===
-          isFile,
-    );
+          isFile
+      ) {
+        return candidate;
+      }
+    }
+
+    return undefined;
   }
 
   /**
@@ -118,9 +121,8 @@ export class DeclarationCommentsService {
     return text
       .replace(/^\/\*\*/u, "")
       .replace(/\*\/$/u, "")
-      .split("\n")
-      .map((line) => line.replace(/^\s*\*\s?/u, ""))
-      .join(" ");
+      .replaceAll(/^[^\S\n]*\*[^\S\n]?/gmu, "")
+      .replaceAll("\n", " ");
   }
 
   // 🌎 Public Methods

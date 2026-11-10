@@ -4,7 +4,7 @@ import { Test } from "@nestjs/testing";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { corsOptions } from "./caelundas-api.utilities";
+import { CorsService } from "./cors.service";
 import { HealthModule } from "./modules/health/health.module";
 
 import type { INestApplication } from "@nestjs/common";
@@ -33,7 +33,7 @@ describe("caelundas api graphql end-to-end suite", () => {
     }).compile();
 
     application = module.createNestApplication<INestApplication<Server>>();
-    application.enableCors(corsOptions([webOrigin]));
+    application.enableCors(new CorsService().getOptions([webOrigin]));
     await application.listen(0);
     url = `${await application.getUrl()}/graphql`;
   });

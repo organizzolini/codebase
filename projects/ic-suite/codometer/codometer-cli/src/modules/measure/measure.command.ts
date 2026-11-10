@@ -23,7 +23,9 @@ import type { MeasurementResult } from "@codometer/measurement";
  * CLI entry point for the repository measurement workflow.
  */
 @Command({
-  description: "Measure a directory and produce every resolved output",
+  arguments: "[directories...]",
+  description:
+    "Measure the working directory, or each directory named, and produce every resolved output",
   name: "measure",
 })
 @Injectable()
@@ -90,7 +92,69 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Reads the configuration `--config` names. Nothing is searched for, so a missing flag or unreadable file fails the run.
+   * Measure one directory and produce every resolved output, returning whether
+   * the run failed.
+   *
+   * Nothing here reads the working directory or sets the exit code, so `run`
+   * can measure many directories in one process and weigh each one's verdict
+   * on its own. `options.config` should be absolute, since a relative path is
+   * read against the process's working directory.
+   *
+   * Flags are independent: `--output-json`/`--output-markdown` each write
+   * their own destination, `--check reports` fails on a stale report,
+   * `--check limits` fails on a breached limit, `--format` prints, and none of
+   * them turns another on. Every output is produced before any finding is
+   * weighed, so a run that writes and gates leaves the report behind even
+   * when the gate trips.
+   */
+  private async measureDirectory(
+    options: MeasureCommandOptions,
+    workingDirectory: string,
+  ): Promise<boolean> {
+    const plan = await this.resolveRunPlan(options, workingDirectory);
+
+    if (plan === undefined) {
+      return true;
+    }
+
+    const { configuration, consoleMarkdown, destinations, format, mode } = plan;
+    const outputPaths = this.destinationsService.listOutputPaths({
+      destinations,
+      workingDirectory,
+    });
+
+    this.announceOutputPaths(outputPaths);
+
+    const measurement: MeasurementResult = this.measureService.measure({
+      configuration,
+      outputPaths,
+      workingDirectory,
+    });
+    const report = this.reportService.build(measurement);
+    const stalePaths = this.deliveryService.deliver({
+      consoleMarkdown,
+      destinations,
+      format,
+      measurement,
+      mode,
+      report,
+      scope: this.destinationsService.selectScope(workingDirectory),
+    });
+
+    return this.reportFindings({ measurement, mode, stalePaths });
+  }
+
+  /**
+   * Read the configuration, or say why it could not be read.
+   *
+   * Reports the reason and returns `undefined` rather than failing the process:
+   * whoever called `measureDirectory` decides what a refused run costs.
+   *
+   * `--config` is required: no file is searched for and none is assumed, so a
+   * run without it fails naming the flag, and so does a path that names no
+   * file or a configuration nothing can parse. A shared default object,
+   * spread by each project's own `codometer.config.ts`, is what states
+   * `format` once for a workspace.
    */
   private async readConfiguration(
     options: MeasureCommandOptions,
@@ -115,15 +179,13 @@ export class MeasureCommand extends CommandRunner {
       this.logger.error(`📊 Rejected the configuration`, undefined, {
         reason: error instanceof Error ? error.message : String(error),
       });
-      process.exitCode = 1;
       return undefined;
     }
   }
 
-  /** Says the command line could not be made sense of, and fails the run. */
+  /** Says the command line could not be made sense of. */
   private rejectCommandLine(reasons: string[]): void {
     this.logger.error(`📊 Rejected the command line`, undefined, { reasons });
-    process.exitCode = 1;
   }
 
   /** Report every breached limit, and say whether one of them fails the run. */
@@ -167,21 +229,19 @@ export class MeasureCommand extends CommandRunner {
     );
   }
 
-  /** Weigh every finding, set the exit code once, and say the run is done. */
-  private reportFindings(args: ReportFindingsArguments): void {
+  /** Weigh every finding, say the run is done, and say whether it failed. */
+  private reportFindings(args: ReportFindingsArguments): boolean {
     const failed = this.reportFailures(args);
     const stale = this.reportStaleness(args);
     const breached = this.reportBreaches(args);
-
-    if (failed || stale || breached) {
-      process.exitCode = 1;
-    }
 
     this.logger.info("✅ Finished the measurement run", undefined, {
       breachCount: args.measurement.limits.filter((limit) => limit.breached)
         .length,
       inputCount: args.measurement.inputs.length,
     });
+
+    return failed || stale || breached;
   }
 
   /** Report every stale destination, and say whether that fails the run. */
@@ -262,8 +322,6 @@ export class MeasureCommand extends CommandRunner {
     return workingDirectory;
   }
 
-  // 🌎 Public Methods
-
   /**
    * Parses the set of checks to fail on. A `--check` with no value is refused later rather than silently becoming write mode.
    */
@@ -334,44 +392,49 @@ export class MeasureCommand extends CommandRunner {
     return value;
   }
 
+  // 🌎 Public Methods
+
   /**
-   * Measures the repository and produces every output. Flags are independent, and every output is written before any finding gates the run.
+   * Measure the process's working directory, or each directory named, and fail
+   * the process when any run failed.
+   *
+   * Directories are named only by a caller that would otherwise start this
+   * command once per directory and pay its start-up each time. Each is
+   * measured exactly as a run started inside it would be, with `--config`
+   * read against that directory, and one that throws fails its own run
+   * without stopping the rest. Without any, a throw is the command line's to
+   * report, as it always was.
    */
   async run(
-    _passedParameters: string[],
+    directories: string[],
     options: MeasureCommandOptions,
   ): Promise<void> {
-    const workingDirectory = this.resolveWorkingDirectory();
-    const plan = await this.resolveRunPlan(options, workingDirectory);
+    if (directories.length === 0) {
+      if (
+        await this.measureDirectory(options, this.resolveWorkingDirectory())
+      ) {
+        process.exitCode = 1;
+      }
 
-    if (plan === undefined) {
       return;
     }
 
-    const { configuration, consoleMarkdown, destinations, format, mode } = plan;
-    const outputPaths = this.destinationsService.listOutputPaths({
-      destinations,
-      workingDirectory,
-    });
+    for (const directory of directories.map((named) => path.resolve(named))) {
+      try {
+        const failed = await this.measureDirectory(
+          options.config === undefined
+            ? options
+            : { ...options, config: path.resolve(directory, options.config) },
+          directory,
+        );
 
-    this.announceOutputPaths(outputPaths);
-
-    const measurement: MeasurementResult = this.measureService.measure({
-      configuration,
-      outputPaths,
-      workingDirectory,
-    });
-    const report = this.reportService.build(measurement);
-    const stalePaths = this.deliveryService.deliver({
-      consoleMarkdown,
-      destinations,
-      format,
-      measurement,
-      mode,
-      report,
-      scope: this.destinationsService.selectScope(workingDirectory),
-    });
-
-    this.reportFindings({ measurement, mode, stalePaths });
+        process.exitCode = failed ? 1 : process.exitCode;
+      } catch (error: unknown) {
+        this.logger.error(`📊 Failed to measure ${directory}`, undefined, {
+          reason: error instanceof Error ? error.message : String(error),
+        });
+        process.exitCode = 1;
+      }
+    }
   }
 }

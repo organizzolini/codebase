@@ -59,9 +59,13 @@ codometer --config configuration/codometer.config.ts --check limits
 | `--output-json [path]` | Write the JSON report, at the given path or the configured one |
 | `--output-markdown [path]` | Write the markdown badge block, at the given path or the configured one |
 
-There is no `--directory`: a run always measures the process's working
-directory, with no per-invocation override. `cd` into what you want measured,
-or narrow it with `--inputs`.
+There is no `--directory`: a run measures the process's working directory.
+`cd` into what you want measured, or narrow it with `--inputs`. Directories
+named as arguments, as in `codometer measure --config codometer.config.ts a b`,
+are each measured as a run started inside them would be, with `--config` read
+there, from one process: a runner that would start the command once per
+directory pays its start-up once instead. The exit code says only that some
+directory failed, so rerun a failing one by itself for its own report.
 
 **Every flag is independent.** `--output-json`/`--output-markdown` each write
 their own destination, `--check limits` fails on a breached limit, `--check

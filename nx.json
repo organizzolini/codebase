@@ -266,180 +266,28 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "node --import @swc-node/register/esm-register ../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config codometer.config.ts --output-json --check limits"
+            "check": true
           },
           "write": {
-            "command": "node --import @swc-node/register/esm-register ../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config codometer.config.ts --output-json --output-markdown codometer.md"
+            "outputMarkdown": "codometer.md"
           }
         },
         "defaultConfiguration": "check",
         "dependsOn": ["build"],
-        "description": "Measure one project and gate the limit it declares, writing the report the pull request's ⏲️ Codometer section reads. This default depends on `build` because size analysis reads compiled output; the workspace-wide `configuration:codometer` target must NOT, because it measures source and waiting on every build would be both slow and circular — it pins `dependsOn` to an empty list of its own so this default can never reach it, and neither half of that asymmetry may be collapsed into the other. The command runs with `cwd` set to `{projectRoot}` rather than the workspace root: codometer has no `--directory` flag of its own and always measures the process's own working directory, so running there is what makes a project's `limits[]` address paths like `Compiled JavaScript.size` rather than ones synthesized under a `Command Line` input, and it is also what makes `--config codometer.config.ts`, which every command names because codometer reads no configuration it is not given, mean the project's own file instead of the workspace one. `main.ts` is addressed with a literal `../` rather than `{workspaceRoot}` for the same reason — the working directory it runs from is no longer the workspace root, and Nx only resolves the `{workspaceRoot}` token when it opens the whole option's value, not when it appears partway through one; this entry reaches every project that sits directly below the workspace root, such as `validation`; the ones at `projects/<project>`, the ones nested one level deeper under a domain folder such as `projects/lexico/`, and the ones under `projects/ic-suite/<suite>/`, each have their own override below. `SWC_NODE_PROJECT` is pinned the same way, to the shared base every project's own tsconfig already extends: `@swc-node/register`'s ESM hook resolves its tsconfig as `<cwd>/tsconfig.json` with no upward search, so a project with no `tsconfig.json` of its own — `affirmancy`, which is pure Python — would otherwise fail to load `codometer-cli` at all rather than measure anything, the same way `codometer-cli`'s own `start` target already pins this for the same hook. `--output-json` is a bare flag rather than a path, so it writes wherever the resolved configuration's own `json` output says to — the shared configuration's `codometer-report.json`, the same path for every project — and a target that left the flag off would write nothing at all and still exit clean — contributing nothing to the ⏲️ Codometer section and looking exactly like a project that changed nothing — so passing it is what makes the report exist, not something the tool refuses to run without. `--output-markdown codometer.md` stays a literal path on the command line because only the `write` configuration passes it, which is what keeps a branch's `check` run from rewriting every project's `codometer.md`; `check` adds `--check limits` so a breach fails only after the report is on disk. Neither checks staleness: project `codometer.md` files are written on main by the release workflow, so they are expected to be stale on a branch. The report this target writes is subtracted from its own inputs, because `production` would otherwise glob it back in and every run would rewrite the hash it was just cached under — a local run could never hit its own cache, and a fresh checkout could never match one. `README.md` stays an input despite also being an output: codometer measures markdown, so an edit to it genuinely changes the measurement, and restoring it from cache writes back the identical bytes.",
-        "executor": "nx:run-commands",
+        "description": "Measure one project and gate the limit it declares, writing the report the pull request's ⏲️ Codometer section reads. Runs through the `integration:codometer` executor rather than `nx:run-commands`, because that executor is a batch executor: `nx affected -t codometer` hands it every project at once and one process measures them all, where a process per project paid the swc hook's start-up and codometer's module load each time. Each task still passes, fails and is cached by itself: the report and badge block are written under each project's root exactly as the command line writes them, and a limit breach fails only its own project after its report is on disk. The executor's own sources are inputs, so changing how codometer is run re-runs every project's measurement, and `--batch=false` turns batching off and runs each project through the command line as before. It depends on `build` because size analysis reads compiled output; the workspace-wide `configuration:codometer` target must NOT, because it measures source and waiting on every build would be both slow and circular — it pins `dependsOn` to an empty list of its own so this default can never reach it, and neither half of that asymmetry may be collapsed into the other. The executor measures each project from its own root, which is what makes a project's `limits[]` address paths like `Compiled JavaScript.size` rather than ones synthesized under a `Command Line` input, and what makes `config`, which every task names because codometer reads no configuration it is not given, mean the project's own file instead of the workspace one. `--output-json` is always on, writing wherever the resolved configuration's own `json` output says to — the shared configuration's `codometer-report.json`, the same path for every project — because a task that left it off would write nothing at all and still exit clean, contributing nothing to the ⏲️ Codometer section and looking exactly like a project that changed nothing. `outputMarkdown` is set only by the `write` configuration, which is what keeps a branch's `check` run from rewriting every project's `codometer.md`; `check` sets `check`, so a breach fails only after the report is on disk. Neither checks staleness: project `codometer.md` files are written on main by the release workflow, so they are expected to be stale on a branch. The report this target writes is subtracted from its own inputs, because `production` would otherwise glob it back in and every run would rewrite the hash it was just cached under — a local run could never hit its own cache, and a fresh checkout could never match one. `README.md` stays an input despite also being an output: codometer measures markdown, so an edit to it genuinely changes the measurement, and restoring it from cache writes back the identical bytes.",
+        "executor": "integration:codometer",
         "inputs": [
           "!{projectRoot}/codometer-report.json",
           "^production",
           "{workspaceRoot}/configuration/.codometerignore",
           "{workspaceRoot}/configuration/codometer.config.ts",
+          "{workspaceRoot}/integration/executors.json",
+          "{workspaceRoot}/integration/src/executors/codometer/**/!(*.test.*|*.spec.*)",
+          "{workspaceRoot}/integration/src/modules/process-runner/process-runner.service.ts",
           "production"
         ],
         "options": {
-          "cwd": "{projectRoot}",
-          "env": {
-            "SWC_NODE_PROJECT": "../configuration/tsconfig.json"
-          }
-        },
-        "outputs": [
-          "{projectRoot}/codometer.md",
-          "{projectRoot}/codometer-report.json"
-        ]
-      },
-      {
-        "cache": true,
-        "configurations": {
-          "check": {
-            "command": "node --import @swc-node/register/esm-register ../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config codometer.config.ts --output-json --check limits"
-          },
-          "write": {
-            "command": "node --import @swc-node/register/esm-register ../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config codometer.config.ts --output-json --output-markdown codometer.md"
-          }
-        },
-        "defaultConfiguration": "check",
-        "dependsOn": ["build"],
-        "description": "The `projects/<project>` override of the default `codometer` entry: every field is identical except the climb back to the workspace root, which is two levels instead of one.",
-        "executor": "nx:run-commands",
-        "filter": {
-          "projects": ["projects/*"]
-        },
-        "inputs": [
-          "!{projectRoot}/codometer-report.json",
-          "^production",
-          "{workspaceRoot}/configuration/.codometerignore",
-          "{workspaceRoot}/configuration/codometer.config.ts",
-          "production"
-        ],
-        "options": {
-          "cwd": "{projectRoot}",
-          "env": {
-            "SWC_NODE_PROJECT": "../../configuration/tsconfig.json"
-          }
-        },
-        "outputs": [
-          "{projectRoot}/codometer.md",
-          "{projectRoot}/codometer-report.json"
-        ]
-      },
-      {
-        "cache": true,
-        "configurations": {
-          "check": {
-            "command": "node --import @swc-node/register/esm-register ../../../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config codometer.config.ts --output-json --check limits"
-          },
-          "write": {
-            "command": "node --import @swc-node/register/esm-register ../../../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config codometer.config.ts --output-json --output-markdown codometer.md"
-          }
-        },
-        "defaultConfiguration": "check",
-        "dependsOn": ["build"],
-        "description": "The `projects/ic-suite/<suite>/` override of the default `codometer` entry above: every field is identical except the two relative paths, corrected from two directories below the workspace root to four. Kept as a full second entry rather than a partial one because Nx does not merge across matching targetDefaults array entries — the last one whose `filter` matches a project replaces the earlier entry wholesale for that project, so a partial override would silently drop the fields it left out.",
-        "executor": "nx:run-commands",
-        "filter": {
-          "projects": [
-            "callidescope-agents",
-            "callidescope-cli",
-            "callidescope-configuration",
-            "callidescope-core",
-            "callidescope-examples",
-            "callidescope-graph",
-            "callidescope-nx",
-            "callidescope-output",
-            "codependix-agents",
-            "codependix-boundaries",
-            "codependix-cli",
-            "codependix-configuration",
-            "codependix-core",
-            "codependix-examples",
-            "codependix-file-imports",
-            "codependix-nestjs-modules",
-            "codependix-nx",
-            "codependix-nx-projects",
-            "codependix-output",
-            "codometer-agents",
-            "codometer-cli",
-            "codometer-configuration",
-            "codometer-core",
-            "codometer-examples",
-            "codometer-languages",
-            "codometer-measurement",
-            "codometer-output",
-            "coinagerie-agents",
-            "coinagerie-cli",
-            "coinagerie-configuration",
-            "coinagerie-core",
-            "coinagerie-examples",
-            "coinagerie-languages",
-            "coinagerie-nx",
-            "coinagerie-output",
-            "coinagerie-vocabulary",
-            "conformetry-agents",
-            "conformetry-cli",
-            "conformetry-configuration",
-            "conformetry-core",
-            "conformetry-examples",
-            "conformetry-generation",
-            "conformetry-languages",
-            "conformetry-nx",
-            "conformetry-output",
-            "conformetry-validation"
-          ]
-        },
-        "inputs": [
-          "!{projectRoot}/codometer-report.json",
-          "^production",
-          "{workspaceRoot}/configuration/.codometerignore",
-          "{workspaceRoot}/configuration/codometer.config.ts",
-          "production"
-        ],
-        "options": {
-          "cwd": "{projectRoot}",
-          "env": {
-            "SWC_NODE_PROJECT": "../../../../configuration/tsconfig.json"
-          }
-        },
-        "outputs": [
-          "{projectRoot}/codometer.md",
-          "{projectRoot}/codometer-report.json"
-        ]
-      },
-      {
-        "cache": true,
-        "configurations": {
-          "check": {
-            "command": "node --import @swc-node/register/esm-register ../../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config codometer.config.ts --output-json --check limits"
-          },
-          "write": {
-            "command": "node --import @swc-node/register/esm-register ../../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config codometer.config.ts --output-json --output-markdown codometer.md"
-          }
-        },
-        "defaultConfiguration": "check",
-        "dependsOn": ["build"],
-        "description": "The `projects/<domain>/` override of the default `codometer` entry above: every field is identical except the two relative paths, corrected from two directories below the workspace root to three. A full entry for the same reason as the `projects/ic-suite/<suite>/` one: Nx replaces a matching targetDefaults array entry wholesale rather than merging it.",
-        "executor": "nx:run-commands",
-        "filter": {
-          "projects": ["projects/*/*"]
-        },
-        "inputs": [
-          "!{projectRoot}/codometer-report.json",
-          "^production",
-          "{workspaceRoot}/configuration/.codometerignore",
-          "{workspaceRoot}/configuration/codometer.config.ts",
-          "production"
-        ],
-        "options": {
-          "cwd": "{projectRoot}",
-          "env": {
-            "SWC_NODE_PROJECT": "../../../configuration/tsconfig.json"
-          }
+          "config": "codometer.config.ts"
         },
         "outputs": [
           "{projectRoot}/codometer.md",

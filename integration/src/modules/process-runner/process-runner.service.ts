@@ -10,7 +10,11 @@ import {
   MAXIMUM_CAPTURED_BYTES,
 } from "./process-runner.constants";
 
-import type { CapturedProcess, Command } from "./process-runner.types";
+import type {
+  CapturedProcess,
+  CaptureLocation,
+  Command,
+} from "./process-runner.types";
 
 /**
  * Runs child processes for the integration commands.
@@ -33,8 +37,7 @@ export class ProcessRunnerService {
   // 🌎 Public Methods
 
   /**
-   * Runs a command to completion with no shell, returning what it printed.
-   * @returns Both output streams and the exit code.
+   * Runs a command to completion and returns both output streams and the exit code.
    */
   public capture(executable: string, args: readonly string[]): CapturedProcess {
     const result = spawnSync(executable, [...args], {
@@ -52,14 +55,15 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command without blocking, so several can run at once.
-   * @returns Both output streams and the exit code.
+   * Runs a command without blocking and returns what it printed. Standard input is closed at once.
    */
   public async captureAsync(
     executable: string,
     args: readonly string[],
+    where: CaptureLocation = {},
   ): Promise<CapturedProcess> {
     const child = spawn(executable, [...args], {
+      ...where,
       stdio: ["ignore", "pipe", "pipe"],
     });
     const printed = Promise.allSettled([
@@ -89,8 +93,7 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs commands in order, stopping at the first that fails.
-   * @returns Their combined output, and the failing exit code or 0.
+   * Runs commands in order, stopping at the first that fails, and returns their output.
    */
   public captureSequence(commands: readonly Command[]): CapturedProcess {
     const finished: CapturedProcess = { status: 0, stderr: "", stdout: "" };
@@ -111,8 +114,7 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command to completion, writing stdout byte for byte to a file,
-   * which suits binary downloads. Returns the exit code.
+   * Runs a command with its standard output written byte for byte to a file.
    */
   public captureToFile(
     executable: string,
@@ -140,8 +142,7 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command with this process's own output streams, so its output
-   * reads as the shell step's did. Returns the exit code.
+   * Runs a command with this process's own output streams, optionally writing text to its input.
    */
   public stream(
     executable: string,

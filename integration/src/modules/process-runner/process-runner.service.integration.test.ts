@@ -78,6 +78,20 @@ describe(ProcessRunnerService, () => {
       });
     });
 
+    it("runs in the directory and environment it is given", async () => {
+      expect.hasAssertions();
+
+      const result = await service.captureAsync(
+        process.execPath,
+        ["-e", "process.stdout.write(process.cwd() + process.env.WHERE)"],
+        { cwd: import.meta.dirname, env: { WHERE: "-here" } },
+      );
+
+      expect(result.stdout).toBe(
+        `${fs.realpathSync(import.meta.dirname)}-here`,
+      );
+    });
+
     it("closes standard input at once", async () => {
       expect.hasAssertions();
 

@@ -3,21 +3,21 @@ import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
 import { CalendarEventEntity } from "./calendar-event.entities";
 import { EventFacetEntity } from "./event-facet.entities";
-import { EventFilterGroupEntity } from "./event-filter.entities";
-import { parseEventFilter } from "./event-filter.utilities";
-import { EventGroupingEntity } from "./event-grouping.entities";
-import { parseEventGrouping } from "./event-grouping.utilities";
 import {
   EVENT_FILTER_ARGUMENT_DESCRIPTION,
   EVENT_GROUPING_ARGUMENT_DESCRIPTION,
 } from "./events.constants";
 import { EventsDatasetEntity } from "./events.entities";
 import { EventsService } from "./events.service";
-import { PeriodInput } from "./period-input.entities";
-import { PresetEntity } from "./preset.entities";
-import { DEFAULT_PRESET_ID } from "./presets.constants";
-import { WindowsArguments } from "./windows-arguments.entities";
-import { WindowsEntity } from "./windows.entities";
+import { EventFilterGroupEntity } from "./filters/event-filter.entities";
+import { EventFilterService } from "./filters/event-filter.service";
+import { EventGroupingEntity } from "./grouping/event-grouping.entities";
+import { EventGroupingService } from "./grouping/event-grouping.service";
+import { PresetEntity } from "./presets/preset.entities";
+import { DEFAULT_PRESET_ID } from "./presets/presets.constants";
+import { PeriodInput } from "./windows/period-input.entities";
+import { WindowsArguments } from "./windows/windows-arguments.entities";
+import { WindowsEntity } from "./windows/windows.entities";
 
 /**
  * Serves the dataset, events and facets queries over the Caelundas Postgres.
@@ -27,6 +27,10 @@ export class EventsResolver {
   // 🏗 Dependency Injection
 
   constructor(
+    @Inject(EventFilterService)
+    private readonly filterService: EventFilterService,
+    @Inject(EventGroupingService)
+    private readonly groupingService: EventGroupingService,
     @Inject(EventsService) private readonly eventsService: EventsService,
   ) {}
   // 🔎 Queries
@@ -85,8 +89,8 @@ export class EventsResolver {
   ): Promise<CalendarEventEntity[]> {
     return this.eventsService.findEvents(
       period,
-      parseEventFilter(filter),
-      parseEventGrouping(grouping),
+      this.filterService.parse(filter),
+      this.groupingService.parse(grouping),
     );
   }
 
@@ -108,7 +112,10 @@ export class EventsResolver {
     })
     filter?: EventFilterGroupEntity | null,
   ): Promise<EventFacetEntity[]> {
-    return this.eventsService.findFacets(period, parseEventFilter(filter));
+    return this.eventsService.findFacets(
+      period,
+      this.filterService.parse(filter),
+    );
   }
 
   /**
