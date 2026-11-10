@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.61.4](https://github.com/organizzolini/codebase/compare/v3.61.3...v3.61.4) (2026-11-10)
+
+### ⚡ Performance Improvements
+
+* **integration,codometer:** ⚡️ judge every project's codometer limits from one batched run ([#2244](https://github.com/organizzolini/codebase/issues/2244)) ([283f014](https://github.com/organizzolini/codebase/commit/283f014b00563a7a455d190e27bebeb0bfe34d89)), closes [#2242](https://github.com/organizzolini/codebase/issues/2242) [#2112](https://github.com/organizzolini/codebase/issues/2112) [#2113](https://github.com/organizzolini/codebase/issues/2113)
+
+### ♻️ Code Refactoring
+
+* **caelundas:** ♻️ move events utilities into services and submodules ([#2220](https://github.com/organizzolini/codebase/issues/2220)) ([0dfa25b](https://github.com/organizzolini/codebase/commit/0dfa25b763d36ba5928558d5b74402a68ea88b2e)), closes [#2214](https://github.com/organizzolini/codebase/issues/2214) [#2211](https://github.com/organizzolini/codebase/issues/2211) [#2216](https://github.com/organizzolini/codebase/issues/2216)
+
 ## [3.61.3](https://github.com/organizzolini/codebase/compare/v3.61.2...v3.61.3) (2026-11-10)
 
 ### ♻️ Code Refactoring

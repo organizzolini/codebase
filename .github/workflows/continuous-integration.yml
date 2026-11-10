@@ -54,26 +54,14 @@ jobs:
       fail-fast: false
       matrix:
         check:
-          - target: typecheck-code
-            name: Typecheck
-            emoji: 🧑‍🎓
-          - target: format-code
-            name: Format
-            emoji: 🧑‍🎨
-          - target: lint-code
-            name: Lint
+          # `static-code` runs the static gates in one `nx affected` call with
+          # `--configuration=check`. Keep `targets` equal to `guard-code`'s
+          # `dependsOn` in `nx.json` plus the gates run here, less those with legs
+          # below: a gate named in neither place is checked by nothing in CI.
+          - target: static-code
+            targets: typecheck-code,format-code,lint-code,deprecate-code,catalog-manifests,lockfile,project-ports,readme-projects,vscode-extensions
+            name: Static
             emoji: 🧑‍⚕️
-          - target: deprecate-code
-            name: Deprecate
-            emoji: 🧟
-          # guard-code aggregates these five legs. Run as legs of their own they share
-          # the runner pool, so each stays inside the default limit.
-          # Keep this leg's `targets` equal to `guard-code`'s `dependsOn` in `nx.json`:
-          # a gate named in neither is checked by nothing in CI.
-          - target: guard-code
-            targets: catalog-manifests,lockfile,project-ports,readme-projects,vscode-extensions
-            name: Guard
-            emoji: 💂
           - target: callidescope-restrict
             name: Callidescope Restrict
             emoji: 🔭
@@ -247,7 +235,7 @@ jobs:
           # `terraform-validate` run as part of lint-code, and the runner image
           # no longer ships terraform.
           terraform: >-
-            ${{ (matrix.check.target == 'lint-code' ||
+            ${{ (matrix.check.target == 'static-code' ||
             matrix.check.target == 'plan-terraform') && 'true' || 'false' }}
           nx-cache: "true"
           nx-cache-scope: >-
@@ -256,7 +244,7 @@ jobs:
           nx-graph-cache: "true"
           nx-shas: "true"
           nx-base: push-before
-          eslint-cache: ${{ matrix.check.target == 'lint-code' && 'true' || 'false' }}
+          eslint-cache: ${{ matrix.check.target == 'static-code' && 'true' || 'false' }}
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
@@ -421,7 +409,7 @@ jobs:
           always() &&
           steps.check-skip.outputs.skip != 'true' &&
           (matrix.check.target == 'build-projects' ||
-          matrix.check.target == 'typecheck-code' ||
+          matrix.check.target == 'static-code' ||
           matrix.check.target == 'test-code')
         uses: ./.github/actions/report-integration
         with:
@@ -450,5 +438,5 @@ jobs:
             github.event.pull_request.head.repo.full_name == github.repository
             && 'true' || 'false' }}
           eslint-cache: >-
-            ${{ matrix.check.target == 'lint-code' &&
+            ${{ matrix.check.target == 'static-code' &&
             github.event_name != 'merge_group' && 'true' || 'false' }}

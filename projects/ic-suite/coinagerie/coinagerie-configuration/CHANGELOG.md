@@ -1,3 +1,9 @@
+## 0.0.15 (2026-11-10)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-core to 0.0.15
+
 ## 0.0.14 (2026-11-10)
 
 ### 💅 Refactors

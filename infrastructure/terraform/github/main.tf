@@ -208,16 +208,12 @@ locals {
   github_actions_integration_id = 15368
 
   required_checks = [
-    "🧑‍🎨 Format",
-    "🧑‍🎓 Typecheck",
     "🕵️ Secure",
-    "💂 Guard",
+    "🧑‍⚕️ Static",
     "🔭 Callidescope Restrict",
     "🕸️ Codependix Bound",
     "👔 Conformetry Validate",
     "👷 Build",
-    "🧑‍⚕️ Lint",
-    "🧟 Deprecate",
     "🤵 Publishable Packages",
     "🧑‍🚀 Infrastructure",
     "🧑‍🏭 Devcontainer",
