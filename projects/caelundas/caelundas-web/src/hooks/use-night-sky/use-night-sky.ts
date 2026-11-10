@@ -17,6 +17,7 @@ import {
   isReducedMotion,
   readNightSkyOverrides,
   subscribeToReducedMotion,
+  toNightSkyDrawing,
   toNightSkyInput,
 } from "./use-night-sky.utilities";
 import { useWindowSize } from "./use-window-size";
@@ -40,10 +41,12 @@ export function useNightSky(): UseNightSkyResult {
   // 🪝 Hooks
   // The router's state and not a match's search, since the root shell that
   // mounts the backdrop is rendered outside every match.
+  // Without the opacities, which the page applies, so moving one does not
+  // ask the API for the same sky again.
   const overrides = useRouterState({
     select: (state: {
       location: { search: Readonly<Record<string, unknown>> };
-    }) => readNightSkyOverrides(state.location.search),
+    }) => toNightSkyDrawing(readNightSkyOverrides(state.location.search)),
     structuralSharing: true,
   });
   const { size } = useWindowSize();
