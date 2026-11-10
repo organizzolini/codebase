@@ -1,3 +1,1 @@
-import { coinagerieConfiguration } from "../configuration/coinagerie.config.js";
-
-export default coinagerieConfiguration;
+export { coinagerieConfiguration as default } from "../configuration/coinagerie.config.js";

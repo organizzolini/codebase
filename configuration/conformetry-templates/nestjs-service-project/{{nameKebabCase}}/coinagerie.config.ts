@@ -1,3 +1,1 @@
-import { coinagerieConfiguration } from "{{workspaceRelativePrefix}}configuration/coinagerie.config.js";
-
-export default coinagerieConfiguration;
+export { coinagerieConfiguration as default } from "{{workspaceRelativePrefix}}configuration/coinagerie.config.js";
