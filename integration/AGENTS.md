@@ -66,6 +66,7 @@ one class.
 | `cleanup-codebase` | `src/modules/cleanup-codebase` | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it |
 | `keep-task-database` | `src/modules/keep-task-database` | `cleanup-codebase` |
 | `merge-task-cache` | `src/modules/merge-task-cache` | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory |
+| `publishable-packages-gate` | `src/modules/publishable-packages-gate` | the 🤵 Publishable Packages leg of Continuous Integration |
 | `run-affected` | `src/modules/run-affected` | the Continuous Integration matrix legs, for every check but Secure and Publishable Packages |
 | `collect-codometer-baseline` | `src/modules/collect-codometer-baseline` | the `report-integration` composite action, on a green `main` build |
 | `report-codometer-changes` | `src/modules/report-codometer-changes` | the `report-integration` composite action, on a pull request's build |
@@ -87,8 +88,8 @@ templates from Nx.
 
 `src/modules/process-runner` holds the wrapper over `node:child_process`
 (`capture` returns the output, `captureSequence` runs several commands until one
-fails, `captureAsync` does so without blocking, and `stream` inherits it). The `publication` project keeps its own copy for the
-release commands and the publishable-packages gate; the two are not shared
+fails, `captureAsync` does so without blocking, and `stream` inherits it). The `deployment` project keeps its own copy for the
+release commands; the two are not shared
 through a library yet. `src/modules/task-database` holds the service the three
 task-database commands share; it reads `NX_WORKSPACE_DATA_DIRECTORY` and
 `MACHINE_ID_FILES`, and opens the databases with the built-in `node:sqlite`, so

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -26,12 +27,12 @@ describe(PointCharacteristicsModule, () => {
   let west: WestEdgeCountCharacteristicService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CodeModule, MatrixModule, PointCharacteristicsModule],
-      providers: [CharacteristicContextService],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      CharacteristicContextService,
+      { imports: [CodeModule, MatrixModule, PointCharacteristicsModule] },
+    );
 
-    contextService = await module.resolve(CharacteristicContextService);
+    contextService = instance;
     east = module.get(EastEdgeCountCharacteristicService);
     edges = module.get(EdgeCountCharacteristicService);
     north = module.get(NorthEdgeCountCharacteristicService);

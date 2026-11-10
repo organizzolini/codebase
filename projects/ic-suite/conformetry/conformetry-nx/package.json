@@ -101,5 +101,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.77"
+  "version": "0.0.79"
 }

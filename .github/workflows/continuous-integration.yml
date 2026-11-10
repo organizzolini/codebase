@@ -145,7 +145,7 @@ jobs:
           # into a consumer outside the checkout, then runs its command lines
           # and one inferred target per Nx plugin. Runs whole, and only when an
           # ic-suite package or the check is affected — see the
-          # `publishable-packages-gate` command of the `publication` project.
+          # `publishable-packages-gate` command of the `integration` project.
           # Never authenticates to a registry: no step is given an npm token,
           # and setup-node is given no `registry-url`. Its first run on #1473
           # took 4m05s with nothing cached: 2m49s to pack and check, 34s of
@@ -358,7 +358,7 @@ jobs:
           PUBLISHABLE_PACKAGES_CONSUMER_ROOT: ${{ runner.temp }}/publishable-packages
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts publishable-packages-gate
+            integration/src/integration.main.ts publishable-packages-gate
 
       - name: 🗂️ Setup Environment File
         if: >-
@@ -460,7 +460,6 @@ jobs:
           run-outcome: ${{ steps.run-check.outcome }}
           pull-request-number: ${{ github.event.pull_request.number }}
           target: ${{ matrix.check.target }}
-          shard: ${{ matrix.check.shard }}
 
       # A merge group runs on its own `gh-readonly-queue/...` ref, new for every
       # group, and a cache saved there is readable by no later run: later

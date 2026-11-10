@@ -174,7 +174,7 @@ echo "Timestamp: $timestamp"
 `scripts/nx/` holds only the two helpers the Nx targets call,
 `await-health.sh` and `stop-port.sh`. The CI steps around the Nx task cache
 and the affected base, which used to be shell here, are commands of the
-[publication](../publication) project since
+[deployment](../deployment) project since
 [ADR 0028](../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
 
 ### Task-Result Database
@@ -212,13 +212,13 @@ can be exercised locally against a scratch directory and a fake id:
 
 ```bash
 NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
-  nx run publication:start:adopt-task-database
+  nx run deployment:start:adopt-task-database
 ```
 
 ### Affected Runs
 
 The affected-run steps are commands of the
-[publication](../publication) project too:
+[deployment](../deployment) project too:
 
 | Command | What it does |
 | ------- | ------------ |
@@ -230,7 +230,7 @@ locally:
 
 ```bash
 BEFORE=c160aad5f NX_BASE=HEAD~5 NX_HEAD=007edad2e GITHUB_ENV=/tmp/github-env \
-  nx run publication:start:bound-base-to-push
+  nx run deployment:start:bound-base-to-push
 ```
 
 ## Notepads

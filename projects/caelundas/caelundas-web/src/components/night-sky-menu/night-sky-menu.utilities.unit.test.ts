@@ -69,6 +69,8 @@ describe("night sky menu utilities", () => {
         "sky.eclipticOpacity": undefined,
         "sky.lat": undefined,
         "sky.lineColor": undefined,
+        "sky.opacity": undefined,
+        "sky.surfaceOpacity": undefined,
         "sky.top": undefined,
       });
       expect(change).not.toHaveProperty("sky.debug");

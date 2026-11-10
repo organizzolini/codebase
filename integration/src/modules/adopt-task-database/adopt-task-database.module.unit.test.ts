@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
+import { expectModuleImports } from "@codebase/testing/nestjs";
 
 import { TaskDatabaseModule } from "../task-database/task-database.module";
 
@@ -11,16 +12,17 @@ describe(AdoptTaskDatabaseModule, () => {
   it("registers expected imports and providers", () => {
     expect.hasAssertions();
 
-    const imports = Reflect.getMetadata("imports", AdoptTaskDatabaseModule) as
-      | undefined
-      | unknown[];
     const providers = Reflect.getMetadata(
       "providers",
       AdoptTaskDatabaseModule,
     ) as undefined | unknown[];
 
-    expect(imports).toContain(LoggerModule);
-    expect(imports).toContain(TaskDatabaseModule);
+    expectModuleImports(
+      AdoptTaskDatabaseModule,
+      LoggerModule,
+      TaskDatabaseModule,
+    );
+
     expect(providers).toContain(AdoptTaskDatabaseCommand);
   });
 });

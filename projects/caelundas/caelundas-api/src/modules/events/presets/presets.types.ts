@@ -16,6 +16,18 @@ export interface Preset {
 }
 
 /**
+ * A named set of filters the calendar applies in one step, written by tag
+ * names rather than ids so it does not depend on the database it is applied
+ * to.
+ */
+export interface Preset {
+  description: string;
+  filter: PresetGroup;
+  id: string;
+  name: string;
+}
+
+/**
  * Conditions joined under one combinator, nested groups included.
  */
 export interface PresetGroup {

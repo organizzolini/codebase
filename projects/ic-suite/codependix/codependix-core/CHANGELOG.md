@@ -1,3 +1,13 @@
+## 0.0.74 (2026-11-10)
+
+This was a version bump only for codependix-core to align it with other projects, there were no code changes.
+
+## 0.0.73 (2026-11-10)
+
+### 🚀 Features
+
+- **callidescope,codependix,codometer,coinagerie,configuration:** ✨ write tool markdown to adjacent files ([#2225](https://github.com/organizzolini/codebase/pull/2225), [#2224](https://github.com/organizzolini/codebase/issues/2224))
+
 ## 0.0.72 (2026-11-09)
 
 This was a version bump only for codependix-core to align it with other projects, there were no code changes.
