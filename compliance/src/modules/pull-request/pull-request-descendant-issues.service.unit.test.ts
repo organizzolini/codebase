@@ -1,11 +1,12 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestDescendantIssuesService } from "./pull-request-descendant-issues.service";
 import { PullRequestGithubService } from "./pull-request-github.service";
 
 import type { GithubCliResult } from "./pull-request-github.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 function output(standardOutput: string): GithubCliResult {
   return {
@@ -16,23 +17,23 @@ function output(standardOutput: string): GithubCliResult {
   };
 }
 
+/** What PullRequestDescendantIssuesService is built with. */
+const DEPENDENCIES = {
+  mocks: [PullRequestGithubService],
+} satisfies TestingModuleOptions;
+
 describe(PullRequestDescendantIssuesService, () => {
   let service: PullRequestDescendantIssuesService;
   let github: PullRequestGithubService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PullRequestDescendantIssuesService,
-        {
-          provide: PullRequestGithubService,
-          useValue: createMock<PullRequestGithubService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      PullRequestDescendantIssuesService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(PullRequestDescendantIssuesService);
-    github = await module.resolve(PullRequestGithubService);
+    service = built.instance;
+    github = built.mock(PullRequestGithubService);
   });
 
   beforeEach(() => {
@@ -51,8 +52,13 @@ describe(PullRequestDescendantIssuesService, () => {
     });
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      PullRequestDescendantIssuesService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(PullRequestDescendantIssuesService);
   });
 
   it("returns nothing when the issues have no sub-issues", () => {

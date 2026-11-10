@@ -1,64 +1,50 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { captureExitCode, captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CheckService } from "../check/check.service";
 
 import { BatchCommand } from "./batch.command";
 
 import type { CheckVerdict, RunCheckArguments } from "../check/check.types";
-import type { MockInstance } from "vitest";
+import type { CapturedOutput } from "@codebase/testing";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 const run = vi.fn<(args: RunCheckArguments) => Promise<CheckVerdict>>();
 
+/** What the BatchCommand is built with. */
+const DEPENDENCIES = {
+  providers: [{ provide: CheckService, useValue: { run } }],
+} satisfies TestingModuleOptions;
+
 describe(BatchCommand, () => {
   let command: BatchCommand;
-  let write: MockInstance<typeof process.stdout.write>;
+  let output: CapturedOutput;
+  let readExitCode: () => typeof process.exitCode;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        BatchCommand,
-        { provide: CheckService, useValue: { run } },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    command = await module.resolve(BatchCommand);
+    ({ instance: command } = await buildTestingModule(
+      BatchCommand,
+      DEPENDENCIES,
+    ));
   });
 
   beforeEach(() => {
     run.mockReset();
-    process.exitCode = 0;
-    write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
-    write.mockClear();
+    readExitCode = captureExitCode();
+    output = captureOutput();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(BatchCommand, DEPENDENCIES);
+
+    expect(instance).toBeInstanceOf(BatchCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        BatchCommand,
-        { provide: CheckService, useValue: { run } },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("BatchCommand");
+    await expectLoggerContext(BatchCommand, DEPENDENCIES);
   });
 
   it("prints one verdict per directory, in the order given", async () => {
@@ -72,7 +58,7 @@ describe(BatchCommand, () => {
 
     expect(run).toHaveBeenCalledTimes(2);
     expect(run.mock.calls.at(0)?.at(0)).toMatchObject({ mode: "check" });
-    expect(JSON.parse(String(write.mock.calls.at(0)?.at(0)))).toStrictEqual([
+    expect(JSON.parse(output.stdout())).toStrictEqual([
       { directory: "packages/a", ok: true, report: "" },
       { directory: "packages/b", ok: false, report: "missing: argv" },
     ]);
@@ -84,12 +70,12 @@ describe(BatchCommand, () => {
     run.mockResolvedValue({ ok: false, report: "x" });
     await command.run(["packages/a"]);
 
-    expect(process.exitCode).toBe(1);
+    expect(readExitCode()).toBe(1);
 
     run.mockResolvedValue({ ok: true, report: "" });
     await command.run(["packages/a"]);
 
-    expect(process.exitCode).toBe(0);
+    expect(readExitCode()).toBe(0);
   });
 
   it("writes when told to", async () => {

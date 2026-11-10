@@ -1,19 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { enterWorkspace } from "../../../testing/environment";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
@@ -34,24 +24,6 @@ const DOCKER_INFO = "docker info";
 const POSTGRES_UP = "pnpm exec nx run infrastructure:postgres:up";
 
 describe(LocalServicesService, () => {
-  let service: LocalServicesService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LocalServicesService,
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
-        { provide: ReporterService, useValue: createMock<ReporterService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(LocalServicesService);
-  });
-
   let workspace: TemporaryWorkspace;
   let report: string[];
 
@@ -60,14 +32,12 @@ describe(LocalServicesService, () => {
     machine: FakeMachine = {},
   ): Promise<{ fake: FakeProcessRunner; subject: LocalServicesService }> => {
     const fake = createFakeProcessRunner(machine);
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(LocalServicesService, {
       providers: [
-        LocalServicesService,
         ReporterService,
         { provide: ProcessRunnerService, useValue: fake.runner },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     return { fake, subject: await module.resolve(LocalServicesService) };
   };
@@ -85,9 +55,12 @@ describe(LocalServicesService, () => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LocalServicesService, {
+      mocks: [ProcessRunnerService, ReporterService],
+    });
+
+    expect(instance).toBeInstanceOf(LocalServicesService);
   });
 
   it("leaves a daemon that already answers alone and starts Postgres", async () => {

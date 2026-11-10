@@ -1,10 +1,12 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { DEFAULT_INCLUDE } from "@coinagerie/configuration";
 import { LanguagesModule, typescriptKeywords } from "@coinagerie/languages";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DiscoveryModule } from "../discovery/discovery.module";
 import { FoldingModule } from "../folding/folding.module";
@@ -14,29 +16,19 @@ import { VocabularyService } from "./vocabulary.service";
 
 import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration";
 
-const TEMPORARY_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
-
 describe(VocabularyService, () => {
   let service: VocabularyService;
   let root: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(VocabularyService, {
       imports: [DiscoveryModule, FoldingModule, LanguagesModule, WordsModule],
-      providers: [VocabularyService],
-    }).compile();
-
-    service = await module.resolve(VocabularyService);
+    }));
   });
 
   beforeEach(() => {
-    mkdirSync(TEMPORARY_ROOT, { recursive: true });
-    root = mkdtempSync(path.join(TEMPORARY_ROOT, "vocabulary-"));
+    root = createTemporaryDirectory("vocabulary");
     mkdirSync(path.join(root, ".git"));
-  });
-
-  afterEach(() => {
-    rmSync(root, { force: true, recursive: true });
   });
 
   function writeTree(files: Record<string, string>): void {
@@ -61,8 +53,12 @@ describe(VocabularyService, () => {
     };
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(VocabularyService, {
+      imports: [DiscoveryModule, FoldingModule, LanguagesModule, WordsModule],
+    });
+
+    expect(instance).toBeInstanceOf(VocabularyService);
   });
 
   it("collects the words of every identifier and every path, sorted and once each", async () => {

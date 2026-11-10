@@ -1,11 +1,13 @@
 import { ConfigurationService } from "@coinagerie/configuration";
 import { DeliveryService } from "@coinagerie/output";
 import { VocabularyService } from "@coinagerie/vocabulary";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CheckService } from "./check.service";
 
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type {
   ResolvedCoinagerieConfiguration,
   ResolvedCoinagerieOutput,
@@ -35,20 +37,23 @@ function destinationAt(path: string): ResolvedCoinagerieOutput {
   return { description: undefined, path, type: "markdown" };
 }
 
+/** What the CheckService is built with. */
+const DEPENDENCIES = {
+  providers: [
+    { provide: ConfigurationService, useValue: { loadConfiguration } },
+    { provide: VocabularyService, useValue: { collect } },
+    { provide: DeliveryService, useValue: { check, write } },
+  ],
+} satisfies TestingModuleOptions;
+
 describe(CheckService, () => {
   let service: CheckService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        CheckService,
-        { provide: ConfigurationService, useValue: { loadConfiguration } },
-        { provide: VocabularyService, useValue: { collect } },
-        { provide: DeliveryService, useValue: { check, write } },
-      ],
-    }).compile();
-
-    service = await module.resolve(CheckService);
+    ({ instance: service } = await buildTestingModule(
+      CheckService,
+      DEPENDENCIES,
+    ));
   });
 
   beforeEach(() => {
@@ -59,9 +64,10 @@ describe(CheckService, () => {
     write.mockReset();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CheckService, DEPENDENCIES);
+
+    expect(instance).toBeInstanceOf(CheckService);
   });
 
   const args = {

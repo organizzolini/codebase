@@ -2,12 +2,10 @@ import http from "node:http";
 import { Readable } from "node:stream";
 import { buffer } from "node:stream/consumers";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SharedNxCacheRemoteService } from "./shared-nx-cache-remote.service";
 
@@ -19,7 +17,6 @@ interface Seen {
 }
 
 describe(SharedNxCacheRemoteService, () => {
-  let service: SharedNxCacheRemoteService;
   let bucket: http.Server | undefined;
 
   afterEach(async () => {
@@ -89,9 +86,8 @@ describe(SharedNxCacheRemoteService, () => {
   const create = async (
     configuration: Record<string, string>,
   ): Promise<SharedNxCacheRemoteService> => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SharedNxCacheRemoteService, {
       providers: [
-        SharedNxCacheRemoteService,
         {
           provide: ConfigService,
           useValue: {
@@ -100,9 +96,8 @@ describe(SharedNxCacheRemoteService, () => {
               .mockImplementation((key: string) => configuration[key]),
           },
         },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
-    }).compile();
+    });
 
     return module.resolve(SharedNxCacheRemoteService);
   };
@@ -119,21 +114,12 @@ describe(SharedNxCacheRemoteService, () => {
     ...extra,
   });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        SharedNxCacheRemoteService,
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(SharedNxCacheRemoteService, {
+      mocks: [ConfigService],
+    });
 
-    service = await module.resolve(SharedNxCacheRemoteService);
-  });
-
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(SharedNxCacheRemoteService);
   });
 
   it("is disabled until every setting is present", async () => {
