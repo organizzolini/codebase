@@ -1,9 +1,5 @@
 import fs from "node:fs";
-import os from "node:os";
-import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -13,6 +9,9 @@ import {
   it,
   vi,
 } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PackageManifestService } from "../package-manifest/package-manifest.service";
 
@@ -31,21 +30,17 @@ const releasesAre = (...versions: string[]): void => {
 };
 
 describe(UpgradeNodeService, () => {
+  const moduleOptions = { mocks: [PackageManifestService] };
   let service: UpgradeNodeService;
   let packageManifest: PackageManifestService;
   let directory: string;
   let originalDirectory: string;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        UpgradeNodeService,
-        {
-          provide: PackageManifestService,
-          useValue: createMock<PackageManifestService>(),
-        },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(
+      UpgradeNodeService,
+      moduleOptions,
+    );
 
     service = await module.resolve(UpgradeNodeService);
     packageManifest = await module.resolve(PackageManifestService);
@@ -53,7 +48,7 @@ describe(UpgradeNodeService, () => {
 
   beforeEach(() => {
     originalDirectory = process.cwd();
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "node-test-"));
+    directory = createTemporaryDirectory("node");
     process.chdir(directory);
     fs.writeFileSync(".nvmrc", "v24.16.0\n");
     vi.mocked(packageManifest.replace).mockReset();
@@ -62,11 +57,17 @@ describe(UpgradeNodeService, () => {
   afterEach(() => {
     process.chdir(originalDirectory);
     vi.unstubAllGlobals();
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    expect.hasAssertions();
+
+    const { instance } = await buildTestingModule(
+      UpgradeNodeService,
+      moduleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(UpgradeNodeService);
   });
 
   it("writes the newest release of the major, in both places", async () => {
