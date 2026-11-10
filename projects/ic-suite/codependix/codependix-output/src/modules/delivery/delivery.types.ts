@@ -15,23 +15,15 @@ export interface DeliverFileArguments {
 }
 
 /**
- * Arguments for delivering one project's (or the workspace's) resolved
- * export configuration.
- *
- * `jsonContent`/`markdownContent` are rendered by the caller — every graph
- * type renders its own JSON shape and its own diagram — and are only read
- * when the resolved output actually touches that destination, so a caller
- * whose target is `"markdown"` never has to render JSON it will not deliver.
+ * Arguments for delivering one resolved export. `jsonContent` and `markdownContent` are
+ * rendered by the caller, and only when the target touches them.
  */
 export interface DeliverGraphOutputArguments {
   jsonContent: string | undefined;
   markdownContent: string | undefined;
   /**
-   * The heading text used to auto-create a missing anchor's section on write.
-   *
-   * `undefined` for a standalone (non-anchored) Markdown destination, which
-   * has no section to create. Required whenever the destination is anchored
-   * and might need auto-creation — see `DeliveryService.deliverAnchoredMarkdown`.
+   * The heading used to auto-create a missing anchor's section on write.
+   * `undefined` for a standalone Markdown destination, which has no section.
    */
   markdownSection: MarkdownSectionArguments | undefined;
   mode: CodependixRunMode;

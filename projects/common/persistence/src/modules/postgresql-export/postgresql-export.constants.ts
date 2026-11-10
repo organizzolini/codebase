@@ -57,11 +57,9 @@ export class PostgresqlExportTableError extends Error {
 }
 
 /**
- * What `postgresql-export --dry-run` prints, one line each: where it would export
- * from and to, what it would export of each selected table, in the plan's
- * order, and whether `file` (`exists`) would be created or overwritten.
- * Never carries the password. Each line is a whole log message, so each
- * opens with an emoji and a verb, as `LoggerService` requires.
+ * What `postgresql-export --dry-run` prints, one line each. Never carries the
+ * password; each line opens with an emoji and a verb, as `LoggerService`
+ * requires.
  */
 export const dryRunMessages = (
   {

@@ -12,10 +12,8 @@ export interface SyncAnchoredBlockArguments {
 }
 
 /**
- * Arguments for syncing the configured markdown destination.
- *
- * The rendered markdown arrives already built: what a report says belongs to
- * the report module, and this one only decides where it lands.
+ * Arguments for syncing the configured markdown destination. The markdown arrives already
+ * rendered; this only decides where it lands.
  */
 export interface SyncMarkdownArguments {
   readonly check: boolean;

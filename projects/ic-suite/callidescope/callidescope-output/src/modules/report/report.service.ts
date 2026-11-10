@@ -63,11 +63,7 @@ export class ReportService {
   }
 
   /**
-   * Renders a callable's signature, collapsing one that is too long.
-   *
-   * The return type survives the collapse. Which twelve services a constructor
-   * takes is noise at the point where someone is reading a stack; what it hands
-   * back is not.
+   * Renders a callable's signature, collapsing a long one while keeping the return type.
    */
   private renderSignature(frame: StackFrame): string {
     const { signature } = frame;
@@ -82,22 +78,8 @@ export class ReportService {
   }
 
   /**
-   * Shortens a summary to what fits under an indented frame.
-   *
-   * The opening sentence first, because a comment that runs long here is a
-   * short statement of what the callable does followed by paragraphs of why —
-   * and the first half is the half that orients someone reading a stack. It is
-   * printed whole and unmarked: it is a complete thought, not an elision, and
-   * the frame's `file:line` is already the pointer to the rest.
-   *
-   * Cutting at the character instead throws away a sentence boundary that was
-   * usually right there. Across this repository that happens to a fifth of
-   * printed summaries, whose opening sentences run about 64 characters at the
-   * median and 113 at the very longest.
-   *
-   * A single sentence longer than the limit has no boundary to find, so it is
-   * cut on a word — half a word reads as a typo rather than as an elision —
-   * and marked as cut short.
+   * Shortens a summary to fit an indented frame, keeping the opening sentence whole, or
+   * cutting on a word and marking it.
    */
   private shortenSummary(summary: string): string {
     if (summary.length <= SUMMARY_LIMIT) {
@@ -120,12 +102,8 @@ export class ReportService {
   // 🌎 Public Methods
 
   /**
-   * Renders every frame of a stack, the entry point first.
-   *
-   * Takes anything holding a frame list rather than a full `CallStack`: a
-   * depth or entry-point kind is never read here, so a caller with a path
-   * that has neither — an address-centered lookup, for one — does not have to
-   * fabricate one to call this.
+   * Renders every frame of a stack, entry point first, from anything holding a frame list, not only
+   * a full `CallStack`.
    */
   public renderStackTree(stack: { frames: readonly StackFrame[] }): string {
     return stack.frames

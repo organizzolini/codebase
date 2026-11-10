@@ -5,14 +5,7 @@
 // ♟️ Constants
 
 /**
- * How many times each row's tile is laid out along its band on the page.
- *
- * A stored `svg` is one repeat, and one repeat read alone shows the shape of
- * a tile rather than the shape of the meander it tiles into — which of two
- * adjacent tiles a stroke belongs to only becomes readable once the repeat
- * has happened a few times. Six is wide enough for the eye to pick the
- * period out and short enough that a whole pattern's grid of them still fits
- * a column.
+ * How many times each row's tile repeats along its band. Six is enough for the eye to read the period.
  */
 export const BAND_REPEAT_COUNT = 6;
 
@@ -27,19 +20,7 @@ export const BAND_REPEAT_COUNT = 6;
  */
 
 /**
- * The page's own stylesheet, held here rather than inline in
- * `DrawIndexService` so the service's own methods stay about assembling rows
- * into markup rather than about styling it.
- *
- * Carried over from the retired `DrawIndexService`'s own page, with `.art`
- * restyled for an inlined `<svg>` in place of the `<img>` it used to frame:
- * there is no `loading="lazy"` left to give an inline element, since that
- * attribute only ever deferred a linked file's own network request.
- *
- * `.art > svg` is the band, and only the band — the child combinator matters,
- * because the repeats nested inside it are `<svg>` elements too and must keep
- * the size the band placed them at. The band alone scales down to its column,
- * so six repeats of a wide tile shrink to fit rather than scrolling.
+ * The page's stylesheet. `.art > svg` is the band alone, so nested repeats keep their placed size.
  */
 export const PAGE_STYLES = `
 :root { color-scheme: light dark; }

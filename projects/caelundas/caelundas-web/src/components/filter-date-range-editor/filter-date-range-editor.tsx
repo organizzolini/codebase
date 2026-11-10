@@ -6,8 +6,7 @@ import type { KeyboardEvent, ReactNode } from "react";
 // 🔖 Type
 
 /**
- * What the filter builder hands every value editor. Its value is read as the
- * calendar's own, a pair of days, whatever the registry's type says.
+ * What the filter builder hands a value editor; its value is a pair of days.
  */
 export interface FilterDateRangeEditorProperties extends FilterEditorProps {
   className?: string;
@@ -16,10 +15,7 @@ export interface FilterDateRangeEditorProperties extends FilterEditorProps {
 // 🧩 Component
 
 /**
- * Renders the date field's value editor: a first and a last day, as the
- * `YYYY-MM-DD` pair the filter compiler reads in the observer's zone. Enter
- * or Apply commits the pair and Escape cancels; the builder flags a pair
- * that is missing a day or runs backwards.
+ * Renders the date field's value editor: a first and last `YYYY-MM-DD` day; Enter applies, Escape cancels.
  */
 export function FilterDateRangeEditor(
   properties: Readonly<FilterDateRangeEditorProperties>,

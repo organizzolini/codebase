@@ -2,10 +2,8 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 /**
- * Where fake workspaces are built: this project's gitignored `tmp/`.
- *
- * Never the system temporary directory, which sits outside the workspace and
- * so outside the reach of the swc register hook on a Linux runner.
+ * Fake workspaces are built in this project's gitignored `tmp/`, never the
+ * system temp directory, which a Linux runner's swc register hook cannot reach.
  */
 const TEMPORARY_ROOT = path.join(import.meta.dirname, "..", "tmp");
 
@@ -18,11 +16,8 @@ export interface FakeWorkspace {
 }
 
 /**
- * Builds a workspace on disk from a map of relative path to file content.
- *
- * Only what a test names exists, so a folder with a `project.json` is a
- * project and one without is not, which is exactly the difference inference
- * has to see.
+ * Writes a workspace from relative paths to contents. Only named files exist, so
+ * a folder is a project only if it has a `project.json`.
  */
 export function createFakeWorkspace(
   files: Readonly<Record<string, string>>,

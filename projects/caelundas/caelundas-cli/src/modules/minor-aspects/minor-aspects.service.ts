@@ -120,12 +120,8 @@ export class MinorAspectsService {
   // 🌎 Public Methods
 
   /**
-   * Creates a calendar event for a specific minor aspect occurrence.
-   *
-   * Formats the event with appropriate emoji indicators, body symbols,
-   * and tagging for filtering and organization.
-   *
-   * @see {@link getMinorAspect} for aspect type determination
+   * Creates the calendar event for one minor aspect occurrence; throws when no
+   * minor aspect is within orb.
    */
   buildMinorAspectEvent(args: {
     body1: Body;
@@ -158,20 +154,8 @@ export class MinorAspectsService {
   }
 
   /**
-   * Detects minor aspect events within a single minute time window.
-   *
-   * Scans all configured body pairs for minor aspects (semi-sextile 30°,
-   * semi-square 45°, sesquiquadrate 135°, quincunx 150°) and determines
-   * the phase (forming, exact, or dissolving) based on comparison with
-   * adjacent minutes.
-   *
-   * Minor aspects are weaker harmonic relationships that add nuance to
-   * astrological interpretations. They use smaller orbs than major aspects
-   * (typically ±2-3° vs ±8-10°).
-   *
-   * @see {@link getMinorAspect} for aspect type detection
-   * @see {@link getMinorAspectPhase} for phase determination
-   * @see {@link minorAspectBodies} for configured body list
+   * Detects minor aspects at a minute across configured body pairs (semi-sextile,
+   * semi-square, sesquiquadrate, quincunx), with phase from adjacent minutes.
    */
   detect(args: {
     coordinateEphemerisByBody: Record<Body, CoordinateEphemeris>;
@@ -186,8 +170,8 @@ export class MinorAspectsService {
   }
 
   /**
-   * Lists the minor aspects in orb at this minute and the minutes either side,
-   * so a sweep can seed its active-aspect registry at the window start.
+   * Minor aspects in orb at this minute and adjacent minutes, to seed a sweep's
+   * registry at its start.
    */
   detectActive(args: SimpleAspectDetectorArguments): AspectBodies[] {
     const { coordinateEphemerisByBody, minute } = args;
@@ -204,13 +188,8 @@ export class MinorAspectsService {
   }
 
   /**
-   * Converts instantaneous minor aspect events into progressive events.
-   *
-   * Pairs forming and dissolving events for the same body-aspect combination
-   * to create events spanning the entire active period of each aspect.
-   * Progressive events show when an aspect is in orb rather than just boundary moments.
-   *
-   * @see {@link pairProgressiveEvents} for forming/dissolving pairing logic
+   * Pairs forming and dissolving minor aspect events into duration events
+   * spanning each aspect's full time in orb.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     return this.minorAspectsProgressiveService.detectProgressive(events);
@@ -228,8 +207,8 @@ export class MinorAspectsService {
   }
 
   /**
-   * Classifies the minor aspect phase (forming / perfective / dissolving) between two bodies
-   * across three consecutive minutes, or `null` if no minor aspect is in progress.
+   * Classifies a minor aspect's phase (forming, perfective, or dissolving) across
+   * three consecutive minutes; null if none is in progress.
    *
    */
   getMinorAspectPhase(args: {

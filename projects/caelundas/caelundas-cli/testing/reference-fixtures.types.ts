@@ -20,10 +20,6 @@ export interface ReferenceComparison {
 export type ReferenceEvent = ReferenceFixture["events"][number];
 
 /**
- * A small committed file of authoritative values for one window, as the
- * schema in `reference-fixtures.constants.ts` validates it. Optional fields:
- * `absent` (summaries or descriptions that must not appear in the window),
- * `counts` (summary or description to the exact number of events with it), and per event `end`,
- * `note` and `toleranceMinutes`.
+ * A committed file of authoritative values for one window, validated by `referenceFixtureSchema`.
  */
 export type ReferenceFixture = z.infer<typeof referenceFixtureSchema>;

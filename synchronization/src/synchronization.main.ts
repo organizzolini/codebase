@@ -6,12 +6,8 @@ import { LoggerService } from "@codebase/observability";
 import { MainModule } from "./synchronization.module";
 
 /**
- * Bootstraps the synchronization CLI application.
- *
- * Standard output belongs to a command's result: `installed-skills check`
- * prints the context the skills session hook hands to an agent, and a log
- * line on the same stream would be read as part of it. Every diagnostic
- * therefore goes to standard error, chosen here before anything logs.
+ * Bootstraps the CLI. Diagnostics go to standard error, since standard output is
+ * a command's result that the skills hook reads whole.
  */
 async function main(): Promise<void> {
   LoggerService.logToStandardError();

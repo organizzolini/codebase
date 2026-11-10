@@ -61,12 +61,7 @@ function readExecutor(executorName: string): Record<string, unknown> {
 }
 
 /**
- * Resolves one subpath through an `exports` map: the first string target whose
- * key matches exactly or as a single-wildcard pattern.
- *
- * Narrower than Node, which prefers the longest matching prefix and reads
- * conditional targets too — so it can only fail a map Node would accept,
- * never pass one Node would reject, for the maps this package declares.
+ * Resolves a subpath through an `exports` map. Narrower than Node, so it can only reject maps Node would accept.
  */
 function resolveExport(
   exportsMap: Record<string, unknown>,

@@ -27,13 +27,7 @@ describe("conformetry-configuration index", () => {
   });
 
   it("publishes one service and one module, and no other collaborator", () => {
-    // The layer's whole contract, and the shape the three sibling ic-suite
-    // toolchains already publish. `InputService`, `InputPromptingService`,
-    // `InstanceDiscoveryService`, `TemplateDiscoveryService`,
-    // `RenderingService` and `InstanceGroupService` are all still here, each
-    // its own class in its own file; they are simply reached through the
-    // facade, so a consumer injects one thing from this package rather than
-    // fourteen.
+    // Only the service and the module are public; the other collaborators are reached through the facade.
     expect(
       Object.entries(surface)
         .filter(([name]) => name.endsWith("Service") || name.endsWith("Module"))

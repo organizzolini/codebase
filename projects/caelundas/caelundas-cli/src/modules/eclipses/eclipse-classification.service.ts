@@ -43,11 +43,8 @@ export class EclipseClassificationService {
   // 🔏 Private Methods
 
   /**
-   * The Moon's least separation from `target`, in degrees, if it keeps the
-   * motion it has across the window: |p × v| / |v| in the plane tangent to
-   * the sky at the target. Over an eclipse's few hours the Moon's path
-   * relative to the Sun or the shadow is straight enough to classify it
-   * from its very first minute.
+   * The Moon's least separation from `target` in degrees, taking its path as
+   * straight across the window.
    */
   private static getClosestApproach(
     window: {
@@ -109,9 +106,8 @@ export class EclipseClassificationService {
   }
 
   /**
-   * Radius in kilometers of the Moon's umbra `behind` kilometers past the
-   * Moon along the shadow axis. It shrinks to zero at the umbra's tip and
-   * is negative beyond it, where the antumbra makes an eclipse annular.
+   * Umbra radius in km `behind` the Moon along the shadow axis; zero at the tip,
+   * negative beyond it (annular).
    */
   private static getUmbralRadius(
     behind: number,
@@ -152,11 +148,8 @@ export class EclipseClassificationService {
   // 🌎 Public Methods
 
   /**
-   * Classifies a lunar eclipse from any minute of it by the Moon's closest
-   * approach to the shadow axis: total if the whole Moon enters the umbra
-   * (radius 1.01·π☾ + π☉ − s☉), partial if part of it does, penumbral if it
-   * only meets the penumbra. Null unless the eclipse is in progress in the
-   * window.
+   * Classifies a lunar eclipse from any minute by the Moon's closest approach to
+   * the shadow axis: total, partial, or penumbral; else null.
    */
   getLunarEclipseType(
     current: EclipseCoordinates,
@@ -194,13 +187,8 @@ export class EclipseClassificationService {
   }
 
   /**
-   * Classifies a solar eclipse from any minute of it by the shadow axis's
-   * closest approach to Earth's center (gamma). Partial if the umbra and
-   * antumbra miss Earth. Otherwise total or annular by whether the umbra
-   * still reaches the observer under the axis at greatest eclipse, and
-   * hybrid if it does there but not at the path's ends, where the observer
-   * on Earth's limb is farther from the Moon. Null unless the eclipse is in
-   * progress in the window.
+   * Classifies a solar eclipse from any minute by the shadow axis's closest
+   * approach to Earth's center (gamma): partial, total, annular, or hybrid.
    */
   getSolarEclipseType(
     current: EclipseCoordinates,

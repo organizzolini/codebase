@@ -60,11 +60,7 @@ export class ConfigurationFileService {
   // 🔏 Private Methods
 
   /**
-   * Walks upward from the process cwd looking for the repository root.
-   *
-   * Used to resolve a configuration path given relative to that root even when
-   * the command was invoked from a nested directory, which is what a task runner
-   * does whenever it sets the cwd to the project rather than the workspace.
+   * Finds the repository root by walking up from the cwd, for task runners that start in a project.
    */
   private findRepositoryRoot(): string | undefined {
     let candidateDirectory = path.resolve(process.cwd());
@@ -153,11 +149,7 @@ export class ConfigurationFileService {
   }
 
   /**
-   * Applies defaults to the entry-point rules.
-   *
-   * The authored object is defaulted to an empty one up front rather than
-   * optional-chained per field, which keeps this to one branch per option
-   * instead of two.
+   * Applies defaults to the entry-point rules. Defaulting the authored object once keeps one branch per option.
    */
   private resolveEntryPoints(
     entryPoints: CallidescopeEntryPoints | undefined,
@@ -174,12 +166,7 @@ export class ConfigurationFileService {
   }
 
   /**
-   * Applies the directories no repository wants traced, on top of a
-   * configuration's own.
-   *
-   * Additive rather than a replacement: the defaults are directories no
-   * repository wants traced, so a configuration naming its own noise should
-   * not have to restate them to keep them out.
+   * Adds the default noise directories to a configuration's own excludes, so it need not restate them.
    */
   private resolveExclude(exclude: string[] | undefined): string[] {
     return [...new Set([...DEFAULT_EXCLUDE_GLOBS, ...(exclude ?? [])])];
@@ -212,10 +199,7 @@ export class ConfigurationFileService {
   }
 
   /**
-   * Applies defaults to one anchored markdown destination, if it was named.
-   *
-   * Shared by `markdown` and `mermaid`: the two differ in what is written
-   * between the anchors, and in nothing this resolves.
+   * Applies defaults to one anchored markdown destination, if it was named. Shared by `markdown` and `mermaid`.
    */
   private resolveMarkdownDestination(
     destination: CallidescopeMarkdownOutputConfiguration | undefined,
@@ -241,11 +225,8 @@ export class ConfigurationFileService {
   // 🌎 Public Methods
 
   /**
-   * Finds a configuration file sitting directly at one directory.
-   *
-   * No upward walk, which is what makes this the search a project root needs:
-   * walking up from one would find the workspace file and hand every project a
-   * copy of it.
+   * Finds a configuration file directly in one directory, without walking upward.
+   * Walking up would hand every project the workspace file.
    */
   public findConfigurationFileAt(directory: string): string | undefined {
     for (const fileName of CONFIGURATION_FILE_NAMES) {
@@ -260,12 +241,7 @@ export class ConfigurationFileService {
   }
 
   /**
-   * Loads and validates a callidescope configuration file.
-   *
-   * The path is required and must exist — a typo in a task runner's arguments
-   * should fail rather than quietly trace the repository with defaults it never
-   * asked for. Nothing is searched for and nothing is defaulted: the workspace
-   * configuration is always one the caller named.
+   * Loads and validates a configuration file. The path is required and must exist, so a typo fails rather than tracing with defaults.
    */
   public async loadConfiguration(
     args: LoadConfigurationArguments,
@@ -276,16 +252,8 @@ export class ConfigurationFileService {
   }
 
   /**
-   * Loads a configuration, and says what the file itself declared and which
-   * file answered.
-   *
-   * The same work as `loadConfiguration`, keeping two facts it throws away. The
-   * path is what tells a caller resolving a configuration beside every project
-   * which file it has already read as the run's own, so that one file is never
-   * given two roles. The authored object is what a refusal has to name fields
-   * from, since resolution manufactures the rest.
-   *
-   * Naming a path is required, so one always comes back.
+   * Loads a configuration, returning the authored object and the file it came from.
+   * Its path lets a caller skip the run's own file.
    */
   public async loadConfigurationFile(
     args: LoadConfigurationArguments,
@@ -313,11 +281,7 @@ export class ConfigurationFileService {
   }
 
   /**
-   * Fills in every field a configuration file may leave out.
-   *
-   * Exposed so a host embedding callidescope can hand over a configuration
-   * object it assembled itself and get the same shape a configuration file
-   * produces.
+   * Fills in every field a configuration may leave out. Also used by hosts that assemble a configuration object themselves.
    */
   public resolveConfiguration(
     configuration: CallidescopeConfiguration,

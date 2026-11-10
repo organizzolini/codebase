@@ -8,15 +8,7 @@ import { YehArabicLetterCharacteristicsService } from "./yeh-arabic-letter-chara
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
 /**
- * Each distinct orientation of the ى (final Arabic alef maksura, the dotless
- * yeh) as a Code holding one isolated copy, beside every orientation name
- * drawing that ink. The base, facing Southwest, draws:
- *
- * ```text
- *   ┌─╴
- * ╷ └┐
- * └──┘
- * ```
+ * Each distinct orientation of the ى (final Arabic alef maksura, the dotless yeh) as a Code holding one isolated copy.
  */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
@@ -63,15 +55,7 @@ const FINAL_FORM: LetterFormFixture = {
 };
 
 /**
- * Each distinct orientation of the ى (isolated Arabic alef maksura, the dotless
- * yeh) as a Code holding one isolated copy, beside every orientation name
- * drawing that ink. The base, facing Southwest, draws:
- *
- * ```text
- *   ┌╴
- * ╷ └┐
- * └──┘
- * ```
+ * Each distinct orientation of the ى (isolated Arabic alef maksura, the dotless yeh) as a Code holding one isolated copy.
  */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [

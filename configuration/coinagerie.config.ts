@@ -19,10 +19,8 @@ import type { CoinagerieConfiguration } from "@coinagerie/configuration";
 // 📖 Glossary
 
 /**
- * The root glossary every project's own glossary is written against.
- *
- * Resolved from this file rather than from the working directory, because a
- * project's check runs from the project's own folder.
+ * The root glossary each project's glossary is written against, resolved from
+ * this file since checks run from the project's folder.
  */
 const ROOT_GLOSSARY_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -33,14 +31,8 @@ const ROOT_GLOSSARY_PATH = path.resolve(
 const GLOSSARY_BULLET_PATTERN = /^- \*\*(?<word>[^\s*]+)\*\*:/u;
 
 /**
- * Reads the headwords the root glossary lists.
- *
- * Only the bullets matter: a definition, and any line continuing one, says
- * nothing about which words are covered. A missing file throws, so the run
- * names the configuration whose `exclude.words` failed instead of quietly
- * listing every word the root glossary was meant to cover.
- *
- * @returns Every word on a bullet of the root glossary, in file order
+ * Every word on a bullet of the root glossary. A missing file throws, so the run
+ * names the configuration whose `exclude.words` failed.
  */
 export function readRootGlossaryWords(): string[] {
   return readFileSync(ROOT_GLOSSARY_PATH, "utf8")
@@ -53,11 +45,8 @@ export function readRootGlossaryWords(): string[] {
 // ♟️ Conventions
 
 /**
- * Every language's reserved words, which name the language rather than
- * anything this repository did.
- *
- * The package exports them as plain lists and excludes nothing on its own, so
- * what a glossary leaves out is stated here, where a reader can see it.
+ * Reserved words of every language; they name the language, not this
+ * repository, so they are excluded here.
  */
 export const keywordExclusions: string[] = [
   ...cssKeywords,
@@ -72,13 +61,8 @@ export const keywordExclusions: string[] = [
 ];
 
 /**
- * Words the singularizer and the lemmatizer fold into something the code
- * never wrote, mapped back, and the abbreviations the code spells out in full
- * elsewhere, mapped onto that spelling.
- *
- * `fold` runs after plurals and inflections are folded, so every key is a
- * headword the package already produced: `caelundas` arrives as `caelunda`,
- * and `data` as `datum`.
+ * Words folded into something the code never wrote, mapped back, plus
+ * abbreviations mapped to their spelling. Keys are folded headwords.
  */
 const FOLDED_WORDS = new Map([
   ["arg", "argument"],
@@ -99,10 +83,9 @@ const FOLDED_WORDS = new Map([
 ]);
 
 /**
- * Maps a headword onto the one this repository writes it as.
+ * Maps a headword onto the spelling this repository writes it as.
  *
  * @param word - A headword after plural and inflection folding
- * @returns The headword this repository keeps the word under
  */
 export function foldRepositoryWord(word: string): string {
   return FOLDED_WORDS.get(word) ?? word;
@@ -111,14 +94,8 @@ export function foldRepositoryWord(word: string): string {
 // 🗣️ Common words
 
 /**
- * Plain English and runtime vocabulary that no project defines differently
- * from anywhere else: function words, verbs every program uses, and the names
- * of the standard library, the test framework, and package manifest fields.
- *
- * Chosen by how many project glossaries listed the word unprompted, so a word
- * a project means something particular by belongs in that project's glossary
- * and stays out of this list. Written as one string per line of prose rather
- * than one array entry per word to stay under the file size limit.
+ * Plain English and runtime vocabulary no project defines differently, picked
+ * by how many glossaries listed it; one string per line, for file size.
  */
 export const commonWordExclusions: string[] = `
   absolute actual address after afterward again allow alpha although
@@ -155,15 +132,8 @@ export const commonWordExclusions: string[] = `
 // 📚 External vocabulary
 
 /**
- * Words this repository takes from tools it uses and does not define: lint
- * rule names, library and product terms, abbreviations, and the plain
- * vocabulary of the documents it quotes, with the truncated stems the
- * tokenizer leaves of them.
- *
- * Each one is found in the documentation of the thing it came from, so a
- * glossary here would only repeat it. Written as prose for the same reason as
- * the common words above. The stems are not words, so the spell check skips
- * the list.
+ * Words from tools this repository uses but does not define, with truncated
+ * stems; the spell check skips the list.
  */
 // cspell:disable
 export const externalWordExclusions: string[] = [
@@ -3193,10 +3163,8 @@ export const externalWordExclusions: string[] = [
 // cspell:enable
 
 /**
- * Words that follow a shape no one defines: hexadecimal runs from hashes and
- * identifiers, and a name ending in digits, such as a numbered fixture or a
- * version tag. `j2000`, the astronomical epoch, is the one name kept. A
- * number and one letter, such as the tile coordinate `01x`, is no word.
+ * Shapeless words: hexadecimal runs and names ending in digits, such as
+ * numbered fixtures. `j2000` is kept; a number and one letter is no word.
  */
 export const patternExclusions: RegExp[] = [
   /^(?=.*\d)[0-9a-f]{2,}$/u,
@@ -3207,16 +3175,8 @@ export const patternExclusions: RegExp[] = [
 // 🧩 Configuration
 
 /**
- * What every project's `coinagerie.config.ts` spreads.
- *
- * Words the root glossary lists are excluded, so a project's own glossary
- * holds only the words that are its own, and it is written to `coinagerie.md`
- * beside the project's README. The root configuration does not
- * spread this: it writes the glossary these words are read from, and reading
- * it would exclude every word it was about to write.
- *
- * A named export beside the default: the loader reads only a file's default
- * export, and a project spreading the shared configuration imports it by name.
+ * What every project's `coinagerie.config.ts` spreads, excluding the root
+ * glossary's words. A named export, since the loader reads only the default.
  */
 export const coinagerieConfiguration = {
   exclude: {

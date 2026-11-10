@@ -26,12 +26,8 @@ permissions:
   pull-requests: write
   issues: write
 
-# The shared Nx cache's bucket. Only a trusted run gets the read-write key and
-# `NX_SHARED_CACHE_REMOTE_WRITABLE`: a run for a pull request, or a manual run
-# off `main`, gets the read-only key, which cannot write whatever the cache
-# server is told. Each key is the join of two expressions, one of them always
-# empty, so a missing read-only secret leaves it empty rather than falling back
-# to the read-write one.
+# The shared Nx cache bucket. Only trusted runs get read-write keys: a pull request
+# or a manual run off `main` gets read-only keys, which cannot write.
 env:
   NX_SHARED_CACHE_REMOTE_ACCESS_KEY_ID: >-
     ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && secrets.NX_CACHE_READ_ONLY_ACCESS_KEY_ID || '' }}${{ !((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))) && secrets.NX_CACHE_READ_WRITE_ACCESS_KEY_ID || '' }}
@@ -59,19 +55,15 @@ jobs:
       matrix:
         check:
           # `static-code` runs typecheck, format, lint and deprecate in one
-          # `nx affected` call with `--configuration=check`, as the
-          # `validate-code` skill runs them. The run reads `targets` in place
-          # of `target`.
+          # `nx affected` call with `--configuration=check`, reading `targets` in
+          # place of `target`.
           - target: static-code
             targets: typecheck-code,format-code,lint-code,deprecate-code
             name: Static
             emoji: 🧑‍⚕️
-          # `guard-code` is the local aggregate of these six gates and the
-          # three legs below it. Run together with Static they took past the
-          # default limit, so they are a leg of their own. Keep `targets` here
-          # equal to the `dependsOn` of `guard-code` in `nx.json`, less the
-          # three gates with legs below: a gate named in no leg is checked by
-          # nothing in CI.
+          # A leg of its own, since with Static these took past the default limit.
+          # Keep `targets` equal to `guard-code`'s `dependsOn` in `nx.json`, less
+          # the gates with legs below: a gate named in no leg is checked by nothing.
           - target: guard-code
             targets: catalog-manifests,coinagerie-check,lockfile,project-ports,readme-projects,vscode-extensions
             name: Guard
@@ -136,51 +128,32 @@ jobs:
           - target: build-projects
             name: Build
             emoji: 👷
-          # Packs every publishable ic-suite package and installs the tarballs
-          # into a consumer outside the checkout, then runs its command lines
-          # and one inferred target per Nx plugin. Runs whole, and only when an
-          # ic-suite package or the check is affected — see the
-          # `publishable-packages-gate` command of the `integration` project.
-          # Never authenticates to a registry: no step is given an npm token,
-          # and setup-node is given no `registry-url`. Its first run on #1473
-          # took 4m05s with nothing cached: 2m49s to pack and check, 34s of
-          # that in the consumer. Across 79 runs it never passed 5m33s, so it
-          # runs under the default limit.
+          # Packs every publishable ic-suite package and installs the tarballs into a
+          # consumer outside the checkout, then runs its checks. Runs only when an
+          # ic-suite package or the check is affected. Never authenticates to a registry.
           - target: verify-publishable-packages
             name: Publishable Packages
             emoji: 🤵
-          # Plans the OpenRouter Terraform when a pull request changes it, and
-          # comments what the plan would create, update, replace, and delete. It
-          # is a comment, not part of the body, so it cannot race the Codometer
-          # report that rewrites the body. Nothing is applied: Continuous
-          # Deployment does that once the change reaches `main`. The leg always
-          # reports, so it can be a required check, and its steps run only for a
-          # same-repository pull request that changes the module, since a fork
-          # is not given the secrets the plan needs.
-          # The slowest of the 4 runs that planned anything took 2m09s, so it
-          # runs under the default limit too.
+          # Plans the OpenRouter Terraform for a pull request and comments the result.
+          # Nothing applies here: Continuous Deployment applies it on `main`. The leg
+          # always reports, so it can be a required check; its steps run only for a
+          # same-repository pull request, since forks get no secrets.
           - target: plan-terraform
             name: Infrastructure
             emoji: 🧑‍🚀
-          # Builds and tests the devcontainer image when a pull request changes
-          # a file the image or its test reads, without publishing it:
-          # Continuous Deployment builds and pushes the image on `main`. Like
-          # the infrastructure leg it always reports, and does its work only
-          # when the change calls for it. It needs none of the Node setup.
-          # Only 3 of 81 runs built the image, the slowest in 9m05s, so 15
-          # minutes keeps room for a slower build without waiting 20 on a hung
-          # one.
+          # Builds and tests the devcontainer image for a pull request that changes it,
+          # without publishing: Continuous Deployment pushes it on `main`. Like the
+          # infrastructure leg, it always reports. The slowest build took 9m05s, so 15
+          # minutes leaves room without waiting 20 on a hung one.
           - target: build-devcontainer
             name: Devcontainer
             emoji: 🧑‍🏭
             timeout-minutes: 15
 
     steps:
-      # Decides first what the job has to do, so the skip decision below and
-      # every step after it know it up front. Only a same-repository pull
-      # request is planned: a fork is not given the secrets the plan needs. On a
-      # pull request the action lists the changed files through the API, so it
-      # needs no clone.
+      # Decides first whether the job has work to do, so the skip decision below knows
+      # it up front. Only same-repository pull requests are planned, since a fork gets
+      # no secrets. The action reads changed files through the API, so no clone is needed.
       - name: 🚦 Detect Terraform Changes
         id: terraform-changes
         if: >-
@@ -456,14 +429,9 @@ jobs:
           pull-request-number: ${{ github.event.pull_request.number }}
           target: ${{ matrix.check.target }}
 
-      # A merge group runs on its own `gh-readonly-queue/...` ref, new for every
-      # group, and a cache saved there is readable by no later run: later
-      # groups and pull requests see their own refs and `main`'s. Saving only
-      # filled the repository's 10 GB quota (a third of it, measured) and
-      # pushed out the entries `main` saves for everyone else, so a merge
-      # group still restores `main`'s caches but saves none of its own. It imports
-      # the pull request's instead, from the artifact the pull request's run
-      # uploads here.
+      # A merge group runs on its own ref, so its cache saves are read by no later run
+      # and would evict `main`'s entries. It restores `main`'s caches, saves none, and
+      # imports the pull request's cache from the artifact that run uploads.
       - name: 🧹 Cleanup Codebase
         if: >-
           always() &&

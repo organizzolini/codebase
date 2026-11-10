@@ -33,9 +33,7 @@ export function parseTimelineScale(value: unknown): TimelineScale | undefined {
 }
 
 /**
- * The vendored calendar's view for one of the app's, and how many days it
- * shows when that is the N-day view. The timeline is the Gantt's rather than
- * the calendar's, so it has none.
+ * The calendar's view for one of the app's, and its day count for the N-day view; the timeline has none.
  */
 export function toEventCalendarView(
   view: Exclude<CalendarViewName, "timeline">,

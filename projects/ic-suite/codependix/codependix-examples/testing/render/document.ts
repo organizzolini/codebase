@@ -13,12 +13,7 @@ import type {
 // 📄 Rendering
 
 /**
- * Renders every document, writing it or reporting what drifted.
- *
- * `check` is what makes the guides trustworthy. Every claim the README and
- * `AGENTS.md` make is quoted from a file rendered here, so a resolver or
- * scanner change that silently reversed one of them fails rather than leaving
- * a guide describing behavior the tool no longer has.
+ * Renders every document, writing it or reporting drift. `check` makes the quoted claims fail when behavior changes.
  */
 export function deliverDocuments(args: {
   documents: ExampleDocument[];
@@ -55,16 +50,8 @@ export function fenceJson(value: unknown): string {
 }
 
 /**
- * Renders one document as Markdown.
- *
- * Shaped so `markdownlint` passes on the result without a fix pass: one
- * top-level heading, a blank line either side of every heading and every
- * fenced block, and exactly one trailing newline.
- *
- * `## Run it` and `## Next` are rendered rather than authored, because every
- * example in this package is run the same way and the reading order already
- * lives in one place. That is the shape every `*-examples` package in this
- * workspace shares — see this package's `AGENTS.md`.
+ * Renders one document as Markdown that `markdownlint` passes unfixed. The `## Run it` and `## Next`
+ * sections are rendered, not authored.
  */
 export function renderDocument(document: ExampleDocument): string {
   const emoji = EXAMPLE_EMOJI[document.id];
@@ -93,11 +80,8 @@ export function renderDocument(document: ExampleDocument): string {
 }
 
 /**
- * Lists every file one document is committed as, Markdown first.
- *
- * Everything an example produces lands in that example's own directory, beside
- * the subject it was built from — the `README.md` a reader opens, and any JSON
- * export the example commits.
+ * Lists every file one document is committed as, Markdown first. Everything lands in that example's
+ * own directory, beside its subject.
  */
 export function resolveFiles(document: ExampleDocument): ExampleFile[] {
   return [

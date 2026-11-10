@@ -28,11 +28,8 @@ interface ScenarioArguments {
 // ♟️ Constants
 
 /**
- * Two projects that depend on each other, and an application that depends on
- * one of them.
- *
- * `shop-checkout` and `shop-pricing` are the cross-project cycle; `shop-web`
- * is only a dependent of it.
+ * Two projects that depend on each other, plus an application depending on one.
+ * `shop-web` only depends on the cycle.
  */
 const SHOP_CYCLE: ExampleWorkspace = {
   dependencies: [
@@ -64,8 +61,8 @@ const SHOP_RING: ExampleWorkspace = {
 };
 
 /**
- * A workspace where the web application reaches past the api to the database,
- * and the api reaches a project the `allow` rule does not list.
+ * The web application reaches past the api to the database, and the api
+ * reaches a project the `allow` rule does not list.
  */
 const SHOP_ACCESS: ExampleWorkspace = {
   dependencies: [

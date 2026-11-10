@@ -15,8 +15,7 @@ export type DerivedGroupId =
   | "year";
 
 /**
- * A dimension the events can be grouped by: a tag root, whose tree the
- * grouping can go down into, or a value derived from each event's times.
+ * A dimension events group by: a tag root, whose tree a grouping can descend, or a value derived from each event's times.
  */
 export interface EventGroupField {
   /**
@@ -30,14 +29,11 @@ export interface EventGroupField {
   id: string;
   label: string;
   /**
-   * For a tag root, the names of the tags at each depth beneath it, from
-   * depth 1 down, so the depth picker can say what each level holds; empty
-   * for a derived field.
+   * For a tag root, the tag names at each depth below it, from depth 1; empty for a derived field.
    */
   levels: readonly (readonly string[])[];
   /**
-   * For a tag root, its tags in tree order as the filter lists them, so the
-   * grouping picks from the same tree; empty for a derived field.
+   * For a tag root, its tags in filter tree order; empty for a derived field.
    */
   options: readonly FilterOption[];
 }
@@ -48,10 +44,7 @@ export interface EventGroupField {
 export type EventGrouping = readonly EventGroupLevel[];
 
 /**
- * One level of a grouping: the field it groups by and, for a tag root, the
- * tags it makes a group of, each holding the events under it. With none
- * picked it groups by the root's children, or by the tags `depth` beneath the
- * root of a link from before tags could be picked.
+ * One level of a grouping: its field, and for a tag root the tags it groups by, or else the children at `depth`.
  */
 export interface EventGroupLevel {
   depth?: number | undefined;

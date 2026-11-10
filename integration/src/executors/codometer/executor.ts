@@ -8,13 +8,7 @@ import type {
 } from "./codometer.types";
 
 /**
- * Measures one project and fails its task when codometer says the run failed.
- *
- * What `node codometer-cli.main.ts measure` does from the project's root, run
- * through an executor so Nx can batch it: `nx affected -t codometer` hands the
- * batch executor beside this one every project it must measure, and this runs
- * when batching is off or a task stands alone. The command's own output is
- * printed as it would be on the command line.
+ * Measures one project from its root and fails the task when codometer says the run failed. Runs when batching is off.
  */
 export default async function codometerExecutor(
   options: CodometerExecutorOptions,

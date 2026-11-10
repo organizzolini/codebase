@@ -26,11 +26,8 @@ export class ReportFindingsService {
   // 🔏 Private Methods
 
   /**
-   * Names the stacks that ran deeper than callidescope allows.
-   *
-   * Reported whether or not the run gates on them — a stack this long is worth
-   * saying out loud even in a run that only wrote a report — but only a run
-   * asked to fail on depth fails on it.
+   * Names the stacks that ran deeper than allowed. Reported whether or not the run gates on them;
+   * only a depth gate fails.
    */
   private reportDeepStacks(args: ReportFindingsArguments): boolean {
     const { deepStacks } = args.result;
@@ -49,13 +46,8 @@ export class ReportFindingsService {
   }
 
   /**
-   * Fails a run that traced nothing at all.
-   *
-   * Unconditional, and not something `--check` turns on. Every other finding
-   * is a verdict on code that was read; this one says no code was read, and a
-   * gate that passes because it never looked is worse than one that fails —
-   * it reports the workspace as clean and there is nothing in the output to
-   * say otherwise.
+   * Fails a run that traced nothing at all, unconditionally, since a gate that never looked must
+   * not pass.
    */
   private reportEmptyTrace(args: ReportFindingsArguments): boolean {
     if (args.result.summary.callableCount > 0) {
@@ -83,11 +75,8 @@ export class ReportFindingsService {
   }
 
   /**
-   * Names the callables that called more things directly than callidescope
-   * allows.
-   *
-   * Reported whether or not the run gates on them, mirroring
-   * `reportDeepStacks` — but only a run asked to fail on breadth fails on it.
+   * Names the callables that call more things directly than allowed. Reported always; only a breadth
+   * gate fails on them.
    */
   private reportWideCallables(args: ReportFindingsArguments): boolean {
     const { wideCallables } = args.result;
@@ -112,17 +101,8 @@ export class ReportFindingsService {
   // 🌎 Public Methods
 
   /**
-   * Weighs every finding a run can produce, and fails on any of them.
-   *
-   * They are weighed separately and announced separately. A stack that is too
-   * deep is something the code does; a callable calling too many things is
-   * something else the code does; a stale report is something the checkout
-   * has not caught up with. Reading one as another sends the author to fix
-   * the wrong thing.
-   *
-   * A project that could not be read never reaches here: it ends the trace
-   * before anything is printed or written, and is reported by
-   * `CallidescopeCommand` itself.
+   * Weighs every finding a run can produce and fails on any of them, announcing each kind
+   * separately so its fix is clear.
    */
   public reportFindings(args: ReportFindingsArguments): void {
     const stale = this.reportStaleness(args);

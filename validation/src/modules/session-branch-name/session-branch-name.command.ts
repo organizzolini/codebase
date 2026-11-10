@@ -7,15 +7,12 @@ import { RENAME_BRANCH_DIRECTIVE } from "./session-branch-name.constants";
 import { SessionBranchNameService } from "./session-branch-name.service";
 
 /**
- * CLI command behind the branch-name session hook: does the checked-out
- * branch follow `<type>/<scope>-<description>`?
+ * CLI command behind the branch-name session hook: does the checked-out branch
+ * follow `<type>/<scope>-<description>`?
  *
- * Its standard output is the whole report and nothing else, so
- * `scripts/git/validate-session-branch-name.sh` can hand it to the agent as
- * context unchanged: silent with exit 0 for a compliant branch or no branch
- * at all, and otherwise the configured error — format, valid types, valid
- * scopes — and the rename-branch directive, with exit 1. It formats nothing
- * for any one agent harness; the hook's emitter does that.
+ * Its standard output is the report alone, which the hook hands to the agent.
+ * Silent with exit 0 when compliant, or with no branch; otherwise the error and
+ * the rename-branch directive, with exit 1.
  */
 @Command({
   description:
@@ -43,9 +40,8 @@ export class SessionBranchNameCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Judges the branch, printing the report and setting exit code 1 when it
-   * breaks the convention. The exit code is set rather than forced, so a
-   * report written to a pipe is never cut off by an early exit.
+   * Prints the branch report and sets exit code 1 when the branch breaks the
+   * convention, without forcing an early exit.
    */
   async run(): Promise<void> {
     // Nothing here is asynchronous; the base class signature is.

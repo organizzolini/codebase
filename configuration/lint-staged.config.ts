@@ -12,35 +12,13 @@ import os from "node:os";
 import path from "node:path";
 
 /**
- * How many tasks one `nx affected` run may execute at once.
- *
- * This was pinned to 2 because the run exhausted memory and the operating
- * system killed it. That was blamed on `analyze-code` spawning a nested
- * `nx run` per tool, each with its own scheduler, so `--parallel` bounded the
- * outer process only. `lint-code` is an `nx:noop` whose work hangs off
- * `dependsOn`, so one scheduler now owns every task and this number means what
- * it says.
- *
- * lint-staged reports every killed command as "Task failed to spawn:
- * undefined", so that wording alone does not identify the cause. A run killed
- * for memory does some work first; one killed for an over-long argument dies
- * instantly with no output at all. See `getStagedFilesFlags`.
- *
- * In CI it is doubled, for the release commit, whose hook checks every bumped
- * package. v2.34.0's took 11m40s over 718 tasks with a critical path of 2m15s,
- * on a 4-CPU runner. The heaviest tasks then, `configuration:codependix` and
- * `callidescope-restrict`, peaked near 1.6 GB, so 8 stay under the runner's 16 GB.
- * The per-project `codependix-bound` replaced the first and was measured on
- * macOS at up to 1.3 GB (`lexico-api`), under that figure.
+ * Tasks per `nx affected` run. Kept low after an out-of-memory kill; CI uses 8
+ * because the release commit's hook checks every bumped package.
  */
 const ANALYSIS_PARALLELISM = process.env["CI"] ? 8 : getLocalParallelism();
 
 /**
- * How many tasks a local run may execute at once: two fewer than the CPU
- * count, within a floor of 4 and a ceiling of 6. The local hook runs only the
- * fast tier below, which a warm cache mostly replays, so extra slots sat idle
- * on a hit and starved the machine on a miss. Memory bounds it too: the
- * heaviest tasks peak near 1.6 GB, so each slot is budgeted 3 GB.
+ * Concurrent task slots: two fewer than the CPU count, within 4 to 6. Each gets 3 GB.
  */
 function getLocalParallelism(): number {
   const byCpu = os.availableParallelism() - 2;
@@ -49,35 +27,13 @@ function getLocalParallelism(): number {
 }
 
 /**
- * The targets every commit runs, local or CI: formatting, lint, and typecheck,
- * which catch what an edit loop breaks and replay from the cache when nothing
- * changed. Every other gate runs in the continuous integration, deployment, and
- * compliance workflows and in the `validate-code` skill, which agents run
- * before submitting. The release commit made in CI runs this same set, so the
- * hook means one thing wherever it fires.
- *
- * The glossary check is in the set so that a commit adding a word the code
- * uses, or removing the last use of one, stops here and not after a push. It
- * runs the `check` configuration like the rest and writes nothing: the
- * `validate-code` skill's `write` pass is what regenerates a glossary.
+ * Targets every commit runs, locally and in CI, including a check-only glossary pass. Other gates run in CI and `validate-code`.
  */
 const ANALYSIS_TARGETS = "typecheck,oxlint,oxfmt,coinagerie-check";
 
 /**
- * Renders staged paths as one workspace-relative `--files=` flag each.
- *
- * `--files` also accepts a single comma-separated value, but that value grows
- * without bound as a commit grows, and one over-long argument is enough to get
- * the whole run killed: Node 26 is killed by the operating system on any single
- * argument past 1011 bytes, before the script it was asked to run prints
- * anything. The commit then fails as lint-staged's "Task failed to spawn:
- * undefined" with no output to explain it, and the paths look guilty because
- * whichever one crosses the threshold appears to be the trigger. Nx unions
- * repeated `--files` flags, so the affected set is identical and every argument
- * stays path-sized.
- *
- * The workspace pins Node 24 in `.nvmrc`, which has no such limit. This keeps
- * the hook working on a Node that does.
+ * Renders staged paths as one `--files=` flag each. One comma-separated value would
+ * outgrow Node 26's 1011-byte argument limit.
  */
 function getStagedFilesFlags(files: string[]): string {
   return files
@@ -86,19 +42,8 @@ function getStagedFilesFlags(files: string[]): string {
 }
 
 /**
- * Hands `nx affected` the staged changes as two revisions, selecting projects
- * the way CI does.
- *
- * Given `--files`, Nx counts a file as changed in full. Given a base and a
- * head, it diffs `package.json` and `pnpm-lock.yaml` field by field. The
- * 2.31.0 release commit, a version bump plus regenerated markdown, selects 6
- * projects that way rather than 48, and a dependency bump selects only the
- * projects that use it.
- *
- * The head is a throwaway commit of the index on top of `HEAD`: lint-staged
- * stashes unstaged edits first, so the files the tasks read match it. It
- * stays unreferenced and is collected with other loose objects. A repository
- * with no `HEAD` yet falls back to `--files`.
+ * Hands `nx affected` the staged changes as two revisions, selecting projects as CI does.
+ * With no HEAD yet, falls back to `--files`.
  */
 function getStagedRevisionFlags(files: string[]): string {
   try {
@@ -119,9 +64,8 @@ function getStagedRevisionFlags(files: string[]): string {
 }
 
 /**
- * Runs one git command and returns its trimmed standard output. Its standard
- * error is captured rather than shown, so the expected failure with no `HEAD`
- * does not print a `fatal:` line into the hook's output.
+ * Runs one git command and returns its trimmed stdout. Stderr is captured, so a
+ * missing `HEAD` prints nothing.
  */
 function runGit(gitArguments: string[]): string {
   return execFileSync("git", gitArguments, {
@@ -131,14 +75,8 @@ function runGit(gitArguments: string[]): string {
 }
 
 /**
- * Flags selecting every conformetry instance, when a conformetry template is
- * staged, and `undefined` when none is.
- *
- * `.nxignore` hides some template files from Nx, so editing one selects no
- * project. This passes the staged files plus the conformetry configuration,
- * an input of every instance project, so all of them are selected. The edit
- * still reaches each project's cache key through the template hash input the
- * plugin declares, so each one re-validates.
+ * Flags every conformetry instance when a template is staged, else `undefined`.
+ * `.nxignore` hides templates from Nx, so this flags the instances directly.
  */
 function getStagedTemplateFlags(files: string[]): string | undefined {
   const stagedTemplates = files.some((file) =>
@@ -153,11 +91,8 @@ function getStagedTemplateFlags(files: string[]): string | undefined {
 }
 
 /**
- * Hands `nx affected` the staged changes: the template flags when a template
- * is staged, otherwise two revisions.
- *
- * Staged files are counted in full, as with `--files`, so a commit that stages
- * a template loses the field-level diff of `package.json` and the lockfile.
+ * Hands `nx affected` the staged changes: template flags when a template is staged,
+ * otherwise two revisions.
  */
 function getStagedChangeFlags(files: string[]): string {
   return getStagedTemplateFlags(files) ?? getStagedRevisionFlags(files);
@@ -165,16 +100,11 @@ function getStagedChangeFlags(files: string[]): string {
 
 const config = {
   // 🔒 Lockfile integrity
-  // Run as the `validation` CLI rather than through its Nx target, which would
-  // cost another project graph build for one command. No environment prefix:
-  // lint-staged spawns commands without a shell, so `NODE_OPTIONS='' node …`
-  // would be parsed as the executable name. The pre-commit hook already clears
-  // `NODE_OPTIONS` for exactly the reason that prefix exists elsewhere, so
-  // there is nothing left here to neutralize.
+  // Runs as the `validation` CLI, not its Nx target, which would cost another graph build.
+  // No environment prefix: lint-staged spawns commands without a shell.
   //
-  // What it checks is not a file's contents but whether a resolution still
-  // holds: `pnpm install --frozen-lockfile --lockfile-only`, which no Nx target
-  // models. It never writes node_modules, so it is safe to run beside the rest.
+  // It checks that the resolution still holds with `pnpm install --frozen-lockfile
+  // --lockfile-only`, which no Nx target models. It never writes node_modules.
   "{**/package.json,pnpm-workspace.yaml}": (): string[] => [
     "node --import @swc-node/register/esm-register validation/src/validation.main.ts lockfile",
   ],
@@ -194,34 +124,23 @@ const config = {
   // target the Lint Codebase workflow runs and selecting projects the same
   // way it does, so what passes here passes there.
 
-  // This replaces a table of per-path entries that mapped a changed file to
-  // the target that cared about it. Nx already does that mapping: each leaf
-  // declares the config files it reads in its own `inputs`, so touching
-  // knip.config.ts or the PR template re-runs exactly the leaves it should and
-  // cache-hits the rest. Doing it by hand duplicated that, and every entry
-  // cost another project graph build.
+  // This replaces a per-path table mapping each changed file to its target. Nx already maps
+  // files to targets: each leaf lists the config files it reads in its `inputs`. Doing it by
+  // hand duplicated that, and every entry cost another project graph build.
 
   // Conformetry is scoped like the rest: a project needs validating when its own
   // files, the conformetry configuration, or a conformetry template change. The
   // template case is the one `nx affected` cannot always see, so
   // `getStagedChangeFlags` covers it.
 
-  // Each derivation synchronization is named alongside `lint-code` rather
-  // than reached through its `dependsOn`, for the reason the Lint Codebase
-  // workflow names them: each also publishes on the default branch, and Nx
-  // forwards an explicit configuration down `dependsOn`, so an edge there
-  // would let `lint-code --configuration=write` publish from a branch.
+  // Each derivation synchronization is named alongside `lint-code`, not reached through
+  // `dependsOn`: it also publishes on the default branch, and an explicit configuration
+  // forwarded down `dependsOn` would let `lint-code --configuration=write` publish from a branch.
 
-  // `callidescope-restrict` and `codependix-bound` reach a commit through
-  // `guard-code`'s `dependsOn` instead of being named here. Both are inferred
-  // per project and have no configurations, so the `check` configuration below
-  // falls through to their defaults. `nx affected` scopes each to the projects
-  // a commit touched, so a commit that deepens one project's call stacks or
-  // breaks one project's boundary fails that project's own task.
-  // `configuration:codependix` is write-only and is not reached from here.
-  // The glossary check is named in `ANALYSIS_TARGETS` instead: a hook that
-  // judges a glossary writes none, so a commit that leaves one out of step
-  // fails and `validate-code`'s `write` pass is what repairs it.
+  // `callidescope-restrict` and `codependix-bound` are reached through `guard-code`'s
+  // `dependsOn`, not named here: each is inferred per project, and `nx affected` scopes it
+  // to the projects a commit touched. `configuration:codependix` is write-only. The
+  // glossary check is in `ANALYSIS_TARGETS`: it writes nothing, so `validate-code` repairs.
 
   // There is no aggregate `synchronize` target to name instead: each
   // synchronization is its own Nx target on the `synchronization` project, run
@@ -229,14 +148,10 @@ const config = {
   // named by whichever caller wants it rather than through a shared process
   // that loops over all of them.
 
-  // `nx sync:check` no longer runs anywhere, on commit or otherwise: the
-  // generator plugin it checked is emitted into .conformetry on install rather
-  // than committed, so no commit can stage it out of date. Every conformetry
-  // command re-checks the emitted plugin against the configuration instead. See
-  // configuration/.husky/pre-commit for the retirement note. Were it ever
-  // reinstated, it could not be prefixed here: lint-staged spawns commands
-  // without a shell, so `NX_DAEMON=false nx ...` would be parsed as the
-  // executable name.
+  // `nx sync:check` no longer runs anywhere: the generator plugin it checked is emitted
+  // on install rather than committed, so no commit can stage it out of date. Every
+  // conformetry command re-checks the emitted plugin itself. See
+  // configuration/.husky/pre-commit for the retirement note.
   "*": (files: string[]): string[] => [
     `nx affected --target=${ANALYSIS_TARGETS} --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedChangeFlags(files)}`,
   ],

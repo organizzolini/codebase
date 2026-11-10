@@ -52,12 +52,7 @@ export class ConfigurationLoaderService {
   // 🌎 Public Methods
 
   /**
-   * Looks for a project's own configuration file, exactly at its root.
-   *
-   * This never walks upward: a project's own file must be colocated with it,
-   * and walking upward would find the workspace root's configuration — or
-   * another project's, in a nested layout — instead of correctly reporting
-   * that this project has none.
+   * Looks for a project's own configuration file at its root only, never upward, which would find the workspace's.
    */
   public findProjectConfigurationFile(projectRoot: string): string | undefined {
     for (const fileName of CONFIGURATION_FILE_NAMES) {
@@ -72,12 +67,7 @@ export class ConfigurationLoaderService {
   }
 
   /**
-   * Walks upward from the process cwd looking for the workspace root.
-   *
-   * Used to resolve a configuration path given relative to that root even when
-   * the command was invoked from a nested directory, which is what a task
-   * runner does whenever it sets the cwd to a project rather than the
-   * workspace.
+   * Walks upward from the cwd to the workspace root, so a task runner's nested cwd still resolves configuration paths.
    */
   public findWorkspaceRoot(): string | undefined {
     let candidateDirectory = path.resolve(process.cwd());
@@ -137,10 +127,7 @@ export class ConfigurationLoaderService {
   }
 
   /**
-   * Reads the main configuration file at the path it was told to.
-   *
-   * The path is required: nothing searches for a file, and no file is not a
-   * configuration that resolves every graph to `target: "none"`.
+   * Reads the main configuration file at the given path. The path is required: a missing file is an error, never an empty configuration.
    */
   public async readAuthoredConfiguration(args: {
     configurationPath: string;

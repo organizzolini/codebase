@@ -3,9 +3,8 @@ import { createTreeWithEmptyWorkspace } from "@nx/devkit/testing";
 import type { Tree } from "@nx/devkit";
 
 /**
- * Builds an in-memory Nx workspace, with its `nx.json` and root
- * `package.json`, holding each file given at its workspace path, for testing
- * a generator, an executor, or a plugin.
+ * Builds an in-memory Nx workspace holding each given file at its workspace
+ * path, for testing a generator, executor, or plugin.
  */
 export function createWorkspaceTree(
   files: Readonly<Record<string, string>> = {},

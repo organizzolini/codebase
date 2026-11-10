@@ -13,8 +13,7 @@ import type { TimelineBar } from "./calendar-timeline.types";
 import type { GanttEvent } from "@codebase/presentation";
 
 /**
- * The ids of the rows on screen, and a few beyond each edge, or `null` while
- * the body has not been laid out and so every row counts as on screen.
+ * Ids of rows on screen plus a few beyond each edge; `null` until laid out, when every row counts as visible.
  */
 export function getVisibleTimelineRows(
   rows: readonly TimelineRowBox[],
@@ -50,8 +49,7 @@ export function isSameRowSet(
 }
 
 /**
- * The bars of the visible rows only, or every bar while every row counts as
- * visible: rows scrolled out of view draw nothing until they return.
+ * Bars of the visible rows only, or every bar while all rows count as visible.
  */
 export function windowTimelineBars(
   bars: GanttEvent<TimelineBar>[],

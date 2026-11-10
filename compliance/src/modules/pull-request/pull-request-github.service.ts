@@ -10,18 +10,11 @@ import type { GithubCliResult } from "./pull-request-github.types";
  * Runs the `gh` command-line client and reports what it produced.
  *
  * The `gh` client rather than an HTTP client on purpose: it already resolves
- * the repository from the checkout and the token from the environment, so a
- * workflow, a fork, and a developer's terminal all authenticate the same way
- * with nothing to configure.
+ * the repository and token from the checkout and environment, so every caller
+ * authenticates the same way with nothing to configure.
  *
- * A near-identical helper lives beside the label synchronizer in
- * `synchronization`. That duplication is deliberate. The Nx tag
- * constraints forbid one of these projects importing the other, and a shared
- * abstraction with one caller on each side would be a package to maintain in
- * exchange for forty lines. Two small local helpers is the cheaper of the two.
- *
- * Nothing here throws. A `gh` that is missing, unauthorized, or rate-limited
- * is a fact to report, not an exception to propagate.
+ * Nothing here throws. A missing, unauthorized, or rate-limited `gh` is a fact
+ * to report, not an exception to propagate.
  */
 @Injectable()
 export class PullRequestGithubService {
@@ -40,8 +33,7 @@ export class PullRequestGithubService {
   /**
    * Whatever `gh` said about why it could not do the thing.
    *
-   * Both streams, because which one carries the reason varies by subcommand,
-   * and a failure reported with nothing to read is worse than a clumsy line.
+   * Both streams, since `gh` varies which one carries the reason.
    */
   public describeFailure(result: GithubCliResult): string {
     const output = `${result.standardError} ${result.standardOutput}`.trim();

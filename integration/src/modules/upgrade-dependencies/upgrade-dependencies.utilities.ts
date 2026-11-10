@@ -8,11 +8,8 @@ import type { Failure, StepReport } from "./upgrade-dependencies.types";
 // 🌎 Utilities
 
 /**
- * Writes the pull request the weekly job opens. Its details say what each step
- * came to, skipped steps first and in the summary, and close the body with
- * their errors and any warnings, where a reviewer cannot miss them: a step
- * that has been failing for weeks must not hide behind a pull request that
- * looks like any other.
+ * Writes the weekly pull request: skipped steps first, errors and warnings
+ * last. A long-failing step must not hide.
  */
 export function renderPullRequestBody(
   reports: readonly StepReport[],

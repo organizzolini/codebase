@@ -7,18 +7,13 @@ import type { PreparedValidationDocument } from "@conformetry/core";
 
 /** Arguments for expanding instance globs into instances. */
 export interface FindInstancesArguments {
-  /**
-   * Globs, relative to the working directory, naming paths that are never
-   * instances: a directory or file a pattern found is dropped when one of
-   * these matches it.
-   */
+  /** Globs naming paths that are never instances. A matching directory or file is dropped. */
   readonly exclude?: string[] | undefined;
   /** Glob patterns, resolved against the working directory. */
   readonly patterns: string[];
   /**
-   * Applied to every instance these patterns produce. Callers that need
-   * per-project values, such as an Nx plugin supplying `type`, call once per
-   * project rather than passing a lookup table.
+   * Applied to every instance these patterns produce. Callers needing per-project
+   * values call once per project rather than passing a lookup table.
    */
   readonly substitutions?: Substitutions;
   /** Applied to every instance these patterns produce, when the group sets one. */
@@ -27,39 +22,27 @@ export interface FindInstancesArguments {
 }
 
 /**
- * A place a template's tree is rendered into, plus the name it renders with.
+ * A place a template's tree is rendered into, with the name it renders with.
  *
- * Instances come from the caller's glob expansion. Nothing here knows how they
- * were found — that is the host's job, because globbing a workspace and
- * reading project labels is workspace knowledge, not template knowledge.
+ * The host's glob expansion supplies it.
  */
 export interface Instance {
   /**
-   * Absolute paths the match is restricted to, or `undefined` for the whole
-   * directory tree.
-   *
-   * This is what lets a two-file template like `nestjs-service-file` win. A
-   * directory glob leaves the scope open and the largest fitting template
-   * wins; a file glob narrows the scope to the matched files, so a template
-   * describing exactly those files fits better than one describing the whole
-   * directory.
+   * Absolute paths narrowing the match, or `undefined` for the whole tree. A file
+   * glob narrows this, so a template describing those files fits better.
    */
   readonly fileScope?: string[];
   /** Drives the name substitutions — a directory basename or a filename stem. */
   readonly nameStem: string;
   /**
-   * Absolute path to the directory the template's tree is laid over.
-   *
-   * A template that produces a folder contains that folder, so this is the
-   * folder's *parent*: `nestjs-service-module` holds `{{nameKebabCase}}/…`,
-   * and its path is `…/src/modules`. A template that produces loose files
-   * holds them at its root, and its path is the directory those files sit in.
+   * Directory the template's tree is laid over: for a folder-producing template,
+   * the folder's parent; for loose files, their directory.
    */
   readonly path: string;
   /**
-   * Substitutions the caller supplies on top of the derived name variants,
-   * such as `type` from the project graph. Mustache renders an unknown
-   * placeholder as empty, so anything a template references must arrive here.
+   * Caller-supplied substitutions beyond the derived name variants, such as
+   * `type`. Mustache renders a missing placeholder as empty, so each one must
+   * arrive here.
    */
   readonly substitutions?: Substitutions;
   /**
@@ -82,9 +65,8 @@ export interface MatchedInstance {
   /** How many of the template's files the instance already has. */
   readonly matchedFileCount: number;
   /**
-   * The random stand-in rendered for each placeholder nothing supplied, keyed
-   * by placeholder. Validation replaces each with the text the instance holds
-   * there. Absent or empty when every placeholder was supplied.
+   * Random stand-ins for placeholders nothing supplied, keyed by placeholder.
+   * Validation swaps each for the instance's own text there.
    */
   readonly placeholderValues?: Substitutions;
   /** Every value the template renders with, stand-ins included. */
@@ -113,8 +95,7 @@ export interface ResolvedInstances {
 /**
  * Arguments for taking an inventory of templates and instances.
  *
- * Both filters narrow the pairing rather than the search, so an entry that
- * survives neither drops out entirely.
+ * Both filters narrow the pairing, so an entry that survives neither drops out.
  */
 export interface ResolveInventoryArguments {
   readonly configuration: ConformetryConfiguration;
@@ -128,10 +109,7 @@ export interface ResolveInventoryArguments {
 /**
  * One template weighed against an instance during matching.
  *
- * `matchRatio` measures which template *fits*, by file presence alone. It is
- * deliberately not called a score: an instance's conformance score measures
- * how well the matched template's contents are honoured, which is a different
- * number arrived at a different way.
+ * `matchRatio` measures fit by file presence alone, not conformance score.
  */
 export interface TemplateMatch {
   readonly matchedFileCount: number;
@@ -153,10 +131,7 @@ export interface UnmatchedInstance {
 }
 
 /**
- * Why an instance could not be matched.
- *
- * Both are reported rather than skipped: a glob is the caller asserting these
- * directories are instances, so an instance matching nothing is a real finding,
- * and a tie means two templates are indistinguishable.
+ * Why an instance went unmatched. Reported, not skipped: a glob asserts the
+ * directory is an instance, so no match is a finding.
  */
 export type UnmatchedReason = "ambiguous" | "no-match";

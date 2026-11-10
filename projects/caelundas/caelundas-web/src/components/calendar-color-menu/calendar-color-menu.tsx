@@ -38,8 +38,7 @@ export interface CalendarColorMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the toolbar's Color menu, one panel like the Sky menu's: a switch
- * that colors the events, then what they are colored by with its legend.
+ * Renders the toolbar's Color menu: a switch that colors the events, then what they are colored by, with its legend.
  */
 export function CalendarColorMenu(
   properties: Readonly<CalendarColorMenuProperties>,

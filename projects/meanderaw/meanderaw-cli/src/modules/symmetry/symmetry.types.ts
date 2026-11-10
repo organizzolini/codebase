@@ -1,14 +1,7 @@
 // 🏷️ Types
 
 /**
- * How a point is reached, ranked in the order the retired `mosaic` generator's
- * exact-cover search discovered covers in: `0` a bare point, `1` one
- * anchoring a southward edge, `2` one anchoring an eastward edge, `3` one
- * reached only by a neighbor's edge.
- *
- * A union rather than a plain number so a rank cannot be invented: there are
- * exactly four ways a point is reached, and a reader indexing by one needs no
- * fallback for a rank that does not exist.
+ * How a point is reached: `0` bare, `1` anchors a southward edge, `2` an eastward one, `3` only an adjacent point's edge.
  */
 export type PointRank = 0 | 1 | 2 | 3;
 

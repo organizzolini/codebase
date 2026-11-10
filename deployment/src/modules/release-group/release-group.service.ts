@@ -62,8 +62,7 @@ export class ReleaseGroupService {
 
   /**
    * Lists the group's members from a written project graph, failing with
-   * Nx's own error when it could not say which projects are in the group or
-   * where one lives.
+   * Nx's error when Nx cannot name them or locate one.
    */
   private membersFrom(graphFile: string): ReleaseGroupMember[] {
     const releaseProjects = (
@@ -113,9 +112,6 @@ export class ReleaseGroupService {
 
   /**
    * Reports whether npm already has the given `<name>@<version>`.
-   *
-   * @param specifier - The package and version to look for.
-   * @returns Whether npm answers with that version.
    */
   public async isOnNpm(specifier: string): Promise<boolean> {
     const viewed = await this.processRunner.captureAsync("npm", [
@@ -130,21 +126,16 @@ export class ReleaseGroupService {
   }
 
   /**
-   * Reports whether `NPM_REGISTRY` names a registry other than npmjs.org,
-   * which makes the run a rehearsal: no provenance, and no GitHub records.
-   *
-   * @returns Whether this run is a rehearsal.
+   * Reports whether `NPM_REGISTRY` names a non-npmjs.org registry, making this
+   * a rehearsal: no provenance, no GitHub records.
    */
   public isRehearsal(): boolean {
     return this.npmRegistry() !== DEFAULT_NPM_REGISTRY;
   }
 
   /**
-   * The npm registry packages are published to and read from, with no
-   * trailing slash: npmjs.org, unless `NPM_REGISTRY` names another to
-   * rehearse against.
-   *
-   * @returns The registry's address.
+   * The npm registry to publish to and read from, without a trailing slash:
+   * npmjs.org unless `NPM_REGISTRY` overrides it.
    */
   public npmRegistry(): string {
     const configured = this.configService.get("NPM_REGISTRY", { infer: true });
@@ -155,16 +146,8 @@ export class ReleaseGroupService {
   }
 
   /**
-   * Lists every project in the Nx release group, read from nx.json's
-   * `release.projects`, with its directory.
-   *
-   * Two Nx calls in all, rather than one per project: each starts Nx afresh,
-   * and asking for every project's root separately took about 90 seconds a
-   * step for 28 packages. It fails rather than return nothing, since an empty
-   * group would leave `pnpm -r publish` with no filter, publishing every
-   * package.
-   *
-   * @returns The group's members, in the order Nx lists them.
+   * Lists each project in the Nx release group. Fails rather than returning
+   * none, since an empty group would publish every package.
    */
   public readGroup(): ReleaseGroupMember[] {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), "release-group-"));
@@ -188,10 +171,7 @@ export class ReleaseGroupService {
   }
 
   /**
-   * Reads the name and version of the package in the given directory.
-   *
-   * @param root - The package's directory, relative to the workspace.
-   * @returns Its manifest's name and version.
+   * Reads the package.json in the directory `root`, relative to the workspace.
    */
   public readManifest(root: string): PackageManifest {
     return JSON.parse(
@@ -200,13 +180,8 @@ export class ReleaseGroupService {
   }
 
   /**
-   * Calls the task once for each item, `PARALLEL_CALLS` at a time, and
-   * reports whether every call succeeded. Each call's output is held back and
-   * printed whole, in item order, so concurrent calls never interleave.
-   *
-   * @param items - What to call the task with.
-   * @param task - The work for one item, returning the lines it printed.
-   * @returns Whether every call succeeded.
+   * Calls the task per item, `PARALLEL_CALLS` at a time, printing each output
+   * whole, in order. Resolves to whether all succeeded.
    */
   public async runInParallel<Item>(
     items: readonly Item[],

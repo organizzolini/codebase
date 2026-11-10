@@ -9,11 +9,9 @@ const REPORT_HANDLERS: Record<string, () => string> = {
 /**
  * A stack whose real depth is unknowable, reported as a floor.
  *
- * Eight frames of ordinary forwarding end at `REPORT_HANDLERS[format]()`, where
- * the member name is a value rather than a name in the syntax. Nothing about
- * the call site says which handler runs, so callidescope records the call as
- * unfollowable rather than guessing — and every stack passing through it prints
- * its depth as `≥ 8` instead of `8`.
+ * Eight frames of forwarding end at `REPORT_HANDLERS[format]()`, a computed member,
+ * so the call is recorded as unfollowable and every stack through it prints
+ * `≥ 8`.
  */
 @Injectable()
 export class ComputedMemberService {

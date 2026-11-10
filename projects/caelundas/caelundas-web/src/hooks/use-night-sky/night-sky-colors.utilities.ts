@@ -3,9 +3,7 @@ import { COLOR_DIGITS_PATTERN } from "./night-sky.constants";
 // 🌎 Public Functions
 
 /**
- * Reads a hexadecimal color of three or six digits, with or without the `#`,
- * as lowercase `#rrggbb`, or answers the fallback for anything else. A number
- * is never read: the router turns `1e5` into one, and what it meant is gone.
+ * Reads a three or six digit hexadecimal color as lowercase `#rrggbb`, or the fallback; a number is never read.
  */
 export function normalizeHexadecimalColor(
   value: unknown,

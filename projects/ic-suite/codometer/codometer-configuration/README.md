@@ -306,8 +306,8 @@ custom: [
 ],
 ```
 
-`kinds` are `class`, `enum`, `function`, `getter`, `interface`, `method`,
-`property`, and `setter`. `modifiers` are `abstract`, `async`, `export`,
+`kinds` are `class`, `enum`, `file`, `function`, `getter`, `interface`,
+`method`, `property`, `setter`, `signature`, `type`, and `variable`. `modifiers` are `abstract`, `async`, `export`,
 `override`, `private`, `protected`, `public`, `readonly`, and `static`.
 
 Both are read literally, from the syntax. A callable written as a class member

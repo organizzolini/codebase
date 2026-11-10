@@ -59,10 +59,9 @@ export class CollectCodometerBaselineService {
   // 🌎 Public Methods
 
   /**
-   * Copies each report found beneath a root into the baseline directory.
-   *
-   * @param root - The workspace root to search and to put the baseline in.
-   * @returns Lines saying how many reports were gathered, or that none were.
+   * Copies each report beneath `root` into the baseline.
+   * @param root - Workspace root, searched and written to.
+   * @returns Summary lines.
    */
   public collect(root = process.cwd()): CollectCodometerBaselineReport {
     const reports = this.findReports(root);

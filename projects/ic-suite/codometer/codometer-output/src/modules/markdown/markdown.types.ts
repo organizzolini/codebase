@@ -16,9 +16,7 @@ export interface BuildAnchorHelpersArguments {
 /**
  * What a run measured: one project, or the repository holding it.
  *
- * Carried into the rendering because the first badge group is named after it.
- * A run scoped to `projects/common/observability` reporting a `Repository` heading names the
- * whole workspace for figures that only ever covered one package.
+ * Names the first badge group, so the scope is never misreported.
  */
 export type MeasurementScope = "project" | "repository";
 
@@ -57,12 +55,7 @@ export interface SyncMarkdownArguments {
 }
 
 /**
- * One declared target's measured size, as the badge block reports it.
- *
- * Only the targets a run actually measured the size of reach this. A run that
- * declared none — the whole-repository run, which measures source and has no
- * build output of its own — renders no size badges at all, so the aggregate
- * README keeps the single `Repository Size` figure it already carries.
+ * One declared target's measured size. Only targets a run measured reach the badge block.
  */
 export interface TargetSize {
   bytes: number;

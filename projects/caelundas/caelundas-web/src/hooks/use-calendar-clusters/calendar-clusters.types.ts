@@ -28,9 +28,7 @@ export interface ClusterOptions {
    */
   firstDay: string;
   /**
-   * How far apart, in minutes, two events inside a day may start and still
-   * be one cluster. A view with room to draw many events side by side keeps
-   * it short.
+   * Minutes apart that events in a day may start and still cluster; views with room keep it short.
    */
   gapMinutes: number;
   lastDay: string;

@@ -3,10 +3,7 @@
 import type { NeighborhoodEdge } from "../neighborhood/neighborhood.types";
 
 /**
- * The whole-repository Nx dependency graph: every project, every edge.
- *
- * Exported once at the workspace root rather than once per project — see
- * `CONTEXT.md`'s `Workspace Graph` term.
+ * The whole-repository Nx dependency graph: every project and every edge.
  */
 export interface WorkspaceGraph {
   /** Every edge between two workspace projects, sorted. */

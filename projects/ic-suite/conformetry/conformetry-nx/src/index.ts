@@ -38,11 +38,8 @@ export type {
 } from "./modules/scope/scope.types";
 
 /**
- * Infers a `conformetry-validate` target onto every project holding instances.
- *
- * Nx hands this every `project.json` at once, which is why the conformetry
- * configuration is read a single time inside `inferTargets` rather than once
- * per project — the older per-file hook reloaded and re-globbed for each one.
+ * Infers a `conformetry-validate` target onto every project holding instances,
+ * reading the configuration once rather than per project.
  */
 const createNodes: CreateNodes = [
   PROJECT_CONFIGURATION_GLOB,
@@ -84,11 +81,7 @@ export default conformetryPlugin;
 /**
  * Runs one configured generator against an Nx tree.
  *
- * This is the machinery a consumer's generated generator wrappers call. The
- * published package declares no scaffolding generators of its own, only
- * `sync`: which generators exist is a property of the consumer's
- * configuration, so `nx g @conformetry/nx:<anything else>` resolves nothing by
- * design.
+ * The package declares only `sync`; which generators exist is the consumer's configuration.
  */
 export async function runConformetryGenerator(args: {
   generatorName: string;

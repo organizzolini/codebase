@@ -62,10 +62,7 @@ describe(ProjectGraphsService, () => {
   let projectRoot: string;
 
   /**
-   * Builds a `GraphRunContext` a test can override selected fields of.
-   *
-   * `selectedProjects` follows `projects` unless a test overrides it, which
-   * is what a run naming no `--projects`/`--tags` selection resolves to.
+   * Builds a `GraphRunContext` a test can override, with `selectedProjects` following `projects`.
    */
   function buildContext(
     overrides: Partial<GraphRunContext> = {},

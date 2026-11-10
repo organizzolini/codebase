@@ -1025,6 +1025,133 @@ describe(TypescriptService, () => {
       expect(measurement?.measured).toBe(6);
     });
 
+    it("measures the JSDoc of a const, a type alias, and a property signature", () => {
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
+          * A constant.
+          */
+         export const limit = 1;
+
+         /**
+          * A type alias.
+          */
+         export type Limit = number;
+
+         export interface Shape {
+           /**
+            * A property signature.
+            */
+           width: number;
+         }`,
+        ],
+      );
+
+      const result = service.analyze({
+        commentCounters: [
+          counterFor("variable", 6),
+          counterFor("type", 6),
+          counterFor("signature", 6),
+        ],
+        sourceFiles: ["src/foo.ts"],
+        symbolCounters: [],
+        workingDirectory,
+      });
+
+      expect(
+        flattenDeclarationComments(result.declarationCommentCounts).map(
+          (measurement) => ({
+            declaration: measurement.declaration,
+            kind: measurement.kind,
+          }),
+        ),
+      ).toStrictEqual([
+        { declaration: "limit", kind: "variable" },
+        { declaration: "Limit", kind: "type" },
+        { declaration: "width", kind: "signature" },
+      ]);
+    });
+
+    it("measures a JSDoc block set apart by a blank line as the file header", () => {
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
+          * What this file is for.
+          */
+
+         import { thing } from "thing";
+
+         export const value = thing;`,
+        ],
+      );
+
+      const result = service.analyze({
+        commentCounters: [counterFor("file", 6), counterFor("variable", 6)],
+        sourceFiles: ["src/foo.ts"],
+        symbolCounters: [],
+        workingDirectory,
+      });
+
+      expect(
+        flattenDeclarationComments(result.declarationCommentCounts).map(
+          (measurement) => measurement.kind,
+        ),
+      ).toStrictEqual(["file"]);
+    });
+
+    it("does not read a declaration's own JSDoc as the file header", () => {
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
+          * A class.
+          */
+         export class Foo {}`,
+        ],
+      );
+
+      const result = service.analyze({
+        commentCounters: [counterFor("file", 6), counterFor("class", 6)],
+        sourceFiles: ["src/foo.ts"],
+        symbolCounters: [],
+        workingDirectory,
+      });
+
+      expect(
+        flattenDeclarationComments(result.declarationCommentCounts).map(
+          (measurement) => measurement.kind,
+        ),
+      ).toStrictEqual(["class"]);
+    });
+
+    it("does not read a detached file header as the next declaration's JSDoc", () => {
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
+          * What this file is for.
+          */
+
+         export class Foo {}`,
+        ],
+      );
+
+      const result = service.analyze({
+        commentCounters: [counterFor("file", 6), counterFor("class", 6)],
+        sourceFiles: ["src/foo.ts"],
+        symbolCounters: [],
+        workingDirectory,
+      });
+
+      expect(
+        flattenDeclarationComments(result.declarationCommentCounts).map(
+          (measurement) => measurement.kind,
+        ),
+      ).toStrictEqual(["file"]);
+    });
+
     it("does not report a declaration with no JSDoc comment at all", () => {
       const workingDirectory = stageSources(
         ["src/foo.ts"],

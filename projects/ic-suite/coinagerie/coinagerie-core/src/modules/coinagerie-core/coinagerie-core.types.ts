@@ -1,21 +1,14 @@
 // 🏷️ Types
 
 /**
- * A destination's words, each with its definition.
- *
- * A map rather than a plain object, so a word such as `constructor` or
- * `prototype` can never be confused with something every object already
- * carries. A definition is `""` when nobody has written one yet. Keys are
- * plain lowercase headwords; the forms folded into a headword are never
- * carried this far.
+ * Words of a destination, each with its definition or `""` when unwritten. A
+ * map so `constructor` cannot collide with an inherited property.
  */
 export type Glossary = ReadonlyMap<string, string>;
 
 /**
- * How one destination disagrees with the codebase's vocabulary.
- *
- * Both lists are sorted. A destination agrees with the code exactly when both
- * are empty; an empty definition is never a disagreement.
+ * How one destination disagrees with the code. Agreement means both lists are
+ * empty; an empty definition is never a disagreement.
  */
 export interface GlossaryDifference {
   /** Words the code uses that the destination does not list. */

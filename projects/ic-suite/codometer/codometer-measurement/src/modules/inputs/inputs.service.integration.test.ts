@@ -76,11 +76,7 @@ describe(`${InputsService.name} over a real directory`, () => {
     ).not.toContain("dist/vendor/bundled.js");
   });
 
-  // The tool this replaced applied negations in the order they were written,
-  // so the same patterns rearranged could hold a different set of files. The
-  // globs go through the real resolution rather than being partitioned here,
-  // because partitioning them in the test is the very step an order-dependent
-  // implementation would need in order to pass anyway.
+  // The tool this replaced applied negations in written order, so the same patterns rearranged could hold different files. Globs go through real resolution, since partitioning them here would hide that order dependence.
   it.each([
     ["last", ["dist/**/*.js", "dist/nested/**/*.js", "!dist/**/*.min.js"]],
     ["first", ["!dist/**/*.min.js", "dist/**/*.js", "dist/nested/**/*.js"]],

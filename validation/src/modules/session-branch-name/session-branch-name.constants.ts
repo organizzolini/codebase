@@ -3,9 +3,8 @@ import { z } from "zod";
 // ♟️ Constants
 
 /**
- * The configuration `validate-branch-name` reads, relative to the workspace
- * root. Read here too rather than restated, so the session check and the
- * pre-push hook can never disagree about what a valid branch is.
+ * The configuration `validate-branch-name` reads. Read here, not restated, so
+ * the session check and pre-push hook cannot disagree.
  */
 export const BRANCH_NAME_CONFIG_PATH = "validate-branch-name.config.cjs";
 

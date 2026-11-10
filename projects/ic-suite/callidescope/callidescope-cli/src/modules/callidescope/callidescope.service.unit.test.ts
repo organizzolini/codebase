@@ -131,10 +131,7 @@ function buildSubject(args: {
 }
 
 /**
- * Resolves limits the way a real run does, through the real resolver.
- *
- * The one resolver rather than a second copy of the inheritance rules: a test
- * that worked them out for itself could pass while the tool disagreed.
+ * Resolves limits through the real resolver, so tests cannot disagree with the tool's inheritance rules.
  */
 function resolveLimits(args: {
   projectConfigurations?: readonly LoadedProjectConfiguration[];
@@ -207,12 +204,9 @@ describe(CallidescopeService, () => {
   });
 
   it("names the logged depth for the trace rather than for one project", () => {
-    // A scoped run builds programs for its whole dependency closure, so this
-    // number routinely belongs to a project the run was never pointed at —
-    // `tools/synchronization` printed a traced seventeen while owning ten.
-    // Under a bare `maximumDepth` it reads as the number to write into that
-    // project's own limit, which would be headroom. Pinned here because the
-    // name is the entire fix, and a rename back would be silent.
+    // A scoped run traces its dependency closure, so this number can belong to a
+    // project it was never pointed at. Under a bare `maximumDepth` it would read as
+    // that project's limit, which would be headroom. The name is the fix.
     const projectProgram = buildFixtureProgram({
       "packages/example/src/index.ts": `
         function inner(): void {}

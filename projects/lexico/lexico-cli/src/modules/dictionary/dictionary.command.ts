@@ -321,9 +321,7 @@ export class DictionaryCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Resolves the optional end-lemma bound: a given lemma must be a cached page at
-   * or after `startLemma`, a bare flag prompts on a terminal, and anything else is
-   * no bound.
+   * Resolves the end-lemma bound: a given lemma must be a cached page at or after `startLemma`; a bare flag prompts; otherwise no bound.
    */
   private async resolveEndLemma(
     endLemma: CommandOptionValue,
@@ -350,8 +348,7 @@ export class DictionaryCommand extends CommandRunner {
   }
 
   /**
-   * Resolves the optional start-lemma bound: a given lemma must be a cached page,
-   * a bare flag prompts on a terminal, and anything else is no bound.
+   * Resolves the start-lemma bound: a given lemma must be a cached page; a bare flag prompts; otherwise no bound.
    */
   private async resolveStartLemma(
     startLemma: CommandOptionValue,

@@ -13,13 +13,9 @@ import {
 import type { ProjectLimitRow } from "./limits.types";
 
 /**
- * Turns the resolved limits into the document a reader gets.
+ * Turns the resolved limits into the markdown table a reader gets.
  *
- * Markdown, because the listing is a table and everything else callidescope
- * prints is already markdown — it reads in a terminal and pastes into a pull
- * request unchanged. Kept apart from the service so the shape of the document
- * is testable with no configuration anywhere near it, and so resolving the
- * limits never depends on how they will be shown.
+ * Kept apart from the service so resolving the limits never depends on how they are shown.
  */
 @Injectable()
 export class RenderLimitsService {
@@ -34,11 +30,7 @@ export class RenderLimitsService {
   // 🔏 Private Methods
 
   /**
-   * Names the project a row is about.
-   *
-   * Two kinds of row carry no directory to print, for two different reasons:
-   * the workspace default belongs to no project at all, and the project rooted
-   * at the workspace root has the empty string for a root.
+   * Names the project a row is about. The workspace default has none; the root project has an empty name.
    */
   private renderProject(project: string | undefined): string {
     if (project === undefined) {

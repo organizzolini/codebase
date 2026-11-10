@@ -12,11 +12,7 @@ export interface CapturedRun {
 }
 
 /**
- * What one task of a gate batch settled on.
- *
- * Nx's own type for a batch executor's result is not exported through
- * `@nx/devkit`, so this states the shape Nx reads back: whether the task
- * passed, and the output to show and to store with it in the cache.
+ * What one task of a gate batch settled on: whether it passed, and the output to show and cache.
  */
 export interface GateBatchTaskResult {
   readonly success: boolean;
@@ -54,11 +50,8 @@ export interface RunGateBatchTask {
   /** Whether Nx caches the target this task runs as. */
   readonly cached: boolean;
   /**
-   * The workspace configuration this task is judged against, already resolved.
-   *
-   * Resolved by the executor rather than here: reading it back out of
-   * `nx.json` is a long chain of calls, and a batch that made it from several
-   * places deep inside itself would be too deep to read.
+   * The workspace configuration this task is judged against, resolved by the
+   * executor so a batch never reads `nx.json`.
    */
   readonly configurationPath: string;
   /** Nx's id for the task, which the result is keyed by. */

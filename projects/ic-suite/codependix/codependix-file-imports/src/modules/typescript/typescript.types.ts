@@ -3,13 +3,8 @@
 import type ts from "typescript";
 
 /**
- * A TypeScript project's internal file-level import Graph: which of its own
- * files import which other of its own files.
- *
- * Only edges resolving to a file inside the project are kept — an import of
- * an external package or of another workspace project resolves outside
- * `fileNames` and is left out, the same way `Neighborhood` only draws edges
- * between projects it already knows about.
+ * A TypeScript project's internal file-level import graph. Edges to files outside the
+ * project, such as packages or other workspace projects, are left out.
  */
 export interface TypescriptImportGraph {
   /** Every drawn import relationship, sorted so the diagram never churns. */
@@ -29,11 +24,8 @@ export interface TypescriptImportGraphEdge {
 }
 
 /**
- * A workspace project whose own `tsconfig.json` can be turned into a program.
- *
- * Every workspace project is a candidate, unlike `codependix-nestjs-modules`'s
- * `NestjsProject`, which is gated to projects tagged `framework:nestjs` — a
- * file-level import graph is meaningful for any TypeScript project.
+ * A workspace project with its own `tsconfig.json`. Every such project is a candidate,
+ * unlike the NestJS module's tag-gated projects.
  */
 export interface TypescriptProject {
   /** Absolute path of the project directory. */
@@ -45,14 +37,8 @@ export interface TypescriptProject {
 }
 
 /**
- * One project's program together with the compiler host and options that
- * built it.
- *
- * The host and options travel with the program rather than being rebuilt by
- * `TypescriptImportGraphService`: resolving an import specifier through
- * `ts.resolveModuleName` needs the exact same host and options the program
- * itself was built with, or module resolution could silently disagree with
- * what the program actually parsed.
+ * One project's program with the host and options that built it. Import resolution
+ * must use the same pair.
  */
 export interface TypescriptProjectProgram {
   readonly host: ts.CompilerHost;

@@ -14,16 +14,11 @@ export interface ClassifiedCalendarEvent {
 }
 
 /**
- * Raw tag strings and the paths each stands for. An empty list means the
- * raw tag classifies nothing; a raw tag missing from every map falls back to
- * a root of its own.
+ * Raw tag strings and the paths each stands for; an empty list classifies nothing.
  */
 export type TagMap = Readonly<Record<string, readonly TagPath[]>>;
 
 /**
- * A node's place in the tag tree: the names from its root down to it, so
- * `["Type", "Aspect", "Major"]` names the `Major` node under `Aspect` under
- * the `Type` root. An event carrying a path is linked to its last node, and
- * carries the ones above it through the closure table.
+ * A node's place in the tag tree: its names from the root down, such as `["Type", "Aspect", "Major"]`.
  */
 export type TagPath = readonly [string, ...string[]];

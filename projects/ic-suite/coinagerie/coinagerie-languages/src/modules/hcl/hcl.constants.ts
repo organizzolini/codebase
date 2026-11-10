@@ -8,13 +8,8 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 export const HCL_EXTENSIONS: readonly string[] = [".hcl", ".tf", ".tfvars"];
 
 /**
- * How HCL is read: `#`, `//`, and block comments, quoted strings, and
- * here-document bodies.
- *
- * Two kinds of quoted string are names. An object key written
- * `"key" = value`, and a block label such as the `"aws_instance"` and `"web"`
- * of `resource "aws_instance" "web" {`, found by the block header on the same
- * line before it. Interpolations inside a string are part of the string.
+ * Comments, quoted strings, and here-documents in HCL. A quoted key or block label is
+ * a name; an interpolation stays inside its string.
  */
 export const HCL_GRAMMAR: LexicalGrammar = {
   identifier: /[\p{L}_][\p{L}\p{N}_-]*/uy,
@@ -40,14 +35,8 @@ export const HCL_GRAMMAR: LexicalGrammar = {
 };
 
 /**
- * The keywords of HCL, lowercased as the vocabulary compares words.
- *
- * The language's own words, not Terraform's: `resource` and `variable` are
- * block types a Terraform configuration chooses, and HCL does not reserve
- * them.
- *
- * A plain array, so a configuration spreads it into `exclude.words` and the
- * tool excludes nothing it was not asked to.
+ * The keywords of HCL, lowercased. Its own words, not Terraform's: `resource`
+ * and `variable` are block types HCL does not reserve.
  */
 export const HCL_KEYWORDS: string[] = [
   "else",

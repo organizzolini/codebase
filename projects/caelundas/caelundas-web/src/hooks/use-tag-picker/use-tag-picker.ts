@@ -20,11 +20,7 @@ import type { KeyboardEvent } from "react";
 // 🧩 Hook
 
 /**
- * Holds what the tag picker needs from the builder's editor properties: the
- * tags the rule holds, which tags are open, and the handlers that edit them.
- * The tree opens already showing the tags the rule holds; a search lists
- * every match and leaves the folding alone. Each tick is written at once,
- * with the list left open.
+ * Holds what the tag picker needs from the builder's editor: the tags the rule holds, which are open, and the handlers that edit them.
  */
 export function useTagPicker(
   properties: Readonly<UseTagPickerProperties>,

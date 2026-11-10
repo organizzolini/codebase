@@ -8,16 +8,9 @@ import type { ResolvedCodependixConfiguration } from "../configuration/configura
 import type { ApplyOverridesArguments } from "./override-resolution.types";
 
 /**
- * Applies strict, per-field CLI overrides to an already-resolved
- * configuration.
- *
- * Mirrors `@callidescope/configuration`'s `FlagResolutionService` philosophy
- * exactly: a flag may override a value the configuration already declares,
- * and is refused when the configuration never declared that field at all.
- * Kept apart from `ConfigurationService` so the resolution logic — and the
- * file-length budget it would otherwise share with loading, boundary
- * defaulting, and per-project resolution — is stated and tested once, on its
- * own.
+ * Applies strict, per-field CLI overrides to a resolved configuration. A flag may override a declared
+ * value, and is refused for a field the configuration never declared. Kept apart from
+ * `ConfigurationService` to keep that file within its length budget.
  */
 @Injectable()
 export class OverrideResolutionService {
@@ -32,18 +25,8 @@ export class OverrideResolutionService {
   // 🔏 Private Methods
 
   /**
-   * Applies one list override, refusing it when the author never declared
-   * the field it names.
-   *
-   * Checked against `authored` — the configuration exactly as parsed, before
-   * `include`/`exclude` are defaulted — rather than against the resolved
-   * value: `ConfigurationService.resolveConfiguration` fills in
-   * `DEFAULT_INCLUDE_GLOBS`/`[]` for a field the author never wrote, so the
-   * resolved value is never itself `undefined`. Checking there would make
-   * every override legal regardless of what the configuration actually
-   * declared, which is the opposite of the precedence rule this mirrors.
-   *
-   * An empty override list is read the same as no override at all.
+   * Refuses an override for a field the author never declared. Checked against the authored config,
+   * since resolution fills defaults.
    */
   private resolveOverride(args: {
     authored: string[] | undefined;

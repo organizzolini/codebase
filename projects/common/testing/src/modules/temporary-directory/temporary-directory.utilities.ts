@@ -7,9 +7,8 @@ import { beforeAll, onTestFinished } from "vitest";
 import { TEMPORARY_DIRECTORY_PREFIX } from "./temporary-directory.constants";
 
 /**
- * Creates an empty directory for the running test, named
- * `codebase-test-<label>-…`, and removes it with everything in it once the
- * test finishes. Call it from a test or a `beforeEach` hook.
+ * Creates an empty directory for the running test, removed with its contents
+ * once the test finishes.
  */
 export function createTemporaryDirectory(label: string): string {
   const directory = makeDirectory(label);
@@ -22,9 +21,8 @@ export function createTemporaryDirectory(label: string): string {
 }
 
 /**
- * Creates one empty directory before the enclosing suite's first test and
- * removes it once the suite finishes, for tests that share files. Call it in
- * a `describe` body; the returned function reads the directory's path.
+ * Creates one empty directory before the suite's first test, removed after it.
+ * Call in a `describe` body; the returned function reads its path.
  */
 export function useTemporaryDirectory(label: string): () => string {
   let directory: string | undefined;

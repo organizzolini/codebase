@@ -1,10 +1,9 @@
 // ♟️ Constants
 
 /**
- * Directory entry holding git's own database, never measured.
+ * Git's own database directory, never measured.
  *
- * Skipped by name rather than by an ignore rule: `.gitignore` never mentions
- * it, because git has no need to ignore what it never looks at.
+ * Skipped by name, since `.gitignore` never needs to mention what git never reads.
  */
 export const GIT_DIRECTORY_NAME = ".git";
 
@@ -12,10 +11,9 @@ export const GIT_DIRECTORY_NAME = ".git";
 export const GITIGNORE_FILE_NAME = ".gitignore";
 
 /**
- * Glob suffix claiming everything beneath the directory a pattern names.
+ * Glob suffix matching everything beneath the directory a pattern names.
  *
- * A pattern ending in it excludes every descendant without exception, which
- * is what makes the directory safe to skip rather than walk and discard.
+ * Such a directory can be skipped rather than walked and discarded.
  */
 export const RECURSIVE_GLOB_SUFFIX = "/**";
 
@@ -29,11 +27,9 @@ export const JS_EXTENSIONS = new Set([".cjs", ".js", ".jsx", ".mjs"]);
 export const MARKDOWN_EXTENSIONS = new Set([".markdown", ".md", ".mdx"]);
 
 /**
- * File extensions treated as JSON data.
+ * File extensions treated as JSON data, excluding `.ipynb`.
  *
- * `.ipynb` is deliberately absent: a notebook is JSON on disk, but measuring
- * it here would report a document whose cells nobody wrote by hand as prose
- * and code. The jupyter analyzer takes notebooks apart instead.
+ * A notebook is JSON, but the jupyter analyzer reads its cells.
  */
 export const JSON_EXTENSIONS = new Set([".json", ".jsonc", ".jsonl"]);
 

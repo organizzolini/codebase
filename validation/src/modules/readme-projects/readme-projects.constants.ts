@@ -4,16 +4,14 @@
 export const WORKSPACE_SCOPES = ["projects"];
 
 /**
- * Workspace root directories that never hold a project of their own: the
- * dependency install, and `projects/`, which is searched through
- * `WORKSPACE_SCOPES` instead. Hidden directories are skipped by name.
+ * Root directories that never hold a project: the install, and `projects/`,
+ * searched through `WORKSPACE_SCOPES` instead. Hidden ones are skipped.
  */
 export const NON_PROJECT_ROOT_DIRECTORIES = ["node_modules", "projects"];
 
 /**
- * What marks a directory as a conformetry template's placeholder, such as
- * `{{nameKebabCase}}`, rather than a project: the manifest inside it belongs
- * to a project that does not exist yet.
+ * Marks a conformetry template placeholder directory, such as
+ * `{{nameKebabCase}}`, not a real project yet.
  */
 export const TEMPLATE_PLACEHOLDER_PATTERN = /\{\{.*\}\}/;
 

@@ -6,17 +6,12 @@ import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { SEMANTIC_RELEASE } from "./tag-codebase.constants";
 
 /**
- * Versions and tags the codebase with semantic-release: the root version, the
- * root `CHANGELOG.md`, the `v*` tag and GitHub release the README badge shows,
- * and the one `chore(release): 🔖 tag codebase` commit that also carries the
- * package versions and changelogs `version-packages` wrote.
+ * Versions and tags the codebase with semantic-release, which makes the one
+ * `chore(release)` commit carrying the package versions too.
  *
- * It steps aside, as `MainTipService` describes, both before semantic-release
- * and after a failed one. Before matters because semantic-release, finding
- * `main` ahead of it, skips the release and exits 0, and `tag-packages` would
- * then commit the package versions on a stale commit. After matters because
- * semantic-release takes minutes before it pushes, and a merge in that window
- * gets the push rejected. Any other failure still fails.
+ * It steps aside when `main` moved, both before semantic-release, so no stale
+ * commit is tagged, and after a failed one, since a merge during its
+ * minutes-long run gets the push rejected. Other failures still fail.
  */
 @Injectable()
 export class TagCodebaseService {
@@ -36,15 +31,8 @@ export class TagCodebaseService {
   // 🌎 Public Methods
 
   /**
-   * Runs semantic-release, or steps aside when `main` has moved.
-   *
-   * The release commit and its push skip Husky's hooks. Every task in the
-   * pre-commit hook only checks, and the merge queue already ran those checks
-   * on this same content, so repeating them here only costs time: over 20
-   * minutes for a release that bumps most of the packages, which outran the
-   * job's timeout.
-   *
-   * @returns The exit code: 0 when released or stepped aside, 1 otherwise.
+   * Runs semantic-release, or steps aside when `main` has moved. Skips Husky's
+   * hooks, which only repeat checks the merge queue already ran.
    */
   public run(): number {
     const base = this.mainTipService.head();

@@ -20,11 +20,7 @@ import type {
 } from "./event-groups.types";
 
 /**
- * Groups events into a tree, a level per level of the grouping, from the
- * group keys each event was read with. An event falls in every group of a
- * level it has a key for, or in the level's "No …" group when it has none,
- * and each group counts the distinct events it holds, so an event under two
- * planets is in both and counted once in the group above them.
+ * Groups events into a tree, one level per grouping level; an event falls in each group it has a key for.
  */
 export function buildEventGroups(
   events: readonly CalendarEventRecord[],
@@ -105,9 +101,7 @@ function compareText(left: string, right: string): number {
 }
 
 /**
- * Describes a group for one key: a tag's name and path below its root, a
- * derived value written out, or the level's "No …" group for no key. Derived
- * keys sort as written, except the duration buckets, shortest first.
+ * Describes a group for one key: a tag's name and path, a derived value, or the "No …" group for no key.
  */
 function describeGroup(
   groupKey: CalendarEventGroupKey | null,

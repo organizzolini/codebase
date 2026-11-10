@@ -9,11 +9,7 @@ import type {
 
 /**
  * Fails one project's task when cspell finds a misspelling under its root.
- *
- * What `cspell '<root>/**'` does, run through an executor so Nx can batch it:
- * `nx affected -t spell-check` hands the batch executor beside this one every
- * project it must check, and this runs when batching is off or a task stands
- * alone. cspell's own report is printed as it would be on the command line.
+ * Runs when batching is off or a task stands alone.
  */
 export default async function spellCheckExecutor(
   options: SpellCheckExecutorOptions,

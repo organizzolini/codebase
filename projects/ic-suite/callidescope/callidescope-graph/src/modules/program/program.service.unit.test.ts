@@ -20,10 +20,8 @@ import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 /**
- * Writes a project into an existing workspace, and describes it.
- *
- * A `package.json` comes with it unless `omitManifest` says otherwise, which
- * is what makes the project something another one's closure may reach.
+ * Writes a project and describes it. Unless `omitManifest` is set, it gets a `package.json`,
+ * so other closures can reach it.
  */
 async function addProject(args: {
   configuration?: string;

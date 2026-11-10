@@ -30,18 +30,10 @@ import type {
 } from "./batch.types";
 
 /**
- * Judges many gate tasks from as few command line runs as it can.
+ * Judges many gate tasks from as few command line runs as possible.
  *
- * One gate per project started the codependix command line once per project,
- * and most of what that costs is the start: a run over forty projects took 22
- * seconds where one took 4. This asks the command line about every project of
- * a group at once, reads from its JSON report which projects each finding is
- * charged to, and gives every task the verdict of its own project alone, so
- * each still passes, fails and is cached by itself.
- *
- * Kept shallow: every method calls the next at most a few layers down, because
- * the long chain that resolves a configuration path lives in the executor, and
- * nothing here may sit on top of it.
+ * A run over forty projects took 22 seconds where one took 4, so the command line is asked
+ * about a group's projects at once. Each task then gets the verdict of its own project alone.
  */
 @Injectable()
 export class BatchService {
@@ -56,17 +48,8 @@ export class BatchService {
   // 🔏 Private Methods
 
   /**
-   * Starts the command line and keeps what it printed, rather than showing it.
-   *
-   * Standard output is kept because a `--format json` run prints its verdicts
-   * there. Standard error is shown as it arrives when asked to, so a long
-   * container boot still reports progress, and is kept either way. Read with
-   * the stream consumers rather than event handlers: the process ending and
-   * its output being read are waited on together, so a run that ends before
-   * its last chunk has been read is not read short, and no callback of this
-   * method's own sits on top of the stack. A process that cannot be started
-   * settles with the reason rather than rejecting, so one failed run costs the
-   * tasks it judged and not the whole batch.
+   * Runs the command line and keeps its output. A process that cannot start settles with
+   * the reason, rather than rejecting.
    */
   private async captureCommandLine(args: {
     argv: string[];
@@ -111,13 +94,8 @@ export class BatchService {
   }
 
   /**
-   * Gets a failed task's own report by running its project alone.
-   *
-   * A batch knows which project a finding is charged to but prints JSON, so
-   * the failing project is run again by itself to get exactly what a single
-   * gate prints. A second run that passes does not clear the task: the batch
-   * charged the project, and a pass found by looking again must never hide a
-   * finding, so the disagreement is stated beside whatever the run printed.
+   * Gets a failed task's own report by running its project alone, since a batch prints JSON.
+   * A passing rerun never clears the failure.
    */
   private async explainFailure(args: {
     judged: JudgedTask;
@@ -152,14 +130,8 @@ export class BatchService {
   }
 
   /**
-   * Puts a task in the group it can be judged with, or settles it outright.
-   *
-   * A task that judges other projects or tags is run on its own, as a single
-   * gate would be, unless its target is cached, which a single gate refuses
-   * too. One that cannot be run at all fails without a throw, so neither costs
-   * the rest of the batch. A task judging only its own project joins the group
-   * sharing its configuration and dependencies setting and is left for
-   * `runGroup`, which is signalled by returning nothing.
+   * Puts a task in the group it can be judged with, or settles it outright. Tasks judging
+   * other projects run alone.
    */
   private async groupOrSettle(args: {
     groups: Map<string, GateRunGroup>;
@@ -210,16 +182,8 @@ export class BatchService {
   }
 
   /**
-   * Judges one run's worth of tasks from a single boundary check.
-   *
-   * The check is asked about every project at once and prints JSON naming the
-   * projects each finding is charged to. A task fails when a finding names its
-   * own project, and only then: a finding charged to another project of the
-   * batch is that project's, and one in a dependency is a note.
-   *
-   * A run is never read as a pass it did not earn. Output that is not the
-   * report, or a failing exit with no finding charged to any task judged,
-   * fails every task, since nothing says which of them the run was about.
+   * Judges one run's tasks from one boundary check. A task fails only when a finding names
+   * its own project; unreadable output fails them all.
    */
   private async judgeRun(args: {
     argv: string[];
@@ -270,11 +234,7 @@ export class BatchService {
   }
 
   /**
-   * Deals a group's projects into the runs that will judge them, and builds
-   * each run's command line and the one that explains each of its projects.
-   *
-   * Plain loops rather than callbacks: each command line is built a few calls
-   * below here, and a callback in between would put that over the depth limit.
+   * Deals a group's projects into the runs that judge them, and builds each run's command line.
    */
   private planShares(args: {
     concurrency: number;
@@ -348,12 +308,7 @@ export class BatchService {
   }
 
   /**
-   * Judges a group's tasks from runs that go at once, each over its own share.
-   *
-   * The projects are dealt across `concurrency` runs, more when an argument
-   * would pass `MAX_PROJECTS_ARGUMENT_BYTES`. Every run is started before any
-   * is waited on, so the group takes as long as its slowest share rather than
-   * the sum of them — the parallelism separate tasks had, kept.
+   * Judges a group's tasks from runs that go at once, each over its own share of projects.
    */
   private async runGroup(args: {
     concurrency: number;
@@ -379,13 +334,8 @@ export class BatchService {
   // 🌎 Public Methods
 
   /**
-   * Judges every task of a batch, each by its own project, from as few
-   * command line runs as it can.
-   *
-   * Tasks that judge only their own project, with the same configuration and
-   * the same dependencies setting, are run together. A task that judges other
-   * projects or tags is run on its own, as a single gate would, and a task
-   * that cannot be run at all fails alone.
+   * Judges every task of a batch by its own project, from as few runs as possible.
+   * Own-project tasks share runs.
    */
   public async runBatch(
     args: RunGateBatchArguments,

@@ -6,10 +6,7 @@
 export const CLUSTER_ID_PREFIX = "cluster:";
 
 /**
- * The kinds of event that are merged: the aspects, of which a busy day has
- * dozens that differ only in the bodies they join. Every other kind, such as
- * a twilight, a station or a cycle, is a different named event each time, and
- * is never merged.
+ * Event kinds merged into one: the aspects, which differ only in the bodies they join. Others never merge.
  */
 export const CLUSTERED_KIND_PATHS: ReadonlySet<string> = new Set([
   "Type / Aspect / Compound Aspect",

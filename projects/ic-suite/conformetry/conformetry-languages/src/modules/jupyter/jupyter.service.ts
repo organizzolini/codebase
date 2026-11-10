@@ -129,13 +129,9 @@ export class JupyterService implements ConformetryLanguageValidator {
   }
 
   /**
-   * Weighs a cell the notebook does not have.
+   * Weighs a cell the notebook lacks, against an empty instance.
    *
-   * Measured by comparing the template cell against an empty instance, which
-   * is exactly what "none of this is present" means. Guessing a flat 1 instead
-   * would let a notebook drop a forty-line code cell for the same price as an
-   * empty one, and mixing in a line count would put a unit in the denominator
-   * that nothing else uses.
+   * A flat weight would price a large cell like an empty one.
    */
   private weighMissingCell(args: {
     cell: PairedCells;

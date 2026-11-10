@@ -19,10 +19,7 @@ export type CodometerBatchExecutorArguments = [
 ];
 
 /**
- * The fields of Nx's executor context these executors read.
- *
- * Stated here rather than imported from `@nx/devkit`: this project does not
- * depend on it, and Nx passes real objects that satisfy this structurally.
+ * The fields of Nx's executor context these executors read, stated here since this project does not depend on `@nx/devkit`.
  */
 export interface CodometerExecutorContext {
   readonly projectGraph: {

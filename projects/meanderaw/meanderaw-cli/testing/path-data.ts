@@ -8,29 +8,14 @@
 // 🔧 Configuration
 
 /**
- * How far two coordinates may differ before the difference counts as real.
- * `GridGeometryService.formatCoordinate` rounds every coordinate to five
- * decimal places, so at a row count whose grid unit doesn't divide the
- * canvas evenly (7, 9, 11) two rounded values that should be equal can land
- * a few millionths of a pixel apart.
+ * How far two coordinates may differ before the difference is real. Rounding to five decimals can leave equal values a few millionths apart.
  */
 export const COORDINATE_ROUNDING_TOLERANCE = 0.0001;
 
 // 🌎 Utilities
 
 /**
- * Whether a rendered document lays ink back over ink it has already drawn.
- *
- * Every motif emits only `M`, `H`, and `V`, and a well-formed run
- * alternates axis: a horizontal run ends where a vertical one begins. Two
- * consecutive commands along the *same* axis mean the subpath reversed
- * direction without turning, retracing the segment it just drew. That is a
- * charter violation rather than a cosmetic one — the duplicate ink is a
- * second stroke over the first — and it is what issue #507 reports for
- * `chain` and `snake` above eight rows.
- *
- * Coordinates are stripped rather than parsed: the axis alternation is a
- * property of the command letters alone.
+ * Whether a document lays ink back over ink it already drew: two same-axis commands in a row retrace a segment.
  */
 export const retracesItself = (document: string): boolean =>
   [...document.matchAll(/\sd="([^"]*)"/gu)].some((match) =>
@@ -44,9 +29,7 @@ export const rightmostX = (pathData: string): number =>
   );
 
 /**
- * Splits one unit's path into the motif trace and the border segment
- * appended after it, by trimming exactly the border the service would draw
- * for those same options.
+ * Splits a unit's path into its motif trace and the border appended after it. Trims the border the service draws.
  */
 export const splitTrace = (
   fullPath: string,

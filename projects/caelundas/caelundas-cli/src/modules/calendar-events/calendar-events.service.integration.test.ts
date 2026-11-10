@@ -64,9 +64,7 @@ function tagged(
 }
 
 /**
- * Thirty seconds rather than the shared five: two full batches of inserts
- * took just over five seconds on a CI runner, which is several times
- * slower than a local machine.
+ * Thirty seconds rather than the shared five: two batches of inserts take over five seconds on CI.
  */
 const BULK_UPSERT_TIMEOUT_MILLISECONDS = 30_000;
 

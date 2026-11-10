@@ -24,10 +24,7 @@ import type { Tree } from "@nx/devkit";
 /**
  * Regenerates the workspace's conformetry generator plugin.
  *
- * Registered as a global sync generator, so `nx sync:check` fails whenever the
- * configuration declares a generator the emitted plugin does not, and `nx sync`
- * fixes it. Writing through the tree rather than to disk is what makes the
- * check possible: Nx compares the tree against the working copy.
+ * Registered as a global sync generator; writing through the tree lets `nx sync:check` compare.
  */
 export default async function syncGenerator(
   tree: Tree,
@@ -61,10 +58,9 @@ export default async function syncGenerator(
 }
 
 /**
- * Reads the workspace's `nx.json` through the tree, or nothing when absent.
+ * Reads `nx.json` through the tree, or nothing when absent.
  *
- * Through the tree rather than from disk so that a workspace mid-edit is read
- * the same way every other file in this generator is.
+ * Reading the tree means a mid-edit workspace is read like every other file here.
  */
 function readNxConfiguration(tree: Tree): unknown {
   const contents = tree.read(NX_CONFIGURATION_FILENAME, "utf8");

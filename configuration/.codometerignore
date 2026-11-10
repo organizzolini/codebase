@@ -134,3 +134,7 @@ projects/ic-suite/codometer/codometer-examples/examples/corpus/
 .github/agents/impeccable-*
 .github/hooks/impeccable.json
 # installed-skills-end
+
+# generated GraphQL client output (nobody writes these comments)
+projects/caelundas/caelundas-web/src/graphql/generated/
+projects/lexico/lexico-web/src/graphql/generated/

@@ -1,16 +1,9 @@
 // ♟️ Constants
 
 /**
- * Thrown when a command line cannot be turned into a run.
- *
- * One class rather than one per cause: every cause is the same event to
- * whoever catches it — nothing was attempted, and the fix is to retype the
- * flags. Only the wording varies, which is what the factories below do.
- *
- * Sits beside the constants because that is where every error class in this
- * repository lives — the project structure rule has no `errors` suffix, and
- * the Constant File Shape rule whitelists `class X extends Error` for exactly
- * this.
+ * Thrown when a command line cannot be turned into a run. One class rather than one per cause:
+ * every cause means nothing ran and the flags need retyping. Only the wording varies, by the
+ * factories below. Sits here because the constants rule whitelists error classes.
  */
 export class InputError extends Error {
   constructor(message: string) {
@@ -20,11 +13,8 @@ export class InputError extends Error {
 }
 
 /**
- * A required value that cannot be asked for, because stdin is not a terminal.
- *
- * `prompts` does not fail there — it draws its menu, never resolves, and the
- * process exits 0 having done nothing. This refuses to become that silent
- * green no-op.
+ * A required value that cannot be asked for without a terminal. `prompts` would
+ * exit 0 having done nothing, so this refuses instead.
  */
 export const missingInputError = (subject: string): InputError =>
   new InputError(
@@ -32,11 +22,8 @@ export const missingInputError = (subject: string): InputError =>
   );
 
 /**
- * A prompt someone dismissed without answering.
- *
- * Worded apart from a prompt that resolved to something unrecognized:
- * pressing escape is ordinary, and reporting it as a crash sends the reader
- * debugging for nothing.
+ * A prompt dismissed without an answer. Worded apart from an unrecognized
+ * answer, since escape is ordinary, not a crash.
  */
 export const promptCancelledError = (subject: string): InputError =>
   new InputError(`${subject} was not chosen.`);

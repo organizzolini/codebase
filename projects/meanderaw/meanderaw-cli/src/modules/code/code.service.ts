@@ -14,37 +14,14 @@ import type { Directions, Tile } from "../tile/tile.types";
 import type { Code, CodeObject } from "./code.types";
 
 /**
- * Owns a meander's Code: reading one, reading a lattice point's four
- * direction bits out of it, spelling a tile into one, and rotating its
- * phase.
+ * Owns a meander's Code: reading one, a point's direction bits, spelling a
+ * tile into one, and rotating its phase.
  *
- * Encoding and decoding are two directions of a single conversion, so they
- * sit together rather than in two similarly named modules. {@link parse} and
- * {@link directionsAt} go from the string to the ink; {@link spell} goes
- * back; {@link tile} is {@link spell}'s inverse at the whole-tile
- * granularity, for the one caller that needs the tile vocabulary rather than
- * a point at a time.
+ * **A Code is read in place.** Each bit is decoded from its own digit, since
+ * a Code spells all four bits per point.
  *
- * **A Code is read in place.** Every bit is decoded literally off its own
- * digit at `row * columns + column` rather than derived from a neighbor:
- * north and west are redundant with the previous point's south and east
- * under the lattice's own agreement invariant, but a Code spells all four
- * bits out per point regardless, and reading what is written is simpler than
- * re-deriving it and trusting an invariant nothing here has checked. There
- * is no intermediate grid — walking a Code is indexing a string, and the
- * array of arrays that used to stand between the two gave nothing the string
- * does not.
- *
- * **The spelling is deliberately redundant.** Four bits per point describes
- * `4 * columns * rows` bits where a tile has only
- * `columns * (2 * rows - 1)` degrees of freedom, because every edge is
- * written twice, once at each end. That is the same redundancy
- * `TileService.assertWellFormed` checks, and paying it buys a Code
- * whose characters are the meander's own points: `0` is a dot, `3` a
- * horizontal straight, `c` a vertical straight, `5`/`6`/`9`/`a` the corners,
- * `7`/`b`/`d`/`e` the T-junctions, `f` a crossing. A reader decodes a Code
- * point by point without a table, which is the whole reason it reads this
- * way.
+ * **The spelling is redundant.** Each edge is written at both ends, so every
+ * character names one point.
  */
 @Injectable()
 export class CodeService {
@@ -137,11 +114,8 @@ export class CodeService {
   // 🌎 Public Methods
 
   /**
-   * The canonical phase of a Code is the one that minimizes its
-   * tile-crossing component delta, breaking ties by choosing the
-   * lexicographically smallest Code string.
-   *
-   * The group of phases defaults to every cyclic column rotation.
+   * The canonical phase of a Code: the one minimizing its tile-crossing
+   * score, ties broken by the lexicographically smallest digits.
    */
   canonicalPhase(
     code: CodeObject,
@@ -169,14 +143,8 @@ export class CodeService {
   }
 
   /**
-   * The four direction bits the point at `(row, column)` carries, read off
-   * the single character at `row * columns + column`.
-   *
-   * A position outside the Code's own extent carries no ink at all. That is
-   * not a tolerated fallback but what the lattice says: the rows above the
-   * first and below the last are the band's two border rules, which are cap
-   * ticks rather than points of the repeat, so there is nothing there for a
-   * bit to be set on.
+   * The four direction bits at `(row, column)`, read off the single character
+   * there. Positions outside the Code carry no ink.
    */
   directionsAt(code: CodeObject, row: number, column: number): Directions {
     const { columns, digits, rows } = code;
@@ -191,9 +159,8 @@ export class CodeService {
   }
 
   /**
-   * Formats a `CodeObject` into the self-contained Code string in the format
-   * `{columns}x{rows}y{digits}` (or `{columns}x{rows}y{digits}r{repeats}` when `repeats > 1`),
-   * with 2-digit zero-padding on `columns`, `rows`, and `repeats`.
+   * Formats a `CodeObject` as `{columns}x{rows}y{digits}`, with an `r{repeats}`
+   * suffix past one repeat and 2-digit zero-padding.
    */
   format(code: CodeObject): Code {
     const columns = String(code.columns).padStart(2, "0");
@@ -205,12 +172,8 @@ export class CodeService {
   }
 
   /**
-   * Reads `code`, either as a self-contained string formatted as
-   * `{columns}x{rows}y{digits}r{repeats}` or as bare hexadecimal digits at the given
-   * `rows` and `columns`.
-   *
-   * Refuses a length that disagrees with `rows` and `columns` or a character
-   * outside the hexadecimal alphabet.
+   * Reads `code` as a self-contained string or bare hexadecimal digits at `rows` and
+   * `columns`, refusing a length or character that disagrees.
    */
   parse(code: Code, rows?: number, columns?: number): CodeObject {
     const match = CODE_FORMAT_PATTERN.exec(code);
@@ -226,8 +189,8 @@ export class CodeService {
   }
 
   /**
-   * Reduces a Code to its smallest repeating unit by finding the smallest
-   * column span that divides the Code's columns and repeats exactly to fill them.
+   * Reduces a Code to its smallest repeating unit: the smallest column span
+   * that divides its columns and repeats to fill them.
    */
   reduceToUnit(code: CodeObject): CodeObject {
     const { columns, digits, repeats, rows } = code;
@@ -256,18 +219,8 @@ export class CodeService {
   }
 
   /**
-   * The Code shifted `shift` columns west, wrapping each row around its own
-   * span — the same band cut at a different place.
-   *
-   * A Code repeats forever east and west, so a cyclic shift of its columns
-   * re-phases the pattern without changing it: the point at
-   * `(row, column)` moves to `(row, column - shift)` carrying all four of
-   * its bits, which for a row-major reading is a rotation of each row's own
-   * substring and nothing more. The bits travel unchanged because a shift
-   * moves the whole lattice rather than the ink across it.
-   *
-   * A negative or oversized `shift` is taken modulo the column span rather
-   * than refused, since every integer names a real phase.
+   * The Code shifted `shift` columns west, wrapping each row. A shift
+   * re-phases the repeat without changing the pattern.
    */
   rotate(code: CodeObject, shift: number): CodeObject {
     const { columns, digits, rows } = code;
@@ -296,19 +249,16 @@ export class CodeService {
   }
 
   /**
-   * The Code every tile in a symmetry class shares: {@link spell} of the one
-   * member `SymmetryService.canonicalTile` picks. Two tiles draw the
-   * same pattern exactly when their canonical Codes match.
+   * The Code every tile in a symmetry class shares: {@link spell} of the
+   * canonical member. Tiles draw the same pattern exactly when these match.
    */
   spellCanonical(tile: Tile, repeats = 1): string {
     return this.spell(this.symmetryService.canonicalTile(tile), repeats);
   }
 
   /**
-   * A tile's digits alone: one lowercase hexadecimal character per point, in
-   * reading order, worth `8` for `north`, `4` for `south`, `2` for `east` and
-   * `1` for `west` — exactly `rows × columns` of them, whatever the Code the
-   * tile was read from spelled.
+   * The tile's digits: one lowercase hexadecimal character per point in reading order,
+   * worth 8 north, 4 south, 2 east and 1 west.
    */
   spellDigits(tile: Tile): string {
     return tile.points
@@ -326,15 +276,8 @@ export class CodeService {
   }
 
   /**
-   * The Codes of every other member of `code`'s symmetry class — its mirror,
-   * its flip, and both — each at its own canonical phase, sorted.
-   *
-   * These are the meanders the draw run folds into this one row, so they are
-   * recorded beside it rather than lost: a Code that names a member of the
-   * class names this row. A meander a reflection maps onto itself names
-   * nothing, and `code` itself is never listed. `scoreTileCrossing` is the
-   * score {@link canonicalPhase} ranks phases by, so each Code is the one a
-   * row of its own would have stored.
+   * The Codes of `code`'s other symmetry-class members, each at its canonical
+   * phase, sorted. The draw run folds these into this row.
    */
   symmetricalCodes(
     code: CodeObject,
@@ -360,15 +303,8 @@ export class CodeService {
   }
 
   /**
-   * The tile a Code names, as the tile vocabulary rather than a point at a
-   * time — {@link spell} read backwards.
-   *
-   * It is the one decoding a caller needs the whole shape for, and it is
-   * deliberately the exception: reading a point's bits where they are needed
-   * costs one index, while building a tile allocates one object per lattice
-   * point. A caller measuring a Code reaches for {@link directionsAt}; a
-   * caller asking a question the tile vocabulary already answers reaches for
-   * this.
+   * The tile a Code names: {@link spell} read backwards. Allocates one object
+   * per point, so measuring a Code should use {@link directionsAt} instead.
    */
   tile(code: CodeObject): Tile {
     const { columns, rows } = code;

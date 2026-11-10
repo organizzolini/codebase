@@ -50,9 +50,8 @@ export class EclipseTopocentricService {
   // 🔐 Private Fields
 
   /**
-   * The solar eclipse the observer is watching: the local type given to it
-   * at its first minute, and the last minute it was seen, so its begins,
-   * maximum, ends and span share one title.
+   * The observer's solar eclipse: its local type from its first minute, and the
+   * last minute seen, so its phases share one title.
    */
   private solarOccurrence: EclipseOccurrence<SolarEclipseType> | null = null;
 
@@ -61,10 +60,8 @@ export class EclipseTopocentricService {
   // 🔏 Private Methods
 
   /**
-   * The least separation of a run of minutes, refined between minutes by
-   * the parabola through the squared separations either side of it, which
-   * is exact for a Moon passing the Sun in a straight line at a steady
-   * speed. The minute it falls on supplies the discs.
+   * The least separation over a run of minutes, refined by a parabola through
+   * the squared separations beside it.
    */
   private static getClosestApproach(
     run: [ClosestApproach, ...ClosestApproach[]],
@@ -94,19 +91,15 @@ export class EclipseTopocentricService {
   }
 
   /**
-   * How far inside its contact limit an eclipse is, degrees: positive while
-   * in progress, zero at contact.
+   * How far inside its contact limit an eclipse is, degrees; zero at contact.
    */
   private static getContactMargin(geometry: EclipseContactGeometry): number {
     return geometry.contactLimit - geometry.separation;
   }
 
   /**
-   * The local type of a solar eclipse from the discs at the Moon's closest
-   * approach to the Sun: total when the Moon's disc covers the Sun's
-   * (s☾ ≥ s☉ and separation ≤ s☾ − s☉), annular when the Sun's disc rings
-   * the Moon's (s☉ greater than s☾ and separation ≤ s☉ − s☾), and
-   * otherwise partial.
+   * The local solar eclipse type at the Moon's closest approach, from the discs:
+   * total, annular, or partial.
    */
   private static getLocalSolarEclipseType(
     closest: ClosestApproach,
@@ -123,8 +116,8 @@ export class EclipseTopocentricService {
   }
 
   /**
-   * How far inside both its contact limit and the horizon an eclipse is,
-   * degrees: positive while it is in progress and the body is up.
+   * Margin inside both contact limit and horizon, degrees; positive while in
+   * progress with the body up.
    */
   private static getVisibilityMargin(
     geometry: EclipseContactGeometry,
@@ -137,11 +130,8 @@ export class EclipseTopocentricService {
   }
 
   /**
-   * Carries the observer's solar eclipse into `minute`: it keeps its local
-   * type while visible from one minute to the next, takes a new one from
-   * its closest visible approach at its first minute, and ends (null) when
-   * no minute of the window is visible. A Sun rising or setting mid-eclipse
-   * clips the run it is judged by, but never changes a type once given.
+   * Carries the observer's solar eclipse into `minute`, keeping its type while
+   * visible; null when no minute is visible.
    */
   private continueSolarOccurrence(args: {
     minute: Moment;
@@ -169,9 +159,7 @@ export class EclipseTopocentricService {
 
   /**
    * The Moon's closest approach to the Sun over the visible run of minutes
-   * that starts within a minute of `minute`, read ahead from the horizon
-   * ephemeris until the discs part, the Sun sets or the ephemeris ends.
-   * Null when no minute of it is visible.
+   * starting near `minute`; null when none is visible.
    */
   private getClosestVisibleApproach(args: {
     minute: Moment;
@@ -238,11 +226,8 @@ export class EclipseTopocentricService {
   }
 
   /**
-   * Classifies one minute of a locally visible eclipse from its visibility
-   * margin, positive while the eclipse is both in progress and above the
-   * horizon: it begins where the margin turns positive and ends where it
-   * turns negative, each on the nearest minute, and peaks at `isMaximum`
-   * while visible.
+   * Classifies a minute by the eclipse's visibility margin: begins as it turns
+   * positive, ends as it turns negative, peaks at `isMaximum`.
    */
   private getVisiblePhases(
     margins: NeighborValues,
@@ -284,12 +269,8 @@ export class EclipseTopocentricService {
   // 🌎 Public Methods
 
   /**
-   * Classifies the lunar eclipse phases the observer sees at the current
-   * minute. The Moon's place in Earth's shadow is the same for everyone, so
-   * contacts are geocentric (P1/P4); the observer sees them only while the
-   * Moon's upper limb is above the horizon, so a Moon rising or setting
-   * eclipsed begins or ends the eclipse at moonrise or moonset. It peaks at
-   * greatest eclipse when the Moon is up.
+   * Observer's lunar phases: geocentric contacts, visible only while the Moon's
+   * limb is up, so moonrise or moonset can begin or end one.
    */
   getLunarTopocentricPhases(args: {
     coordinates: EclipseCoordinatesWindow;
@@ -317,12 +298,8 @@ export class EclipseTopocentricService {
   }
 
   /**
-   * Classifies the solar eclipse phases the observer sees at the current
-   * minute, from the topocentric Sun and Moon: it is in progress while their
-   * discs overlap (C1 to C4) and the Sun's upper limb is above the horizon,
-   * and it peaks where the Moon passes nearest the Sun. An eclipse whose
-   * discs never overlap from here, though its penumbra lies elsewhere on
-   * Earth, yields nothing.
+   * Observer's solar phases: in progress while the discs overlap and the Sun is
+   * up; none when they never overlap from here.
    */
   getSolarTopocentricPhases(samples: TopocentricWindow): EclipsePhase[] {
     const geometry = {
@@ -360,12 +337,8 @@ export class EclipseTopocentricService {
   }
 
   /**
-   * Computes the observer's solar and lunar eclipse events at one minute.
-   * The observer's sky is read only while an eclipse is in progress
-   * somewhere on Earth, since a local eclipse lies inside the global one.
-   * Solar events carry the type the observer sees, which differs from the
-   * geocentric one away from the central path; lunar events carry the
-   * geocentric type, which is the same for every observer.
+   * The observer's eclipse events at a minute, read from the sky only during a
+   * global eclipse; solar types are local, lunar geocentric.
    */
   getTopocentricEvents(args: {
     currentCoordinates: EclipseCoordinates;

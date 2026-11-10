@@ -41,16 +41,7 @@ export function detectable(
 }
 
 /**
- * Runs the real `CaelundasCommand` once, against the Postgres database the
- * caller has already pointed `CAELUNDAS_POSTGRES_*` at, and reads back the ICS
- * and JSON files it wrote.
- *
- * Only the two detectors are replaced, because Swiss Ephemeris detection is
- * minutes of computation, and the ephemeris is stood in for, because nothing
- * here reads its files; like a real detector, the stand-in reports the
- * events that start from the start date through the whole of the end date.
- * Each run boots its own application context, because `ConfigModule`
- * reads the run's variables once, when it is compiled.
+ * Runs the real command once and reads back its ICS and JSON files; each run boots a fresh context, since ConfigModule reads variables once.
  */
 export async function runCalendarCommand(
   run: CalendarCommandRun,

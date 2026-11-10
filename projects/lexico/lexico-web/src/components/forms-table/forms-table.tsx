@@ -27,13 +27,7 @@ export interface FormsTableProperties {
 // 🧩 Component
 
 /**
- * A grid of the words a lexeme's forms are written as, such as a noun's cases
- * down the side and its numbers across the top. It runs the full width of the
- * card it sits in, out through the card's padding. Every cell is the same size and
- * holds its word, and the grid is named in small captions in the cells' corners:
- * each row's first cell carries the row, such as NOM or 1ST, and the first
- * row's cells carry the columns, such as SG and PL. Every cell also carries its
- * full row and column names, hidden, for screen readers.
+ * A grid of a lexeme's forms: cases or persons down the side, numbers across the top, each cell holding its word.
  */
 export function FormsTable(
   properties: Readonly<FormsTableProperties>,

@@ -269,15 +269,7 @@ describe("measure command over a fixture directory", () => {
     ).toBe(2);
   });
 
-  // The reviewer-found defect: `MeasureService.measure()` used to derive the
-  // headline `MeasurementResult.statistics` — what the console and markdown
-  // badges render from — by looking up an input literally named "codebase".
-  // `--inputs` never leaves an input by that name active, so every badge
-  // reported zero for a run that genuinely measured real files. The JSON
-  // report's own per-input metrics (asserted above) were never affected —
-  // they come from `MetricIndexService`, not from the headline field — so
-  // this has to be checked against what actually reads the headline: the
-  // markdown badge block printed to standard output.
+  // Regression: the headline statistics behind the console badges were looked up by an input named "codebase", which `--inputs` never leaves active, so every badge read zero. Check the markdown badge block printed to standard output, the consumer that reads the headline.
   it("--inputs produces real, non-zero headline statistics for the console badges, not a name lookup that misses", async () => {
     const output = captureOutput();
 

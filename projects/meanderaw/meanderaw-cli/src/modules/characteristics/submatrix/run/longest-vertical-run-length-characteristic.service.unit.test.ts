@@ -38,11 +38,9 @@ describe(LongestVerticalRunLengthCharacteristicService, () => {
   });
 
   it("never wraps a vertical run across the band's own border rules", () => {
-    // A single-column south arm at row 0 and another at row 2, with a bare
-    // row 1 between them. If the last row's south arm wrapped around to
-    // row 0 the way an east arm wraps across columns, this would read as
-    // one continuous run of 2; since it does not, the longest run is the
-    // lone edge from row 0 to row 1.
+    // A south arm at row 0 and another at row 2, with a bare row 1 between
+    // them. Vertical runs do not wrap the way east arms do, so the longest
+    // run is the lone edge from row 0 to row 1.
     const context = contextService.create({
       columns: 1,
       digits: "404",

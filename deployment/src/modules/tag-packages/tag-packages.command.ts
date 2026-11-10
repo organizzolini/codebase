@@ -8,14 +8,13 @@ import { describeError } from "../process-runner/process-runner.utilities";
 import { TagPackagesService } from "./tag-packages.service";
 
 /**
- * CLI command that tags each newly versioned ic-suite package on the release
- * commit and pushes the tags, as the 🔖 Tag Packages release step, first
- * committing any versions no codebase release carried.
+ * CLI command that commits any leftover versions, then tags each newly
+ * versioned ic-suite package and pushes the tags, as the 🔖 Tag Packages
+ * release step.
  *
- * Reads `GITHUB_ENV`, where `RELEASE_SUPERSEDED=true` is written when `main`
- * moved before the leftover commit could be pushed, and `PUSH_RETRY_DELAY`;
- * git reads the committer identity. Exits with the last rejected push's
- * code, 1 on any other failure, and 0 otherwise.
+ * Writes `RELEASE_SUPERSEDED=true` to `GITHUB_ENV` when `main` moved. Reads
+ * `PUSH_RETRY_DELAY`. Exits with the last rejected push's code, 1 on any other
+ * failure, and 0 otherwise.
  */
 @Command({
   description:

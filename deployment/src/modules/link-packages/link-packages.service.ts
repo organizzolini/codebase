@@ -29,15 +29,12 @@ import type {
 } from "./link-packages.types";
 
 /**
- * Links each published ic-suite package on npm to this repository, on the
- * organization's Linked artifacts page, and lists the ones this run
- * published for `actions/attest`.
+ * Links each published ic-suite package on npm to this repository and lists
+ * this run's publishes for `actions/attest`.
  *
- * Attesting only those keeps the provenance honest: an attestation says this
- * run built the package, which is untrue of a version an earlier run
- * published. A version this run published is known to be on npm without
- * asking, which matters while npm's metadata has yet to list it. One package
- * failing to link still lets the others be attested, before the step fails.
+ * Only versions this run published are attested, since an attestation says
+ * this run built the package. Those count as on npm even before its metadata
+ * lists them. One failed link does not stop the rest.
  */
 @Injectable()
 export class LinkPackagesService {
@@ -112,9 +109,8 @@ export class LinkPackagesService {
   }
 
   /**
-   * Reports whether the organization already has an npm storage record for
-   * a digest. The API answers 404 while a digest has no records at all, and
-   * any answer that is not a record list counts as none.
+   * Reports whether the organization has an npm storage record for a digest;
+   * a 404 or unparsable answer counts as none.
    */
   private async hasStorageRecord(
     digest: string,
@@ -137,9 +133,8 @@ export class LinkPackagesService {
   }
 
   /**
-   * Links the package in the given directory: a version this run published
-   * is added to the attestation subjects, a version already on npm is only
-   * linked, and a version on neither is left alone.
+   * Links the package at `root`, and adds a version this run published to the
+   * attestation subjects. Skips one on neither.
    */
   private async linkPackage(
     root: string,
@@ -195,12 +190,8 @@ export class LinkPackagesService {
   }
 
   /**
-   * Prints the `sha256:…` digest of the tarball npm serves for a
-   * `<name>@<version>`, which is what both a storage record and an
-   * attestation identify the package by; npm itself reports only a sha512
-   * integrity. The tarball URL comes from npm metadata when available, and
-   * falls back to the conventional npm path, then is fetched with retries
-   * because npm can trail a publish by minutes.
+   * Returns the `sha256:` digest of an npm tarball, which npm does not report
+   * itself. Retries the fetch, as npm can trail a publish.
    */
   private async tarballDigest(
     specifier: string,
@@ -243,9 +234,7 @@ export class LinkPackagesService {
   // 🌎 Public Methods
 
   /**
-   * Records every published release-group version that has no record yet,
-   * and lists the ones this run published in a checksums file, setting the
-   * `attest=true` step output when there is any.
+   * Records each published version that has no storage record yet.
    *
    * @returns The exit code: 1 when any package failed to link, 0 otherwise.
    */

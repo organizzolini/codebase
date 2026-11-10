@@ -23,8 +23,7 @@ export interface NightSkySliderProperties {
 // 🧩 Component
 
 /**
- * Renders one of the night sky's numbers as a labeled slider showing its
- * value and unit. It sends every step as it moves, so the sky follows it.
+ * Renders one night sky number as a labeled slider showing its value and unit; it sends every step as it moves.
  */
 export function NightSkySlider(
   properties: Readonly<NightSkySliderProperties>,

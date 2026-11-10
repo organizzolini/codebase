@@ -14,14 +14,7 @@ import type {
 } from "./codometer.types";
 
 /**
- * Judges every codometer task Nx batched from one run per measurement.
- *
- * A process per project paid the swc hook and codometer's module load for
- * each, which is most of what a small project's measurement costs. Each task
- * still passes, fails and is cached by itself: the report and the badge block
- * are written under each project's root by the same code the command line
- * runs, and Nx hashes and replays batched tasks one by one. A task whose
- * project the graph does not know fails alone.
+ * Judges every codometer task Nx batched from one run per measurement. Each task still passes, fails and is cached by itself.
  */
 export default async function codometerBatchExecutor(
   ...[taskGraph, options, overrides, context]: CodometerBatchExecutorArguments
@@ -62,12 +55,7 @@ export default async function codometerBatchExecutor(
 }
 
 /**
- * Judges one task by running its project alone, exactly as it was run before
- * batching.
- *
- * What a task's verdict and printed report are made of, so a failure reads as
- * codometer's own. A project that passes alone passes, whatever the batch it
- * was in did.
+ * Judges one task by running its project alone, as before batching.
  */
 async function judgeAlone(args: {
   options: CodometerExecutorOptions;
@@ -88,11 +76,7 @@ async function judgeAlone(args: {
 }
 
 /**
- * Judges the tasks that ask for the same measurement from one codometer run.
- *
- * A clean exit passes every task. Otherwise the run said only that some
- * project failed, not which, so each task is judged alone, a few at a time:
- * that costs what a run per project always did, and only when something fails.
+ * Judges tasks sharing one measurement from a single run; on failure, judges each alone, a few at a time.
  */
 async function judgeGroup(
   args: MeasurementGroup & { workspaceRoot: string },
@@ -132,11 +116,7 @@ async function judgeGroup(
 }
 
 /**
- * Prints what each failed task found, under the task's id.
- *
- * Nx keeps a batch task's output for the cache but does not print it, where a
- * single task's output reaches the terminal. Without this a failed task is red
- * and silent. Passing tasks print nothing.
+ * Prints each failed task's output under its id, since Nx prints none for a batch.
  */
 function printFailures(results: Record<string, CodometerTaskResult>): void {
   for (const [taskId, result] of Object.entries(results)) {

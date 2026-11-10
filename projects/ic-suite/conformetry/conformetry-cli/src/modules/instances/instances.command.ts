@@ -18,16 +18,10 @@ import {
 import type { InstancesCommandOptions } from "./instances.types.js";
 
 /**
- * Lists every instance the configured globs find, and which templates explain
- * each one.
+ * Lists every instance the configured globs find, with the templates that explain each one.
  *
- * Each path printed is usable as the `--instances` argument to the templates
- * command, so the two read as one pair: this side answers "what is generated
- * code here", the other answers "what standard does this path answer to".
- *
- * Output goes to standard output rather than through the logger, which asserts
- * every message opens with an emoji and a verb — right for a log line, wrong
- * for a listing.
+ * Each printed path works as the `--instances` argument to the templates command.
+ * Output goes to stdout rather than the logger, whose messages must open with an emoji and a verb.
  */
 @Command({
   description:

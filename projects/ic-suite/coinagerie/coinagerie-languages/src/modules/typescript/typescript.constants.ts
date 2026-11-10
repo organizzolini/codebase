@@ -3,10 +3,8 @@
 import ts from "typescript";
 
 /**
- * How each TypeScript and JavaScript extension is parsed.
- *
- * JavaScript is parsed by the same compiler, which reads JSX in every
- * JavaScript file the way bundlers do.
+ * How each TypeScript and JavaScript extension is parsed. JavaScript goes
+ * through the same compiler, reading JSX in every file the way bundlers do.
  */
 export const TYPESCRIPT_SCRIPT_KINDS: ReadonlyMap<string, ts.ScriptKind> =
   new Map([
@@ -21,11 +19,8 @@ export const TYPESCRIPT_SCRIPT_KINDS: ReadonlyMap<string, ts.ScriptKind> =
   ]);
 
 /**
- * Declarations whose name may be written as a quoted string.
- *
- * A quoted name here is a key — `{ "quoted-key": 1 }`, `enum E { "Member" }`
- * — and counts as an identifier. Every other string literal is text, and
- * contributes nothing.
+ * Declarations whose name may be quoted. A quoted name here is a key and counts
+ * as an identifier; other string literals are text.
  */
 export const QUOTABLE_NAME_OWNER_KINDS: ReadonlySet<ts.SyntaxKind> = new Set([
   ts.SyntaxKind.EnumMember,
@@ -39,14 +34,8 @@ export const QUOTABLE_NAME_OWNER_KINDS: ReadonlySet<ts.SyntaxKind> = new Set([
 ]);
 
 /**
- * Every keyword the TypeScript compiler reserves or treats as contextual,
- * lowercased as the vocabulary compares words.
- *
- * Read from the compiler's own keyword range rather than written out, so the
- * list can never fall behind the language: `interface`, `readonly`, `of`, and
- * every other word its scanner knows. A plain array, so a configuration
- * spreads it into `exclude.words` and the tool excludes nothing it was not
- * asked to.
+ * Every reserved or contextual keyword the compiler knows, lowercased. Read
+ * from its keyword range, so the list cannot fall behind.
  */
 export const TYPESCRIPT_KEYWORDS: string[] = Array.from(
   { length: ts.SyntaxKind.LastKeyword - ts.SyntaxKind.FirstKeyword + 1 },

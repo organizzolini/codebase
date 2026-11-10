@@ -1,17 +1,8 @@
 // ♟️ Constants
 
 /**
- * Markdown files that carry the generated type and scope tables.
- *
- * Every entry must hold both `types-start`/`types-end` and
- * `scopes-start`/`scopes-end` marker pairs — the synchronizer rewrites what
- * sits between them and throws when a registered file has nowhere to write.
- *
- * These are the real paths, never the symlinked mirrors: `AGENTS.md` rather
- * than `.github/copilot-instructions.md`, and `.agents/skills/` rather than
- * `.github/skills/`. Writing through a mirror lands on the same file, but a
- * list that names mirrors cannot be checked against the files that actually
- * carry the markers.
+ * Markdown files with the generated type and scope tables, each holding
+ * `types-*` and `scopes-*` markers. Real paths, never mirrors.
  */
 export const SYNC_CONVENTIONAL_CONFIG_MARKDOWN_FILES = [
   ".github/CONTRIBUTING.md",

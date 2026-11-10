@@ -44,18 +44,9 @@ import { useCalendarSearch } from "../hooks/use-calendar-search/use-calendar-sea
 /**
  * The landing page.
  */
-// The calendar of astronomical events reads only in the browser: the static
-// build renders a bare shell ahead of time, and the events come from the
-// Caelundas API. A first load that takes longer than a moment shows a skeleton, and
-// a failed one an error.
+// The calendar reads only in the browser: the events come from the Caelundas API, and a slow first load shows a skeleton.
 //
-// Every later load, a move to another day, view or filter, reloads in the
-// background while the calendar it replaces stays on screen, so an open
-// filter builder or a scrolled agenda survives it. That is why the search is
-// read from the location rather than declared as loader dependencies: a
-// dependency would make each search its own match, which shows the skeleton
-// again. The loader's own cache, keyed by window and filter, stands in for
-// the router's.
+// Later loads reload in the background, so the page stays up; search is read from the location, not loader dependencies.
 export const Route = createFileRoute("/")({
   component: IndexPage,
   errorComponent: IndexError,
@@ -102,11 +93,7 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 /**
  * Renders the landing page's heading.
  */
-// The calendar fills the viewport under its one toolbar row, and renders
-// times in the zone the data was computed for. The view the link names wins;
-// without one, a phone opens on the agenda and anything wider on the month,
-// following the width as it changes. When the window holds no events, a
-// notice over the calendar says why.
+// The calendar fills the viewport in the data's zone; the view the link names wins, else a phone opens on agenda, wider on month.
 function IndexPage(): ReactNode {
   // 🪝 Hooks
   const { colorBy, dataset, emptiness, events, facets, grouping, presets } =

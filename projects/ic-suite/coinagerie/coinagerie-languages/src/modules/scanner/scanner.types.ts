@@ -1,12 +1,8 @@
 // 🏷️ Types
 
 /**
- * What makes a quoted string a key rather than a value.
- *
- * `after` is sticky and tested where the string ends; `before`, when given, is
- * tested against the text from the start of the line to the string, so a
- * pattern can tell `["key"]` at the head of a TOML table from the same
- * characters closing an array value.
+ * What makes a quoted string a key. `after` is tested where the string ends;
+ * `before`, if given, sees the line's text before it.
  */
 export interface KeyPattern {
   after: RegExp;
@@ -14,12 +10,8 @@ export interface KeyPattern {
 }
 
 /**
- * Everything the scanner needs to know about one language.
- *
- * The rules are tried in order at every position, ahead of the bare
- * `identifier` pattern, so a prefix or a comment opener always wins over the
- * name it would otherwise start. A grammar with no `identifier` reads only
- * quoted keys.
+ * Language grammar. Rules are tried in order, so comment openers win over
+ * `identifier`. With no `identifier`, only quoted keys are read.
  */
 export interface LexicalGrammar {
   identifier?: RegExp;
@@ -28,22 +20,14 @@ export interface LexicalGrammar {
 }
 
 /**
- * What a matched token is to the vocabulary.
- *
- * A `comment` is skipped, whatever it holds. An `identifier` is a name written
- * in quotes — a SQL `"table"` — and contributes its content. A `string` is
- * text and contributes nothing, unless a key separator follows it.
+ * How the vocabulary treats a matched token. Comments are skipped; quoted
+ * identifiers count by content; strings count only as keys.
  */
 export type LexicalKind = "comment" | "identifier" | "string";
 
 /**
- * One kind of token a language can contain, matched whole.
- *
- * The pattern is sticky and matches the token from its first character to its
- * last, an unterminated one included, so a stray quote can never swallow more
- * than a language's own syntax allows. The first capture group is the token's
- * content, read for an `identifier` and for a `string` that proves to be a
- * key.
+ * One token kind, matched whole. A stray quote cannot swallow more than the
+ * language's syntax; the first capture group is the content.
  */
 export interface LexicalRule {
   kind: LexicalKind;

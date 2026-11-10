@@ -183,12 +183,8 @@ export class AddressReportService {
   }
 
   /**
-   * Renders several callables' direct calls as one document.
-   *
-   * JSON is **always** an array, whatever the address count, so a script can
-   * `JSON.parse` a run's output without branching on how many addresses it
-   * asked about. Markdown and mermaid concatenate the per-callable renders,
-   * each of which already carries its own heading naming the address.
+   * Renders several callables' direct calls as one document. JSON is always an array,
+   * whatever the address count.
    */
   public renderBreadthReports(args: RenderBreadthReportsArguments): string {
     if (args.format === "json") {
@@ -248,10 +244,8 @@ export class AddressReportService {
   }
 
   /**
-   * Renders several callables' traced paths as one document.
-   *
-   * JSON is **always** an array, for the same reason `renderBreadthReports`
-   * does it: one run, one parseable document, regardless of address count.
+   * Renders several callables' traced paths as one document. JSON is always an array,
+   * whatever the address count.
    */
   public renderDepthReports(args: RenderDepthReportsArguments): string {
     if (args.format === "json") {

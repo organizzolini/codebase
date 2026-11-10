@@ -2,8 +2,7 @@ import { onTestFinished } from "vitest";
 
 /**
  * Sets environment variables for the running test, removing any given as
- * `undefined`, and restores each to its value from before the first override
- * once the test finishes. Call it from a test or a `beforeEach` hook.
+ * `undefined`, and restores each to its prior value afterwards.
  */
 export function overrideEnvironment(
   overrides: Readonly<Record<string, string | undefined>>,

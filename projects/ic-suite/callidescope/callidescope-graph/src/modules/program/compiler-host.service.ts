@@ -4,11 +4,9 @@ import ts from "typescript";
 /**
  * Builds compiler hosts that share parsed source files across programs.
  *
- * Every project's program pulls in the same lib files and the same workspace
- * dependencies, so without sharing, one run re-reads `lib.es2023.d.ts` once per
- * project and the shared packages roughly one and a half times over. Caching is
- * the difference between a ten-second run and a five-second one, and it costs
- * nothing in correctness as long as the cache key names the script target.
+ * Every program pulls in the same lib and workspace files, so without sharing one
+ * run re-reads them once per project. The cache key must name the script target,
+ * or a file parsed at one target is silently reused at another.
  */
 @Injectable()
 export class CompilerHostService {
@@ -19,13 +17,8 @@ export class CompilerHostService {
   // 🔐 Private Fields
 
   /**
-   * Answers to the file-system questions module resolution asks, shared by
-   * every program of a run.
-   *
-   * One run probes the same `node_modules` paths once per program — about
-   * 370,000 `stat` calls over 21,000 distinct paths for `configuration` — and
-   * those probes, not parsing, were most of its time. The tree does not change
-   * during a run, so an answer stays right until `clear`.
+   * Answers file-system questions module resolution asks, shared by every program
+   * of a run and valid until `clear`.
    */
   private readonly directoryExistsCache = new Map<
     string,
@@ -44,11 +37,8 @@ export class CompilerHostService {
   >();
   private readonly realPathCache = new Map<string, { answer: string }>();
   /**
-   * Keyed on file name and script target together.
-   *
-   * The target has to be part of the key. A source file parsed at ES2023 has a
-   * different tree from the same text parsed at ES5, so handing a cached one to
-   * a program that asked for another target is silently wrong.
+   * Keyed on file name and script target together, since one file parses to
+   * different trees per target.
    */
   private readonly sourceFileCache = new Map<string, ts.SourceFile>();
 
@@ -109,12 +99,8 @@ export class CompilerHostService {
   }
 
   /**
-   * Creates a compiler host that reuses already-parsed source files.
-   *
-   * `setParentNodes` is on because the rest of the package reads `node.parent`
-   * and `node.getStart()`, neither of which works on a tree parsed without it,
-   * and neither of which `createProgram` turns on by itself for files it pulls
-   * in rather than files it was handed.
+   * Creates a compiler host that reuses parsed source files. `setParentNodes` is on
+   * because the package reads `node.parent`, which needs it.
    */
   public createHost(args: {
     options: ts.CompilerOptions;

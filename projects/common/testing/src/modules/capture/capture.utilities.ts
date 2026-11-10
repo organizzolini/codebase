@@ -3,9 +3,8 @@ import { onTestFinished, vi } from "vitest";
 import type { CapturedOutput } from "./capture.types";
 
 /**
- * Clears `process.exitCode` for the running test and returns a reader for it,
- * so a command line's exit code can be asserted without leaking into the test
- * run; the code from before the capture is restored once the test finishes.
+ * Clears `process.exitCode` for the running test, so a command's code cannot
+ * leak; returns a reader. The prior code is restored after the test.
  */
 export function captureExitCode(): () => typeof process.exitCode {
   const original = process.exitCode;
@@ -19,9 +18,8 @@ export function captureExitCode(): () => typeof process.exitCode {
 }
 
 /**
- * Captures standard output and standard error for the running test, keeping
- * the writes off the real streams, and restores both streams once the test
- * finishes. Call it from a test or a `beforeEach` hook.
+ * Captures stdout and stderr for the running test, keeping writes off the real
+ * streams and restoring both afterwards. Call from a test or `beforeEach`.
  */
 export function captureOutput(): CapturedOutput {
   const standardOutput: string[] = [];

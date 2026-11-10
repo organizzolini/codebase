@@ -16,14 +16,7 @@ export interface ClassificationPassArguments extends EntryPointPassArguments {
 /** The roots a run will measure depth from. */
 export interface EntryPointCollection {
   readonly entryPoints: readonly EntryPoint[];
-  /**
-   * Every declared address that named no callable, or more than one.
-   *
-   * Returned rather than logged or skipped: a declared address that stops
-   * resolving is a root silently leaving the measurement, which lowers the
-   * project's depth and loosens its gate with nothing in the output to say so.
-   * The caller is what turns these into a refusal.
-   */
+  /** Declared addresses naming no callable, or more than one. Returned, not skipped: a silently dropped root loosens the gate. */
   readonly unresolvedAddresses: readonly UnresolvedEntryPointAddress[];
 }
 
@@ -39,11 +32,8 @@ export interface EntryPointPassArguments {
 }
 
 /**
- * One configuration's entry-point rules, with its decorator names in a set.
- *
- * Built once per configuration rather than per callable: `decorators` is
- * authored as a list and asked about once per decorator on every declaration
- * in the workspace.
+ * One configuration's entry-point rules, with decorator names in a set. Built once, since it is
+ * asked per declaration.
  */
 export interface ProjectEntryRules {
   readonly decorators: ReadonlySet<string>;

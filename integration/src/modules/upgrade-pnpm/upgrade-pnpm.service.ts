@@ -30,10 +30,7 @@ export class UpgradePnpmService {
 
   /**
    * Pins the newest pnpm release.
-   *
-   * @returns The version now pinned, as a summary line.
-   * @throws When the newest release cannot be found, or pnpm will not switch
-   *   to it.
+   * @throws When the newest release is not found, or pnpm cannot switch.
    */
   public upgrade(): string {
     const view = this.processRunner.capture("pnpm", [

@@ -6,9 +6,8 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    // The generated route tree lives under `src/`. Test files sit beside the
-    // routes they test, so the route generator is told to skip them rather than
-    // treat them as routes.
+    // Skip test files beside the routes, so the route generator does not treat
+    // them as routes.
     tanstackStart({
       router: {
         generatedRouteTree: "routeTree.gen.ts",

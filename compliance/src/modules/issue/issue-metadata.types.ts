@@ -9,20 +9,13 @@ export interface BulkIssuesVerdict {
 }
 
 /**
- * What one `gh` invocation produced.
- *
- * Standard output and standard error are kept apart rather than merged. `gh`
- * writes its own notices — a new-release announcement, for one — to standard
- * error even when the call succeeds, so a merged stream leaves a successful
- * call returning a document that no longer parses as JSON. In a report that
- * is a false failure on a valid issue.
+ * What one `gh` invocation produced. Stdout and stderr stay apart: `gh` writes
+ * notices to stderr even on success.
  */
 export interface GithubCliResult {
   /**
-   * Whether the `gh` binary could be executed at all.
-   *
-   * A missing binary is worth telling apart from a call that ran and failed:
-   * one is an environment to fix, the other is an answer from GitHub.
+   * Whether the `gh` binary could run at all. A missing binary is an
+   * environment to fix, not an answer from GitHub.
    */
   readonly available: boolean;
   readonly standardError: string;
@@ -45,13 +38,8 @@ export interface HierarchyViolation {
 }
 
 /**
- * The Type and Scope answers read out of an `issue.yml` submission, when the
- * issue's body carries them.
- *
- * An issue opened through `gh issue create` or the API rather than the
- * template has neither, and that is a normal, expected shape rather than a
- * parse failure — it just means there is nothing in the body to compare
- * labels against.
+ * Type and Scope answers from an `issue.yml` body. Absent when the issue was
+ * opened without the template, which is normal.
  */
 export interface IssueFormAnswers {
   readonly scope?: string;
@@ -62,8 +50,8 @@ export interface IssueFormAnswers {
 export interface IssueMetadata {
   readonly body: string;
   /**
-   * Whether the issue has a native parent. Left out when the source cannot
-   * say, such as the workflow's environment mode, which skips the type check.
+   * Whether the issue has a native parent. Omitted when the source cannot
+   * say, such as the environment mode that skips the type check.
    */
   readonly hasParent?: boolean;
   /** The GitHub Issue Type's name, or `null` when none is set. */
@@ -72,10 +60,8 @@ export interface IssueMetadata {
 }
 
 /**
- * Either the metadata, or the one line saying why there is none.
- *
- * A failure to read the input is reported the same way a failed check is, so
- * the command has one report path rather than two.
+ * Either the metadata, or the one-line reason there is none. Input-read
+ * failures share the failed-check report path.
  */
 export type IssueMetadataResolution =
   | { readonly failure: string; readonly resolved: false }
@@ -104,10 +90,7 @@ export interface ListIssuesResult {
 /**
  * Everything wrong with one issue, and the commands that fix it.
  *
- * Both lists rather than a first failure: an issue with several problems is
- * several edits, and finding them one run at a time is several round trips
- * through a check that can fail its own workflow run but never the issue's
- * creation — the issue already exists by the time this runs.
+ * All problems are reported in one pass.
  */
 export interface MetadataVerdict {
   readonly failures: readonly string[];

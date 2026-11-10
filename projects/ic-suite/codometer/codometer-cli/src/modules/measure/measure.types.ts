@@ -21,9 +21,7 @@ export interface ReportFindingsArguments {
 }
 
 /**
- * Everything a run needs once its command line has been made sense of: the
- * resolved configuration, what to print, where each output goes, and what
- * the run does with what it measures.
+ * Everything a run needs once its command line is parsed: the configuration, what to print, where outputs go, and the run mode.
  */
 export interface RunPlan {
   configuration: ResolvedCodometerConfiguration;

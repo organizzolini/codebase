@@ -16,14 +16,12 @@ import {
 } from "./local-services.constants";
 
 /**
- * Starts the services some applications need while they are developed: a
- * Docker daemon, and the Postgres container that runs on it.
+ * Starts the services some applications need during development: a Docker daemon and
+ * the Postgres container that runs on it.
  *
- * A machine that already reaches a daemon, like a devcontainer with the host's
- * socket mounted, is left alone. One that carries the daemon binary but runs
- * none, like a Claude Code cloud session, gets a daemon started, which needs
- * root. A service that cannot start prints why and leaves the rest of setup
- * alone, because the Node toolchain is already done by then.
+ * A machine already reaching a daemon, such as a devcontainer with the host's socket, is
+ * left alone. One with the daemon binary but no running daemon gets one started, which
+ * needs root. A service that cannot start prints why and setup continues.
  */
 @Injectable()
 export class LocalServicesService {

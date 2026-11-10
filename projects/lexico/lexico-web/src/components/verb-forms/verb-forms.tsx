@@ -27,10 +27,7 @@ export interface VerbFormsProperties {
 // 🧩 Component
 
 /**
- * A verb's conjugation: tabs for voice, then mood, then tense, over a table of
- * its words by person and number, and a last tab for the forms that have no
- * person, such as infinitives and participles. A tab keeps its choice when the
- * tab above it changes, as long as the new one has it.
+ * Verb conjugation: tabs for voice, mood, and tense over a table of words by person and number, plus a tab for non-person forms.
  */
 export function VerbForms(
   properties: Readonly<VerbFormsProperties>,

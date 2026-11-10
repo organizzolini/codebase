@@ -53,13 +53,9 @@ const packageFiles = isList(files)
   : [];
 
 /**
- * Resolves one subpath through an `exports` map: the first string target whose
- * key matches exactly or as a single-wildcard pattern.
+ * Resolves a subpath through an `exports` map, first match wins.
  *
- * Simpler than Node, which prefers the longest matching prefix, honours `null`
- * exclusions and reads conditional targets. That is enough for the flat maps
- * this package declares, where one string key matches each subpath; a map
- * with overlapping keys or `null` targets would need Node's full rules.
+ * Enough for this package's flat maps, where each subpath has one key.
  */
 function resolveExport(
   exportsMap: Record<string, unknown>,
@@ -91,9 +87,8 @@ function resolveExport(
 }
 
 /**
- * The two Nx manifests this package ships: the collection key inside each, the
- * field that names the code, the folder and module that code lives in, and the
- * entries the manifest must declare.
+ * The two Nx manifests this package ships: each collection key, the field naming
+ * the code, and the module it lives in.
  */
 const MANIFESTS = [
   {

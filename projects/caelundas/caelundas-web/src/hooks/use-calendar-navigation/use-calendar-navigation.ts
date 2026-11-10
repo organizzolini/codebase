@@ -14,11 +14,7 @@ import type {
 // 🧩 Hook
 
 /**
- * Holds the navigation the toolbar draws, in one place above every view, so
- * switching views keeps the toolbar, and the focus on its view selector,
- * rather than mounting a new one. The views report how they move; the buttons
- * call the latest report, and the title is state because it is drawn. Today
- * is switched off once the days the view shows include today.
+ * Holds the toolbar's navigation in one place above every view, so switching views keeps the focus on its view selector.
  */
 export function useCalendarNavigation(
   properties: Readonly<UseCalendarNavigationProperties>,

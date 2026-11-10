@@ -107,11 +107,7 @@ export class SextupleAspectsService {
   // 🌎 Public Methods
 
   /**
-   * Detects all sextuple aspect patterns from stored 2-body aspect events.
-   *
-   * Currently detects the Hexagram (Star of David) pattern, which is one
-   * of the rarest and most spiritually significant configurations.
-   *
+   * Detects Hexagram (Star of David) patterns, six bodies in trine and sextile relationships, from stored 2-body aspects.
    */
   detect(args: {
     currentAspectBodies: AspectBodies[];
@@ -127,11 +123,7 @@ export class SextupleAspectsService {
   }
 
   /**
-   * Converts instantaneous sextuple aspect events into progressive events.
-   *
-   * Pairs forming and dissolving events for the same body sextet and
-   * pattern type to create events spanning the entire active period.
-   *
+   * Converts instantaneous sextuple events into progressive events spanning the active period, pairing forming and dissolving events.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const progressiveEvents: DetectedCalendarEvent[] = [];
@@ -157,13 +149,7 @@ export class SextupleAspectsService {
   }
 
   /**
-   * Drops bodies that cannot belong to any hexagram.
-   *
-   * A member of a hexagram trines two other members and sextiles two others,
-   * so a body with fewer than two of either among the remaining candidates is
-   * out. Removing one can strand its neighbors, so this repeats until none
-   * is left to remove. It only narrows the set the six-body combinations are
-   * drawn from; it never rules out a set that is a hexagram.
+   * Drops bodies with fewer than two trines or two sextiles among the candidates, repeating until stable; never rules out a hexagram.
    */
   pruneHexagramCandidates(
     bodies: Body[],

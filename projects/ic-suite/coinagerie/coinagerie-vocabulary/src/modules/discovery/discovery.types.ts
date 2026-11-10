@@ -15,10 +15,7 @@ export interface DiscoverArguments {
 }
 
 /**
- * The rules of one `.gitignore`, and the folder they were written in.
- *
- * `base` is relative to the repository root, `""` for the root itself; the
- * patterns only ever see paths relative to it.
+ * The rules of one `.gitignore`, and its folder: `base` is relative to the repository root.
  */
 export interface IgnoreScope {
   base: string;

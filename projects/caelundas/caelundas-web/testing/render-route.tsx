@@ -25,9 +25,8 @@ vi.mock(import("../src/routes/__root"), async () => {
  */
 export interface RenderRouteOptions {
   /**
-   * The API the route reads, as `serveCalendarApi` would serve it, such as
-   * one with more events or one that fails. A test that serves its own and
-   * wants to inspect it hands that one here.
+   * The API the route reads, as `serveCalendarApi` serves it; pass your own to
+   * inspect it or to vary events or failures.
    */
   api?: CalendarApi | CalendarApiOptions;
   /**

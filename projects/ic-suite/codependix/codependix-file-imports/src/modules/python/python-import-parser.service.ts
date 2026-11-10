@@ -10,18 +10,10 @@ import {
 import type { PythonImportSpecifier } from "./python-import-parser.types";
 
 /**
- * Parses a Python source file's top-level `import`/`from ... import`
- * statements into the module each one names.
+ * Parses a Python source file's top-level import statements into the module each names.
  *
- * There is no `ast`-equivalent compiler API available from Node the way
- * `ts.isImportDeclaration` walks a real `ts.Program`, so statements are
- * recognized with a small hand-rolled scanner instead: comments and quoted
- * strings are stripped so a `#` or a quote character inside either never
- * confuses the parser, a statement's continuation lines are rejoined by
- * tracking parenthesis depth and trailing backslashes, and only statements
- * starting at column zero are considered — an import nested inside a
- * function or a conditional is deliberately not walked, the same way a
- * TypeScript `import` declaration can only ever appear at module scope.
+ * Statements are recognized with a small hand-rolled scanner, since Node has no Python
+ * AST. Only statements starting at column zero are read, so nested imports are skipped.
  */
 @Injectable()
 export class PythonImportParserService {

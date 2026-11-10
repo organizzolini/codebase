@@ -32,9 +32,7 @@ export class DiscoveryService {
   // 🔏 Private Methods
 
   /**
-   * The nearest folder at or above the root holding a `.git` entry, or the
-   * root itself outside any repository. A worktree's `.git` is a file, which
-   * counts the same.
+   * The nearest folder at or above `directory` holding `.git`, or `directory` itself. A worktree's `.git` file counts.
    */
   private findRepositoryRoot(directory: string): string {
     for (let candidate = directory; ; candidate = path.dirname(candidate)) {
@@ -49,9 +47,7 @@ export class DiscoveryService {
   }
 
   /**
-   * Whether an `exclude.paths` glob names a folder outright, which excludes
-   * everything in it — so `exclude: ["dist"]` reads the way a `.gitignore`
-   * line does, and the folder is never walked.
+   * Whether an `exclude.paths` glob names a whole folder, so the folder is never walked, as a `.gitignore` line would.
    */
   private isExcludedFolder(args: WalkArguments, absolutePath: string): boolean {
     const relativePath = this.toPosix(
@@ -72,8 +68,7 @@ export class DiscoveryService {
   }
 
   /**
-   * The ignore files of every folder from the repository root down to, but
-   * not including, the scan root — whose own file the walk reads.
+   * Ignore files from the repository root down to, excluding, the scan root, whose own file the walk reads.
    */
   private readAncestorScopes(
     repositoryRoot: string,
@@ -100,9 +95,7 @@ export class DiscoveryService {
   }
 
   /**
-   * Every file under one folder that no ignore file claims, as absolute
-   * paths. Symbolic links are skipped rather than followed, so nothing is
-   * read twice and a link to an ancestor cannot loop.
+   * Every unignored file under one folder, as absolute paths. Symbolic links are skipped, so nothing is read twice or loops.
    */
   private walk(args: WalkArguments): string[] {
     const base = this.toPosix(

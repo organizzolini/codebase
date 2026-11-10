@@ -38,12 +38,8 @@ export class IngressesService {
   // 🔑 Public Fields
 
   /**
-   * Maps each zodiac sign to its ecliptic longitude range.
-   *
-   * The ecliptic is divided into 12 equal 30° segments, starting with Aries at 0°.
-   *
-   * @remarks
-   * Tropical zodiac (aligned with seasons, not constellations)
+   * Maps each zodiac sign to its ecliptic longitude range: twelve 30° segments
+   * from Aries at 0°, on the tropical zodiac (aligned with seasons).
    */
   static readonly degreeRangeBySign: Record<
     Sign,
@@ -97,11 +93,8 @@ export class IngressesService {
   }
 
   /**
-   * Creates a sign peak ingress calendar event.
-   *
-   * Marks when a celestial body reaches the 15° midpoint of its current zodiac sign,
-   * representing the peak expression of that sign's energy.
-   *
+   * Creates a peak ingress event when a body reaches the 15° midpoint of its
+   * current sign, the peak expression of its energy.
    */
   buildPeakIngressEvent(args: {
     body: Body;
@@ -144,11 +137,8 @@ export class IngressesService {
   }
 
   /**
-   * Builds progressive event spans for zodiac sign ingress periods.
-   *
-   * Pairs consecutive sign ingress events for each body to produce duration-based
-   * calendar entries representing the full transit through each zodiac sign.
-   *
+   * Pairs consecutive sign ingresses per body into duration spans covering each
+   * full sign transit.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const progressiveEvents: DetectedCalendarEvent[] = [];
@@ -183,14 +173,8 @@ export class IngressesService {
   }
 
   /**
-   * Detects decan ingress events for celestial bodies.
-   *
-   * A decan ingress occurs when a body crosses into a new decan (10° subdivision
-   * within a sign). Each sign has three decans. Excludes sign boundary crossings
-   * (which are sign ingresses, not decan ingresses).
-   *
-   * @see {@link isDecanIngress} for crossing detection
-   * @see {@link getDecan} for decan number (1-3) determination
+   * Decan ingresses: a body crossing into a new 10° decan, excluding sign
+   * boundaries, which are sign ingresses.
    */
   getDecanIngressEvents(args: {
     coordinateEphemerisByBody: Record<Body, CoordinateEphemeris>;
@@ -243,11 +227,8 @@ export class IngressesService {
   }
 
   /**
-   * Detects sign peak ingress events for celestial bodies at a specific minute.
-   *
-   * A peak ingress occurs when a body reaches the midpoint longitude (15°) of its
-   * current zodiac sign, representing the peak expression of that sign's energy.
-   *
+   * Detects peak ingresses, when a body reaches the 15° midpoint of its current
+   * sign.
    */
   getPeakIngressEvents(args: {
     coordinateEphemerisByBody: Record<Body, CoordinateEphemeris>;
@@ -296,15 +277,8 @@ export class IngressesService {
   }
 
   /**
-   * Detects zodiacal sign ingress events for celestial bodies.
-   *
-   * A sign ingress occurs when a body crosses from one zodiac sign into the next
-   * (every 30° of ecliptic longitude). Monitors all configured bodies and generates
-   * events when they cross sign boundaries.
-   *
-   * @see {@link isSignIngress} for crossing detection
-   * @see {@link getSign} for sign determination
-   * @see {@link signIngressBodies} for list of tracked bodies
+   * Detects zodiac sign ingresses, when a body crosses a 30° longitude boundary;
+   * monitors every configured body.
    */
   getSignIngressEvents(args: {
     coordinateEphemerisByBody: Record<Body, CoordinateEphemeris>;

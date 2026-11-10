@@ -13,20 +13,9 @@ import type {
 } from "./nestjs-modules-workspace-graph.types";
 
 /**
- * Builds the whole-workspace NestJS module graph — every NestJS project's
- * own module graph, combined into one — exported once at the workspace root
- * rather than once per project.
- *
- * A module's class name alone is only unique within its own project — two
- * different projects each declare their own `AppModule`, and even within one
- * project `ModuleGraphService` already collapses two same-named modules into
- * one node — so every node is qualified with the project it belongs to before
- * the projects' graphs are combined, mirroring
- * `codependix-nx-projects`'s `WorkspaceGraphService` without reusing its
- * code, since the two build genuinely different kinds of graph from
- * genuinely different sources. `ModuleGraphService.buildGraph` has already
- * dropped ambient-module edges per project by the time a graph reaches here,
- * so nothing further needs deciding about ambience at workspace scope.
+ * Builds the whole-workspace NestJS module graph, combining every project's module graph
+ * into one. Each node is qualified with its project, since a class name alone is not
+ * unique across the workspace. Ambient-module edges are already dropped per project.
  */
 @Injectable()
 export class NestjsModulesWorkspaceGraphService {

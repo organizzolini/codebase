@@ -70,11 +70,9 @@ runs:
       if: steps.pnpm-cache.outputs.cache-hit != 'true'
       uses: pnpm/action-setup@v6
 
-    # `pnpm/action-setup` puts pnpm on PATH itself, so on a cache hit the same
-    # three environment changes have to be made by hand. These mirror what it
-    # does on Linux with a bundled node: PNPM_HOME is `dest/node_modules/.bin`,
-    # and both it and its `bin` subdirectory go on PATH, because pnpm v10 and
-    # v11 disagree about which of the two holds the shims.
+    # `pnpm/action-setup` puts pnpm on PATH itself, so a cache hit must make the same
+    # three environment changes by hand. pnpm v10 and v11 disagree about whether
+    # `PNPM_HOME` or its `bin` subdirectory holds the shims, so both go on PATH.
     - name: 🛤️ Restore Cached pnpm PATH
       if: steps.pnpm-cache.outputs.cache-hit == 'true'
       run: |
@@ -84,12 +82,10 @@ runs:
         echo "${pnpm_home}/bin" >>"$GITHUB_PATH"
       shell: bash
 
-    # Two jobs in one, both about the step above rather than about the cache.
-    # A cache entry is immutable, so a damaged one would otherwise break every
-    # job until the pinned version changed — hence the reinstall. And this is
-    # the only thing tying the hand-rolled PATH to the action's real behavior,
-    # so an upgrade that moves the shims surfaces here, as a warning naming
-    # both versions, instead of as `pnpm: command not found` three steps later.
+    # A cache entry is immutable, so a damaged one would break every job until the
+    # pinned version changed; this step reinstalls it. It also warns when an upgrade
+    # moves the shims the hand-rolled PATH above relies on, instead of failing later
+    # with `pnpm: command not found`.
     - name: 🔎 Verify Cached pnpm
       if: steps.pnpm-cache.outputs.cache-hit == 'true'
       id: pnpm-verify

@@ -1,5 +1,6 @@
 import {
   CODOMETER_COMMENT_LANGUAGES,
+  CODOMETER_SYMBOL_KINDS,
   type CodometerConfiguration,
   type CodometerCustomStatistic,
 } from "@codometer/configuration";
@@ -7,24 +8,16 @@ import {
 // ♟️ Conventions
 
 /**
- * Name of the target holding a project's compiled JavaScript.
- *
- * Written out rather than derived: the pull request report joins each measured
- * target against the same target measured on the base branch, and the name is
- * the join key.
+ * Name of the target holding a project's compiled JavaScript; the pull request
+ * report joins targets across branches by this name.
  */
 const COMPILED_TARGET_NAME = "Compiled JavaScript";
 
 // 💬 Comment Budgets
 
 /**
- * What each comment-budget counter is labeled, keyed by the language its
- * `comment` selector names.
- *
- * A display name rather than the lowercase language identifier itself, so a
- * badge reads "TypeScript Comment Budget" rather than "typescript Comment
- * Budget". Also what the limit below reads its metric path from, so a label
- * can never drift from the counter it gates.
+ * Each comment-budget counter's display label by language, such as "TypeScript
+ * Comment Budget"; the limit below reads its metric path from it.
  */
 const COMMENT_LANGUAGE_LABELS = {
   css: "CSS",
@@ -40,34 +33,69 @@ const COMMENT_LANGUAGE_LABELS = {
   string
 >;
 
+/** Words a plain comment block may hold: one short paragraph. */
+const PLAIN_COMMENT_MAXIMUM_WORDS = 48;
+
+/** Lines a plain comment block may span. */
+const PLAIN_COMMENT_MAXIMUM_LINES = 8;
+
 /**
- * `comment` selectors carry no inheritance, and a selector naming no
- * `language` covers every one of them — shell included. Expressing "every
- * language at 128 words, except shell at 256" therefore needs the general
- * budget written out once per language rather than once for all of them, so
- * shell can be left for its own, looser selector below instead of also
- * matching this one.
- *
- * A comment block is capped by how much it says, not how wide it is: every
- * linter here already holds a line to 80 columns, so a character budget would
- * only restate it. The budget is per block — the run of comment lines a
- * reader takes as one thought, ended by a blank line — which is what makes a
- * sprawling explanation the thing reported rather than a long word.
+ * One budget per language, since `comment` selectors carry no inheritance.
+ * Capped per block by words and lines, never characters.
  */
 const generalCommentBudgets: CodometerCustomStatistic[] =
   CODOMETER_COMMENT_LANGUAGES.filter((language) => language !== "shell").map(
     (language) => ({
-      comment: { language, maximumWords: 128 },
+      comment: {
+        language,
+        maximumLines: PLAIN_COMMENT_MAXIMUM_LINES,
+        maximumWords: PLAIN_COMMENT_MAXIMUM_WORDS,
+      },
       label: `${COMMENT_LANGUAGE_LABELS[language]} Comment Budget`,
     }),
   );
 
+/** Words a class's or file header's JSDoc may hold: the one place a role is explained. */
+const ROLE_JSDOC_MAXIMUM_WORDS = 64;
+
+/** Lines a class's or file header's JSDoc may span, delimiters included. */
+const ROLE_JSDOC_MAXIMUM_LINES = 14;
+
+/** Words any other declaration's JSDoc may hold: what it is, and why. */
+const DECLARATION_JSDOC_MAXIMUM_WORDS = 24;
+
+/** Lines any other declaration's JSDoc may span, delimiters included. */
+const DECLARATION_JSDOC_MAXIMUM_LINES = 8;
+
+/** The kinds whose JSDoc says what a whole module is for. */
+const ROLE_JSDOC_KINDS: readonly string[] = ["class", "file"];
+
 /**
- * Shell is loosened rather than held to the shared budget: a shell
- * script's header, such as `scripts/installation.sh`'s, documents usage and
- * execution order in one comment block. That is a manual page, not a
- * sprawling explanation, and condensing it would delete the thing the file
- * exists for. 256 still catches real sprawl.
+ * One JSDoc budget per declaration kind. Classes and file headers, which say
+ * what a module is for, get the larger one.
+ */
+const jsdocBudgets: CodometerCustomStatistic[] = CODOMETER_SYMBOL_KINDS.map(
+  (kind) => {
+    const isRole = ROLE_JSDOC_KINDS.includes(kind);
+
+    return {
+      comment: {
+        kind,
+        maximumLines: isRole
+          ? ROLE_JSDOC_MAXIMUM_LINES
+          : DECLARATION_JSDOC_MAXIMUM_LINES,
+        maximumWords: isRole
+          ? ROLE_JSDOC_MAXIMUM_WORDS
+          : DECLARATION_JSDOC_MAXIMUM_WORDS,
+      },
+      label: `${kind[0]?.toUpperCase() ?? ""}${kind.slice(1)} JSDoc Budget`,
+    };
+  },
+);
+
+/**
+ * Shell is looser: a script's header documents usage and order in one block,
+ * so 256 words still catches real sprawl.
  */
 const shellCommentBudget: CodometerCustomStatistic = {
   comment: { language: "shell", maximumWords: 256 },
@@ -78,6 +106,7 @@ const shellCommentBudget: CodometerCustomStatistic = {
 const commentBudgets: CodometerCustomStatistic[] = [
   ...generalCommentBudgets,
   shellCommentBudget,
+  ...jsdocBudgets,
 ];
 
 /** Every custom statistic's own label, in declaration order. */
@@ -90,15 +119,8 @@ function selectAllLabels(
 // 🧱 Shared Configuration
 
 /**
- * The counters every measurement in this repository shares, spread by every
- * project's own output.
- *
- * The file-name counters are the file suffixes this repository's project
- * structure enforces. Counting them says what the TypeScript total is
- * actually made of — how much is services, and how much is the tests for
- * them. The comment budgets stay unset for `documentation`: gating this prose
- * is not a reason to start gating every JSDoc comment against the same
- * budget.
+ * The counters every project's measurement shares: file-suffix counters
+ * showing what the TypeScript total is made of, then the comment budgets.
  */
 const customStatistics: CodometerCustomStatistic[] = [
   { label: "Module Files", patterns: ["**/*.module.ts"] },
@@ -125,14 +147,8 @@ const customStatistics: CodometerCustomStatistic[] = [
 ];
 
 /**
- * A comment-budget breach gates the same way any other counter does: through
- * an ordinary `limits[]` entry addressing its `custom.<label>` metric path,
- * whose value is a *count* of the blocks that broke the selector's own
- * `maximumWords` — so the limit that gates it is a count of zero, not a word
- * total. A counter with no limit only counts; declaring one here is what
- * turns it into a cap. Derived from `commentBudgets` rather than written out
- * a second time, so a label can never drift between the counter and the
- * limit that gates it.
+ * Each comment-budget counter's `custom.<label>` limit is zero breaching
+ * blocks; a counter with no limit only counts. Derived from `commentBudgets`.
  */
 const commentBudgetLimits: CodometerConfiguration["limits"] =
   commentBudgets.map((statistic) => ({
@@ -141,23 +157,8 @@ const commentBudgetLimits: CodometerConfiguration["limits"] =
   }));
 
 /**
- * What every measurement in this repository shares, spread by every project.
- *
- * Imported and spread by each project's `codometer.config.ts`, the same way
- * each project's `eslint.config.ts` spreads the base config beside this file.
- * A plain object rather than a function: nothing here depends on which project
- * is reading it, so nothing here has to be told.
- *
- * `format` is set here rather than left to a code-level fallback — the schema
- * has none — so this is where the repository's one intentional default lives,
- * and every project inherits it by spreading this object.
- *
- * A named export rather than the default: codometer's loader only ever reads
- * a configuration file's default export, and that has to be
- * `workspaceConfiguration` below, so the workspace-root Nx target's `--config`
- * resolves the exclusions and README destination that belong to the
- * repository alone. A project spreading this object therefore imports it by
- * name rather than as a default.
+ * What every measurement shares, spread by each project; `format` is set here.
+ * A named export, since the loader reads only default exports.
  */
 export const codometerConfiguration = {
   // Measures every counter declared above, regardless of which output below
@@ -170,16 +171,11 @@ export const codometerConfiguration = {
   format: "markdown",
   // A comment budget declared and never limited is a counter, not a cap.
   limits: commentBudgetLimits,
-  // Where each project leaves the report the pull request's ⏲️ Codometer
-  // section reads. Declared here rather than passed as `--output-json` by the
-  // Nx target, because it is the same path for every project and a
-  // destination is configuration.
+  // Where each project leaves the report the pull request's Codometer section reads.
   //
-  // The `markdown` entry beside it is what the per-project `codometer:write`
-  // Nx configuration writes into each project's own README. Every output
-  // selects every label `custom` declares, so without this entry a project's
-  // README badges would silently lose every convention counter the `json`
-  // output still reports.
+  // The `markdown` entry is what `codometer:write` splices into each project's README.
+  // Every output selects every `custom` label, so without this entry README badges would drop
+  // the counters `json` still reports.
   outputs: [
     {
       custom: selectAllLabels(customStatistics),
@@ -200,19 +196,8 @@ export const codometerConfiguration = {
 // 🎯 Targets
 
 /**
- * Everything a project's compiled-output input holds except which files it
- * is.
- *
- * Spread by each project that emits compiled JavaScript, which then supplies
- * the one field that differs — the glob naming its own build output. Every
- * build is written to the project's own `dist/`, so the input needs no
- * `directory` of its own: what it measures already sits beneath the project
- * being measured.
- *
- * A project that emits nothing declares no input at all rather than an empty
- * one. That is the difference between a project that was never going to have a
- * build and one whose build has not run: only the second should read as an
- * input matching no files.
+ * What a compiled-output input holds except its files, which each project
+ * supplies as its `dist/` glob. A project emitting nothing declares none.
  */
 export const compiledJavaScriptTarget = {
   analyses: ["size"],
@@ -226,13 +211,8 @@ export const compiledJavaScriptTarget = {
 // 🏛️ Workspace
 
 /**
- * What a run measuring the whole repository measures.
- *
- * The default export, because codometer's loader only ever reads a
- * configuration file's default export and the `configuration` project's `codometer`
- * target points `--config` directly at this file. No input of its own: the
- * repository is the one thing measured without a glob, and its build output
- * belongs to the projects that emit it.
+ * What a whole-repository run measures: the default export, with no input of
+ * its own; projects measure their own builds.
  */
 const workspaceConfiguration = {
   ...codometerConfiguration,

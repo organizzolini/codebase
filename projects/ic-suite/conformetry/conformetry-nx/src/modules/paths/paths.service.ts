@@ -32,12 +32,7 @@ import type { Tree } from "@nx/devkit";
 /**
  * Decides where a generator writes, by reading the workspace it writes into.
  *
- * `conformetry-generation` takes a destination and renders into it; it has no
- * opinion about layout, exactly as `conformetry-validation` takes instances
- * and has no opinion about how they were found. Layout is Nx-shaped knowledge,
- * so it is answered here — and answered by looking at the projects and module
- * folders that already exist, rather than by a configured convention that
- * would go stale the moment one project deviated.
+ * Layout is inferred from the projects and module folders that already exist, rather than from a configured convention that could go stale.
  */
 @Injectable()
 export class PathsService {
@@ -90,9 +85,7 @@ export class PathsService {
   /**
    * Locates a named module, refusing one the project does not have.
    *
-   * Naming a module means writing into one that exists. Placing the files at a
-   * made-up path instead scattered a stray directory across the project root
-   * and reported success, which reads as the generator having worked.
+   * A made-up path would scatter stray directories.
    */
   private requireModulePath(args: {
     instances: Instance[];
@@ -114,14 +107,9 @@ export class PathsService {
   }
 
   /**
-   * The directories a generator's instances sit in, read from its `instances`.
+   * The directories a generator's untagged instance globs point into.
    *
-   * An instance's path is the directory its template is laid over, so the
-   * parent of each workspace pattern is where a new one may go — which is what
-   * keeps generation and validation pointed at the same places. Only groups
-   * without tags count, because a tagged group is read inside projects that
-   * already exist. `undefined` when there are none, which places no
-   * restriction.
+   * Each glob's parent is where new instances may go.
    */
   private async resolveAllowedDirectories(args: {
     configurationPath: string;
@@ -175,14 +163,9 @@ export class PathsService {
   }
 
   /**
-   * Infers where a project keeps its modules, from where its modules already
-   * are.
+   * Infers where a project keeps its modules, from existing ones.
    *
-   * The directory holding the most of them wins, which is what makes this
-   * robust: one stray directory alongside `src/modules` does not move new
-   * modules next to it. Returns `undefined` for a project with no modules yet,
-   * because there is then nothing to infer from and guessing a convention is
-   * how a generic package acquires one repository's layout.
+   * The directory holding the most wins; no modules, no guess.
    */
   private resolveModuleParentPath(args: {
     instances: Instance[];
@@ -212,9 +195,7 @@ export class PathsService {
   /**
    * Finds the directory holding an existing module of the given name.
    *
-   * Used when a generator adds files to a module rather than creating one —
-   * `nestjs-service-file` writes a service into a module that already exists,
-   * so the module has to be located rather than placed.
+   * Used when a generator adds files to an existing module.
    */
   private resolveModulePath(args: {
     instances: Instance[];
@@ -230,13 +211,9 @@ export class PathsService {
   }
 
   /**
-   * Places a project that does not exist yet, which is why no project lookup
-   * can answer this. An unrecognized type is used verbatim, so the first
-   * project of a new type still lands somewhere sensible.
+   * Places a new project by its type.
    *
-   * Refuses when no type is given: falling back to the workspace root wrote a
-   * stray project folder there and reported success, which reads as the
-   * generator having worked.
+   * Refuses without a type, rather than writing to the workspace root.
    */
   private resolveNewProjectPath(args: {
     allowedDirectories: AllowedDirectories | undefined;
@@ -304,9 +281,7 @@ export class PathsService {
   /**
    * The folder a generator's scope places new instances in, if it names one.
    *
-   * Preferred over inferring from existing instances, because a scope is the
-   * author stating where instances belong — inference only guesses it, and
-   * guesses nothing at all in a project that has none yet.
+   * Preferred over inference, since the scope states where instances belong.
    */
   private async resolveScopedDirectory(args: {
     configurationPath: string;
@@ -330,12 +305,9 @@ export class PathsService {
   }
 
   /**
-   * Infers the workspace directory a new project of a given type belongs in,
-   * from where projects of that type already live.
+   * Finds the workspace directory where projects of a type already live.
    *
-   * `type: "packages"` resolves to whichever directory actually holds the
-   * workspace's packages, so the answer stays right in a workspace that calls
-   * it something else.
+   * `type: "packages"` resolves to wherever packages live.
    */
   private resolveTypeDirectoryPath(args: {
     tree: Tree;
@@ -355,12 +327,9 @@ export class PathsService {
   // 🌎 Public Methods
 
   /**
-   * Resolves the absolute directory a generator's template tree is laid over.
+   * Resolves the directory a generator's template tree is laid over.
    *
-   * This is the *parent* of anything the template creates, because a template
-   * that produces a folder contains that folder. Throws for a new project
-   * whose inputs name neither a directory nor a type, rather than writing it
-   * at the workspace root.
+   * Throws for a new project given neither directory nor type.
    */
   public async resolveGenerationPath(
     args: ResolveGenerationPathArguments,

@@ -57,11 +57,7 @@ export class PullRequestLabelsService {
 
   /**
    * Works out what reconciling would create, update, and leave behind.
-   *
-   * A label is missing, drifted, or stale — never deletable. Deleting is the
-   * one thing a reconciliation must not decide on its own: a label somebody
-   * removed from the configuration may still be on open pull requests, and
-   * removing it there loses information no run can put back.
+   * Nothing is deleted: a label removed from configuration may still be in use.
    */
   public planReconciliation(options: {
     currentLabels: readonly ConventionalLabel[];
@@ -96,12 +92,9 @@ export class PullRequestLabelsService {
   }
 
   /**
-   * The whole vocabulary this repository must carry.
-   *
-   * Read fresh from `conventional.config.cjs` on every run rather than copied
-   * here, so a scope added to the configuration needs no matching change in
-   * this project. A scope name is lowercased because a label name is
-   * case-sensitive while `JimmyPaolini` is a scope spelled with capitals.
+   * The whole vocabulary this repository must carry, read fresh from
+   * `conventional.config.cjs`. Scope names are lowercased, since label names are
+   * case-sensitive.
    */
   public readExpectedLabels(): ConventionalLabel[] {
     const configPath = path.join(process.cwd(), CONVENTIONAL_CONFIG_PATH);

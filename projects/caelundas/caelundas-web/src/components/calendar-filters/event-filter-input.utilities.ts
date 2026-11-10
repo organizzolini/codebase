@@ -11,11 +11,7 @@ import type {
 } from "./event-filters.types";
 
 /**
- * Writes the ReUI filter tree as the API's filter input, a group of rules and
- * of nested groups with every value as text. A rule that is not finished,
- * with no operator, no path or no values, is left out rather than sent, and
- * so is a group left with nothing in it; a tree with nothing left answers
- * `null`, meaning no filter.
+ * Writes the filter tree as the API's filter input, leaving out unfinished rules and empty groups; an empty tree answers `null`.
  */
 export function toEventFilterInput(
   node: EventFilterNode | undefined,

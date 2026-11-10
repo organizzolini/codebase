@@ -18,11 +18,9 @@ import type { ResolvedCallSite } from "./edges.types";
 /**
  * Resolves one call expression to the declarations it can reach.
  *
- * The fast path is asking the checker for the symbol at the member name, which
- * already answers the case this tool exists for: a call on a constructor-
- * injected property. The parameter property carries the service's type, the
- * checker follows it, and no dependency-injection machinery is needed to trace
- * a NestJS call graph. Everything below that is the long tail.
+ * The fast path asks the checker for the symbol at the member name. A call on a
+ * constructor-injected property is the common case, and the checker follows its
+ * declared type, so no dependency-injection machinery is needed.
  */
 @Injectable()
 export class SymbolResolutionService {
@@ -58,10 +56,7 @@ export class SymbolResolutionService {
 
   /**
    * True when a declaration is a function form that can carry a body.
-   *
-   * Spelled out rather than using `ts.isFunctionLike`, which also admits bare
-   * call and construct signatures — those have no body to push a frame for, and
-   * narrowing to them makes `.body` unreadable.
+   * `ts.isFunctionLike` also admits bodiless signatures.
    */
   private isBodyCarrying(
     declaration: ts.Declaration,
@@ -120,11 +115,8 @@ export class SymbolResolutionService {
   }
 
   /**
-   * Names the type a member is declared on, and where that name is written.
-   *
-   * The name node comes back alongside the text because the checker needs a
-   * location to resolve the owning symbol from, and fetching it separately
-   * would mean checking twice that the owner exists at all.
+   * Names the type a member is declared on, with the name node the checker
+   * needs to resolve the owning symbol.
    */
   private readOwner(
     declaration: ts.Declaration,
@@ -156,11 +148,8 @@ export class SymbolResolutionService {
   }
 
   /**
-   * Resolves an already-identified callee symbol to its declarations.
-   *
-   * Split from `resolve` so that identifying the callee and following it stay
-   * separately readable — and separately testable, since the shapes that fail
-   * to identify a callee are nothing like the shapes that fail to follow one.
+   * Resolves an already-identified callee symbol to its declarations. Split from
+   * `resolve` so each step stays separately testable.
    */
   private resolveSymbol(args: {
     callee: ts.Expression;
@@ -173,11 +162,8 @@ export class SymbolResolutionService {
     });
     const declaredIn = resolved.getDeclarations() ?? [];
 
-    // Checked before anything else is attempted. Most calls in any real file
-    // land in a dependency or in `lib.es5.d.ts`, and those are leaves rather
-    // than gaps — recording them as unresolved would bury the handful of calls
-    // that genuinely could not be followed under thousands that never needed
-    // following.
+    // Checked first. Most calls land in a dependency or lib.es5.d.ts, which are leaves,
+    // not gaps; recording them as unresolved would bury the calls that truly failed.
     if (
       declaredIn.length > 0 &&
       declaredIn.every((declaration) =>

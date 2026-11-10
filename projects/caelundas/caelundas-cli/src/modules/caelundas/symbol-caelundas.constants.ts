@@ -197,9 +197,7 @@ export const symbolBySextupleAspect = {
 // ✨ Stellium
 
 /**
- * Maps stellium configurations to their emoji symbols.
- * Stelliums are clusters of 3+ planets in the same sign or house.
- * Symbol brightness increases with the number of planets involved.
+ * Maps stelliums (clusters of 3+ planets in one sign or house) to emoji; brighter with more planets.
  */
 export const symbolByStellium = {
   "decuple stellium": "☀️",
@@ -260,18 +258,6 @@ export const symbolByOrbitalDirection = {
 //   apogee: "❄️",
 //   periapsis: "🔥",
 //   apoapsis: "❄️",
-// } as const;
-
-// export const symbolByPosition = {
-//   ...symbolByApsis,
-//   "vernal equinox": "🌸",
-//   beltane: "🌼",
-//   "summer solstice": "🌞",
-//   lammas: "🌾",
-//   "autumn equinox": "🍂",
-//   samhain: "🎃",
-//   "winter solstice": "☃️",
-//   imbolc: "🐑",
 // } as const;
 
 // 🌓 Phases

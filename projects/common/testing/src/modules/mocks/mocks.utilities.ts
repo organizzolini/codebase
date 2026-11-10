@@ -21,17 +21,7 @@ export function answerPrompts(...answers: readonly PromptAnswers[]): void {
 
 /**
  * The `node:child_process` module with each process-starting function wrapped
- * in a spy that runs the real process until a test stages a result. A test
- * file hands it the real module from its `vi.mock` factory:
- *
- * ```ts
- * vi.mock("node:child_process", async (importOriginal) => {
- *   const { mockChildProcess } = await import("@codebase/testing");
- *   return mockChildProcess(await importOriginal());
- * });
- *
- * vi.mocked(execFile).mockImplementation(…);
- * ```
+ * in a spy that runs the real process until a test stages a result.
  */
 export function mockChildProcess(
   actual: typeof ChildProcess,
@@ -49,15 +39,8 @@ export function mockChildProcess(
 }
 
 /**
- * A module with only the given members replaced, for a `vi.mock` factory that
- * keeps the rest of the real module:
- *
- * ```ts
- * vi.mock("./reader", async (importOriginal) => {
- *   const { mockPartially } = await import("@codebase/testing");
- *   return mockPartially(await importOriginal<typeof Reader>(), { read: vi.fn() });
- * });
- * ```
+ * Replaces only the given members of a module, keeping the rest of the real
+ * module, for a `vi.mock` factory.
  */
 export function mockPartially<Module extends object>(
   actual: Module,
@@ -67,9 +50,8 @@ export function mockPartially<Module extends object>(
 }
 
 /**
- * Replaces the global `fetch` for the running test with a mock that answers
- * each request with the next response, or rejects with the next error, in
- * order, and restores the real `fetch` once the test finishes.
+ * Replaces global `fetch` with a mock that answers each request with the next
+ * response or error, in order, and restores the real one afterwards.
  */
 export function stubFetch(
   ...outcomes: readonly (Error | Response)[]

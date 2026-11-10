@@ -38,12 +38,7 @@ import type { Repository } from "typeorm";
 // 🔧 Configuration
 
 /**
- * How long the whole draw run may take. At `DRAW_TEST_EDGE_BUDGET` it walks
- * `2 ** edges` assignments at each of fourteen shapes, renders an SVG for
- * every meander it keeps, and writes 30,279 rows — about ten seconds
- * locally, and several times that on a shared CI runner. Bounded rather
- * than removed, so a pinned budget raised past what anybody meant fails here
- * rather than running forever.
+ * How long the whole draw run may take. Bounded, so an over-raised budget fails here rather than running forever.
  */
 const DRAW_RUN_TIMEOUT_MILLISECONDS = 300_000;
 
@@ -118,15 +113,9 @@ describe(DrawEnumerationService, () => {
       await expect(repository.count()).resolves.toBe(2079);
     });
 
-    // 🎯 A meander's identity is its lattice address — its Code together
-    // with the shape that Code is read at — and this is the measurement that
-    // says so. 11 lattices are spelled by meanders of two different shapes,
-    // 24 rows in all: a lattice names a tile by its points and deliberately
-    // not by its shape, so the four characters `0000` are four bare points
-    // two rows by two columns and also four down one column. Uniqueness is
-    // asserted over the address rather than over the lattice for exactly
-    // that reason, and the lattice count is asserted beside it so that the
-    // gap between them cannot close silently.
+    // 🎯 A meander's identity is its lattice address: its Code and the shape
+    // it is read at. Some lattices recur across shapes, so uniqueness is
+    // asserted over the address and the lattice count beside it.
     it("writes no two rows sharing a lattice address, though 11 lattices are shared across shapes", async () => {
       const rows = await repository.find({
         select: { code: true, columns: true, lattice: true, rows: true },
@@ -141,10 +130,9 @@ describe(DrawEnumerationService, () => {
       expect(new Set(rows.map(({ code }) => code)).size).toBe(2079);
     });
 
-    // 🎯 One row per symmetry class, and the rest of the class recorded
-    // beside it rather than dropped. Each folded Code belongs to exactly one
-    // class, so none may repeat across rows, and none may be a row of its
-    // own — a Code that were would mean two rows for one class.
+    // 🎯 One row per symmetry class, with the rest of the class recorded
+    // beside it. Folded Codes belong to exactly one class, so none may repeat
+    // across rows or be a row of its own.
     it("records each row's folded mirror and flip Codes, none of them a row of its own or another row's", async () => {
       const rows = await repository.find({
         select: { code: true, symmetricalCodes: true },

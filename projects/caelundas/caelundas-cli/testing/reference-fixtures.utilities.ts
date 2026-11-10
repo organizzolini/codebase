@@ -17,14 +17,7 @@ import type {
 } from "./reference-fixtures.types";
 
 /**
- * Fails the test unless every reference event was paired with a detected
- * event within tolerance (one detected event satisfies at most one reference),
- * no `absent` summary was detected at all, and every `counts` summary occurs
- * exactly the stated number of times.
- *
- * The message lists every failing event with its expected time, actual time
- * and delta, and cites the fixture's source and retrieval date, so a failure
- * reads as a disagreement with a named authority rather than a bare number.
+ * Fails the test unless every reference event pairs with a detected event within tolerance and every `absent` and `counts` check holds.
  */
 export function assertReferenceEvents(
   events: readonly DetectedCalendarEvent[],
@@ -67,9 +60,7 @@ export function assertReferenceEvents(
 }
 
 /**
- * Compares every reference event with the detected event of the same summary
- * paired to it by nearest start, within the event's tolerance (or the fixture's). A span reference
- * holds the end to the same tolerance as the start.
+ * Pairs each reference with the nearest-start detected event of its summary, and checks start and end within tolerance.
  */
 export function compareReferenceEvents(
   events: readonly DetectedCalendarEvent[],
@@ -110,11 +101,7 @@ export function compareReferenceEvents(
 }
 
 /**
- * Reads and validates `<name>.json` from the reference fixtures directory.
- *
- * A fixture that names no source, no retrieval date or no tolerance, or that
- * gives a time that is not a UTC instant, is rejected: the point of a
- * reference is that someone can check it against its authority later.
+ * Reads and validates `<name>.json` from the fixtures directory; a fixture without source, retrieval date or tolerance is rejected.
  */
 export function loadReferenceFixture(
   name: string,
@@ -160,9 +147,7 @@ function formatInstant(instant: string): string {
 }
 
 /**
- * Whether `name` is the event's title or its description. A boundary event and
- * its span share a title, so a fixture tells a perfective one apart by the
- * description, which keeps the phase word.
+ * Whether `name` is the event's title or description; a fixture tells a perfective event apart by its description.
  */
 function isNamed(event: DetectedCalendarEvent, name: string): boolean {
   return event.summary === name || event.description === name;
@@ -174,10 +159,7 @@ function minutesBetween(reference: string, actual: Date): number {
 }
 
 /**
- * Pairs each reference with a detected event of the same summary, nearest
- * start and end first (a boundary reference has no end, so its event is the
- * one that starts and ends together), so that every detected event satisfies
- * at most one reference.
+ * Pairs each reference with a detected event of its summary, nearest start and end first, so each event satisfies one reference.
  */
 function pairEvents(
   events: readonly DetectedCalendarEvent[],

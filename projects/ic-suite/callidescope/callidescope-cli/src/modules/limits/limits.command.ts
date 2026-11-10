@@ -13,18 +13,12 @@ import type { LimitsCommandOptions } from "./limits.types";
 import type { LogData } from "@codebase/observability";
 
 /**
- * CLI entry point that lists what every project in scope is gated by.
+ * CLI entry point that lists each project's depth and breadth limits and the file each came from.
  *
- * A reading command, like `depth` and `breadth`: it touches no destination,
- * fails on no limit, and would have nothing to fail on anyway, since it
- * resolves configuration without measuring a single stack. What it restores is
- * the one thing per-project limits cost — a ratchet written one file per
- * project is no longer reviewable in the single file it used to live in, and
- * this is where it is reviewable as a set instead.
+ * A reading command: it touches no destination and fails on no limit.
+ * Per-project limits are reviewable as one set.
  *
- * `codometer configuration --limits` is the same command for the same reason,
- * and this matches its shape: a markdown table on standard output, one row per
- * limit, naming the file each number is declared in.
+ * Prints the same rows as `codometer configuration --limits`.
  */
 @Command({
   description:
@@ -52,12 +46,8 @@ export class LimitsCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Logs one refusal under its own headline, and fails the run.
-   *
-   * A message rather than a stack trace: every refusal here names the project
-   * and the field, and each is about a file a person wrote. Nothing has been
-   * printed by the time this runs, so a refused listing prints a reason and
-   * nothing that looks like an answer.
+   * Logs one refusal under its headline and fails the run.
+   * Shows a message, not a stack trace, since the cause is user input.
    */
   private reject(headline: string, data: LogData): void {
     this.logger.error(headline, undefined, data);
@@ -81,11 +71,7 @@ export class LimitsCommand extends CommandRunner {
   }
 
   /**
-   * Prints every project's resolved limits.
-   *
-   * Written to standard output rather than to a file: the listing is something
-   * a reader looks at or pipes onward, and unlike a report there is nothing
-   * downstream that consumes it.
+   * Prints every project's resolved limits to standard output, since nothing downstream reads it as a file.
    */
   public async run(
     _passedParameters: string[],

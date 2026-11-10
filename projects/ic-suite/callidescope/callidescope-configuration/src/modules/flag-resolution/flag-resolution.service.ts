@@ -28,40 +28,9 @@ import type {
 } from "./flag-resolution.types";
 
 /**
- * Combines a command line with the configuration it was resolved against,
- * under one precedence rule.
- *
- * **The rule.** A flag that changes what a run judges or writes may only
- * override a value the configuration already declares. A flag that selects
- * mode or presentation is command-line only, because neither can make an
- * under-configured run legal.
- *
- * `--check` and `--write` are the mode flags and `--format` is the
- * presentation flag, so none of the three is merged into anything here — the
- * format is validated and handed back beside the configuration rather than
- * written into it. Every other flag is an override, so each replaces exactly
- * the field it names and leaves every neighboring field as the configuration
- * wrote it — including whatever resolution folded into that field, which is
- * why `--exclude` keeps the default globs rather than the six of them being
- * neighbors it discards. `--config` never reaches this call at all: it chooses
- * the file the rest are resolved against.
- *
- * Every configured field has such an override, save one. `excludeFrom` names
- * the ignore files a run reads, which is what the run *is* rather than a value
- * it judges by, and it is workspace-only for the same reason — a project
- * cannot redirect it either.
- *
- * The overrides are grouped rather than listed, one private method per nesting
- * level of the configuration, because a single returned literal covering four
- * levels was already the longest thing here at three fields and would not have
- * survived thirteen.
- *
- * One service rather than a merge per command, because the four defects this
- * replaced were each a different command combining one flag with one field
- * its own way: an empty `--directories` beating the configured list, a
- * `--markdown` path discarding the heading and markers beside it, a `--json`
- * path discarding the configured indentation, and an unrecognized `--format`
- * rewritten to markdown instead of refused.
+ * Combines a command line with the configuration it was resolved against.
+ * A flag that changes what a run judges or writes may only override a value the configuration
+ * already declares. Mode and presentation flags are command-line only.
  */
 @Injectable()
 export class FlagResolutionService {
@@ -76,19 +45,7 @@ export class FlagResolutionService {
   // 🔏 Private Methods
 
   /**
-   * Reads one limit flag into the number it chose, or nothing.
-   *
-   * Nothing on every path but success — the flag left off, and both refusals —
-   * because the caller reads this as *what the command line overrode*, and a
-   * refused value reported as an override would be the typo silently winning
-   * the argument it just lost.
-   *
-   * Two refusals rather than one, because they are different mistakes: a value
-   * that is not a positive whole number is a typo, and a value with nothing to
-   * override is the precedence rule. Only `limits.maximumBreadth` can reach the
-   * second — it is the one judged value resolution supplies no default for, and
-   * a flag that could supply one would gate a workspace on a number no
-   * configuration ever chose.
+   * Reads one limit flag into the number it chose, or nothing. A refused value is never reported as an override.
    */
   private resolveCount(args: {
     configured: number | undefined;
@@ -123,16 +80,8 @@ export class FlagResolutionService {
   }
 
   /**
-   * Applies a path flag to one configured destination, and to nothing else.
-   *
-   * Spread over the configured object rather than resolved afresh from the
-   * path: a destination carries a heading, a description, its anchors, and
-   * its render and write hooks, and re-resolving from a path alone silently
-   * replaced every one of them with a default.
-   *
-   * An undeclared destination is refused rather than invented, which is the
-   * precedence rule itself: a flag may change where a declared report goes
-   * and may not ask for a report the configuration never declared.
+   * Applies a path flag to one configured destination, keeping its heading, anchors, and hooks.
+   * An undeclared destination is refused.
    */
   private resolveDestination<Destination extends { path: string }>(args: {
     configured: Destination | undefined;
@@ -161,9 +110,6 @@ export class FlagResolutionService {
 
   /**
    * Applies the entry-point flags to the rules a run roots its stacks with.
-   *
-   * Grouped rather than spread into the caller, so the one returned literal
-   * there stays four fields long however many rules this level grows.
    */
   private resolveEntryPoints(args: {
     configured: ResolvedCallidescopeEntryPoints;
@@ -203,18 +149,8 @@ export class FlagResolutionService {
   }
 
   /**
-   * Reads `--exclude` the way the configured field beside it is read: over the
-   * top of the globs no repository wants traced, never instead of them.
-   *
-   * `exclude` is the one list resolution does not hand back as written —
-   * `resolveExclude` folds `DEFAULT_EXCLUDE_GLOBS` into it, so the array
-   * arriving here is the authored globs plus six directories nobody chose.
-   * Replacing that array wholesale, as every other list flag rightly does with
-   * its own field, therefore threw away the defaults too: `--exclude src/**`
-   * traced `node_modules` and `dist`. So the flag overrides what the
-   * configuration *authored* and the same additive resolution is re-run over
-   * it, which is what makes `--exclude` and an authored `exclude` mean the
-   * same thing.
+   * Reads `--exclude` over the globs no repository wants traced, never instead of them.
+   * Replacing the defaults would trace `node_modules`.
    */
   private resolveExclude(args: {
     configured: string[];
@@ -231,11 +167,7 @@ export class FlagResolutionService {
   // recognizes, which is exactly what this refusal is about.
   // cspell:ignore mermiad
   /**
-   * Reads `--format` into one of the formats a run can print.
-   *
-   * Anything else is refused rather than rewritten. A run that quietly
-   * printed markdown for `--format mermiad` exited 0 having taught its reader
-   * that the flag does nothing.
+   * Reads `--format` into one of the formats a run can print. Anything else is refused rather than rewritten.
    */
   private resolveFormat(args: {
     errors: string[];
@@ -259,14 +191,8 @@ export class FlagResolutionService {
   }
 
   /**
-   * Reads the limit flags into the numbers they chose, and nothing else.
-   *
-   * The overrides are what a flag really said, kept apart from the merged
-   * configuration below, because a limit is enforced per project: a project's
-   * own file declares the number its gate reads, so an override that stopped
-   * at the workspace's copy would be a flag no gate ever looks at. A member is
-   * absent unless a flag supplied it, which is what lets the override be
-   * applied to a declared limit without supplying one where none was declared.
+   * Reads the limit flags into the numbers they chose. Overrides stay apart from the merged
+   * configuration, since a limit is enforced per project.
    */
   private resolveLimitOverrides(args: {
     configured: ResolvedCallidescopeLimits;
@@ -302,13 +228,8 @@ export class FlagResolutionService {
   }
 
   /**
-   * Applies the limit overrides to the numbers the run's own configuration
-   * declares.
-   *
-   * An absent breadth limit is left off the object rather than written as an
-   * explicit `undefined`: `maximumBreadth` is the one optional member here, and
-   * a key that is always present would say a configuration declared a breadth
-   * limit of nothing where resolution had simply never been given one.
+   * Applies the limit overrides to the numbers the run's own configuration declares.
+   * An absent breadth limit is left off, not written as `undefined`.
    */
   private resolveLimits(args: {
     configured: ResolvedCallidescopeLimits;
@@ -325,15 +246,8 @@ export class FlagResolutionService {
   }
 
   /**
-   * Reads one list flag, preferring it over the configuration when it named
-   * anything.
-   *
-   * An empty list is absent rather than a value: `--directories ""` and a
-   * `--directories` nobody typed arrive here as the same thing, and reading
-   * either as "trace nothing" — or, as this used to, as "trace everything" in
-   * defiance of a configuration that said otherwise — silently ignores what
-   * was configured. One rule for every list flag, so `--exclude ""` cannot
-   * mean something `--directories ""` does not.
+   * Reads one list flag, preferring it over the configuration when it names anything.
+   * An empty list counts as absent.
    */
   private resolveList(args: {
     configured: string[];
@@ -345,11 +259,7 @@ export class FlagResolutionService {
   }
 
   /**
-   * Reads one switch flag into the boolean it names.
-   *
-   * Anything but `true` or `false` is refused rather than coerced, for the
-   * reason `--format` is: a typo read as either answer changes what the run
-   * traces while looking like it was obeyed.
+   * Reads one switch flag into the boolean it names. Anything but `true` or `false` is refused rather than coerced.
    */
   private resolveSwitch(args: {
     configured: boolean;
@@ -415,13 +325,8 @@ export class FlagResolutionService {
   // 🌎 Public Methods
 
   /**
-   * Resolves a whole command line against one configuration.
-   *
-   * Every complaint is collected rather than thrown at the first one, so a
-   * command line with two mistakes in it is two mistakes to fix rather than
-   * two runs. Nothing has been traced or written by the time this returns, so
-   * a caller that finds `errors` non-empty can refuse with the checkout
-   * untouched.
+   * Resolves a whole command line against one configuration. Every complaint is collected,
+   * and nothing is traced or written by the time it returns.
    */
   public resolveRunFlags(args: {
     configuration: ResolvedCallidescopeConfiguration;

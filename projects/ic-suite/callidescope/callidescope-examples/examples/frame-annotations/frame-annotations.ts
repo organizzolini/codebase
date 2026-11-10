@@ -9,15 +9,9 @@ interface DescribeArguments {
 /**
  * One frame per annotation shape a comment-trivia reader gets wrong.
  *
- * `trace` heads a stack seven deep on purpose: annotations are read only for
- * the frames a report actually prints, so a shape has to sit inside a reported
- * stack to be demonstrated at all.
- *
- * `legacyRender` heads a second, shorter one, because a deprecated frame cannot
- * live inside the first. Calling a `@deprecated` member is an ESLint error in
- * this repository, so the only honest way to give the tag a frame is to make
- * the deprecated callable a root of its own — which is what it would be in real
- * code on its way out anyway.
+ * `trace` heads a stack seven deep, since annotations are read only for printed
+ * frames. `legacyRender` heads its own root, because calling a `@deprecated`
+ * member is an ESLint error in this repository.
  */
 @Injectable()
 export class FrameAnnotationsService {
@@ -35,10 +29,7 @@ export class FrameAnnotationsService {
   }
 
   /**
-   * Finishes the chain and hands back what the layers above it built. Every
-   * word after that first sentence is the explanation rather than the summary,
-   * which is exactly why a printed frame stops at the sentence boundary and
-   * leaves the rest to the `file:line` beside it.
+   * Finishes the chain and returns what the layers above it built, in one long sentence the printed frame shortens and the JSON keeps whole.
    */
   private finish(description: string): string {
     return description.trim();
@@ -66,22 +57,16 @@ export class FrameAnnotationsService {
   }
 
   /**
-   * Renders a value the way this package used to.
+   * Renders a value the old way.
    *
-   * @deprecated Superseded by `render`, and left here so a `@deprecated` tag
-   * has a frame of its own to mark.
+   * @deprecated Superseded by `render`.
    */
   public legacyRender(value: string): string {
     return this.compose(value);
   }
 
   /**
-   * Renders one value for display, in the form its type calls for.
-   *
-   * The two overloads return different types on purpose. Identical return types
-   * collapse into one signature taking a union, and this shape exists to show
-   * where an overload's documentation lives — on the signature, not on the
-   * implementation the call graph points at.
+   * Renders one value for display. The overloads differ in return type, so the docs live on the signature.
    */
   public render(value: string): string;
   public render(value: number): string[];

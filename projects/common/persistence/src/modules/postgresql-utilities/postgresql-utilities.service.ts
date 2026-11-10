@@ -55,11 +55,9 @@ export class PostgresqlUtilitiesService {
   // 🔏 Private Methods
 
   /**
-   * Runs `tool` with `args`, connected to `connection` through its
-   * environment, or to nothing when there is none, and resolves what it
-   * printed once it exits zero.
-   *
-   * @throws PostgresClientError when it exits non-zero or cannot start.
+   * Runs `tool` with its connection in the environment, resolving its output
+   * once it exits zero.
+   * @throws PostgresClientError on failure.
    */
   private async run(
     tool: PostgresClientTool,
@@ -96,11 +94,8 @@ export class PostgresqlUtilitiesService {
   // 🌎 Public Methods
 
   /**
-   * Dumps exactly `tables` from `connection` to a custom-format `file`.
-   * `--strict-names` makes a table that does not exist an error rather than
-   * a smaller dump.
-   *
-   * @throws PostgresClientError when pg_dump fails.
+   * Dumps exactly `tables` to a custom-format `file`; `--strict-names` makes a
+   * missing table an error. @throws PostgresClientError when pg_dump fails.
    */
   async dump({
     connection,
@@ -123,13 +118,8 @@ export class PostgresqlUtilitiesService {
   }
 
   /**
-   * Checks that `tool` is installed and major version 18, by running
-   * `tool --version`. Run it before any database work: it opens no
-   * connection and gives the tool no credentials.
-   *
-   * @throws PostgresClientToolError when the binary is missing, cannot
-   * report a version, reports one that is not understood, or is not 18;
-   * the message names the setup script that installs it.
+   * Checks that `tool` is installed at major version 18, before any connection.
+   * @throws PostgresClientToolError when it is missing or the wrong version.
    */
   async ensureTool(tool: PostgresClientTool): Promise<void> {
     const { error, stderr, stdout } = await new Promise<{
@@ -172,11 +162,8 @@ export class PostgresqlUtilitiesService {
   }
 
   /**
-   * Reads the table of contents of the dump at `file` with
-   * `pg_restore --list`, which connects to no database, so an unreadable
-   * file fails before any connection opens.
-   *
-   * @throws PostgresClientError when pg_restore cannot read it.
+   * Reads the dump's table of contents with `pg_restore --list`, which connects
+   * to no database. @throws PostgresClientError when it cannot read the file.
    */
   async list(file: string): Promise<PostgresDumpEntry[]> {
     const { stdout } = await this.run("pg_restore", [
@@ -188,13 +175,8 @@ export class PostgresqlUtilitiesService {
   }
 
   /**
-   * Restores exactly `tables` from `file` into `connection`, as one
-   * transaction that stops at the first error, so a failed restore leaves
-   * the target as it was. The entries come from a `--use-list` written
-   * from `contents`, because `pg_restore --table` would leave out each
-   * table's indexes and constraints. Ownership and grants are left to the
-   * target's own role, which the source's roles need not exist beside.
-   *
+   * Restores exactly `tables` in one transaction. A `--use-list` keeps their
+   * indexes and constraints, which `--table` would omit.
    * @throws PostgresClientError when pg_restore fails.
    */
   async restore({
@@ -239,14 +221,9 @@ export class PostgresqlUtilitiesService {
   }
 
   /**
-   * Empties exactly `tables` in `connection`'s database through the `pg`
-   * driver, which `pg_restore` cannot do for a data-only restore. The
-   * truncate commits on its own, before any restore begins.
-   *
-   * @throws PostgresReferencedTablesError when a table outside `tables`
-   * references one of them, or PostgresTruncateError when the database
-   * cannot be reached or the truncate fails; either way nothing was
-   * truncated.
+   * Empties tables through the `pg` driver, since `pg_restore` cannot do
+   * data-only restores. Commits on its own.
+   * @throws PostgresReferencedTablesError or PostgresTruncateError; nothing truncated.
    */
   async truncate({
     connection,

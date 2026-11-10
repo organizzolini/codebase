@@ -31,10 +31,7 @@ export interface NightSkyConstellationFolderProperties {
 // 🧩 Component
 
 /**
- * Renders one folder of the constellation picker, the way a file tree draws
- * one: a chevron that opens it, a checkbox that is checked when all its
- * constellations show, dashed when some do, and toggles them all, and its
- * constellations indented beneath it, each with a checkbox of its own.
+ * Renders one folder of the constellation picker: a chevron to open it, a checkbox toggling all its constellations, and them beneath.
  */
 export function NightSkyConstellationFolder(
   properties: Readonly<NightSkyConstellationFolderProperties>,

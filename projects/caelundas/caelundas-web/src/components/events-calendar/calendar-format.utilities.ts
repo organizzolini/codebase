@@ -32,8 +32,7 @@ export function formatCalendarDay(day: string): string {
 }
 
 /**
- * Names a duration in days, hours, and minutes, leaving out any unit that is
- * zero, or "Instant" for an event with no duration at all.
+ * Names a duration in days, hours and minutes, skipping zero units; "Instant" for no duration.
  */
 export function formatDuration(minutes: number): string {
   if (minutes === 0) {
@@ -76,8 +75,7 @@ export function formatEventSpan(
 }
 
 /**
- * Writes the time of day an instant falls on in a zone, such as "10:20 AM",
- * with a plain space where the locale data may put a narrow one.
+ * Writes the time of day an instant falls on in a zone, such as "10:20 AM"; plain space, not narrow.
  */
 export function formatEventTime(date: Date, timeZone: string): string {
   return date

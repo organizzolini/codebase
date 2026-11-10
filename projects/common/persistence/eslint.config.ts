@@ -11,13 +11,9 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // @golevelup/ts-vitest: a devDependency used only in test files, which
-          // are outside the build dependency check's scope.
-          // pg: TypeORM's postgres driver, which TypeORM resolves by name at
-          // runtime, so nothing imports it — the same carve-out meanderaw and
-          // lexico-db make, and fallow's `ignoreDependencies` notes.
-          // vitest: referenced via tsconfig "types" array; it's a devDependency and
-          // the @nx/dependency-checks rule misidentifies it as a production dependency.
+          // @golevelup/ts-vitest: devDependency used only by test files.
+          // pg: TypeORM's driver, resolved by name at runtime, so nothing imports it.
+          // vitest: named in tsconfig "types", which the rule misreads.
           ignoredDependencies: ["@golevelup/ts-vitest", "pg", "vitest"],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
         },

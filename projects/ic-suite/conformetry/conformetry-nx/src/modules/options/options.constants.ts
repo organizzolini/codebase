@@ -4,10 +4,8 @@
 export const CONFORMETRY_NX_PLUGIN_NAME = "@conformetry/nx";
 
 /**
- * How a refusal names the plugin option in the `nx.json` registration.
- *
- * Handed to the configuration layer, which owns the requirement and the words
- * of the refusal; this is only where the path was meant to be set.
+ * How a refusal names the plugin option in `nx.json`. The configuration layer owns
+ * the requirement and its wording; this is only the name.
  */
 export const PLUGIN_OPTION_SURFACE =
   'the "configurationPath" option of the @conformetry/nx plugin in nx.json';

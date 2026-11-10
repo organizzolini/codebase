@@ -12,15 +12,11 @@ import type { IssueFormAnswers } from "./issue-metadata.types";
 /**
  * Reads a submitted `issue.yml` body and says which labels it implies.
  *
- * Pure throughout: every method is a function of what it is handed, so the
- * whole rule set is testable without an issue, a token, or a network. Talking
- * to `gh` is the command's job, not this one's.
+ * Pure throughout, so the rules are testable without an issue, a token, or a
+ * network. Talking to `gh` is the command's job.
  *
- * GitHub renders a submitted Type or Scope dropdown answer as `### Type` /
- * `### Scope`, a blank line, then the answer. An issue opened directly
- * through `gh issue create` or the API carries neither marker, so there is
- * nothing here to derive a label from — this reconciliation only ever adds
- * labels an `issue.yml` submission actually named.
+ * Only labels a submitted form actually named are added. An issue opened with
+ * `gh` or the API has no form answers, so nothing is derived from it.
  */
 @Injectable()
 export class IssueLabelsService {
@@ -37,8 +33,7 @@ export class IssueLabelsService {
   /**
    * Reads one dropdown field's answer out of a rendered issue-form body.
    *
-   * An unfilled optional field renders as the literal placeholder
-   * `_No response_`, which is treated the same as no answer at all.
+   * An unfilled optional field renders as `_No response_`, which means no answer.
    */
   private extractFormField(body: string, label: string): string | undefined {
     const pattern = new RegExp(

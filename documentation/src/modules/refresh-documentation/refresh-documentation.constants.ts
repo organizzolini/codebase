@@ -25,10 +25,8 @@ export const OPENWIKI_LINK = "openwiki";
 export const OPENWIKI_STORAGE = "documentation/openwiki";
 
 /**
- * How many times OpenWiki is started before the refresh gives up. The free
- * model's only provider overloads for minutes at a time, and OpenWiki's own
- * retries do not cover every such failure, so a failed run is started again;
- * it picks up the progress it left in the wiki directory.
+ * Maximum runs of OpenWiki before giving up. Its provider overloads for
+ * minutes, so a failed run restarts and resumes from the wiki directory.
  */
 export const OPENWIKI_ATTEMPTS = 4;
 

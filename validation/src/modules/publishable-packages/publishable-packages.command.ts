@@ -37,11 +37,8 @@ export class PublishablePackagesCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Executes the publishable package tarball verification and exits 0 on success, 1 on failure.
-   *
-   * A thrown error exits 1 here because nest-commander's default handler
-   * prints it and still exits 0, which would read a refusal — a consumer
-   * location inside a workspace, a command that would publish — as a pass.
+   * Verifies the packed tarballs and exits 0 on success, 1 on failure. A thrown
+   * error exits 1 too, since nest-commander would exit 0.
    */
   public async run(): Promise<void> {
     await Promise.resolve();

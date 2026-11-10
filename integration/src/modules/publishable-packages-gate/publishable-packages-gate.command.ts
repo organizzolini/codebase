@@ -16,9 +16,8 @@ import { PublishablePackagesGateService } from "./publishable-packages-gate.serv
  *
  * The consumer the check creates lives beneath
  * `PUBLISHABLE_PACKAGES_CONSUMER_ROOT`, which the workflow points at
- * `$RUNNER_TEMP`; the check inherits it from this process and refuses any
- * directory that is not outside the checkout. Exits with the check's own code,
- * or 1 when a revision is missing or Nx cannot say what is affected.
+ * `$RUNNER_TEMP`. Exits with the check's own code, or 1 when a revision is
+ * missing or Nx cannot say what is affected.
  */
 @Command({
   description:

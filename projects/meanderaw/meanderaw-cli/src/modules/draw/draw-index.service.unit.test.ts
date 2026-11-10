@@ -15,7 +15,7 @@ import type { Meander } from "../database/entities/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
-/** What the draw index service is built with: a mocked database, and stand-ins that answer with fixed values for the code parser and the drawing. */
+/** A mocked database plus fixed-answer stand-ins for the code parser and the drawing. */
 const MODULE_OPTIONS: TestingModuleOptions = {
   mocks: [DatabaseService],
   providers: [

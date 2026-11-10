@@ -18,17 +18,9 @@ import type { Environment } from "../../integration.types";
 import type { BoundBaseReport } from "./bound-base-to-push.types";
 
 /**
- * Moves a push's `NX_BASE` to the push's own previous tip, `BEFORE`.
- *
- * On a push, `nx-set-shas` bases the run on the last commit whose whole
- * workflow succeeded. One red run on main then widens the next run to every
- * merge since, which runs longer, times out in turn, and widens the one after:
- * 19 of 40 main runs covered the whole workspace. Each commit reaching main
- * already passed the merge queue against main's tip, so no retry is needed.
- *
- * `NX_BASE` is kept when there is no previous tip (an empty or all-zero
- * `BEFORE`, as on a new branch) or when `BEFORE` is not an ancestor of
- * `NX_HEAD` (a force-push, or a commit this clone does not have).
+ * Moves a push's `NX_BASE` to the push's previous tip, `BEFORE`, so one red
+ * main run cannot widen every later run to all merges since. `NX_BASE` is kept
+ * when `BEFORE` is empty or not an ancestor of `NX_HEAD`, as on a force-push.
  */
 @Injectable()
 export class BoundBaseToPushService {

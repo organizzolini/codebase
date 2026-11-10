@@ -42,9 +42,7 @@ export function findAncestors(
 }
 
 /**
- * Each tag's state for the tags picked, where picking a tag picks everything
- * beneath it: checked when it, or all the tags beneath it, are picked, partial
- * when only some of what is beneath it is, and unchecked otherwise.
+ * Each tag's state for the picks, where picking a tag picks all beneath it: checked, partial, or unchecked.
  */
 export function getTagStates(
   items: readonly FilterOption[],
@@ -86,10 +84,7 @@ export function readDepth(item: FilterOption): number {
 }
 
 /**
- * Toggles a tag with everything beneath it: a checked or partly picked tag is
- * checked, and a checked one cleared, then the tags above it follow from
- * what is beneath them. The picks are written as the fewest tags that cover
- * them: a tag with all of its tags picked stands for them.
+ * Toggles a tag with everything beneath it, then the tags above follow; picks are the fewest tags that cover them.
  */
 export function toggleTag(
   items: readonly FilterOption[],
@@ -114,9 +109,7 @@ export function toggleTag(
 }
 
 /**
- * Lays the tags out as the picker draws them, in the order they are given,
- * depth first: a tag beneath one that is closed is left out. With
- * `showAll`, as while searching, every tag shows and none has a handle.
+ * Lays tags out as the picker draws them, depth first, leaving out tags beneath a closed one; `showAll` lists every tag.
  */
 export function toTagTreeRows(
   items: readonly FilterOption[],
@@ -125,8 +118,7 @@ export function toTagTreeRows(
     selected: readonly unknown[];
     showAll: boolean;
     /**
-     * Each tag's state where picking a tag takes what is beneath it; every
-     * tag is checked or not by whether it is picked itself without it.
+     * Each tag's check state: picking a tag takes everything beneath it.
      */
     states?: ReadonlyMap<string, TagCheckState>;
   }>,

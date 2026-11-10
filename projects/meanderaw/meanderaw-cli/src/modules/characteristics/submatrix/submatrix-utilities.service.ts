@@ -21,8 +21,8 @@ export class SubmatrixUtilitiesService {
   // 🔐 Private Fields
 
   /**
-   * Each template's glyph points, parsed once however many boards count it.
-   * Keyed weakly by the template, so a parse lives no longer than its template.
+   * Each template's glyph points, parsed once. Keyed weakly by the template,
+   * so a parse lives no longer than the template.
    */
   private readonly cellsByTemplate = new WeakMap<
     readonly string[],
@@ -30,11 +30,8 @@ export class SubmatrixUtilitiesService {
   >();
 
   /**
-   * Each board's digit grid, built once however many templates count it.
-   * Keyed weakly by the matrix, so a grid lives no longer than its board.
-   * Keying by identity assumes a board is never mutated after its first
-   * count, the same assumption {@link LetterUtilitiesService}'s count cache
-   * makes; a mutated board would keep reading its stale grid.
+   * Each board's digit grid, built once. Keyed weakly by the matrix. Assumes
+   * a board is never mutated after its first count.
    */
   private readonly digitGrids = new WeakMap<
     Matrix,
@@ -93,21 +90,8 @@ export class SubmatrixUtilitiesService {
   // 🌎 Public Methods
 
   /**
-   * Counts the minimal isolated glyphs of a matrix drawn exactly as `template`.
-   *
-   * The template holds one string per row and one character per point: the
-   * point's hexadecimal Code digit (north 8, south 4, east 2, west 1), or `.`
-   * for a point outside the glyph. A window matches when every glyph point
-   * carries exactly its template arms. A template's arms all stay inside the
-   * glyph, so an exact match is a whole piece of ink — nothing joins it, which
-   * is what makes it isolated, and why each piece matches at one window only.
-   * Columns wrap, so a glyph may cross the tile's seam; a glyph wider than the
-   * tile would overlap its own repeat and is never counted.
-   *
-   * "Nothing joins it" assumes the agreement invariant: every arm is
-   * reciprocated by its neighbor, the way {@link TileService.assertWellFormed}
-   * checks. A context built from a malformed Code can disagree with itself, and
-   * this function does not detect that.
+   * Counts the isolated glyphs of a matrix drawn exactly as `template`, a
+   * hexadecimal-digit grid with `.` outside the glyph. Columns wrap.
    */
   public countIsolatedGlyphs(
     matrix: Matrix,
@@ -135,8 +119,7 @@ export class SubmatrixUtilitiesService {
 
   /**
    * Counts the points whose ink leaves by `arm`, whatever other arms they
-   * carry — a lone arm, a straight edge, a corner, a fork, and a cross all
-   * count once — which is every directional edge count.
+   * carry. This is every directional edge count.
    */
   public countPointsWithArm(matrix: Matrix, arm: MatrixPointArm): number {
     let count = 0;
@@ -153,10 +136,8 @@ export class SubmatrixUtilitiesService {
   }
 
   /**
-   * Counts the points whose ink leaves by exactly `arms` — every named arm set
-   * and every other arm clear — which is the whole of every 1×1 submatrix
-   * characteristic: a bare point is `[]`, a corner two perpendicular arms, a
-   * fork three, and a cross all four.
+   * Counts the points whose ink leaves by exactly `arms`, every other arm
+   * clear. A bare point is `[]`; a corner, two perpendicular arms.
    */
   public countPointsWithExactArms(
     matrix: Matrix,
@@ -185,14 +166,8 @@ export class SubmatrixUtilitiesService {
   }
 
   /**
-   * Every point's hexadecimal Code digit, row by row, as
-   * {@link SubmatrixUtilitiesService.pointDigitAt} spells it. Built once per
-   * board and shared by every template counted on it, so a board's arms are
-   * read once rather than once per template and window.
-   *
-   * The grid returned is that shared one, so a caller must not mutate it, and
-   * it stays correct only while the board itself is never mutated after its
-   * first count.
+   * Every point's digit, row by row, as {@link SubmatrixUtilitiesService.pointDigitAt}
+   * spells it. Shared across templates; callers must not mutate it.
    */
   public digitGrid(matrix: Matrix): readonly (readonly number[])[] {
     const built = this.digitGrids.get(matrix);
@@ -209,9 +184,7 @@ export class SubmatrixUtilitiesService {
 
   /**
    * Typesets a {@link SubmatrixUtilitiesService.countIsolatedGlyphs} template
-   * as the LaTeX definition of its characteristic — the count of isolated
-   * windows equal to the template, with its digits as a matrix and each blank
-   * as a centered dot.
+   * as the LaTeX definition of its characteristic.
    */
   public glyphFormula(template: readonly string[]): string {
     const rows = template
@@ -227,9 +200,7 @@ export class SubmatrixUtilitiesService {
 
   /**
    * The window a {@link SubmatrixUtilitiesService.countIsolatedGlyphs}
-   * template reads: one column per character of its widest line, blanks
-   * included, and one row per line — the `submatrix` metadata of every glyph
-   * characteristic, derived so it cannot disagree with the template.
+   * template reads: its widest line by its line count, blanks included.
    */
   public glyphWindow(template: readonly string[]): SubmatrixWindow {
     return {
@@ -239,9 +210,8 @@ export class SubmatrixUtilitiesService {
   }
 
   /**
-   * The hexadecimal Code digit of the point at `(row, column)` — north 8,
-   * south 4, east 2, west 1 — with columns wrapping, or -1 past the top or
-   * bottom row, which no digit equals.
+   * The hexadecimal Code digit at `(row, column)`, columns wrapping; -1 past the top
+   * or bottom row.
    */
   public pointDigitAt(matrix: Matrix, row: number, column: number): number {
     const points = matrix[row] ?? [];

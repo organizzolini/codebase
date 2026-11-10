@@ -1,11 +1,9 @@
 import { TEMPLATE_HASH_SOURCE } from "./plugin.constants";
 
 /**
- * Builds the shell command, run from the workspace root, that prints a digest
- * of every file under the given template folders.
+ * Builds the command that digests the template folders.
  *
- * It is a Node program rather than a pipeline of `find` and `shasum` so that it
- * behaves the same wherever Nx runs, and it reads the disk, not Nx's file map.
+ * A Node program, not `find` and `shasum`, so it behaves the same everywhere.
  */
 export function buildTemplateHashCommand(templatePaths: string[]): string {
   const program = TEMPLATE_HASH_SOURCE.replace(

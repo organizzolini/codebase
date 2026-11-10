@@ -3,14 +3,8 @@ import { LETTER_ORIENTATION_NAMES } from "./submatrix/letter/letter.constants";
 // ♟️ Constants
 
 /**
- * The key of every letter glyph count, sixteen per letter: the letter's
- * transliteration, its positional form for an Arabic letter, one of its
- * sixteen orientation names, and its script —
- * `<letter>[<Form>]<Corner>[Quarter|Half|ThreeQuarter]<Script>Count`, such as
- * `aSoutheastLatinCount`, `daletSouthwestHalfHebrewCount`, or
- * `behIsolatedSouthwestArabicCount`. Letters run alphabetically, and each
- * letter's keys in `LETTER_ORIENTATION_NAMES` order.
- * Each is the `metadata.key` of one evaluator a letter service provides.
+ * Each letter's sixteen glyph count keys, in `LETTER_ORIENTATION_NAMES` order.
+ * Each is the `metadata.key` of one letter evaluator.
  */
 export const LETTER_CHARACTERISTIC_KEYS = [
   ...LETTER_ORIENTATION_NAMES.map((name) => `a${name}LatinCount` as const),
@@ -229,12 +223,8 @@ export const LETTER_CHARACTERISTIC_KEYS = [
 ] as const;
 
 /**
- * The key of every numeric characteristic an evaluator under `submatrix/`,
- * `path/`, or `compound/` fills — each structural count listed here and every
- * letter key — in alphabetical order. Each is the `metadata.key` of exactly
- * one registered evaluator whose `valueType` is `"number"`, and
- * `CharacteristicsModule`'s own test holds the two sets equal in both
- * directions.
+ * Every numeric characteristic key, alphabetical, including the letter keys.
+ * `CharacteristicsModule`'s test holds this set equal to the numeric evaluators.
  */
 export const NUMERIC_CHARACTERISTIC_KEYS = (
   [
@@ -312,10 +302,8 @@ export const BOOLEAN_CHARACTERISTIC_KEYS = [
 ] as const;
 
 /**
- * The key of every pattern characteristic, in alphabetical order — the
- * compound booleans under `compound/pattern/`, each a named combination of
- * other Characteristics a meander can be filtered by. The draw run writes
- * one page per key, listing every meander the pattern holds for.
+ * Every pattern characteristic, alphabetical: the compound booleans under
+ * `compound/pattern/`. The draw run writes one page per key.
  */
 export const PATTERN_CHARACTERISTIC_KEYS = [
   "isArcade",
@@ -339,9 +327,8 @@ export const PATTERN_CHARACTERISTIC_KEYS = [
 ] as const satisfies readonly (typeof BOOLEAN_CHARACTERISTIC_KEYS)[number][];
 
 /**
- * Every characteristic key, numeric keys first and boolean keys after, each
- * run alphabetical — the order `CharacteristicsService` lists
- * metadata in and fills a record in.
+ * Every characteristic key: numeric keys first, then boolean, each run
+ * alphabetical. The order `CharacteristicsService` fills records in.
  */
 export const CHARACTERISTIC_KEYS = [
   ...NUMERIC_CHARACTERISTIC_KEYS,
@@ -349,10 +336,8 @@ export const CHARACTERISTIC_KEYS = [
 ] as const;
 
 /**
- * Every key a meander row's `characteristics` map may hold `true` under, in
- * the order a caption lists them: each boolean characteristic, then
- * `isReducible`, which is a fact about the Code as filed rather than any
- * evaluator's value.
+ * Keys a meander row's `characteristics` map may hold `true` under: each
+ * boolean, then `isReducible`, a fact about the Code as filed.
  */
 export const STORED_BOOLEAN_KEYS = [
   ...BOOLEAN_CHARACTERISTIC_KEYS,
@@ -360,9 +345,8 @@ export const STORED_BOOLEAN_KEYS = [
 ] as const;
 
 /**
- * {@link BOOLEAN_CHARACTERISTIC_KEYS} as a set of plain strings, so an
- * unchecked key read off a discovered provider can be looked up without
- * first being narrowed to the key union it is being checked against.
+ * {@link BOOLEAN_CHARACTERISTIC_KEYS} as plain strings, so a key read off a
+ * discovered provider can be looked up without narrowing it first.
  */
 export const BOOLEAN_CHARACTERISTIC_KEY_SET: ReadonlySet<string> = new Set(
   BOOLEAN_CHARACTERISTIC_KEYS,

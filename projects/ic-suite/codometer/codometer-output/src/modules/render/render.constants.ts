@@ -4,9 +4,9 @@
 export const HEADING = "## ⏲️ Codometer";
 
 /**
- * The block this report claims inside a shared document. HTML comments are
- * invisible once the markdown is rendered, and every other report claims its
- * own pair, so several can sit in one document without collision.
+ * The block this report claims inside a shared document.
+ *
+ * HTML comment markers are invisible when rendered, so reports can share one document.
  */
 export const CODOMETER_MARKERS = {
   end: "<!-- codometer-changes:end -->",

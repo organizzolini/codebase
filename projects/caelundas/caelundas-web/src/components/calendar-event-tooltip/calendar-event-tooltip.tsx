@@ -34,8 +34,7 @@ export interface CalendarEventTooltipProperties {
 // 🧩 Component
 
 /**
- * Wraps what is drawn for an event, its glyphs, in a tooltip that follows the pointer, with the event's
- * name in English, whatever the database says of it, and its tags as pills.
+ * Wraps an event's glyphs in a tooltip that follows the pointer, showing its name in English and its tags as pills.
  */
 export function CalendarEventTooltip(
   properties: Readonly<CalendarEventTooltipProperties>,

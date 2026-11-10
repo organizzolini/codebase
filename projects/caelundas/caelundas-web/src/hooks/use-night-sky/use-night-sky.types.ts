@@ -54,8 +54,7 @@ export interface NightSkyOverrides {
 }
 
 /**
- * The night sky the hook built: its SVG markup, or nothing while the star
- * catalog loads, when the link turns it off, and where the view cannot draw.
+ * The night sky the hook built: its SVG markup, or nothing when there is none to draw.
  */
 export interface UseNightSkyResult {
   /**

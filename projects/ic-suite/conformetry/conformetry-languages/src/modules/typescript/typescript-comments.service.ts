@@ -36,12 +36,9 @@ export class TypescriptCommentsService {
   // 🌎 Public Methods
 
   /**
-   * Reports each template comment absent from the instance, or present but
-   * out of order relative to the comments before it.
+   * Reports each template comment absent from the instance, or out of order.
    *
-   * Every template comment is one requirement, whatever its length: a section
-   * marker is a marker. That is reported alongside the misses so a document
-   * whose comments are all present still contributes them to its score.
+   * Every template comment is one requirement, whatever its length.
    */
   public compareComments(args: CompareCommentsArguments): CommentComparison {
     const instanceComments = this.extractComments(args.instanceSourceFile);
@@ -71,18 +68,7 @@ export class TypescriptCommentsService {
   /**
    * Collects every comment in a source file, in source order.
    *
-   * Walks down to individual tokens and reads the trivia preceding each one.
-   * Every comment precedes some token, including the closing brace of a class,
-   * which is what makes this complete.
-   *
-   * Two simpler approaches fail here. Reading leading and trailing ranges off
-   * *statement* nodes misses any comment bordering no node — notably the
-   * section markers between the last class member and the closing brace, where
-   * `🔏 Private Methods` and `🌎 Public Methods` live in an otherwise empty
-   * service; those markers were silently unenforceable. Scanning the raw token
-   * stream instead loses sync on template literals, because a substitution's
-   * closing brace needs an explicit re-scan, and everything after the first
-   * template substitution is mis-tokenized.
+   * Reads the trivia before each token, so no comment is missed.
    */
   public extractComments(sourceFile: SourceFile): ExtractedComment[] {
     const commentsByPosition = new Map<number, ExtractedComment>();

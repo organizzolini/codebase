@@ -21,17 +21,9 @@ import type {
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Builds a Python project's internal file-level import Graph, and renders it.
- *
- * Every source file's top-level import statements are read through
- * `PythonImportParserService`, then each specifier is resolved to a real
- * file with `resolveSpecifierPath` — the closest Python equivalent of
- * `ts.resolveModuleName`, since Python has no compiler API to delegate to.
- * An absolute specifier (`from src.grammars import Grammar`) resolves
- * relative to the project root; a relative one (`from .grammars import Grammar`)
- * resolves relative to the importing file's own directory, ascended once per
- * extra leading dot. An edge is kept only when it resolves to a file this
- * project owns, the same rule `TypescriptImportGraphService.buildGraph` applies.
+ * Builds a Python project's file-level import graph and renders it. An absolute
+ * specifier resolves from the project root; a relative one from the importing file's
+ * directory. Only edges to files this project owns are kept.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -122,13 +114,8 @@ export class PythonImportGraphService {
   }
 
   /**
-   * Resolves an import specifier to an absolute file path, checked against
-   * the filesystem — the closest Python has to `ts.resolveModuleName`
-   * checking against a compiler host.
-   *
-   * A specifier with no module path (`from . import name`) resolves the
-   * package directory itself — its `__init__.py` — since there is no
-   * standalone file a bare relative import could otherwise name.
+   * Resolves an import specifier to an absolute path on disk. `from . import name`
+   * resolves to the package's `__init__.py`.
    */
   private resolveSpecifierPath(args: {
     containingFileName: string;

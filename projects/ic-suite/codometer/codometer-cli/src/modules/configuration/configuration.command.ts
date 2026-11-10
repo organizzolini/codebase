@@ -18,13 +18,7 @@ import {
 import type { ConfigurationCommandOptions } from "./configuration.types";
 
 /**
- * CLI entry point for listing what a repository configures.
- *
- * Reports configuration and never measurement: no build is required, nothing
- * is compressed, and no limit is evaluated. That separation is the point — a
- * repository whose limits live one per project has no single place left to
- * read them as a set, and this is that place, without waiting on the builds
- * a measurement would need.
+ * CLI entry point for listing a repository's configuration. Reads configuration only, never measurement: no build is needed and no limit is evaluated, so the limits can be read together without waiting on builds.
  */
 @Command({
   description: "List the codometer configuration found beneath a directory",
@@ -98,11 +92,7 @@ export class ConfigurationCommand extends CommandRunner {
   }
 
   /**
-   * Lists what the tree beneath the given directory configures.
-   *
-   * Writes to standard output rather than a file: the listing is something a
-   * reader looks at or pipes onward, and unlike a measurement it has no report
-   * anything else consumes.
+   * Lists the configuration beneath the directory to standard output, since the listing is read or piped, not a report.
    */
   async run(
     _passedParameters: string[],

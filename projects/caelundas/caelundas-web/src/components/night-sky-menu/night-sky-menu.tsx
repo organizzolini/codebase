@@ -48,11 +48,7 @@ export interface NightSkyMenuProperties {
 // 🧩 Component
 
 /**
- * Renders the toolbar's Sky menu: every setting of the night sky behind the
- * page, read from the link and written back to it as it changes, so the sky
- * follows a control live and a link reopens the same controls. Its sections
- * sit in three columns on a wide screen, so the menu fits without scrolling,
- * and in one on a phone; the constellation picker is last, closed at first.
+ * Renders the toolbar's Sky menu: each night sky setting, read from and written back to the link as it changes.
  */
 export function NightSkyMenu(
   properties: Readonly<NightSkyMenuProperties>,

@@ -1,11 +1,7 @@
 // ♟️ Constants
 
 /**
- * The codometer command line, relative to the workspace root.
- *
- * Run from source under the swc hook, as the `nx:run-commands` target this
- * executor replaced did, so a run of a project alone is the exact command the
- * workspace has always used.
+ * The codometer command line, relative to the workspace root, run from source under the swc hook.
  */
 export const CODOMETER_CLI_MAIN =
   "projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts";

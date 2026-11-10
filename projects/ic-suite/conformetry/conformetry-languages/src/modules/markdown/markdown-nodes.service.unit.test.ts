@@ -89,9 +89,8 @@ describe(MarkdownNodesService, () => {
     const CELL: MarkdownNode = { type: "tableCell" };
 
     /**
-     * Node pairs the tree walk rarely reaches on its own: inline content is
-     * usually settled by the paragraph's text before its children are
-     * compared, so each comparator is driven directly here.
+     * Node pairs the tree walk rarely reaches alone: inline content settles in the
+     * paragraph's text, so each comparator is driven directly.
      */
     const PAIRS: {
       differing: MarkdownNode;

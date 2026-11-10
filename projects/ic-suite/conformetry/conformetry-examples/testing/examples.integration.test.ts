@@ -39,11 +39,8 @@ interface ExampleExpectation {
 }
 
 /**
- * Every example, and the outcome its guide promises.
- *
- * Keyed by directory name and checked against the directory listing below, so
- * an example added without an expectation fails rather than going unchecked. This
- * is what keeps the guides honest: each one quotes output this table asserts.
+ * Each example's promised outcome. Keyed by directory, so an example added
+ * without one fails. Each guide's quoted output is asserted here.
  */
 const EXPECTATIONS: Record<string, ExampleExpectation> = {
   "ambiguous-attribution": {
@@ -123,11 +120,8 @@ const EXPECTATIONS: Record<string, ExampleExpectation> = {
 };
 
 /**
- * The examples whose committed instance is exactly what the generator writes.
- *
- * Rendering happens twice — once to generate, once to compare — so an instance
- * a reader is told to copy has to be byte-identical to generated output, or the
- * example teaches a file that would fail the very check it demonstrates.
+ * Examples whose committed instance is the generator's output. Both render, so
+ * a copied instance must match generated output byte for byte.
  */
 const ROUND_TRIPS = [
   {

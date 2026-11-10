@@ -19,11 +19,7 @@ const INSTANCE_PATTERN = "packages/*/src/modules/*";
 /**
  * Builds a workspace holding three templates and one instance.
  *
- * The instance has both of `widget`'s files and one of `gadget`'s three, so
- * the same path is explained completely by one template and partially by the
- * other — which is the case the inventory exists to report. `sprocket` shares
- * no file with it at all, so a template nothing was generated from is covered
- * too.
+ * The instance fits `widget` completely and `gadget` partially.
  */
 async function populateWorkspace(workingDirectory: string): Promise<void> {
   const templatesPath = path.join(workingDirectory, "configuration/templates");

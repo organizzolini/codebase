@@ -72,9 +72,7 @@ export class AinArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright ع (final Arabic ain) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ع (final Arabic ain) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ┌┐
    * ┌┴┴╴
@@ -84,9 +82,7 @@ export class AinArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly finalTemplate: readonly string[] = [".65.", "6bb1", "a31."];
 
   /**
-   * The upright ع (initial Arabic ain) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ع (initial Arabic ain) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ┌╴
    * ╶┴╴
@@ -95,9 +91,7 @@ export class AinArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly initialTemplate: readonly string[] = [".61", "2b1"];
 
   /**
-   * The upright ع (isolated Arabic ain) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ع (isolated Arabic ain) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ┌╴
    * ┌┴╴
@@ -107,9 +101,7 @@ export class AinArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly isolatedTemplate: readonly string[] = [".61", "6b1", "a31"];
 
   /**
-   * The upright ع (medial Arabic ain) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ع (medial Arabic ain) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ┌┬╴
    * ╶┴┴╴

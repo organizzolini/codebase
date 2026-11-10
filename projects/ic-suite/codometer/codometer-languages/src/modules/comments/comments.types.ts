@@ -14,13 +14,7 @@ export interface CommentBlock {
 }
 
 /**
- * How long one comment or JSDoc block may run, carried as an explicit
- * argument rather than read off a resolved configuration object.
- *
- * Shaped to match the `comment` selector `@codometer/configuration` declares
- * — a `language`, a `kind`, and this same set of optional maxima plus
- * `severity` — so mapping one onto this is a direct field copy rather than a
- * translation.
+ * How long one comment block may run, shaped to match the `comment` selector's maxima.
  */
 export interface CommentBudget {
   maximumCharacters: number | undefined;
@@ -30,18 +24,7 @@ export interface CommentBudget {
 }
 
 /**
- * One `comment`-selector custom statistic's budget, and what it is over.
- *
- * Mirrors the selector field for field: `kind` names a documentable
- * declaration whose JSDoc is measured, `language` names the language whose
- * plain comment blocks are, and `undefined` on both means every language that
- * has comments — exactly as `CodometerCommentSelector` documents. A counter
- * naming both is measured as a `kind`: the whole list reaches both measurers,
- * and each selects from it by reading `kind`.
- *
- * Kept apart per statistic rather than merged into one budget per language or
- * kind, so two statistics naming the same one with different maxima each
- * count only their own breaches back against their own label.
+ * One `comment` custom statistic's budget and what it is over. A counter naming both `kind` and `language` is measured as a `kind`.
  */
 export interface CommentCounter {
   budget: CommentBudget;
@@ -72,14 +55,7 @@ export interface LabeledCommentMeasurement {
 }
 
 /**
- * The file lists comment measurement reads, one per language that has a
- * budget.
- *
- * Named here rather than taken from `DiscoveredLanguageFiles`, which would
- * point this module back at the one that depends on it. `languages` depends on
- * `comments` and never the reverse; a cycle between the two crashes the Nest
- * container outright rather than failing anything readable. The discovery
- * result satisfies this structurally, so callers pass it unchanged.
+ * Comment-bearing files per language. Declared here, not taken from discovery, so `languages` depends on `comments` alone.
  */
 export interface LanguageCommentFiles {
   cssFiles: string[];
@@ -125,21 +101,14 @@ export interface MeasureLanguageCommentsArguments {
   /**
    * Python's comments, already found by its own analyzer.
    *
-   * Python is read in Python: its analysis runs `tokenize` in a subprocess,
-   * which knows a `#` inside a string literal from a real comment the way no
-   * line scanner can. The tokens arrive here rather than the measurements, so
-   * a word still means one thing across every language.
+   * Read by `tokenize`, which tells a real comment from a `#` inside a string.
    */
   pythonComments: readonly LocatedCommentToken[];
   workingDirectory: string;
 }
 
 /**
- * A comment token with the offset YAML's tree walk needs to order it.
- *
- * The offset is not part of what a comment is — no other reader has one, and
- * Python's tokenizer reports positions rather than offsets — so it stays here
- * rather than on `CommentToken`.
+ * A comment token with the YAML tree offset that orders it. The offset is not part of a comment.
  */
 export interface PositionedToken {
   offset: number;
@@ -147,11 +116,7 @@ export interface PositionedToken {
 }
 
 /**
- * One TypeScript or JavaScript file's in-progress scan.
- *
- * Keyed by position rather than held as a list, so a comment range found from
- * both a token's leading trivia and its predecessor's trailing trivia — the
- * same range read from either side of the gap between them — is kept once.
+ * One TypeScript or JavaScript file's in-progress scan, keyed by position so a range read twice is kept once.
  */
 export interface TypescriptCommentScan {
   content: string;

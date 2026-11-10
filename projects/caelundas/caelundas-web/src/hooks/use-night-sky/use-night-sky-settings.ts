@@ -10,10 +10,7 @@ import type { UseNightSkySettingsResult } from "./use-night-sky-settings.types";
 // 🧩 Hook
 
 /**
- * The night sky's settings as the link sets them, the constellations the
- * sky has figures for, and how to change the link: the controls the View menu
- * draws read and write the same `sky.*` keys the backdrop reads, so a
- * control and the link never disagree.
+ * The night sky's settings as the link sets them, and how to change the link; controls and link never disagree.
  */
 export function useNightSkySettings(): UseNightSkySettingsResult {
   // 🪝 Hooks

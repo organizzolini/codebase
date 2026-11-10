@@ -35,18 +35,9 @@ import type {
 } from "@codependix/configuration";
 
 /**
- * Judges every level's graph against the rules declared for it.
- *
- * A level whose rule list is empty is never built at all, which is what makes
- * the gate affordable: judging the NestJS level means booting every
- * `framework:nestjs` container in preview mode, and judging the TypeScript
- * level means building a `ts.Program` per project. A workspace declaring only
- * Nx rules pays for neither.
- *
- * Nothing here writes or reads a destination. A violation goes to the console
- * and the exit code, so `--check boundaries` leaves every committed export
- * exactly as it found it — the property that lets it gate a branch, where the
- * exports are expected to be behind the workspace they describe.
+ * Judges every level's graph against its declared rules. A level with no rules is never built,
+ * keeping the gate affordable. Writes nothing: findings go to the console and exit code, leaving
+ * committed exports untouched.
  */
 @Injectable()
 export class BoundaryCheckService {
@@ -70,13 +61,8 @@ export class BoundaryCheckService {
   // 🔏 Private Methods
 
   /**
-   * The `CodependixGraphType` each boundary level is judged under.
-   *
-   * Finer-grained than `CodependixGraphType` itself: `python` and
-   * `typescript` both fall under `fileImports`, since `codependix-file-imports`
-   * builds and exports both as one graph type even though `boundaries`
-   * still nests their rules by language. `--no-file-imports` therefore skips
-   * both levels together.
+   * The graph type each level is judged under. `python` and `typescript` both fall under
+   * `fileImports`, so `--no-file-imports` skips both.
    */
   private graphTypeForLevel(
     level: CodependixBoundaryLevel,
@@ -95,8 +81,7 @@ export class BoundaryCheckService {
   }
 
   /**
-   * Judges every charged finding: it fails the run when one of its projects
-   * is judged, and is a note against the dependency it lives in otherwise.
+   * Judges every charged finding: it fails the run when a charged project is judged, else it is a note.
    */
   private judge(
     outcome: BoundaryLevelOutcome,
@@ -127,12 +112,7 @@ export class BoundaryCheckService {
   }
 
   /**
-   * Resolves one level's declared rules out of the nested boundaries shape.
-   *
-   * A record keyed by level rather than a switch, the same reason `runLevel`
-   * is one: every `CodependixBoundaryLevel` must have an entry, so a fifth
-   * level added to that union fails to compile here instead of silently
-   * resolving to nothing.
+   * Resolves one level's rules from the nested shape. Keyed by level, so a new level fails to compile.
    */
   private rulesForLevel(
     boundaries: ResolvedCodependixBoundariesConfiguration,
@@ -152,11 +132,7 @@ export class BoundaryCheckService {
   }
 
   /**
-   * Builds one level's findings, whichever of the four builders it needs.
-   *
-   * A record keyed by level rather than a switch: the record type requires
-   * every `CodependixBoundaryLevel` to have an entry, so a fifth level added
-   * to that union fails to compile here instead of silently going unchecked.
+   * Builds one level's findings with whichever builder it needs.
    */
   private async runLevel(
     args: LevelCheckArguments,
@@ -200,11 +176,8 @@ export class BoundaryCheckService {
   }
 
   /**
-   * Judges the whole-workspace Nx project graph, drawn over the build set so
-   * no edge from a judged project into a dependency is dropped.
-   *
-   * A graph that cannot be built is charged to every judged project, since
-   * none of them could be judged at this level.
+   * Judges the whole-workspace Nx graph over the build set. A graph that cannot be built is charged
+   * to every judged project.
    */
   private runNxLevel(args: LevelCheckArguments): BoundaryLevelOutcome {
     const { context, level, rules } = args;
@@ -241,15 +214,8 @@ export class BoundaryCheckService {
   }
 
   /**
-   * Judges every project in the build set at one level, isolating each
-   * project's failure.
-   *
-   * The three per-project levels differ only in how a project is discovered
-   * and how its graph is built, so the loop around them is written once: a
-   * project that raises is collected as a failure charged to it, and every
-   * other project is still judged. `buildGraph` may be asynchronous because
-   * the NestJS level's is — booting a container is the one graph this tool
-   * cannot build synchronously.
+   * Judges each build-set project at one level, isolating failures per project so one raise
+   * does not stop the rest.
    */
   private async runProjectLevel<Project extends { name: string }>(args: {
     buildGraph: (project: Project) => BoundaryGraph | Promise<BoundaryGraph>;
@@ -316,16 +282,8 @@ export class BoundaryCheckService {
   // 🌎 Public Methods
 
   /**
-   * Judges every level that has a rule to judge it by and whose graph type
-   * this run enabled.
-   *
-   * The four levels are independent, so a NestJS project failing to boot has
-   * no bearing on whether the Nx or import graphs break a rule, and every
-   * level is attempted regardless of what an earlier one reported. A level
-   * declaring no rule is skipped before anything is built, which is what
-   * keeps the gate affordable — and a level whose graph type
-   * `context.enabledGraphTypes` excludes is skipped the same way, so
-   * `--no-nestjs-modules` never boots a single container to judge it.
+   * Judges every level with rules and an enabled graph type. A level is skipped before any graph is
+   * built, so `--no-nestjs-modules` boots no container.
    */
   public async run(
     context: BoundaryCheckContext,

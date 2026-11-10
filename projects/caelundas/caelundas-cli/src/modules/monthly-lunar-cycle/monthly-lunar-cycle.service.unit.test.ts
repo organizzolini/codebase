@@ -86,9 +86,8 @@ describe(MonthlyLunarCycleService, () => {
   });
 
   /**
-   * Runs `detect` over consecutive minutes of a synthetic sky, one sample per
-   * minute, and returns every event from the minutes that have both
-   * neighbors. The Moon sits `elongations[i]` degrees ahead of the Sun.
+   * Runs `detect` over a synthetic sky of consecutive minutes, returning events
+   * from minutes with both neighbors.
    */
   function detectSeries(args: {
     elongations: number[];

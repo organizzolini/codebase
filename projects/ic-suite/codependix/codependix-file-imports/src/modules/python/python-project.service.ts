@@ -59,12 +59,7 @@ export class PythonProjectService {
   }
 
   /**
-   * Filters an already-read list of Nx projects down to the ones tagged
-   * `language:python`, and describes each one.
-   *
-   * Projects are returned in the order they were given, which callers keep
-   * sorted by name — the same order `TypescriptProjectService.discoverProjects`
-   * preserves.
+   * Keeps the Nx projects tagged `language:python`, in input order, and describes each one.
    */
   discoverProjects(
     projects: { absoluteRoot: string; name: string; tags: string[] }[],

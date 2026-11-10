@@ -1,4 +1,6 @@
-/* cspell:words adspirate Amatoria Amores Argonautica argonautica atavis auctor carmina coeptis Cogitanti dicere edite fert Flaccus formas fueramus Horatius illas illi libelli Maecenas meis memoria Metamorphoses mihi mundi mutastis mutatas Naso Nasonis natus nondum nunc omnia Oratore origine Ovidius Peneia Phoebi Poetica praetulit primaque Publius quinque Quintus regibus repetenti saepenumero Satirae sumus Tullius Valerius valerius vetera vincit vinum */
+/* cspell:words adspirate Amatoria Amores Argonautica argonautica atavis auctor carmina coeptis Cogitanti dicere edite fert Flaccus formas fueramus Horatius illas illi libelli Maecenas meis memoria Metamorphoses mihi mundi mutastis mutatas */
+
+/* cspell:words Naso Nasonis natus nondum nunc omnia Oratore origine Ovidius Peneia Phoebi Poetica praetulit primaque Publius quinque Quintus regibus repetenti saepenumero Satirae sumus Tullius Valerius valerius vetera vincit vinum */
 
 import { Author, Line, Text } from "@codebase/lexico-db";
 
@@ -99,9 +101,7 @@ const TEXTS: ReadonlyMap<LiteratureSearchTextSlug, SeededText> = new Map([
 ]);
 
 /**
- * Seeds four authors, eight texts, and their lines: names, slugs, titles, and
- * line contents chosen so each search matches by exactly one column, matches
- * across authors, or matches nothing, as each test needs.
+ * Seeds four authors and eight texts with lines chosen so each search matches one column, several authors, or nothing.
  */
 export async function seedLiteratureSearchCorpus(
   database: DatabaseTestingModule,

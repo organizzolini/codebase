@@ -1,11 +1,8 @@
 // 🏷️ Types
 
 /**
- * The four arguments Nx calls a batch executor with, in the order it passes them.
- *
- * A tuple rather than four parameters because Nx fixes that signature and the
- * workspace holds a function to three: the task graph, each task's resolved
- * options by task id, the overrides of the whole run, and the context.
+ * Nx's four batch-executor arguments: task graph, each task's options, the
+ * run's overrides, and context. A tuple, since Nx fixes the signature.
  */
 export type CheckBatchExecutorArguments = [
   taskGraph: CheckBatchTaskGraph,
@@ -34,11 +31,8 @@ export interface CheckBatchTaskGraph {
 }
 
 /**
- * What one task of a check batch settled on.
- *
- * Nx's own type for a batch executor's result is not exported through
- * `@nx/devkit`, so this states the shape Nx reads back: whether the task
- * passed, and the output to show and to store with it in the cache.
+ * Shape of one batch task's result, as Nx reads it back, since `@nx/devkit`
+ * does not export Nx's own type.
  */
 export interface CheckBatchTaskResult {
   readonly success: boolean;

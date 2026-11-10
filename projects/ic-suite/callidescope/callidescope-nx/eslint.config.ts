@@ -11,19 +11,10 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // @codebase/observability: bundled into the library build output via Vite and inlined,
-          // so it is a build-time devDependency rather than a runtime dependency.
-          // @golevelup/ts-vitest: a devDependency used only in test files, which
-          // are outside the build dependency check's scope.
-          // pino, pino-pretty: runtime dependencies of the inlined @codebase/observability,
-          // not imported directly in this package's TypeScript source.
-          // typescript: a peer of @callidescope/cli and @callidescope/graph,
-          // declared here so a consumer installs it; nothing in this package
-          // imports it.
-          // @codebase/testing: a devDependency whose shared setup the project's
-          // `testing/` folder imports, outside the build's scope.
-          // vitest: referenced via tsconfig "types" array; it's a devDependency and
-          // the @nx/dependency-checks rule misidentifies it as a production dependency.
+          // Ignored as build-time or test-only: pino rides inside observability, which Vite
+          // inlined; testing and ts-vitest serve tests; typescript is a peer that consumers
+          // install, unimported here; vitest is referenced via tsconfig "types", which the
+          // rule misreads as production use.
           ignoredDependencies: [
             "@codebase/observability",
             "@codebase/testing",

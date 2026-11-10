@@ -53,9 +53,7 @@ export function getAgendaRange(
 }
 
 /**
- * How tall an agenda row is drawn: a heading is shorter than an event, an
- * event is as tall as its tags need, and the button that lists more is as tall
- * as an event with none.
+ * How tall an agenda row is drawn: headings are shorter than events, and an event is as tall as its tags need.
  */
 export function getAgendaRowHeight(row: AgendaListRow, width: number): number {
   if (row.kind === "event") {
@@ -86,9 +84,7 @@ export function getAgendaRowKey(row: AgendaListRow): string {
 }
 
 /**
- * How tall an event row is drawn in a list `width` pixels wide: as tall as
- * its name and duration, and a line for every line its tags wrap onto, so
- * that all of them show.
+ * Height of an event row `width` pixels wide: its name and duration, plus a line per wrapped tag line.
  */
 export function getEventRowHeight(
   tags: readonly CalendarEventTag[],
@@ -116,10 +112,7 @@ export function getEventRowHeight(
 }
 
 /**
- * Lays events out as agenda rows, a heading for each day that has any and
- * the day's events beneath it in order. An event is listed once, on the day
- * it begins, however long it lasts; one already under way on the first day
- * is listed there, so a long span is neither repeated daily nor lost.
+ * Lays events out as agenda rows: a heading per day, then its events, each listed once on its first day.
  */
 export function toAgendaRows(
   events: readonly CalendarEventRecord[],
@@ -145,12 +138,7 @@ export function toAgendaRows(
 }
 
 /**
- * Lays events out as agenda rows in the groups of a grouping: each group's
- * heading, counting the distinct events listed in it, then its sub-groups,
- * or in the innermost groups their days and events as the ungrouped agenda
- * lists them. Only events the agenda's days list are grouped, so a count
- * never includes an event the agenda leaves out. With no grouping, the
- * rows are the ungrouped agenda's.
+ * Lays events out as agenda rows in a grouping's groups, counting each group's distinct listed events; with no grouping, the agenda's rows.
  */
 export function toGroupedAgendaRows(
   events: readonly CalendarEventRecord[],
@@ -202,8 +190,7 @@ function compareStarts(
 }
 
 /**
- * The day the agenda lists an event under, and whether it was already under
- * way then, or `null` when none of its days lists it.
+ * The day the agenda lists an event under, and whether it was already under way, or `null` if no day lists it.
  */
 function getAgendaListing(
   record: CalendarEventRecord,

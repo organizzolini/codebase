@@ -9,11 +9,8 @@ import type {
 /**
  * Reads the callidescope configuration one run is judged by.
  *
- * Its own service rather than more of `PluginService`, because every target
- * here starts by reading the same file — the one its `configurationPath` names
- * — and none of them can be written until it is read. Keeping
- * it apart also keeps the verdict and the inference in `PluginService` beside
- * each other, which is where the rules a reader comes looking for are.
+ * Kept apart from `PluginService` because every target reads this file first. Keeping it
+ * separate leaves the verdict and inference together in `PluginService`.
  */
 @Injectable()
 export class RunConfigurationService {
@@ -30,11 +27,8 @@ export class RunConfigurationService {
   // 🌎 Public Methods
 
   /**
-   * Resolves and loads the configuration one run is judged by.
-   *
-   * The file-aware load rather than the plain one: a run resolves a
-   * configuration beside every project it reaches, and skips whichever file is
-   * already serving as this run's own.
+   * Resolves and loads the configuration one run is judged by, skipping whichever file is already
+   * this run's own.
    */
   public async load(
     args: LoadRunConfigurationArguments,

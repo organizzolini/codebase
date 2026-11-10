@@ -40,12 +40,7 @@ export class LanguagesService {
   /**
    * Every Language that claims extensions of its own, in report order.
    *
-   * A method rather than a field, because the injected engines are assigned
-   * in the constructor and field initializers have already run by then.
-   *
-   * The text Language is deliberately absent. It is the Fallback, reached
-   * through `widenFallback` below, so it joins a run only when some extension
-   * needs it rather than on account of its own `.txt`.
+   * The text Language joins only as the Fallback.
    */
   private claimingLanguages(): ConformetryLanguageValidator[] {
     return [
@@ -60,9 +55,7 @@ export class LanguagesService {
   /**
    * The text Language, widened to also claim the extensions nothing else did.
    *
-   * Widening the descriptor rather than special-casing the dispatch means the
-   * caller routes documents by extension exactly as it does for every other
-   * Language.
+   * Widening the descriptor routes it like any other Language.
    */
   private widenFallback(
     unclaimedExtensions: string[],
@@ -86,11 +79,7 @@ export class LanguagesService {
   /**
    * Resolves a validator for every extension in play.
    *
-   * A Language is returned when the run holds at least one extension it
-   * claims, so a run over JSON alone never reports a TypeScript result it had
-   * nothing to say about. An extension nobody claims falls back to text,
-   * compared line by line, so no template file goes unchecked — silently
-   * skipping one would check less than the caller believes.
+   * Unclaimed extensions fall back to text, so no template file goes unchecked.
    */
   public resolveValidators(
     args: ResolveValidatorsArguments,

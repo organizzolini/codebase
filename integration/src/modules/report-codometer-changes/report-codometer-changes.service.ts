@@ -176,10 +176,8 @@ export class ReportCodometerChangesService {
   // 🌎 Public Methods
 
   /**
-   * Fetches the baseline, rewrites the pull request body with the changes
-   * against it, and saves the body.
-   *
-   * @returns Lines to print, and 0 or the exit code of the step that failed.
+   * Fetches the baseline and rewrites the pull request body with its changes.
+   * @returns Lines to print, and the failed step's exit code.
    */
   public report(): ReportCodometerChangesOutcome {
     const pullRequest = this.configService.get("PULL_REQUEST", { infer: true });

@@ -24,9 +24,7 @@ export class TagsService {
   // 🔏 Private Methods
 
   /**
-   * The id of a path's last node, saving each missing node on the way down
-   * through a tree repository, which adds its closure-table rows, and
-   * recording it in `ids` for the paths after it.
+   * The id of a path's last node, saving missing nodes on the way down and recording them in `ids`.
    */
   private async ensurePath(
     manager: EntityManager,
@@ -60,12 +58,7 @@ export class TagsService {
   // 🌎 Public Methods
 
   /**
-   * Maps each distinct path, by its {@link tagPathKey}, to the id of its last
-   * node, through `manager`, so the nodes it inserts belong to the caller's
-   * transaction. An event classified under the path is linked to that node.
-   * Two runs at once may both insert the same missing node; the unique name
-   * indexes make the second fail rather than store a duplicate, and running it
-   * again succeeds.
+   * Maps each path to its last node's id, saving missing nodes in the caller's transaction. Concurrent runs may collide, so rerun.
    */
   async resolve(
     manager: EntityManager,

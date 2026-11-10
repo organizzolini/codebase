@@ -1,20 +1,7 @@
 /**
- * Dependency Cruiser Configuration
- *
- * Validates architectural boundaries and prevents problematic dependency patterns
- * across the codebase. Rules enforce circular dependency prevention, orphan detection,
- * test isolation, production/dev dependency separation, and module system consistency.
- *
- * Each rule's `comment` field documents its purpose.
- *
- * Usage:
- *   nx run <project>:dependency-cruiser
- *
- * CI: Runs automatically via .github/workflows/lint-codebase.yml
- *     (on PRs affecting source files + weekly scheduled run)
- *
+ * Dependency Cruiser rules: cycles, orphans, test imports, dev dependencies, ESM in CJS.
+ * Run via `nx run <project>:dependency-cruiser`.
  * @type {import('dependency-cruiser').IConfiguration}
- * @see https://github.com/sverweij/dependency-cruiser
  */
 const path = require("node:path");
 

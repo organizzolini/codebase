@@ -78,10 +78,9 @@ export class PublishablePackagesChecksService {
   }
 
   /**
-   * Emits the consumer's conformetry generator plugin, as the documented
-   * postinstall would, and checks it against `@conformetry/nx:sync`, which
-   * loads the plugin's own generator. Then generates one instance into the
-   * healthy fixture, which the conformetry target validates with the rest.
+   * Emits the conformetry generator plugin as postinstall would, and checks it
+   * loads through `@conformetry/nx:sync`. Then generates an instance in the
+   * healthy fixture.
    */
   private verifyGenerator(context: ConsumerContext): string[] {
     const setup = [
@@ -131,9 +130,8 @@ export class PublishablePackagesChecksService {
   }
 
   /**
-   * Runs one inferred target against both fixtures: the healthy one must
-   * pass, and the broken one must fail with the text only a gate that ran
-   * would print.
+   * Runs one inferred target on both fixtures: the healthy one must pass, the
+   * broken one must fail with text only a run prints.
    */
   private verifyPluginTarget(
     context: ConsumerContext,
@@ -229,11 +227,8 @@ export class PublishablePackagesChecksService {
   // 🌎 Public Methods
 
   /**
-   * Runs every check against an installed consumer.
-   *
-   * @param context - The installed consumer.
-   * @param publishablePackages - The packages it installed.
-   * @returns One message per failed check, or none when all of them passed.
+   * Runs every check against an installed consumer, returning one message per
+   * failed check.
    */
   public verifyConsumer(
     context: ConsumerContext,

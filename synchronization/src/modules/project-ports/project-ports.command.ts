@@ -27,13 +27,9 @@ import type { PortProject } from "./project-ports.types";
  * CLI command that makes the port of every `*-api` and `*-web` application the
  * one its name hashes to.
  *
- * A web application declares its port in `vite.config.mts` and an API in
- * `.env.default`. When that port is not the hashed one, `write` rewrites it on
- * every line that is about a port, in every file of the project's domain
- * folder — `projects/lexico` for `lexico-web`, since the web application's
- * default API address and the API's allowed origin name each other's port.
- * Two applications whose names hash to the same port fail the check, because
- * no rewrite can resolve that.
+ * `write` rewrites a mismatched port on each port line in the project's domain
+ * folder, since the web app and its API name each other's port. Two
+ * applications hashing to one port fail the check.
  */
 @Command({
   description: "Run the project-ports command",

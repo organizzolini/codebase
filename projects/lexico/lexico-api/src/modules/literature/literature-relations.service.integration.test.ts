@@ -99,9 +99,7 @@ describe("literature relations integration suite", () => {
   }
 
   /**
-   * Asserts that paging every parent at once gives each parent the page the
-   * original slicing gives it alone, for every argument combination built
-   * from one parent's children. Its cursors name no child of the others.
+   * Asserts that paging all parents at once gives each the page slicing gives it alone, for every argument combination. Cursors never cross parents.
    */
   async function expectMatrixAgreement(
     childIdsByParent: ReadonlyMap<string, readonly string[]>,

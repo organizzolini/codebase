@@ -18,21 +18,7 @@ import type {
 } from "./resolved.types";
 
 /**
- * Answers what a codometer run is configured to do.
- *
- * The configuration layer's one public entry point. The file says what to
- * measure, and the flags beside it say what to do about what was measured;
- * both are answered here, so a command injects this and nothing else from
- * this package.
- *
- * It composes rather than implements. Finding and reading a file is
- * `ConfigurationLoaderService`, filling one in is
- * `ConfigurationResolverService`, and reading a command line is
- * `ConfigurationFlagsService` — three package-internal collaborators, none of
- * them reachable from outside. What the configuration *means* — which files an
- * exclusion glob removes, where a badge block is spliced in — belongs to the
- * analyzers that read it, so that reading a configuration stays free of any
- * knowledge of the repository being measured.
+ * Answers what a codometer run is configured to do: the file says what to measure, the flags say what to do with it. Composes the loader, resolver and flags services, so commands inject only this class.
  */
 @Injectable()
 export class ConfigurationService {
@@ -53,12 +39,7 @@ export class ConfigurationService {
   // 🌎 Public Methods
 
   /**
-   * Loads and validates a codometer configuration file.
-   *
-   * The path is required and must exist — a typo in a task runner's
-   * arguments fails rather than quietly measuring the repository with
-   * defaults it never asked for. No ancestor directory is searched, and no
-   * file is assumed.
+   * Loads and validates the configuration file at a required path. No ancestor is searched and no default is assumed.
    */
   public async loadConfiguration(
     args: LoadConfigurationArguments,
@@ -69,11 +50,7 @@ export class ConfigurationService {
   }
 
   /**
-   * Loads a configuration and says which file answered.
-   *
-   * The same work as `loadConfiguration`, keeping the absolute path the file
-   * resolved to, so a caller listing what a repository configures can
-   * attribute each answer to the file that gave it.
+   * Loads a configuration and returns the absolute path of the file that answered, for attribution.
    */
   public async loadConfigurationFile(
     args: LoadConfigurationArguments,

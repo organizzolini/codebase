@@ -39,14 +39,9 @@ export class MainTipService {
   // 🌎 Public Methods
 
   /**
-   * Reports whether the remote's `main` is no longer the given commit.
+   * Reports whether the remote's `main` has moved off `base`.
    *
-   * A failed fetch is not itself a failure: the comparison against whatever
-   * `FETCH_HEAD` then names decides, as it did in the shell script. Its error
-   * is printed, so a run that steps aside after one says why.
-   *
-   * @param base - The commit this run started from.
-   * @returns Whether `main` has moved on from it.
+   * A failed fetch is not fatal: the comparison against `FETCH_HEAD` decides.
    */
   public hasMovedFrom(base: string): boolean {
     const fetched = this.processRunner.capture("git", [
@@ -78,8 +73,7 @@ export class MainTipService {
   }
 
   /**
-   * Sets `RELEASE_SUPERSEDED=true` for every later step of the job, which
-   * each release step after this one skips on, and says why.
+   * Sets `RELEASE_SUPERSEDED=true`, which every later release step skips on, and says why.
    *
    * @param base - The commit this run started from.
    */

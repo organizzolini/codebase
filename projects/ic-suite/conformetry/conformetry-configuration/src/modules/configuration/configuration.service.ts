@@ -44,22 +44,9 @@ import type {
 import type { GeneratorHooks } from "@conformetry/core";
 
 /**
- * The one answer to "what is this run actually configured to do".
+ * The single entry point for configuration questions: load a config file, find templates and instances, and prompt for inputs.
  *
- * Every question a caller outside this package can ask about configuration is
- * asked here: what a config file declares, which templates it points at, which
- * instances exist and what explains them, what a placeholder renders to, and
- * what to ask a person for when an input was left off. A consumer therefore
- * injects this and nothing else from this package, which is what makes the
- * configuration layer one layer rather than a bag of collaborators a caller
- * has to know the names of — the shape callidescope, codependix and codometer
- * already publish.
- *
- * Loading a config file is the one job held here rather than delegated;
- * everything below it is a one-line hand-off. Prompting, option parsing,
- * rendering, template discovery, instance discovery and instance-group reading
- * stay six classes in their own files, because they are six different jobs.
- * What they stop being is six public entry points.
+ * Callers inject this service and nothing else from this package. The collaborators are kept as separate classes so each one stays a single job.
  */
 @Injectable()
 export class ConfigurationService {
@@ -83,8 +70,7 @@ export class ConfigurationService {
   /**
    * Fills in the optional halves of one parsed generator entry.
    *
-   * A generator with no inputs and no instances is legal — it renders a fixed
-   * template nobody validates — so both default to empty rather than failing.
+   * A generator with no inputs or instances is legal.
    */
   private applyGeneratorDefaults(
     definition: ParsedGeneratorEntry,
@@ -127,10 +113,9 @@ export class ConfigurationService {
   }
 
   /**
-   * Walks upward from the process cwd looking for the workspace manifest.
+   * Walks upward from the cwd to find the workspace manifest.
    *
-   * Used to resolve a config path given relative to the workspace root even
-   * when the command was invoked from a nested directory.
+   * Lets a config path resolve from a nested directory.
    */
   private async findWorkspaceRoot(): Promise<string | undefined> {
     let candidateDirectory = path.resolve(process.cwd());
@@ -230,9 +215,7 @@ export class ConfigurationService {
   /**
    * Loads, validates, and normalizes a conformetry configuration file.
    *
-   * Throws `UnknownConfigurationFileTypeError` for an unreadable extension, and
-   * propagates the Zod error for a malformed registry — a bad config should
-   * fail loudly rather than silently validate nothing.
+   * Throws for an unsupported extension or a malformed registry, so a bad config fails loudly.
    */
   public async loadConformetryConfiguration(
     configurationPath: string,
@@ -324,13 +307,9 @@ export class ConfigurationService {
   }
 
   /**
-   * Returns the configuration path a run was given, or refuses.
+   * Returns the configuration path, or throws when it is absent or blank.
    *
-   * Every host asks here, so "a path is required" and what the refusal says
-   * have one home. `surface` names where the caller expected the path to be
-   * set, for example the `--config` flag.
-   *
-   * Throws `ConfigurationPathRequiredError` for an absent or blank value.
+   * `surface` names where the path was expected.
    */
   public requireConfigurationPath(
     value: string | undefined,
@@ -346,12 +325,9 @@ export class ConfigurationService {
   }
 
   /**
-   * Resolves a config path to the absolute file `loadConformetryConfiguration`
-   * reads: against the cwd first, then the workspace root.
+   * Resolves a config path to the file `loadConformetryConfiguration` reads.
    *
-   * Public because the directory a hook builds its paths from is that file's
-   * parent, and only this resolution knows which file was read. A host that
-   * worked it out from the flag alone would miss the workspace-root fallback.
+   * Public so hosts resolve the same file, including the workspace-root fallback.
    */
   public async resolveConfigurationPath(
     configurationPath: string,

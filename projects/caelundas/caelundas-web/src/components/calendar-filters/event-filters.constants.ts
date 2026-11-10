@@ -1,6 +1,5 @@
 /**
- * Starts every tag field's id, followed by the id of the tag root it
- * filters, so a rule's path alone says which root it is about.
+ * Starts every tag field's id, so a rule's path alone says which tag root it filters.
  */
 export const TAG_FIELD_PREFIX = "tag:";
 
@@ -29,8 +28,7 @@ export const DERIVED_FIELD_IDS = {
 } as const;
 
 /**
- * The name the tag fields' editor is registered under with the builder: a
- * searchable list of checkboxes, one for each tag, indented by its depth.
+ * The builder's name for the tag editor: a searchable checkbox list, indented by depth.
  */
 export const TAG_OPTIONS_EDITOR = "tag-options";
 
@@ -107,8 +105,7 @@ export const NUMBER_OPERATORS = {
 } as const;
 
 /**
- * What each tag root the data has means, shown under its name in the list of
- * attributes. A root not named here is described by its name alone.
+ * What each tag root means, shown under its name in the attribute list; other roots show their name alone.
  */
 export const TAG_ROOT_DESCRIPTIONS: Readonly<Record<string, string>> = {
   "Aspect Harmonic":

@@ -4,9 +4,7 @@
 export const CAELUNDAS_PROJECT = "caelundas";
 
 /**
- * The digits a latitude or longitude column holds: nine in all, six after the
- * point, which fits `-180.000000` and keeps the fixed six decimals the
- * natural key has always compared.
+ * Digits a latitude or longitude column holds: nine in all, six after the point.
  */
 export const COORDINATE_PRECISION = 9;
 
@@ -14,20 +12,13 @@ export const COORDINATE_PRECISION = 9;
 export const COORDINATE_SCALE = 6;
 
 /**
- * The statements that rebuild the derived tag tables, in the order they run:
- * both tables are emptied, the events' table first, then `tag_nodes` is filled
- * with every tag's place in the tree, then `calendar_event_tag_nodes` with one
- * row per event and tag, ancestors included. Each fill is one insert-select
- * statement, so Postgres does the set-based work, and the names are unqualified
- * because every connection pins its search path to the schema.
+ * Statements rebuilding the derived tag tables, in run order; names are unqualified as connections pin their search path.
  */
 export const READ_MODEL_STATEMENTS = [
   "delete from calendar_event_tag_nodes",
   "delete from tag_nodes",
-  // Every tag with its place in the tree: its depth (the number of ancestors,
-  // so a root is 0), its root, and its full path from that root. A tag's
-  // level is the number of closure rows that name it as a descendant, itself
-  // included, so its root is the ancestor at level 1.
+  // Each tag with its depth (ancestor count, so a root is 0), root, and full path.
+  // Its root is the ancestor at closure level 1.
   `insert into tag_nodes (id, name, depth, root_id, path)
 with levels as (
     select

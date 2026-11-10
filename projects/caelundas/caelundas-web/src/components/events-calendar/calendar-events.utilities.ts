@@ -6,10 +6,7 @@ import type { CalendarEventRecord } from "./calendar-records.types";
 import type { CalendarEvent } from "@codebase/presentation";
 
 /**
- * Maps a database event to the vendored calendar's event model, carrying the
- * record along as its data. An instant is given one minute, because the
- * calendar draws nothing for an event that ends where it starts. Events are
- * read-only: the app never edits them.
+ * Maps a database event to the calendar's model, giving an instant one minute, since zero-length events draw nothing.
  */
 export function toCalendarEvent(
   record: CalendarEventRecord,

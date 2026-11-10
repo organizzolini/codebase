@@ -15,10 +15,8 @@ import { resolveToolInputs } from "./plugin-inputs.utilities";
 import type { ToolInputsLogger } from "./plugin.types";
 
 /**
- * Where fixture closures are written: inside this package's gitignored
- * `tmp/`, so every one of them is a real directory tree with real links that
- * Node's own resolver walks — and none of them is this repository's closure,
- * which grows whenever the command line gains a dependency.
+ * Where fixture closures are written: this package's gitignored `tmp/`, never
+ * this repository's closure, which grows with every dependency.
  */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
@@ -78,14 +76,8 @@ function writePackage(args: {
 }
 
 /**
- * Writes a workspace whose command line reaches `@codependix/core` and
- * `@codebase/observability`, development dependencies included, and declares two
- * it cannot: one never linked, and one linked to a package that names itself
- * something else, beneath a stray manifest that cannot be parsed.
- *
- * Neither linked package exports its `./package.json`, and both keep their
- * entry under `src/`, so a resolver that asks for the manifest by name, or
- * assumes the entry sits beside it, fails here.
+ * Writes a workspace with two packages the resolver cannot link: one never linked, one misnamed.
+ * Neither exports its manifest.
  */
 function writeWorkspace(root: string): void {
   const packages = path.join(root, "packages");

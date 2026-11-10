@@ -24,9 +24,7 @@ export interface LexemeMatchProperties {
 // 🧩 Component
 
 /**
- * Two small icons saying how the search matched this lexeme: whether through a
- * Latin word or an English translation, and whether the match was exact, the
- * start of the word, or only part of it. Each explains itself in a tooltip.
+ * Two icons showing how a search matched: via Latin or English, and whether exact, a prefix, or partial. Each has a tooltip.
  */
 export function LexemeMatch(
   properties: Readonly<LexemeMatchProperties>,

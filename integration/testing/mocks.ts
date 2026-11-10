@@ -30,10 +30,8 @@ export type ScriptedAnswer<Result> = readonly Result[] | Result;
 export type ScriptedEffect = (args: readonly string[]) => void;
 
 /**
- * A task-database directory inside the workspace, for a test to fill.
- *
- * It sits under `.nx`, which is ignored, and never in the operating system's
- * temporary directory: a fixture there passes on macOS and fails on a runner.
+ * A task-database directory inside the workspace, for a test to fill. Under
+ * `.nx`, never the OS temp directory.
  */
 export interface TaskDatabaseWorkspace {
   /** Writes one file that is not a database, and the companions named by suffix. */
@@ -78,8 +76,8 @@ const answerFor = <Result>(
 };
 
 /**
- * Finds what the script says about a command line: its exact entry, or the
- * longest entry ending in ` *` whose text before the `*` starts the line.
+ * Finds a command line's entry: exact, else the longest ` *` entry whose
+ * prefix starts the line.
  */
 const lookUp = <Value>(
   script: Readonly<Record<string, Value>>,
@@ -97,15 +95,11 @@ const lookUp = <Value>(
 };
 
 /**
- * A process runner that answers `capture` and `captureAsync` from a script
- * and records every call, so a command test runs the real service against no
- * real process.
+ * Answers `capture` and `captureAsync` from a script and records every call,
+ * so a command test runs the real service with no process.
  *
- * @param script - Answers a captured call by its full command line, such as
- * `git merge-base a b`, or by a prefix ending in ` *`; a line it does not
- * name fails the test.
- * @param streamStatus - The exit code a streamed call returns when
- * `streamScript` does not name its line.
+ * @param script - Answers by full command line, or a prefix ending in ` *`.
+ * @param streamStatus - Exit code of an unnamed streamed call.
  * @param streamScript - Exit codes for streamed calls, by command line.
  */
 export class FakeProcessRunner implements Pick<
@@ -175,8 +169,8 @@ export class FakeProcessRunner implements Pick<
   }
 
   /**
-   * Answers a call whose output goes to a file exactly as `capture` would,
-   * minus the output: a scripted effect writes the file when a test needs it.
+   * Answers a call whose output goes to a file, as `capture` would, minus the
+   * output. A scripted effect writes the file when needed.
    */
   public captureToFile(
     executable: string,
@@ -281,9 +275,8 @@ export function readCachedHashes(file: string): string[] {
 }
 
 /**
- * Writes a real Nx task database at the given path, with the two tables a
- * merge reads, holding one task and one cached result per hash. Foreign keys
- * match Nx's own: every result names a task.
+ * Writes a real Nx task database at `file`, holding one task and one cached
+ * result per hash, with the foreign key Nx uses.
  */
 export function writeTaskDatabase(
   file: string,
@@ -322,10 +315,8 @@ export const failed = (stderr = "", status = 1): CapturedProcess => ({
 });
 
 /**
- * Makes an empty directory inside this project for the current test, removed
- * once that test finishes. Call it from a test or a `beforeEach` hook.
- *
- * @returns A function that makes a new directory and returns its path.
+ * Returns a maker of empty directories inside this project, each removed once
+ * the current test finishes. Call it from a test or `beforeEach`.
  */
 export function useTemporaryDirectories(): () => string {
   return () => {
@@ -339,13 +330,7 @@ export function useTemporaryDirectories(): () => string {
   };
 }
 
-/**
- * Writes a file beneath a directory, making its parent directories.
- *
- * @param root - The directory the path is relative to.
- * @param relative - The file's path beneath it.
- * @param content - What the file holds.
- */
+/** Writes `content` to `relative` beneath `root`, making parent directories. */
 export function writeFile(
   root: string,
   relative: string,

@@ -11,14 +11,12 @@ import {
 } from "./readme-projects.constants";
 
 /**
- * Finds every workspace project and says which ones the root README does not
- * link to.
+ * Finds every workspace project and says which the root README does not link
+ * to.
  *
- * A project is any directory with its own `package.json` directly in the
- * workspace root, or under `projects/` at any depth below its grouping
- * folders — the same definition the catalog policy scans by. Documented means the README links to that project's
- * directory somewhere as `[name](scope/name)`; nothing enforces the
- * surrounding prose, grouping, or description.
+ * A project is a directory with a `package.json` in the workspace root or
+ * under `projects/` at any depth. It is documented when the README links it as
+ * `[name](scope/name)`; the surrounding prose is not checked.
  */
 @Injectable()
 export class ReadmeProjectsService {
@@ -35,11 +33,8 @@ export class ReadmeProjectsService {
   // 🌎 Public Methods
 
   /**
-   * Every project path nested under `directoryPath`, at any depth. A
-   * directory with its own `package.json` is a project and is not descended
-   * into further; a directory without one is a grouping folder and is
-   * searched recursively. A directory named for a template placeholder is
-   * neither: the manifest inside it belongs to a project that does not exist.
+   * Every project path nested under `directoryPath`. A directory with a
+   * `package.json` is a project; template placeholder directories are skipped.
    */
   private findProjectPaths(
     workspaceRoot: string,
@@ -70,10 +65,8 @@ export class ReadmeProjectsService {
   }
 
   /**
-   * Every project that sits directly in the workspace root, such as
-   * `validation`: a non-hidden directory with its own `package.json`. Not
-   * searched any deeper, because the root also holds folders that are not
-   * projects.
+   * Every project directly in the workspace root: a non-hidden directory with a
+   * `package.json`.
    */
   private findRootProjectPaths(workspaceRoot: string): string[] {
     const projectPaths: string[] = [];

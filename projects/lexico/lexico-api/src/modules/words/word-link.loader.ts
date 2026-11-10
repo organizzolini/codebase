@@ -43,8 +43,7 @@ export class WordLinkLoader {
   // 🔏 Private Methods
 
   /**
-   * Orders the words of a batch of links by the link IDs requested, with an
-   * error in place of a link that no longer resolves to a word.
+   * Orders a batch's words by requested link ID, with an error for any link that no longer resolves.
    */
   private loadWords(
     linkIds: readonly string[],

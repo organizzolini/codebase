@@ -51,9 +51,7 @@ export class QafArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright ٯ (final Arabic dotless qaf) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ٯ (final Arabic dotless qaf) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *   ┌┐
    * ╷ ├┴╴
@@ -67,9 +65,7 @@ export class QafArabicLetterCharacteristicsService implements CharacteristicEval
   ];
 
   /**
-   * The upright ٯ (isolated Arabic dotless qaf) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ٯ (isolated Arabic dotless qaf) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *   ┌┐
    * ╷ ├┘

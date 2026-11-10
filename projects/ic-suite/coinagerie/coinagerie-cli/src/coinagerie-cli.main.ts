@@ -8,11 +8,8 @@ import { LoggerService } from "@codebase/observability";
 import { MainModule } from "./coinagerie-cli.module";
 
 /**
- * Boots the command-line host and runs the command named on the command line.
- *
- * Standard output belongs to the glossary a bare run prints, so every
- * diagnostic goes to standard error — chosen here, before anything logs,
- * because the logger is built on first use.
+ * Boots the command-line host. Diagnostics go to standard error, which must be
+ * chosen before the logger is first built.
  */
 async function main(): Promise<void> {
   LoggerService.logToStandardError();

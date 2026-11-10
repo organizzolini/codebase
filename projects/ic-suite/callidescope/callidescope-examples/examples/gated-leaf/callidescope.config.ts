@@ -1,20 +1,6 @@
 import type { CallidescopeProjectConfiguration } from "@callidescope/configuration";
 
-/**
- * What one leaf project says about itself, completely.
- *
- * A project configuration may set `entryPoints`, `exclude`, `limits`, and
- * `write` — and must set all four. Everything else describes the run itself,
- * and a project file that sets one of those is refused before anything is
- * traced; a project file that leaves one of these four out is refused for
- * exactly the opposite reason.
- *
- * Nothing is resolved across two files any more. Every value this project is
- * traced and judged by is written below, which is why the fields it has no
- * opinion about are here too rather than absent. A real package spreads the
- * workspace's `projectDefaults` to say the same thing in one line; this one
- * writes it out because it is the worked example of the shape.
- */
+/** What one leaf project says about itself, completely. Every field is written out rather than spread from `projectDefaults`. */
 const callidescopeConfiguration: CallidescopeProjectConfiguration = {
   /**
    * One glob, naming the generated file this project does not want measured.

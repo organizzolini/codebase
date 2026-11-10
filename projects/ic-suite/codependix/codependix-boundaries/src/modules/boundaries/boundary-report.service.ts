@@ -3,14 +3,8 @@ import { Injectable } from "@nestjs/common";
 import type { BoundaryViolation } from "./boundaries.types";
 
 /**
- * Renders violations into the lines a run prints.
- *
- * Rendering lives here rather than in the host for the same reason each graph
- * package renders its own mermaid: the package that knows what a finding means
- * is the one that should decide how it reads. There is no configured
- * destination and no file — a violation report is a list of things currently
- * wrong, which is not a document worth regenerating on the default branch or
- * checking for staleness.
+ * Renders violations into the lines a run prints, since this package knows what a finding means.
+ * A report is a list of current problems, not a document, so it is never regenerated or checked for staleness.
  */
 @Injectable()
 export class BoundaryReportService {
@@ -27,18 +21,8 @@ export class BoundaryReportService {
   // 🌎 Public Methods
 
   /**
-   * Who a finding is charged to, as the lines and the Markdown report word it.
-   *
-   * The one place that wording lives: a violation and a failure are both
-   * reported as a note when they live only in a dependency, and a reader who
-   * sees the phrase in one report should find it unchanged in the other.
-   * Says "in dependency" because the finding is real, and inherited, but it is
-   * not theirs to fix and it did not fail their run.
-   *
-   * A failure charged to every one of `judgedProjects` is counted rather than
-   * listed — "all 200 judged projects" — since naming the whole workspace on
-   * every line says nothing a count does not. Only a failure can be: pass no
-   * `judgedProjects` for a finding whose charged names are the point.
+   * Words who a finding is charged to. Notes say "in dependency"; a failure charged to every
+   * judged project is counted, not listed.
    */
   public describeCharge(args: {
     isNote: boolean;
@@ -59,10 +43,8 @@ export class BoundaryReportService {
   }
 
   /**
-   * Whether a charge names every one of several judged projects.
-   *
-   * Compared as sets, since neither list is promised to be sorted. A single
-   * judged project is never "all": naming it is shorter than counting it.
+   * Whether a charge names every one of several judged projects, compared as sets.
+   * One judged project is never "all".
    */
   public isChargedToEveryProject(args: {
     judgedProjects: readonly string[];
@@ -88,11 +70,7 @@ export class BoundaryReportService {
   }
 
   /**
-   * One line summarizing what a run found.
-   *
-   * Counts rules as well as violations, because the two answer different
-   * questions: one broken rule reporting forty edges is a single decision to
-   * revisit, and forty rules reporting one edge each is not.
+   * One summary line for a run. Counts rules as well as violations: one rule with forty edges is one decision.
    */
   public renderSummary(violations: readonly BoundaryViolation[]): string {
     if (violations.length === 0) {
@@ -107,13 +85,7 @@ export class BoundaryReportService {
   }
 
   /**
-   * One violation as the line the log and the Markdown report both print: its
-   * level, whom it is charged to, then the message.
-   *
-   * The one place that line's shape lives, so a run's failing lines, its
-   * notes, its failures, and the Markdown bullets cannot drift apart.
-   * `judgedProjects` is passed only by a failure, whose charge may be counted
-   * — see `describeCharge`.
+   * One violation's log and Markdown line: level, charged projects, message. Defined once so they cannot drift apart.
    */
   public renderViolation(args: {
     isNote: boolean;
@@ -131,14 +103,7 @@ export class BoundaryReportService {
   }
 
   /**
-   * One line per violation, each naming its level and the projects it is
-   * charged to before the rule's own sentence.
-   *
-   * The level and projects lead because the message cannot carry them: the
-   * same rule evaluated at file level fails once per project, and a bare pair
-   * of file paths does not say whose files they are. Charged projects rather
-   * than the graph's scope, so an Nx-level finding names the projects that
-   * own it rather than the workspace it was found in.
+   * One line per violation: its level and the projects it is charged to, not the workspace.
    */
   public renderViolations(violations: readonly BoundaryViolation[]): string[] {
     return violations.map((violation) =>

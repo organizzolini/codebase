@@ -3,12 +3,9 @@
 import type { SqlResult } from "./sql.types";
 
 /**
- * Matches a `/* … *\/` comment, including one spanning several lines.
+ * Matches a block comment, including one spanning several lines.
  *
- * Written to match one star at a time rather than as `[\s\S]*?\*\/`, whose
- * backtracking cost grows fast on a long run of unclosed `/*` markers — a
- * lazy dot-all is the classic shape CodeQL flags as slow on adversarial
- * input, and an unclosed comment inside a large file is exactly that shape.
+ * Matches one star at a time, avoiding slow backtracking on unclosed markers.
  */
 export const SQL_BLOCK_COMMENT_PATTERN = /\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\//g;
 
@@ -18,8 +15,7 @@ export const SQL_LINE_COMMENT_PATTERN = /--[^\n]*/g;
 /**
  * Maps each counted clause onto the pattern that recognizes it.
  *
- * Word boundaries keep `CREATED_AT` from reading as a `CREATE`, and the join
- * pattern accepts the qualifiers a dialect may put in front of one.
+ * Word boundaries stop `CREATED_AT` reading as `CREATE`.
  */
 export const SQL_KEYWORD_PATTERNS: [keyof SqlResult, RegExp][] = [
   ["commonTableExpressions", /\bWITH\b/gi],

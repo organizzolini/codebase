@@ -73,9 +73,7 @@ export class SeenArabicLetterCharacteristicsService implements CharacteristicEva
   // 🔐 Private Fields
 
   /**
-   * The upright س (final Arabic seen) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright س (final Arabic seen) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *    ╷╷╷
    * ╷ ┌┴┴┴╴
@@ -89,9 +87,7 @@ export class SeenArabicLetterCharacteristicsService implements CharacteristicEva
   ];
 
   /**
-   * The upright س (initial Arabic seen) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright س (initial Arabic seen) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷╷╷
    * ╶┴┴┘
@@ -100,9 +96,7 @@ export class SeenArabicLetterCharacteristicsService implements CharacteristicEva
   private readonly initialTemplate: readonly string[] = [".444", "2bb9"];
 
   /**
-   * The upright س (isolated Arabic seen) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright س (isolated Arabic seen) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *    ╷╷╷
    * ╷ ┌┴┴┘
@@ -116,9 +110,7 @@ export class SeenArabicLetterCharacteristicsService implements CharacteristicEva
   ];
 
   /**
-   * The upright س (medial Arabic seen) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright س (medial Arabic seen) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷╷╷
    * ╶┴┴┴╴

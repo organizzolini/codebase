@@ -15,8 +15,7 @@ import type { ReactNode } from "react";
  */
 export interface FilterTagEditorProperties extends FilterEditorProps {
   /**
-   * Whether picking a tag picks everything beneath it and a tag with only some
-   * of its tags picked is shown partly picked; on when absent.
+   * Picking a tag picks everything beneath it, and partial tags show as partly picked; on when absent.
    */
   cascade?: boolean | undefined;
   className?: string;
@@ -25,15 +24,7 @@ export interface FilterTagEditorProperties extends FilterEditorProps {
 // 🧩 Component
 
 /**
- * Renders the value editor of a tag field: a search box over the tag tree,
- * each tag a checkbox by its own name with the events it matches. A tag with
- * tags beneath it has a handle that opens or closes them, so a deep tree can
- * be folded down to its first level; it opens already showing the tags the
- * rule holds, and a closed tag says how many picks are inside it. Searching
- * lists every match, open or not. Ticking a tag takes everything beneath it,
- * and a tag with only some of its tags ticked shows a dash. Every tick is
- * written at once and the list stays open, so several can be picked together;
- * Escape closes it.
+ * Renders a tag field's value editor: a searchable checkbox tree, where ticking a tag takes all beneath it; Escape closes it.
  */
 export function FilterTagEditor(
   properties: Readonly<FilterTagEditorProperties>,

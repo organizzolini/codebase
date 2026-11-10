@@ -14,10 +14,8 @@ export const USAGE_MESSAGE =
 // 🏃 Running
 
 /**
- * Renders every example, writing it or reporting what drifted.
- *
- * Returns the lines to print and the exit code to set, rather than printing and
- * exiting itself, so the whole run is exercised by a test.
+ * Renders every example, writing it or reporting drift. Returns lines and exit code
+ * rather than exiting, so tests can run it.
  */
 export async function run(
   args: string[],
@@ -54,12 +52,8 @@ export async function run(
 }
 
 /**
- * Reads exactly one run mode from the command line.
- *
- * Two modes and no default, mirroring `codependix` itself — both because the
- * shape is worth demonstrating and because it is the right shape: silently
- * defaulting to a write nobody asked for would rewrite committed documentation
- * on a check run.
+ * Reads exactly one run mode. There is no default: a silent write would rewrite
+ * committed documentation on a check run.
  */
 export function selectMode(args: string[]): ExampleRunMode | undefined {
   const check = args.includes("--check");

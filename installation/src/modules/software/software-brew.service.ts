@@ -31,9 +31,6 @@ export class SoftwareBrewService {
 
   /**
    * Installs `formula` through Homebrew unless `name` is already a command.
-   *
-   * @param name - The command whose presence decides whether to install.
-   * @param formula - The formula or tap path, when it is not `name` itself.
    */
   public installOrCheck(name: string, formula: string = name): void {
     this.reporter.print(`🔍 Checking for ${name} installation...`);

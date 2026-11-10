@@ -68,8 +68,7 @@ export function passageTokensAt(index: number): PassageToken[] {
 }
 
 /**
- * Seeds the Aeneid's opening lines, out of index order, with every token
- * linked to its dictionary word, beside a second text by the same author.
+ * Seeds the Aeneid's opening lines, out of index order, each token linked to its word, plus a second text.
  */
 export async function seedReadingPassage(
   dataSource: DataSource,

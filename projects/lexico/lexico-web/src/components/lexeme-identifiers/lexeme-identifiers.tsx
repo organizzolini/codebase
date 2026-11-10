@@ -20,8 +20,7 @@ export interface LexemeIdentifiersProperties {
 // 🧩 Component
 
 /**
- * What the searched word is as a form of this lexeme, such as "1ST SG PRES ACT
- * IND", for when a search matched an inflected form and not the headword.
+ * The searched word as a form of this lexeme, such as "1ST SG PRES ACT IND", when a search matched an inflected form.
  */
 export function LexemeIdentifiers(
   properties: Readonly<LexemeIdentifiersProperties>,

@@ -12,11 +12,7 @@ export type HalfEdgeGraph = ReadonlyMap<string, readonly HalfEdge[]>;
 export type Heading = 0 | 1 | 2 | 3;
 
 /**
- * One maximal run of ink through points of degree two, read as the turns it
- * makes at each point it passes through. An open strand runs between two
- * points that are free ends or junctions and lists the turns at its interior
- * points only; a closed strand is a loop of degree-two points and lists a
- * turn for every one of them, in cyclic order.
+ * One maximal run of ink through degree-two points, as the turns it makes at each point it passes.
  */
 export interface Strand {
   readonly closed: boolean;
@@ -24,7 +20,7 @@ export interface Strand {
 }
 
 /**
- * The handedness of the ink's heading change at one point along a strand:
- * `1` a right (clockwise) quarter turn, `-1` a left one, `0` straight on.
+ * The ink's heading change at one point: `1` a right (clockwise) quarter turn,
+ * `-1` a left one, `0` straight on.
  */
 export type Turn = -1 | 0 | 1;

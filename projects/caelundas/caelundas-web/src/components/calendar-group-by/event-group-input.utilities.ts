@@ -5,10 +5,7 @@ import type {
 import type { EventGrouping, EventGroupLevel } from "./event-groups.types";
 
 /**
- * Writes the levels a view groups by, and the level it colors by, as the
- * API's grouping input, or `null` when it asks for neither. The API answers
- * each event with the group keys of the levels in order and then of the one
- * colored by.
+ * Writes the grouping and color levels as the API's grouping input, or `null` when neither is set.
  */
 export function toEventGroupingInput(
   grouping: EventGrouping,

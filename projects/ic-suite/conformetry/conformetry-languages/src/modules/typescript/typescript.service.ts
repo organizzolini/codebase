@@ -163,9 +163,7 @@ export class TypescriptService implements ConformetryLanguageValidator {
   /**
    * Reports every declaration and comment the template requires.
    *
-   * The two passes weigh independent things — structure counts syntax nodes,
-   * comments count section markers — so their totals add rather than one
-   * subsuming the other.
+   * Structure and comments weigh independent things, so their totals add.
    */
   public validateDocument(
     document: PreparedValidationDocument,

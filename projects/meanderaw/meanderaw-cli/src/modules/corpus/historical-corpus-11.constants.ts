@@ -3,8 +3,7 @@
 import type { CorpusEntry } from "./corpus.types";
 
 /**
- * Part 11 of the historical corpus, containing the waterfalls family meanders
- * extrapolated across 2, 3, and 4 rows up to 12 columns beyond the edge budget.
+ * Part 11 of the historical corpus: waterfalls meanders extrapolated across 2 to 4 rows up to 12 columns beyond the edge budget.
  */
 // 🎯 Hexadecimal lattice Codes rather than words, so the dictionaries are
 // turned off across them — a run of hexadecimal digits occasionally spells one.

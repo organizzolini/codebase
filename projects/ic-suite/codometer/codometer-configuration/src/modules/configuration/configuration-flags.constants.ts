@@ -25,10 +25,9 @@ export const CHECK_LIMITS = "limits";
 export const CHECK_REPORTS = "reports";
 
 /**
- * Everything `--check` accepts, in the order an error message lists them.
+ * Everything `--check` accepts, in error-message order.
  *
- * Named here rather than spelled into each message, so the list a mistake is
- * measured against and the list it is told about can never drift apart.
+ * Named once so the check and its message cannot drift apart.
  */
 export const CHECK_NAMES = [CHECK_LIMITS, CHECK_REPORTS];
 
@@ -42,10 +41,8 @@ export const FORMAT_JSON = "json";
 export const FORMAT_MARKDOWN = "markdown";
 
 /**
- * Everything `--format` accepts, in the order an error message lists them.
+ * Everything `--format` accepts, in error-message order.
  *
- * Named here rather than spelled into each message, so the list a mistake is
- * measured against and the list it is told about can never drift apart. A
- * format added here is accepted everywhere the moment it is rendered.
+ * A format added here is accepted everywhere the moment it is rendered.
  */
 export const FORMAT_NAMES = [FORMAT_JSON, FORMAT_MARKDOWN] as const;

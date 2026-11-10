@@ -39,9 +39,8 @@ export class NightSkyService {
   // 🔏 Private Methods
 
   /**
-   * Inserts rows of one entity in batches under Postgres's parameter limit,
-   * each row binding one parameter per column it carries, so a wide row
-   * makes a smaller batch.
+   * Inserts rows in batches under Postgres's parameter limit; a wide row,
+   * binding more parameters, makes a smaller batch.
    */
   private async insertInBatches<Entity extends ObjectLiteral>(
     manager: EntityManager,

@@ -1,6 +1,6 @@
 /**
  * The chain `createServerFn` builds, reduced to what a route test needs: the
- * handler comes back as is, so calling the server function calls it directly.
+ * handler comes back as is.
  */
 export interface ServerFunctionBuilder {
   /** Hands the handler back, to be called as the server function. */

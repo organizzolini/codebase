@@ -74,10 +74,9 @@ export class InputOptionsService {
   }
 
   /**
-   * Reads an option's value from either `--flag=value` or `--flag value`.
+   * Reads an option's value from `--flag=value` or `--flag value`.
    *
-   * Returns `undefined` when the next token is another flag, so a valueless
-   * flag does not swallow the option that follows it.
+   * A valueless flag does not swallow the option after it.
    */
   private readOptionValue(args: {
     argumentIndex: number;
@@ -114,8 +113,7 @@ export class InputOptionsService {
   /**
    * Scans raw arguments for flags matching the generator's schema.
    *
-   * Unknown flags are ignored rather than rejected: the argument list also
-   * carries the command's own options, which are handled elsewhere.
+   * Unknown flags are ignored, since the command's own options share the argument list.
    */
   public collectGeneratorInputs(args: {
     rawArguments: string[];

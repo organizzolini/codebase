@@ -14,10 +14,8 @@ vi.mock("../../modules/plugin/plugin-context.utilities", () => ({
 }));
 
 /**
- * An executor context for a run against one project, or against none.
- *
- * Built literally rather than mocked: `createMock` fabricates every property
- * it is not handed, so Nx omitting `projectName` cannot be expressed with it.
+ * An executor context for one project, or none. Built literally, since `createMock` would
+ * fabricate a `projectName` Nx might omit.
  */
 function buildContext(projectName?: string, cache = false): ExecutorContext {
   return {

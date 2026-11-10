@@ -25,9 +25,7 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
 /**
  * File names a configuration may be written under.
  *
- * Never searched for to pick the configuration of a run — that is always named
- * with `--config`. It exists so a listing can identify configuration files
- * while walking a tree.
+ * Used to spot config files when listing a tree; a run always takes `--config`.
  */
 export const CONFIGURATION_FILE_NAMES = [
   "codometer.config.ts",
@@ -41,11 +39,9 @@ export const CONFIGURATION_FILE_NAMES = [
 ] as const;
 
 /**
- * Path globs excluded from measurement when a configuration names none.
+ * Path globs excluded when a configuration names none: only what every ecosystem generates.
  *
- * Only the directories every ecosystem generates. Everything a specific
- * repository considers noise — ingested corpora, generated documentation,
- * scratch notes — belongs in that repository's own configuration file.
+ * Repository-specific noise belongs in its own configuration.
  */
 export const DEFAULT_EXCLUDE_GLOBS = [
   "**/.nx/**",
@@ -56,10 +52,9 @@ export const DEFAULT_EXCLUDE_GLOBS = [
 ] as const;
 
 /**
- * Badge colors handed to configured counters that name none, in order.
+ * Badge colors for configured counters that name none, cycled in order.
  *
- * Cycled rather than exhausted, so a repository can configure as many counters
- * as it likes and each still gets a color that is stable between runs.
+ * Cycling keeps each counter's color stable between runs.
  */
 export const DEFAULT_CUSTOM_STATISTIC_COLORS = [
   "7c3aed",
@@ -76,13 +71,9 @@ export const DEFAULT_CUSTOM_STATISTIC_COLORS = [
 export const DEFAULT_CUSTOM_STATISTIC_GROUP = "conventions";
 
 /**
- * Name of the input every run measures unless a configuration replaces it:
- * the codebase itself.
+ * Name of the input every run measures: the whole codebase.
  *
- * Its files are every one the repository's ignore files leave behind rather
- * than a glob match — `include` here is a placeholder a glob-based reader
- * never consults for this one entry — which is what makes this input
- * different from every other one a configuration declares.
+ * Its files come from ignore files, not globs.
  */
 export const DEFAULT_INPUT_NAME = "codebase";
 
@@ -99,42 +90,26 @@ export const DEFAULT_CODEBASE_INPUT: CodometerInput = {
 /**
  * Compression applied to an input that names none.
  *
- * Gzip rather than the best available, because a compressed size is only worth
- * measuring against what a server would actually send, and gzip is what every
- * client understands. An input measuring bytes on disk asks for `none`.
+ * Gzip, since clients understand it; `none` measures bytes on disk.
  */
 export const DEFAULT_INPUT_COMPRESSION = "gzip" satisfies CodometerCompression;
 
 /**
- * Where an input's globs start when it names no directory of its own.
+ * Where an input's globs start when it names no directory: the working directory.
  *
- * The process's working directory. An input that means to reach outside it
- * says so, which keeps "measure what I was pointed at" the thing that needs
- * no writing down.
+ * Reaching outside it must be written down.
  */
 export const DEFAULT_INPUT_DIRECTORY = ".";
 
 /**
- * Severity a limit that names none carries.
- *
- * The strict one. A limit is written to gate, so one that quietly warned
- * because nobody spelled out the severity would be a gate in name only —
- * `warn` is the deliberate choice, not the accidental one.
+ * Severity of a limit that names none. Strict on purpose: a quietly warning limit gates nothing.
  */
 export const DEFAULT_LIMIT_SEVERITY = "fail" satisfies CodometerSeverity;
 
 /**
- * What each unit suffix a limit may carry multiplies its number by.
+ * Multiplier per unit suffix. Decimal, with a required trailing `b`.
  *
- * Decimal rather than binary — `"8 KB"` is 8000 bytes — matching what every
- * size limit written against the tool this replaced already means. The
- * trailing `b` is part of every key, so `"8 K"` finds nothing here and is
- * rejected instead of being read as 8000 by a parser that shrugged.
- *
- * A map rather than an object literal, so that a unit spelling an inherited
- * property — `constructor` is the one the pattern can reach — finds nothing
- * either, instead of a function that multiplies the limit into `NaN` and
- * quietly stops it ever being exceeded.
+ * A map, so an inherited name such as `constructor` finds nothing.
  */
 export const LIMIT_UNIT_MULTIPLIERS: ReadonlyMap<string, number> = new Map([
   ["b", 1],
@@ -145,11 +120,9 @@ export const LIMIT_UNIT_MULTIPLIERS: ReadonlyMap<string, number> = new Map([
 ]);
 
 /**
- * Splits a limit written as a string into its number and its unit.
+ * Splits a string limit into its number and unit.
  *
- * Anchored at both ends so a value with anything else in it — a comparison, a
- * second number, a trailing word — matches nothing and is rejected rather than
- * being read as whichever part happened to parse.
+ * Anchored at both ends, so anything extra is rejected rather than half-parsed.
  */
 export const LIMIT_VALUE_PATTERN = /^(\d+(?:\.\d+)?)\s*([a-z]*)$/i;
 
@@ -163,29 +136,23 @@ export const DEFAULT_MARKDOWN_END_MARKER = "<!-- codometer:end -->";
 export const DEFAULT_MARKDOWN_START_MARKER = "<!-- codometer:start -->";
 
 /**
- * Interpreter used for Python analysis when a configuration names none.
+ * Interpreter for Python analysis when a configuration names none.
  *
- * A repository whose Python lives in a managed environment overrides this with
- * the command that enters it — `uv run python`, `poetry run python`, or the
- * path to a virtual environment's interpreter.
+ * Repositories with managed environments override it, e.g. `uv run python`.
  */
 export const DEFAULT_PYTHON_COMMAND = "python3";
 
 /**
- * Prefix that turns an include glob into one that removes files instead.
+ * Prefix turning an include glob into an exclusion.
  *
- * Read wherever an input's globs are resolved, so the negations end up in the
- * exclude set rather than being matched literally against a path no file
- * starts with.
+ * Read wherever an input's globs are resolved.
  */
 export const NEGATION_PREFIX = "!";
 
 /**
- * Marks the repository root during an upward search from the process cwd.
+ * Marks the repository root for an upward search.
  *
- * A package manifest is deliberately not one of them: every package in a
- * monorepo carries one, so the search would stop at the nearest project rather
- * than the root a configuration path was written relative to.
+ * Package manifests are excluded: every monorepo package has one.
  */
 export const REPOSITORY_ROOT_MARKERS = [".git", "pnpm-workspace.yaml"] as const;
 
@@ -215,9 +182,7 @@ export const CODOMETER_COMPRESSIONS = [
 ] as const satisfies readonly CodometerCompression[];
 
 /**
- * What a configuration reaching no `format` is told — written out rather than
- * left as the schema's own "expected one of" line, because it is the first
- * thing a newcomer to codometer sees.
+ * Message for a configuration with no `format`, written out rather than left to the schema's generic line.
  */
 export const MISSING_FORMAT_MESSAGE =
   'A codometer configuration must name a `format` of "json" or "markdown", and nothing supplies one for it. Set it in this file, or spread a shared default object that sets it — every run has to be told which report shape it produces, and a directory with no configuration file anywhere above it fails here rather than measuring with a format nobody chose.';

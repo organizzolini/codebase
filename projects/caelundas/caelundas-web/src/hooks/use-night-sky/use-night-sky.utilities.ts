@@ -58,9 +58,7 @@ export function findUnknownConstellationNames(
 }
 
 /**
- * Whether the window cut a field of view by more than the pole's own margin,
- * which is worth saying; the whole sky from the pole, the default, is cut by
- * only that degree.
+ * Whether the window cut the field of view by more than the pole's margin, which is worth saying.
  */
 export function isFieldOfViewCut(
   measurements: Readonly<FieldOfViewMeasurements>,
@@ -94,8 +92,7 @@ export function normalizeConstellationName(name: string): string {
 }
 
 /**
- * Reads the backdrop's settings from the link. A key that does not parse
- * falls back to its default, so a stale or hand-edited link still opens.
+ * Reads the backdrop's settings from the link; a key that does not parse falls back to its default.
  */
 export function readNightSkyOverrides(
   search: Readonly<Record<string, unknown>>,
@@ -180,8 +177,7 @@ export function subscribeToReducedMotion(onChange: () => void): () => void {
 }
 
 /**
- * The settings the API draws the sky from: the link's but its opacities,
- * which the page applies, so an opacity that moves leaves the sky as it is.
+ * The link's settings but its opacities, which the page applies, so an opacity change leaves the sky as it is.
  */
 export function toNightSkyDrawing(
   overrides: NightSkyOverrides,
@@ -192,10 +188,7 @@ export function toNightSkyDrawing(
 }
 
 /**
- * Writes the backdrop's settings, the window it fills and whether it stands
- * still as the API's night sky input. No figure is `none`, which is what an
- * empty list of names means; the moment is left out, so the API draws the sky
- * for now.
+ * Writes the backdrop's settings as the API's night sky input; no figure is `none`, and the moment is left out for now.
  */
 export function toNightSkyInput(
   overrides: NightSkyDrawing,
@@ -258,9 +251,7 @@ function isHexadecimalColor(value: unknown): boolean {
 }
 
 /**
- * Reads `sky.constellations`, a comma-separated list of names and the words
- * `all`, `zodiac` and `none`, each normalized. Absent, or anything but text,
- * is the zodiac; empty, or `none`, is no figure.
+ * Reads `sky.constellations`: a comma list of names, `all`, `zodiac` or `none`; absent means the zodiac, `none` or empty no figure.
  */
 function readConstellationNames(value: unknown): readonly string[] {
   if (typeof value !== "string") {
@@ -287,9 +278,7 @@ function readNumber(
 }
 
 /**
- * Reads one stroke from the link: `<prefix>Color` like the background's
- * colors, and `<prefix>Opacity` and `<prefix>Width` clamped to their ranges.
- * A key given a value it cannot read falls back, and is named as rejected.
+ * Reads one stroke from the link: `<prefix>Color`, `Opacity` and `Width`, clamped; an unreadable key falls back and is named as rejected.
  */
 function readStroke(
   search: Readonly<Record<string, unknown>>,

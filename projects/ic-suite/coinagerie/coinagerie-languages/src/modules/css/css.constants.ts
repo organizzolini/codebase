@@ -8,12 +8,8 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 export const CSS_EXTENSIONS: readonly string[] = [".css"];
 
 /**
- * How CSS is read: block comments, quoted strings, and the unquoted body of a
- * `url(…)`, which is a path and not a name.
- *
- * A hexadecimal color is skipped whole, so `#e0e0e0` and `#abc` read as the colors
- * they are; an identifier with a hyphen, such as `font-size` or `--accent`,
- * is one raw identifier. CSS has no key separator, so no string is a key.
+ * Hexadecimal colors are skipped whole, so `#abc` is not a name; a `url(…)` body is a
+ * path. CSS has no keys.
  */
 export const CSS_GRAMMAR: LexicalGrammar = {
   identifier: /-{0,2}[\p{L}_][\p{L}\p{N}_-]*/uy,
@@ -33,15 +29,8 @@ export const CSS_GRAMMAR: LexicalGrammar = {
 };
 
 /**
- * The at-rule names and global values of CSS, lowercased as the vocabulary
- * compares words.
- *
- * One word each: an at-rule such as `font-face` is split into its words by the
- * vocabulary, and `font` and `face` are ordinary words, so only the at-rules
- * that are a single word are listed.
- *
- * A plain array, so a configuration spreads it into `exclude.words` and the
- * tool excludes nothing it was not asked to.
+ * CSS at-rule names and global values, lowercased. Multi-word at-rules are
+ * omitted, as the vocabulary splits them into common words.
  */
 export const CSS_KEYWORDS: string[] = [
   "and",

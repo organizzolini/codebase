@@ -1,7 +1,5 @@
 /**
- * One group an event falls in at one level of a grouping: a tag, with its
- * name and full path, or a value derived from the event's times, whose label
- * the app writes.
+ * One group an event falls in at a grouping level: a tag with its path, or a value derived from its times.
  */
 export interface CalendarEventGroupKey {
   key: string;
@@ -26,9 +24,7 @@ export interface CalendarEventRecord {
   durationMinutes: number;
   end: Date;
   /**
-   * The groups the event falls in, one list per level of the query's
-   * grouping: several for an event with several tags in a dimension, none
-   * for one with no tag there. Empty when the query asked for no grouping.
+   * The groups an event falls in, one list per grouping level: several for several tags, none for no tag.
    */
   groups: CalendarEventGroupKey[][];
   id: string;
@@ -56,8 +52,7 @@ export interface CalendarEventTag {
 }
 
 /**
- * One tag root, the dimension it names, and every tag beneath it, so the
- * filters can offer a field per root without knowing the roots ahead.
+ * One tag root and every tag beneath it, so filters offer a field per root without knowing roots ahead.
  */
 export interface EventFacet {
   id: string;
@@ -73,8 +68,7 @@ export interface EventFacet {
  */
 export interface EventFacetValue {
   /**
-   * The events that carry the tag or any tag beneath it, among those that
-   * overlap the window the facets were read for, or all of them with none.
+   * Events carrying the tag or any tag beneath it, among those overlapping the facets' window.
    */
   count: number;
   /**
@@ -90,9 +84,7 @@ export interface EventFacetValue {
 }
 
 /**
- * The span the whole dataset covers and the zone its events were computed
- * in, so the calendar can render local time and tell "nothing matches" apart
- * from "outside the data".
+ * The span the dataset covers and its events' zone, to tell "nothing matches" apart from "outside the data".
  */
 export interface EventsDataset {
   count: number;

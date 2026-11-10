@@ -14,12 +14,9 @@ import type { IssueOutcome, IssuePlan } from "./issue.types";
 /**
  * CLI command that labels, assigns, and audits issues.
  *
- * What it does follows from the workflow event and the arguments: a newly
- * opened issue gets the labels its form implies; an issue without an assignee
- * gets the owner; one issue (by number or event) or every open issue (`--all`,
- * a schedule, a dispatch) is then audited. Writes happen on workflow events,
- * or locally when `write` is passed. Every phase reports in one run; exits 1
- * if anything failed.
+ * A newly opened issue gets the labels its form implies and, if unassigned, the
+ * owner. One issue, or every open issue with `--all`, is then audited. Writes happen
+ * on workflow events, or locally with `write`. Exits 1 if anything failed.
  */
 @Command({
   arguments: "[number] [write]",

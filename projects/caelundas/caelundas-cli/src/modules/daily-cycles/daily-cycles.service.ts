@@ -149,26 +149,8 @@ export class DailyCyclesService {
   }
 
   /**
-   * Detects daily lunar cycle events at a specific minute.
-   *
-   * Analyzes the Moon's elevation at the current minute and surrounding minutes
-   * to identify key daily events: moonrise (horizon crossing upward), lunar zenith
-   * (culmination/highest point), moonset (horizon crossing downward), and lunar nadir
-   * (lowest point below horizon). Rise and set compare the topocentric true elevation
-   * with −(34′ refraction + the Moon's own semidiameter); parallax is already in it.
-   *
-   * @see {@link getAzimuthElevationFromEphemeris} for ephemeris data retrieval
-   * @see {@link isRise} for rise detection algorithm
-   * @see {@link isSet} for set detection algorithm
-   *
-   * @example
-   * ```typescript
-   * const events = getDailyLunarCycleEvents({
-   *   currentMinute: moment(),
-   *   moonAzimuthElevationEphemeris
-   * });
-   * // Returns events like moonrise, zenith, moonset, nadir
-   * ```
+   * Detects moonrise, zenith, moonset, and nadir at a minute; rise and set use
+   * −(34′ refraction + semidiameter).
    */
   getDailyLunarCycleEvents(args: {
     minute: Moment;
@@ -212,12 +194,8 @@ export class DailyCyclesService {
   }
 
   /**
-   * Detects daily solar cycle events at a specific minute.
-   *
-   * Checks for sunrise (true elevation crosses −0.8333° upward), solar zenith (local
-   * maximum), sunset (true elevation crosses −0.8333° downward), and solar nadir (local
-   * minimum) by comparing values at the previous, current, and next minute.
-   *
+   * Detects sunrise, zenith, sunset, and nadir at a minute by comparing the
+   * previous, current, and next minute.
    */
   getDailySolarCycleEvents(args: {
     minute: Moment;

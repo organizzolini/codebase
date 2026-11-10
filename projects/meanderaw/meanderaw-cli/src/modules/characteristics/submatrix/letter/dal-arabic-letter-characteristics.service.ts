@@ -51,9 +51,7 @@ export class DalArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright د (final Arabic dal) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright د (final Arabic dal) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╶┐
    * ╶─┴╴
@@ -62,9 +60,7 @@ export class DalArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly finalTemplate: readonly string[] = [".25.", "23b1"];
 
   /**
-   * The upright د (isolated Arabic dal) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright د (isolated Arabic dal) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╶┐
    * ╶─┘

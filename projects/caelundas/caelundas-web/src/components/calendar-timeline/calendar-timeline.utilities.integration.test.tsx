@@ -32,10 +32,7 @@ function withBusyEvents(
   return { events: [...FIXTURE_EVENTS, ...createBusyEvents(start, count)] };
 }
 
-// The timeline is tested through the `/` route, the way the page uses it;
-// it lives apart from the route's own tests only to keep each file short.
-// Each test renders the whole route and opens the View menu, which a loaded
-// continuous integration runner needs well past the default 5 seconds for.
+// Tested through the `/` route, as the page uses it; each test needs up to 30 seconds on a loaded CI runner.
 vi.setConfig({ testTimeout: 30_000 });
 
 describe("calendar timeline", () => {

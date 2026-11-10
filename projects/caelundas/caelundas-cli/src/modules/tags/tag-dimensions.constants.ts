@@ -45,10 +45,7 @@ export const POLARITY_BY_ELEMENT: Readonly<Record<string, string>> = {
 };
 
 /**
- * The kind of each point of the annual solar cycle, and the season the Sun
- * is in at it: spring from the vernal equinox, summer from the summer
- * solstice, autumn from the autumnal equinox and winter from the winter
- * solstice, as the Sun's ecliptic longitude marks them.
+ * Each point of the annual solar cycle's kind and season, from the Sun's ecliptic longitude.
  */
 export const KIND_AND_SEASON_BY_SOLAR_CYCLE_POINT: Readonly<
   Record<string, readonly [string, string]>
@@ -72,10 +69,7 @@ export const KIND_AND_SEASON_BY_SOLAR_CYCLE_POINT: Readonly<
 };
 
 /**
- * The signs each of the seven traditional planets is dignified or debilitated
- * in, by dignity, strongest first. An ingress into a sign takes the first
- * dignity that lists it, so Mercury in Virgo is in its domicile though Virgo
- * is its exaltation as well; a sign no dignity lists leaves it peregrine.
+ * Signs each traditional planet is dignified or debilitated in, strongest dignity first; the first listing wins.
  */
 export const SIGNS_BY_DIGNITY_BY_PLANET: Readonly<
   Record<string, readonly (readonly [string, readonly Sign[]])[]>
@@ -125,10 +119,7 @@ export const SIGNS_BY_DIGNITY_BY_PLANET: Readonly<
 };
 
 /**
- * The stage of its synodic cycle each Mercury, Venus and Mars phase event
- * marks. New and full fall at the conjunctions, the first and last morning
- * or evening sighting count as a rise or a set, and a morning or evening
- * star, like a visibility span, is a stage of visibility.
+ * The synodic stage each Mercury, Venus or Mars phase marks; new and full fall at the conjunctions.
  */
 export const SYNODIC_STAGE_BY_PHASE: Readonly<Record<string, string>> = {
   brightest: "Brightest",
@@ -192,9 +183,7 @@ export const BODY_CLASS_BY_BODY: Record<Body, string> = {
 };
 
 /**
- * The nature and harmonic of each simple aspect: hard aspects divide the
- * circle by two and four, soft ones flow, and the rest are neutral. The
- * harmonic is the number the aspect divides the circle by.
+ * The nature (hard, soft or neutral) and harmonic of each simple aspect.
  */
 export const NATURE_AND_HARMONIC_BY_ASPECT: Record<
   Aspect,
@@ -219,10 +208,7 @@ export const NATURE_AND_HARMONIC_BY_ASPECT: Record<
 };
 
 /**
- * The nature and harmonic of each compound pattern, from the aspects that
- * make it up. A stellium is a cluster of conjunctions; a yod and a boomerang
- * rest on quincunxes, a hammer on sesquiquadrate aspects, and a grand cross and an
- * hourglass on squares and oppositions.
+ * The nature and harmonic of each compound pattern, taken from the aspects that make it up.
  */
 export const NATURE_AND_HARMONIC_BY_PATTERN: Readonly<
   Record<string, readonly [string, number]>

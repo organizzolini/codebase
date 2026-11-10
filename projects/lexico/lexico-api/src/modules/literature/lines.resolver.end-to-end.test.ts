@@ -54,8 +54,8 @@ interface ReaderToken {
 }
 
 /**
- * Reads a passage the way the reader does: a page of lines, a page of each
- * line's tokens, and the word each token resolves to.
+ * The reader's page query: a page of lines, each line's tokens, and the word
+ * each token resolves to.
  */
 const READER = `
   query Reader(

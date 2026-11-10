@@ -21,17 +21,10 @@ import type { WriteMarkdownOutput } from "./output.types";
 
 // 🧱 The schema, kept apart from the vocabulary it validates against.
 //
-// `configuration.constants.ts` holds the accepted words and the defaults; this
-// file holds the zod schema built over them. Splitting it that way is what
-// keeps the import one-directional — the schema reads the vocabulary and the
-// vocabulary reads nothing — and a cycle between two files in this package
-// would crash the Nest container rather than fail anything readable.
+// `configuration.constants.ts` holds the words and defaults; this file builds the zod schema over them. A cycle between the two would crash the Nest container.
 
 /**
- * Accepts a configured callback.
- *
- * Checked for being a function and nothing else: what it does with its
- * arguments is the author's business, and a schema cannot inspect it anyway.
+ * Accepts a configured callback, checked only for being a function.
  */
 const callbackSchema = <CallbackType>(): z.ZodType<CallbackType> =>
   z.custom<CallbackType>((value) => typeof value === "function", {
@@ -51,9 +44,7 @@ const commentSelectorSchema = z.object({
 /**
  * One configured counter: `patterns`, `symbols`, `comment`, or any mix.
  *
- * Used for the top-level `custom` array, which is the only place a counter
- * is declared — an output's own `custom` selects labels from it rather than
- * declaring counters of its own.
+ * Declared only in the top-level `custom` array.
  */
 const customStatisticSchema = z
   .object({
@@ -149,12 +140,7 @@ const markdownOutputSchema = z
 /**
  * Validates a configuration file's contents.
  *
- * Zod strips unknown keys rather than rejecting them, so a configuration
- * written for a newer codometer still loads under an older one instead of
- * failing on a field it has no opinion about. That is also what makes a
- * removed field — `comments`, `documentation`, a per-language override —
- * silently absent from the resolved configuration rather than a validation
- * error.
+ * Zod strips unknown keys rather than rejecting them, so a removed field is silently absent.
  */
 export const codometerConfigurationSchema = z
   .object({

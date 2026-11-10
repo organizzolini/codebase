@@ -12,9 +12,8 @@ import type { IssueSummary, IssueTypeFacts } from "./issue-metadata.types";
  * Judges an issue's GitHub Issue Type against its place in the hierarchy.
  *
  * A root issue, with no parent, is a Feature or a Bug. Every sub-issue, at any
- * depth, is a Task. The type is read from GitHub's native `issueType` and
- * `parent` fields, with a `Part of #n` line in the body counting as a parent
- * for an issue that has not been linked natively yet.
+ * depth, is a Task. A `Part of #n` line in the body counts as a parent until the
+ * issue is linked natively.
  */
 @Injectable()
 export class IssueMetadataTypeService {
@@ -75,9 +74,7 @@ export class IssueMetadataTypeService {
   // 🌎 Public Methods
 
   /**
-   * Records the failure and its fixes when the type does not fit the position.
-   *
-   * Skipped when the source could not read the issue's type or parent.
+   * Records the failure and its fixes. Skipped when the issue's type or parent is unreadable.
    */
   public check(
     issueNumber: string,

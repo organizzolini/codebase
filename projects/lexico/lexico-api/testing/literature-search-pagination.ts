@@ -6,9 +6,7 @@ export type FetchLiteratureSearchPage = (
 ) => Promise<LiteratureSearchPage>;
 
 /**
- * The parts of a Relay connection every literature search returns, whether
- * read from the service or from a GraphQL response, where an absent cursor
- * arrives as `null` rather than `undefined`.
+ * The parts of a Relay connection every literature search returns. An absent cursor arrives as `null`, not `undefined`.
  */
 export interface LiteratureSearchPage {
   readonly edges: readonly {
@@ -33,11 +31,7 @@ export interface LiteratureSearchPageArguments {
 }
 
 /**
- * Asserts the Relay invariants of one search: walking it forward with
- * `first`/`after`, or backward with `last`/`before`, visits every result of
- * the unpaginated search exactly once and in the same order, every page
- * reports the same `totalCount`, and only the ends report no further page.
- * Returns the unpaginated ids so a test can assert what was matched.
+ * Asserts a search pages consistently in both directions: every result once, in order, with no extra pages. Returns the unpaginated ids.
  */
 export async function expectLiteratureSearchPagination(
   fetchPage: FetchLiteratureSearchPage,

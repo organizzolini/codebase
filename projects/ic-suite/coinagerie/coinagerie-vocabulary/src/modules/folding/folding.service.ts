@@ -30,10 +30,7 @@ export class FoldingService {
   // 🌎 Public Methods
 
   /**
-   * The headword a lowercase word folds into: its singular, then its lemma.
-   *
-   * A fold that would leave a single letter (`ts` into `t`) is refused, since
-   * one-letter words are not terms.
+   * The headword a lowercase word folds into: its singular, then its lemma. A one-letter result is refused, since one-letter words are not terms.
    */
   fold(word: string): string {
     const folded = lemmatizer.verb(pluralize.singular(word));
@@ -42,9 +39,7 @@ export class FoldingService {
   }
 
   /**
-   * The headword a word is listed under: folded into its singular and lemma,
-   * then through the configuration's own `fold` when it has one. A fault in
-   * that function surfaces as an `InvalidConfigurationError` naming the file.
+   * The headword a word is listed under: folded, then passed through the configuration's `fold` when it has one. Faults name the file.
    */
   headword(
     word: string,

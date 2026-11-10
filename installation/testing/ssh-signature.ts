@@ -5,8 +5,7 @@ export interface SignedCommit {
 }
 
 /**
- * Builds the text of a commit object carrying an SSH signature made by a key of
- * this type, armored and indented the way git writes a `gpgsig` header.
+ * Builds a commit object's text carrying an SSH signature from a key of this type.
  */
 export function createSignedCommit(type = "ssh-ed25519"): SignedCommit {
   const publicKey = Buffer.concat([

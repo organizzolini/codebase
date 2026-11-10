@@ -54,11 +54,8 @@ export class OptionsService {
   // 🌎 Public Methods
 
   /**
-   * Reads the `configuration` option of an executor, refusing a missing one.
-   *
-   * Nx validates the option against `schema.json`, but a target written by hand
-   * reaches an executor unchecked, so the same refusal the plugin option gets —
-   * decided by the configuration layer — is applied here.
+   * Reads the `configuration` option of an executor, refusing a missing one, since
+   * hand-written targets skip `schema.json`.
    */
   public readConfiguration(value: unknown): string {
     return this.configurationService.requireConfigurationPath(
@@ -68,11 +65,8 @@ export class OptionsService {
   }
 
   /**
-   * Narrows an untrusted output format to one callidescope renders.
-   *
-   * A target written by hand in a `project.json` bypasses the executor's
-   * `schema.json` enum, so an unrecognized value falls back to whatever the
-   * configuration chose rather than reaching the renderer.
+   * Narrows an untrusted output format to one callidescope renders, since hand-written targets
+   * bypass the `schema.json` enum.
    */
   public readFormat(value: unknown): CallidescopeOutputFormat | undefined {
     return CALLIDESCOPE_OUTPUT_FORMATS.find(
@@ -98,13 +92,8 @@ export class OptionsService {
   }
 
   /**
-   * Reads a list of strings out of an executor's options.
-   *
-   * Nx validates an option against its `schema.json` before the executor sees
-   * it, but a target written by hand in a `project.json` reaches here
-   * unchecked, so a non-array or a list holding non-strings is narrowed rather
-   * than trusted. Entries are trimmed and the blanks dropped, so a trailing
-   * comma in `--projects a,b,` names two projects rather than three.
+   * Reads a list of strings from executor options, trimming entries and dropping blanks, so
+   * `a,b,` names two projects.
    */
   public readStringList(value: unknown): string[] {
     if (!this.isUnknownArray(value)) {
@@ -119,11 +108,8 @@ export class OptionsService {
   }
 
   /**
-   * Resolves the effective plugin options from an untrusted value.
-   *
-   * Every field has a default except `configurationPath`: the workspace
-   * configuration is never searched for, so a registration that does not name
-   * it is refused rather than guessed at.
+   * Resolves the effective plugin options from an untrusted value. Only `configurationPath`
+   * has no default, and it is never searched for.
    */
   public resolvePluginOptions(options: unknown): CallidescopePluginOptions {
     const record: Record<string, unknown> =

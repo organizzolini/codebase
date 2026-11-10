@@ -23,8 +23,7 @@ import type {
 } from "@conformetry/configuration";
 
 /**
- * Writes a template with one root file and two files in a nested folder, so a
- * partially present instance leaves two files sharing one missing directory.
+ * Writes a template with one root file and a nested folder holding two files.
  */
 async function createNestedTemplatePath(): Promise<string> {
   const templatePath = path.join(

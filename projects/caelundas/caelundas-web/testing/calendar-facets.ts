@@ -5,9 +5,7 @@ import { type CalendarApiOptions, serveCalendarApi } from "./calendar-api";
 import type { EventFacet } from "../src/components/events-calendar/calendar-records.types";
 
 /**
- * The facets the mocked API answers for the whole dataset, from the fixture
- * unless a test hands it other tags or events, read through the same client
- * the calendar reads them with.
+ * The facets the mocked API answers for the dataset, from the fixture unless a test hands others.
  */
 export async function findFixtureFacets(
   options: CalendarApiOptions = {},

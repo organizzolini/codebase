@@ -21,10 +21,8 @@ import type {
  */
 export interface DatabaseTestingConnection {
   /**
-   * The project's own database module, imported in place of the helper's own
-   * `PostgresqlModule.forRoot`, so modules under test that import it share
-   * its one connection rather than opening a second. Absent: the helper
-   * connects with its own `PostgresqlModule.forRoot`.
+   * The project's own database module, so modules under test share its one
+   * connection. Absent, the helper uses its own `PostgresqlModule.forRoot`.
    */
   readonly database?: NonNullable<ModuleMetadata["imports"]>[number];
 }

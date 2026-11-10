@@ -22,11 +22,7 @@ export interface AxisTabsProperties {
 // 🧩 Component
 
 /**
- * One row of tabs for a single axis of the conjugation, such as its moods. A row
- * runs the full width of the card, out through its padding, and the rows and the
- * table below them are joined into one block.
- * Each tab is the usual abbreviation, such as IND or PRES, so that all of them
- * share one row and fill it, and carries its full name for readers and hover.
+ * One row of tabs for a conjugation axis, such as moods, each tab abbreviated and carrying its full name for hover.
  */
 export function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
   const { className, onChange, options, value } = properties;

@@ -12,23 +12,12 @@ import type {
 } from "./tile.types";
 
 /**
- * The vocabulary every other `mosaic` service reads a tile through: how a
- * tile is built from its edges, how its edges are read back off it, and what
- * makes a grid of direction bits a tile rather than an arbitrary
- * assignment.
+ * The vocabulary every other `mosaic` service reads a tile through: building
+ * it from edges and reading them back.
  *
- * A tile has two faces and they say the same thing. {@link Edges} is
- * the one whose entries are the tile's own degrees of freedom, one per
- * edge, which is what enumeration iterates and what the symmetry group
- * permutes. {@link Directions} is the one
- * a point is read in, where an edge appears twice because both of its ends
- * carry it. {@link build} goes one way and {@link edges} the other, and a
- * tile that has been through both is the tile it started as.
- *
- * The redundancy is the point rather than the price. Rendering, degree,
- * naming, and the charter's own junction counts are all questions about a
- * *point*, so they are answered by reading four bits rather than by
- * searching for the edges that happen to touch it.
+ * A tile has two faces saying the same thing. {@link Edges} holds each degree
+ * of freedom once; {@link Directions} is what a point is read in. {@link build}
+ * and {@link edges} convert between them.
  */
 @Injectable()
 export class TileService {
@@ -43,9 +32,8 @@ export class TileService {
   // 🔏 Private Methods
 
   /**
-   * Refuses one point whose bits disagree with its neighbors'. Split from
-   * {@link assertWellFormed} so each stays inside the workspace's statement
-   * limit, and called only from it.
+   * Refuses one point whose bits disagree with its neighbors'. Called only from
+   * {@link assertWellFormed}.
    */
   private assertPointAgrees(tile: Tile, row: number, column: number): void {
     const { columns, points } = tile;
@@ -102,20 +90,8 @@ export class TileService {
   // 🌎 Public Methods
 
   /**
-   * Refuses a grid of direction bits that is not a tile, naming what is
-   * wrong with it.
-   *
-   * Three things are checked, and together they are the agreement invariant:
-   * the grid is the size its own `rows` and `columns` declare; `east` at
-   * every point equals `west` at the point to its right, wrapping from the
-   * last column into the next repeat; and `south` equals `north` at the
-   * point below, with the rows above the first and below the last
-   * carrying neither, since the cap ticks at border lines 0 and `rows + 1` are
-   * not tile points.
-   *
-   * The east–west wrap is what makes a tile tile at all, rather than a
-   * detail of that: a tile whose last column disagrees with its own first
-   * column draws a pattern that does not join up with its own next repeat.
+   * Refuses a grid of direction bits that is not a tile. Its east-west wrap
+   * makes a tile join with its next repeat.
    */
   assertWellFormed(tile: Tile): void {
     const { columns, points, rows } = tile;
@@ -151,13 +127,8 @@ export class TileService {
   }
 
   /**
-   * The tile a set of edges draws, with every point's four bits derived
-   * from the two edges it owns and the two its neighbors do.
-   *
-   * At one column the eastward edge wraps onto its own point, so `east` and
-   * `west` there are the same bit by construction — which is why the
-   * single-column case needs no rule of its own, and why a shape holds
-   * `2^(columns × (2·rows − 1))` tiles at every column span including one.
+   * The tile a set of edges draws, each point's four bits derived from its
+   * neighbors' edges.
    */
   build(shape: TileShape, edges: Edges): Tile {
     const { columns, rows } = shape;
@@ -177,13 +148,8 @@ export class TileService {
   }
 
   /**
-   * How many of a point's four direction bits are set — the point's degree
-   * as the drawing shows it. A dot is 0, a dash end 1, a corner or a
-   * straight run 2, a T-junction 3, a crossing 4.
-   *
-   * At one column a set eastward edge is both the point's `east` and its
-   * `west`, so it reads as 2: the ink really does leave that point in both
-   * directions, running off one side of the repeat and back in the other.
+   * A point's degree: how many of its four direction bits are set. A dot is 0,
+   * a corner 2, a crossing 4.
    */
   degree(directions: Directions): number {
     return [
@@ -205,15 +171,8 @@ export class TileService {
   }
 
   /**
-   * How many distinct edges touch a point, which differs from
-   * {@link degree} at one column and nowhere else: there a set eastward
-   * edge is a single edge looping from the point back to itself, so it
-   * counts once here and twice there.
-   *
-   * This is the quantity the retired `mosaic` generator's exact-cover rule bounded at
-   * one — every cell claimed exactly once, by a dot alone or by one half of
-   * a dash — so it is what a caller asks for to recover that region of the
-   * space.
+   * Distinct edges touching a point. Differs from {@link degree} only at one
+   * column, where an eastward edge loops back.
    */
   incidentEdges(tile: Tile, row: number, column: number): number {
     const directions = tile.points[row]?.[column];
@@ -232,7 +191,7 @@ export class TileService {
     return this.degree(directions) === 0;
   }
 
-  /** Sets one edge of a draft, ignoring a row the draft does not have — which is what lets a caller walk past the last row without checking first. */
+  /** Sets one edge of a draft, ignoring rows the draft lacks, so a caller can walk past the last row. */
   mark(grid: readonly boolean[][], row: number, column: number): void {
     const targetRow = grid[row];
 

@@ -9,17 +9,7 @@ import type { CommentToken } from "./comments.types";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Reads HCL's `#`, `//`, and `/* ... *\/` comments — the only language this
- * tool measures that marks a comment three different ways.
- *
- * A line scanner for the two line forms, none of it string-aware:
- * `HclService`'s own line-based counting already accepts the same
- * limitation, checking only whether a trimmed line's first characters open a
- * comment rather than parsing the language properly. The block form is found
- * with `indexOf` rather than a regular expression: a pattern matching an
- * unclosed `/*` through to end of input has to fail once per occurrence,
- * which is quadratic on adversarial input, while two `indexOf` calls per
- * comment never scan the same text twice.
+ * Reads HCL's `#`, `//`, and block comments, the only language here with three comment forms. Line forms are scanned without string awareness, as `HclService` already does. Block comments use `indexOf`: a regex on an unclosed block goes quadratic.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -113,11 +103,7 @@ export class HclCommentsService {
   // 🌎 Public Methods
 
   /**
-   * Reads every `#`, `//`, and `/* *\/` comment, in the order they appear.
-   *
-   * Block spans are found first so a line marker found inside one — a `#`
-   * written as prose in a `/* *\/` block, say — can be dropped rather than
-   * measured a second time as a comment of its own.
+   * Reads every `#`, `//`, and block comment in order. Block spans come first, so a line marker inside one is not measured twice.
    */
   read(content: string): CommentToken[] {
     const blocks = this.readBlocks(content);

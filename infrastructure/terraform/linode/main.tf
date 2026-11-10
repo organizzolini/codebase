@@ -70,10 +70,8 @@ resource "linode_object_storage_key" "state" {
   }
 }
 
-# The bucket the state is moving to, named for what it holds. Linode cannot
-# rename a bucket, so the original `state` bucket above stays in place and
-# keeps serving every root until the cutover in infrastructure/AGENTS.md
-# is done by hand. Destroying this one would delete the state it holds.
+# The bucket state is moving to. Linode cannot rename a bucket, so the original `state`
+# bucket stays in place until the cutover is done by hand. Destroying this one deletes the state.
 resource "linode_object_storage_bucket" "terraform_state" {
   label         = var.terraform_state_bucket_label
   region        = var.region
@@ -102,10 +100,9 @@ resource "linode_object_storage_key" "terraform_state" {
   }
 }
 
-# The key Terraform uses to configure the cache bucket. It cannot be scoped to
-# that bucket: a key's `bucket_access` needs the bucket to exist, and the bucket
-# needs a key to exist first. It reaches every bucket in the account, so it is
-# kept out of the outputs and never handed to CI.
+# The key Terraform uses for the cache bucket. It cannot be scoped to that bucket, since
+# a scoped key needs the bucket to exist. It reaches every bucket in the account, so it
+# stays out of the outputs and is never handed to CI.
 resource "linode_object_storage_key" "nx_cache_provisioner" {
   label = "${var.nx_cache_bucket_label}-provisioner"
 }

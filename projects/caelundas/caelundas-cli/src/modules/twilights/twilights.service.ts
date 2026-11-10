@@ -113,22 +113,7 @@ export class TwilightsService {
   }
 
   /**
-   * Detects twilight transition events at a specific minute.
-   *
-   * Identifies six daily twilight transitions based on solar depression angles:
-   * - Astronomical dawn/dusk (18° below horizon)
-   * - Nautical dawn/dusk (12° below horizon)
-   * - Civil dawn/dusk (6° below horizon).
-   *
-   * @see {@link isAstronomicalDawn} and related functions for detection
-   * @see {@link degreesByTwilight} for threshold definitions
-   *
-   * @remarks
-   * Twilight periods are important for:
-   * - Photography (golden hour, blue hour)
-   * - Astronomy (observing windows)
-   * - Navigation (marine twilight)
-   * - Daily rhythm (circadian cycles)
+   * Detects twilight transition events at a minute, from solar depression angles: astronomical, nautical and civil dawn and dusk.
    */
   detect(args: {
     minute: Moment;
@@ -150,14 +135,7 @@ export class TwilightsService {
   }
 
   /**
-   * Generates progressive events for twilight periods.
-   *
-   * Creates span events for six twilight periods plus full night and daylight:
-   * - Astronomical twilight (morning/evening)
-   * - Nautical twilight (morning/evening)
-   * - Daylight (civil dawn to civil dusk)
-   * - Night (astronomical dusk to astronomical dawn).
-   *
+   * Generates span events for the six twilight periods, daylight and night.
    * @see {@link pairProgressiveEvents} for pairing logic
    */
   detectProgressive(

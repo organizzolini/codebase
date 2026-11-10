@@ -1,12 +1,7 @@
 // ♟️ Constants
 
 /**
- * Whole-pipeline reference cases: each fixture names a window, an authority
- * and the events that authority publishes, and the real perfective and
- * progressive passes must reproduce them within the fixture's tolerance.
- *
- * To add a case, commit a fixture under `testing/reference-fixtures/`, then
- * add its name to this list: a failing case goes in first, the fix after it.
+ * Whole-pipeline reference cases; to add one, commit a fixture under `testing/reference-fixtures/` and name it here.
  */
 export const referenceFixtureNames: readonly string[] = [
   "horizons-lunar-apogee-2026-01-13",

@@ -11,9 +11,7 @@ import type { CalendarViewName } from "./calendar-views.types";
 // 🌎 Public Functions
 
 /**
- * How the calendar lays a view out: a phone's week scrolls sideways in the
- * content area under a sticky hour column, and every other view scrolls
- * inside itself.
+ * How a view lays out: a phone's week scrolls sideways under a sticky hour column; every other view scrolls inside itself.
  */
 export function getViewLayout(
   view: CalendarViewName,

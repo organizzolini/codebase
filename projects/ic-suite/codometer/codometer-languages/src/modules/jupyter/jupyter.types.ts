@@ -32,10 +32,7 @@ export interface JupyterResult {
 }
 
 /**
- * What the notebooks themselves report, before any language analyzer runs.
- *
- * The two source lists are what the notebook contributes to the Python and
- * markdown analyzers: cell bodies that exist in no file of their own.
+ * What notebooks report before any language analyzer runs. The source lists are cell bodies that exist in no file of their own.
  */
 export interface NotebookParts {
   cells: number;

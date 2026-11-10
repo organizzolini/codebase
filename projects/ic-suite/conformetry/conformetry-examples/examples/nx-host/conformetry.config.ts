@@ -5,12 +5,8 @@ const EXAMPLE_PATH =
   "projects/ic-suite/conformetry/conformetry-examples/examples/nx-host";
 
 /**
- * The same configuration shape, typed for the Nx host instead of the
- * command-line one.
- *
- * `ConformetryNxConfiguration` is what makes an instance group's `tags` legal:
- * the standalone type has nothing to match a label against, so a group written
- * this way only means something to a host with a project graph.
+ * Typed for the Nx host. `tags` are legal only here: the standalone type has no
+ * project graph to match a label against.
  */
 const conformetryConfiguration: ConformetryNxConfiguration = [
   {

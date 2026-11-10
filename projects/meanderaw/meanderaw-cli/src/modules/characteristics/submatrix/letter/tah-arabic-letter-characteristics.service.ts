@@ -72,9 +72,7 @@ export class TahArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright ط (final Arabic tah) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ط (final Arabic tah) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╷
    * ├┐
@@ -84,9 +82,7 @@ export class TahArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly finalTemplate: readonly string[] = ["4..", "e5.", "ab1"];
 
   /**
-   * The upright ط (initial Arabic tah) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ط (initial Arabic tah) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷
    *  ├┐
@@ -96,9 +92,7 @@ export class TahArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly initialTemplate: readonly string[] = [".4.", ".e5", "2b9"];
 
   /**
-   * The upright ط (isolated Arabic tah) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ط (isolated Arabic tah) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╷
    * ├┐
@@ -108,9 +102,7 @@ export class TahArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly isolatedTemplate: readonly string[] = ["4.", "e5", "a9"];
 
   /**
-   * The upright ط (medial Arabic tah) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ط (medial Arabic tah) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷
    *  ├┐

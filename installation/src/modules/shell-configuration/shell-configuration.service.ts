@@ -143,9 +143,8 @@ export class ShellConfigurationService {
   }
 
   /**
-   * Removes the block an earlier run wrote to source `scripts/shell/processes.sh`,
-   * which no longer exists. The block was a marker line and one sourcing line;
-   * a marker followed by anything else was not written by this command.
+   * Removes the block an earlier run wrote for `scripts/shell/processes.sh`, which no longer exists.
+   * A marker followed by anything else was not written here.
    */
   private removeProcessesBlock(file: string): void {
     const lines = this.readStartupFile(file).split("\n");

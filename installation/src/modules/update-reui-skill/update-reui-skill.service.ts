@@ -26,17 +26,11 @@ import type {
 } from "./update-reui-skill.types";
 
 /**
- * Refreshes the vendored ReUI skill from the bundle reui.io serves.
+ * Refreshes the vendored ReUI skill from the bundle reui.io serves, which `skills update` skips.
  *
- * `skills update` skips a skill locked as `local`, which is how ReUI is locked
- * because it publishes only a JSON bundle. This is that missing step:
- *
- * - Idempotent. The bundle is hashed the way the skills CLI hashes a skill
- *   folder, and nothing is written when that equals both the lockfile pin and
- *   the folder on disk, so local drift is healed too.
- * - Safe to extract. A bundle path that resolves outside the skill folder
- *   aborts before anything is deleted or written.
- * - Non-fatal. Any failure prints the retry command and the run exits 0.
+ * Idempotent: nothing is written when the bundle hash matches both the lockfile pin and the folder, so
+ * local drift is healed too. A bundle path resolving outside the skill folder aborts before any write.
+ * Non-fatal: failures print the retry command and exit 0.
  */
 @Injectable()
 export class UpdateReuiSkillService {

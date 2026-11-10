@@ -3,12 +3,8 @@
 import { z } from "zod";
 
 /**
- * How a conventional subject line is read, a commit's or the title's alike.
- *
- * Unlike the pull-request-labels-assignees check's title pattern, the breaking marker
- * is captured rather than discarded: whether a commit or the title itself
- * declares a breaking change is exactly what decides the required release
- * level here.
+ * How a commit or title subject is read. Unlike the labels check, the breaking
+ * marker is captured, since it decides the required release level.
  */
 export const CONVENTIONAL_SUBJECT_PATTERN =
   /^([a-z][a-z-]*)(?:\(([^()]+)\))?(?<breaking>!)?:\s+(?<subject>\S.*)$/u;
@@ -17,19 +13,14 @@ export const CONVENTIONAL_SUBJECT_PATTERN =
 export const SUBJECT_SCOPE_SEPARATOR_PATTERN = /[,/]/u;
 
 /**
- * The footer semantic-release treats as its own breaking-change declaration.
- *
- * A commit whose subject carries no `!` can still be breaking through this
- * footer in its body, exactly as `@semantic-release/commit-analyzer` reads it.
+ * Footer that marks a breaking change, as `@semantic-release/commit-analyzer`
+ * reads it. A commit with no `!` can still be breaking through it.
  */
 export const BREAKING_CHANGE_FOOTER_PATTERN = /BREAKING[ -]CHANGE:/u;
 
 /**
- * `release.config.cjs`'s single source of truth, relative to the workspace
- * root.
- *
- * Read fresh on every run rather than copied here, so a `releaseRules` change
- * needs no matching change in this check — the two cannot drift apart.
+ * Path to `release.config.cjs`, read fresh each run so a `releaseRules` change
+ * needs no matching edit here.
  */
 export const RELEASE_CONFIG_PATH = "configuration/release.config.cjs";
 
@@ -37,11 +28,8 @@ export const RELEASE_CONFIG_PATH = "configuration/release.config.cjs";
 export const COMMIT_ANALYZER_PLUGIN_NAME = "@semantic-release/commit-analyzer";
 
 /**
- * The relative significance a semantic-release level carries, `false` lowest.
- *
- * This ordering is semver itself rather than anything specific to this
- * repository's `releaseRules`, so it is the one thing here that is safe to
- * state directly instead of reading back out of configuration.
+ * Semver significance of each release level. Safe to hard-code, unlike
+ * `releaseRules`, because it is semver itself.
  */
 export const RELEASE_LEVEL_RANK: Record<string, number> = {
   major: 3,

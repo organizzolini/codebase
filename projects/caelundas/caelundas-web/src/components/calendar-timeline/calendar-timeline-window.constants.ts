@@ -1,5 +1,4 @@
 /**
- * How many rows beyond each edge of the timeline's viewport keep their bars,
- * so a fast scroll does not show empty rows before the next render.
+ * How many rows beyond each viewport edge keep their bars, so a fast scroll shows no empty rows.
  */
 export const TIMELINE_OVERSCAN = 8;

@@ -166,12 +166,9 @@ export class TypescriptNodesService {
   // 🌎 Public Methods
 
   /**
-   * Counts a node and everything beneath it.
+   * Counts a node and everything beneath it: what a missing declaration costs.
    *
-   * This is what a missing declaration costs. Comparison reports a vanished
-   * class once, but the template asked for the class *and* every member inside
-   * it, so weighing that finding by its subtree is what keeps a deleted class
-   * from scoring the same as a deleted import.
+   * Otherwise a deleted class would score like an import.
    */
   public countSubtree(node: Node): number {
     return this.readChildren(node).reduce((total, child) => {
@@ -195,8 +192,7 @@ export class TypescriptNodesService {
   /**
    * Reads a node's identity, or `null` when it has none.
    *
-   * A `null` key means the node can only be matched by syntax kind — which is
-   * why an anonymous statement is satisfied by any statement of that kind.
+   * A `null` key matches by syntax kind alone.
    */
   public readKey(node: Node): null | string {
     if (isImportDeclaration(node)) {

@@ -42,17 +42,8 @@ import type { NestjsProject } from "@codependix/nestjs-modules";
 import type { Neighborhood, NxProject } from "@codependix/nx-projects";
 
 /**
- * Builds, renders, and delivers every included project's own graph, for
- * each of the three graph types — the Nx Neighborhood, the TypeScript/Python
- * file-level import graph, and the NestJS module graph.
- *
- * Split out of `GraphRunService`, which keeps only orchestration — resolving the
- * context once, deciding which graph types are active, and combining this
- * service's per-project outcome with `WorkspaceGraphsService`'s own
- * whole-workspace one — purely to stay under this repository's per-file line
- * limit. Every method here isolates one project's failure from the rest: a
- * missing anchor or a NestJS project that fails to boot its container is
- * collected as a `ProjectRunFailure` rather than aborting the loop.
+ * Builds, renders, and delivers each included project's graph for the three per-project graph types.
+ * Each method isolates one project's failure: it is collected as a `ProjectRunFailure`.
  */
 @Injectable()
 export class ProjectGraphsService {

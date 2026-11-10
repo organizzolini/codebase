@@ -52,9 +52,7 @@ const DURATION_BUCKET_SQL = `case ${DURATION_BUCKETS.map(
 ).join(" ")} end`;
 
 /**
- * Each derived field's group key, one text value per event, read in the
- * event's own zone. Keys sort in time order as text, except the weekday's
- * number, from Sunday as 0, and the duration bucket's name.
+ * Each derived field's text group key, read in the event's own zone. Weekdays count from Sunday as 0.
  */
 export const CALENDAR_GROUP_KEY_SQL: Readonly<
   Record<(typeof CALENDAR_GROUP_IDS)[number], string>
@@ -82,9 +80,7 @@ export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, n
 export const NO_GROUP_SQL = `select null::text as "key", null::text as label, null::text as "path" where false`;
 
 /**
- * The tags an event falls under in one root at one depth, binding `{root}`
- * and `{depth}`. A tag of the event's that ends above that depth stands for
- * itself: a leaf is its own group at any depth below it.
+ * Tags an event falls under in one root at one depth; a shallower leaf stands for itself.
  */
 export const TAG_GROUP_SQL = `
   select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path"
@@ -111,9 +107,7 @@ export const TAG_GROUP_SQL = `
 `;
 
 /**
- * The picked tags an event falls under, bound as one uuid array in place of
- * `{tags}`. An event is attached to every tag above its own, so a picked tag
- * finds everything beneath it.
+ * Picked tags an event falls under; an event is attached to every tag above its own.
  */
 export const PICKED_TAG_GROUP_SQL = `
   select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path"
@@ -122,9 +116,7 @@ export const PICKED_TAG_GROUP_SQL = `
 `;
 
 /**
- * Gathers one level's group rows into a JSON array column, in place of
- * `{source}`, named by `{column}`. A key the source could not work out puts
- * the event in no group rather than one named "null".
+ * Gathers one level's group rows into a JSON column. An unknown key puts the event in no group, not one named null.
  */
 export const GROUP_COLUMN_SQL = `,
     coalesce(

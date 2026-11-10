@@ -26,9 +26,7 @@ import type { Provider } from "@nestjs/common";
 import type { Repository } from "typeorm";
 
 /**
- * How long one whole `DrawCommand` draw run may take: tens of thousands of rows
- * decoded, rendered, measured, and indexed. Real work rather than a hang, so
- * it is declared rather than left to the default five seconds.
+ * How long one whole `DrawCommand` draw run may take. Declared rather than left to the default five seconds.
  */
 export const DRAW_RUN_TIMEOUT_MILLISECONDS = 300_000;
 
@@ -43,16 +41,8 @@ export interface DrawRunFixture {
 }
 
 /**
- * Starts a throwaway Postgres container, migrated by the project's real
- * migrations, and compiles the module `DrawCommand`'s draw run runs in over
- * it: the real enumeration, ingestion, and index services, plus whatever
- * `mocks` the caller stands in for `--code` and logging.
- *
- * Shared by the draw-run suites, which are split across files so vitest
- * runs their draw runs in parallel rather than one after another. Each caller
- * mocks `node:fs/promises` itself: `vi.mock` is hoisted only within a test
- * file, and the testing packages are development dependencies this
- * production-scoped folder cannot import.
+ * Starts a throwaway Postgres container and compiles the draw run module over
+ * it. Callers mock `node:fs/promises` themselves.
  */
 export async function startDrawRun(
   mocks: readonly Provider[],

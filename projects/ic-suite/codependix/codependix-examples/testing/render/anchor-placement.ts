@@ -24,12 +24,7 @@ interface AnchorPlacement {
 }
 
 /**
- * One branch of the auto-creation rule, as a section to render.
- *
- * Held as data so the branches read as cases of one rule rather than as
- * hand-written sections: what varies between them is only the file being
- * spliced, whether a subheading is placed above the anchor, and what was
- * already spliced into that file first.
+ * One branch of the auto-creation rule, as a section to render. Held as data, so branches read as cases of one rule.
  */
 interface AnchorPlacementCase {
   readonly anchorName: string;
@@ -37,10 +32,8 @@ interface AnchorPlacementCase {
   readonly heading: string;
   readonly note: string;
   /**
-   * Placements applied to `fileContent` before this one.
-   *
-   * Non-empty for exactly one case: a second graph type landing under a
-   * `## 🕸️ Codependix` section an earlier graph type already created.
+   * Placements applied to `fileContent` first. Non-empty for exactly one case:
+   * a second graph type joining a section an earlier one created.
    */
   readonly previousPlacements: AnchorPlacement[];
   readonly subheading: string | undefined;
@@ -196,10 +189,7 @@ export function insert(args: {
 }
 
 /**
- * Replaces a throwaway directory with a stable placeholder.
- *
- * A committed example carrying the temporary path of whichever machine
- * rendered it would fail `examples --check` everywhere else.
+ * Replaces a throwaway directory with a stable placeholder, so committed examples do not carry one machine's temp path.
  */
 export function redactRoot(message: string, absoluteRoot: string): string {
   return message.replaceAll(absoluteRoot, "<project>");
@@ -285,11 +275,7 @@ function buildModesDocument(): ExampleDocument {
 }
 
 /**
- * Wraps rendered Markdown in a fence so the document shows it verbatim.
- *
- * Fenced with four backticks rather than three: the content being shown is a
- * spliced export, which contains a fenced mermaid diagram of its own, and a
- * three-backtick fence would close on it.
+ * Wraps Markdown in a four-backtick fence so it shows verbatim. Three backticks would close on a nested mermaid fence.
  */
 function fenceMarkdown(content: string): string {
   return `\`\`\`\`markdown\n${content.trimEnd()}\n\`\`\`\``;

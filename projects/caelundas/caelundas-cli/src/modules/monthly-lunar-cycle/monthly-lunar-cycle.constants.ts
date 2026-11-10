@@ -14,10 +14,7 @@ export const LUNAR_APSIDES_BASE_TAGS = [
 ] as const;
 
 /**
- * The Moon's apparent geocentric ecliptic longitude minus the Sun's, in
- * degrees, at the instant each phase begins. The four primary phases are the
- * definition USNO and the almanacs publish phase times by; the crescent and
- * gibbous phases begin at the octants halfway between them.
+ * The Moon's minus the Sun's ecliptic longitude at each phase's start; the four primary phases match USNO's definition.
  */
 export const ELONGATION_BY_LUNAR_PHASE: Record<LunarPhase, number> = {
   "first quarter": 90,

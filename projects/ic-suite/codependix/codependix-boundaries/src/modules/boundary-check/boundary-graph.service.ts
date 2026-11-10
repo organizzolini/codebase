@@ -14,20 +14,9 @@ import type { NestjsModuleGraph } from "@codependix/nestjs-modules";
 import type { NxProject, WorkspaceGraph } from "@codependix/nx-projects";
 
 /**
- * Flattens each of codependix's four graphs into the one shape rules read.
- *
- * The adapters live here, in the host that already builds all four, rather
- * than in `@codependix/boundaries` — which would otherwise have to depend on
- * `@nestjs/core` and `typescript` to name the types it translates, for a
- * package whose whole job is evaluating rules. The four
- * already share an identical `{ source, target }` edge shape by construction,
- * so each adapter is only ever nodes, edges, and the attributes rules select
- * on.
- *
- * What each level knows differs, and the node shape says so: an Nx project
- * carries tags and a root, a file carries its project-relative path and the
- * project it belongs to, and a NestJS module carries its class name, declaring
- * file path, and project name.
+ * Flattens each of codependix's four graphs into the one shape rules read. The adapters live
+ * here, not in the boundaries package, which would otherwise need `@nestjs/core` and `typescript`
+ * to name the types. Each node says only what its level knows.
  */
 @Injectable()
 export class BoundaryGraphService {
@@ -88,15 +77,8 @@ export class BoundaryGraphService {
   }
 
   /**
-   * Adapts the whole-workspace Nx project graph.
-   *
-   * The workspace graph rather than each project's one-hop neighborhood: a
-   * rule is a statement about the shape of the graph, and a neighborhood is
-   * the same graph shown twice from either end of every edge.
-   *
-   * Tags come off the `NxProject`s themselves, because they are what makes
-   * this level worth having: a tag rule reaches nothing unless the nodes it
-   * judges carry them.
+   * Adapts the whole-workspace Nx graph, since a rule describes the whole graph. Tags come from
+   * the projects, the reason this level exists.
    */
   public buildNxGraph(args: {
     projects: readonly NxProject[];

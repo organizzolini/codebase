@@ -73,9 +73,7 @@ export class HahArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright ح (final Arabic hah) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ح (final Arabic hah) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ┌─╴
    * ┌┘
@@ -85,9 +83,7 @@ export class HahArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly finalTemplate: readonly string[] = [".631", "69..", "a31."];
 
   /**
-   * The upright ح (initial Arabic hah) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ح (initial Arabic hah) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *   ┌╴
    *  ┌┘
@@ -101,9 +97,7 @@ export class HahArabicLetterCharacteristicsService implements CharacteristicEval
   ];
 
   /**
-   * The upright ح (isolated Arabic hah) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ح (isolated Arabic hah) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ┌╴
    * ┌┘
@@ -113,9 +107,7 @@ export class HahArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly isolatedTemplate: readonly string[] = [".61", "69.", "a31"];
 
   /**
-   * The upright ح (medial Arabic hah) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ح (medial Arabic hah) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *   ┌╴
    *  ┌┘

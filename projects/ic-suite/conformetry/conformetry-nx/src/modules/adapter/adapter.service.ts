@@ -13,11 +13,7 @@ import type { Tree } from "@nx/devkit";
 /**
  * Backs generation with an Nx `Tree` instead of the filesystem.
  *
- * This is what makes `nx g --dry-run` and Nx's change preview work: the
- * generic generation service writes through whatever adapter it is handed, and
- * a `Tree` records writes without touching disk until Nx flushes them. Running
- * the CLI as a subprocess, which is what this package used to do, wrote
- * straight to disk and made both features lie.
+ * Lets `nx g --dry-run` and Nx's change preview work, since a `Tree` records writes until Nx flushes them.
  */
 @Injectable()
 export class AdapterService {
@@ -32,12 +28,9 @@ export class AdapterService {
   // 🔏 Private Methods
 
   /**
-   * Lists a directory through the tree when it is inside the workspace, and
-   * through the filesystem otherwise.
+   * Lists a directory through the tree inside the workspace.
    *
-   * Templates usually live inside the workspace, so reading them through the
-   * tree means a generator run sees edits an earlier generator in the same run
-   * made — which is what a caller expects from a composed generator.
+   * Lets a generator see edits made earlier in the same run.
    */
   private async listDirectory(args: {
     directoryPath: string;
@@ -104,9 +97,7 @@ export class AdapterService {
   /**
    * Builds the adapters one generator run writes through.
    *
-   * `makeDirectory` is a no-op because a `Tree` has no directories of its own —
-   * writing `a/b/c.ts` implies them. The formatter defers to Nx so generated
-   * files are formatted by the workspace's own configuration.
+   * `makeDirectory` is a no-op, since a `Tree` implies directories from file paths.
    */
   public createAdapters(args: CreateAdaptersArguments): TreeAdapters {
     return {

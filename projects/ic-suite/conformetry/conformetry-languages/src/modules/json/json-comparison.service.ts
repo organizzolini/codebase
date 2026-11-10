@@ -16,17 +16,9 @@ import type { ConformetryDifference } from "@conformetry/core";
 /**
  * Structurally compares two JSON documents.
  *
- * The template is treated as a **subset** requirement, not an exact match: the
- * instance may add keys and array entries freely, but every key and value the
- * template declares must be present. That is what makes a generated file
- * editable after generation without immediately failing validation.
+ * The template is a subset requirement: the instance may add keys and entries freely, but every template key and value must be present.
  *
- * Exported from this module so the Jupyter module can reuse it for
- * notebooks, which are JSON documents, rather than duplicating the walk.
- *
- * The walk also counts what it asked for: every template node is one
- * requirement, and a key with no counterpart costs the whole subtree beneath
- * it, so dropping an object scores worse than dropping one of its scalars.
+ * Exported for the Jupyter module, which compares notebooks as JSON.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -169,10 +161,7 @@ export class JsonComparisonService {
   /**
    * Compares two arrays.
    *
-   * Required scalars must appear somewhere in the instance array, order
-   * independent. For a required object, the instance entry that produces the
-   * fewest differences is taken as the intended match — an array entry has no key, so
-   * there is nothing better to match on.
+   * Scalars may appear anywhere; objects match the entry with the fewest differences.
    */
   private compareArrays(args: {
     instanceArray: JsonValue[];
@@ -231,9 +220,9 @@ export class JsonComparisonService {
   }
 
   /**
-   * Adds the container's own requirement to what its members contributed, so a
-   * matched object weighs exactly what `countNodes` would have charged for it
-   * had it been missing.
+   * Adds the container's own requirement to its members' weights.
+   *
+   * Matches the weight `countNodes` charges for a missing container.
    */
   private countContainer(comparison: JsonComparison): JsonComparison {
     return { ...comparison, totalWeight: comparison.totalWeight + 1 };
@@ -280,11 +269,9 @@ export class JsonComparisonService {
   }
 
   /**
-   * Picks the candidate comparison that left the least of the template
-   * unaccounted for.
+   * Picks the candidate that leaves the least of the template unaccounted for.
    *
-   * Weighed by failed weight rather than error count: one finding standing in
-   * for a whole missing object is a worse match than two missing scalars.
+   * Ranks by failed weight, not error count.
    */
   private pickClosestMatch(candidates: JsonComparison[]): JsonComparison {
     return candidates.reduce((best, candidate) => {

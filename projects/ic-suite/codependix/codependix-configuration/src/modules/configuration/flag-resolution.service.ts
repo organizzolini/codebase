@@ -15,15 +15,9 @@ import type { MapCommandOptions } from "./configuration.types";
 import type { RunMode, RunModeSelection } from "@codependix/core";
 
 /**
- * Reads the command line into what the run will do.
- *
- * Internal to the `configuration` module rather than a module of its own:
- * resolving the command line is half of answering "what is this run actually
- * configured to do", and `ConfigurationService` is the one public way to ask.
- * `codometer-cli` and `callidescope-cli` still carry a `run-plan` module of
- * this shape inside their hosts — and, deliberately, the same `--check
- * reports` spelling, since a stale configured destination is one finding
- * across all three.
+ * Reads the command line into what the run will do. Internal to this module, since
+ * `ConfigurationService` is the one public way to ask. The `--check reports` spelling matches the
+ * sibling CLIs, since a stale destination is one finding across all three.
  */
 @Injectable()
 export class FlagResolutionService {
@@ -48,11 +42,8 @@ export class FlagResolutionService {
   }
 
   /**
-   * Asks which of the three things a run with no flags at all should do.
-   *
-   * Nothing is inferred: a session that cannot be asked fails rather than
-   * defaulting to a write nobody requested, and a run that quietly did
-   * nothing and exited 0 is worse than either.
+   * Asks what a run with no flags should do. Nothing is inferred: an unanswerable session fails rather
+   * than writing something nobody requested.
    */
   private async promptForMode(): Promise<RunModeSelection> {
     const choice = await this.inputService.promptForSelect({
@@ -73,13 +64,8 @@ export class FlagResolutionService {
   }
 
   /**
-   * Reads the `--check` value into the set of things the run fails on.
-   *
-   * A flag passed without a value arrives as `true` and is a mistake rather
-   * than a shorthand: read as "gate nothing" it would be a gate that cannot
-   * fail, and `--check "$GATES"` with the variable unset would pass forever
-   * over a workspace whose every rule was broken — worse than no gate at all,
-   * because it looks like protection.
+   * Reads `--check` into the things the run fails on. A bare `--check` is refused: a gate that cannot
+   * fail looks like protection.
    */
   private readCheckNames(
     value: string | true | undefined,
@@ -126,15 +112,8 @@ export class FlagResolutionService {
   // 🌎 Public Methods
 
   /**
-   * Reads the flags into what the run writes and what it fails on.
-   *
-   * `--write --check reports` is refused rather than obeyed: nothing can be
-   * stale immediately after being written, so a run asking for both has
-   * misunderstood one of them and would pass whatever it was meant to catch.
-   * `--write --check boundaries` is legal for the mirror-image reason — a
-   * boundary has no destination to be stale, so writing every export and
-   * judging every graph in one run is two independent things, not a
-   * contradiction.
+   * Reads the flags into what the run writes and fails on. `--write --check reports` is refused:
+   * nothing is stale right after being written.
    */
   public async selectMode(
     options: MapCommandOptions,
@@ -168,11 +147,8 @@ export class FlagResolutionService {
   }
 
   /**
-   * Whether a run reads or rewrites the files its exports live in.
-   *
-   * `--check boundaries` alone reads no destination and writes nothing, so it
-   * leaves every committed export exactly as it found it — which is what
-   * makes it safe on a branch, where the exports are expected to be behind.
+   * Whether a run reads or rewrites its exports. `--check boundaries` alone touches no file, so it is
+   * safe on a branch.
    */
   public touchesFiles(mode: RunMode): boolean {
     return mode.checksReports || mode.writes;

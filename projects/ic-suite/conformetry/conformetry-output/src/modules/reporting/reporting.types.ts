@@ -15,17 +15,13 @@ export interface FormatReportArguments {
   /** Failing files, already grouped by `PluginService` or `FilesService`. */
   readonly fileResults: ValidationFileResult[];
   /**
-   * Per-instance scores to summarize above the findings.
-   *
-   * Optional so a caller with nothing to score — a single ad-hoc comparison —
-   * still gets a report. Instances that scored perfectly are left out of the
-   * summary: printing a full line for each would bury the ones that did not.
+   * Per-instance scores to summarize above the findings. Perfect scores are left
+   * out, so the imperfect ones stay visible.
    */
   readonly scores?: InstanceScore[];
   /**
-   * Directory that absolute paths are made relative to, so reports stay
-   * readable and machine-independent. Passed in rather than discovered, since
-   * this package deliberately has no workspace awareness.
+   * Directory absolute paths are made relative to, keeping reports readable and
+   * machine-independent. Passed in, as this package has no workspace awareness.
    */
   readonly workingDirectory: string;
 }

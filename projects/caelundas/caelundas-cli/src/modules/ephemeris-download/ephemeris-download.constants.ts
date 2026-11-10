@@ -1,9 +1,7 @@
 // ♟️ Constants
 
 /**
- * The Swiss Ephemeris data files caelundas computes from: the planets, the
- * Moon, and the asteroids. The `18` in each name is the century they start at,
- * and together they cover the years 1800 to 2399.
+ * The Swiss Ephemeris data files for planets, Moon and asteroids; `18` is the century they start at.
  */
 export const EPHEMERIS_FILENAMES = [
   "seas_18.se1",

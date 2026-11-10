@@ -19,9 +19,7 @@ import type { EventCalendarOccurrence } from "@codebase/presentation";
 // 🧩 Hook
 
 /**
- * Merges the events of one kind that run together in a week, three days or a
- * day, for the days that view shows, when merging is on, and holds which
- * cluster is open.
+ * Merges events of one kind that run together for the days the view shows, and holds which cluster is open.
  */
 export function useCalendarClusters(
   properties: Readonly<UseCalendarClustersProperties>,

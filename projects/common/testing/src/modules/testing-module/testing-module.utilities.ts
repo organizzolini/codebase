@@ -12,17 +12,8 @@ import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { Type } from "@nestjs/common";
 
 /**
- * Compiles a testing module around the class under test, with a logger mock,
- * a deep mock for each class in `mocks`, and the imports and providers given,
- * then resolves the class. A dependency nothing provides fails the build, so
- * resolving is itself the check that the class's wiring is complete.
- *
- * ```ts
- * const { instance, mock } = await buildTestingModule(ExportCommand, {
- *   mocks: [PostgresqlUtilitiesService],
- * });
- * mock(PostgresqlUtilitiesService).dump.mockResolvedValue(…);
- * ```
+ * Compiles a testing module around the class, with a logger mock and a deep
+ * mock per `mocks` class; resolving fails on any unprovided dependency.
  */
 export async function buildTestingModule<Target>(
   target: Type<Target>,

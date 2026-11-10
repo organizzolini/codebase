@@ -14,9 +14,8 @@ export interface AnchorSectionInsertArguments {
   fileContent: string;
   introLine: string;
   /**
-   * The `### <Subheading>` placed immediately above the anchor block, or
-   * `undefined` when the anchor sits directly under the `## 🕸️ Codependix`
-   * heading with no subheading of its own — the workspace README's shape.
+   * The `### <Subheading>` above the anchor block; `undefined` when the anchor
+   * sits directly under the Codependix heading.
    */
   subheading: string | undefined;
 }

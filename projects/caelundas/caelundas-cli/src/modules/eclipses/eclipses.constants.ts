@@ -2,9 +2,7 @@
 import type { EclipseType } from "./eclipses.types";
 
 /**
- * Danjon's enlargement of Earth's shadow: the Moon's parallax is scaled by
- * 1.01, growing Earth's radius by about 1/85 for its atmosphere. NASA's
- * lunar eclipse tables (F. Espenak) time their contacts with this rule.
+ * Danjon's enlargement of Earth's shadow, scaling the Moon's parallax by 1.01, as NASA's eclipse tables use.
  */
 export const DANJON_SHADOW_ENLARGEMENT = 1.01;
 
@@ -27,7 +25,6 @@ export const eclipseTypeLabelByType: Record<EclipseType, string> = {
 export const MILLISECONDS_PER_MINUTE = 60_000;
 
 /**
- * The longest a solar eclipse can last at one place, in minutes, with room
- * to spare: about three and a half hours from first to last contact.
+ * The longest a solar eclipse lasts at one place, in minutes, with room to spare.
  */
 export const LOCAL_SOLAR_ECLIPSE_MAXIMUM_MINUTES = 300;

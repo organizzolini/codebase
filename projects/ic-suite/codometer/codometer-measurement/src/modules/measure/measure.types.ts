@@ -27,10 +27,7 @@ export interface AnalyzeFilesArguments {
 }
 
 /**
- * What every analysis declared for one input reported over its files.
- *
- * An analysis an input did not ask for reports `undefined` rather than a zero,
- * so an input nobody measured the size of is never mistaken for an empty one.
+ * What every analysis declared for one input reported over its files. Analyses not requested report `undefined`, never a zero.
  */
 export interface InputMeasurement {
   /** How many files the input's globs claimed. */
@@ -48,9 +45,7 @@ export interface MeasureArguments {
   /**
    * Files codometer writes itself, relative to the measured directory.
    *
-   * Never measured, whether or not this particular run writes them: a run that
-   * measured a different tree depending on its flags could not tell a stale
-   * report from a report written by a differently-flagged run.
+   * Never measured, so flags never change what is measured.
    */
   outputPaths: readonly string[];
   workingDirectory: string;
@@ -70,20 +65,13 @@ export interface MeasureInputArguments {
 }
 
 /**
- * Everything one run measured, input by input.
- *
- * `statistics` is the `codebase` input's own language metrics, which is the
- * report every consumer renders today. It is the same object that input
- * carries, held out separately so nothing downstream has to know which input
- * it came from.
+ * Everything one run measured, input by input. `statistics` holds the codebase's language metrics, held out for consumers.
  */
 export interface MeasurementResult {
   /**
-   * Whatever the run could not do, collected rather than thrown.
+   * What the run could not do, collected rather than thrown.
    *
-   * An input that will not measure and a limit that binds to nothing are both
-   * recorded here and stepped over, so one run names every one of them instead
-   * of stopping at the first and hiding the rest behind it.
+   * One run names every failure rather than stopping at the first.
    */
   failures: ReportFailure[];
   /** Every metric each measured input counted, addressable by dotted path. */
@@ -91,10 +79,9 @@ export interface MeasurementResult {
   /** Every input measured, in the order `inputs` declared them. */
   inputs: InputMeasurement[];
   /**
-   * What every declared limit found, in the order they were declared.
+   * What every declared limit found, in declaration order.
    *
-   * Empty when nothing declared one, which is the ordinary case: a metric with
-   * no limit is measured and reported like every other, and gated by nothing.
+   * Empty when none is declared, which is the ordinary case.
    */
   limits: EvaluatedLimit[];
   statistics: CodeStatisticsResult;

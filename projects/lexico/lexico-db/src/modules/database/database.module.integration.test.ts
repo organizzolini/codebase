@@ -16,10 +16,7 @@ const ENTITY_FILES = globSync("**/*.entity.ts", {
 const IMPORT_TIMEOUT_MILLISECONDS = 120_000;
 
 /**
- * Imports one module in a fresh Node process under the SWC loader that
- * codependix, the TypeORM CLI, and the API use. Unlike Vitest's transform,
- * it emits decorator metadata, so an entity cycle whose `design:type` reads
- * a class before its module finishes evaluating throws here.
+ * Imports a module in a fresh process under the SWC loader, which emits decorator metadata unlike Vitest, so an entity cycle throws here.
  */
 async function importInFreshProcess(modulePath: string): Promise<string> {
   return new Promise((resolve, reject) => {

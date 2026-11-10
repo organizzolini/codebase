@@ -1,19 +1,12 @@
 // 🏷️ Types
 
 /**
- * A NestJS project's module import graph, reduced to what an export needs.
- *
- * Built from the exploration of a project's container in
- * preview mode — see `NestjsProjectService.exploreProject` — and kept to the
- * plain module-name and edge shape a diagram or a JSON export can render
- * directly, without carrying the container's own provider or controller
- * metadata.
+ * A NestJS project's module import graph, reduced to the names and edges a diagram needs.
  */
 export interface NestjsModuleGraph {
   /**
-   * Modules every other module imports, and whose edges are therefore left
-   * out. Reported so a caller can say why the diagram looks sparser than the
-   * container does.
+   * Modules every other module imports. Their edges are left out, so the
+   * diagram looks sparser than the container.
    */
   readonly ambientModuleNames: string[];
   /** Every drawn import relationship, sorted so the diagram is stable. */

@@ -454,8 +454,7 @@ describe("search service integration suite", () => {
 
   describe("pagination", () => {
     /**
-     * Asserts every page of a search agrees with slicing its whole, ranked
-     * result list in memory, the way search paged before it paged in SQL.
+     * Asserts every search page agrees with slicing the whole ranked result in memory.
      */
     async function expectSearchMatrixAgreement(
       search: (

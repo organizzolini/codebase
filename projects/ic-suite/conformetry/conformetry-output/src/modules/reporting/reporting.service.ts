@@ -48,8 +48,7 @@ export class ReportingService {
   // 🔏 Private Methods
 
   /**
-   * Renders one error: its message, where it was found in both the instance
-   * and the template, the expected and actual values when known, and the fix.
+   * Renders one error: its message, locations, expected and actual values, and the fix.
    */
   private formatError(args: {
     error: ConformetryDifference;
@@ -123,10 +122,9 @@ export class ReportingService {
   }
 
   /**
-   * Renders a weight pair as ` — met/total requirements met (percentage)`.
+   * Renders a weight pair as met/total requirements and a percentage.
    *
-   * One renderer for every level — file, instance, and run total — so the same
-   * three numbers appear in the same order wherever a reader looks.
+   * One renderer for every level, so the numbers always read alike.
    */
   private formatFraction(args: {
     failedWeight: number;
@@ -139,9 +137,9 @@ export class ReportingService {
   }
 
   /**
-   * Renders a single location line, preferring line/column over a JSON path.
-   * Returns nothing when the error carries neither, which is normal for
-   * whole-file differences such as a missing file.
+   * Renders a location line, preferring line and column over a JSON path.
+   *
+   * Empty for whole-file differences such as a missing file.
    */
   private formatLocation(args: FormatLocationArguments): string[] {
     if (args.line !== undefined) {
@@ -184,15 +182,7 @@ export class ReportingService {
   /**
    * Renders the summary of instances that did not score perfectly.
    *
-   * The fraction is printed alongside the percentage because the percentage
-   * alone hides its own scale: "99.3%" reads the same whether one requirement
-   * of 151 went missing or thirty of four thousand did, and only the first is
-   * a five-minute fix.
-   *
-   * Both sides of the comparison are printed too, because a score alone does
-   * not say whether the run failed: 94% passes under a threshold of 90 and
-   * fails under 95, and a reader should not have to go looking for which
-   * applied.
+   * The fraction shows the scale a percentage hides.
    */
   private formatScores(args: {
     scores: InstanceScore[];
@@ -220,16 +210,9 @@ export class ReportingService {
   }
 
   /**
-   * Renders the run's total across every scored instance.
+   * Renders the run's total across every scored instance, not only the failures.
    *
-   * Totalled over all of them rather than only the ones listed above, because
-   * the question the total answers is how the run did overall, and a total of
-   * just the failures would always read close to zero.
-   *
-   * The unit is the instance/template pair, not the file. One file governed by
-   * two templates owes both of them, so its requirements genuinely count twice
-   * — which is why this is labelled by instances rather than presented as a
-   * share of the codebase.
+   * A file under two templates counts twice.
    */
   private formatTotal(scores: InstanceScore[]): string {
     const failedWeight = scores.reduce((total, score) => {
@@ -251,13 +234,9 @@ export class ReportingService {
   }
 
   /**
-   * Renders every failing file as one report string, with a score summary
-   * above it. Returns a success message when there is nothing to report, so
-   * callers never print an empty report.
+   * Renders every failing file as one report, with a score summary above it.
    *
-   * Findings print whether or not their instance cleared its threshold: a
-   * lowered threshold is permission to ship the drift, not a reason to stop
-   * showing it.
+   * Findings print even when their instance clears its threshold.
    */
   public formatReport(args: FormatReportArguments): string {
     const scoreLines = this.formatScores({

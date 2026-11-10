@@ -6,11 +6,8 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 export const JSON_EXTENSIONS: readonly string[] = [".json", ".jsonc"];
 
 /**
- * How JSON is read: comments, which JSONC allows, and quoted strings.
- *
- * A string followed by a colon is a key, and every key is an identifier. A
- * value is never a name, and neither is a bare literal such as `true`, so the
- * grammar has no identifier pattern at all.
+ * Comments (JSONC) and quoted strings. A string followed by a colon is a key;
+ * values are never names.
  */
 export const JSON_GRAMMAR: LexicalGrammar = {
   keys: [{ after: /\s*:/y }],
@@ -22,9 +19,7 @@ export const JSON_GRAMMAR: LexicalGrammar = {
 };
 
 /**
- * The literal words of JSON, lowercased as the vocabulary compares words.
- *
- * A plain array, so a configuration spreads it into `exclude.words` and the
- * tool excludes nothing it was not asked to.
+ * The literal words of JSON, lowercased. A plain array, so spreading it into
+ * `exclude.words` excludes nothing extra.
  */
 export const JSON_KEYWORDS: string[] = ["false", "null", "true"];

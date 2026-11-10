@@ -25,10 +25,8 @@ export type SpellCheckBatchExecutorArguments = [
 ];
 
 /**
- * The fields of Nx's executor context these executors read.
- *
- * Stated here rather than imported from `@nx/devkit`: this project does not
- * depend on it, and Nx passes real objects that satisfy this structurally.
+ * Fields of Nx's executor context that these executors read. Declared
+ * here, not imported from `@nx/devkit`, which this project does not depend on.
  */
 export interface SpellCheckExecutorContext {
   readonly projectGraph: {

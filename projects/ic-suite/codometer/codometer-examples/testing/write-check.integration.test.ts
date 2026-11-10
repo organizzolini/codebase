@@ -45,12 +45,9 @@ describe("every example configuration this package ships", () => {
       );
 
     /**
-     * The guide's rows run top to bottom over one copy, as a reader would.
+     * Rows run in order over one copy, as a reader would.
      *
-     * Neither of the first two rows writes anything — which is asserted, not
-     * assumed — so the write that follows lands in the same fresh tree a copy
-     * of its own would have given it, and the comparison rows then read the
-     * report that write produced.
+     * The first two write nothing, so later rows see the same tree.
      */
     let walk: MatrixWalk;
 

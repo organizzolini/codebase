@@ -24,13 +24,9 @@ import {
 describe("every example configuration this package ships", () => {
   describe("what codometer writes, it does not measure", () => {
     /**
-     * One copy, walked in the order the guide describes it.
+     * One copy, walked in the order the guide describes.
      *
-     * The first write creates the two destinations; the console measurement
-     * then reads a tree that holds them, and writes nothing itself; the second
-     * write measures that same tree again. Each case below reads the step it
-     * is about, and every step sees exactly the tree it would have seen in a
-     * copy of its own.
+     * Each step sees exactly the tree it would in its own copy.
      */
     let firstWrite: CodometerRun;
     let remeasured: CodometerReport;

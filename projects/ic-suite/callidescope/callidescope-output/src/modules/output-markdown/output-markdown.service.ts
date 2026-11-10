@@ -74,15 +74,8 @@ export class OutputMarkdownService {
   }
 
   /**
-   * Cuts out a start marker's corrupted span and splices the fresh block in.
-   *
-   * Reached only when the start marker is present but the block's own end
-   * marker cannot be found anywhere after it — the same file this
-   * convention lets stack several anchored blocks back to back, so
-   * everything is fair game to have drifted except one thing: another
-   * block's own anchors. The span is cut at the next such anchor, or at the
-   * end of the file when none follows, so the fresh block replaces exactly
-   * what belonged to this one and nothing that belonged to another.
+   * Cuts a start marker's corrupted span, up to the next anchor or end of file, and splices the
+   * fresh block in.
    */
   private replaceOrphanedBlock(args: {
     existing: string;
@@ -112,13 +105,8 @@ export class OutputMarkdownService {
   }
 
   /**
-   * Places the generated block into the file's current content.
-   *
-   * A pattern match replaces cleanly. No start marker at all falls back to
-   * appending, the historical behavior for a file never written to before.
-   * A start marker with no matching end can never satisfy the pattern —
-   * silently leaving it in place is what let a run claim success while
-   * changing nothing — so that span is cut out and replaced instead.
+   * Places the generated block: replaces a match, appends when no marker exists, and cuts a
+   * dangling start marker.
    */
   private spliceBlock(args: {
     destination: SyncAnchoredBlockArguments["destination"];
@@ -197,11 +185,8 @@ export class OutputMarkdownService {
   }
 
   /**
-   * Splices the anchored block into a file.
-   *
-   * Appends the block when the anchors are absent, creates the file when it
-   * does not exist, and in check mode writes nothing and reports whether the
-   * file already holds the current block.
+   * Splices the anchored block into a file, appending or creating it as needed, and in check mode
+   * only reports drift.
    */
   public syncAnchoredBlock(args: SyncAnchoredBlockArguments): boolean {
     const target = args.path ?? args.destination.path;

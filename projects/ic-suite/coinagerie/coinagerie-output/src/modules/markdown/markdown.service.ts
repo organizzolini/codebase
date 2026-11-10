@@ -25,14 +25,10 @@ import type {
 import type { Glossary } from "@coinagerie/core";
 
 /**
- * Renders, parses, and splices the markdown glossary block.
- *
- * The block is the `## 🪙 Coinagerie` heading, an optional description, and
- * one `- **word**: definition` bullet per word, between the
- * `coinagerie:start` and `coinagerie:end` anchors. A definition continues on
- * indented lines below its bullet, kept verbatim. Parsing is strict on
- * purpose: anything it cannot read is refused rather than dropped, because a
- * dropped word reads as stale and writing would delete its definition.
+ * Renders, parses, and splices the markdown glossary block: a `## 🪙 Coinagerie`
+ * heading, an optional description, and one `- **word**: definition` bullet per
+ * word, between anchors. Parsing is strict, since a dropped word would read as
+ * stale and writing would delete its definition.
  */
 @Injectable()
 export class MarkdownService implements GlossaryFormatHandler {
@@ -56,10 +52,7 @@ export class MarkdownService implements GlossaryFormatHandler {
   }
 
   /**
-   * Where the block sits, or `undefined` when the file has no anchors.
-   *
-   * Exactly one start anchor followed by exactly one end anchor; any other
-   * arrangement is refused.
+   * Where the block sits, or `undefined` without anchors. Any arrangement other than one start then one end anchor is refused.
    */
   private findAnchors(
     lines: string[],
@@ -203,11 +196,7 @@ export class MarkdownService implements GlossaryFormatHandler {
   // 🌎 Public Methods
 
   /**
-   * The glossary in a file's block, or `undefined` when it has no anchors.
-   *
-   * Throws `MalformedGlossaryError` on an unrecognized line, a duplicated
-   * word, or misplaced anchors. Free text between the heading and the first
-   * bullet is the description: never a word, and kept by `write`.
+   * The glossary in a file's block, or `undefined` without anchors. Throws `MalformedGlossaryError` on an unrecognized line, duplicate word, or misplaced anchor.
    */
   parse(content: string, filePath: string): Glossary | undefined {
     const lines = content.split(LINE_BREAK_PATTERN);
@@ -262,9 +251,7 @@ export class MarkdownService implements GlossaryFormatHandler {
   }
 
   /**
-   * A file's content with the block in place: replacing the anchored block
-   * when there is one, appending it after a blank line when there is not,
-   * and standing alone in a file that is empty or does not exist.
+   * Puts the block into a file's content: replacing the anchored block, else appending it after a blank line, else standing alone.
    */
   splice(content: string | undefined, block: string): string {
     if (content === undefined || content === "") {
@@ -291,11 +278,7 @@ export class MarkdownService implements GlossaryFormatHandler {
   }
 
   /**
-   * Writes a glossary into a destination's content as a rendered block.
-   *
-   * The configured description wins; without one, whatever prose already
-   * sits between the heading and the first bullet is kept, so a write never
-   * deletes text a person wrote there.
+   * Writes a glossary as a rendered block. The configured description wins; otherwise existing prose under the heading is kept.
    */
   write(args: WriteGlossaryArguments): string {
     const configured =

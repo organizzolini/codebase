@@ -26,13 +26,7 @@ import type {
 import type { z } from "zod";
 
 /**
- * Measures Jupyter notebooks by handing their parts to the other analyzers.
- *
- * A notebook is three languages in one file, and this service owns none of
- * them: the document is JSON, its code cells are Python, and its markdown
- * cells are prose, so each is counted by the analyzer that already knows how.
- * What is left — cells, outputs, execution — belongs to the notebook itself
- * and is counted here.
+ * Measures Jupyter notebooks by handing their parts to the other analyzers. The notebook's own cells, outputs, and execution are counted here.
  */
 @Injectable()
 export class JupyterService {

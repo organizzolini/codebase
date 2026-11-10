@@ -17,13 +17,9 @@ import type {
 } from "./boundary-check.types";
 
 /**
- * Reports what a boundary pass found — as lines, as the JSON object under the
- * `boundaries` key, and as the Markdown section of a combined document.
- *
- * Kept apart from `BoundaryReportService`, which renders rule violations
- * alone: a pass's container failures and verdicts are only known to the check
- * that judged them, and every wording that says whom a finding is charged to
- * still comes from `BoundaryReportService.describeCharge`.
+ * Reports what a boundary pass found: as lines, as the JSON `boundaries` object, and as a Markdown
+ * section. Kept apart from `BoundaryReportService`, which only renders rule violations. Charge
+ * wording still comes from `BoundaryReportService.describeCharge`.
  */
 @Injectable()
 export class BoundaryOutcomeReportService {
@@ -67,12 +63,8 @@ export class BoundaryOutcomeReportService {
   }
 
   /**
-   * One bullet: the verdict in bold, then the line the log prints.
-   *
-   * An error is whatever a library threw, so its text may run over several
-   * lines and carry `-->`. A continuation line is indented to stay inside the
-   * bullet, rather than ending the list, and `-->` is written as an entity,
-   * since it would close the HTML comment an anchor block lives in.
+   * One bullet: bold verdict, then the line. Continuation lines are indented, and `-->` is escaped
+   * so it cannot close an HTML comment.
    */
   private renderBullet(verdict: string, line: string): string {
     const text = line
@@ -88,9 +80,7 @@ export class BoundaryOutcomeReportService {
   }
 
   /**
-   * One failure as the line the log and the Markdown report both print: the
-   * shape of a violation's line, with the error as its message and, when the
-   * failing code belongs to another project, that project named last.
+   * One failure as its log line, naming the project owning the code it broke on, when that is another project.
    */
   private renderFailure(args: {
     failure: JudgedBoundaryFinding<BoundaryCheckFailure>;
@@ -114,10 +104,8 @@ export class BoundaryOutcomeReportService {
   }
 
   /**
-   * The bullets of every finding charged to one project, violations first.
-   *
-   * A failure charged to every judged project is left out: it is listed once,
-   * in `renderWorkspaceGroup`, rather than under each of them.
+   * The bullets of every finding charged to one project, violations first. Workspace-wide failures
+   * are left to `renderWorkspaceGroup`.
    */
   private renderProjectGroup(args: {
     project: string;
@@ -177,12 +165,8 @@ export class BoundaryOutcomeReportService {
   // 🌎 Public Methods
 
   /**
-   * Reduces a pass's judged findings to the object `--format json` prints.
-   *
-   * Maps field by field rather than spreading: a violation's `scope` is where
-   * it was found, not whose it is, and the report names the charged projects
-   * instead. A cycle absent from an access rule is `null` and an absent owner
-   * is left out, so the same key never means two things.
+   * Reduces a pass's findings to the `--format json` object. Maps field by field: `scope` is
+   * dropped, since `projects` names the owners.
    */
   buildReport(args: BoundaryReportArguments): BoundaryReport {
     return {
@@ -212,10 +196,7 @@ export class BoundaryOutcomeReportService {
   }
 
   /**
-   * One line per failure: its level, whom it is charged to, and the error —
-   * then the project owning the code it broke on, when that is another
-   * project. A note says which dependency it lives in instead, and a failure
-   * charged to every one of `judgedProjects` says "all N judged projects".
+   * One line per failure, with its level, charge, and error. Notes name their dependency.
    */
   renderFailures(
     failures: readonly JudgedBoundaryFinding<BoundaryCheckFailure>[],
@@ -227,15 +208,8 @@ export class BoundaryOutcomeReportService {
   }
 
   /**
-   * Renders a report as the Markdown a combined document carries: the judged
-   * projects, then every finding listed under each project it is charged to,
-   * a note marked as not failing under the dependency it lives in. A failure
-   * charged to every judged project is listed once, ahead of them, rather
-   * than under each. An error's line breaks stay inside its bullet.
-   *
-   * A run judging no project at all — a workspace holding nothing but its
-   * root, since an unmatched selection is refused before the run — says
-   * "none" rather than printing an empty list.
+   * Renders a report as Markdown: findings under each charged project, workspace-wide failures once,
+   * first. No judged project prints as "none".
    */
   renderMarkdown(report: BoundaryReport): string {
     const judged = `Judged projects: ${

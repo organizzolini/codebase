@@ -12,15 +12,13 @@ export type UseTagPickerProperties = Pick<
   "cancel" | "commit" | "field" | "onValueChange" | "options" | "value"
 > & {
   /**
-   * Whether picking a tag picks everything beneath it and a tag with only
-   * some of its tags picked is shown partly picked; on when absent.
+   * Picking a tag picks everything beneath it, and partial tags show as partly picked; on when absent.
    */
   cascade?: boolean | undefined;
 };
 
 /**
- * What the tag picker draws and does: the rows to list, and how a tick, a
- * handle and a key change the rule or the folding.
+ * What the tag picker draws and does: its rows, and how a tick, handle and key change the rule or the folding.
  */
 export interface UseTagPickerResult {
   handleOpen: (id: string, open: boolean) => void;

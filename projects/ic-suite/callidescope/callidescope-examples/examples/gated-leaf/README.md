@@ -179,13 +179,13 @@ What this project is judged against, as declared in its own `callidescope.config
 **1. `GatedLeafService.read`** — depth 4 · declared
 
 ```text
-🚀 GatedLeafService.read(key: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:40]
-   ↳ The address this project declares as its entry point.
-  └─> GatedLeafService.parse(key: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:27]
+🚀 GatedLeafService.read(key: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:33]
+   ↳ The project's declared entry point: three direct callees, four frames deep.
+  └─> GatedLeafService.parse(key: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:24]
      ↳ First of the three, and the way into the chain.
-    └─> GatedLeafService.normalize(key: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:22]
+    └─> GatedLeafService.normalize(key: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:19]
        ↳ Second of the three, one hop from the end.
-      └─> GatedLeafService.finish(key: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:17]
+      └─> GatedLeafService.finish(key: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:14]
          ↳ Ends the chain, which is where the fourth frame is.
 ```
 
@@ -193,7 +193,7 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `GatedLeafService.read` | 3 | `GatedLeafService.parse`, `GatedLeafService.normalize`, `GatedLeafService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:40` |
-| `GatedLeafService.normalize` | 1 | `GatedLeafService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:22` |
-| `GatedLeafService.parse` | 1 | `GatedLeafService.normalize` | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:27` |
+| `GatedLeafService.read` | 3 | `GatedLeafService.parse`, `GatedLeafService.normalize`, `GatedLeafService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:33` |
+| `GatedLeafService.normalize` | 1 | `GatedLeafService.finish` | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:19` |
+| `GatedLeafService.parse` | 1 | `GatedLeafService.normalize` | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:24` |
 <!-- callidescope:end -->

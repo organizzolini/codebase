@@ -15,11 +15,8 @@ import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🧪 Tests
 
-// 🎯 Every fixture below is drawn at 5 rows, the same row count
-// the retired per-tile motif computed its own geometry fixtures at —
-// `GeometryService.compute(5)` gives a unit of 10, an
-// offset of 2.5, and a stroke width of 5 — so a reader can check one
-// against the other rather than trusting a fresh set of numbers.
+// 🎯 Fixtures are drawn at 5 rows, where `GeometryService.compute(5)` gives a
+// unit of 10, an offset of 2.5 and a stroke width of 5, so numbers can be checked.
 /** What the class under test is built with. */
 const MODULE_OPTIONS: TestingModuleOptions = {
   providers: [
@@ -34,14 +31,7 @@ const MODULE_OPTIONS: TestingModuleOptions = {
 describe(DrawingService, () => {
   let service: DrawingService;
 
-  /**
-   * The Code `digits` spells, at the shape the fixtures are drawn at.
-   *
-   * Built directly rather than through `CodeService.parse`, because these
-   * fixtures deliberately carry fewer rows than a full 5-row meander:
-   * the renderer draws what it is given row by row, and one row is
-   * enough to assert where a segment lands.
-   */
+  /** Built directly, not via `CodeService.parse`: fixtures may carry fewer rows than a full meander. */
   const code = (digits: string, columns: number, repeats = 1): CodeObject => ({
     columns,
     digits,

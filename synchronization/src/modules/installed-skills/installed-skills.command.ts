@@ -24,19 +24,12 @@ import type {
 /**
  * CLI command that keeps the skills `skills-lock.json` declares installed.
  *
- * `check` lists the locked skills whose `SKILL.md` is absent. Its standard
- * output is the whole report and nothing else, so the skills session hook can
- * hand it to the agent as context unchanged: silent with exit 0 when every
- * skill is present, the missing names and the remediation with exit 1
- * otherwise. The remediation differs for a cloud agent, which installs from a
- * setup workflow, and a local one, which has a terminal.
+ * `check` prints only the missing skills, for the session hook, and exits 1
+ * when any are missing.
  *
- * `write` restores the missing ones and is what the root `postinstall` runs.
- * It never fails an install: skills are agent context, not a build input, so
- * an outage or an unreadable lockfile only warns with the command that
- * retries it. `SKIP_SKILLS_INSTALL` leaves skills alone entirely, and
- * `SKILLS_INSTALL_FORCE` restores even when every skill is present, to repair
- * a damaged one.
+ * `write` restores them on `postinstall` and never fails an install.
+ * `SKIP_SKILLS_INSTALL` skips it, and `SKILLS_INSTALL_FORCE` restores even when
+ * all are present.
  */
 @Command({
   description: "Check or restore the skills skills-lock.json declares",

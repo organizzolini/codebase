@@ -23,8 +23,7 @@ export interface NightSkyBackdropMountProperties {
 // 🧩 Component
 
 /**
- * Renders the night sky the link asks for behind the page. It draws nothing
- * until the sky is built in the browser, so the static shell is unchanged.
+ * Renders the night sky the link asks for behind the page; draws nothing until the sky is built in the browser.
  */
 export function NightSkyBackdropMount(
   properties: Readonly<NightSkyBackdropMountProperties>,

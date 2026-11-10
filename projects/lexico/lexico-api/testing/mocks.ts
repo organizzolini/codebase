@@ -4,13 +4,8 @@ import { vi } from "vitest";
 import type { ObjectLiteral, QueryBuilder, Repository } from "typeorm";
 
 /**
- * Creates a vitest mock for TypeORM's `Repository` with a fully configured
- * `createQueryBuilder` mock. Suitable for use as a provider value in NestJS tests.
- *
- * The `createQueryBuilder` mock includes all chainable methods that call
- * `.mockReturnThis()` so the full method chain stays on the same mock instance.
- * Terminal methods are typed via `Entity` and left unimplemented — configure
- * them per-test with `.mockResolvedValue`.
+ * Mocks TypeORM's `Repository` with a chainable `createQueryBuilder`; configure
+ * terminal methods per test with `.mockResolvedValue`.
  */
 export const createRepositoryMock = <
   Entity extends ObjectLiteral = ObjectLiteral,

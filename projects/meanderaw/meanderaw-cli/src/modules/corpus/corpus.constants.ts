@@ -1,15 +1,8 @@
 // ♟️ Constants
 
 /**
- * The edge budget the historical corpus was extracted against, and the
- * boundary `CorpusService` ingests it by: every entry past sixteen edges is
- * preserved as a hardcoded row.
- *
- * Fixed rather than read from the draw run's own budget. When the budget rose
- * past sixteen, a boundary that followed it dropped the entries it newly
- * reached — the exact duplicates of an enumerated meander, and the mirrors
- * and flips the enumeration folds. Hardcoded meanders are never deduplicated against the draw run;
- * the draw run skips a Code a hardcoded row already holds instead.
+ * The edge budget the corpus was extracted against; entries past it are hardcoded rows.
+ * Fixed, not the draw run's budget.
  */
 export const HISTORICAL_CORPUS_EDGE_BUDGET = 16;
 

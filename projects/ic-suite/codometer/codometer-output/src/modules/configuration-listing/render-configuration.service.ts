@@ -12,13 +12,9 @@ import type {
 } from "./configuration-listing.types";
 
 /**
- * Turns a resolved configuration listing into the document a reader gets.
+ * Turns a resolved configuration listing into the document a reader gets: markdown by default, JSON when a tool parses it.
  *
- * Markdown by default because the listing is a table and a repository already
- * reads codometer's output as markdown; JSON when something downstream parses
- * it. Kept apart from the command so the shape of the document is testable
- * without a command line, and apart from the service so gathering the
- * configuration never depends on how it will be shown.
+ * Kept apart from the command and the service, so the document's shape is testable on its own.
  */
 @Injectable()
 export class RenderConfigurationService {
@@ -88,12 +84,7 @@ export class RenderConfigurationService {
   }
 
   /**
-   * Renders why nothing answered for the walk root, when nothing did.
-   *
-   * Nothing at all otherwise, so the caller's line list is unchanged. Said at
-   * the top of the document rather than left out: every limit below is still
-   * real, but the walk that found them ran on the built-in exclusions rather
-   * than the ones this repository declares.
+   * Renders why the walk root did not answer. The limits below stand, but the walk used the built-in exclusions.
    */
   private renderRootError(rootError: string | undefined): string[] {
     if (rootError === undefined) {

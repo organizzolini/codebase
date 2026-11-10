@@ -6,11 +6,7 @@ import { LoggerService } from "@codebase/observability";
 import { MainModule } from "./lexico-cli.module";
 
 /**
- * Bootstraps the NestJS CommandFactory with buffered logs routed through a pino `LoggerService`.
- *
- * nest-commander's default `serviceErrorHandler` only writes a failed command's
- * error to standard error, so the process would still exit 0. This one logs it
- * and sets a non-zero exit code instead.
+ * nest-commander's default handler exits 0 on a failed command, so this one logs the error and sets a non-zero exit code.
  */
 async function main(): Promise<void> {
   const logger = new LoggerService();

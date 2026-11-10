@@ -80,10 +80,7 @@ export class TomlService {
   }
 
   /**
-   * Whether the line closes the multi-line string that was open, or opens one.
-   *
-   * An odd number of `"""` or `'''` delimiters flips the state; an even number
-   * opens and closes within the same line and leaves it as it was.
+   * Whether a line leaves a multi-line string open. An odd count of `"""` or `'''` flips the state; an even count leaves it.
    */
   private isInsideMultilineString(line: string, wasInside: boolean): boolean {
     const delimiters = (line.match(TOML_MULTILINE_DELIMITER_PATTERN) ?? [])

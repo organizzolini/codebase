@@ -99,9 +99,7 @@ export class SearchService {
   }
 
   /**
-   * Describes each Latin match on a page the way merging its tiers would: the
-   * morphological identifiers of every matched word that inflects it, and the
-   * split-off enclitic when its stem matched a headword or an inflected word.
+   * Describes each Latin match on a page as merging its tiers would: morphological identifiers, plus any split-off enclitic whose stem matched.
    */
   private async describeLatinMatches(
     scored: readonly ScoredLexeme[],
@@ -213,9 +211,7 @@ export class SearchService {
   }
 
   /**
-   * Pages ranked lexemes in SQL, best score first and then by id: the ranking
-   * is joined to the lexemes, the cursors bound its negated score and id, and
-   * only the page's lexemes are loaded and described.
+   * Pages ranked lexemes in SQL, best score then id first, loading and describing only the page's lexemes.
    */
   private async paginateRankedLexemes(
     ranked: RankedLexemeQuery,
@@ -311,10 +307,7 @@ export class SearchService {
   }
 
   /**
-   * Ranks the first `LATIN_TIER_RESULT_LIMIT` lexemes, closest first and then
-   * by id, whose headword or inflected word is within the term parameter's
-   * maximum edit distance. Trigram similarity narrows the candidates through
-   * their index, and the edit distance then scores each one.
+   * Ranks the first `LATIN_TIER_RESULT_LIMIT` lexemes within the fuzzy edit distance, closest first. Trigram similarity narrows candidates through their index first.
    */
   private rankFuzzyMatches(termParameter: string): string {
     const maximum = `:${termParameter}Maximum`;
@@ -338,11 +331,7 @@ export class SearchService {
   }
 
   /**
-   * Ranks every Latin tier at once: exact headwords, inflected words, the
-   * enclitic's own entry once its stem matched a translated lexeme, and the
-   * first `LATIN_TIER_RESULT_LIMIT` lexemes each prefix and fuzzy
-   * matches rank. A lexeme keeps its best tier's score, and one with no
-   * translation is dropped.
+   * Ranks every Latin tier at once. A lexeme keeps its best tier's score, and one with no translation is dropped.
    */
   private rankLatinMatches(
     terms: readonly string[],

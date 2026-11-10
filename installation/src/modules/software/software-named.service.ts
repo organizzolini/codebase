@@ -25,19 +25,11 @@ import {
 import type { SoftwareEnvironment } from "./software.types";
 
 /**
- * Installs just the software it is named, for a job or a machine that needs a
- * few of what `software` installs: any tool `software` installs from a release
- * archive (Linux only), and `postgres-client`, PostgreSQL 18's `pg_dump` and
- * `pg_restore` (Linux and Mac).
+ * Installs just the software it is named: any tool `software` installs from a release archive
+ * (Linux only), or `postgres-client` (Linux and Mac).
  *
- * These are the installs `software` makes, so a CI runner, a devcontainer, and
- * a laptop run one version of each tool. Naming software differs from asking
- * for everything in two ways: a tool that cannot be installed fails the run,
- * since it was asked for, and the apt steps go through `sudo` when this is not
- * root, as on a runner. The tools land in `~/.local/bin`, which is put first on
- * this process's `PATH`, so the check after the PostgreSQL install sees 18's
- * `pg_dump` rather than another version's, and appended to the file GitHub
- * Actions reads, when there is one.
+ * Installs match `software`, so every machine runs one version of each tool. Unlike `software`,
+ * a tool that cannot be installed fails the run, since it was asked for.
  */
 @Injectable()
 export class SoftwareNamedService {
@@ -104,10 +96,7 @@ export class SoftwareNamedService {
   // 🌎 Public Methods
 
   /**
-   * Installs the named software, in the order named, and puts it on `PATH` for
-   * the steps after.
-   *
-   * @param names - What to install: a release archive tool, or `postgres-client`.
+   * Installs the named software in the order named, and puts it on `PATH` for later steps.
    */
   public install(names: readonly string[]): void {
     this.validate(names);

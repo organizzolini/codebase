@@ -2,12 +2,7 @@
 
 /** Options the `depth` and `breadth` executors accept. */
 export interface AddressExecutorOptions {
-  /**
-   * The callables to look up, each `<file>#<qualified-name>`.
-   *
-   * Plural to match the `--addresses` the command line takes, so one target
-   * run answers about a whole rename rather than one callable at a time.
-   */
+  /** The callables to look up, each `<file>#<qualified-name>`. Plural, so one run answers about a whole rename. */
   readonly addresses?: string[] | undefined;
   readonly configuration: string;
   readonly format?: string | undefined;

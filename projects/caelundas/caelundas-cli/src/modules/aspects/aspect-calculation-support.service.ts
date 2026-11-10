@@ -21,11 +21,8 @@ export class AspectCalculationSupportService {
   // 🔐 Private Fields
 
   /**
-   * Windows already read, by the body's ephemeris and then the minute.
-   *
-   * Every aspect family asks for the same body's window once per pair per
-   * minute, which is dozens of identical reads. Keying on the ephemeris
-   * object itself lets a day's entries go with it.
+   * Windows already read, keyed by ephemeris and then minute, so each body is
+   * read once per minute rather than once per pair.
    */
   private readonly windowCache = new WeakMap<
     CoordinateEphemeris,

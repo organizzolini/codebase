@@ -12,10 +12,7 @@ export const MODULE_GRAPH_AMBIENT_LEGEND =
   "_Rounded modules are global: every module can inject them, so their edges are left out._";
 
 /**
- * Smallest graph the ambient-module rule is allowed to fire on.
- *
- * Below this a module imported by everything else is just a small graph, not
- * a global one: in a two-module project the only import there is would
- * qualify.
+ * Smallest graph the ambient rule may fire on. Below it, a module everything
+ * imports is just a small graph.
  */
 export const MODULE_GRAPH_AMBIENT_MINIMUM_MODULES = 4;

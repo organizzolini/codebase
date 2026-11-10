@@ -1,6 +1,6 @@
 /**
- * How each custom scalar reaches a web client: as the string it travels as in
- * JSON, not the `Date` or opaque id its server-side class holds.
+ * How each custom scalar reaches a web client: the JSON string it travels as,
+ * not the server's `Date` or id class.
  */
 export const GRAPHQL_CODEGEN_SCALARS = {
   DateTime: { input: "string", output: "string" },

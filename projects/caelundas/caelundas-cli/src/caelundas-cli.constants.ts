@@ -4,9 +4,7 @@ import { CAELUNDAS_PROJECT } from "@codebase/caelundas-db";
 import { postgresEnvironmentSchema } from "@codebase/persistence";
 
 /**
- * The most bind parameters one Postgres statement accepts: the wire protocol
- * counts them in sixteen bits. A bulk insert is split into statements of
- * `floor(limit / columns)` rows so that none passes it.
+ * The most bind parameters one Postgres statement accepts; bulk inserts are split to stay under it.
  */
 export const POSTGRES_MAXIMUM_PARAMETERS = 65_535;
 

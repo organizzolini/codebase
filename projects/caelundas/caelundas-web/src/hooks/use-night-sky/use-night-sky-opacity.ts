@@ -6,12 +6,7 @@ import type { UseNightSkyOpacityResult } from "./use-night-sky-opacity.types";
 
 // 🧩 Hook
 
-/**
- * The two opacities the link sets, each defaulted where absent: how opaque
- * the night sky is drawn, and how opaque the calendar's surfaces are over it.
- * It reads only those keys, so the page is not rendered for any other sky
- * change.
- */
+/** The link's sky and surface opacities, defaulted where absent; reads only those keys, so other sky changes skip a render. */
 export function useNightSkyOpacity(): UseNightSkyOpacityResult {
   // 🪝 Hooks
   const skyOpacity = useRouterState({

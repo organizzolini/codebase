@@ -75,9 +75,7 @@ export class BehArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright ٮ (final Arabic dotless beh) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ٮ (final Arabic dotless beh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╷
    * └─╴
@@ -86,9 +84,7 @@ export class BehArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly finalTemplate: readonly string[] = ["4..", "a31"];
 
   /**
-   * The upright ٮ (initial Arabic dotless beh) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ٮ (initial Arabic dotless beh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷
    * ╶┘
@@ -97,9 +93,7 @@ export class BehArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly initialTemplate: readonly string[] = [".4", "29"];
 
   /**
-   * The upright ٮ (isolated Arabic dotless beh) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ٮ (isolated Arabic dotless beh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    * ╷ ╷
    * └─┘
@@ -108,9 +102,7 @@ export class BehArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly isolatedTemplate: readonly string[] = ["4.4", "a39"];
 
   /**
-   * The upright ٮ (medial Arabic dotless beh) glyph's points as hexadecimal
-   * Code digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ٮ (medial Arabic dotless beh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷
    * ╶┴╴

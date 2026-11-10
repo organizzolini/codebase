@@ -12,13 +12,8 @@ import type {
 // 🏷️ Types
 
 /**
- * A whole example workspace, as a description turned into a real project graph.
- *
- * Written as data rather than as a nested Nx workspace on disk because
- * `NeighborhoodService.readProjectGraph` resolves the project graph from the
- * process working directory unless a configuration names a `projectGraph`
- * file — and handing the builders a graph directly is what lets a guide be
- * rendered from the real ones. See this package's README.
+ * A whole example workspace, as data. Handed to the builders directly because
+ * `readProjectGraph` resolves from the working directory. See this package's README.
  */
 export interface ExampleWorkspace {
   readonly dependencies: ExampleDependency[];
@@ -51,11 +46,8 @@ const WORKSPACE_ROOT = "/atlas";
 export const SUBJECT_PROJECT_NAME = "atlas-service";
 
 /**
- * The example workspace's projects, including its root project.
- *
- * The root project is carried deliberately: `NeighborhoodService.readProjects`
- * drops every node whose root is `"."`, so its absence from every diagram is
- * something the examples show rather than assert.
+ * The example workspace's projects, root project included. `readProjects`
+ * drops the root, so its absence from every diagram is something the examples show.
  */
 const ATLAS_PROJECTS: ExampleProject[] = [
   { name: "atlas-application", root: "applications/atlas-application" },
@@ -118,10 +110,8 @@ const ATLAS_UNCONNECTED: ExampleWorkspace = {
 };
 
 /**
- * The chain after an edge is added somewhere else in the workspace.
- *
- * `atlas-core` is untouched by the change and its Neighborhood still moves,
- * which is why this repository gates no pull request on `codependix map --check`.
+ * The chain after an edge is added elsewhere. `atlas-core` is untouched, yet
+ * its Neighborhood moves.
  */
 const ATLAS_CHAIN_AFTER_DRIFT: ExampleWorkspace = {
   dependencies: [

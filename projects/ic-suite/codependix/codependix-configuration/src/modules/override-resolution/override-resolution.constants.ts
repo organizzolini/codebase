@@ -1,14 +1,8 @@
 // ♟️ Constants
 
 /**
- * Says an override flag has nothing to override.
- *
- * Mirrors `@callidescope/configuration`'s `buildUndeclaredValueMessage`
- * exactly: a flag may change a value the configuration already declares and
- * may not supply one it left out. `--include`/`--exclude` are checked
- * against the configuration as authored, before `include`/`exclude` are
- * defaulted — so a configuration that never wrote the field is refused even
- * though the resolved value is never itself `undefined`.
+ * Says an override flag has nothing to override. Mirrors `@callidescope/configuration`'s
+ * `buildUndeclaredValueMessage`: a flag may change a declared value, never supply an undeclared one.
  */
 export const buildUndeclaredOverrideMessage = (args: {
   field: string;

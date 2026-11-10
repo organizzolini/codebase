@@ -30,9 +30,7 @@ export interface LexemeFormsProperties {
 // 🧩 Component
 
 /**
- * The declension or conjugation of a lexeme, folded away until asked for. The
- * forms are loaded the first time it opens through the loader the route gives
- * this component.
+ * A lexeme's declension or conjugation, folded away until opened; its forms load on first open through the route's loader.
  */
 export function LexemeForms(
   properties: Readonly<LexemeFormsProperties>,

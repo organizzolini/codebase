@@ -9,9 +9,7 @@ type ConfigOptions =
     };
 
 /**
- * A minute rather than the shared ten seconds: importing the whole
- * application afresh, every detector and the database entities with it,
- * took ten seconds locally, and a CI runner is several times slower.
+ * Sixty seconds rather than the shared ten: importing the app afresh takes far longer on a CI runner.
  */
 const IMPORT_TIMEOUT_MILLISECONDS = 60_000;
 

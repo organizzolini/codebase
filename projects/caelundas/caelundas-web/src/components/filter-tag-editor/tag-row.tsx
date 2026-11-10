@@ -26,9 +26,7 @@ export interface TagRowProperties {
 // 🧩 Component
 
 /**
- * Draws one tag's row: a handle to open or close it when it has tags beneath
- * it, a checkbox, its name indented by its depth, the picks inside it while
- * it is closed, and the events it matches.
+ * Draws one tag's row: a checkbox, its indented name, a handle for tags beneath, and the picks inside when closed.
  */
 export function TagRow(properties: Readonly<TagRowProperties>): ReactNode {
   const { className, onKeyDown, onOpenChange, onToggle, row } = properties;

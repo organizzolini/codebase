@@ -38,11 +38,7 @@ export function buildCssGroup(statistics: CodeStatisticsResult): string {
 }
 
 /**
- * Render the badges of every configured counter belonging to one group.
- *
- * Appended after a group's built-in badges rather than interleaved with them,
- * so the counters a repository added are visibly its own and the built-in
- * order stays the same as every other repository's.
+ * Renders the badges of every configured counter in one group, appended after the built-in ones.
  */
 export function buildCustomBadges(
   statistics: CodeStatisticsResult,
@@ -56,10 +52,7 @@ export function buildCustomBadges(
 }
 
 /**
- * Renders the Conventions badge group.
- *
- * The one group that exists only for configured counters, and the only one
- * that disappears when none belong to it.
+ * Renders the Conventions group, the one that disappears when no configured counter belongs to it.
  */
 export function buildCustomGroup(statistics: CodeStatisticsResult): string {
   const badges = buildCustomBadges(statistics, "conventions");
@@ -72,15 +65,7 @@ export function buildCustomGroup(statistics: CodeStatisticsResult): string {
 }
 
 /**
- * Renders every custom statistic's breaching instances as its own section.
- *
- * Generalized past the `comment` selector, the only per-instance selector
- * spec #749 user story 16 names today: whichever selector a `custom`
- * statistic's `instances` came from, each one becomes a bullet naming the
- * file and line it was found at. A statistic that only counts — no
- * `instances` at all — or one carrying no breaches this run contributes
- * nothing, the same instinct `buildCustomGroup` already follows when nothing
- * belongs to a group.
+ * Renders each custom statistic's breaching instances as its own section, one bullet per file and line.
  */
 export function buildCustomStatisticInstancesSection(
   statistics: CodeStatisticsResult,
@@ -99,11 +84,7 @@ export function buildCustomStatisticInstancesSection(
 }
 
 /**
- * Build one labelled group of badges.
- *
- * The label is what makes an unqualified counter readable: `Classes` under
- * the TypeScript group and `Python Classes` under the Python one are two
- * different measurements, and only the grouping says which is which.
+ * Builds one labelled group of badges. The label tells same-named counters in different languages apart.
  */
 export function buildGroup(label: string, badges: string[]): string {
   // A real heading rather than a bold line: the block sits under an `##`
@@ -253,12 +234,7 @@ export function buildPythonGroup(statistics: CodeStatisticsResult): string {
 }
 
 /**
- * Renders the whole-tree badge group, named after what the run measured.
- *
- * `Repository` only when the measured directory is the repository. A run
- * scoped to one project heads the same badges `Project`, because the figures
- * beneath cover that project and nothing else — the badges themselves are
- * unchanged, only what they are said to be about.
+ * Renders the whole-tree group, named for what the run measured: `Repository` only for the whole repository, else `Project`.
  */
 export function buildRepositoryGroup(
   statistics: CodeStatisticsResult,
@@ -318,18 +294,7 @@ export function buildSqlGroup(statistics: CodeStatisticsResult): string {
 }
 
 /**
- * Renders the Measured Targets badge group, one badge per measured target.
- *
- * The group exists only when a run measured a declared target's size, which is
- * what tells a run measuring one project from the run measuring the whole
- * repository: a project declares build output to size, the repository declares
- * none and keeps the single `Repository Size` badge it already had. A target
- * that asked for no size analysis contributes no badge rather than a zero,
- * because "not measured" and "measured as empty" must not read alike.
- *
- * The compression rides in the value, since a gzipped figure and a raw one are
- * not the same measurement and a badge showing only the number would let them
- * be compared as though they were.
+ * Renders the Measured Targets group, one badge per measured target. A run that measured no target has no group.
  */
 export function buildTargetsGroup(targets: readonly TargetSize[]): string {
   if (targets.length === 0) {
@@ -410,12 +375,7 @@ export function encodeValue(input: number | string): string {
 }
 
 /**
- * Formats one target's measured size, naming the compression it was measured
- * under unless there was none.
- *
- * An uncompressed figure is left unqualified because that is what a plain byte
- * count means everywhere else in this report; a compressed one says so, so
- * that 5.32 kB gzipped is never read as 5.32 kB on disk.
+ * Formats one target's size, naming its compression unless it was uncompressed. A gzipped figure is never read as bytes on disk.
  */
 export function formatTargetSize(target: TargetSize): string {
   const size = formatBytes(target.bytes);

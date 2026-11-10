@@ -55,14 +55,8 @@ export class CaelundasCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Executes the full calendar generation pipeline.
-   *
-   * Parses environment input, detects all perfective and progressive astronomical events
-   * across the configured date range, merges and sorts the results by start time, upserts
-   * them through {@link CalendarEventsService}, then renders the stored events for the range and
-   * location to ICS and JSON files via {@link CalendarService}.
-   *
-   * @returns Promise that resolves when both files have been written.
+   * Runs the calendar pipeline: detect, store, then render the stored range to
+   * ICS and JSON files.
    */
   async run(): Promise<void> {
     this.logger.debug("🚀 Starting a caelundas run", undefined, {

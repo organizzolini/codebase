@@ -27,10 +27,7 @@ export interface GroupTagPickerProperties {
 // 🧩 Component
 
 /**
- * Renders the tag tree a level of a grouping picks its groups from: the same
- * tree, with the same search, folding and counts, as the filter's value
- * editor for that root. Each tag ticked becomes a group of the events under
- * it, so several are picked together without listing their combinations.
+ * Renders the tag tree a level picks its groups from, with the filter's search, folding and counts; each tag ticked is a group.
  */
 export function GroupTagPicker(
   properties: Readonly<GroupTagPickerProperties>,

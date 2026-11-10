@@ -23,21 +23,8 @@ import type {
 } from "./plugin.types";
 
 /**
- * The cache inputs that tie a gate to the compiler options its loader reads.
- *
- * The loader takes them from the workspace root's `tsconfig.json`, and
- * through it from every base that file `extends` — directly, through an
- * array, or through a base's own `extends` — so an edit to any of them can
- * change how a gate compiles what it judges. A base in the workspace is
- * named as a `{workspaceRoot}` file, which Nx's affected computation follows
- * as well as hashes. A base an installed package provides is named in
- * `externalDependencies` instead, since its version is what changes — but
- * only when the root `package.json` declares the package, because Nx fails
- * every task naming an external dependency missing from its graph.
- *
- * Nothing here throws: inference runs while Nx builds the project graph,
- * where a throw stops every command in the workspace. A base that cannot be
- * read, or cannot be named, is skipped and named in a warning instead.
+ * Cache inputs for the compiler options the loader reads: the root `tsconfig.json` and every
+ * base it extends. Never throws.
  */
 export function resolveTsconfigInputs(
   args: ResolveTsconfigInputsArguments,
@@ -77,14 +64,8 @@ function describeSkippedBase(
 }
 
 /**
- * Walks the root tsconfig's `extends` chain, each workspace file once, so a
- * chain that loops still ends.
- *
- * The root's own file is named whether or not it exists: the loader falls
- * back to its defaults without one, and creating it must still invalidate
- * the gate. So is an extended file that is missing or cannot be parsed —
- * a fix to it must invalidate the gate too — though what it would extend in
- * turn cannot be followed.
+ * Walks the root tsconfig's `extends` chain, each workspace file once. The root is named
+ * even when absent.
  */
 function followExtendsChain(args: {
   logger: ToolInputsLogger;
@@ -126,9 +107,8 @@ function followExtendsChain(args: {
 }
 
 /**
- * Every string a tsconfig's `extends` names, read as TypeScript reads it:
- * JSON with comments and trailing commas, and a string or an array of them.
- * Nothing, with a warning, when the file is missing or cannot be parsed.
+ * Every string a tsconfig's `extends` names, as TypeScript reads it. Nothing, with a
+ * warning, when the file cannot be parsed.
  */
 function readExtends(args: {
   file: string;
@@ -153,9 +133,8 @@ function readExtends(args: {
 }
 
 /**
- * The installed package a real path outside the workspace belongs to — the
- * one under its last `node_modules`, which under pnpm's store is the package
- * itself rather than the store — or nothing for a path under none.
+ * The installed package a real path outside the workspace belongs to: the one under its
+ * last `node_modules`, or nothing for a path under none.
  */
 function readInstalledPackageName(file: string): string | undefined {
   const segments = file.split(path.sep);
@@ -172,10 +151,8 @@ function readInstalledPackageName(file: string): string | undefined {
 }
 
 /**
- * The packages the root manifest declares from a registry, which Nx's
- * lockfile parsing puts in its graph. One it declares through `workspace:`,
- * `file:`, `link:`, or `portal:` is local, and may be no external node at
- * all — naming it would fail every gate.
+ * The packages the root manifest declares from a registry. Local protocols are left out,
+ * since naming one would fail every gate.
  */
 function readRegistryDependencies(workspaceRoot: string): Set<string> {
   return new Set(
@@ -191,15 +168,8 @@ function readRegistryDependencies(workspaceRoot: string): Set<string> {
 }
 
 /**
- * Resolves one `extends` entry to the base it names, as TypeScript does, and
- * sorts it by where that base lives.
- *
- * A base in the workspace is a file — a package of the same workspace
- * included, since its files are what change. One under `node_modules` is an
- * installed package, named by its version, whether the entry named the
- * package or a path into it — when the root manifest declares it, which puts
- * it in Nx's graph. One that resolves nowhere is neither: nothing shows that
- * Nx's graph holds it, and TypeScript itself would fail to read it.
+ * Resolves an `extends` entry to the base it names, sorted by where that base lives. One that
+ * resolves nowhere is skipped.
  */
 function resolveExtendedBase(args: {
   declared: ReadonlySet<string>;
@@ -237,12 +207,7 @@ function resolveExtendedBase(args: {
 }
 
 /**
- * Resolves an entry naming a package, from the extending file, as Node
- * resolves a module: the path inside the package it names, with `.json`
- * appended when that names no file. One naming no path inside the package
- * is its own `tsconfig.json`, or whatever its `exports` map the package to —
- * TypeScript tries the latter first, and a package exporting only that
- * refuses the former. Only a JSON file counts, since only one can be a base.
+ * Resolves a package entry as Node does. Only a JSON file counts, since only one can be a base.
  */
 function resolvePackageBase(args: {
   file: string;
@@ -270,11 +235,8 @@ function resolvePackageBase(args: {
 }
 
 /**
- * Resolves an entry naming a path, from the extending file's directory, with
- * `.json` appended when it names no file — a directory of that name is no
- * file, so `./configuration` beside a `configuration/` folder still means
- * `configuration.json`. A missing file is still named, at the path it would
- * have, so the edit that creates it invalidates the gate.
+ * Resolves a path entry from the extending file's directory, appending `.json` when it names no
+ * file. A missing file is still named.
  */
 function resolvePathBase(args: { file: string; specifier: string }): string {
   const named = path.resolve(path.dirname(args.file), args.specifier);

@@ -22,9 +22,7 @@ export interface CalendarScaleSelectProperties {
 // 🧩 Component
 
 /**
- * Renders one button for each of the timeline's scales, from a day of
- * minutes to a year of months, the one shown pressed. The View menu holds it
- * in its Scale submenu.
+ * Renders one button per timeline scale, from a day of minutes to a year of months, the shown one pressed.
  */
 export function CalendarScaleSelect(
   properties: Readonly<CalendarScaleSelectProperties>,

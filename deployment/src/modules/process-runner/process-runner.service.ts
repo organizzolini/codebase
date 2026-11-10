@@ -33,11 +33,7 @@ export class ProcessRunnerService {
   // 🌎 Public Methods
 
   /**
-   * Runs a command to completion and returns what it printed.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
-   * @returns Both output streams and the exit code.
+   * Runs a command to completion with no shell and returns its output and exit code.
    */
   public capture(executable: string, args: readonly string[]): CapturedProcess {
     const result = spawnSync(executable, [...args], {
@@ -56,11 +52,7 @@ export class ProcessRunnerService {
 
   /**
    * Runs a command without blocking, so several can run at once, and returns
-   * what it printed once it ends. Its standard input is closed at once.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
-   * @returns Both output streams and the exit code.
+   * its output when it ends. Standard input is closed.
    */
   public async captureAsync(
     executable: string,
@@ -96,13 +88,8 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command to completion with its standard output written to a file,
-   * byte for byte, which suits a download that is not text.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
-   * @param file - The file its standard output replaces.
-   * @returns The error stream and the exit code; `stdout` is always empty.
+   * Runs a command to completion, writing its standard output to `file` byte
+   * for byte, for binary downloads.
    */
   public captureToFile(
     executable: string,
@@ -130,13 +117,8 @@ export class ProcessRunnerService {
   }
 
   /**
-   * Runs a command with this process's own output streams, so its output
-   * appears as it would from the shell step that used to run it.
-   *
-   * @param executable - The program to run, looked up on `PATH`.
-   * @param args - Its arguments, passed verbatim with no shell between.
-   * @param input - Text to write to its standard input, when it reads any.
-   * @returns The exit code.
+   * Runs a command with this process's own output streams, optionally writing
+   * `input` to its standard input.
    */
   public stream(
     executable: string,

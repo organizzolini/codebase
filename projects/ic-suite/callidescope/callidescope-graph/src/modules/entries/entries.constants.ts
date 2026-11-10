@@ -1,12 +1,6 @@
 // ♟️ Constants
 
-/**
- * Methods a framework calls on a class it manages.
- *
- * Nothing in a repository calls these, so without naming them every one would
- * be promoted as an orphan and reported with an entry-point kind that says
- * nothing about why it runs.
- */
+/** Methods a framework calls on a managed class. Naming them stops each being promoted as an orphan. */
 export const LIFECYCLE_METHOD_NAMES = new Set([
   "beforeApplicationShutdown",
   "onApplicationBootstrap",

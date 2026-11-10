@@ -48,11 +48,9 @@ export class ValidationService {
   // 🔏 Private Methods
 
   /**
-   * Checks one instance's files exist, then compares the documents whose
-   * extensions the selected validators claim.
+   * Checks one instance's files exist, then compares the documents the validators claim.
    *
-   * File existence comes first because a missing file cannot be compared, and
-   * reporting it once is clearer than every language reporting it in turn.
+   * File existence comes first, since a missing file cannot be compared.
    */
   private compareInstance(args: {
     instance: MatchedInstance;
@@ -89,15 +87,9 @@ export class ValidationService {
   }
 
   /**
-   * Fills in each placeholder nothing supplied from the instance itself.
+   * Fills each placeholder nothing supplied from the instance itself.
    *
-   * The template was rendered with a random value standing in for each one,
-   * and a first comparison captures the text of the instance node aligned with
-   * the first template node holding each value. The instance comes back with
-   * that text substituted, ready for the ordinary comparison — which is the
-   * consistency check, since a later occurrence holding different text is an
-   * ordinary difference. `missing` keeps the stand-in of every placeholder
-   * nothing revealed. The capture pass runs only when something is unresolved.
+   * Captures the instance text aligned with each stand-in; unrevealed placeholders are kept as `missing`.
    */
   private inferPlaceholders(args: {
     instance: MatchedInstance;
@@ -183,13 +175,7 @@ export class ValidationService {
   /**
    * Validates every instance and returns the differences found.
    *
-   * Instances that matched no template are reported alongside the content
-   * differences rather than skipped, so one report covers both "this file is
-   * wrong" and "conformetry cannot tell what this path was generated from".
-   *
-   * Synchronous, because resolving the languages was the only step that ever
-   * waited on anything: they were imported on demand, and now they are
-   * injected.
+   * Unmatched instances are reported alongside content differences, not skipped.
    */
   public validate(args: RunValidationArguments): RunValidationResult {
     const { matched, unmatched } = this.configurationService.matchInstances({

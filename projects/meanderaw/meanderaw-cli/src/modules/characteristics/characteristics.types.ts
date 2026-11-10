@@ -16,9 +16,7 @@ export type BooleanCharacteristicKey =
   (typeof BOOLEAN_CHARACTERISTIC_KEYS)[number];
 
 /**
- * A discovered provider shaped like an evaluator — a `compute` method and a
- * `metadata` object naming a string key and value type — before its key and
- * value type are checked against the key lists.
+ * A discovered provider shaped like an evaluator: a `compute` method and `metadata` naming its key and value type.
  */
 export interface CandidateEvaluator {
   compute(context: CharacteristicContext): unknown;
@@ -29,22 +27,14 @@ export interface CandidateEvaluator {
 }
 
 /**
- * The tier a characteristic is measured in: `submatrix` reads local windows
- * of the grid (a single point or an M×N sliding window), `path` walks the ink
- * as a graph over the cyclic band, and `compound` combines other
- * characteristics' values rather than reading the grid itself.
+ * The tier a characteristic is measured in: `submatrix` reads a grid window,
+ * `path` walks the ink as a graph, `compound` combines other values.
  */
 export type CharacteristicCategory = "compound" | "path" | "submatrix";
 
 /**
- * Everything an evaluator may read about one meander, prepared once by the
- * caller and shared by every evaluator — so no evaluator depends on another
- * having run first.
- *
- * `matrix` is the decoded grid indexed `[row][column]`; its columns wrap
- * cyclically, which `MatrixService.pointAt` and `MatrixService.submatrices`
- * already honour. `rows` and `columns` restate its shape so an evaluator need
- * not guard an empty first row.
+ * Everything an evaluator may read about one meander, prepared once and shared, so no
+ * evaluator depends on another having run first.
  */
 export interface CharacteristicContext {
   readonly code: CodeObject;
@@ -54,11 +44,7 @@ export interface CharacteristicContext {
 }
 
 /**
- * One characteristic as a self-describing service: the metadata that names
- * and explains it, and the pure computation of its value from a context.
- *
- * An evaluator that needs another characteristic's value injects that
- * evaluator's service and calls its `compute` with the same context.
+ * One characteristic as a self-describing service: its metadata and the pure computation of its value from a context.
  */
 export interface CharacteristicEvaluator<
   T extends CharacteristicValue = CharacteristicValue,
@@ -68,10 +54,7 @@ export interface CharacteristicEvaluator<
 }
 
 /**
- * A provider holding several evaluators rather than being one — a letter
- * service, whose sixteen orientations are each an evaluator with its own key
- * and metadata. `CharacteristicsService` registers every member of every
- * group it discovers exactly as it registers a lone evaluator.
+ * A provider holding several evaluators rather than being one, such as a letter service whose sixteen orientations are each an evaluator.
  */
 export interface CharacteristicEvaluatorGroup<
   T extends CharacteristicValue = CharacteristicValue,
@@ -87,14 +70,8 @@ export type CharacteristicKeyOf<T extends CharacteristicValue> =
   T extends boolean ? BooleanCharacteristicKey : NumericCharacteristicKey;
 
 /**
- * What a characteristic is, for people and catalogs rather than for the
- * computation: its camelCase `key` (the record field, and the key of a
- * stored row's `characteristics` map, it fills), a display `name`, a one-sentence `description`, its tier, and the
- * type of value it yields. `formula` is a LaTeX expression of the definition,
- * and `documentationUrl` links a fuller explanation where one exists.
- *
- * A `submatrix` characteristic must also declare the `submatrix` window it
- * reads; a `path` or `compound` one reads no window and must not.
+ * A characteristic's catalog entry: key, name, description, tier, and value type.
+ * A `submatrix` one declares its window; `path` and `compound` ones must not.
  */
 export type CharacteristicMetadata<
   T extends CharacteristicValue = CharacteristicValue,
@@ -121,9 +98,8 @@ export interface CharacteristicMetadataFields<
 }
 
 /**
- * Every Characteristic of one meander as a single record, one field per
- * registered evaluator: a number under each numeric key and a boolean under
- * each boolean key. `CharacteristicsService.compute` fills it.
+ * Every Characteristic of one meander as one record: a number under each
+ * numeric key, a boolean under each boolean key.
  */
 export type Characteristics = NumericCharacteristicRecord &
   Readonly<Record<BooleanCharacteristicKey, boolean>>;
@@ -159,11 +135,8 @@ export type PatternCharacteristicKey =
 export type StoredBooleanKey = (typeof STORED_BOOLEAN_KEYS)[number];
 
 /**
- * A meander row's `characteristics` map: every numeric characteristic that is
- * not zero under its key, and `true` under every {@link StoredBooleanKey} that
- * holds. A zero or `false` is left out, so a reader takes a missing key as
- * zero or `false`; raw SQL reads one as
- * `COALESCE((characteristics ->> 'key')::numeric, 0)` for the same reason.
+ * A meander row's `characteristics` map. A missing key means zero or `false`,
+ * so raw SQL reads one as `COALESCE((characteristics ->> 'key')::numeric, 0)`.
  */
 export type StoredCharacteristics = Readonly<
   Partial<Record<NumericCharacteristicKey, number>> &
@@ -171,9 +144,7 @@ export type StoredCharacteristics = Readonly<
 >;
 
 /**
- * The window a `submatrix` characteristic reads, in lattice points: a fixed
- * glyph's exact template size, 1×1 for a point scan, or — marked `variable` —
- * the smallest window a variable-size scan such as a rectangle can match.
+ * The lattice-point window a `submatrix` characteristic reads: a glyph's template size, 1×1 for a point scan, or the smallest match for a `variable` scan.
  */
 export interface SubmatrixWindow {
   readonly columns: number;

@@ -250,7 +250,7 @@ Tests must accompany code. Run tests via `nx run <project>:vitest:<unit|integrat
 
 ### Language Conventions & Size Limits
 
-For naming conventions, abbreviations, formatting, and language-specific rules, invoke the `write-typescript` or `write-python` skills. Strict size limits apply (e.g., max 512 lines per file, 128 words per comment block). Split files and refactor rather than ignoring limits.
+For naming conventions, abbreviations, formatting, and language-specific rules, invoke the `write-typescript` or `write-python` skills. Strict size limits apply (e.g., max 512 lines per file, 48 words per plain comment block and 24 per JSDoc (64 on a class)). Split files and refactor rather than ignoring limits.
 
 ## Git Workflow
 

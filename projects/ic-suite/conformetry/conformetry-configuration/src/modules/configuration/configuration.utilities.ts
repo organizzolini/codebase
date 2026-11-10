@@ -9,21 +9,7 @@ import type { z } from "zod";
 /**
  * Fails when two generators would answer to the same thing.
  *
- * A host resolves a generator by taking the *first* whose name matches, so a
- * collision does not error where it is used — it silently shadows, and the
- * losing generator becomes unreachable while still appearing in the
- * configuration. Two generators sharing a template collide differently:
- * validation then finds instances that fit both equally and reports them as
- * matching nothing.
- *
- * Reported through Zod rather than thrown, so every collision in a
- * configuration surfaces in one pass and each one carries the index of the
- * entry it came from.
- *
- * A generator is described structurally rather than taken as
- * `ParsedGeneratorEntry`, which is inferred from the very schema these checks
- * are attached to: naming it would make the schema depend on this file and
- * this file on the schema.
+ * A host resolves the first matching name, so a collision silently shadows.
  */
 export function assertNoCollisions(
   definitions: {
@@ -90,9 +76,7 @@ function findDuplicates<Definition extends { name: string }>(args: {
 /**
  * Reports a name that would shadow the all-templates sentinel.
  *
- * `validate --templates all` means every template. A generator answering to
- * that name would make the same word mean two things on one command line, and
- * whichever meaning won would silently discard the other.
+ * `validate --templates all` already means every template, so the word cannot name one.
  */
 function findReservedNames(
   definitions: {

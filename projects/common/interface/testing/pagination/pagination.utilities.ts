@@ -41,10 +41,8 @@ export function expectedPage(
 }
 
 /**
- * Slices an array of items according to forward (first, after) and backward
- * (last, before) Relay pagination parameters: how every connection paged
- * before paging moved into SQL, kept here as the oracle SQL paging must agree
- * with on every boundary.
+ * Slices items by forward (`first`, `after`) and backward (`last`, `before`)
+ * Relay paging, the oracle SQL paging must agree with.
  */
 export function paginateArray<T>(
   items: T[],
@@ -72,11 +70,8 @@ export function paginateArray<T>(
 }
 
 /**
- * Cursor and count combinations worth pinning: the first, a middle, and the
- * last member, a row outside the filtered set, an undecodable cursor, and two
- * non-canonical encodings of a member, each as `after` and as `before`, plus
- * ordered, equal, and crossed pairs of both. A quick matrix keeps only the
- * middle member, the outsider, and one pair.
+ * Cursor and count combinations pinning paging edges: first, middle, last, an
+ * outsider, bad and non-canonical cursors, crossed pairs. `quick` keeps three.
  */
 export function paginationMatrix(
   ids: readonly string[],

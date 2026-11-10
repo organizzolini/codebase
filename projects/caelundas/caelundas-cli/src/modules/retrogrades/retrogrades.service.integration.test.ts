@@ -36,11 +36,7 @@ import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 let service: RetrogradesService;
 
 /**
- * Builds a Record<RetrogradeBody, CoordinateEphemeris> across the 61-minute detection
- * window (MARGIN_MINUTES before and after `minute`). Each body maps to its own
- * timestamp-keyed CoordinateEphemeris. Every body defaults to a constant longitude of
- * 100°. An optional override specifies a different `previous` / `current` / `next`
- * pattern for one body so that targeted station scenarios can be tested in isolation.
+ * Builds ephemerides for every body across the detection window; bodies default to 100°, and one optional override sets a station pattern.
  */
 function createRetrogradeEphemeris(
   minute: Moment,

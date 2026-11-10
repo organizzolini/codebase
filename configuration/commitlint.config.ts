@@ -33,17 +33,8 @@ const NX_RELEASE_PROJECT_LINE =
 const ATTRIBUTION_TRAILER = /^(?:Co-authored-by|Claude-Session): \S+/i;
 
 /**
- * Every non-empty body line must be an attribution trailer.
- *
- * Matched case-insensitively. Git trailer keys are case-insensitive, and the
- * tools that write this one disagree on casing — GitHub Copilot emits
- * `Co-authored-by:` and Claude Code emits `Co-Authored-By:`. Both are the same
- * trailer to git and to GitHub, so rejecting either would fail a valid commit
- * over a detail no downstream consumer distinguishes.
- *
- * A `chore(release)` commit may also list Nx's per-project release lines. Nx
- * always appends them when one commit releases several independent projects,
- * and no option turns them off.
+ * Every non-empty body line must be an attribution trailer. Matched
+ * case-insensitively, as git treats trailer keys.
  */
 const bodyCoAuthoredOnly: Rule = (parsed): RuleOutcome => {
   const body: null | string = parsed.body;

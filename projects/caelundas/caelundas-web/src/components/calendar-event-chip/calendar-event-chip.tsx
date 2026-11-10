@@ -26,9 +26,7 @@ export interface CalendarEventChipProperties {
 // 🧩 Component
 
 /**
- * Draws an event as its glyphs alone, with a tooltip of its name in English
- * and what the database says of it, and for a screen reader the name and the
- * description in full, since the glyphs say neither.
+ * Draws an event as its glyphs, with a tooltip of its name; a screen reader gets the name and description in full.
  */
 export function CalendarEventChip(
   properties: Readonly<CalendarEventChipProperties>,

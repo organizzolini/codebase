@@ -8,12 +8,8 @@ import type {
 } from "./executor.types";
 
 /**
- * Judges one project's glossaries against the words its code uses.
- *
- * Inferred onto every project holding a coinagerie configuration, so
- * `nx affected -t coinagerie-check` judges only the projects a branch touched.
- * With `write` it rewrites the glossaries instead of failing on one. It is the
- * batch of one: the same command line, asked about a single project.
+ * Judges one project's glossaries against its code's words.
+ * Inferred onto every configured project, so `nx affected` judges only touched projects.
  */
 export default async function checkExecutor(
   options: CheckExecutorOptions,

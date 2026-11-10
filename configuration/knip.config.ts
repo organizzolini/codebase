@@ -4,13 +4,9 @@ const config: KnipConfig = {
   $schema: "https://unpkg.com/knip@5/schema.json",
 
   // Globally ignored file patterns (tests, build output, caches)
-  // Each toolchain configuration named here is read by file name, never
-  // imported, the way nothing imports eslint.config.ts — but knip has a plugin
-  // for eslint and none for these. codometer walks upward from the directory it
-  // measures; callidescope resolves one beside every project a trace reaches;
-  // codependix, optionally, beside every project a run maps; and coinagerie
-  // from the folder a run starts in, where only the shared configuration a
-  // project spreads imports anything.
+  // Each toolchain configuration named here is read by file name, not imported. codometer walks
+  // upward from the directory it measures; callidescope and codependix resolve one beside each
+  // project; coinagerie reads from the folder a run starts in.
   ignore: [
     "**/*.test.ts",
     "**/callidescope.config.ts",
@@ -218,11 +214,9 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
-    // codometer-examples: A sample corpus and one configuration per behavior.
-    // Nothing here is imported by anything — the configurations are read by the
-    // codometer command line and the corpus exists to be counted — so knip is
-    // told where the entry points really are rather than left to conclude the
-    // whole package is dead.
+    // codometer-examples: a sample corpus and one configuration per behavior.
+    // Nothing imports these; the corpus exists to be counted. Declaring the
+    // entry points stops knip concluding the whole package is dead.
     "projects/ic-suite/codometer/codometer-examples": {
       entry: [
         "codometer.config.ts",
@@ -264,11 +258,9 @@ const config: KnipConfig = {
     },
 
     // persistence: Shared Postgres package and its command line. The migration
-    // SQL extraction script is run by name from the `migration` target
-    // defaults in nx.json rather than imported, and `start` and `repl` run
-    // `src/persistence.main.ts` and `src/persistence.repl.ts` by path, so knip is
-    // told the command entry points are used. Knip discovers both package
-    // exports, including the public testing subpath, from package.json.
+    // SQL script runs by name from nx.json, and `start` and `repl` run their
+    // entry files by path, so knip is told those command entry points are used.
+    // Knip discovers the package exports from package.json.
     "projects/common/persistence": {
       entry: [
         "scripts/**/*.ts",
@@ -396,15 +388,9 @@ const config: KnipConfig = {
       ignore: ["src/**/*.test.ts", "testing/**"],
       project: "src/**/*.ts",
     },
-    // Every fixture exists to be traced, not imported. An orphan-root fixture
-    // is *defined* by having no caller, and a resolution-table fixture is
-    // reached only by the type checker — which is exactly the shape knip
-    // reports as an unused file or an unused export. Declaring the whole of
-    // `examples/` as entry points says that directly, and keeps knip doing the
-    // one job that still applies here: telling this package when a dependency
-    // it declares has stopped being used. Ignoring `examples/` instead would
-    // leave every dependency looking unused, and `knip --fix` would delete
-    // them.
+    // Every fixture exists to be traced, not imported, so knip reports it as unused. Declaring
+    // all of `examples/` as entry points says so directly. Ignoring it instead would leave every
+    // dependency looking unused, and `knip --fix` would delete them.
     "projects/ic-suite/callidescope/callidescope-examples": {
       entry: [
         "callidescope.workspace.config.ts",
@@ -499,11 +485,9 @@ const config: KnipConfig = {
       ignore: ["src/**/*.test.ts", "testing/**"],
       project: "src/**/*.ts",
     },
-    // conformetry-examples: runnable examples of the toolchain. Example code
-    // exists to be read and run, not imported, so every file here is an entry
-    // point in its own right — without saying so, knip reports the whole
-    // package as unused. The fixture trees are excluded because a template
-    // file is not valid TypeScript until it has been rendered.
+    // conformetry-examples: runnable examples of the toolchain. Their files are entry points,
+    // since knip would otherwise report the whole package as unused. The fixture trees are
+    // excluded because a template is not valid TypeScript until it has been rendered.
     "projects/ic-suite/conformetry/conformetry-examples": {
       entry: ["examples/*/conformetry.config.ts", "examples/*/*.ts"],
       ignore: ["examples/*/instances/**", "examples/*/templates/**"],

@@ -1,10 +1,7 @@
 import type { CodeStatisticsResult, CodometerReport } from "@codometer/core";
 
 /**
- * Builds a zeroed statistics report for tests that only pass one through.
- *
- * Every counter the pipeline produces is present, so a test asserting on the
- * whole report keeps working when a new statistic is added.
+ * Builds a zeroed statistics report, with every counter present so whole-report assertions survive new statistics.
  */
 export function buildCodeStatistics(
   overrides: Partial<CodeStatisticsResult> = {},
@@ -186,10 +183,7 @@ export function buildCodeStatistics(
 }
 
 /**
- * Builds a report holding one target and one unlimited metric.
- *
- * Enough shape for anything that only carries a report through, and small
- * enough that a test asserting on the whole document stays readable.
+ * Builds a report with one target and one unlimited metric, enough to carry a report through in tests.
  */
 export function buildCodometerReport(
   overrides: Partial<CodometerReport> = {},

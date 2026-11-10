@@ -6,13 +6,8 @@ import type { Language } from "../languages/languages.types";
 import type { YamlHit } from "./yaml.types";
 
 /**
- * Reads the keys of a YAML document.
- *
- * A key is an identifier and a value is not, so a mapping contributes the
- * names on its left and a sequence of plain values contributes nothing.
- * Block scalar bodies are skipped, because the text of a `run: |` script is
- * not a name. The scan is one line at a time and judges nothing about the
- * document as a whole, so a half-written file still yields every key it has.
+ * Reads the keys of a YAML document, one line at a time. Block scalar bodies
+ * are skipped, and a half-written file still yields every key it has.
  */
 @Injectable()
 export class YamlService implements Language {
@@ -40,11 +35,7 @@ export class YamlService implements Language {
   }
 
   /**
-   * The first rule that matches at `index`, or a one-character skip when none
-   * does.
-   *
-   * The rules cover every character a line can hold, so the skip is only a
-   * guarantee that a scan always moves forward.
+   * The first rule matching at `index`, or a one-character skip so the scan always moves forward.
    */
   private matchRule(line: string, index: number): YamlHit {
     let hit: YamlHit = YAML_UNMATCHED;

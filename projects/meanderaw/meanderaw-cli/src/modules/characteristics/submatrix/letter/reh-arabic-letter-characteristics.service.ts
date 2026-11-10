@@ -51,9 +51,7 @@ export class RehArabicLetterCharacteristicsService implements CharacteristicEval
   // 🔐 Private Fields
 
   /**
-   * The upright ر (final Arabic reh) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ر (final Arabic reh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ┌╴
    * ┌┘
@@ -63,9 +61,7 @@ export class RehArabicLetterCharacteristicsService implements CharacteristicEval
   private readonly finalTemplate: readonly string[] = [".61", "69.", "8.."];
 
   /**
-   * The upright ر (isolated Arabic reh) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+   * The upright ر (isolated Arabic reh) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷
    * ┌┘

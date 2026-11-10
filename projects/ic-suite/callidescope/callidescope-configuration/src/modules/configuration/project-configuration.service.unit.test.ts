@@ -31,12 +31,7 @@ const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
 const CONFIGURATION_FILE_NAME = CONFIGURATION_FILE_NAMES[3];
 
 /**
- * A project configuration with every field a project must set.
- *
- * Every test staging a well-formed project file goes through here, so a field
- * that becomes required is added in one place rather than in thirty — and a
- * test asserting something other than completeness cannot accidentally stop
- * asserting it.
+ * Builds a complete project configuration, so a field that becomes required is added in one place.
  */
 function completeConfiguration(
   overrides: Partial<CallidescopeProjectConfiguration> = {},
@@ -94,11 +89,7 @@ async function resolveWrittenLimits(args: {
 }
 
 /**
- * Writes an object as a JavaScript literal, `undefined` members included.
- *
- * `JSON.stringify` drops a key written as `undefined`, which is precisely the
- * difference these tests are about: a project that wrote the member and a
- * project that forgot it would stage the same file.
+ * Writes a value as a JavaScript literal, keeping `undefined` members, which JSON would drop.
  */
 function serialize(value: unknown): string {
   if (Array.isArray(value)) {
@@ -119,12 +110,7 @@ function serialize(value: unknown): string {
 }
 
 /**
- * Copies an object without one key, staging the file a project forgot to
- * finish.
- *
- * Rebuilt from its entries rather than copied and deleted from, because a
- * dynamic `delete` is a lint error here — and a key whose value is `undefined`
- * survives the rebuild, which is exactly the distinction these tests turn on.
+ * Copies an object without one key. Rebuilt from entries, since a dynamic `delete` is a lint error.
  */
 function withoutKey(
   value: object,
@@ -136,12 +122,8 @@ function withoutKey(
 }
 
 /**
- * Writes a fresh workspace holding one configuration file per named project.
- *
- * An object is written as a JavaScript module and anything else verbatim, so
- * staging a malformed file is as easy as staging a well-formed one. JavaScript
- * rather than JSON because `undefined` is the value a complete configuration
- * writes to gate no breadth or publish no diagram, and JSON cannot spell it.
+ * Writes a fresh workspace holding one configuration file per named project. Objects are written
+ * as JavaScript, since `undefined` must survive.
  */
 async function writeWorkspace(
   projects: Record<string, object | string>,
@@ -521,10 +503,7 @@ describe(ProjectConfigurationService, () => {
   );
 
   it("refuses a field written as undefined, which says nothing about its members", async () => {
-    // `limits: undefined` is not the statement `maximumBreadth: undefined` is.
-    // A member written as undefined is a project saying it gates no breadth;
-    // the field written as undefined says nothing about either number, so it
-    // is the same gap as leaving the field out and is refused by that name.
+    // A field written as undefined says nothing about its members, so it is refused like a field left out.
     const workspaceRoot = await writeWorkspace({
       "packages/hollow": `export default {
         entryPoints: {

@@ -8,11 +8,7 @@ import type { CaptureLocation } from "../../modules/process-runner/process-runne
 import type { CodometerExecutorOptions } from "./codometer.types";
 
 /**
- * Where codometer's command line runs: the directory it is started in and the
- * environment it sees.
- *
- * The swc hook is pointed at the shared tsconfig because it would otherwise
- * read `<cwd>/tsconfig.json`, which a Python project does not have.
+ * Where codometer's command line runs: its directory and environment, with the swc hook pointed at the shared tsconfig.
  */
 export function buildCaptureLocation(args: {
   environment?: Record<string, string>;
@@ -30,12 +26,7 @@ export function buildCaptureLocation(args: {
 }
 
 /**
- * The command-line arguments of a measurement, after `node`, ending in the
- * directories to measure.
- *
- * What the `nx:run-commands` target passed: the report is always written,
- * `--check limits` only for a task that gates, and the badge block only when
- * the task names a file for it. No directory means the working directory.
+ * The command-line arguments of a measurement, after `node`, ending in the directories to measure.
  */
 export function buildCliArguments(args: {
   directories: readonly string[];

@@ -1,11 +1,7 @@
 #!/usr/bin/env node
-// The shebang is what makes the emitted `src/codometer-cli.main.js` usable as this package's
-// `bin`. TypeScript copies it through to the output verbatim, so the built
-// entry runs under a bare `node` with no loader registered — the decorator
-// metadata NestJS constructor injection reads is already in that output,
-// because `configuration/tsconfig.json` sets `emitDecoratorMetadata`. The
-// executable bit is deliberately not managed here: npm and pnpm both set it on
-// a `bin` target at install time, even when the file ships mode 644.
+// The shebang makes the emitted `src/codometer-cli.main.js` runnable as the
+// package `bin` under bare `node`. Decorator metadata is already in the output
+// (`emitDecoratorMetadata`), and npm and pnpm set the executable bit at install.
 import "reflect-metadata";
 import { CommandFactory } from "nest-commander";
 
@@ -15,13 +11,8 @@ import { MainModule } from "./codometer-cli.module";
 import { withDefaultCommand } from "./codometer-cli.utilities";
 
 /**
- * Bootstraps the codometer CLI command application.
- *
- * Standard output belongs to the result: `codometer --format json` writes a
- * document meant to be piped into something that parses it, and `--format
- * markdown` one meant to be redirected into a file. Every diagnostic therefore
- * goes to standard error, chosen here — before anything logs — because the
- * pino instance is built on first use.
+ * Bootstraps the CLI. Logs go to standard error, set before the first log, so
+ * standard output carries only the result document.
  */
 async function main(): Promise<void> {
   LoggerService.logToStandardError();

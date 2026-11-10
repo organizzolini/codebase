@@ -7,8 +7,7 @@ import type { BrotliOptions } from "node:zlib";
 /**
  * Brotli quality size analysis compresses at.
  *
- * The maximum, and stated rather than left to the library's default for the
- * same reason the gzip level is.
+ * The maximum, stated rather than left to the library default.
  */
 export const BROTLI_QUALITY = 11;
 
@@ -24,9 +23,7 @@ export const BROTLI_OPTIONS: BrotliOptions = {
 /**
  * Deflate level size analysis compresses at.
  *
- * Set explicitly on every call. Node's default is 6 and produces a different
- * number of bytes for the same file, so a level left unstated is a measurement
- * that silently disagrees with every limit written against the old one.
+ * Set explicitly: Node's default produces different bytes, so an unstated level shifts every limit.
  */
 export const GZIP_LEVEL = 9;
 

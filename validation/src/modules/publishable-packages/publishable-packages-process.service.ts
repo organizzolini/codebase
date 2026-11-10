@@ -36,13 +36,9 @@ export class PublishablePackagesProcessService {
   // 🔏 Private Methods
 
   /**
-   * Builds the environment a consumer command runs under.
-   *
-   * Starts from this process's own, minus anything that would let the
-   * consumer reach this workspace or a registry token: its `PATH` entries
-   * such as `node_modules/.bin`, its Nx task variables, and its package
-   * manager configuration. The user configuration is pointed at an empty file
-   * inside the consumer, so a token in `~/.npmrc` is never even read.
+   * Inherits this process's environment minus anything that would reach this
+   * workspace or a registry token, and points npm's user config inside the
+   * consumer.
    */
   private createEnvironment(context: ConsumerContext): NodeJS.ProcessEnv {
     const environment: NodeJS.ProcessEnv = {};
@@ -76,11 +72,8 @@ export class PublishablePackagesProcessService {
   // 🌎 Public Methods
 
   /**
-   * Runs one command in the consumer's directory and returns what it printed.
-   *
-   * @param context - The consumer to run inside, and the workspace to hide.
-   * @param command - The executable, its arguments, and its time limit.
-   * @returns The command's combined output, free of color codes, and its exit code.
+   * Runs one command in the consumer's directory, returning its combined output
+   * without color codes and its exit code.
    */
   public run(
     context: ConsumerContext,

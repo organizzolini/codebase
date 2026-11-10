@@ -34,15 +34,9 @@ export class InstanceDiscoveryLocatingService {
   // 🔏 Private Methods
 
   /**
-   * Derives the substitutions an instance's own location answers.
+   * Derives location substitutions, such as `type`.
    *
-   * `type` is the top-level directory the instance sits in — `packages` for
-   * `packages/widgets` — because that is what a project template's own
-   * `project.json` renders into its paths. Derived rather than configured for
-   * the same reason the name variants are: it is a fact about where the
-   * instance is, and restating it per glob is how the two drift apart. A
-   * configured value still wins, which is what a workspace nesting its
-   * projects deeper needs.
+   * `type` is the top-level directory; a configured value still wins.
    */
   private deriveLocationSubstitutions(args: {
     instancePath: string;
@@ -98,12 +92,9 @@ export class InstanceDiscoveryLocatingService {
   }
 
   /**
-   * Returns the literal filename suffix a pattern ends with, such as
-   * `.service.ts` for `**\/*.service.ts`, or `""` when the pattern's last
-   * segment holds no wildcard.
+   * Returns the literal suffix a pattern ends with, or `""` if none.
    *
-   * This is what a file instance's name is derived from: the part of the
-   * filename the glob did not spell out is the name.
+   * A file's name is what the glob did not spell out.
    */
   private resolveGlobSuffix(pattern: string): string {
     const basename = path.basename(pattern);
@@ -117,13 +108,9 @@ export class InstanceDiscoveryLocatingService {
   }
 
   /**
-   * Derives the name an instance's substitutions are built from.
+   * Derives an instance's name.
    *
-   * A directory is named by itself. A file is named by what remains once the
-   * glob's literal suffix is removed, so `differences.service.ts` matched by
-   * `*.service.ts` and `differences.service.unit.test.ts` matched by
-   * `*.service.unit.test.ts` both yield `differences` — which is what collapses the
-   * two into a single two-file instance.
+   * Minus the glob's suffix, `differences.service.ts` and `differences.service.unit.test.ts` both give `differences`.
    */
   private resolveNameStem(args: {
     entryName: string;
@@ -144,14 +131,9 @@ export class InstanceDiscoveryLocatingService {
   // 🌎 Public Methods
 
   /**
-   * Expands every pattern and returns one instance per distinct path, name,
-   * and scope kind.
+   * Expands every pattern into one instance per distinct path, name, and scope kind.
    *
-   * A directory match leaves the file scope open, so the largest fitting
-   * template wins. File matches for the same name are unioned into one scoped
-   * instance, so a template describing exactly those files wins instead. A
-   * directory and a file instance for the same name stay separate on purpose:
-   * both run, and deduplication reports the finding from the smaller template.
+   * Same-name file matches merge into one scoped instance.
    */
   public findInstances(args: FindInstancesArguments): Instance[] {
     const fileScopesByKey = new Map<string, Set<string> | undefined>();

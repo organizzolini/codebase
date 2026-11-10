@@ -8,7 +8,6 @@ export {
   FORMAT_MARKDOWN,
   FORMAT_NAMES,
 } from "./modules/configuration/configuration-flags.constants";
-// 📤 Exports
 export { codometerConfigurationSchema } from "./modules/configuration/configuration-schema.constants";
 export {
   CODOMETER_ANALYSES,
@@ -74,3 +73,5 @@ export type {
   ResolvedCodometerOutput,
   ResolvedCodometerPythonConfiguration,
 } from "./modules/configuration/resolved.types";
+// 📤 Exports
+export { CODOMETER_SYMBOL_KINDS } from "@codometer/core";

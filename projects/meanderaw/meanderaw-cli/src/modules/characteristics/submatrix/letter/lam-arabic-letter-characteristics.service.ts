@@ -59,10 +59,7 @@ export class LamArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ل (final Arabic lam) glyph's points as hexadecimal Code digits,
-   * one string per row, `.` outside the glyph, facing Southwest:
-   *
+  /** The upright ل (final Arabic lam) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *   ╷
    *   │
@@ -77,10 +74,7 @@ export class LamArabicLetterCharacteristicsService implements CharacteristicEval
     "a3b1",
   ];
 
-  /**
-   * The upright ل (initial Arabic lam) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+  /** The upright ل (initial Arabic lam) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷
    *  │
@@ -95,10 +89,7 @@ export class LamArabicLetterCharacteristicsService implements CharacteristicEval
     "29",
   ];
 
-  /**
-   * The upright ل (isolated Arabic lam) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+  /** The upright ل (isolated Arabic lam) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *   ╷
    *   │
@@ -113,10 +104,7 @@ export class LamArabicLetterCharacteristicsService implements CharacteristicEval
     "a39",
   ];
 
-  /**
-   * The upright ل (medial Arabic lam) glyph's points as hexadecimal Code
-   * digits, one string per row, `.` outside the glyph, facing Southwest:
-   *
+  /** The upright ل (medial Arabic lam) glyph as hexadecimal Code digits, facing Southwest:
    * ```text
    *  ╷
    *  │

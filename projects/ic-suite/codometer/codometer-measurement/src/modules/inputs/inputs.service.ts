@@ -41,11 +41,7 @@ export class InputsService {
   // 🔏 Private Methods
 
   /**
-   * Whether a directory can hold anything the input's globs claim.
-   *
-   * A hidden directory is only entered when a glob spells it out. That is what
-   * every glob library means by excluding dot files, and it is also what stops
-   * an input over the whole tree from reading the repository's git database.
+   * Whether a directory can hold anything the input's globs claim. A hidden directory is entered only when a glob names it.
    */
   private canDescend(
     args: WalkInputArguments,
@@ -62,12 +58,7 @@ export class InputsService {
   }
 
   /**
-   * The furthest out an input is allowed to reach, from where the run started.
-   *
-   * The repository holding the measured directory, or that directory itself
-   * when nothing above it looks like one. Found by marker rather than by
-   * asking git, which is never invoked here, and generic to every repository —
-   * it says where measuring stops, not how any tree beneath it is arranged.
+   * The furthest an input may reach: the repository above the measured directory, found by marker files, or the directory itself.
    */
   private findBoundary(workingDirectory: string): string {
     let candidateDirectory = path.resolve(workingDirectory);
@@ -99,11 +90,7 @@ export class InputsService {
   }
 
   /**
-   * Whether a symbolic link points at a file.
-   *
-   * Links are followed, as every glob library does. Only to files, though: a
-   * link pointing back at one of its own ancestors would otherwise be walked
-   * until the stack ran out.
+   * Whether a symbolic link points at a file. Links are followed only to files, so a link back to an ancestor cannot recurse.
    */
   private isLinkedFile(absolutePath: string): boolean {
     try {
@@ -118,10 +105,7 @@ export class InputsService {
   }
 
   /**
-   * Whether the input claims a file.
-   *
-   * Both lists are answered in full rather than in order, so where a pattern
-   * sits within either of them cannot change the answer.
+   * Whether the input claims a file. Both lists are answered in full, so pattern order cannot change the answer.
    */
   private isMatched(
     input: ResolvedCodometerInput,
@@ -144,11 +128,7 @@ export class InputsService {
   }
 
   /**
-   * Reads a directory's entries, or none when the directory cannot be read.
-   *
-   * An input naming a directory that was never built is an ordinary state
-   * rather than a failure — it holds no files, and what that means is decided
-   * by whoever asked for the measurement.
+   * Reads a directory's entries, or none when it cannot be read. An input naming a directory not yet built simply holds no files.
    */
   private readEntries(absoluteDirectory: string): Dirent[] {
     try {
@@ -163,12 +143,7 @@ export class InputsService {
   }
 
   /**
-   * The measured-directory-relative prefix every matched path carries.
-   *
-   * Empty when the input starts where the run does. Otherwise it is the walk
-   * root written relative to the measured directory — `../../dist` and the
-   * like — so that every path leaving this service is relative to the same
-   * directory whether or not the input reached outside it.
+   * The prefix every matched path carries, relative to the measured directory. Empty when the input starts where the run does.
    */
   private readInputPrefix(
     walkDirectory: string,
@@ -215,11 +190,7 @@ export class InputsService {
   }
 
   /**
-   * The literal path prefix of a glob, up to its first magic character.
-   *
-   * `dist/projects/common/observability/**` can only match inside `dist/projects/common/observability`, so
-   * that is the only branch of the tree worth reading — the difference between
-   * measuring one build directory and enumerating every dependency to find it.
+   * The literal path prefix of a glob, up to its first magic character. Only that branch of the tree needs reading.
    */
   private toIncludeBase(pattern: string): string {
     const literalSegments: string[] = [];
@@ -266,18 +237,7 @@ export class InputsService {
   // 🌎 Public Methods
 
   /**
-   * Lists the files an input holds, sorted, relative to the measured directory.
-   *
-   * The walk starts at the input's own directory, which is the measured one
-   * unless the input named a way out of it. Where a repository builds is a
-   * convention its configuration states and this service is told, never one
-   * inferred here from a project's position — but the reach is bounded: a
-   * directory landing outside the repository fails the input by name rather
-   * than measuring whatever it found there.
-   *
-   * Sorted because the walk visits directories in whatever order the
-   * filesystem reports them, and a size is a sum of every file either way —
-   * but a list nobody can predict is one nobody can compare.
+   * Lists the files an input holds, sorted, relative to the measured directory. The walk may reach outside it, but never beyond the repository.
    */
   matchFiles(args: MatchInputFilesArguments): string[] {
     const walkDirectory = path.resolve(

@@ -103,10 +103,7 @@ export const ECLIPSE_TYPE_NAMES = Object.values(eclipseTypeLabelByType);
 const DAILY_CYCLE_NAMES = ["Daily Lunar Cycle", "Daily Solar Cycle"];
 
 /**
- * The raw tags that mean the same wherever they appear: bodies with their
- * class, signs with the element, modality and polarity they imply, decans,
- * the focal body of a compound aspect, the domain of the cycles and phases,
- * and the tags every event carries.
+ * Raw tags that mean the same wherever they appear, such as bodies, signs, decans and the tags every event carries.
  */
 export const SHARED_TAG_MAP: TagMap = {
   ...mapNone(UNCLASSIFIED_RAW_TAGS),
@@ -165,8 +162,7 @@ const SIMPLE_ASPECT_TAG_MAP: TagMap = mergeTagMaps(
 );
 
 /**
- * Compound aspects, by the class and name of the pattern, each with its
- * phase and the nature and harmonic of the aspects that make it up.
+ * Compound aspects by the pattern's class and name, each with its phase, nature and harmonic.
  */
 const COMPOUND_ASPECT_TAG_MAP: TagMap = mergeTagMaps(
   ASPECT_PHASE_TAG_MAP,
@@ -211,11 +207,7 @@ const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
 };
 
 /**
- * Raw tags whose meaning depends on the kind of event, keyed by the raw tag
- * that marks that kind. A marked event's raw tags are looked up in its
- * marker's map as well as the shared one. Ingresses and eclipses are typed
- * from several raw tags at once, so their markers map their own raw tags to
- * nothing and the classifier derives their paths.
+ * Raw tags whose meaning depends on the kind of event, keyed by the raw tag marking that kind.
  */
 export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   ...PLANETARY_PHASE_TAG_MAPS,

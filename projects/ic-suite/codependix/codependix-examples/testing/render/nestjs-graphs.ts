@@ -14,12 +14,8 @@ import type {
 // 🏷️ Types
 
 /**
- * One example project's exploration outcome.
- *
- * Modelled on `codependix-cli`'s split between `ProjectRunResult` and
- * `ProjectRunFailure`: a project either produced a graph or never got that
- * far, and the two must not be representable at once — which is what lets a
- * run report exactly which projects failed while completing every other one.
+ * One example project's exploration outcome: a graph, or the failure that
+ * stopped it. Modelled on `codependix-cli`'s `ProjectRunResult` and `ProjectRunFailure`.
  */
 type Exploration =
   | {
@@ -52,10 +48,7 @@ const PREVIEW_CONTAINER = ["preview-mode", "container"];
 
 /**
  * The root module each example application boots from, keyed by project name.
- *
- * What a real workspace declares in `nestjsModules.rootModules`: nothing about
- * where a root module lives is assumed, so a project absent from this table
- * is a library and is rooted in a synthetic module.
+ * A project absent here is a library, rooted in a synthetic module.
  */
 export const EXAMPLE_ROOT_MODULES: Readonly<Record<string, NestjsRootModule>> =
   {
@@ -81,13 +74,8 @@ const FAILING_CONTAINER = ["container-rooting", "failing-container"];
 // 🕸️ Graphs
 
 /**
- * Module graphs already built, keyed by the project root they came from.
- *
- * Exploring a container boots it, and the same containers are asked for
- * repeatedly. Nothing under `examples/` changes while the process runs, so the
- * second request is answered from here. Only a successful exploration is
- * cached: a container that refuses to load raises every time it is asked for,
- * which is what the container-rooting example shows.
+ * Module graphs already built, keyed by project root. Only a successful
+ * exploration is cached: a container that refuses to load raises every time.
  */
 const graphsByRoot = new Map<string, Promise<NestjsModuleGraph>>();
 
@@ -140,11 +128,7 @@ export function describeError(error: unknown): string {
 }
 
 /**
- * Describes a project the way discovery would have described it.
- *
- * `NestjsProjectService.discoverProjects` filters an Nx project graph by the
- * `framework:nestjs` tag, and an example project is not an Nx project — so the
- * descriptor discovery would have produced is built directly instead.
+ * Describes a project as discovery would have. An example is not an Nx project, so discovery's descriptor is built directly.
  */
 export function describeProjectAt(absoluteRoot: string): NestjsProject {
   const name = path.basename(absoluteRoot);

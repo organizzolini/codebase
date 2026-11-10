@@ -14,19 +14,9 @@ export interface SyncDestinationsArguments {
   /** The depth and breadth limits each traced project is judged against. */
   readonly projectLimits: ProjectLimitsLookup;
   readonly result: CallGraphResult;
-  /**
-   * Workspace-relative root of each project the run was scoped to, keyed by
-   * name. Only these projects have a section published, so a scoped run never
-   * writes into a dependency it merely measured.
-   */
+  /** Root of each scoped project, keyed by name. Only these get a published section, never a measured-only dependency. */
   readonly startingProjectRoots: ReadonlyMap<string, string>;
-  /**
-   * The written destinations each project declared for itself, by name.
-   *
-   * Every traced project declares a complete configuration, so every one of
-   * them is named here — a project publishing nothing wrote `markdown:
-   * undefined` rather than being absent.
-   */
+  /** Destinations each project declared, by name. A project publishing nothing names `markdown: undefined`, never absence. */
   readonly writeByProject: ReadonlyMap<
     string,
     ResolvedCallidescopeWriteConfiguration

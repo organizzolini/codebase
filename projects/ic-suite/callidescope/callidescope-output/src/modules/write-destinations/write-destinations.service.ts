@@ -16,11 +16,8 @@ import type {
 /**
  * Writes a finished run to every destination it was configured with.
  *
- * Its own service rather than more of the command, because the two answer
- * different questions: the command decides whether a run may write at all, and
- * this decides where what it found lands. There are two answers to that second
- * question — the workspace's own declarations and each project's — and keeping
- * them side by side is what stops one writing over the other.
+ * Kept apart from the command: the command decides whether a run may write, and this decides where
+ * the findings land, for both the workspace and each project.
  */
 @Injectable()
 export class WriteDestinationsService {
@@ -39,16 +36,8 @@ export class WriteDestinationsService {
   // 🔏 Private Methods
 
   /**
-   * Writes the destinations each project declared for itself, returning the
-   * stale ones.
-   *
-   * A path is read relative to that project's own root, which is what keeps a
-   * project's declaration about its own documents rather than about the
-   * repository's — a project cannot write into a sibling by declaring one.
-   *
-   * Only the projects a run was scoped to are published: a dependency measured
-   * through the closure has its own run to publish it, and this one was never
-   * pointed at it.
+   * Writes the destinations each project declared for itself, returning the stale ones.
+   * Paths are relative to each project's own root.
    */
   private syncProjectDestinations(args: SyncDestinationsArguments): string[] {
     const stale: string[] = [];

@@ -8,15 +8,11 @@ import { SessionWorktreeNameService } from "./session-worktree-name.service";
 
 /**
  * CLI command behind the worktree-name session hook: is the linked worktree
- * this runs in named in lowercase kebab-case, and gitignored when it sits
- * inside the main checkout?
+ * named in lowercase kebab-case, and gitignored when inside the main checkout?
  *
- * Its standard output is the whole report and nothing else, so
- * `scripts/git/validate-session-worktree-name.sh` can hand it to the agent as
- * context unchanged: silent with exit 0 when nothing is wrong or nothing is
- * judged, and otherwise every problem and the using-git-worktrees directive,
- * with exit 1. It formats nothing for any one agent harness; the hook's
- * emitter does that.
+ * Its standard output is the report alone, which the hook hands to the agent.
+ * Silent with exit 0 when nothing is wrong, otherwise every problem and the
+ * directive, with exit 1.
  */
 @Command({
   description:
@@ -44,9 +40,8 @@ export class SessionWorktreeNameCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Judges the worktree, printing the report and setting exit code 1 when it
-   * breaks the convention. The exit code is set rather than forced, so a
-   * report written to a pipe is never cut off by an early exit.
+   * Prints the worktree report and sets exit code 1 when the name breaks the
+   * convention, without forcing an early exit.
    */
   async run(): Promise<void> {
     // Nothing here is asynchronous; the base class signature is.

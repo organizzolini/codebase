@@ -52,10 +52,8 @@ import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 let service: MinorAspectsService;
 
 /**
- * Builds a CoordinateEphemeris record for all minorAspectBodies across three timestamps.
- *
- * Every body defaults to longitude 100° so the baseline produces no aspect events.
- * Pass `overrides` to set different longitudes for specific bodies at each timestamp.
+ * Builds a `CoordinateEphemeris` for the minor bodies across three minutes;
+ * each body defaults to 100° so no aspect forms.
  */
 function createAspectEphemeris(
   minute: Moment,

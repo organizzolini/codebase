@@ -14,10 +14,8 @@ const COMMAND_PATH = path.resolve(
 );
 
 /**
- * Where a spawned run's fixture workspace is rooted: inside this project, in
- * its gitignored `tmp`, never the operating system's temporary directory.
- * `@swc-node/register` resolves itself and this project's path aliases from
- * `cwd` upward, which a directory outside the workspace never reaches.
+ * Fixture workspaces live in this project's gitignored `tmp`, never the OS temp
+ * directory: `@swc-node/register` resolves aliases only from inside the workspace.
  */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
 

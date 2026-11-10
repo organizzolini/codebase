@@ -1,10 +1,7 @@
 import type { CodeStatisticsResult } from "@codometer/core";
 
 /**
- * Builds a zeroed statistics report for tests that only pass one through.
- *
- * Every counter the pipeline produces is present, so a test asserting on the
- * whole report keeps working when a new statistic is added.
+ * Builds a zeroed statistics report, with every counter present so whole-report assertions survive new statistics.
  */
 export function buildCodeStatistics(
   overrides: Partial<CodeStatisticsResult> = {},
@@ -186,13 +183,7 @@ export function buildCodeStatistics(
 }
 
 /**
- * Throws the given value without narrowing it to `Error`.
- *
- * A catch block that special-cases `instanceof Error` needs a thrown value
- * that provably is not one to exercise its other branch. Typing the
- * parameter `unknown` is what lets a test throw a bare string or object
- * without tripping the lint rule that otherwise requires every `throw` to
- * carry an `Error`.
+ * Throws a value provably not an `Error`, so a test can reach a catch block's other branch. Typed `unknown` to pass lint.
  */
 export function throwUnknown(value: unknown): never {
   throw value;

@@ -16,12 +16,8 @@ import type { CodependixBoundaryRule } from "@codependix/configuration";
 // ♟️ Constants
 
 /**
- * An application whose container imports a module from a project it depends
- * on, and that module throws the moment its file is evaluated.
- *
- * Rooted on disk, unlike the other attribution workspaces: a container is
- * booted by importing real files, and the project that owns the failing code
- * is read off the error's stack, which names real paths.
+ * An application importing a module that throws when evaluated, from a project
+ * it depends on. Rooted on disk, since containers boot real files.
  */
 const STOREFRONT: ExampleWorkspace = {
   dependencies: [
@@ -42,10 +38,8 @@ const STOREFRONT: ExampleWorkspace = {
 };
 
 /**
- * The one rule declared at the NestJS level.
- *
- * What it says is beside the point: a level is judged only when it declares a
- * rule, and a container that cannot boot is reported whatever the rule is.
+ * The one NestJS-level rule. What it says is beside the point: a container that
+ * cannot boot is reported regardless.
  */
 const NO_MODULE_CYCLES: CodependixBoundaryRule[] = [
   { kind: "acyclic", name: "no-module-cycles" },

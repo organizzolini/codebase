@@ -7,14 +7,10 @@ import { templateFilesHeading } from "./run-affected.constants";
 import { RunAffectedService } from "./run-affected.service";
 
 /**
- * CLI command that runs `nx affected` for one target between `NX_BASE` and
- * `NX_HEAD`, and, when a conformetry template changed and `INCLUDE_TEMPLATES`
- * is "true", once more over the conformetry config so every instance project
- * is selected.
- *
- * Reads its inputs from the environment, as the workflow sets them: `TARGET`,
- * `ARGUMENTS`, `INCLUDE_TEMPLATES`, `NX_BASE`, and `NX_HEAD`. Exits with the
- * first failing `nx affected` run's own code, or 1 when an input is missing.
+ * CLI command that runs `nx affected` for one target, and when
+ * `INCLUDE_TEMPLATES` is "true" and a template changed, once more over the
+ * conformetry config. Exits with the first failing run's code, or 1 when an
+ * input is missing.
  */
 @Command({
   description:

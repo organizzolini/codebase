@@ -13,15 +13,9 @@ import type {
 /**
  * Resolves an interface or abstract member to the classes that implement it.
  *
- * The language service can answer this directly, and answering it that way
- * costs milliseconds per call site — minutes across a repository. This builds
- * one index up front instead, and answers from it in constant time.
- *
- * The index has to be structural, not just nominal. Classes in this repository
- * routinely satisfy an interface without writing `implements`, and the
- * interface members themselves are usually arrow-typed properties rather than
- * method signatures. An index that only followed `implements` clauses would
- * find none of them.
+ * Asking the language service per call site costs minutes across a repository,
+ * so this builds one index up front. It has to be structural, not nominal:
+ * classes often satisfy an interface without writing `implements`.
  */
 @Injectable()
 export class ClassesService {
@@ -52,12 +46,8 @@ export class ClassesService {
   // 🔏 Private Methods
 
   /**
-   * Walks the whole inheritance chain below a base, not just its children.
-   *
-   * An abstract base is often extended by another abstract class, with the
-   * concrete implementation another level down. Following only direct
-   * subclasses finds the intermediate one, discards it for still being
-   * abstract, and reports that nothing implements the member.
+   * Walks the whole inheritance chain below a base, not just direct children,
+   * since intermediate abstract classes would otherwise hide implementers.
    */
   private collectDerived(ownerName: string): ts.ClassDeclaration[] {
     const collected: ts.ClassDeclaration[] = [];
@@ -194,12 +184,8 @@ export class ClassesService {
   }
 
   /**
-   * Finds the concrete declarations one interface member resolves to.
-   *
-   * Nominal implementers are preferred; when a base names none — the common
-   * case here — every class declaring a member of that name is tested for
-   * assignability instead. Filtering by member name first is what keeps that
-   * sweep cheap enough to run.
+   * Finds the concrete declarations an interface member resolves to. Filtering by
+   * member name first keeps the assignability sweep cheap.
    */
   public resolveImplementations(args: {
     checker: ts.TypeChecker;

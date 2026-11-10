@@ -32,9 +32,8 @@ export const INSTALL_COMMAND: Command = [
 ];
 
 /**
- * Locks again for the new version, then proves the lock installs on it: a lock
- * alone would not catch a dependency with no wheel for that Python (ormsgpack,
- * #1491).
+ * Re-lock for the new version, then prove it installs: a lock alone misses a
+ * dependency with no wheel for that Python (ormsgpack, #1491).
  */
 export const LOCK_COMMANDS: readonly Command[] = [
   ["uv", "lock", "--project", "configuration"],

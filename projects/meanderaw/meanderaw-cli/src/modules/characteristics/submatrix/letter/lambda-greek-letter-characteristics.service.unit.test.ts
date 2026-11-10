@@ -8,15 +8,8 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
 /**
- * Each distinct orientation of the Λ (Greek lambda) as a Code holding one isolated
- * copy, beside every orientation name drawing that ink. Its diagonals run as
- * orthogonal zig-zags; the base, facing Southeast, draws:
- *
- * ```text
- *  ┌┐
- * ┌┘└┐
- * ╵  ╵
- * ```
+ * Each distinct orientation of the Λ (Greek lambda) as a Code holding one isolated copy.
+ * Its diagonals run as orthogonal zig-zags.
  */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {

@@ -187,12 +187,8 @@ describe(ChangesService, () => {
     expect(rows.map((row) => row.unit)).toStrictEqual([null, "bytes"]);
   });
 
-  // The redesigned report drops its top-level `documentation` array — a
-  // configured counter's breach detail now lives inside the metric itself,
-  // addressed under `custom.<label>` like any other custom counter — and
-  // reports no longer carry that field at all. A diff must join this metric
-  // by name exactly like any other, rather than erroring on the report's
-  // shape or silently leaving the counter out of the table.
+  // Redesigned reports drop the top-level `documentation` array; a configured counter's breach detail lives in its metric under `custom.<label>`.
+  // A diff must still join that metric by name, not error or drop it.
   it("diffs a custom counter's metric against its baseline without dropping it", () => {
     const buildCustomCounterReport = (value: number): CodometerReport => ({
       targets: [

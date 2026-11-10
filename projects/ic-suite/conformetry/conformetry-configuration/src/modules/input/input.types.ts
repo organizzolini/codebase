@@ -30,9 +30,7 @@ export interface SchemaInput {
 /**
  * One template a picker can offer.
  *
- * Deliberately not `ConformetryGeneratorDefinition`: the picker needs only the
- * name it returns and the description it shows, and asking for the whole
- * definition would tie prompting to the configuration's shape.
+ * Only the name and description are passed, so prompting does not depend on the configuration's shape.
  */
 export interface TemplateChoice {
   readonly description?: string | undefined;

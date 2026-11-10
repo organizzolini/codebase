@@ -13,13 +13,11 @@ import type { BatchCommandOptions, BatchVerdict } from "./batch.types";
 
 /**
  * The `batch` command: judge, or rewrite, the glossaries of many projects in
- * one process.
+ * one process, which avoids paying process startup for each project.
  *
- * Each directory is a project root holding its own coinagerie configuration.
- * Starting the command line costs far more than reading one project, so a
- * caller with many projects names them all here instead of starting it once
- * for each. Standard output carries one JSON array with a verdict per
- * directory, in the order given; the exit code is 1 when any failed.
+ * Each directory is a project root with its own configuration. Standard output
+ * carries one JSON array of verdicts, in the order given; the exit code is 1
+ * when any failed.
  */
 @Command({
   arguments: BATCH_ARGUMENTS,

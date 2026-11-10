@@ -6,14 +6,8 @@ import type { RenderResult } from "@testing-library/react";
 import type { ReactNode } from "react";
 
 /**
- * Renders an application's router at a path, running that route's loader and
- * head the way a navigation would. The root's document shell renders a whole
- * `<html>` document, which cannot mount inside the `<div>` a test renders
- * into, so it is swapped for one that renders the page alone.
- *
- * ```ts
- * await renderRoute(getRouter(), "/search");
- * ```
+ * Renders a router at a path, running its loader. Replaces the document shell
+ * with the page alone, since `<html>` cannot mount in a `<div>`.
  */
 export async function renderRoute(
   router: AnyRouter,

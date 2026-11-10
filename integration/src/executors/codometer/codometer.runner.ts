@@ -14,12 +14,7 @@ import type {
 } from "./codometer.types";
 
 /**
- * Runs the command line once over every named project's root.
- *
- * Silent, since it measures them all through this one process and a failed
- * project is explained by running it alone. The roots are made absolute
- * because the command resolves a named directory, and the configuration inside
- * it, against the directory it runs from.
+ * Runs the command line once, silently, over every named project's root, made absolute.
  */
 export async function runCodometerBatch(
   args: RunCodometerBatchArguments,
@@ -42,11 +37,7 @@ export async function runCodometerBatch(
 }
 
 /**
- * Runs the command line on one project and returns what it printed.
- *
- * From the project's own root, because without a directory named the command
- * measures the one it runs in — which is what a project's `limits[]` are
- * written against.
+ * Runs the command line from one project's own root and returns what it printed.
  */
 export async function runCodometerCli(
   args: RunCodometerArguments,

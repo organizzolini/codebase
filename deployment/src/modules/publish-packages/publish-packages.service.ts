@@ -55,9 +55,8 @@ export class PublishPackagesService {
   // 🔏 Private Methods
 
   /**
-   * Mirrors the package in the given directory to GitHub Packages, unless
-   * that version is there already. Each package packs and unpacks in a
-   * directory of its own, so several can mirror at once.
+   * Mirrors a package to GitHub Packages unless that version is there.
+   * Packs each in its own directory, so several can run at once.
    */
   private async mirrorPackage(
     root: string,
@@ -107,11 +106,8 @@ export class PublishPackagesService {
   }
 
   /**
-   * Packs a package exactly as npm got it, unpacks it, and renames it into
-   * the mirror's scope, dropping its `publishConfig`, whose `registry`
-   * overrides `--registry` and would send the mirror to npm instead.
-   *
-   * @returns The unpacked directory as its output, or the failure.
+   * Packs, unpacks, and renames a package into the mirror's scope, dropping
+   * `publishConfig`, whose `registry` would send it to npm.
    */
   private async packRenamed(
     root: string,
@@ -160,14 +156,8 @@ export class PublishPackagesService {
   }
 
   /**
-   * Prepares to mirror every release-group package to GitHub Packages,
-   * under the owner's scope.
-   *
-   * GitHub Packages is what lists each package in the repository's Packages
-   * sidebar. That registry accepts only packages scoped to the repository's
-   * owner, so `@codometer/cli` is mirrored as `@organizzolini/codometer-cli`,
-   * packed by pnpm exactly as npm got it and then renamed. It goes last
-   * because it is a copy: npm stays where the packages are installed from.
+   * Prepares mirroring to GitHub Packages, which accepts only the owner's
+   * scope, so `@codometer/cli` is mirrored as `@organizzolini/codometer-cli`.
    */
   private prepareMirrors(inputs: PublishInputs): MirrorContext {
     const context: MirrorContext = {
@@ -187,16 +177,8 @@ export class PublishPackagesService {
   }
 
   /**
-   * Publishes every release-group package whose version is not on npm yet.
-   *
-   * pnpm rather than `nx release publish`, because pnpm honors provenance
-   * only as the `--provenance` flag, which Nx cannot pass. `setup-node`
-   * writes no registry `.npmrc`, so the token goes in the user config. What
-   * this run published, which is all the next step may attest as built here,
-   * comes from pnpm's own summary of it: asking npm afterwards once missed 21
-   * of 23 new versions, since a version npm has just accepted can still read
-   * as missing for minutes. A publish that fails part way still records
-   * whatever pnpm reports, before the step fails.
+   * Publishes unpublished packages with pnpm, recording what it published from
+   * pnpm's own summary, since npm can lag minutes.
    */
   private publishToNpm(
     roots: readonly string[],
@@ -274,10 +256,9 @@ export class PublishPackagesService {
   }
 
   /**
-   * Refuses a rehearsal that would still reach a real registry: provenance
-   * needs a CI token, a package's `publishConfig.registry` overrides
-   * `--registry`, and the mirror would go to GitHub Packages. Checked before
-   * anything is written or published; a real release passes untouched.
+   * Refuses a rehearsal that would reach a real registry, such as a package's
+   * `publishConfig.registry`, which overrides `--registry`. Runs before anything
+   * is published.
    */
   private refuseUnsealedRehearsal(
     roots: readonly string[],
@@ -308,12 +289,8 @@ export class PublishPackagesService {
   // 🌎 Public Methods
 
   /**
-   * Publishes the release group to npm, then mirrors it to GitHub Packages.
-   * Both skip any version already there, so a re-run sends only what is
-   * missing.
-   *
-   * @returns The exit code: pnpm's when publishing to npm failed, 1 when a
-   * mirror failed, and 0 otherwise.
+   * Publishes to npm, then mirrors; re-runs skip what exists. Exits with
+   * pnpm's code if npm failed, else 1 on a mirror failure.
    */
   public async run(): Promise<number> {
     const inputs = this.readInputs();

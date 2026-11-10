@@ -12,14 +12,8 @@ import type {
 } from "./modules/draw/draw.types";
 
 /**
- * The entry point of one draw run worker thread, spawned by
- * `DrawPoolService`: boots `DrawWorkerModule` once, then draws every batch
- * of orbit minima it is sent and posts the rows back.
- *
- * A failure is posted rather than thrown, so the pool rejects the one
- * batch that failed with the worker's own message instead of losing the
- * thread. Messages sent while the context is still booting wait on the
- * port until the listener below is attached.
+ * Entry point of one worker thread: boots `DrawWorkerModule`, then draws each
+ * batch sent to it. Failures are posted, not thrown.
  */
 async function bootstrap(): Promise<void> {
   const port = parentPort;

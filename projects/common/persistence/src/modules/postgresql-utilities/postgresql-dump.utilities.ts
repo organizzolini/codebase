@@ -73,14 +73,8 @@ export function parsePostgresDumpContents(
 }
 
 /**
- * The ids of the entries to restore for `tables`: each table's definition
- * and rows, every entry that depends only on what is selected (its
- * indexes, constraints, defaults, comments, and owned sequences), and the
- * session headers. A foreign key to a table left out is left out with it.
- *
- * An entry that depends on nothing in the dump, such as a data-only
- * dump's sequence value, cannot be attributed to a table, so it is
- * selected only when `tables` is every table the dump holds.
+ * Ids of the entries to restore for `tables`, with dependents. Entries naming
+ * no table are kept only when every table is selected.
  */
 export function selectPostgresDumpEntries(
   entries: readonly PostgresDumpEntry[],

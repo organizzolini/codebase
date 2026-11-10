@@ -33,11 +33,7 @@ export class InputService {
   // 🔏 Private Methods
 
   /**
-   * Refuses to draw a prompt nobody can answer.
-   *
-   * `prompts` does not fail on a non-terminal stdin — it renders the menu,
-   * never resolves, and lets the process exit 0, so a run that did nothing
-   * reads as one that succeeded.
+   * Refuses to draw a prompt nobody can answer. `prompts` would exit 0 without doing anything.
    */
   private assertCanPrompt(subject: string): void {
     if (!this.isAtTerminal()) {
@@ -46,15 +42,8 @@ export class InputService {
   }
 
   /**
-   * Narrows a suggestion list to what has been typed so far.
-   *
-   * A method of its own rather than a closure inside the prompt, because this
-   * is the whole of the completion rule and it is worth stating — and testing
-   * — without a terminal anywhere near it.
-   *
-   * Matches on a substring rather than a prefix: a callable is addressed
-   * `<file>#<name>`, and the name is far more often what someone remembers
-   * than the path in front of it.
+   * Narrows suggestions to those containing the typed text. Matches a substring,
+   * since a name is more often remembered than its path.
    */
   public completeSuggestions(args: {
     input: string;
@@ -74,30 +63,14 @@ export class InputService {
   // 🌎 Public Methods
 
   /**
-   * Whether anybody is there to answer a question.
-   *
-   * The one place this is decided, so the value that refuses to be asked for
-   * and the value that is merely offered cannot drift apart on what counts as
-   * a terminal. `isTTY` is read as falsy rather than coerced: `@types/node`
-   * calls it a `boolean` while it is `undefined` off a terminal, so lint
-   * rejects the coercion that would say so.
-   *
-   * Public so that `ConfigurationService.resolveFormatOption` can ask it: the
-   * facade owns the policy of whether to offer a prompt, and this class owns
-   * the question it is deciding on. Package-internal all the same — nothing
-   * outside this package can reach this class at all.
+   * Whether anybody is there to answer a question. Public so `ConfigurationService.resolveFormatOption` can ask it.
    */
   public isAtTerminal(): boolean {
     return process.stdin.isTTY;
   }
 
   /**
-   * Splits `--directories`, a comma-separated list of project directories.
-   *
-   * Kept relative rather than resolved here: each entry is later resolved
-   * against the workspace root, which is always the working directory, so
-   * resolving here as well would only make a relative entry ambiguous about
-   * which root it was ever relative to.
+   * Splits a comma-separated flag into trimmed, non-empty entries. Entries stay relative, resolved later against the workspace root.
    */
   public parseCommaDelimitedOption(value: string | undefined): string[] {
     return value === undefined
@@ -116,16 +89,8 @@ export class InputService {
   }
 
   /**
-   * Prompts for several values at once, completing the list as it is typed.
-   *
-   * The multiselect sibling of `promptForAutocomplete`, and it shares that
-   * method's completion rule so a name typed here narrows the list the same
-   * way it would there.
-   *
-   * Selecting nothing is refused rather than read as an empty list: the
-   * caller asked because it needs at least one value, and `prompts` returns
-   * `[]` both for a deliberate empty selection and for a prompt escaped out
-   * of, which are the same thing to whoever has to act on it.
+   * Prompts for several values, completing as typed. Selecting nothing is refused,
+   * since it cannot be told from an escape.
    */
   public async promptForAutocompleteMultiselect(args: {
     message: string;
@@ -207,12 +172,7 @@ export class InputService {
   }
 
   /**
-   * Trims the configuration path, refusing an absent or blank one.
-   *
-   * The one place that decides a configuration path is required and what the
-   * refusal says. Each caller passes the surface it read the value from — the
-   * `--config` flag, the executor's `configuration` option, or the plugin's
-   * `configurationPath` option — so the error names the right one.
+   * Trims the configuration path, refusing an absent or blank one, and names the surface it came from.
    */
   public requireConfigurationPath(
     path: string | undefined,

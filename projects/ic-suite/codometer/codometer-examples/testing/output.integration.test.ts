@@ -20,10 +20,9 @@ import {
 describe("every example configuration this package ships", () => {
   describe("the output sinks", () => {
     /**
-     * The bare `codometer --format json` run the guide shows, spawned once.
+     * The bare `codometer --format json` run, spawned once.
      *
-     * Reading its standard output directly and piping it into a second process
-     * are two assertions about the same run, so they share it.
+     * Shared by two assertions, so it is not spawned twice.
      */
     let consoleRun: CodometerRun;
 

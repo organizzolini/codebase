@@ -1,10 +1,8 @@
 // ♟️ Constants
 
 /**
- * The images a test container is started from, in order: Docker Hub first,
- * then Google's mirror of it, so a Docker Hub rate limit does not fail a run.
- * Postgres 18 is the first release with the native `uuidv7()` every
- * `PostgresqlIdentifiableEntity` id defaults to.
+ * Images tried in order: Docker Hub, then Google's mirror in case of a rate
+ * limit. Postgres 18 is the first with native `uuidv7()`.
  */
 export const POSTGRES_CONTAINER_IMAGES = [
   "postgres:18-alpine",

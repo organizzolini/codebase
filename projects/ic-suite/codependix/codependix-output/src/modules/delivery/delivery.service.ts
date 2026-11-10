@@ -20,15 +20,8 @@ import type {
 } from "@codependix/core";
 
 /**
- * Delivers a resolved graph export to whichever destinations it names.
- *
- * Every codependix graph type — the Nx Neighborhood, the Nx Workspace Graph,
- * and the NestJS module graph — resolves to the same
- * `ResolvedCodependixGraphOutput` shape and is delivered the same way: a JSON
- * file, an anchored or standalone Markdown file, or both. This service is
- * the one place that shape is turned into file I/O, so `GraphRunService`
- * only has to render each graph type's own JSON and diagram content and hand
- * it over.
+ * Delivers a resolved graph export to whichever destinations it names. Every graph type shares
+ * this path: a JSON file, an anchored or standalone Markdown file, or both.
  */
 @Injectable()
 export class DeliveryService {
@@ -43,10 +36,8 @@ export class DeliveryService {
   // 🔏 Private Methods
 
   /**
-   * Checks whether a named anchor block is current against fresh content.
-   *
-   * A missing anchor is reported as stale rather than throwing, consistent
-   * with every other kind of drift this tool reports.
+   * Checks whether a named anchor block is current. A missing anchor is reported as stale,
+   * not thrown.
    */
   private checkAnchoredMarkdown(args: {
     absoluteRoot: string;
@@ -233,9 +224,8 @@ export class DeliveryService {
   }
 
   /**
-   * Resolves the JSON destination a graph output should deliver to, or
-   * `undefined` when the target does not touch JSON, no destination was
-   * configured, or the caller rendered no JSON content for it.
+   * Resolves the JSON destination for a graph output, or `undefined` when the target does not
+   * touch JSON or no JSON was rendered.
    */
   private resolveJsonDelivery(
     args: DeliverGraphOutputArguments,
@@ -251,9 +241,8 @@ export class DeliveryService {
   }
 
   /**
-   * Resolves the Markdown destination a graph output should deliver to, or
-   * `undefined` when the target does not touch Markdown, no destination was
-   * configured, or the caller rendered no diagram content for it.
+   * Resolves the Markdown destination for a graph output, or `undefined` when the target does not
+   * touch Markdown or no diagram was rendered.
    */
   private resolveMarkdownDelivery(args: DeliverGraphOutputArguments):
     | undefined
@@ -329,12 +318,7 @@ export class DeliveryService {
   }
 
   /**
-   * Auto-creates a missing anchor's `## 🕸️ Codependix` section and writes it.
-   *
-   * Falls back to the historical hard failure when the caller supplied no
-   * `markdownSection` — there is nothing safe to build without a heading and
-   * intro line, and `GraphRunService` always supplies one for every real
-   * anchored destination it delivers.
+   * Auto-creates a missing anchor's section and writes it. Throws when no `markdownSection` was supplied.
    */
   private writeAutoCreatedAnchorSection(args: {
     anchorName: string;
@@ -363,11 +347,8 @@ export class DeliveryService {
   // 🌎 Public Methods
 
   /**
-   * Delivers whichever destinations a resolved graph output names.
-   *
-   * `jsonContent`/`markdownContent` are read only when the resolved target
-   * actually touches that destination, mirroring how a project whose target
-   * is `"json"` never renders a diagram nobody configured.
+   * Delivers whichever destinations a resolved graph output names. Content is read only when the
+   * target touches that destination.
    */
   deliverGraphOutput(args: DeliverGraphOutputArguments): ProjectRunResult {
     const { markdownSection, mode, project } = args;

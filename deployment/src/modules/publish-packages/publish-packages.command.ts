@@ -8,15 +8,12 @@ import { describeError } from "../process-runner/process-runner.utilities";
 import { PublishPackagesService } from "./publish-packages.service";
 
 /**
- * CLI command that publishes every release-group package not yet on npm, with
- * provenance, then mirrors each to GitHub Packages as `@<owner>/<project>`,
- * as the 📦 Publish Packages release step.
+ * CLI command that publishes release-group packages missing from npm with
+ * provenance, then mirrors them to GitHub Packages as `@<owner>/<project>`.
  *
- * Reads `NPM_TOKEN`, `GITHUB_PACKAGES_TOKEN`, `GITHUB_REPOSITORY_OWNER`,
- * `RUNNER_TEMP`, and, to rehearse against a local registry,
- * `NPM_REGISTRY` and `GITHUB_PACKAGES_REGISTRY`. Writes what it published to
- * `$RUNNER_TEMP/newly-published.txt` for `link-packages`. Exits with pnpm's
- * code when publishing to npm failed, and 1 when a mirror or an input failed.
+ * Writes what it published to `$RUNNER_TEMP/newly-published.txt` for
+ * `link-packages`. Exits with pnpm's code when publishing fails, and 1 when a
+ * mirror or an input fails.
  */
 @Command({
   description:

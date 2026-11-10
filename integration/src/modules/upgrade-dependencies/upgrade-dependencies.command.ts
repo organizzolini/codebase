@@ -17,13 +17,9 @@ import type {
 } from "./upgrade-dependencies.types";
 
 /**
- * CLI command that runs the weekly dependency upgrades, each one undone and
- * reported if it fails, and writes the pull request that reports them.
- *
- * Reads `GITHUB_OUTPUT` and `GITHUB_RUN_ID` and sets the `has_dependency_updates` and `body_path`
- * outputs. Exits 0 when every step succeeded or was
- * skipped and something changed, and 1 when a failed step could not be undone
- * or skipped steps are all there is to report.
+ * CLI command that runs the weekly dependency upgrades, undoing and reporting
+ * any that fail, then writes the pull request body. Exits 1 when a failed step
+ * cannot be undone, or when only skipped steps remain to report.
  */
 @Command({
   description:
@@ -49,10 +45,8 @@ export class UpgradeDependenciesCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Prints what a step came to, closes its log group, and records it.
-   *
-   * @returns Whether the run may carry on: only a step that could not be
-   *   undone stops it.
+   * Prints what a step came to and records it.
+   * @returns False only when a step could not be undone.
    */
   private conclude(
     step: UpgradeStep,

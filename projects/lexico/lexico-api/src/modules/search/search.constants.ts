@@ -99,15 +99,13 @@ export const ENGLISH_TIER_SOURCES: ReadonlyMap<number, SearchMatchSource> =
 export const LATIN_TIER_RESULT_LIMIT = 50;
 
 /**
- * Ranks one matched translation for an English search, given the `exactQuery`
- * and `prefixQuery` parameters: an exact translation outranks one the query
- * starts, which outranks any other substring or full-text match.
+ * Ranks a matched translation for an English search: exact, then prefix, then
+ * any other match. Binds `exactQuery` and `prefixQuery`.
  */
 export const ENGLISH_MATCH_SCORE_EXPRESSION = `CASE WHEN LOWER(translation.data) = :exactQuery THEN ${SCORE_TRANSLATION_EXACT} WHEN translation.data ILIKE :prefixQuery THEN ${SCORE_TRANSLATION_PREFIX} ELSE ${SCORE_TRANSLATION_FULLTEXT} END`;
 
 /**
- * Most lexemes an English search ranks before paginating. A common word such
- * as "to" matches a large share of all translations, so the database ranks and
- * caps the matches instead of loading every one of them into memory.
+ * Most lexemes an English search ranks before paginating. The database caps
+ * matches, so a common word like "to" never loads every translation.
  */
 export const ENGLISH_SEARCH_RESULT_LIMIT = 200;

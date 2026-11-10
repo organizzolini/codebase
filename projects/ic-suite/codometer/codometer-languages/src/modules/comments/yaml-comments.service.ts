@@ -13,18 +13,7 @@ import type {
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
- * Reads YAML's comments from the tokenizer rather than from the text.
- *
- * The CST is the only view carrying both facts a measurement needs: an offset,
- * so a breach can name the line it sits on, and the tokenizer's judgement of
- * what is a comment at all, so a `#` inside a quoted scalar stays a character
- * in a string. The composed document has the second and not the first — it
- * hangs a whole run of `#` lines on a node as one string with no position,
- * blank lines and all.
- *
- * This is why YAML does not use `HashCommentsService`: a line scanner would
- * read `key: "a # b"` as carrying a comment, and YAML puts quoted scalars next
- * to `#` constantly.
+ * Reads YAML comments from the tokenizer, not the text. The tokenizer knows a `#` inside a quoted scalar is not a comment, which a line scanner would get wrong. The CST also carries offsets, so a breach names its line.
  */
 @Injectable()
 /* v8 ignore stop */

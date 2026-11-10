@@ -51,10 +51,7 @@ export class PathUtilitiesService {
   }
 
   /**
-   * Splits every edge into its two half-edges. `ConnectivityService.edges`
-   * names each edge from its west or north end, so an edge within one row
-   * heads east from `from` and every other edge heads south; a single-column
-   * self-loop gives its one point both an east and a west half-edge.
+   * Splits every edge into its two half-edges: an edge within a row heads east, and every other edge heads south.
    */
   private halfEdgeGraph(edges: readonly CodeEdge[]): HalfEdgeGraph {
     const graph = new Map<string, HalfEdge[]>();
@@ -91,11 +88,7 @@ export class PathUtilitiesService {
   }
 
   /**
-   * The turn from arriving on `arrival` to leaving by `departure`. A change of
-   * two, a reversal, reads as `0`: it cannot occur, because no point has two
-   * half-edges heading the same way and
-   * {@link PathUtilitiesService.continuation} never leaves by the half-edge it
-   * arrived on.
+   * The turn from `arrival` to `departure`. A reversal reads as `0`, since no point has two half-edges heading the same way.
    */
   private turnBetween(arrival: Heading, departure: Heading): Turn {
     const change = (departure - arrival + 4) % 4;
@@ -170,9 +163,7 @@ export class PathUtilitiesService {
   }
 
   /**
-   * How many separate runs of ink touch `row`: its inked points, grouped by
-   * the eastward edges joining neighbors within that row, wrapping across the
-   * tile boundary. A row inked all the way round the band is one touch.
+   * Separate runs of ink touching `row`, joined by eastward edges and wrapping across the tile. A fully inked row is one run.
    */
   public rowTouchCount(edges: readonly CodeEdge[], row: number): number {
     const inked = new Set<number>();
@@ -199,9 +190,7 @@ export class PathUtilitiesService {
   }
 
   /**
-   * Cuts one repeat's ink into strands — maximal runs through degree-two
-   * points — over the cyclic band `edges` describes. Junctions and free ends
-   * end a strand, so no turn is ever read across a junction.
+   * Cuts one repeat's ink into strands: maximal runs through degree-two points over the cyclic band. Junctions and free ends end a strand.
    */
   public strands(edges: readonly CodeEdge[]): Strand[] {
     const graph = this.halfEdgeGraph(edges);

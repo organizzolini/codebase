@@ -114,19 +114,7 @@ export class VenusianPhaseService {
   // 🌎 Public Methods
 
   /**
-   * Creates a calendar event for a specific Venusian phase.
-   *
-   * Venus exhibits an 8-phase cycle as it orbits the Sun:
-   * - Morning Rise: Venus becomes visible before sunrise
-   * - Western Brightest: Maximum brilliance as morning star
-   * - Western Elongation: Greatest angular distance west of Sun
-   * - Morning Set: Venus sets with the Sun (superior conjunction approaching)
-   * - Evening Rise: Venus becomes visible after sunset
-   * - Eastern Elongation: Greatest angular distance east of Sun
-   * - Eastern Brightest: Maximum brilliance as evening star
-   * - Evening Set: Venus disappears into Sun's glare (inferior conjunction).
-   *
-   * @see {@link symbolByVenusianPhase} for phase symbols
+   * Creates a calendar event for a Venusian phase in Venus's eight-phase cycle.
    */
   buildVenusianPhaseEvent(
     args: BuildPlanetPhaseEventArguments<VenusianPhase>,

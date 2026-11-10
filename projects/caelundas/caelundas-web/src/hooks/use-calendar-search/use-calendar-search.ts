@@ -12,9 +12,7 @@ import type { UseCalendarSearchResult } from "./use-calendar-search.types";
 // 🧩 Hook
 
 /**
- * Writes changes to the link, one place for all of them: a new day, the
- * filter, or any other setting. The filter replaces the entry, so an edit to
- * it does not fill the history.
+ * Writes every link change in one place; the filter replaces the history entry, so edits do not fill it.
  */
 export function useCalendarSearch(timeZone: string): UseCalendarSearchResult {
   // 🪝 Hooks

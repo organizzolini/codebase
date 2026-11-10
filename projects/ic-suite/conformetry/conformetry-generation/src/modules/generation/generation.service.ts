@@ -70,8 +70,7 @@ export class GenerationService {
   /**
    * Merges the derived name variants with the caller's inputs.
    *
-   * Inputs are spread last so an explicit value always wins over the variant
-   * derived from the same name.
+   * Inputs are spread last, so an explicit value wins over a derived variant.
    */
   private buildSubstitutions(args: {
     definitionName: string;
@@ -186,9 +185,9 @@ export class GenerationService {
   // 🌎 Public Methods
 
   /**
-   * Runs the generator lifecycle — `preGenerate`, render, `postGenerate`,
-   * format — and returns the generated file paths: the rendered paths sorted,
-   * then any path a `postGenerate` hook pushed, appended after the sort.
+   * Runs preGenerate, render, postGenerate, and format, then returns the file paths.
+   *
+   * Rendered paths come first, sorted; paths a `postGenerate` hook pushes follow.
    */
   public async runGenerator(
     args: RunGeneratorArguments,

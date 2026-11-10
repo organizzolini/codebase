@@ -38,13 +38,8 @@ export class OptionsService {
   }
 
   /**
-   * Reads the declared inputs from an untrusted record.
-   *
-   * Nx input strings are trimmed and the blanks dropped; Nx input objects such
-   * as `{ externalDependencies: [...] }` pass through untouched, because
-   * dropping one would let a cached verdict outlive what it was meant to track.
-   * Anything else is dropped rather than trusted, so one bad entry cannot
-   * discard the good ones beside it.
+   * Reads inputs from an untrusted record. Nx input objects pass whole, so a
+   * cached verdict cannot outlive what it tracks; junk is dropped.
    */
   private readInputs(options: Record<string, unknown>): PluginInput[] {
     const value = options["inputs"];

@@ -6,34 +6,16 @@ export const ENTRY_FRAME_PREFIX = "🚀";
 /** Marks every frame below the first. */
 export const NESTED_FRAME_PREFIX = "└─>";
 
-/**
- * Characters of signature a frame prints before it collapses the parameters.
- *
- * Most signatures here are short — the median is under twenty characters — but
- * a NestJS constructor taking a dozen injected services runs past four hundred,
- * and one of those inside an indented stack destroys the shape that makes the
- * stack readable at all.
- */
+/** Characters of signature a frame prints before collapsing the parameters. Long injected constructors would otherwise break the stack's shape. */
 export const SIGNATURE_LIMIT = 80;
 
 /** Stands in for a parameter list too long to print. */
 export const COLLAPSED_PARAMETERS = "(…)";
 
-/**
- * Characters of documentation prose a printed frame keeps.
- *
- * A summary is meant to orient a reader mid-stack, not to replace opening the
- * file, and a paragraph indented under ten frames is worse than a sentence.
- * Only the tree is bound by this — the JSON report carries the whole comment.
- */
+/** Characters of documentation prose a printed frame keeps. The tree orients a reader; the JSON report keeps the whole comment. */
 export const SUMMARY_LIMIT = 120;
 
-/**
- * Ends a sentence, when the next one starts.
- *
- * A capital after the space is what separates a sentence break from `e.g. the`
- * or a dotted identifier, neither of which ends anything.
- */
+/** Ends a sentence when the next one starts. The capital after the space tells a break from `e.g.` or a dotted identifier. */
 export const SENTENCE_END_PATTERN = /[!.?](?=\s+[A-Z])/;
 
 /** Appended to a summary cut mid-thought. */
@@ -45,22 +27,10 @@ export const DEPRECATED_MARKER = "⚠ deprecated";
 /** Introduces the documentation line printed under a frame. */
 export const SUMMARY_PREFIX = "↳";
 
-/**
- * Opens every diagram.
- *
- * Left to right, because that is the direction a stack reads and the direction
- * a wide, shallow call graph fits a page.
- */
+/** Opens every diagram, left to right: the direction a stack reads and a wide, shallow graph fits a page. */
 export const MERMAID_FLOWCHART_HEADER = "flowchart LR";
 
-/**
- * Callables a diagram draws before it stops accepting stacks.
- *
- * GitHub refuses a mermaid block past 50,000 characters, and at roughly fifty
- * characters per node and edge this leaves room to spare — the widest project
- * here draws 263. Whole stacks are dropped rather than trimmed, so the diagram
- * never shows an edge into a callable it does not draw.
- */
+/** Callables a diagram draws before it stops accepting stacks. GitHub refuses mermaid blocks past 50,000 characters; whole stacks drop, never trimmed. */
 export const MAXIMUM_DIAGRAM_NODES = 300;
 
 /** Prefix of every generated node identifier. */
@@ -80,13 +50,7 @@ export const MARKDOWN_SUMMARY_HEADER = "| Measure | Value |\n| --- | --- |";
 export const MARKDOWN_WIDE_CALLABLES_HEADER =
   "| Callable | Breadth | Calls directly | Location |\n| --- | --- | --- | --- |";
 
-/**
- * Heading over the call stacks that ran deeper than their project allows.
- *
- * A constant rather than a literal because two renderings write it — the
- * whole-run report, and the findings-only rendering a gate prints — and a
- * reader who greps a failed pipeline for one of them must find the other.
- */
+/** Heading over stacks deeper than their project allows. A constant, so a reader grepping a failed run finds the same text in both renderings. */
 export const MARKDOWN_DEEP_STACKS_HEADING = "Call stacks over the depth limit";
 
 /** Heading over the callables that called more directly than allowed. */
@@ -107,47 +71,21 @@ export const MARKDOWN_HEADROOM_HEADER =
 /** Heading over the limits one project's own section is judged against. */
 export const MARKDOWN_PROJECT_LIMITS_HEADING = "Limits";
 
-/**
- * Header of a project's own resolved-limits table.
- *
- * Two columns rather than the `limits` command's three: that listing spans
- * every project and has to name the file each number came from, where here
- * there is only one file it could be — the `callidescope.config.ts` beside this
- * very readme — and naming it would mean carrying an absolute path, which is
- * not a thing a committed file can hold.
- */
+/** Header of a project's own limits table. Two columns, since no absolute path belongs in a committed file. */
 export const MARKDOWN_PROJECT_LIMITS_HEADER =
   "| Limit | Value |\n| --- | --- |";
 
-/**
- * Says where the numbers come from, so the table needs no second reading.
- *
- * Worded as the `limits` command words it, because the two answer the same
- * question at two scopes — one project's block and the whole set — and a
- * reader who learns the vocabulary in one should not have to learn it again in
- * the other.
- */
+/** Says where the numbers come from, worded as the `limits` command words it so a reader learns the vocabulary once. */
 export const MARKDOWN_PROJECT_LIMITS_SUMMARY =
   "What this project is judged against, as declared in its own `callidescope.config.ts`.";
 
-/**
- * The two gated limits, in the order a project's block prints them.
- *
- * Depth first because depth is judged always and breadth only where a limit
- * exists, so the first row is the one every project has an answer for.
- */
+/** The two gated limits, in print order. Depth comes first because every project has an answer for it; breadth is optional. */
 export const MARKDOWN_PROJECT_LIMIT_NAMES = [
   "maximumDepth",
   "maximumBreadth",
 ] as const;
 
-/**
- * What a value cell says when nothing anywhere declares the limit.
- *
- * Breadth has no workspace default and no tool default, so a project that
- * declares none is gated by nothing at all — and printing a number here, the
- * workspace's or an invented one, would say the opposite.
- */
+/** Shown when nothing declares the limit. Printing a number would say the opposite: breadth has no default. */
 export const NO_LIMIT_LABEL = "none";
 
 /** Bucket holding the projects whose deepest stack broke their own limit. */
@@ -165,22 +103,10 @@ export const HEADROOM_BUCKET_TWO_TO_THREE = "2–3";
 /** Bucket holding the projects with room to spare. */
 export const HEADROOM_BUCKET_FOUR_PLUS = "4+";
 
-/**
- * Bucket holding the projects that measured no stack at all.
- *
- * Named rather than folded into the widest headroom bucket: a project whose
- * deepest stack is zero is not a project with room to spare, it is a project
- * whose limit gates nothing, and those are opposite findings.
- */
+/** Bucket for projects measuring no stack. Not the widest headroom bucket: such a limit gates nothing, the opposite finding. */
 export const HEADROOM_BUCKET_UNMEASURED = "no stacks";
 
-/**
- * The order the scoreboard prints its buckets in, tightest first.
- *
- * A fixed list rather than the keys a run happened to produce, so a bucket
- * nothing fell into is still printed as a zero. "Nothing is over its limit" is
- * the row a reader came for, and an absent row cannot say it.
- */
+/** The order the scoreboard prints buckets, tightest first. Fixed, so an empty bucket still prints as zero. */
 export const HEADROOM_BUCKET_ORDER = [
   HEADROOM_BUCKET_OVER_LIMIT,
   HEADROOM_BUCKET_AT_LIMIT,

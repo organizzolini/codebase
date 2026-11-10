@@ -24,10 +24,8 @@ describe(GraphRunService, () => {
   let projectRoot: string;
 
   /**
-   * Builds a `GraphRunContext` a test can override selected fields of.
-   *
-   * `selectedProjects` follows `projects` unless a test overrides it, which
-   * is what a run naming no `--projects`/`--tags` selection resolves to.
+   * Builds a `GraphRunContext` a test can override selected fields of. `selectedProjects`
+   * follows `projects` unless overridden.
    */
   function buildContext(
     overrides: Partial<GraphRunContext> = {},
@@ -67,9 +65,7 @@ describe(GraphRunService, () => {
   }
 
   /**
-   * A fresh, empty `GraphRunOutcome` — never shared, since `GraphRunService`
-   * mutates the arrays it reads off a mocked pass's return value in place
-   * (pushing the workspace graph's own delivery result onto them).
+   * A fresh, empty outcome, never shared: `GraphRunService` mutates its arrays.
    */
   function emptyOutcome(): GraphRunOutcome {
     return { failures: [], results: [] };

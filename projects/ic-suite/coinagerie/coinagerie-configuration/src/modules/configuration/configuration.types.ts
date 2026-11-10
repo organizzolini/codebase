@@ -1,18 +1,14 @@
 // 🏷️ Types
 
 /**
- * What a `coinagerie.config.ts` exports by default.
- *
- * Every field is optional, and every path in it is relative to the folder the
- * file sits in — that folder is also the root the run scans.
+ * What a `coinagerie.config.ts` exports by default. Every path is relative to
+ * the folder the file sits in, which is also the scan root.
  */
 export interface CoinagerieConfiguration {
   exclude?: CoinagerieExclusions | undefined;
   /**
    * Merges a derivational family into one headword, such as `configuration`
-   * into `configure`. Runs after plurals and inflections have been folded, so
-   * it sees lemmas rather than every surface form, and must return a
-   * non-empty string.
+   * into `configure`. Receives lemmas and must return a non-empty string.
    */
   fold?: FoldWord | undefined;
   /**
@@ -29,12 +25,9 @@ export interface CoinagerieExclusions {
   /** Globs naming files left out of the scan. */
   paths?: string[] | undefined;
   /**
-   * Words left out of the glossary, as a list or as a function returning one,
-   * synchronously or not — the function is where a configuration reads
-   * whatever else it wants to exclude. A string leaves out that exact word.
-   * A regular expression leaves out every word it matches, tested against the
-   * lowercase word and against its folded headword. Exclusion applies after
-   * folding, so excluding `service` also covers `services`. Defaults to none.
+   * Words left out of the glossary: a list, or a function returning one.
+   * Excluding `service` also excludes `services`, since exclusion applies after
+   * folding.
    */
   words?: ExcludedWords | undefined;
 }
@@ -49,9 +42,8 @@ export interface CoinagerieJsonOutput {
 }
 
 /**
- * A markdown destination: the glossary block is kept between the
- * `coinagerie:start` and `coinagerie:end` anchors of this file, and appended
- * to its end when the file has no anchors yet.
+ * A markdown destination: the glossary block sits between the
+ * `coinagerie:start` and `coinagerie:end` anchors, or is appended when they are absent.
  */
 export interface CoinagerieMarkdownOutput {
   /** Rendered under the heading, telling a reader what the block is. */
@@ -64,14 +56,8 @@ export interface CoinagerieMarkdownOutput {
 export type CoinagerieOutput = CoinagerieJsonOutput | CoinagerieMarkdownOutput;
 
 /**
- * What the command line says, layered over the configuration file: a flag
- * that is given replaces the field it names, and a field with no flag keeps
- * what the file says.
- *
- * The two destination flags together replace the file's `outputs` with just
- * the destinations they name. Their paths are relative to the working
- * directory, as a path typed in a shell is; globs stay relative to the scan
- * root.
+ * Command-line flags layered over the configuration file; a given flag replaces
+ * its field. Destination paths resolve from the working directory.
  */
 export interface ConfigurationOverrides {
   /** Replaces the description of every markdown destination. */
@@ -89,9 +75,8 @@ export interface ConfigurationOverrides {
 /** The entries of `exclude.words`, split into exact words and patterns. */
 export interface ExcludedEntries {
   /**
-   * Every regular expression entry, copied without its `g` and `y` flags:
-   * those make `test` stateful, so a pattern would match a word on one call
-   * and miss it on the next.
+   * Regular expressions copied without their `g` and `y` flags, which make
+   * `test` stateful and so flip between matching and missing.
    */
   patterns: RegExp[];
   words: string[];
@@ -111,9 +96,9 @@ export type FoldWord = (word: string) => string;
 /** What `loadConfiguration` is asked for. */
 export interface LoadConfigurationArguments {
   /**
-   * A configuration file named on the command line, relative to the working
-   * directory. Without one, the working directory is searched for a file
-   * named in `CONFIGURATION_FILE_NAMES`, and defaults apply when none exists.
+   * Command-line config file, relative to the working directory. Without one,
+   * the working directory is searched for `CONFIGURATION_FILE_NAMES`, else
+   * defaults apply.
    */
   configurationPath?: string | undefined;
   /** What the command line overrides; nothing when absent. */
@@ -131,9 +116,7 @@ export interface LoadedConfiguration {
 
 /**
  * A configuration with every default filled in and every path absolute.
- *
- * What the rest of the toolchain reads: nothing past this point has to know
- * whether a value was written or defaulted.
+ * Downstream code need not check whether a value was written or defaulted.
  */
 export interface ResolvedCoinagerieConfiguration {
   /** The file read, or `undefined` when the run uses only defaults. */
@@ -147,9 +130,8 @@ export interface ResolvedCoinagerieConfiguration {
    */
   exclude: { paths: string[]; patterns: RegExp[]; words: string[] };
   /**
-   * The configured fold, wrapped so that a throw or an empty or non-string
-   * result raises an `InvalidConfigurationError` naming the file; `undefined`
-   * when none is configured.
+   * The configured fold, wrapped so a throw or an empty or non-string result
+   * raises an `InvalidConfigurationError`; `undefined` when none is configured.
    */
   fold: FoldWord | undefined;
   include: string[];

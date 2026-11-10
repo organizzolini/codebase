@@ -76,12 +76,7 @@ export class LimitsService {
   }
 
   /**
-   * Every metric a written path could mean.
-   *
-   * Each target is asked whether the path starts with its name, rather than
-   * the path being split at its first dot: a target's name may hold a dot of
-   * its own, and so may the metric path that follows it. Whatever the shapes
-   * involved, every reading is collected and none of them is preferred.
+   * Every metric a written path could mean. Targets match by name prefix, never by splitting at the first dot.
    */
   private findCandidates(args: ResolveMetricArguments): MetricBinding[] {
     const candidates: MetricBinding[] = [];
@@ -115,11 +110,7 @@ export class LimitsService {
   }
 
   /**
-   * What the path would mean read as the default target's, if one is set.
-   *
-   * A default target that was never measured is refused rather than ignored:
-   * ignoring it would turn every unqualified path in the configuration into an
-   * unresolvable one, and report the paths instead of the reason.
+   * The path read as the default target's metric, if one is set. An unmeasured default is refused, not ignored.
    */
   private findDefaultCandidate(
     args: ResolveMetricArguments,
@@ -146,12 +137,7 @@ export class LimitsService {
   }
 
   /**
-   * Points one written path at exactly one measured metric.
-   *
-   * Ambiguity is refused rather than settled by a rule about which reading
-   * wins. Any such rule would be invisible in the configuration file, and a
-   * limit holding a metric nobody meant to limit reads exactly like one that
-   * works.
+   * Points one written path at exactly one measured metric. Ambiguity is refused, never settled by a hidden rule.
    */
   private resolve(args: ResolveMetricArguments): MetricBinding {
     const candidates = this.findCandidates(args);
@@ -187,15 +173,7 @@ export class LimitsService {
   // 🌎 Public Methods
 
   /**
-   * Holds every declared limit against the metric it addresses.
-   *
-   * Returns what each limit found rather than a verdict. Severity is carried
-   * through untouched: whether a breach stops the run is a decision about the
-   * run, not about the measurement.
-   *
-   * A limit that binds to nothing joins `failures` and the rest are evaluated
-   * anyway, so one run names every path in a configuration that binds to
-   * nothing instead of the first one and nothing after it.
+   * Holds every declared limit against its metric, returning what each found. Unbound limits are collected, not thrown.
    */
   evaluate(args: EvaluateLimitsArguments): LimitsEvaluation {
     const failures: LimitFailure[] = [];

@@ -9,11 +9,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Counts a Code's edges — half the sum of every point's raw arm count, so an
- * edge shared by two points is not counted once from each end. A north or
- * south arm at the band's own border still tallies here even though it joins
- * nothing, which is why a single point with an odd arm count (a three-armed
- * junction, say) leaves this characteristic at a half-integer value.
+ * Counts a Code's edges as half the sum of every point's raw arm count, so an edge
+ * shared by two points counts once. Border north and south arms still tally, so an
+ * odd arm count leaves a half-integer.
  */
 @Injectable()
 export class EdgeCountCharacteristicService implements CharacteristicEvaluator<number> {

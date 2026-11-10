@@ -8,9 +8,8 @@ import type { GraphqlCodegenOptions } from "./graphql-client.types";
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 /**
- * The GraphQL Code Generator configuration every web client of a lexico-style
- * API shares: typed operation documents, Zod validators for their results, and
- * MSW handlers for tests. A client passes the schema its API emits.
+ * Code generator configuration shared by web clients: typed operations, Zod
+ * validators, and MSW handlers. A client passes its API's schema.
  */
 export function createGraphqlCodegenConfig(
   options: Readonly<GraphqlCodegenOptions>,

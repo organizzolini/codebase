@@ -13,11 +13,8 @@ import type {
 // 🏷️ Types
 
 /**
- * A row in one of the example's two scanner tables.
- *
- * The tables are built from these lists so a case is named in exactly one
- * place, and a source file that stops demonstrating one fails the example
- * rather than leaving the table quietly wrong.
+ * A row in a scanner table. A source file that stops demonstrating its case
+ * fails the example.
  */
 interface ScannerCase {
   readonly description: string;
@@ -135,12 +132,8 @@ export function buildPythonDocuments(): ExampleDocument[] {
 }
 
 /**
- * Describes a project rooted anywhere on disk, through real discovery.
- *
- * `tags` defaults to the `language:python` tag an Nx project would have
- * brought with it, since an example project is not an Nx project. Passing tags
- * without it is how a caller sees the gate refuse: discovery returns nothing
- * at all.
+ * Describes a project rooted anywhere on disk. `tags` defaults to `language:python`,
+ * without which discovery returns nothing.
  */
 export function describeProjectAt(
   absoluteRoot: string,

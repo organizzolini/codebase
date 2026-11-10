@@ -75,9 +75,8 @@ export class PostgresqlImportCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Every check a real import and a `--dry-run` share, none of which
-   * connects to the target: the options, the pg_restore version, and the
-   * dump's table of contents. Resolves the plan and the listed contents.
+   * Runs the checks that a real import and `--dry-run` share, none connecting
+   * to the target.
    */
   private async check(options: PostgresqlImportCommandOptions): Promise<{
     readonly contents: readonly PostgresDumpEntry[];
@@ -91,10 +90,8 @@ export class PostgresqlImportCommand extends CommandRunner {
   }
 
   /**
-   * Checks that the dump holds the rows `--data` and the definitions
-   * `--ddl` ask for, for every selected table.
-   *
-   * @throws PostgresqlImportContentsError naming each table that lacks them.
+   * Checks the dump holds the rows and definitions asked for, per selected table.
+   * @throws PostgresqlImportContentsError naming each table lacking them.
    */
   private ensureContents(
     { content, file, tables }: PostgresqlImportPlan,
@@ -134,13 +131,8 @@ export class PostgresqlImportCommand extends CommandRunner {
   }
 
   /**
-   * Validates every option, resolves the tables, and checks the file
-   * exists, so nothing runs against a half-specified command line.
-   *
-   * @throws PostgresqlImportOptionsError naming the first option to fix, or
-   * PostgresUriError when `--target-uri` cannot be used, or
-   * PostgresTableNameError when a `--table` names no schema and no
-   * `--schema` was given.
+   * Validates every option, resolves the tables, and checks the file exists
+   * before anything runs. @throws The first option that cannot be used.
    */
   private plan(options: PostgresqlImportCommandOptions): PostgresqlImportPlan {
     const targetUri = this.requireOption(
@@ -176,10 +168,8 @@ export class PostgresqlImportCommand extends CommandRunner {
   }
 
   /**
-   * `value`, or an `PostgresqlImportOptionsError` with `message` when the option was
-   * not given. A repeatable option given no times arrives as `undefined`.
-   *
-   * @throws PostgresqlImportOptionsError when `value` is `undefined`.
+   * Returns `value`, or throws when the option was not given. A repeatable
+   * option given no times arrives as `undefined`.
    */
   private requireOption<Value>(
     value: undefined | Value,
@@ -190,11 +180,8 @@ export class PostgresqlImportCommand extends CommandRunner {
   }
 
   /**
-   * Restores the plan's tables from the listed dump. A client-tool failure
-   * says the target was left unchanged, which the single transaction
-   * guarantees, unless `truncated`: then the tables may be empty, and the
-   * import should be re-run.
-   *
+   * Restores the plan's tables. A failure leaves the target unchanged, or, once
+   * `truncated`, the tables empty.
    * @throws PostgresqlImportRestoreError when pg_restore fails.
    */
   private async restore(
@@ -233,12 +220,9 @@ export class PostgresqlImportCommand extends CommandRunner {
   }
 
   /**
-   * Empties the plan's tables before a `--clean --data` restore. With
-   * `--ddl`, `pg_restore` drops and recreates them instead, so nothing
-   * is truncated. Resolves whether the tables were emptied.
-   *
-   * @throws PostgresqlImportCleanError when an unselected table references a
-   * selected one, or the truncate fails; nothing was truncated.
+   * Empties the plan's tables before a `--clean --data` restore, unless `--ddl`
+   * drops and recreates them. Resolves whether emptied.
+   * @throws PostgresqlImportCleanError, with nothing truncated.
    */
   private async truncate({
     clean,
@@ -348,11 +332,8 @@ export class PostgresqlImportCommand extends CommandRunner {
   }
 
   /**
-   * Validates the options, checks pg_restore and the dump's contents,
-   * applies any `--clean`, then restores the selected tables in one
-   * transaction. Nothing connects to the target until the dump is known to
-   * hold what was asked for; `--dry-run` stops there, printing the plan
-   * instead of importing.
+   * Checks the dump, applies any `--clean`, then restores the tables in one
+   * transaction. `--dry-run` stops before any import.
    */
   async run(
     _passedParameters: string[],

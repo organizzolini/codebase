@@ -1,17 +1,8 @@
 import type { ServerFunctionBuilder } from "./browser-stand-ins.types";
 
 /**
- * A stand-in for TanStack Start's `createServerFn`, which only runs inside
- * the Start server runtime, so a route that defines a server function would
- * throw under test. A web application swaps it in from its setup file:
- *
- * ```ts
- * vi.mock("@tanstack/react-start", async (importOriginal) => ({
- *   ...(await importOriginal<object>()),
- *   createServerFn: (await import("@codebase/testing/react"))
- *     .createServerFunctionStandIn,
- * }));
- * ```
+ * Stands in for TanStack Start's `createServerFn`, which only runs in the Start
+ * server, so a route test swaps it in via `vi.mock`.
  */
 export function createServerFunctionStandIn(
   _options?: unknown,

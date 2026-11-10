@@ -2,12 +2,7 @@ import type { ConstellationListing } from "./night-sky.types";
 
 // 🔭 Defaults
 
-/**
- * The backdrop's defaults. `skyOpacity` dims the whole sky and
- * `surfaceOpacity` is how opaque the calendar's surfaces are drawn over it:
- * the sky is dimmed and the surfaces mostly opaque so text reads in either
- * theme.
- */
+/** The backdrop's defaults: a dimmed sky and mostly opaque calendar surfaces, so text reads in either theme. */
 export const DEFAULT_OPTIONS = {
   backgroundBottomColor: "#0d1533",
   backgroundTopColor: "#04060f",
@@ -30,10 +25,7 @@ export const DEFAULT_OPTIONS = {
 } as const;
 
 /**
- * The default observer, at the north pole, where altitude is declination and
- * the default view, the whole sky above the horizon, holds the northern half
- * of the ecliptic and the northern zodiac's figures as they turn past; the
- * longitude is New York's.
+ * The default observer, at the north pole, where the view shows the northern ecliptic; longitude is New York's.
  */
 export const DEFAULT_OBSERVER = {
   latitudeDegrees: 90,
@@ -58,9 +50,7 @@ export const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 export const POLE_MARGIN_DEGREES = 1;
 
 /**
- * The lowest bottom altitude `sky.altBottom` takes: below the horizon, so a
- * view from the pole, where altitude is declination, reaches the southern
- * half of the ecliptic and the zodiac.
+ * The lowest bottom altitude `sky.altBottom` takes: below the horizon, so a pole view reaches the southern ecliptic.
  */
 export const MINIMUM_BOTTOM_ALTITUDE_DEGREES = -45;
 
@@ -79,8 +69,7 @@ export const COLOR_DIGITS_PATTERN = /^#?(?:[\da-f]{3}|[\da-f]{6})$/iu;
 export const CONSTELLATION_WORDS = ["all", "none", "zodiac"] as const;
 
 /**
- * The figures drawn when the link names none: the zodiac's, faint enough to
- * sit behind the calendar and the twelve a calendar of astrology is about.
+ * The figures drawn when the link names none: the zodiac, faint enough to sit behind the calendar.
  */
 export const DEFAULT_CONSTELLATIONS: readonly string[] = ["zodiac"];
 
@@ -94,9 +83,7 @@ export const LINE_OPACITY_RANGE = { maximum: 1, minimum: 0 } as const;
 export const LINE_WIDTH_RANGE = { maximum: 10, minimum: 0 } as const;
 
 /**
- * Every constellation the night sky has a figure for, by its Latin name, with
- * whether it is one of the twelve of the zodiac, as the figure picker lists
- * them.
+ * Every constellation with a figure, by Latin name, flagged when it is one of the zodiac's twelve.
  */
 export const CONSTELLATIONS: readonly ConstellationListing[] = [
   { name: "Andromeda", zodiac: false },

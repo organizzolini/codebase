@@ -6,9 +6,8 @@ import type { Instance } from "@conformetry/configuration";
 export interface FindProjectInstancesArguments {
   readonly configurationPath: string;
   /**
-   * Shared across the projects of one pass, so a workspace-wide glob that is
-   * the same for every project is expanded once. Omit it and every call globs
-   * for itself.
+   * Shared across one pass's projects, so a workspace-wide glob is expanded once.
+   * Omit it and every call globs for itself.
    */
   readonly discoveryCache?: Map<string, Instance[]>;
   readonly project: ProjectScope;

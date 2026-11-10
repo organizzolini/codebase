@@ -10,12 +10,8 @@ import type {
 } from "./spell-check.types";
 
 /**
- * Judges every spell-check task Nx batched from one run per configuration.
- *
- * One cspell per project paid its start-up and dictionary load each time,
- * which is most of what a small project's check costs. Each task still
- * passes, fails and is cached by itself — Nx hashes and replays batched tasks
- * one by one. A task whose project the graph does not know fails alone.
+ * Judges the spell-check tasks Nx batched, with one cspell run per configuration.
+ * Each task passes, fails and caches by itself.
  */
 export default async function spellCheckBatchExecutor(
   ...[taskGraph, options, overrides, context]: SpellCheckBatchExecutorArguments
@@ -53,13 +49,8 @@ export default async function spellCheckBatchExecutor(
 }
 
 /**
- * Gets a failed task's own report by running its project alone.
- *
- * The batch knows which project a misspelling is under but prints findings for
- * every project, so the failing project is run again by itself to get exactly
- * what cspell prints on the command line. A second run that passes does not
- * clear the task: the batch found a misspelling there, so the disagreement is
- * stated beside what was printed.
+ * Reruns a failed project alone for cspell's own printed report. A batch
+ * that found a misspelling stays failed even if the rerun passes.
  */
 async function explain(args: {
   configuration: string;
@@ -83,13 +74,8 @@ async function explain(args: {
 }
 
 /**
- * Judges one configuration's tasks from a single cspell run over all of their
- * roots.
- *
- * A clean exit passes every task. Otherwise a task fails when a finding sits
- * under its own root, and only then; a failing exit with no finding under any
- * root asked about fails every task, since nothing says which of them the run
- * was about.
+ * Judges one configuration's tasks from one cspell run. A clean exit passes
+ * all; a task fails for a finding under its own root.
  */
 async function judgeGroup(args: {
   configuration: string;
@@ -128,11 +114,8 @@ async function judgeGroup(args: {
 }
 
 /**
- * Prints what each failed task found, under the task's id.
- *
- * Nx keeps a batch task's output for the cache but does not print it, where a
- * single task's output reaches the terminal. Without this a failed task is red
- * and silent. Passing tasks print nothing.
+ * Prints each failed task's output under its id. Nx stores batch output
+ * but never prints it, so a failure would otherwise be silent.
  */
 function printFailures(results: Record<string, SpellCheckTaskResult>): void {
   for (const [taskId, result] of Object.entries(results)) {

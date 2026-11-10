@@ -12,23 +12,14 @@ export const SOURCE_LABEL_PREFIX = "source:";
 export const TYPE_LABEL_PREFIX = "type:";
 
 /**
- * How a conventional title is read.
- *
- * The scope group is optional even though the convention requires a scope.
- * commitlint's `scope-empty` rule rejects a title with no scope, so in a
- * workflow run 📝 Validate Pull Request Title fails first and this check never
- * sees one. Run by hand with a pull request number it runs ahead of any title
- * check, so matching the scope as optional keeps it correct there too, and is
- * defense in depth everywhere else. The subject group is deliberately not
- * optional: a title that is only a prefix is not a title.
+ * Scope is optional here because commitlint's `scope-empty` rejects a title with no scope,
+ * titles first; this keeps a by-hand run correct. Subject is required.
  */
 export const CONVENTIONAL_TITLE_PATTERN =
   /^([a-z][a-z-]*)(?:\(([^()]+)\))?!?:\s+(?<subject>\S.*)$/u;
 
 /**
- * What one title's scope group is split on.
- *
- * commitlint's `scope-enum` splits on both, so one title may name several
- * scopes and each of them is expected to have its own label.
+ * Splits a title's scope group the way commitlint's `scope-enum` does, so each
+ * scope needs its own label.
  */
 export const TITLE_SCOPE_SEPARATOR_PATTERN = /[,/]/u;

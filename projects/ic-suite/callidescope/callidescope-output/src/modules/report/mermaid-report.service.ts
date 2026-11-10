@@ -13,15 +13,10 @@ import type { StackFrame } from "@callidescope/core";
 /**
  * Draws a set of call stacks as one mermaid flowchart.
  *
- * One diagram for all of them rather than one apiece, because a single stack
- * is a straight line and a straight line is a list with extra steps. Drawn
- * together the shared tails converge — every resolver ending in the same
- * service, every command reaching the same repository — and that convergence
- * is the thing a picture shows and an indented tree cannot.
+ * One diagram for all stacks, because shared tails converge there and that convergence is what a
+ * picture shows and an indented tree cannot.
  *
- * Labels carry the callable's name and nothing else. What it takes, returns,
- * and documents belongs to the tree rendering, which has room for it; a
- * diagram trying to carry all of that is unreadable at any size.
+ * Labels carry only the callable's name. Signatures and docs belong to the tree rendering.
  */
 @Injectable()
 export class MermaidReportService {

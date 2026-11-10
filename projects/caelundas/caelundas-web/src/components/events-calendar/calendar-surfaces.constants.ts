@@ -1,12 +1,7 @@
 // 🔖 Constants
 
 /**
- * The surfaces of the calendar that stand over the night sky, as the
- * background each paints. The share of the color that is opaque is
- * `--surface-opacity`, which the Sky menu's calendar opacity sets on the
- * document: the lower it is, the more stars show through, and the harder the
- * text on it is to read. They are whole class names, so Tailwind finds them
- * in the source.
+ * Calendar surfaces over the night sky, as whole class names for Tailwind; `--surface-opacity` sets the opaque share.
  */
 export const SURFACE_CLASS_NAMES = {
   agendaDate: "bg-muted/(--surface-opacity)",
@@ -17,10 +12,7 @@ export const SURFACE_CLASS_NAMES = {
 } as const;
 
 /**
- * The same for the vendored calendars' surfaces, which live in the shared
- * presentation package and are changed from here: through the class hooks the
- * event calendar offers, and through selectors on the slots the Gantt
- * names, which need no edit to the package.
+ * The same for the vendored calendars' surfaces, changed here through class hooks and Gantt slot selectors.
  */
 export const VENDORED_SURFACE_CLASS_NAMES = {
   ganttHeaders:

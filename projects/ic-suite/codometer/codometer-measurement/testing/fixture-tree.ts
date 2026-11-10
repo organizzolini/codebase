@@ -2,11 +2,8 @@ import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 /**
- * Contents of the fixture tree, keyed by path relative to its root.
- *
- * Written to a real directory rather than mocked, because the behavior under
- * test is exactly what the filesystem reports: which entries a directory
- * holds, which of them are symlinks, and which ignore files sit beside them.
+ * The fixture tree's contents by relative path, written to a real directory
+ * because the behavior under test is what the filesystem reports.
  */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
   // `README.md` is not named here on purpose. Codometer splices into it, so
@@ -40,13 +37,8 @@ const FIXTURE_FILES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Writes the fixture tree into the given directory and returns that root.
- *
- * `CLAUDE.md` is a symlink to `AGENTS.md`, the shape the repository's own tree
- * has and the one that used to be counted twice.
- *
- * The directory comes from the testing package's temporary-directory
- * helpers, which remove it, tree and all, once the test or suite finishes.
+ * Writes the fixture tree into a directory and returns that root. `CLAUDE.md`
+ * is a symlink to `AGENTS.md`, like the repository's own tree.
  */
 export function createFixtureTree(root: string): string {
   for (const [relativePath, contents] of Object.entries(FIXTURE_FILES)) {

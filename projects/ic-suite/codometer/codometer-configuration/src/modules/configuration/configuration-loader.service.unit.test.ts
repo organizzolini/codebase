@@ -120,11 +120,9 @@ describe(ConfigurationLoaderService, () => {
   });
 
   it("resolves a configuration path relative to the repository root", async () => {
-    // A configuration path written relative to a repository root, read from a
-    // nested working directory — which is what a task runner leaves behind
-    // whenever it sets the cwd to the project rather than the workspace. The
-    // fixture is a temporary repository rather than this one so that loading
-    // it never evaluates this package's own sources a second time.
+    // A configuration path relative to a repository root, read from a nested
+    // working directory, as a task runner leaves behind. The fixture is a
+    // temporary repository so no real configuration file is needed.
     const repositoryRoot = createTemporaryDirectory("loader-repository");
     await writeFile(
       path.join(repositoryRoot, "pnpm-workspace.yaml"),

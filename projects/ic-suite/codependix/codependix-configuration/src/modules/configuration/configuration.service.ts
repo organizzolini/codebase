@@ -40,14 +40,8 @@ import type {
 import type { RunMode, RunModeSelection } from "@codependix/core";
 
 /**
- * Loads, validates, and resolves codependix configuration files.
- *
- * Loading and per-project resolution are kept apart on purpose: a project's
- * actual export configuration depends on both the global defaults and its own
- * name, so resolving it eagerly for every project in the workspace would mean
- * redoing that work for a workspace whose graphs run against a filtered subset
- * of projects. `resolveForProject` is called once per project that is
- * actually built instead.
+ * Loads, validates, and resolves codependix configuration. Per-project resolution is kept apart
+ * from loading, so it runs only for projects actually built.
  */
 @Injectable()
 export class ConfigurationService {
@@ -99,12 +93,7 @@ export class ConfigurationService {
   }
 
   /**
-   * Fills in every graph level a `boundaries` block may leave out.
-   *
-   * Every level resolves to a list rather than to `undefined`, so a caller
-   * walks all of them without asking which ones were configured — the same
-   * reason `include` resolves to a list nobody wrote. `fileImports` resolves
-   * both of its languages the same way, one level deeper.
+   * Fills in every graph level a `boundaries` block may omit, each as a list, so callers need not ask which were configured.
    */
   private resolveBoundaries(
     boundaries: CodependixBoundariesConfiguration | undefined,
@@ -142,11 +131,7 @@ export class ConfigurationService {
   // 🌎 Public Methods
 
   /**
-   * Splits the `--projects` and `--tags` arguments into lists, and reads
-   * `--no-dependencies` as building over the selected projects alone.
-   *
-   * Empty entries are dropped, so a trailing comma and a doubled one are both
-   * read as the author meant them rather than as a glob matching nothing.
+   * Splits `--projects` and `--tags` into lists, and reads `--no-dependencies` as building over the selection alone. Blank entries are dropped.
    */
   private resolveSelection(
     selection: CodependixSelectionArguments | undefined,
@@ -167,17 +152,8 @@ export class ConfigurationService {
   }
 
   /**
-   * Whether a project participates in graph export at all.
-   *
-   * A project matches when something claims it — an `include` glob, a
-   * `--projects` glob, or a `--tags` tag — and no `exclude` glob claims its
-   * name or root. The command line **widens** what the configuration already
-   * selects rather than replacing it; `exclude` wins over all three, because
-   * a flag that could resurrect an excluded project would make `exclude`
-   * advisory.
-   *
-   * `projectRoot` and `projectTags` are optional: a caller with neither handy
-   * still resolves against globs written against project names.
+   * Whether a project takes part in graph export: matched by `include` or the command line, and not claimed by `exclude`.
+   * `exclude` wins over flags.
    */
   public isProjectIncluded(args: ProjectSelectionArguments): boolean {
     const { configuration, projectName, projectRoot } = args;
@@ -194,15 +170,8 @@ export class ConfigurationService {
   }
 
   /**
-   * Whether a project is in the set a run's command line narrowed to.
-   *
-   * A run naming no selection selects **everything**, which is what keeps the
-   * whole-workspace graph and the boundary gate judging every project by
-   * default. Naming one narrows both to what it named.
-   *
-   * This is where `--projects`/`--tags` differ from `include`: `include` is
-   * about which projects have exports written for them, and never reaches the
-   * workspace graph or the gate. A selection reaches all three.
+   * Whether a project is in the command line's selection. Naming none selects every project.
+   * `include` never reaches the graph or gate, only selections do.
    */
   public isProjectSelected(args: ProjectSelectionArguments): boolean {
     const { selection } = args.configuration;
@@ -215,11 +184,7 @@ export class ConfigurationService {
   }
 
   /**
-   * Loads and validates a codependix configuration file.
-   *
-   * The path is required and must exist — a typo in a task runner's
-   * arguments should fail rather than quietly resolving every graph to
-   * `target: "none"`. Nothing is searched for.
+   * Loads and validates a configuration file. The path must exist; nothing is searched for, so a typo fails rather than resolving to nothing.
    */
   public async loadConfiguration(
     args: LoadConfigurationArguments,
@@ -235,14 +200,7 @@ export class ConfigurationService {
   }
 
   /**
-   * Loads and validates one project's own `codependix.config.ts`, or
-   * `undefined` when it has none.
-   *
-   * Searched for exactly at `projectRoot` — see
-   * `ConfigurationLoaderService.findProjectConfigurationFile` — rather than
-   * named by a path the way `loadConfiguration`'s file is: a project's file is either colocated with it or it does not
-   * exist, and a project with none produces no per-project output rather than
-   * inheriting one from a parent directory.
+   * Loads one project's own `codependix.config.ts`, or `undefined`. Searched for only at its root, never inherited from a parent.
    */
   public async loadProjectConfiguration(
     args: LoadProjectConfigurationArguments,
@@ -271,13 +229,7 @@ export class ConfigurationService {
   }
 
   /**
-   * Parses a comma-separated list option, dropping blank entries.
-   *
-   * One of the six command-line methods this service forwards to the
-   * `input` and flag-resolution providers it owns. They are stated here
-   * rather than exported alongside it because this package makes exactly one
-   * service public: a host asking what a run is configured to do — from its
-   * configuration file or from its flags — asks `ConfigurationService`.
+   * Parses a comma-separated list, dropping blanks. Forwarded here, since `ConfigurationService` is the one public service.
    */
   public parseCommaDelimitedOption(value: string | undefined): string[] {
     return this.inputService.parseCommaDelimitedOption(value);
@@ -299,12 +251,7 @@ export class ConfigurationService {
   }
 
   /**
-   * Returns the main configuration path, refusing one that is missing.
-   *
-   * No file is searched for, so every host — the command line, the Nx
-   * executor, the Nx plugin — must be handed a path. `surface` names the
-   * setting the caller took it from (for example "`--config` flag"), which is
-   * what the refusal tells the user to fix. Absent and blank are the same.
+   * Returns the main configuration path, refusing a missing or blank one. `surface` names its source in the refusal.
    */
   public requireConfigurationPath(
     configurationPath: string | undefined,
@@ -318,11 +265,7 @@ export class ConfigurationService {
   }
 
   /**
-   * Fills in every field a configuration file may leave out.
-   *
-   * Exposed so a host embedding codependix can hand over a configuration
-   * object it assembled itself and get the same shape a configuration file
-   * produces.
+   * Fills in every field a configuration file may omit. Exposed so a host can pass an assembled configuration and get the file's shape.
    */
   public resolveConfiguration(
     configuration: CodependixConfiguration,
@@ -340,18 +283,8 @@ export class ConfigurationService {
   }
 
   /**
-   * Resolves one project's export configuration for one graph type.
-   *
-   * A project's own `codependix.config.ts`, when it has one, is read exactly
-   * as loaded — no merge against a workspace-wide default happens here, since
-   * spreading the root-exported `projectDefaults` already happened when the
-   * project's own file was authored. A project excluded by the configured
-   * `include`/`exclude` globs, or one that has no configuration file of its
-   * own at all, always resolves to `target: "none"`: the former because a
-   * project excluded from graph export should not need every field rewritten
-   * to `"none"` by hand, the latter because a project matched by `include`
-   * with no file of its own has nothing to export, even though it still
-   * contributes to the Workspace Graph and is judged by boundary rules.
+   * Resolves one project's export configuration for one graph type. An excluded project, or one without
+   * its own file, resolves to `target: "none"`.
    */
   public resolveForProject(
     args: ResolveForProjectArguments,
@@ -384,16 +317,7 @@ export class ConfigurationService {
   }
 
   /**
-   * Resolves the Workspace Graph's export configuration for one graph type.
-   *
-   * A Workspace Graph is exported once for the whole repository rather than
-   * once per project, so it has no per-project override and is unaffected by
-   * `include`/`exclude` — those two apply only to `resolveForProject`.
-   *
-   * `--projects` and `--tags` do reach it, through the node set rather than
-   * through this: a run naming a selection draws the graph over the projects
-   * it named. Where that graph lands is still read from `workspace`, keyed by
-   * `graphType`.
+   * Resolves the Workspace Graph's export for one graph type. `include` and `exclude` never apply to it.
    */
   public resolveForWorkspace(
     configuration: ResolvedCodependixConfiguration,

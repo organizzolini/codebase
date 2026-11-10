@@ -25,9 +25,7 @@ const FAINT: Star = {
 };
 
 /**
- * A few stars, as the catalog `caelundas-cli night-sky` ingests holds them,
- * so a sky drawn without Postgres still has stars to draw, and a magnitude
- * limit still has a star to leave out.
+ * Stars the catalog holds, so a sky drawn without Postgres has stars to draw and a magnitude limit has one to leave out.
  */
 const STARS: Star[] = [
   VEGA,

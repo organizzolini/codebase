@@ -25,13 +25,9 @@ import type {
 } from "./configuration-listing.types";
 
 /**
- * Finds every codometer configuration in a tree and says what each one holds.
+ * Finds every codometer configuration in a tree and what each one holds. Never measures, so it runs in milliseconds.
  *
- * Answers the question a repository gains once its limits stop living in one
- * table: where is everything configured, and what does it add up to. It reads
- * configuration and never measures anything, so it needs no build and runs in
- * milliseconds — and no single unreadable file takes the listing down, because
- * every failure is carried back on the result rather than thrown.
+ * A bad file is reported on the result rather than thrown, so one unreadable file cannot take the listing down.
  */
 @Injectable()
 export class ConfigurationListingService {
@@ -54,14 +50,7 @@ export class ConfigurationListingService {
   // 🔏 Private Methods
 
   /**
-   * Resolves one configuration file, reporting rather than throwing on failure.
-   *
-   * A file named like a configuration is not always one that loads: a
-   * generator template carries placeholders in its own path, and a
-   * work-in-progress file may not parse. One such file must not take the
-   * listing down with it, because the listing is most wanted precisely when
-   * something is wrong. The failure is carried on the entry so the reader sees
-   * which file could not be read instead of a shorter list than the tree holds.
+   * Resolves one configuration file, reporting a failure on its entry rather than throwing, so one bad file cannot hide the rest.
    */
   private async describeConfiguration(args: {
     directory: string;
@@ -91,11 +80,7 @@ export class ConfigurationListingService {
   }
 
   /**
-   * Renders a limit's value with the unit its metric implies.
-   *
-   * A resolved limit carries a bare number, so `256000` alone cannot say
-   * whether it gates bytes or files. Only a size analysis produces a `.size`
-   * metric, which is what makes the suffix a sound test.
+   * Renders a limit with its metric's unit. Only size analysis produces a `.size` metric, so the suffix is a sound test.
    */
   private formatLimitValue(metric: string, value: number): string {
     return metric.endsWith(SIZE_METRIC_SUFFIX)
@@ -104,13 +89,7 @@ export class ConfigurationListingService {
   }
 
   /**
-   * Resolves the exclusions the walk uses, reporting rather than throwing.
-   *
-   * The configuration named by the required path may not exist or may not
-   * parse. That must not take the listing down — the listing is most wanted
-   * precisely when the configuration is in a state somebody is trying to
-   * understand — so the built-in exclusions stand in and the failure is
-   * carried back to be reported and to fail the run's exit code.
+   * Resolves the walk's exclusions, falling back to the built-in ones and reporting the failure rather than throwing.
    */
   private async resolveWalkExclusions(
     args: DescribeConfigurationsArguments,
@@ -138,10 +117,7 @@ export class ConfigurationListingService {
   // 🌎 Public Methods
 
   /**
-   * Resolves the configuration each file in a tree answers with.
-   *
-   * Every file found is resolved by its own path, which is what makes the
-   * result match what a run of codometer given that file would see.
+   * Resolves the configuration each file in a tree answers with, by its own path, matching a run given that file.
    */
   public async describeConfigurations(
     args: DescribeConfigurationsArguments,
@@ -163,18 +139,7 @@ export class ConfigurationListingService {
   }
 
   /**
-   * Finds every configuration file beneath a directory.
-   *
-   * Walks with the same gitignore-aware discovery a measurement uses, so a
-   * configuration inside `node_modules` or a build directory is never picked
-   * up, and one inside a folder the repository ignores is never reported as
-   * something the repository configures.
-   *
-   * The exclusions come from whatever configuration answers for the walk root,
-   * because that is what says which files this repository considers its own —
-   * walking without them would list every configuration in a vendored
-   * dependency or a generator template. A path that does not load falls back
-   * to the built-in exclusions and reports itself instead of failing.
+   * Finds every configuration file beneath a directory, using the same gitignore-aware walk as a measurement. Exclusions come from the walk root's configuration.
    */
   public async findConfigurationFiles(
     args: DescribeConfigurationsArguments,

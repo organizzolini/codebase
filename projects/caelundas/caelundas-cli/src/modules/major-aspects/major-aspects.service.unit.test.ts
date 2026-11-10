@@ -235,10 +235,7 @@ describe(MajorAspectsService, () => {
       const previousMinute = currentMinute.clone().subtract(1, "minute");
       const nextMinute = currentMinute.clone().add(1, "minute");
 
-      // Create ephemeris with all bodies clustered in a small range to avoid aspects
-      // Major aspects need specific angle differences: 0°, 60°, 90°, 120°, 180°
-      // If all bodies are within a ~35° range, no pairs will have angles matching major aspects
-      // Positions: 10° through 45° (35° span, all angles < 56° which is outside all aspect orbs)
+      // Bodies clustered within 10°–45° form no major aspect: every angle is under 56°.
       const safeLongitudes = [
         10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44,
         46,

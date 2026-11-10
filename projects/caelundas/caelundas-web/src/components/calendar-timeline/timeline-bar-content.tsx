@@ -20,9 +20,7 @@ export interface TimelineBarContentProperties extends Pick<
 // 🧩 Component
 
 /**
- * Draws what a bar holds: a circle for an instant, at its moment and never
- * narrower than a lane is tall; the count of a cluster of crowded markers, in
- * a circle; or a span's title.
+ * Draws a bar's content: an instant's circle, a cluster's count in a circle, or a span's title.
  */
 export function TimelineBarContent(
   properties: Readonly<TimelineBarContentProperties>,
