@@ -50,6 +50,7 @@ body:
         - persistence
         - interface
         - dependencies
+        - deployment
         - deployments
         - documentation
         - infrastructure
@@ -67,7 +68,6 @@ body:
         - codometer
         - coinagerie
         - no-release
-        - publication
         - release
         - reporting
         - scripts

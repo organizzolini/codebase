@@ -1,0 +1,60 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "deployment",
+  "projectType": "application",
+  "sourceRoot": "deployment",
+  "tags": [
+    "framework:nest-commander",
+    "framework:nestjs",
+    "generator:nestjs-command-project",
+    "language:typescript",
+    "type:package"
+  ],
+  "targets": {
+    "build-projects": {},
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "repl": {},
+    "spell-check": {},
+    "start": {
+      "cache": false,
+      "configurations": {
+        "link-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts link-packages"
+        },
+        "publish-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts publish-packages"
+        },
+        "tag-codebase": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts tag-codebase"
+        },
+        "tag-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts tag-packages"
+        },
+        "version-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts version-packages"
+        }
+      },
+      "description": "Run one deployment command by name. Callers in CI set the variables each command reads, such as NX_BASE and NX_HEAD.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

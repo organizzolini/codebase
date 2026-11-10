@@ -6,13 +6,13 @@ Call stacks traced through `integration`, deepest first. Each frame shows what i
 
 | Measure | Value |
 | --- | --- |
-| Callables | 200 |
-| Files | 105 |
-| Calls traced | 227 |
-| Call stacks | 16 |
+| Callables | 206 |
+| Files | 110 |
+| Calls traced | 232 |
+| Call stacks | 17 |
 | Deepest stack | 6 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 12 |
+| Unfollowable calls | 13 |
 
 ### Limits
 
@@ -76,7 +76,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>13 more call stacks</summary>
+<summary>14 more call stacks</summary>
 
 **4. `knipBatchExecutor`** — depth 6 · orphan-root
 
@@ -249,6 +249,17 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Reads one variable, an absent one as empty.
 ```
 
+**17. `PublishablePackagesGateCommand.run`** — depth 3 · decorated-method
+
+```text
+🚀 PublishablePackagesGateCommand.run(): Promise<void> [integration/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts:49]
+   ↳ Decides whether the check is affected, then runs it whole or skips it.
+  └─> PublishablePackagesGateService.decide(): PublishablePackagesGateOutcome [integration/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts:47]
+     ↳ Asks Nx which gated projects the change between `NX_BASE` and `NX_HEAD` affects.
+    └─> ProcessRunnerService.capture(executable: string, args: readonly string[]): CapturedProcess [integration/src/modules/process-runner/process-runner.service.ts:42]
+       ↳ Runs a command to completion and returns what it printed.
+```
+
 </details>
 
 ### Breadth
@@ -260,7 +271,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TaskDatabaseService.planMerge` | 6 | `TaskDatabaseService.cacheDirectory`, `TaskDatabaseService.directory`, `TaskDatabaseService.list`, `TaskDatabaseService.newest`, `schemaOf`, `schemaMismatchReason` | `integration/src/modules/task-database/task-database.service.ts:280` |
 
 <details>
-<summary>81 more callables</summary>
+<summary>84 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -284,6 +295,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `UpgradeDependenciesService.work` | 4 | `ProcessRunnerService.captureSequence`, `UpgradeNodeService.upgrade`, `UpgradePnpmService.upgrade`, `UpgradePythonService.upgrade` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.service.ts:144` |
 | `UpgradeDependenciesCommand.run` | 4 | `UpgradeDependenciesService.attempt`, `UpgradeDependenciesCommand.conclude`, `UpgradeDependenciesService.finish`, `UpgradeDependenciesCommand.some(…)` | `integration/src/modules/upgrade-dependencies/upgrade-dependencies.command.ts:85` |
 | `TaskDatabaseService.adoptSource` | 3 | `TaskDatabaseService.cacheDirectory`, `TaskDatabaseService.directory`, `nothingToMergeIntoMessage` | `integration/src/modules/task-database/task-database.service.ts:67` |
+| `PublishablePackagesGateCommand.run` | 3 | `PublishablePackagesGateService.decide`, `affectedMessage`, `PublishablePackagesGateService.execute` | `integration/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts:49` |
 | `ReportCodometerChangesService.rewriteBody` | 3 | `ProcessRunnerService.capture`, `failedMessage`, `ProcessRunnerService.stream` | `integration/src/modules/report-codometer-changes/report-codometer-changes.service.ts:109` |
 | `ReportCodometerChangesService.report` | 3 | `ReportCodometerChangesService.fetchBaseline`, `ReportCodometerChangesService.rewriteBody`, `baselineFoundMessage` | `integration/src/modules/report-codometer-changes/report-codometer-changes.service.ts:184` |
 | `RunAffectedService.plan` | 3 | `RunAffectedService.readInputs`, `RunAffectedService.templatesChanged`, `RunAffectedService.runOf` | `integration/src/modules/run-affected/run-affected.service.ts:164` |
@@ -319,6 +331,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ImportPrTaskCacheCommand.run` | 1 | `ImportPrTaskCacheService.import` | `integration/src/modules/import-pr-task-cache/import-pr-task-cache.command.ts:43` |
 | `KeepTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.keep` | `integration/src/modules/keep-task-database/keep-task-database.command.ts:41` |
 | `MergeTaskCacheCommand.run` | 1 | `TaskDatabaseService.merge` | `integration/src/modules/merge-task-cache/merge-task-cache.command.ts:45` |
+| `PublishablePackagesGateService.decide` | 1 | `ProcessRunnerService.capture` | `integration/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts:47` |
+| `PublishablePackagesGateService.execute` | 1 | `ProcessRunnerService.stream` | `integration/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts:92` |
 | `ReportCodometerChangesCommand.run` | 1 | `ReportCodometerChangesService.report` | `integration/src/modules/report-codometer-changes/report-codometer-changes.command.ts:43` |
 | `RunAffectedService.readInputs` | 1 | `RunAffectedService.filter(…)` | `integration/src/modules/run-affected/run-affected.service.ts:79` |
 | `RunAffectedService.execute` | 1 | `ProcessRunnerService.stream` | `integration/src/modules/run-affected/run-affected.service.ts:147` |
