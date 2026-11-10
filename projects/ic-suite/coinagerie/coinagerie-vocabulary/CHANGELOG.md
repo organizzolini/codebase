@@ -1,3 +1,14 @@
+## 0.0.17 (2026-11-10)
+
+### 🚀 Features
+
+- **codometer:** ✨ gate JSDoc on every declaration kind and shorten long comments ([#2227](https://github.com/organizzolini/codebase/pull/2227), [#2226](https://github.com/organizzolini/codebase/issues/2226))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.17
+- Updated coinagerie-languages to 0.0.17
+
 ## 0.0.16 (2026-11-10)
 
 ### 🧱 Updated Dependencies

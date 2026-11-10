@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.62.0](https://github.com/organizzolini/codebase/compare/v3.61.6...v3.62.0) (2026-11-10)
+
+### ✨ Features
+
+* **codometer:** ✨ gate JSDoc on every declaration kind and shorten long comments ([#2227](https://github.com/organizzolini/codebase/issues/2227)) ([bb1778e](https://github.com/organizzolini/codebase/commit/bb1778e84b884f2b40c1f350d6911adc4c30e2e6)), closes [#2226](https://github.com/organizzolini/codebase/issues/2226)
+
 ## [3.61.6](https://github.com/organizzolini/codebase/compare/v3.61.5...v3.61.6) (2026-11-10)
 
 ### 🐛 Bug Fixes

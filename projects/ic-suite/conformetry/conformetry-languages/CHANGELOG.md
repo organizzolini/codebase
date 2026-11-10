@@ -1,3 +1,14 @@
+## 0.0.80 (2026-11-10)
+
+### 🚀 Features
+
+- **codometer:** ✨ gate JSDoc on every declaration kind and shorten long comments ([#2227](https://github.com/organizzolini/codebase/pull/2227), [#2226](https://github.com/organizzolini/codebase/issues/2226))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.81
+- Updated conformetry-core to 0.0.79
+
 ## 0.0.79 (2026-11-10)
 
 ### 🧱 Updated Dependencies
