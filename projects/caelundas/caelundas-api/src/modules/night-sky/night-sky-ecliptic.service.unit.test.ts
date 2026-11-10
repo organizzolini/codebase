@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import {
-  formatEcliptic,
-  toEclipticPoint,
-  traceEcliptic,
-} from "./night-sky-ecliptic.utilities";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { NightSkyColorsService } from "./night-sky-colors.service";
+import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
+import { NightSkyProjectionService } from "./night-sky-projection.service";
 
 import type { EclipticStyle, SkyGeometry } from "./night-sky.types";
 
@@ -27,18 +27,38 @@ const WIDE: SkyGeometry = {
   scale: 1000,
 };
 
-describe("night sky ecliptic", () => {
-  describe(toEclipticPoint, () => {
+describe(NightSkyEclipticService, () => {
+  let service: NightSkyEclipticService;
+
+  const providers = [NightSkyColorsService, NightSkyProjectionService];
+
+  beforeAll(async () => {
+    const built = await buildTestingModule(NightSkyEclipticService, {
+      providers,
+    });
+
+    service = built.instance;
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyEclipticService, {
+      providers,
+    });
+
+    expect(instance).toBeInstanceOf(NightSkyEclipticService);
+  });
+
+  describe("toPoint", () => {
     it("starts at the March equinox, on the equator at 0 hours", () => {
-      const [rightAscension, declination] = toEclipticPoint(0);
+      const [rightAscension, declination] = service.toPoint(0);
 
       expect(rightAscension).toBeCloseTo(0, 6);
       expect(declination).toBeCloseTo(0, 6);
     });
 
     it("reaches the obliquity north at 6 hours and south at 18", () => {
-      const [northHours, north] = toEclipticPoint(90);
-      const [southHours, south] = toEclipticPoint(270);
+      const [northHours, north] = service.toPoint(90);
+      const [southHours, south] = service.toPoint(270);
 
       expect(northHours).toBeCloseTo(6, 6);
       expect(north).toBeCloseTo(23.44, 6);
@@ -47,25 +67,25 @@ describe("night sky ecliptic", () => {
     });
 
     it("crosses the equator again at 12 hours", () => {
-      const [rightAscension, declination] = toEclipticPoint(180);
+      const [rightAscension, declination] = service.toPoint(180);
 
       expect(rightAscension).toBeCloseTo(12, 6);
       expect(declination).toBeCloseTo(0, 6);
     });
   });
 
-  describe(traceEcliptic, () => {
+  describe("trace", () => {
     it("closes the circle every five degrees of longitude", () => {
-      const points = traceEcliptic();
+      const points = service.trace();
 
       expect(points).toHaveLength(73);
       expect(points.at(-1)?.[1]).toBeCloseTo(points[0]?.[1] ?? Number.NaN, 6);
     });
   });
 
-  describe(formatEcliptic, () => {
+  describe("formatEcliptic", () => {
     it("draws a dashed path in its own color, opacity and width", () => {
-      const markup = formatEcliptic(WIDE, STYLE);
+      const markup = service.formatEcliptic(WIDE, STYLE);
 
       expect(markup).toMatch(
         /^<g data-layer="ecliptic" stroke="#ffb877" stroke-opacity="0.5" stroke-width="1"[^>]*stroke-dasharray/u,
@@ -74,7 +94,9 @@ describe("night sky ecliptic", () => {
     });
 
     it("draws nothing when the window never shows it", () => {
-      expect(formatEcliptic({ ...WIDE, outerRadius: 400 }, STYLE)).toBe("");
+      expect(service.formatEcliptic({ ...WIDE, outerRadius: 400 }, STYLE)).toBe(
+        "",
+      );
     });
   });
 });

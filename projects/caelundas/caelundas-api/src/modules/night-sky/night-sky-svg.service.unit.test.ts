@@ -1,12 +1,17 @@
 import { Horizon, Observer, SiderealTime } from "astronomy-engine";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import {
-  buildNightSky,
-  computeGreenwichMeanSiderealHours,
-  computeLocalSiderealDegrees,
-  computeStartingSiderealDegrees,
-} from "./night-sky.utilities";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { NightSkyColorsService } from "./night-sky-colors.service";
+import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
+import { NightSkyLinesService } from "./night-sky-lines.service";
+import { NightSkyOptionsService } from "./night-sky-options.service";
+import { NightSkyProjectionService } from "./night-sky-projection.service";
+import { NightSkySiderealTimeService } from "./night-sky-sidereal-time.service";
+import { NightSkyStarsService } from "./night-sky-stars.service";
+import { NightSkySvgService } from "./night-sky-svg.service";
+import { NightSkyViewService } from "./night-sky-view.service";
 
 import type { StarRow } from "./night-sky.types";
 
@@ -79,8 +84,37 @@ const baseOptions = {
   width: WIDTH,
 } as const;
 
-describe("night sky", () => {
-  describe(buildNightSky, () => {
+describe(NightSkySvgService, () => {
+  let sidereal: NightSkySiderealTimeService;
+  let service: NightSkySvgService;
+
+  const providers = [
+    NightSkyColorsService,
+    NightSkyEclipticService,
+    NightSkyLinesService,
+    NightSkyOptionsService,
+    NightSkyProjectionService,
+    NightSkySiderealTimeService,
+    NightSkyStarsService,
+    NightSkyViewService,
+  ];
+
+  beforeAll(async () => {
+    const built = await buildTestingModule(NightSkySvgService, { providers });
+
+    service = built.instance;
+    sidereal = built.module.get(NightSkySiderealTimeService);
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkySvgService, {
+      providers,
+    });
+
+    expect(instance).toBeInstanceOf(NightSkySvgService);
+  });
+
+  describe("build", () => {
     it.each([
       "2026-10-20T01:00:00Z",
       "2026-10-20T05:00:00Z",
@@ -88,7 +122,7 @@ describe("night sky", () => {
       "2027-03-10T02:00:00Z",
     ])("agrees with astronomy-engine on which way is west at %s", (iso) => {
       const instant = new Date(iso);
-      const start = computeLocalSiderealDegrees(
+      const start = sidereal.localDegrees(
         instant,
         LONGITUDE,
         SiderealTime(instant),
@@ -111,7 +145,7 @@ describe("night sky", () => {
     });
 
     it("draws every star whose ring crosses the window at its position", () => {
-      const { measurements, svg } = buildNightSky({
+      const { measurements, svg } = service.build({
         ...baseOptions,
         faintestMagnitude: 5.5,
       });
@@ -132,7 +166,7 @@ describe("night sky", () => {
     });
 
     it("draws the figures it is given beneath the stars, turning with them", () => {
-      const { measurements, svg } = buildNightSky({
+      const { measurements, svg } = service.build({
         ...baseOptions,
         constellationSegments: [
           { from: [2, 50], name: "Test", to: [3, 45], zodiac: false },
@@ -148,8 +182,8 @@ describe("night sky", () => {
     });
 
     it("draws the ecliptic only when asked, beneath the stars", () => {
-      const plain = buildNightSky({ ...baseOptions, latitudeDegrees: 75 });
-      const { svg } = buildNightSky({
+      const plain = service.build({ ...baseOptions, latitudeDegrees: 75 });
+      const { svg } = service.build({
         ...baseOptions,
         ecliptic: true,
         latitudeDegrees: 75,
@@ -163,14 +197,14 @@ describe("night sky", () => {
     });
 
     it("draws no figure unless it is given one", () => {
-      const { measurements, svg } = buildNightSky(baseOptions);
+      const { measurements, svg } = service.build(baseOptions);
 
       expect(measurements.segmentsDrawn).toBe(0);
       expect(svg).not.toContain("<polyline");
     });
 
     it("starts at minus the sidereal angle and turns one full circle", () => {
-      const { svg } = buildNightSky({
+      const { svg } = service.build({
         ...baseOptions,
         localSiderealDegrees: 100,
       });
@@ -179,7 +213,7 @@ describe("night sky", () => {
     });
 
     it("stands still at minus the sidereal angle, the animation's starting angle", () => {
-      const { svg } = buildNightSky({
+      const { svg } = service.build({
         ...baseOptions,
         localSiderealDegrees: 100,
         still: true,
@@ -190,12 +224,12 @@ describe("night sky", () => {
     });
 
     it("draws the background gradient in the colors it is given", () => {
-      const { svg } = buildNightSky({
+      const { svg } = service.build({
         ...baseOptions,
         backgroundBottomColor: "#123",
         backgroundTopColor: "A0B1C2",
       });
-      const plain = buildNightSky(baseOptions).svg;
+      const plain = service.build(baseOptions).svg;
 
       expect(svg).toContain('offset="0" stop-color="#a0b1c2"');
       expect(svg).toContain('offset="1" stop-color="#112233"');
@@ -204,7 +238,7 @@ describe("night sky", () => {
     });
 
     it("keeps anything but a hexadecimal color out of the markup", () => {
-      const { svg } = buildNightSky({
+      const { svg } = service.build({
         ...baseOptions,
         backgroundTopColor: 'red"/><script>',
       });
@@ -214,8 +248,8 @@ describe("night sky", () => {
     });
 
     it("puts the pole above the top edge and sets the period from the speed", () => {
-      const slow = buildNightSky(baseOptions).measurements;
-      const fast = buildNightSky({
+      const slow = service.build(baseOptions).measurements;
+      const fast = service.build({
         ...baseOptions,
         pixelsPerSecond: 24,
       }).measurements;
@@ -226,7 +260,7 @@ describe("night sky", () => {
     });
 
     it("reduces a field of view that would put the pole on screen", () => {
-      const { measurements } = buildNightSky({
+      const { measurements } = service.build({
         ...baseOptions,
         bottomAltitudeDegrees: 5,
         latitudeDegrees: 25,
@@ -239,7 +273,7 @@ describe("night sky", () => {
     });
 
     it("draws the full view from the pole, latitude 90, with finite numbers", () => {
-      const { measurements, svg } = buildNightSky({
+      const { measurements, svg } = service.build({
         ...baseOptions,
         bottomAltitudeDegrees: 0,
         ecliptic: true,
@@ -261,7 +295,7 @@ describe("night sky", () => {
         [6, 55, 4, 0.4],
         [9, 55, 4, 5],
       ];
-      const { svg } = buildNightSky({ ...baseOptions, stars: sample });
+      const { svg } = service.build({ ...baseOptions, stars: sample });
 
       expect(svg).toContain('<g fill="#9bb0ff">');
       expect(svg).toContain('<g fill="#f8f7ff">');
@@ -269,19 +303,19 @@ describe("night sky", () => {
     });
 
     it("adds a glow only behind bright stars", () => {
-      const bright = buildNightSky({
+      const bright = service.build({
         ...baseOptions,
         stars: [[3, 55, 0, 0.6]],
       });
-      const faint = buildNightSky({ ...baseOptions, stars: [[3, 55, 5, 0.6]] });
+      const faint = service.build({ ...baseOptions, stars: [[3, 55, 5, 0.6]] });
 
       expect(bright.svg).toContain('fill="url(#star-glow)"');
       expect(faint.svg).not.toContain('fill="url(#star-glow)"');
     });
 
     it("draws the zoomed-out tuning view only when asked", () => {
-      const tuning = buildNightSky({ ...baseOptions, debug: true }).svg;
-      const backdrop = buildNightSky(baseOptions).svg;
+      const tuning = service.build({ ...baseOptions, debug: true }).svg;
+      const backdrop = service.build(baseOptions).svg;
 
       expect(tuning).toContain('preserveAspectRatio="xMidYMid meet"');
       expect(tuning).toContain(">pole</text>");
@@ -290,41 +324,10 @@ describe("night sky", () => {
     });
   });
 
-  describe("sidereal time", () => {
-    it("matches astronomy-engine to within a few seconds", () => {
-      const instant = new Date("2026-10-20T01:00:00Z");
-
-      expect(computeGreenwichMeanSiderealHours(instant)).toBeCloseTo(
-        SiderealTime(instant),
-        2,
-      );
-    });
-
-    it("keeps local sidereal time between 0 and 360 degrees", () => {
-      const instant = new Date("2026-10-20T01:00:00Z");
-      const west = computeLocalSiderealDegrees(instant, -300);
-      const east = computeLocalSiderealDegrees(instant, 300);
-
-      expect(west).toBeGreaterThanOrEqual(0);
-      expect(west).toBeLessThan(360);
-      expect(east).toBeGreaterThanOrEqual(0);
-      expect(east).toBeLessThan(360);
-    });
-
-    it("starts the sky at astronomy-engine's local sidereal angle", () => {
-      const instant = new Date("2026-10-20T01:00:00Z");
-
-      expect(computeStartingSiderealDegrees(instant, LONGITUDE)).toBeCloseTo(
-        computeLocalSiderealDegrees(instant, LONGITUDE, SiderealTime(instant)),
-        6,
-      );
-    });
-  });
-
   it("colors the reddest stars from the last stretch of the ramp", () => {
     expect.hasAssertions();
 
-    const reddest = buildNightSky({
+    const reddest = service.build({
       ...baseOptions,
       stars: stars.map(([hours, degrees, magnitude]) => [
         hours,

@@ -8,6 +8,16 @@ import {
 } from "@codebase/caelundas-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { NightSkyColorsService } from "./night-sky-colors.service";
+import { NightSkyEclipticService } from "./night-sky-ecliptic.service";
+import { NightSkyInputService } from "./night-sky-input.service";
+import { NightSkyLinesService } from "./night-sky-lines.service";
+import { NightSkyOptionsService } from "./night-sky-options.service";
+import { NightSkyProjectionService } from "./night-sky-projection.service";
+import { NightSkySiderealTimeService } from "./night-sky-sidereal-time.service";
+import { NightSkyStarsService } from "./night-sky-stars.service";
+import { NightSkySvgService } from "./night-sky-svg.service";
+import { NightSkyViewService } from "./night-sky-view.service";
 import { NIGHT_SKY_CACHE_SIZE } from "./night-sky.constants";
 import { NightSkyService } from "./night-sky.service";
 
@@ -80,14 +90,38 @@ describe(NightSkyService, () => {
 
   beforeAll(async () => {
     ({ instance: service } = await buildTestingModule(NightSkyService, {
-      providers: [{ provide: getEntityManagerToken(), useValue: manager }],
+      providers: [
+        NightSkyColorsService,
+        NightSkyEclipticService,
+        NightSkyInputService,
+        NightSkyLinesService,
+        NightSkyOptionsService,
+        NightSkyProjectionService,
+        NightSkySiderealTimeService,
+        NightSkyStarsService,
+        NightSkySvgService,
+        NightSkyViewService,
+        { provide: getEntityManagerToken(), useValue: manager },
+      ],
     }));
     await service.onModuleInit();
   });
 
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(NightSkyService, {
-      providers: [{ provide: getEntityManagerToken(), useValue: manager }],
+      providers: [
+        NightSkyColorsService,
+        NightSkyEclipticService,
+        NightSkyInputService,
+        NightSkyLinesService,
+        NightSkyOptionsService,
+        NightSkyProjectionService,
+        NightSkySiderealTimeService,
+        NightSkyStarsService,
+        NightSkySvgService,
+        NightSkyViewService,
+        { provide: getEntityManagerToken(), useValue: manager },
+      ],
     });
 
     expect(instance).toBeInstanceOf(NightSkyService);
@@ -121,7 +155,19 @@ describe(NightSkyService, () => {
     expect.hasAssertions();
 
     const { instance: fresh } = await buildTestingModule(NightSkyService, {
-      providers: [{ provide: getEntityManagerToken(), useValue: manager }],
+      providers: [
+        NightSkyColorsService,
+        NightSkyEclipticService,
+        NightSkyInputService,
+        NightSkyLinesService,
+        NightSkyOptionsService,
+        NightSkyProjectionService,
+        NightSkySiderealTimeService,
+        NightSkyStarsService,
+        NightSkySvgService,
+        NightSkyViewService,
+        { provide: getEntityManagerToken(), useValue: manager },
+      ],
     });
 
     expect(() => fresh.catalog).toThrow("not loaded");
@@ -141,7 +187,7 @@ describe(NightSkyService, () => {
     expect(() => service.build({ height: 0, width: 800 })).toThrow("height");
   });
 
-  it("hands back the same sky for requests that name the same canonical sky", () => {
+  it("hands back the same sky for requests that name the same snapped sky", () => {
     expect.hasAssertions();
 
     const first = service.build({

@@ -1,7 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { formatConstellationLines } from "./night-sky-lines.utilities";
-import { projectSkyPoint } from "./night-sky-projection.utilities";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { NightSkyColorsService } from "./night-sky-colors.service";
+import { NightSkyLinesService } from "./night-sky-lines.service";
+import { NightSkyProjectionService } from "./night-sky-projection.service";
 
 import type {
   ConstellationSegment,
@@ -45,17 +48,37 @@ function readPolylines(markup: string): [number, number][][] {
   );
 }
 
-describe(formatConstellationLines, () => {
+describe(NightSkyLinesService, () => {
+  let service: NightSkyLinesService;
+  let projection: NightSkyProjectionService;
+
+  const providers = [NightSkyColorsService, NightSkyProjectionService];
+
+  beforeAll(async () => {
+    const built = await buildTestingModule(NightSkyLinesService, { providers });
+
+    service = built.instance;
+    projection = built.module.get(NightSkyProjectionService);
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyLinesService, {
+      providers,
+    });
+
+    expect(instance).toBeInstanceOf(NightSkyLinesService);
+  });
+
   it("draws a segment whose stars both show from one star to the other", () => {
     const segment = createSegment([2, 60], [3, 50]);
-    const { markup, segmentsDrawn } = formatConstellationLines(
+    const { markup, segmentsDrawn } = service.formatConstellationLines(
       GEOMETRY,
       [segment],
       STYLE,
     );
     const [polyline] = readPolylines(markup);
-    const from = projectSkyPoint(GEOMETRY, segment.from);
-    const to = projectSkyPoint(GEOMETRY, segment.to);
+    const from = projection.project(GEOMETRY, segment.from);
+    const to = projection.project(GEOMETRY, segment.to);
 
     expect(segmentsDrawn).toBe(1);
     expect(markup).toMatch(/^<g [^>]*stroke-opacity/u);
@@ -70,7 +93,7 @@ describe(formatConstellationLines, () => {
   });
 
   it("cuts a segment where it leaves the ring the window can show", () => {
-    const { markup } = formatConstellationLines(
+    const { markup } = service.formatConstellationLines(
       GEOMETRY,
       [createSegment([2, 40], [2, -80])],
       STYLE,
@@ -84,7 +107,7 @@ describe(formatConstellationLines, () => {
   });
 
   it("strokes the figures in the color, opacity and width it is given", () => {
-    const { markup } = formatConstellationLines(
+    const { markup } = service.formatConstellationLines(
       GEOMETRY,
       [createSegment([2, 60], [3, 50])],
       { lineColor: "#FF8800", lineOpacity: 0.5, lineWidth: 2 },
@@ -96,7 +119,7 @@ describe(formatConstellationLines, () => {
   });
 
   it("never lets a color that is not hexadecimal into the markup", () => {
-    const { markup } = formatConstellationLines(
+    const { markup } = service.formatConstellationLines(
       GEOMETRY,
       [createSegment([2, 60], [3, 50])],
       { ...STYLE, lineColor: '"/><script>' },
@@ -108,7 +131,7 @@ describe(formatConstellationLines, () => {
 
   it("draws nothing of a segment whose stars the window never shows", () => {
     expect(
-      formatConstellationLines(
+      service.formatConstellationLines(
         GEOMETRY,
         [createSegment([2, -70], [3, -75])],
         STYLE,
@@ -117,7 +140,7 @@ describe(formatConstellationLines, () => {
   });
 
   it("follows a segment across 0 hours rather than around the pole", () => {
-    const { markup } = formatConstellationLines(
+    const { markup } = service.formatConstellationLines(
       GEOMETRY,
       [createSegment([23.9, 30], [0.1, 30])],
       STYLE,

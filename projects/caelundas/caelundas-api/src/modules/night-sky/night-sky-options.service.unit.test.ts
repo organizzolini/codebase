@@ -1,9 +1,25 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { resolveOptions } from "./night-sky-options.utilities";
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
+import { NightSkyOptionsService } from "./night-sky-options.service";
 import { DEFAULT_OPTIONS } from "./night-sky.constants";
 
-describe("night sky options suite", () => {
+describe(NightSkyOptionsService, () => {
+  let service: NightSkyOptionsService;
+
+  beforeAll(async () => {
+    const built = await buildTestingModule(NightSkyOptionsService);
+
+    service = built.instance;
+  });
+
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(NightSkyOptionsService);
+
+    expect(instance).toBeInstanceOf(NightSkyOptionsService);
+  });
+
   const required = {
     height: 700,
     latitudeDegrees: 40,
@@ -15,7 +31,7 @@ describe("night sky options suite", () => {
   it("fills every option left out with its default", () => {
     expect.hasAssertions();
 
-    expect(resolveOptions(required)).toStrictEqual({
+    expect(service.withDefaults(required)).toStrictEqual({
       ...DEFAULT_OPTIONS,
       ...required,
       constellationSegments: [],
@@ -46,6 +62,6 @@ describe("night sky options suite", () => {
       verticalFieldOfViewDegrees: 30,
     };
 
-    expect(resolveOptions(given)).toStrictEqual(given);
+    expect(service.withDefaults(given)).toStrictEqual(given);
   });
 });
