@@ -1,3 +1,11 @@
+## 0.0.76 (2026-11-10)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.76
+- Updated codometer-languages to 0.0.76
+- Updated codometer-core to 0.0.76
+
 ## 0.0.75 (2026-11-10)
 
 ### 🧱 Updated Dependencies
