@@ -8,22 +8,28 @@ import {
 
 import { getDefaultFilter } from "./use-filter-query.utilities";
 
-import type { ResolvedEventFilterCollection } from "../../components/calendar-filters/event-filter-collections.types";
 import type { EventFilterQuery } from "../../components/calendar-filters/event-filters.types";
+import type { ResolvedPreset } from "../../components/calendar-filters/presets.types";
 import type { UseFilterQueryResult } from "./use-filter-query.types";
 
 // 🧩 Hook
 
 /**
- * Holds the filter tree the builder edits; a link with no filter opens on the default collection, and only link changes replace the tree.
+ * Holds the filter tree the builder edits and the presets it can be
+ * replaced with. A link with no filter opens on the default preset. Only
+ * a change to the link itself replaces the tree: the link lags an edit until
+ * the calendar has reloaded, and must not undo it meanwhile. An edit that
+ * leaves the query as it was, such as a rule that is not finished yet, stays
+ * here rather than reloading the calendar, and a preset replaces the
+ * whole tree and is written to the link at once.
  */
 export function useFilterQuery(
   filter: EventFilterQuery | undefined,
-  collections: readonly ResolvedEventFilterCollection[],
+  presets: readonly ResolvedPreset[],
   onFilterChange: (filter: EventFilterQuery) => void,
 ): UseFilterQueryResult {
   // 🪝 Hooks
-  const defaultFilter = getDefaultFilter(collections);
+  const defaultFilter = getDefaultFilter(presets);
   const [query, setQuery] = useState(filter ?? defaultFilter);
   const [seenFilter, setSeenFilter] = useState(filter);
 
@@ -47,7 +53,7 @@ export function useFilterQuery(
       onFilterChange(toLinkedEventFilter(next));
     }
   };
-  const handleCollectionSelect = (next: EventFilterQuery): void => {
+  const handlePresetSelect = (next: EventFilterQuery): void => {
     setQuery(next);
     onFilterChange(toLinkedEventFilter(next));
   };
@@ -56,7 +62,7 @@ export function useFilterQuery(
 
   // 🎁 Result
   return {
-    handleCollectionSelect,
+    handlePresetSelect,
     handleQueryChange,
     query,
   };

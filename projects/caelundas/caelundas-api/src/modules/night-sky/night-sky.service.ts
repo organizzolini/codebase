@@ -4,16 +4,10 @@ import { EntityManager } from "typeorm";
 
 import { ConstellationLine, Star } from "@codebase/caelundas-db";
 
-import {
-  canonicalizeNightSkyInput,
-  parseNightSkyInput,
-  selectConstellationSegments,
-} from "./night-sky-input.utilities";
+import { NightSkyInputService } from "./night-sky-input.service";
+import { NightSkySiderealTimeService } from "./night-sky-sidereal-time.service";
+import { NightSkySvgService } from "./night-sky-svg.service";
 import { NIGHT_SKY_CACHE_SIZE } from "./night-sky.constants";
-import {
-  buildNightSky,
-  computeStartingSiderealDegrees,
-} from "./night-sky.utilities";
 
 import type { NightSkyInput } from "./night-sky-input.entities";
 import type {
@@ -33,11 +27,16 @@ import type { OnModuleInit } from "@nestjs/common";
 export class NightSkyService implements OnModuleInit {
   // 🏗 Dependency Injection
 
-  constructor(@InjectEntityManager() private readonly manager: EntityManager) {}
+  constructor(
+    @InjectEntityManager() private readonly manager: EntityManager,
+    private readonly input: NightSkyInputService,
+    private readonly siderealTime: NightSkySiderealTimeService,
+    private readonly svg: NightSkySvgService,
+  ) {}
 
   // 🔐 Private Fields
 
-  /** Built skies by canonical input, least recently used first. */
+  /** Built skies by snapped input, least recently used first. */
   private readonly cache = new Map<string, NightSky>();
 
   private loaded: NightSkyCatalog | undefined;
@@ -45,18 +44,18 @@ export class NightSkyService implements OnModuleInit {
   // 🔑 Public Fields
 
   /**
-   * Draws the sky for a canonical input.
+   * Draws the sky for a snapped input.
    */
   private draw(input: ParsedNightSkyInput): NightSky {
     const { constellations, time, ...options } = input;
 
-    return buildNightSky({
+    return this.svg.build({
       ...options,
-      constellationSegments: selectConstellationSegments(
+      constellationSegments: this.input.selectConstellationSegments(
         this.catalog.segments,
         constellations,
       ),
-      localSiderealDegrees: computeStartingSiderealDegrees(
+      localSiderealDegrees: this.siderealTime.startingDegrees(
         time,
         options.longitudeDegrees,
       ),
@@ -80,12 +79,14 @@ export class NightSkyService implements OnModuleInit {
   // 🌎 Public Methods
 
   /**
-   * Builds the sky for a query, cached by canonical input so repeats and
-   * equivalent requests are nearly free.
+   * Builds the night sky a query asks for, from the stars and figures held
+   * in memory, refusing input the builder cannot draw. A sky is built from
+   * its snapped input, and kept so that a repeat request, or one for a
+   * moment or size that rounds to the same, costs almost nothing.
    */
   public build(input: NightSkyInput): NightSky {
-    const canonical = canonicalizeNightSkyInput(parseNightSkyInput(input));
-    const key = JSON.stringify(canonical);
+    const snapped = this.input.snap(this.input.parse(input));
+    const key = JSON.stringify(snapped);
     const cached = this.cache.get(key);
 
     if (cached !== undefined) {
@@ -95,7 +96,7 @@ export class NightSkyService implements OnModuleInit {
       return cached;
     }
 
-    const built = this.draw(canonical);
+    const built = this.draw(snapped);
 
     this.cache.set(key, built);
 

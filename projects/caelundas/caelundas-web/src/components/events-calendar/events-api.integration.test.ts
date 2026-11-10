@@ -3,32 +3,32 @@ import { describe, expect, it } from "vitest";
 
 import { serveGraphqlApi } from "../../../testing/graphql-api";
 import {
-  mockCalendarWindowsQuery,
   mockDatasetQuery,
   mockEventsQuery,
   mockFacetsQuery,
-  mockFilterCollectionsQuery,
   mockNightSkyQuery,
+  mockPresetsQuery,
+  mockWindowsQuery,
 } from "../../graphql/generated/mocks";
 import {
-  CalendarWindowsDocument,
   DatasetDocument,
   EventsDocument,
   FacetsDocument,
-  FilterCollectionsDocument,
   NightSkyDocument,
+  PresetsDocument,
+  WindowsDocument,
 } from "../../graphql/generated/operations";
 
 import {
   describeDataset,
   findEvents,
   findFacets,
-  findFilterCollections,
+  findPresets,
   findViewWindows,
   queryApi,
 } from "./events-api.utilities";
 
-const window = { end: "2026-02-01T00:00:00Z", start: "2026-01-01T00:00:00Z" };
+const period = { end: "2026-02-01T00:00:00Z", start: "2026-01-01T00:00:00Z" };
 
 describe("events api", () => {
   it("reads the dataset", async () => {
@@ -36,8 +36,8 @@ describe("events api", () => {
 
     const dataset = {
       count: 2,
-      end: window.end,
-      start: window.start,
+      end: period.end,
+      start: period.start,
       timezone: "UTC",
     };
     serveGraphqlApi(
@@ -49,7 +49,7 @@ describe("events api", () => {
     });
   });
 
-  it("reads the events of a window with a filter and a grouping", async () => {
+  it("reads the events of a period with a filter and a grouping", async () => {
     expect.hasAssertions();
 
     let received: unknown;
@@ -65,7 +65,7 @@ describe("events api", () => {
         rules: [{ operator: "contains", path: ["text"], values: ["moon"] }],
       },
       grouping: { levels: [{ field: "month" }] },
-      window,
+      period,
     };
 
     await expect(queryApi(EventsDocument, variables)).resolves.toStrictEqual({
@@ -81,40 +81,34 @@ describe("events api", () => {
       mockFacetsQuery(() => HttpResponse.json({ data: { facets: [] } })),
     );
 
-    await expect(queryApi(FacetsDocument, { window })).resolves.toStrictEqual({
+    await expect(queryApi(FacetsDocument, { period })).resolves.toStrictEqual({
       facets: [],
     });
   });
 
-  it("reads the filter collections", async () => {
+  it("reads the presets", async () => {
     expect.hasAssertions();
 
-    const data = { defaultFilterCollection: null, filterCollections: [] };
-    serveGraphqlApi(
-      mockFilterCollectionsQuery(() => HttpResponse.json({ data })),
-    );
+    const data = { defaultPreset: null, presets: [] };
+    serveGraphqlApi(mockPresetsQuery(() => HttpResponse.json({ data })));
 
-    await expect(
-      queryApi(FilterCollectionsDocument, {}),
-    ).resolves.toStrictEqual(data);
+    await expect(queryApi(PresetsDocument, {})).resolves.toStrictEqual(data);
   });
 
-  it("reads the calendar windows", async () => {
+  it("reads the windows", async () => {
     expect.hasAssertions();
 
-    const calendarWindows = { columnMinutes: null, visible: window, window };
+    const windows = { columnMinutes: null, read: period, visible: period };
     serveGraphqlApi(
-      mockCalendarWindowsQuery(() =>
-        HttpResponse.json({ data: { calendarWindows } }),
-      ),
+      mockWindowsQuery(() => HttpResponse.json({ data: { windows } })),
     );
 
     await expect(
-      queryApi(CalendarWindowsDocument, {
-        anchor: window.start,
-        view: "MONTH",
+      queryApi(WindowsDocument, {
+        anchor: period.start,
+        window: "MONTH",
       }),
-    ).resolves.toStrictEqual({ calendarWindows });
+    ).resolves.toStrictEqual({ windows });
   });
 
   it("reads the night sky", async () => {
@@ -155,8 +149,8 @@ describe("events api", () => {
           data: {
             dataset: {
               count: 2,
-              end: window.end,
-              start: window.start,
+              end: period.end,
+              start: period.start,
               timezone: "UTC",
             },
           },
@@ -166,8 +160,8 @@ describe("events api", () => {
 
     await expect(describeDataset()).resolves.toStrictEqual({
       count: 2,
-      end: new Date(window.end),
-      start: new Date(window.start),
+      end: new Date(period.end),
+      start: new Date(period.start),
       timezone: "UTC",
     });
 
@@ -178,7 +172,7 @@ describe("events api", () => {
     await expect(describeDataset()).resolves.toBeNull();
   });
 
-  it("asks for a window's events with the filter and grouping, and reads their instants as dates", async () => {
+  it("asks for a period's events with the filter and grouping, and reads their instants as dates", async () => {
     expect.hasAssertions();
 
     let received: unknown;
@@ -193,11 +187,11 @@ describe("events api", () => {
                 color: null,
                 description: "d",
                 durationMinutes: 0,
-                end: window.start,
+                end: period.start,
                 groups: [[{ key: "k", label: "L", path: null }]],
                 id: "e1",
                 location: null,
-                start: window.start,
+                start: period.start,
                 startLocalDay: "2026-01-01",
                 startLocalHour: 0,
                 summary: "s",
@@ -213,56 +207,54 @@ describe("events api", () => {
     const [event] = await findEvents({
       filter: { combinator: "AND", rules: [] },
       grouping: { levels: [{ field: "month" }] },
-      window: { end: new Date(window.end), start: new Date(window.start) },
+      period: { end: new Date(period.end), start: new Date(period.start) },
     });
 
     expect(received).toStrictEqual({
       filter: { combinator: "AND", rules: [] },
       grouping: { levels: [{ field: "month" }] },
-      window: {
+      period: {
         end: "2026-02-01T00:00:00.000Z",
         start: "2026-01-01T00:00:00.000Z",
       },
     });
-    expect(event?.start).toStrictEqual(new Date(window.start));
+    expect(event?.start).toStrictEqual(new Date(period.start));
     expect(event?.groups).toStrictEqual([
       [{ key: "k", label: "L", path: null }],
     ]);
   });
 
-  it("reads the facets over a window, or over every event without one", async () => {
+  it("reads the facets over a period, or over every event without one", async () => {
     expect.hasAssertions();
 
-    const windows: unknown[] = [];
+    const periods: unknown[] = [];
     serveGraphqlApi(
       mockFacetsQuery(({ variables }) => {
-        windows.push(variables.window);
+        periods.push(variables.period);
 
         return HttpResponse.json({ data: { facets: [] } });
       }),
     );
 
     await findFacets({
-      end: new Date(window.end),
-      start: new Date(window.start),
+      end: new Date(period.end),
+      start: new Date(period.start),
     });
     await findFacets();
 
-    expect(windows).toStrictEqual([
+    expect(periods).toStrictEqual([
       { end: "2026-02-01T00:00:00.000Z", start: "2026-01-01T00:00:00.000Z" },
       null,
     ]);
   });
 
-  it("reads the collections and the one the calendar opens on", async () => {
+  it("reads the presets and the one the calendar opens on", async () => {
     expect.hasAssertions();
 
-    const data = { defaultFilterCollection: null, filterCollections: [] };
-    serveGraphqlApi(
-      mockFilterCollectionsQuery(() => HttpResponse.json({ data })),
-    );
+    const data = { defaultPreset: null, presets: [] };
+    serveGraphqlApi(mockPresetsQuery(() => HttpResponse.json({ data })));
 
-    await expect(findFilterCollections()).resolves.toStrictEqual(data);
+    await expect(findPresets()).resolves.toStrictEqual(data);
   });
 
   it("reads the windows of a view as dates, naming the view and scale as the API does", async () => {
@@ -270,15 +262,15 @@ describe("events api", () => {
 
     let received: unknown;
     serveGraphqlApi(
-      mockCalendarWindowsQuery(({ variables }) => {
+      mockWindowsQuery(({ variables }) => {
         received = variables;
 
         return HttpResponse.json({
           data: {
-            calendarWindows: {
+            windows: {
               columnMinutes: null,
-              visible: window,
-              window,
+              read: period,
+              visible: period,
             },
           },
         });
@@ -288,19 +280,19 @@ describe("events api", () => {
     await expect(
       findViewWindows({
         agendaDays: 7,
-        anchor: new Date(window.start),
+        anchor: new Date(period.start),
         scale: "quarter",
         view: "three-day",
       }),
     ).resolves.toStrictEqual({
-      visible: { end: new Date(window.end), start: new Date(window.start) },
-      window: { end: new Date(window.end), start: new Date(window.start) },
+      read: { end: new Date(period.end), start: new Date(period.start) },
+      visible: { end: new Date(period.end), start: new Date(period.start) },
     });
     expect(received).toStrictEqual({
       agendaDays: 7,
       anchor: "2026-01-01T00:00:00.000Z",
       scale: "QUARTER",
-      view: "THREE_DAY",
+      window: "THREE_DAY",
     });
   });
 });

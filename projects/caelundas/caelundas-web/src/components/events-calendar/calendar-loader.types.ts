@@ -1,11 +1,11 @@
-import type { ResolvedEventFilterCollection } from "../calendar-filters/event-filter-collections.types";
 import type { EventFilterQuery } from "../calendar-filters/event-filters.types";
+import type { ResolvedPreset } from "../calendar-filters/presets.types";
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
 import type {
   CalendarEventRecord,
   EventFacet,
   EventsDataset,
-  EventsWindow,
+  Period,
 } from "./calendar-records.types";
 
 /**
@@ -14,12 +14,9 @@ import type {
 export interface CalendarData {
   anchor: Date;
   /**
-   * The named filters the calendar offers, resolved against the data's tags
-   * by the API.
-   */
-  collections: ResolvedEventFilterCollection[];
-  /**
-   * The level events are colored by, after the grouping's levels; undefined when colored by type.
+   * The level the events are colored by, read for each event after the
+   * grouping's levels, or nothing when they are colored by type, kind by
+   * kind: the link's, holding only a field the data has.
    */
   colorBy: EventGroupLevel | undefined;
   dataset: EventsDataset | null;
@@ -34,7 +31,7 @@ export interface CalendarData {
   facets: EventFacet[];
   /**
    * The filter the events were read through: the link's, or the default
-   * collection's when the link names none.
+   * preset's when the link names none.
    */
   filter: EventFilterQuery | undefined;
   /**
@@ -46,17 +43,24 @@ export interface CalendarData {
    * the view's default, holding only fields the data has.
    */
   grouping: EventGroupLevel[];
-  window: EventsWindow;
+  period: Period;
+  /**
+   * The named filters the calendar offers, resolved against the data's tags
+   * by the API.
+   */
+  presets: ResolvedPreset[];
 }
 
 /**
- * Why a window shows no events: the data is empty, the window is outside it, or filters leave nothing.
+ * Why a loaded period shows no events, so the page can say which: the
+ * database holds none, the period lies outside the dates it covers, the
+ * filters leave nothing, or nothing in the period exists at all.
  */
 export type CalendarEmptiness =
   | {
       dataset: EventsDataset;
       /**
-       * The covered day nearest the window: the first for a window before
+       * The covered day nearest the period: the first for a period before
        * the data, the last for one after it.
        */
       jumpTo: Date;

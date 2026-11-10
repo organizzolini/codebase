@@ -1,5 +1,5 @@
-query Facets($window: EventsWindowInput, $filter: EventFilterGroupInput) {
-  facets(window: $window, filter: $filter) {
+query Facets($period: PeriodInput, $filter: EventFilterGroupInput) {
+  facets(period: $period, filter: $filter) {
     id
     name
     values {

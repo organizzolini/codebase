@@ -431,7 +431,6 @@ jobs:
           run-outcome: ${{ steps.run-check.outcome }}
           pull-request-number: ${{ github.event.pull_request.number }}
           target: ${{ matrix.check.target }}
-          shard: ${{ matrix.check.shard }}
 
       # A merge group runs on its own ref, so its cache saves are read by no later run
       # and would evict `main`'s entries. It restores `main`'s caches, saves none, and

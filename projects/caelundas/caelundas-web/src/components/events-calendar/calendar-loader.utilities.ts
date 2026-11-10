@@ -1,5 +1,5 @@
-import { toEventFilterCollection } from "../calendar-filters/event-filter-collections.utilities";
 import { toEventFilterInput } from "../calendar-filters/event-filter-input.utilities";
+import { toPreset } from "../calendar-filters/presets.utilities";
 import {
   createEventGroupFields,
   getDefaultGrouping,
@@ -18,20 +18,20 @@ import {
   describeDataset,
   findEvents,
   findFacets,
-  findFilterCollections,
+  findPresets,
   findViewWindows,
 } from "./events-api.utilities";
 
 import type { CalendarSearch } from "../../hooks/use-calendar-search/calendar-search.types";
-import type { ResolvedEventFilterCollection } from "../calendar-filters/event-filter-collections.types";
 import type { EventFilterQuery } from "../calendar-filters/event-filters.types";
+import type { ResolvedPreset } from "../calendar-filters/presets.types";
 import type { EventGroupLevel } from "../calendar-group-by/event-groups.types";
 import type { CalendarData, CalendarEmptiness } from "./calendar-loader.types";
 import type {
   CalendarEventRecord,
   EventFacet,
   EventsDataset,
-  EventsWindow,
+  Period,
 } from "./calendar-records.types";
 
 /**
@@ -44,23 +44,25 @@ export function clearCalendarCaches(): void {
 }
 
 /**
- * Reads the events in the shown window plus a buffer, through a cache keyed by window and filter.
+ * Reads the events in the period the search parameters' view and day show,
+ * plus a buffer, that pass their filter, together with the dataset's span
+ * and zone, all through the API. Reads go through a cache keyed by period and
+ * filter, so going back to a period already seen answers at once.
  */
 export async function loadCalendar(
   search: CalendarSearch,
 ): Promise<CalendarData> {
-  const { anchor, visible, window } = await resolveWindows(search);
+  const { anchor, read, visible } = await resolveWindows(search);
   // The facets are read for the visible days, and the grouping is resolved
   // against them, so a later load waits on nothing here.
-  const { collections, dataset, defaultFilter, facets } =
-    await readBasics(visible);
+  const { dataset, defaultFilter, facets, presets } = await readBasics(visible);
   const effectiveFilter = search.filter ?? defaultFilter;
   const filter = toEventFilterInput(effectiveFilter);
   const { colorBy, grouping } = resolveGroups(search, facets);
   const query = {
     filter,
     grouping: toEventGroupingInput(grouping, colorBy),
-    window,
+    period: read,
   };
   const events = await readCached(
     EVENTS_CACHE,
@@ -71,13 +73,12 @@ export async function loadCalendar(
     dataset,
     events,
     filtered: filter !== null,
+    period: read,
     visible,
-    window,
   });
 
   return {
     anchor,
-    collections,
     colorBy,
     dataset,
     emptiness,
@@ -86,21 +87,26 @@ export async function loadCalendar(
     filter: effectiveFilter,
     filtered: filter !== null,
     grouping,
-    window,
+    period: read,
+    presets,
   };
 }
 
 /**
- * Tells why the shown days hold no events, or null when they hold some; a filter check runs only when empty and filtered.
+ * Tells why the days a view shows hold no events, or nothing when they hold
+ * some. Only those days count, not the buffer read around them. Whether the
+ * filters emptied the days, or they hold nothing to filter, is asked only
+ * when they are empty and filtered, so a filtered period costs no second
+ * query.
  */
 async function describeEmptiness(data: {
   dataset: EventsDataset | null;
   events: readonly CalendarEventRecord[];
   filtered: boolean;
-  visible: EventsWindow;
-  window: EventsWindow;
+  period: Period;
+  visible: Period;
 }): Promise<CalendarEmptiness | null> {
-  const { dataset, events, filtered, visible, window } = data;
+  const { dataset, events, filtered, period, visible } = data;
 
   if (events.some((event) => isShown(event, visible))) {
     return null;
@@ -122,7 +128,7 @@ async function describeEmptiness(data: {
     return { kind: "match" };
   }
 
-  const everything = { window };
+  const everything = { period };
   const unfiltered = await readCached(
     EVENTS_CACHE,
     JSON.stringify(everything),
@@ -137,18 +143,20 @@ async function describeEmptiness(data: {
 /**
  * Whether an event overlaps the days a view shows.
  */
-function isShown(event: CalendarEventRecord, visible: EventsWindow): boolean {
+function isShown(event: CalendarEventRecord, visible: Period): boolean {
   return event.start < visible.end && event.end >= visible.start;
 }
 
 /**
- * Reads what the loader needs before the events: the facets of the shown days, the dataset and the collections.
+ * Reads what the loader needs before the events: the facets of the days the
+ * view shows, and what holds whatever the period, the dataset and the
+ * presets.
  */
-async function readBasics(visible: EventsWindow): Promise<{
-  collections: ResolvedEventFilterCollection[];
+async function readBasics(visible: Period): Promise<{
   dataset: EventsDataset | null;
   defaultFilter: EventFilterQuery | undefined;
   facets: EventFacet[];
+  presets: ResolvedPreset[];
 }> {
   const [facets, constants] = await Promise.all([
     readCached(
@@ -163,7 +171,10 @@ async function readBasics(visible: EventsWindow): Promise<{
 }
 
 /**
- * Answers a read from a promise cache, starting it for a new key; a failed read is forgotten, so Retry reads it again.
+ * Answers a read from a cache of promises, starting it when the key is new
+ * and keeping the most recent ones. The data never changes while the page is
+ * open, so a cached read stays right; a failed one is forgotten, so Retry
+ * reads it again.
  */
 async function readCached<TValue>(
   cache: Map<string, Promise<TValue>>,
@@ -196,29 +207,31 @@ async function readCached<TValue>(
 }
 
 /**
- * Reads the dataset and the offered collections, with the filter of the one it opens on.
+ * Reads the dataset, and the presets the calendar offers with the filter
+ * of the one it opens on, which the API resolved against the data: none when
+ * the data has none of the tags that preset names.
  */
 async function readConstants(): Promise<{
-  collections: ResolvedEventFilterCollection[];
   dataset: EventsDataset | null;
   defaultFilter: EventFilterQuery | undefined;
+  presets: ResolvedPreset[];
 }> {
-  const [dataset, { defaultFilterCollection, filterCollections }] =
-    await Promise.all([describeDataset(), findFilterCollections()]);
-  const collections: ResolvedEventFilterCollection[] = [];
+  const [dataset, { defaultPreset, presets: found }] = await Promise.all([
+    describeDataset(),
+    findPresets(),
+  ]);
+  const presets: ResolvedPreset[] = [];
 
   // A loop rather than a mapping callback keeps the call stacks shallow.
-  for (const collection of filterCollections) {
-    collections.push(toEventFilterCollection(collection));
+  for (const preset of found) {
+    presets.push(toPreset(preset));
   }
 
   return {
-    collections,
     dataset,
     defaultFilter:
-      defaultFilterCollection === null
-        ? undefined
-        : toEventFilterCollection(defaultFilterCollection).filter,
+      defaultPreset === null ? undefined : toPreset(defaultPreset).filter,
+    presets,
   };
 }
 
@@ -236,7 +249,9 @@ function resolveColorBy(
 }
 
 /**
- * The grouping the search's view shows: the link's, or the view's default, kept to the fields the data has; only agenda and timeline group.
+ * The grouping the search's view shows: the link's, or the view's default,
+ * kept to the fields the data has. Only the agenda and the timeline group;
+ * with no view, the agenda a phone opens on is grouped.
  */
 function resolveGrouping(
   search: CalendarSearch,
@@ -273,13 +288,13 @@ function resolveGroups(
 }
 
 /**
- * The day the search anchors on, today without one, and the window the view
+ * The day the search anchors on, today without one, and the period the view
  * shows around it, with the buffer read beyond it.
  */
 async function resolveWindows(search: CalendarSearch): Promise<{
   anchor: Date;
-  visible: EventsWindow;
-  window: EventsWindow;
+  read: Period;
+  visible: Period;
 }> {
   const anchor = parseCalendarDate(search.date, new Date());
 

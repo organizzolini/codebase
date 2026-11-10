@@ -20,11 +20,6 @@ inputs:
   target:
     description: The matrix check target being run
     required: true
-  shard:
-    description: |
-      The matrix leg's shard, when one target is split across legs. It
-      suffixes the coverage artifact, whose name must be unique per run.
-    default: ""
 
 runs:
   using: composite
@@ -75,16 +70,6 @@ runs:
           projects/*/type-coverage-report.txt
           projects/*/*/type-coverage-report.txt
           projects/ic-suite/*/*/type-coverage-report.txt
-        retention-days: 30
-
-    - name: 📊 Upload Test Coverage
-      if: inputs.target == 'test-code'
-      uses: actions/upload-artifact@v7
-      with:
-        name: coverage-reports${{ inputs.shard && format('-{0}', inputs.shard) || '' }}
-        path: |
-          coverage/
-          projects/**/coverage/
         retention-days: 30
 
     - name: 🚦 Enforce Limits

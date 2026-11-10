@@ -96,7 +96,7 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 // The calendar fills the viewport in the data's zone; the view the link names wins, else a phone opens on agenda, wider on month.
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { collections, colorBy, dataset, emptiness, events, facets, grouping } =
+  const { colorBy, dataset, emptiness, events, facets, grouping, presets } =
     Route.useLoaderData();
   // The calendar's own search only: structural sharing hands back the same
   // object when a sky key alone changed, so the page is not rendered again.
@@ -168,10 +168,10 @@ function IndexPage(): ReactNode {
           filters={
             <CalendarFilters
               className="contents"
-              collections={collections}
               fields={fields}
               filter={filter}
               onFilterChange={handleFilterChange}
+              presets={presets}
             />
           }
           grouping={grouping}

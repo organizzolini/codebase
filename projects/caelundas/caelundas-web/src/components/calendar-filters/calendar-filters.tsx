@@ -6,7 +6,7 @@ import {
 } from "@codebase/presentation";
 
 import { useFilterQuery } from "../../hooks/use-filter-query/use-filter-query";
-import { CalendarCollectionPicker } from "../calendar-collection-picker/calendar-collection-picker";
+import { PresetPicker } from "../preset-picker/preset-picker";
 
 import { EDITORS, TABLET_QUERY } from "./calendar-filters.constants";
 import { renderFiltersButton } from "./calendar-filters.utilities";
@@ -15,12 +15,12 @@ import { countActiveEventFilterRules } from "./event-filter-tree.utilities";
 import { FilterChipRow } from "./filter-chip-row";
 import { FilterSurface } from "./filter-surface";
 
-import type { ResolvedEventFilterCollection } from "./event-filter-collections.types";
 import type {
   EventFilterField,
   EventFilterQuery,
   EventFilterValue,
 } from "./event-filters.types";
+import type { ResolvedPreset } from "./presets.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -31,11 +31,6 @@ import type { ReactNode } from "react";
  */
 export interface CalendarFiltersProperties {
   className?: string;
-  /**
-   * The named filters the menu applies in one step, which include the
-   * default one the calendar opens on.
-   */
-  collections?: readonly ResolvedEventFilterCollection[];
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
   /**
@@ -43,6 +38,11 @@ export interface CalendarFiltersProperties {
    * once nothing is left.
    */
   onFilterChange: (filter: EventFilterQuery) => void;
+  /**
+   * The named filters the menu applies in one step, which include the
+   * default one the calendar opens on.
+   */
+  presets?: readonly ResolvedPreset[];
 }
 
 // 🧩 Component
@@ -55,17 +55,17 @@ export function CalendarFilters(
 ): ReactNode {
   const {
     className,
-    collections = [],
     fields,
     filter,
     onFilterChange,
+    presets = [],
   } = properties;
 
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
-  const { handleCollectionSelect, handleQueryChange, query } = useFilterQuery(
+  const { handlePresetSelect, handleQueryChange, query } = useFilterQuery(
     filter,
-    collections,
+    presets,
     onFilterChange,
   );
   const activeCount = countActiveEventFilterRules(query);
@@ -90,9 +90,9 @@ export function CalendarFilters(
           trigger={renderFiltersButton(activeCount)}
         >
           <div className="flex flex-col gap-3">
-            <CalendarCollectionPicker
-              collections={collections}
-              onSelect={handleCollectionSelect}
+            <PresetPicker
+              onSelect={handlePresetSelect}
+              presets={presets}
               query={query}
             />
             <Filters<EventFilterValue>
@@ -108,7 +108,7 @@ export function CalendarFilters(
         <Button
           disabled={activeCount === 0}
           onClick={() => {
-            handleCollectionSelect(EMPTY_EVENT_FILTER);
+            handlePresetSelect(EMPTY_EVENT_FILTER);
           }}
           size="sm"
           variant="outline"

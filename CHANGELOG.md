@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.61.2](https://github.com/organizzolini/codebase/compare/v3.61.1...v3.61.2) (2026-11-10)
+
+## [3.61.1](https://github.com/organizzolini/codebase/compare/v3.61.0...v3.61.1) (2026-11-10)
+
+### ♻️ Code Refactoring
+
+* **configuration,deployment,integration:** ♻️ rename publication to deployment and move its gate to integration ([#2193](https://github.com/organizzolini/codebase/issues/2193)) ([0440302](https://github.com/organizzolini/codebase/commit/04403028a23422aa80ed9fa03f7d6a57401dcbe4)), closes [#2192](https://github.com/organizzolini/codebase/issues/2192)
+
 ## [3.61.0](https://github.com/organizzolini/codebase/compare/v3.60.0...v3.61.0) (2026-11-10)
 
 ### ✨ Features

@@ -45,14 +45,14 @@ describe(CalendarViewMenu, () => {
     expect(trigger.querySelectorAll("svg")).toHaveLength(1);
   });
 
-  it("has no collections or colors, which belong elsewhere", async () => {
+  it("has no presets or colors, which belong elsewhere", async () => {
     renderMenu();
     fireEvent.click(screen.getByRole("button", { name: "View options" }));
     await screen.findByRole("menuitemcheckbox", {
       name: "Group similar events",
     });
 
-    expect(screen.queryByText("Collections")).toBeNull();
+    expect(screen.queryByText("Presets")).toBeNull();
     expect(screen.queryByText("Color events")).toBeNull();
   });
 
