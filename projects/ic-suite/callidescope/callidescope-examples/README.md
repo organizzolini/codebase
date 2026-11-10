@@ -879,6 +879,7 @@ graph LR
   file_callidescope_workspace_config_ts["callidescope.workspace.config.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
+  file_coinagerie_config_ts["coinagerie.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_examples_base_class_base_class_ts["examples/base-class/base-class.ts"]
   file_examples_base_class_base_task_ts["examples/base-class/base-task.ts"]
