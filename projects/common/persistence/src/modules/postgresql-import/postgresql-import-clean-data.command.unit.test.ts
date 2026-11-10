@@ -12,9 +12,9 @@ import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-u
 
 import type { SpawnedProcess } from "../../../testing/mocks";
 
-vi.mock("node:child_process", async () => {
-  const { childProcessMock } = await import("../../../testing/mocks");
-  return childProcessMock;
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  return mockPostgresChildProcess(await importOriginal());
 });
 
 const PASSWORD = "hunter2-secret";

@@ -18,9 +18,9 @@ import { PostgresqlExportCommand } from "./postgresql-export.command";
 
 import type { SpawnedProcess } from "../../../testing/mocks";
 
-vi.mock("node:child_process", async () => {
-  const { childProcessMock } = await import("../../../testing/mocks");
-  return childProcessMock;
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  return mockPostgresChildProcess(await importOriginal());
 });
 
 /** Where successful exports write, so none lands in the working directory. */
