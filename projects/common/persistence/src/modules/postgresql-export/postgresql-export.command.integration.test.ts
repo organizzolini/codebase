@@ -29,12 +29,15 @@ import type { FixtureDatabase } from "../../../testing/fixture-persistence";
 import type { PostgresUriConnection } from "../postgresql-utilities/postgresql-utilities.types";
 import type { PostgresConnection } from "../postgresql/postgresql.types";
 import type { StartedPostgresContainer } from "@codebase/persistence/testing";
+import type * as Testing from "@codebase/testing";
 
 // 🎯 The real execFile, wrapped so each test can read the arguments and
 // environment every client tool was started with.
 vi.mock("node:child_process", async (importOriginal) => {
-  const actual = await importOriginal<{ execFile: typeof execFile }>();
-  return { ...actual, execFile: vi.fn<typeof execFile>(actual.execFile) };
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
 });
 
 /** The same connection in the shape the client tools are handed it. */

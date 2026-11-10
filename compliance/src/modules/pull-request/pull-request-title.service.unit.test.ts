@@ -6,9 +6,15 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestTitleService } from "./pull-request-title.service";
 
+import type * as Testing from "@codebase/testing";
 import type { SpawnSyncReturns } from "node:child_process";
 
-vi.mock("node:child_process", () => ({ spawnSync: vi.fn() }));
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
+});
 
 function completion(
   overrides: Partial<SpawnSyncReturns<string>>,

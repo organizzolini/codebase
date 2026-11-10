@@ -1,4 +1,4 @@
-import { Test } from "@nestjs/testing";
+import { Injectable } from "@nestjs/common";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
@@ -22,6 +22,12 @@ import type {
   LetterOrientationName,
   LetterScript,
 } from "./letter.types";
+
+/** A consumer module's provider that injects the shared service, which only resolves when the module exports it. */
+@Injectable()
+class Consumer {
+  constructor(readonly utilities: LetterUtilitiesService) {}
+}
 
 /** An L: a stem down three points with a foot east, 2 columns by 3 rows, unchanged by no flip or turn. */
 const L: readonly string[] = ["4.", "c.", "a1"];
@@ -69,21 +75,11 @@ describe(LetterUtilitiesService, () => {
   });
 
   it("lets a consumer that imports LetterCharacteristicsModule inject it", async () => {
-    const shared = Symbol("shared");
-    const module = await Test.createTestingModule({
+    const { instance } = await buildTestingModule(Consumer, {
       imports: [LetterCharacteristicsModule],
-      providers: [
-        {
-          inject: [LetterUtilitiesService],
-          provide: shared,
-          useFactory: (
-            utilities: LetterUtilitiesService,
-          ): LetterUtilitiesService => utilities,
-        },
-      ],
-    }).compile();
+    });
 
-    expect(module.get(shared)).toBeInstanceOf(LetterUtilitiesService);
+    expect(instance.utilities).toBeInstanceOf(LetterUtilitiesService);
   });
 
   it("mirrors a template east to west, swapping east and west arms", () => {

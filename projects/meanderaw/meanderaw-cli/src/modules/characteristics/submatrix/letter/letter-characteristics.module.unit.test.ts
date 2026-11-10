@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SubmatrixUtilitiesService } from "../submatrix-utilities.service";
 
@@ -287,7 +288,7 @@ describe(LetterCharacteristicsModule, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(SubmatrixUtilitiesService, {
       imports: [LetterCharacteristicsModule],
       providers: [
         {
@@ -298,7 +299,7 @@ describe(LetterCharacteristicsModule, () => {
           ): CharacteristicEvaluatorGroup<number>[] => injected,
         },
       ],
-    }).compile();
+    });
 
     groups = module.get<CharacteristicEvaluatorGroup<number>[]>(GROUPS);
     utilities = module.get(LetterUtilitiesService);
