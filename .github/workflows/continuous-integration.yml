@@ -58,17 +58,24 @@ jobs:
       fail-fast: false
       matrix:
         check:
-          # `static-code` runs typecheck, format, lint and deprecate, then the six
-          # Guard gates that need no leg of their own, in one `nx affected` call
-          # with `--configuration=check`, as the `validate-code` skill runs them.
-          # The run reads `targets` in place of `target`. Keep `targets` equal to
-          # those four plus the `dependsOn` of `guard-code` in `nx.json`, less the
-          # three gates with legs below: a gate named in neither place is checked
-          # by nothing in CI.
+          # `static-code` runs typecheck, format, lint and deprecate in one
+          # `nx affected` call with `--configuration=check`, as the
+          # `validate-code` skill runs them. The run reads `targets` in place
+          # of `target`.
           - target: static-code
-            targets: typecheck-code,format-code,lint-code,deprecate-code,catalog-manifests,coinagerie-check,lockfile,project-ports,readme-projects,vscode-extensions
+            targets: typecheck-code,format-code,lint-code,deprecate-code
             name: Static
             emoji: 🧑‍⚕️
+          # `guard-code` is the local aggregate of these six gates and the
+          # three legs below it. Run together with Static they took past the
+          # default limit, so they are a leg of their own. Keep `targets` here
+          # equal to the `dependsOn` of `guard-code` in `nx.json`, less the
+          # three gates with legs below: a gate named in no leg is checked by
+          # nothing in CI.
+          - target: guard-code
+            targets: catalog-manifests,coinagerie-check,lockfile,project-ports,readme-projects,vscode-extensions
+            name: Guard
+            emoji: 💂
           - target: callidescope-restrict
             name: Callidescope Restrict
             emoji: 🔭
