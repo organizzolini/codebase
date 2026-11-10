@@ -17,6 +17,7 @@ nx run coinagerie-configuration:vitest
 ## 👔 Conformetry
 
 This project was generated from the [nestjs-service-project](../../configuration/conformetry-templates/nestjs-service-project) conformetry template.
+<<<<<<< HEAD
 
 <!-- coinagerie:start -->
 
@@ -148,3 +149,5 @@ What this project is judged against, as declared in its own `callidescope.config
 
 </details>
 <!-- callidescope:end -->
+=======
+>>>>>>> 96490981a3429a535ed79e290e5a4ba1ca225dc6

@@ -126,9 +126,9 @@ graph LR
 <!-- codependix:end name="example-workspace" -->
 ````
 
-## A project with no `README.md`, on `--write`
+## A project with no `README.md`, on `--check`
 
-Fails outright, in either mode. The file itself not existing is a more serious problem than a missing anchor — there is nothing to splice into and nothing safe to create.
+Fails outright. The file itself not existing is a more serious problem than a missing anchor — there is nothing to compare against. `--write` instead creates the file, with the `## 🕸️ Codependix` section in it.
 
 ```text
 AnchorNotFoundError: Anchor "example-nx" not found in <project>/README.md
