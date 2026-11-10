@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-configuration:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **accept**: Describes the input a depth or breadth command takes, the same address form every stack frame prints for copying.
 - **anchor**: The opening and closing comment markers that bracket the generated markdown block this package writes into a README file.

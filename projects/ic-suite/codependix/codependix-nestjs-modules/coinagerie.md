@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nestjs-modules:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **ambient**: Module that NestJS marks as global, drawn as a rounded node and left out of edges because every module can inject it.
 - **breadth**: Count of callables a function calls directly, as callidescope reports it in this project's Breadth table.

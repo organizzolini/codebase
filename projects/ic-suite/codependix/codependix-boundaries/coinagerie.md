@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codependix-boundaries:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **acyclic**: Kind of boundary rule that forbids any cycle among the nodes its selector claims, reporting the full path.
 - **ambient**: Prefix of ambientModuleNames, a NestJS project exploration field listing module names with no source file behind them.

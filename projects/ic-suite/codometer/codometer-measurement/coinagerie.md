@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codometer-measurement:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: Stem of anchored, as in the discovery test's note that a leading-slash ignore pattern is anchored at the repository root.
 - **boundary**: Repository edge passed to the inputs constructor, beyond which an input configuration is not allowed to reach.

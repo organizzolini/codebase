@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run integration:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **adopt**: Renaming the newest restored task database to this machine's id so the CI job reuses it.
 - **adoption**: The AdoptionPlan that decides which restored task database to rename to this machine's id, if any.

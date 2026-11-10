@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-configuration:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **accept**: Validating a value the caller already supplied and throwing when invalid, as acceptProvidedValue does before any interactive prompt runs.
 - **breadth**: The number of distinct functions one callable calls directly, which callidescope reports and gates in the Breadth table.

@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run lexico-db:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **breadth**: Heading of the callidescope breadth section in this README, currently None, so no breadth limit is measured here.
 - **cascade**: Foreign-key behavior in the migrations, ON DELETE CASCADE, so deleting a parent row also removes its dependent rows.

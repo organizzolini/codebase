@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-output:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: Start or end marker that delimits a generated block inside a markdown file, so a splice can replace it.
 - **breadth**: Width of a call graph as reported in the breadth section, measured against maximumBreadth.

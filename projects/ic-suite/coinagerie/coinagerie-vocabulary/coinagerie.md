@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-vocabulary:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **aspect**: Example word in folding tests, where aspects folds into the singular aspect; also a fixture file name.
 - **breadth**: The maximumBreadth limit, set to seven in this project's callidescope configuration, bounding callees per function.

@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run synchronization:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **breadth**: Callidescope measure of how many direct callees a frame fans out to, gated for every traced project in the workspace.
 - **corrupt**: Fake behavior flag corruptsLockfile that simulates a restore which damages the lockfile, testing the safety check.

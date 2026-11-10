@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run caelundas-web:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **air**: One of the four sign elements used as a filter field, with a value of fire, earth, air or water.
 - **alt**: Short form in the sky settings key altBottom, the lowest altitude the night sky draws, beneath the horizon.

@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run lexico-api:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **batch**: Dataloader term for grouping ID lookups into one query, such as lexemes loaded together in a single batch.
 - **book**: Division of a literary work used as a text locator, such as book one of Vergil's Aeneid in literature fixtures.

@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-output:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **breadth**: Callidescope measure of how many callables one function calls directly, shown in the README breadth tables and gated per project.
 - **inventoried**: Types for entries the inventory service has listed: InventoriedInstance, InventoriedTemplate, and InventoriedPairing.

@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run publication:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **baseline**: Starting version a package is measured from when no earlier tag exists, placed on the commit before it was added.
 - **batch**: Group of six tags pushed together by tag-packages, with a rejected batch retried, so pushes respect the remote's limits.

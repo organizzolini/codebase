@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-cli:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **breadth**: The number of other callables one function calls directly, which callidescope reports in the Breadth table of this README and gates against a limit.
 - **generation**: Rendering a template with resolved inputs to create new files, which the generate command performs through GenerationService.

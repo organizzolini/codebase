@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run presentation:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **accept**: Names the cascader's predicate or option type that decides which nodes a commit may accept.
 - **account**: A reui account, meaning the free plan whose daily request allowance governs fetching components through the MCP server.

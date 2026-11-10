@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-output:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: The HTML comment markers coinagerie:start and coinagerie:end that bracket the managed block in a markdown file.
 - **boundary**: Edge where glossary text enters the package, where it is parsed and validated before any comparison or write happens.

@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codometer-core:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: A named README marker pair that codometer's output writers splice generated content between, as the configuration package describes.
 - **breadth**: The callidescope report section that counts direct calls per callable, listed as the Breadth table of this package.

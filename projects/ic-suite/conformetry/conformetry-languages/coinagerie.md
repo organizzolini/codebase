@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-languages:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **alt**: Alternative text field of a markdown image node, compared so the description must match the template.
 - **anchor**: Offset in an instance file where a TypeScript error is pinned when known, carried on the difference type.

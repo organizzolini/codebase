@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-nx:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
 - **generation**: Writing instance files from a generator, done by the shared generation runtime through an Nx Tree adapter.

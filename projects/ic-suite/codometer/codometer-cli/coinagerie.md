@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codometer-cli:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: The block name, such as codometer, that a README section is keyed by so a rewrite replaces it rather than appending.
 - **baseline**: The previously committed report that a fresh measurement is diffed against when checking for stale reports.

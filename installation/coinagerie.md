@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run installation:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **bundle**: The ReUI skill JSON payload the update-reui-skill command downloads from reui.io and writes into the vendored skill.
 - **elsewhere**:

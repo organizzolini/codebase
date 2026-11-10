@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run coinagerie-cli:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: Start and end marker comments bracketing the coinagerie block in a markdown glossary, so a write replaces only that span.
 - **angle**: Sample glossary word the end-to-end tests define as the gap between two bodies, used to exercise a failing check.

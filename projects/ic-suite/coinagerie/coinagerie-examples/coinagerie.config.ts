@@ -6,12 +6,4 @@ export default {
     ...coinagerieConfiguration.exclude,
     paths: ["examples/**"],
   },
-  outputs: [
-    {
-      description:
-        "The words this project uses that the root glossary does not define, regenerated with `nx run coinagerie-examples:coinagerie-check:write`.",
-      path: "coinagerie.md",
-      type: "markdown",
-    },
-  ],
 };

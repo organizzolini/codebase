@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codometer-examples:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: Start and end marker comment pair bracketing a generated block in a markdown or YAML file, which a sync rewrites in place.
 - **border**: CSS property in the theme corpus sample whose bottom edge is set to none, measured as ordinary styling.

@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-examples:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **accept**: Not used in example code; examples say a file conforms or drifts, never that it is approved.
 - **attribution**: How conformetry decides which template an instance path belongs to, inferred from structure since nothing records it.

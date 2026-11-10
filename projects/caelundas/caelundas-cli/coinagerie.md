@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run caelundas-cli:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **aggregation**: The ephemeris pipeline stage that merges per-minute body positions into one series, run by EphemerisAggregationService.
 - **air**: Element name in the tag dimensions, under which signs such as Aquarius, Gemini, and Libra are grouped for classification.

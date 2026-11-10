@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run coinagerie-agents:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **specific**: Describing content tied to one workspace rather than the toolchain, which the shipped skills must never contain.
 - **triage**: Skill for acting on a failed check, a refused glossary, or a word that looks wrong, which the other skills hand off to.

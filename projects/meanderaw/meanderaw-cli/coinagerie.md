@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run meanderaw-cli:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **arcade**: A pattern characteristic for a unit with no cross or bare dot, computed by IsArcadeCharacteristicService for each unit.
 - **arm**: One arm of a letter's ink, a stroke end the letter utilities count and sum through LetterUtilitiesService.reduce.

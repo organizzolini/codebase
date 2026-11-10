@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run lexico-cli:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **agr**: Abbreviated praenomen key for Agrippa in the manual praenomen table, expanded only to its masculine form.
 - **ammianus**: Short literature slug that the literature constants map to the full author name Ammianus Marcellinus.

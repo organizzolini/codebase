@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run configuration:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **alt**: Short for alternative text, the image description attribute that the markdown and jsx-a11y lint rules require here.
 - **anchor**: A named block marker in a README that codependix fills with its generated dependency graph, so the rendered diagram stays current.

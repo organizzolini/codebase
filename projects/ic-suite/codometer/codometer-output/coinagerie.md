@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codometer-output:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: Start and end marker comments that bracket a generated block in a markdown file, so a sync replaces only that span.
 - **baseline**: The previous codometer report a changes run diffs against, joined per project to produce each row's base value and delta.

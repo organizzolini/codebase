@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codometer-languages:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: YAML node property holding a reusable node's name, which the YAML comment service reads as a string when present.
 - **breadth**: Limit on how many calls a function may make, which the languages service keeps within by avoiding an extra split.

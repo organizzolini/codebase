@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codependix-file-imports:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **breadth**: How many callables one function calls directly, as callidescope measures it and bounds it with maximumBreadth.
 - **canonical**: Not a term of its own here; the project identifies a file by the symlink-resolved path that toRealPath returns.

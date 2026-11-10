@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-core:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **anchor**: The start and end HTML comment markers bounding the generated glossary block in a markdown destination, which the tool rewrites.
 - **breadth**: The callee fan-out per function that callidescope caps here through maximumBreadth, set to one in this package's configuration.

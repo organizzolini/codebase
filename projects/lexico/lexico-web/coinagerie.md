@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run lexico-web:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **alt**: Alternate text on the Lexico logo image, so screen readers announce the brand name rather than the file.
 - **breadth**: Callidescope measure of how many callees one frame fans out to, bounded by maximumBreadth in each project's config.

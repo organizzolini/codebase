@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run persistence:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **breadth**: The number of direct calls a callable makes, measured by callidescope and reported in this project's Breadth table.
 - **convention**: The naming and log-message rules that the package's entities, commands, and tests follow, checked by tests and the lint rules.

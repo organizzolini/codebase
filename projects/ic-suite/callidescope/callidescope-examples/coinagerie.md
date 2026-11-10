@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-examples:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **aggregate**: The umbrella Nx target that runs every example at once, documented separately from the run of each individual example.
 - **breadth**: The count of distinct direct callees one callable has, the limit the gated-leaf fixture exists to exercise.

@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codependix-configuration:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **accept**: Describes which --check names the flag resolver allows, rejecting any outside its set with a named list of valid choices.
 - **acyclic**: A boundary rule kind, declared beside access rules, that forbids any cycle among the nodes its selector covers.

@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codometer-configuration:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **accept**: The check of a --check or --format value against the names the flags service admits, refusing unknown ones.
 - **anchor**: The marker pair a README block is spliced between, which the anchor helper appends when absent and compares in check mode.

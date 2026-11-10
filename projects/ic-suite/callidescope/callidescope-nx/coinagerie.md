@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run callidescope-nx:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **batch**: Group of gate tasks Nx hands to one executor call, which traces the workspace once and judges each project from that trace.
 - **breadth**: Width measurement of a traced project, reported by the breadth executor and gated against maximumBreadth.

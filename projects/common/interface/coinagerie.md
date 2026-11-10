@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run interface:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **breadth**: The callee-count limit callidescope applies per callable, set to seven in this project.
 - **large**: Size word in test names for first and last counts beyond the array length, such as largeFirstResult.

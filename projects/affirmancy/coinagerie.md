@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run affirmancy:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **affirmation**: Pydantic model in src/models.py holding one generated sentence of text, which the output writer numbers into per-grammar lists.
 - **aleph**: A Subject in the Hebrew Letter category, first in order, whose metadata carries the character alef.

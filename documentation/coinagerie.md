@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run documentation:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **affirmation**: Generated phrase that the affirmations feature planning documents describe, produced by an LLM from tarot-card references.
 - **band**: Horizontal strip of a meander drawing bounded by two borders, which ADR 0004 and ADR 0006 adjust for crossings and branch families.

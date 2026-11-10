@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run conformetry-generation:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **breadth**: Callidescope measure of how many callees one callable calls directly, shown in the README breadth table.
 - **gamma**: Third placeholder input in the generation unit test, kept in the hook input while beta is dropped.

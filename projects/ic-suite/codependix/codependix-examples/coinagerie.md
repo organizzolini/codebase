@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codependix-examples:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **ambient**: Modules marked global that codependix registers implicitly into containers, judged by inbound edge counts in the ambient-modules fixtures.
 - **anchor**: The named comment block in a Markdown README where codependix writes its graph, placed by the anchor-placement examples.

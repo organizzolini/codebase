@@ -2,7 +2,7 @@
 
 ## 🪙 Coinagerie
 
-The words this project uses that the root glossary does not define, regenerated with `nx run codependix-nx:coinagerie-check:write`.
+The words this project uses that the root glossary does not define, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **batch**: Group of gate tasks Nx hands to one executor call, which runs one boundary check and reads each project's verdict from it.
 - **boundary**: Codependix rule check run per project, failing the gate when a dependency graph breaks a configured rule charged to it.
