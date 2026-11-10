@@ -119,6 +119,9 @@ jobs:
             emoji: 🧑‍🔬
             exclude: "*,!projects/caelundas/**"
             shard: caelundas
+            # A cold run (no cached test output) takes 8 to 12 minutes, so the
+            # default 12 cancels it on any change that invalidates the cache.
+            timeout-minutes: 15
           - target: test-code
             name: Test IC Suite
             emoji: 🧑‍🔬
