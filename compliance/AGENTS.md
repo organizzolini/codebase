@@ -27,7 +27,7 @@ This project owns four commands, each backed by one service per concern:
   it is read-only unless `write` is given.
 - `issue` (`src/modules/issue/`): labels and assigns a new issue, audits one
   issue, or audits every open issue (`--all`), chosen by event or arguments.
-- `audit-governance`: repository governance checks.
+- `audit-files`: repository governance checks.
 - `organization-project`: manual synchronization of repository issues and pull
   requests into the organization project.
 

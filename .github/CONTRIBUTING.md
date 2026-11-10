@@ -269,7 +269,7 @@ Five workflows run on every pull request. Each maps to targets you can run local
 | Secure Code   | Secrets, Python AST, dependency vulnerabilities, licenses, infrastructure misconfiguration                               | `nx affected --target=secure-code`                            |
 | Make Projects | Builds every buildable project and gates its declared bundle size                                                        | `nx affected --target=build-projects`                         |
 | Comply Code   | Branch name, pull request title, body, labels, assignees, and release significance                                       | See [Pull Request Process](#pull-request-process)             |
-| Enforce Code  | CODEOWNERS rules and workflow security                                                                                   | `compliance/src/compliance.main.ts audit-governance` |
+| Enforce Code  | CODEOWNERS rules and workflow security                                                                                   | `compliance/src/compliance.main.ts audit-files` |
 
 🚀 Continuous Deployment runs post-merge on `main` to release the workspace and to build and verify the dev container image. Builds are verified before merge, in the merge queue, and a pull request that changes the dev container builds and tests it there too.
 
@@ -501,7 +501,7 @@ Issues and specs live as GitHub issues in [Organizzolini/codebase](https://githu
 gh issue create --template issue.yml
 ```
 
-Issue titles follow the same `<type>(<scope>): <gitmoji> <subject>` convention as commits. Unlike a pull request title this is not enforced, so a quick backlog-idea title is a normal shape for an issue. Labels are the `type:*` and `scope:*` labels matching the title, one `source:*` label, and a triage label — `status:needs-triage`, `status:needs-info`, `status:ready-for-agent`, `status:ready-for-human`, or `wontfix`. A sixth, `status:in-progress`, is applied once implementation begins rather than during triage.
+Issue titles follow the same `<type>(<scope>): <gitmoji> <subject>` convention as commits. Unlike a pull request title this is not enforced, so a quick backlog-idea title is a normal shape for an issue. Labels are the `type:*` and `scope:*` labels matching the title, one `source:*` label, and a triage label — `status:needs-triage`, `status:needs-info`, `status:ready-for-agent`, `status:ready-for-human`, or `wontfix`. Work in progress is not a label: it is the In Progress value of the board's Status field, set once implementation begins.
 
 The Continuous Compliance workflow checks issue metadata on `opened`, `edited`, `labeled`, and `unlabeled`, and on `opened` first reconciles the labels a submitted form implies. It has its own README badge, and the same issue job also checks that every pull request closes or references an issue (see [Pull Request Process](#pull-request-process)), so a red badge there means an issue or a pull request missing its issue link.
 
