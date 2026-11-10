@@ -1,6 +1,7 @@
 import { createPlaceholderValue } from "@conformetry/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ScoringService } from "../scoring/scoring.service";
 
@@ -26,15 +27,19 @@ describe(JsonService, () => {
   let service: JsonService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [JsonComparisonService, JsonService, ScoringService],
-    }).compile();
+    const built = await buildTestingModule(JsonService, {
+      providers: [JsonComparisonService, ScoringService],
+    });
 
-    service = await module.resolve(JsonService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(JsonService, {
+      providers: [JsonComparisonService, ScoringService],
+    });
+
+    expect(instance).toBeInstanceOf(JsonService);
   });
 
   it("claims JSON and JSONC files", () => {

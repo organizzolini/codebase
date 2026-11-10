@@ -1,5 +1,4 @@
 import { createMock, type DeepMocked } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import {
   afterEach,
   beforeAll,
@@ -10,11 +9,15 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { resetCommandTestHarness } from "../../../testing/command-harness";
 
 import { LatinLibraryCommand } from "./latin-library.command";
+
+import type { LoggerService } from "@codebase/observability";
+import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
 const { appendFileMock, mkdirMock, readFileMock, writeFileMock } = vi.hoisted(
   () => ({
@@ -34,21 +37,13 @@ vi.mock("node:fs/promises", () => ({
 
 describe(LatinLibraryCommand, () => {
   let command: LatinLibraryCommand;
-  let logger: DeepMocked<LoggerService>;
+  let logger: BuiltTestingModule<LatinLibraryCommand>["logger"];
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LatinLibraryCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(LatinLibraryCommand);
 
-    command = await module.resolve(LatinLibraryCommand);
-    logger = await module.resolve(LoggerService);
+    command = built.instance;
+    logger = built.logger;
   });
 
   beforeEach(() => {
@@ -96,25 +91,14 @@ describe(LatinLibraryCommand, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LatinLibraryCommand);
+
+    expect(instance).toBeInstanceOf(LatinLibraryCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LatinLibraryCommand,
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    await module.resolve(LatinLibraryCommand);
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("LatinLibraryCommand");
+    await expectLoggerContext(LatinLibraryCommand);
   });
 
   it.each([

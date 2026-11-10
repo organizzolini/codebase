@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { FoldingService } from "./folding.service";
 
@@ -22,15 +23,13 @@ describe(FoldingService, () => {
   let service: FoldingService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [FoldingService],
-    }).compile();
-
-    service = await module.resolve(FoldingService);
+    ({ instance: service } = await buildTestingModule(FoldingService));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(FoldingService);
+
+    expect(instance).toBeInstanceOf(FoldingService);
   });
 
   describe("fold", () => {

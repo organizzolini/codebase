@@ -2,19 +2,10 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { enterWorkspace } from "../../../testing/environment";
 import { captureReport } from "../../../testing/report";
@@ -76,7 +67,6 @@ function lockfileText(computedHash: string): string {
 }
 
 describe(UpdateReuiSkillCommand, () => {
-  let command: UpdateReuiSkillCommand;
   let workspace: TemporaryWorkspace;
   let report: string[];
   let fetchMock: ReturnType<typeof vi.fn<typeof fetch>>;
@@ -99,31 +89,11 @@ describe(UpdateReuiSkillCommand, () => {
     fetchMock.mockResolvedValue(Response.json({ files, version }));
   };
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        UpdateReuiSkillCommand,
-        {
-          provide: UpdateReuiSkillService,
-          useValue: createMock<UpdateReuiSkillService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    command = await module.resolve(UpdateReuiSkillCommand);
-  });
-
   /** Builds the command over the real service. */
   const createCommand = async (): Promise<UpdateReuiSkillCommand> => {
-    const module = await Test.createTestingModule({
-      providers: [
-        UpdateReuiSkillCommand,
-        UpdateReuiSkillService,
-        ReporterService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(UpdateReuiSkillCommand, {
+      providers: [UpdateReuiSkillService, ReporterService],
+    });
 
     return module.resolve(UpdateReuiSkillCommand);
   };
@@ -150,27 +120,18 @@ describe(UpdateReuiSkillCommand, () => {
     vi.unstubAllGlobals();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(UpdateReuiSkillCommand, {
+      mocks: [UpdateReuiSkillService],
+    });
+
+    expect(instance).toBeInstanceOf(UpdateReuiSkillCommand);
   });
 
   it("sets logger context", async () => {
-    expect.hasAssertions();
-
-    const module = await Test.createTestingModule({
-      providers: [
-        UpdateReuiSkillCommand,
-        {
-          provide: UpdateReuiSkillService,
-          useValue: createMock<UpdateReuiSkillService>(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("UpdateReuiSkillCommand");
+    await expectLoggerContext(UpdateReuiSkillCommand, {
+      mocks: [UpdateReuiSkillService],
+    });
   });
 
   it("writes nothing when the bundle equals the pin and the folder", async () => {

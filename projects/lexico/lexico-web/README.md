@@ -666,8 +666,8 @@ graph LR
 
 ### Measured Targets
 
-![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-186.53_kB_gzip-6b7280?style=flat-square)
-![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-51.95_kB_gzip-6b7280?style=flat-square)
+![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-186.75_kB_gzip-6b7280?style=flat-square)
+![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-52.01_kB_gzip-6b7280?style=flat-square)
 ![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.93_kB_gzip-6b7280?style=flat-square)
 ![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-206.49_kB_gzip-6b7280?style=flat-square)
 

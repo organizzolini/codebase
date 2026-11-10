@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { SubmatrixUtilitiesService } from "../submatrix-utilities.service";
 
@@ -30,15 +31,11 @@ describe(RectangleUtilitiesService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [RectangleUtilitiesService, SubmatrixUtilitiesService],
-    }).compile();
+    const built = await buildTestingModule(RectangleUtilitiesService, {
+      providers: [SubmatrixUtilitiesService],
+    });
 
-    service = await module.resolve(RectangleUtilitiesService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    service = built.instance;
   });
 
   describe("countIsolatedRectangles", () => {

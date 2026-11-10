@@ -58,7 +58,9 @@ const config: KnipConfig = {
     "@graphql-codegen/typescript-validation-schema",
     "graphql-codegen-typescript-validation-schema",
     "@commitlint/config-conventional", // commitlint preset, referenced as string in extends array
+    "@codebase/testing", // Imported by tests and testing/setup.ts, which knip leaves out of its scope
     "@golevelup/ts-vitest", // Conformance-scaffolded test mock utility — imported in testing/mocks.ts which is in ignoreFiles
+    "@nestjs/testing", // Conformance-scaffolded test dependency — the testing package's module builder imports it for the tests, so no project file does
     "@nx/eslint-plugin", // Loaded dynamically by Nx ESLint integration
     // Kept despite knip hinting it is redundant: the hint comes from a
     // full-workspace run, and the Nx target runs knip scoped to one workspace,

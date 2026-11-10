@@ -1,8 +1,9 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   FROZEN_INSTALL_ARGUMENTS,
@@ -54,20 +55,21 @@ describe(LockfileService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [LockfileService],
-    }).compile();
+    const built = await buildTestingModule(LockfileService);
 
-    service = await module.resolve(LockfileService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(LockfileService);
+
+    expect(instance).toBeInstanceOf(LockfileService);
   });
 
   describe("checkLockfile", () => {

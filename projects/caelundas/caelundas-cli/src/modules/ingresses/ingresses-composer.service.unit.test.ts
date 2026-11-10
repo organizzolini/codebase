@@ -1,9 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 
@@ -12,20 +10,24 @@ import { IngressesComposerService } from "./ingresses-composer.service";
 describe(IngressesComposerService, () => {
   let service: IngressesComposerService;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        IngressesComposerService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: EphemerisService, useValue: createMock<EphemerisService>() },
-      ],
-    }).compile();
+  const testingModuleOptions = { mocks: [EphemerisService] };
 
-    service = await module.resolve(IngressesComposerService);
+  beforeAll(async () => {
+    const { instance } = await buildTestingModule(
+      IngressesComposerService,
+      testingModuleOptions,
+    );
+
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      IngressesComposerService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(IngressesComposerService);
   });
 
   describe("body names across ingress kinds", () => {

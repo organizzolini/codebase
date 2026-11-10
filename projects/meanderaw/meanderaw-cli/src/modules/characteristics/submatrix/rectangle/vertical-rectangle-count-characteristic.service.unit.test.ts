@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
@@ -14,22 +15,20 @@ describe(VerticalRectangleCountCharacteristicService, () => {
   let service: VerticalRectangleCountCharacteristicService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [CodeModule, MatrixModule],
-      providers: [
-        CharacteristicContextService,
-        RectangleUtilitiesService,
-        SubmatrixUtilitiesService,
-        VerticalRectangleCountCharacteristicService,
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      VerticalRectangleCountCharacteristicService,
+      {
+        imports: [CodeModule, MatrixModule],
+        providers: [
+          CharacteristicContextService,
+          RectangleUtilitiesService,
+          SubmatrixUtilitiesService,
+        ],
+      },
+    );
 
-    contextService = await module.resolve(CharacteristicContextService);
-    service = await module.resolve(VerticalRectangleCountCharacteristicService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    contextService = await built.module.resolve(CharacteristicContextService);
+    service = built.instance;
   });
 
   it("counts the smallest rectangle taller than it is wide", () => {

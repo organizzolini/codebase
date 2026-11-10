@@ -1,8 +1,8 @@
-import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { Author, In, Line, Text, Token } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 
@@ -56,12 +56,9 @@ function stubPageStatement(
 }
 
 describe(LiteratureService, () => {
-  let service: LiteratureService;
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LiteratureService, {
       providers: [
-        LiteratureService,
         {
           provide: getRepositoryToken(Author),
           useValue: createRepositoryMock<Author>(),
@@ -79,13 +76,9 @@ describe(LiteratureService, () => {
           useValue: createRepositoryMock<Token>(),
         },
       ],
-    }).compile();
+    });
 
-    service = await module.resolve(LiteratureService);
-  });
-
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(LiteratureService);
   });
 
   it("finds an author by id and slug without loading its texts", async () => {

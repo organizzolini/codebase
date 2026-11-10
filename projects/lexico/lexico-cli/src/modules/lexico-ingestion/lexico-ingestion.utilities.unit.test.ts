@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { promptsMock } from "@codebase/testing";
+
 import { mockStandardInputTerminal } from "../../../testing/mocks";
 
 import { NO_SELECTION_CHOICE } from "./lexico-ingestion.constants";
@@ -8,15 +10,6 @@ import {
   requireChoice,
   selectChoice,
 } from "./lexico-ingestion.utilities";
-
-const { promptsMock } = vi.hoisted(() => ({
-  promptsMock:
-    vi.fn<
-      (question: {
-        choices: { title: string; value: string }[];
-      }) => Promise<Record<string, unknown>>
-    >(),
-}));
 
 vi.mock("prompts", () => ({
   default: promptsMock,
@@ -81,7 +74,10 @@ describe("lexico-ingestion utilities", () => {
       promptsMock.mockResolvedValueOnce({ choice: NO_SELECTION_CHOICE });
 
       await expect(selectChoice(question)).resolves.toBeUndefined();
-      expect(promptsMock.mock.calls[0]?.[0].choices[0]).toStrictEqual({
+
+      const [prompt] = promptsMock.mock.calls[0] ?? [];
+
+      expect((prompt as { choices: unknown[] }).choices[0]).toStrictEqual({
         title: "All",
         value: NO_SELECTION_CHOICE,
       });

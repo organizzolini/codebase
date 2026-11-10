@@ -1,6 +1,8 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { renderRoute } from "@codebase/testing/react";
+
 import { readServedApi, serveCalendarApi } from "../../testing/calendar-api";
 import {
   BUILDER_TEST,
@@ -15,7 +17,7 @@ import {
   filterLink,
   tagRule,
 } from "../../testing/event-filters";
-import { renderRoute } from "../../testing/render-route";
+import { renderCalendarRoute } from "../../testing/render-route";
 import { setViewportWidth } from "../../testing/viewport";
 import { getRouter } from "../router";
 
@@ -50,7 +52,9 @@ vi.setConfig({ testTimeout: 45_000 });
 
 describe("index", () => {
   it("renders its page", async () => {
-    await renderRoute("/");
+    serveCalendarApi();
+
+    await renderRoute(getRouter(), "/");
 
     await expect(
       screen.findByRole("heading", { level: 1 }),
@@ -59,7 +63,7 @@ describe("index", () => {
   });
 
   it("shows the requested month as a grid under one toolbar row", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const grid = await screen.findByRole("grid", { name: "March 2026" });
     const toolbar = screen.getByTestId("calendar-toolbar");
@@ -80,7 +84,7 @@ describe("index", () => {
   });
 
   it("shows each event at its time in the observer's zone", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const event = await screen.findByRole("button", {
       name: /^Mars Conjunct Venus, 10:20\sAM/u,
@@ -94,7 +98,7 @@ describe("index", () => {
   });
 
   it("tells a span apart from an instant by its derived duration", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const [span] = await screen.findAllByRole("button", {
       name: /^Mercury Retrograde/u,
@@ -109,7 +113,7 @@ describe("index", () => {
   });
 
   it("moves to the next month and reads its events", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
 
     const toolbar = await findToolbar();
 
@@ -124,7 +128,7 @@ describe("index", () => {
   });
 
   it("offers the covered dates for a month outside the data", async () => {
-    await renderRoute("/?date=2025-01-01");
+    await renderCalendarRoute("/?date=2025-01-01");
 
     await screen.findByRole("grid", { name: "January 2025" });
 
@@ -142,7 +146,7 @@ describe("index", () => {
   });
 
   it("offers the last covered day for a month after the data", async () => {
-    await renderRoute("/?date=2030-01-01");
+    await renderCalendarRoute("/?date=2030-01-01");
 
     await screen.findByRole("grid", { name: "January 2030" });
 
@@ -154,7 +158,7 @@ describe("index", () => {
   });
 
   it("says when a month inside the data holds no events", async () => {
-    await renderRoute("/?date=2026-05-01");
+    await renderCalendarRoute("/?date=2026-05-01");
 
     await screen.findByRole("grid", { name: "May 2026" });
 
@@ -163,7 +167,7 @@ describe("index", () => {
   });
 
   it("shows a skeleton while the API answers", async () => {
-    await renderRoute("/?date=2026-03-01", {
+    await renderCalendarRoute("/?date=2026-03-01", {
       api: { hang: true },
       waitForLoad: false,
     });
@@ -177,7 +181,7 @@ describe("index", () => {
     const api = serveCalendarApi();
 
     api.fail("The API answered 404");
-    await renderRoute("/?date=2026-03-01", { api });
+    await renderCalendarRoute("/?date=2026-03-01", { api });
 
     await expect(
       screen.findByText("The events could not be loaded"),
@@ -192,7 +196,7 @@ describe("index", () => {
   });
 
   it("opens on today when the date in the link is not a date", async () => {
-    await renderRoute("/?date=2026-02-30");
+    await renderCalendarRoute("/?date=2026-02-30");
 
     const today = new Date().toLocaleString("en-US", {
       month: "long",
@@ -205,7 +209,7 @@ describe("index", () => {
   });
 
   it("says when the API holds no events at all", async () => {
-    await renderRoute("/?date=2026-03-01", {
+    await renderCalendarRoute("/?date=2026-03-01", {
       api: { events: [], tags: [] },
     });
 
@@ -218,7 +222,7 @@ describe("index", () => {
   });
 
   it("restores the filters a link holds", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
@@ -240,7 +244,7 @@ describe("index", () => {
   });
 
   it("keeps the filters when moving to another month", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup("and", tagRule("planet", "is_any_of", ["mercury"])),
@@ -262,7 +266,7 @@ describe("index", () => {
   });
 
   it("does not blame the filters for a month with no events at all", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-05-01",
         filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
@@ -276,7 +280,7 @@ describe("index", () => {
   });
 
   it("restores nested groups and negated rules from a link", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup(
@@ -300,7 +304,7 @@ describe("index", () => {
   });
 
   it("ignores a filter in the link that does not parse", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink("2026-03-01", { combinator: "xor", type: "group" }),
     );
 
@@ -310,7 +314,7 @@ describe("index", () => {
   });
 
   it("ignores the rules that are not finished", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup("and", tagRule("planet", "is_any_of", [])),
@@ -331,7 +335,7 @@ describe("index", () => {
     "opens the filter builder over the calendar on $size",
     async (viewport) => {
       setViewportWidth(viewport.width);
-      await renderRoute("/?date=2026-03-01");
+      await renderCalendarRoute("/?date=2026-03-01");
 
       const toolbar = await findToolbar();
 
@@ -352,7 +356,7 @@ describe("index", () => {
     "filters the calendar with a rule built in the builder",
     BUILDER_TEST,
     async () => {
-      await renderRoute("/?date=2026-03-01");
+      await renderCalendarRoute("/?date=2026-03-01");
       await startFilterRule(/^Planet(?!-)/u, "is any of");
       await pickOption(/^Mercury/u);
       fireEvent.keyDown(document.activeElement ?? document.body, {
@@ -375,7 +379,7 @@ describe("index", () => {
     "shows the active filters as chips beside a count",
     BUILDER_TEST,
     async () => {
-      await renderRoute(
+      await renderCalendarRoute(
         filterLink(
           "2026-03-01",
           filterGroup(
@@ -418,7 +422,7 @@ describe("index", () => {
 
   it("collapses the chips into the count on a phone", async () => {
     setViewportWidth(375);
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
@@ -434,7 +438,7 @@ describe("index", () => {
   });
 
   it("turns the colors off from the Color menu and the grouping of crowded days from the View menu", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("grid", { name: "March 2026" });
 
     const seen = new Set<string>();
@@ -470,7 +474,7 @@ describe("index", () => {
   });
 
   it("switches the symbols to emojis and back from the View menu", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("heading", { level: 1 });
 
     for (const name of ["Emojis", "Glyphs"]) {
@@ -493,7 +497,7 @@ describe("index", () => {
   });
 
   it("searches the events' text from a link", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       filterLink(
         "2026-03-01",
         filterGroup("and", fieldRule("text", "contains", "ingress")),
@@ -512,7 +516,7 @@ describe("index", () => {
     "filters by a date range picked in the builder",
     BUILDER_TEST,
     async () => {
-      await renderRoute("/?date=2026-03-01");
+      await renderCalendarRoute("/?date=2026-03-01");
       await startFilterRule(/^Date/u, "is between");
       fireEvent.change(
         await screen.findByLabelText("Date from", {}, BUILDER_WAIT),
@@ -538,7 +542,7 @@ describe("index", () => {
 
   describe("sky link parameters", () => {
     it("keeps them through the calendar's own navigation", async () => {
-      await renderRoute("/?date=2026-03-01&sky.lat=51.5");
+      await renderCalendarRoute("/?date=2026-03-01&sky.lat=51.5");
       const router = getRenderedRouter();
       const toolbar = await findToolbar();
 
@@ -553,7 +557,7 @@ describe("index", () => {
     });
 
     it("does not run the loader again for a change to them alone", async () => {
-      await renderRoute("/?date=2026-03-01");
+      await renderCalendarRoute("/?date=2026-03-01");
       const api = readServedApi();
       const router = getRenderedRouter();
 
@@ -573,7 +577,7 @@ describe("index", () => {
     });
 
     it("still runs the loader for a change to the calendar", async () => {
-      await renderRoute("/?date=2026-03-01&sky.lat=51.5");
+      await renderCalendarRoute("/?date=2026-03-01&sky.lat=51.5");
       const api = readServedApi();
       const router = getRenderedRouter();
 

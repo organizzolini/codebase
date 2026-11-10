@@ -1,13 +1,14 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { azalt } from "sweph";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisCoordinateService } from "./ephemeris-coordinate.service";
 import { EphemerisHorizonService } from "./ephemeris-horizon.service";
 import { EphemerisTimeService } from "./ephemeris-time.service";
 
+import type { createMock } from "@golevelup/ts-vitest";
 import type * as Sweph from "sweph";
 
 vi.mock("sweph", async (importOriginal) => {
@@ -27,22 +28,17 @@ describe(EphemerisHorizonService, () => {
   >;
   let timeService: ReturnType<typeof createMock<EphemerisTimeService>>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EphemerisHorizonService,
-        {
-          provide: EphemerisCoordinateService,
-          useValue: createMock<EphemerisCoordinateService>(),
-        },
-        {
-          provide: EphemerisTimeService,
-          useValue: createMock<EphemerisTimeService>(),
-        },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    mocks: [EphemerisCoordinateService, EphemerisTimeService],
+  };
 
-    service = await module.resolve(EphemerisHorizonService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      EphemerisHorizonService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     coordinateService = await module.resolve(EphemerisCoordinateService);
     timeService = await module.resolve(EphemerisTimeService);
 
@@ -141,8 +137,13 @@ describe(EphemerisHorizonService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EphemerisHorizonService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EphemerisHorizonService);
   });
 
   describe("computeAzimuthElevationForBody", () => {

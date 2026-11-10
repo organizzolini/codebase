@@ -1,10 +1,17 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CommentsService } from "./comments.service";
 import { HashCommentsService } from "./hash-comments.service";
 
 import type { CommentBudget } from "./comments.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+/** What the CommentsService is built with. */
+const DEPENDENCIES = {
+  providers: [HashCommentsService],
+} satisfies TestingModuleOptions;
 
 describe(CommentsService, () => {
   let service: CommentsService;
@@ -34,16 +41,22 @@ describe(CommentsService, () => {
   }
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [CommentsService, HashCommentsService],
-    }).compile();
+    const { instance, module } = await buildTestingModule(
+      CommentsService,
+      DEPENDENCIES,
+    );
 
-    service = await module.resolve(CommentsService);
+    service = instance;
     hashComments = await module.resolve(HashCommentsService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      CommentsService,
+      DEPENDENCIES,
+    );
+
+    expect(instance).toBeInstanceOf(CommentsService);
   });
 
   it("measures a file with no comments as no blocks", () => {

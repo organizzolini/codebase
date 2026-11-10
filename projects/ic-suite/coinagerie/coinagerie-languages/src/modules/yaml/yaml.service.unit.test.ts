@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { YamlService } from "./yaml.service";
 
@@ -7,15 +8,13 @@ describe(YamlService, () => {
   let service: YamlService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [YamlService],
-    }).compile();
-
-    service = await module.resolve(YamlService);
+    ({ instance: service } = await buildTestingModule(YamlService));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(YamlService);
+
+    expect(instance).toBeInstanceOf(YamlService);
   });
 
   it.each([

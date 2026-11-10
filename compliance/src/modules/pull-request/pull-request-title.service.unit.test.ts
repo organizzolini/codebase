@@ -1,7 +1,8 @@
 import { spawnSync } from "node:child_process";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestTitleService } from "./pull-request-title.service";
 
@@ -27,19 +28,19 @@ describe(PullRequestTitleService, () => {
   let service: PullRequestTitleService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PullRequestTitleService],
-    }).compile();
+    const built = await buildTestingModule(PullRequestTitleService);
 
-    service = await module.resolve(PullRequestTitleService);
+    service = built.instance;
   });
 
   beforeEach(() => {
     vi.mocked(spawnSync).mockReset();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PullRequestTitleService);
+
+    expect(instance).toBeInstanceOf(PullRequestTitleService);
   });
 
   it("passes a title commitlint accepts", () => {

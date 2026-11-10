@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { InputSchemaService } from "./input-schema.service";
 
@@ -7,15 +8,15 @@ describe(InputSchemaService, () => {
   let service: InputSchemaService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [InputSchemaService],
-    }).compile();
+    const built = await buildTestingModule(InputSchemaService);
 
-    service = await module.resolve(InputSchemaService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(InputSchemaService);
+
+    expect(instance).toBeInstanceOf(InputSchemaService);
   });
 
   describe("describeInput", () => {

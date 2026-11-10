@@ -4,6 +4,8 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { buildTestingModule } from "@codebase/testing/nestjs";
+
 import { CodeModule } from "../../../code/code.module";
 import { MatrixModule } from "../../../matrix/matrix.module";
 import { CharacteristicContextService } from "../../characteristic-context.service";
@@ -29,10 +31,6 @@ describe(IsChainCharacteristicService, () => {
 
       contextService = await module.resolve(CharacteristicContextService);
       service = await module.resolve(IsChainCharacteristicService);
-    });
-
-    it("is defined", () => {
-      expect(service).toBeDefined();
     });
 
     it.each([
@@ -63,9 +61,8 @@ describe(IsChainCharacteristicService, () => {
     let service: IsChainCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const built = await buildTestingModule(IsChainCharacteristicService, {
         providers: [
-          IsChainCharacteristicService,
           {
             provide: MaxMonotonicTurnLengthCharacteristicService,
             useValue: { compute: (): number => values.maxMonotonicTurnLength },
@@ -81,9 +78,9 @@ describe(IsChainCharacteristicService, () => {
             },
           },
         ],
-      }).compile();
+      });
 
-      service = await module.resolve(IsChainCharacteristicService);
+      service = built.instance;
     });
 
     beforeEach(() => {

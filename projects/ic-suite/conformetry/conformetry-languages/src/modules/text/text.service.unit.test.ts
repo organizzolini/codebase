@@ -1,6 +1,7 @@
 import { createPlaceholderValue } from "@conformetry/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TextService } from "./text.service";
 
@@ -23,15 +24,15 @@ describe(TextService, () => {
   let service: TextService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [TextService],
-    }).compile();
+    const built = await buildTestingModule(TextService);
 
-    service = await module.resolve(TextService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TextService);
+
+    expect(instance).toBeInstanceOf(TextService);
   });
 
   it("claims only .txt files", () => {

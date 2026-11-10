@@ -1,8 +1,9 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import {
   EPHEMERIS_FILENAMES,
@@ -26,11 +27,10 @@ describe("ephemeris-download utilities", () => {
   };
 
   beforeEach(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "ephemeris-"));
+    directory = createTemporaryDirectory("ephemeris");
   });
 
   afterEach(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
     vi.restoreAllMocks();
   });
 

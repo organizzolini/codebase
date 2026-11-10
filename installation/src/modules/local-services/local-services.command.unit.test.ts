@@ -1,8 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { expectLoggerContext } from "@codebase/observability/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { LocalServicesCommand } from "./local-services.command";
 import { LocalServicesService } from "./local-services.service";
@@ -12,46 +11,26 @@ describe(LocalServicesCommand, () => {
   let service: LocalServicesService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LocalServicesCommand,
-        {
-          provide: LocalServicesService,
-          useValue: createMock<LocalServicesService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
+    const { module } = await buildTestingModule(LocalServicesCommand, {
+      mocks: [LocalServicesService],
+    });
 
     command = await module.resolve(LocalServicesCommand);
     service = await module.resolve(LocalServicesService);
   });
 
-  it("is defined", () => {
-    expect(command).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(LocalServicesCommand, {
+      mocks: [LocalServicesService],
+    });
+
+    expect(instance).toBeInstanceOf(LocalServicesCommand);
   });
 
   it("sets logger context", async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LocalServicesCommand,
-        {
-          provide: LocalServicesService,
-          useValue: createMock<LocalServicesService>(),
-        },
-        {
-          provide: LoggerService,
-          useValue: createMock<LoggerService>(),
-        },
-      ],
-    }).compile();
-
-    const logger = await module.resolve(LoggerService);
-
-    expect(logger.setContext).toHaveBeenCalledWith("LocalServicesCommand");
+    await expectLoggerContext(LocalServicesCommand, {
+      mocks: [LocalServicesService],
+    });
   });
 
   it("starts the local services", async () => {
