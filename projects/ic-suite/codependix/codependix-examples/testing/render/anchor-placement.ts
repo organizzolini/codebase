@@ -167,7 +167,6 @@ export function describeMissingReadme(mode: "check" | "write"): string {
   try {
     deliver({ content: SAMPLE_DIAGRAM, mode, project });
 
-    /* v8 ignore next -- a destination with no file always raises */
     return "delivered";
   } catch (error) {
     return redactRoot(describeError(error), project.absoluteRoot);
@@ -223,9 +222,9 @@ function buildAutoCreationSections(): ExampleSection[] {
 function buildMissingReadmeSections(): ExampleSection[] {
   return [
     {
-      body: fence(describeMissingReadme("write")),
-      heading: "A project with no `README.md`, on `--write`",
-      note: "Fails outright, in either mode. The file itself not existing is a more serious problem than a missing anchor — there is nothing to splice into and nothing safe to create.",
+      body: fence(describeMissingReadme("check")),
+      heading: "A project with no `README.md`, on `--check`",
+      note: "Fails outright. The file itself not existing is a more serious problem than a missing anchor — there is nothing to compare against. `--write` instead creates the file, with the `## 🕸️ Codependix` section in it.",
     },
     {
       body: fence(describeMissingAnchor()),

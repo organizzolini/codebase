@@ -277,11 +277,17 @@ export class DeliveryService {
   }): void {
     const resolvedPath = path.resolve(args.absoluteRoot, args.path);
 
+    // A file that does not exist yet is created, but only when there is a
+    // section to put in it — the same condition an absent anchor needs.
     if (!existsSync(resolvedPath)) {
-      throw new AnchorNotFoundError(args.anchorName, resolvedPath);
+      if (args.markdownSection === undefined) {
+        throw new AnchorNotFoundError(args.anchorName, resolvedPath);
+      }
+
+      mkdirSync(path.dirname(resolvedPath), { recursive: true });
     }
 
-    const fileContent = readFileSync(resolvedPath, "utf8");
+    const fileContent = this.readFileOrEmpty(resolvedPath);
     const anchorExists = this.anchorsService.hasAnchor({
       anchorName: args.anchorName,
       fileContent,
