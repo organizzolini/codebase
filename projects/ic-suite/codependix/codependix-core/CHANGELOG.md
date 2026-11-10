@@ -1,3 +1,7 @@
+## 0.0.74 (2026-11-10)
+
+This was a version bump only for codependix-core to align it with other projects, there were no code changes.
+
 ## 0.0.73 (2026-11-10)
 
 ### 🚀 Features
