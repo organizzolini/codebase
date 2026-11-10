@@ -235,6 +235,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **visibility**: Morning or evening star visibility span of Mercury, Venus, or Mars, the time a planet is seen before sunrise or after sunset.
 - **visible**: Adjective for a solar eclipse seen from the observer's location, which keeps its local type while the Sun is above horizon.
 - **water**: Element that the tag dimensions assign to the cancer, scorpio, and pisces signs, tagging their events as water-sign events.
+- **window**: A place and a short range of dates (a period) that a reference or end-to-end test sweeps through the whole detection pipeline.
 - **winter**: Season label for the winter solstice and the autumn-to-winter half of the annual solar cycle events.
 - **yod**: Three-body aspect pattern of a sextile base with two quincunxes meeting at an apex, detected by the triple-aspects service.
 - **zenith**: Highest altitude a body reaches each day, which daily cycles turn into solar noon and lunar culmination calendar events.

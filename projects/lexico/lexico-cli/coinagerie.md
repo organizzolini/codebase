@@ -52,6 +52,7 @@ The words this project uses that the root glossary does not define, regenerated 
 - **martial**: Literature constants slug for Martial, expanded to marcus valerius martialis, the epigrammatist the literature ingestion loads.
 - **mela**: Second half of the author slug pomponius-mela, whose De chorographia the library ingests as a work.
 - **perfect**: Verb tense family covering perfect, future perfect, and pluperfect, which the part-of-speech forms service maps by name.
+- **period**: Literary era of an author or work, such as Classical, recorded with the text it was ingested from.
 - **perseus**: Source and command for the Perseus Digital Library, which the perseus stage converts from XML into markdown library works.
 - **phase**: Stage of a multi-step chunk run, such as the chunk phase in EDCS ingestion, where undefined entries are skipped.
 - **pronunciation**: Module and service that derive phonemic and phonetic spellings for each Wiktionary entry, in classical or ecclesiastical mode.

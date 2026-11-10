@@ -25,5 +25,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **valerius**: Roman poet named in the literature search corpus fixture, whose texts the corpus lists for search tests.
 - **verb**: Part of speech whose finite forms, such as indicative or subjunctive, are modeled and tested across the search and forms code.
 - **vergil**: Latin poet whose Aeneid, Eclogues, and Georgics seed most literature search and integration test fixtures.
+- **window**: Slice of ordered row ids bounded by the before and after cursors, which cursor pagination cuts to the first or last count and loads one page at a time.
 
 <!-- coinagerie:end -->

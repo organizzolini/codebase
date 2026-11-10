@@ -60,5 +60,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **updatable**: Stray fragment with no source hit, so the glossary lists it without any meanderaw concept behind it.
 - **waterfall**: A pattern characteristic named for a waterfall of stacked strands, computed by IsWaterfallsCharacteristicService for each unit.
 - **whirl**: A pattern characteristic for a unit whose strands wind in a whirl, computed by IsWhirlCharacteristicService for each Code.
+- **window**: The rectangle of cells of a letter's matrix that a characteristic reads, or the part of a Code an address names to draw.
 
 <!-- coinagerie:end -->
