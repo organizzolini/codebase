@@ -4,7 +4,7 @@ import { ValidationService } from "@conformetry/validation";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { captureExitCode } from "@codebase/testing";
+import { captureExitCode, captureOutput } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ValidateCommand } from "./validate.command";
@@ -141,7 +141,7 @@ describe(ValidateCommand, () => {
     });
 
     it("writes the report to stdout rather than through the logger", async () => {
-      const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+      const output = captureOutput();
 
       vi.mocked(reportingService.formatReport).mockReturnValue(
         "All checked files conform.",
@@ -152,7 +152,7 @@ describe(ValidateCommand, () => {
       // The report is a document for a reader, and the logger rejects any
       // message that does not open with an emoji and a verb — which every
       // report, success message included, does not.
-      expect(write).toHaveBeenCalledWith("All checked files conform.\n");
+      expect(output.stdout()).toBe("All checked files conform.\n");
       expect(commandLogger.info).not.toHaveBeenCalledWith(
         expect.stringContaining("All checked files conform."),
       );
@@ -372,16 +372,14 @@ describe(ValidateCommand, () => {
     it("says nothing matched rather than reporting a vacuous pass", async () => {
       vi.mocked(configurationService.findInstances).mockReturnValue([]);
 
-      const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+      const output = captureOutput();
 
       await command.run([], {
         config: CONFIGURATION_PATH,
         templates: ["widget"],
       });
 
-      expect(write).toHaveBeenCalledWith(
-        expect.stringContaining("No instances belong to widget"),
-      );
+      expect(output.stdout()).toContain("No instances belong to widget");
       expect(validationService.validate).not.toHaveBeenCalled();
       expect(readExitCode()).toBeUndefined();
     });
@@ -405,16 +403,14 @@ describe(ValidateCommand, () => {
 
       vi.mocked(configurationService.readWorkspaceGroups).mockReturnValue([]);
 
-      const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+      const output = captureOutput();
 
       await command.run([], {
         config: CONFIGURATION_PATH,
         templates: ["widget"],
       });
 
-      expect(write).toHaveBeenCalledWith(
-        expect.stringContaining("locates instances by project tag"),
-      );
+      expect(output.stdout()).toContain("locates instances by project tag");
       expect(readExitCode()).toBeUndefined();
     });
 
