@@ -78,8 +78,10 @@ export function validateCalendarSearch(
     "sky.lineWidth": parseSkyValue(search["sky.lineWidth"]),
     "sky.lon": parseSkyValue(search["sky.lon"]),
     "sky.maxMag": parseSkyValue(search["sky.maxMag"]),
+    "sky.opacity": parseSkyValue(search["sky.opacity"]),
     "sky.pixelsPerSecond": parseSkyValue(search["sky.pixelsPerSecond"]),
     "sky.starScale": parseSkyValue(search["sky.starScale"]),
+    "sky.surfaceOpacity": parseSkyValue(search["sky.surfaceOpacity"]),
     "sky.top": parseSkyValue(search["sky.top"]),
     "sky.vFov": parseSkyValue(search["sky.vFov"]),
   };

@@ -3,6 +3,7 @@ import {
   DEFAULT_OPTIONS,
   LINE_OPACITY_RANGE,
   MINIMUM_BOTTOM_ALTITUDE_DEGREES,
+  OPACITY_RANGE,
 } from "../../hooks/use-night-sky/night-sky.constants";
 
 import type {
@@ -52,6 +53,28 @@ export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
     minimum: MINIMUM_BOTTOM_ALTITUDE_DEGREES,
     step: 1,
     unit: "°",
+  },
+];
+
+/** Sky and calendar-surface opacity: a dimmer sky and more opaque calendar make text easier to read. */
+export const OPACITY_SLIDERS: readonly SkySliderControl[] = [
+  {
+    field: "skyOpacity",
+    key: "sky.opacity",
+    label: "Sky opacity",
+    maximum: OPACITY_RANGE.maximum,
+    minimum: OPACITY_RANGE.minimum,
+    step: 0.01,
+    unit: "",
+  },
+  {
+    field: "surfaceOpacity",
+    key: "sky.surfaceOpacity",
+    label: "Calendar opacity",
+    maximum: OPACITY_RANGE.maximum,
+    minimum: OPACITY_RANGE.minimum,
+    step: 0.01,
+    unit: "",
   },
 ];
 
@@ -142,6 +165,7 @@ export const ECLIPTIC_SLIDERS: readonly SkySliderControl[] = [
  */
 export const SKY_SLIDERS: readonly SkySliderControl[] = [
   ...ANGLE_SLIDERS,
+  ...OPACITY_SLIDERS,
   ...STAR_SLIDERS,
   ...LINE_SLIDERS,
   ...ECLIPTIC_SLIDERS,
@@ -204,8 +228,10 @@ export const SKY_DEFAULTS: Readonly<
   "sky.lineWidth": DEFAULT_OPTIONS.lineWidth,
   "sky.lon": DEFAULT_OBSERVER.longitudeDegrees,
   "sky.maxMag": DEFAULT_OPTIONS.faintestMagnitude,
+  "sky.opacity": DEFAULT_OPTIONS.skyOpacity,
   "sky.pixelsPerSecond": DEFAULT_OPTIONS.pixelsPerSecond,
   "sky.starScale": DEFAULT_OPTIONS.starScale,
+  "sky.surfaceOpacity": DEFAULT_OPTIONS.surfaceOpacity,
   "sky.top": DEFAULT_OPTIONS.backgroundTopColor,
   "sky.vFov": DEFAULT_OPTIONS.verticalFieldOfViewDegrees,
 };

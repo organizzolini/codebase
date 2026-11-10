@@ -11,13 +11,14 @@ import {
   LINE_OPACITY_RANGE,
   LINE_WIDTH_RANGE,
   MINIMUM_BOTTOM_ALTITUDE_DEGREES,
+  OPACITY_RANGE,
   POLE_MARGIN_DEGREES,
   REDUCED_MOTION_QUERY,
 } from "./night-sky.constants";
 
 import type { NightSkyInput } from "../../graphql/generated/operations";
 import type { FieldOfViewMeasurements } from "./night-sky.types";
-import type { NightSkyOverrides } from "./use-night-sky.types";
+import type { NightSkyDrawing, NightSkyOverrides } from "./use-night-sky.types";
 import type { WindowSize } from "./use-window-size.types";
 
 // 🔏 Private Functions
@@ -138,10 +139,20 @@ export function readNightSkyOverrides(
       z.number().positive().max(1000),
       DEFAULT_OPTIONS.pixelsPerSecond,
     ),
+    skyOpacity: clampNumber(
+      search["sky.opacity"],
+      OPACITY_RANGE,
+      DEFAULT_OPTIONS.skyOpacity,
+    ),
     starScale: readNumber(
       search["sky.starScale"],
       z.number().positive().max(10),
       DEFAULT_OPTIONS.starScale,
+    ),
+    surfaceOpacity: clampNumber(
+      search["sky.surfaceOpacity"],
+      OPACITY_RANGE,
+      DEFAULT_OPTIONS.surfaceOpacity,
     ),
     verticalFieldOfViewDegrees: readNumber(
       search["sky.vFov"],
@@ -166,10 +177,21 @@ export function subscribeToReducedMotion(onChange: () => void): () => void {
 }
 
 /**
+ * The link's settings but its opacities, which the page applies, so an opacity change leaves the sky as it is.
+ */
+export function toNightSkyDrawing(
+  overrides: NightSkyOverrides,
+): NightSkyDrawing {
+  const { skyOpacity: _sky, surfaceOpacity: _surface, ...drawing } = overrides;
+
+  return drawing;
+}
+
+/**
  * Writes the backdrop's settings as the API's night sky input; no figure is `none`, and the moment is left out for now.
  */
 export function toNightSkyInput(
-  overrides: NightSkyOverrides,
+  overrides: NightSkyDrawing,
   view: Readonly<{ size: WindowSize; still: boolean }>,
 ): NightSkyInput {
   return {

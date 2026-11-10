@@ -100,6 +100,24 @@ describe(useNightSky, () => {
     });
   });
 
+  it("does not ask for the sky again when only an opacity changes", async () => {
+    const api = serveCalendarApi();
+
+    router.search = {};
+    router.previous = undefined;
+
+    const { rerender, result } = renderHook(() => useNightSky());
+
+    await waitFor(() => {
+      expect(result.current.sky).toBeDefined();
+    });
+
+    router.search = { "sky.opacity": 0.3, "sky.surfaceOpacity": 0.5 };
+    rerender();
+
+    expect(api.requests.nightSky).toHaveLength(1);
+  });
+
   it("asks for none when the link names no figure", async () => {
     const api = serveCalendarApi();
 

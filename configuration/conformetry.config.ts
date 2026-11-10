@@ -33,9 +33,6 @@ function defineInputs(
   return inputs;
 }
 
-/** Each ic-suite CLI's `nestjs-command-project` score, set on its own group. */
-const COMMAND_PROJECT_BASELINE = 795 / 798;
-
 const conformetryConfiguration: ConformetryNxConfiguration = [
   // Groups without tags are plain workspace globs — the form a host with no
   // project graph writes, and the right one where the set of projects is not a
@@ -75,7 +72,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/callidescope/",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["projects/ic-suite/codependix/codependix-cli"],
@@ -104,7 +100,6 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           type: "projects/ic-suite/conformetry/",
           workspaceRelativePrefix: "../../../../",
         },
-        threshold: COMMAND_PROJECT_BASELINE,
       },
       {
         patterns: ["compliance"],

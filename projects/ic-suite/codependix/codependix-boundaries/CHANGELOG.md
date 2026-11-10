@@ -1,3 +1,17 @@
+## 0.0.75 (2026-11-10)
+
+### 🚀 Features
+
+- **callidescope,codependix,codometer,coinagerie,configuration:** ✨ write tool markdown to adjacent files ([#2225](https://github.com/organizzolini/codebase/pull/2225), [#2224](https://github.com/organizzolini/codebase/issues/2224))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.73
+- Updated codependix-configuration to 0.0.75
+- Updated codependix-file-imports to 0.0.73
+- Updated codependix-nx-projects to 0.0.74
+- Updated codependix-core to 0.0.73
+
 ## 0.0.74 (2026-11-09)
 
 ### 🧱 Updated Dependencies

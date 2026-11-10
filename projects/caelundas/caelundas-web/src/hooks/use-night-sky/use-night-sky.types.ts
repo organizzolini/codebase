@@ -1,6 +1,15 @@
 // 🏷️ Types
 
 /**
+ * The settings the API draws the sky from: those of the link but its
+ * opacities, which the page applies and the API never sees.
+ */
+export type NightSkyDrawing = Omit<
+  NightSkyOverrides,
+  "skyOpacity" | "surfaceOpacity"
+>;
+
+/**
  * The backdrop's settings after the link's `sky.*` keys are applied over the
  * defaults.
  */
@@ -33,7 +42,14 @@ export interface NightSkyOverrides {
    * to their defaults.
    */
   rejectedKeys: readonly string[];
+  /** `sky.opacity`: how opaque the whole sky is drawn, from 0 to 1. */
+  skyOpacity: number;
   starScale: number;
+  /**
+   * `sky.surfaceOpacity`: how opaque the calendar's surfaces are drawn over
+   * the sky, from 0 to 1.
+   */
+  surfaceOpacity: number;
   verticalFieldOfViewDegrees: number;
 }
 

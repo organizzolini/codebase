@@ -6,6 +6,7 @@ import {
   isFieldOfViewCut,
   normalizeConstellationName,
   readNightSkyOverrides,
+  toNightSkyDrawing,
   toNightSkyInput,
 } from "./use-night-sky.utilities";
 
@@ -131,6 +132,39 @@ describe("use-night-sky utilities", () => {
     });
   });
 
+  describe("the opacities", () => {
+    it("dims the sky and keeps the calendar's surfaces mostly opaque by default", () => {
+      expect(readNightSkyOverrides({})).toMatchObject({
+        skyOpacity: 0.6,
+        surfaceOpacity: 0.7,
+      });
+    });
+
+    it("reads sky.opacity and sky.surfaceOpacity, clamped to 0 and 1", () => {
+      expect(
+        readNightSkyOverrides({
+          "sky.opacity": 0.3,
+          "sky.surfaceOpacity": 0.6,
+        }),
+      ).toMatchObject({ skyOpacity: 0.3, surfaceOpacity: 0.6 });
+      expect(
+        readNightSkyOverrides({
+          "sky.opacity": 3,
+          "sky.surfaceOpacity": -1,
+        }),
+      ).toMatchObject({ skyOpacity: 1, surfaceOpacity: 0 });
+    });
+
+    it("falls back to the default for a value it cannot read", () => {
+      expect(
+        readNightSkyOverrides({
+          "sky.opacity": "dim",
+          "sky.surfaceOpacity": "solid",
+        }),
+      ).toMatchObject({ skyOpacity: 0.6, surfaceOpacity: 0.7 });
+    });
+  });
+
   describe("the ecliptic", () => {
     it("is on by default, in a faint white dashed default style", () => {
       expect(readNightSkyOverrides({})).toMatchObject({
@@ -224,6 +258,16 @@ describe("use-night-sky utilities", () => {
       expect(
         isFieldOfViewCut({ ...measurements, fieldOfViewClamped: false }, 120),
       ).toBe(false);
+    });
+  });
+
+  describe(toNightSkyDrawing, () => {
+    it("leaves out the opacities the page applies", () => {
+      const drawing = toNightSkyDrawing(readNightSkyOverrides({}));
+
+      expect(drawing).not.toHaveProperty("skyOpacity");
+      expect(drawing).not.toHaveProperty("surfaceOpacity");
+      expect(drawing).toMatchObject({ latitudeDegrees: 90 });
     });
   });
 

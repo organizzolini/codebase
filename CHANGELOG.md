@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.61.0](https://github.com/organizzolini/codebase/compare/v3.60.0...v3.61.0) (2026-11-10)
+
+### ✨ Features
+
+* **caelundas:** ✨ control night sky and calendar opacity from the Sky menu ([#2222](https://github.com/organizzolini/codebase/issues/2222)) ([c34e799](https://github.com/organizzolini/codebase/commit/c34e799528a8386b38e369f356e8b5bee1de19f3)), closes [#2218](https://github.com/organizzolini/codebase/issues/2218)
+
+## [3.60.0](https://github.com/organizzolini/codebase/compare/v3.59.5...v3.60.0) (2026-11-10)
+
+### ✨ Features
+
+* **callidescope,codependix,codometer,coinagerie,configuration:** ✨ write tool markdown to adjacent files ([#2225](https://github.com/organizzolini/codebase/issues/2225)) ([9649098](https://github.com/organizzolini/codebase/commit/96490981a3429a535ed79e290e5a4ba1ca225dc6)), closes [#2224](https://github.com/organizzolini/codebase/issues/2224)
+
+### ♻️ Code Refactoring
+
+* **compliance,documentation:** ♻️ add a manage-project skill and rename audit-governance to audit-files ([#2191](https://github.com/organizzolini/codebase/issues/2191)) ([8e39566](https://github.com/organizzolini/codebase/commit/8e3956672947398748b4b7fafdde15698a3d99b7)), closes [#2190](https://github.com/organizzolini/codebase/issues/2190)
+
 ## [3.59.5](https://github.com/organizzolini/codebase/compare/v3.59.4...v3.59.5) (2026-11-09)
 
 ### 🐛 Bug Fixes

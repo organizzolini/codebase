@@ -6,13 +6,13 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { AuditGovernanceService } from "./audit-governance.service";
+import { AuditFilesService } from "./audit-files.service";
 
-describe(AuditGovernanceService, () => {
-  let service: AuditGovernanceService;
+describe(AuditFilesService, () => {
+  let service: AuditFilesService;
 
   beforeAll(async () => {
-    const built = await buildTestingModule(AuditGovernanceService);
+    const built = await buildTestingModule(AuditFilesService);
 
     service = built.instance;
   });
@@ -22,7 +22,7 @@ describe(AuditGovernanceService, () => {
     readonly codeowners?: string;
     readonly workflows?: Record<string, string>;
   }): string {
-    const root = createTemporaryDirectory("audit-governance");
+    const root = createTemporaryDirectory("audit-files");
 
     if (files.codeowners !== undefined) {
       mkdirSync(path.join(root, ".github"), { recursive: true });
@@ -41,9 +41,9 @@ describe(AuditGovernanceService, () => {
   }
 
   it("resolves with its dependencies", async () => {
-    const { instance } = await buildTestingModule(AuditGovernanceService);
+    const { instance } = await buildTestingModule(AuditFilesService);
 
-    expect(instance).toBeInstanceOf(AuditGovernanceService);
+    expect(instance).toBeInstanceOf(AuditFilesService);
   });
 
   describe("checkCodeowners", () => {
@@ -310,11 +310,11 @@ jobs:
     });
   });
 
-  describe("checkGovernance", () => {
+  describe("checkFiles", () => {
     it("returns aggregated verdict correctly", () => {
       expect.hasAssertions();
 
-      const verdict = service.checkGovernance(
+      const verdict = service.checkFiles(
         workspace({
           codeowners: "* @JimmyPaolini",
           workflows: {

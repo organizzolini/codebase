@@ -3,12 +3,9 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { AuditGovernanceService } from "./audit-governance.service";
+import { AuditFilesService } from "./audit-files.service";
 
-import type {
-  CodeownersVerdict,
-  WorkflowVerdict,
-} from "./audit-governance.types";
+import type { CodeownersVerdict, WorkflowVerdict } from "./audit-files.types";
 
 /**
  * CLI command that audits repository governance including CODEOWNERS and workflow security.
@@ -16,18 +13,18 @@ import type {
 @Command({
   description:
     "Check repository governance including CODEOWNERS and workflow security",
-  name: "audit-governance",
+  name: "audit-files",
 })
 @Injectable()
-export class AuditGovernanceCommand extends CommandRunner {
+export class AuditFilesCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
-    private readonly auditGovernanceService: AuditGovernanceService,
+    private readonly auditGovernanceService: AuditFilesService,
     private readonly logger: LoggerService,
   ) {
     super();
-    this.logger.setContext(AuditGovernanceCommand.name);
+    this.logger.setContext(AuditFilesCommand.name);
   }
 
   // 🔐 Private Fields
@@ -80,7 +77,7 @@ export class AuditGovernanceCommand extends CommandRunner {
 
     this.logger.log("👮 Auditing repository governance.");
 
-    const verdict = this.auditGovernanceService.checkGovernance();
+    const verdict = this.auditGovernanceService.checkFiles();
 
     this.reportCodeownersVerdict(verdict.codeowners);
     this.reportWorkflowsVerdict(verdict.workflows);

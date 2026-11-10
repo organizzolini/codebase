@@ -5,30 +5,27 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { mockProcessExit } from "../../../testing/mocks";
 
-import { AuditGovernanceCommand } from "./audit-governance.command";
-import { AuditGovernanceService } from "./audit-governance.service";
+import { AuditFilesCommand } from "./audit-files.command";
+import { AuditFilesService } from "./audit-files.service";
 
 import type { LoggerServiceContract } from "@codebase/observability";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
-/** What the AuditGovernanceCommand is built with. */
+/** What the AuditFilesCommand is built with. */
 const DEPENDENCIES = {
-  mocks: [AuditGovernanceService],
+  mocks: [AuditFilesService],
 } satisfies TestingModuleOptions;
 
-describe(AuditGovernanceCommand, () => {
-  let command: AuditGovernanceCommand;
-  let service: AuditGovernanceService;
+describe(AuditFilesCommand, () => {
+  let command: AuditFilesCommand;
+  let service: AuditFilesService;
   let logger: LoggerServiceContract;
 
   beforeAll(async () => {
-    const built = await buildTestingModule(
-      AuditGovernanceCommand,
-      DEPENDENCIES,
-    );
+    const built = await buildTestingModule(AuditFilesCommand, DEPENDENCIES);
 
     command = built.instance;
-    service = built.mock(AuditGovernanceService);
+    service = built.mock(AuditFilesService);
     logger = built.logger;
   });
 
@@ -38,15 +35,15 @@ describe(AuditGovernanceCommand, () => {
 
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(
-      AuditGovernanceCommand,
+      AuditFilesCommand,
       DEPENDENCIES,
     );
 
-    expect(instance).toBeInstanceOf(AuditGovernanceCommand);
+    expect(instance).toBeInstanceOf(AuditFilesCommand);
   });
 
   it("sets logger context", async () => {
-    await expectLoggerContext(AuditGovernanceCommand, DEPENDENCIES);
+    await expectLoggerContext(AuditFilesCommand, DEPENDENCIES);
   });
 
   it("logs success and does not exit when governance is valid", async () => {
@@ -54,7 +51,7 @@ describe(AuditGovernanceCommand, () => {
 
     const exitSpy = mockProcessExit();
 
-    vi.mocked(service.checkGovernance).mockReturnValue({
+    vi.mocked(service.checkFiles).mockReturnValue({
       codeowners: {
         filePath: ".github/CODEOWNERS",
         ruleCount: 1,
@@ -82,7 +79,7 @@ describe(AuditGovernanceCommand, () => {
 
     const exitSpy = mockProcessExit();
 
-    vi.mocked(service.checkGovernance).mockReturnValue({
+    vi.mocked(service.checkFiles).mockReturnValue({
       codeowners: {
         ruleCount: 0,
         valid: false,
@@ -114,7 +111,7 @@ describe(AuditGovernanceCommand, () => {
 
     const exitSpy = mockProcessExit();
 
-    vi.mocked(service.checkGovernance).mockReturnValue({
+    vi.mocked(service.checkFiles).mockReturnValue({
       codeowners: {
         filePath: ".github/CODEOWNERS",
         ruleCount: 1,
@@ -147,7 +144,7 @@ describe(AuditGovernanceCommand, () => {
 
     const exitSpy = mockProcessExit();
 
-    vi.mocked(service.checkGovernance).mockReturnValue({
+    vi.mocked(service.checkFiles).mockReturnValue({
       codeowners: {
         ruleCount: 2,
         valid: true,
