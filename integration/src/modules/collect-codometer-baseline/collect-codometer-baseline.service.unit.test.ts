@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { useTemporaryDirectories, writeFile } from "../../../testing/mocks";
 
@@ -13,16 +14,21 @@ describe(CollectCodometerBaselineService, () => {
   let service: CollectCodometerBaselineService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [CollectCodometerBaselineService],
-    }).compile();
+    const { module } = await buildTestingModule(
+      CollectCodometerBaselineService,
+    );
 
     service = await module.resolve(CollectCodometerBaselineService);
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      CollectCodometerBaselineService,
+    );
+
+    expect(instance).toBeInstanceOf(CollectCodometerBaselineService);
   });
 
   it("copies each report to the path it was found at", () => {

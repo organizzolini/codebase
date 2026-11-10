@@ -1,16 +1,9 @@
 import fs from "node:fs";
 
 import { ConfigService } from "@nestjs/config";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import {
   failed,
@@ -46,7 +39,6 @@ const graphOf = (roots: Record<string, string>): string =>
 describe(ReleaseGroupService, () => {
   const makeDirectory = useTemporaryDirectories();
   let reportLines: string[];
-  let service: ReleaseGroupService;
   let workspace: string;
 
   /** Builds the service over a scripted process runner. */
@@ -61,28 +53,15 @@ describe(ReleaseGroupService, () => {
     runner.effects["pnpm exec nx graph *"] = (args): void => {
       fs.writeFileSync(String(args.at(-1)).replace("--file=", ""), graph);
     };
-    const module = await Test.createTestingModule({
+    const { module } = await buildTestingModule(ReleaseGroupService, {
       providers: [
-        ReleaseGroupService,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: ProcessRunnerService, useValue: runner },
       ],
-    }).compile();
+    });
 
     return { runner, service: await module.resolve(ReleaseGroupService) };
   };
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ReleaseGroupService,
-        { provide: ConfigService, useValue: new ConfigService() },
-        { provide: ProcessRunnerService, useValue: new FakeProcessRunner({}) },
-      ],
-    }).compile();
-
-    service = await module.resolve(ReleaseGroupService);
-  });
 
   beforeEach(() => {
     reportLines = [];
@@ -104,10 +83,17 @@ describe(ReleaseGroupService, () => {
     vi.unstubAllEnvs();
   });
 
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
 
-    expect(service).toBeDefined();
+    const { instance } = await buildTestingModule(ReleaseGroupService, {
+      providers: [
+        { provide: ConfigService, useValue: new ConfigService() },
+        { provide: ProcessRunnerService, useValue: new FakeProcessRunner({}) },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(ReleaseGroupService);
   });
 
   describe("readGroup", () => {
