@@ -52,10 +52,6 @@ describe(DatabaseService, () => {
     await database.close();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
-  });
-
   describe("save", () => {
     it("persists a meander row with every field it was given", async () => {
       const saved = await service.save(
@@ -237,7 +233,9 @@ describe(DatabaseService, () => {
         .where("meander.code = :code", { code: "map-coalesce" })
         .andWhere(
           "COALESCE((meander.characteristics ->> :key)::numeric, 0) = 0",
-          { key: "crossCount" },
+          {
+            key: "crossCount",
+          },
         )
         .getMany();
 
