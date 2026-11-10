@@ -1,31 +1,21 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { Test } from "@nestjs/testing";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
 import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+  captureExitCode,
+  captureOutput,
+  useTemporaryDirectory,
+} from "@codebase/testing";
 
 import { MainModule } from "../../codependix-cli.module";
 
 import { PathCommand } from "./path.command";
 
 import type { PathCommandOptions } from "./path.types";
-import type { MockInstance } from "vitest";
+import type { CapturedOutput } from "@codebase/testing";
 
 const PROJECT_GRAPH = {
   dependencies: {
@@ -61,16 +51,16 @@ const PROJECT_GRAPH = {
 describe("path command", () => {
   describe("over a fixture tree", () => {
     let workingDirectory: string;
+    const getWorkingDirectory = useTemporaryDirectory("codependix-path");
     let originalWorkingDirectory: string;
-    let writeSpy: MockInstance<typeof process.stdout.write>;
-    let capturedOutput: string;
+    let output: CapturedOutput;
 
     async function run(
       args: string[],
       options: PathCommandOptions = {},
     ): Promise<{ exitCode: number; output: string }> {
       process.chdir(workingDirectory);
-      process.exitCode = 0;
+      const readExitCode = captureExitCode();
 
       const module = await Test.createTestingModule({
         imports: [MainModule],
@@ -82,23 +72,19 @@ describe("path command", () => {
         ...options,
       });
 
-      const exitCode =
-        typeof process.exitCode === "number" ? process.exitCode : 0;
+      const exitCode = readExitCode() ?? 0;
 
-      process.exitCode = 0;
       process.chdir(originalWorkingDirectory);
 
       return {
         exitCode: typeof exitCode === "string" ? Number(exitCode) : exitCode,
-        output: capturedOutput,
+        output: output.stdout(),
       };
     }
 
     beforeAll(() => {
       originalWorkingDirectory = process.cwd();
-      workingDirectory = realpathSync(
-        mkdtempSync(path.join(tmpdir(), "codependix-path-")),
-      );
+      workingDirectory = getWorkingDirectory();
 
       mkdirSync(path.join(workingDirectory, "packages/project-a/src"), {
         recursive: true,
@@ -148,21 +134,7 @@ describe("path command", () => {
     });
 
     beforeEach(() => {
-      capturedOutput = "";
-      writeSpy = vi
-        .spyOn(process.stdout, "write")
-        .mockImplementation((chunk: string | Uint8Array) => {
-          capturedOutput += chunk.toString();
-          return true;
-        });
-    });
-
-    afterEach(() => {
-      writeSpy.mockRestore();
-    });
-
-    afterAll(() => {
-      rmSync(workingDirectory, { force: true, recursive: true });
+      output = captureOutput();
     });
 
     it("reports a path between two Nx projects in markdown format", async () => {

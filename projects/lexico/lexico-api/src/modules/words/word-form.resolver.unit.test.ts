@@ -1,10 +1,10 @@
 /* cspell:words amo */
 
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { Word } from "@codebase/lexico-db";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { WordFormType } from "./word-form.entities";
 import { WordFormResolver } from "./word-form.resolver";
@@ -14,21 +14,12 @@ import { WordType } from "./word.entities";
 import type { WordsService } from "./words.service";
 
 describe(WordFormResolver, () => {
-  let resolver: WordFormResolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(WordFormResolver, {
+      mocks: [WordLinkLoader],
+    });
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        WordFormResolver,
-        { provide: WordLinkLoader, useValue: createMock<WordLinkLoader>() },
-      ],
-    }).compile();
-
-    resolver = await module.resolve(WordFormResolver);
-  });
-
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf(WordFormResolver);
   });
 
   it("resolves a word-form link's word through the loader", async () => {

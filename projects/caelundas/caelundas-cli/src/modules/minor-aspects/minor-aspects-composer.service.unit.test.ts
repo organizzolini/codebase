@@ -1,9 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
@@ -17,29 +15,28 @@ describe(MinorAspectsComposerService, () => {
   let aspectEphemerisService: DeepMocked<AspectEphemerisService>;
   let progressiveUtilitiesService: DeepMocked<ProgressiveUtilitiesService>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        MinorAspectsComposerService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-        {
-          provide: AspectEphemerisService,
-          useValue: createMock<AspectEphemerisService>(),
-        },
-        {
-          provide: ProgressiveUtilitiesService,
-          useValue: createMock<ProgressiveUtilitiesService>(),
-        },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    mocks: [AspectEphemerisService, ProgressiveUtilitiesService],
+  };
 
-    service = await module.resolve(MinorAspectsComposerService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      MinorAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     aspectEphemerisService = module.get(AspectEphemerisService);
     progressiveUtilitiesService = module.get(ProgressiveUtilitiesService);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      MinorAspectsComposerService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(MinorAspectsComposerService);
   });
 
   it("assembles boundary events for every phase", () => {

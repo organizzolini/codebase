@@ -1,19 +1,10 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { overrideEnvironment } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PublishablePackagesProcessService } from "./publishable-packages-process.service";
 
@@ -37,19 +28,23 @@ const lastSpawnEnvironment = (): NodeJS.ProcessEnv => {
   return environment;
 };
 
+/** Replaces the whole environment for the running test, keeping nothing else. */
+const replaceEnvironment = (environment: Record<string, string>): void => {
+  overrideEnvironment({
+    ...Object.fromEntries(
+      Object.keys(process.env).map((name) => [name, undefined]),
+    ),
+    ...environment,
+  });
+};
+
 describe(PublishablePackagesProcessService, () => {
   let service: PublishablePackagesProcessService;
-  const originalEnvironment = { ...process.env };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        PublishablePackagesProcessService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
+    const built = await buildTestingModule(PublishablePackagesProcessService);
 
-    service = await module.resolve(PublishablePackagesProcessService);
+    service = built.instance;
   });
 
   beforeEach(() => {
@@ -64,13 +59,14 @@ describe(PublishablePackagesProcessService, () => {
     });
   });
 
-  afterEach(() => {
-    process.env = { ...originalEnvironment };
-  });
-
-  it("is defined", () => {
+  it("resolves with its dependencies", async () => {
     expect.hasAssertions();
-    expect(service).toBeDefined();
+
+    const { instance } = await buildTestingModule(
+      PublishablePackagesProcessService,
+    );
+
+    expect(instance).toBeInstanceOf(PublishablePackagesProcessService);
   });
 
   it("runs the executable inside the consumer without a shell", () => {
@@ -131,7 +127,7 @@ describe(PublishablePackagesProcessService, () => {
   it("drops registry tokens and this workspace's tool settings", () => {
     expect.hasAssertions();
 
-    process.env = {
+    replaceEnvironment({
       FORCE_COLOR: "3",
       HOME: "/home/runner",
       NODE_AUTH_TOKEN: "secret",
@@ -140,7 +136,7 @@ describe(PublishablePackagesProcessService, () => {
       NPM_TOKEN: "secret",
       NX_WORKSPACE_ROOT: "/work/codebase",
       pnpm_config_verify_deps_before_run: "false",
-    };
+    });
 
     service.run(context, { args: [], executable: "nx", timeout: 1 });
 
@@ -158,14 +154,14 @@ describe(PublishablePackagesProcessService, () => {
   it("drops every PATH entry inside the workspace", () => {
     expect.hasAssertions();
 
-    process.env = {
+    replaceEnvironment({
       PATH: [
         "/work/codebase/node_modules/.bin",
         "/home/runner/setup-pnpm/node_modules/.bin",
         "/work/codebase",
         "/usr/bin",
       ].join(path.delimiter),
-    };
+    });
 
     service.run(context, { args: [], executable: "nx", timeout: 1 });
 

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TypescriptService } from "./typescript.service";
 
@@ -7,11 +8,7 @@ describe(TypescriptService, () => {
   let service: TypescriptService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [TypescriptService],
-    }).compile();
-
-    service = await module.resolve(TypescriptService);
+    ({ instance: service } = await buildTestingModule(TypescriptService));
   });
 
   /** The distinct identifiers a source yields, sorted, so order never matters. */
@@ -19,8 +16,10 @@ describe(TypescriptService, () => {
     return [...new Set(service.tokenize(content, filePath))].toSorted();
   }
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TypescriptService);
+
+    expect(instance).toBeInstanceOf(TypescriptService);
   });
 
   it.each([

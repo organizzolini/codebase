@@ -286,13 +286,14 @@ const MODULE_BOUNDARIES = {
     // the graph it renders; the CLI composes them, so the dependency
     // only ever points that way.
     {
-      onlyDependOnLibsWithTags: [],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:callidescope-core",
     },
     {
       onlyDependOnLibsWithTags: [
         "name:callidescope-core",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-configuration",
     },
@@ -301,6 +302,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-configuration",
         "name:callidescope-core",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-graph",
     },
@@ -310,6 +312,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-core",
         "name:callidescope-graph",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-output",
     },
@@ -320,6 +323,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-graph",
         "name:callidescope-output",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-cli",
     },
@@ -335,6 +339,7 @@ const MODULE_BOUNDARIES = {
         "name:callidescope-graph",
         "name:callidescope-output",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:callidescope-nx",
     },
@@ -347,11 +352,11 @@ const MODULE_BOUNDARIES = {
     // report diffing included; and the command-line host wires
     // commands over all of them.
     {
-      onlyDependOnLibsWithTags: [],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:codometer-core",
     },
     {
-      onlyDependOnLibsWithTags: ["name:codometer-core"],
+      onlyDependOnLibsWithTags: ["name:codometer-core", "name:testing"],
       sourceTag: "name:codometer-configuration",
     },
     {
@@ -359,6 +364,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-configuration",
         "name:codometer-core",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-languages",
     },
@@ -368,6 +374,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-core",
         "name:codometer-languages",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-measurement",
     },
@@ -377,6 +384,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-core",
         "name:codometer-measurement",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-output",
     },
@@ -387,6 +395,7 @@ const MODULE_BOUNDARIES = {
         "name:codometer-measurement",
         "name:codometer-output",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:codometer-cli",
     },
@@ -394,11 +403,11 @@ const MODULE_BOUNDARIES = {
     // `core <- configuration <- languages <- vocabulary <- output <- cli`.
     // No coinagerie package depends on another toolchain.
     {
-      onlyDependOnLibsWithTags: [],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:coinagerie-core",
     },
     {
-      onlyDependOnLibsWithTags: ["name:coinagerie-core"],
+      onlyDependOnLibsWithTags: ["name:coinagerie-core", "name:testing"],
       sourceTag: "name:coinagerie-configuration",
     },
     {
@@ -406,6 +415,7 @@ const MODULE_BOUNDARIES = {
         "name:coinagerie-configuration",
         "name:coinagerie-core",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:coinagerie-languages",
     },
@@ -415,6 +425,7 @@ const MODULE_BOUNDARIES = {
         "name:coinagerie-core",
         "name:coinagerie-languages",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:coinagerie-vocabulary",
     },
@@ -424,6 +435,7 @@ const MODULE_BOUNDARIES = {
         "name:coinagerie-core",
         "name:coinagerie-vocabulary",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:coinagerie-output",
     },
@@ -434,6 +446,7 @@ const MODULE_BOUNDARIES = {
         "name:coinagerie-output",
         "name:coinagerie-vocabulary",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:coinagerie-cli",
     },
@@ -448,6 +461,7 @@ const MODULE_BOUNDARIES = {
         "name:coinagerie-output",
         "name:coinagerie-vocabulary",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:coinagerie-nx",
     },
@@ -459,17 +473,18 @@ const MODULE_BOUNDARIES = {
     // template or instance path is part of resolving it, and
     // `conformetry-generation` consumes it upward.
     {
-      onlyDependOnLibsWithTags: [],
+      onlyDependOnLibsWithTags: ["name:testing"],
       sourceTag: "name:conformetry-core",
     },
     {
-      onlyDependOnLibsWithTags: ["name:conformetry-core"],
+      onlyDependOnLibsWithTags: ["name:conformetry-core", "name:testing"],
       sourceTag: "name:conformetry-configuration",
     },
     {
       onlyDependOnLibsWithTags: [
         "name:conformetry-configuration",
         "name:conformetry-core",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-generation",
     },
@@ -484,6 +499,7 @@ const MODULE_BOUNDARIES = {
       onlyDependOnLibsWithTags: [
         "name:conformetry-configuration",
         "name:conformetry-core",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-languages",
     },
@@ -492,6 +508,7 @@ const MODULE_BOUNDARIES = {
         "name:conformetry-configuration",
         "name:conformetry-core",
         "name:conformetry-languages",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-validation",
     },
@@ -500,6 +517,7 @@ const MODULE_BOUNDARIES = {
         "name:conformetry-core",
         "name:conformetry-languages",
         "name:conformetry-validation",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-output",
     },
@@ -511,6 +529,7 @@ const MODULE_BOUNDARIES = {
         "name:conformetry-output",
         "name:conformetry-validation",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:conformetry",
     },
@@ -522,6 +541,7 @@ const MODULE_BOUNDARIES = {
         "name:conformetry-output",
         "name:conformetry-validation",
         "name:observability",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-nx",
     },
@@ -538,6 +558,7 @@ const MODULE_BOUNDARIES = {
         "name:conformetry-nx",
         "name:conformetry-output",
         "name:conformetry-validation",
+        "name:testing",
       ],
       sourceTag: "name:conformetry-examples",
     },
@@ -1573,6 +1594,19 @@ export default [
       "vitest/consistent-vitest-vi": "error",
       "vitest/hoisted-apis-on-top": "error",
       "vitest/max-nested-describe": ["error", { max: 3 }],
+      "vitest/expect-expect": [
+        "error",
+        {
+          // The shared testing helpers assert for the test that calls them.
+          assertFunctionNames: [
+            "expect",
+            "expectLoggerContext",
+            "expectModuleExports",
+            "expectModuleImports",
+            "expectModuleProvides",
+          ],
+        },
+      ],
       "vitest/no-alias-methods": "error",
       "vitest/no-commented-out-tests": "error",
       "vitest/no-disabled-tests": "error",

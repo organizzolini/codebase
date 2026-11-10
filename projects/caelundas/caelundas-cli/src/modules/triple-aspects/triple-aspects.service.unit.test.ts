@@ -1,8 +1,7 @@
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
@@ -45,23 +44,31 @@ function buildTSquareBoundary(
 describe(TripleAspectsService, () => {
   let service: TripleAspectsService;
 
+  const testingModuleOptions = {
+    providers: [
+      AspectGraphService,
+      CompoundPhaseService,
+      ProgressiveUtilitiesService,
+      TripleAspectsComposerService,
+      TripleAspectsDetectorService,
+    ],
+  };
+
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        LoggerService,
-        AspectGraphService,
-        CompoundPhaseService,
-        ProgressiveUtilitiesService,
-        TripleAspectsComposerService,
-        TripleAspectsDetectorService,
-        TripleAspectsService,
-      ],
-    }).compile();
-    service = await module.resolve(TripleAspectsService);
+    const { instance } = await buildTestingModule(
+      TripleAspectsService,
+      testingModuleOptions,
+    );
+    service = instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      TripleAspectsService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(TripleAspectsService);
   });
 
   describe("detect", () => {

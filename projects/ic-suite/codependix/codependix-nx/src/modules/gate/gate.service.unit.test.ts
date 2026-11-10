@@ -5,19 +5,25 @@ import { PassThrough } from "node:stream";
 import { pathToFileURL } from "node:url";
 
 import { ConfigurationModule } from "@codependix/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { captureOutput } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PluginService } from "../plugin/plugin.service";
 
 import { GateService } from "./gate.service";
 
+import type * as Testing from "@codebase/testing";
+import type { CapturedOutput } from "@codebase/testing";
 import type * as ChildProcessModule from "node:child_process";
 
-vi.mock("node:child_process", async (importOriginal) => ({
-  ...(await importOriginal<typeof ChildProcessModule>()),
-  spawn: vi.fn<() => void>(),
-}));
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal<typeof ChildProcessModule>());
+});
 
 vi.mock("node:fs", () => ({
   readFileSync: vi.fn<() => string>(() => "{}"),
@@ -58,15 +64,14 @@ function spawnedArguments(): readonly string[] {
 }
 
 describe(GateService, () => {
+  let output: CapturedOutput;
   let service: GateService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(GateService, {
       imports: [ConfigurationModule],
-      providers: [GateService, PluginService],
-    }).compile();
-
-    service = await module.resolve(GateService);
+      providers: [PluginService],
+    }));
   });
 
   beforeEach(() => {
@@ -81,13 +86,16 @@ describe(GateService, () => {
       }),
     );
     vi.mocked(spawn).mockReturnValue(buildChild({ exitCode: 0 }));
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
-    vi.spyOn(process.stderr, "write").mockReturnValue(true);
+    output = captureOutput();
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(GateService, {
+      imports: [ConfigurationModule],
+      providers: [PluginService],
+    });
+
+    expect(instance).toBeInstanceOf(GateService);
   });
 
   describe("buildCommandArguments", () => {
@@ -390,12 +398,8 @@ describe(GateService, () => {
         workspaceRoot: "/workspace",
       });
 
-      expect(process.stdout.write).toHaveBeenCalledWith(
-        Buffer.from("a report"),
-      );
-      expect(process.stderr.write).toHaveBeenCalledWith(
-        Buffer.from("a boundary finding"),
-      );
+      expect(output.stdout()).toContain("a report");
+      expect(output.stderr()).toContain("a boundary finding");
     });
 
     it("rejects when the command line cannot be started", async () => {

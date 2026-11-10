@@ -1,9 +1,10 @@
-import { mkdtempSync, readFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 
 import { codependixConfigurationSchema } from "@codependix/configuration";
 import { describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import * as anchorPlacement from "./render/anchor-placement";
 import {
@@ -408,7 +409,7 @@ describe("codependix examples", () => {
       const outcome = deliverDocuments({
         documents: await collectDocuments(),
         mode: "check",
-        outputDirectory: mkdtempSync(path.join(tmpdir(), "codependix-empty-")),
+        outputDirectory: createTemporaryDirectory("codependix-empty"),
       });
 
       expect(outcome.stalePaths).toHaveLength(outcome.writtenCount);
@@ -439,7 +440,7 @@ describe("codependix examples", () => {
 
       const outcome = await run(
         ["--check"],
-        mkdtempSync(path.join(tmpdir(), "codependix-stale-")),
+        createTemporaryDirectory("codependix-stale"),
       );
 
       expect(outcome.exitCode).toBe(1);
@@ -450,7 +451,7 @@ describe("codependix examples", () => {
       expect.hasAssertions();
 
       const outputDirectory = path.join(
-        mkdtempSync(path.join(tmpdir(), "codependix-run-")),
+        createTemporaryDirectory("codependix-run"),
         "nested",
       );
       const documents = await collectDocuments();

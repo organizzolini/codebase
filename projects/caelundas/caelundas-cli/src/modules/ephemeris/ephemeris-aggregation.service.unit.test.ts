@@ -1,7 +1,7 @@
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisAggregationService } from "./ephemeris-aggregation.service";
 import { EphemerisConstantsService } from "./ephemeris-constants.service";
@@ -9,6 +9,8 @@ import { EphemerisCoordinateService } from "./ephemeris-coordinate.service";
 import { EphemerisHorizonService } from "./ephemeris-horizon.service";
 import { EphemerisPhenomenaService } from "./ephemeris-phenomena.service";
 import { EphemerisTimeService } from "./ephemeris-time.service";
+
+import type { createMock } from "@golevelup/ts-vitest";
 
 describe(EphemerisAggregationService, () => {
   let service: EphemerisAggregationService;
@@ -21,34 +23,23 @@ describe(EphemerisAggregationService, () => {
   let horizonService: ReturnType<typeof createMock<EphemerisHorizonService>>;
   let timeService: ReturnType<typeof createMock<EphemerisTimeService>>;
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        EphemerisAggregationService,
-        {
-          provide: EphemerisConstantsService,
-          useValue: createMock<EphemerisConstantsService>(),
-        },
-        {
-          provide: EphemerisCoordinateService,
-          useValue: createMock<EphemerisCoordinateService>(),
-        },
-        {
-          provide: EphemerisHorizonService,
-          useValue: createMock<EphemerisHorizonService>(),
-        },
-        {
-          provide: EphemerisPhenomenaService,
-          useValue: createMock<EphemerisPhenomenaService>(),
-        },
-        {
-          provide: EphemerisTimeService,
-          useValue: createMock<EphemerisTimeService>(),
-        },
-      ],
-    }).compile();
+  const testingModuleOptions = {
+    mocks: [
+      EphemerisConstantsService,
+      EphemerisCoordinateService,
+      EphemerisHorizonService,
+      EphemerisPhenomenaService,
+      EphemerisTimeService,
+    ],
+  };
 
-    service = await module.resolve(EphemerisAggregationService);
+  beforeAll(async () => {
+    const { instance, module } = await buildTestingModule(
+      EphemerisAggregationService,
+      testingModuleOptions,
+    );
+
+    service = instance;
     constantsService = await module.resolve(EphemerisConstantsService);
     coordinateService = await module.resolve(EphemerisCoordinateService);
     horizonService = await module.resolve(EphemerisHorizonService);
@@ -103,8 +94,13 @@ describe(EphemerisAggregationService, () => {
     vi.clearAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      EphemerisAggregationService,
+      testingModuleOptions,
+    );
+
+    expect(instance).toBeInstanceOf(EphemerisAggregationService);
   });
 
   describe("buildEphemerisFeatureSets", () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestBodyLinksService } from "./pull-request-body-links.service";
 
@@ -7,15 +8,15 @@ describe(PullRequestBodyLinksService, () => {
   let service: PullRequestBodyLinksService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [PullRequestBodyLinksService],
-    }).compile();
+    const built = await buildTestingModule(PullRequestBodyLinksService);
 
-    service = await module.resolve(PullRequestBodyLinksService);
+    service = built.instance;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PullRequestBodyLinksService);
+
+    expect(instance).toBeInstanceOf(PullRequestBodyLinksService);
   });
 
   it("adds missing ancestor references to the Related list", () => {

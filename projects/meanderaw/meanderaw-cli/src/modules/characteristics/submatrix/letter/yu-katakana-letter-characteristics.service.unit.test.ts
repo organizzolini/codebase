@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { expectedCounts, letterHarness } from "../../../../../testing/letters";
@@ -41,10 +40,7 @@ const ALIASES: readonly LetterAliasFixture[] = [
 ];
 
 describe(YuKatakanaLetterCharacteristicsService, () => {
-  const letter = letterHarness(
-    YuKatakanaLetterCharacteristicsService,
-    async (metadata) => Test.createTestingModule(metadata).compile(),
-  );
+  const letter = letterHarness(YuKatakanaLetterCharacteristicsService);
 
   beforeAll(async () => {
     await letter.compile();

@@ -23,6 +23,7 @@
   "description": "Command-line tool that lists the vocabulary of a codebase and keeps a glossary of it in step with the code",
   "devDependencies": {
     "@codebase/observability": "workspace:*",
+    "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",

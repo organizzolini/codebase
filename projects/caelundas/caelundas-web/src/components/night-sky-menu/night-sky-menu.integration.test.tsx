@@ -2,7 +2,7 @@ import { cleanup, fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { readServedApi } from "../../../testing/calendar-api";
-import { renderRoute } from "../../../testing/render-route";
+import { renderCalendarRoute } from "../../../testing/render-route";
 import { getRouter } from "../../router";
 import { NightSkyBackdropMount } from "../night-sky-backdrop/night-sky-backdrop-mount";
 
@@ -82,7 +82,7 @@ describe("night sky menu", () => {
   });
 
   it("sets its controls from the link", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       "/?date=2026-03-01&sky.constellations=all&sky.lat=51.5&sky=off",
     );
     await openNightSkyMenu();
@@ -102,7 +102,7 @@ describe("night sky menu", () => {
   });
 
   it("writes a control to the link, and the sky follows it", async () => {
-    await renderRoute("/?date=2026-03-01&sky.ecliptic=false");
+    await renderCalendarRoute("/?date=2026-03-01&sky.ecliptic=false");
     const api = readServedApi();
     await findSky();
     await openNightSkyMenu();
@@ -132,7 +132,7 @@ describe("night sky menu", () => {
   });
 
   it("steps a slider from the keyboard and writes the step to the link", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await openNightSkyMenu();
 
     const [latitude] = screen.getAllByLabelText("Latitude", {
@@ -151,7 +151,7 @@ describe("night sky menu", () => {
   });
 
   it("resets every setting it holds, and keeps the tuning view", async () => {
-    await renderRoute(
+    await renderCalendarRoute(
       "/?date=2026-03-01&sky.lat=51.5&sky.top=%23102040&sky.eclipticOpacity=0.5&sky.debug=true",
     );
     await openNightSkyMenu();
@@ -170,7 +170,9 @@ describe("night sky menu", () => {
   it.each(["all", "none"])(
     "resets sky.constellations=%s to the zodiac, the default, with a bare link",
     async (words) => {
-      await renderRoute(`/?date=2026-03-01&sky.constellations=${words}`);
+      await renderCalendarRoute(
+        `/?date=2026-03-01&sky.constellations=${words}`,
+      );
       const api = readServedApi();
       await openNightSkyMenu();
       await openConstellations();
@@ -211,7 +213,7 @@ describe("night sky menu", () => {
   );
 
   it("toggles all twelve zodiac figures from their folder, dashed when some show", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await openNightSkyMenu();
     await openConstellations();
 
@@ -245,7 +247,7 @@ describe("night sky menu", () => {
   });
 
   it("writes all once every folder is checked", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     await openNightSkyMenu();
     await openConstellations();
 
@@ -259,7 +261,7 @@ describe("night sky menu", () => {
   });
 
   it("asks for the ecliptic and the zodiac's figures at the defaults", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     const api = readServedApi();
 
     await findSky();
@@ -271,7 +273,7 @@ describe("night sky menu", () => {
   });
 
   it("hides the ecliptic from its switch, and the Default button brings it back", async () => {
-    await renderRoute("/?date=2026-03-01");
+    await renderCalendarRoute("/?date=2026-03-01");
     const api = readServedApi();
     await findSky();
     await openNightSkyMenu();

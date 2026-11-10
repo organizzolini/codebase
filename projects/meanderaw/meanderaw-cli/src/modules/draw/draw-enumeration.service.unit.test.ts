@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { DatabaseService } from "../database/database.service";
 import { EnumerationService } from "../enumeration/enumeration.service";
@@ -9,6 +10,7 @@ import { DrawEnumerationService } from "./draw-enumeration.service";
 import { DrawPoolService } from "./draw-pool.service";
 
 import type { MeanderRecord } from "../database/database.types";
+import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🧪 Tests
 
@@ -19,6 +21,11 @@ import type { MeanderRecord } from "../database/database.types";
  * actually hold is asserted against a real connection in
  * `draw-enumeration.service.integration.test.ts`.
  */
+/** What the class under test is built with. */
+const MODULE_OPTIONS: TestingModuleOptions = {
+  mocks: [DrawPoolService, DatabaseService, EnumerationService],
+};
+
 describe(DrawEnumerationService, () => {
   let drawPoolService: DrawPoolService;
   let databaseService: DatabaseService;
@@ -28,28 +35,15 @@ describe(DrawEnumerationService, () => {
   const record = createMock<MeanderRecord>({ code: "00" });
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        DrawEnumerationService,
-        {
-          provide: DrawPoolService,
-          useValue: createMock<DrawPoolService>(),
-        },
-        {
-          provide: DatabaseService,
-          useValue: createMock<DatabaseService>(),
-        },
-        {
-          provide: EnumerationService,
-          useValue: createMock<EnumerationService>(),
-        },
-      ],
-    }).compile();
+    const built = await buildTestingModule(
+      DrawEnumerationService,
+      MODULE_OPTIONS,
+    );
 
-    service = await module.resolve(DrawEnumerationService);
-    drawPoolService = await module.resolve(DrawPoolService);
-    databaseService = await module.resolve(DatabaseService);
-    enumerationService = await module.resolve(EnumerationService);
+    service = built.instance;
+    drawPoolService = built.mock(DrawPoolService);
+    databaseService = built.mock(DatabaseService);
+    enumerationService = built.mock(EnumerationService);
   });
 
   beforeEach(() => {
@@ -67,8 +61,13 @@ describe(DrawEnumerationService, () => {
     vi.mocked(databaseService.saveAll).mockResolvedValue(1);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(
+      DrawEnumerationService,
+      MODULE_OPTIONS,
+    );
+
+    expect(instance).toBeInstanceOf(DrawEnumerationService);
   });
 
   describe("persist", () => {
