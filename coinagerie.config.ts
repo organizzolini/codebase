@@ -37,7 +37,7 @@ export default {
       "installation/**",
       "integration/**",
       "projects/**",
-      "publication/**",
+      "deployment/**",
       "synchronization/**",
       "validation/**",
       // Links into the project folders above.
