@@ -35,15 +35,3 @@ nx run coinagerie-languages:vitest
 ## 👔 Conformetry
 
 This project was generated from the [nestjs-service-project](../../configuration/conformetry-templates/nestjs-service-project) conformetry template.
-
-<!-- coinagerie:start -->
-
-## 🪙 Coinagerie
-
-The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-languages:coinagerie-check:write`.
-
-- **breadth**: The maximumBreadth limit in this package's callidescope configuration, capping how many callees one callable may make.
-- **grammar**: The LexicalGrammar object a language constant supplies to the shared scanner, holding its rules and key patterns.
-- **splice**: Array method call in TYPESCRIPT_KEYWORDS that inserts each keyword in sorted position, avoiding toSorted for older libraries.
-
-<!-- coinagerie:end -->
