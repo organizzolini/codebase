@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.61.0](https://github.com/organizzolini/codebase/compare/v3.60.0...v3.61.0) (2026-11-10)
+
+### ✨ Features
+
+* **caelundas:** ✨ control night sky and calendar opacity from the Sky menu ([#2222](https://github.com/organizzolini/codebase/issues/2222)) ([c34e799](https://github.com/organizzolini/codebase/commit/c34e799528a8386b38e369f356e8b5bee1de19f3)), closes [#2218](https://github.com/organizzolini/codebase/issues/2218)
+
 ## [3.60.0](https://github.com/organizzolini/codebase/compare/v3.59.5...v3.60.0) (2026-11-10)
 
 ### ✨ Features
