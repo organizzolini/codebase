@@ -252,7 +252,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts version-packages
+            deployment/src/deployment.main.ts version-packages
 
       - name: 👷 Build Projects
         if: >-
@@ -335,10 +335,10 @@ jobs:
           GIT_COMMITTER_NAME: Jimmy Paolini
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts tag-codebase
+            deployment/src/deployment.main.ts tag-codebase
 
       # Tags each newly versioned package on the release commit and pushes the
-      # tags. The `tag-packages` command of the `publication` project explains
+      # tags. The `tag-packages` command of the `deployment` project explains
       # the commit it makes when there was no codebase release to carry the
       # versions.
       - name: 🔖 Tag Packages
@@ -351,7 +351,7 @@ jobs:
           GIT_COMMITTER_NAME: Jimmy Paolini
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts tag-packages
+            deployment/src/deployment.main.ts tag-packages
 
       # Publishes each released package to npm with provenance, and to GitHub Packages
       # under the owner's scope. The `publish-packages` command explains why it uses pnpm
@@ -367,7 +367,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts publish-packages
+            deployment/src/deployment.main.ts publish-packages
 
       # Lists each npm package on the organization's Linked artifacts page and names
       # the ones this run published, for the attestation below. A version already on
@@ -381,7 +381,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts link-packages
+            deployment/src/deployment.main.ts link-packages
 
       # A GitHub build-provenance attestation for each npm tarball this run published,
       # shown beside its record on the Linked artifacts page. It also runs after a

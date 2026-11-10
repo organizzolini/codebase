@@ -12,6 +12,7 @@ import { CollectCodometerBaselineModule } from "./modules/collect-codometer-base
 import { ImportPrTaskCacheModule } from "./modules/import-pr-task-cache/import-pr-task-cache.module";
 import { KeepTaskDatabaseModule } from "./modules/keep-task-database/keep-task-database.module";
 import { MergeTaskCacheModule } from "./modules/merge-task-cache/merge-task-cache.module";
+import { PublishablePackagesGateModule } from "./modules/publishable-packages-gate/publishable-packages-gate.module";
 import { ReportCodometerChangesModule } from "./modules/report-codometer-changes/report-codometer-changes.module";
 import { RunAffectedModule } from "./modules/run-affected/run-affected.module";
 import { SetupCodebaseModule } from "./modules/setup-codebase/setup-codebase.module";
@@ -38,6 +39,7 @@ import { VerifyTaskDatabaseModule } from "./modules/verify-task-database/verify-
     KeepTaskDatabaseModule,
     LoggerModule,
     MergeTaskCacheModule,
+    PublishablePackagesGateModule,
     ReportCodometerChangesModule,
     RunAffectedModule,
     SetupCodebaseModule,

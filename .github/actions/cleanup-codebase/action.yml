@@ -55,7 +55,7 @@ runs:
 
     # `always()` is redundant with the calling step, but cheap insurance on cancellation.
     # The merge group cannot read the pull request's caches, so the `import-pr-task-cache`
-    # command of the `publication` project downloads this artifact instead. Three days cover the queue.
+    # command of the `deployment` project downloads this artifact instead. Three days cover the queue.
     - name: 📤 Share Nx Cache With The Merge Group
       if: |
         always() && inputs.nx-cache == 'true' && inputs.nx-cache-artifact ==

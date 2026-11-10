@@ -1,11 +1,11 @@
 packages:
   - compliance
   - configuration
+  - deployment
   - documentation
   - infrastructure
   - installation
   - integration
-  - publication
   - synchronization
   - validation
   - projects/*

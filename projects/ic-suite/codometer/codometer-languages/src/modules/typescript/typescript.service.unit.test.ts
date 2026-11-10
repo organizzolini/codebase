@@ -1,9 +1,13 @@
 // `param` is the name of the JSDoc tag these tests count, not an abbreviation.
 // cspell:ignore param
 
-import tsCompiler from "typescript";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { mkdirSync, writeFileSync } from "node:fs";
+import path from "node:path";
 
+import tsCompiler from "typescript";
+import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CommentsService } from "../comments/comments.service";
@@ -19,11 +23,19 @@ import type { TypescriptSymbolCounter } from "./typescript.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { CodometerSymbolKind } from "@codometer/core";
 
-const { readFileSyncMock } = vi.hoisted(() => ({
-  readFileSyncMock: vi.fn<(filePath: string, encoding: string) => string>(),
-}));
+/** Writes each source into a fresh directory, in step with its file name. */
+function stageSources(fileNames: string[], contents: string[]): string {
+  const workingDirectory = createTemporaryDirectory("typescript");
 
-vi.mock("node:fs", () => ({ readFileSync: readFileSyncMock }));
+  for (const [index, fileName] of fileNames.entries()) {
+    const filePath = path.join(workingDirectory, fileName);
+
+    mkdirSync(path.dirname(filePath), { recursive: true });
+    writeFileSync(filePath, contents[index] ?? "", "utf8");
+  }
+
+  return workingDirectory;
+}
 
 /** What the TypescriptService is built with. */
 const DEPENDENCIES = {
@@ -41,10 +53,6 @@ describe(TypescriptService, () => {
     service = instance;
   });
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(
       TypescriptService,
@@ -55,18 +63,21 @@ describe(TypescriptService, () => {
   });
 
   it("counts classes, exported symbols, and methods", () => {
-    readFileSyncMock.mockReturnValue(
-      `export class Foo {
+    const workingDirectory = stageSources(
+      ["src/foo.ts"],
+      [
+        `export class Foo {
          bar(): void {}
          async baz(): Promise<void> {}
        }`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/foo.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.classes).toBe(1);
@@ -78,16 +89,19 @@ describe(TypescriptService, () => {
   });
 
   it("counts top-level functions and distinguishes async vs sync", () => {
-    readFileSyncMock.mockReturnValue(
-      `export function greet(): void {}
+    const workingDirectory = stageSources(
+      ["src/utils.ts"],
+      [
+        `export function greet(): void {}
        export async function fetchData(): Promise<string> { return ""; }`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/utils.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.functions).toBe(2);
@@ -97,16 +111,19 @@ describe(TypescriptService, () => {
   });
 
   it("counts interfaces, enums, and generic declarations", () => {
-    readFileSyncMock.mockReturnValue(
-      `export interface Repo<T> {}
+    const workingDirectory = stageSources(
+      ["src/types.ts"],
+      [
+        `export interface Repo<T> {}
        export enum Color { Red, Green }`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/types.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.interfaces).toBe(1);
@@ -116,17 +133,20 @@ describe(TypescriptService, () => {
   });
 
   it("counts imports and tracks external package names", () => {
-    readFileSyncMock.mockReturnValue(
-      `import { foo } from "@scope/package";
+    const workingDirectory = stageSources(
+      ["src/imports.ts"],
+      [
+        `import { foo } from "@scope/package";
        import bar from "other-package";
        import baz from "./local";`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/imports.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.imports).toBe(3);
@@ -136,21 +156,24 @@ describe(TypescriptService, () => {
   });
 
   it("counts comments, doc comments, and doc tags", () => {
-    readFileSyncMock.mockReturnValue(
-      `// line comment
+    const workingDirectory = stageSources(
+      ["src/comments.ts"],
+      [
+        `// line comment
        /* block comment */
        /**
        * @param value
        * @returns string
        */
        const answer = 42;`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/comments.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.comments).toBe(3);
@@ -163,33 +186,39 @@ describe(TypescriptService, () => {
   });
 
   it("counts TODO and FIXME comments", () => {
-    readFileSyncMock.mockReturnValue(
-      `// TODO: implement this
+    const workingDirectory = stageSources(
+      ["src/todos.ts"],
+      [
+        `// TODO: implement this
        // FIXME: broken
        const x = 1;`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/todos.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.todos).toBe(2);
   });
 
   it("counts const declarations", () => {
-    readFileSyncMock.mockReturnValue(
-      `export const A = 1, B = 2;
+    const workingDirectory = stageSources(
+      ["src/consts.ts"],
+      [
+        `export const A = 1, B = 2;
        let mutable = 3;`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/consts.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.constants).toBe(2);
@@ -197,20 +226,23 @@ describe(TypescriptService, () => {
   });
 
   it("counts class property functions, accessors, and type aliases", () => {
-    readFileSyncMock.mockReturnValue(
-      `type LocalTypeAlias<T> = T;
+    const workingDirectory = stageSources(
+      ["src/advanced.ts"],
+      [
+        `type LocalTypeAlias<T> = T;
        class Worker {
          get size(): number { return 1; }
          set size(value: number) { void value; }
          task = async (): Promise<void> => {};
        }`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/advanced.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.methods).toBe(3);
@@ -220,30 +252,36 @@ describe(TypescriptService, () => {
   });
 
   it("does not count non-const variable statements", () => {
-    readFileSyncMock.mockReturnValue("let mutable = 1;");
+    const workingDirectory = stageSources(
+      ["src/mutable.ts"],
+      ["let mutable = 1;"],
+    );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/mutable.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.constants).toBe(0);
   });
 
   it("counts function expressions and decorators", () => {
-    readFileSyncMock.mockReturnValue(
-      `@sealed
+    const workingDirectory = stageSources(
+      ["src/decorated.ts"],
+      [
+        `@sealed
        export class DecoratedClass {}
        const worker = function namedWorker(): void {};`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/decorated.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.decorators).toBe(1);
@@ -253,20 +291,22 @@ describe(TypescriptService, () => {
   });
 
   it("counts class expressions and JavaScript/TSX file kinds", () => {
-    readFileSyncMock
-      .mockReturnValueOnce(
+    const workingDirectory = stageSources(
+      ["src/class-expression.ts", "src/view.tsx", "src/index.js"],
+      [
         `const Worker = class WorkerClass {
            run(): void {}
          };`,
-      )
-      .mockReturnValueOnce("const element = <div>Hello</div>;")
-      .mockReturnValueOnce("module.exports = {};");
+        "const element = <div>Hello</div>;",
+        "module.exports = {};",
+      ],
+    );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/class-expression.ts", "src/view.tsx", "src/index.js"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.classes).toBe(1);
@@ -276,17 +316,20 @@ describe(TypescriptService, () => {
   });
 
   it("ignores relative and absolute imports for external package counting", () => {
-    readFileSyncMock.mockReturnValue(
-      `import "./local";
+    const workingDirectory = stageSources(
+      ["src/imports-mixed.ts"],
+      [
+        `import "./local";
        import "/absolute/path";
        import "external-lib";`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/imports-mixed.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.imports).toBe(3);
@@ -294,13 +337,16 @@ describe(TypescriptService, () => {
   });
 
   it("ignores an empty import specifier for external package counting", () => {
-    readFileSyncMock.mockReturnValue(`import "";`);
+    const workingDirectory = stageSources(
+      ["src/empty-specifier.ts"],
+      [`import "";`],
+    );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/empty-specifier.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.imports).toBe(1);
@@ -361,20 +407,23 @@ describe(TypescriptService, () => {
   });
 
   it("covers exported and local interface/type alias branches", () => {
-    readFileSyncMock.mockReturnValue(
-      `import packageMember from "plain-package/submodule";
+    const workingDirectory = stageSources(
+      ["src/type-shapes.ts"],
+      [
+        `import packageMember from "plain-package/submodule";
        import scopedMember from "@scope/package/submodule";
        export interface ExportedInterface<T> {}
        interface LocalInterface {}
        export type ExportedTypeAlias<T> = T;
        type LocalTypeAlias = string;`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/type-shapes.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.imports).toBe(2);
@@ -387,17 +436,20 @@ describe(TypescriptService, () => {
   });
 
   it("covers generic class and function branches with local enums", () => {
-    readFileSyncMock.mockReturnValue(
-      `class GenericClass<T> {}
+    const workingDirectory = stageSources(
+      ["src/generics.ts"],
+      [
+        `class GenericClass<T> {}
        enum LocalEnum { A }
        function genericFunction<T>(value: T): T { return value; }`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/generics.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.classes).toBe(1);
@@ -407,34 +459,38 @@ describe(TypescriptService, () => {
   });
 
   it("sums line counts across multiple files", () => {
-    readFileSyncMock
-      .mockReturnValueOnce("line1\nline2\nline3")
-      .mockReturnValueOnce("a\nb");
+    const workingDirectory = stageSources(
+      ["src/a.ts", "src/b.ts"],
+      ["line1\nline2\nline3", "a\nb"],
+    );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/a.ts", "src/b.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.lines).toBe(5);
   });
 
   it("handles doc comments without @ prefix tags", () => {
-    readFileSyncMock.mockReturnValue(
-      `/**
+    const workingDirectory = stageSources(
+      ["src/no-tags.ts"],
+      [
+        `/**
         * Plain description without tags
         * Another line
         */
         const x = 1;`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/no-tags.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.docComments).toBe(1);
@@ -461,16 +517,19 @@ describe(TypescriptService, () => {
   });
 
   it("counts relative imports without treating them as external packages", () => {
-    readFileSyncMock.mockReturnValue(
-      `import { helper } from "../utils";
+    const workingDirectory = stageSources(
+      ["src/local.ts"],
+      [
+        `import { helper } from "../utils";
        import "./styles.css";`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/local.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.imports).toBe(2);
@@ -478,20 +537,23 @@ describe(TypescriptService, () => {
   });
 
   it("handles edge case doc tags with special characters", () => {
-    readFileSyncMock.mockReturnValue(
-      `/**
+    const workingDirectory = stageSources(
+      ["src/special-tags.ts"],
+      [
+        `/**
         * @param-special test
         * @returns-value string
         * @see https://example.com
         */
         function test(): void {}`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/special-tags.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.docComments).toBe(1);
@@ -501,20 +563,23 @@ describe(TypescriptService, () => {
   });
 
   it("distinguishes between different doc tag styles", () => {
-    readFileSyncMock.mockReturnValue(
-      `/**
+    const workingDirectory = stageSources(
+      ["src/decorators.ts"],
+      [
+        `/**
         * @deprecated
         * @experimental
         * @internal
         */
         const config = {};`,
+      ],
     );
 
     const result = service.analyze({
       commentCounters: [],
       sourceFiles: ["src/decorators.ts"],
       symbolCounters: [],
-      workingDirectory: "/repo",
+      workingDirectory,
     });
 
     expect(result.docComments).toBe(1);
@@ -532,31 +597,37 @@ describe(TypescriptService, () => {
     };
 
     it("counts the class members carrying every required modifier", () => {
-      readFileSyncMock.mockReturnValue(
-        `export class Foo {
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `export class Foo {
            static build(): Foo { return new Foo(); }
            static async load(): Promise<Foo> { return new Foo(); }
            instance(): void {}
          }`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: [],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [{ ...staticMethods }],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(result.symbolCounts["Static Methods"]).toBe(2);
     });
 
     it("requires every modifier a counter names, not just one", () => {
-      readFileSyncMock.mockReturnValue(
-        `export class Foo {
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `export class Foo {
            static build(): void {}
            async load(): Promise<void> {}
            static async both(): Promise<void> {}
          }`,
+        ],
       );
 
       const result = service.analyze({
@@ -570,21 +641,24 @@ describe(TypescriptService, () => {
             patterns: [],
           },
         ],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(result.symbolCounts["Static Async Methods"]).toBe(1);
     });
 
     it("asks for the kind alone when a counter names no modifiers", () => {
-      readFileSyncMock.mockReturnValue(
-        `class Foo {
+      const workingDirectory = stageSources(
+        ["src/shapes.ts"],
+        [
+          `class Foo {
            get name(): string { return ""; }
            set name(value: string) {}
            private field = 1;
          }
          interface Shape { area: number }
          enum Color { Red }`,
+        ],
       );
 
       const result = service.analyze({
@@ -604,7 +678,7 @@ describe(TypescriptService, () => {
             patterns: [],
           },
         ],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(result.symbolCounts["Accessors"]).toBe(2);
@@ -614,10 +688,13 @@ describe(TypescriptService, () => {
     // A class field holding an arrow function is a property: the arrow carries
     // none of the field's modifiers, so it is not found by asking for methods.
     it("treats a static arrow-function field as a property", () => {
-      readFileSyncMock.mockReturnValue(
-        `class Foo {
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `class Foo {
            static build = (): void => {};
          }`,
+        ],
       );
 
       const result = service.analyze({
@@ -632,7 +709,7 @@ describe(TypescriptService, () => {
             patterns: [],
           },
         ],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(result.symbolCounts["Static Methods"]).toBe(0);
@@ -640,13 +717,16 @@ describe(TypescriptService, () => {
     });
 
     it("reports zero for a counter nothing in the repository matches", () => {
-      readFileSyncMock.mockReturnValue(`export const value = 1;`);
+      const workingDirectory = stageSources(
+        ["src/value.ts"],
+        [`export const value = 1;`],
+      );
 
       const result = service.analyze({
         commentCounters: [],
         sourceFiles: ["src/value.ts"],
         symbolCounters: [{ ...staticMethods }],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(result.symbolCounts).toStrictEqual({ "Static Methods": 0 });
@@ -655,10 +735,13 @@ describe(TypescriptService, () => {
     // `default` is a modifier keyword the matcher vocabulary has no name for,
     // and passing over it must not disturb the modifiers beside it.
     it("ignores modifier keywords a counter cannot ask for", () => {
-      readFileSyncMock.mockReturnValue(
-        `export default class Foo {
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `export default class Foo {
            static build(): void {}
          }`,
+        ],
       );
 
       const result = service.analyze({
@@ -673,7 +756,7 @@ describe(TypescriptService, () => {
             patterns: [],
           },
         ],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(result.symbolCounts["Static Methods"]).toBe(1);
@@ -681,13 +764,19 @@ describe(TypescriptService, () => {
     });
 
     it("searches only the files a counter's patterns name", () => {
-      readFileSyncMock.mockReturnValue(`class Foo { static build(): void {} }`);
+      const workingDirectory = stageSources(
+        ["packages/one/src/foo.ts", "applications/two/src/foo.ts"],
+        Array.from(
+          { length: 2 },
+          () => `class Foo { static build(): void {} }`,
+        ),
+      );
 
       const result = service.analyze({
         commentCounters: [],
         sourceFiles: ["packages/one/src/foo.ts", "applications/two/src/foo.ts"],
         symbolCounters: [{ ...staticMethods, patterns: ["packages/**"] }],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(result.symbolCounts["Static Methods"]).toBe(1);
@@ -731,9 +820,12 @@ describe(TypescriptService, () => {
     }
 
     it("ignores a counter naming only a language, which the readers measure", () => {
-      readFileSyncMock.mockReturnValue(
-        `/** One two three four five six seven. */
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/** One two three four five six seven. */
          export class Foo {}`,
+        ],
       );
 
       const result = service.analyze({
@@ -752,25 +844,28 @@ describe(TypescriptService, () => {
         ],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(result.declarationCommentCounts).toStrictEqual({});
     });
 
     it("does nothing when no comment counter is given", () => {
-      readFileSyncMock.mockReturnValue(
-        `/**
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
           * A class.
           */
          export class Foo {}`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: [],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(
@@ -779,8 +874,10 @@ describe(TypescriptService, () => {
     });
 
     it("measures a documented class, interface, function, method, and property under their limits", () => {
-      readFileSyncMock.mockReturnValue(
-        `/**
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
           * A class.
           */
          export class Foo {
@@ -804,13 +901,14 @@ describe(TypescriptService, () => {
           * A function.
           */
          export function greet(): void {}`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: allCounters,
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(
@@ -833,21 +931,24 @@ describe(TypescriptService, () => {
     });
 
     it("marks a declaration whose comment exceeds its own counter's limit as breached", () => {
-      readFileSyncMock.mockReturnValue(
-        `/**
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
           * A class.
           * With far too many lines of explanation.
           */
          export class Foo {
            value = 1;
          }`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: [counterFor("class", 2)],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
       const [measurement] = result.declarationCommentCounts["class"] ?? [];
 
@@ -857,9 +958,12 @@ describe(TypescriptService, () => {
     });
 
     it("measures characters instead of lines when configured", () => {
-      readFileSyncMock.mockReturnValue(
-        `/** Short. */
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/** Short. */
          export class Foo {}`,
+        ],
       );
 
       const result = service.analyze({
@@ -878,7 +982,7 @@ describe(TypescriptService, () => {
         ],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
       const [measurement] = result.declarationCommentCounts["class"] ?? [];
 
@@ -887,11 +991,14 @@ describe(TypescriptService, () => {
     });
 
     it("measures words instead of lines when configured", () => {
-      readFileSyncMock.mockReturnValue(
-        `/**
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
           * This comment has exactly six words.
           */
          export class Foo {}`,
+        ],
       );
 
       const result = service.analyze({
@@ -910,7 +1017,7 @@ describe(TypescriptService, () => {
         ],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
       const [measurement] = result.declarationCommentCounts["class"] ?? [];
 
@@ -919,8 +1026,10 @@ describe(TypescriptService, () => {
     });
 
     it("measures the JSDoc of a const, a type alias, and a property signature", () => {
-      readFileSyncMock.mockReturnValue(
-        `/**
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
           * A constant.
           */
          export const limit = 1;
@@ -936,6 +1045,7 @@ describe(TypescriptService, () => {
             */
            width: number;
          }`,
+        ],
       );
 
       const result = service.analyze({
@@ -946,7 +1056,7 @@ describe(TypescriptService, () => {
         ],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(
@@ -964,21 +1074,24 @@ describe(TypescriptService, () => {
     });
 
     it("measures a JSDoc block set apart by a blank line as the file header", () => {
-      readFileSyncMock.mockReturnValue(
-        `/**
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
           * What this file is for.
           */
 
          import { thing } from "thing";
 
          export const value = thing;`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: [counterFor("file", 6), counterFor("variable", 6)],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(
@@ -989,18 +1102,21 @@ describe(TypescriptService, () => {
     });
 
     it("does not read a declaration's own JSDoc as the file header", () => {
-      readFileSyncMock.mockReturnValue(
-        `/**
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
           * A class.
           */
          export class Foo {}`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: [counterFor("file", 6), counterFor("class", 6)],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(
@@ -1011,19 +1127,22 @@ describe(TypescriptService, () => {
     });
 
     it("does not read a detached file header as the next declaration's JSDoc", () => {
-      readFileSyncMock.mockReturnValue(
-        `/**
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
           * What this file is for.
           */
 
          export class Foo {}`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: [counterFor("file", 6), counterFor("class", 6)],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(
@@ -1034,13 +1153,16 @@ describe(TypescriptService, () => {
     });
 
     it("does not report a declaration with no JSDoc comment at all", () => {
-      readFileSyncMock.mockReturnValue(`export class Foo {}`);
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [`export class Foo {}`],
+      );
 
       const result = service.analyze({
         commentCounters: allCounters,
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(
@@ -1049,16 +1171,19 @@ describe(TypescriptService, () => {
     });
 
     it("does not treat a plain block comment as JSDoc", () => {
-      readFileSyncMock.mockReturnValue(
-        `/* Not a doc comment. */
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/* Not a doc comment. */
          export class Foo {}`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: allCounters,
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(
@@ -1067,20 +1192,23 @@ describe(TypescriptService, () => {
     });
 
     it("reports the file and 1-indexed line of the declaration", () => {
-      readFileSyncMock.mockReturnValue(
-        `// A leading line comment.
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `// A leading line comment.
 
          /**
           * A class.
           */
          export class Foo {}`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: [counterFor("class", 6)],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
       const [measurement] = result.declarationCommentCounts["class"] ?? [];
 
@@ -1089,21 +1217,24 @@ describe(TypescriptService, () => {
     });
 
     it("measures a documented enum under its counter's limit", () => {
-      readFileSyncMock.mockReturnValue(
-        `/**
+      const workingDirectory = stageSources(
+        ["src/status.ts"],
+        [
+          `/**
           * A status.
           */
          export enum Status {
            Active,
            Inactive,
          }`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: [counterFor("enum", 6)],
         sourceFiles: ["src/status.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
       const [measurement] = result.declarationCommentCounts["enum"] ?? [];
 
@@ -1115,8 +1246,10 @@ describe(TypescriptService, () => {
     });
 
     it("measures a documented getter and setter under their counters' limits", () => {
-      readFileSyncMock.mockReturnValue(
-        `export class Foo {
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `export class Foo {
            /**
             * The value.
             */
@@ -1129,13 +1262,14 @@ describe(TypescriptService, () => {
             */
            set value(next: number) {}
          }`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: [counterFor("getter", 6), counterFor("setter", 6)],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
 
       expect(
@@ -1155,18 +1289,21 @@ describe(TypescriptService, () => {
     });
 
     it("names an anonymous default-exported function as such", () => {
-      readFileSyncMock.mockReturnValue(
-        `/**
+      const workingDirectory = stageSources(
+        ["src/foo.ts"],
+        [
+          `/**
           * An anonymous function.
           */
          export default function (): void {}`,
+        ],
       );
 
       const result = service.analyze({
         commentCounters: [counterFor("function", 6)],
         sourceFiles: ["src/foo.ts"],
         symbolCounters: [],
-        workingDirectory: "/repo",
+        workingDirectory,
       });
       const [measurement] = result.declarationCommentCounts["function"] ?? [];
 

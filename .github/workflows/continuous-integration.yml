@@ -329,7 +329,7 @@ jobs:
           PUBLISHABLE_PACKAGES_CONSUMER_ROOT: ${{ runner.temp }}/publishable-packages
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            publication/src/publication.main.ts publishable-packages-gate
+            integration/src/integration.main.ts publishable-packages-gate
 
       - name: 🗂️ Setup Environment File
         if: >-

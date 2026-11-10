@@ -138,6 +138,11 @@ const scopes = [
     name: "dependencies",
   },
   {
+    description:
+      "Deployment CLI: the CI release steps and the publishable-packages gate",
+    name: "deployment",
+  },
+  {
     description: "GitHub Actions workflows and CI/CD pipeline configuration",
     name: "deployments",
   },
@@ -207,11 +212,6 @@ const scopes = [
   {
     description: "Escape hatch: suppress semantic-release for any commit type",
     name: "no-release",
-  },
-  {
-    description:
-      "Publication CLI: the CI release steps and the publishable-packages gate",
-    name: "publication",
   },
   {
     description:

@@ -23,6 +23,7 @@ const COMMAND_NAMES = [
   "import-pr-task-cache",
   "keep-task-database",
   "merge-task-cache",
+  "publishable-packages-gate",
   "report-codometer-changes",
   "run-affected",
   "setup-codebase",
