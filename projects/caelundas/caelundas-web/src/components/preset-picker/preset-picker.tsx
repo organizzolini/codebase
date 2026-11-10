@@ -9,40 +9,37 @@ import {
 import { toEventFilterInput } from "../calendar-filters/event-filter-input.utilities";
 import { EMPTY_EVENT_FILTER } from "../calendar-filters/event-filter-tree.constants";
 
-import {
-  ALL_EVENTS_ID,
-  CUSTOM_ID,
-} from "./calendar-collection-picker.constants";
+import { ALL_EVENTS_ID, CUSTOM_ID } from "./preset-picker.constants";
 
-import type { ResolvedEventFilterCollection } from "../calendar-filters/event-filter-collections.types";
 import type { EventFilterQuery } from "../calendar-filters/event-filters.types";
+import type { ResolvedPreset } from "../calendar-filters/presets.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The collections of filters to offer, the filter tree the calendar holds,
- * and where to send a collection picked.
+ * The presets of filters to offer, the filter tree the calendar holds,
+ * and where to send a preset picked.
  */
-export interface CalendarCollectionPickerProperties {
+export interface PresetPickerProperties {
   className?: string;
-  collections: readonly ResolvedEventFilterCollection[];
   onSelect: (filter: EventFilterQuery) => void;
+  presets: readonly ResolvedPreset[];
   query: EventFilterQuery;
 }
 
 // 🧩 Component
 
 /**
- * Renders the collection the filters below come from, as a dropdown to pick
- * another from. The collection whose filters
+ * Renders the preset the filters below come from, as a dropdown to pick
+ * another from. The preset whose filters
  * the tree holds is the one shown, "All events" when the tree filters
  * nothing, and anything else as custom, an edit made in the builder.
  */
-export function CalendarCollectionPicker(
-  properties: Readonly<CalendarCollectionPickerProperties>,
+export function PresetPicker(
+  properties: Readonly<PresetPickerProperties>,
 ): ReactNode {
-  const { className, collections, onSelect, query } = properties;
+  const { className, onSelect, presets, query } = properties;
 
   // 🪝 Hooks
 
@@ -52,16 +49,16 @@ export function CalendarCollectionPicker(
   const current = JSON.stringify(toEventFilterInput(query));
   let value = current === "null" ? ALL_EVENTS_ID : CUSTOM_ID;
 
-  for (const collection of collections) {
-    if (JSON.stringify(toEventFilterInput(collection.filter)) === current) {
-      value = collection.id;
+  for (const preset of presets) {
+    if (JSON.stringify(toEventFilterInput(preset.filter)) === current) {
+      value = preset.id;
     }
   }
 
   const items = [
-    ...collections.map((collection) => ({
-      label: collection.name,
-      value: collection.id,
+    ...presets.map((preset) => ({
+      label: preset.name,
+      value: preset.id,
     })),
     { label: "All events", value: ALL_EVENTS_ID },
     ...(value === CUSTOM_ID ? [{ label: "Custom", value: CUSTOM_ID }] : []),
@@ -69,10 +66,10 @@ export function CalendarCollectionPicker(
 
   // 💪 Handlers
   const handleChange = (picked: unknown): void => {
-    const collection = collections.find((candidate) => candidate.id === picked);
+    const preset = presets.find((candidate) => candidate.id === picked);
 
-    if (collection !== undefined || picked === ALL_EVENTS_ID) {
-      onSelect(collection?.filter ?? EMPTY_EVENT_FILTER);
+    if (preset !== undefined || picked === ALL_EVENTS_ID) {
+      onSelect(preset?.filter ?? EMPTY_EVENT_FILTER);
     }
   };
 
@@ -84,7 +81,7 @@ export function CalendarCollectionPicker(
   return (
     <div
       className={className}
-      data-testid="calendar-collection-picker"
+      data-testid="preset-picker"
     >
       <Select
         items={items}
@@ -92,7 +89,7 @@ export function CalendarCollectionPicker(
         value={value}
       >
         <SelectTrigger
-          aria-label="Collection"
+          aria-label="Preset"
           className="w-full"
         >
           <SelectValue />

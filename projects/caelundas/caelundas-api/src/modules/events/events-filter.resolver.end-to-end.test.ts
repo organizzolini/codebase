@@ -53,12 +53,12 @@ describe("events filtering end-to-end suite", () => {
   /** The summaries of the events a filter keeps, earliest first. */
   async function keep(filter: GroupVariable | null): Promise<string[]> {
     const body = await application.query(
-      `query Events($window: EventsWindowInput!, $filter: EventFilterGroupInput) {
-        events(window: $window, filter: $filter) { summary }
+      `query Events($period: PeriodInput!, $filter: EventFilterGroupInput) {
+        events(period: $period, filter: $filter) { summary }
       }`,
       {
         filter,
-        window: {
+        period: {
           end: "2026-04-01T00:00:00.000Z",
           start: "2026-03-01T00:00:00.000Z",
         },
@@ -459,12 +459,12 @@ describe("events filtering end-to-end suite", () => {
       expect.hasAssertions();
 
       const body = await application.query(
-        `query($window: EventsWindowInput!, $filter: EventFilterGroupInput) {
-          events(window: $window, filter: $filter) { summary }
+        `query($period: PeriodInput!, $filter: EventFilterGroupInput) {
+          events(period: $period, filter: $filter) { summary }
         }`,
         {
           filter: { combinator: "XOR" },
-          window: {
+          period: {
             end: "2026-04-01T00:00:00.000Z",
             start: "2026-03-01T00:00:00.000Z",
           },
@@ -478,12 +478,12 @@ describe("events filtering end-to-end suite", () => {
       expect.hasAssertions();
 
       const body = await application.query(
-        `query($window: EventsWindowInput!, $filter: EventFilterGroupInput) {
-          events(window: $window, filter: $filter) { summary }
+        `query($period: PeriodInput!, $filter: EventFilterGroupInput) {
+          events(period: $period, filter: $filter) { summary }
         }`,
         {
           filter: { combinator: "AND", rules: [{ path: ["text"] }] },
-          window: {
+          period: {
             end: "2026-04-01T00:00:00.000Z",
             start: "2026-03-01T00:00:00.000Z",
           },
@@ -534,10 +534,10 @@ describe("events filtering end-to-end suite", () => {
     });
   });
 
-  describe("filter collections", () => {
-    const COLLECTIONS = `
-      query Collections {
-        filterCollections {
+  describe("presets", () => {
+    const PRESETS = `
+      query Presets {
+        presets {
           id
           name
           description
@@ -551,31 +551,31 @@ describe("events filtering end-to-end suite", () => {
             }
           }
         }
-        defaultFilterCollection { id }
+        defaultPreset { id }
       }
     `;
 
-    /** Asks for the collections and the default among them. */
-    async function collections(): Promise<{
-      defaultFilterCollection: null | { id: string };
-      filterCollections: {
+    /** Asks for the presets and the default among them. */
+    async function askPresets(): Promise<{
+      defaultPreset: null | { id: string };
+      presets: {
         filter: Record<string, unknown>;
         id: string;
       }[];
     }> {
-      const body = await application.query(COLLECTIONS);
+      const body = await application.query(PRESETS);
 
       expect(body.errors).toBeUndefined();
 
       return body.data as never;
     }
 
-    it("serves the collections the tags of the data can name, in menu order", async () => {
+    it("serves the presets the tags of the data can name, in menu order", async () => {
       expect.hasAssertions();
 
-      const { filterCollections } = await collections();
+      const { presets } = await askPresets();
 
-      expect(filterCollections.map(({ id }) => id)).toStrictEqual([
+      expect(presets.map(({ id }) => id)).toStrictEqual([
         "highlights",
         "major-aspects",
         "aspects-without-the-moon",
@@ -584,13 +584,11 @@ describe("events filtering end-to-end suite", () => {
       ]);
     });
 
-    it("names the data's tags in a collection, leaving out those it lacks", async () => {
+    it("names the data's tags in a preset, leaving out those it lacks", async () => {
       expect.hasAssertions();
 
-      const { filterCollections } = await collections();
-      const highlights = filterCollections.find(
-        ({ id }) => id === "highlights",
-      );
+      const { presets } = await askPresets();
+      const highlights = presets.find(({ id }) => id === "highlights");
 
       expect(highlights?.filter).toStrictEqual({
         combinator: "OR",
@@ -625,27 +623,24 @@ describe("events filtering end-to-end suite", () => {
       });
     });
 
-    it("leaves out a collection none of whose tags exist", async () => {
+    it("leaves out a preset none of whose tags exist", async () => {
       expect.hasAssertions();
 
-      const { filterCollections } = await collections();
-      const ids = filterCollections.map(({ id }) => id);
+      const { presets } = await askPresets();
+      const ids = presets.map(({ id }) => id);
 
       expect(ids).not.toContain("aspect-patterns");
       expect(ids).not.toContain("daily-cycles");
     });
 
-    it("opens on the default collection, which filters the events when sent back", async () => {
+    it("opens on the default preset, which filters the events when sent back", async () => {
       expect.hasAssertions();
 
-      const { defaultFilterCollection, filterCollections } =
-        await collections();
+      const { defaultPreset, presets } = await askPresets();
 
-      expect(defaultFilterCollection).toStrictEqual({ id: "highlights" });
+      expect(defaultPreset).toStrictEqual({ id: "highlights" });
 
-      const filter = filterCollections.find(
-        ({ id }) => id === "highlights",
-      )?.filter;
+      const filter = presets.find(({ id }) => id === "highlights")?.filter;
 
       await expect(
         keep(structuredClone(filter) as unknown as GroupVariable),

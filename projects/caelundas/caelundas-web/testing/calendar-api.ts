@@ -7,19 +7,18 @@ import {
 } from "../src/components/events-calendar/calendar-views.constants";
 import { getViewWindows } from "../src/components/events-calendar/calendar-window.utilities";
 import {
-  mockCalendarWindowsQuery,
   mockDatasetQuery,
   mockEventsQuery,
   mockFacetsQuery,
-  mockFilterCollectionsQuery,
   mockNightSkyQuery,
+  mockPresetsQuery,
+  mockWindowsQuery,
 } from "../src/graphql/generated/mocks";
 
 import { FIXTURE_EVENTS, FIXTURE_TAGS } from "./calendar-fixture";
 import { serveGraphqlApi } from "./graphql-api";
 
 import type {
-  CalendarWindowsQueryVariables,
   EventFilterGroupInput,
   EventFilterRuleInput,
   EventGroupLevelInput,
@@ -27,9 +26,10 @@ import type {
   EventsQueryVariables,
   FacetsQuery,
   FacetsQueryVariables,
-  FilterCollectionsQuery,
   NightSkyInput,
   NightSkyQuery,
+  PresetsQuery,
+  WindowsQueryVariables,
 } from "../src/graphql/generated/operations";
 import type { FixtureEvent, FixtureTag } from "./calendar-fixture";
 
@@ -45,9 +45,9 @@ export interface CalendarApi {
   requests: {
     events: EventsQueryVariables[];
     facets: FacetsQueryVariables[];
-    filterCollections: number;
     nightSky: NightSkyInput[];
-    windows: CalendarWindowsQueryVariables[];
+    presets: number;
+    windows: WindowsQueryVariables[];
   };
 }
 
@@ -55,11 +55,6 @@ export interface CalendarApi {
  * What a test may change about the API it serves.
  */
 export interface CalendarApiOptions {
-  /**
-   * The filter collections the API offers, the one with the `defaultId` the
-   * collection the calendar opens on; none by default.
-   */
-  collections?: readonly Collection[];
   defaultId?: string;
   /**
    * How long every events read after the first takes, as a slow connection
@@ -81,13 +76,18 @@ export interface CalendarApiOptions {
    * answering as usual.
    */
   nightSkyError?: string;
+  /**
+   * The presets the API offers, the one with the `defaultId` the
+   * preset the calendar opens on; none by default.
+   */
+  presets?: readonly Preset[];
   tags?: readonly FixtureTag[];
 }
 
 /**
- * One filter collection as the API answers it.
+ * One filter preset as the API answers it.
  */
-type Collection = FilterCollectionsQuery["filterCollections"][number];
+type Preset = PresetsQuery["presets"][number];
 
 /**
  * The tag tree's lookups: each tag's ancestors, depth, root and full path.
@@ -117,7 +117,7 @@ export function readServedApi(): CalendarApi {
 /**
  * Serves the calendar API for the test that calls it, over the fixture's
  * events and tags unless it hands others. It answers the way the real API
- * does for what the web sends: the window, the tag and text rules of a
+ * does for what the web sends: the period, the tag and text rules of a
  * filter, the grouping and the dataset, and nothing the web does not read.
  */
 export function serveCalendarApi(
@@ -136,8 +136,8 @@ export function serveCalendarApi(
     requests: {
       events: [],
       facets: [],
-      filterCollections: 0,
       nightSky: [],
+      presets: 0,
       windows: [],
     },
   };
@@ -176,20 +176,19 @@ export function serveCalendarApi(
         facets: findFacets(events, tree, roots, variables),
       }));
     }),
-    mockFilterCollectionsQuery(async () => {
-      api.requests.filterCollections += 1;
+    mockPresetsQuery(async () => {
+      api.requests.presets += 1;
 
       return answer(() => ({
-        defaultFilterCollection:
-          options.collections?.find(({ id }) => id === options.defaultId) ??
-          null,
-        filterCollections: [...(options.collections ?? [])],
+        defaultPreset:
+          options.presets?.find(({ id }) => id === options.defaultId) ?? null,
+        presets: [...(options.presets ?? [])],
       }));
     }),
-    mockCalendarWindowsQuery(async ({ variables }) => {
+    mockWindowsQuery(async ({ variables }) => {
       api.requests.windows.push(variables);
 
-      return answer(() => ({ calendarWindows: findWindows(variables) }));
+      return answer(() => ({ windows: findWindows(variables) }));
     }),
     mockNightSkyQuery(async ({ variables }) => {
       api.requests.nightSky.push(variables.input);
@@ -259,7 +258,7 @@ function drawBareSky(input: NightSkyInput): NightSkyQuery["nightSky"] {
 }
 
 /**
- * The events that overlap the window and meet the filter, earliest first,
+ * The events that overlap the period and meet the filter, earliest first,
  * with their tags and the keys of every grouping level.
  */
 function findEvents(
@@ -278,7 +277,7 @@ function findEvents(
   return events
     .filter(
       (event) =>
-        overlaps(event, variables.window) &&
+        overlaps(event, variables.period) &&
         matches(event, tree, variables.filter),
     )
     .toSorted(
@@ -319,7 +318,7 @@ function findEvents(
 
 /**
  * The tags every root offers beneath it, counted over the events of the
- * window that meet the filter.
+ * period that meet the filter.
  */
 function findFacets(
   events: readonly FixtureEvent[],
@@ -329,7 +328,7 @@ function findFacets(
 ): FacetsQuery["facets"] {
   const counted = events.filter(
     (event) =>
-      overlaps(event, variables.window) &&
+      overlaps(event, variables.period) &&
       matches(event, tree, variables.filter),
   );
 
@@ -394,19 +393,19 @@ function findGroupKeys(
 }
 
 /**
- * The days a view shows and the window read for them, from the web's own
+ * The days a view shows and the period read for them, from the web's own
  * calendar arithmetic, which the real API reproduces.
  */
-function findWindows(variables: CalendarWindowsQueryVariables): {
+function findWindows(variables: WindowsQueryVariables): {
   columnMinutes: null | number;
+  read: { end: string; start: string };
   visible: { end: string; start: string };
-  window: { end: string; start: string };
 } {
-  const { visible, window } = getViewWindows(
-    variables.view === null || variables.view === undefined
+  const { read, visible } = getViewWindows(
+    variables.window === null || variables.window === undefined
       ? undefined
       : calendarViewSchema.parse(
-          variables.view.toLowerCase().replace("_", "-"),
+          variables.window.toLowerCase().replace("_", "-"),
         ),
     new Date(variables.anchor),
     {
@@ -420,13 +419,13 @@ function findWindows(variables: CalendarWindowsQueryVariables): {
 
   return {
     columnMinutes: null,
+    read: {
+      end: read.end.toISOString(),
+      start: read.start.toISOString(),
+    },
     visible: {
       end: visible.end.toISOString(),
       start: visible.start.toISOString(),
-    },
-    window: {
-      end: window.end.toISOString(),
-      start: window.start.toISOString(),
     },
   };
 }
@@ -524,17 +523,17 @@ function matchesRule(
 }
 
 /**
- * Whether an event overlaps a half-open window.
+ * Whether an event overlaps a half-open period.
  */
 function overlaps(
   event: FixtureEvent,
-  window: null | undefined | { end: string; start: string },
+  period: null | undefined | { end: string; start: string },
 ): boolean {
   return (
-    window === null ||
-    window === undefined ||
-    (new Date(event.start) < new Date(window.end) &&
-      new Date(event.end) >= new Date(window.start))
+    period === null ||
+    period === undefined ||
+    (new Date(event.start) < new Date(period.end) &&
+      new Date(event.end) >= new Date(period.start))
   );
 }
 

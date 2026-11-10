@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { toEventFilterCollection } from "./event-filter-collections.utilities";
 import { toEventFilterInput } from "./event-filter-input.utilities";
+import { toPreset } from "./presets.utilities";
 
-describe(toEventFilterCollection, () => {
-  it("reads a collection the API answered as the builder's tree, rules first then groups", () => {
-    const collection = toEventFilterCollection({
+describe(toPreset, () => {
+  it("reads a preset the API answered as the builder's tree, rules first then groups", () => {
+    const preset = toPreset({
       description: "Planets and signs.",
       filter: {
         combinator: "OR",
@@ -36,7 +36,7 @@ describe(toEventFilterCollection, () => {
       name: "Planet-sign events",
     });
 
-    expect(collection).toStrictEqual({
+    expect(preset).toStrictEqual({
       description: "Planets and signs.",
       filter: {
         combinator: "or",
@@ -87,7 +87,7 @@ describe(toEventFilterCollection, () => {
 
     expect(
       toEventFilterInput(
-        toEventFilterCollection({
+        toPreset({
           description: "",
           filter: { ...filter, groups: null },
           id: "any",
@@ -107,7 +107,7 @@ describe(toEventFilterCollection, () => {
   });
 
   it("reads a rule with no values as one with none to pick from", () => {
-    const { filter } = toEventFilterCollection({
+    const { filter } = toPreset({
       description: "",
       filter: {
         combinator: "AND",
@@ -132,7 +132,7 @@ describe(toEventFilterCollection, () => {
   });
 
   it("reads a group that holds only nested groups", () => {
-    const { filter } = toEventFilterCollection({
+    const { filter } = toPreset({
       description: "",
       filter: {
         combinator: "OR",

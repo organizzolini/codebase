@@ -70,11 +70,11 @@ describe("events grouping end-to-end suite", () => {
   ): Promise<Record<string, GroupKey[][]>> {
     const body = await application.query(
       `query Events(
-        $window: EventsWindowInput!
+        $period: PeriodInput!
         $filter: EventFilterGroupInput
         $grouping: EventGroupingInput
       ) {
-        events(window: $window, filter: $filter, grouping: $grouping) {
+        events(period: $period, filter: $filter, grouping: $grouping) {
           summary
           groups { key label path }
         }
@@ -85,7 +85,7 @@ describe("events grouping end-to-end suite", () => {
           grouping === null
             ? null
             : { colorBy: options.colorBy ?? null, levels: grouping },
-        window: {
+        period: {
           end: "2026-04-01T00:00:00.000Z",
           start: "2026-03-01T00:00:00.000Z",
         },
@@ -398,8 +398,8 @@ describe("events grouping end-to-end suite", () => {
       expect.hasAssertions();
 
       const body = await application.query(
-        `query Events($window: EventsWindowInput!, $grouping: EventGroupingInput) {
-          events(window: $window, grouping: $grouping) { id }
+        `query Events($period: PeriodInput!, $grouping: EventGroupingInput) {
+          events(period: $period, grouping: $grouping) { id }
         }`,
         {
           grouping: {
@@ -407,7 +407,7 @@ describe("events grouping end-to-end suite", () => {
               field,
             })),
           },
-          window: {
+          period: {
             end: "2026-04-01T00:00:00.000Z",
             start: "2026-03-01T00:00:00.000Z",
           },
@@ -421,12 +421,12 @@ describe("events grouping end-to-end suite", () => {
       expect.hasAssertions();
 
       const body = await application.query(
-        `query Events($window: EventsWindowInput!, $grouping: EventGroupingInput) {
-          events(window: $window, grouping: $grouping) { id }
+        `query Events($period: PeriodInput!, $grouping: EventGroupingInput) {
+          events(period: $period, grouping: $grouping) { id }
         }`,
         {
           grouping: { levels: [{ depth: 99, field: `tag:${tags.planet.id}` }] },
-          window: {
+          period: {
             end: "2026-04-01T00:00:00.000Z",
             start: "2026-03-01T00:00:00.000Z",
           },

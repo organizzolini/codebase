@@ -1,4 +1,4 @@
-fragment FilterCollectionFields on EventFilterCollection {
+fragment PresetFields on Preset {
   description
   id
   name
@@ -23,11 +23,11 @@ fragment FilterGroupFields on EventFilterGroup {
   }
 }
 
-query FilterCollections {
-  defaultFilterCollection {
-    ...FilterCollectionFields
+query Presets {
+  defaultPreset {
+    ...PresetFields
   }
-  filterCollections {
-    ...FilterCollectionFields
+  presets {
+    ...PresetFields
   }
 }

@@ -1,4 +1,5 @@
-import { CalendarView } from "./calendar-view.entities";
+import { CalendarWindow } from "./calendar-window.entities";
+import { TimelineScale } from "./timeline-scale.entities";
 import {
   AGENDA_DAY_COUNT,
   BUFFER_DAYS,
@@ -10,18 +11,13 @@ import {
   MONTH_TRAILING_DAYS,
   THREE_DAYS,
   WEEK_DAYS,
-} from "./calendar-windows.constants";
-import { TimelineScale } from "./timeline-scale.entities";
+} from "./windows.constants";
 
-import type {
-  CalendarWindowOptions,
-  CalendarWindows,
-  TimeWindow,
-} from "./calendar-windows.types";
+import type { Period, Windows, WindowsOptions } from "./windows.types";
 
 /**
  * The days a view shows around the day it opens on, as UTC midnights, and
- * the window read for them, a day wider either side: a zone's midnight lies
+ * the period read for them, a day wider either side: a zone's midnight lies
  * up to a day from UTC's, so the buffer holds every event the zone's days
  * show. Only these days are read, whatever the data spans; the agenda's
  * count of days is held to 1 through 366. A timeline also answers how long
@@ -30,36 +26,36 @@ import type {
  * With no view, the windows cover the month and the agenda both, so a resize
  * between them needs no reload.
  */
-export function getCalendarWindows(
-  view: CalendarView | null | undefined,
+export function getWindows(
+  calendarWindow: CalendarWindow | null | undefined,
   anchor: Date,
-  options: CalendarWindowOptions = {},
-): CalendarWindows {
-  if (view === undefined || view === null) {
-    const month = getCalendarWindows(CalendarView.MONTH, anchor);
-    const agenda = getCalendarWindows(CalendarView.AGENDA, anchor, options);
+  options: WindowsOptions = {},
+): Windows {
+  if (calendarWindow === undefined || calendarWindow === null) {
+    const month = getWindows(CalendarWindow.MONTH, anchor);
+    const agenda = getWindows(CalendarWindow.AGENDA, anchor, options);
 
     return {
       columnMinutes: null,
-      visible: joinWindows(month.visible, agenda.visible),
-      window: joinWindows(month.window, agenda.window),
+      read: joinPeriods(month.read, agenda.read),
+      visible: joinPeriods(month.visible, agenda.visible),
     };
   }
 
   const scale = options.scale ?? DEFAULT_TIMELINE_SCALE;
   const visible =
-    view === CalendarView.TIMELINE
+    calendarWindow === CalendarWindow.TIMELINE
       ? getTimelineDays(scale, anchor)
-      : getVisibleDays(view, anchor, options.agendaDays);
+      : getVisibleDays(calendarWindow, anchor, options.agendaDays);
 
   return {
     columnMinutes:
-      view === CalendarView.TIMELINE ? COLUMN_MINUTES[scale] : null,
-    visible,
-    window: {
+      calendarWindow === CalendarWindow.TIMELINE ? COLUMN_MINUTES[scale] : null,
+    read: {
       end: shiftDays(visible.end, BUFFER_DAYS),
       start: shiftDays(visible.start, -BUFFER_DAYS),
     },
+    visible,
   };
 }
 
@@ -68,7 +64,7 @@ export function getCalendarWindows(
  * out: the day, the week from Sunday, the month, the quarter widened to
  * whole weeks, or otherwise the year.
  */
-function getTimelineDays(scale: TimelineScale, anchor: Date): TimeWindow {
+function getTimelineDays(scale: TimelineScale, anchor: Date): Period {
   const year = anchor.getUTCFullYear();
   const month = anchor.getUTCMonth();
   const day = startOfDay(anchor);
@@ -111,13 +107,13 @@ function getTimelineDays(scale: TimelineScale, anchor: Date): TimeWindow {
  * midnight.
  */
 function getVisibleDays(
-  view: Exclude<CalendarView, CalendarView.TIMELINE>,
+  calendarWindow: Exclude<CalendarWindow, CalendarWindow.TIMELINE>,
   anchor: Date,
   agendaDays: null | number | undefined,
-): TimeWindow {
+): Period {
   const day = startOfDay(anchor);
 
-  if (view === CalendarView.MONTH) {
+  if (calendarWindow === CalendarWindow.MONTH) {
     const first = new Date(
       Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth(), 1),
     );
@@ -131,7 +127,7 @@ function getVisibleDays(
     };
   }
 
-  if (view === CalendarView.WEEK) {
+  if (calendarWindow === CalendarWindow.WEEK) {
     // Weeks start on Sunday, as the calendar draws them.
     const sunday = shiftDays(day, -day.getUTCDay());
 
@@ -139,21 +135,21 @@ function getVisibleDays(
   }
 
   const length = {
-    [CalendarView.AGENDA]: Math.min(
+    [CalendarWindow.AGENDA]: Math.min(
       Math.max(agendaDays ?? AGENDA_DAY_COUNT, 1),
       MAXIMUM_AGENDA_DAYS,
     ),
-    [CalendarView.DAY]: 1,
-    [CalendarView.THREE_DAY]: THREE_DAYS,
-  }[view];
+    [CalendarWindow.DAY]: 1,
+    [CalendarWindow.THREE_DAY]: THREE_DAYS,
+  }[calendarWindow];
 
   return { end: shiftDays(day, length), start: day };
 }
 
 /**
- * The smallest window holding two.
+ * The smallest period holding two.
  */
-function joinWindows(left: TimeWindow, right: TimeWindow): TimeWindow {
+function joinPeriods(left: Period, right: Period): Period {
   return {
     end: new Date(Math.max(left.end.getTime(), right.end.getTime())),
     start: new Date(Math.min(left.start.getTime(), right.start.getTime())),

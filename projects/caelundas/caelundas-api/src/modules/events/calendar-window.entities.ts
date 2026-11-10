@@ -5,7 +5,7 @@ import { registerEnumType } from "@nestjs/graphql";
 /**
  * A view the calendar offers.
  */
-export enum CalendarView {
+export enum CalendarWindow {
   AGENDA = "agenda",
   DAY = "day",
   MONTH = "month",
@@ -14,7 +14,7 @@ export enum CalendarView {
   WEEK = "week",
 }
 
-registerEnumType(CalendarView, {
+registerEnumType(CalendarWindow, {
   description: "A view the calendar offers.",
-  name: "CalendarView",
+  name: "CalendarWindow",
 });

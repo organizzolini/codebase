@@ -9,7 +9,7 @@ import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
 export class EventFacetValueEntity {
   @Field(() => Int, {
     description:
-      "The events that carry the tag or any tag beneath it, among those that overlap the window, or all of them with none.",
+      "The events that carry the tag or any tag beneath it, among those that overlap the period, or all of them with none.",
   })
   count!: number;
 

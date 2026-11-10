@@ -2,16 +2,16 @@ import type {
   EventFilterGroupInput,
   EventGroupingInput,
 } from "../../graphql/generated/operations";
-import type { EventsWindow } from "./calendar-records.types";
+import type { Period } from "./calendar-records.types";
 
 // 🏷️ Types
 
 /**
- * What a read of the events asks for: a window, and optionally the filter
+ * What a read of the events asks for: a period, and optionally the filter
  * the events in it must meet and the grouping each is read with keys for.
  */
 export interface EventsReadQuery {
   filter?: EventFilterGroupInput | null | undefined;
   grouping?: EventGroupingInput | null | undefined;
-  window: EventsWindow;
+  period: Period;
 }
