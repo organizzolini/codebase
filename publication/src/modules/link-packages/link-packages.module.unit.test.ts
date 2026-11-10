@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { LoggerModule } from "@codebase/observability";
+import {
+  expectModuleImports,
+  expectModuleProvides,
+} from "@codebase/testing/nestjs";
 
 import { ProcessRunnerModule } from "../process-runner/process-runner.module";
 import { ReleaseGroupModule } from "../release-group/release-group.module";
@@ -13,17 +17,16 @@ describe(LinkPackagesModule, () => {
   it("registers expected imports and providers", () => {
     expect.hasAssertions();
 
-    const imports = Reflect.getMetadata("imports", LinkPackagesModule) as
-      | undefined
-      | unknown[];
-    const providers = Reflect.getMetadata("providers", LinkPackagesModule) as
-      | undefined
-      | unknown[];
-
-    expect(imports).toContain(LoggerModule);
-    expect(imports).toContain(ProcessRunnerModule);
-    expect(imports).toContain(ReleaseGroupModule);
-    expect(providers).toContain(LinkPackagesCommand);
-    expect(providers).toContain(LinkPackagesService);
+    expectModuleImports(
+      LinkPackagesModule,
+      LoggerModule,
+      ProcessRunnerModule,
+      ReleaseGroupModule,
+    );
+    expectModuleProvides(
+      LinkPackagesModule,
+      LinkPackagesCommand,
+      LinkPackagesService,
+    );
   });
 });
