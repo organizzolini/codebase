@@ -62,7 +62,7 @@ runs:
           integration/src/integration.main.ts report-codometer-changes
 
     - name: 📊 Upload Type Coverage
-      if: inputs.run-outcome == 'failure' && inputs.target == 'typecheck-code'
+      if: inputs.run-outcome == 'failure' && inputs.target == 'static-code'
       uses: actions/upload-artifact@v7
       with:
         name: type-coverage-reports
