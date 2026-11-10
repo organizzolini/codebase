@@ -13,7 +13,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **ascension**:
 - **aspect**:
 - **azimuth**:
-- **binder**:
 - **breadth**:
 - **canonical**:
 - **canonicalize**:
@@ -44,7 +43,6 @@ The words this project uses that the root glossary does not define, regenerated 
 - **magnitude**:
 - **middleware**:
 - **moon**:
-- **negative**:
 - **north**:
 - **obliquity**:
 - **observer**:
