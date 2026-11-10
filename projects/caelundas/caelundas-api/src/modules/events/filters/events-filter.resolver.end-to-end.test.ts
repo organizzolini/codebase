@@ -5,12 +5,12 @@ import {
   seedEvents,
   seedFilterTags,
   startEventsApplication,
-} from "../../../testing/events-application";
+} from "../../../../testing/events-application";
 
 import type {
   EventsApplication,
   FilterTags,
-} from "../../../testing/events-application";
+} from "../../../../testing/events-application";
 import type { Tag } from "@codebase/caelundas-db";
 
 /** A filter variable, as a client writes it. */

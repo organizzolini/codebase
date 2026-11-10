@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { DEFAULT_PRESET_ID, PRESETS } from "./presets.constants";
-import { resolvePresets } from "./presets.utilities";
+import { PresetsService } from "./presets.service";
 
-import type { EventFacetEntity } from "./event-facet.entities";
+import type { EventFacetEntity } from "../event-facet.entities";
 
 /** A tag root with a tag for each path beneath it, each id `root:path`. */
 function facet(id: string, name: string, paths: string[]): EventFacetEntity {
@@ -20,6 +20,8 @@ function facet(id: string, name: string, paths: string[]): EventFacetEntity {
   };
 }
 
+const service = new PresetsService();
+
 const FACETS = [
   facet("type", "Type", [
     "Aspect / Simple Aspect / Major Aspect",
@@ -29,11 +31,11 @@ const FACETS = [
   facet("planet", "Planet", ["Moon", "Sun"]),
 ];
 
-describe(resolvePresets, () => {
+describe(PresetsService, () => {
   it("names the tags of the data in place of the names it was written with", () => {
     expect.hasAssertions();
 
-    const [highlights] = resolvePresets(FACETS);
+    const [highlights] = service.resolve(FACETS);
 
     expect(highlights).toMatchObject({
       filter: {
@@ -74,7 +76,7 @@ describe(resolvePresets, () => {
   it("lists the presets the data can serve, in menu order", () => {
     expect.hasAssertions();
 
-    expect(resolvePresets(FACETS).map(({ id }) => id)).toStrictEqual([
+    expect(service.resolve(FACETS).map(({ id }) => id)).toStrictEqual([
       "highlights",
       "major-aspects",
       "planetary-cycles",
@@ -85,14 +87,14 @@ describe(resolvePresets, () => {
     expect.hasAssertions();
 
     expect(
-      resolvePresets(FACETS.slice(0, 1)).map(({ id }) => id),
+      service.resolve(FACETS.slice(0, 1)).map(({ id }) => id),
     ).not.toContain("major-aspects");
   });
 
   it("keeps the or's other conditions when one cannot be named", () => {
     expect.hasAssertions();
 
-    const [highlights] = resolvePresets(FACETS.slice(0, 1));
+    const [highlights] = service.resolve(FACETS.slice(0, 1));
 
     expect(highlights?.id).toBe(DEFAULT_PRESET_ID);
     expect(highlights?.filter.groups).toStrictEqual([]);
@@ -102,7 +104,7 @@ describe(resolvePresets, () => {
   it("answers nothing for data that has none of the tags", () => {
     expect.hasAssertions();
 
-    expect(resolvePresets([])).toStrictEqual([]);
+    expect(service.resolve([])).toStrictEqual([]);
   });
 
   it("offers each preset once, with a name and a description", () => {

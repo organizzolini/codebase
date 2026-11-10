@@ -2,15 +2,21 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { CalendarWindow } from "./calendar-window.entities";
-import { EventFilterCombinator } from "./event-filter-combinator.entities";
 import { EventsResolver } from "./events.resolver";
 import { EventsService } from "./events.service";
+import { EventFilterCalendarFieldsService } from "./filters/event-filter-calendar-fields.service";
+import { EventFilterCombinator } from "./filters/event-filter-combinator.entities";
+import { EventFilterNumbersService } from "./filters/event-filter-numbers.service";
+import { EventFilterParametersService } from "./filters/event-filter-parameters.service";
+import { EventFilterValuesService } from "./filters/event-filter-values.service";
+import { EventFilterService } from "./filters/event-filter.service";
+import { EventGroupingService } from "./grouping/event-grouping.service";
+import { CalendarWindow } from "./windows/calendar-window.entities";
 
 import type { CalendarEventEntity } from "./calendar-event.entities";
 import type { EventFacetEntity } from "./event-facet.entities";
 import type { EventsDatasetEntity } from "./events.entities";
-import type { ResolvedPreset } from "./presets.types";
+import type { ResolvedPreset } from "./presets/presets.types";
 
 const describeDataset = vi.fn<() => Promise<EventsDatasetEntity | null>>();
 const findPresets = vi.fn<() => Promise<ResolvedPreset[]>>();
@@ -26,6 +32,12 @@ describe(EventsResolver, () => {
   beforeAll(async () => {
     ({ instance: resolver } = await buildTestingModule(EventsResolver, {
       providers: [
+        EventFilterCalendarFieldsService,
+        EventFilterNumbersService,
+        EventFilterParametersService,
+        EventFilterService,
+        EventFilterValuesService,
+        EventGroupingService,
         {
           provide: EventsService,
           useValue: {
@@ -42,7 +54,15 @@ describe(EventsResolver, () => {
 
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(EventsResolver, {
-      providers: [{ provide: EventsService, useValue: {} }],
+      providers: [
+        EventFilterCalendarFieldsService,
+        EventFilterNumbersService,
+        EventFilterParametersService,
+        EventFilterService,
+        EventFilterValuesService,
+        EventGroupingService,
+        { provide: EventsService, useValue: {} },
+      ],
     });
 
     expect(instance).toBeInstanceOf(EventsResolver);

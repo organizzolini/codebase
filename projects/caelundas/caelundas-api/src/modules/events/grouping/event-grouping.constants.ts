@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { DURATION_BUCKETS } from "./event-filter-fields.constants";
+import { DURATION_BUCKETS } from "../filters/event-filter-fields.constants";
 
 import type { EventGroupLevel } from "./event-grouping.types";
 
@@ -32,7 +32,7 @@ export const MAXIMUM_GROUP_FIELD_LENGTH = 64;
  * The ids of the fields derived from each event's start or duration, longest
  * period first.
  */
-export const DERIVED_GROUP_IDS = [
+export const CALENDAR_GROUP_IDS = [
   "year",
   "quarter",
   "month",
@@ -56,8 +56,8 @@ const DURATION_BUCKET_SQL = `case ${DURATION_BUCKETS.map(
  * event's own zone. Keys sort in time order as text, except the weekday's
  * number, from Sunday as 0, and the duration bucket's name.
  */
-export const DERIVED_GROUP_KEY_SQL: Readonly<
-  Record<(typeof DERIVED_GROUP_IDS)[number], string>
+export const CALENDAR_GROUP_KEY_SQL: Readonly<
+  Record<(typeof CALENDAR_GROUP_IDS)[number], string>
 > = {
   day: "e.start_local_day",
   duration: DURATION_BUCKET_SQL,
@@ -73,7 +73,7 @@ export const DERIVED_GROUP_KEY_SQL: Readonly<
 /**
  * One derived group key for the event `e`, in place of `{key}`.
  */
-export const DERIVED_GROUP_SQL = `select {key} as "key", null::text as label, null::text as "path"`;
+export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, null::text as "path"`;
 
 /**
  * A source that puts every event in no group at its level, for a field the

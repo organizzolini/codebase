@@ -10,7 +10,7 @@ export const TAG_FIELD_PREFIX = "tag:";
  * The ids of the fields derived from each event's own columns rather than
  * from its tags.
  */
-export const DERIVED_FIELD_IDS = {
+export const CALENDAR_FIELD_IDS = {
   date: "date",
   duration: "duration",
   durationMinutes: "duration-minutes",
@@ -39,7 +39,7 @@ export const TAG_OPERATOR_NAMES: readonly string[] =
 /**
  * The operators the derived fields offer, by what they do.
  */
-export const DERIVED_OPERATORS = {
+export const CALENDAR_OPERATORS = {
   between: "between",
   contains: "contains",
   isAnyOf: "is_any_of",

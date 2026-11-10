@@ -5,7 +5,7 @@
  * `e`. Days and hours are read in each event's own zone; a day is text
  * written `YYYY-MM-DD`, which orders like the date it names.
  */
-export const DERIVED_FIELD_SQL = {
+export const CALENDAR_FIELD_SQL = {
   durationMinutes: "e.duration_minutes",
   endLocalDay: `(e."end" at time zone e.timezone)::date::text`,
   hour: "e.start_local_hour",

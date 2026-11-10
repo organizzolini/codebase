@@ -8,21 +8,21 @@ export interface CompiledEventFilter {
 }
 
 /**
- * Collects the values a compiled expression binds, numbering the `$n`
- * placeholders after the `offset` the query already binds.
- */
-export interface EventFilterBinder {
-  readonly offset: number;
-  readonly parameters: unknown[];
-}
-
-/**
  * Conditions and nested groups joined under one combinator, validated.
  */
 export interface EventFilterGroup {
   combinator: "and" | "or";
   groups: EventFilterGroup[];
   rules: EventFilterRule[];
+}
+
+/**
+ * Collects the values a compiled expression binds, numbering the `$n`
+ * placeholders after the `offset` the query already binds.
+ */
+export interface EventFilterParameters {
+  readonly offset: number;
+  readonly values: unknown[];
 }
 
 /**

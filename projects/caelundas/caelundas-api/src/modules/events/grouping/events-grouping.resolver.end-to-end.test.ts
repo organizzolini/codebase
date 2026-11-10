@@ -10,12 +10,12 @@ import {
   seedEvents,
   seedFilterTags,
   startEventsApplication,
-} from "../../../testing/events-application";
+} from "../../../../testing/events-application";
 
 import type {
   EventsApplication,
   FilterTags,
-} from "../../../testing/events-application";
+} from "../../../../testing/events-application";
 import type { Tag } from "@codebase/caelundas-db";
 
 /** One group key as the events query returns it. */

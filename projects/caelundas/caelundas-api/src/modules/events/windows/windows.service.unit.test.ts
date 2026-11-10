@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { CalendarWindow } from "./calendar-window.entities";
 import { TimelineScale } from "./timeline-scale.entities";
-import { getWindows } from "./windows.utilities";
+import { WindowsService } from "./windows.service";
 
 import type { Period } from "./windows.types";
+
+const service = new WindowsService();
 
 /** Thursday the 22nd of October 2026, at noon UTC. */
 const THURSDAY = new Date("2026-10-22T12:00:00.000Z");
@@ -14,11 +16,11 @@ function iso({ end, start }: Period): [string, string] {
   return [start.toISOString(), end.toISOString()];
 }
 
-describe(getWindows, () => {
+describe(WindowsService, () => {
   it("shows the day a day view opens on, and reads a day either side", () => {
     expect.hasAssertions();
 
-    const windows = getWindows(CalendarWindow.DAY, THURSDAY);
+    const windows = service.getWindows(CalendarWindow.DAY, THURSDAY);
 
     expect(iso(windows.visible)).toStrictEqual([
       "2026-10-22T00:00:00.000Z",
@@ -35,7 +37,7 @@ describe(getWindows, () => {
     expect.hasAssertions();
 
     expect(
-      iso(getWindows(CalendarWindow.THREE_DAY, THURSDAY).visible),
+      iso(service.getWindows(CalendarWindow.THREE_DAY, THURSDAY).visible),
     ).toStrictEqual(["2026-10-22T00:00:00.000Z", "2026-10-25T00:00:00.000Z"]);
   });
 
@@ -43,7 +45,7 @@ describe(getWindows, () => {
     expect.hasAssertions();
 
     expect(
-      iso(getWindows(CalendarWindow.WEEK, THURSDAY).visible),
+      iso(service.getWindows(CalendarWindow.WEEK, THURSDAY).visible),
     ).toStrictEqual(["2026-10-18T00:00:00.000Z", "2026-10-25T00:00:00.000Z"]);
   });
 
@@ -51,7 +53,7 @@ describe(getWindows, () => {
     expect.hasAssertions();
 
     expect(
-      iso(getWindows(CalendarWindow.MONTH, THURSDAY).visible),
+      iso(service.getWindows(CalendarWindow.MONTH, THURSDAY).visible),
     ).toStrictEqual(["2026-09-24T00:00:00.000Z", "2026-11-15T00:00:00.000Z"]);
   });
 
@@ -59,23 +61,25 @@ describe(getWindows, () => {
     expect.hasAssertions();
 
     expect(
-      iso(getWindows(CalendarWindow.AGENDA, THURSDAY).visible),
+      iso(service.getWindows(CalendarWindow.AGENDA, THURSDAY).visible),
     ).toStrictEqual(["2026-10-22T00:00:00.000Z", "2026-11-21T00:00:00.000Z"]);
     expect(
       iso(
-        getWindows(CalendarWindow.AGENDA, THURSDAY, { agendaDays: 60 }).visible,
+        service.getWindows(CalendarWindow.AGENDA, THURSDAY, { agendaDays: 60 })
+          .visible,
       ),
     ).toStrictEqual(["2026-10-22T00:00:00.000Z", "2026-12-21T00:00:00.000Z"]);
     expect(
       iso(
-        getWindows(CalendarWindow.AGENDA, THURSDAY, {
+        service.getWindows(CalendarWindow.AGENDA, THURSDAY, {
           agendaDays: 5000,
         }).visible,
       ),
     ).toStrictEqual(["2026-10-22T00:00:00.000Z", "2027-10-23T00:00:00.000Z"]);
     expect(
       iso(
-        getWindows(CalendarWindow.AGENDA, THURSDAY, { agendaDays: 0 }).visible,
+        service.getWindows(CalendarWindow.AGENDA, THURSDAY, { agendaDays: 0 })
+          .visible,
       ),
     ).toStrictEqual(["2026-10-22T00:00:00.000Z", "2026-10-23T00:00:00.000Z"]);
   });
@@ -83,7 +87,7 @@ describe(getWindows, () => {
   it("joins the month and agenda windows for no view", () => {
     expect.hasAssertions();
 
-    const windows = getWindows(undefined, THURSDAY);
+    const windows = service.getWindows(undefined, THURSDAY);
 
     expect(iso(windows.visible)).toStrictEqual([
       "2026-09-24T00:00:00.000Z",
@@ -101,7 +105,7 @@ describe(getWindows, () => {
       columnMinutes: null | number;
       visible: [string, string];
     } {
-      const { columnMinutes, visible } = getWindows(
+      const { columnMinutes, visible } = service.getWindows(
         CalendarWindow.TIMELINE,
         THURSDAY,
         { scale },
@@ -164,7 +168,7 @@ describe(getWindows, () => {
     it("reads a day either side of what it shows", () => {
       expect.hasAssertions();
 
-      const { read } = getWindows(CalendarWindow.TIMELINE, THURSDAY, {
+      const { read } = service.getWindows(CalendarWindow.TIMELINE, THURSDAY, {
         scale: TimelineScale.WEEK,
       });
 
@@ -178,7 +182,7 @@ describe(getWindows, () => {
       expect.hasAssertions();
 
       // 1 July 2026 is a Wednesday and 1 October a Thursday.
-      const july = getWindows(
+      const july = service.getWindows(
         CalendarWindow.TIMELINE,
         new Date("2026-07-15T12:00:00.000Z"),
         { scale: TimelineScale.QUARTER },
