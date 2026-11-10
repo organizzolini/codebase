@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "additionalProperties": false,
+  "description": "Measure a project with codometer and write its report. Batched, so one process measures every project Nx hands it.",
+  "properties": {
+    "check": {
+      "description": "Fail the task when a limit the project declares is breached, after the report is written.",
+      "type": "boolean"
+    },
+    "config": {
+      "description": "The codometer configuration file, relative to the project root.",
+      "type": "string"
+    },
+    "outputMarkdown": {
+      "description": "Where to write the markdown badge block, relative to the project root.",
+      "type": "string"
+    }
+  },
+  "required": ["config"],
+  "title": "Codometer",
+  "type": "object"
+}

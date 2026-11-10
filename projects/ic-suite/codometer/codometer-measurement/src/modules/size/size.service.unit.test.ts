@@ -1,6 +1,10 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+import path from "node:path";
+
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { UnreadableTargetFileError } from "./size.constants";
@@ -8,23 +12,31 @@ import { SizeService } from "./size.service";
 
 import type { CodometerCompression } from "@codometer/configuration";
 import type { DeepMocked } from "@golevelup/ts-vitest";
+import type * as NodeFileSystem from "node:fs";
 
-// Reading is mocked down to the one call the measurement makes, so the bytes
-// under test come from the compression rather than from a temporary directory.
-// Real files are measured in `size.service.integration.test.ts`.
-const { readFileSyncMock } = vi.hoisted(() => ({
-  readFileSyncMock: vi.fn<(filePath: string) => Buffer>(),
-}));
+// Reads stay real except for one sentinel path, which throws a bare string:
+// a thrown literal is not an Error, and the measurement still has to report
+// which file it gave up on. Real files are staged in a temporary directory.
+vi.mock("node:fs", async (importOriginal) => {
+  const actual = await importOriginal<typeof NodeFileSystem>();
 
-vi.mock("node:fs", async (importOriginal) => ({
-  ...(await importOriginal<Record<string, unknown>>()),
-  readFileSync: readFileSyncMock,
-}));
+  return {
+    ...actual,
+    readFileSync: (filePath: string) => {
+      if (filePath.endsWith("odd.js")) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw "not an Error";
+      }
 
-/** The two files every measurement here is made of, keyed by absolute path. */
+      return actual.readFileSync(filePath);
+    },
+  };
+});
+
+/** The two files every measurement here is made of, keyed by relative path. */
 const FILE_CONTENTS: Readonly<Record<string, string>> = {
-  "/repo/dist/alpha.js": "export const alpha = 1;\n",
-  "/repo/dist/beta.js": "export const beta = 2;\n",
+  "dist/alpha.js": "export const alpha = 1;\n",
+  "dist/beta.js": "export const beta = 2;\n",
 };
 
 /** Bytes these two files report under each compression, permanently. */
@@ -38,12 +50,14 @@ describe(SizeService, () => {
   let service: SizeService;
   let loggerService: DeepMocked<LoggerService>;
 
+  let workingDirectory: string;
+
   /** Measures both fixture files under one compression. */
   function analyze(compression: CodometerCompression): number {
     return service.analyze({
       compression,
       files: ["dist/alpha.js", "dist/beta.js"],
-      workingDirectory: "/repo",
+      workingDirectory,
     }).bytes;
   }
 
@@ -55,16 +69,14 @@ describe(SizeService, () => {
   });
 
   beforeEach(() => {
-    readFileSyncMock.mockReset();
-    readFileSyncMock.mockImplementation((filePath: string) => {
-      const contents = FILE_CONTENTS[filePath];
+    workingDirectory = createTemporaryDirectory("size");
 
-      if (contents === undefined) {
-        throw new Error(`ENOENT: ${filePath}`);
-      }
+    for (const [fileName, contents] of Object.entries(FILE_CONTENTS)) {
+      const filePath = path.join(workingDirectory, fileName);
 
-      return Buffer.from(contents);
-    });
+      mkdirSync(path.dirname(filePath), { recursive: true });
+      writeFileSync(filePath, contents, "utf8");
+    }
   });
 
   it("resolves with its dependencies", async () => {
@@ -85,16 +97,9 @@ describe(SizeService, () => {
       service.analyze({
         compression: "brotli",
         files: ["dist/alpha.js"],
-        workingDirectory: "/repo",
+        workingDirectory,
       }),
     ).toStrictEqual({ bytes: 28, compression: "brotli", files: 1 });
-  });
-
-  it("reads each file once, relative to the measured directory", () => {
-    analyze("gzip");
-
-    expect(readFileSyncMock).toHaveBeenCalledTimes(2);
-    expect(readFileSyncMock).toHaveBeenCalledWith("/repo/dist/alpha.js");
   });
 
   // Reporting the other files and calling the total a measurement would be a
@@ -105,7 +110,7 @@ describe(SizeService, () => {
       service.analyze({
         compression: "gzip",
         files: ["dist/alpha.js", "dist/gone.js"],
-        workingDirectory: "/repo",
+        workingDirectory,
       }),
     ).toThrow(UnreadableTargetFileError);
   });
@@ -115,10 +120,10 @@ describe(SizeService, () => {
       service.analyze({
         compression: "gzip",
         files: ["dist/gone.js"],
-        workingDirectory: "/repo",
+        workingDirectory,
       }),
     ).toThrow(
-      "Cannot measure /repo/dist/gone.js: Error: ENOENT: /repo/dist/gone.js",
+      `Cannot measure ${path.join(workingDirectory, "dist/gone.js")}: Error: ENOENT`,
     );
   });
 
@@ -127,35 +132,37 @@ describe(SizeService, () => {
       service.analyze({
         compression: "gzip",
         files: ["dist/gone.js"],
-        workingDirectory: "/repo",
+        workingDirectory,
       }),
     ).toThrow(UnreadableTargetFileError);
 
     expect(loggerService.error).toHaveBeenCalledWith(
       "🗜️ Failed to measure a target file",
       undefined,
-      expect.objectContaining({ path: "/repo/dist/gone.js" }),
+      expect.objectContaining({
+        path: path.join(workingDirectory, "dist/gone.js"),
+      }),
     );
   });
 
   it("logs the reason for a thrown value that is not an Error", () => {
-    readFileSyncMock.mockImplementationOnce(() => {
-      // eslint-disable-next-line @typescript-eslint/only-throw-error
-      throw "not an Error";
-    });
+    writeFileSync(path.join(workingDirectory, "dist/odd.js"), "", "utf8");
 
     expect(() =>
       service.analyze({
         compression: "gzip",
         files: ["dist/odd.js"],
-        workingDirectory: "/repo",
+        workingDirectory,
       }),
     ).toThrow(UnreadableTargetFileError);
 
     expect(loggerService.error).toHaveBeenCalledWith(
       "🗜️ Failed to measure a target file",
       undefined,
-      { path: "/repo/dist/odd.js", reason: "not an Error" },
+      {
+        path: path.join(workingDirectory, "dist/odd.js"),
+        reason: "not an Error",
+      },
     );
   });
 });

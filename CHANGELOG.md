@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.61.5](https://github.com/organizzolini/codebase/compare/v3.61.4...v3.61.5) (2026-11-10)
+
+## [3.61.4](https://github.com/organizzolini/codebase/compare/v3.61.3...v3.61.4) (2026-11-10)
+
+### ⚡ Performance Improvements
+
+* **integration,codometer:** ⚡️ judge every project's codometer limits from one batched run ([#2244](https://github.com/organizzolini/codebase/issues/2244)) ([283f014](https://github.com/organizzolini/codebase/commit/283f014b00563a7a455d190e27bebeb0bfe34d89)), closes [#2242](https://github.com/organizzolini/codebase/issues/2242) [#2112](https://github.com/organizzolini/codebase/issues/2112) [#2113](https://github.com/organizzolini/codebase/issues/2113)
+
+### ♻️ Code Refactoring
+
+* **caelundas:** ♻️ move events utilities into services and submodules ([#2220](https://github.com/organizzolini/codebase/issues/2220)) ([0dfa25b](https://github.com/organizzolini/codebase/commit/0dfa25b763d36ba5928558d5b74402a68ea88b2e)), closes [#2214](https://github.com/organizzolini/codebase/issues/2214) [#2211](https://github.com/organizzolini/codebase/issues/2211) [#2216](https://github.com/organizzolini/codebase/issues/2216)
+
+## [3.61.3](https://github.com/organizzolini/codebase/compare/v3.61.2...v3.61.3) (2026-11-10)
+
+### ♻️ Code Refactoring
+
+* **caelundas:** ♻️ move night-sky utilities into services ([#2215](https://github.com/organizzolini/codebase/issues/2215)) ([af55d43](https://github.com/organizzolini/codebase/commit/af55d43228f18a3dea7dd6cfd4dc35111d15be94)), closes [#2213](https://github.com/organizzolini/codebase/issues/2213) [#2211](https://github.com/organizzolini/codebase/issues/2211)
+* **caelundas:** ♻️ rename the caelundas-api vocabulary to windows, periods and presets ([#2216](https://github.com/organizzolini/codebase/issues/2216)) ([10e62f5](https://github.com/organizzolini/codebase/commit/10e62f5254fee26eebc3a418004273dbb0d263a9)), closes [#2212](https://github.com/organizzolini/codebase/issues/2212) [#2211](https://github.com/organizzolini/codebase/issues/2211)
+
+## [3.61.2](https://github.com/organizzolini/codebase/compare/v3.61.1...v3.61.2) (2026-11-10)
+
+## [3.61.1](https://github.com/organizzolini/codebase/compare/v3.61.0...v3.61.1) (2026-11-10)
+
+### ♻️ Code Refactoring
+
+* **configuration,deployment,integration:** ♻️ rename publication to deployment and move its gate to integration ([#2193](https://github.com/organizzolini/codebase/issues/2193)) ([0440302](https://github.com/organizzolini/codebase/commit/04403028a23422aa80ed9fa03f7d6a57401dcbe4)), closes [#2192](https://github.com/organizzolini/codebase/issues/2192)
+
+## [3.61.0](https://github.com/organizzolini/codebase/compare/v3.60.0...v3.61.0) (2026-11-10)
+
+### ✨ Features
+
+* **caelundas:** ✨ control night sky and calendar opacity from the Sky menu ([#2222](https://github.com/organizzolini/codebase/issues/2222)) ([c34e799](https://github.com/organizzolini/codebase/commit/c34e799528a8386b38e369f356e8b5bee1de19f3)), closes [#2218](https://github.com/organizzolini/codebase/issues/2218)
+
+## [3.60.0](https://github.com/organizzolini/codebase/compare/v3.59.5...v3.60.0) (2026-11-10)
+
+### ✨ Features
+
+* **callidescope,codependix,codometer,coinagerie,configuration:** ✨ write tool markdown to adjacent files ([#2225](https://github.com/organizzolini/codebase/issues/2225)) ([9649098](https://github.com/organizzolini/codebase/commit/96490981a3429a535ed79e290e5a4ba1ca225dc6)), closes [#2224](https://github.com/organizzolini/codebase/issues/2224)
+
+### ♻️ Code Refactoring
+
+* **compliance,documentation:** ♻️ add a manage-project skill and rename audit-governance to audit-files ([#2191](https://github.com/organizzolini/codebase/issues/2191)) ([8e39566](https://github.com/organizzolini/codebase/commit/8e3956672947398748b4b7fafdde15698a3d99b7)), closes [#2190](https://github.com/organizzolini/codebase/issues/2190)
+
 ## [3.59.5](https://github.com/organizzolini/codebase/compare/v3.59.4...v3.59.5) (2026-11-09)
 
 ### 🐛 Bug Fixes

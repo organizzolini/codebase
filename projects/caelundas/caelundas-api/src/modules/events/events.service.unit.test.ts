@@ -4,9 +4,17 @@ import { z } from "zod";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { CalendarView } from "./calendar-view.entities";
 import { EventsService } from "./events.service";
-import { TimelineScale } from "./timeline-scale.entities";
+import { EventFilterCalendarFieldsService } from "./filters/event-filter-calendar-fields.service";
+import { EventFilterNumbersService } from "./filters/event-filter-numbers.service";
+import { EventFilterParametersService } from "./filters/event-filter-parameters.service";
+import { EventFilterValuesService } from "./filters/event-filter-values.service";
+import { EventFilterService } from "./filters/event-filter.service";
+import { EventGroupingService } from "./grouping/event-grouping.service";
+import { PresetsService } from "./presets/presets.service";
+import { CalendarWindow } from "./windows/calendar-window.entities";
+import { TimelineScale } from "./windows/timeline-scale.entities";
+import { WindowsService } from "./windows/windows.service";
 
 import type { EntityManager } from "typeorm";
 
@@ -17,13 +25,33 @@ describe(EventsService, () => {
 
   beforeAll(async () => {
     ({ instance: service } = await buildTestingModule(EventsService, {
-      providers: [{ provide: getEntityManagerToken(), useValue: { query } }],
+      providers: [
+        EventFilterCalendarFieldsService,
+        EventFilterNumbersService,
+        EventFilterParametersService,
+        EventFilterService,
+        EventFilterValuesService,
+        EventGroupingService,
+        PresetsService,
+        WindowsService,
+        { provide: getEntityManagerToken(), useValue: { query } },
+      ],
     }));
   });
 
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(EventsService, {
-      providers: [{ provide: getEntityManagerToken(), useValue: { query } }],
+      providers: [
+        EventFilterCalendarFieldsService,
+        EventFilterNumbersService,
+        EventFilterParametersService,
+        EventFilterService,
+        EventFilterValuesService,
+        EventGroupingService,
+        PresetsService,
+        WindowsService,
+        { provide: getEntityManagerToken(), useValue: { query } },
+      ],
     });
 
     expect(instance).toBeInstanceOf(EventsService);
@@ -44,17 +72,17 @@ describe(EventsService, () => {
     expect.hasAssertions();
 
     expect(
-      service.findCalendarWindows({
+      service.findWindows({
         anchor: "2026-10-22T12:00:00.000Z",
         scale: TimelineScale.YEAR,
-        view: CalendarView.TIMELINE,
+        window: CalendarWindow.TIMELINE,
       }).visible,
     ).toStrictEqual({
       end: new Date("2027-01-01T00:00:00.000Z"),
       start: new Date("2026-01-01T00:00:00.000Z"),
     });
     expect(
-      service.findCalendarWindows({ anchor: new Date("2026-10-22T12:00:00Z") })
+      service.findWindows({ anchor: new Date("2026-10-22T12:00:00Z") })
         .columnMinutes,
     ).toBeNull();
   });
@@ -85,7 +113,7 @@ describe(EventsService, () => {
     await expect(service.describeDataset()).resolves.toBeNull();
   });
 
-  it("finds the events in a window, binding its end then its start", async () => {
+  it("finds the events in a period, binding its end then its start", async () => {
     expect.hasAssertions();
 
     const start = new Date("2026-03-05T03:30:00Z");
@@ -150,7 +178,23 @@ describe(EventsService, () => {
     ]);
   });
 
-  it("applies a compiled filter to the events, binding it after the window", async () => {
+  it("writes the period as ISO 8601 text in UTC for the query", async () => {
+    expect.hasAssertions();
+
+    query.mockResolvedValueOnce([]);
+
+    await service.findEvents({
+      end: "2026-03-05T03:30:00-05:00",
+      start: new Date("2026-03-05T03:30:00Z"),
+    });
+
+    expect(query).toHaveBeenLastCalledWith(expect.any(String), [
+      "2026-03-05T08:30:00.000Z",
+      "2026-03-05T03:30:00.000Z",
+    ]);
+  });
+
+  it("applies a compiled filter to the events, binding it after the period", async () => {
     expect.hasAssertions();
 
     query.mockResolvedValueOnce([]);
@@ -243,7 +287,7 @@ describe(EventsService, () => {
     );
   });
 
-  it("applies a compiled filter to the facets, with or without a window", async () => {
+  it("applies a compiled filter to the facets, with or without a period", async () => {
     expect.hasAssertions();
 
     query.mockResolvedValueOnce([]);
@@ -284,7 +328,7 @@ describe(EventsService, () => {
     );
   });
 
-  it("gathers the tags beneath each root into its facet, counting over the window", async () => {
+  it("gathers the tags beneath each root into its facet, counting over the period", async () => {
     expect.hasAssertions();
 
     const row = (
@@ -336,7 +380,7 @@ describe(EventsService, () => {
     ]);
   });
 
-  it("counts over every event when no window is given", async () => {
+  it("counts over every event when no period is given", async () => {
     expect.hasAssertions();
 
     query.mockResolvedValueOnce([]);
@@ -355,7 +399,7 @@ describe(EventsService, () => {
     ).rejects.toThrow(z.ZodError);
   });
 
-  it("resolves the filter collections against the tags of the whole dataset", async () => {
+  it("resolves the presets against the tags of the whole dataset", async () => {
     expect.hasAssertions();
 
     query.mockResolvedValueOnce([
@@ -377,9 +421,9 @@ describe(EventsService, () => {
       },
     ]);
 
-    const collections = await service.findFilterCollections();
+    const presets = await service.findPresets();
 
-    expect(collections.map(({ id }) => id)).toStrictEqual([
+    expect(presets.map(({ id }) => id)).toStrictEqual([
       "highlights",
       "planetary-cycles",
     ]);

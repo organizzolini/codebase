@@ -134,10 +134,10 @@ jobs:
             --ignore-scripts
 
       # Audits repository governance (CODEOWNERS rules and workflow security).
-      - name: 👮 Audit Repository Governance
+      - name: 👮 Audit Repository Files
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            compliance/src/compliance.main.ts audit-governance
+            compliance/src/compliance.main.ts audit-files
 
   comply:
     name: 🧑‍⚖️ Comply

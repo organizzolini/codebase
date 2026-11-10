@@ -7,9 +7,9 @@ import type { EventFilterQuery } from "../../components/calendar-filters/event-f
  */
 export interface UseFilterQueryResult {
   /**
-   * Replaces the whole tree with a collection's, and writes it to the link.
+   * Replaces the whole tree with a preset's, and writes it to the link.
    */
-  handleCollectionSelect: (next: EventFilterQuery) => void;
+  handlePresetSelect: (next: EventFilterQuery) => void;
   handleQueryChange: (next: EventFilterQuery) => void;
   query: EventFilterQuery;
 }

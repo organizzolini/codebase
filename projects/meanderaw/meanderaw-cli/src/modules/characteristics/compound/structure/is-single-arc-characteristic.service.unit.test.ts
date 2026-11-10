@@ -1,4 +1,3 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
@@ -24,13 +23,12 @@ describe(IsSingleArcCharacteristicService, () => {
     let service: IsSingleArcCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const real = await buildTestingModule(CharacteristicContextService, {
         imports: [CodeModule, MatrixModule, StructureCharacteristicsModule],
-        providers: [CharacteristicContextService],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(IsSingleArcCharacteristicService);
+      contextService = real.instance;
+      service = await real.module.resolve(IsSingleArcCharacteristicService);
     });
 
     it.each([

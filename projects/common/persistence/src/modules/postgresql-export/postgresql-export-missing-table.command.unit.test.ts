@@ -3,9 +3,9 @@ import { describe, expect, it, vi } from "vitest";
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses, processFailure } from "../../../testing/mocks";
 
-vi.mock("node:child_process", async () => {
-  const { childProcessMock } = await import("../../../testing/mocks");
-  return childProcessMock;
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockPostgresChildProcess } = await import("../../../testing/mocks");
+  return mockPostgresChildProcess(await importOriginal());
 });
 
 const PASSWORD = "hunter2-secret";

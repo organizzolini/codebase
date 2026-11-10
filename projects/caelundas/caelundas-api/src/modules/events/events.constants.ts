@@ -39,17 +39,17 @@ export const datasetRowSchema = z.object({
 });
 
 /**
- * The events that overlap a window, earliest first, each with the tags it was
+ * The events that overlap a period, earliest first, each with the tags it was
  * given as a JSON array, read through the derived-times view. Binds the
- * window's end, then its start; ends are compared inclusively so an instant
- * at the window's first moment is still found. `{filter}` is replaced by
+ * period's end, then its start; ends are compared inclusively so an instant
+ * at the period's first moment is still found. `{filter}` is replaced by
  * the compiled filter, or by nothing, and `{groups}` by the columns that read
  * each grouping level's keys, or by nothing. The instants where an aspect
  * begins forming or dissolves are left out, since the event that spans the
  * aspect says as much; they stay in the data. Text sorts by bytes, rather
  * than by the database's locale.
  */
-export const EVENTS_IN_WINDOW_SQL = `
+export const EVENTS_IN_PERIOD_SQL = `
   select
     e.id,
     e.color,
@@ -90,7 +90,7 @@ export const EVENTS_IN_WINDOW_SQL = `
   order by e."start", e."summary" collate "C", e.id
 `;
 
-/** A tag an event carries, as {@link EVENTS_IN_WINDOW_SQL} gathers it. */
+/** A tag an event carries, as {@link EVENTS_IN_PERIOD_SQL} gathers it. */
 export const tagSchema = z.object({
   depth: z.number(),
   id: z.string(),
@@ -99,7 +99,7 @@ export const tagSchema = z.object({
 });
 
 /**
- * The group keys of one level, as {@link EVENTS_IN_WINDOW_SQL} gathers them
+ * The group keys of one level, as {@link EVENTS_IN_PERIOD_SQL} gathers them
  * into a `group_<level>` column.
  */
 export const groupKeysSchema = z.array(
@@ -111,7 +111,7 @@ export const groupKeysSchema = z.array(
 );
 
 /**
- * One row of {@link EVENTS_IN_WINDOW_SQL}; the `group_<level>` columns it
+ * One row of {@link EVENTS_IN_PERIOD_SQL}; the `group_<level>` columns it
  * adds for a grouping are read by {@link groupKeysSchema} apart.
  */
 export const eventRowSchema = z.looseObject({
@@ -131,14 +131,14 @@ export const eventRowSchema = z.looseObject({
 
 /**
  * Every tag in the tree with its root, its path beneath that root, and the
- * number of events it matches among those that overlap a window, its
+ * number of events it matches among those that overlap a period, its
  * descendants' included, roots and their tags each in path order. Binds the
- * window's end, then its start; a null bound leaves that side open, so two
+ * period's end, then its start; a null bound leaves that side open, so two
  * nulls count every event. `{filter}` is replaced by the compiled filter, or
  * by nothing, so the counts cover the events the filter keeps.
  */
 export const FACETS_SQL = `
-  with in_window as (
+  with in_period as (
     select e.id
     from calendar_event_derived_times e
     where e."start" < coalesce($1::timestamptz, 'infinity')
@@ -148,7 +148,7 @@ export const FACETS_SQL = `
   tag_counts as (
     select t.tag_id, count(*) as count
     from calendar_event_tag_nodes t
-    join in_window w on w.id = t.calendar_event_id
+    join in_period w on w.id = t.calendar_event_id
     group by t.tag_id
   )
   select

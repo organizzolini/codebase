@@ -21,6 +21,16 @@ describe(NightSkyBackdrop, () => {
     expect(backdrop.querySelector("circle")).not.toBeNull();
   });
 
+  it("is drawn at the opacity it is given, and opaque without one", () => {
+    const { rerender } = render(<NightSkyBackdrop opacity={0.4} />);
+
+    expect(screen.getByTestId("night-sky-backdrop").style.opacity).toBe("0.4");
+
+    rerender(<NightSkyBackdrop />);
+
+    expect(screen.getByTestId("night-sky-backdrop").style.opacity).toBe("");
+  });
+
   it("draws nothing without a sky", () => {
     render(<NightSkyBackdrop />);
 

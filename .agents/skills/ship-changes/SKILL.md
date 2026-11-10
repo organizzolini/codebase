@@ -105,7 +105,7 @@ A check that cannot be run is reported as skipped with the reason, never as pass
 
 Completion: nothing is left claiming the work is in flight, and nothing the run created is left on the machine. Run only after step 5 passes.
 
-- **Issues**: for each issue the pull request closes or advances, remove `status:in-progress`, and `gh issue close <n> --comment "<pull request and release>"` the ones now done (a closed issue is the done signal; no `status:done` label exists). Close a parent spec only when every pull request under it is merged.
+- **Issues**: `gh issue close <n> --comment "<pull request and release>"` each issue the pull request finished (a closed issue is the done signal, and the board marks it Done by itself). An issue the pull request only advances stays In Progress. Close a parent spec only when every pull request under it is merged.
 
 ### Local cleanup
 

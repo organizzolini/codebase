@@ -163,13 +163,7 @@ export const runCodometer = (
 ): CodometerRun => {
   const result = spawnSync(
     process.execPath,
-    [
-      "--import",
-      "@swc-node/register/esm-register",
-      commandLineEntry,
-      "codometer",
-      ...args,
-    ],
+    ["--import", "@swc-node/register/esm-register", commandLineEntry, ...args],
     {
       cwd,
       encoding: "utf8",

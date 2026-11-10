@@ -13,17 +13,17 @@ The single issue template lives at `.github/ISSUE_TEMPLATE/issue.yml`, with requ
 
 - **Set the GitHub Issue Type by position in the hierarchy.** A root issue — one with no parent, whether a spec or a standalone report — is a **Feature** or a **Bug**. Every sub-issue, at any depth, is a **Task**. So a spec is a Feature, and the pull request issues and commit sub-issues beneath it are Tasks. Set it when creating (`gh issue create --type Feature`) or afterwards (`gh issue edit <n> --type Task`). The `compliance issue` check below enforces it, and it is independent of the `type:*` label, which still names the commit type.
 
-This is enforced two ways. First, the template's required dropdowns and disabled blank issues stop most drift at the source. Second, the 🦹 Continuous Compliance GitHub Actions workflow runs on an issue's `opened`/`edited`/`labeled`/`unlabeled` events as well as on a weekly scheduled cron (every Friday at 8:18 AM NYC time): the `compliance issue` command (`compliance`) validates issue labels, GitHub Issue Types (roots are Feature or Bug, sub-issues are Task), parent-child hierarchy depths (maximum 3 tiers: Spec → PR → Commit), and release significance constraints across open issues. In addition, the scheduled matrix job runs `audit-governance` (`compliance`) to enforce `.github/CODEOWNERS` validity and GitHub Actions workflow security policies. The same command also fails any pull request (Dependabot's excepted) whose `closingIssuesReferences` is empty, on pull requests and in the merge queue. On `opened` the same command reconciles the labels a submitted form implies onto the issue first, so a freshly filed template issue already carries them before the check runs.
+This is enforced two ways. First, the template's required dropdowns and disabled blank issues stop most drift at the source. Second, the 🦹 Continuous Compliance GitHub Actions workflow runs on an issue's `opened`/`edited`/`labeled`/`unlabeled` events as well as on a weekly scheduled cron (every Friday at 8:18 AM NYC time): the `compliance issue` command (`compliance`) validates issue labels, GitHub Issue Types (roots are Feature or Bug, sub-issues are Task), parent-child hierarchy depths (maximum 3 tiers: Spec → PR → Commit), and release significance constraints across open issues. In addition, the scheduled matrix job runs `audit-files` (`compliance`) to enforce `.github/CODEOWNERS` validity and GitHub Actions workflow security policies. The same command also fails any pull request (Dependabot's excepted) whose `closingIssuesReferences` is empty, on pull requests and in the merge queue. On `opened` the same command reconciles the labels a submitted form implies onto the issue first, so a freshly filed template issue already carries them before the check runs.
 
 The README's Continuous Compliance badge is this workflow's own status badge. It validates both issue metadata and repository governance policies across open issues and workflow configurations.
 
-### GitHub Projects is not currently reachable
+### The project board
 
-The `gh` token in use carries `gist`, `read:org`, `repo`, and `workflow` — but **not `read:project`**. Issue operations all work; anything touching Projects does not. Grant the scope before relying on a Projects board:
+The organization project [codebase](https://github.com/orgs/organizzolini/projects/1) mirrors the tracker. Built-in workflows add every issue and sub-issue, link a pull request to its issue, and mark an issue Done when it closes; its views are one per project area, filtered on `scope:*` labels. The fields an agent fills — **Status**, **Priority**, **Effort** — and how to set them are in [manage-project](../../.agents/skills/manage-project/SKILL.md).
 
-```bash
-gh auth refresh --scopes read:project,read:org
-```
+Reading or writing the board needs the `project` scope on the `gh` token (`gh auth refresh --scopes project`); a token with only `read:org` and `repo` works for issues but not for the board. Projects calls are GraphQL and share one hourly budget across every tool and agent, so set fields for the issues in hand and never sweep the whole board.
+
+**Milestones are not used.** The spec, a root Feature or Bug issue, is the unit of planning; see [manage-project](../../.agents/skills/manage-project/SKILL.md#milestones).
 
 ## Planning shape: a spec, its pull requests, and their commits
 
@@ -112,31 +112,33 @@ What belongs in the issue versus the pull request description is set out in [lin
 
 ## Marking work in progress
 
-**Applying `status:in-progress` is the first write of an implementation
-session** — before the first failing test, and before any code. It goes on
-every layer the work is about to move, not only the one being typed into: the
-spec issue, the parent issue whose pull request is being built, and the
-sub-issue for the commit being written. `gh issue edit` takes all three
-together:
+**Setting the board's Status field to In Progress is the first write of an
+implementation session** — before the first failing test, and before any code.
+It goes on every layer the work is about to move, not only the one being typed
+into: the spec issue, the parent issue whose pull request is being built, and
+the sub-issue for the commit being written. There is no `status:in-progress`
+label: the field is the one place that state lives, so the board and the issue
+cannot disagree. [manage-project](../../.agents/skills/manage-project/SKILL.md)
+has the `set_field` recipe:
 
 ```bash
-gh issue edit <spec> <parent> <child> --add-label "status:in-progress"
+set_field <spec> Status "In Progress"
+set_field <parent> Status "In Progress"
+set_field <child> Status "In Progress"
 ```
 
-- **A layer takes the label when work under it starts**, so the spec goes
-  in-progress with its first parent issue and a parent goes in-progress with
-  its first sub-issue. Sub-issues that are planned but not yet started stay as
-  they are — the label marks what is moving, not what is scoped.
+- **A layer moves when work under it starts**, so the spec goes in progress
+  with its first parent issue and a parent goes in progress with its first
+  sub-issue. Sub-issues that are planned but not yet started stay Todo — the
+  field marks what is moving, not what is scoped.
 - **Drop `status:ready-for-agent` and `status:ready-for-human` in the same
-  edit.** Those say the ticket is waiting to be picked up, which stops being
+  step.** Those say the ticket is waiting to be picked up, which stops being
   true the moment it is — `/triage`'s frontier query and anyone scanning the
   board both read them that way.
-- **The label comes off when the issue closes.** There is no `status:done`
-  label; a closed issue is the done signal. Remove it as the ticket closes, so
-  nothing sits closed and still reading as in-progress:
+- **Closing the issue is the whole of finishing.** The board's built-in
+  workflow marks a closed issue Done, so there is nothing to clear:
 
   ```bash
-  gh issue edit <child> --remove-label "status:in-progress"
   gh issue close <child> --comment "..."
   ```
 

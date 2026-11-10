@@ -1,6 +1,13 @@
 {
   "$schema": "../node_modules/nx/schemas/executors.json",
   "executors": {
+    "codometer": {
+      "batchImplementation": "./src/executors/codometer/batch-executor",
+      "description": "Measure a project with codometer and write its report, from one process for every project Nx batches.",
+      "implementation": "./src/executors/codometer/executor",
+      "preferBatch": true,
+      "schema": "./src/executors/codometer/schema.json"
+    },
     "knip": {
       "batchImplementation": "./src/executors/knip/batch-executor",
       "description": "Fail a project when knip reports an issue in its workspace, from one knip run for every project Nx batches.",

@@ -5,7 +5,7 @@ import { EMPTY_EVENT_FILTER } from "../calendar-filters/event-filter-tree.consta
 
 import { loadCalendar } from "./calendar-loader.utilities";
 
-// The collection the API resolved against the fixture's tags, as it answers:
+// The preset the API resolved against the fixture's tags, as it answers:
 // the events that stand still.
 const HIGHLIGHTS = {
   description: "The events most worth a look.",
@@ -27,8 +27,8 @@ const HIGHLIGHTS = {
 const MARCH = { date: "2026-03-15", view: "month" } as const;
 
 describe(loadCalendar, () => {
-  it("opens on the default collection when the link names no filter", async () => {
-    serveCalendarApi({ collections: [HIGHLIGHTS], defaultId: "highlights" });
+  it("opens on the default preset when the link names no filter", async () => {
+    serveCalendarApi({ defaultId: "highlights", presets: [HIGHLIGHTS] });
 
     const data = await loadCalendar(MARCH);
 
@@ -37,17 +37,17 @@ describe(loadCalendar, () => {
     expect(data.events.map((event) => event.id)).toStrictEqual([
       "event-mercury-retrograde",
     ]);
-    expect(data.collections.map((collection) => collection.id)).toStrictEqual([
+    expect(data.presets.map((preset) => preset.id)).toStrictEqual([
       "highlights",
     ]);
   });
 
-  it("offers the collections without opening on one the API has none default", async () => {
-    serveCalendarApi({ collections: [HIGHLIGHTS] });
+  it("offers the presets without opening on one the API has none default", async () => {
+    serveCalendarApi({ presets: [HIGHLIGHTS] });
 
     const data = await loadCalendar(MARCH);
 
-    expect(data.collections).toHaveLength(1);
+    expect(data.presets).toHaveLength(1);
     expect(data.filter).toBeUndefined();
     expect(data.filtered).toBe(false);
   });
@@ -128,7 +128,7 @@ describe(loadCalendar, () => {
 
     expect(data.filter).toBeUndefined();
     expect(data.filtered).toBe(false);
-    expect(api.requests.filterCollections).toBe(1);
+    expect(api.requests.presets).toBe(1);
   });
 
   it("counts each tag's events only in the days the view shows", async () => {
@@ -230,10 +230,10 @@ describe(loadCalendar, () => {
         agendaDays: 10,
         anchor: "2026-03-15T12:00:00.000Z",
         scale: "WEEK",
-        view: "AGENDA",
+        window: "AGENDA",
       },
     ]);
-    expect(data.window.start.getTime()).toBeLessThan(
+    expect(data.period.start.getTime()).toBeLessThan(
       new Date("2026-03-15T00:00:00.000Z").getTime(),
     );
   });
@@ -243,7 +243,7 @@ describe(loadCalendar, () => {
 
     await loadCalendar({ date: "2026-03-15" });
 
-    expect(api.requests.windows[0]).toMatchObject({ view: null });
+    expect(api.requests.windows[0]).toMatchObject({ window: null });
   });
 
   it("keeps only the most recent windows, reading the oldest again", async () => {

@@ -1,15 +1,20 @@
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { writeFileSync } from "node:fs";
+import path from "node:path";
 
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PullRequestBodyService } from "./pull-request-body.service";
 
-/** What the mocked workspace hands back for the template read. */
-let templateDocument = "";
+/** The template file the running test reads, in its own temporary directory. */
+let templatePath = "";
 
-vi.mock("node:fs", () => ({
-  readFileSync: vi.fn<(target: string) => string>(() => templateDocument),
-}));
+/** Replaces what the running test's template file holds. */
+function writeTemplate(document: string): void {
+  writeFileSync(templatePath, document, "utf8");
+}
 
 /** The four headings, each with real content under it. */
 const validBody = [
@@ -77,8 +82,11 @@ describe(PullRequestBodyService, () => {
   });
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    templateDocument = templateBody;
+    templatePath = path.join(
+      createTemporaryDirectory("pull-request-body"),
+      "template.md",
+    );
+    writeTemplate(templateBody);
   });
 
   it("resolves with its dependencies", async () => {
@@ -90,7 +98,7 @@ describe(PullRequestBodyService, () => {
   describe("extractTemplateComments", () => {
     it("reads every prompt the template holds", () => {
       expect.hasAssertions();
-      expect(service.extractTemplateComments("template.md")).toStrictEqual([
+      expect(service.extractTemplateComments(templatePath)).toStrictEqual([
         "<!-- Brief description of what this PR does (1-2 sentences) -->",
         "<!-- List of specific changes made -->",
         "<!-- How to manually verify these changes work correctly -->",
@@ -101,9 +109,11 @@ describe(PullRequestBodyService, () => {
     it("reads a prompt added to the template with no code change", () => {
       expect.hasAssertions();
 
-      templateDocument = `${templateBody}\n## 🧭 Rollout\n\n<!-- How this reaches production, and what to watch -->\n`;
+      writeTemplate(
+        `${templateBody}\n## 🧭 Rollout\n\n<!-- How this reaches production, and what to watch -->\n`,
+      );
 
-      expect(service.extractTemplateComments("template.md")).toContain(
+      expect(service.extractTemplateComments(templatePath)).toContain(
         "<!-- How this reaches production, and what to watch -->",
       );
     });
@@ -111,9 +121,9 @@ describe(PullRequestBodyService, () => {
     it("reads a prompt wrapped across lines", () => {
       expect.hasAssertions();
 
-      templateDocument = "<!-- One prompt\nspread over two lines -->";
+      writeTemplate("<!-- One prompt\nspread over two lines -->");
 
-      expect(service.extractTemplateComments("template.md")).toStrictEqual([
+      expect(service.extractTemplateComments(templatePath)).toStrictEqual([
         "<!-- One prompt\nspread over two lines -->",
       ]);
     });
@@ -121,9 +131,9 @@ describe(PullRequestBodyService, () => {
     it("reads no prompt out of a template that has none", () => {
       expect.hasAssertions();
 
-      templateDocument = "## 🌰 Summary\n";
+      writeTemplate("## 🌰 Summary\n");
 
-      expect(service.extractTemplateComments("template.md")).toStrictEqual([]);
+      expect(service.extractTemplateComments(templatePath)).toStrictEqual([]);
     });
   });
 
@@ -557,7 +567,7 @@ describe(PullRequestBodyService, () => {
   describe("findUnfilledComments", () => {
     /** The prompts the template currently holds. */
     const templateComments = (): string[] =>
-      service.extractTemplateComments("template.md");
+      service.extractTemplateComments(templatePath);
 
     it("finds none in a fully written description", () => {
       expect.hasAssertions();
@@ -604,7 +614,7 @@ describe(PullRequestBodyService, () => {
     it("catches a prompt the description wrapped differently", () => {
       expect.hasAssertions();
 
-      templateDocument = "<!-- One prompt\nspread over two lines -->";
+      writeTemplate("<!-- One prompt\nspread over two lines -->");
 
       expect(
         service.findUnfilledComments({
@@ -620,7 +630,7 @@ describe(PullRequestBodyService, () => {
     const check = (body: string): ReturnType<typeof service.checkBody> =>
       service.checkBody({
         body,
-        templateComments: service.extractTemplateComments("template.md"),
+        templateComments: service.extractTemplateComments(templatePath),
       });
 
     it("passes a fully valid description", () => {

@@ -42,21 +42,32 @@ export class DeclarationCommentsService {
     return nodeWithName.name?.getText?.() ?? "(anonymous)";
   }
 
-  /** Finds the node's leading JSDoc comment range, the last one if several. */
+  /**
+   * Finds the node's leading JSDoc comment range, the last one if several.
+   *
+   * Walked newest-first in a loop rather than with `findLast`, because the
+   * callback would be one more frame on the deepest stack this package owns.
+   */
   private getJsDocRange(
     node: tsCompiler.Node,
     sourceFile: tsCompiler.SourceFile,
   ): tsCompiler.CommentRange | undefined {
-    return (
+    const ranges =
       tsCompiler.getLeadingCommentRanges(
         sourceFile.text,
         node.getFullStart(),
-      ) ?? []
-    ).findLast(
-      (candidate) =>
+      ) ?? [];
+
+    for (const candidate of ranges.toReversed()) {
+      if (
         candidate.kind === tsCompiler.SyntaxKind.MultiLineCommentTrivia &&
-        sourceFile.text.slice(candidate.pos, candidate.pos + 3) === "/**",
-    );
+        sourceFile.text.slice(candidate.pos, candidate.pos + 3) === "/**"
+      ) {
+        return candidate;
+      }
+    }
+
+    return undefined;
   }
 
   /**
@@ -113,14 +124,16 @@ export class DeclarationCommentsService {
    * Stripped for the word count only. A character count stays the raw slice —
    * it is the one unit a reader can check against their editor's own column
    * count, and a marker is very much a character even though it is not a word.
+   * Each line's marker is stripped by one multiline replace rather than a
+   * `map` over the split lines, because the callback would be one more frame on
+   * the deepest stack this package owns.
    */
   private readProse(text: string): string {
     return text
       .replace(/^\/\*\*/u, "")
       .replace(/\*\/$/u, "")
-      .split("\n")
-      .map((line) => line.replace(/^\s*\*\s?/u, ""))
-      .join(" ");
+      .replaceAll(/^[^\S\n]*\*[^\S\n]?/gmu, "")
+      .replaceAll("\n", " ");
   }
 
   // 🌎 Public Methods

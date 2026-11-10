@@ -1,5 +1,5 @@
-import type { ResolvedEventFilterCollection } from "../calendar-filters/event-filter-collections.types";
 import type { EventFilterQuery } from "../calendar-filters/event-filters.types";
+import type { ResolvedPreset } from "../calendar-filters/presets.types";
 import type {
   CalendarEventRecord,
   EventFacet,
@@ -9,9 +9,9 @@ import type {
 export const CONSTANTS_CACHE = new Map<
   string,
   Promise<{
-    collections: ResolvedEventFilterCollection[];
     dataset: EventsDataset | null;
     defaultFilter: EventFilterQuery | undefined;
+    presets: ResolvedPreset[];
   }>
 >();
 

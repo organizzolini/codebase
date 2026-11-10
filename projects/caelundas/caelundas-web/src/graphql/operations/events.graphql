@@ -1,9 +1,9 @@
 query Events(
-  $window: EventsWindowInput!
+  $period: PeriodInput!
   $filter: EventFilterGroupInput
   $grouping: EventGroupingInput
 ) {
-  events(window: $window, filter: $filter, grouping: $grouping) {
+  events(period: $period, filter: $filter, grouping: $grouping) {
     color
     description
     durationMinutes

@@ -2,6 +2,12 @@ import type { ConstellationListing } from "./night-sky.types";
 
 // 🔭 Defaults
 
+/**
+ * The backdrop's defaults. `skyOpacity` dims the whole sky and
+ * `surfaceOpacity` is how opaque the calendar's surfaces are drawn over it:
+ * the sky is dimmed and the surfaces mostly opaque so text reads in either
+ * theme.
+ */
 export const DEFAULT_OPTIONS = {
   backgroundBottomColor: "#0d1533",
   backgroundTopColor: "#04060f",
@@ -16,8 +22,10 @@ export const DEFAULT_OPTIONS = {
   lineOpacity: 0.24,
   lineWidth: 0.8,
   pixelsPerSecond: 3,
+  skyOpacity: 0.6,
   starScale: 1,
   still: false,
+  surfaceOpacity: 0.7,
   verticalFieldOfViewDegrees: 90,
 } as const;
 
@@ -75,6 +83,9 @@ export const CONSTELLATION_WORDS = ["all", "none", "zodiac"] as const;
  * sit behind the calendar and the twelve a calendar of astrology is about.
  */
 export const DEFAULT_CONSTELLATIONS: readonly string[] = ["zodiac"];
+
+/** The opacities the sky, its surfaces and its strokes are clamped to. */
+export const OPACITY_RANGE = { maximum: 1, minimum: 0 } as const;
 
 /** The opacities `sky.lineOpacity` is clamped to. */
 export const LINE_OPACITY_RANGE = { maximum: 1, minimum: 0 } as const;

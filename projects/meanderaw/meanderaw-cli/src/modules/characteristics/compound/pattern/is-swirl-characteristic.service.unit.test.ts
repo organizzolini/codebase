@@ -1,7 +1,6 @@
 // Fragments of hexadecimal meander Codes used as test fixtures, not words.
 // cspell:ignore ccffcca
 
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
@@ -28,13 +27,12 @@ describe(IsSwirlCharacteristicService, () => {
     let service: IsSwirlCharacteristicService;
 
     beforeAll(async () => {
-      const module = await Test.createTestingModule({
+      const real = await buildTestingModule(CharacteristicContextService, {
         imports: [CodeModule, PatternCharacteristicsModule, MatrixModule],
-        providers: [CharacteristicContextService],
-      }).compile();
+      });
 
-      contextService = await module.resolve(CharacteristicContextService);
-      service = await module.resolve(IsSwirlCharacteristicService);
+      contextService = real.instance;
+      service = await real.module.resolve(IsSwirlCharacteristicService);
     });
 
     it.each([

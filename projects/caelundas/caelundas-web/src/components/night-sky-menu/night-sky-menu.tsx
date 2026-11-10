@@ -20,6 +20,7 @@ import {
   ANGLE_SLIDERS,
   BACKGROUND_COLORS,
   COLUMN_CLASS_NAME,
+  OPACITY_SLIDERS,
   PANEL_CLASS_NAME,
   STAR_SLIDERS,
 } from "./night-sky-menu.constants";
@@ -134,6 +135,11 @@ export function NightSkyMenu(
                       value={settings[control.field]}
                     />
                   ))}
+                  <NightSkySliders
+                    controls={OPACITY_SLIDERS}
+                    onValueChange={handleSettingChange}
+                    settings={settings}
+                  />
                 </NightSkySection>
                 <NightSkySection title="Stars">
                   <NightSkySliders

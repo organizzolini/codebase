@@ -67,10 +67,6 @@ describe(DrawIndexService, () => {
     overrides: Partial<MeanderRecord> & Pick<MeanderRecord, "code">,
   ): MeanderRecord => meanderRecord({ rows: 1, ...overrides });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
-  });
-
   it("builds one page per held pattern from the committed rows, and an index linking them", async () => {
     await repository.save(
       record({

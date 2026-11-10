@@ -4,6 +4,7 @@ import { PassThrough } from "node:stream";
 import { ConfigurationModule } from "@codependix/configuration";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { captureOutput } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { GateService } from "../gate/gate.service";
@@ -13,12 +14,14 @@ import { BatchService } from "./batch.service";
 
 import type { GateOptions } from "../gate/gate.types";
 import type { RunGateBatchTask } from "./batch.types";
-import type * as ChildProcessModule from "node:child_process";
+import type * as Testing from "@codebase/testing";
 
-vi.mock("node:child_process", async (importOriginal) => ({
-  ...(await importOriginal<typeof ChildProcessModule>()),
-  spawn: vi.fn<() => void>(),
-}));
+vi.mock("node:child_process", async (importOriginal) => {
+  const { mockChildProcess } =
+    await vi.importActual<typeof Testing>("@codebase/testing");
+
+  return mockChildProcess(await importOriginal());
+});
 
 /** A child process that prints, then exits with the given code or fails. */
 function buildChild(args: {
@@ -67,8 +70,7 @@ describe(BatchService, () => {
   beforeEach(() => {
     vi.mocked(spawn).mockReset();
     vi.mocked(spawn).mockReturnValue(buildChild({ exitCode: 0 }));
-    vi.spyOn(process.stdout, "write").mockReturnValue(true);
-    vi.spyOn(process.stderr, "write").mockReturnValue(true);
+    captureOutput();
   });
 
   it("resolves with its dependencies", async () => {
