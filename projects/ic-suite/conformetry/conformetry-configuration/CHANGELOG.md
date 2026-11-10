@@ -1,3 +1,13 @@
+## 0.0.80 (2026-11-10)
+
+### 🩹 Fixes
+
+- **codependix,conformetry,infrastructure,installation,persistence,testing,configuration,caelundas,dependencies:** 🐛 gap ([#2223](https://github.com/organizzolini/codebase/pull/2223), [#2221](https://github.com/organizzolini/codebase/issues/2221))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.78
+
 ## 0.0.79 (2026-11-10)
 
 ### 🧱 Updated Dependencies

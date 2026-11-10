@@ -1,3 +1,12 @@
+## 0.0.16 (2026-11-10)
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.16
+- Updated coinagerie-vocabulary to 0.0.16
+- Updated coinagerie-output to 0.0.16
+- Updated coinagerie-core to 0.0.16
+
 ## 0.0.15 (2026-11-10)
 
 ### 🧱 Updated Dependencies

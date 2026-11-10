@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.61.6](https://github.com/organizzolini/codebase/compare/v3.61.5...v3.61.6) (2026-11-10)
+
+### 🐛 Bug Fixes
+
+* **codependix,conformetry,infrastructure,installation,persistence,testing,configuration,caelundas,dependencies:** 🐛 gap ([#2223](https://github.com/organizzolini/codebase/issues/2223)) ([4a49195](https://github.com/organizzolini/codebase/commit/4a4919570756f489c4dbf7b7b169c9bc6fdc5547)), closes [#2221](https://github.com/organizzolini/codebase/issues/2221)
+
 ## [3.61.5](https://github.com/organizzolini/codebase/compare/v3.61.4...v3.61.5) (2026-11-10)
 
 ## [3.61.4](https://github.com/organizzolini/codebase/compare/v3.61.3...v3.61.4) (2026-11-10)
