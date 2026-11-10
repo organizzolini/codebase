@@ -21,7 +21,7 @@ export const environmentSchema = z.object({
 });
 
 /**
- * Emits the code-first schema beside the root module, so booting from the
- * repository root never writes a stray `src/schema.gql`.
+ * Code-first schema file, beside the root module so booting from the repository
+ * root cannot write a stray `src/schema.gql` there.
  */
 export const GRAPHQL_SCHEMA_FILE = path.join(import.meta.dirname, "schema.gql");

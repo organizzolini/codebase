@@ -990,6 +990,9 @@ importers:
       '@codebase/observability':
         specifier: workspace:*
         version: link:../projects/common/observability
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../projects/common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -1162,6 +1165,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../projects/common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -1313,6 +1319,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -1434,6 +1443,9 @@ importers:
       '@codebase/persistence':
         specifier: workspace:*
         version: link:../../common/persistence
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../common/testing
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)
@@ -3320,6 +3332,9 @@ importers:
       '@codebase/observability':
         specifier: workspace:*
         version: link:../../../common/observability
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3369,6 +3384,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3403,6 +3421,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3451,13 +3472,13 @@ importers:
       '@nestjs/common':
         specifier: catalog:ic-suite
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)
-      reflect-metadata:
-        specifier: 'catalog:'
-        version: 0.2.2
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3476,6 +3497,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.1(vitest@5.0.1)
+      reflect-metadata:
+        specifier: 'catalog:'
+        version: 0.2.2
       vitest:
         specifier: 'catalog:'
         version: 5.0.1(@opentelemetry/api@1.10.0)(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@31.0.0(@noble/hashes@2.2.0))(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))(vite@8.3.6(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
@@ -3498,6 +3522,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3531,10 +3558,10 @@ importers:
       '@nestjs/common':
         specifier: catalog:ic-suite
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)
-      reflect-metadata:
-        specifier: 'catalog:'
-        version: 0.2.2
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3553,6 +3580,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.1(vitest@5.0.1)
+      reflect-metadata:
+        specifier: 'catalog:'
+        version: 0.2.2
       vitest:
         specifier: 'catalog:'
         version: 5.0.1(@opentelemetry/api@1.10.0)(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@31.0.0(@noble/hashes@2.2.0))(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))(vite@8.3.6(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
@@ -3574,13 +3604,13 @@ importers:
       pluralize:
         specifier: 'catalog:'
         version: 8.0.0
-      reflect-metadata:
-        specifier: 'catalog:'
-        version: 0.2.2
       wink-lemmatizer:
         specifier: 'catalog:'
         version: 3.0.4
     devDependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../../../common/testing
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3602,6 +3632,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.1(vitest@5.0.1)
+      reflect-metadata:
+        specifier: 'catalog:'
+        version: 0.2.2
       vitest:
         specifier: 'catalog:'
         version: 5.0.1(@opentelemetry/api@1.10.0)(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@31.0.0(@noble/hashes@2.2.0))(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))(vite@8.3.6(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))

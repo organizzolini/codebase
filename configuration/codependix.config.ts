@@ -561,7 +561,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "The coinagerie chain is the ic-suite spine: `core <- configuration <- languages <- vocabulary <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, languages tokenize source into raw identifiers, vocabulary turns them into headwords, output owns every render target and the glossary comparison, and the command-line host composes all of them. No coinagerie package imports another toolchain; it re-implements what it needs.",
         name: "coinagerie-core-is-a-leaf",
-        to: { id: ["!(configuration)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["name:coinagerie-configuration"] },
@@ -570,7 +570,7 @@ const codependixConfiguration: CodependixConfiguration = {
           "The coinagerie chain is the ic-suite spine: `core <- configuration <- languages <- vocabulary <- output <- cli`. Core is the contracts leaf, configuration resolves the config file and the command line, languages tokenize source into raw identifiers, vocabulary turns them into headwords, output owns every render target and the glossary comparison, and the command-line host composes all of them. No coinagerie package imports another toolchain; it re-implements what it needs.",
         name: "coinagerie-configuration-layer",
         to: {
-          tags: ["name:configuration", "name:coinagerie-core"],
+          tags: ["name:configuration", "name:coinagerie-core", "name:testing"],
         },
       },
       {
@@ -585,6 +585,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:coinagerie-configuration",
             "name:coinagerie-core",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -601,6 +602,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:coinagerie-core",
             "name:coinagerie-languages",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -617,6 +619,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:coinagerie-core",
             "name:coinagerie-vocabulary",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -634,6 +637,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:coinagerie-output",
             "name:coinagerie-vocabulary",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -652,6 +656,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:coinagerie-output",
             "name:coinagerie-vocabulary",
             "name:observability",
+            "name:testing",
           ],
         },
       },

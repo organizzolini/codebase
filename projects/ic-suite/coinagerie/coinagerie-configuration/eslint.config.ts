@@ -15,7 +15,12 @@ export default [
           // are outside the build dependency check's scope.
           // vitest: referenced via tsconfig "types" array; it's a devDependency and
           // the @nx/dependency-checks rule misidentifies it as a production dependency.
-          ignoredDependencies: ["@golevelup/ts-vitest", "vitest"],
+          ignoredDependencies: [
+            "@codebase/testing",
+            "@golevelup/ts-vitest",
+            "reflect-metadata",
+            "vitest",
+          ],
           ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
         },
       ],
