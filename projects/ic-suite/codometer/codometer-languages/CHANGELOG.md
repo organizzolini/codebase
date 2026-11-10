@@ -1,3 +1,14 @@
+## 0.0.74 (2026-11-10)
+
+### 🚀 Features
+
+- **callidescope,codependix,codometer,coinagerie,configuration:** ✨ write tool markdown to adjacent files ([#2225](https://github.com/organizzolini/codebase/pull/2225), [#2224](https://github.com/organizzolini/codebase/issues/2224))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.74
+- Updated codometer-core to 0.0.74
+
 ## 0.0.73 (2026-11-09)
 
 ### 🧱 Updated Dependencies

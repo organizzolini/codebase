@@ -36,8 +36,8 @@
     "start": {
       "cache": false,
       "configurations": {
-        "audit-governance": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts audit-governance"
+        "audit-files": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts audit-files"
         },
         "issue": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts issue"

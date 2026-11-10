@@ -50,15 +50,15 @@ export const projectDefaults = {
    * request, so a pull request cannot catch this.
    */
   fileImports: {
-    markdown: { anchor: "codependix-file-imports" },
+    markdown: { anchor: "codependix-file-imports", path: "codependix.md" },
     target: "markdown",
   },
   nestjsModules: {
-    markdown: { anchor: "codependix-nestjs-modules" },
+    markdown: { anchor: "codependix-nestjs-modules", path: "codependix.md" },
     target: "markdown",
   },
   nxProjects: {
-    markdown: { anchor: "codependix-nx-projects" },
+    markdown: { anchor: "codependix-nx-projects", path: "codependix.md" },
     target: "markdown",
   },
 } satisfies CodependixProjectConfiguration;
@@ -969,15 +969,15 @@ const codependixConfiguration: CodependixConfiguration = {
    */
   workspace: {
     fileImports: {
-      markdown: { anchor: "codependix-file-imports" },
+      markdown: { anchor: "codependix-file-imports", path: "codependix.md" },
       target: "markdown",
     },
     nestjsModules: {
-      markdown: { anchor: "codependix-nestjs-modules" },
+      markdown: { anchor: "codependix-nestjs-modules", path: "codependix.md" },
       target: "markdown",
     },
     nxProjects: {
-      markdown: { anchor: "codependix-nx-projects" },
+      markdown: { anchor: "codependix-nx-projects", path: "codependix.md" },
       target: "markdown",
     },
   },
