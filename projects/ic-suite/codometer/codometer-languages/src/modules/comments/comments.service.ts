@@ -40,26 +40,15 @@ export class CommentsService {
   // 🔏 Private Methods
 
   /**
-   * Counts the words in a comment's prose, markers already stripped.
-   *
-   * Splitting a trimmed string on whitespace runs never yields an empty
-   * token, so the empty case is the only one worth guarding — and guarding it
-   * rather than filtering keeps a callback frame off the deepest stack this
-   * package owns.
-   */
-  private countWords(prose: string): number {
-    const trimmed = prose.trim();
-
-    return trimmed === "" ? 0 : trimmed.split(/\s+/u).length;
-  }
-
-  /**
    * Every declared maximum, paired with what this comment measured.
    *
    * Written as three guarded pushes rather than a table walked by `flatMap`,
    * because the callback would be one more frame on the deepest stack this
    * package owns — the JSDoc walk reaches here through eleven of them, and
-   * `callidescope.config.ts` gates that at what it measures.
+   * `callidescope.config.ts` gates that at what it measures. The words are
+   * counted in place for the same reason: splitting a trimmed string on
+   * whitespace runs never yields an empty token, so the empty case is the only
+   * one worth guarding, and a helper would be a frame deeper.
    */
   private declaredLimits(
     args: { prose: string; source: string },
@@ -88,9 +77,11 @@ export class CommentsService {
     }
 
     if (comments.maximumWords !== undefined) {
+      const trimmed = args.prose.trim();
+
       declared.push({
         limit: comments.maximumWords,
-        measured: this.countWords(args.prose),
+        measured: trimmed === "" ? 0 : trimmed.split(/\s+/u).length,
         unit: "words",
       });
     }
