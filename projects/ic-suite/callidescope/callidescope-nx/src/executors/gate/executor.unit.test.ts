@@ -11,6 +11,7 @@ import gateExecutor from "./executor";
 import type { PluginService } from "../../modules/plugin/plugin.service";
 import type { ResolvedTraceScope } from "../../modules/plugin/plugin.types";
 import type { ConfigurationService } from "@callidescope/configuration";
+import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext } from "@nx/devkit";
 
 /** The workspace configuration every run must name. */
@@ -68,6 +69,8 @@ function buildScope(
 }
 
 describe(gateExecutor, () => {
+  let output: CapturedOutput;
+
   beforeEach(() => {
     vi.clearAllMocks();
     pluginService.resolveTraceScope.mockResolvedValue(buildScope());
@@ -76,7 +79,7 @@ describe(gateExecutor, () => {
       ok: true,
       report: "## Call stacks over the depth limit (0)",
     });
-    captureOutput();
+    output = captureOutput();
   });
 
   it("gates the project the target belongs to when nothing else is named", async () => {
@@ -111,9 +114,7 @@ describe(gateExecutor, () => {
     ).resolves.toStrictEqual({ success: false });
     // The findings still reach stdout: a failing gate is exactly when the
     // reader needs to see what tripped it.
-    expect(process.stdout.write).toHaveBeenCalledWith(
-      "## Call stacks over the depth limit (1)\n",
-    );
+    expect(output.stdout()).toBe("## Call stacks over the depth limit (1)\n");
   });
 
   it("prints the findings of a gate that passed", async () => {
@@ -124,9 +125,7 @@ describe(gateExecutor, () => {
       buildContext("alpha"),
     );
 
-    expect(process.stdout.write).toHaveBeenCalledWith(
-      "## Call stacks over the depth limit (0)\n",
-    );
+    expect(output.stdout()).toBe("## Call stacks over the depth limit (0)\n");
   });
 
   it("prefers a named selection over the target's own project", async () => {
@@ -215,9 +214,7 @@ describe(gateExecutor, () => {
       ),
     ).resolves.toStrictEqual({ success: false });
     expect(pluginService.runGate).not.toHaveBeenCalled();
-    expect(process.stdout.write).toHaveBeenCalledWith(
-      `${EMPTY_SCOPE_REPORT}\n`,
-    );
+    expect(output.stdout()).toBe(`${EMPTY_SCOPE_REPORT}\n`);
   });
 
   it("forwards the resolved scope to the gate unchanged", async () => {

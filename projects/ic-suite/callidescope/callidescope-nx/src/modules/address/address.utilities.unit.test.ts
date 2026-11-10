@@ -11,6 +11,7 @@ import type { PluginService } from "../plugin/plugin.service";
 import type { ResolvedTraceScope } from "../plugin/plugin.types";
 import type { AddressService } from "./address.service";
 import type { ConfigurationService } from "@callidescope/configuration";
+import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext } from "@nx/devkit";
 
 /** The workspace configuration every run must name. */
@@ -68,6 +69,8 @@ function buildScope(
 }
 
 describe(runAddressExecutor, () => {
+  let output: CapturedOutput;
+
   beforeEach(() => {
     vi.clearAllMocks();
     pluginService.resolveTraceScope.mockResolvedValue(buildScope());
@@ -77,7 +80,7 @@ describe(runAddressExecutor, () => {
       ok: true,
       report: "# Breadth",
     });
-    captureOutput();
+    output = captureOutput();
   });
 
   it.each([
@@ -98,7 +101,7 @@ describe(runAddressExecutor, () => {
           },
         }),
       ).resolves.toStrictEqual({ success: true });
-      expect(process.stdout.write).toHaveBeenCalledWith(`${report}\n`);
+      expect(output.stdout()).toBe(`${report}\n`);
     },
   );
 
@@ -242,8 +245,6 @@ describe(runAddressExecutor, () => {
         },
       }),
     ).resolves.toStrictEqual({ success: false });
-    expect(process.stdout.write).toHaveBeenCalledWith(
-      "No callable matches it.\n",
-    );
+    expect(output.stdout()).toBe("No callable matches it.\n");
   });
 });

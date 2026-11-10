@@ -8,7 +8,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import { captureExitCode } from "@codebase/testing";
+import { captureExitCode, captureOutput } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PathCommand } from "./path.command";
@@ -170,7 +170,7 @@ describe(PathCommand, () => {
     });
 
     it("executes query and prints report to stdout", async () => {
-      const writeSpy = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+      const output = captureOutput();
       const mockContext = createMock<GraphRunContext>();
       vi.mocked(runContextService.build).mockResolvedValue(mockContext);
       vi.mocked(pathQueryService.query).mockResolvedValue({
@@ -201,12 +201,8 @@ describe(PathCommand, () => {
         from: "app",
         to: "lib",
       });
-      expect(writeSpy).toHaveBeenCalledWith(
-        expect.stringContaining("`app` → `lib`"),
-      );
+      expect(output.stdout()).toContain("`app` → `lib`");
       expect(readExitCode() ?? 0).toBe(0);
-
-      writeSpy.mockRestore();
     });
 
     it("reports a refused configuration path without building a context", async () => {
