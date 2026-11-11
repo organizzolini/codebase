@@ -1,3 +1,9 @@
+## 0.0.18 (2026-11-11)
+
+### 🚀 Features
+
+- **codometer:** ✨ tighten the comment budgets and shorten every comment over them ([#2262](https://github.com/organizzolini/codebase/pull/2262), [#2261](https://github.com/organizzolini/codebase/issues/2261))
+
 ## 0.0.17 (2026-11-10)
 
 ### 🚀 Features

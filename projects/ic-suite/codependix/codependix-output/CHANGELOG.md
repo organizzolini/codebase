@@ -1,3 +1,18 @@
+## 0.0.80 (2026-11-11)
+
+### 🚀 Features
+
+- **codometer:** ✨ tighten the comment budgets and shorten every comment over them ([#2262](https://github.com/organizzolini/codebase/pull/2262), [#2261](https://github.com/organizzolini/codebase/issues/2261))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.78
+- Updated codependix-configuration to 0.0.80
+- Updated codependix-file-imports to 0.0.78
+- Updated codependix-nx-projects to 0.0.79
+- Updated codependix-boundaries to 0.0.80
+- Updated codependix-core to 0.0.78
+
 ## 0.0.79 (2026-11-10)
 
 ### 🚀 Features

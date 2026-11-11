@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.63.0](https://github.com/organizzolini/codebase/compare/v3.62.0...v3.63.0) (2026-11-11)
+
+### ✨ Features
+
+* **codometer:** ✨ tighten the comment budgets and shorten every comment over them ([#2262](https://github.com/organizzolini/codebase/issues/2262)) ([7e2bdf0](https://github.com/organizzolini/codebase/commit/7e2bdf03365c8b1c0f10ab2ccfbb64a5a37d1f2b)), closes [#2261](https://github.com/organizzolini/codebase/issues/2261)
+
 ## [3.62.0](https://github.com/organizzolini/codebase/compare/v3.61.6...v3.62.0) (2026-11-10)
 
 ### ✨ Features

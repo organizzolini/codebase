@@ -1,3 +1,16 @@
+## 0.0.83 (2026-11-11)
+
+### 🚀 Features
+
+- **codometer:** ✨ tighten the comment budgets and shorten every comment over them ([#2262](https://github.com/organizzolini/codebase/pull/2262), [#2261](https://github.com/organizzolini/codebase/issues/2261))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.82
+- Updated conformetry-generation to 0.0.82
+- Updated conformetry-validation to 0.0.81
+- Updated conformetry-output to 0.0.81
+
 ## 0.0.82 (2026-11-10)
 
 ### 🚀 Features
