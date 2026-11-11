@@ -62,7 +62,7 @@ export interface DepthMeasurement {
   readonly byComponent: readonly ComponentDepth[];
 }
 
-/** Arguments for measuring breadth across the graph. */
+/** Arguments for measuring breadth across the graph, cycles included. */
 export interface MeasureBreadthArguments {
   readonly callableIds: readonly CallableId[];
   readonly graph: CallGraph;

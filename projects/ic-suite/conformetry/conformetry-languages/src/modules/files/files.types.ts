@@ -18,7 +18,7 @@ export interface FilesCheckResult {
   readonly totalWeight: number;
 }
 
-/** A conformance error this pass always weighs. */
+/** An error this pass always weighs, so `weight` is never optional. */
 export interface WeighedConformetryDifference extends ConformetryDifference {
   readonly weight: number;
 }

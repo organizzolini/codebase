@@ -11,5 +11,5 @@ export const MODULE_GRAPH_MERMAID_HEADER = "flowchart LR";
 export const MODULE_GRAPH_AMBIENT_LEGEND =
   "_Rounded modules are global: every module can inject them, so their edges are left out._";
 
-/** Smallest graph the ambient rule may fire on. */
+/** Smallest graph the ambient rule fires on; smaller ones have normal hubs. */
 export const MODULE_GRAPH_AMBIENT_MINIMUM_MODULES = 4;

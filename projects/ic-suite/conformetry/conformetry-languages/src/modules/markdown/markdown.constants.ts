@@ -12,7 +12,7 @@ export const MARKDOWN_VALIDATOR_DESCRIPTOR: LanguageValidatorDescriptor = {
   name: "markdown",
 };
 
-/** Node types whose children carry the meaning. */
+/** Node types whose children carry the meaning, so nested headings still count. */
 export const CONTAINER_TYPES = new Set<string>([
   "blockquote",
   "document",

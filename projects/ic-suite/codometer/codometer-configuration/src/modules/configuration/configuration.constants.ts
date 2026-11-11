@@ -22,7 +22,7 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
   ".ts",
 ]);
 
-/** File names a configuration may be written under. */
+/** File names a configuration may use; a run always takes `--config`. */
 export const CONFIGURATION_FILE_NAMES = [
   "codometer.config.ts",
   "codometer.config.mts",

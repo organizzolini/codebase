@@ -219,7 +219,7 @@ export const LETTER_CHARACTERISTIC_KEYS = [
   ...LETTER_ORIENTATION_NAMES.map((name) => `z${name}LatinCount` as const),
 ] as const;
 
-/** Every numeric characteristic key, alphabetical, including the letter keys. */
+/** Every numeric key, letters included, pinned to the evaluators by a test. */
 export const NUMERIC_CHARACTERISTIC_KEYS = (
   [
     "bettiNumber0Count",

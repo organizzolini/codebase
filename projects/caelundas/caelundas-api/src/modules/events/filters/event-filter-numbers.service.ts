@@ -109,7 +109,7 @@ export class EventFilterNumbersService {
   }
 
   /**
-   * Compiles a numeric rule on a tag root whose tags are named for numbers.
+   * Compiles a numeric rule on a number-named tag root: events with a tag beneath it meeting the comparison; `neq` and not-between invert it.
    */
   public compileTagNumberRule(
     rootId: string,
@@ -133,7 +133,7 @@ export class EventFilterNumbersService {
   }
 
   /**
-   * Whether a rule on a derived field compares a number.
+   * Whether a rule on a derived field compares a number: any numeric operator on duration, a comparison but not a range on the hour.
    */
   public isCalendarNumberRule(fieldId: string, operator: string): boolean {
     if (fieldId === CALENDAR_FIELD_IDS.durationMinutes) {

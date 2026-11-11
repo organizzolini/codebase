@@ -107,7 +107,7 @@ export interface PositionedToken {
   token: CommentToken;
 }
 
-/** One TypeScript or JavaScript file's in-progress scan, keyed by position. */
+/** A TypeScript or JavaScript file's scan, keyed by position so repeats collapse. */
 export interface TypescriptCommentScan {
   content: string;
   ranges: Map<number, CommentRange>;
