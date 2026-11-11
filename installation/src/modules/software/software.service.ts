@@ -14,11 +14,10 @@ import { SoftwareOllamaService } from "./software-ollama.service";
 import { SoftwarePythonService } from "./software-python.service";
 
 /**
- * Installs the developer tools that come after Node, with a different set on each platform.
+ * Installs developer tools after Node, with a different set on each platform.
  *
- * A Mac gets Python, Ollama, Docker, GPG, the infrastructure tools, and database tools.
- * Linux, which has no Homebrew, gets the tools a commit and the security gate need.
- * Both then make SSH commit signatures verifiable.
+ * A Mac gets Python, Ollama, Docker, GPG, infrastructure tools, and database tools.
+ * Linux gets the tools a commit and the security gate need.
  * Homebrew, nvm, Node, and pnpm are installed beforehand by `scripts/installation.sh`.
  */
 @Injectable()

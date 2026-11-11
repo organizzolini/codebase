@@ -13,7 +13,5 @@ export const LONGITUDES_WINDOW_INSTANTS = [
   "next",
 ] as const;
 
-/**
- * The phase word (forming, perfective, or dissolving) in an aspect's description, so a boundary title reads the same.
- */
+/** Phase word (forming, perfective, dissolving) in an aspect's description. */
 export const PHASE_WORD_PATTERN = / (?:forming|perfective|dissolving)(?= |$)/u;

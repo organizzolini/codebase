@@ -39,12 +39,12 @@ import type {
 } from "./upgrade-dependencies.types";
 
 /**
- * Runs the weekly dependency upgrades one step at a time, so none can leave a
- * half-applied change behind.
+ * Runs the weekly dependency upgrades step by step, so none leaves a
+ * half-applied change.
  *
- * Before each step, the working tree is recorded as a git tree, untracked
- * files included. A failed step is undone by restoring that tree, the state the
- * previous step left, so a later failure cannot undo an earlier success.
+ * Before each step, the working tree is saved as a git tree, untracked files
+ * included. A failed step is undone by restoring that tree, so later failures
+ * cannot undo earlier successes.
  */
 @Injectable()
 export class UpgradeDependenciesService {

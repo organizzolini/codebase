@@ -11,7 +11,7 @@ const AUTHOR_SLUGS = ["cicero", "horace", "ovid", "valerius-flaccus"] as const;
 /** Author slugs seeded by the literature search corpus. */
 export type LiteratureSearchAuthorSlug = (typeof AUTHOR_SLUGS)[number];
 
-/** The saved rows of the corpus, looked up by slug, so tests can name expectations. */
+/** Saved corpus rows, looked up by slug for expectations. */
 export interface LiteratureSearchCorpus {
   readonly author: (slug: LiteratureSearchAuthorSlug) => Author;
   readonly lines: readonly Line[];
@@ -29,7 +29,7 @@ export type LiteratureSearchTextSlug =
   | "ovid/metamorphoses"
   | "valerius-flaccus/argonautica";
 
-/** One text to seed, with its author and its lines in index order. */
+/** A text to seed, with its author and lines. */
 interface SeededText {
   readonly author: LiteratureSearchAuthorSlug;
   readonly lines: readonly string[];

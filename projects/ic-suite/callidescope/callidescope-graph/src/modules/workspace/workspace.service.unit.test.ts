@@ -84,10 +84,7 @@ const TRANSITIVE_PROJECT: WorkspaceProject = {
   root: "packages/transitive",
 };
 
-/**
- * The workspace root as a project: a manifest of its own, and a root that
- * contains every other project's.
- */
+/** The workspace root, as a project containing every other. */
 const WORKSPACE_ROOT_PROJECT: WorkspaceProject = {
   configurationPath: "",
   hasPackageManifest: true,

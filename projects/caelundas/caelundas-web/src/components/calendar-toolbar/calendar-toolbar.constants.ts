@@ -1,7 +1,7 @@
 // ♟️ Constants
 
 /**
- * One of the toolbar's two rows; its right end wraps under when the row does not fit.
+ * A toolbar row; its right end wraps under when cramped.
  */
 export const ROW_CLASS_NAME =
   "flex min-w-0 flex-wrap items-start justify-between gap-2";

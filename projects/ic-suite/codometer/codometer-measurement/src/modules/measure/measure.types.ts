@@ -26,9 +26,7 @@ export interface AnalyzeFilesArguments {
   workingDirectory: string;
 }
 
-/**
- * What every analysis declared for one input reported over its files. Analyses not requested report `undefined`, never a zero.
- */
+/** One input's analysis results; skipped ones are `undefined`, not zero. */
 export interface InputMeasurement {
   /** How many files the input's globs claimed. */
   files: number;
@@ -64,9 +62,7 @@ export interface MeasureInputArguments {
   workingDirectory: string;
 }
 
-/**
- * Everything one run measured, input by input. `statistics` holds the codebase's language metrics, held out for consumers.
- */
+/** Everything one run measured, input by input; `statistics` stands apart. */
 export interface MeasurementResult {
   /**
    * What the run could not do, collected rather than thrown.

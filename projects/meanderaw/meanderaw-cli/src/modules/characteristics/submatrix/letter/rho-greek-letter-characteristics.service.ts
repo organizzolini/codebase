@@ -8,16 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the Ρ (Greek rho) glyph — a
- * closed unit square whose west side runs on a unit below it as a stem — one
- * per corner and clockwise rotation, each counting the base template drawn
- * that way. The base faces Southeast, drawn:
- *
- * ```text
- * ┌┐
- * ├┘
- * ╵
- * ```
+ * Provides the sixteen orientation evaluators of the Ρ glyph: a closed unit square whose west side
+ * runs on a unit below it as a stem. One per corner and clockwise rotation, each counting the base
+ * template drawn that way. The base faces Southeast.
  */
 @Injectable()
 export class RhoGreekLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -43,7 +36,7 @@ export class RhoGreekLetterCharacteristicsService implements CharacteristicEvalu
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = ["65", "e9", "8."];
 
   // 🔑 Public Fields

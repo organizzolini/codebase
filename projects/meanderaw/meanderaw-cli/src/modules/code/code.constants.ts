@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * Matches a self-contained Code string in the format `{columns}x{rows}y{lattice}r{repeats}`
- * (or without the `r` suffix), case-insensitively.
- */
+/** Matches a Code in `{columns}x{rows}y{lattice}r{repeats}` form, `r` optional. */
 export const CODE_FORMAT_PATTERN =
   /^(?<columns>\d+)x(?<rows>\d+)y(?<digits>[^r]+?)(?:r(?<repeats>\d+))?$/iu;
 

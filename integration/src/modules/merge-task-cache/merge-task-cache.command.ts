@@ -8,13 +8,12 @@ import { TaskDatabaseService } from "../task-database/task-database.service";
 import { NO_SOURCE_MESSAGE } from "./merge-task-cache.constants";
 
 /**
- * CLI command that merges another run's Nx task cache into this one, so the
- * tasks that run already finished are hits here too.
+ * CLI command that merges another run's Nx task cache into this one, so its
+ * finished tasks are hits here.
  *
- * Takes the source directory, holding `cache/` and `workspace-data/` as `.nx`
- * lays them out, and reads `NX_WORKSPACE_DATA_DIRECTORY` and
- * `NX_CACHE_DIRECTORY`. Always exits 0: a problem is a warning and a cold
- * cache, never a failed run.
+ * Takes the source directory, holding `cache/` and `workspace-data/`, and reads
+ * `NX_WORKSPACE_DATA_DIRECTORY` and `NX_CACHE_DIRECTORY`. Always exits 0: a
+ * problem is a warning and a cold cache.
  */
 @Command({
   arguments: "[source-directory]",

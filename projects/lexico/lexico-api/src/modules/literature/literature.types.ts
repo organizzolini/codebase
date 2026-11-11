@@ -9,16 +9,10 @@ import type { Repository } from "@codebase/lexico-db";
  */
 export type AuthorDatabaseOnlyField = "metadata";
 
-/**
- * The `Author` relation a resolver exposes instead of the object: its texts,
- * which `AuthorsResolver` pages in title order.
- */
+/** The `Author` relation resolvers expose: texts, in title order. */
 export type AuthorResolvedField = "texts";
 
-/**
- * How a connection's cursors are written, and read back into the row each
- * names, so a cursor the connection never handed out is ignored.
- */
+/** Reads cursors back into rows; unissued cursors are ignored. */
 export interface ConnectionCursor {
   /**
    * Reads the id, and sort key if present, of the row a cursor names. Null when
@@ -29,9 +23,7 @@ export interface ConnectionCursor {
   readonly encode: (position: CursorPosition) => string;
 }
 
-/**
- * A filtered query Relay pagination pushes ordering, cursor bounds, and limits into, so one page of rows is read.
- */
+/** Query filters, ordering, and limits that pagination pushes down. */
 export interface ConnectionQuery<
   Node extends IdentifiedEntity,
   Row extends IdentifiedEntity = Node,
@@ -52,25 +44,19 @@ export interface ConnectionQuery<
   readonly sortKey: string;
 }
 
-/**
- * One parent's page of children asked for through a batched relation
- * connection, such as one line's `tokens(first: 20)`.
- */
+/** One parent's page of batched children, such as `tokens(first: 20)`. */
 export interface ConnectionRequest {
   readonly pagination: PaginationArguments;
   readonly parentId: string;
 }
 
-/**
- * The row a cursor claims to name: its id, and the sort key that row must
- * still have when the cursor carries one.
- */
+/** A cursor's row: id, plus sort key if carried. */
 export interface CursorClaim {
   readonly id: string;
   readonly key?: unknown;
 }
 
-/** The sort key and id of the row a cursor names, which bound a page's window. */
+/** Sort key and id of the row a cursor names. */
 export interface CursorPosition {
   readonly id: string;
   readonly key: unknown;
@@ -84,21 +70,16 @@ export interface IdentifiedEntity {
 /** The `Line` relations the API exposes, each as its own GraphQL type. */
 export type LineRelationField = "author" | "text";
 
-/**
- * The `Line` relation a resolver exposes instead of the object: its tokens,
- * which `LinesResolver` pages in index order.
- */
+/** The `Line` relation resolvers expose: tokens, in index order. */
 export type LineResolvedField = "tokens";
 
-/** The counts a page is cut to, with absent and negative counts read as no limit. */
+/** Page sizes; absent or negative counts mean no limit. */
 export interface PageLimits {
   readonly first: null | number;
   readonly last: null | number;
 }
 
-/**
- * What one statement reads for a page: the cursor rows, whether any row precedes `before`, and the window between them.
- */
+/** A page statement's cursor rows and the window between them. */
 export interface PageRead {
   readonly after: CursorPosition | null;
   readonly before: CursorPosition | null;
@@ -107,7 +88,7 @@ export interface PageRead {
   readonly window: CursorPosition[];
 }
 
-/** The one row the page statement returns, as the driver hands it back. */
+/** The one row a page statement returns. */
 export interface PageReadRow {
   readonly after: CursorPosition | null;
   readonly before: CursorPosition | null;
@@ -116,25 +97,20 @@ export interface PageReadRow {
   readonly window: CursorPosition[];
 }
 
-/** The cursors of one partitioned page, each naming a row of one parent. */
+/** Cursors of one partitioned page, each naming a parent's row. */
 export interface PartitionBounds {
   readonly after: null | PartitionedCursorPosition;
   readonly before: null | PartitionedCursorPosition;
 }
 
-/**
- * One parent's row counts in a partitioned connection: every child, the
- * children between the cursors, and the children before the `before` cursor.
- */
+/** One parent's counts: all children, those between cursors, and before. */
 export interface PartitionCounts {
   readonly beforeCount: number;
   readonly totalCount: number;
   readonly windowCount: number;
 }
 
-/**
- * Children of many parents, paged within each parent in a fixed number of statements, such as line tokens.
- */
+/** Many parents' children, paged in a fixed statement count. */
 export interface PartitionedConnectionQuery<Entity extends IdentifiedEntity> {
   /** The alias the column names below are written against, such as `token`. */
   readonly alias: string;
@@ -178,10 +154,7 @@ export type TextDatabaseOnlyField = "metadata";
 /** The `Text` relations the API exposes, each as its own GraphQL type. */
 export type TextRelationField = "author" | "parentText";
 
-/**
- * The `Text` relations a resolver serves instead of the object: child texts,
- * paged in title order, and lines, paged in index order.
- */
+/** The `Text` relations resolvers serve: child texts and lines. */
 export type TextResolvedField = "childTexts" | "lines";
 
 /** The `Token` relations the API exposes, each as its own GraphQL type. */

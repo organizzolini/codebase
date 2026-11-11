@@ -21,10 +21,7 @@ export function getRouter(): Router<typeof routeTree, "never", true> {
 }
 
 declare module "@tanstack/react-router" {
-  /**
-   * Registers this application's router, so links and hooks are typed against
-   * its route tree.
-   */
+  /** Registers the router, typing links and hooks to its routes. */
   interface Register {
     router: ReturnType<typeof getRouter>;
   }

@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * The same splice between markers of another name, since prose can hold the default ones.
- *
- * See the [output guide](./README.md).
- */
+// See the [output guide](./README.md).
+/** The same splice between renamed markers, since prose can hold defaults. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   outputs: [

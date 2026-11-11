@@ -14,7 +14,7 @@ export interface LinkResult {
   readonly outcome: WriteOutcome;
 }
 
-/** The shape of one invocation: where it came from and what it may do. */
+/** One invocation: where it came from and what it may do. */
 export interface PullRequestInvocation {
   readonly eventName: string;
   readonly number: string;
@@ -26,7 +26,7 @@ export type PullRequestResult<Value> =
   | { readonly failure: string; readonly ok: false }
   | { readonly ok: true; readonly value: Value };
 
-/** What a write-phase step did: report lines, and what it could not do. */
+/** What one write-phase step reported, and what it could not do. */
 export interface WriteOutcome {
   readonly failures: readonly string[];
   readonly lines: readonly string[];

@@ -7,10 +7,9 @@ import { ChangesService } from "./changes.service";
 /**
  * Diffs codometer reports and joins them to a baseline.
  *
- * Imports `LoggerModule` itself rather than relying on a consuming
- * application to import it globally, since this package is a library with no
- * root module of its own — `LoggerModule` is `@Global()`, so importing it
- * here is enough for `LoggerService` to resolve wherever this module is used.
+ * Imports `LoggerModule` itself, since this library has no root module.
+ * `LoggerModule` is `@Global()`, so `LoggerService` resolves wherever this
+ * module is used.
  */
 @Module({
   controllers: [],

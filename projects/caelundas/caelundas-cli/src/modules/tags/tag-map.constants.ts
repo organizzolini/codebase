@@ -82,7 +82,7 @@ const COMPOUND_CLASSES = [
   ],
 ] as const;
 
-/** The names of every twilight event and span, each a kind of twilight. */
+/** Names of every twilight event and span. */
 const TWILIGHT_NAMES = [
   "Astronomical Dawn",
   "Astronomical Dusk",
@@ -102,9 +102,7 @@ export const ECLIPSE_TYPE_NAMES = Object.values(eclipseTypeLabelByType);
 /** The daily cycles, whose events no raw tag tells apart further. */
 const DAILY_CYCLE_NAMES = ["Daily Lunar Cycle", "Daily Solar Cycle"];
 
-/**
- * Raw tags that mean the same wherever they appear, such as bodies, signs, decans and the tags every event carries.
- */
+/** Raw tags with one meaning everywhere, such as bodies. */
 export const SHARED_TAG_MAP: TagMap = {
   ...mapNone(UNCLASSIFIED_RAW_TAGS),
   ...Object.fromEntries(
@@ -143,10 +141,7 @@ const ASPECT_PHASE_TAG_MAP: TagMap = mapEach(
   (name) => [TAG_ROOT.phase, name],
 );
 
-/**
- * Simple aspects, by the class and name of the aspect, each with its nature,
- * harmonic and phase.
- */
+/** Simple aspects by class and name, with nature, harmonic, phase. */
 const SIMPLE_ASPECT_TAG_MAP: TagMap = mergeTagMaps(
   ASPECT_PHASE_TAG_MAP,
   {
@@ -161,9 +156,7 @@ const SIMPLE_ASPECT_TAG_MAP: TagMap = mergeTagMaps(
   ),
 );
 
-/**
- * Compound aspects by the pattern's class and name, each with its phase, nature and harmonic.
- */
+/** Compound aspects by class and name, with phase, nature, harmonic. */
 const COMPOUND_ASPECT_TAG_MAP: TagMap = mergeTagMaps(
   ASPECT_PHASE_TAG_MAP,
   {
@@ -183,10 +176,7 @@ const COMPOUND_ASPECT_TAG_MAP: TagMap = mergeTagMaps(
 /** The visibility spans every planet's paired rise and set events make. */
 const VISIBILITY_PHASES = ["evening visibility", "morning visibility"];
 
-/**
- * The Mercury, Venus and Mars synodic cycle events, by the raw tag marking
- * each planet's, its planet, and the phases it goes through.
- */
+/** Mercury, Venus, and Mars synodic events, by planet and phase. */
 const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   Martian: mapPlanetaryPhases({
     marker: "Martian",
@@ -206,9 +196,7 @@ const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   }),
 };
 
-/**
- * Raw tags whose meaning depends on the kind of event, keyed by the raw tag marking that kind.
- */
+/** Raw tags whose meaning depends on event kind. */
 export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   ...PLANETARY_PHASE_TAG_MAPS,
   "Compound Aspect": COMPOUND_ASPECT_TAG_MAP,

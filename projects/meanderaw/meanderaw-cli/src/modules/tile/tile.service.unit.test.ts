@@ -11,7 +11,7 @@ import type { Directions, Tile } from "./tile.types";
 
 // 🔧 Configuration
 
-/** All four bits clear, to be spread over with whichever ones a case is about. */
+/** All four direction bits clear, for cases to set. */
 const BARE: Directions = {
   east: false,
   north: false,

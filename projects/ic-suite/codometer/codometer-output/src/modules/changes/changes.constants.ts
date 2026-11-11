@@ -2,11 +2,7 @@ import { z } from "zod";
 
 // ♟️ Constants
 
-/**
- * Where a project's codometer run leaves its report.
- *
- * One glob per workspace directory, so `node_modules` strays are never read.
- */
+/** Glob for a project's codometer report, skipping `node_modules`. */
 export const REPORT_GLOBS = [
   "codometer-report.json",
   "applications/*/codometer-report.json",
@@ -18,11 +14,7 @@ export const REPORT_GLOBS = [
   "tools/*/codometer-report.json",
 ];
 
-/**
- * The shape of a codometer report, as far as this diff reads it.
- *
- * Validated, so a malformed report reads as nothing measured.
- */
+/** Report shape this diff reads; malformed reports count as nothing. */
 export const codometerReportSchema = z.object({
   failures: z
     .array(

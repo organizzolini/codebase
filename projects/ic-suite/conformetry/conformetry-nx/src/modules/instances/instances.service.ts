@@ -14,10 +14,7 @@ import type {
 /**
  * Turns Nx project knowledge into the instances conformetry validates.
  *
- * This is the whole reason the plugin exists: the generic packages take a list
- * of paths, and deciding which paths belong to which project — and which
- * projects a configured instance group applies to — is Nx-shaped knowledge
- * that would otherwise have to live inside them.
+ * Generic packages take plain paths, so the Nx-shaped mapping of paths and groups to projects lives here.
  */
 @Injectable()
 export class InstancesService {

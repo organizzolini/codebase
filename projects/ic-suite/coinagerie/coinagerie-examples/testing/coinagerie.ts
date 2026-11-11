@@ -25,13 +25,10 @@ export const packageDirectory = path.resolve(
 /** Where every example lives, one folder each. */
 export const examplesDirectory = path.join(packageDirectory, "examples");
 
-/** The command-line host, reached by path so `nx affected` ties this package to it. */
+/** Command-line host, by path so `nx affected` ties it in. */
 const cliDirectory = path.resolve(packageDirectory, "..", "coinagerie-cli");
 
-/**
- * Staged example copies live here, inside the package: a spawned run resolves
- * `@swc-node/register` upward, so a copy in `os.tmpdir()` fails on Linux only.
- */
+/** Staged copies here, since `os.tmpdir()` breaks swc on Linux. */
 const stagingDirectory = path.join(packageDirectory, "tmp");
 
 /** Long enough for a cold swc start on a slow runner. */

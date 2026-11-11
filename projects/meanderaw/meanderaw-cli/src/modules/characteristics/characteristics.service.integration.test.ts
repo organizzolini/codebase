@@ -24,7 +24,7 @@ import type { Characteristics } from "./characteristics.types";
 /** The Codes the retired computation's values were captured for. */
 const FIXTURE_CODES = Object.keys(LEGACY_FIELDS);
 
-/** How many times side by side each fixture is drawn when its tilings are read. */
+/** Side-by-side copies of each fixture drawn when reading its tilings. */
 const TILINGS = [1, 2, 3] as const;
 
 /** A fixture's captured legacy fields, keyed by their new record keys. */

@@ -16,7 +16,7 @@ import type {
 } from "../ephemeris/ephemeris.types";
 import type { PhaseParameters } from "./phases.types";
 
-/** One minute of a synthetic planet and Sun, `index` minutes from the tested minute. */
+/** Synthetic planet and Sun, `index` minutes from the tested minute. */
 interface SyntheticSample {
   illumination?: number;
   magnitude?: number;

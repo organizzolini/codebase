@@ -2,10 +2,7 @@
 
 import type { CallableId } from "@callidescope/core";
 
-/**
- * The bookkeeping Tarjan's algorithm carries, threaded as one object to keep
- * parameter lists short.
- */
+/** Bookkeeping for Tarjan's algorithm, threaded as one object. */
 export interface TarjanState {
   readonly componentIdByCallable: Map<CallableId, number>;
   readonly frames: TraversalFrame[];

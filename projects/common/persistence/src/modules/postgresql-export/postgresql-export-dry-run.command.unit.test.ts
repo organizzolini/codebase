@@ -16,7 +16,7 @@ vi.mock("node:child_process", async (importOriginal) => {
 
 const PASSWORD = "hunter2-secret";
 
-/** Nothing listens on port 1, so a connection would be refused at once. */
+/** Nothing listens on port 1; connections fail at once. */
 const SOURCE_URI = `postgresql://fixture_username:${PASSWORD}@127.0.0.1:1/fixture_development`;
 
 describe("postgresql-export --dry-run", () => {

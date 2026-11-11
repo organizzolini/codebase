@@ -8,9 +8,7 @@ import type {
 import type { CodependixRunMode } from "@codependix/core";
 import type { NxProject, NxProjectGraph } from "@codependix/nx-projects";
 
-/**
- * Everything every graph-type pass reads, resolved once per run. The boundary gate reads it too.
- */
+/** Everything every graph-type pass reads, resolved once per run. */
 export interface GraphRunContext {
   /**
    * Projects every boundary graph is built over: the selection and its
@@ -43,10 +41,7 @@ export interface GraphRunContext {
   workingDirectory: string;
 }
 
-/**
- * The `--projects` patterns and `--tags` tags a run was given that matched
- * no project — see `RunContextService.findUnmatchedSelection`.
- */
+/** `--projects` patterns and `--tags` tags that matched no project. */
 export interface UnmatchedSelection {
   readonly projects: readonly string[];
   readonly tags: readonly string[];

@@ -11,7 +11,7 @@ export interface BodyVerdict {
   readonly unfilledComments: readonly string[];
 }
 
-/** What one required section may hold, and how many words it may run to. */
+/** What one required section may hold, and its word limit. */
 export interface SectionRule {
   readonly heading: string;
   readonly maximumWords?: number;

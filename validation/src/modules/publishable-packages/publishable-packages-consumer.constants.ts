@@ -5,26 +5,17 @@ import type {
   PluginTargetExpectation,
 } from "./publishable-packages.types";
 
-/**
- * Directory a consumer is created beneath; unset, the OS temp directory. Keep it
- * outside every package, or it resolves the wrong packages.
- */
+/** Parent for consumers, defaulting to OS temp; keep it outside packages. */
 export const CONSUMER_ROOT_VARIABLE = "PUBLISHABLE_PACKAGES_CONSUMER_ROOT";
 
 /** Prefix of each consumer directory, completed by `mkdtemp`. */
 export const CONSUMER_DIRECTORY_PREFIX = "publishable-packages-consumer-";
 
-/**
- * Variables a consumer never inherits: `NX_*` aims its Nx at this workspace;
- * `npm_*`, `pnpm_config_*` and `NODE_OPTIONS` carry its settings, tokens or hooks.
- */
+/** Variables a consumer never inherits, such as `NX_*` or `NODE_OPTIONS`. */
 export const INHERITED_VARIABLE_PATTERN =
   /^(?:npm_|nx_|pnpm_config_|force_color$|node_auth_token$|node_options$)/i;
 
-/**
- * Matches terminal color codes, which print even under `FORCE_COLOR=0`, so
- * output compares as the text a person reads.
- */
+/** Matches color codes that print even under `FORCE_COLOR=0`. */
 export const ESCAPE_SEQUENCE_PATTERN = new RegExp(
   String.raw`${String.fromCodePoint(0x1b)}\[[\d;?]*[ -/]*[@-~]`,
   "gu",
@@ -33,10 +24,7 @@ export const ESCAPE_SEQUENCE_PATTERN = new RegExp(
 /** Milliseconds `pnpm install` may take on an oversubscribed runner. */
 export const INSTALL_TIMEOUT = 600_000;
 
-/**
- * Largest output a consumer command may print. Node's 1 MiB default is too
- * small for an install log, which would read as failure.
- */
+/** Output cap for consumers; Node's 1 MiB default overflows install logs. */
 export const MAXIMUM_OUTPUT_BYTES = 64 * 1024 * 1024;
 
 /** Milliseconds any other consumer command may take. */
@@ -63,10 +51,7 @@ export const GENERATED_INSTANCE = "generated";
 /** The one generator the consumer's conformetry configuration declares. */
 export const CONSUMER_GENERATOR = "greeting";
 
-/**
- * One inferred target per Nx plugin, with the text its failing fixture prints
- * when the gate itself ran.
- */
+/** One inferred target per Nx plugin, with its failing fixture's text. */
 export const PLUGIN_TARGET_EXPECTATIONS: readonly PluginTargetExpectation[] = [
   {
     failure: "Call stacks over the depth limit (1)",
@@ -91,10 +76,7 @@ export const TYPECHECK_DIRECTORY = "typecheck";
 /** Configuration the per-package import check typechecks with. */
 export const TYPECHECK_CONFIGURATION = "tsconfig.typecheck.json";
 
-/**
- * The typecheck config: every import file, strictly. Library checking stays
- * off, or `nx`'s own declarations fail and say nothing about the packages.
- */
+/** Strict typecheck of every import; library checks off, else `nx` fails. */
 export const TYPECHECK_CONFIGURATION_CONTENT = `{
   "compilerOptions": {
     "lib": ["ES2023", "DOM"],
@@ -110,10 +92,7 @@ export const TYPECHECK_CONFIGURATION_CONTENT = `{
 }
 `;
 
-/**
- * Describes a consumer command that failed, ending with the last lines it
- * printed so a CI log names the cause without a rerun.
- */
+/** A failed consumer command, with its last lines for CI logs. */
 export const formatCommandFailure = (
   description: string,
   result: ConsumerCommandResult,

@@ -1,4 +1,4 @@
-/** A commit object's text with the public key of the SSH key that signed it. */
+/** A commit object's text and the public key that signed it. */
 export interface SignedCommit {
   commit: string;
   publicKey: string;

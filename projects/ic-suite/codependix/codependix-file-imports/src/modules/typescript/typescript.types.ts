@@ -2,10 +2,7 @@
 
 import type ts from "typescript";
 
-/**
- * A TypeScript project's internal file-level import graph. Edges to files outside the
- * project, such as packages or other workspace projects, are left out.
- */
+/** TypeScript file import graph; edges leaving the project are omitted. */
 export interface TypescriptImportGraph {
   /** Every drawn import relationship, sorted so the diagram never churns. */
   readonly edges: TypescriptImportGraphEdge[];
@@ -23,10 +20,7 @@ export interface TypescriptImportGraphEdge {
   readonly target: string;
 }
 
-/**
- * A workspace project with its own `tsconfig.json`. Every such project is a candidate,
- * unlike the NestJS module's tag-gated projects.
- */
+/** A project with a `tsconfig.json`; no tag gates it. */
 export interface TypescriptProject {
   /** Absolute path of the project directory. */
   readonly absoluteRoot: string;
@@ -36,10 +30,7 @@ export interface TypescriptProject {
   readonly tsconfigPath: string;
 }
 
-/**
- * One project's program with the host and options that built it. Import resolution
- * must use the same pair.
- */
+/** Program, host, and options; import resolution must reuse them. */
 export interface TypescriptProjectProgram {
   readonly host: ts.CompilerHost;
   readonly options: ts.CompilerOptions;

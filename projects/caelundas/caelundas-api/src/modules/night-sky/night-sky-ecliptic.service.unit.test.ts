@@ -14,10 +14,7 @@ const STYLE: EclipticStyle = {
   eclipticWidth: 1,
 };
 
-/**
- * A frame whose ring reaches 2000 from the pole, past every declination the
- * ecliptic takes.
- */
+/** Frame whose ring reaches past every ecliptic declination. */
 const WIDE: SkyGeometry = {
   fieldOfView: { clamped: false, degrees: 20, limitDegrees: 40 },
   innerRadius: 100,

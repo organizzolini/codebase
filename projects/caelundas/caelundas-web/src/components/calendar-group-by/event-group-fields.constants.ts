@@ -1,5 +1,5 @@
 /**
- * Tag roots a view groups by when the link names no grouping: agenda by type, timeline by type then planet.
+ * Tag roots each view groups by when the link names none.
  */
 export const DEFAULT_GROUP_ROOTS = {
   agenda: ["Type"],

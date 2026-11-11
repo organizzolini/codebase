@@ -9,10 +9,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Counts the connected components of one repeat — the zeroth Betti number
- * $b_0$ — by walking the Code as a graph over the cyclic band, where a step
- * east off the last column arrives at the first. Every point is a vertex,
- * so an isolated dot is a component of its own.
+ * Counts the connected components of one repeat, the zeroth Betti number $b_0$, walking the
+ * Code as a graph over the cyclic band. Every point is a vertex, so an isolated dot counts as one.
  */
 @Injectable()
 export class BettiNumber0CountCharacteristicService implements CharacteristicEvaluator<number> {

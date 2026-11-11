@@ -8,11 +8,7 @@ export interface GroupedLabels {
   readonly typeLabels: readonly string[];
 }
 
-/**
- * Everything wrong with one pull request, and the commands that fix it.
- *
- * All problems are reported in one pass, not one per run.
- */
+/** Everything wrong with one pull request, and how to fix it. */
 export interface MetadataVerdict {
   readonly failures: readonly string[];
   readonly remediationCommands: readonly string[];

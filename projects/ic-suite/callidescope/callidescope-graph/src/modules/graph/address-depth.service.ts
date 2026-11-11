@@ -16,11 +16,11 @@ import type { CallableId, StackFrame } from "@callidescope/core";
 /**
  * Enumerates every simple path above or below one callable.
  *
- * `PathsService` keeps one deepest path per entry point, which answers "how deep".
- * An address lookup needs every path in each direction, so this walks them all.
+ * `PathsService` keeps only the deepest path per entry point. An address lookup
+ * needs every path, so this walks them all.
  *
- * It is iterative, on an explicit stack, since a widely called utility can sit
- * many frames deep in a caller chain.
+ * Iterative, on an explicit stack, since widely called utilities sit deep in
+ * chains.
  */
 @Injectable()
 export class AddressDepthService {

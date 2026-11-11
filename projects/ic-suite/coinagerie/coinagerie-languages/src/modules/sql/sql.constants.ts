@@ -7,10 +7,7 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 /** The extensions SQL scripts are written with. */
 export const SQL_EXTENSIONS: readonly string[] = [".sql"];
 
-/**
- * Double-quoted and backtick names are identifiers. SQL has no key separator,
- * so no string is a key.
- */
+/** Quoted names are identifiers; SQL strings are never keys. */
 export const SQL_GRAMMAR: LexicalGrammar = {
   identifier: /[\p{L}_][\p{L}\p{N}_$]*/uy,
   keys: [],
@@ -29,10 +26,7 @@ export const SQL_GRAMMAR: LexicalGrammar = {
   ],
 };
 
-/**
- * The reserved words of standard SQL and common dialects, lowercased. A plain
- * array, so spreading it into `exclude.words` excludes nothing extra.
- */
+/** Standard SQL and common dialect reserved words, lowercased. */
 export const SQL_KEYWORDS: string[] = [
   "add",
   "all",

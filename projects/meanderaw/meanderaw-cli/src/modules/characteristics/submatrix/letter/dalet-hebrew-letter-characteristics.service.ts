@@ -8,15 +8,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the ד (Hebrew dalet) glyph —
- * a three-unit roof with a unit leg dropping a unit short of its east end —
- * one per corner and clockwise rotation, each counting the base template drawn
- * that way. The base faces Southwest, drawn:
- *
- * ```text
- * ╶─┬╴
- *   ╵
- * ```
+ * Provides the sixteen orientation evaluators of the ד (Hebrew dalet) glyph, a three-unit roof with a unit leg at its east end.
+ * Each counts the base template, drawn facing Southwest.
  */
 @Injectable()
 export class DaletHebrewLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -38,7 +31,7 @@ export class DaletHebrewLetterCharacteristicsService implements CharacteristicEv
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, `.` outside it. */
   private readonly template: readonly string[] = ["2371", "..8."];
 
   // 🔑 Public Fields

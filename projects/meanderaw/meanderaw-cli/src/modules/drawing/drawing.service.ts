@@ -10,11 +10,10 @@ import type { Directions } from "../tile/tile.types";
 import type { CanvasPoint } from "./drawing.types";
 
 /**
- * Draws a Code to SVG. Each point owns two of its four direction bits: an
- * `east` bit draws one unit right, a `south` bit one unit down. A point owning
- * neither is an inked dot, which keeps the drawing space-filling.
+ * Draws a Code to SVG. Each point owns two of its four direction bits: `east`
+ * draws one unit right, `south` one unit down. A point owning neither is an inked dot.
  *
- * There is no repeat unit or overhang: a Code is one whole meander.
+ * No repeat unit or overhang: a Code is one whole meander.
  */
 @Injectable()
 export class DrawingService {

@@ -15,20 +15,14 @@ export const OPENWIKI_ARGUMENTS = [
 /** The agent instruction file OpenWiki leaves behind, which is never committed. */
 export const OPENWIKI_LEFTOVER_FILE = "CLAUDE.md";
 
-/**
- * Where the wiki is written, relative to the workspace root. A symlink here
- * points at the directory the documentation project keeps its pages in.
- */
+/** Wiki output path, a symlink to the documentation project's pages. */
 export const OPENWIKI_LINK = "openwiki";
 
 /** The directory the wiki's pages are committed in. */
 export const OPENWIKI_STORAGE = "documentation/openwiki";
 
-/**
- * Maximum runs of OpenWiki before giving up. Its provider overloads for
- * minutes, so a failed run restarts and resumes from the wiki directory.
- */
+/** Maximum OpenWiki runs; a failed run resumes from the wiki. */
 export const OPENWIKI_ATTEMPTS = 4;
 
-/** The wait before the second attempt; each later wait is one step longer. */
+/** Wait before attempt two; later waits each grow one step. */
 export const OPENWIKI_RETRY_DELAY_MS = 120_000;

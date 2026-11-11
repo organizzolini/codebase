@@ -9,10 +9,7 @@ export const PUSH_ATTEMPTS = 4;
 /** Seconds between push attempts, unless `PUSH_RETRY_DELAY` says otherwise. */
 export const DEFAULT_PUSH_RETRY_DELAY = 20;
 
-/**
- * Every file `version-packages` may write. Globs, since a git path that matches
- * nothing fails the whole `git add`.
- */
+/** Files `version-packages` writes, as globs: no miss fails `git add`. */
 export const VERSIONED_FILE_PATTERNS = [
   "projects/ic-suite/*/*/CHANGELOG.md",
   "projects/ic-suite/*/*/package.json",

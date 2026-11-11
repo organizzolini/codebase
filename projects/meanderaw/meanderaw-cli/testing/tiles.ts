@@ -15,15 +15,12 @@ import type { Tile } from "../src/modules/tile/tile.types";
 
 // 🔧 Configuration
 
-/** The real builder, so hand-written tiles are derived exactly as enumerated ones are. */
+/** The real builder, so tiles match enumerated ones. */
 const tileService = new TileService();
 
 // 🌎 Utilities
 
-/**
- * The tile whose points own the edges `rowDescriptions` describes, one string per row.
- * `.` none, `e` eastward, `s` southward, `b` both.
- */
+/** Points from `rowDescriptions`; `e` east, `s` south, `b` both. */
 export const buildTile = (rowDescriptions: readonly string[]): Tile => {
   const columns = rowDescriptions[0]?.length ?? 0;
   const rows = rowDescriptions.length;

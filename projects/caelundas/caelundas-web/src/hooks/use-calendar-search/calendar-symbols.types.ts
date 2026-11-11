@@ -1,6 +1,6 @@
 // 🏷️ Types
 
 /**
- * How the calendar draws event name symbols: as icons, or as the emoji and Unicode they are written in.
+ * How event symbols are drawn: icons, or emoji and Unicode.
  */
 export type CalendarSymbols = "emojis" | "glyphs";

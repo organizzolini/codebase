@@ -15,7 +15,7 @@ export const PULL_REQUEST_UNSET_MESSAGE =
 export const NO_BASELINE_MESSAGE =
   "ℹ️ No successful main run to compare against yet.";
 
-/** Reports a baseline that could not be fetched, and that the report goes on without. */
+/** Reports a failed baseline fetch; the report goes on without. */
 export const baselineSkippedMessage = (reason: string): string =>
   `::warning::Reporting without a codometer baseline: ${reason}`;
 

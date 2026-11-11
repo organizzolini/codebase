@@ -11,8 +11,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The event to draw, and what to spell out for a screen reader beyond its
- * name.
+ * The event to draw, and extra text for screen readers.
  */
 export interface CalendarEventChipProperties {
   className?: string;

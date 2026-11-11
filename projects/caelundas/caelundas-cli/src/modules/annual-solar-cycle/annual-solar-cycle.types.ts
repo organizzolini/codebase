@@ -41,10 +41,7 @@ export interface SolarCycleLongitudes {
   previousLongitude: number;
 }
 
-/**
- * Radial speeds (AU per day) of the Sun at a minute and the minute before it,
- * for sign-change apsis detection.
- */
+/** Sun's radial speed (AU/day) at this and the prior minute. */
 export interface SolarDistanceSample {
   current: number;
   previous: number;

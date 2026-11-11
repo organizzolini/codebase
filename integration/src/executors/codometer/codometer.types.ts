@@ -1,12 +1,12 @@
 // 🏷️ Types
 
-/** A task of a batch whose project is known, ready to be measured. */
+/** A batch task whose project is known, ready to measure. */
 export interface BatchedTask {
   readonly id: string;
   readonly root: string;
 }
 
-/** The arguments Nx calls a batch executor with, in the order it passes them. */
+/** Arguments Nx passes a batch executor, in order. */
 export type CodometerBatchExecutorArguments = [
   taskGraph: {
     readonly tasks: Readonly<
@@ -18,9 +18,7 @@ export type CodometerBatchExecutorArguments = [
   context: CodometerExecutorContext,
 ];
 
-/**
- * The fields of Nx's executor context these executors read, stated here since this project does not depend on `@nx/devkit`.
- */
+/** Nx executor context fields read here, without depending on `@nx/devkit`. */
 export interface CodometerExecutorContext {
   readonly projectGraph: {
     readonly nodes: Readonly<

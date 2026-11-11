@@ -29,10 +29,11 @@ import type {
 } from "./import-pr-task-cache.types";
 
 /**
- * Imports the Nx task cache uploaded by the pull request's own run into a
- * merge group's run, since a merge group cannot read the pull request's
- * caches. Only pull requests from this repository are trusted: a fork's
- * artifact could carry crafted results. Any other outcome leaves a cold cache.
+ * Imports the Nx task cache a pull request's run uploaded into a merge group's
+ * run, since a merge group cannot read those caches.
+ *
+ * Only this repository's pull requests are trusted: a fork's artifact could
+ * carry crafted results. Any other outcome leaves a cold cache.
  */
 @Injectable()
 export class ImportPrTaskCacheService {

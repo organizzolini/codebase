@@ -62,7 +62,7 @@ const STELLIUM_SIZES = Array.from(
 const BODIES = aspectBodies.map((body) => bodyDisplayName(body));
 const SIGNS = signs.map((sign) => _.startCase(sign));
 
-/** A representative raw tag set for every kind of event a detector emits. */
+/** Raw tags for each event kind a detector emits. */
 const DETECTOR_TAG_SETS: readonly (readonly string[])[] = [
   ...PLANETARY_PHASES.flatMap(([marker, phases]) =>
     [...phases.map((phase) => _.startCase(phase)), ...VISIBILITY].map(

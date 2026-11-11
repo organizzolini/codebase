@@ -3,7 +3,7 @@
 import type { DetectorFamily } from "../src/modules/perfective/perfective.types";
 
 /**
- * Summary text marking each detector family; a summary matching none is a fixture mistake, so the lookup throws.
+ * Summary text marking each detector family; an unmatched one throws.
  */
 export const familyBySummaryPattern: readonly (readonly [
   RegExp,

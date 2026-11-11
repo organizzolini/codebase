@@ -46,11 +46,7 @@ export interface MarkdownComparisonError {
   readonly weight: number;
 }
 
-/**
- * The subset of an mdast node this validator reads.
- *
- * Structural, so only the fields that take part in matching are declared.
- */
+/** The subset of an mdast node that matching reads. */
 export interface MarkdownNode {
   readonly alt?: string;
   readonly children?: MarkdownNode[];

@@ -19,7 +19,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * One busy day, and the events to pick out the ones on it from.
+ * One busy day and the events to pick from.
  */
 export interface CalendarOverflowListProperties {
   className?: string;

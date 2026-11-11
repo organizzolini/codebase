@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * The same files uncompressed: bytes on disk, the denominator for gzip and brotli.
- *
- * Run from the corpus directory with `codometer --config ../compression/none.config.ts`.
- */
+// Run from the corpus directory with `codometer --config ../compression/none.config.ts`.
+/** The same files uncompressed: bytes on disk, gzip and brotli's denominator. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 /**
- * What an event is called: the glyphs its chip shows, and the English name and description its tooltip says.
+ * An event's name: its chip glyphs, English name, and details.
  */
 export interface EventLabel {
   /**

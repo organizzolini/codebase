@@ -23,7 +23,7 @@ describe(SoftwareNamedService, () => {
   const originalPath = process.env["PATH"];
   const install = vi.fn<ReleaseArchivesService["install"]>();
   const installPostgres = vi.fn<SoftwareDatabaseService["installPostgres"]>();
-  /** Builds the service over a fake machine, with only the path file variable set. */
+  /** Builds the service over a fake machine, path variable only. */
   const build = async (
     environment: Record<string, string> = {},
     machine: FakeMachine = {},

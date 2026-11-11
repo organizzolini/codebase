@@ -1,12 +1,9 @@
 // 🏷️ Types
 
-/** How a release is packaged. A `binary` is the executable itself, with nothing to unpack. */
+/** How a release is packaged: `binary` is the bare executable. */
 export type ReleaseArchiveFormat = "binary" | "tar.gz" | "zip";
 
-/**
- * A command-line tool installed from its published Linux release. `{version}` is the pin;
- * `{architecture}` is the machine's processor name.
- */
+/** A Linux release: `{version}` is the pin, `{architecture}` the processor name. */
 export interface ReleaseArchiveTool {
   /** What this tool calls each processor architecture Node reports. */
   architectures: Readonly<Record<string, string>>;
@@ -26,7 +23,7 @@ export interface ReleaseArchiveTool {
   version: string;
 }
 
-/** One tool's release, once its archive name and architecture are settled, and where it is downloaded to. */
+/** A release with its archive name, architecture, and download path settled. */
 export interface ReleaseDownload {
   /** What the tool calls this machine's processor. */
   architecture: string;

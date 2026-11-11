@@ -7,13 +7,13 @@ import type { ConventionalLabel } from "./pull-request-labels.types";
 /** The vocabulary's single source of truth, relative to the workspace root. */
 export const CONVENTIONAL_CONFIG_PATH = "configuration/conventional.config.cjs";
 
-/** Color every `type:` label carries, so the family reads as one at a glance. */
+/** Color every `type:` label carries, so the family reads as one. */
 export const TYPE_LABEL_COLOR = "d93f0b";
 
 /** Color every `scope:` label carries. */
 export const SCOPE_LABEL_COLOR = "1d76db";
 
-/** Labels no configuration derives, so they are written here and reconciled with the derived ones. */
+/** Labels no configuration derives, kept here beside the derived ones. */
 export const STATIC_LABELS: ConventionalLabel[] = [
   {
     color: "b60205",
@@ -32,10 +32,10 @@ export const STATIC_LABELS: ConventionalLabel[] = [
   },
 ];
 
-/** Prefixes this reconciliation owns. Labels outside them belong to someone else and are neither expected nor reported. */
+/** Prefixes this reconciliation owns. Other labels are never reported. */
 export const TRACKED_LABEL_PREFIXES = ["scope:", "source:", "type:"];
 
-/** Page size for `gh label list`, well above the roughly forty labels here, so one call returns them all and none looks missing. */
+/** Page size for `gh label list`: one call fetches all. */
 export const LABEL_LIST_LIMIT = "500";
 
 /** The shape `gh label list --json name,color,description` returns. */

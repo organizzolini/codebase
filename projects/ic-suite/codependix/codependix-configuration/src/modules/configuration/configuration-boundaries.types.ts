@@ -1,19 +1,13 @@
 // 🏷️ Types
 
-/**
- * Every declared boundary rule, keyed by the graph level it judges. Field by field, since
- * `Partial<Record>` would reject the unset value.
- */
+/** Rules per graph level, field by field; `Partial<Record>` rejects unset. */
 export interface CodependixBoundariesConfiguration {
   fileImports?: CodependixFileImportsBoundariesConfiguration | undefined;
   nestjsModules?: CodependixBoundaryRule[] | undefined;
   nxProjects?: CodependixBoundaryRule[] | undefined;
 }
 
-/**
- * One rule stating which nodes may reach which. `forbid` reports edges from `from` to `to`;
- * `allow` reports edges from `from` to anything not `to`.
- */
+/** `forbid`: edges `from` to `to`. `allow`: edges `from` to anything else. */
 export interface CodependixBoundaryAccessRule {
   /**
    * Narrows which edges the rule judges, rather than which nodes it selects.
@@ -35,10 +29,7 @@ export interface CodependixBoundaryAccessRule {
   to: CodependixBoundarySelector;
 }
 
-/**
- * One rule forbidding a cycle among a selected set of nodes. Narrow at file level, where
- * `dependency-cruiser`'s `no-circular` already gates.
- */
+/** Forbids a cycle among selected nodes; file level has `no-circular`. */
 export interface CodependixBoundaryAcyclicRule {
   kind: "acyclic";
   /** Why the rule exists, appended to the generated sentence. */
@@ -52,10 +43,7 @@ export interface CodependixBoundaryAcyclicRule {
   nodes?: CodependixBoundarySelector | undefined;
 }
 
-/**
- * How a rule narrows which edges it judges. Separate from the node selector: only the Nx level draws
- * an edge worth narrowing on.
- */
+/** Narrows judged edges; only the Nx level needs it. */
 export interface CodependixBoundaryEdgeSelector {
   /**
    * Judge only implicit (`true`) or only explicit (`false`) edges; unset judges
@@ -69,10 +57,7 @@ export type CodependixBoundaryRule =
   | CodependixBoundaryAccessRule
   | CodependixBoundaryAcyclicRule;
 
-/**
- * A rule's node picker: globs matched against each stated field. A selector stating no field is
- * refused, not read as everything.
- */
+/** Globs per field; an empty selector is refused, not universal. */
 export interface CodependixBoundarySelector {
   /** Globs matched against the node's identifier. */
   id?: string[] | undefined;
@@ -84,17 +69,13 @@ export interface CodependixBoundarySelector {
   tags?: string[] | undefined;
 }
 
-/**
- * `boundaries.fileImports`'s rules, nested by language. Separate so authored and resolved shapes can both name it.
- */
+/** `boundaries.fileImports` rules by language, shared by both shapes. */
 export interface CodependixFileImportsBoundariesConfiguration {
   python?: CodependixBoundaryRule[] | undefined;
   typescript?: CodependixBoundaryRule[] | undefined;
 }
 
-/**
- * Every level's declared rules, resolved to an empty list when unset, so callers iterate every level unconditionally.
- */
+/** Each level's rules, empty when unset, so callers need not check. */
 export interface ResolvedCodependixBoundariesConfiguration {
   fileImports: ResolvedCodependixFileImportsBoundariesConfiguration;
   nestjsModules: CodependixBoundaryRule[];

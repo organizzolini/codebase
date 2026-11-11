@@ -3,21 +3,19 @@ import type { CalendarEvent, CalendarEventTag } from "@codebase/caelundas-db";
 import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 import type { Moment } from "moment-timezone";
 
-/** The row an event becomes for one observer, before the database adds its own columns. */
+/** Event row for one observer, before the database adds columns. */
 export type CalendarEventRow = Omit<
   CalendarEvent,
   keyof PostgresqlUpdatableEntity
 >;
 
-/** One link an upsert writes between an event and a node of the tag tree. */
+/** Upsert link from an event to a tag node. */
 export type CalendarEventTagLink = Pick<
   CalendarEventTag,
   "calendarEventId" | "tagId"
 >;
 
-/**
- * A detected event, without the id, audit columns, coordinates or timezone the upsert adds; its tags are raw strings.
- */
+/** Detected event with raw tag strings, before the upsert's columns. */
 export type DetectedCalendarEvent = Omit<
   CalendarEvent,
   "latitude" | "longitude" | "timezone" | keyof PostgresqlUpdatableEntity
@@ -40,15 +38,12 @@ export interface Observer extends Coordinates {
   timezone: string;
 }
 
-/**
- * A stored event as `findInRange` returns it, with the names of its directly linked tags.
- */
+/** Stored event from `findInRange`, with its directly linked tag names. */
 export type StoredCalendarEvent = CalendarEvent &
   Pick<DetectedCalendarEvent, "tags">;
 
 /**
- * A `RETURNING` row: its database id, and the summary, start and end that
- * identify it per observer; `Date`s, not `Moment`s.
+ * `RETURNING` row: database id, and summary, start and end.
  */
 export interface WrittenCalendarEvent {
   end: Date | Moment;

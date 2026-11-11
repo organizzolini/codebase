@@ -11,13 +11,9 @@ import {
 import type { Language } from "../languages/languages.types";
 
 /**
- * Reads the identifiers of a TypeScript or JavaScript file from its syntax
- * tree.
+ * Reads the identifiers of a TypeScript or JavaScript file from its syntax tree.
  *
- * A syntax tree rather than a scanner, so a comment, a string, a template
- * literal's text, or a regular expression can never leak a word: none of
- * them is an identifier node. The parser recovers from syntax errors, so a
- * half-finished edit still contributes every name it has.
+ * A syntax tree, not a scanner, so comments, strings, template text, and regular expressions never leak a word. The parser recovers from syntax errors, so a half-finished edit still yields its names.
  */
 @Injectable()
 export class TypescriptService implements Language {

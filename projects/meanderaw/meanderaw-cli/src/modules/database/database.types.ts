@@ -12,10 +12,7 @@ export interface MeanderPatternShapeCount {
   readonly rows: number;
 }
 
-/**
- * The fields needed to persist one meander row — everything but the
- * columns the database fills itself: the `id` and the audit columns.
- */
+/** A meander row's fields, minus the `id` and audit columns. */
 export type MeanderRecord = Omit<Meander, keyof PostgresqlUpdatableEntity>;
 
 /** How wide and how deep one repeat is. */

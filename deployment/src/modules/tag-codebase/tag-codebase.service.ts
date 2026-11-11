@@ -6,12 +6,12 @@ import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { SEMANTIC_RELEASE } from "./tag-codebase.constants";
 
 /**
- * Versions and tags the codebase with semantic-release, which makes the one
- * `chore(release)` commit carrying the package versions too.
+ * Versions and tags the codebase with semantic-release, in one `chore(release)`
+ * commit.
  *
- * It steps aside when `main` moved, both before semantic-release, so no stale
- * commit is tagged, and after a failed one, since a merge during its
- * minutes-long run gets the push rejected. Other failures still fail.
+ * Steps aside when `main` moved, before semantic-release so no stale commit is
+ * tagged, and after a failed run, since a merge during it gets the push
+ * rejected. Other failures still fail.
  */
 @Injectable()
 export class TagCodebaseService {

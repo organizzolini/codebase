@@ -12,12 +12,10 @@ import type {
 } from "./tile.types";
 
 /**
- * The vocabulary every other `mosaic` service reads a tile through: building
- * it from edges and reading them back.
+ * Converts a `mosaic` tile between its two faces, edges and directions.
  *
- * A tile has two faces saying the same thing. {@link Edges} holds each degree
- * of freedom once; {@link Directions} is what a point is read in. {@link build}
- * and {@link edges} convert between them.
+ * {@link Edges} holds each degree of freedom once; {@link Directions} is what a point is read in.
+ * {@link build} and {@link edges} convert between them.
  */
 @Injectable()
 export class TileService {

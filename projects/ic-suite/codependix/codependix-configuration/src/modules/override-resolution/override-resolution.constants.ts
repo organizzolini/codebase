@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * Says an override flag has nothing to override. Mirrors `@callidescope/configuration`'s
- * `buildUndeclaredValueMessage`: a flag may change a declared value, never supply an undeclared one.
- */
+/** Message for an override flag with nothing declared to override. */
 export const buildUndeclaredOverrideMessage = (args: {
   field: string;
   flag: string;

@@ -37,16 +37,10 @@ export class EnumerationService {
 
   // 🔐 Private Fields
 
-  /**
-   * The widest column count drawn, from `DRAW_MAXIMUM_COLUMNS`, layered on the
-   * edge budget as a review filter.
-   */
+  /** Widest column count drawn, a review filter from `DRAW_MAXIMUM_COLUMNS`. */
   private readonly maximumColumns: number;
 
-  /**
-   * The deepest row count drawn, from `DRAW_MAXIMUM_ROWS`, layered on the edge
-   * budget as a review filter.
-   */
+  /** Deepest row count drawn, a review filter from `DRAW_MAXIMUM_ROWS`. */
   private readonly maximumRows: number;
 
   // 🔑 Public Fields

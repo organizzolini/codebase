@@ -70,13 +70,8 @@ export class EventGroupingService {
   }
 
   /**
-   * Compiles a grouping to one select-list column per level, `group_0`
-   * onward, each a JSON array of the group keys an event falls in at that
-   * level, over the derived events view aliased `e`, whose placeholders are
-   * numbered after the `offset` parameters the query already binds. A tag level
-   * answers the picked tags, or every tag of that root at its depth, the event
-   * is under, so an event with two planets falls in both; a derived level
-   * answers one key. A field the calendar does not know answers none.
+   * Compiles a grouping to one select-list column per level, numbering
+   * placeholders after offset.
    */
   public compile(
     grouping: readonly EventGroupLevel[],
@@ -96,10 +91,8 @@ export class EventGroupingService {
   }
 
   /**
-   * Validates the grouping a query was given and appends the level the events
-   * are colored by, so the color's keys come last. Throws a `ZodError` that
-   * names the offending field for a malformed one, including more than three
-   * levels of grouping.
+   * Validates a grouping and appends the color level last. Throws a `ZodError`
+   * for more than three levels.
    */
   public parse(grouping: unknown): EventGroupLevel[] {
     const { colorBy, levels } = eventGroupingSchema.parse(grouping ?? {});

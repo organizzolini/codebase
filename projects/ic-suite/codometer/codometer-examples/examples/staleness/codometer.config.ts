@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * `--check reports` re-measures sizes, which differ across Node releases' zlib.
- *
- * See the [staleness guide](./README.md).
- */
+// See the [staleness guide](./README.md).
+/** `--check reports` re-measures sizes, which differ across Node releases' zlib. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

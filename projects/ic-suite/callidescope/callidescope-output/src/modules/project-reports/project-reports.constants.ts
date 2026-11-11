@@ -1,4 +1,4 @@
 // ♟️ Constants
 
-/** Frames a stack needs before a report carries it. A single frame is a callable that calls nothing, not a call stack. */
+/** Fewest frames a reported stack needs; one frame is a callable. */
 export const MINIMUM_STACK_FRAMES = 2;

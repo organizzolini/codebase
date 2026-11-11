@@ -26,11 +26,10 @@ import type {
 } from "./vscode-settings.types";
 
 /**
- * CLI command that merges `.vscode/settings.json` into the VS Code Machine
- * settings. Machine settings persist across devcontainer rebuilds and apply as
- * the lowest-priority layer, so keys that devcontainer features injected are
- * preserved and workspace settings win on conflict.
- * Runs in check (default) or write mode based on the first positional argument.
+ * CLI command that merges `.vscode/settings.json` into VS Code Machine settings.
+ *
+ * Machine settings persist across rebuilds as the lowest-priority layer, keeping devcontainer keys; workspace settings win on conflict.
+ * Runs in check (default) or write mode, set by the first positional argument.
  */
 @Command({
   description: "Run the vscode-settings command",

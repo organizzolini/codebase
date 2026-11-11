@@ -6,10 +6,7 @@ import {
   DEFAULT_PROJECT_README_HEADING,
 } from "@callidescope/configuration";
 
-/**
- * The starting point every project spreads and overrides: defaults, never
- * ceilings. See `documentation/development/callidescope-configuration.md`.
- */
+/** Starting defaults every project spreads and overrides, never ceilings. */
 export const workspaceLimits = {
   /**
    * `configuration/` project's own breadth, and the number the six
@@ -128,11 +125,7 @@ export const projectDefaults = {
   },
 } satisfies CallidescopeProjectConfiguration;
 
-/**
- * Published on main; a branch runs only the depth gate, so no pull request
- * conflicts on a generated block. See `documentation/development/callidescope-
- * configuration.md`.
- */
+/** Published on main only; branches run just the depth gate. */
 const callidescopeConfiguration: CallidescopeConfiguration = {
   /**
    * `LoggerService` sits behind nearly every other callable in this

@@ -41,12 +41,11 @@ import type {
 } from "./task-database.types";
 
 /**
- * Looks after the Nx task-result database a CI job restores from its cache.
+ * Looks after the Nx task database a CI job restores.
  *
- * Nx decides a cache hit from a row in this SQLite database alone, never from
- * `.nx/cache`. It names the file `<machine-id>-v<schema>.db` and keeps a
- * write-ahead log, shared-memory index, and rollback journal beside it, so
- * every operation treats those four files as one database.
+ * Nx decides a cache hit from a row in this SQLite database, never `.nx/cache`.
+ * The file is `<machine-id>-v<schema>.db`; its write-ahead log, shared memory,
+ * and rollback journal are part of it.
  */
 @Injectable()
 export class TaskDatabaseService {

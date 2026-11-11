@@ -32,11 +32,7 @@ function buildCustomStatistic(
   };
 }
 
-/**
- * Every counter in `sampleStatistics.custom`, declared as this destination's own.
- *
- * A case overrides it to show one destination renders a different subset.
- */
+/** Every `sampleStatistics.custom` counter, declared as this destination's own. */
 const DEFAULT_CUSTOM_STATISTICS: ResolvedCodometerCustomStatistic[] = [
   buildCustomStatistic("Service Files"),
   buildCustomStatistic("Unit Tests"),

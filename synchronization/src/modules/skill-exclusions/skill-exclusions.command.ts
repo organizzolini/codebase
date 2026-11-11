@@ -25,15 +25,12 @@ import type {
 } from "./skill-exclusions.types";
 
 /**
- * CLI command that syncs the installed-skill exclusion lists from
- * `skills-lock.json`.
+ * CLI command that syncs installed-skill exclusion lists from `skills-lock.json`.
  *
- * Installed skills are owned upstream, so the five tools that reach `.agents/`
- * each list them one per line, not as `.agents/skills/` wholesale, which would
- * also skip this repository's own skills.
+ * Installed skills are owned upstream, so the five tools reaching `.agents/` list each one per line,
+ * not `.agents/skills/` wholesale, which would skip this repository's own skills.
  *
- * Generating keeps them in step with the lockfile, so a newly added skill is
- * never missed.
+ * Generating keeps lists in step with the lockfile.
  */
 @Command({
   description: "Run the skill-exclusions command",

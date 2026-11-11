@@ -42,10 +42,7 @@ import type {
 /**
  * Loads, validates, and normalizes callidescope configuration files.
  *
- * This service owns loading only. What the configuration means — which files an
- * exclusion glob removes, which decorator marks a stack root — belongs to the
- * analyzers that read it, so that reading a configuration file stays free of any
- * knowledge of the repository being traced.
+ * Loading only. What the configuration means belongs to the analyzers that read it, so reading a file stays free of knowledge about the traced repository.
  */
 @Injectable()
 export class ConfigurationFileService {

@@ -7,9 +7,7 @@ import { RehArabicLetterCharacteristicsService } from "./reh-arabic-letter-chara
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ر (final Arabic reh) as a Code holding one isolated copy.
- */
+/** Each distinct orientation of final ر as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -63,9 +61,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "rehFinal",
 };
 
-/**
- * Each distinct orientation of the ر (isolated Arabic reh) as a Code holding one isolated copy.
- */
+/** Each distinct orientation of isolated ر as a standalone Code. */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {

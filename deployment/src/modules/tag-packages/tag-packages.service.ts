@@ -26,12 +26,11 @@ import type { ReleaseGroupMember } from "../release-group/release-group.types";
 import type { LeftoverOutcome } from "./tag-packages.types";
 
 /**
- * Tags each newly versioned ic-suite package on the release commit and pushes
- * the tags.
+ * Tags each newly versioned ic-suite package and pushes the tags.
  *
- * A package is newly versioned when its `<project>@<version>` tag does not
- * exist. GitHub rejects pushes that update more than 6 refs, so tags go 6 at a
- * time, retrying a rejected batch. Tags still missing are pushed by the next run.
+ * A package is newly versioned when its `<project>@<version>` tag is missing.
+ * GitHub rejects pushes over 6 refs, so tags go 6 at a time, retrying a
+ * rejected batch. The next run pushes any still missing.
  */
 @Injectable()
 export class TagPackagesService {

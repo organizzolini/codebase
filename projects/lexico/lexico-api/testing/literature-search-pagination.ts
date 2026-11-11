@@ -5,9 +5,7 @@ export type FetchLiteratureSearchPage = (
   pagination: LiteratureSearchPageArguments,
 ) => Promise<LiteratureSearchPage>;
 
-/**
- * The parts of a Relay connection every literature search returns. An absent cursor arrives as `null`, not `undefined`.
- */
+/** Relay connection parts every search returns; absent cursors are `null`. */
 export interface LiteratureSearchPage {
   readonly edges: readonly {
     readonly cursor: string;

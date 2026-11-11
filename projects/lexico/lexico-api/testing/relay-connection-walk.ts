@@ -10,12 +10,12 @@ export interface ConnectionPage<Node> {
   readonly totalCount: number;
 }
 
-/** Fetches the page next to a cursor, or the first page when there is none. */
+/** Fetches the page after a cursor, or the first page. */
 export type FetchPage<Node> = (
   cursor: null | string,
 ) => Promise<ConnectionPage<Node>>;
 
-/** A walk stops here rather than looping on a connection that never ends. */
+/** Stops a walk that would loop on a never-ending connection. */
 const MAXIMUM_PAGES = 32;
 
 /** Every node a list of pages holds, in page order then edge order. */

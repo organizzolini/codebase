@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * A Python project's internal file-level import graph. Shaped like the TypeScript graph,
- * built by a separate parser.
- */
+/** Python file import graph, shaped like the TypeScript one. */
 export interface PythonImportGraph {
   /** Every drawn import relationship, sorted so the diagram never churns. */
   readonly edges: PythonImportGraphEdge[];
@@ -21,10 +18,7 @@ export interface PythonImportGraphEdge {
   readonly target: string;
 }
 
-/**
- * A workspace project tagged `language:python`. No marker file reliably identifies one,
- * since every project shares the root `pyproject.toml`.
- */
+/** A project tagged `language:python`; no marker file identifies one. */
 export interface PythonProject {
   /** Absolute path of the project directory. */
   readonly absoluteRoot: string;

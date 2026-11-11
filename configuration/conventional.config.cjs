@@ -1,21 +1,13 @@
 /**
- * Shared conventional commit configuration
+ * Shared conventional commit configuration.
  *
- * This file is the single source of truth for types, scopes, and emoji mappings used across:
- * - commitlint.config.ts (commit message validation)
- * - validate-branch-name.config.js (branch name validation)
- * - release.config.cjs (release rules and changelog sections)
- * - .vscode/settings.json (scope autocomplete)
- * - .agents/skills/commit-code/SKILL.md (reference tables)
+ * Single source of truth for types, scopes, and emojis across commitlint, branch-name validation, releases, editor autocomplete, and commit-code.
  *
- * When adding/removing types, scopes, or emojis, update this file only.
+ * When adding or removing types, scopes, or emojis, update this file only.
  * Run `nx run synchronization:conventional-config:write` to propagate changes.
  */
 
-/**
- * Canonical gitmoji, one emoji per commit type: the source of truth for each
- * type's key, description and emoji. See gitmoji.dev.
- */
+/** Canonical gitmoji, one emoji per commit type. See gitmoji.dev. */
 const types = [
   {
     code: ":sparkles:",

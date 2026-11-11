@@ -7,7 +7,7 @@ import { YouHanziLetterCharacteristicsService } from "./you-hanzi-letter-charact
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the 由 (hanzi you) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each orientation of 由, as one isolated copy. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x04y04006f50efd0ab90",

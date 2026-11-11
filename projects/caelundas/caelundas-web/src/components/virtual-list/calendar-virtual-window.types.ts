@@ -7,7 +7,7 @@ export interface VirtualWindow {
 }
 
 /**
- * Where a virtualized list is scrolled to and how much of it shows.
+ * Scroll position, viewport height, row offsets, and overscan.
  */
 export interface VirtualWindowInput {
   /**

@@ -5,10 +5,7 @@ import type { conformetryConfigurationSchema } from "./configuration.constants";
 import type { GeneratorHooks } from "@conformetry/core";
 import type { z } from "zod";
 
-/**
- * The loaded configuration: one entry per generator. An array, since a
- * generator's name is already a field and a record would state it twice.
- */
+/** The loaded config: one entry per generator, as an array. */
 export type ConformetryConfiguration = ConformetryGeneratorDefinition[];
 
 /** One generator, with the template it renders and the instances it governs. */
@@ -39,11 +36,7 @@ export interface ConformetryGeneratorDefinition {
 /** One configurable input, expressed as a JSON Schema fragment. */
 export type ConformetryGeneratorInputDefinition = Record<string, unknown>;
 
-/**
- * Minimal JSON Schema fragment for a generator's inputs.
- *
- * Only `properties` and `required` are modelled, since those are what conformetry reads.
- */
+/** JSON Schema fragment for generator inputs: `properties` and `required` only. */
 export interface JsonSchemaDefinition {
   [key: string]: unknown;
   properties?: Record<string, unknown>;

@@ -24,9 +24,7 @@ const FAINT: Star = {
   rightAscensionHours: 12.9,
 };
 
-/**
- * Stars the catalog holds, so a sky drawn without Postgres has stars to draw and a magnitude limit has one to leave out.
- */
+/** Catalog stars, so a Postgres-free sky has stars to draw. */
 const STARS: Star[] = [
   VEGA,
   {
@@ -67,10 +65,7 @@ const READS = new Map<unknown, unknown[]>([
   [Star, STARS],
 ]);
 
-/**
- * What the services' entity manager answers without a database: the stars
- * and the one figure segment above, and no row of any other entity.
- */
+/** Entity manager answers without a database: stars and one figure segment. */
 export const NO_DATABASE_ENTITY_MANAGER = {
   getRepository: (
     target: unknown,

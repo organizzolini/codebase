@@ -45,7 +45,7 @@ interface SeededLexeme {
   readonly partOfSpeech: PartOfSpeech;
 }
 
-/** Each boundary matrix issues a few hundred statements, which a slow runner needs time for. */
+/** Boundary matrices run hundreds of statements, so they need time. */
 const MATRIX_TIMEOUT_MILLISECONDS = 120_000;
 
 /** A search connection as a GraphQL client observes it, with nodes reduced to ids. */

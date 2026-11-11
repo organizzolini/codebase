@@ -7,10 +7,7 @@ import { onTestFinished } from "vitest";
 import type { ProcessRunnerService } from "../src/modules/process-runner/process-runner.service";
 import type { CapturedProcess } from "../src/modules/process-runner/process-runner.types";
 
-/**
- * Where temporary workspaces are made: inside this project, never the
- * operating system's temporary directory, and ignored by git.
- */
+/** Workspaces go in this project, never the OS temp directory. */
 const TEMPORARY_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
 /** One call a command made to the process runner. */
@@ -20,19 +17,13 @@ export interface RecordedCall {
   input?: string;
 }
 
-/**
- * How a scripted command line answers: one result every time, or one result
- * per call in turn, the last repeating.
- */
+/** Fixed, or one result per call with the last repeating. */
 export type ScriptedAnswer<Result> = readonly Result[] | Result;
 
-/** Something a scripted command line does to the disk when it is called. */
+/** What a scripted command does to the disk when called. */
 export type ScriptedEffect = (args: readonly string[]) => void;
 
-/**
- * A task-database directory inside the workspace, for a test to fill. Under
- * `.nx`, never the OS temp directory.
- */
+/** A task-database directory under `.nx`, for a test to fill. */
 export interface TaskDatabaseWorkspace {
   /** Writes one file that is not a database, and the companions named by suffix. */
   add: (name: string, ageSeconds: number, companions?: string[]) => void;
@@ -75,10 +66,7 @@ const answerFor = <Result>(
   return picked;
 };
 
-/**
- * Finds a command line's entry: exact, else the longest ` *` entry whose
- * prefix starts the line.
- */
+/** Finds the exact entry, else the longest matching `*` prefix. */
 const lookUp = <Value>(
   script: Readonly<Record<string, Value>>,
   line: string,
@@ -95,10 +83,10 @@ const lookUp = <Value>(
 };
 
 /**
- * Answers `capture` and `captureAsync` from a script and records every call,
- * so a command test runs the real service with no process.
+ * Answers `capture` and `captureAsync` from a script and records calls, so
+ * tests run no process.
  *
- * @param script - Answers by full command line, or a prefix ending in ` *`.
+ * @param script - Answers by full command line or `*` prefix.
  * @param streamStatus - Exit code of an unnamed streamed call.
  * @param streamScript - Exit codes for streamed calls, by command line.
  */
@@ -120,7 +108,7 @@ export class FakeProcessRunner implements Pick<
 
   public readonly captured: RecordedCall[] = [];
 
-  /** What each scripted command line does to the disk, by line or prefix. */
+  /** Disk effects of each scripted command, by line or prefix. */
   public readonly effects: Record<string, ScriptedEffect> = {};
 
   /** Every command line called, captured or streamed, in order. */

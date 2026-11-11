@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * A counter with `patterns` counts files; one with `symbols` counts declarations.
- *
- * See the [statistics guide](./README.md).
- */
+// See the [statistics guide](./README.md).
+/** A counter with `patterns` counts files; one with `symbols` counts declarations. */
 const codometerConfiguration: CodometerConfiguration = {
   custom: [
     // 🗂️ By file pattern — one badge per naming convention.

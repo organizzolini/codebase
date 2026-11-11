@@ -23,10 +23,9 @@ import {
 /**
  * Regenerates the OpenWiki pages under `documentation/openwiki`.
  *
- * Runs in the current working directory, which must be the workspace root:
- * OpenWiki treats that directory as the repository and writes to `openwiki`
- * beneath it. It refuses a symbolic link there, so for the length of a run the
- * root `openwiki` symlink gives way to the real directory it points at.
+ * Runs from the workspace root, since OpenWiki writes to `openwiki` beneath the
+ * working directory. It refuses a symlink there, so the root symlink gives way
+ * to its target for the run.
  */
 @Injectable()
 export class RefreshDocumentationService {

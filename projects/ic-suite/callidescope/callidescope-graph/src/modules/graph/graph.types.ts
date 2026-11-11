@@ -12,10 +12,7 @@ export interface BreadthMeasurement {
   readonly byCallable: ReadonlyMap<CallableId, CallableBreadth>;
 }
 
-/**
- * How many callables one callable calls directly. `calleeIds` holds distinct callees,
- * not call sites.
- */
+/** Direct callee count. `calleeIds` holds distinct callees, not call sites. */
 export interface CallableBreadth {
   readonly breadth: number;
   readonly calleeIds: readonly CallableId[];
@@ -53,10 +50,7 @@ export interface ComponentDepth {
   readonly reachesUnresolved: boolean;
 }
 
-/**
- * The graph with each cycle collapsed into one node, since longest path needs an
- * acyclic graph.
- */
+/** Graph with cycles collapsed, as longest path needs no cycles. */
 export interface CondensedGraph {
   readonly componentIdByCallable: ReadonlyMap<CallableId, number>;
   readonly memberIdsByComponent: readonly (readonly CallableId[])[];
@@ -68,10 +62,7 @@ export interface DepthMeasurement {
   readonly byComponent: readonly ComponentDepth[];
 }
 
-/**
- * Arguments for measuring breadth across the graph. No condensation is needed,
- * since breadth is defined even inside cycles.
- */
+/** Arguments for measuring breadth across the graph. */
 export interface MeasureBreadthArguments {
   readonly callableIds: readonly CallableId[];
   readonly graph: CallGraph;

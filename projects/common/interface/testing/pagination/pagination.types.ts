@@ -1,4 +1,4 @@
-/** How a matrix is built: its cursor encoding, and whether to keep it quick. */
+/** A matrix's cursor encoding, and whether it stays quick. */
 export interface MatrixOptions {
   /** Encodes the cursor a connection hands out for an id; `{ id }` by default. */
   readonly cursorOf?: (id: string) => string;

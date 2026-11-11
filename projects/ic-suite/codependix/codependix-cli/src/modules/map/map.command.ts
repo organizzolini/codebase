@@ -35,9 +35,9 @@ import type {
 /**
  * CLI entry point for the codependix dependency graph workflow.
  *
- * `--write` publishes every configured export. `--check` names the findings that fail the run:
- * `boundaries` for a broken rule, `reports` for a stale destination. Which graphs run is set by
- * `codependix.config.ts`. Staleness moves with the workspace, so it gates apart from breakage.
+ * `--write` publishes every configured export. `--check` fails on `boundaries`
+ * (broken rules) and `reports` (stale destinations). Staleness moves with the
+ * workspace, so it gates apart from breakage.
  */
 @Command({
   description: "Map every configured dependency graph and export it",

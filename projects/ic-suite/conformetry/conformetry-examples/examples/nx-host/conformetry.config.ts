@@ -4,10 +4,8 @@ import type { ConformetryNxConfiguration } from "@conformetry/nx";
 const EXAMPLE_PATH =
   "projects/ic-suite/conformetry/conformetry-examples/examples/nx-host";
 
-/**
- * Typed for the Nx host. `tags` are legal only here: the standalone type has no
- * project graph to match a label against.
- */
+// `tags` are legal only here: the standalone type has no project graph.
+/** Typed for the Nx host. */
 const conformetryConfiguration: ConformetryNxConfiguration = [
   {
     description: "A module template, located by project tag rather than glob",

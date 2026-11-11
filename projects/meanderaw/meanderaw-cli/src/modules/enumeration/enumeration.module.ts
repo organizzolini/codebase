@@ -8,12 +8,10 @@ import { EnumerationService } from "./enumeration.service";
 import { TileEnumerationService } from "./tile-enumeration.service";
 
 /**
- * Wires up the walk over the lattice's unit space. {@link TileEnumerationService}
- * folds every subset of a shape's edges by symmetry class, and
- * {@link EnumerationService} spells each tile into a Code.
+ * Wires the walk over the lattice's unit space, folding tiles by symmetry class
+ * and spelling them into Codes.
  *
- * Nothing here knows what a tile is called, so {@link CodeModule} can depend on
- * the symmetry group without this module depending back on the spelling.
+ * Nothing here names tiles, so {@link CodeModule} can use the symmetry group without a cycle.
  */
 @Module({
   controllers: [],

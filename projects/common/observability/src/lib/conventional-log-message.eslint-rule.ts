@@ -28,17 +28,14 @@ type ConventionalLogMessageViolation =
   | { data: { word: string }; messageId: "nonConventionalVerb" }
   | { data?: undefined; messageId: "missingLeadingEmoji" };
 
-/**
- * The slice of a message argument's shape this rule reads, hand-rolled because
- * `@types/estree` is outside this package's graph.
- */
+/** Argument shape read here, since estree is out of graph. */
 interface MessageArgumentShape {
   quasis?: readonly { value: { cooked?: null | string | undefined } }[];
   type: string;
   value?: unknown;
 }
 
-/** A message split into the emoji the console shows and the prose after it. */
+/** A message split into its leading emoji and prose. */
 interface ParsedLogMessage {
   emoji: string | undefined;
   text: string;
@@ -119,10 +116,7 @@ function parseLogMessage(message: string): ParsedLogMessage {
 
 // 📏 Rule
 
-/**
- * Metadata for the `conventional-log-message` rule. Only a string literal or
- * template prefix is checked; other arguments are skipped.
- */
+/** Rule metadata; only string literal or template prefixes are checked. */
 const conventionalLogMessageMeta: {
   documentation: { description: string };
   messages: {

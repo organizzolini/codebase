@@ -8,9 +8,7 @@ import type {
 
 // 🏷️ Types
 
-/**
- * Arguments for building finite verb forms for specific persons, used in the FormsBuilderVerbProvider.
- */
+/** Arguments for building finite verb forms for given persons. */
 export interface BuildFinitePersonFormsArguments {
   lexeme: Lexeme;
   mood: FormMood;

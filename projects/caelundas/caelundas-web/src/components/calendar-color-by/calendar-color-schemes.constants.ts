@@ -1,7 +1,7 @@
 // ♟️ Constants
 
 /**
- * The colors a scheme hands out in turn, distinct side by side and legible on dark and light pages.
+ * Colors handed out in turn, legible on dark and light.
  */
 export const COLOR_PALETTE: readonly string[] = [
   "#f43f5e",

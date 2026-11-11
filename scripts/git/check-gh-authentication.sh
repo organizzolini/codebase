@@ -29,12 +29,10 @@ resolve_repository_owner() {
   return 1
 }
 
-# Claude Code cloud sessions hold a placeholder in GH_TOKEN and a session proxy
-# adds the real credential to each request, so `gh auth status` rejects a token
-# that every REST call succeeds with. They also cannot reach GraphQL at all —
-# the proxy answers 403 — which is what `gh project list` speaks. Both checks
-# would fail a session that can read and write the repository, so a cloud
-# session is judged by the REST call it will really make.
+# Cloud sessions hold a placeholder in GH_TOKEN; a proxy adds the real credential to
+# each request. So `gh auth status` rejects a token that REST calls succeed with, and
+# GraphQL is refused with 403, which `gh project list` needs. Both checks would fail a
+# session that can read and write, so cloud sessions are judged by the REST call they make.
 is_cloud_session() {
   [[ "${CLAUDE_CODE_REMOTE:-}" == 'true' ]]
 }
@@ -59,14 +57,11 @@ verify_github_cli_access() {
   fi
 }
 
-# Session hooks run in a bare non-interactive shell that never reads the user's
-# shell profile, so GH_TOKEN and GITHUB_TOKEN are absent here even when every
-# terminal in the session exports them. gh then falls back to its keyring
-# account, whose token carries fewer scopes, and the check fails on a credential
-# the session never uses. Asking the login shell for what it exports is what
-# makes the hook see the same token the session does.
+# Hooks run in a bare shell that skips the user's profile, so GH_TOKEN and GITHUB_TOKEN are absent.
+# gh then falls back to its keyring token, which has fewer scopes and is not the one the
+# session uses. Asking the login shell for its exports sees the same token.
 #
-# Continuous integration passes the token in explicitly, so it never asks.
+# CI passes the token explicitly, so it never asks.
 resolve_login_shell_token() {
   if [[ -n "${GITHUB_ACTIONS:-}" || -n "${CI:-}" ]]; then
     return 1

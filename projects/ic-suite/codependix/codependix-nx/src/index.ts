@@ -30,11 +30,7 @@ export { PluginModule } from "./modules/plugin/plugin.module";
 export { PluginService } from "./modules/plugin/plugin.service";
 export type { CodependixPluginOptions } from "./modules/plugin/plugin.types";
 
-/**
- * Infers the gate onto every project but the workspace root, reading the plugin
- * options once. Unresolvable command-line inputs still leave the tsconfig chain
- * hashed.
- */
+/** Infers the gate per non-root project, reading options once. */
 const createNodes: CreateNodes = [
   PROJECT_CONFIGURATION_GLOB,
   async (

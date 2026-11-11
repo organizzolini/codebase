@@ -24,10 +24,11 @@ import type {
 import type { ProjectReport } from "@callidescope/core";
 
 /**
- * Renders what a whole run says about the projects in it, rather than one callable or stack.
+ * Renders what a whole run says about the projects in it.
  *
- * Its two sections are the index and the scoreboard: which project holds what, and how much room
- * each has before its own limit stops it. Both key on each project's resolved limit.
+ * Two sections: the index and the scoreboard, showing which project holds what
+ * and how much room each has before its own limit stops it. Both key on each
+ * project's resolved limit.
  */
 @Injectable()
 export class WorkspaceReportService {

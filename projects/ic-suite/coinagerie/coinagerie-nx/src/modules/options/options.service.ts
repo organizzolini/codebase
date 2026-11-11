@@ -10,10 +10,9 @@ import type { CoinageriePluginOptions, PluginInput } from "./options.types";
 /**
  * Narrows the untyped options object Nx hands a plugin.
  *
- * Nx passes whatever the consumer wrote in `nx.json` with no validation, so
- * every field is checked before use rather than cast. A bad value falls back
- * to its default: a typo in a target name should not stop the project graph
- * from being built.
+ * Nx passes consumer config from `nx.json` unvalidated, so each field is checked
+ * before use. A bad value falls back to its default, so a target-name typo does
+ * not stop the project graph from building.
  */
 @Injectable()
 export class OptionsService {

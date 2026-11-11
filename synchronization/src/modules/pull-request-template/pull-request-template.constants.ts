@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-/** Marker block name used to embed the PR template in target markdown files. */
+/** Marker block name that embeds the PR template in Markdown. */
 export const SYNC_PULL_REQUEST_TEMPLATE_MARKER = "pr-template";
 
 /** Target files that embed the PR template block. */

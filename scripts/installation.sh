@@ -1,29 +1,11 @@
 #!/bin/bash
-# installation.sh — Entry point for local developer machine setup.
+# installation.sh: local developer machine setup, run once after cloning.
 #
-# Run this once after cloning the codebase repository to install all required tools,
-# configure your shell, and install project dependencies.
+# Usage: bash scripts/installation.sh   (from the workspace or worktree root)
 #
-# Usage: bash scripts/installation.sh   (from the workspace/worktree root)
-#
-# macOS and Linux take different paths through the same file; see the Linux
-# section below for what the second one does and leaves out.
-#
-# This is a bootstrap. It installs only what the real setup needs in order to
-# run: Homebrew's presence, nvm, Node.js, pnpm, and the workspace's packages.
-# Everything after that is the `setup` command of the installation project
-# (installation), which configures the shell, installs the remaining
-# software, creates the .env files, and installs the dependencies.
-#
-# Execution order:
-#   1. utilities.sh        — validates cwd, loads .env, enables set -e
-#   2. Homebrew            — checked, never installed
-#   3. nvm, Node.js, pnpm  — nvm and Node (.nvmrc), Husky init, pnpm, nx
-#   4. pnpm install        — the packages the command is written in
-#   5. the setup command   — everything else, as tested TypeScript
-#
-# The whole bootstrap is one file, so environment changes made below
-# (nvm use, PATH updates) carry through into the setup command.
+# A bootstrap: it installs what the real setup needs to run (Homebrew's presence,
+# nvm, Node.js, pnpm, and packages). The `setup` command of the installation
+# project then does the rest, as tested TypeScript.
 
 source ./scripts/utilities.sh
 
@@ -35,15 +17,10 @@ installation() {
 }
 
 # ── Operating system ─────────────────────────────────────────────────────────
-# macOS continues below with Homebrew and nvm. Linux, which is what a Claude
-# Code cloud session and the devcontainer run, has no Homebrew and often a system
-# Node older than .nvmrc. So there Node is the nodejs.org release for .nvmrc,
-# linked into ~/.local/bin, which is ahead of the system Node on PATH. node-gyp
-# is linked from the copy npm bundles, because the native packages (sweph,
-# cpu-features) need it on PATH. The Husky init file and the global nx are set
-# up here too, as on a Mac. The setup command then does the rest for Linux: the
-# .env files, the software Linux can have, and the Docker daemon and Postgres.
-# Safe to run again.
+# macOS continues below. Linux (cloud sessions, devcontainer) has no Homebrew and
+# often an older Node, so Node is the nodejs.org release for .nvmrc in ~/.local/bin.
+# node-gyp comes from npm's copy, which native packages need on PATH.
+# Husky and nx match a Mac; setup does the rest. Safe to run again.
 operating_system="$(uname -s)"
 if [[ "${operating_system}" != "Darwin" && "${operating_system}" != "Linux" ]]; then
   echo "🛑 Unsupported operating system: ${operating_system}. Use macOS or Linux." >&2

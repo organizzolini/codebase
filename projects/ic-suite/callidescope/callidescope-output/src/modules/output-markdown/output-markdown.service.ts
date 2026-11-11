@@ -20,10 +20,9 @@ import type { MarkdownAnchorHelpers } from "@callidescope/configuration";
 /**
  * Splices a generated block into a markdown file, between two anchors.
  *
- * Staleness is decided by comparing the extracted block against the
- * regenerated one, byte for byte. A file with no anchors, or no file at all,
- * counts as stale rather than as an error, so check mode reports the same thing
- * whether the block drifted or was never written.
+ * Staleness compares the extracted block with the regenerated one, byte for byte.
+ * A missing file or anchor counts as stale, not as an error, so check mode
+ * reports drift and absence alike.
  */
 @Injectable()
 export class OutputMarkdownService {

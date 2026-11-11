@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * One worked example, rendered as Markdown under `output/`. `--check` compares it with
- * the committed file, so a guide cannot quote a stale diagram.
- */
+/** A worked example rendered under `output/`, checked against the commit. */
 export interface ExampleDocument {
   /** File stem the document is written under, such as `03-ambient-modules`. */
   readonly id: string;
@@ -23,7 +20,7 @@ export interface ExampleFile {
   readonly relativePath: string;
 }
 
-/** A JSON export committed so a reader sees its shape without running anything. */
+/** A committed JSON export, so readers see its shape. */
 export interface ExampleJsonExport {
   /**
    * Content, already rendered by `DeliveryService.renderJson` so it is

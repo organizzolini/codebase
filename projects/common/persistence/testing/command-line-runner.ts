@@ -41,10 +41,7 @@ interface RunCliCommandLineOptions {
   readonly module?: DynamicModule | Type<unknown>;
 }
 
-/**
- * Levels that write a line. `log` is absent: it forwards to `info`, so its calls
- * record as `info`.
- */
+/** Writing levels. `log` is absent, since it forwards to `info`. */
 const LOGGER_LEVELS = ["debug", "error", "info", "verbose", "warn"] as const;
 
 /**

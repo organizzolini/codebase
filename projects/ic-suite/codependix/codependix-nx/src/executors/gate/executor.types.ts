@@ -3,10 +3,7 @@
 import type { GateOptions } from "../../modules/gate/gate.types";
 import type { ExecutorContext, TaskGraph } from "@nx/devkit";
 
-/**
- * The four arguments Nx passes a batch executor: task graph, each task's
- * options by id, the run's overrides, and the context.
- */
+/** The four arguments Nx passes a batch executor, in order. */
 export type GateBatchExecutorArguments = [
   taskGraph: TaskGraph,
   options: Record<string, GateExecutorOptions>,

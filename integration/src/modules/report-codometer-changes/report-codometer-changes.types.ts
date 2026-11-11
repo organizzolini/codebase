@@ -12,7 +12,7 @@ export type CodometerBaseline =
       line: string;
     };
 
-/** What the report did: lines to print, and the exit code to end with. */
+/** Lines to print, and the exit code to end with. */
 export interface ReportCodometerChangesOutcome {
   exitCode: number;
   lines: string[];

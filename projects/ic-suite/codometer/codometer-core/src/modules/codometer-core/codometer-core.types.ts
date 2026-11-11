@@ -1,8 +1,6 @@
 // 🏷️ Types
 
-/**
- * Aggregated code statistics from the measurement pipeline, grouped by language. Lives here so `codometer.config.ts` can name it.
- */
+/** Code statistics by language, typed here for codometer.config.ts. */
 export interface CodeStatisticsResult {
   css: CssStatistics;
   custom: CustomStatisticResult[];
@@ -28,9 +26,7 @@ export interface CodeStatisticsResult {
   yaml: YamlStatistics;
 }
 
-/**
- * Everything one run measured, and what it could not. Each metric carries its limits and a stable name to join on.
- */
+/** One run's metrics and failures, each with a stable name. */
 export interface CodometerReport {
   /**
    * What the run could not do. Empty on an ordinary run.
@@ -41,18 +37,10 @@ export interface CodometerReport {
   targets: ReportTarget[];
 }
 
-/**
- * What a breach costs.
- *
- * `fail` is a gate and `warn` is a report. Both are reported identically.
- */
+/** What a breach costs: `fail` gates, `warn` reports, both print alike. */
 export type CodometerSeverity = "fail" | "warn";
 
-/**
- * A badge group a configured counter can be rendered into.
- *
- * Every group the report renders, plus `conventions` for configured counters.
- */
+/** Badge group a counter can render into; `conventions` covers counters. */
 export type CodometerStatisticGroup =
   | "conventions"
   | "css"
@@ -68,11 +56,7 @@ export type CodometerStatisticGroup =
   | "typescript"
   | "yaml";
 
-/**
- * A kind of declaration a symbol counter can ask for.
- *
- * `function` covers callables outside a class; class-field arrows are `property`.
- */
+/** Declaration kind a symbol counter asks for; `function` means non-class callables. */
 export type CodometerSymbolKind =
   | "class"
   | "enum"
@@ -87,11 +71,7 @@ export type CodometerSymbolKind =
   | "type"
   | "variable";
 
-/**
- * A modifier a counted declaration must carry.
- *
- * Matched literally: `public` misses members public only by omission.
- */
+/** Modifier a declaration must carry; matched literally, so `public` misses implicit. */
 export type CodometerSymbolModifier =
   | "abstract"
   | "async"
@@ -118,9 +98,7 @@ export interface CssStatistics {
   selectors: number;
 }
 
-/**
- * What one configured counter found. `count` is files for a path counter and declarations for a symbol counter.
- */
+/** What one counter found; `count` means files or declarations. */
 export interface CustomStatisticResult {
   color: string;
   count: number;
@@ -196,9 +174,7 @@ export interface JsonStatistics {
   totalNodes: number;
 }
 
-/**
- * Statistics specific to Jupyter notebooks. Counters come from three analyzers: JSON document, Python cells, and markdown cells.
- */
+/** Jupyter notebook statistics, from JSON, Python cell and markdown analyzers. */
 export interface JupyterStatistics {
   cells: number;
   classes: number;
@@ -246,12 +222,7 @@ export interface MarkdownStatistics {
   thematicBreaks: number;
 }
 
-/**
- * What a metric's number counts.
- *
- * Only bytes are called out. Every other metric counts things, and a count has
- * no unit to get wrong.
- */
+/** What a metric's number counts: bytes, or a unitless count. */
 export type MetricUnit = "bytes" | null;
 
 /** Code statistics specific to Python source files. */
@@ -270,9 +241,7 @@ export interface PythonStatistics {
   protocols: number;
 }
 
-/**
- * Something the run could not do, and what it was trying to act on. `CodometerReport.failures` is where consumers read it.
- */
+/** Something the run could not do, and what it acted on. */
 export interface ReportFailure {
   /** Which part of the run it failed in. */
   kind: ReportFailureKind;
@@ -281,16 +250,10 @@ export interface ReportFailure {
   subject: string;
 }
 
-/**
- * Which part of a run a failure belongs to: `input` or `limit`.
- *
- * Neither is a breach; do not read them as passing.
- */
+/** Input or limit: which run part failed; neither is a breach. */
 export type ReportFailureKind = "input" | "limit";
 
-/**
- * The limit declared on one metric, and whether the metric cleared it. Held and breached limits are written out alike.
- */
+/** A metric's declared limit, and whether the metric cleared it. */
 export interface ReportLimit {
   breached: boolean;
   /** Stays `null` when none was written; a renderer falls back to the path. */
@@ -344,9 +307,7 @@ export interface ReportTarget {
   name: string;
 }
 
-/**
- * Statistics specific to shell scripts, counted with patterns rather than a parser. Only constructs a reader recognizes on sight.
- */
+/** Shell script statistics, counted by pattern rather than a parser. */
 export interface ShellStatistics {
   commentLines: number;
   comments: number;
@@ -402,9 +363,7 @@ export interface TypescriptStatistics {
   interfaces: number;
 }
 
-/**
- * Structural statistics specific to YAML documents. A file is a stream, so `documents` is counted apart from `files`.
- */
+/** YAML document statistics; documents count apart from files. */
 export interface YamlStatistics {
   aliases: number;
   anchors: number;

@@ -14,7 +14,7 @@ import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { EntityManager, Repository } from "typeorm";
 import type { ColumnMetadata } from "typeorm/metadata/ColumnMetadata.js";
 
-/** What the database service is built with: a repository mock in place of Postgres. */
+/** Built with a repository mock in place of Postgres. */
 const MODULE_OPTIONS: TestingModuleOptions = {
   providers: [
     {

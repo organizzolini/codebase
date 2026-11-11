@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * Size strings are decimal, with a required trailing `b`: `"8 KB"` is 8000 bytes.
- *
- * See the [limits guide](./README.md).
- */
+// See the [limits guide](./README.md).
+/** Size strings are decimal and need a trailing `b`. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

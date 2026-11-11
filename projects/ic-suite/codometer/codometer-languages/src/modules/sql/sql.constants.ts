@@ -2,21 +2,13 @@
 
 import type { SqlResult } from "./sql.types";
 
-/**
- * Matches a block comment, including one spanning several lines.
- *
- * Matches one star at a time, avoiding slow backtracking on unclosed markers.
- */
+/** Block comment regex; one star at a time avoids slow backtracking. */
 export const SQL_BLOCK_COMMENT_PATTERN = /\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\//g;
 
 /** Matches a `--` comment through to the end of its line. */
 export const SQL_LINE_COMMENT_PATTERN = /--[^\n]*/g;
 
-/**
- * Maps each counted clause onto the pattern that recognizes it.
- *
- * Word boundaries stop `CREATED_AT` reading as `CREATE`.
- */
+/** Maps each clause to its pattern; word boundaries prevent false matches. */
 export const SQL_KEYWORD_PATTERNS: [keyof SqlResult, RegExp][] = [
   ["commonTableExpressions", /\bWITH\b/gi],
   ["creates", /\bCREATE\b/gi],

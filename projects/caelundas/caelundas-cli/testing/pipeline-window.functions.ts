@@ -12,7 +12,7 @@ import type {
   PipelineWindowRequest,
 } from "./pipeline-window.types";
 
-/** Sweeps already started in this process, so tests sharing a window pay for it once. */
+/** Sweeps started in this process, so shared windows run once. */
 const sweeps = new Map<string, Promise<PipelineWindow>>();
 
 /**

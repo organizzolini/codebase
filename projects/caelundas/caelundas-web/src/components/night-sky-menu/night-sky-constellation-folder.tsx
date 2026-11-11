@@ -15,8 +15,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * A folder's name, the constellations in it, which show, and where to send
- * the names a check toggles.
+ * A folder's label, constellations, shown names, and toggle handler.
  */
 export interface NightSkyConstellationFolderProperties {
   className?: string;

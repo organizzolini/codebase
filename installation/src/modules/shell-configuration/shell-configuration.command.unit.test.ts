@@ -24,7 +24,7 @@ describe(ShellConfigurationCommand, () => {
   let workspace: TemporaryWorkspace;
   let report: string[];
 
-  /** Builds the command over the real service and a machine with these tools. */
+  /** Builds the command over the real service and these tools. */
   const createCommand = async (
     installed: string[],
   ): Promise<ShellConfigurationCommand> => {

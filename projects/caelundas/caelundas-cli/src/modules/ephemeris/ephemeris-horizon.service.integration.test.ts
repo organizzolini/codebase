@@ -8,9 +8,7 @@ import { EphemerisService } from "./ephemeris.service";
 
 import type { AzimuthElevationEphemeris } from "./ephemeris.types";
 
-/**
- * The Moon from Philadelphia on 20 March 2026, checked against JPL Horizons on 2026-10-07.
- */
+/** Moon from Philadelphia, 20 March 2026, checked against JPL Horizons. */
 const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };
 const moonCulmination = "2026-03-20T18:26:00.000Z";
 const moonrise = "2026-03-20T11:38:00.000Z";
@@ -23,11 +21,9 @@ const horizonsMoonriseSemidiameter = 1941.923 / 2 / 3600;
 /** USNO's standard refraction at the horizon, 34′, in degrees. */
 const horizonRefraction = 34 / 60;
 
-/**
- * The Sun and Moon from Philadelphia at greatest local eclipse, checked against JPL Horizons; azimuth from North.
- */
+/** Sun and Moon at greatest eclipse, per JPL Horizons. */
 const greatestLocalEclipse = "2026-08-12T17:54:00.000Z";
-/** Horizons: separation of the apparent topocentric Moon (RA 142.737254662°, Dec 15.165666571°) from the Sun (142.451827633°, 14.798538952°). */
+/** Horizons RA/Dec of the topocentric Moon and Sun, in degrees. */
 const horizonsSunMoonSeparation = 0.459_136;
 /** Horizons azimuth of the Moon and the Sun at greatest local eclipse. */
 const horizonsAzimuths = { moon: 205.898_816, sun: 206.185_78 };

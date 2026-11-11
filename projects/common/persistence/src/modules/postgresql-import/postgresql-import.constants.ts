@@ -5,10 +5,7 @@ import { describePostgresContent } from "../postgresql-utilities/postgresql-util
 import type { PostgresContent } from "../postgresql-utilities/postgresql-utilities.types";
 import type { PostgresqlImportPlan } from "./postgresql-import.types";
 
-/**
- * What `postgresql-import` says when an option it requires is missing, keyed by the
- * option. Each names the option and shows it in use.
- */
+/** Missing-option messages, keyed by option, each showing its usage. */
 export const POSTGRESQL_IMPORT_OPTION_MESSAGES = {
   content:
     "--data and/or --ddl is required: pass --data for rows, --ddl for table definitions, or both",
@@ -67,10 +64,7 @@ export class PostgresqlImportRestoreError extends Error {
 export const missingFileMessage = (file: string): string =>
   `${file} does not exist: name a dump file or directory written by postgresql-export with --file`;
 
-/**
- * What `postgresql-import` says when the dump at `file` lacks the rows (`data`) or
- * table definitions (`ddl`) of some selected tables.
- */
+/** Message: dump lacks selected rows (`data`) or definitions (`ddl`). */
 export const missingContentsMessage = (
   file: string,
   { data, ddl }: Readonly<Record<"data" | "ddl", readonly string[]>>,
@@ -86,10 +80,7 @@ export const missingContentsMessage = (
 export const rolledBackMessage = (detail: string, target: string): string =>
   `${detail}\nNothing was imported: the restore ran as one transaction, so ${target} was left unchanged.`;
 
-/**
- * What `postgresql-import --clean --data` says when tables outside the selection,
- * `referencing`, reference a selected one: the `--table` options to add.
- */
+/** Message naming `--table` options to add for referencing tables. */
 export const referencedTablesMessage = (
   referencing: readonly string[],
   target: string,
@@ -100,10 +91,7 @@ export const referencedTablesMessage = (
 export const notTruncatedMessage = (detail: string, target: string): string =>
   `${detail}\nNothing was truncated: ${target} was left unchanged.`;
 
-/**
- * What `postgresql-import` adds to a restore that failed after `--clean --data`
- * emptied `tables`: they may be empty, and the import should be re-run.
- */
+/** Warning: failed `--clean --data` may leave tables empty; re-run. */
 export const truncatedMessage = (
   detail: string,
   target: string,
@@ -111,11 +99,7 @@ export const truncatedMessage = (
 ): string =>
   `${detail}\n--clean had already emptied ${tables.join(", ")} in ${target}, so they may now be empty. Re-run the import from the same file to refill them.`;
 
-/**
- * What `postgresql-import --dry-run` prints, one line each. Never carries the
- * password; each line opens with an emoji and a verb, as `LoggerService`
- * requires.
- */
+/** Dry-run lines, no password, each opening with an emoji and verb. */
 export const dryRunMessages = (
   {
     clean,

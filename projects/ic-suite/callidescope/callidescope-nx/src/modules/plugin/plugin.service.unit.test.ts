@@ -43,7 +43,7 @@ vi.mock("node:fs", () => ({
   existsSync: vi.fn<() => boolean>(() => true),
 }));
 
-/** The limits a stubbed run resolved, so a forwarded lookup can be pinned. */
+/** Stubbed run's resolved limits, so forwarded lookups can be pinned. */
 const LIMITS: ProjectLimitsLookup = {
   byProject: new Map(),
   workspace: createMock<ProjectLimits>(),

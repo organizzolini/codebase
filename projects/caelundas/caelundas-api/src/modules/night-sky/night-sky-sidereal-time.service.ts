@@ -54,9 +54,7 @@ export class NightSkySiderealTimeService {
   }
 
   /**
-   * The angle the sky starts at for a place and moment, from
-   * astronomy-engine's apparent sidereal time. The hand-rolled mean sidereal
-   * time above is only the fallback when that is unavailable.
+   * The starting angle from astronomy-engine's apparent sidereal time.
    */
   public startingDegrees(date: Date, longitudeDegrees: number): number {
     return this.localDegrees(date, longitudeDegrees, SiderealTime(date));

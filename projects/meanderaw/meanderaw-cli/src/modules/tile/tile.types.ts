@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * The four direction bits one point carries: ink leaving north, south, east,
- * or west. `0000` is a dot, `1111` a crossing.
- */
+/** Point direction bits: `0000` a dot, `1111` a crossing. */
 export interface Directions {
   readonly east: boolean;
   readonly north: boolean;
@@ -11,10 +8,7 @@ export interface Directions {
   readonly west: boolean;
 }
 
-/**
- * A tile's edges, each held once. The tile's own degrees of freedom, and the
- * form a tile is built from.
- */
+/** A tile's degrees of freedom, each edge held once. */
 export interface Edges {
   readonly horizontal: readonly (readonly boolean[])[];
   readonly vertical: readonly (readonly boolean[])[];
@@ -28,23 +22,20 @@ export interface EdgesDraft {
   readonly vertical: boolean[][];
 }
 
-/**
- * One repeat tile: a `columns` by `rows` grid of points, each carrying its four
- * direction bits. `points` is indexed `[row][column]`.
- */
+/** A `columns` by `rows` grid of points, indexed `[row][column]`. */
 export interface Tile {
   readonly columns: number;
   readonly points: readonly (readonly Directions[])[];
   readonly rows: number;
 }
 
-/** Which point of a tile is being talked about, grouped into one object so a method naming it stays inside the workspace's parameter limit. */
+/** A tile point, bundled to respect the parameter limit. */
 export interface TilePoint {
   readonly column: number;
   readonly row: number;
 }
 
-/** The size of a tile, apart from anything drawn on it: how deep a band one repeat spans, and how many columns. */
+/** A tile's band depth and column count. */
 export interface TileShape {
   readonly columns: number;
   readonly rows: number;

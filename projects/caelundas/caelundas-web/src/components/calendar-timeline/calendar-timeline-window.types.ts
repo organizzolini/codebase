@@ -1,6 +1,5 @@
 /**
- * One timeline row as it was laid out: its id and its height in pixels, in
- * the order the rows are drawn.
+ * A timeline row's id and height, in draw order.
  */
 export interface TimelineRowBox {
   height: number;

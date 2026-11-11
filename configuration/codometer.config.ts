@@ -7,18 +7,12 @@ import {
 
 // ♟️ Conventions
 
-/**
- * Name of the target holding a project's compiled JavaScript; the pull request
- * report joins targets across branches by this name.
- */
+/** Target holding compiled JavaScript, joined across branches by name. */
 const COMPILED_TARGET_NAME = "Compiled JavaScript";
 
 // 💬 Comment Budgets
 
-/**
- * Each comment-budget counter's display label by language, such as "TypeScript
- * Comment Budget"; the limit below reads its metric path from it.
- */
+/** Display label per language for each comment-budget counter. */
 const COMMENT_LANGUAGE_LABELS = {
   css: "CSS",
   hcl: "HCL",
@@ -39,10 +33,7 @@ const PLAIN_COMMENT_MAXIMUM_WORDS = 48;
 /** Lines a plain comment block may span. */
 const PLAIN_COMMENT_MAXIMUM_LINES = 8;
 
-/**
- * One budget per language, since `comment` selectors carry no inheritance.
- * Capped per block by words and lines, never characters.
- */
+/** One budget per language, capped by words and lines. */
 const generalCommentBudgets: CodometerCustomStatistic[] =
   CODOMETER_COMMENT_LANGUAGES.filter((language) => language !== "shell").map(
     (language) => ({
@@ -55,11 +46,11 @@ const generalCommentBudgets: CodometerCustomStatistic[] =
     }),
   );
 
-/** Words a class's or file header's JSDoc may hold: the one place a role is explained. */
-const ROLE_JSDOC_MAXIMUM_WORDS = 64;
+/** Words a class's or file header's JSDoc may hold. */
+const ROLE_JSDOC_MAXIMUM_WORDS = 48;
 
 /** Lines a class's or file header's JSDoc may span, delimiters included. */
-const ROLE_JSDOC_MAXIMUM_LINES = 14;
+const ROLE_JSDOC_MAXIMUM_LINES = 16;
 
 /** Words any other declaration's JSDoc may hold: what it is, and why. */
 const DECLARATION_JSDOC_MAXIMUM_WORDS = 24;
@@ -70,35 +61,40 @@ const DECLARATION_JSDOC_MAXIMUM_LINES = 8;
 /** The kinds whose JSDoc says what a whole module is for. */
 const ROLE_JSDOC_KINDS: readonly string[] = ["class", "file"];
 
-/**
- * One JSDoc budget per declaration kind. Classes and file headers, which say
- * what a module is for, get the larger one.
- */
+/** Words a short declaration's JSDoc may hold: a data shape's one-line gloss. */
+const SHORT_JSDOC_MAXIMUM_WORDS = 12;
+
+/** Lines a short declaration's JSDoc may span, delimiters included. */
+const SHORT_JSDOC_MAXIMUM_LINES = 4;
+
+/** Data-shape kinds, whose JSDoc is one short gloss. */
+const SHORT_JSDOC_KINDS: readonly string[] = [
+  "enum",
+  "interface",
+  "property",
+  "type",
+  "variable",
+];
+
+/** JSDoc budget per declaration kind; classes and files get more. */
 const jsdocBudgets: CodometerCustomStatistic[] = CODOMETER_SYMBOL_KINDS.map(
   (kind) => {
-    const isRole = ROLE_JSDOC_KINDS.includes(kind);
+    const [maximumLines, maximumWords] = ROLE_JSDOC_KINDS.includes(kind)
+      ? [ROLE_JSDOC_MAXIMUM_LINES, ROLE_JSDOC_MAXIMUM_WORDS]
+      : SHORT_JSDOC_KINDS.includes(kind)
+        ? [SHORT_JSDOC_MAXIMUM_LINES, SHORT_JSDOC_MAXIMUM_WORDS]
+        : [DECLARATION_JSDOC_MAXIMUM_LINES, DECLARATION_JSDOC_MAXIMUM_WORDS];
 
     return {
-      comment: {
-        kind,
-        maximumLines: isRole
-          ? ROLE_JSDOC_MAXIMUM_LINES
-          : DECLARATION_JSDOC_MAXIMUM_LINES,
-        maximumWords: isRole
-          ? ROLE_JSDOC_MAXIMUM_WORDS
-          : DECLARATION_JSDOC_MAXIMUM_WORDS,
-      },
+      comment: { kind, maximumLines, maximumWords },
       label: `${kind[0]?.toUpperCase() ?? ""}${kind.slice(1)} JSDoc Budget`,
     };
   },
 );
 
-/**
- * Shell is looser: a script's header documents usage and order in one block,
- * so 256 words still catches real sprawl.
- */
+/** Shell is looser than other plain comments: a script header documents usage. */
 const shellCommentBudget: CodometerCustomStatistic = {
-  comment: { language: "shell", maximumWords: 256 },
+  comment: { language: "shell", maximumLines: 16, maximumWords: 64 },
   label: `${COMMENT_LANGUAGE_LABELS.shell} Comment Budget`,
 };
 
@@ -118,10 +114,7 @@ function selectAllLabels(
 
 // 🧱 Shared Configuration
 
-/**
- * The counters every project's measurement shares: file-suffix counters
- * showing what the TypeScript total is made of, then the comment budgets.
- */
+/** Counters every project shares: TypeScript file suffixes, then comment budgets. */
 const customStatistics: CodometerCustomStatistic[] = [
   { label: "Module Files", patterns: ["**/*.module.ts"] },
   { label: "Service Files", patterns: ["**/*.service.ts"] },
@@ -146,20 +139,14 @@ const customStatistics: CodometerCustomStatistic[] = [
   ...commentBudgets,
 ];
 
-/**
- * Each comment-budget counter's `custom.<label>` limit is zero breaching
- * blocks; a counter with no limit only counts. Derived from `commentBudgets`.
- */
+/** Zero-breach limit per comment-budget counter, derived from `commentBudgets`. */
 const commentBudgetLimits: CodometerConfiguration["limits"] =
   commentBudgets.map((statistic) => ({
     metric: `custom.${statistic.label}`,
     value: 0,
   }));
 
-/**
- * What every measurement shares, spread by each project; `format` is set here.
- * A named export, since the loader reads only default exports.
- */
+/** Shared settings including `format`. A named export, not default. */
 export const codometerConfiguration = {
   // Measures every counter declared above, regardless of which output below
   // selects it — an output's own `custom` only picks labels back out of this.
@@ -195,10 +182,7 @@ export const codometerConfiguration = {
 
 // 🎯 Targets
 
-/**
- * What a compiled-output input holds except its files, which each project
- * supplies as its `dist/` glob. A project emitting nothing declares none.
- */
+/** Compiled-output input settings, minus the `dist/` files each project supplies. */
 export const compiledJavaScriptTarget = {
   analyses: ["size"],
   compression: "gzip",
@@ -210,10 +194,7 @@ export const compiledJavaScriptTarget = {
 
 // 🏛️ Workspace
 
-/**
- * What a whole-repository run measures: the default export, with no input of
- * its own; projects measure their own builds.
- */
+/** Whole-repository run settings, with no input of its own. */
 const workspaceConfiguration = {
   ...codometerConfiguration,
   // What this repository does not measure lives in an ignore file, the way

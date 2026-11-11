@@ -14,9 +14,7 @@ import type {
 export interface CalendarData {
   anchor: Date;
   /**
-   * The level the events are colored by, read for each event after the
-   * grouping's levels, or nothing when they are colored by type, kind by
-   * kind: the link's, holding only a field the data has.
+   * The level events are colored by, or nothing for the default by type.
    */
   colorBy: EventGroupLevel | undefined;
   dataset: EventsDataset | null;
@@ -52,9 +50,7 @@ export interface CalendarData {
 }
 
 /**
- * Why a loaded period shows no events, so the page can say which: the
- * database holds none, the period lies outside the dates it covers, the
- * filters leave nothing, or nothing in the period exists at all.
+ * Why a period is empty: no data, out of range, filters.
  */
 export type CalendarEmptiness =
   | {

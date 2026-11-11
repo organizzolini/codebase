@@ -12,8 +12,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The chip row reads its rules from the surrounding `Filters`, so it takes
- * nothing else.
+ * Takes no props: its rules come from the surrounding `Filters`.
  */
 export interface FilterChipRowProperties {
   className?: string;

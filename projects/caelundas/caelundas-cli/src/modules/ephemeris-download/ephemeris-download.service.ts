@@ -16,11 +16,7 @@ import {
 } from "./ephemeris-download.utilities";
 
 /**
- * Downloads the Swiss Ephemeris data files caelundas computes from.
- *
- * Each file is written to a `.part` file that is renamed only once it is whole,
- * so an interrupted download leaves nothing the next run would take as done.
- * Files already present are left alone, which makes a rerun cheap.
+ * Downloads the Swiss Ephemeris data files. Each file is written to a `.part` file renamed only once whole, so an interrupted download leaves nothing the next run would take as done. Files already present are skipped.
  */
 @Injectable()
 export class EphemerisDownloadService {

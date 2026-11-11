@@ -28,11 +28,9 @@ import type {
 /**
  * Runs Python conformance checks through the Python interpreter.
  *
- * Python's syntax tree is only available from Python, so structural validation
- * shells out to a small module shipped inside this package rather than
- * approximating it with a line comparison. The subprocess is synchronous
- * because callers are, and because one file's validation has nothing to
- * overlap with.
+ * Python's syntax tree is only available from Python, so structural checks shell
+ * out to a small module shipped in this package. The subprocess is synchronous,
+ * since its callers are.
  */
 @Injectable()
 /* v8 ignore stop */
@@ -46,9 +44,7 @@ export class PythonBridgeService {
 
   // 🔐 Private Fields
 
-  /**
-   * Directory holding the `python` package, resolved from this module so the bridge is found wherever conformetry runs.
-   */
+  /** Directory of the `python` package, found from this module. */
   private readonly pythonRootPath = path.resolve(
     path.dirname(fileURLToPath(import.meta.url)),
     "..",

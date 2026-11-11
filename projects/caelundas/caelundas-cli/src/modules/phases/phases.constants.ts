@@ -12,12 +12,10 @@ export const VENUSIAN_TAG = "Venusian";
 export const MERCURIAN_TAG = "Mercurian";
 export const MARTIAN_TAG = "Martian";
 
-/**
- * The largest phase angle at which a magnitude minimum is greatest brilliancy; thin crescents reach 168°.
- */
+/** Largest phase angle where magnitude minimum means greatest brilliancy. */
 export const MAXIMUM_BRILLIANCY_PHASE_ANGLE_DEGREES = 160;
 
-/** Elongation from the Sun, in degrees, at which an inner planet rises out of or sets into its glare. */
+/** Sun elongation (degrees) where an inner planet leaves its glare. */
 export const RISE_SET_ELONGATION_DEGREES = 6;
 
 export const MORNING_RISE_TAG = "Morning Rise";

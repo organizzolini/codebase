@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** One extension list of a devcontainer, set against the list the source declares. */
+/** A devcontainer's extension list, compared with the source's list. */
 export interface ExtensionListDifference {
   readonly actual: string[];
   readonly expected: string[];

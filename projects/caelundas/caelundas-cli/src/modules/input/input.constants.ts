@@ -13,9 +13,7 @@ export const minimumDate = "1900-01-01";
  */
 export const maximumDate = "2100-12-31";
 
-/**
- * Validates coordinates and dates, derives the timezone from the location, and parses dates into Moments.
- */
+/** Validates coordinates and dates, deriving timezone, into Moments. */
 export const inputSchema = z
   .object({
     endDate: z

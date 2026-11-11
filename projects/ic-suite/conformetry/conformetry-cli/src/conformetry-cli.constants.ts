@@ -1,23 +1,12 @@
 import { z } from "zod";
 
-/**
- * Indent width for machine-readable output.
- *
- * Shared by every command with a `--json` mode, so the two listings are
- * parseable the same way.
- */
+/** Indent width for `--json` output, shared so every listing parses alike. */
 export const JSON_INDENT = 2;
 
-/**
- * How a refusal names the `--config` flag. The configuration layer owns the
- * requirement and its wording; this is only the flag's name.
- */
+/** The `--config` flag's name, as refusals print it. */
 export const CONFIGURATION_FLAG_SURFACE = "the --config flag";
 
-/**
- * Refuses an unknown template name. Shared by `generate` and `validate`, since
- * silently dropping it would report a vacuous pass.
- */
+/** Refuses an unknown template name, so `validate` cannot pass vacuously. */
 export const unknownTemplateError = (args: {
   availableTemplateNames: readonly string[];
   templateName: string;
@@ -26,10 +15,7 @@ export const unknownTemplateError = (args: {
     `Unknown template "${args.templateName}". Available: ${args.availableTemplateNames.join(", ")}`,
   );
 
-/**
- * Rejects `--generator`, which `--template` replaced. Commander accepts unknown
- * flags for template inputs, so this loud error is the only signal.
- */
+/** Rejects the retired `--generator` flag, which commander would accept silently. */
 export const removedGeneratorOptionError = (): Error =>
   new Error(
     "--generator was removed. Pass --template instead: it is the word the configuration, the templates command, and the conformance report already use.",

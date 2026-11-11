@@ -6,7 +6,7 @@ import type { KeyboardEvent, ReactNode } from "react";
 // 🔖 Type
 
 /**
- * What the filter builder hands a value editor; its value is a pair of days.
+ * The value editor's props; its value is a pair of days.
  */
 export interface FilterDateRangeEditorProperties extends FilterEditorProps {
   className?: string;

@@ -53,34 +53,13 @@ export class HehArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ه (final Arabic heh) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ┌┐
-   * │├╴
-   * └┘
-   * ```
-   */
+  /** Upright ه (final form) as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = ["65.", "ce1", "a9."];
 
-  /**
-   * The upright ه (initial Arabic heh) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *  ┌┐
-   *  ├┤
-   * ╶┴┘
-   * ```
-   */
+  /** Upright ه (initial form) as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = [".65", ".ed", "2b9"];
 
-  /**
-   * The upright ه (medial Arabic heh) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *  ┌┐
-   * ╶┼┼╴
-   *  └┘
-   * ```
-   */
+  /** Upright ه (medial form) as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = [".65.", "2ff1", ".a9."];
 
   // 🔑 Public Fields

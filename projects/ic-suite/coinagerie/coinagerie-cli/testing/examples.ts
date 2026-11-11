@@ -1,10 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
-/**
- * Examples package fixtures. Read by path, not imported, because this package
- * may not depend on the examples; vitest inputs name the same folder.
- */
+/** Example fixtures, read by path; this package cannot depend on them. */
 const EXAMPLES_DIRECTORY = path.resolve(
   import.meta.dirname,
   "../../coinagerie-examples/examples",

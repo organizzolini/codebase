@@ -12,8 +12,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The error a load failed with, and what to do when the reader asks to try
- * again.
+ * The load's error and the retry handler.
  */
 export interface CalendarErrorProperties {
   className?: string;

@@ -11,10 +11,7 @@ import { execFileSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
 
-/**
- * Tasks per `nx affected` run. Kept low after an out-of-memory kill; CI uses 8
- * because the release commit's hook checks every bumped package.
- */
+/** Tasks per `nx affected` run, kept low against memory kills. */
 const ANALYSIS_PARALLELISM = process.env["CI"] ? 8 : getLocalParallelism();
 
 /**
@@ -26,9 +23,7 @@ function getLocalParallelism(): number {
   return Math.max(4, Math.min(byCpu, byMemory, 6));
 }
 
-/**
- * Targets every commit runs, locally and in CI, including a check-only glossary pass. Other gates run in CI and `validate-code`.
- */
+/** Targets every commit runs; other gates run in CI instead. */
 const ANALYSIS_TARGETS = "typecheck,oxlint,oxfmt,coinagerie-check";
 
 /**

@@ -38,10 +38,7 @@ const PROJECTS: NxProject[] = [
   },
 ];
 
-/**
- * Both lexico applications depend on the entities, which depend on their
- * fixtures. `codependix-file-imports` is in the workspace but unused by them.
- */
+/** Both apps depend on entities; `codependix-file-imports` is unused. */
 const GRAPH: NxProjectGraph = {
   dependencies: {
     "lexico-api": [

@@ -8,10 +8,7 @@ export interface BulkIssuesVerdict {
   readonly totalIssues: number;
 }
 
-/**
- * What one `gh` invocation produced. Stdout and stderr stay apart: `gh` writes
- * notices to stderr even on success.
- */
+/** One `gh` call's output. Stderr stays apart: `gh` writes notices there. */
 export interface GithubCliResult {
   /**
    * Whether the `gh` binary could run at all. A missing binary is an
@@ -37,10 +34,7 @@ export interface HierarchyViolation {
   readonly parentNumber?: number;
 }
 
-/**
- * Type and Scope answers from an `issue.yml` body. Absent when the issue was
- * opened without the template, which is normal.
- */
+/** Type and Scope answers. Absent when the issue skipped the template. */
 export interface IssueFormAnswers {
   readonly scope?: string;
   readonly type?: string;
@@ -59,10 +53,7 @@ export interface IssueMetadata {
   readonly labelNames: readonly string[];
 }
 
-/**
- * Either the metadata, or the one-line reason there is none. Input-read
- * failures share the failed-check report path.
- */
+/** The metadata, or the one-line reason there is none. */
 export type IssueMetadataResolution =
   | { readonly failure: string; readonly resolved: false }
   | { readonly metadata: IssueMetadata; readonly resolved: true };
@@ -87,11 +78,7 @@ export interface ListIssuesResult {
   readonly success: boolean;
 }
 
-/**
- * Everything wrong with one issue, and the commands that fix it.
- *
- * All problems are reported in one pass.
- */
+/** Everything wrong with one issue, and the commands that fix it. */
 export interface MetadataVerdict {
   readonly failures: readonly string[];
   readonly remediationCommands: readonly string[];

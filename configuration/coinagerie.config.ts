@@ -18,10 +18,7 @@ import type { CoinagerieConfiguration } from "@coinagerie/configuration";
 
 // 📖 Glossary
 
-/**
- * The root glossary each project's glossary is written against, resolved from
- * this file since checks run from the project's folder.
- */
+/** Root glossary each project's glossary is written against. */
 const ROOT_GLOSSARY_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../GLOSSARY.md",
@@ -44,10 +41,7 @@ export function readRootGlossaryWords(): string[] {
 
 // ♟️ Conventions
 
-/**
- * Reserved words of every language; they name the language, not this
- * repository, so they are excluded here.
- */
+/** Language keywords; they name the language, not this repository. */
 export const keywordExclusions: string[] = [
   ...cssKeywords,
   ...hclKeywords,
@@ -60,10 +54,7 @@ export const keywordExclusions: string[] = [
   ...yamlKeywords,
 ];
 
-/**
- * Words folded into something the code never wrote, mapped back, plus
- * abbreviations mapped to their spelling. Keys are folded headwords.
- */
+/** Folded words and abbreviations, mapped to their spelling. */
 const FOLDED_WORDS = new Map([
   ["arg", "argument"],
   ["axio", "axios"],
@@ -93,10 +84,7 @@ export function foldRepositoryWord(word: string): string {
 
 // 🗣️ Common words
 
-/**
- * Plain English and runtime vocabulary no project defines differently, picked
- * by how many glossaries listed it; one string per line, for file size.
- */
+/** Shared plain English and runtime vocabulary, one string per line. */
 export const commonWordExclusions: string[] = `
   absolute actual address after afterward again allow alpha although
   analysis answer anything append array ask assertion assign at attach
@@ -131,10 +119,7 @@ export const commonWordExclusions: string[] = `
 
 // 📚 External vocabulary
 
-/**
- * Words from tools this repository uses but does not define, with truncated
- * stems; the spell check skips the list.
- */
+/** Truncated stems and tool words the spell check skips. */
 // cspell:disable
 export const externalWordExclusions: string[] = [
   "2xl",
@@ -3162,10 +3147,7 @@ export const externalWordExclusions: string[] = [
 ];
 // cspell:enable
 
-/**
- * Shapeless words: hexadecimal runs and names ending in digits, such as
- * numbered fixtures. `j2000` is kept; a number and one letter is no word.
- */
+/** Shapeless words: hexadecimal runs and digit-ending names, like numbered fixtures. */
 export const patternExclusions: RegExp[] = [
   /^(?=.*\d)[0-9a-f]{2,}$/u,
   /^(?!j2000$)[a-z]+\d+$/u,
@@ -3174,10 +3156,7 @@ export const patternExclusions: RegExp[] = [
 
 // 🧩 Configuration
 
-/**
- * What every project's `coinagerie.config.ts` spreads, excluding the root
- * glossary's words. A named export, since the loader reads only the default.
- */
+/** Settings every project spreads, excluding the root glossary's words. */
 export const coinagerieConfiguration = {
   exclude: {
     words: (): (string | RegExp)[] => [

@@ -14,11 +14,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Whether a Code's repeating unit is a double chain — two junction-free open
- * strands at pitch `2 rows - 2` that wrap across the tile edge and reverse
- * at their tightest turn, with a horizontal run one short of the unit's
- * width and a vertical run two short of its depth. The pitch is the unit's
- * own column count.
+ * Whether a Code's repeating unit is a double chain: two junction-free open strands at pitch
+ * `2 rows - 2`, wrapping across the tile edge and reversing at their tightest turn. The pitch
+ * is the unit's column count.
  */
 @Injectable()
 export class IsDoubleChainCharacteristicService implements CharacteristicEvaluator<boolean> {

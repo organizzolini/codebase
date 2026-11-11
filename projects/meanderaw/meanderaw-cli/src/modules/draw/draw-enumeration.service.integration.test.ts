@@ -37,9 +37,7 @@ import type { Repository } from "typeorm";
 
 // 🔧 Configuration
 
-/**
- * How long the whole draw run may take. Bounded, so an over-raised budget fails here rather than running forever.
- */
+/** A whole draw run's time limit; over-raised budgets fail here. */
 const DRAW_RUN_TIMEOUT_MILLISECONDS = 300_000;
 
 // 🧪 Tests

@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-/** Start marker of any anchored block this convention recognizes. Where a corrupted block must stop being replaced: at another block's territory. */
+/** Start marker of an anchored block. Replacement stops at other blocks. */
 export const FOREIGN_ANCHOR_PATTERN =
   /<!--\s*(?:[A-Za-z0-9_-]+:start|[A-Z0-9_]+_START)\b/i;
 

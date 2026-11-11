@@ -15,11 +15,9 @@ import type { ChangesCommandOptions } from "./changes.types";
 /**
  * CLI entry point for the pull request change report.
  *
- * Diffs every project's codometer report against a baseline snapshot and
- * puts the result wherever it was asked for. Only ever reads and writes a
- * local markdown file — handing that file to a pull request, an issue, or a
- * wiki is the caller's job, which keeps this command independent of any one
- * forge's API.
+ * Diffs each project's codometer report against a baseline snapshot, and writes
+ * a local markdown file. Handing that file to a PR or wiki is the caller's job,
+ * keeping this command forge-independent.
  */
 @Command({
   description: "Report codometer's changes against a baseline",

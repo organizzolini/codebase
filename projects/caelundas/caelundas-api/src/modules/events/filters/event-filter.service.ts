@@ -39,9 +39,7 @@ export class EventFilterService {
   ) {}
 
   /**
-   * Joins a group's compiled rules and nested groups under its combinator, in
-   * parentheses so that nesting keeps its meaning, or answers `null` for one
-   * with nothing finished in it.
+   * Joins a group's compiled parts under its combinator; `null` when empty.
    */
   private compileGroup(
     group: EventFilterGroup,
@@ -113,9 +111,8 @@ export class EventFilterService {
   }
 
   /**
-   * Compiles a rule on a tag field. Each picked tag also matches every tag
-   * beneath it, because the tag view lists each event's ancestors too. A pick
-   * that is no tag id matches nothing, as a tag the data lacks would.
+   * Compiles a tag rule. Picked tags also match their descendants; non-UUIDs
+   * match nothing.
    */
   private compileTagRule(
     operator: string,
@@ -150,13 +147,8 @@ export class EventFilterService {
   }
 
   /**
-   * Compiles the filter tree to one parameterized boolean expression over the
-   * derived events view, aliased `e`, whose placeholders are numbered after the
-   * `offset` parameters the query already binds. A rule that is not finished,
-   * such as one with no known operator, no values, or a field this calendar
-   * does not know, is left out rather than failing, and so is a group left
-   * with nothing in it; a tree with nothing left compiles to `null`, meaning
-   * no filter.
+   * Compiles the filter tree to boolean SQL, numbering placeholders after
+   * `offset`. Unfinished rules are dropped; an empty tree is `null`.
    */
   public compile(
     filter: EventFilterGroup | null | undefined,
@@ -173,8 +165,8 @@ export class EventFilterService {
   }
 
   /**
-   * Validates the filter a query was given, answering `null` for no filter and
-   * throwing a `ZodError` that names the offending field for a malformed one.
+   * Validates a query's filter: `null` for none, a `ZodError` for a
+   * malformed one.
    */
   public parse(filter: unknown): EventFilterGroup | null {
     return filter === null || filter === undefined

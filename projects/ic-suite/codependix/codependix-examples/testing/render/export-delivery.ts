@@ -23,9 +23,7 @@ import type { CodependixRunMode, ProjectRunResult } from "@codependix/core";
 
 // 🏷️ Types
 
-/**
- * A throwaway project one delivery example writes into, keeping markers out of any file a real write could claim.
- */
+/** A throwaway project for one delivery example to write into. */
 export interface ScratchProject {
   readonly absoluteRoot: string;
   readonly name: string;

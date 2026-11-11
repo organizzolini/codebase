@@ -10,7 +10,7 @@ import type {
   LetterOrientationFixture,
 } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the ㅋ (hangul kieuk) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** One isolated Code per orientation of the ㅋ (hangul kieuk). */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   { fixture: "03x03y2502d0080", names: ["Southeast", "NorthwestHalf"] },
   {

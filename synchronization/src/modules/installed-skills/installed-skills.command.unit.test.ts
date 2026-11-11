@@ -56,10 +56,7 @@ describe(InstalledSkillsCommand, () => {
   let workspace: string;
   let printed: () => string;
 
-  /**
-   * Builds the command over the real service, with this environment and a
-   * fake process runner over the test's workspace.
-   */
+  /** Builds the command over the real service and a fake runner. */
   const createCommand = async (
     environment: Record<string, string> = {},
     behavior: FakeProcessBehavior = {},

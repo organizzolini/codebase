@@ -15,22 +15,13 @@ const ENTRY_POINT = path.resolve(
   "callidescope-cli.main.ts",
 );
 
-/**
- * The TypeScript loader as an absolute URL. Resolved here, not through `esm-register`,
- * because runs execute in a workspace with no `node_modules`.
- */
+/** TypeScript loader as an absolute URL; runs have no `node_modules`. */
 const LOADER_HOOK = import.meta.resolve("@swc-node/register/esm");
 
-/**
- * Per-run timeout. Spawned runs build real programs, and CI measured 5.4 and 5.7 seconds,
- * past Vitest's five-second default.
- */
+/** Per-run timeout, past Vitest's five-second default. CI builds take 5.7s. */
 const SPAWNED_RUN_TIMEOUT = 30_000;
 
-/**
- * Compiler options the spawned run reads. Without them, NestJS constructor injection loses
- * the decorator metadata it needs.
- */
+/** Compiler options for spawned runs; NestJS injection needs decorator metadata. */
 const LOADER_PROJECT = path.resolve(import.meta.dirname, "..", "tsconfig.json");
 
 /**

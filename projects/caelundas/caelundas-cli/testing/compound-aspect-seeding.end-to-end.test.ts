@@ -16,7 +16,7 @@ import type { INestApplicationContext } from "@nestjs/common";
 
 const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };
 
-/** The windows of the two compound-aspect reference fixtures, so their sweeps are shared. */
+/** Windows of the two compound-aspect fixtures, shared across sweeps. */
 const windows = [
   [
     "October 2026",

@@ -2,7 +2,7 @@
 
 import type { ResolvedCallSite } from "./edges.types";
 
-/** A call that left the traced code: no edge, and no gap to report either. */
+/** Call leaving traced code: no edge, and no reported gap. */
 export const EXTERNAL_CALL: ResolvedCallSite = {
   declarations: [],
   reason: undefined,

@@ -29,7 +29,7 @@ describe(SshSigningService, () => {
   let report: string[];
   const signed = createSignedCommit();
 
-  /** Builds the service over a machine where git signs with SSH by default. */
+  /** Builds the service over a machine whose git signs with SSH. */
   const createService = async (
     machine: FakeMachine = {},
     format = "ssh\n",

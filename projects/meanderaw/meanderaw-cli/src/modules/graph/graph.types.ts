@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * A graph in the terms piece-counting needs: nodes carrying ink, their
- * neighbors, and a node identity.
- */
+/** Piece-counting graph of inked nodes, their neighbors, and identity. */
 export interface InkAdjacency<Node> {
   readonly key: (node: Node) => string;
   readonly neighbors: (node: Node) => readonly Node[];

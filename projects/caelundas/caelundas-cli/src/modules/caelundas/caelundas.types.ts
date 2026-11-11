@@ -41,17 +41,13 @@ import type {
  */
 export type Aspect = (typeof aspects)[number];
 
-/**
- * Whether two bodies approach, sit at, or depart from an exact aspect angle.
- */
+/** Two bodies approaching, exact at, or departing from an aspect. */
 export type AspectPhase = (typeof aspectPhases)[number];
 
 // 🔟 Decans
 
 /**
- * Asteroids (minor planets) tracked for astrological significance.
- *
- * Includes major asteroids: Ceres, Pallas, Juno, Vesta, Chiron.
+ * Asteroids (minor planets) tracked: Ceres, Pallas, Juno, Vesta, Chiron.
  */
 export type Asteroid = keyof typeof symbolByAsteroid;
 
@@ -66,31 +62,16 @@ export type Body = keyof typeof symbolByBody;
 
 // 💫 Asteroids
 
-/**
- * Decan representing a 10-degree subdivision within a zodiac sign.
- *
- * Each sign is divided into three decans (e.g., "aries 1", "aries 2", "aries 3").
- */
+/** 10-degree subdivision of a sign, like "aries 1". */
 export type Decan = keyof typeof symbolByDecan;
 
-/**
- * Obscuration of the Moon or Sun in an eclipse: partial, total, annular, or penumbral.
- */
+/** Eclipse obscuration: partial, total, annular, or penumbral. */
 export type EclipsePhase = (typeof eclipsePhases)[number];
 
-/**
- * Lunar phase representing the Moon's illumination state as seen from Earth.
- *
- * Eight phases from new moon (0°) through full moon (180°) and back.
- */
+/** Eight Moon phases, new (0°) through full (180°) and back. */
 export type LunarPhase = keyof typeof symbolByLunarPhase;
 
-/**
- * Major aspects representing primary angular relationships between bodies.
- *
- * Includes conjunction (0°), sextile (60°), square (90°), trine (120°),
- * opposition (180°) with orbs of ±6-8°.
- */
+/** Major aspects: conjunction (0°), sextile, square, trine, opposition (180°). */
 export type MajorAspect = keyof typeof symbolByMajorAspect;
 
 /**
@@ -103,27 +84,13 @@ export type MartianPhase = keyof typeof symbolByMartianPhase;
  */
 export type MercurianPhase = keyof typeof symbolByMercurianPhase;
 
-/**
- * Minor aspects representing secondary angular relationships between bodies.
- *
- * Includes semi-sextile (30°), semi-square (45°), sesquiquadrate (135°),
- * quincunx (150°) with ±3° orbs.
- */
+/** Minor aspects: semi-sextile (30°), semi-square (45°), sesquiquadrate (135°), quincunx (150°). */
 export type MinorAspect = keyof typeof symbolByMinorAspect;
 
-/**
- * Lunar nodes and apsides representing calculated points in the Moon's orbit.
- *
- * Includes north/south nodes (ecliptic intersections) and lunar perigee/apogee
- * (closest/farthest points from Earth).
- */
+/** Lunar nodes and apsides: Moon's orbit crossings and perigee/apogee points. */
 export type Node = keyof typeof symbolByNode;
 
-/**
- * Direction of a planet's apparent motion relative to the zodiac.
- *
- * Values: "direct" (eastward), "retrograde" (westward), "stationary" (transition).
- */
+/** Planet's apparent motion: "direct", "retrograde", or "stationary". */
 export type OrbitalDirection = keyof typeof symbolByOrbitalDirection;
 
 /**
@@ -131,19 +98,13 @@ export type OrbitalDirection = keyof typeof symbolByOrbitalDirection;
  */
 export type Planet = keyof typeof symbolByPlanet;
 
-/**
- * Four-body patterns: grand cross (two oppositions, four squares), kite (a grand trine plus an opposing body), and mystic rectangle.
- */
+/** Four-body patterns: grand cross, kite, and mystic rectangle. */
 export type QuadrupleAspect = keyof typeof symbolByQuadrupleAspect;
 
-/**
- * Five-body aspect patterns, which form rarely and typically only with asteroids or lunar nodes.
- */
+/** Five-body patterns, rare and usually involving asteroids or nodes. */
 export type QuintupleAspect = keyof typeof symbolByQuintupleAspect;
 
-/**
- * Bodies that can appear retrograde from Earth: planets other than the Sun and Moon.
- */
+/** Bodies that can appear retrograde: planets, not Sun or Moon. */
 export type RetrogradeBody = (typeof retrogradeBodies)[number];
 
 // export type LunarPhaseSymbol = (typeof symbolByLunarPhase)[LunarPhase];
@@ -155,9 +116,7 @@ export type RetrogradeBody = (typeof retrogradeBodies)[number];
  */
 export type SextupleAspect = keyof typeof symbolBySextupleAspect;
 
-/**
- * Zodiac sign: a 30-degree segment of the tropical ecliptic, starting at the vernal equinox.
- */
+/** Zodiac sign: a 30-degree tropical segment from the vernal equinox. */
 export type Sign = keyof typeof symbolBySign;
 
 // ☿️ Mercurian Phases
@@ -165,10 +124,7 @@ export type Sign = keyof typeof symbolBySign;
 // ♂️ Martian Phases
 
 /**
- * Specialty aspects based on harmonic divisions of the zodiac circle.
- *
- * Includes quintile (72°), biquintile (144°), septile (51.43°), novile (40°)
- * with ±1-2° orbs.
+ * Harmonic aspects: quintile (72°), biquintile (144°), septile (51.43°), novile (40°).
  */
 export type SpecialtyAspect = keyof typeof symbolBySpecialtyAspect;
 
@@ -187,9 +143,7 @@ export type TripleAspect = keyof typeof symbolByTripleAspect;
 
 // 🔭 Body Types
 
-/**
- * Venus's illumination and visibility from Earth, following its eight-year cycle as morning or evening star.
- */
+/** Venus's eight-year cycle as morning or evening star. */
 export type VenusianPhase = keyof typeof symbolByVenusianPhase;
 
 /**

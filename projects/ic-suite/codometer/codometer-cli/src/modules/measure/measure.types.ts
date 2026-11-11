@@ -20,9 +20,7 @@ export interface ReportFindingsArguments {
   stalePaths: string[];
 }
 
-/**
- * Everything a run needs once its command line is parsed: the configuration, what to print, where outputs go, and the run mode.
- */
+/** What a run needs after parsing: config, print, outputs, mode. */
 export interface RunPlan {
   configuration: ResolvedCodometerConfiguration;
   /** Where the console's own badge block comes from, resolved independently

@@ -13,8 +13,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The agenda row to draw, the zone its times read in, and how deep a day's
- * heading sits beneath the group headings.
+ * The row to draw, its time zone, and day heading depth.
  */
 export interface AgendaRowContentProperties {
   className?: string;

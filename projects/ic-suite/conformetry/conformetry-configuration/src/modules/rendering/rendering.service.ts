@@ -13,11 +13,8 @@ import type { TemplateSpans } from "mustache";
 /**
  * Renders conformetry template placeholders.
  *
- * This is the single owner of template rendering across the workspace.
- * Generation renders templates to create files; validation renders the same
- * templates to compare them against existing files. Both must substitute
- * identically or validation would flag files the generator itself produced,
- * so neither reimplements this.
+ * The single owner of template rendering. Generation and validation both render
+ * through it, so validation never flags files the generator produced.
  */
 @Injectable()
 export class RenderingService {

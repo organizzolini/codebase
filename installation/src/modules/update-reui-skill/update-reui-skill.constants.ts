@@ -34,5 +34,5 @@ export const bundleSchema = z.object({
     ),
 });
 
-/** A record that keeps the key order of what it parses, unlike an object. */
+/** Record that keeps parsed key order, unlike a plain object. */
 export const recordSchema = z.record(z.string(), z.unknown());

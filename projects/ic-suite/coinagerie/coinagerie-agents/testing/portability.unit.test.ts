@@ -12,10 +12,7 @@ const EXPECTED_SKILLS = [
   "coinagerie-triage",
 ];
 
-/**
- * Patterns that tie a skill to this repository. An installed skill runs in
- * other repositories, where each match would be a broken reference.
- */
+/** Patterns tying a skill to this repository; installed copies break. */
 const REPOSITORY_SPECIFICS: { label: string; pattern: RegExp }[] = [
   { label: "a folder of this repository", pattern: /\bprojects\//u },
   {

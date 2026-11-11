@@ -7,7 +7,7 @@ import { ShenHanziLetterCharacteristicsService } from "./shen-hanzi-letter-chara
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the 申 (hanzi shen) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of 申 as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x05y04006f50efd0af900800",

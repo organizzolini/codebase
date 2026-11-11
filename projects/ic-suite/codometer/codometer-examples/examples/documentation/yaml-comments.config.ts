@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * YAML comment-block budget, gated on its own apart from JSDoc `comment` selectors.
- *
- * See the [documentation guide](./README.md).
- */
+// See the [documentation guide](./README.md).
+/** YAML comment-block budget, gated apart from JSDoc `comment` selectors. */
 const codometerConfiguration: CodometerConfiguration = {
   custom: [
     {

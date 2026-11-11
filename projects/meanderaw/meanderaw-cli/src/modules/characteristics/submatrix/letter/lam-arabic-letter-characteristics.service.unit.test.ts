@@ -7,9 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ل (final Arabic lam) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ل (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -49,9 +47,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "lamFinal",
 };
 
-/**
- * Each distinct orientation of the ل (initial Arabic lam) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ل (initial form). */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -91,9 +87,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "lamInitial",
 };
 
-/**
- * Each distinct orientation of the ل (isolated Arabic lam) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ل (isolated form). */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -133,9 +127,7 @@ const ISOLATED_FORM: LetterFormFixture = {
   prefix: "lamIsolated",
 };
 
-/**
- * Each distinct orientation of the ل (medial Arabic lam) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ل (medial form). */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [

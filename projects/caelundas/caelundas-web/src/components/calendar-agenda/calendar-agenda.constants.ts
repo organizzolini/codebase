@@ -33,8 +33,7 @@ export const PILL_GAP = 4;
 export const PILL_LINE_HEIGHT = 20;
 
 /**
- * How tall each kind of agenda row is drawn, in pixels, so the list can be
- * windowed without measuring a row.
+ * Agenda row heights in pixels, so rows need no measuring.
  */
 export const AGENDA_ROW_HEIGHTS: Readonly<Record<AgendaRow["kind"], number>> = {
   day: 36,

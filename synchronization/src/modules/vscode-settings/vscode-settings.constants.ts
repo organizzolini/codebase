@@ -3,7 +3,7 @@
 /** The workspace settings that apply in-container once merged into the Machine settings. */
 export const VSCODE_WORKSPACE_SETTINGS_FILE = ".vscode/settings.json";
 
-/** Where VS Code Server keeps Machine settings; volume-mounted, so they outlive a rebuild. */
+/** VS Code Server's Machine settings, volume-mounted to outlive a rebuild. */
 export const VSCODE_MACHINE_SETTINGS_DIRECTORY =
   "/root/.vscode-server/data/Machine";
 

@@ -28,10 +28,7 @@ export type {
   InferredTargets,
 } from "./modules/plugin/plugin.types";
 
-/**
- * Infers a coinagerie check target onto every project holding a configuration,
- * reading the plugin options once.
- */
+/** Infers a check target on each project with a configuration. */
 const createNodes: CreateNodes = [
   CONFIGURATION_GLOB,
   async (

@@ -12,8 +12,7 @@ export interface ColorLegendEntry {
 }
 
 /**
- * How events are colored: the colors with what each stands for, and the color
- * an event gets.
+ * The legend's colors, and the color an event gets.
  */
 export interface ColorScheme {
   colorOf: (event: CalendarEventRecord) => null | string;

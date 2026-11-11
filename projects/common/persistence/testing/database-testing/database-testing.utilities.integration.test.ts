@@ -17,7 +17,7 @@ import type { DatabaseTestingModule } from "./database-testing.types";
 
 // 🧪 Tests
 
-/** A host no resolver can reach, standing in for a developer's own setting. */
+/** Unreachable host, standing in for a developer's own setting. */
 const STRAY_HOST = "stray.invalid";
 
 describe(startDatabaseTestingModule, () => {

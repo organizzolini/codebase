@@ -7,7 +7,7 @@ import { SLatinLetterCharacteristicsService } from "./s-latin-letter-characteris
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the S as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of S as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "03x03y610a50290",

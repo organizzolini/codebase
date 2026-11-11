@@ -68,7 +68,7 @@ export interface RenderConfigurationArguments {
   rootError: string | undefined;
 }
 
-/** The exclusions a configuration walk uses, and why they may be the defaults. */
+/** Exclusions a configuration walk uses, which may be defaults. */
 export interface WalkExclusions {
   /** Why the walk root's configuration could not be read, if it could not. */
   error: string | undefined;

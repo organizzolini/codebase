@@ -19,10 +19,9 @@ import type { CodeStatisticsResult } from "@codometer/core";
 /**
  * Makes every measured number addressable by a dotted path.
  *
- * The same index answers two questions that used to be one layer's private
- * business: which metric a limit is written against, and which metrics the
- * report has to list. Both need every number a target measured, named the same
- * way, so the naming lives here rather than in either caller.
+ * One index answers both which metric a limit targets and which metrics the
+ * report lists. Both need every number named the same way, so the naming lives
+ * here, not in either caller.
  */
 @Injectable()
 export class MetricIndexService {

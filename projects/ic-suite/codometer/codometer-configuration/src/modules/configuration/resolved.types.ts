@@ -19,11 +19,7 @@ import type {
   CodometerSymbolKind,
 } from "@codometer/core";
 
-/**
- * A resolved configuration and the file it was resolved from.
- *
- * `path` is the absolute path of the file the configuration was read from.
- */
+/** A resolved configuration and the absolute `path` it came from. */
 export interface LoadedConfiguration {
   configuration: ResolvedCodometerConfiguration;
   path: string;
@@ -39,9 +35,7 @@ export interface ResolvedCodometerCommentSelector {
   severity: CodometerSeverity;
 }
 
-/**
- * Configuration with every default applied, so no analyzer has to know which fields a file may omit.
- */
+/** Configuration with every default applied, so analyzers never see gaps. */
 export interface ResolvedCodometerConfiguration {
   /** Every counter this configuration measures, with defaults applied. */
   custom: ResolvedCodometerCustomStatistic[];
@@ -67,9 +61,7 @@ export interface ResolvedCodometerCustomStatistic {
   symbols?: CodometerSymbolMatcher | undefined;
 }
 
-/**
- * A named set of files, with negations collected. A file is in when an include claims it and no exclude does.
- */
+/** A named file set: includes claim files, excludes remove them. */
 export interface ResolvedCodometerInput {
   analyses: CodometerAnalysis[];
   compression: CodometerCompression;
@@ -88,9 +80,7 @@ export interface ResolvedCodometerJsonOutput {
   type: "json";
 }
 
-/**
- * A limit with severity filled in and its value read as a number. Units are gone: `"8 KB"` arrives as 8000.
- */
+/** A limit with severity set, its value a bare number. */
 export interface ResolvedCodometerLimit {
   /** Stays `undefined` when none was written; a report falls back to the path. */
   label: string | undefined;
@@ -99,9 +89,7 @@ export interface ResolvedCodometerLimit {
   value: number;
 }
 
-/**
- * Markdown output destination with defaults applied. `write` stays `undefined` unless configured, selecting the built-in rendering.
- */
+/** Markdown destination with defaults applied; `write` picks the renderer. */
 export interface ResolvedCodometerMarkdownOutput {
   custom: ResolvedCodometerCustomStatistic[];
   description: string | undefined;

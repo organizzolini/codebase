@@ -8,33 +8,25 @@ import type { Body } from "../caelundas/caelundas.types";
 export type AzimuthElevationEphemeris = Record<string, HorizonPosition>;
 
 /**
- * Sun and Moon, the bodies with horizon ephemerides. A copy lives in `caelundas.constants.ts`; keep both in step.
+ * Sun and Moon. Keep the copy in `caelundas.constants.ts` in step.
  */
 export type AzimuthElevationEphemerisBody = Extract<Body, "moon" | "sun">;
 
-/**
- * Time-indexed ecliptic longitude and latitude in degrees for a celestial body, by ISO timestamp.
- */
+/** Ecliptic longitude and latitude in degrees, by ISO timestamp. */
 export type CoordinateEphemeris = Record<
   string,
   { latitude: number; longitude: number }
 >;
 
 /**
- * Bodies for which coordinate ephemerides are generated.
- * Includes all tracked planets, asteroids, comets, and lunar nodes.
+ * Bodies with coordinate ephemerides: planets, asteroids, comets, nodes.
  */
 export type CoordinateEphemerisBody = Body;
 
-/**
- * Coordinate pair representing a position on the celestial sphere.
- * Format: [longitude, latitude] in degrees.
- */
+/** [longitude, latitude] in degrees on the celestial sphere. */
 export type Coordinates = [Longitude, Latitude];
 
-/**
- * Time-indexed distance in AU and radial speed in AU per day, positive while receding. Apsides come from the speed's sign.
- */
+/** Distance (AU) and radial speed (AU/day); positive while receding. */
 export type DistanceEphemeris = Record<
   string,
   { distance: number; distanceSpeed: number }
@@ -58,9 +50,7 @@ export interface Ephemerides {
   illuminationEphemerisByBody: Record<Body, IlluminationEphemeris>;
 }
 
-/**
- * Where a body sits in one observer's sky at one minute, from its topocentric position.
- */
+/** Body's topocentric sky position for one observer at one minute. */
 export interface HorizonPosition {
   /** Degrees from North, clockwise through East (0° North, 90° East, 180° South, 270° West). */
   azimuth: number;
@@ -77,7 +67,7 @@ export interface HorizonPosition {
 }
 
 /**
- * Time-indexed illuminated percentage, apparent magnitude (smaller is brighter), and phase angle in degrees.
+ * Illuminated percentage, apparent magnitude (smaller is brighter), phase angle (degrees).
  */
 export type IlluminationEphemeris = Record<
   string,
@@ -92,19 +82,13 @@ export type IlluminationEphemerisBody = Extract<
   "mars" | "mercury" | "moon" | "sun" | "venus"
 >;
 
-/**
- * Ecliptic latitude in degrees.
- * Range: -90° (south) to +90° (north) from the ecliptic plane.
- */
+/** Ecliptic latitude in degrees: -90° (south) to +90° (north). */
 export type Latitude = number;
 
-/**
- * Ecliptic longitude in degrees.
- * Range: 0° to 360° along the ecliptic, starting from the vernal equinox.
- */
+/** Ecliptic longitude in degrees, 0° to 360° from vernal equinox. */
 export type Longitude = number;
 
-/** What a Swiss Ephemeris call was computing, for an error that names it. */
+/** Swiss Ephemeris call being computed, named in errors. */
 export interface SwissEphemerisSubject {
   /** The body or node the call was for. */
   body: string;

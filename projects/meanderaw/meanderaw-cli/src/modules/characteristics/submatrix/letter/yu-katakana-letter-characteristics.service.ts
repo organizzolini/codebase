@@ -8,10 +8,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the ユ (katakana yu) glyph — a
- * unit stroke turning down into a base stroke that runs a unit past the turn —
- * one per corner and clockwise rotation, each counting the base template drawn
- * that way. The base faces Southeast, drawn:
+ * Sixteen orientation evaluators of the ユ glyph, one per corner and clockwise rotation.
+ * The base faces Southeast, drawn:
  *
  * ```text
  * ╶┐
@@ -41,7 +39,7 @@ export class YuKatakanaLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** The upright glyph's points, `.` outside the glyph. */
   private readonly template: readonly string[] = ["25.", "2b1"];
 
   // 🔑 Public Fields

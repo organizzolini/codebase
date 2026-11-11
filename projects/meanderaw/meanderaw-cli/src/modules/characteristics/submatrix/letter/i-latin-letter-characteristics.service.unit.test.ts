@@ -10,7 +10,7 @@ import type {
   LetterOrientationFixture,
 } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the I as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** One isolated Code per orientation of the I. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "02x02y4080",

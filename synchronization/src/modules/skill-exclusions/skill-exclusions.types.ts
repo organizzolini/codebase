@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * One file naming every installed skill and the files they install elsewhere,
- * one line per skill in each tool's own syntax.
- */
+/** A file listing each installed skill's files elsewhere, in tool syntax. */
 export interface SkillExclusionFile {
   /**
    * The comment syntax this file opens with, so the block markers stay valid:
@@ -23,7 +20,7 @@ export interface SkillExclusionFile {
   readonly tool: string;
 }
 
-/** What the lists are generated from: the locked skills and their vendored files. */
+/** Source of the lists: locked skills and their vendored files. */
 export interface SkillExclusionInputs {
   /** Every skill the lockfile declares, sorted. */
   readonly skillNames: readonly string[];

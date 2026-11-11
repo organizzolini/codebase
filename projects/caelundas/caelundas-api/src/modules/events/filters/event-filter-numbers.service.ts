@@ -39,9 +39,7 @@ export class EventFilterNumbersService {
   ) {}
 
   /**
-   * Compiles a numeric rule on a field derived from the event's own columns:
-   * the hour it starts or its duration in minutes. The hour keeps its own range
-   * reader for "is between", so only its comparisons arrive here.
+   * Compiles a numeric rule on the hour or the duration in minutes.
    */
   public compileCalendarNumberRule(
     rule: EventFilterRule,
@@ -62,10 +60,8 @@ export class EventFilterNumbersService {
   }
 
   /**
-   * Compiles a numeric comparison over a SQL expression for the events whose
-   * number meets it, reading the operands the rule's operator takes: a range
-   * of two, or one number. Answers `null` for an operator that compares
-   * nothing or operands that were not written as numbers.
+   * Compiles a numeric comparison over a SQL expression. Answers `null` for
+   * unusable operands.
    */
   public compileNumberCondition(
     expression: string,
@@ -113,9 +109,7 @@ export class EventFilterNumbersService {
   }
 
   /**
-   * Compiles a numeric rule on a tag root whose tags are named for numbers:
-   * events with a tag beneath the root whose number meets the comparison, or
-   * with `neq` and "is not between", with none that does.
+   * Compiles a numeric rule on a tag root whose tags are named for numbers.
    */
   public compileTagNumberRule(
     rootId: string,
@@ -139,9 +133,7 @@ export class EventFilterNumbersService {
   }
 
   /**
-   * Whether a rule on a derived field compares a number: any numeric operator
-   * on the duration in minutes, and a comparison but not a range on the hour,
-   * whose range is read within its bounds.
+   * Whether a rule on a derived field compares a number.
    */
   public isCalendarNumberRule(fieldId: string, operator: string): boolean {
     if (fieldId === CALENDAR_FIELD_IDS.durationMinutes) {

@@ -15,7 +15,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The dates the data covers, the nearest of them, and where a jump goes.
+ * The data's dates, the nearest of them, and the jump target.
  */
 export interface OutsideDatasetProperties {
   className?: string;

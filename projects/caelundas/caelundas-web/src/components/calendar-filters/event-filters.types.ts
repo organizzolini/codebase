@@ -16,8 +16,7 @@ export type EventFilterField = FilterField<EventFilterValue>;
 export type EventFilterNode = FilterNode<EventFilterValue>;
 
 /**
- * The whole filter tree: always a group, so a flat filter and a nested one
- * compile the same way.
+ * The whole filter tree, always a group.
  */
 export type EventFilterQuery = FilterQuery<EventFilterValue>;
 
@@ -27,7 +26,7 @@ export type EventFilterQuery = FilterQuery<EventFilterValue>;
 export type EventFilterRule = FilterRule<EventFilterValue>;
 
 /**
- * A rule's value: a list of picks, a range pair, or one text value; anything else is an unfinished rule.
+ * A rule value: picks, a range, or text; else unfinished.
  */
 export type EventFilterValue =
   | (null | number | string)[]

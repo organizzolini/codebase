@@ -18,7 +18,7 @@ import { SoftwareService } from "./software.service";
 
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
-/** The steps a software install can run, as mocks, with the service built over them. */
+/** Mocked software install steps, with the service built over them. */
 interface Steps {
   database: DeepMocked<SoftwareDatabaseService>;
   docker: DeepMocked<SoftwareDockerService>;

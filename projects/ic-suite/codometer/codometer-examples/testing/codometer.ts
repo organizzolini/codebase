@@ -30,9 +30,7 @@ export const packageDirectory = path.resolve(
   "..",
 );
 
-/**
- * This package's own configuration, named with `--config` by every run that wants it.
- */
+/** This package's own configuration, passed with `--config`. */
 export const packageConfiguration = path.join(
   packageDirectory,
   "codometer.config.ts",
@@ -46,11 +44,7 @@ const workspaceDirectory = path.resolve(
   "..",
 );
 
-/**
- * Entry point of the codometer command line, resolved through the package.
- *
- * Makes `nx affected` treat a tool change as relevant.
- */
+/** Codometer command line, so `nx affected` sees tool changes. */
 const commandLineEntry = path.resolve(
   createRequire(import.meta.url).resolve("@codometer/cli/package.json"),
   "..",
@@ -58,11 +52,7 @@ const commandLineEntry = path.resolve(
   "codometer-cli.main.ts",
 );
 
-/**
- * A throwaway copy of the corpus, made inside this package rather than `os.tmpdir()`.
- *
- * Outside the workspace, `@swc-node/register` fails to resolve.
- */
+/** Corpus copy inside this package, where `@swc-node/register` resolves. */
 const scratchDirectory = path.join(packageDirectory, "tmp");
 
 /** Everything this package ships to be run: one directory per example. */
@@ -75,11 +65,7 @@ export const corpusDirectory = path.join(examplesDirectory, "corpus");
 export const exampleConfiguration = (...segments: readonly string[]): string =>
   path.join(examplesDirectory, ...segments);
 
-/**
- * Pins `TS_NODE_PROJECT` to the workspace's own compiler configuration.
- *
- * Otherwise the spawn's `cwd` picks a tsconfig, and examples have none.
- */
+/** Pins `TS_NODE_PROJECT`, as examples have no tsconfig. */
 const typescriptConfigurationPath = path.resolve(
   workspaceDirectory,
   "tsconfig.json",
@@ -103,22 +89,14 @@ export interface CodometerRun {
   standardOutput: string;
 }
 
-/**
- * One breaching instance a `comment` selector's counter found.
- *
- * Safe to index only for `comment` metrics; others leave it `null`.
- */
+/** One breaching `comment` block; null for other metrics. */
 export type ReportedDeclaration = NonNullable<
   ReportMetric["instances"]
 >[number];
 
 // 🏃 Running
 
-/**
- * Runs the command line and returns what it produced.
- *
- * `cwd` is what gets measured, since there is no `--directory` flag.
- */
+/** Runs the command line; `cwd` is what gets measured. */
 export const runCodometer = (
   args: readonly string[],
   cwd: string = workspaceDirectory,
@@ -145,11 +123,7 @@ export const runCodometer = (
   };
 };
 
-/**
- * Pipes a run's output into a second process, reporting the result.
- *
- * Only stdout is piped, so a stray log line fails it.
- */
+/** Pipes stdout to a second process, so stray logs fail. */
 export const runPipeline = (
   upstream: CodometerRun,
   readReport: string,
@@ -201,11 +175,7 @@ export const runPipeline = (
   }
 };
 
-/**
- * Runs the command line for its report, and parses what came back.
- *
- * A stray log line in standard output fails it.
- */
+/** Runs the command line and parses its report from stdout. */
 export const measure = (
   args: readonly string[],
   cwd: string = workspaceDirectory,
@@ -236,11 +206,7 @@ export interface GatedMeasurement {
   run: CodometerRun;
 }
 
-/**
- * Runs one example as a gate, reading its report in the same spawn.
- *
- * The verdict is independent of output format.
- */
+/** Runs one example as a gate in a single spawn. */
 export const gateAndMeasureExample = (
   ...segments: readonly string[]
 ): GatedMeasurement => {
@@ -273,7 +239,7 @@ export const readTarget = (
   return target;
 };
 
-/** Reads one metric's value from a target by its path within that target. */
+/** Reads one metric's value from a target by path. */
 export const readMetric = (
   report: CodometerReport,
   targetName: string,
@@ -290,7 +256,7 @@ export const readMetric = (
   return metric.value;
 };
 
-/** Reads every limit declared on one metric, in the order they were written. */
+/** Reads every limit on one metric, in written order. */
 export const readMetricLimits = (
   report: CodometerReport,
   targetName: string,
@@ -307,11 +273,7 @@ export const readMetricLimits = (
   return metric.limits;
 };
 
-/**
- * Reads one metric's breaching instances by its path within a target.
- *
- * `null` for a metric that only counts.
- */
+/** Reads one metric's breaching instances; `null` if it only counts. */
 export const readMetricInstances = (
   report: CodometerReport,
   targetName: string,
@@ -345,11 +307,7 @@ export const readCounters = (
 
 // 📋 Scratch copies
 
-/**
- * Runs a body against a throwaway copy of the corpus.
- *
- * The committed corpus must stay unchanged, or every other test's counts drift.
- */
+/** Runs a body on a copied corpus, keeping the original. */
 export const withCorpusCopy = <Result>(
   body: (directory: string) => Result,
 ): Result => {

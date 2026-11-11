@@ -15,10 +15,7 @@ import type { CodependixBoundaryRule } from "@codependix/configuration";
 
 // ♟️ Constants
 
-/**
- * An application importing a module that throws when evaluated, from a project
- * it depends on. Rooted on disk, since containers boot real files.
- */
+/** An app importing a throwing module, rooted on disk. */
 const STOREFRONT: ExampleWorkspace = {
   dependencies: [
     { source: "storefront-api", target: "storefront-catalog", type: "static" },
@@ -37,10 +34,7 @@ const STOREFRONT: ExampleWorkspace = {
   ],
 };
 
-/**
- * The one NestJS-level rule. What it says is beside the point: a container that
- * cannot boot is reported regardless.
- */
+/** The one NestJS-level rule; boot failures are reported regardless. */
 const NO_MODULE_CYCLES: CodependixBoundaryRule[] = [
   { kind: "acyclic", name: "no-module-cycles" },
 ];

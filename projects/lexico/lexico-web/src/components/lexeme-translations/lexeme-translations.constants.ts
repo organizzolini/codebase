@@ -1,7 +1,4 @@
 // ♟️ Constants
 
-/**
- * How many translations show while the section is folded, so one entry with
- * dozens of senses cannot dominate the masonry.
- */
+/** Translations shown while folded, so long entries cannot dominate. */
 export const VISIBLE_TRANSLATION_COUNT = 2;

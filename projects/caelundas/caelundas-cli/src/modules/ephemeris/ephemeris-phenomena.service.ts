@@ -25,8 +25,7 @@ export class EphemerisPhenomenaService {
   // 🔐 Private Fields
 
   /**
-   * The Sun's illumination, constant: its mean apparent magnitude stands in for
-   * a per-minute pheno_ut call, and it is fully lit.
+   * Sun's constant illumination: its mean magnitude, in place of pheno_ut.
    */
   private static readonly sunIllumination = {
     illumination: 100,

@@ -35,8 +35,7 @@ export class EventFilterCalendarFieldsService {
   ) {}
 
   /**
-   * Keeps the events that overlap any day of a range, or with "is not between"
-   * drops them, the days read in each event's own zone.
+   * Keeps events overlapping a day range, or drops them for "is not between".
    */
   private compileDateRule(
     operator: string,
@@ -142,9 +141,8 @@ export class EventFilterCalendarFieldsService {
   }
 
   /**
-   * Keeps the events whose summary or description contains a piece of text,
-   * ignoring case, or drops them. The text's own wildcards match literally,
-   * and text of nothing but spaces leaves the rule unfinished.
+   * Keeps events whose summary or description contains the text, ignoring
+   * case. Wildcards match literally.
    */
   private compileTextRule(
     operator: string,
@@ -173,8 +171,7 @@ export class EventFilterCalendarFieldsService {
   }
 
   /**
-   * Keeps the events whose weekday, numbered from Sunday, is any of the chosen
-   * ones, or none of them, the weekday read in each event's own zone.
+   * Keeps events on the chosen weekdays, Sunday is 0, or none of them.
    */
   private compileWeekdayRule(
     operator: string,
@@ -196,9 +193,8 @@ export class EventFilterCalendarFieldsService {
   }
 
   /**
-   * Compiles a rule on a field derived from the event's own columns: its date
-   * range, weekday, hour, duration, temporality, or text. Answers `null` for a
-   * field it does not know and for a rule that is not finished.
+   * Compiles a rule on a derived calendar field. Answers `null` for an unknown
+   * field or an unfinished rule.
    */
   public compileCalendarRule(
     rule: EventFilterRule,

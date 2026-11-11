@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * The whole-workspace file-level import graph, combining every project's graph.
- * Each file is qualified by its project, since file names alone are not unique.
- */
+/** Whole-workspace file import graph, with each file qualified by project. */
 export interface FileImportsWorkspaceGraph {
   /** Every drawn import relationship, sorted so the diagram never churns. */
   readonly edges: FileImportsWorkspaceGraphEdge[];

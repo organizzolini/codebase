@@ -27,7 +27,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The events and view to draw, and where to report the calendar's moves.
+ * Events and view to draw, and a navigation reporter.
  */
 export interface CalendarGridProperties {
   /**

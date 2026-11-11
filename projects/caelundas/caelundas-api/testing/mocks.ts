@@ -23,10 +23,7 @@ export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   });
 }
 
-/**
- * Mocks TypeORM's `Repository` with a chainable `createQueryBuilder`; configure
- * terminal methods per test with `.mockResolvedValue`.
- */
+/** Mocks Repository with a chainable createQueryBuilder; stub terminals per test. */
 export const createRepositoryMock = <
   Entity extends ObjectLiteral = ObjectLiteral,
 >(): Repository<Entity> => {

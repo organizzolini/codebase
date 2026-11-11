@@ -2,19 +2,13 @@
 
 import type { SkillExclusionFile } from "./skill-exclusions.types";
 
-/**
- * Body of the comment opening the generated block. Each file adds its own
- * comment syntax: `#` for most, `//` for JSONC.
- */
+/** Opening comment text of the generated block, in each file's syntax. */
 export const BLOCK_START_LABEL = "installed-skills-start";
 
 /** Body of the comment closing the generated block. */
 export const BLOCK_END_LABEL = "installed-skills-end";
 
-/**
- * Files a skill's installer writes outside its folder, by skill name. Listed
- * while the skill is installed; new ones go here.
- */
+/** Files a skill's installer writes outside its folder, by skill name. */
 export const VENDORED_SKILL_PATHS: Readonly<Record<string, readonly string[]>> =
   {
     impeccable: [
@@ -24,10 +18,7 @@ export const VENDORED_SKILL_PATHS: Readonly<Record<string, readonly string[]>> =
     ],
   };
 
-/**
- * Files that must name every installed skill and its vendored files. A seventh
- * file needs its markers added too.
- */
+/** Files naming every skill and its vendored files; each needs markers. */
 export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
   {
     commentPrefix: "#",

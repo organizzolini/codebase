@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * What one frozen `pnpm install` produced. Output streams are merged, since
- * nothing parses it and which stream pnpm explains a refusal on varies.
- */
+/** What one frozen `pnpm install` printed, with both streams merged. */
 export interface FrozenInstallResult {
   /**
    * Whether the `pnpm` binary could run at all. A missing binary means the

@@ -13,11 +13,7 @@ export interface BuildAnchorHelpersArguments {
   destination: ResolvedCodometerMarkdownOutput;
 }
 
-/**
- * What a run measured: one project, or the repository holding it.
- *
- * Names the first badge group, so the scope is never misreported.
- */
+/** Measured scope: one project, or the repository holding it. */
 export type MeasurementScope = "project" | "repository";
 
 /** Arguments accepted when rendering the built-in badge report. */
@@ -54,9 +50,7 @@ export interface SyncMarkdownArguments {
   targets: readonly TargetSize[];
 }
 
-/**
- * One declared target's measured size. Only targets a run measured reach the badge block.
- */
+/** A declared target's size; only measured targets reach the badges. */
 export interface TargetSize {
   bytes: number;
   compression: CodometerCompression;

@@ -41,10 +41,7 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
   ".ts",
 ]);
 
-/**
- * File names a project's own configuration may take beside its root, searched
- * in order: TypeScript before JSON. The main configuration is never searched for.
- */
+/** Project config file names, searched in order: TypeScript before JSON. */
 export const CONFIGURATION_FILE_NAMES = [
   "codependix.config.ts",
   "codependix.config.mts",
@@ -61,25 +58,16 @@ export const DEFAULT_EXPORT_TARGET: CodependixExportTarget = "none";
 /** Markdown file an anchor-mode destination writes into when it names none. */
 export const DEFAULT_MARKDOWN_PATH = "README.md";
 
-/**
- * Participating projects when a configuration names none. Deliberately empty:
- * export must be declared, never silently widened to the whole workspace.
- */
+/** Default project list; empty on purpose, never silently widened. */
 export const DEFAULT_INCLUDE_GLOBS = [] as const;
 
-/**
- * Root markers for an upward search from the cwd. Not package manifests: every
- * project has one, so the search would stop early.
- */
+/** Upward search root markers; not manifests, which every project has. */
 export const REPOSITORY_ROOT_MARKERS = [".git", "pnpm-workspace.yaml"] as const;
 
 /** Separates the entries of a `--projects` or `--tags` argument. */
 export const SELECTION_SEPARATOR = ",";
 
-/**
- * Validates one end of an access rule, or an acyclic rule's scope. Requires a
- * field: an empty selector would silently match every node.
- */
+/** Rule selector; empty would silently match every node. */
 const boundarySelectorSchema = z
   .object({
     id: z.array(z.string().min(1)).min(1).optional(),
@@ -118,10 +106,7 @@ const boundaryRuleSchema = z.union([
   }),
 ]);
 
-/**
- * Validates `boundaries.fileImports`'s rules, nested by language. Cross-language
- * edges cannot exist, so rules stay language-scoped.
- */
+/** Validates `boundaries.fileImports` rules; cross-language edges cannot exist. */
 const fileImportsBoundariesConfigurationSchema = z.object({
   python: z.array(boundaryRuleSchema).optional(),
   typescript: z.array(boundaryRuleSchema).optional(),
@@ -178,20 +163,14 @@ const graphOutputSchema = z
     }
   });
 
-/**
- * Validates a project's own `codependix.config.ts`, keyed by graph type, since
- * the root schema no longer carries project exports.
- */
+/** Validates a project's `codependix.config.ts`, keyed by graph type. */
 export const codependixProjectConfigurationSchema = z.object({
   fileImports: graphOutputSchema.optional(),
   nestjsModules: graphOutputSchema.optional(),
   nxProjects: graphOutputSchema.optional(),
 });
 
-/**
- * Validates the Workspace Graph's export configuration. All three graph types
- * are accepted, each built as a whole-workspace graph.
- */
+/** Validates the Workspace Graph's exports; all three graph types accepted. */
 const workspaceConfigurationSchema = z.object({
   fileImports: graphOutputSchema.optional(),
   nestjsModules: graphOutputSchema.optional(),
@@ -205,10 +184,7 @@ const nestjsModulesConfigurationSchema = z.object({
     .optional(),
 });
 
-/**
- * Validates a codependix configuration file's contents. Unknown keys are
- * stripped, not rejected, so newer configurations still load.
- */
+/** Validates a configuration file; unknown keys are stripped, not rejected. */
 export const codependixConfigurationSchema = z.object({
   boundaries: boundariesConfigurationSchema.optional(),
   exclude: z.array(z.string()).optional(),
@@ -218,32 +194,26 @@ export const codependixConfigurationSchema = z.object({
   workspace: workspaceConfigurationSchema.optional(),
 });
 
-/** What `--check boundaries` asks the run to fail on: an edge breaking a rule. */
+/** `--check boundaries` fails the run on a rule-breaking edge. */
 export const CHECK_BOUNDARIES = "boundaries";
 
-/** What `--check reports` asks the run to fail on: a stale configured export. */
+/** `--check reports` fails the run on a stale export. */
 export const CHECK_REPORTS = "reports";
 
-/**
- * Everything `--check` accepts, in error-message order. `reports` is the word
- * `codometer` and `callidescope` use for stale output too.
- */
+/** Values `--check` accepts; `reports` matches the sibling tools' term. */
 export const CHECK_NAMES = [CHECK_BOUNDARIES, CHECK_REPORTS];
 
 /** How a `--check` value is written: one comma-separated set, no spaces needed. */
 export const CHECK_SEPARATOR = ",";
 
-/**
- * Choices offered when no mode is named. Never defaulted: a silent no-op that
- * exits 0 is the failure to avoid.
- */
+/** Choices offered without a mode; never defaulted, avoiding silent no-ops. */
 export const RUN_MODE_CHOICES = [
   CHECK_BOUNDARIES,
   CHECK_REPORTS,
   "write",
 ] as const;
 
-/** What the prompt calls the thing it is asking for, in its error messages. */
+/** Name a prompt uses for the value, in error messages. */
 export const RUN_MODE_SUBJECT = "A run mode (--check or --write)";
 
 // 🚨 Errors

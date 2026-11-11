@@ -26,8 +26,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The fields the builder offers, the filter tree the link holds, and where
- * to send an edited one.
+ * The builder's fields, the link's filter tree, and the edit handler.
  */
 export interface CalendarFiltersProperties {
   className?: string;

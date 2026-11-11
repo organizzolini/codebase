@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-/** Stands in for a column a limit left empty, so the cell is never blank. */
+/** Placeholder for an empty limit cell, never leaving it blank. */
 export const ABSENT_LABEL = "—";
 
 /** Heading the whole listing is written under. */
@@ -16,9 +16,5 @@ export const LIMIT_TABLE_COLUMNS = [
   "Declared in",
 ] as const;
 
-/**
- * Metric suffix marking a limit whose value is bytes.
- *
- * Only the `.size` metric path says whether it counts bytes.
- */
+/** Metric suffix for byte-valued limits; only `.size` paths say so. */
 export const SIZE_METRIC_SUFFIX = ".size";

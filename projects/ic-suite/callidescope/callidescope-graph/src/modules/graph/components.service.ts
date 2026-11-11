@@ -7,11 +7,10 @@ import type { CallGraph, CondensedGraph } from "./graph.types";
 import type { CallableId } from "@callidescope/core";
 
 /**
- * Collapses every cycle in the call graph into a single node.
+ * Collapses every cycle in the call graph into one node.
  *
- * Longest path is only defined on an acyclic graph, so cycles are condensed before
- * depth is measured. Detecting repeats during the walk would make memoized depth
- * depend on which path arrived first. A ring of three functions counts three frames.
+ * Longest path needs an acyclic graph, so cycles are condensed first. Detecting
+ * repeats mid-walk would make memoized depth depend on arrival order.
  */
 @Injectable()
 export class ComponentsService {

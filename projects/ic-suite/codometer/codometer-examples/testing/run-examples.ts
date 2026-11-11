@@ -25,18 +25,10 @@ import {
 
 // 🗂️ The examples
 
-/**
- * Fixture directories under `examples/`, not examples.
- *
- * They hold no README, so the corpus counts guides quote stay exact.
- */
+/** Fixture directories, with no README to skew guide counts. */
 const FIXTURE_DIRECTORIES = new Set(["compiled", "corpus"]);
 
-/**
- * Exit codes each example gives under `--check limits`, keyed by path.
- *
- * The guides state these codes, so a changed outcome fails here too.
- */
+/** Exit code per example under `--check limits`, keyed by path. */
 const EXPECTED_EXIT_CODES: Record<string, number> = {
   "compression/brotli.config.ts": 0,
   "compression/gzip.config.ts": 0,

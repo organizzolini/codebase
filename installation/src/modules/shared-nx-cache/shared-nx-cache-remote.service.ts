@@ -23,9 +23,8 @@ import type { RemoteEntry } from "./shared-nx-cache.types";
 /**
  * The S3-compatible bucket behind the local cache, when one is configured.
  *
- * Reads go through: a miss is answered from the bucket, and a failing bucket reads as a miss.
- * Writes happen only when `NX_SHARED_CACHE_REMOTE_WRITABLE` is `true`, and never over an existing object.
- * The bucket key's own permissions are what keep a pull request out, not this process.
+ * Reads fall through to it. Writes happen only when `NX_SHARED_CACHE_REMOTE_WRITABLE` is `true`,
+ * and never over an existing object. The bucket key's permissions, not this process, keep pull requests out.
  */
 @Injectable()
 export class SharedNxCacheRemoteService {

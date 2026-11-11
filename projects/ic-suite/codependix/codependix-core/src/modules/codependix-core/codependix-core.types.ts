@@ -10,25 +10,16 @@ export interface AnchorCheckResult {
   readonly isCurrent: boolean;
 }
 
-/**
- * What delivery does to a destination: `check` compares, `write` updates.
- * Distinct from `RunMode`, which covers the whole run.
- */
+/** What delivery does to a destination: `check` or `write`. */
 export type CodependixRunMode = "check" | "write";
 
-/**
- * One graph-type pass's outcomes, kept apart: projects that finished, and projects that failed before
- * their exports resolved.
- */
+/** One graph pass's outcomes: finished projects, and early failures. */
 export interface GraphRunOutcome {
   failures: ProjectRunFailure[];
   results: ProjectRunResult[];
 }
 
-/**
- * Names the section (`## 🕸️ Codependix`) auto-created when an anchored destination is missing.
- * Supplied per call, not configured.
- */
+/** Section heading auto-created when an anchored destination is missing. */
 export interface MarkdownSectionArguments {
   introLine: string;
   /**
@@ -38,9 +29,7 @@ export interface MarkdownSectionArguments {
   subheading: string | undefined;
 }
 
-/**
- * One project's failure before its exports could resolve: a missing anchor, or a NestJS container that would not boot.
- */
+/** Missing anchor, or a NestJS container that will not boot. */
 export interface ProjectRunFailure {
   error: string;
   projectName: string;
@@ -55,19 +44,14 @@ export interface ProjectRunResult {
   stalePaths: string[];
 }
 
-/**
- * What the run does with the graphs it builds. The three flags are independent, so no flag turns another on.
- */
+/** What the run does with built graphs; flags are independent. */
 export interface RunMode {
   readonly checksBoundaries: boolean;
   readonly checksReports: boolean;
   readonly writes: boolean;
 }
 
-/**
- * What the command line asked the run to do, and the complaints about it. All complaints are collected
- * before any is reported.
- */
+/** Requested run settings, and every complaint about them. */
 export interface RunModeSelection {
   readonly errors: readonly string[];
   readonly mode: RunMode;

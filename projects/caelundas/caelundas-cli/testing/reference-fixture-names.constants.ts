@@ -1,7 +1,7 @@
 // ♟️ Constants
 
 /**
- * Whole-pipeline reference cases; to add one, commit a fixture under `testing/reference-fixtures/` and name it here.
+ * Whole-pipeline reference cases; add a fixture, then name it here.
  */
 export const referenceFixtureNames: readonly string[] = [
   "horizons-lunar-apogee-2026-01-13",

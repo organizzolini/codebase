@@ -2,11 +2,7 @@
 
 import type { CodeStatisticsResult } from "@codometer/core";
 
-/**
- * What a run reports when `codebase` ran no language analysis.
- *
- * Zero rather than `undefined`, so consumers still get a shape to render.
- */
+/** Language metrics when `codebase` ran no analysis: zero, not `undefined`. */
 export const EMPTY_CODE_STATISTICS_RESULT: CodeStatisticsResult = {
   css: {
     atRules: 0,

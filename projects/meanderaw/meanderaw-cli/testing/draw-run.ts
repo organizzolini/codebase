@@ -25,9 +25,7 @@ import { DRAW_TEST_EDGE_BUDGET, DRAW_TEST_WORKERS } from "./draw-run-budget";
 import type { Provider } from "@nestjs/common";
 import type { Repository } from "typeorm";
 
-/**
- * How long one whole `DrawCommand` draw run may take. Declared rather than left to the default five seconds.
- */
+/** Time limit for one `DrawCommand` run, above the five-second default. */
 export const DRAW_RUN_TIMEOUT_MILLISECONDS = 300_000;
 
 /** Everything a draw-run case reads back from one compiled `DrawCommand`. */

@@ -6,9 +6,7 @@ import type {
   ResolvedCallidescopeConfiguration,
 } from "../configuration/configuration.types";
 
-/**
- * Command-line flags as parsed. `--config` is absent: it picks the file the others resolve against.
- */
+/** Parsed command-line flags, minus `--config`, which picks the file. */
 export interface CallidescopeRunFlags {
   /** Mode. The written `--check` set, or `true` for the flag with no value. */
   readonly check?: string | true | undefined;

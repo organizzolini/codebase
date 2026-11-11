@@ -5,10 +5,7 @@
  */
 export type Code = string;
 
-/**
- * One Code and the shape it is read at. Its character for `(row, column)`
- * sits at `row * columns + column`.
- */
+/** A Code and its shape, read row-major. */
 export interface CodeObject {
   readonly columns: number;
   readonly digits: string;

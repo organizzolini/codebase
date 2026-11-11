@@ -9,7 +9,7 @@ export interface CallableAddressCandidate {
   readonly location: SourceLocation;
 }
 
-/** What resolving a callable address produced. A union, since each outcome calls for a different next step. */
+/** Resolution outcome; each kind needs a different next step. */
 export type CallableAddressResolution =
   | {
       readonly candidates: readonly CallableAddressCandidate[];
@@ -33,7 +33,7 @@ export interface ResolveAddressArguments {
   readonly workspaceRoot: string;
 }
 
-/** A resolution that did not name exactly one callable, derived so every failure stays covered. */
+/** Failed resolution: no single callable, derived to cover every failure. */
 export type UnresolvedCallableAddress = Exclude<
   CallableAddressResolution,
   { readonly kind: "resolved" }

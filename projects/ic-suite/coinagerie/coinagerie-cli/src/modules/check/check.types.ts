@@ -3,7 +3,7 @@
 /** Whether a run judges the glossaries against the code or rewrites them. */
 export type CheckMode = "check" | "write";
 
-/** What one project's run settled on: whether it passed, and what to say. */
+/** One project's verdict: whether it passed, and what to report. */
 export interface CheckVerdict {
   readonly ok: boolean;
   readonly report: string;

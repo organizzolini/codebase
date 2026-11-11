@@ -9,7 +9,7 @@ import { mockNightSkyQuery } from "../../graphql/generated/mocks";
 import { useNightSky } from "./use-night-sky";
 
 /**
- * The link the router reads, which each test sets, and the last state a select returned, as the router keeps it.
+ * The router's mocked link state, set by each test.
  */
 const router = vi.hoisted(() => {
   const state: {

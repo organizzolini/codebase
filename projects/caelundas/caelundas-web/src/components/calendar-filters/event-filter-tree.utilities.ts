@@ -22,8 +22,8 @@ export function countActiveEventFilterRules(node: EventFilterNode): number {
 }
 
 /**
- * Whether two filter trees hold the same content, whatever order their keys
- * were set in: a link is parsed into new objects on every navigation.
+ * Whether two filter trees hold the same content in any key order: a link
+ * is parsed into new objects on every navigation.
  */
 export function isSameEventFilter(
   left: EventFilterQuery | undefined,
@@ -36,8 +36,8 @@ export function isSameEventFilter(
 }
 
 /**
- * Rebuilds a filter tree with every node's keys in one fixed order, leaving
- * out a `negated` that was never set, so equal trees write equal JSON.
+ * Rebuilds a filter tree with keys in one fixed order and no unset `negated`,
+ * so equal trees write equal JSON.
  */
 export function normalizeEventFilter(
   group: LooseEventFilterGroup,
@@ -63,9 +63,8 @@ export function normalizeEventFilter(
 }
 
 /**
- * The filter a link should hold for a tree. An empty tree is kept, not
- * dropped: a link with no filter opens on the default preset, so "no
- * filter at all" has to be written out.
+ * An empty tree is kept, not dropped: a link with no filter opens on the
+ * default preset.
  */
 export function toLinkedEventFilter(query: EventFilterQuery): EventFilterQuery {
   return query;

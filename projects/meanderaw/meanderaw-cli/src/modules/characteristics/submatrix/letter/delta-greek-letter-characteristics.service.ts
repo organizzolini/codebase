@@ -8,18 +8,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the Δ (Greek delta) glyph — a
- * closed triangle: a two-point peak with a two-step staircase descending from
- * each side to a five-unit base, its diagonals drawn as orthogonal zig-zags —
- * one per corner and clockwise rotation, each counting the base template drawn
- * that way. The base faces Southeast, drawn:
- *
- * ```text
- *   ┌┐
- *  ┌┘└┐
- * ┌┘  └┐
- * └────┘
- * ```
+ * Provides the sixteen orientation evaluators of the Δ (Greek delta) glyph, a closed triangle with stepped sides.
+ * Each counts the base template, drawn facing Southeast.
  */
 @Injectable()
 export class DeltaGreekLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -41,7 +31,7 @@ export class DeltaGreekLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, `.` outside it. */
   private readonly template: readonly string[] = [
     "..65..",
     ".69a5.",

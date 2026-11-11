@@ -19,10 +19,7 @@ import type { CallidescopeOutputFormat } from "@callidescope/configuration";
 /**
  * Narrows the untyped options object Nx hands a plugin.
  *
- * Nx passes whatever the consumer wrote in `nx.json` with no validation, so
- * every field is checked before use rather than cast. A bad value falls back
- * to its default: a typo in a target name should not stop the project graph
- * from being built.
+ * Nx passes unvalidated `nx.json` options, so every field is checked before use. A bad value falls back to its default, so a typo does not stop the project graph.
  */
 @Injectable()
 export class OptionsService {

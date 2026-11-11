@@ -8,17 +8,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the ל (Hebrew lamed) glyph —
- * a unit step, a unit stroke rising from the west end of a unit stroke and
- * another dropping from its east end — one per corner and clockwise rotation,
- * each counting the base template drawn that way. The base faces Southwest,
- * drawn:
- *
- * ```text
- * ╷
- * └┐
- *  ╵
- * ```
+ * Provides the sixteen orientation evaluators of the ל (Hebrew lamed) glyph, a unit step with strokes rising and dropping at its ends.
+ * Each counts the base template, drawn facing Southwest.
  */
 @Injectable()
 export class LamedHebrewLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -40,7 +31,7 @@ export class LamedHebrewLetterCharacteristicsService implements CharacteristicEv
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, `.` outside it. */
   private readonly template: readonly string[] = ["4.", "a5", ".8"];
 
   // 🔑 Public Fields

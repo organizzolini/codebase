@@ -71,12 +71,9 @@ import { YuKatakanaLetterCharacteristicsService } from "./yu-katakana-letter-cha
 import { ZLatinLetterCharacteristicsService } from "./z-latin-letter-characteristics.service";
 
 /**
- * Provides and exports every letter service, one per letter, with an Arabic letter's
- * positional forms together in one. `CharacteristicsModule` imports this group and re-exports it.
- *
- * Each letter has one base template per script reading corner (or one per positional
- * form for Arabic), and each template yields sixteen evaluators: four corners by four
- * rotations. Letters that are orientations of one another share ink.
+ * Provides and exports every letter service, one per letter, with an Arabic letter's positional
+ * forms together. Each letter has one base template per script reading corner, or per positional
+ * form for Arabic. Each template yields sixteen evaluators: four corners by four rotations.
  */
 @Module({
   controllers: [],

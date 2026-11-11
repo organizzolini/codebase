@@ -16,10 +16,9 @@ import type { Environment } from "../../deployment.types";
 /**
  * Notices when `main` has moved during a release run, and steps the run aside.
  *
- * A release run takes long enough that another pull request often merges
- * while it works. That newer commit gets a release run of its own, which
- * releases everything this one would have, so a run that finds `main` has
- * moved steps aside instead of failing on a rejected push.
+ * A newer merge gets its own release run, releasing everything this one would,
+ * so a run that finds `main` moved steps aside rather than fail on a rejected
+ * push.
  */
 @Injectable()
 export class MainTipService {

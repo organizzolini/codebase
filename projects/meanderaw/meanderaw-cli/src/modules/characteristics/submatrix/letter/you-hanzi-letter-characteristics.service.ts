@@ -8,10 +8,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the 由 (hanzi you) glyph — a
- * two-by-two grid of unit squares whose middle vertical stroke runs a unit
- * above its top — one per corner and clockwise rotation, each counting the
- * base template drawn that way. The base faces Southeast, drawn:
+ * Sixteen orientation evaluators of the 由 glyph, one per corner and clockwise rotation.
+ * The base faces Southeast, drawn:
  *
  * ```text
  *  ╷
@@ -40,7 +38,7 @@ export class YouHanziLetterCharacteristicsService implements CharacteristicEvalu
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** The upright glyph's points, `.` outside the glyph. */
   private readonly template: readonly string[] = [".4.", "6f5", "efd", "ab9"];
 
   // 🔑 Public Fields

@@ -2,7 +2,7 @@
 
 import type { ExecutorContext, TaskGraph } from "@nx/devkit";
 
-/** Arguments Nx passes a batch executor, in order: task graph, per-task options, run overrides, and context. */
+/** Batch executor arguments: task graph, options, overrides, and context. */
 export type GateBatchExecutorArguments = [
   taskGraph: TaskGraph,
   options: Record<string, GateExecutorOptions>,
@@ -10,9 +10,7 @@ export type GateBatchExecutorArguments = [
   context: ExecutorContext,
 ];
 
-/**
- * What one task of a gate batch settled on: pass or fail, and the output Nx caches.
- */
+/** One gate task's verdict and the output Nx caches. */
 export interface GateBatchTaskResult {
   readonly success: boolean;
   readonly terminalOutput: string;

@@ -12,10 +12,7 @@ import type {
 
 // 🏷️ Types
 
-/**
- * A row in a scanner table. A source file that stops demonstrating its case
- * fails the example.
- */
+/** A scanner-table row; the example fails if its file drifts. */
 interface ScannerCase {
   readonly description: string;
   readonly file: string;
@@ -23,7 +20,7 @@ interface ScannerCase {
 
 // ♟️ Constants
 
-/** Nx tag a project must carry for the Python pass to discover it at all. */
+/** Nx tag the Python pass needs to discover a project. */
 const PYTHON_PROJECT_TAG = "language:python";
 
 /** Path segment every Python example sits under, inside `examples/`. */

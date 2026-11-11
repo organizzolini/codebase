@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** The derived grid unit, offset, and stroke width every motif is drawn against. */
+/** Grid unit, offset, and stroke width shared by motifs. */
 export interface Geometry {
   readonly height: number;
   readonly offset: number;

@@ -8,7 +8,7 @@ import { ProgramModule } from "../src/modules/program/program.module";
 import { SignaturesModule } from "../src/modules/signatures/signatures.module";
 import { WorkspaceModule } from "../src/modules/workspace/workspace.module";
 
-/** Every analysis module, imported wholesale so any service's dependencies resolve without each test restating them. */
+/** Every analysis module, so tests need not restate dependencies. */
 export const ANALYSIS_MODULES = [
   CallablesModule,
   DocumentationModule,

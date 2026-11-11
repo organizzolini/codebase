@@ -7,10 +7,7 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 /** The extensions TOML documents are written with. */
 export const TOML_EXTENSIONS: readonly string[] = [".toml"];
 
-/**
- * `#` comments, and the four string kinds. A quoted string is a key before `=`
- * or `.`, including in a table header.
- */
+/** `#` comments; quoted strings before `=` or `.` are keys. */
 export const TOML_GRAMMAR: LexicalGrammar = {
   identifier: /[\p{L}_][\p{L}\p{N}_-]*/uy,
   keys: [
@@ -30,8 +27,5 @@ export const TOML_GRAMMAR: LexicalGrammar = {
   ],
 };
 
-/**
- * The literal words of TOML, lowercased. A plain array, so spreading it into
- * `exclude.words` excludes nothing extra.
- */
+/** TOML literal words, lowercased. Spreading into `exclude.words` excludes nothing extra. */
 export const TOML_KEYWORDS: string[] = ["false", "inf", "nan", "true"];

@@ -6,8 +6,8 @@ import type { EventFilterNode, EventFilterQuery } from "./event-filters.types";
 import type { ResolvedPreset } from "./presets.types";
 
 /**
- * Reads a preset the API answered as the calendar's own: the ReUI filter
- * tree the builder edits, each node given an id from the preset's.
+ * Reads a preset the API answered as the calendar's own ReUI filter tree,
+ * each node given an id from the preset's.
  */
 export function toPreset(preset: PresetFieldsFragment): ResolvedPreset {
   return {
@@ -19,8 +19,8 @@ export function toPreset(preset: PresetFieldsFragment): ResolvedPreset {
 }
 
 /**
- * Reads a group of the API's filter as a ReUI group, its rules first and its
- * nested groups after, where `position` says where it sits in the preset.
+ * Reads an API filter group as a ReUI group: rules first, then nested groups.
+ * `position` locates it in the preset.
  */
 function toGroup(
   group: FilterGroupFieldsFragment & {

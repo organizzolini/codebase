@@ -22,10 +22,7 @@ export interface ProgramSet {
   readonly programs: readonly ProjectProgram[];
 }
 
-/**
- * One project's program, its checker, and the files it owns. Each file is walked
- * once, by its owner.
- */
+/** A project's program, checker, and owned files, each walked once. */
 export interface ProjectProgram {
   readonly checker: ts.TypeChecker;
   /** Absolute real paths this program is responsible for walking. */

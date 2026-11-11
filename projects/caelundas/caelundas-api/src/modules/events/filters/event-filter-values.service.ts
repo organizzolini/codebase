@@ -63,8 +63,7 @@ export class EventFilterValuesService {
   }
 
   /**
-   * Reads a list of whole numbers from `minimum` to `maximum`, distinct and in
-   * order of first appearance. An empty list means the rule is unfinished.
+   * Reads distinct whole numbers in bounds, in first-appearance order.
    */
   public readIntegers(
     values: readonly string[],
@@ -84,8 +83,7 @@ export class EventFilterValuesService {
   }
 
   /**
-   * Reads the two ends of a range a rule was given, or `null` when either is
-   * not written as a number or they run backwards.
+   * Reads a range of two numbers in order, or `null` when unusable.
    */
   public readNumberRange(values: readonly string[]): [number, number] | null {
     const [first, second] = values;

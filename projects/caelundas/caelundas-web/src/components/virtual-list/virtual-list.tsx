@@ -15,7 +15,7 @@ import type { ReactNode, UIEvent } from "react";
 // 🔖 Type
 
 /**
- * The rows to window, how tall each is, and how to draw one.
+ * The rows, and their height, key, and draw functions.
  */
 export interface VirtualListProperties<Row> {
   className?: string;

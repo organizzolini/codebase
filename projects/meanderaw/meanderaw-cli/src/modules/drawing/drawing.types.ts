@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** One lattice point's position on the canvas, in pixels, as `DrawingService` draws from it. */
+/** A lattice point's canvas position, in pixels. */
 export interface CanvasPoint {
   readonly x: number;
   readonly y: number;

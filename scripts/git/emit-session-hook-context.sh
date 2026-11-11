@@ -1,16 +1,10 @@
 #!/bin/bash
 #
-# Shared sessionStart emitter — reads context text on stdin and prints the JSON
-# shape the calling agent harness understands.
+# Shared sessionStart emitter: reads context on stdin and prints the JSON
+# shape the calling harness reads. Empty input means the command never ran,
+# so the context says why. Without node, it exits silently.
 #
-#   - Claude Code reads hookSpecificOutput.additionalContext
-#   - GitHub Copilot reads a top-level additionalContext
-#   - Empty input means the command that should have written the context could
-#     not run at all: the context then says why, as far as this can tell
-#   - Without node, nothing can be emitted, so it exits silently
-#
-# A hook that is a shim over a workspace command calls this only when that
-# command fails, naming how a person reruns it to see its error:
+# A shim over a workspace command calls this only when that command fails:
 #
 #   CONTEXT="$(<command> 2>/dev/null)" && exit 0
 #   printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "<rerun>"

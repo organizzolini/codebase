@@ -18,10 +18,7 @@ import type { CodometerReport } from "@codometer/core";
 
 const REPORT_FILE_NAME = "codometer-report.json";
 
-/**
- * A long comment codometer-configured (see below) to breach a
- * `comment`-selector custom statistic's word budget.
- */
+/** A long comment that breaches a `comment`-selector word budget. */
 const LONG_YAML_COMMENT = [
   "# This comment runs on for far more words than the configured budget",
   "# allows, so the comment-selector custom statistic below counts it as a",

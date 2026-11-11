@@ -26,12 +26,11 @@ import type {
 } from "./report-codometer-changes.types";
 
 /**
- * Writes the changes in codometer's measurements onto a pull request.
+ * Writes codometer's changes onto a pull request body.
  *
- * It fetches the baseline the latest green `main` run uploaded, when there is
- * one, has `codometer-cli` diff this run's reports against it inside the pull
- * request body, and edits the pull request. A baseline that cannot be fetched
- * only costs the comparison: the report is still written.
+ * Fetches the baseline the latest green `main` run uploaded, when there is one,
+ * and has `codometer-cli` diff this run's reports against it. A baseline that
+ * cannot be fetched only costs the comparison; the report is still written.
  */
 @Injectable()
 export class ReportCodometerChangesService {

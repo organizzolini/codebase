@@ -4,13 +4,12 @@ import type { CalendarEventRecord } from "../events-calendar/calendar-records.ty
 // 🏷️ Types
 
 /**
- * A row the agenda draws: a day, an event, or the button that lists more.
+ * An agenda row: a day, an event, or the show-more button.
  */
 export type AgendaListRow = AgendaRow | { kind: "later" };
 
 /**
- * The days an agenda lists: `from` is included and `through` is not, both as
- * `YYYY-MM-DD` in `timeZone`.
+ * Agenda days: `from` included, `through` excluded, both `YYYY-MM-DD` in `timeZone`.
  */
 export interface AgendaRange {
   from: string;
@@ -19,7 +18,7 @@ export interface AgendaRange {
 }
 
 /**
- * A row of the agenda: a group, a day, or an event; an event in two groups is listed in both.
+ * An agenda row: a group, a day, or an event.
  */
 export type AgendaRow =
   | {

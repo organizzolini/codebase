@@ -20,8 +20,5 @@ export const environmentSchema = z.object({
   CAELUNDAS_API_PORT: z.coerce.number().default(6173),
 });
 
-/**
- * Code-first schema file, beside the root module so booting from the repository
- * root cannot write a stray `src/schema.gql` there.
- */
+/** Schema file beside the root module, not the working directory. */
 export const GRAPHQL_SCHEMA_FILE = path.join(import.meta.dirname, "schema.gql");

@@ -8,7 +8,7 @@ import { ProgramConfigurationError } from "@callidescope/graph";
 
 import { isRefusedProjectConfiguration } from "../address-lookup/address-lookup.constants";
 
-/** Whether a `new` expression pushes a frame. Constructors do real work, so counting them keeps stacks honest. */
+/** Whether a `new` expression pushes a frame; constructors do real work. */
 export const INCLUDE_CONSTRUCTOR_EDGES = true;
 
 // 🚫 Refusals
@@ -23,11 +23,11 @@ export const REJECTED_PROJECT = "🔭 Rejected a project it could not read";
 export const REJECTED_PROJECT_CONFIGURATION =
   "🔭 Rejected a project configuration";
 
-/** Refuses a bare argument that names no command, since the default command would otherwise trace the workspace and succeed. */
+/** Refuses a bare argument, which would otherwise trace the workspace. */
 export const buildUnknownCommandMessage = (name: string): string =>
   `${name} is not a callidescope command, and the trace takes no positional arguments. Run one of depth, breadth, or limits, or drop the argument to trace the workspace.`;
 
-/** The headline a refused error is reported under, or nothing. Free function, since mocked services would classify nothing. */
+/** The headline a refused error is reported under, or nothing. */
 export const readRefusalHeadline = (error: unknown): string | undefined => {
   if (error instanceof ProgramConfigurationError) {
     return REJECTED_PROJECT;

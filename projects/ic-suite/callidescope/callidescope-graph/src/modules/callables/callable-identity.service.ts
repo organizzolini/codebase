@@ -7,12 +7,11 @@ import type { CallableDeclaration } from "./callables.types";
 import type { CallableKind, SourceLocation } from "@callidescope/core";
 
 /**
- * Gives every callable a stable identifier and a name a report can print.
+ * Gives every callable a stable identifier and a printable name.
  *
  * The identifier is the file path plus the declaration's start offset, not its
- * line. Two callables share a line often — an arrow property and the statement
- * holding it do — but exactly one declaration can begin at one offset, so an
- * offset cannot collide the way a line can.
+ * line. Two callables often share a line, but only one declaration begins at an
+ * offset, so offsets cannot collide.
  */
 @Injectable()
 export class CallableIdentityService {

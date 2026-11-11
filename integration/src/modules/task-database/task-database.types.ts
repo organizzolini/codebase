@@ -30,7 +30,7 @@ export type MergePlan =
       reason: string;
     };
 
-/** The database a merge reads from, or why the source cannot be merged. */
+/** The database a merge reads, or why it cannot. */
 export type MergeSource =
   | {
       /** The source's newest database, sound and of a familiar schema. */
@@ -42,7 +42,7 @@ export type MergeSource =
       reason: string;
     };
 
-/** What one task-database step has to say; every step ends with exit code 0. */
+/** What one step reports; every step exits 0. */
 export interface TaskDatabaseReport {
   /** The lines to print, in order, each already formatted for the workflow log. */
   lines: readonly string[];

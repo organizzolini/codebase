@@ -25,9 +25,7 @@ export class NightSkyColorsService {
   // 🌎 Public Methods
 
   /**
-   * Builds the SVG definitions: the vertical gradient of the sky's background
-   * and the glow of the brightest stars. The colors are read as hexadecimal
-   * and written as `#rrggbb`, so nothing else can reach the markup.
+   * Builds the sky gradient and star-glow definitions, with colors read as `#rrggbb`.
    */
   public formatSkyDefinitions(topColor: string, bottomColor: string): string {
     return (
@@ -39,10 +37,8 @@ export class NightSkyColorsService {
   }
 
   /**
-   * Reads a hexadecimal color of three or six digits, with or without the
-   * `#`, as lowercase `#rrggbb`, or answers the fallback for anything else. A
-   * number is never read: the router turns `1e5` into one, and what it meant
-   * is gone.
+   * Reads a color as lowercase `#rrggbb`, else the fallback. Numbers are
+   * never read, since the router mangles them.
    */
   public readColor(value: unknown, fallback: string): string {
     if (typeof value !== "string" || !COLOR_DIGITS_PATTERN.test(value)) {

@@ -14,10 +14,7 @@ export interface DeliverFileArguments {
   relativePath: string;
 }
 
-/**
- * Arguments for delivering one resolved export. `jsonContent` and `markdownContent` are
- * rendered by the caller, and only when the target touches them.
- */
+/** Caller-rendered JSON and Markdown, made only when the target needs them. */
 export interface DeliverGraphOutputArguments {
   jsonContent: string | undefined;
   markdownContent: string | undefined;

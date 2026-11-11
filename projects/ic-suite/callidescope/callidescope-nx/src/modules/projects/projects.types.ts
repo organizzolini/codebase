@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * One Nx project, reduced to what directory resolution needs. Deliberately not shared with
- * `codependix-nx-projects`, which sits in another toolchain.
- */
+/** Nx project fields directory resolution needs; not shared, by design. */
 export interface NxProject {
   readonly name: string;
   /** Workspace-relative root, exactly as the Nx project graph states it. */
@@ -21,7 +18,7 @@ export interface ResolvedProjectDirectories extends ResolvedProjectSelection {
   readonly directories: string[];
 }
 
-/** What a set of Nx project names and tags resolved to, before directories. */
+/** Resolved project names and tags, before directories. */
 export interface ResolvedProjectSelection {
   /**
    * Every project name the graph knew, sorted — what a caller names back when

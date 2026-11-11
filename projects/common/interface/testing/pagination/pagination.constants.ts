@@ -1,9 +1,6 @@
 import type { PageRequest } from "./pagination.types";
 
-/**
- * Page counts covering `first`, `last`, both together, zero, and the negative
- * counts the original slicing read as no limit.
- */
+/** Page counts for `first`, `last`, both, zero, and negatives. */
 export const FULL_LIMITS: readonly PageRequest[] = [
   {},
   { first: 0 },

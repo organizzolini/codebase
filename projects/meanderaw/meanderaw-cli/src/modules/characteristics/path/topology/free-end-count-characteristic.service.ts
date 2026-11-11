@@ -9,10 +9,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Counts the points where one repeat's ink terminates — vertices of degree
- * one in the Code read as a graph over the cyclic band. An edge is claimed by
- * either of its ends, so a degree here is the graph's rather than the
- * number of bits a digit happens to spell.
+ * Counts the points where one repeat's ink terminates, vertices of degree one in the
+ * cyclic-band graph. An edge is claimed by either end.
  */
 @Injectable()
 export class FreeEndCountCharacteristicService implements CharacteristicEvaluator<number> {

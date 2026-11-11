@@ -20,8 +20,7 @@ export const EDITORS: FilterEditorRegistry = {
 export const TABLET_QUERY = "(min-width: 768px)";
 
 /**
- * The Filters button's join to Clear in their button group: square on the
- * right, raised above Clear while focused so its ring shows whole.
+ * Joins Filters to Clear: square right, raised on focus.
  */
 export const FILTERS_BUTTON_CLASS_NAME =
   "in-data-[slot=button-group]:rounded-r-none focus-visible:relative focus-visible:z-10";

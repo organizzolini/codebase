@@ -1,11 +1,9 @@
 import { Injectable } from "@nestjs/common";
 
 /**
- * Passes a callback to a dependency and gets a frame for the callback alone.
+ * Passes a callback to a dependency, which gets its own frame.
  *
- * `Array.prototype.map` is external, so it is a leaf and never a frame. The
- * arrow handed to it is this repository's own code, so it is recorded as its
- * own frame — and the call it makes is followed from there.
+ * `Array.prototype.map` is external, so it is a leaf. The arrow handed to it is local code, so it is a frame and its calls are followed.
  */
 @Injectable()
 export class CallbackArgumentService {

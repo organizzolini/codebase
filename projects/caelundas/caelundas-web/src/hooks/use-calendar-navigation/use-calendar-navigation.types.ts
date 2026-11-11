@@ -7,8 +7,7 @@ import type {
 // 🏷️ Types
 
 /**
- * The view on screen and the day it is anchored on, which say whether today
- * is already shown.
+ * The view on screen and its anchor day.
  */
 export interface UseCalendarNavigationProperties {
   agendaDays?: number | undefined;

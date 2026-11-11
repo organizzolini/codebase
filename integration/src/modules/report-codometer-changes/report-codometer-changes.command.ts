@@ -9,10 +9,9 @@ import { ReportCodometerChangesService } from "./report-codometer-changes.servic
  * CLI command that writes codometer's changes against the latest `main`
  * baseline into a pull request's body.
  *
- * Reads `PULL_REQUEST`, `GITHUB_REPOSITORY`, `GITHUB_SERVER_URL`, and
- * `RUNNER_TEMP`, and `gh` its token from `GH_TOKEN`. Exits 1 when the pull
- * request is not named, or with the code of the step that failed; a baseline
- * that cannot be fetched is a warning, never a failure.
+ * Reads `PULL_REQUEST`, `GITHUB_REPOSITORY`, and `RUNNER_TEMP`. Exits 1 when
+ * the pull request is not named, or with the failed step's code. Failing to
+ * fetch the baseline is only a warning.
  */
 @Command({
   description:

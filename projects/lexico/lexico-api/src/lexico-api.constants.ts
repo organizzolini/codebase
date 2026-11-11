@@ -21,8 +21,5 @@ export const environmentSchema = z.object({
   LEXICO_API_PORT: z.coerce.number().default(5003),
 });
 
-/**
- * Code-first schema file, beside the root module so booting from the repository
- * root cannot write a stray `src/schema.gql` there.
- */
+/** Code-first schema, beside the root module, not in `src/`. */
 export const GRAPHQL_SCHEMA_FILE = path.join(import.meta.dirname, "schema.gql");

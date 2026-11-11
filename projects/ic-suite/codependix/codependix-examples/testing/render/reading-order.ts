@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * Every example in reading order, for each `## Next` link. Imports nothing, to
- * avoid an import cycle.
- */
+/** Every example in reading order, for `## Next` links; imports nothing. */
 export const EXAMPLE_ORDER = [
   "graph-levels",
   "neighborhood-scope",
@@ -28,10 +25,7 @@ export const EXAMPLE_ORDER = [
   "workspace-drift",
 ] as const;
 
-/**
- * Each example's title emoji, keyed by directory name, kept beside the reading
- * order so no two examples can share one.
- */
+/** Title emoji per example directory, so no two share one. */
 export const EXAMPLE_EMOJI: Record<string, string> = {
   "ambient-modules": "🌍",
   "auto-created-sections": "🪄",

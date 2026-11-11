@@ -17,7 +17,7 @@ import type { CodependixBoundaryRule } from "@codependix/configuration";
 
 // 🏷️ Types
 
-/** What a scenario's run is pointed at, beyond the workspace it is fixed to. */
+/** A scenario run's targets, beyond its fixed workspace. */
 interface ScenarioArguments {
   /** `false` for `--no-dependencies`. */
   readonly dependencies?: boolean;
@@ -27,10 +27,7 @@ interface ScenarioArguments {
 
 // ♟️ Constants
 
-/**
- * Two projects that depend on each other, plus an application depending on one.
- * `shop-web` only depends on the cycle.
- */
+/** A cycle of two projects, plus an app depending on one. */
 const SHOP_CYCLE: ExampleWorkspace = {
   dependencies: [
     { source: "shop-web", target: "shop-checkout", type: "static" },
@@ -60,10 +57,7 @@ const SHOP_RING: ExampleWorkspace = {
   ],
 };
 
-/**
- * The web application reaches past the api to the database, and the api
- * reaches a project the `allow` rule does not list.
- */
+/** Web app skips the api; api reaches an unlisted project. */
 const SHOP_ACCESS: ExampleWorkspace = {
   dependencies: [
     { source: "shop-e2e", target: "shop-web", type: "static" },

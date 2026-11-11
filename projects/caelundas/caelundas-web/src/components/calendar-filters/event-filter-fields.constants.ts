@@ -17,7 +17,7 @@ export const NUMERIC_TAG_NAME = /\d$/u;
 export const EVENT_COUNT_FORMAT = new Intl.PluralRules("en-US");
 
 /**
- * The operators every tag field offers, in the order the builder lists them.
+ * Operators every tag field offers, in builder order.
  */
 export const TAG_FIELD_OPERATORS: FilterOperator[] = [
   {
@@ -114,8 +114,7 @@ const RANGE_OPERATORS: FilterOperator[] = [
 ];
 
 /**
- * The fields read from each event's own columns rather than its tags. Times
- * are the observer's local ones.
+ * Fields read from event columns, with observer-local times.
  */
 export const DERIVED_FIELDS: readonly EventFilterField[] = [
   {

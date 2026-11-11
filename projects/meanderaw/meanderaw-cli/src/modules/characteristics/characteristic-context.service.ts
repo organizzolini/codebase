@@ -8,10 +8,10 @@ import type { CharacteristicContext } from "./characteristics.types";
 
 /**
  * Prepares the one {@link CharacteristicContext} every evaluator reads, so a Code is
- * parsed and decoded once per meander. The Code is reduced to its smallest repeating
- * unit first, so repeats measure the same as a single drawing.
+ * parsed once per meander. The Code is reduced to its smallest repeating unit first,
+ * so repeats measure the same as a single drawing.
  *
- * The context's `code` is re-spelled as lowercase digits, `rows × columns` long.
+ * Its `code` is lowercase digits.
  */
 @Injectable()
 export class CharacteristicContextService {

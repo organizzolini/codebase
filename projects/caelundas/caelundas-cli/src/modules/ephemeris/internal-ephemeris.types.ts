@@ -8,8 +8,7 @@ import type {
 import type { Moment } from "moment-timezone";
 
 /**
- * Accumulated minute-by-minute ephemeris data for a single body across a date range.
- * Populated incrementally before final conversion to result maps.
+ * Minute-by-minute ephemeris data for one body, filled before conversion.
  */
 export interface EphemerisAccumulators {
   readonly azimuthElevationEphemeris: AzimuthElevationEphemeris;
@@ -29,8 +28,7 @@ export interface EphemerisEntries {
 }
 
 /**
- * Sets marking which bodies require each ephemeris feature.
- * Used internally to skip unnecessary computations during single-pass aggregation.
+ * Which bodies need each feature, to skip unneeded work.
  */
 export interface EphemerisFeatureSets {
   readonly azimuthElevationSet: Set<Body>;

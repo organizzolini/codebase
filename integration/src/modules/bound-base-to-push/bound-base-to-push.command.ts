@@ -6,12 +6,11 @@ import { LoggerService } from "@codebase/observability";
 import { BoundBaseToPushService } from "./bound-base-to-push.service";
 
 /**
- * CLI command that moves a push's `NX_BASE` to the push's previous tip, so
- * one red run on main cannot widen the next.
+ * CLI command that moves a push's `NX_BASE` to its previous tip, so one red run
+ * cannot widen the next.
  *
- * Reads `BEFORE`, `NX_BASE`, `NX_HEAD`, and `GITHUB_ENV`, the file a moved
- * base is written to. Exits 1 when `NX_BASE` or `NX_HEAD` is unset, or a moved
- * base has nowhere to go, and 0 otherwise, a kept base included.
+ * Reads `BEFORE`, `NX_BASE`, `NX_HEAD`, and `GITHUB_ENV`. Exits 1 when
+ * `NX_BASE` or `NX_HEAD` is unset or a moved base has nowhere to go, else 0.
  */
 @Command({
   description: "Move a push's NX_BASE to the push's own previous tip",

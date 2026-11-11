@@ -8,10 +8,7 @@ import type { InkAdjacency } from "./graph.types";
 
 // 🔧 Configuration
 
-/**
- * An adjacency over plain string nodes, built from undirected edges written as `"a-b"`.
- * Strings keep the walk tested apart from lattice points.
- */
+/** String-node adjacency, so tests stay apart from lattice points. */
 const adjacency = (
   nodes: readonly string[],
   edges: readonly string[],

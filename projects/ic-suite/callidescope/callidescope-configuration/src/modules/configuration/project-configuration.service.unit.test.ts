@@ -24,7 +24,7 @@ import type {
   ProjectLimitsLookup,
 } from "./configuration.types";
 
-/** A workspace file no staged project is ever beside, for runs that name one. */
+/** Workspace file no project sits beside, for named runs. */
 const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
 
 /** The spelling `writeWorkspace` stages every configuration under. */

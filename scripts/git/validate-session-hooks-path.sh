@@ -1,21 +1,14 @@
 #!/bin/bash
 #
-# sessionStart hook — validates that the git hooks directory exists.
+# sessionStart hook: checks that the git hooks directory exists.
 #
-#   - Silent when `core.hooksPath` resolves to a directory holding a pre-commit
-#     hook
-#   - Injects the repair commands as additionalContext otherwise
+#   - Silent when core.hooksPath holds a pre-commit hook
+#   - Otherwise injects the repair commands as additionalContext
 #
-# Husky points `core.hooksPath` at a generated directory under the Husky
-# folder, and git does not complain when that directory is missing: commits
-# simply run no hooks, so the signing check and lint-staged stop without a
-# word. Moving the Husky folder leaves every existing checkout in that state
-# until its next install, and a worktree's own `core.hooksPath` names the main
-# checkout's copy, so the main checkout's install fixes the folder but not the
-# worktree's path.
+# A missing hooks directory fails silently: commits run no hooks. Worktrees name
+# the main checkout's copy, which an install does not fix for them.
 #
-# It reports rather than repairs: the repair writes git configuration shared by
-# every worktree of the repository.
+# Reports, not repairs: repairs write config shared by all worktrees.
 
 SCRIPT_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPOSITORY_ROOT="$(cd "${SCRIPT_DIRECTORY}/../.." && pwd)"

@@ -38,10 +38,7 @@ const publishablePackages: PublishablePackage[] = [
 
 const PASSED: ConsumerCommandResult = { output: "", status: 0 };
 
-/**
- * What a healthy consumer prints for each command, keyed by the executable's
- * basename and its arguments.
- */
+/** What a healthy consumer prints, keyed by executable and arguments. */
 const healthyConsumer = (command: ConsumerCommand): ConsumerCommandResult => {
   const executable = path.basename(command.executable);
   const words = command.args.join(" ");

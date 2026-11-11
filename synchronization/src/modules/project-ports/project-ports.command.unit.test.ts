@@ -44,7 +44,7 @@ describe(ProjectPortsCommand, () => {
   const read = (relativePath: string): string =>
     readFileSync(path.join(root, relativePath), "utf8");
 
-  /** Declares an application as an Nx project whose port source holds this port. */
+  /** Declares an Nx application whose port source holds this port. */
   const writeProject = (
     directory: string,
     name: string,

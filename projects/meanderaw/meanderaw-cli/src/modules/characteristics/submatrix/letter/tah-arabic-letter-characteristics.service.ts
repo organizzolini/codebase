@@ -8,11 +8,10 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ط
- * (Arabic tah) skeleton — final, initial, isolated, and medial — one per corner
- * and clockwise rotation, each counting that form's base template, which faces
- * Southwest, drawn that way. A letter sharing a form's skeleton, differing from
- * it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ط skeleton, final,
+ * initial, isolated, and medial. One per corner and clockwise rotation, each counting that form's
+ * base template, which faces Southwest. Letters sharing a skeleton, differing only by dots, are
+ * aliases.
  */
 @Injectable()
 export class TahArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -71,44 +70,16 @@ export class TahArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ط (final Arabic tah) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ╷
-   * ├┐
-   * └┴╴
-   * ```
-   */
+  /** Upright final ط glyph as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = ["4..", "e5.", "ab1"];
 
-  /**
-   * The upright ط (initial Arabic tah) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *  ╷
-   *  ├┐
-   * ╶┴┘
-   * ```
-   */
+  /** Upright initial ط glyph as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = [".4.", ".e5", "2b9"];
 
-  /**
-   * The upright ط (isolated Arabic tah) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ╷
-   * ├┐
-   * └┘
-   * ```
-   */
+  /** Upright isolated ط glyph as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = ["4.", "e5", "a9"];
 
-  /**
-   * The upright ط (medial Arabic tah) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *  ╷
-   *  ├┐
-   * ╶┴┴╴
-   * ```
-   */
+  /** Upright medial ط glyph as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = [".4..", ".e5.", "2bb1"];
 
   // 🔑 Public Fields

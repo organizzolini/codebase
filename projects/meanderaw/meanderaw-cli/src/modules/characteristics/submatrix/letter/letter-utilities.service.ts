@@ -36,9 +36,7 @@ export class LetterUtilitiesService {
 
   // 🔐 Private Fields
 
-  /**
-   * Each matrix's glyph counts by template, so orientations and letters drawing the same ink scan a context once. Keyed weakly by the matrix.
-   */
+  /** Glyph counts per template, cached weakly by matrix. */
   private readonly counts = new WeakMap<Matrix, Map<string, number>>();
 
   /** How many clockwise quarter turns each rotation makes. */

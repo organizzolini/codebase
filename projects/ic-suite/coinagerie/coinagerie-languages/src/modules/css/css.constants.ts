@@ -7,10 +7,7 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 /** The extensions CSS stylesheets are written with. */
 export const CSS_EXTENSIONS: readonly string[] = [".css"];
 
-/**
- * Hexadecimal colors are skipped whole, so `#abc` is not a name; a `url(…)` body is a
- * path. CSS has no keys.
- */
+/** Skip `#rrggbb` colors and `url(…)` bodies. CSS has no keys. */
 export const CSS_GRAMMAR: LexicalGrammar = {
   identifier: /-{0,2}[\p{L}_][\p{L}\p{N}_-]*/uy,
   keys: [],
@@ -28,10 +25,7 @@ export const CSS_GRAMMAR: LexicalGrammar = {
   ],
 };
 
-/**
- * CSS at-rule names and global values, lowercased. Multi-word at-rules are
- * omitted, as the vocabulary splits them into common words.
- */
+/** Lowercased CSS at-rules and global values; multi-word ones omitted. */
 export const CSS_KEYWORDS: string[] = [
   "and",
   "charset",

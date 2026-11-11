@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * A path that could name two metrics, so it is refused rather than resolved.
- *
- * See the [limits guide](./README.md).
- */
+// See the [limits guide](./README.md).
+/** A path that could name two metrics, so it is refused. */
 const codometerConfiguration: CodometerConfiguration = {
   defaultInput: "codebase",
   format: "markdown",

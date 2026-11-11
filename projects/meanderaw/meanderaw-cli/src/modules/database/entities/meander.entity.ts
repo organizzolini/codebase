@@ -15,10 +15,7 @@ import type { StoredCharacteristics } from "../../characteristics/characteristic
 @Index(["code"], { unique: true })
 @Index(["rows", "columns", "code"])
 export class Meander extends PostgresqlUpdatableEntity {
-  /**
-   * Every Characteristic, as one sparse JSON object. A missing key means zero
-   * or `false`, so raw SQL must `COALESCE` it.
-   */
+  /** Sparse JSON; missing keys mean zero or false, COALESCE them. */
   @Column({ type: "jsonb" })
   characteristics!: StoredCharacteristics;
 
@@ -44,10 +41,7 @@ export class Meander extends PostgresqlUpdatableEntity {
   @Column({ transformer: BIGINT_NUMBER_TRANSFORMER, type: "bigint" })
   rows!: number;
 
-  /**
-   * The Codes of this meander's other symmetry-class members, sorted; empty
-   * when every reflection maps the meander onto itself.
-   */
+  /** Sorted Codes of this class's other members; empty when none. */
   @Column({ default: "", type: "simple-array" })
   symmetricalCodes!: string[];
 }

@@ -7,9 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ٮ (final Arabic dotless beh) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ٮ (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -54,9 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "behFinal",
 };
 
-/**
- * Each distinct orientation of the ٮ (initial Arabic dotless beh) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ٮ (initial form). */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -111,9 +107,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "behInitial",
 };
 
-/**
- * Each distinct orientation of the ٮ (isolated Arabic dotless beh) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ٮ (isolated form). */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -152,9 +146,7 @@ const ISOLATED_FORM: LetterFormFixture = {
   prefix: "behIsolated",
 };
 
-/**
- * Each distinct orientation of the ٮ (medial Arabic dotless beh) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ٮ (medial form). */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [
     {

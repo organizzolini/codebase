@@ -113,11 +113,11 @@ function letterModuleExports(): readonly unknown[] {
   return exported;
 }
 
-/** Every letter service `CharacteristicsModule` must provide, so a new letter needs no second list here. */
+/** Every letter service `CharacteristicsModule` must provide. */
 const LETTER_SERVICES: readonly Type<CharacteristicEvaluatorGroup<number>>[] =
   letterModuleExports().filter((value) => isLetterService(value));
 
-/** Every lone characteristic evaluator a consumer of `CharacteristicsModule` must be able to inject. */
+/** Every standalone evaluator a consumer must be able to inject. */
 const CHARACTERISTIC_SERVICES: readonly Type<CharacteristicEvaluator>[] = [
   BettiNumber0CountCharacteristicService,
   BettiNumber1CountCharacteristicService,
@@ -182,16 +182,13 @@ const CHARACTERISTIC_SERVICES: readonly Type<CharacteristicEvaluator>[] = [
   WestForkCountCharacteristicService,
 ];
 
-/** A letter service's class name, read as its key stem and its script: `TuSoilHanziLetterCharacteristicsService` keys `tuSoil…HanziCount`. */
+/** A letter class name gives its key stem and script. */
 const LETTER_SERVICE_NAME = new RegExp(
   String.raw`^(?<stem>\w+?)(?<script>${Object.keys(LETTER_SCRIPTS).join("|")})LetterCharacteristicsService$`,
   "u",
 );
 
-/**
- * The lattice-point window each non-letter submatrix evaluator reads. Letter
- * glyphs are checked against their fixtures in the letter module's test.
- */
+/** The lattice-point window each non-letter submatrix evaluator reads. */
 const WINDOWS: Readonly<Record<string, SubmatrixWindow>> = {
   cornerCount: { columns: 1, rows: 1 },
   crossCount: { columns: 1, rows: 1 },
@@ -221,10 +218,10 @@ const WINDOWS: Readonly<Record<string, SubmatrixWindow>> = {
   westForkCount: { columns: 1, rows: 1 },
 };
 
-/** The token a consumer module gathers every evaluator under, through a factory whose `inject` list only resolves exported providers. */
+/** The token consumers gather every evaluator under; only exports resolve. */
 const EVALUATORS = Symbol("EVALUATORS");
 
-/** The token a consumer module gathers every letter service under, the same way. */
+/** The token a consumer gathers every letter service under. */
 const LETTERS = Symbol("LETTERS");
 
 /** The metadata key a service's class name promises: `DotCountCharacteristicService` fills `dotCount`. */

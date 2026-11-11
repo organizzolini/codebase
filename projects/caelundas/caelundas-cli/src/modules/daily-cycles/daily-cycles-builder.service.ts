@@ -42,8 +42,7 @@ export class DailyCyclesBuilderService {
     "Solar",
   ];
   /**
-   * The Sun's conventional semidiameter, 16′. With refraction it gives the
-   * standard sunrise and sunset altitude of −0.8333°.
+   * Conventional Sun semidiameter, 16′; with refraction, gives −0.8333° at sunrise.
    */
   private static readonly sunSemidiameterDegrees =
     16 / MathService.arcminutesPerDegree;

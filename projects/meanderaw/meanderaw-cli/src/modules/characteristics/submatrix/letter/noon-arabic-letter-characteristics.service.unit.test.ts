@@ -7,9 +7,7 @@ import { NoonArabicLetterCharacteristicsService } from "./noon-arabic-letter-cha
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ں (final Arabic dotless noon) as a Code holding one isolated copy.
- */
+/** Each distinct orientation of final ں as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -54,9 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "noonFinal",
 };
 
-/**
- * Each distinct orientation of the ں (isolated Arabic dotless noon) as a Code holding one isolated copy.
- */
+/** Each distinct orientation of isolated ں as a standalone Code. */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {

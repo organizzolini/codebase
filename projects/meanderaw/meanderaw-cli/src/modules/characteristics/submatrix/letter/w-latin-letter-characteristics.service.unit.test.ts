@@ -7,7 +7,7 @@ import { WLatinLetterCharacteristicsService } from "./w-latin-letter-characteris
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the W as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of W as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x03y4040c4c0ab90",

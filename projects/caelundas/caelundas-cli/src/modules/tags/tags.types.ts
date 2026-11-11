@@ -1,7 +1,7 @@
 // 🏷️ Types
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
-/** What classifying an event reads: its raw tags and its start and end. */
+/** What classifying an event reads: raw tags, start and end. */
 export type ClassifiableEvent = Pick<
   DetectedCalendarEvent,
   "end" | "start" | "tags"
@@ -14,11 +14,9 @@ export interface ClassifiedCalendarEvent {
 }
 
 /**
- * Raw tag strings and the paths each stands for; an empty list classifies nothing.
+ * Raw tag strings and the paths each stands for.
  */
 export type TagMap = Readonly<Record<string, readonly TagPath[]>>;
 
-/**
- * A node's place in the tag tree: its names from the root down, such as `["Type", "Aspect", "Major"]`.
- */
+/** Node's names from the root down, e.g. `["Type", "Aspect"]`. */
 export type TagPath = readonly [string, ...string[]];

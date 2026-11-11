@@ -2,7 +2,7 @@
 // Short ids, such as `tag-mars`, stand in for database uuids.
 
 /**
- * One event as the mocked API stores it, with the tags it was given directly.
+ * A fixture event, with the tags it was given directly.
  */
 export interface FixtureEvent {
   color: null | string;

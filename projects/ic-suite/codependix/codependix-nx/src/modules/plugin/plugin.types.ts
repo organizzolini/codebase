@@ -11,10 +11,7 @@ export interface CodependixPluginOptions {
   readonly gateTargetName: string;
 }
 
-/**
- * What an `extends` entry names: a workspace file, an installed package, or
- * something no input can name.
- */
+/** An `extends` target: a workspace file, a package, or neither. */
 export type ExtendedBase =
   | { readonly file: string; readonly kind: "file" }
   | { readonly kind: "outside" }
@@ -30,10 +27,7 @@ export interface ExtendsChain {
   readonly packages: Set<string>;
 }
 
-/**
- * One cache input of an inferred target: a file glob, or the npm packages an
- * installed command line is versioned by.
- */
+/** Cache input: a file glob, or npm packages versioning it. */
 export type InferredInput = string | { externalDependencies: string[] };
 
 /** A target this plugin infers onto a project. */
@@ -97,7 +91,7 @@ export interface ToolInputsLogger {
   warn: (message: string) => void;
 }
 
-/** The workspace packages a command line reaches, and the names it could not. */
+/** Workspace packages reached by a command line, and unresolved names. */
 export interface WorkspacePackages {
   /** Real directories, the command line's own included. */
   readonly directories: Set<string>;

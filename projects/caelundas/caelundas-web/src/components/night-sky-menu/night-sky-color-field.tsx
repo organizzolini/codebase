@@ -8,8 +8,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The color a field picks, its value as `#rrggbb`, and where to send a picked
- * one.
+ * The color field's control, value as `#rrggbb`, and change handler.
  */
 export interface NightSkyColorFieldProperties {
   className?: string;

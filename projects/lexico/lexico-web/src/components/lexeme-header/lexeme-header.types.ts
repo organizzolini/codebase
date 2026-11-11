@@ -1,8 +1,6 @@
 // 🏷️ Types
 
-/**
- * A lexeme's inflection from the API. Which fields are filled depends on the part of speech.
- */
+/** A lexeme's inflection; filled fields depend on part of speech. */
 export interface LexemeInflection {
   adverbType?: null | string;
   case?: null | string;

@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * Two paths that bind to nothing, reported together.
- *
- * See the [limits guide](./README.md).
- */
+// See the [limits guide](./README.md).
+/** Two paths that bind to nothing, reported together. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

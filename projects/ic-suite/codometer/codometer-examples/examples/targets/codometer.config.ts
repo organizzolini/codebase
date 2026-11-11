@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * Every input field, over files the codebase input cannot see.
- *
- * See the [targets guide](./README.md).
- */
+// See the [targets guide](./README.md).
+/** Every input field, over files the codebase input cannot see. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

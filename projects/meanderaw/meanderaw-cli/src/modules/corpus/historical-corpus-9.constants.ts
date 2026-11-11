@@ -2,10 +2,7 @@
 
 import type { CorpusEntry } from "./corpus.types";
 
-/**
- * Part 9 of the historical corpus, one of the chunks it is split into by printed line count.
- * See `HISTORICAL_CORPUS`, and `documentation/adr/0013-hold-the-historical-corpus-as-a-test-set.md`.
- */
+/** Part 9 of the historical corpus, a test set. */
 // 🎯 Hexadecimal lattice Codes rather than words, so the dictionaries are
 // turned off across them — a run of hexadecimal digits occasionally spells one.
 /* cspell:disable */

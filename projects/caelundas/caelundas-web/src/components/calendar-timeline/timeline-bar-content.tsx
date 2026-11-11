@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The bar to draw, as the Gantt hands it to its event renderer.
+ * The bar to draw, from the Gantt's event renderer.
  */
 export interface TimelineBarContentProperties extends Pick<
   GanttRenderEventProps<TimelineBar>,

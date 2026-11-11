@@ -2,10 +2,7 @@
 
 import type { ReleaseArchiveTool } from "./release-archives.types";
 
-/**
- * Tools Linux installs from release archives, with the versions the cloud
- * devcontainer pins. A test fails if they drift.
- */
+/** Linux archive tools a test keeps level with the devcontainer. */
 export const RELEASE_ARCHIVE_TOOLS: readonly ReleaseArchiveTool[] = [
   {
     architectures: { arm64: "arm64", x64: "amd64" },

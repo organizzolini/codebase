@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * A value nothing can read, such as `"8 K"`. Refused rather than guessed at.
- *
- * See the [limits guide](./README.md).
- */
+// See the [limits guide](./README.md).
+/** A value nothing can read, such as `8 K`, is refused. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

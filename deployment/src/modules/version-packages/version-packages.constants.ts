@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * Versions the release group and writes changelogs, committing nothing.
- * `NX_DAEMON=false` keeps a stale daemon graph from the `.nxignore` addition.
- */
+/** Versions the release group, uncommitted; `NX_DAEMON=false` avoids stale graphs. */
 export const NX_RELEASE = [
   "NX_DAEMON=false",
   "pnpm",

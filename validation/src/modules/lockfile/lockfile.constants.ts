@@ -3,11 +3,7 @@
 /** The package manager whose answer this check is. */
 export const PACKAGE_MANAGER_BINARY = "pnpm";
 
-/**
- * The install that answers the question. `--frozen-lockfile` refuses rather
- * than rewriting; `--lockfile-only` leaves `node_modules` untouched for the
- * parallel hooks.
- */
+/** Runs `--frozen-lockfile`, refusing rather than rewriting. `--lockfile-only` spares `node_modules`. */
 export const FROZEN_INSTALL_ARGUMENTS = [
   "install",
   "--frozen-lockfile",
@@ -25,9 +21,6 @@ export const LOCKFILE_OUT_OF_SYNC_MESSAGES = [
   "pnpm output:",
 ];
 
-/**
- * Said when there is no pnpm to ask; the check then passes, since refusing
- * would block commits without checking.
- */
+/** Said when no pnpm is found; the check then passes. */
 export const PACKAGE_MANAGER_MISSING_MESSAGE =
   "⚠️  pnpm not found in PATH; skipping lockfile check";

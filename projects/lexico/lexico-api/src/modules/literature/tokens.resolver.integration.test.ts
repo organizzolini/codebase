@@ -23,7 +23,7 @@ import type { TokensArguments } from "./tokens-arguments.entities";
 import type { Connection } from "@codebase/interface";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
-/** A page of tokens, reduced to what a reader can observe of it. */
+/** A page of tokens, reduced to what a reader observes. */
 interface TokensPage {
   readonly data: string[];
   readonly endCursor: null | string;

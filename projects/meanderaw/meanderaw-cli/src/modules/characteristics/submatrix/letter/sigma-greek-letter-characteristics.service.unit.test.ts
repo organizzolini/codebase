@@ -7,10 +7,7 @@ import { SigmaGreekLetterCharacteristicsService } from "./sigma-greek-letter-cha
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the Σ (Greek sigma) as a Code holding one isolated copy.
- * Its diagonals run as orthogonal zig-zags.
- */
+/** Each distinct Σ orientation as a standalone Code; zig-zag diagonals. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x04y6310a5006900a310",

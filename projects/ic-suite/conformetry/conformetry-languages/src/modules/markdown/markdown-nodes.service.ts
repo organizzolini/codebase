@@ -7,12 +7,11 @@ import { SKIPPED_TYPES } from "./markdown.constants";
 import type { MarkdownNode } from "./markdown.types";
 
 /**
- * Decides whether two markdown nodes are "the same node".
+ * Decides whether two markdown nodes are the same node.
  *
- * Each node type has its own notion of identity: a heading is its depth plus
- * its text, a link is its URL plus its text, a table is its column count. This
- * is what lets a template require *a table with three columns* without
- * dictating its contents.
+ * Each node type has its own identity: a heading is its depth and text, a link
+ * its URL and text, a table its column count. So a template can require a table
+ * with three columns.
  */
 @Injectable()
 export class MarkdownNodesService {
@@ -22,11 +21,7 @@ export class MarkdownNodesService {
 
   // 🔐 Private Fields
 
-  /**
-   * How two nodes of a given type are judged the same node.
-   *
-   * Types with no special rule fall through to a text comparison.
-   */
+  /** Identity rule per node type. Types without one compare text. */
   private readonly matchersByType: Record<
     string,
     (templateNode: MarkdownNode, instanceNode: MarkdownNode) => boolean

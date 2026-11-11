@@ -1,10 +1,7 @@
 import type * as ChildProcess from "node:child_process";
 import type { Mock } from "vitest";
 
-/**
- * `node:child_process` with each function that starts a process replaced by
- * a spy that calls through to it.
- */
+/** `node:child_process` with process starters replaced by pass-through spies. */
 export type ChildProcessMock = Omit<typeof ChildProcess, ProcessStarter> & {
   readonly [Name in ProcessStarter]: Mock<(typeof ChildProcess)[Name]>;
 };

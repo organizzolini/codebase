@@ -8,11 +8,7 @@ export interface CalculateScoreArguments {
   readonly totalWeight: number;
 }
 
-/**
- * Anything that carries a weight.
- *
- * Narrower than `ConformetryDifference`, so a package need not build messages just to count.
- */
+/** Anything carrying a weight, with no message needed. */
 export interface WeightedFinding {
   readonly weight?: number;
 }

@@ -3,7 +3,7 @@ import type { EventFilterQuery } from "../../components/calendar-filters/event-f
 // 🏷️ Types
 
 /**
- * The filter tree the builder edits, with what to do with an edit.
+ * The filter tree, and its edit and preset handlers.
  */
 export interface UseFilterQueryResult {
   /**

@@ -29,10 +29,10 @@ class Consumer {
   constructor(readonly utilities: LetterUtilitiesService) {}
 }
 
-/** An L: a stem down three points with a foot east, 2 columns by 3 rows, unchanged by no flip or turn. */
+/** L with a three-point stem and east foot; no symmetry. */
 const L: readonly string[] = ["4.", "c.", "a1"];
 
-/** A hook turning south at its east end, 3 columns by 2 rows, so the laws are not tuned to one shape. */
+/** Hook turning south; laws are not tuned to one shape. */
 const HOOK: readonly string[] = ["235", "..8"];
 
 /** The orientation named `name`, or undefined — which no expected template or window equals — when the enumeration lacks it. */
@@ -43,7 +43,7 @@ function named(
   return orientations.find((entry) => entry.name === name);
 }
 
-/** The L as a Latin letter, keyed as the real L so its keys are registered ones. */
+/** Real Latin L, keyed so its keys are registered. */
 const L_LETTER: LetterDefinition = {
   aliases: {
     Southeast: "the hangul ㄴ (nieun)",

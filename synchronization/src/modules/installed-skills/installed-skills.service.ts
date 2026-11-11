@@ -21,13 +21,11 @@ import type {
 } from "./installed-skills.types";
 
 /**
- * Compares the skills `skills-lock.json` declares against the ones on disk. A
- * skill is installed only when its `SKILL.md` exists, since an interrupted
- * restore can leave an empty folder.
+ * Compares the skills `skills-lock.json` declares against the ones on disk.
+ * A skill is installed only when its `SKILL.md` exists, since a restore can leave an empty folder.
  *
- * A restore must leave tracked files alone: `skills experimental_install`
- * rewrites the lockfile and every skill folder, which dirties every CI job.
- * Moving pins is `skills update`, never a restore.
+ * A restore must leave tracked files alone: `skills experimental_install` rewrites every skill folder.
+ * Moving pins is `skills update`.
  */
 @Injectable()
 export class InstalledSkillsService {

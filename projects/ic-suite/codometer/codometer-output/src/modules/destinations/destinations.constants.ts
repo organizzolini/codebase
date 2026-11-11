@@ -7,11 +7,7 @@ import type { ResolvedMarkdownDestination } from "./destinations.types";
 
 // ♟️ Constants
 
-/**
- * The markdown destination the console falls back to.
- *
- * Renders the badge block a configuration would write, identically.
- */
+/** Console fallback markdown destination, rendering the same badges. */
 export const DEFAULT_MARKDOWN_DESTINATION: ResolvedMarkdownDestination = {
   custom: [],
   description: undefined,

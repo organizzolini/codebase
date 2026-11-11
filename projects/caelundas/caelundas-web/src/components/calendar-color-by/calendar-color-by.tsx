@@ -16,8 +16,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The tag roots the data has, what the events are colored by, and where to
- * send another.
+ * The color level, the data's facets, and the change handler.
  */
 export interface CalendarColorByProperties {
   className?: string;

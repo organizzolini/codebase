@@ -19,10 +19,9 @@ import type { GlossaryDifference } from "@coinagerie/core";
 /**
  * Checks and writes every configured glossary destination.
  *
- * Every destination is read and parsed before any is written, so one that
- * cannot be parsed stops the run with every file untouched. Destinations are
- * independent: each is compared with the vocabulary alone, and no definition
- * is ever copied from one to another.
+ * Every destination is parsed before any is written, so one unreadable file
+ * leaves all untouched. Destinations are independent; no definition is copied
+ * between them.
  */
 @Injectable()
 export class DeliveryService {
@@ -38,9 +37,7 @@ export class DeliveryService {
 
   // 🔐 Private Fields
 
-  /**
-   * Each destination type's format. A record, so a new destination type fails to compile until its format is registered.
-   */
+  /** Format per destination type, so new types must register one. */
   private readonly handlers: Readonly<
     Record<ResolvedCoinagerieOutput["type"], GlossaryFormatHandler>
   >;

@@ -43,10 +43,7 @@ function moduleOptions(
 
 // 🔧 Configuration
 
-/**
- * The eleven shapes the mosaic corpus commits, with the tile counts each holds.
- * Written out, not derived, so a changed rule fails.
- */
+/** Expected tile counts for eleven shapes, not derived. */
 const ADMITTED_SHAPES: readonly {
   readonly columns: number;
   readonly matchings: number;

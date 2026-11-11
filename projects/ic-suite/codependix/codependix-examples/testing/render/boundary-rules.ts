@@ -7,10 +7,7 @@ import type { CodependixBoundaryRule } from "@codependix/configuration";
 
 // ♟️ Constants
 
-/**
- * A four-project graph with an edge every seeded rule shape can judge. Written
- * directly, since the judging is the subject.
- */
+/** A four-project graph with an edge every rule shape judges. */
 const ATLAS_PROJECTS: BoundaryGraph = {
   edges: [
     { implicit: false, source: "atlas-application", target: "atlas-service" },

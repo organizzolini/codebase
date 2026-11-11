@@ -82,6 +82,6 @@ export interface CalendarSearch {
 }
 
 /**
- * What a sky key of the link holds, as the router read it.
+ * A sky key's value as the router read it.
  */
 export type SkySearchValue = boolean | number | string;

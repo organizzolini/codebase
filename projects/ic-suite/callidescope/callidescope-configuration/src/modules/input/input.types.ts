@@ -2,9 +2,7 @@
 
 import type { PromptObject } from "prompts";
 
-/**
- * The `--format` option every callidescope command shares. Held wide, so the resolver refuses unknown values.
- */
+/** Shared `--format` option. Held wide, so the resolver refuses unknowns. */
 export interface CallidescopeFormatOptions {
   readonly format?: string | undefined;
 }

@@ -11,10 +11,7 @@ import type {
 
 // 🏷️ Types
 
-/**
- * A whole example workspace, as data. Handed to the builders directly because
- * `readProjectGraph` resolves from the working directory. See this package's README.
- */
+/** A whole example workspace as data, not read from the cwd. */
 export interface ExampleWorkspace {
   readonly dependencies: ExampleDependency[];
   readonly projects: ExampleProject[];
@@ -45,10 +42,7 @@ const WORKSPACE_ROOT = "/atlas";
 /** The project every Neighborhood example is centered on. */
 export const SUBJECT_PROJECT_NAME = "atlas-service";
 
-/**
- * The example workspace's projects, root project included. `readProjects`
- * drops the root, so its absence from every diagram is something the examples show.
- */
+/** The example projects; `readProjects` drops the root, which diagrams omit. */
 const ATLAS_PROJECTS: ExampleProject[] = [
   { name: "atlas-application", root: "applications/atlas-application" },
   { name: "atlas-core", root: "packages/atlas-core" },
@@ -109,10 +103,7 @@ const ATLAS_UNCONNECTED: ExampleWorkspace = {
   projects: ATLAS_PROJECTS,
 };
 
-/**
- * The chain after an edge is added elsewhere. `atlas-core` is untouched, yet
- * its Neighborhood moves.
- */
+/** Chain after an edge elsewhere; untouched `atlas-core` still moves. */
 const ATLAS_CHAIN_AFTER_DRIFT: ExampleWorkspace = {
   dependencies: [
     { source: "atlas-application", target: "atlas-core", type: "static" },

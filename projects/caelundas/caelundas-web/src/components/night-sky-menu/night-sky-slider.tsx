@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The number a slider sets, its value, and where to send a moved one.
+ * The slider's control, value, and change handler.
  */
 export interface NightSkySliderProperties {
   className?: string;

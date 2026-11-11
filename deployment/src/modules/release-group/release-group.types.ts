@@ -18,7 +18,7 @@ export interface ParallelOutcome {
   succeeded: boolean;
 }
 
-/** The part of `nx graph --file` output each member's directory is read from. */
+/** Part of `nx graph --file` output giving each member's directory. */
 export interface ProjectGraphFile {
   graph: {
     nodes: Record<string, undefined | { data: { root?: string } }>;

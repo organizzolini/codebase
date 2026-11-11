@@ -8,14 +8,9 @@ import { CaelundasDatabaseService } from "./caelundas-database.service";
 import { CAELUNDAS_DATABASE_ENTITIES } from "./data-source.constants";
 
 /**
- * Connects an application to `caelundas_development`.`caelundas` as
- * `caelundas_username`, the way every database-backed project does, through
- * the shared `DatabaseModule.forRoot` and its naming strategy, with every
- * caelundas entity registered. Never synchronizes and never runs migrations
- * on start: they run on their own, with `nx run caelundas-db:migration:run`.
+ * Connects an application to `caelundas_development`.`caelundas` as `caelundas_username`, through the shared `DatabaseModule.forRoot` and its naming strategy, with every caelundas entity registered. Never synchronizes or runs migrations on start: `nx run caelundas-db:migration:run` does that.
  *
- * Reads `CAELUNDAS_POSTGRES_*` through `ConfigService`, so the importing
- * application's `ConfigModule` must be global.
+ * Reads `CAELUNDAS_POSTGRES_*` via `ConfigService`, so the importing app's `ConfigModule` must be global.
  */
 @Module({
   controllers: [],

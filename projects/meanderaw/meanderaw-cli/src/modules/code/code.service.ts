@@ -17,11 +17,9 @@ import type { Code, CodeObject } from "./code.types";
  * Owns a meander's Code: reading one, a point's direction bits, spelling a
  * tile into one, and rotating its phase.
  *
- * **A Code is read in place.** Each bit is decoded from its own digit, since
- * a Code spells all four bits per point.
+ * **A Code is read in place.** Each bit is decoded from its own digit.
  *
- * **The spelling is redundant.** Each edge is written at both ends, so every
- * character names one point.
+ * **The spelling is redundant.** Each edge is written at both ends.
  */
 @Injectable()
 export class CodeService {

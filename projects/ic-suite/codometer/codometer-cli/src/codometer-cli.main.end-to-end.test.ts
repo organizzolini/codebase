@@ -19,11 +19,7 @@ import type { CodometerReport } from "@codometer/core";
 
 const COMMAND_PATH = path.resolve(import.meta.dirname, "codometer-cli.main.ts");
 
-/**
- * Fixture tree a spawned run measures, kept inside the workspace.
- *
- * `@swc-node/register` resolves from the spawn's `cwd`, so a tree outside it fails.
- */
+/** Spawned-run fixture; swc resolves only from inside the workspace. */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
 describe("main end-to-end suite", () => {

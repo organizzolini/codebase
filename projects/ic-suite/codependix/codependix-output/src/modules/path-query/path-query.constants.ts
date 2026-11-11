@@ -8,7 +8,7 @@ import {
 /** Arrow connecting successive nodes in a Markdown path. */
 export const PATH_ARROW = " → ";
 
-/** What `--format mermaid` prints: each active graph type rendered as a mermaid flowchart. */
+/** What `--format mermaid` prints: each active graph as a flowchart. */
 export const FORMAT_MERMAID = "mermaid";
 
 /** Formats accepted by the path command's `--format` flag. */

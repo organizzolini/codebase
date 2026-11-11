@@ -12,9 +12,8 @@ import { LanguagesService } from "./languages.service";
 /**
  * The one module a host imports to get every Language.
  *
- * Wiring the Languages individually is still possible — each has its own
- * module — but a host almost always wants all of them, because the Fallback
- * makes the text Language a floor under every run rather than an option.
+ * Each Language also has its own module. Hosts usually want all of them, since
+ * the Fallback makes the text Language a floor under every run.
  */
 @Module({
   controllers: [],

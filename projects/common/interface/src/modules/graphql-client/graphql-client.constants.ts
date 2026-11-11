@@ -1,22 +1,13 @@
-/**
- * How each custom scalar reaches a web client: the JSON string it travels as,
- * not the server's `Date` or id class.
- */
+/** How custom scalars reach a web client: JSON strings, not classes. */
 export const GRAPHQL_CODEGEN_SCALARS = {
   DateTime: { input: "string", output: "string" },
   ID: { input: "string", output: "string" },
 } as const;
 
-/**
- * Where a client's generated artifacts land, relative to the project that
- * runs code generation.
- */
+/** Where generated client artifacts land, relative to the codegen project. */
 export const GRAPHQL_CODEGEN_GENERATED_DIRECTORY = "./src/graphql/generated";
 
-/**
- * Where a client keeps the operations it generates types for, relative to the
- * project that runs code generation.
- */
+/** Where client operations live, relative to the codegen project. */
 export const GRAPHQL_CODEGEN_OPERATIONS = [
   "src/graphql/operations/**/*.graphql",
 ];

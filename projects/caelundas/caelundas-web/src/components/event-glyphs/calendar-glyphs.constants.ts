@@ -1,5 +1,5 @@
 /**
- * Starts a word of two letters or more, so one-letter aspect symbols such as N are not words.
+ * Two-or-more-letter words, skipping one-letter aspect symbols.
  */
 export const WORD_START = /(?<=^|\s)\p{L}{2,}/u;
 

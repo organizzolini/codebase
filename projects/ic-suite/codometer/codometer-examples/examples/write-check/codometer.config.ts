@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * Declares both destinations and one breaching limit, for the `--output-*` and `--check` matrix.
- *
- * See the [output guide](./README.md).
- */
+// See the [output guide](./README.md).
+/** Both destinations and one breaching limit, for the flag matrix. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   limits: [{ label: "Lines", metric: "codebase.linesOfCode", value: 20 }],

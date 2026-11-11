@@ -46,12 +46,12 @@ export const CALENDAR_VIEW_PERIODS: Readonly<
 export const AGENDA_DAY_COUNT = 30;
 
 /**
- * The most days the agenda lists at once, however far it is scrolled.
+ * The most days the agenda lists at once.
  */
 export const MAXIMUM_AGENDA_DAYS = 366;
 
 /**
- * The spans the timeline shows at once, from the finest to the coarsest.
+ * Timeline spans, finest to coarsest.
  */
 export const TIMELINE_SCALES = [
   "day",

@@ -79,7 +79,7 @@ export class Lexeme extends PostgresqlDeletableEntity {
   })
   translations?: null | Translation[];
 
-  /** Junction rows linking this lexeme to every word string that can represent it. */
+  /** Junction rows linking this lexeme to its word strings. */
   @OneToMany("WordLexeme", "lexeme", { onDelete: "CASCADE" })
   wordLexemes?: WordLexeme[];
 }

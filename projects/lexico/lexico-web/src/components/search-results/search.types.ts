@@ -43,10 +43,7 @@ export interface SearchParameters {
   query?: string | undefined;
 }
 
-/**
- * One form of a lexeme as the GraphQL API returns it: the grammar of the form
- * beside its kind.
- */
+/** A lexeme form as the GraphQL API returns it. */
 interface FormNode {
   form: Omit<LexemeFormRow, "id" | "kind" | "word"> & { __typename: string };
   id: string;

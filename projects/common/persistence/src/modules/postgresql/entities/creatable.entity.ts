@@ -10,10 +10,7 @@ export abstract class PostgresqlCreatableEntity extends PostgresqlIdentifiableEn
   })
   createdAt!: Date;
 
-  /**
-   * Set by the application, and left empty by a writer with no user
-   * identity, such as a command-line application.
-   */
+  /** Set by the app; empty for a user-less CLI. */
   @Column("uuid", {
     comment: "Identifier of the user or process that created the record",
     nullable: true,

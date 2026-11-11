@@ -4,9 +4,9 @@ import ts from "typescript";
 /**
  * Builds compiler hosts that share parsed source files across programs.
  *
- * Every program pulls in the same lib and workspace files, so without sharing one
- * run re-reads them once per project. The cache key must name the script target,
- * or a file parsed at one target is silently reused at another.
+ * Programs share lib and workspace files, avoiding re-reads per project. The
+ * cache key must name the script target, or a file parsed for one target is
+ * silently reused for another.
  */
 @Injectable()
 export class CompilerHostService {
@@ -16,10 +16,7 @@ export class CompilerHostService {
 
   // 🔐 Private Fields
 
-  /**
-   * Answers file-system questions module resolution asks, shared by every program
-   * of a run and valid until `clear`.
-   */
+  /** Module-resolution file answers, shared by a run until `clear`. */
   private readonly directoryExistsCache = new Map<
     string,
     { answer: boolean }
@@ -36,10 +33,7 @@ export class CompilerHostService {
     ts.ModuleResolutionCache
   >();
   private readonly realPathCache = new Map<string, { answer: string }>();
-  /**
-   * Keyed on file name and script target together, since one file parses to
-   * different trees per target.
-   */
+  /** Keyed by file and target: one file parses differently per target. */
   private readonly sourceFileCache = new Map<string, ts.SourceFile>();
 
   // 🔑 Public Fields

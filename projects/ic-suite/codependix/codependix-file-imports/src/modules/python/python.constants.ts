@@ -9,7 +9,7 @@ export const PYTHON_FILE_EXTENSION = ".py";
 /** Header declaring the mermaid diagram type and its default layout direction. */
 export const PYTHON_IMPORT_GRAPH_MERMAID_HEADER = "graph LR";
 
-/** Rendered in place of a diagram for a project with no internal file imports. */
+/** Diagram stand-in for a project with no internal file imports. */
 export const PYTHON_IMPORT_GRAPH_UNCONNECTED =
   "_This project has no internal file imports._";
 
@@ -24,5 +24,5 @@ export const PYTHON_PROJECT_EXCLUDED_DIRECTORY_NAMES = new Set([
   "node_modules",
 ]);
 
-/** Nx tag a project must carry to be discovered as a Python project. */
+/** Nx tag that marks a project as Python. */
 export const PYTHON_PROJECT_TAG = "language:python";

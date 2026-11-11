@@ -5,10 +5,7 @@ import { SvgService } from "./svg.service";
 /**
  * Wires up the service that turns finished path data into an SVG document.
  *
- * It used to wire a second one beside it, deciding the filename a set of
- * generation parameters was written under. That service retired with the
- * `output/` tree of SVG files it named paths in: a meander is a database
- * row now, addressed by its lattice address rather than by a path.
+ * A meander is a database row now, so no files are named or written here.
  */
 @Module({
   controllers: [],

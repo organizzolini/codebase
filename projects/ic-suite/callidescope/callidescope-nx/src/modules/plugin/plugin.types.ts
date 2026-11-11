@@ -65,7 +65,7 @@ export interface ResolveTraceScopeArguments {
   readonly withDependencies: boolean;
 }
 
-/** The trace's arguments without `format`, since a gate's output is the findings that decided its exit code. */
+/** Trace arguments without `format`: a gate prints its findings. */
 export type RunGateArguments = Omit<RunTraceArguments, "format">;
 
 /** Arguments for gating several tasks from one trace. */
@@ -76,7 +76,7 @@ export interface RunGateBatchArguments {
   readonly workspaceRoot: string;
 }
 
-/** One task of a gate batch: the projects it reads and the ones it answers for. */
+/** Gate batch task: projects read, and projects answered for. */
 export interface RunGateBatchTask {
   /** Workspace-relative directories the task's trace reads. */
   readonly directories: readonly string[];
@@ -104,10 +104,7 @@ export interface RunTraceResult {
   readonly report: string;
 }
 
-/**
- * What one predicate decided about a traced result. `reason` explains a verdict the findings
- * cannot, such as a run that read nothing.
- */
+/** One predicate's decision. `reason` explains what findings cannot. */
 export interface RunVerdict {
   readonly findings: OwnedFindings;
   /** Whether every rule both targets share was cleared. */

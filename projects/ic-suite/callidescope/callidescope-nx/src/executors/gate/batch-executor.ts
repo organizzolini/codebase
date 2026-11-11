@@ -15,7 +15,7 @@ import type {
 } from "./executor.types";
 import type { ExecutorContext } from "@nx/devkit";
 
-/** What resolving one task's scope came to: a task to run, or its failure. */
+/** One task's scope: a task to run, or a failure. */
 type ResolvedTask =
   | { configurationPath: string; task: RunGateBatchTask; taskId: string }
   | { failure: GateBatchTaskResult; taskId: string };

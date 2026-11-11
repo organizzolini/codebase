@@ -1,7 +1,4 @@
-/**
- * Branch name validation: `<type>/<scope>-<description>`, built from the types and scopes in `conventional.config.cjs`.
- * Run by the `pre-push` hook.
- */
+/** Branch name rules from `conventional.config.cjs`, checked on pre-push. */
 const { scopes, types } = require("./configuration/conventional.config.cjs");
 
 const specialBranches = ["main"];

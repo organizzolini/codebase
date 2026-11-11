@@ -34,7 +34,7 @@ import type {
 import type { FixtureEvent, FixtureTag } from "./calendar-fixture";
 
 /**
- * The API a test serves, with what it was asked and a way to break it.
+ * A test's mock API, its requests, and a failure switch.
  */
 export interface CalendarApi {
   /**
@@ -115,10 +115,7 @@ export function readServedApi(): CalendarApi {
 }
 
 /**
- * Serves the calendar API for the test that calls it, over the fixture's
- * events and tags unless it hands others. It answers the way the real API
- * does for what the web sends: the period, the tag and text rules of a
- * filter, the grouping and the dataset, and nothing the web does not read.
+ * Serves the calendar API over fixture data, or the options given.
  */
 export function serveCalendarApi(
   options: CalendarApiOptions = {},
@@ -448,8 +445,7 @@ function listEventTags(event: FixtureEvent, tree: Tree): Set<string> {
 }
 
 /**
- * Whether an event meets a filter's tag and text rules; a rule on another
- * field keeps every event, as the mock reads none of them.
+ * Whether an event meets a filter's tag and text rules; other fields keep every event.
  */
 function matches(
   event: FixtureEvent,

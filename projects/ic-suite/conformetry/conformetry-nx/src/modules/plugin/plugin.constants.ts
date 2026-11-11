@@ -1,31 +1,19 @@
 // ♟️ Constants
 
-/**
- * Glob matching the configuration and every `project.json`. A `project.json`
- * glob alone leaves the daemon stale after a configuration edit.
- */
+/** Glob for configuration and `project.json` files; the daemon needs both. */
 export const PROJECT_CONFIGURATION_GLOB =
   "**/{project.json,conformetry.config.*}";
 
 /** Basename that marks a matched file as an actual project description. */
 export const PROJECT_CONFIGURATION_FILENAME = "project.json";
 
-/**
- * Global key for the cached application context. A module-level cache would
- * split in two when Nx's plugin isolation reloads the module.
- */
+/** `globalThis` key for the cached context, surviving plugin isolation reloads. */
 export const PLUGIN_CONTEXT_GLOBAL_KEY = "__conformetryPluginContext";
 
-/**
- * Root of the workspace-level project, skipped during inference. Inferring a
- * target there would duplicate every project's work under one uncacheable task.
- */
+/** Workspace root project, skipped to avoid duplicating all work. */
 export const WORKSPACE_PROJECT_ROOT = ".";
 
-/**
- * Source of the program that hashes template folders: each folder recursively,
- * in name order, folded into one digest. A missing folder contributes nothing.
- */
+/** Hashes template folders recursively, in name order, into one digest. */
 export const TEMPLATE_HASH_SOURCE = String.raw`
 const crypto = require("crypto");
 const fs = require("fs");

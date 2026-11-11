@@ -13,10 +13,8 @@ import type { CodeEdge } from "../../connectivity/connectivity.types";
 import type { TurnTraceMetrics } from "./reverses-at-its-tightest-turn.types";
 
 /**
- * Whether one repeat's ink reverses at its tightest possible turn: a turn one lattice
- * step after the walk's start or its previous turn, the port of the legacy `hasTightU`
- * check. Two turns of opposite hands one step apart still count. Always `false` when
- * any point carries three or four arms.
+ * Whether one repeat's ink reverses at its tightest turn, a turn one lattice step after the
+ * walk's start or its previous turn. Always `false` when any point has three or four arms.
  */
 @Injectable()
 export class ReversesAtItsTightestTurnCharacteristicService implements CharacteristicEvaluator<boolean> {

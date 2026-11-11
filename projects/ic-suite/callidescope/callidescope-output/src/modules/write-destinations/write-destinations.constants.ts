@@ -2,7 +2,7 @@
 
 import type { ResolvedCallidescopeWriteConfiguration } from "@callidescope/configuration";
 
-/** How each anchored destination draws its stacks. One list, so `mermaid` can never start printing trees by accident. */
+/** How each anchored destination draws stacks. Keeps `mermaid` from printing trees. */
 export const MARKDOWN_DESTINATION_RENDERINGS = [
   ["markdown", "tree"],
   ["mermaid", "diagram"],

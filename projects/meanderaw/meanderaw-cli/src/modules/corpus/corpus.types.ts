@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * One historical drawing, kept as the Code that names it. See
- * `HISTORICAL_CORPUS` for the set.
- */
+/** One historical drawing, named by its Code. */
 export interface CorpusEntry {
   readonly code: string;
   readonly columns: number;

@@ -16,7 +16,7 @@ import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 import type { EventEmitter } from "node:events";
 import type * as NodeUrl from "node:url";
 
-/** How a faked thread answers one batch, and every thread spawned so far. */
+/** A fake thread's answer, and every thread spawned. */
 const { threads } = vi.hoisted(() => {
   const state: {
     compiled: boolean;
@@ -67,7 +67,7 @@ vi.mock("node:url", async (importOriginal) => {
   };
 });
 
-/** What the pool is built with when it runs in-process: no worker threads, and mocks for the worker and the enumeration. */
+/** Pool options for in-process drawing: no threads, mocked collaborators. */
 const MODULE_OPTIONS: TestingModuleOptions = {
   mocks: [DrawWorkerService, TileEnumerationService],
   providers: [{ provide: ConfigService, useValue: { get: () => 0 } }],

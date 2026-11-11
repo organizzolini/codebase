@@ -1,8 +1,7 @@
 // ♟️ Constants
 
 /**
- * The icon file of each symbol an ingested event's name is written with,
- * keyed by its code point alone, without a variation selector.
+ * Icon file for each symbol, keyed without variation selectors.
  */
 export const FILE_BY_SYMBOL: Readonly<Record<string, string>> = {
   // Bodies
@@ -113,7 +112,7 @@ export const FILE_BY_SYMBOL: Readonly<Record<string, string>> = {
 };
 
 /**
- * Symbols drawn as more than one icon: the moon at its nearest and farthest, and the eclipse dragon, the lunar nodes.
+ * Symbols drawn as two icons: moon extremes and the dragon.
  */
 export const FILES_BY_COMPOSITE_SYMBOL: Readonly<
   Record<string, readonly string[]>
@@ -124,8 +123,7 @@ export const FILES_BY_COMPOSITE_SYMBOL: Readonly<
 };
 
 /**
- * The icons of a decan's number, which an ingress into the decan writes as
- * a keycap: the digit, then the keycap.
+ * Decan icons, keyed by the keycap digit an ingress writes.
  */
 export const FILE_BY_DECAN: Readonly<Record<string, string>> = {
   "1": "ingress-first-decan-icon.svg",
@@ -134,7 +132,7 @@ export const FILE_BY_DECAN: Readonly<Record<string, string>> = {
 };
 
 /**
- * The icon of an event that is only its symbol, by name, where that symbol is shared with another event.
+ * Icons keyed by event name, where a symbol is shared.
  */
 export const FILE_BY_EVENT_NAME: Readonly<Record<string, string>> = {
   "Astronomical Dawn": "astronomical-dawn-icon.svg",
@@ -164,7 +162,7 @@ export const FILE_BY_EVENT_NAME: Readonly<Record<string, string>> = {
 export const KEYCAP = "\u20E3";
 
 /**
- * Icons of the arrows opening an aspect's name, forming and dissolving; elsewhere the arrows mean east and west.
+ * Arrow icons opening an aspect name: forming or dissolving.
  */
 export const FILE_BY_LEADING_SYMBOL: Readonly<Record<string, string>> = {
   "➡": "waxing-icon.png",
@@ -185,7 +183,6 @@ export const URL_BY_FILE: Readonly<Record<string, string>> = Object.fromEntries(
 );
 
 /**
- * The variation selectors that ask for a text or an emoji look; an icon is
- * the same for either.
+ * Variation selectors for text or emoji looks; icons ignore them.
  */
 export const VARIATION_SELECTORS = new Set(["\uFE0E", "\uFE0F"]);

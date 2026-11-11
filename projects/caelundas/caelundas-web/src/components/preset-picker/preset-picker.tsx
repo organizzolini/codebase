@@ -18,8 +18,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The presets of filters to offer, the filter tree the calendar holds,
- * and where to send a preset picked.
+ * The presets offered, the current filter tree, and the selection handler.
  */
 export interface PresetPickerProperties {
   className?: string;
@@ -31,10 +30,8 @@ export interface PresetPickerProperties {
 // 🧩 Component
 
 /**
- * Renders the preset the filters below come from, as a dropdown to pick
- * another from. The preset whose filters
- * the tree holds is the one shown, "All events" when the tree filters
- * nothing, and anything else as custom, an edit made in the builder.
+ * Renders a dropdown of presets, showing the one the filter tree matches, else
+ * All events, or Custom for an edit.
  */
 export function PresetPicker(
   properties: Readonly<PresetPickerProperties>,

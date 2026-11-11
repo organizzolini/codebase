@@ -26,7 +26,7 @@ import { UpgradeDependenciesService } from "./upgrade-dependencies.service";
 import type { Command } from "../process-runner/process-runner.types";
 import type { UpgradeStep } from "./upgrade-dependencies.types";
 
-/** A command that runs some JavaScript, which is how a test writes a file. */
+/** A command running JavaScript, which writes a test file. */
 const node = (code: string): Command => ["node", "-e", code];
 
 /** A command that writes a file. */
@@ -35,7 +35,7 @@ const write = (file: string, text: string): Command =>
     `require("fs").writeFileSync(${JSON.stringify(file)}, ${JSON.stringify(text)})`,
   );
 
-/** Throws whatever it is given, which is how a test throws what is not an error. */
+/** Throws whatever it is given, even a non-Error. */
 const fail = (value: unknown): never => {
   throw value;
 };

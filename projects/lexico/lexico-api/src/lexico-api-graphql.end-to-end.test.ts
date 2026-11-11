@@ -49,7 +49,7 @@ const AUDIT_FIELDS = [
   "updatedBy",
 ] as const;
 
-/** The rows the suite seeds, by what each query looks them up with. */
+/** Seeded rows, by the key queries look them up with. */
 interface Seeded {
   readonly lexeme: Lexeme;
 }

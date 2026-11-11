@@ -34,9 +34,7 @@ vi.mock("node:fs/promises", () => ({
   }),
 }));
 
-/**
- * How many historical corpus entries are preserved as hardcoded rows. Written down so drift is caught.
- */
+/** Historical corpus entries kept as hardcoded rows, to catch drift. */
 const HISTORICAL_CORPUS_PRESERVED = 1026;
 
 /** Starts a fresh draw run over an emptied `meanders` table, with `--code` and logging mocked out. */

@@ -1,6 +1,6 @@
 import type { CallidescopeConfiguration } from "@callidescope/configuration";
 
-/** Fixture trace settings: tool defaults, so fixtures produce findings. Not named `callidescope.config.ts`, or discovery reads it as a project file. */
+/** Fixture trace settings. Not named `callidescope.config.ts`, or discovery reads it. */
 const callidescopeConfiguration: CallidescopeConfiguration = {
   /**
    * The workspace configuration project is not a project configuration.

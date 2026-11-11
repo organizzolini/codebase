@@ -12,8 +12,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The constellations to pick from, the words the link holds, and where to
- * send a new choice.
+ * The constellations, the link's words, and the change handler.
  */
 export interface NightSkyConstellationPickerProperties {
   className?: string;

@@ -11,10 +11,7 @@ export interface TemporaryWorkspace {
   root: string;
 }
 
-/**
- * Inside the project, never the OS temp directory: a child spawned from there
- * cannot resolve the loaders on Linux.
- */
+/** Inside the project: Linux children cannot resolve loaders from OS temp. */
 const TEMPORARY_ROOT = path.resolve(
   import.meta.dirname,
   "../node_modules/.installation-tests",

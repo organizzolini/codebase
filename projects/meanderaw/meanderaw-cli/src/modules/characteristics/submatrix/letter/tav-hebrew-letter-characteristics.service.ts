@@ -8,15 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the ת (Hebrew tav) glyph — a
- * unit roof on two unit legs, the west leg kicking a unit foot out to the west
- * — one per corner and clockwise rotation, each counting the base template
- * drawn that way. The base faces Southwest, drawn:
- *
- * ```text
- *  ┌┐
- * ╶┘╵
- * ```
+ * Provides the sixteen orientation evaluators of the ת glyph: a unit roof on two unit legs, the
+ * west leg kicking a unit foot out to the west. One per corner and clockwise rotation, each
+ * counting the base template drawn that way. The base faces Southwest.
  */
 @Injectable()
 export class TavHebrewLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -38,7 +32,7 @@ export class TavHebrewLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = [".65", "298"];
 
   // 🔑 Public Fields

@@ -10,10 +10,7 @@ export interface ColorSegment {
   toColor: readonly [number, number, number];
 }
 
-/**
- * One segment of a constellation's figure, between two stars, with the
- * constellation it belongs to.
- */
+/** One segment of a constellation's figure, between two stars. */
 export interface ConstellationSegment {
   from: SkyPoint;
   /** The constellation's Latin name, such as `Ursa Major`. */
@@ -35,9 +32,7 @@ export interface EclipticStyle {
   eclipticWidth: number;
 }
 
-/**
- * A field of view after clamping it so the pole stays above the top edge.
- */
+/** A field of view, clamped to keep the pole visible. */
 export interface FieldOfView {
   clamped: boolean;
   degrees: number;
@@ -72,10 +67,7 @@ export interface NightSky {
   svg: string;
 }
 
-/**
- * What the database holds for the night sky: its stars, brightest first, and
- * every constellation's figure as segments.
- */
+/** Night sky stars, brightest first, and constellation segments. */
 export interface NightSkyCatalog {
   segments: readonly ConstellationSegment[];
   stars: readonly StarRow[];
@@ -156,9 +148,7 @@ export interface NightSkyOptions {
   width: number;
 }
 
-/**
- * A `nightSky` query's input with defaults applied and values checked, plus the observer's longitude.
- */
+/** Parsed query input with defaults applied, plus longitude. */
 export type ParsedNightSkyInput = Omit<
   ResolvedNightSkyOptions,
   "constellationSegments" | "localSiderealDegrees" | "stars"
@@ -168,9 +158,7 @@ export type ParsedNightSkyInput = Omit<
   time: Date;
 };
 
-/**
- * A point of the sky projected about the pole, in the rotating group's frame.
- */
+/** A point projected about the pole, in the rotating frame. */
 export interface ProjectedPoint {
   /** Distance from the pole, which says whether the window can show it. */
   radius: number;
@@ -200,9 +188,7 @@ export interface SelectedStars {
   rendered: readonly RenderedStar[];
 }
 
-/**
- * Where the pole sits and how far each ring of stars is from it.
- */
+/** Where the pole sits, and each star ring's radius. */
 export interface SkyGeometry {
   fieldOfView: FieldOfView;
   innerRadius: number;
@@ -212,23 +198,16 @@ export interface SkyGeometry {
   scale: number;
 }
 
-/**
- * A point of the sky: right ascension in hours, then declination in degrees.
- */
+/** A sky point: right ascension hours, then declination degrees. */
 export type SkyPoint = readonly [
   rightAscensionHours: number,
   declinationDegrees: number,
 ];
 
-/**
- * A direction in the sky as a vector from the Earth's center, any length.
- */
+/** A sky direction as a vector from Earth's center. */
 export type SkyVector = readonly [x: number, y: number, z: number];
 
-/**
- * One catalog row: right ascension in hours, declination in degrees, apparent
- * magnitude, then the B−V color index.
- */
+/** One catalog star: right ascension, declination, magnitude, color index. */
 export type StarRow = readonly [
   rightAscensionHours: number,
   declinationDegrees: number,
@@ -236,9 +215,7 @@ export type StarRow = readonly [
   colorIndex: number,
 ];
 
-/**
- * The SVG frame: its view box, how it fits, the ground and the overlay.
- */
+/** The SVG frame: view box, fit, ground and overlay. */
 export interface Viewport {
   aspectRatio: string;
   ground: string;

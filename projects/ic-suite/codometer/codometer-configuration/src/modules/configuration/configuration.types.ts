@@ -9,16 +9,10 @@ import type {
   CodometerSymbolModifier,
 } from "@codometer/core";
 
-/**
- * An analysis codometer runs over an input.
- *
- * `language` counts declarations; `size` counts compressed bytes.
- */
+/** Measures an input: `language` counts declarations, `size` compressed bytes. */
 export type CodometerAnalysis = "language" | "size";
 
-/**
- * A language a `comment` selector may narrow to. Every language with comments, except JSDoc, which `kind` selects.
- */
+/** Language a `comment` selector narrows to; JSDoc goes by `kind`. */
 export type CodometerCommentLanguage =
   | "css"
   | "hcl"
@@ -29,9 +23,7 @@ export type CodometerCommentLanguage =
   | "typescript"
   | "yaml";
 
-/**
- * One comment measured against its kind's limit, shared by all comment analyzers. `kind` is a plain string so no analyzer owns the union.
- */
+/** One comment checked against its kind's limit, for any analyzer. */
 export interface CodometerCommentMeasurement {
   breached: boolean;
   /** What the comment documents: a declaration's name, or the comment itself. */
@@ -46,9 +38,7 @@ export interface CodometerCommentMeasurement {
   unit: CodometerDocumentationUnit;
 }
 
-/**
- * Comment budget for a custom statistic. Selectors never inherit. Omitting `language` covers all; `kind` narrows to JSDoc.
- */
+/** Comment budget for a custom statistic. Selectors never inherit. */
 export interface CodometerCommentSelector {
   kind?: CodometerSymbolKind | undefined;
   language?: CodometerCommentLanguage | undefined;
@@ -62,14 +52,10 @@ export interface CodometerCommentSelector {
   severity?: CodometerSeverity | undefined;
 }
 
-/**
- * How a target's files are compressed before size analysis. Explicit, because an unchosen compression is a byte count nobody can explain.
- */
+/** Compression before size analysis, always stated rather than implied. */
 export type CodometerCompression = "brotli" | "gzip" | "none";
 
-/**
- * Configuration authored in a `codometer.config.ts`. Only `format` is required, with no built-in fallback.
- */
+/** Authored configuration. Only `format` is required, with no fallback. */
 export interface CodometerConfiguration {
   /**
    * Every counter this configuration measures, whether or not an output renders it.
@@ -116,9 +102,7 @@ export interface CodometerConfiguration {
   python?: CodometerPythonConfiguration | undefined;
 }
 
-/**
- * One configured counter, measuring files by `patterns`, declarations by `symbols`, or comment blocks by `comment`.
- */
+/** A counter over `patterns`, `symbols`, or `comment`. */
 export interface CodometerCustomStatistic {
   /** Badge color, as a shields.io hexadecimal triplet. */
   color?: string | undefined;
@@ -140,9 +124,7 @@ export type CodometerDocumentationUnit = "characters" | "lines" | "words";
 /** Which report shape a run produces. */
 export type CodometerFormat = "json" | "markdown";
 
-/**
- * A named set of files, declared by include and exclude globs. Only `compression` and `analyses` are read from an input named `codebase`.
- */
+/** A named set of files, from include and exclude globs. */
 export interface CodometerInput {
   /** Which analyses run over the matched files. At least one. */
   analyses: CodometerAnalysis[];
@@ -156,9 +138,7 @@ export interface CodometerInput {
   name: string;
 }
 
-/**
- * Where the JSON report is written. Selecting a `custom` label the top level never declared is refused.
- */
+/** JSON destination; an undeclared `custom` label is refused. */
 export interface CodometerJsonOutput {
   custom?: string[] | undefined;
   indentation?: number | undefined;
@@ -166,9 +146,7 @@ export interface CodometerJsonOutput {
   type: "json";
 }
 
-/**
- * How high one measured metric may go, compared against `value` alone, with no baseline or floor.
- */
+/** Highest allowed value of one metric, compared against `value` alone. */
 export interface CodometerLimit {
   /** What to call the limit in a report, when the path itself reads poorly. */
   label?: string | undefined;
@@ -192,9 +170,7 @@ export interface CodometerLimit {
   value: number | string;
 }
 
-/**
- * Where the markdown report is written. One of `path` or `write` is required; `write` overrides the built-in rendering.
- */
+/** Markdown destination, by `path` or a custom `write` renderer. */
 export interface CodometerMarkdownOutput {
   custom?: string[] | undefined;
   description?: string | undefined;
@@ -213,9 +189,7 @@ export interface CodometerPythonConfiguration {
   command?: string | undefined;
 }
 
-/**
- * TypeScript and JavaScript declarations a counter claims: a listed kind carrying every `modifiers` entry, or the kind alone when absent.
- */
+/** Declarations a counter claims, by kind and every `modifiers` entry. */
 export interface CodometerSymbolMatcher {
   kinds: CodometerSymbolKind[];
   modifiers?: CodometerSymbolModifier[] | undefined;
@@ -227,9 +201,7 @@ export interface LoadConfigurationArguments {
   configurationPath: string;
 }
 
-/**
- * Options for the measure command. Each `--output-*` flag writes only its own destination. There is no `--write`.
- */
+/** Measure options. Each `--output-*` flag writes only its own destination. */
 export interface MeasureCommandOptions {
   /** The comma-separated set of things to fail on, as it was written. */
   check?: string | true | undefined;
@@ -255,24 +227,16 @@ export interface MeasureCommandOptions {
   outputMarkdown?: string | true | undefined;
 }
 
-/**
- * What a run prints to standard output.
- *
- * Derived from the list `--format` validates against, so they cannot drift.
- */
+/** What a run prints, derived from the `--format` list. */
 export type MeasureFormat = (typeof FORMAT_NAMES)[number];
 
-/**
- * What the command line asked for, and what it could not parse. Every complaint is collected before any is reported.
- */
+/** A parsed command line and every complaint found parsing it. */
 export interface ModeSelection {
   errors: string[];
   mode: RunMode;
 }
 
-/**
- * What the run does with what it measures: gates on `checksReports` and `checksLimits`, and writes per `--output-*` flag.
- */
+/** What a run gates on and writes, per `--output-*` flag. */
 export interface RunMode {
   checksLimits: boolean;
   checksReports: boolean;

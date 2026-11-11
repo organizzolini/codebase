@@ -10,11 +10,7 @@ export const CODE_CELL_TYPE = "code";
 /** Cell type of a notebook cell holding prose. */
 export const MARKDOWN_CELL_TYPE = "markdown";
 
-/**
- * The parts of a notebook cell this analyzer reads.
- *
- * A schema, not an interface, since nbformat's snake_case keys would fail lint.
- */
+/** Notebook cell parts read; a schema, as snake_case keys fail lint. */
 export const notebookCellSchema = z.object({
   cell_type: z.string().optional(),
   execution_count: z.number().nullish(),

@@ -20,9 +20,8 @@ import type {
 /**
  * Reads a pull request's metadata and says whether it agrees with its title.
  *
- * Pure throughout: every method is a function of what it is handed, so the
- * whole rule set is testable without a pull request, a token, or a network.
- * Reading the metadata from GitHub is the command's job, not this one's.
+ * Pure, so the whole rule set is testable without a pull request, a token, or a
+ * network. Reading the metadata from GitHub is the command's job.
  */
 @Injectable()
 export class PullRequestLabelsAssigneesService {

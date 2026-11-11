@@ -16,10 +16,7 @@ import type { InstanceScore } from "@conformetry/core";
 /**
  * Scores each matched instance and decides whether it clears its threshold.
  *
- * Scoring is deliberately separate from the report. Deduplication picks which
- * template gets to *print* a shared file's finding, but a score answers a
- * different question — how much of this instance's own template it honours —
- * so it is taken from what validation found before any of that is collapsed.
+ * Scoring stays separate from the report: deduplication picks which template prints a shared finding, but a score measures this instance's own template, taken before collapsing.
  */
 @Injectable()
 /* v8 ignore stop */

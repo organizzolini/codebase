@@ -16,7 +16,7 @@ import {
  * combinations are refused.
  */
 
-/** What walking the matrix's rows in order over one corpus copy left behind. */
+/** What the ordered matrix rows left in one corpus copy. */
 interface MatrixWalk {
   bare: CodometerRun;
   bareWroteReport: boolean;
@@ -44,11 +44,7 @@ describe("every example configuration this package ships", () => {
         directory,
       );
 
-    /**
-     * Rows run in order over one copy, as a reader would.
-     *
-     * The first two write nothing, so later rows see the same tree.
-     */
+    /** Rows run in order on one shared copy. */
     let walk: MatrixWalk;
 
     beforeAll(() => {

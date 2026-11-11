@@ -14,9 +14,7 @@ export interface DiscoverArguments {
   skip: string[];
 }
 
-/**
- * The rules of one `.gitignore`, and its folder: `base` is relative to the repository root.
- */
+/** A `.gitignore`'s rules and folder; `base` is repo-relative. */
 export interface IgnoreScope {
   base: string;
   matcher: Ignore;

@@ -11,10 +11,7 @@ import type {
 } from "@codependix/configuration";
 import type { NxProject, NxProjectGraph } from "@codependix/nx-projects";
 
-/**
- * Everything a boundary check reads about the workspace it judges. Narrower than `GraphRunContext`,
- * which a boundary-only caller need not satisfy.
- */
+/** What a boundary check reads; narrower than `GraphRunContext`. */
 export interface BoundaryCheckContext {
   /**
    * The projects every level's graph is built over: `selectedProjects` and
@@ -40,10 +37,7 @@ export interface BoundaryCheckContext {
   readonly workingDirectory: string;
 }
 
-/**
- * A graph that could not be built, charged to its projects. `ownerProject` names the dependency
- * whose code failed, when the stack shows it.
- */
+/** A graph that failed to build, charged to its projects. */
 export interface BoundaryCheckFailure {
   /** The raised error's message. */
   readonly error: string;
@@ -57,10 +51,7 @@ export interface BoundaryCheckFailure {
   readonly projects: readonly string[];
 }
 
-/**
- * What one boundary pass found, each finding judged. Failures sit beside violations, not thrown,
- * so one broken container hides no other finding.
- */
+/** What one boundary pass found, with each finding judged. */
 export interface BoundaryCheckOutcome {
   readonly failures: JudgedBoundaryFinding<BoundaryCheckFailure>[];
   readonly violations: JudgedBoundaryFinding<BoundaryViolation>[];
@@ -72,10 +63,7 @@ export interface BoundaryLevelOutcome {
   readonly violations: BoundaryViolation[];
 }
 
-/**
- * One boundary pass's findings as `--format json` prints them. Each finding carries its verdict,
- * so a note is not mistaken for a failure.
- */
+/** Boundary findings as `--format json` prints them. */
 export interface BoundaryReport {
   /** Every container that could not boot, charged and judged. */
   readonly failures: BoundaryReportFailure[];
@@ -114,10 +102,7 @@ export interface BoundaryReportViolation {
   readonly verdict: BoundaryVerdict;
 }
 
-/**
- * Whether a finding fails the run or is a note. `"fail"` when a charged
- * project is judged; `"note"` when all are build-only dependencies.
- */
+/** `"fail"` when a charged project is judged, else `"note"`. */
 export type BoundaryVerdict = "fail" | "note";
 
 /** Arguments accepted when collecting one graph's failure. */

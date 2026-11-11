@@ -27,7 +27,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The fields to pick from, the one picked, and where to send another.
+ * Fields to pick from, the picked one, and the select handler.
  */
 export interface GroupFieldPickerProperties {
   className?: string;

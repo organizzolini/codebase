@@ -20,12 +20,9 @@ import type { MatchedInstance } from "@conformetry/configuration";
 import type { ConformetryLanguageValidator } from "@conformetry/core";
 
 /**
- * Runs a full conformetry validation: match instances to templates, check the
- * files exist, then compare contents language by language.
+ * Runs a conformetry validation: matches instances, checks files, then compares contents.
  *
- * The instances arrive from the caller. This package used to scan the
- * workspace for `project.json` files and infer scope from generator name
- * suffixes, which made a generic package depend on one repository's layout.
+ * Instances come from the caller, so the package need not scan one repository's layout.
  */
 @Injectable()
 export class ValidationService {

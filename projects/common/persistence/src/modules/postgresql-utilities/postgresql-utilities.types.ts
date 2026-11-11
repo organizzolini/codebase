@@ -21,10 +21,7 @@ export interface PostgresClientOutput {
 /** A PostgreSQL client binary this module runs. */
 export type PostgresClientTool = "pg_dump" | "pg_restore";
 
-/**
- * Which parts of the selected tables a dump or restore moves. At least one
- * is true; both true means table definitions and rows together.
- */
+/** Table parts to move; at least one must be true. */
 export interface PostgresContent {
   /** Move the tables' rows. */
   readonly data: boolean;
@@ -33,10 +30,7 @@ export interface PostgresContent {
   readonly ddl: boolean;
 }
 
-/**
- * One entry of a dump's table of contents, as `pg_restore --list --verbose`
- * prints it.
- */
+/** A dump's table-of-contents entry, as `pg_restore --list` prints it. */
 export interface PostgresDumpEntry {
   /** The ids of the entries it depends on, some possibly not in the dump. */
   readonly dependencies: readonly number[];
@@ -74,10 +68,7 @@ export interface PostgresDumpOptions {
   readonly tables: readonly string[];
 }
 
-/**
- * Runs one SQL statement with positional `$n` parameters and resolves its
- * rows; how `truncatePostgresTables` reaches a database.
- */
+/** Runs one parameterized SQL statement and resolves its rows. */
 export type PostgresQuery = (
   sql: string,
   parameters?: readonly unknown[],
@@ -121,10 +112,7 @@ export interface PostgresTruncateOptions {
   readonly tables: readonly string[];
 }
 
-/**
- * Where a client tool connects, parsed from a `postgresql://` URI and handed
- * over as `PG*` variables, never argv.
- */
+/** Client tool connection, passed as `PG*` variables, never argv. */
 export interface PostgresUriConnection {
   /** The database the URI's path names. */
   readonly database: string;

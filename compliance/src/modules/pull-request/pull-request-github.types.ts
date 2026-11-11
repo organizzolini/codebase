@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * What one `gh` invocation produced. Stdout and stderr stay apart: `gh` writes
- * notices to stderr even on success.
- */
+/** One `gh` call's output. Stderr stays apart: `gh` writes notices there. */
 export interface GithubCliResult {
   /** Whether the `gh` binary could be executed at all. */
   readonly available: boolean;

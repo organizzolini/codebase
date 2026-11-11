@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * Counts blocks over a `comment` budget, one counter per declaration kind.
- *
- * Gated with a limit of `0`. See the [documentation guide](./README.md).
- */
+// Gated with a limit of `0`. See the [documentation guide](./README.md).
+/** Counts blocks over a `comment` budget, one counter per declaration kind. */
 const codometerConfiguration: CodometerConfiguration = {
   custom: [
     {

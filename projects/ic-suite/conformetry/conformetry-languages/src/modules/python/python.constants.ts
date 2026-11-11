@@ -2,16 +2,10 @@
 
 import type { LanguageValidatorDescriptor } from "@conformetry/core";
 
-/**
- * Weight assumed for a bridge finding that declares none. Right for any leaf
- * requirement, and the only safe assumption for an unlabelled payload.
- */
+/** Weight for a bridge finding that declares none. */
 export const DEFAULT_BRIDGE_WEIGHT = 1;
 
-/**
- * Extensions the Python validator claims. Notebooks are absent: the Jupyter
- * module owns `.ipynb` and calls back here for code cells.
- */
+/** Extensions the Python validator claims; notebooks are absent. */
 export const PYTHON_VALIDATOR_FILE_EXTENSIONS = [".py"];
 
 /** Identifies the Python language to the orchestrator and the `--languages` filter. */

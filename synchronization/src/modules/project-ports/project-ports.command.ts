@@ -24,12 +24,10 @@ import type {
 import type { PortProject } from "./project-ports.types";
 
 /**
- * CLI command that makes the port of every `*-api` and `*-web` application the
- * one its name hashes to.
+ * CLI command that sets each `*-api` and `*-web` port to the one its name hashes to.
  *
- * `write` rewrites a mismatched port on each port line in the project's domain
- * folder, since the web app and its API name each other's port. Two
- * applications hashing to one port fail the check.
+ * `write` rewrites mismatched ports in the project's domain folder, since the web app and its API name each other's port.
+ * Two applications hashing to one port fail the check.
  */
 @Command({
   description: "Run the project-ports command",

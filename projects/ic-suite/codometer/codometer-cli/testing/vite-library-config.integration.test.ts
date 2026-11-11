@@ -11,11 +11,7 @@ import viteConfiguration from "../vite.config.ts";
 
 import type { LibraryOptions, UserConfig } from "vite";
 
-/**
- * Two-module library sources, keyed by path.
- *
- * Both declare one class name, so bundling and minifying lose the `.name` a logger reads.
- */
+/** Library sources by path, with one shared class name. */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
   "src/index.ts": [
     'import { otherContext } from "./other";',

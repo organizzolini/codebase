@@ -1,11 +1,10 @@
 /**
- * Starts every tag field's id, so a rule's path alone says which tag root it filters.
+ * Prefix of every tag field's id, naming its tag root.
  */
 export const TAG_FIELD_PREFIX = "tag:";
 
 /**
- * The operators a tag field offers. A tag matches every node beneath it,
- * because the tag view carries each event's ancestors.
+ * Tag operators; a tag also matches every node beneath it.
  */
 export const TAG_OPERATORS = {
   hasAllOf: "has_all_of",
@@ -14,8 +13,7 @@ export const TAG_OPERATORS = {
 } as const;
 
 /**
- * The ids of the fields derived from each event's own columns rather than
- * from its tags.
+ * Ids of fields derived from event columns, not tags.
  */
 export const DERIVED_FIELD_IDS = {
   date: "date",
@@ -28,7 +26,7 @@ export const DERIVED_FIELD_IDS = {
 } as const;
 
 /**
- * The builder's name for the tag editor: a searchable checkbox list, indented by depth.
+ * The builder's name for the tag editor.
  */
 export const TAG_OPTIONS_EDITOR = "tag-options";
 
@@ -90,8 +88,7 @@ export const WEEKDAY_LABELS: readonly string[] = [
 export const TEMPORALITIES: readonly string[] = ["Instant", "Duration"];
 
 /**
- * The operators a numeric field offers, mirroring the filter builder's own
- * number operators: equality, the four orderings, and a range.
+ * Numeric field operators: equality, orderings, and a range.
  */
 export const NUMBER_OPERATORS = {
   between: "between",
@@ -105,7 +102,7 @@ export const NUMBER_OPERATORS = {
 } as const;
 
 /**
- * What each tag root means, shown under its name in the attribute list; other roots show their name alone.
+ * What each tag root means; unlisted roots show their name.
  */
 export const TAG_ROOT_DESCRIPTIONS: Readonly<Record<string, string>> = {
   "Aspect Harmonic":

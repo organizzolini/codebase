@@ -7,7 +7,7 @@ import { YeoHangulLetterCharacteristicsService } from "./yeo-hangul-letter-chara
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the ㅕ (hangul yeo) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of ㅕ as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "03x04y0402d02d0080",

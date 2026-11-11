@@ -1,25 +1,11 @@
 #!/bin/bash
 #
-# sessionStart hook — points this session's Nx at the machine-wide shared cache.
+# sessionStart hook: points this session's Nx at the shared machine-wide cache.
 #
-#   - Starts the `installation` project's `shared-nx-cache` server when none is
-#     answering, detached so it outlives the session and the worktree
-#   - Appends the two environment variables Nx reads to Claude Code's
-#     CLAUDE_ENV_FILE, so every `nx` call this session makes shares the cache
-#   - `env` as the first argument prints those exports instead, for a git hook
-#     to `eval`; nothing is printed while the server cannot be reached
-#   - Reads a bucket behind the server from `NX_SHARED_CACHE_REMOTE_*` when set,
-#     and from ~/.config/codebase/nx-shared-cache-remote.env when that file
-#     exists, always read-only: only CI on `main` writes to the bucket. A server
-#     already running keeps the settings it started with, so stop it to apply
-#     a new file
-#   - Always exits 0 and prints nothing else: a missing cache only makes Nx
-#     slower, and must never block a session or a commit
-#
-# Every worktree keeps its own `.nx/cache` and task database, so a fresh one
-# starts cold and re-runs every gate. A task that misses locally asks the
-# shared server, which holds what any worktree on this machine has already
-# computed, so an agent's first commit replays instead of recomputing.
+#   - Starts the shared server when none answers, detached from the session
+#   - Appends the Nx variables to CLAUDE_ENV_FILE; `env` prints them for a git hook
+#   - Reads a read-only bucket from NX_SHARED_CACHE_REMOTE_*; only CI on main writes
+#   - Always exits 0: a missing cache only slows Nx
 
 SCRIPT_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPOSITORY_ROOT="$(cd "${SCRIPT_DIRECTORY}/../.." && pwd)"

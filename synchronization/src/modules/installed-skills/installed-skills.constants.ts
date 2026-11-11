@@ -17,10 +17,7 @@ export const RESTORE_COMMAND =
 export const SESSION_HOOK_COMMAND =
   "bash scripts/git/validate-session-skills.sh";
 
-/**
- * What a cloud agent can do about missing skills: it installs dependencies
- * from a setup workflow rather than a terminal.
- */
+/** Cloud agents fix missing skills from a setup workflow. */
 export const CLOUD_REMEDIATION = [
   `1. Restore them with "${RESTORE_COMMAND}".`,
   '2. If restoration fails, confirm ".github/workflows/copilot-setup-steps.yml" completed its dependency install, which restores skills through postinstall.',
@@ -28,7 +25,7 @@ export const CLOUD_REMEDIATION = [
   `4. Re-run "${SESSION_HOOK_COMMAND}" to confirm.`,
 ].join("\n");
 
-/** What a local agent can do about missing skills, from its own terminal. */
+/** Local agents fix missing skills from their own terminal. */
 export const LOCAL_REMEDIATION = [
   `1. Restore them with "${RESTORE_COMMAND}".`,
   "2. Ask the user to start a new session afterwards. Skills register when a session starts, so restoring them does not add them to this one.",
@@ -39,7 +36,7 @@ export const LOCAL_REMEDIATION = [
 export const MISSING_SKILLS_CONSEQUENCE =
   '🚨 The agent workflow in AGENTS.md links to these skills. Until they are restored those links dangle, and user-invoked skills such as "/grill-with-docs" are unavailable.';
 
-/** How to try a failed restore again, attached to every warning about one. */
+/** How to retry a failed restore, attached to each warning. */
 export const RETRY_HINT = `Retry with '${RESTORE_COMMAND}'`;
 
 /** The `skills` subcommand that restores every locked skill from its source. */

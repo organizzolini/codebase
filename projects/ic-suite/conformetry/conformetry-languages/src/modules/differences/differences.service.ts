@@ -19,11 +19,9 @@ import type {
 /**
  * Builds and narrows structured conformance differences.
  *
- * Every validator funnels through here so that error wording, the `fix`
- * suggestion, and the location fields stay consistent across languages. The
- * `resolve*` guards additionally narrow untrusted payloads — notably the JSON
- * emitted by the Python validator bridge, whose fields cross a process
- * boundary and cannot be trusted to match the TypeScript types.
+ * Every validator funnels through here, keeping error wording, the `fix`
+ * suggestion, and locations consistent. The `resolve*` guards narrow untrusted
+ * payloads, such as JSON from the Python bridge, whose fields may not match the types.
  */
 @Injectable()
 export class DifferencesService {

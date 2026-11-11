@@ -6,10 +6,7 @@ import type {
   ResolvedCallidescopeConfiguration,
 } from "@callidescope/configuration";
 
-/**
- * A traced workspace, before any address is matched against it.
- * One trace serves both the completion list and the lookup.
- */
+/** A traced workspace, shared by the completion list and the lookup. */
 export interface LocatedWorkspace {
   readonly configuration: ResolvedCallidescopeConfiguration;
   /** What the lookup prints, resolved from the command line and refused if unknown. */

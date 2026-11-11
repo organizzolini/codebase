@@ -1,10 +1,7 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-/**
- * Gitignored `tmp/` in this project, never the system temp directory: a spawned
- * run only resolves `@swc-node/register` from inside the workspace.
- */
+/** Gitignored `tmp/`, never system temp: spawns resolve `@swc-node/register` only in-workspace. */
 export const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
 /**

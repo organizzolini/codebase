@@ -14,10 +14,7 @@ import { HISTORICAL_CORPUS_11 } from "./historical-corpus-11.constants";
 
 import type { CorpusEntry } from "./corpus.types";
 
-/**
- * Every drawing the repository used to commit, collapsed to one entry per Code.
- * `CorpusService.ingest` keeps only the entries beyond the enumeration's reach.
- */
+/** Every drawing the repository committed, one entry per Code. */
 export const HISTORICAL_CORPUS: readonly CorpusEntry[] = [
   ...HISTORICAL_CORPUS_1,
   ...HISTORICAL_CORPUS_2,

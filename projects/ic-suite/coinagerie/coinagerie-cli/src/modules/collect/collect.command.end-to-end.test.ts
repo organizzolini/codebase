@@ -13,7 +13,7 @@ import { run, SPAWN_TIMEOUT } from "../../../testing/run-command";
 const START = "<!-- coinagerie:start -->";
 const END = "<!-- coinagerie:end -->";
 
-/** The source file of the `check-failures` example: `aspect`, `angle`, `lunar`, `phase`, `service`, and `src`. */
+/** `check-failures` example source: `aspect`, `angle`, `lunar`, `phase`, `service`, `src`. */
 const SOURCE = readExample("check-failures", "src");
 
 /** Both destinations, the JSON one first, and nothing else scanned. */

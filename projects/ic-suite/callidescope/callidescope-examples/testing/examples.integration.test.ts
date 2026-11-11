@@ -33,10 +33,10 @@ const WORKSPACE_ROOT = path.resolve(
 const EXAMPLES_DIRECTORY =
   "projects/ic-suite/callidescope/callidescope-examples";
 
-/** The one target name every guide's `## Run it` block is supposed to name. */
+/** Target name each guide's `## Run it` block names. */
 const AGGREGATE_TARGET_NAME = "examples";
 
-/** The command every guide's `## Run it` block documents, composed from names so a rename fails every guide. */
+/** Command every guide's `## Run it` block documents, from names. */
 const RUN_IT_COMMAND = `nx run ${readProjectDefinition().name}:${AGGREGATE_TARGET_NAME}`;
 
 /** Every directory under `examples/`, whether or not it is a project. */
@@ -51,10 +51,10 @@ const EXAMPLE_NAMES = readdirSync(
 /** The nested project that carries its own limits, and breaches both. */
 const GATED_LEAF_DIRECTORY = `${EXAMPLES_DIRECTORY}/examples/gated-leaf`;
 
-/** Guides documenting runs beyond the aggregate target, named rather than discovered. Adding one is a deliberate act. */
+/** Guides documenting runs beyond the aggregate target, listed by name. */
 const GUIDES_WITH_DOCUMENTED_RUNS = ["gated-leaf"];
 
-/** Example directories holding their own `tsconfig.json`, read off disk so a new nested project cannot be missed. */
+/** Example directories with their own `tsconfig.json`, read from disk. */
 const NESTED_PROJECT_DIRECTORIES = readdirSync(
   path.join(WORKSPACE_ROOT, EXAMPLES_DIRECTORY, "examples"),
   { withFileTypes: true },
@@ -112,7 +112,7 @@ function readTargetDirectories(configuration: "check" | "write"): string {
   return value;
 }
 
-/** The roots a run is pointed at, read from the `examples` target. Nested projects are reached only when named there. */
+/** Roots a run is pointed at, from the `examples` target. */
 const STARTING_DIRECTORIES = readTargetDirectories("check");
 
 /**

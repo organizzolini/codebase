@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * The edge budget the corpus was extracted against; entries past it are hardcoded rows.
- * Fixed, not the draw run's budget.
- */
+/** The corpus's edge budget, fixed, not the draw run's. */
 export const HISTORICAL_CORPUS_EDGE_BUDGET = 16;
 
 // 🚨 Errors

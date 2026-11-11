@@ -21,9 +21,8 @@ import type { DrawCommandOptions } from "./draw.types";
 /**
  * Draws meanders into the Postgres database `MEANDERAW_POSTGRES_DATABASE` names.
  *
- * - **`draw`** draws every meander: the enumerated lattice space, then the
- *   historical corpus's hardcoded Codes beyond the edge budget.
- * - **`draw --rows <n> --columns <n> --code <code>`** persists that one meander.
+ * - **`draw`** draws every meander, then the corpus's hardcoded Codes beyond the budget.
+ * - **`draw --rows <n> --columns <n> --code <code>`** persists one meander.
  *
  * The hardcoded half runs first, so a hardcoded row keeps its Code.
  */

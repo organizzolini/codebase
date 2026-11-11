@@ -63,16 +63,13 @@ export const LEXICO_DATABASE_ENTITIES = [
   Token,
 ] as const;
 
-/** Every migration, in order, for the test harness; the runtime module runs none. */
+/** Every migration, for the test harness; the runtime runs none. */
 export const LEXICO_DATABASE_MIGRATIONS = [
   Migration1791164926316,
   Migration1792000000000,
 ] as const;
 
-/**
- * TypeORM data source for `nx run lexico-db:migration:*`, built like the runtime
- * `DatabaseModule` but reading only `LEXICO_POSTGRES_*`, and never synchronizing.
- */
+/** TypeORM migration source: reads `LEXICO_POSTGRES_*`, never synchronizes. */
 export const lexicoDataSource = createDataSource({
   entities: [...LEXICO_DATABASE_ENTITIES],
   migrations: ["src/modules/database/migrations/*.ts"],

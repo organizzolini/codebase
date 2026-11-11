@@ -8,10 +8,7 @@ import {
 
 import type { CodependixGraphType } from "@codependix/configuration";
 
-/**
- * Anchor and JSON key for the boundary report. Not a graph type, so it cannot
- * collide with one.
- */
+/** Anchor and JSON key for the boundary report, unlike graph types. */
 export const BOUNDARIES_KEY = "boundaries";
 
 /** `### <subheading>` placed above the boundary report's anchor. */
@@ -20,22 +17,13 @@ export const BOUNDARIES_MARKDOWN_SUBHEADING = "Boundaries";
 /** What `--format json` prints: every active graph type's data, keyed by type. */
 export const FORMAT_JSON = "json";
 
-/**
- * What `--format markdown` prints, and the default when `--format` is left off.
- * A fixed constant, not a configured field.
- */
+/** What `--format markdown` prints, and the default; not a configured field. */
 export const FORMAT_MARKDOWN = "markdown";
 
-/**
- * Everything `--format` accepts, in error-message order. `MapCommand.parseFormat`
- * validates against this array, so a format added here is accepted everywhere.
- */
+/** Every `--format` value, in error-message order; `parseFormat` validates against it. */
 export const FORMAT_NAMES = [FORMAT_JSON, FORMAT_MARKDOWN] as const;
 
-/**
- * Each graph type's section heading in a combined destination, keyed by type.
- * The anchor is the type's own name.
- */
+/** Each graph type's section heading in combined output, keyed by type. */
 export const GRAPH_TYPE_MARKDOWN_SUBHEADINGS: Record<
   CodependixGraphType,
   string

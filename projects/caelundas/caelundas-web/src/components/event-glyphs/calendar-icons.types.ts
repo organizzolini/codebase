@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 /**
- * One piece of an event's symbols: an icon, or text such as a hyphen or emoji that has no icon.
+ * One piece of an event's symbols: an icon or plain text.
  */
 export type GlyphPart =
   | { file: string; id: string; kind: "icon"; symbol: string; url: string }

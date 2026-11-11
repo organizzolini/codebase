@@ -8,8 +8,7 @@ import type {
 import type { Moment } from "moment-timezone";
 
 /**
- * Magnitudes at a minute and its margins, with the phase angle and positions
- * that decide visibility; the least magnitude is the brightest.
+ * Magnitudes at a minute and its margins, plus visibility inputs.
  */
 export interface BrightnessesArguments {
   currentLatitudePlanet: number;
@@ -52,8 +51,7 @@ export interface DetectPlanetaryEventsArguments {
 }
 
 /**
- * Ecliptic positions around a minute for elongation; latitudes matter because
- * greatest elongation uses the true angular separation.
+ * Ecliptic positions around a minute; latitudes matter for elongation.
  */
 export interface ElongationLongitudeArguments {
   currentLatitudePlanet: number;

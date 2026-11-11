@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-/** Methods a framework calls on a managed class. Naming them stops each being promoted as an orphan. */
+/** Framework-called methods; naming them stops orphan promotion. */
 export const LIFECYCLE_METHOD_NAMES = new Set([
   "beforeApplicationShutdown",
   "onApplicationBootstrap",

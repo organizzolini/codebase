@@ -1,15 +1,9 @@
 // 🏷️ Types
 
-/**
- * A 2D grid of lattice points representing a meander pattern, indexed as
- * `[row][column]`.
- */
+/** A 2D lattice-point grid for a pattern, indexed `[row][column]`. */
 export type Matrix = readonly (readonly MatrixPoint[])[];
 
-/**
- * The four directional ink connections at a single lattice point in a 2D matrix:
- * whether ink travels north, south, east, or west.
- */
+/** Which of a point's four directions carry ink. */
 export interface MatrixPoint {
   readonly east: boolean;
   readonly north: boolean;

@@ -33,9 +33,7 @@ export interface DuplicateTargetFinding {
   target: string;
 }
 
-/**
- * What one limit found once it was pointed at its metric. A breach carries `breached`; a held limit is reported alike.
- */
+/** One limit's result against its metric; a breach sets `breached`. */
 export interface EvaluatedLimit {
   /** Whether the measured value came out above the limit. */
   breached: boolean;
@@ -55,26 +53,20 @@ export interface EvaluateLimitsArguments {
   indexes: ReadonlyMap<string, TargetMetricIndex>;
 }
 
-/**
- * One limit that could not be held against anything. Collected rather than thrown, so one run reports every such limit.
- */
+/** A limit that bound to nothing, collected rather than thrown. */
 export interface LimitFailure {
   /** The dotted path exactly as the limit was written. */
   metric: string;
   reason: string;
 }
 
-/**
- * Every declared limit's result, plus those that bound to nothing. A limit that could not bind is neither a breach nor a pass.
- */
+/** Every limit's result, with unbound limits neither breached nor passed. */
 export interface LimitsEvaluation {
   failures: LimitFailure[];
   limits: EvaluatedLimit[];
 }
 
-/**
- * What one target measured, as the limits layer reads it. Declared here so this layer needs no measurement types.
- */
+/** One target's measurements, as the limits layer reads them. */
 export interface MeasuredTarget {
   files: number;
   language: CodeStatisticsResult | undefined;

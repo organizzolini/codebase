@@ -14,10 +14,7 @@ import { resolveTsconfigInputs } from "./plugin-tsconfig.utilities";
 
 import type { ToolInputsLogger } from "./plugin.types";
 
-/**
- * Where fixture workspaces are written: inside this package's gitignored
- * `tmp/`, so each is a real directory tree that Node's own resolver walks.
- */
+/** Fixture workspaces go in gitignored `tmp/`, as real directory trees. */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
 /** This repository's root, whose tsconfig extends `configuration/`'s. */

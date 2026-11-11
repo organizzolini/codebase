@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * Two destinations spliced with the default markers, appended when the markers are absent.
- *
- * See the [output guide](./README.md).
- */
+// See the [output guide](./README.md).
+/** Two destinations spliced with default markers, appended when markers are absent. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   outputs: [

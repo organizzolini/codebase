@@ -11,10 +11,9 @@ import type { CalculateScoreArguments, WeightedFinding } from "./scoring.types";
 /**
  * Turns weights into conformance scores.
  *
- * The arithmetic is small but it is the same arithmetic in seven places — one
- * per language package, plus the file-existence pass and the run aggregate —
- * and it has two edge cases worth getting right once: the default weight of a
- * finding that declares none, and an empty template whose denominator is zero.
+ * The same arithmetic runs in seven places, one per language package, plus the
+ * file-existence pass and the run aggregate. Two edge cases matter: a finding
+ * with no declared weight, and an empty template whose denominator is zero.
  */
 @Injectable()
 export class ScoringService {

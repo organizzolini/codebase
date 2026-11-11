@@ -5,13 +5,11 @@ import { LoggerService } from "@codebase/observability";
 import type { ReportFindingsArguments } from "./report-findings.types";
 
 /**
- * Weighs every finding a run can produce, and fails on the ones it was asked
- * to gate.
+ * Weighs every finding a run produces, failing on the ones it gates.
  *
- * Kept away from `CallidescopeCommand` itself, the same reason `RunPlanService`
- * is: what a run does with what it found is a question this service answers on
- * its own — through `this.logger` alone — leaving the command to orchestrate
- * the trace rather than weigh its output.
+ * Kept apart from `CallidescopeCommand`, as `RunPlanService` is: this service
+ * decides on its own what a run does with its findings, through `this.logger`,
+ * leaving the command to orchestrate the trace.
  */
 @Injectable()
 export class ReportFindingsService {

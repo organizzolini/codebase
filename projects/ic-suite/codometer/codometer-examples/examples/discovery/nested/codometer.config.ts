@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * The named configuration answers alone; nothing is merged from parent files.
- *
- * See the [discovery guide](../README.md).
- */
+// See the [discovery guide](../README.md).
+/** The named configuration answers alone; nothing is merged from parent files. */
 const codometerConfiguration: CodometerConfiguration = {
   custom: [
     {

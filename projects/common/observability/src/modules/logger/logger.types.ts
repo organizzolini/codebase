@@ -2,10 +2,7 @@
 
 import type { ConsoleLogger } from "@nestjs/common";
 
-/**
- * Values beside a log line rather than inside it: counts and durations change
- * per occurrence, so they stay queryable fields.
- */
+/** Values beside the log line, kept as queryable fields. */
 export interface LogData {
   [key: string]: unknown;
   /** How many things the operation handled. */
@@ -18,7 +15,7 @@ export interface LogData {
   total?: number;
 }
 
-/** The public logger shape used to type test doubles without importing its service. */
+/** Public logger shape, for test doubles without the service. */
 export interface LoggerServiceContract extends ConsoleLogger {
   /** Normalizes unknown errors into a stable message and timestamped log line. */
   buildErrorLogEntry(
@@ -33,7 +30,7 @@ export interface LoggerServiceContract extends ConsoleLogger {
   info(message: unknown, context?: string, data?: LogData): void;
 }
 
-/** A message split into the emoji the console shows and the prose telemetry stores. */
+/** Message split into emoji and the prose telemetry stores. */
 export interface ParsedLogMessage {
   emoji: string | undefined;
   text: string;

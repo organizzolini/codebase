@@ -15,13 +15,8 @@ import type { UseFilterQueryResult } from "./use-filter-query.types";
 // 🧩 Hook
 
 /**
- * Holds the filter tree the builder edits and the presets it can be
- * replaced with. A link with no filter opens on the default preset. Only
- * a change to the link itself replaces the tree: the link lags an edit until
- * the calendar has reloaded, and must not undo it meanwhile. An edit that
- * leaves the query as it was, such as a rule that is not finished yet, stays
- * here rather than reloading the calendar, and a preset replaces the
- * whole tree and is written to the link at once.
+ * Holds the filter tree and presets. Only a link change replaces the tree, so
+ * an edit is not undone.
  */
 export function useFilterQuery(
   filter: EventFilterQuery | undefined,

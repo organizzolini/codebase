@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * Builds the opening marker of a named anchor block. Independent of
- * conformetry's marker syntax, so named anchors can share one Markdown file.
- */
+/** Opening marker of a named anchor, unlike conformetry's markers. */
 export const buildStartMarker = (anchorName: string): string =>
   `<!-- codependix:start name="${anchorName}" -->`;
 
@@ -11,10 +8,7 @@ export const buildStartMarker = (anchorName: string): string =>
 export const buildEndMarker = (anchorName: string): string =>
   `<!-- codependix:end name="${anchorName}" -->`;
 
-/**
- * The heading every auto-created Codependix section is placed under. Matched
- * literally, so a hand-written copy is reused rather than duplicated.
- */
+/** Heading for auto-created sections, matched literally to reuse hand-written ones. */
 export const CODEPENDIX_SECTION_HEADING = "## 🕸️ Codependix";
 
 // 🚨 Errors

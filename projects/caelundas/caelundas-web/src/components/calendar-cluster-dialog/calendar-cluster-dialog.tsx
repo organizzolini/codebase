@@ -20,7 +20,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The cluster to open, the events it stands for, and what to do on close.
+ * The cluster's events, its title, and the close handler.
  */
 export interface CalendarClusterDialogProperties {
   className?: string;

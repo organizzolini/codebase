@@ -36,17 +36,13 @@ export interface CallidescopeJsonOutputConfiguration {
   path: string;
 }
 
-/**
- * The limits one command line overrode, and only those. A member is present only when a flag supplied it.
- */
+/** Limits a flag overrode; absent members were not supplied. */
 export interface CallidescopeLimitOverrides {
   maximumBreadth?: number | undefined;
   maximumDepth?: number | undefined;
 }
 
-/**
- * Thresholds that decide what a run reports, both per project: how deep a stack may run, and how widely a callable may reach.
- */
+/** Per-project stack depth and callable breadth limits. */
 export interface CallidescopeLimits {
   /** Distinct direct callees a callable may have before it is reported. No default: a project must set it for `--check breadth`. */
   maximumBreadth?: number | undefined;
@@ -71,9 +67,7 @@ export interface CallidescopeMarkdownOutputConfiguration {
 /** How a run renders what it found. */
 export type CallidescopeOutputFormat = "json" | "markdown" | "mermaid";
 
-/**
- * A project's own `callidescope.config.ts`, with every member required so it reads as a whole.
- */
+/** A project's own `callidescope.config.ts`, every member required. */
 export interface CallidescopeProjectConfiguration {
   entryPoints: CallidescopeProjectEntryPoints;
   /** Globs matched against paths relative to this project's own root. */
@@ -82,7 +76,7 @@ export interface CallidescopeProjectConfiguration {
   write: CallidescopeProjectWriteConfiguration;
 }
 
-/** Which of a project's callables are treated as the roots of a call stack. */
+/** Which callables a project treats as call stack roots. */
 export interface CallidescopeProjectEntryPoints {
   addresses: string[];
   decorators: string[];
@@ -91,18 +85,13 @@ export interface CallidescopeProjectEntryPoints {
   includeTests: boolean;
 }
 
-/**
- * The two limits a project is gated by. `maximumBreadth` may be `undefined`, saying outright that the project gates no breadth.
- */
+/** Two gate limits. `maximumBreadth` may be `undefined`: no breadth gate. */
 export interface CallidescopeProjectLimits {
   maximumBreadth: number | undefined;
   maximumDepth: number;
 }
 
-/**
- * Where a project's own published section and diagram land, read relative to its root.
- * The JSON report is never a project's to redirect.
- */
+/** Project section and diagram paths, relative to its root. */
 export interface CallidescopeProjectWriteConfiguration {
   markdown: CallidescopeMarkdownOutputConfiguration | undefined;
   mermaid: CallidescopeMarkdownOutputConfiguration | undefined;
@@ -122,10 +111,7 @@ export interface LoadConfigurationArguments {
   configurationPath: string;
 }
 
-/**
- * A resolved configuration, with the file's own object and the path it was read from.
- * Both answer different questions, so both are kept.
- */
+/** Resolved configuration, plus the file's raw object and its path. */
 export interface LoadedCallidescopeConfiguration {
   /** The file's own object, before a single default was applied. */
   authored: CallidescopeConfiguration;
@@ -169,9 +155,7 @@ export interface MarkdownAnchorHelpers {
 /** Whether a project's own configuration may set one field, or one member. */
 export type ProjectFieldPermission = "forbidden" | "permitted";
 
-/**
- * The depth and breadth limits one project is gated by, and the file both were written in.
- */
+/** One project's depth and breadth limits, and their file. */
 export interface ProjectLimits {
   /** Absent when the project declared no breadth limit, which most do not. */
   maximumBreadth: number | undefined;
@@ -180,9 +164,7 @@ export interface ProjectLimits {
   path: string | undefined;
 }
 
-/**
- * The limits every traced project is judged against, per project and for the workspace file itself.
- */
+/** Limits judging each traced project and the workspace file. */
 export interface ProjectLimitsLookup {
   /** Keyed by workspace-relative project root. */
   byProject: ReadonlyMap<string, ProjectLimits>;
@@ -205,9 +187,7 @@ export interface RenderMarkdownArguments {
 /** Turns the traced findings into the markdown that will be written. */
 export type RenderMarkdownOutput = (args: RenderMarkdownArguments) => string;
 
-/**
- * Configuration with every default applied, so no analyzer must know which fields a file may omit.
- */
+/** Configuration with every default applied; analyzers need no defaults. */
 export interface ResolvedCallidescopeConfiguration {
   directories: string[];
   entryPoints: ResolvedCallidescopeEntryPoints;
@@ -240,9 +220,7 @@ export interface ResolvedCallidescopeLimits {
   maximumDepth: number;
 }
 
-/**
- * Markdown output destination with defaults applied. `render` and `writeBlock` stay unset to select the CLI's built-in implementations.
- */
+/** Markdown destination with defaults applied. Unset `render`/`writeBlock` pick built-ins. */
 export interface ResolvedCallidescopeMarkdownOutputConfiguration {
   description: string | undefined;
   endMarker: string;
@@ -254,9 +232,7 @@ export interface ResolvedCallidescopeMarkdownOutputConfiguration {
   writeBlock: undefined | WriteMarkdownOutput;
 }
 
-/**
- * Output destinations with defaults applied. Both stay `undefined` when unconfigured, so an unconfigured run writes nothing.
- */
+/** Output destinations, with defaults applied. Unset means nothing is written. */
 export interface ResolvedCallidescopeWriteConfiguration {
   json: ResolvedCallidescopeJsonOutputConfiguration | undefined;
   markdown: ResolvedCallidescopeMarkdownOutputConfiguration | undefined;
@@ -290,5 +266,5 @@ export interface WriteMarkdownArguments {
   result: CallGraphResult;
 }
 
-/** Decides where rendered markdown lands. Return `false` to report the destination as stale, which fails a check run. */
+/** Chooses where markdown lands; `false` marks it stale, failing checks. */
 export type WriteMarkdownOutput = (args: WriteMarkdownArguments) => boolean;

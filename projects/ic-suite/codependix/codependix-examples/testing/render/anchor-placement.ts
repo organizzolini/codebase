@@ -17,15 +17,13 @@ import type { ExampleDocument, ExampleSection } from "./types";
 
 // 🏷️ Types
 
-/** One anchor placed into a file, with or without a subheading above it. */
+/** One anchor in a file, optionally under a subheading. */
 interface AnchorPlacement {
   readonly anchorName: string;
   readonly subheading: string | undefined;
 }
 
-/**
- * One branch of the auto-creation rule, as a section to render. Held as data, so branches read as cases of one rule.
- */
+/** One auto-creation branch: a section to render, held as data. */
 interface AnchorPlacementCase {
   readonly anchorName: string;
   readonly fileContent: string;
@@ -44,7 +42,7 @@ interface AnchorPlacementCase {
 /** Anchor the Nx Neighborhood block in every anchor example carries. */
 const NX_ANCHOR = buildExampleAnchor("nx");
 
-/** A second anchor in the same file, proving two named blocks never collide. */
+/** A second anchor in the same file, to test collisions. */
 const NESTJS_ANCHOR = buildExampleAnchor("nestjs");
 
 /** Anchor the workspace-level example uses, which carries no subheading. */
@@ -77,7 +75,7 @@ const HAND_WRITTEN_SECTION_README = [
   "",
 ].join("\n");
 
-/** Every branch of the auto-creation rule, in the order the example walks them. */
+/** Every auto-creation branch, in the order the example walks them. */
 const AUTO_CREATION_CASES: AnchorPlacementCase[] = [
   {
     anchorName: NX_ANCHOR,

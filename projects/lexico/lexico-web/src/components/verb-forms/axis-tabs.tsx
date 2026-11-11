@@ -8,10 +8,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The values one axis of a conjugation can take, the one picked, and where to
- * send another pick.
- */
+/** An axis's values, the picked one, and where picks go. */
 export interface AxisTabsProperties {
   className?: string;
   onChange: (value: string) => void;

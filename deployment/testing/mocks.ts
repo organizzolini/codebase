@@ -11,10 +11,7 @@ import type { CapturedProcess } from "../src/modules/process-runner/process-runn
  */
 export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
 
-/**
- * Where temporary workspaces are made: inside this project, never the
- * operating system's temporary directory, and ignored by git.
- */
+/** Workspaces go in this project, never the OS temp directory. */
 const TEMPORARY_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
 /** One call a command made to the process runner. */
@@ -24,13 +21,10 @@ export interface RecordedCall {
   input?: string;
 }
 
-/**
- * How a scripted command line answers: one result every time, or one result
- * per call in turn, the last repeating.
- */
+/** Fixed, or one result per call with the last repeating. */
 export type ScriptedAnswer<Result> = readonly Result[] | Result;
 
-/** Something a scripted command line does to the disk when it is called. */
+/** What a scripted command does to the disk when called. */
 export type ScriptedEffect = (args: readonly string[]) => void;
 
 /** Tells a sequence of answers from a single one. */
@@ -56,10 +50,7 @@ const answerFor = <Result>(
   return picked;
 };
 
-/**
- * Finds a command line's entry: exact, else the longest ` *` entry whose
- * prefix starts the line.
- */
+/** Finds the exact entry, else the longest matching `*` prefix. */
 const lookUp = <Value>(
   script: Readonly<Record<string, Value>>,
   line: string,
@@ -76,11 +67,11 @@ const lookUp = <Value>(
 };
 
 /**
- * A process runner that answers `capture` and `captureAsync` from a script
- * and records every call, so tests run no real process.
+ * Answers `capture` and `captureAsync` from a script and records calls, so
+ * tests run no process.
  *
- * @param script - Answers each command line, or prefix ending in ` *`.
- * @param streamStatus - The exit code of a streamed call the script omits.
+ * @param script - Answers each command line or `*` prefix.
+ * @param streamStatus - Exit code of a streamed call the script omits.
  * @param streamScript - Exit codes for streamed calls, by command line.
  */
 export class FakeProcessRunner implements Pick<
@@ -101,7 +92,7 @@ export class FakeProcessRunner implements Pick<
 
   public readonly captured: RecordedCall[] = [];
 
-  /** What each scripted command line does to the disk, by line or prefix. */
+  /** Disk effects of each scripted command, by line or prefix. */
   public readonly effects: Record<string, ScriptedEffect> = {};
 
   /** Every command line called, captured or streamed, in order. */

@@ -1,6 +1,5 @@
 /**
- * Dependency Cruiser rules: cycles, orphans, test imports, dev dependencies, ESM in CJS.
- * Run via `nx run <project>:dependency-cruiser`.
+ * Dependency Cruiser rules: cycles, orphans, and test imports.
  * @type {import('dependency-cruiser').IConfiguration}
  */
 const path = require("node:path");

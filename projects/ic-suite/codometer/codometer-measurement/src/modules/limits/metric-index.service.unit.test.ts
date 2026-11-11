@@ -10,7 +10,7 @@ import type { MeasuredTarget } from "./limits.types";
 
 const zeroes = buildCodeStatistics();
 
-/** The repository's own metrics, with a counter in every shape a path reads. */
+/** The repository's metrics, with a counter in every path shape. */
 const codebaseTarget: MeasuredTarget = {
   files: 12,
   language: buildCodeStatistics({

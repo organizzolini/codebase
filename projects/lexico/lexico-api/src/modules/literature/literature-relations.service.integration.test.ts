@@ -24,7 +24,7 @@ import { createEmptyConnection } from "./literature.utilities";
 import type { Connection } from "@codebase/interface";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
-/** Each boundary matrix issues a few hundred statements, which a slow runner needs time for. */
+/** Boundary matrices run hundreds of statements, so they need time. */
 const MATRIX_TIMEOUT_MILLISECONDS = 120_000;
 
 /** Pages several parents' children in one call, as a loader batch does. */

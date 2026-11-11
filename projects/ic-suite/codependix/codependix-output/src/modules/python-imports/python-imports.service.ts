@@ -24,14 +24,10 @@ import type {
 import type { PythonProject } from "@codependix/file-imports";
 
 /**
- * Builds and delivers every configured Python file-level import graph
- * export.
+ * Builds and delivers every configured Python file-level import graph export.
  *
- * Split out of `GraphRunService` — which owns the same pass for every
- * other graph type — purely to keep that file under this repository's
- * per-file line limit; the pass itself follows
- * `GraphRunService.runImportGraphs` exactly, one collaborator per language
- * instead of one compiler-backed `ts.Program` per project.
+ * Split out of `GraphRunService` to keep that file under the per-file line limit. The pass follows
+ * `GraphRunService.runImportGraphs`, with one collaborator per language rather than one compiler-backed `ts.Program` per project.
  */
 @Injectable()
 export class PythonImportsService {

@@ -18,7 +18,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * Why the calendar shows no events, and where to send it to find some.
+ * Why the calendar has no events, and where to find some.
  */
 export interface CalendarEmptyProperties {
   className?: string;

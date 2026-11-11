@@ -22,13 +22,10 @@ import type {
 } from "./synchronization.types";
 
 /**
- * CLI command that runs every synchronization command in one process, for a
- * human at a terminal.
+ * CLI command that runs every synchronization command in one process, for a human at a terminal.
  *
- * Each command also has its own Nx target, and workflows name those instead.
- * It takes no selection flag. `nestjs-module-graphs` and `nx-project-graphs`
- * were removed, since `codependix` now produces those graphs; run
- * `nx run configuration:codependix`.
+ * Workflows name each command's own Nx target instead. `nestjs-module-graphs` and `nx-project-graphs`
+ * were removed, since `codependix` now produces those graphs; run `nx run configuration:codependix`.
  */
 @Command({
   description: "Run every synchronization command",

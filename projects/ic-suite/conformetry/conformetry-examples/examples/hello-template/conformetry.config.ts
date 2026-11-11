@@ -1,9 +1,6 @@
 import type { ConformetryConfiguration } from "@conformetry/configuration";
 
-/**
- * Each example names its own folder once, since every path resolves from the
- * workspace root.
- */
+/** The example's own folder, since every path resolves from the root. */
 const EXAMPLE_PATH =
   "projects/ic-suite/conformetry/conformetry-examples/examples/hello-template";
 

@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * Codometer does not measure the files it writes, so repeated runs stay stable.
- *
- * See the [output guide](./README.md).
- */
+// See the [output guide](./README.md).
+/** Codometer skips the files it writes, so repeated runs stay stable. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   outputs: [

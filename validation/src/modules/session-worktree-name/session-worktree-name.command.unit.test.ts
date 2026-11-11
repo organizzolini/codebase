@@ -95,7 +95,7 @@ describe(SessionWorktreeNameCommand, () => {
     return instance;
   };
 
-  /** Puts a linked worktree with this directory name on disk and runs from it. */
+  /** Creates a linked worktree with this name, and runs from it. */
   const enterWorktree = (parent: string, name: string): string => {
     const worktree = path.join(parent, name);
     mkdirSync(worktree, { recursive: true });

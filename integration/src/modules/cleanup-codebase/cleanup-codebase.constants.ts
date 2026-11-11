@@ -1,4 +1,4 @@
 // ♟️ Constants
 
-/** The value of `NX_CACHE` that asks for the task database to be tidied. */
+/** The `NX_CACHE` value asking for the database to be tidied. */
 export const ENABLED_VALUE = "true";

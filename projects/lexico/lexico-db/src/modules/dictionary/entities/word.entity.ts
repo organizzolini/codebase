@@ -19,7 +19,7 @@ export class Word extends PostgresqlDeletableEntity {
   })
   data!: string;
 
-  /** Junction rows linking this word to every morphological form it can surface as. */
+  /** Junction rows linking this word to its morphological forms. */
   @OneToMany(() => WordForm, (wf) => wf.word)
   wordForms!: WordForm[];
 

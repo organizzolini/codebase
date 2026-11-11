@@ -23,9 +23,9 @@ import type {
 /**
  * Judges a built graph against the rules declared for its level.
  *
- * Returns the edges and cycles that break the rules. A rule matching nothing is not an error,
- * so a rule for code yet to exist, or left behind after its code was deleted, reports nothing.
- * Depends only on `@codependix/configuration`, for the rule shapes.
+ * Returns the edges and cycles that break a rule. A rule matching nothing reports
+ * nothing, so rules for code not yet written are harmless. Depends only on
+ * `@codependix/configuration`.
  */
 @Injectable()
 export class BoundariesService {

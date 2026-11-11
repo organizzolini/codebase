@@ -4,15 +4,10 @@ import type { EventFilterGroup, EventFilterRule } from "./event-filter.types";
 
 // ♟️ Constants
 
-/**
- * Caps each node's conditions, groups, path segments and values, so a request cannot ask for an unbounded expression.
- */
+/** Caps each node's size, so requests cannot build unbounded SQL. */
 export const EVENT_FILTER_MAXIMUM_BREADTH = 256;
 
-/**
- * Validates one condition as it arrives from GraphQL, where the optional
- * fields may be absent or null.
- */
+/** Validates one condition from GraphQL, whose optional fields may be null. */
 export const eventFilterRuleSchema: z.ZodType<EventFilterRule> = z.object({
   negated: z
     .boolean()
@@ -27,10 +22,7 @@ export const eventFilterRuleSchema: z.ZodType<EventFilterRule> = z.object({
     .transform((values) => values ?? []),
 });
 
-/**
- * Validates a filter group and every group nested in it, filling the lists a
- * request left out with empty ones.
- */
+/** Validates a filter group and its nested groups, defaulting missing lists. */
 export const eventFilterGroupSchema: z.ZodType<EventFilterGroup> = z.object({
   combinator: z.enum(["and", "or"]),
   groups: z

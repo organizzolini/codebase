@@ -15,11 +15,11 @@ import type { PublishablePackagesGateOutcome } from "./publishable-packages-gate
 /**
  * Decides whether `validation:verify-publishable-packages` runs, and runs it.
  *
- * `nx affected --target=verify-publishable-packages` cannot make that call:
- * the target belongs to `validation`, and no ic-suite package is one of its
- * dependencies, so a change to any of them never marks `validation` affected.
- * The check packs and installs every publishable package, so it runs whole or
- * not at all rather than per affected project.
+ * `nx affected` cannot decide: `validation` owns the target and no ic-suite
+ * package is its dependency, so changes never mark it affected.
+ *
+ * The check installs every publishable package, so it runs whole, never per
+ * project.
  */
 @Injectable()
 export class PublishablePackagesGateService {

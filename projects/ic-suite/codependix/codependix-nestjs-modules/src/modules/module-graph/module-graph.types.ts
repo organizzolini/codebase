@@ -1,8 +1,6 @@
 // 🏷️ Types
 
-/**
- * A NestJS project's module import graph, reduced to the names and edges a diagram needs.
- */
+/** NestJS module graph of one project, as names and edges. */
 export interface NestjsModuleGraph {
   /**
    * Modules every other module imports. Their edges are left out, so the

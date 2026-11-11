@@ -1,9 +1,6 @@
 import { z } from "zod";
 
-/**
- * Input variables the deployment commands read. Each is optional or carries
- * Nx's own default; each command decides what a missing input means.
- */
+/** Input variables read by deployment commands; each is optional. */
 export const environmentSchema = z.object({
   GITHUB_ENV: z.string().optional(),
   GITHUB_OUTPUT: z.string().optional(),

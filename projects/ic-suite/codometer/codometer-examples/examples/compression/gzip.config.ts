@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * Gzip level 9, file by file, matching what a browser downloads.
- *
- * Run from the corpus directory with `codometer --config ../compression/gzip.config.ts`.
- */
+// Run from the corpus directory with `codometer --config ../compression/gzip.config.ts`.
+/** Gzip level 9, file by file, matching what a browser downloads. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

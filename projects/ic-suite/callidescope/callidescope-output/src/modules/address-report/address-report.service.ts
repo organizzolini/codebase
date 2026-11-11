@@ -19,10 +19,9 @@ import type { CallableReference, CallAddressStack } from "@callidescope/graph";
 /**
  * Renders `depth` and `breadth`'s findings for a terminal.
  *
- * Markdown by default and mermaid on request, the same two renderings
- * `callidescope` itself prints — a diagram at a prompt is source someone can
- * paste somewhere that draws it, and markdown is what reads well as terminal
- * text. JSON carries the same data with nothing rendered.
+ * Markdown by default, mermaid on request, as `callidescope` prints them.
+ * Mermaid is paste-ready source; markdown reads well as terminal text.
+ * JSON carries the same data unrendered.
  */
 @Injectable()
 export class AddressReportService {
