@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# sessionStart hook: points this session's Nx at the shared machine-wide cache.
+# sessionStart hook: points this session's Nx at the shared cache.
 #
-#   - Starts the shared server when none answers, detached from the session
-#   - Appends the Nx variables to CLAUDE_ENV_FILE; `env` prints them for a git hook
-#   - Reads a read-only bucket from NX_SHARED_CACHE_REMOTE_*; only CI on main writes
+#   - Starts the shared server when none answers, detached
+#   - Appends the Nx variables to CLAUDE_ENV_FILE; `env` prints them
+#   - Reads a read-only bucket from NX_SHARED_CACHE_REMOTE_*
 #   - Always exits 0: a missing cache only slows Nx
 
 SCRIPT_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

@@ -1,10 +1,8 @@
 #!/bin/bash
 #
-# Shared sessionStart emitter: reads context on stdin and prints the JSON
-# shape the calling harness reads. Empty input means the command never ran,
-# so the context says why. Without node, it exits silently.
-#
-# A shim over a workspace command calls this only when that command fails:
+# Shared sessionStart emitter: reads context on stdin, prints the JSON the calling
+# harness reads. Empty input means the command never ran. Without node, it exits
+# silently. A shim calls it on failure:
 #
 #   CONTEXT="$(<command> 2>/dev/null)" && exit 0
 #   printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "<rerun>"

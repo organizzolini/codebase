@@ -4,13 +4,13 @@
 #
 # Usage: stop-port.sh --port <port> [--timeout <seconds>]
 #
-#   --port     TCP port to free. Required.
+#   --port     Port to free. Required.
 #   --timeout  Seconds after SIGTERM before SIGKILL. Default 10.
 #
-# Only listeners stop, never clients, so an open browser tab survives. A `node --watch`
-# parent is stopped too, or it restarts the server.
+# Only listeners stop, never clients, so open browser tabs survive.
+# A `node --watch` parent stops too.
 #
-# Empty values count as unset, so callers can forward flags.
+# Empty values count as unset.
 
 set -euo pipefail
 

@@ -4,12 +4,12 @@
 #
 # Usage: await-health.sh --url <url> [--query <graphql>] [--expect <text>] [--timeout <seconds>]
 #
-#   --url      Endpoint to poll. Required.
-#   --query    GraphQL query to POST; without it, a GET.
-#   --expect   Text the body must contain. Default: any 2xx.
+#   --url      Required.
+#   --query    GraphQL body; else a GET.
+#   --expect   Body text required, else any 2xx.
 #   --timeout  Seconds to retry. Default 60.
 #
-# Empty values count as unset, so callers can forward flags.
+# Empty values count as unset.
 
 set -euo pipefail
 

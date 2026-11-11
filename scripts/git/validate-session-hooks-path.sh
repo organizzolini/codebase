@@ -5,10 +5,8 @@
 #   - Silent when core.hooksPath holds a pre-commit hook
 #   - Otherwise injects the repair commands as additionalContext
 #
-# A missing hooks directory fails silently: commits run no hooks. Worktrees name
-# the main checkout's copy, which an install does not fix for them.
-#
-# Reports, not repairs: repairs write config shared by all worktrees.
+# A missing directory fails silently: commits run no hooks. It reports, not
+# repairs, since repairs write config shared by all worktrees.
 
 SCRIPT_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPOSITORY_ROOT="$(cd "${SCRIPT_DIRECTORY}/../.." && pwd)"

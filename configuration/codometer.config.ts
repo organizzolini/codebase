@@ -50,13 +50,13 @@ const generalCommentBudgets: CodometerCustomStatistic[] =
 const ROLE_JSDOC_MAXIMUM_WORDS = 48;
 
 /** Lines a class's or file header's JSDoc may span, delimiters included. */
-const ROLE_JSDOC_MAXIMUM_LINES = 16;
+const ROLE_JSDOC_MAXIMUM_LINES = 12;
 
 /** Words any other declaration's JSDoc may hold: what it is, and why. */
 const DECLARATION_JSDOC_MAXIMUM_WORDS = 24;
 
 /** Lines any other declaration's JSDoc may span, delimiters included. */
-const DECLARATION_JSDOC_MAXIMUM_LINES = 8;
+const DECLARATION_JSDOC_MAXIMUM_LINES = 6;
 
 /** The kinds whose JSDoc says what a whole module is for. */
 const ROLE_JSDOC_KINDS: readonly string[] = ["class", "file"];
@@ -94,7 +94,7 @@ const jsdocBudgets: CodometerCustomStatistic[] = CODOMETER_SYMBOL_KINDS.map(
 
 /** Shell is looser than other plain comments: a script header documents usage. */
 const shellCommentBudget: CodometerCustomStatistic = {
-  comment: { language: "shell", maximumLines: 16, maximumWords: 64 },
+  comment: { language: "shell", maximumLines: 16, maximumWords: 48 },
   label: `${COMMENT_LANGUAGE_LABELS.shell} Comment Budget`,
 };
 

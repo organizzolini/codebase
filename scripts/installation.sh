@@ -3,9 +3,9 @@
 #
 # Usage: bash scripts/installation.sh   (from the workspace or worktree root)
 #
-# A bootstrap: it installs what the real setup needs to run (Homebrew's presence,
-# nvm, Node.js, pnpm, and packages). The `setup` command of the installation
-# project then does the rest, as tested TypeScript.
+# A bootstrap: it installs what the real setup needs to run (Homebrew, nvm,
+# Node.js, pnpm, packages). The `setup` command of the installation project then
+# does the rest, as tested TypeScript.
 
 source ./scripts/utilities.sh
 
@@ -17,10 +17,9 @@ installation() {
 }
 
 # ── Operating system ─────────────────────────────────────────────────────────
-# macOS continues below. Linux (cloud sessions, devcontainer) has no Homebrew and
-# often an older Node, so Node is the nodejs.org release for .nvmrc in ~/.local/bin.
-# node-gyp comes from npm's copy, which native packages need on PATH.
-# Husky and nx match a Mac; setup does the rest. Safe to run again.
+# Linux (cloud sessions, devcontainer) has no Homebrew and often an older Node,
+# so Node is the nodejs.org release for .nvmrc in ~/.local/bin. node-gyp comes
+# from npm's copy. Husky and nx match a Mac; setup does the rest. Safe to run again.
 operating_system="$(uname -s)"
 if [[ "${operating_system}" != "Darwin" && "${operating_system}" != "Linux" ]]; then
   echo "🛑 Unsupported operating system: ${operating_system}. Use macOS or Linux." >&2
@@ -154,10 +153,9 @@ fi
 echo "👍 Node.js $(nvm current)"
 
 # ── Husky ─────────────────────────────────────────────────────────────────────
-# Husky executes hooks inside a minimal shell that skips ~/.zshrc / ~/.bashrc,
-# so `node`, `nx`, and `uv` are not on PATH by default. The init file at
-# ~/.config/husky/init.sh is sourced by every hook before it runs, making
-# nvm-managed node and uv-managed Python available inside git hooks.
+# Husky runs hooks in a minimal shell that skips ~/.zshrc and ~/.bashrc, so `node`,
+# `nx`, and `uv` are not on PATH. ~/.config/husky/init.sh, sourced before every hook,
+# makes nvm-managed node and uv-managed Python available inside git hooks.
 echo "🔍 Setting up husky init..."
 mkdir -p "${HOME}/.config/husky"
 HUSKY_INIT_FILE="${HOME}/.config/husky/init.sh"

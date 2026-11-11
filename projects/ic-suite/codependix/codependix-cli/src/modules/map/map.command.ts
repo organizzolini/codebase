@@ -280,10 +280,8 @@ export class MapCommand extends CommandRunner {
 
   /**
    * Parses `--include`, a comma-separated list of globs overriding the
-   * configured `include`.
-   *
-   * Refused later, alongside `--exclude`, when the configuration this run
-   * reads never declared `include`.
+   * configured `include`. Refused later, alongside `--exclude`, when the
+   * configuration never declared `include`.
    */
   @Option({
     description:

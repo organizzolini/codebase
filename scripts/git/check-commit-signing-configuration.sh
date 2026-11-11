@@ -14,10 +14,9 @@ if [[ -z "${signing_key}" ]]; then
   exit 1
 fi
 
-# SSH signing (gpg.format=ssh) is how cloud sessions sign; GitHub verifies it once
-# the key is registered. The GPG checks below do not apply, so SSH takes its own
-# path: the signer must run, and ssh-keygen must verify against an allowed signers
-# file. A harness signer only signs, so verification names ssh-keygen explicitly.
+# SSH signing (gpg.format=ssh) is how cloud sessions sign. The GPG checks below
+# do not apply, so SSH has its own path: the signer must run, and ssh-keygen
+# must verify against an allowed signers file.
 signing_format="$(git config --get gpg.format || true)"
 if [[ "${signing_format}" == 'ssh' ]]; then
   ssh_program="$(git config --get gpg.ssh.program || true)"
@@ -85,10 +84,9 @@ if ! gpg --list-secret-keys --keyid-format=long "${signing_key}" | grep -q '^sec
   exit 1
 fi
 
-# A key that can sign is not necessarily the committer's own. With several GPG
-# identities, user.signingkey can resolve to someone else's key, such as the first
-# secret key a setup script lists. Every check above still passes, so commits carry
-# that signature under this developer's name. Skipped in CI, where the committer is a bot.
+# A key that can sign is not necessarily the committer's own: with several GPG
+# identities, user.signingkey can resolve to someone else's key, and every check
+# above still passes. Skipped in CI, where the committer is a bot.
 if [[ -z "${CI:-}" && -z "${GITHUB_ACTIONS:-}" ]]; then
   git_email="$(git config --get user.email || true)"
   if [[ -z "${git_email}" ]]; then
@@ -117,12 +115,9 @@ if [[ "${SKIP_GPG_SIGNING_SMOKE_TEST:-}" == "true" ]]; then
   exit 0
 fi
 
-# Signs a throwaway commit, so an unusable key fails in seconds.
-#
-# gpg runs through a wrapper that never opens pinentry, so the test passes, fails, or skips:
-#   - CI uses loopback: a headless runner cannot show pinentry.
-#   - Local agents use cancel: a GUI pinentry would hang the hook.
-#     An uncached passphrase fails at once and is inconclusive below.
+# Signs a throwaway commit, so an unusable key fails in seconds. gpg runs through
+# a wrapper that never opens pinentry: CI uses loopback, and local agents cancel,
+# so an uncached passphrase fails at once and is inconclusive below.
 if [[ -n "${CI:-}" || -n "${GITHUB_ACTIONS:-}" ]]; then
   pinentry_mode='loopback'
 else
