@@ -48,9 +48,7 @@ export interface ResolvedMarkdownDestination {
   write: undefined | WriteMarkdownOutput;
 }
 
-/**
- * Every file one run writes: `json` is the report, `markdown` the badge block. Neither prints to standard output.
- */
+/** Files a run writes: `json` report, `markdown` badges; never stdout. */
 export interface RunDestinations {
   json: ResolvedJsonDestination | undefined;
   markdown: ResolvedMarkdownDestination | undefined;

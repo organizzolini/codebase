@@ -8,7 +8,7 @@ export interface LimitsCommandOptions {
   readonly config: string;
 }
 
-/** One project's resolution of one limit, and the file the number came from. */
+/** One project's resolved limit, and the file it came from. */
 export interface ProjectLimitRow {
   readonly limit: LimitName;
   /** Workspace-relative file the number is written in. Absent only on the workspace row when no file wrote it. */

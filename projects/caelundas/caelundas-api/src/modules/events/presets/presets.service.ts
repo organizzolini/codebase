@@ -21,8 +21,7 @@ import type {
 @Injectable()
 export class PresetsService {
   /**
-   * Resolves a group's rules and nested groups, leaving out any that name no
-   * tag the data has and any group left with nothing in it.
+   * Resolves a group's rules and nested groups, dropping any with no matching tag.
    */
   private resolveGroup(
     group: PresetGroup,
@@ -60,8 +59,7 @@ export class PresetsService {
   }
 
   /**
-   * Resolves one rule to the tags of the data that its paths name, or `null`
-   * when the data has no such root or none of the paths.
+   * Resolves a rule to the data's tags for its paths, or `null` when none match.
    */
   private resolveRule(
     rule: PresetRule,
@@ -103,9 +101,7 @@ export class PresetsService {
   }
 
   /**
-   * Resolves every preset the data's tags can serve, in menu order, each
-   * written by tag ids. A preset none of whose tags the data has is left
-   * out, and one that names tags the data lacks applies to the ones it has.
+   * Resolves presets in menu order, dropping any whose tags the data lacks.
    */
   public resolve(facets: readonly EventFacetEntity[]): ResolvedPreset[] {
     const resolved: ResolvedPreset[] = [];

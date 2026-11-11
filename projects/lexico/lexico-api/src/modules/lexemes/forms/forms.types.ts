@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * The `Form` columns the API omits: audit and soft-deletion columns, and joins
- * to its lexeme and to the words it surfaces as.
- */
+/** `Form` columns the API omits: audit, soft-delete, and lexeme joins. */
 export type FormDatabaseOnlyField =
   | "createdAt"
   | "createdBy"

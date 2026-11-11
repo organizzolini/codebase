@@ -37,10 +37,7 @@ export type {
   ConformetryNxWorkspaceInstanceGroup,
 } from "./modules/scope/scope.types";
 
-/**
- * Infers a `conformetry-validate` target onto every project holding instances,
- * reading the configuration once rather than per project.
- */
+/** Infers `conformetry-validate` per instance-holding project, reading config once. */
 const createNodes: CreateNodes = [
   PROJECT_CONFIGURATION_GLOB,
   async (

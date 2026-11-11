@@ -2,11 +2,8 @@ import nodePath from "node:path";
 
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * A `write` that picks its destination from the measurement, derived from `path`.
- *
- * See the [output guide](./README.md).
- */
+// See the [output guide](./README.md).
+/** A `write` that derives its destination from the measurement's `path`. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   outputs: [

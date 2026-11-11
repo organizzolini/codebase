@@ -22,10 +22,8 @@ import type { Document, Node } from "yaml";
 /**
  * Walks parsed YAML documents to collect structural metrics.
  *
- * Counted from the parse tree rather than from the text, so a `#` inside a
- * quoted scalar stays a character in a string and an indented block reports
- * its real nesting instead of a column number. The `yaml` package keeps
- * comments and anchors on the nodes, which is what makes both countable at all.
+ * Counts from the parse tree, not the text, so a `#` inside a quoted scalar stays a string character and indentation gives real nesting.
+ * The `yaml` package keeps comments and anchors on nodes, which makes both countable.
  */
 @Injectable()
 /* v8 ignore stop */

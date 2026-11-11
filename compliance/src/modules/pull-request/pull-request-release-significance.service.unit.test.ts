@@ -10,7 +10,7 @@ import type {
   ReleaseRule,
 } from "./pull-request-release-significance.types";
 
-/** What the mocked `require` hands back, or throws when it is an error. */
+/** What the mocked `require` returns, or throws when it errors. */
 let releaseConfig: unknown;
 
 vi.mock("node:module", () => ({
@@ -57,7 +57,7 @@ const commit = (
   subject,
 });
 
-/** A title, parsed the way the service itself would parse it — never undefined. */
+/** A title, parsed the way the service parses it. Never undefined. */
 const title = (
   service: PullRequestReleaseSignificanceService,
   subject: string,

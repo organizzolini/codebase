@@ -5,9 +5,7 @@ import type {
   ResolvedCodependixBoundariesConfiguration,
 } from "./configuration-boundaries.types";
 
-/**
- * Configuration authored in a `codependix.config.ts`. Every field is optional: with none, codependix writes nothing.
- */
+/** Authored `codependix.config.ts`; every field optional, and none writes nothing. */
 export interface CodependixConfiguration {
   /**
    * Rules every built graph is judged against, keyed by graph level. A violation
@@ -35,10 +33,7 @@ export interface CodependixConfiguration {
   workspace?: CodependixWorkspaceConfiguration | undefined;
 }
 
-/**
- * Strict per-field CLI overrides for a run's root configuration. A field may be overridden only when
- * the file already declared it.
- */
+/** Per-field CLI overrides; only fields the file already declared. */
 export interface CodependixConfigurationOverrides {
   /** Overrides `exclude` for this run. */
   exclude?: string[] | undefined;
@@ -46,10 +41,7 @@ export interface CodependixConfigurationOverrides {
   include?: string[] | undefined;
 }
 
-/**
- * Where a graph type's export lands. Named explicitly rather than inferred, so
- * a `json` path can stay configured while unused.
- */
+/** Where a graph type's export lands; named explicitly, not inferred. */
 export type CodependixExportTarget = "both" | "json" | "markdown" | "none";
 
 /** How one graph type's export is configured for a project. */
@@ -70,10 +62,7 @@ export interface CodependixJsonOutput {
   path: string;
 }
 
-/**
- * Where a graph's Markdown export is written. With `anchor`, it splices into that block of `path`;
- * without, `path` is standalone.
- */
+/** Markdown export; with `anchor`, spliced into that block of `path`. */
 export interface CodependixMarkdownOutput {
   anchor?: string | undefined;
   path?: string | undefined;
@@ -96,20 +85,14 @@ export interface CodependixNestjsRootModule {
   file: string;
 }
 
-/**
- * A project's export configuration, keyed by graph type. Written field by field, since
- * `Partial<Record>` would reject the unset value.
- */
+/** A project's exports by graph type; `Partial<Record>` would reject unset. */
 export interface CodependixProjectConfiguration {
   fileImports?: CodependixGraphOutput | undefined;
   nestjsModules?: CodependixGraphOutput | undefined;
   nxProjects?: CodependixGraphOutput | undefined;
 }
 
-/**
- * The `--projects` and `--tags` arguments as the command line captured them: comma-separated strings,
- * split during resolution.
- */
+/** `--projects` and `--tags` as captured: comma-separated, split later. */
 export interface CodependixSelectionArguments {
   /** `false` for `--no-dependencies` — see `ResolvedCodependixSelection`. */
   dependencies?: boolean | undefined;
@@ -117,10 +100,7 @@ export interface CodependixSelectionArguments {
   tags?: string | undefined;
 }
 
-/**
- * The Workspace Graph's export configuration, keyed by graph type. All three graph types are declared,
- * each spanning every project.
- */
+/** Workspace Graph exports, by graph type, each spanning all projects. */
 export interface CodependixWorkspaceConfiguration {
   fileImports?: CodependixGraphOutput | undefined;
   nestjsModules?: CodependixGraphOutput | undefined;
@@ -212,10 +192,7 @@ export interface ProjectSelectionArguments {
   projectTags?: string[] | undefined;
 }
 
-/**
- * Configuration with every default applied. Carries no per-project state: that lives in each project's
- * own `codependix.config.ts`.
- */
+/** Configuration with defaults applied; per-project state lives elsewhere. */
 export interface ResolvedCodependixConfiguration {
   boundaries: ResolvedCodependixBoundariesConfiguration;
   exclude: string[];
@@ -248,9 +225,7 @@ export interface ResolvedCodependixMarkdownOutput {
   path: string;
 }
 
-/**
- * A run's project selection, split and trimmed. Empty means no selection at all, not one matching nothing.
- */
+/** Project selection; empty means no selection, not one matching nothing. */
 export interface ResolvedCodependixSelection {
   /**
    * Whether graphs build over the selected projects' dependency closure, or

@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * One `comment` budget per language, so limits can differ.
- *
- * Every limit reads `0`. See the [documentation guide](./README.md).
- */
+// Every limit reads `0`. See the [documentation guide](./README.md).
+/** One `comment` budget per language, so limits can differ. */
 const codometerConfiguration: CodometerConfiguration = {
   custom: [
     {

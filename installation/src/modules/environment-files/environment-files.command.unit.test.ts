@@ -25,7 +25,7 @@ describe(EnvironmentFilesCommand, () => {
   let workspace: TemporaryWorkspace;
   let report: string[];
 
-  /** Builds the command over the real service and a machine whose Git lists these files. */
+  /** Builds the command over the real service and a Git stub. */
   const createCommand = async (
     listedFiles: string[],
   ): Promise<EnvironmentFilesCommand> => {

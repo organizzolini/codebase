@@ -1,24 +1,12 @@
 // ♟️ Constants
 
-/**
- * Section heading every rendered statistics block sits under.
- *
- * Rendered rather than hand-written, so no document's heading can drift from the figures.
- */
+/** Heading over rendered statistics, so it never drifts from figures. */
 export const CODOMETER_SECTION_HEADING = "## ⏲️ Codometer";
 
-/**
- * Characters with meaning inside a regular expression.
- *
- * Marker text is configurable, so it must be escaped before it is searched for.
- */
+/** Regex metacharacters; configured marker text must be escaped before search. */
 export const REGEX_SPECIAL_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
 
-/**
- * The newlines a file already ends with, however many there are.
- *
- * Stripped before appending, so the separator is exactly one blank line.
- */
+/** Trailing newlines, stripped before appending so one blank line separates. */
 export const TRAILING_NEWLINES = /\n+$/;
 
 // 🚨 Errors

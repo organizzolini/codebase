@@ -17,15 +17,13 @@ export interface CollectRowsArguments {
   workingDirectory: string;
 }
 
-/**
- * Rows plus what could not be measured. Kept together, since rows alone hide a target that failed.
- */
+/** Rows plus unmeasured targets; rows alone would hide a failure. */
 export interface MetricCollection {
   failures: ProjectFailure[];
   rows: MetricRow[];
 }
 
-/** One metric joined to the project that measured it and to its baseline. */
+/** A metric with its measuring project and baseline. */
 export interface MetricRow extends ReportMetric {
   baseValue: number | undefined;
   /** False when this run did not rebuild the project, so the baseline stands in. */
@@ -41,9 +39,7 @@ export type MetricSeverity = "fail" | "warn";
 /** The denomination a metric's value is counted in. */
 export type MetricUnit = "bytes" | null;
 
-/**
- * Something one project's run could not do. A `target` failure means its rows are absent from the table entirely.
- */
+/** A failed project run; a `target` failure omits its rows. */
 export interface ProjectFailure extends ReportFailure {
   project: string;
 }
@@ -61,9 +57,7 @@ export type ReportFailure = NonNullable<CodometerReport["failures"]>[number];
 export type ReportLimit =
   CodometerReport["targets"][number]["metrics"][number]["limits"][number];
 
-/**
- * One metric codometer measured, with whatever limits it. Carries every metric a target produced, never filtered by unit or limit.
- */
+/** One measured metric and its limits; unfiltered by unit. */
 export interface ReportMetric {
   /**
    * The severity of the worst breached limit, if any.

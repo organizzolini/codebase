@@ -12,11 +12,11 @@ import {
 } from "./upgrade-node.constants";
 
 /**
- * Moves the Node version the workspace runs to the newest release of the major
- * it is on, in `.nvmrc` and in the `engines.node` it requires.
+ * Moves the Node version to the newest release of its current major, in
+ * `.nvmrc` and `engines.node`.
  *
- * A new major is a decision, so this never crosses one, and it never goes back
- * to an older release than the one in use.
+ * A new major is a decision, so this never crosses one, nor moves to an older
+ * release.
  */
 @Injectable()
 export class UpgradeNodeService {

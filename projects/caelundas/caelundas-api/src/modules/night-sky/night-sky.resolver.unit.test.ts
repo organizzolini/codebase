@@ -16,7 +16,7 @@ import { NightSkyViewService } from "./night-sky-view.service";
 import { NightSkyResolver } from "./night-sky.resolver";
 import { NightSkyService } from "./night-sky.service";
 
-/** A database holding no stars: the sky it draws is only the ecliptic. */
+/** No stars in the database; only the ecliptic is drawn. */
 const EMPTY_DATABASE = {
   provide: getEntityManagerToken(),
   useValue: {

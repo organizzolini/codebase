@@ -88,10 +88,7 @@ describe(MarkdownNodesService, () => {
   describe("matches, by node type", () => {
     const CELL: MarkdownNode = { type: "tableCell" };
 
-    /**
-     * Node pairs the tree walk rarely reaches alone: inline content settles in the
-     * paragraph's text, so each comparator is driven directly.
-     */
+    /** Node pairs the walk rarely reaches, so comparators run directly. */
     const PAIRS: {
       differing: MarkdownNode;
       matching: MarkdownNode;

@@ -1,7 +1,4 @@
-/**
- * A grouping compiled to the select-list columns that read each level's
- * group keys, and the values their `$n` placeholders stand for.
- */
+/** Select-list columns for a grouping, and its $n placeholder values. */
 export interface CompiledEventGrouping {
   parameters: unknown[];
   /**
@@ -10,10 +7,7 @@ export interface CompiledEventGrouping {
   sql: string;
 }
 
-/**
- * A validated grouping level: its field, and for a tag root either the tags
- * it groups by or a depth.
- */
+/** A grouping level: its field, and tags or a depth. */
 export interface EventGroupLevel {
   depth?: number | undefined;
   field: string;

@@ -5,7 +5,7 @@ import { z } from "zod";
 /** The bucket the shared Nx cache lives in, as `infrastructure/terraform/linode` names it. */
 export const REMOTE_CACHE_BUCKET = "organizzolini-codebase-nx-cache";
 
-/** The region Linode files that bucket under when a key is scoped to it. */
+/** The region a scoped Linode key files its bucket under. */
 export const REMOTE_CACHE_BUCKET_REGION = "us-iad-2";
 
 /** The S3 endpoint of that region. */
@@ -14,7 +14,7 @@ export const REMOTE_CACHE_ENDPOINT = "https://us-iad-18.linodeobjects.com";
 /** The region requests are signed with, the one CI signs with too. */
 export const REMOTE_CACHE_SIGNING_REGION = "us-east-1";
 
-/** Where the key is kept, under the home directory; the session hook reads the same file. */
+/** Key file under home, which the session hook also reads. */
 export const REMOTE_CACHE_ENVIRONMENT_FILE =
   ".config/codebase/nx-shared-cache-remote.env";
 

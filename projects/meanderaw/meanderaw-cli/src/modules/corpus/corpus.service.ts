@@ -15,13 +15,10 @@ import type { Meander } from "../database/entities/meander.entity";
 import type { CorpusEntry } from "./corpus.types";
 
 /**
- * Ingests the historical corpus into the meander database, through the same
- * pipeline `DrawCodeService` uses, so every row comes from one place.
+ * Ingests the historical corpus through `DrawCodeService`, so every row comes from one place.
  *
- * Only entries beyond the sixteen-edge budget the corpus was drawn against,
- * or shallower than the draw run's row floor, are ingested. A raised draw run
- * budget moves nothing here. A colliding Code fails with
- * {@link DuplicateCorpusCodeError}.
+ * Only entries beyond the sixteen-edge budget, or shallower than the draw run's
+ * row floor, are ingested. A raised draw run budget moves nothing here.
  */
 @Injectable()
 export class CorpusService {

@@ -5,7 +5,7 @@ import { OutputMarkdownModule } from "../src/modules/output-markdown/output-mark
 import { ProjectReportsModule } from "../src/modules/project-reports/project-reports.module";
 import { ReportModule } from "../src/modules/report/report.module";
 
-/** Every output module, imported wholesale so any service's dependencies resolve without each test restating them. */
+/** Every output module, imported so service dependencies resolve in tests. */
 export const ANALYSIS_MODULES = [
   GraphModule,
   OutputJsonModule,

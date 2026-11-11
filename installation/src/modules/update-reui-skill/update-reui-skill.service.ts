@@ -26,10 +26,10 @@ import type {
 } from "./update-reui-skill.types";
 
 /**
- * Refreshes the vendored ReUI skill from the bundle reui.io serves, which `skills update` skips.
+ * Refreshes the ReUI skill from reui.io, which `skills update` skips.
  *
- * Idempotent: nothing is written when the bundle hash matches both the lockfile pin and the folder, so
- * local drift is healed too. A bundle path resolving outside the skill folder aborts before any write.
+ * Idempotent: nothing is written when the bundle matches its lockfile pin and folder, which heals local drift.
+ * A bundle path outside the folder aborts before writing.
  * Non-fatal: failures print the retry command and exit 0.
  */
 @Injectable()

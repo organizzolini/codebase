@@ -10,7 +10,7 @@ import type {
   LetterOrientationFixture,
 } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the Φ (Greek phi) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of Φ as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x04y04006f50af900800",

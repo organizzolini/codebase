@@ -23,7 +23,7 @@ import type { LineType } from "./line.entities";
 import type { Connection } from "@codebase/interface";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
-/** A page of lines, reduced to what a reader can observe of it. */
+/** A page of lines, reduced to what a reader observes. */
 interface LinesPage {
   readonly endCursor: null | string;
   readonly hasNextPage: boolean;

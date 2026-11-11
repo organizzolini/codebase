@@ -30,10 +30,7 @@ interface ContainerModule {
   readonly name: string;
 }
 
-/**
- * Modules the mocked container holds, in registration order, each with the
- * names of the modules it imports.
- */
+/** Mocked container modules, in registration order, with their imports. */
 let containerModules: [name: string, imports: string[]][] = [];
 
 /** Root modules the mocked container was built from, in call order. */

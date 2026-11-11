@@ -28,8 +28,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The view shown, where to send another, and whether the row is too narrow
- * for a button per view.
+ * The view shown, its change handler, and the compact layout.
  */
 export interface CalendarViewSelectProperties {
   className?: string;

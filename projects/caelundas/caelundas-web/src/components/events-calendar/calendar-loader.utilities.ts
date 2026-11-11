@@ -44,10 +44,8 @@ export function clearCalendarCaches(): void {
 }
 
 /**
- * Reads the events in the period the search parameters' view and day show,
- * plus a buffer, that pass their filter, together with the dataset's span
- * and zone, all through the API. Reads go through a cache keyed by period and
- * filter, so going back to a period already seen answers at once.
+ * Reads the events in the view's period, plus a buffer, that pass the filter.
+ * Reads are cached by period and filter.
  */
 export async function loadCalendar(
   search: CalendarSearch,
@@ -93,11 +91,8 @@ export async function loadCalendar(
 }
 
 /**
- * Tells why the days a view shows hold no events, or nothing when they hold
- * some. Only those days count, not the buffer read around them. Whether the
- * filters emptied the days, or they hold nothing to filter, is asked only
- * when they are empty and filtered, so a filtered period costs no second
- * query.
+ * Explains why the view's days hold no events. A second query runs only when
+ * a filter emptied them.
  */
 async function describeEmptiness(data: {
   dataset: EventsDataset | null;
@@ -148,9 +143,8 @@ function isShown(event: CalendarEventRecord, visible: Period): boolean {
 }
 
 /**
- * Reads what the loader needs before the events: the facets of the days the
- * view shows, and what holds whatever the period, the dataset and the
- * presets.
+ * Reads the view's facets, plus the dataset and presets, which hold for any
+ * period.
  */
 async function readBasics(visible: Period): Promise<{
   dataset: EventsDataset | null;
@@ -171,10 +165,8 @@ async function readBasics(visible: Period): Promise<{
 }
 
 /**
- * Answers a read from a cache of promises, starting it when the key is new
- * and keeping the most recent ones. The data never changes while the page is
- * open, so a cached read stays right; a failed one is forgotten, so Retry
- * reads it again.
+ * Answers a read from a promise cache, keeping the most recent. A failed read
+ * is forgotten, so Retry reads again.
  */
 async function readCached<TValue>(
   cache: Map<string, Promise<TValue>>,
@@ -207,9 +199,8 @@ async function readCached<TValue>(
 }
 
 /**
- * Reads the dataset, and the presets the calendar offers with the filter
- * of the one it opens on, which the API resolved against the data: none when
- * the data has none of the tags that preset names.
+ * Reads the dataset and the presets, with the default one's filter, which the
+ * API resolved against the data.
  */
 async function readConstants(): Promise<{
   dataset: EventsDataset | null;
@@ -249,9 +240,8 @@ function resolveColorBy(
 }
 
 /**
- * The grouping the search's view shows: the link's, or the view's default,
- * kept to the fields the data has. Only the agenda and the timeline group;
- * with no view, the agenda a phone opens on is grouped.
+ * The grouping the view shows, kept to the fields the data has. Only the
+ * agenda and timeline group.
  */
 function resolveGrouping(
   search: CalendarSearch,

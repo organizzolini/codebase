@@ -11,11 +11,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Whether a Code's exactly two free ends sit one lattice step apart —
- * counting the shorter way around the cyclic band for their column
- * distance — rather than anywhere further across the grid. False whenever
- * the repeat closes a loop or branches, since both leave no two free ends to
- * compare.
+ * Whether a Code's exactly two free ends sit one lattice step apart, measuring column
+ * distance the shorter way around the cyclic band. False when the repeat closes a loop
+ * or branches.
  */
 @Injectable()
 export class EndsAreLatticeNeighborsCharacteristicService implements CharacteristicEvaluator<boolean> {

@@ -7,10 +7,7 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 /** The extensions Python source and stub files are written with. */
 export const PYTHON_EXTENSIONS: readonly string[] = [".py", ".pyi"];
 
-/**
- * A string followed by a colon is a dictionary key; a compared string, as in
- * `if kind == "circle":`, is a value.
- */
+/** Strings before a colon are keys; compared strings are values. */
 export const PYTHON_GRAMMAR: LexicalGrammar = {
   identifier: PLAIN_IDENTIFIER,
   keys: [
@@ -39,10 +36,7 @@ export const PYTHON_GRAMMAR: LexicalGrammar = {
   ],
 };
 
-/**
- * The reserved words and literals of Python, lowercased. Hard keywords only:
- * soft keywords such as `match` are common words outside one position.
- */
+/** Python hard keywords and literals, lowercased. Soft keywords excluded. */
 export const PYTHON_KEYWORDS: string[] = [
   "and",
   "as",

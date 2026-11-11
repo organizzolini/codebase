@@ -44,7 +44,7 @@ export class TLatinLetterCharacteristicsService implements CharacteristicEvaluat
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = ["271", ".8."];
 
   // 🔑 Public Fields

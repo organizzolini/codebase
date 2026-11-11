@@ -34,10 +34,7 @@ export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
   };
 }
 
-/**
- * Mocks TypeORM's `Repository`, with a `createQueryBuilder` whose chain methods return the same mock.
- * Terminal methods stay unimplemented; configure them per test.
- */
+/** TypeORM `Repository` mock: chain methods return it; terminals are per-test. */
 export const createRepositoryMock = <
   Entity extends ObjectLiteral = ObjectLiteral,
 >(

@@ -1,6 +1,6 @@
 export const PATH_SEPARATOR = " / ";
 
 /**
- * Where the events with no value at a level go: after every other group.
+ * Where events with no value at a level sort: last.
  */
 export const NO_GROUP_ORDER = "￿";

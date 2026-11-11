@@ -20,12 +20,10 @@ import type {
 /**
  * Runs the `gh` command-line client and reports what it produced.
  *
- * The `gh` client rather than an HTTP client on purpose: it already resolves
- * the repository and token from the checkout and environment, so every caller
- * authenticates the same way with nothing to configure.
+ * Uses `gh` rather than an HTTP client: it resolves the repository and token
+ * from the checkout, so every caller authenticates alike.
  *
- * Nothing here throws. A missing, unauthorized, or rate-limited `gh` is a fact
- * to report, not an exception to propagate.
+ * Nothing here throws. A missing or rate-limited `gh` is reported, not raised.
  */
 @Injectable()
 export class IssueGithubService {

@@ -12,7 +12,7 @@ import type { ExecException, ExecFileOptions } from "node:child_process";
  */
 export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
 
-/** What the next process the mocked `execFile` starts does, and every start so far. */
+/** Next mocked `execFile` process's behavior, and every start so far. */
 const processes: { outcome: ProcessOutcome; spawned: SpawnedProcess[] } = {
   outcome: {},
   spawned: [],

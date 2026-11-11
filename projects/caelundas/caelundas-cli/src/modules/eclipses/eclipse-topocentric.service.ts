@@ -50,8 +50,7 @@ export class EclipseTopocentricService {
   // 🔐 Private Fields
 
   /**
-   * The observer's solar eclipse: its local type from its first minute, and the
-   * last minute seen, so its phases share one title.
+   * Solar eclipse in progress: first-minute type and last minute seen.
    */
   private solarOccurrence: EclipseOccurrence<SolarEclipseType> | null = null;
 

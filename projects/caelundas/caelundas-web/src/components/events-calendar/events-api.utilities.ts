@@ -50,8 +50,8 @@ export async function describeDataset(): Promise<EventsDataset | null> {
 }
 
 /**
- * Reads the events that overlap a period and meet a filter, earliest first,
- * each with the group keys it falls in at every level of the grouping.
+ * Reads the events overlapping a period and matching a filter, each with its
+ * group keys.
  */
 export async function findEvents(
   query: EventsReadQuery,
@@ -119,9 +119,8 @@ export async function findViewWindows(
 }
 
 /**
- * Runs one typed GraphQL operation against the Caelundas API, at the address
- * the `VITE_CAELUNDAS_API_URL` build variable gives or else the local
- * default, and returns its data, throwing the first error the API reports.
+ * Runs a typed GraphQL operation at `VITE_CAELUNDAS_API_URL`, throwing the
+ * first error the API reports.
  */
 export async function queryApi<
   TResult,

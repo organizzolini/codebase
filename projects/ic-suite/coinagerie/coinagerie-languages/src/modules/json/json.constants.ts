@@ -5,10 +5,7 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 /** The extensions JSON documents are written with. */
 export const JSON_EXTENSIONS: readonly string[] = [".json", ".jsonc"];
 
-/**
- * Comments (JSONC) and quoted strings. A string followed by a colon is a key;
- * values are never names.
- */
+/** JSONC comments; strings before a colon are keys. */
 export const JSON_GRAMMAR: LexicalGrammar = {
   keys: [{ after: /\s*:/y }],
   rules: [
@@ -18,8 +15,5 @@ export const JSON_GRAMMAR: LexicalGrammar = {
   ],
 };
 
-/**
- * The literal words of JSON, lowercased. A plain array, so spreading it into
- * `exclude.words` excludes nothing extra.
- */
+/** JSON literal words, lowercased. Spreading into `exclude.words` excludes nothing extra. */
 export const JSON_KEYWORDS: string[] = ["false", "null", "true"];

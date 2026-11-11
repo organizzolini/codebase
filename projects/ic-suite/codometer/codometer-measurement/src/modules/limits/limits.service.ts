@@ -20,10 +20,9 @@ import type {
 /**
  * Holds measured metrics to the limits declared against them.
  *
- * Every metric is addressable, whichever analysis produced it, by a dotted
- * path of target name and metric path. Nothing here decides what a breach
- * costs: it reports which limits were exceeded and how badly, and what that is
- * worth is the caller's to say.
+ * Every metric is addressable by a dotted path of target and metric name.
+ * Nothing here decides what a breach costs: it reports which limits were
+ * exceeded and by how much; the caller decides the rest.
  */
 @Injectable()
 export class LimitsService {

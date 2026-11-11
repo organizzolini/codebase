@@ -4,13 +4,7 @@ import type { Coordinates, Longitude } from "../ephemeris/ephemeris.types";
 import type { NeighborValues } from "./math.types";
 
 /**
- * NestJS provider exposing mathematical utility functions for astronomical calculations.
- *
- * Provides injectable access to angle normalization, angular distance, extremum detection,
- * and combinatorics utilities used across event detection services.
- *
- * Arc measurement constants are `static readonly` so they can be referenced in
- * static class fields of consumer services without requiring DI injection.
+ * NestJS provider for astronomical math: angle normalization, angular distance, extremum detection and combinatorics. Arc constants are `static readonly` so consumers can use them in static fields without DI.
  */
 @Injectable()
 export class MathService {

@@ -6,7 +6,7 @@
 export const CLUSTER_ID_PREFIX = "cluster:";
 
 /**
- * Event kinds merged into one: the aspects, which differ only in the bodies they join. Others never merge.
+ * Aspect kinds that merge; other kinds never do.
  */
 export const CLUSTERED_KIND_PATHS: ReadonlySet<string> = new Set([
   "Type / Aspect / Compound Aspect",
@@ -16,8 +16,7 @@ export const CLUSTERED_KIND_PATHS: ReadonlySet<string> = new Set([
 ]);
 
 /**
- * The least span a cluster of instants is drawn with, so it has a body to
- * read.
+ * The least span a cluster of instants is drawn with.
  */
 export const CLUSTER_MINIMUM_MILLISECONDS = 30 * 60_000;
 

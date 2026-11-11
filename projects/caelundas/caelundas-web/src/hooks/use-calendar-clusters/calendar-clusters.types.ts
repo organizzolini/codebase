@@ -3,8 +3,7 @@ import type { CalendarEventRecord } from "../../components/events-calendar/calen
 // 🏷️ Types
 
 /**
- * The events a view draws once similar ones are merged, and what each
- * merged one stands for.
+ * Events to draw after merging, and each merge's members.
  */
 export interface ClusteredEvents {
   /**

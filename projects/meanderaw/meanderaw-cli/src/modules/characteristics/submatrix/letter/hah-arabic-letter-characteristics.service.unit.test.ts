@@ -7,9 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ح (final Arabic hah) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ح (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -54,9 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "hahFinal",
 };
 
-/**
- * Each distinct orientation of the ح (initial Arabic hah) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ح (initial form). */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -95,9 +91,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "hahInitial",
 };
 
-/**
- * Each distinct orientation of the ح (isolated Arabic hah) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ح (isolated form). */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -142,9 +136,7 @@ const ISOLATED_FORM: LetterFormFixture = {
   prefix: "hahIsolated",
 };
 
-/**
- * Each distinct orientation of the ح (medial Arabic hah) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ح (medial form). */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [
     {

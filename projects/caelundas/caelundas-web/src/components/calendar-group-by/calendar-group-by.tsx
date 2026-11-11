@@ -17,8 +17,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The tag roots the data has, the grouping shown, and where to send a
- * changed one.
+ * The data's facets, the grouping shown, and the change handler.
  */
 export interface CalendarGroupByProperties {
   className?: string;

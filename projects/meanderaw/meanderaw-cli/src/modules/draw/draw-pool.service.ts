@@ -15,11 +15,10 @@ import type { Environment } from "../enumeration/enumeration.types";
 import type { DrawWorkerReply, DrawWorkerTask } from "./draw.types";
 
 /**
- * Draws a shape's meanders across worker threads and hands its rows back a
- * wave of batches at a time, in the order a single thread would draw them.
+ * Draws a shape's meanders across worker threads, in single-thread order.
  *
- * Threads are kept for the whole draw run; {@link close} ends them. With no
- * workers configured, the same service runs in-process.
+ * Threads live for the whole draw run; {@link close} ends them.
+ * With no workers configured, the same service runs in-process.
  */
 @Injectable()
 export class DrawPoolService implements OnModuleDestroy {
@@ -38,7 +37,7 @@ export class DrawPoolService implements OnModuleDestroy {
 
   // 🔐 Private Fields
 
-  /** How many threads draw a shape, read once from `DRAW_WORKERS`; zero draws in-process. */
+  /** Threads per shape, from `DRAW_WORKERS`; zero draws in-process. */
   private readonly workerCount: number;
 
   /** The live threads, spawned by the first shape that needs them. */

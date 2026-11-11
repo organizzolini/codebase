@@ -1,8 +1,7 @@
 // 🏷️ Types
 
 /**
- * The settings the API draws the sky from: those of the link but its
- * opacities, which the page applies and the API never sees.
+ * Settings the API draws from: the link's, minus opacities.
  */
 export type NightSkyDrawing = Omit<
   NightSkyOverrides,
@@ -10,8 +9,7 @@ export type NightSkyDrawing = Omit<
 >;
 
 /**
- * The backdrop's settings after the link's `sky.*` keys are applied over the
- * defaults.
+ * The backdrop's settings, with the link's `sky.*` keys applied.
  */
 export interface NightSkyOverrides {
   backgroundBottomColor: string;
@@ -54,7 +52,7 @@ export interface NightSkyOverrides {
 }
 
 /**
- * The night sky the hook built: its SVG markup, or nothing when there is none to draw.
+ * The hook's sky: SVG markup, or nothing when there is none.
  */
 export interface UseNightSkyResult {
   /**

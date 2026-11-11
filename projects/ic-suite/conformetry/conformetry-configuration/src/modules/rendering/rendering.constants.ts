@@ -2,10 +2,7 @@
 
 import type { RenderOptions } from "mustache";
 
-/**
- * Options for every render. Escaping is off: HTML-escaping would turn `&` into
- * `&amp;` in generated source. Per-call options leave mustache's global `escape` alone.
- */
+/** Render options; HTML escaping is off so `&` stays literal. */
 export const MUSTACHE_RENDER_OPTIONS: RenderOptions = {
   escape: String,
 };
@@ -30,10 +27,7 @@ export class MissingSubstitutionError extends Error {
   }
 }
 
-/**
- * Matches a placeholder stand-in, to tell it from literal text. Its letter
- * prefix keeps it a legal identifier wherever it lands.
- */
+/** Matches a placeholder stand-in; its letter prefix keeps it legal. */
 export const PLACEHOLDER_VALUE_PATTERN = /conformetry[0-9a-f]{32}/g;
 
 /** The letters every placeholder value starts with. */

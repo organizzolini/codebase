@@ -5,10 +5,7 @@ import type {
   ConformetryInstanceGroup,
 } from "@conformetry/configuration";
 
-/**
- * The configuration as this plugin reads it. Authors type theirs this way so
- * instance groups are checked against what Nx can resolve.
- */
+/** Configuration as this plugin reads it, so groups match Nx. */
 export type ConformetryNxConfiguration = ConformetryNxGeneratorDefinition[];
 
 /** One generator, whose instance groups this plugin resolves against Nx. */
@@ -19,10 +16,7 @@ export interface ConformetryNxGeneratorDefinition extends Omit<
   instances?: ConformetryNxInstanceGroup[] | undefined;
 }
 
-/**
- * One instance group, a workspace glob or a project selector, told apart by
- * `tags`. No second field can disagree with the globs.
- */
+/** Instance group: a glob or selector, told apart by `tags`. */
 export type ConformetryNxInstanceGroup =
   | ConformetryNxProjectInstanceGroup
   | ConformetryNxWorkspaceInstanceGroup;

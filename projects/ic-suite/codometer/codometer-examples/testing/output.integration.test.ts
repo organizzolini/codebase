@@ -19,11 +19,7 @@ import {
 
 describe("every example configuration this package ships", () => {
   describe("the output sinks", () => {
-    /**
-     * The bare `codometer --format json` run, spawned once.
-     *
-     * Shared by two assertions, so it is not spawned twice.
-     */
+    /** Bare `codometer --format json` run, shared by two assertions. */
     let consoleRun: CodometerRun;
 
     beforeAll(() => {

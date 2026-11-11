@@ -5,12 +5,12 @@ export const MINUTE_MILLISECONDS = 60_000;
 const DAY_MINUTES = 1440;
 
 /**
- * Width of a marker on the axis, in rem: a lane's height plus a little, so neighbors do not touch.
+ * Marker width in rem, so neighbors do not touch.
  */
 export const MARKER_REM = 1.5;
 
 /**
- * Width of one column of each scale at rest, in rem, as the Gantt draws them.
+ * Column width per scale at rest, in rem.
  */
 export const TIMELINE_UNIT_WIDTHS: Readonly<Record<GanttScale, number>> = {
   day: 2.5,
@@ -21,13 +21,12 @@ export const TIMELINE_UNIT_WIDTHS: Readonly<Record<GanttScale, number>> = {
 };
 
 /**
- * How many minutes each of a day's columns lasts: the fewest the Gantt
- * draws.
+ * Minutes per day column: the Gantt's finest step.
  */
 export const TIMELINE_DAY_INTERVAL = 15;
 
 /**
- * How long one column of each scale lasts, in minutes, on the Gantt's axis.
+ * Minutes per column of each scale.
  */
 export const COLUMN_MINUTES: Readonly<Record<GanttScale, number>> = {
   day: TIMELINE_DAY_INTERVAL,

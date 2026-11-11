@@ -44,7 +44,7 @@ describe(ReportCodometerChangesService, () => {
     expect(instance).toBeInstanceOf(ReportCodometerChangesService);
   });
 
-  /** Reports over a scripted process runner, with the environment of a pull request run. */
+  /** Reports over a scripted runner, with a pull request's environment. */
   const report = async (
     script: Record<string, CapturedProcess>,
     streamStatus = 0,

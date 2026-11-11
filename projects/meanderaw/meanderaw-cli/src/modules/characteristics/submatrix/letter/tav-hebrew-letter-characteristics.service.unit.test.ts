@@ -7,7 +7,7 @@ import { TavHebrewLetterCharacteristicsService } from "./tav-hebrew-letter-chara
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the ת (Hebrew tav) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of ת as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   { fixture: "04x02y65008a10", names: ["Southeast", "NorthwestHalf"] },
   {

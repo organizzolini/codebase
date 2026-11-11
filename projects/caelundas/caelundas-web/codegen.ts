@@ -1,7 +1,7 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 /**
- * How `DateTime` and `ID` reach this client: as the JSON strings they travel as.
+ * How `DateTime` and `ID` reach the client: as JSON strings.
  */
 const scalars = {
   DateTime: { input: "string", output: "string" },
@@ -9,7 +9,7 @@ const scalars = {
 } as const;
 
 /**
- * Typed documents and MSW handlers for the operations, from the API's schema, with no extra Zod plugin.
+ * Typed documents and MSW handlers from the API's schema.
  */
 const config: CodegenConfig = {
   documents: ["src/graphql/operations/**/*.graphql"],

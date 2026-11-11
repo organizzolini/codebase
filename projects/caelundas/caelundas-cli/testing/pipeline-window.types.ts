@@ -22,7 +22,7 @@ export interface PipelineWindowOptions {
 }
 
 /**
- * A place and a short date range to sweep; `endDate` is inclusive, and equal start and end dates are refused.
+ * Place and date range to sweep; `endDate` is inclusive.
  */
 export interface PipelineWindowRequest {
   /** Last date swept, `YYYY-MM-DD`, in the observer's timezone. */

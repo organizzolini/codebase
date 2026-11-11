@@ -7,9 +7,7 @@ import { OmegaGreekLetterCharacteristicsService } from "./omega-greek-letter-cha
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the Ω (Greek omega) as a Code holding one isolated copy.
- */
+/** Each distinct orientation of Ω as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "05x03y065000cc0029a10",

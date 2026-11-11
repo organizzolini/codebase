@@ -86,10 +86,7 @@ function resolveExport(
   return undefined;
 }
 
-/**
- * The two Nx manifests this package ships: each collection key, the field naming
- * the code, and the module it lives in.
- */
+/** Nx manifests this package ships: collection keys, code fields, modules. */
 const MANIFESTS = [
   {
     codeField: "implementation",

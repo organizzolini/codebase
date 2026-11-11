@@ -27,13 +27,11 @@ import type {
 } from "@conformetry/core";
 
 /**
- * Finds the generated code a workspace holds, and decides what explains it.
+ * Finds the generated code a workspace holds, and what explains it.
  *
- * This is the workspace-facing half of discovery: the template-discovery module
- * reads the templates root, and this one reads the tree those templates were
- * rendered into. Matching lives here because every answer it produces is
- * instance-shaped — a matched instance, an unmatched one, or a ranking of
- * templates against one path.
+ * The workspace-facing half of discovery. Template discovery reads the
+ * templates root; this reads the rendered tree, and every answer is
+ * instance-shaped.
  */
 @Injectable()
 export class InstanceDiscoveryService {

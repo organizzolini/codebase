@@ -5,12 +5,8 @@ import type { SubmatrixWindow } from "../characteristics.types";
 import type { GlyphCell } from "./submatrix.types";
 
 /**
- * Shared submatrix readings every submatrix group injects: a point's Code digit
- * (`pointDigitAt`), the count of points carrying a given arm
- * (`countPointsWithArm`, every directional edge count) and of points with
- * exactly a given arm set (`countPointsWithExactArms`), and the exact
- * isolated-glyph template match (`countIsolatedGlyphs`) with the LaTeX formula
- * (`glyphFormula`) and the submatrix window (`glyphWindow`) that describe it.
+ * Shared submatrix readings every submatrix group injects: point digits, arm counts,
+ * isolated glyph matches, and the formula and window that describe them.
  */
 @Injectable()
 export class SubmatrixUtilitiesService {
@@ -20,19 +16,13 @@ export class SubmatrixUtilitiesService {
 
   // 🔐 Private Fields
 
-  /**
-   * Each template's glyph points, parsed once. Keyed weakly by the template,
-   * so a parse lives no longer than the template.
-   */
+  /** Each template's glyph points, parsed once, freed with it. */
   private readonly cellsByTemplate = new WeakMap<
     readonly string[],
     GlyphCell[]
   >();
 
-  /**
-   * Each board's digit grid, built once. Keyed weakly by the matrix. Assumes
-   * a board is never mutated after its first count.
-   */
+  /** Each board's digit grid, built once, assuming no mutation. */
   private readonly digitGrids = new WeakMap<
     Matrix,
     readonly (readonly number[])[]

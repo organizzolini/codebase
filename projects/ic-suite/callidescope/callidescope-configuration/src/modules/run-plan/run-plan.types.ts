@@ -7,9 +7,7 @@ import type {
   ResolvedCallidescopeConfiguration,
 } from "../configuration/configuration.types";
 
-/**
- * Options `depth` and `breadth` accept, scoping a lookup to one workspace. Only graph-shaping overrides appear here.
- */
+/** Lookup options `depth` and `breadth` take, scoped to one workspace. */
 export interface AddressCommandOptions {
   /** Callable addresses to report on, each `<file>#<qualified-name>`. Prompted for when empty, never refused. */
   readonly addresses?: string[] | undefined;
@@ -67,9 +65,7 @@ export interface CallidescopeCommandOptions {
   readonly write?: boolean | undefined;
 }
 
-/**
- * What a lookup's flags and configuration resolved to, minus the mode, which lookups do not have.
- */
+/** A lookup's resolved flags and configuration, without the mode. */
 export interface PreparedLookup {
   readonly authoredLimits: CallidescopeLimits | undefined;
   /** The configuration, with the scope a `--directories` flag named applied. */
@@ -95,9 +91,7 @@ export interface PreparedRun {
   readonly workspaceRoot: string;
 }
 
-/**
- * What the run does with what it traces. The four flags are independent, so none turns another on.
- */
+/** Run actions on traced code; its four flags are independent. */
 export interface RunMode {
   readonly checksBreadth: boolean;
   readonly checksDepth: boolean;
@@ -105,9 +99,7 @@ export interface RunMode {
   readonly writes: boolean;
 }
 
-/**
- * What the command line asked the run to do, and the complaints about it.
- */
+/** What the command line asked for, and its complaints. */
 export interface RunModeSelection {
   readonly errors: readonly string[];
   readonly mode: RunMode;

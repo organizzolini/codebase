@@ -51,7 +51,7 @@ const COGS: InventoriedInstance = {
 /** Standard output collected during one test. */
 const output: string[] = [];
 
-/** Every line the command wrote, joined so a single assertion can span lines. */
+/** Every line the command wrote, joined for one assertion. */
 const written = (): string => output.join("\n");
 
 /**

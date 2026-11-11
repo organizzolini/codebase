@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * One row or column of a forms table: the key its words are looked up by and
- * the label it shows.
- */
+/** A forms-table row or column: lookup key and label. */
 export interface FormsTableAxis {
   key: string;
   label: string;

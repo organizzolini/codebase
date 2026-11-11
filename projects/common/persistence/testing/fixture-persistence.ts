@@ -7,10 +7,7 @@ import { CreateParts1767225600001 } from "./fixtures/migrations/1767225600001-cr
 
 import type { PostgresConnection } from "../src/modules/postgresql/postgresql.types";
 
-/**
- * A throwaway Postgres 18 holding the `fixture` schema's `widgets` and
- * their child `parts`, for the export and import suites.
- */
+/** Throwaway Postgres 18 holding `fixture`'s `widgets` and child `parts`. */
 export interface FixtureDatabase {
   /** Closes the connection and stops the container. Safe to call once per start. */
   readonly close: () => Promise<void>;
@@ -32,10 +29,7 @@ export interface FixtureDatabase {
   readonly uri: string;
 }
 
-/**
- * Timeout for a test that runs the command line, client tools, or queries
- * against a container; CI runners are several times slower.
- */
+/** Container test timeout; CI runners run several times slower. */
 export const INTEGRATION_TEST_TIMEOUT_MILLISECONDS = 60_000;
 
 /** Starting Postgres and running the migrations takes longer than a test. */

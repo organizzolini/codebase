@@ -8,11 +8,10 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ك
- * (Arabic kaf) skeleton — final, initial, isolated, and medial — one per corner
- * and clockwise rotation, each counting that form's base template, which faces
- * Southwest, drawn that way. A letter sharing a form's skeleton, differing from
- * it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ك skeleton: final, initial, isolated, and medial.
+ * Each counts that form's base template, drawn facing Southwest.
+ *
+ * A letter differing from a form only by dots or other marks is an alias of it.
  */
 @Injectable()
 export class KafArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -60,42 +59,16 @@ export class KafArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ك (final Arabic kaf) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ╷
-   * │ ╷
-   * └─┴╴
-   * ```
-   */
+  /** Upright ك (final form) as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = ["4...", "c.4.", "a3b1"];
 
-  /**
-   * The upright ك (initial Arabic kaf) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ╶──┐
-   *   ╶┘
-   * ```
-   */
+  /** Upright ك (initial form) as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = ["2335", "..29"];
 
-  /**
-   * The upright ك (isolated Arabic kaf) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ╷
-   * │ ╷
-   * └─┘
-   * ```
-   */
+  /** Upright ك (isolated form) as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = ["4..", "c.4", "a39"];
 
-  /**
-   * The upright ك (medial Arabic kaf) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ╶──┐
-   *   ╶┴╴
-   * ```
-   */
+  /** Upright ك (medial form) as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = ["2335.", "..2b1"];
 
   // 🔑 Public Fields

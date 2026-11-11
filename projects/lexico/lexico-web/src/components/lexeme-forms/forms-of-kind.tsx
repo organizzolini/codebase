@@ -9,9 +9,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * A lexeme's part of speech and the forms it was found to have.
- */
+/** A lexeme's part of speech, and its found forms. */
 export interface FormsOfKindProperties {
   className?: string;
   partOfSpeech: string;

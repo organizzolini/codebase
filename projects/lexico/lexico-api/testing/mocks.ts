@@ -3,10 +3,7 @@ import { vi } from "vitest";
 
 import type { ObjectLiteral, QueryBuilder, Repository } from "typeorm";
 
-/**
- * Mocks TypeORM's `Repository` with a chainable `createQueryBuilder`; configure
- * terminal methods per test with `.mockResolvedValue`.
- */
+/** TypeORM `Repository` mock with chainable `createQueryBuilder`; set terminals per test. */
 export const createRepositoryMock = <
   Entity extends ObjectLiteral = ObjectLiteral,
 >(): Repository<Entity> => {

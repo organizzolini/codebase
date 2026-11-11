@@ -79,10 +79,7 @@ export class NightSkyService implements OnModuleInit {
   // 🌎 Public Methods
 
   /**
-   * Builds the night sky a query asks for, from the stars and figures held
-   * in memory, refusing input the builder cannot draw. A sky is built from
-   * its snapped input, and kept so that a repeat request, or one for a
-   * moment or size that rounds to the same, costs almost nothing.
+   * Builds the sky for a query from memory, caching by snapped input.
    */
   public build(input: NightSkyInput): NightSky {
     const snapped = this.input.snap(this.input.parse(input));

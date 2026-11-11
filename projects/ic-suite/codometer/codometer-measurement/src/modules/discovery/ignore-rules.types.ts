@@ -8,9 +8,7 @@ export interface CreateIgnoreScopeArguments {
   patterns: string[];
 }
 
-/**
- * A gitignore rule set and the directory its patterns are relative to, so `/output` claims that project's `output`.
- */
+/** `.gitignore` rules and the directory their patterns are relative to. */
 export interface IgnoreScope {
   /** Directory the patterns are relative to, `/`-separated from the walk root. `""` is the root itself. */
   directory: string;

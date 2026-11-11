@@ -3,7 +3,7 @@ import type { CalendarViewName } from "../../components/events-calendar/calendar
 // ♟️ Constants
 
 /**
- * Views whose busy days merge: the month has its own "+N more", the others list or group events.
+ * Views whose busy days merge; the month has its own list.
  */
 export const CLUSTERED_VIEWS: ReadonlySet<CalendarViewName> = new Set([
   "day",
@@ -12,7 +12,7 @@ export const CLUSTERED_VIEWS: ReadonlySet<CalendarViewName> = new Set([
 ]);
 
 /**
- * How close events must start to merge: a day needs a crowd; a week, and a phone, merge close pairs.
+ * Gap and minimum count per view for merging.
  */
 export const CLUSTER_TUNING = {
   day: { gapMinutes: 10, minimum: 4 },

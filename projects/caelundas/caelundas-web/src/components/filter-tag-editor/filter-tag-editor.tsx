@@ -10,8 +10,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * What the builder hands every value editor. Its value is read as a list of
- * tag ids, whatever the registry's type says.
+ * Value editor props; the value is a list of tag ids.
  */
 export interface FilterTagEditorProperties extends FilterEditorProps {
   /**

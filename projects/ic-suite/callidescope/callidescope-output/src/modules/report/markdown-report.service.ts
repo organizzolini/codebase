@@ -33,9 +33,8 @@ import type {
 /**
  * Renders a run, or one project's slice of it, as markdown.
  *
- * Markdown rather than a bespoke text format because the same rendering has to
- * serve three places — a terminal, a report file, and a section spliced into a
- * project's own README — and only one of those can read anything else.
+ * Markdown serves a terminal, a report file, and a section spliced into a
+ * project's README alike. Only markdown reads well in all three.
  */
 @Injectable()
 export class MarkdownReportService {

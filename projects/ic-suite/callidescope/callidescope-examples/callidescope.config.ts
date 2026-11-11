@@ -1,8 +1,7 @@
 import type { CallidescopeProjectConfiguration } from "@callidescope/configuration";
 
 /**
- * This project's own, complete configuration; a field left out is refused. Five
- * is one tighter than the workspace's six; see `examples/project-depth-limit`.
+ * Complete configuration. Five is one tighter than the workspace's six.
  */
 const callidescopeConfiguration: CallidescopeProjectConfiguration = {
   entryPoints: {

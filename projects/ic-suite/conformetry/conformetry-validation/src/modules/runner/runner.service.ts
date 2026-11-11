@@ -13,11 +13,7 @@ import type {
 /**
  * Runs a language validator over a prepared document set.
  *
- * This is the shared envelope every language package used to reimplement:
- * select the documents this validator claims, compare each one, group the
- * differences under their file, and assemble the result. Centralizing it means a
- * language package contains only its comparison logic, and that every
- * validator reports its outcome identically.
+ * The shared envelope every language package used to reimplement: selects claimed documents, compares each, groups differences by file. Language packages supply only the comparison.
  */
 @Injectable()
 export class RunnerService {

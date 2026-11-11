@@ -53,8 +53,7 @@ export class EventsService {
   // 🔏 Private Methods
 
   /**
-   * Writes an instant the GraphQL `DateTime` scalar parsed, or a string it
-   * left as is, as the ISO 8601 text Postgres reads as a `timestamptz`.
+   * Formats an instant as the ISO 8601 text Postgres reads as a timestamptz.
    */
   private toIsoString(instant: Date | string): string {
     return new Date(instant).toISOString();
@@ -72,9 +71,8 @@ export class EventsService {
   }
 
   /**
-   * The events that overlap the period and meet the filter, earliest first,
-   * each with the tags it was given and, for each level of the grouping, the
-   * group keys it falls in.
+   * Events overlapping the period and meeting the filter, earliest first, with
+   * their tags and group keys.
    */
   public async findEvents(
     period: PeriodInput,
@@ -120,8 +118,7 @@ export class EventsService {
   }
 
   /**
-   * Every tag root with the tags beneath it, each counting the events that
-   * overlap the period and meet the filter, or every event without a period.
+   * Every tag root and its tags, counting events in the period and filter.
    */
   public async findFacets(
     period?: PeriodInput,
@@ -179,9 +176,8 @@ export class EventsService {
   }
 
   /**
-   * Runs one statement with its `$n` parameters on the shared connection and
-   * parses every row with `schema`, so a column the database returns in an
-   * unexpected shape fails here rather than reaching a client.
+   * Runs one statement and parses each row with `schema`, failing on
+   * unexpected shapes.
    */
   public async select<Row>(
     sql: string,

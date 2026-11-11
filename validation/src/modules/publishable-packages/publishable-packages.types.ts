@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * One command run inside the consumer, always as an argument vector and never
- * through a shell.
- */
+/** One consumer command, run as an argument vector, never a shell. */
 export interface ConsumerCommand {
   /** Arguments passed to the executable, one element each. */
   readonly args: readonly string[];

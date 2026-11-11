@@ -3,13 +3,12 @@ import type { FilterOption } from "@codebase/presentation";
 // 🏷️ Types
 
 /**
- * Whether a tag is picked, with everything beneath it, or only some of what
- * is beneath it is, or none of it.
+ * A tag's pick state: checked, partial, or unchecked.
  */
 export type TagCheckState = "checked" | "partial" | "unchecked";
 
 /**
- * What a tag option carries beyond its label: its depth beneath the root, and its own name, which its row shows.
+ * A tag option's depth beneath the root, and its name.
  */
 export interface TagOptionData {
   depth: number;
@@ -17,8 +16,7 @@ export interface TagOptionData {
 }
 
 /**
- * Where each tag's own tags end in the depth-first list, and which tags have
- * none beneath them.
+ * Where each tag's subtree ends, and which tags are leaves.
  */
 export interface TagShape {
   end: number[];
@@ -26,7 +24,7 @@ export interface TagShape {
 }
 
 /**
- * One row of the tag picker: a tag, where it sits, and whether it is open.
+ * One tag picker row: a tag, its depth, and open state.
  */
 export interface TagTreeRow {
   depth: number;

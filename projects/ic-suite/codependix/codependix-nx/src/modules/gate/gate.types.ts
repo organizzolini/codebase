@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** Arguments for building the command line of a run whose configuration is resolved. */
+/** Arguments for building a command line from a resolved configuration. */
 export interface BuildBatchArguments {
   readonly configurationPath: string;
   readonly dependencies: boolean;

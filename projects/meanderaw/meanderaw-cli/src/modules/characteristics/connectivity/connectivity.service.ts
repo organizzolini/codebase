@@ -8,11 +8,10 @@ import type { Matrix } from "../../matrix/matrix.types";
 import type { CodeEdge, Connectivity } from "./connectivity.types";
 
 /**
- * Reads a meander Matrix as a graph and reports the three numbers no charter invariant
- * fixes: pieces, loops, and terminating points.
+ * Reads a meander Matrix as a graph and reports its pieces, loops, and terminating points.
  *
- * A Matrix is one repeat of a band: east wraps from the last column to the first, while
- * north and south do not. An edge exists when either of its ends claims it.
+ * A Matrix is one repeat of a band: east wraps from the last column to the first. An edge
+ * exists when either end claims it.
  */
 @Injectable()
 export class ConnectivityService {

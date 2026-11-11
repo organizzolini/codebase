@@ -10,8 +10,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * What the View and Color menus show and where each sends a change; the Sky
- * menu reads and writes the link itself.
+ * View and Color menu props; the Sky menu reads the link.
  */
 export interface CalendarMenusProperties {
   className?: string;

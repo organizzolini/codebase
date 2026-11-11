@@ -11,9 +11,7 @@ import YAML from "yaml";
 import { Author, Text } from "@codebase/lexico-db";
 import { LoggerService } from "@codebase/observability";
 
-/**
- * One raw EDCS API record. `inschriften` is a sparse tuple; index 0 holds the inscription text, possibly HTML-tagged.
- */
+/** Raw EDCS record; `inschriften[0]` holds the HTML-tagged text. */
 interface EpigraphikDatenbankClaussSlabyRecord {
   obj: {
     "edcs-id"?: string;

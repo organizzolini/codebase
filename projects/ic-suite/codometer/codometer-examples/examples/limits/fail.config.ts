@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * A `fail` at 20 lines and a `warn` at 10, both on one metric.
- *
- * See the [limits guide](./README.md).
- */
+// See the [limits guide](./README.md).
+/** A `fail` at 20 lines and a `warn` at 10. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   limits: [

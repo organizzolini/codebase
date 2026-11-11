@@ -25,20 +25,20 @@ import type { Type } from "@nestjs/common";
 
 // 🏷️ Types
 
-/** One alias of a letter, and every orientation name drawing the ink it reads as. */
+/** A letter alias and the orientations it reads as. */
 export interface LetterAliasFixture {
   readonly alias: string;
   readonly names: readonly LetterOrientationName[];
 }
 
-/** One positional form of a letter: the key prefix its evaluators share, each distinct orientation of its ink, and each of its aliases. */
+/** A positional form: key prefix, orientations, and aliases. */
 export interface LetterFormFixture {
   readonly aliases: readonly LetterAliasFixture[];
   readonly orientations: readonly LetterOrientationFixture[];
   readonly prefix: string;
 }
 
-/** A compiled letter service's evaluators, read by orientation name, with `form` narrowing them to one positional form's. */
+/** Evaluators read by orientation name, narrowed by `form`. */
 export interface LetterHarness extends LetterReadings {
   /** Compiles the letter service; the letter's test runs it in `beforeAll`. */
   compile(): Promise<void>;
@@ -46,13 +46,13 @@ export interface LetterHarness extends LetterReadings {
   form(prefix: string): LetterReadings;
 }
 
-/** One distinct orientation of a letter: a Code holding one isolated copy of its ink, and every orientation name drawing that ink. */
+/** A distinct orientation, as one isolated copy's Code. */
 export interface LetterOrientationFixture {
   readonly fixture: string;
   readonly names: readonly LetterOrientationName[];
 }
 
-/** A set of sixteen orientation evaluators, read by orientation name; a reading by name throws unless exactly sixteen are selected. */
+/** Orientation evaluators read by name; exactly sixteen required. */
 export interface LetterReadings {
   /** Each orientation's count of a fixture's ink, in orientation-name order. */
   counts(
@@ -103,7 +103,7 @@ export function letterHarness(
     evaluators = built.instance.evaluators;
   };
 
-  /** The readings of whichever evaluators `select` returns when a reading is taken, so a form narrowed before `compile` reads the compiled evaluators. */
+  /** Readings of `select`'s evaluators at read time, so compiles apply. */
   const readings = (
     select: () => readonly CharacteristicEvaluator<number>[],
   ): LetterReadings => {

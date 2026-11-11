@@ -18,11 +18,9 @@ import type { ValidationFileResult } from "@conformetry/core";
 /**
  * Checks that every file a project's template declares actually exists.
  *
- * This runs before any language validator, and is the only check that covers
- * *every* template file regardless of extension. A language validator only
- * sees documents whose extension it claims, so files such as `.gitignore`,
- * `.env.default`, and `pyproject.toml` were previously never checked at all —
- * a project could delete them and still validate clean.
+ * Runs before any language validator, and is the only check covering every
+ * template file regardless of extension. Validators only see their own
+ * extensions, so `.gitignore` and `pyproject.toml` went unchecked.
  */
 @Injectable()
 /* v8 ignore stop */

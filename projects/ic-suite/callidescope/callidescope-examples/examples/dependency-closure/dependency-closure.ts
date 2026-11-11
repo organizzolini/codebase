@@ -4,13 +4,9 @@ import { Injectable } from "@nestjs/common";
 import type { CallidescopeConfiguration } from "@callidescope/configuration";
 
 /**
- * The same injected hop as `injected-dependency`, made across a package
- * boundary.
+ * The same injected hop as `injected-dependency`, across a package boundary.
  *
- * `ConfigurationService` is declared in `@callidescope/configuration`, a
- * workspace package this one depends on. A run scoped to this package alone
- * follows the call into that declaration only because the dependency is in the
- * run's closure — without it, `readDepthLimit` is the last frame there is.
+ * `ConfigurationService` lives in `@callidescope/configuration`, a workspace dependency. Without it in the run's closure, `readDepthLimit` is the last frame.
  */
 @Injectable()
 export class DependencyClosureService {

@@ -11,13 +11,10 @@ import { MILLISECONDS_PER_SECOND } from "./process-runner.constants";
 import type { ProcessOptions, ProcessResult } from "./process-runner.types";
 
 /**
- * Starts the child processes setup depends on, and answers whether a command
- * exists.
+ * Starts the child processes setup depends on, and answers whether a command exists.
  *
- * Nothing else in this project touches `node:child_process`. That is what
- * lets a test stand a fake in for the whole machine: every step asks here, so
- * a recorded list of command lines is a full account of what setup would have
- * done.
+ * Nothing else in this project touches `node:child_process`, so a test can fake the whole machine
+ * here, and a recorded list of command lines shows everything setup did.
  */
 @Injectable()
 export class ProcessRunnerService {

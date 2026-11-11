@@ -1,8 +1,6 @@
 // ♟️ Constants
 
-/**
- * The roots of the tag tree, one per dimension an event is classified along; never nest one dimension under another.
- */
+/** Tag tree roots, one per dimension, never nested. */
 export const TAG_ROOT = {
   aspectHarmonic: "Aspect Harmonic",
   aspectNature: "Aspect Nature",

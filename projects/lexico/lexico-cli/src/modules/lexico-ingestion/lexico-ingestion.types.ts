@@ -8,10 +8,7 @@ export interface CommandOptionChoice {
   value: string;
 }
 
-/**
- * A string-valued flag as nest-commander hands it to `run`: the text given,
- * `true` when the flag was passed bare (`--author`), or absent when omitted.
- */
+/** String flag value: the text, `true` if bare, or absent. */
 export type CommandOptionValue = boolean | null | string | undefined;
 
 /**
@@ -25,19 +22,14 @@ export interface LexicoIngestionCommandOptions {
   wikipedia?: boolean;
 }
 
-/**
- * Inputs for asking the user to pick one choice for a missing flag value.
- */
+/** Prompt inputs for picking a missing flag value. */
 export interface SelectChoiceArguments {
   choices: CommandOptionChoice[];
   message: string;
   noSelectionTitle: string;
 }
 
-/**
- * Cached Wiktionary entry metadata. `html` is populated after the article body
- * has been fetched and written to disk.
- */
+/** Cached Wiktionary metadata; `html` is filled in after download. */
 export interface WiktionaryPage {
   category: string;
   href: string;

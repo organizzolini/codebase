@@ -3,17 +3,13 @@
 /** The project whose `CAELUNDAS_POSTGRES_*` variables, database, schema, and role every connection uses. */
 export const CAELUNDAS_PROJECT = "caelundas";
 
-/**
- * Digits a latitude or longitude column holds: nine in all, six after the point.
- */
+/** Lat/long column digits: nine in all, six after the point. */
 export const COORDINATE_PRECISION = 9;
 
 /** The digits after the point in a latitude or longitude. */
 export const COORDINATE_SCALE = 6;
 
-/**
- * Statements rebuilding the derived tag tables, in run order; names are unqualified as connections pin their search path.
- */
+/** Statements rebuilding derived tag tables, in run order; names unqualified. */
 export const READ_MODEL_STATEMENTS = [
   "delete from calendar_event_tag_nodes",
   "delete from tag_nodes",

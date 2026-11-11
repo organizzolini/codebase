@@ -2,10 +2,7 @@
 
 import type { DependencySectionName } from "./catalog-manifests.types";
 
-/**
- * Dependency sections the catalog policy covers, all four: a version pinned in
- * `peerDependencies` drifts as easily as one in `dependencies`.
- */
+/** All four dependency sections: peers drift as easily as dependencies. */
 export const DEPENDENCY_SECTION_NAMES: DependencySectionName[] = [
   "dependencies",
   "devDependencies",
@@ -16,16 +13,10 @@ export const DEPENDENCY_SECTION_NAMES: DependencySectionName[] = [
 /** The directories a workspace project may live in, nested by domain. */
 export const WORKSPACE_SCOPES = ["projects"];
 
-/**
- * Root directories that never hold a project: the install, and `projects/`,
- * searched through `WORKSPACE_SCOPES` instead. Hidden ones are skipped.
- */
+/** Root directories holding no project; hidden ones are skipped. */
 export const NON_PROJECT_ROOT_DIRECTORIES = ["node_modules", "projects"];
 
-/**
- * The scopes a workspace package name carries. Those must be pinned
- * `workspace:*`; anything else must be pinned `catalog:`.
- */
+/** Scopes marking a workspace package; those pin `workspace:*`, others `catalog:`. */
 export const INTERNAL_PACKAGE_SCOPES = [
   "@callidescope/",
   "@codebase/",
@@ -42,8 +33,5 @@ export const WORKSPACE_PROTOCOL_PREFIX = "workspace:";
 /** How an external dependency must be pinned, exactly. */
 export const CATALOG_PROTOCOL = "catalog:";
 
-/**
- * Pins the default catalog or a named one. A name is a word, never a range, so
- * `catalog:^3.0.0` is still reported.
- */
+/** A `catalog:` pin, default or named. `catalog:^3.0.0` still fails. */
 export const CATALOG_PIN_PATTERN = /^catalog:(?:[a-z][\w-]*)?$/i;

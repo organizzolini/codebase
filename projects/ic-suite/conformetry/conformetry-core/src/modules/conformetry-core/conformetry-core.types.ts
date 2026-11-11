@@ -1,10 +1,6 @@
 // 🏷️ Types
 
-/**
- * A structured conformance error produced by any validator.
- *
- * Consumers render these through `ReportingService`, so every validator reports identically.
- */
+/** A conformance error from any validator, rendered by `ReportingService`. */
 export interface ConformetryDifference {
   /** Actual value found in the instance (populated for value-mismatch differences). */
   readonly actual?: string;
@@ -40,10 +36,7 @@ export interface ConformetryDifference {
   readonly weight?: number;
 }
 
-/**
- * The language or file format of the validator that produced the error. Absent
- * for `"file"` and `"directory"` differences, which are language-agnostic.
- */
+/** Validator's language or format; absent for `"file"` and `"directory"` errors. */
 export type ConformetryDifferenceLanguage =
   | "javascript"
   | "json"
@@ -52,11 +45,7 @@ export type ConformetryDifferenceLanguage =
   | "text"
   | "typescript";
 
-/**
- * Category of the failing element. `"instance"` marks a generated-code directory
- * or file no template explains. `"placeholder"` names a placeholder no instance
- * node revealed.
- */
+/** Failing element kind: `"instance"` is unexplained output, `"placeholder"` is unrevealed. */
 export type ConformetryDifferenceType =
   | "code"
   | "comment"
@@ -66,11 +55,7 @@ export type ConformetryDifferenceType =
   | "placeholder";
 // 🏷️ Types
 
-/**
- * A validator for one language or file format.
- *
- * Implementations supply a descriptor and a single-document comparison; `RunnerService` handles everything else.
- */
+/** A validator for one format; supplies a descriptor and document comparison. */
 export interface ConformetryLanguageValidator {
   readonly descriptor: LanguageValidatorDescriptor;
   /**
@@ -90,11 +75,7 @@ export interface DirectoryEntry {
   name: string;
 }
 
-/**
- * What comparing one document produced: its differences, and the weight they were measured against.
- *
- * Conforming documents count toward the total.
- */
+/** One document's differences and the weight they were measured against. */
 export interface DocumentValidationResult {
   /**
    * The instance text each placeholder value stood for, keyed by that value.
@@ -106,11 +87,7 @@ export interface DocumentValidationResult {
   readonly totalWeight: number;
 }
 
-/**
- * Filesystem operations used by the generation runtime.
- *
- * Lets a virtual-filesystem host, such as an Nx `Tree`, run without touching disk.
- */
+/** Filesystem operations, letting a virtual host like Nx's `Tree` skip disk. */
 export interface FileSystemAdapter {
   listDirectory(directoryPath: string): Promise<DirectoryEntry[]>;
   makeDirectory(directoryPath: string): Promise<void>;
@@ -164,11 +141,7 @@ export interface GeneratorHooks {
   preGenerate?: GeneratorHook;
 }
 
-/**
- * How well one matched instance honours the template it was matched to.
- *
- * Shared by reporting and the orchestrator, so it lives in core.
- */
+/** How well a matched instance honours its template, shared across layers. */
 export interface InstanceScore {
   /** Combined weight of the requirements this instance failed. */
   readonly failedWeight: number;
@@ -185,11 +158,7 @@ export interface InstanceScore {
 }
 // 🏷️ Types
 
-/**
- * One instance on disk, paired with the templates that explain it.
- *
- * Shared by discovery and the output layer, so it lives in core.
- */
+/** An instance on disk, with the templates that explain it. */
 export interface InventoriedInstance {
   /** Where the instance is, including its name stem. */
   readonly path: string;
@@ -197,11 +166,7 @@ export interface InventoriedInstance {
   readonly templates: InventoriedPairing[];
 }
 
-/**
- * How well one template and one instance fit each other.
- *
- * The ratio is file overlap, not conformance.
- */
+/** Fit between a template and instance: file overlap, not conformance. */
 export interface InventoriedPairing {
   readonly matchedFileCount: number;
   /** Share of the template's files the instance already has, 0 to 1. */
@@ -243,11 +208,7 @@ export interface LanguageValidatorResult {
   readonly totalWeight: number;
 }
 
-/**
- * A template file paired with the instance file it governs, rendered against the project's substitutions.
- *
- * Only files present on both sides become documents.
- */
+/** A template and the instance file it governs, rendered with substitutions. */
 export interface PreparedValidationDocument {
   /** Basename of the instance file, used to pick a parser. */
   readonly filename: string;
@@ -268,10 +229,7 @@ export interface PreparedValidationPayload {
 }
 // 🏷️ Types
 
-/**
- * Every error found in one instance file, kept grouped by file so reports can
- * print a per-file heading with its originating template.
- */
+/** Errors found in one instance file, for a per-file report heading. */
 export interface ValidationFileResult {
   readonly differences: ConformetryDifference[];
   readonly filename: string;

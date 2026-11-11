@@ -22,13 +22,14 @@ import {
 import type { Environment } from "../../deployment.types";
 
 /**
- * Versions the ic-suite packages and writes their changelogs, leaving both
- * uncommitted for semantic-release's release commit.
+ * Versions ic-suite packages and their changelogs, uncommitted, for
+ * semantic-release.
  *
- * Nx's own commit and tags are off (`release.git`), so a release lands as one
- * commit. The `configuration` project is ignored for this run, so a
- * tooling-only change releases nothing. Points `origin` at the release token,
- * which later pushes keep.
+ * Nx's own commit and tags are off (`release.git`), so a release is one commit.
+ * The `configuration` project is ignored, so a tooling-only change releases
+ * nothing.
+ *
+ * Points `origin` at the release token, which later pushes keep.
  */
 @Injectable()
 export class VersionPackagesService {

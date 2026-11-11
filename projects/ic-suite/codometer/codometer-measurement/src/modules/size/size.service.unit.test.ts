@@ -33,7 +33,7 @@ vi.mock("node:fs", async (importOriginal) => {
   };
 });
 
-/** The two files every measurement here is made of, keyed by relative path. */
+/** The two files measured here, keyed by relative path. */
 const FILE_CONTENTS: Readonly<Record<string, string>> = {
   "dist/alpha.js": "export const alpha = 1;\n",
   "dist/beta.js": "export const beta = 2;\n",

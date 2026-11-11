@@ -3,9 +3,7 @@ import { z } from "zod";
 import { CAELUNDAS_PROJECT } from "@codebase/caelundas-db";
 import { postgresEnvironmentSchema } from "@codebase/persistence";
 
-/**
- * The most bind parameters one Postgres statement accepts; bulk inserts are split to stay under it.
- */
+/** Postgres bind-parameter limit; bulk inserts are split under it. */
 export const POSTGRES_MAXIMUM_PARAMETERS = 65_535;
 
 // 🌱 Add environment schema fields here

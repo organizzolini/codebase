@@ -8,11 +8,10 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ل
- * (Arabic lam) skeleton — final, initial, isolated, and medial — one per corner
- * and clockwise rotation, each counting that form's base template, which faces
- * Southwest, drawn that way. A letter sharing a form's skeleton, differing from
- * it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ل skeleton: final, initial, isolated, and medial.
+ * Each counts that form's base template, drawn facing Southwest.
+ *
+ * A letter differing from a form only by dots or other marks is an alias of it.
  */
 @Injectable()
 export class LamArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -59,14 +58,7 @@ export class LamArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /** The upright ل (final Arabic lam) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *   ╷
-   *   │
-   * ╷ │
-   * └─┴╴
-   * ```
-   */
+  /** Upright ل (final form) as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [
     "..4.",
     "..c.",
@@ -74,14 +66,7 @@ export class LamArabicLetterCharacteristicsService implements CharacteristicEval
     "a3b1",
   ];
 
-  /** The upright ل (initial Arabic lam) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *  ╷
-   *  │
-   *  │
-   * ╶┘
-   * ```
-   */
+  /** Upright ل (initial form) as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = [
     ".4",
     ".c",
@@ -89,14 +74,7 @@ export class LamArabicLetterCharacteristicsService implements CharacteristicEval
     "29",
   ];
 
-  /** The upright ل (isolated Arabic lam) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *   ╷
-   *   │
-   * ╷ │
-   * └─┘
-   * ```
-   */
+  /** Upright ل (isolated form) as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = [
     "..4",
     "..c",
@@ -104,14 +82,7 @@ export class LamArabicLetterCharacteristicsService implements CharacteristicEval
     "a39",
   ];
 
-  /** The upright ل (medial Arabic lam) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *  ╷
-   *  │
-   *  │
-   * ╶┴╴
-   * ```
-   */
+  /** Upright ل (medial form) as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = [
     ".4.",
     ".c.",

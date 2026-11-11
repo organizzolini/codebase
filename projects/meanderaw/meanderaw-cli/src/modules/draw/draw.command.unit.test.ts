@@ -64,7 +64,7 @@ describe(DrawCommand, () => {
   let drawAll: Mock<() => Promise<number>>;
   let logger: BuiltTestingModule<DrawCommand>["logger"];
 
-  /** The collaborators `DrawCommand` is built with, each answering with the mock functions above. */
+  /** `DrawCommand` collaborators, answering with the mocks above. */
   const moduleOptions = (): TestingModuleOptions => ({
     providers: [
       {

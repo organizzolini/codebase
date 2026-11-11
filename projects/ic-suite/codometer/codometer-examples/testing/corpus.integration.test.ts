@@ -24,11 +24,7 @@ import {
  * cares about.
  */
 
-/**
- * The corpus measured once, with the package's own configuration.
- *
- * Each spawn is slow, so every test below reads this one report.
- */
+/** The corpus, measured once, since each spawn is slow. */
 let corpusReport: CodometerReport;
 
 describe("the sample corpus and the counts its guides quote", () => {

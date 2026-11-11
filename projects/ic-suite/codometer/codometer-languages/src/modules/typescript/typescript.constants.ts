@@ -8,11 +8,7 @@ import type {
   CodometerSymbolModifier,
 } from "@codometer/core";
 
-/**
- * The declaration kind each syntax kind is counted as.
- *
- * Syntactic: a callable in a class body is a `method`, else a `function`.
- */
+/** Declaration kind per syntax kind; class-body callables count as `method`. */
 export const SYMBOL_KIND_BY_SYNTAX_KIND: Partial<
   Record<number, CodometerSymbolKind>
 > = {
@@ -34,7 +30,7 @@ export const SYMBOL_KIND_BY_SYNTAX_KIND: Partial<
   [tsCompiler.SyntaxKind.VariableStatement]: "variable",
 };
 
-/** Matches the text after a comment when a blank line follows it at once. */
+/** Matches comment text when a blank line follows it immediately. */
 export const DETACHED_COMMENT_REGEX = /^[^\S\n]*\n[^\S\n]*\n/u;
 
 /** The modifier each modifier keyword is counted as. */

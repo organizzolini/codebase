@@ -14,9 +14,7 @@ import type {
   WriteMarkdownOutput,
 } from "./configuration.types";
 
-/**
- * Configuration file names, in search order. TypeScript comes first, for its type checking.
- */
+/** File names in search order. TypeScript first, for type checking. */
 export const CONFIGURATION_FILE_NAMES = [
   "callidescope.config.ts",
   "callidescope.config.mts",
@@ -40,10 +38,7 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
   ".ts",
 ]);
 
-/**
- * Files that mark a repository root. `package.json` is absent: every package
- * has one, so it would stop the walk early.
- */
+/** Repository root markers. `package.json` is absent: every package has one. */
 export const REPOSITORY_ROOT_MARKERS = [".git", "pnpm-workspace.yaml"] as const;
 
 /** Directories no repository wants traced, kept out even when unmentioned. */
@@ -56,7 +51,7 @@ export const DEFAULT_EXCLUDE_GLOBS = [
   "**/output/**",
 ] as const;
 
-/** Frames a call stack may hold before it is reported, counting the entry point. */
+/** Frames a call stack may hold, counting its entry point. */
 export const DEFAULT_MAXIMUM_DEPTH = 6;
 
 /** Decorators whose methods a framework invokes, making them stack roots. */
@@ -79,7 +74,7 @@ export const DEFAULT_ENTRY_POINT_DECORATORS = [
 /** Spaces used to indent the JSON report. */
 export const DEFAULT_JSON_INDENTATION = 2;
 
-/** Every format a run may print, in the order a prompt offers them. */
+/** Every format a run prints, in prompt order. */
 export const CALLIDESCOPE_OUTPUT_FORMATS = [
   "markdown",
   "mermaid",
@@ -92,7 +87,7 @@ export const DEFAULT_OUTPUT_FORMAT = "markdown";
 /** Heading the section embedded in a project README is written under. */
 export const DEFAULT_PROJECT_README_HEADING = "## 🔭 Callidescope";
 
-/** Heading of a whole-run markdown block; level one, since the block usually fills its file. */
+/** Whole-run markdown heading, level one: the block fills its file. */
 export const DEFAULT_RUN_HEADING = "# 🔭 Callidescope";
 
 /** Stacks a README section shows before the rest fold into a disclosure. */
@@ -106,13 +101,13 @@ export const DEFAULT_MARKDOWN_END_MARKER = "<!-- callidescope:end -->";
 
 // 🔒 Project Configuration
 
-/** Joins names into an English list; `Intl.ListFormat` needs no guard for the empty or single-name case. */
+/** English list joiner; `Intl.ListFormat` needs no empty-case guard. */
 const FIELD_LIST_FORMAT = new Intl.ListFormat("en", {
   style: "long",
   type: "conjunction",
 });
 
-/** Names a field contributes to the permitted set; a member-classified field yields dotted names such as `write.markdown`. */
+/** Names a field adds; member fields are dotted, as `write.markdown`. */
 const readPermittedNames = (args: {
   field: string;
   permission: ProjectFieldPermission | Record<string, ProjectFieldPermission>;
@@ -126,9 +121,7 @@ const readPermittedNames = (args: {
     .map(([member]) => `${args.field}.${member}`);
 };
 
-/**
- * Whether a project may set each run-level field. Keyed by the interface, so new fields must be classified.
- */
+/** Whether a project may set each field. Keyed by interface. */
 export const PROJECT_CONFIGURATION_FIELD_PERMISSIONS = {
   directories: "forbidden",
   entryPoints: "permitted",
@@ -147,26 +140,26 @@ export const PROJECT_CONFIGURATION_FIELD_PERMISSIONS = {
   | Record<keyof CallidescopeWriteConfiguration, ProjectFieldPermission>
 >;
 
-/** Fields classified a member at a time rather than whole. Derived, so it cannot drift from the permissions record. */
+/** Fields classified per member. Derived, so it cannot drift. */
 export const PROJECT_CONFIGURATION_NESTED_FIELD_NAMES = new Set(
   Object.entries(PROJECT_CONFIGURATION_FIELD_PERMISSIONS)
     .filter(([, permission]) => typeof permission !== "string")
     .map(([field]) => field),
 );
 
-/** Names a project may set, looked up by a field name read from a file. Unknown names are refused. */
+/** Settable names by field; unknown names are refused. */
 export const PROJECT_CONFIGURATION_PERMITTED_FIELD_NAMES = new Set(
   Object.entries(PROJECT_CONFIGURATION_FIELD_PERMISSIONS).flatMap(
     ([field, permission]) => readPermittedNames({ field, permission }),
   ),
 );
 
-/** Permitted field names printed in a refusal, derived from the permissions so the two cannot disagree. */
+/** Refusal-printed field names, derived so they cannot disagree. */
 export const PROJECT_CONFIGURATION_PERMITTED_FIELDS = FIELD_LIST_FORMAT.format(
   PROJECT_CONFIGURATION_PERMITTED_FIELD_NAMES,
 );
 
-/** Names a project's configuration must set, written out since types vanish at runtime. Checked for presence, never emptiness. */
+/** Required names, listed since types vanish at runtime. Presence only. */
 export const PROJECT_CONFIGURATION_REQUIRED_FIELDS = {
   entryPoints: [
     "addresses",
@@ -196,13 +189,13 @@ export class UnknownConfigurationFileTypeError extends Error {
   }
 }
 
-/** Accepts any function, since Zod cannot describe a callback and parsing one would wrap it. */
+/** Any function: Zod cannot describe callbacks, and parsing wraps them. */
 const callbackSchema = <TCallback>(): z.ZodType<TCallback> =>
   z.custom<TCallback>((value) => typeof value === "function", {
     message: "Expected a function",
   });
 
-/** The two limits a configuration may declare; strict, so an unknown limit is refused rather than dropped. */
+/** The two declarable limits. Strict: unknown limits are refused. */
 const limitsSchema = z
   .strictObject({
     maximumBreadth: z.number().int().positive().optional(),
@@ -220,7 +213,7 @@ const entryPointsSchema = z
   })
   .optional();
 
-/** A marker-delimited block in a markdown file, shared by the `markdown` and `mermaid` destinations. */
+/** Marker-delimited markdown block, shared by `markdown` and `mermaid` destinations. */
 const markdownDestinationSchema = z
   .strictObject({
     description: z.string().optional(),
@@ -247,7 +240,7 @@ const writeSchema = z
   })
   .optional();
 
-/** Validates a callidescope configuration file; strict at every level, so unknown fields are refused, not stripped. */
+/** Validates a configuration file; strict, so unknown fields are refused. */
 export const callidescopeConfigurationSchema = z.strictObject({
   directories: z.array(z.string()).optional(),
   entryPoints: entryPointsSchema,
@@ -275,9 +268,7 @@ export class ConfigurationFileNotFoundError extends Error {
 /**
  * Raised when a project's own configuration file cannot be read or parsed.
  *
- * Names the project rather than only the path, because a run resolves a file
- * per project and the failure has to say which one to go and fix. The original
- * failure is kept as `cause` so nothing a reader would need is thrown away.
+ * Names the project, not only the path, since a run resolves a file per project. The original failure is kept as `cause`.
  */
 export class ProjectConfigurationError extends Error {
   constructor(args: {
@@ -316,10 +307,7 @@ export class ProjectConfigurationFieldNotPermittedError extends Error {
 /**
  * Raised when a traced project's configuration leaves a field out.
  *
- * Names the field as a reader has to type it to fix the file — `write.mermaid`
- * rather than `write` — and points at the spread that supplies every field a
- * project has no opinion about, because the fix is almost always that one line
- * rather than a field written out by hand.
+ * Names the field as a reader types it to fix the file, such as `write.mermaid`. The fix is usually the spread that supplies every field a project has no opinion about.
  */
 export class ProjectConfigurationIncompleteError extends Error {
   constructor(args: { field: string; project: string }) {
@@ -333,10 +321,7 @@ export class ProjectConfigurationIncompleteError extends Error {
 /**
  * Raised when a traced project has no configuration file at all.
  *
- * A project that is traced is judged, and what it is judged by is written in
- * its own file or nowhere. Inheriting everything in silence is the arrangement
- * this replaces: it left a project's numbers resolvable only by reading two
- * files and knowing which one won.
+ * A traced project is judged by what its own file says, or by nothing. Inheriting silently, which this replaces, left numbers resolvable only by reading two files.
  */
 export class ProjectConfigurationMissingError extends Error {
   constructor(project: string) {

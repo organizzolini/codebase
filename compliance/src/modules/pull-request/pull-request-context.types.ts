@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** The live state of one pull request, as every later phase reads it. */
+/** The live state of one pull request, shared by every phase. */
 export interface PullRequestContext {
   readonly assignees: readonly string[];
   readonly author: string;

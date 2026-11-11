@@ -7,13 +7,9 @@ import type { MatchedInstance } from "@conformetry/configuration";
 import type { ValidationFileResult } from "@conformetry/core";
 
 /**
- * Collapses the findings of overlapping instances into one report.
+ * Collapses findings of overlapping instances into one report.
  *
- * One file is usually covered by several instances — `logger.service.ts` is
- * reached by the project glob, the module glob, and the service-file glob —
- * and each of those matches a different template. Reporting all three would
- * print the same defect three times, phrased against templates of wildly
- * different size.
+ * A file is often matched by several instances. Reporting each would repeat one defect per template.
  */
 @Injectable()
 export class ValidationDeduplicationService {

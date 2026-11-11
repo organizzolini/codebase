@@ -24,9 +24,8 @@ import type {
 /**
  * Scopes a run's findings to the project each one came from.
  *
- * A section embedded in a project's README should describe that project, not
- * the workspace it happens to sit in, so everything here is keyed on the
- * project the entry point — or the reported callable — belongs to.
+ * A project's README section should describe that project, not the workspace it
+ * sits in, so everything is keyed on the owning project of the entry point or callable.
  */
 @Injectable()
 export class ProjectReportsService {

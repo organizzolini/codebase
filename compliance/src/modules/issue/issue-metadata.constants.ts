@@ -1,16 +1,16 @@
 // ♟️ Constants
 
-/** The `gh` binary a live read runs through, named so a test can shadow it on PATH. */
+/** The `gh` binary live reads run, so tests can shadow it. */
 export const GITHUB_CLI_BINARY = "gh";
 
-/** The variable GitHub Actions sets to the file a step's summary is read from. */
+/** The variable GitHub Actions sets to the step summary file. */
 export const STEP_SUMMARY_VARIABLE = "GITHUB_STEP_SUMMARY";
 
-/** Said when the mirror fails, so a silent summary is never a silent bug. */
+/** Said when the mirror fails, so no failure stays silent. */
 export const STEP_SUMMARY_FAILURE_MESSAGE =
   "⚠️ Unable to write the report to GITHUB_STEP_SUMMARY";
 
-/** The two labels that may declare who opened an issue, and nothing else. */
+/** The two labels that may name who opened an issue. */
 export const SOURCE_LABELS = ["source:agent", "source:human"];
 
 /** How the three label families are recognized. */
@@ -18,10 +18,7 @@ export const SCOPE_LABEL_PREFIX = "scope:";
 export const SOURCE_LABEL_PREFIX = "source:";
 export const TYPE_LABEL_PREFIX = "type:";
 
-/**
- * Exact labels of the `issue.yml` Type and Scope dropdowns. GitHub renders
- * them as `### <label>`, so these must match that file exactly.
- */
+/** Exact `issue.yml` dropdown labels, which GitHub renders as headings. */
 export const TYPE_FIELD_LABEL = "Type";
 export const SCOPE_FIELD_LABEL = "Scope";
 
@@ -40,10 +37,10 @@ export const PARENT_ISSUE_PATTERN =
 export const CONVENTIONAL_ISSUE_TITLE_PATTERN =
   /^([a-z][a-z-]*)(?:\(([^()]+)\))?(?<breaking>!)?:\s+(?<subject>\S.*)$/u;
 
-/** Maximum allowed nesting depth in the issue hierarchy (Spec -\> PR -\> Commit). */
+/** Maximum nesting depth of the issue hierarchy, Spec to Commit. */
 export const MAX_HIERARCHY_DEPTH = 3;
 
-/** Issue Types a root issue (one with no parent) may carry: a spec or standalone report. */
+/** Issue Types a root issue may carry: spec or report. */
 export const ROOT_ISSUE_TYPES = ["Bug", "Feature"];
 
 /** The GitHub Issue Type every sub-issue carries, at any depth. */

@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * The same inputs with every `include` written backwards, which changes nothing.
- *
- * See the [targets guide](./README.md).
- */
+// See the [targets guide](./README.md).
+/** The same inputs with every `include` written backwards, which changes nothing. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

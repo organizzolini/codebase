@@ -1,7 +1,4 @@
 // ♟️ Constants
 
-/**
- * Combining marks that carry a macron once a string is decomposed to NFD.
- * Matches what `lexico-cli` strips from stored lemmas and words.
- */
+/** NFD combining marks that make a macron; matches `lexico-cli` stripping. */
 export const COMBINING_DIACRITICS_PATTERN = /[̀-ͯ]/gu;

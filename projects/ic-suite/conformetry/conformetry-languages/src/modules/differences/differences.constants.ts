@@ -5,17 +5,11 @@ import type {
   ConformetryDifferenceType,
 } from "@conformetry/core";
 
-/**
- * Every recognized error language, used to narrow untrusted payloads such as
- * the JSON returned by the Python validator bridge.
- */
+/** Recognized error languages, for narrowing untrusted payloads. */
 export const CONFORMETRY_ERROR_LANGUAGES: readonly ConformetryDifferenceLanguage[] =
   ["javascript", "json", "markdown", "python", "text", "typescript"];
 
-/**
- * Every recognized error category. Unknown categories are coerced to `"code"`, so
- * a validator cannot crash the run by emitting one.
- */
+/** Recognized error categories; unknown ones coerce to `"code"`. */
 export const CONFORMETRY_ERROR_TYPES: readonly ConformetryDifferenceType[] = [
   "code",
   "comment",

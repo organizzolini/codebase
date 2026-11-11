@@ -13,7 +13,7 @@ import { ReportFindingsService } from "./report-findings.service";
 import type { ReportFindingsArguments } from "./report-findings.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
-/** A run mode with every gate off, so a test opts into the one it checks. */
+/** A run mode with every gate off; tests opt into one gate. */
 const CLEAN_MODE: ReportFindingsArguments["mode"] = {
   checksBreadth: false,
   checksDepth: false,

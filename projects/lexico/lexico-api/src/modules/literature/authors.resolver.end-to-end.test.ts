@@ -28,7 +28,7 @@ interface AuthorTextNode {
   readonly slug: string;
 }
 
-/** Looks up one author, with every text they wrote and each text's parent. */
+/** Looks up one author, their texts, and each text's parent. */
 const AUTHOR = `
   query Author($id: ID, $slug: String, $lookup: AuthorLookupInput) {
     author(id: $id, slug: $slug, lookup: $lookup) {

@@ -23,10 +23,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The sidebar reads the open page from the router and its state from the
- * surrounding `SidebarProvider`, so it takes nothing else.
- */
+/** Reads the open page and state from router and `SidebarProvider`. */
 export interface ApplicationSidebarProperties {
   className?: string;
 }

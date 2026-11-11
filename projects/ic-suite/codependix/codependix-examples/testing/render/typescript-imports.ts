@@ -12,10 +12,7 @@ import type {
 
 // 🏷️ Types
 
-/**
- * A statement that deliberately draws no edge. The table is rendered from this list,
- * and the same run reads the files it names.
- */
+/** An import statement that deliberately draws no edge. */
 interface NonEdgeCase {
   readonly file: string;
   readonly reason: string;
@@ -38,10 +35,7 @@ const RESOLUTION_PROJECT = "resolution";
 /** Project whose `tsconfig.json` the compiler refuses to parse. */
 const BROKEN_PROJECT = "broken";
 
-/**
- * Specifiers that draw no edge. A resolver change that starts drawing one fails
- * the example.
- */
+/** Specifiers that draw no edge; drawing one fails the example. */
 const NON_EDGE_CASES: NonEdgeCase[] = [
   {
     file: "src/re-exported.ts",
@@ -67,10 +61,7 @@ const NON_EDGE_CASES: NonEdgeCase[] = [
 
 // 🕸️ Graphs
 
-/**
- * Graphs already built, keyed by project root. Parsing the default library is
- * slow, and the same projects are asked for repeatedly.
- */
+/** Built graphs, keyed by project root, since parsing is slow. */
 const graphsByRoot = new Map<string, TypescriptImportGraph>();
 
 /** Builds one project's import graph, given its root on disk. */

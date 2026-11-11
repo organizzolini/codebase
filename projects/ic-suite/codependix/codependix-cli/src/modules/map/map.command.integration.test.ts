@@ -24,10 +24,7 @@ import { MapCommand } from "./map.command";
 import type { CapturedOutput } from "@codebase/testing";
 import type { MapCommandOptions } from "@codependix/configuration";
 
-/**
- * A fixture Nx project graph, standing in for `nx graph --file`. The fixture
- * tree runs with no real Nx workspace under it.
- */
+/** Fake Nx project graph, standing in for `nx graph --file`. */
 const PROJECT_GRAPH = {
   dependencies: {},
   nodes: {

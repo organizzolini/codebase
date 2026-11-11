@@ -1,5 +1,5 @@
 /**
- * One group an event falls in at a grouping level: a tag with its path, or a value derived from its times.
+ * A group an event falls in: a tag or derived value.
  */
 export interface CalendarEventGroupKey {
   key: string;
@@ -12,8 +12,7 @@ export interface CalendarEventGroupKey {
 }
 
 /**
- * One astronomical event as the calendar shows it. `start` and `end` are
- * equal for an instant, and `timezone` is the observer's IANA zone.
+ * An astronomical event; equal start and end mark an instant.
  */
 export interface CalendarEventRecord {
   color: null | string;
@@ -52,7 +51,7 @@ export interface CalendarEventTag {
 }
 
 /**
- * One tag root and every tag beneath it, so filters offer a field per root without knowing roots ahead.
+ * A tag root and every tag beneath it.
  */
 export interface EventFacet {
   id: string;
@@ -84,7 +83,7 @@ export interface EventFacetValue {
 }
 
 /**
- * The span the dataset covers and its events' zone, to tell "nothing matches" apart from "outside the data".
+ * The span the data covers, and its zone.
  */
 export interface EventsDataset {
   count: number;

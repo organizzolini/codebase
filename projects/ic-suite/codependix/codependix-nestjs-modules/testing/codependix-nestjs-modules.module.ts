@@ -3,10 +3,7 @@ import { Module } from "@nestjs/common";
 /**
  * Fixture root module for `NestjsProjectService` unit tests.
  *
- * `exploreProject` dynamically imports whatever `rootModuleFile` a project
- * reports, so a test exercising the success path needs a real file on disk
- * exporting a real `MainModule` class rather than a mock — this package holds
- * no root module of its own, being a library rather than a CLI.
+ * `exploreProject` imports the reported `rootModuleFile` dynamically, so the success path needs a real `MainModule` file on disk, not a mock.
  */
 @Module({})
 export class MainModule {}

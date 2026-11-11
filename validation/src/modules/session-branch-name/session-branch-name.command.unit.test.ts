@@ -17,7 +17,7 @@ import { SessionBranchNameService } from "./session-branch-name.service";
 
 import type { GitResult } from "./session-branch-name.types";
 
-/** The repository this suite runs in, whose real branch rules are read too. */
+/** The repository this suite runs in, whose branch rules are read. */
 const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "../../../..");
 
 const RENAME_DIRECTIVE =

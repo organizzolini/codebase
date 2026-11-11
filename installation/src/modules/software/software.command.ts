@@ -7,12 +7,10 @@ import { SoftwareNamedService } from "./software-named.service";
 import { SoftwareService } from "./software.service";
 
 /**
- * CLI command that installs the developer tools that come after Node, and makes SSH commit
- * signatures verifiable.
+ * CLI command that installs developer tools and makes SSH commit signatures verifiable.
  *
  * With no names, installs the platform's default set and starts the Ollama and Docker daemons on a Mac.
- * With names, such as `software gitleaks trivy postgres-client`, installs only those.
- * Exits non-zero at the first install that fails. Rerunning is safe.
+ * With names, installs only those. Exits non-zero at the first failed install. Rerunning is safe.
  */
 @Command({
   arguments: "[names...]",

@@ -18,7 +18,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The skeleton's class name and the view it stands in for; without one, the view the page opens on at this width.
+ * The view it stands in for; the default view when absent.
  */
 export interface CalendarSkeletonProperties {
   className?: string;

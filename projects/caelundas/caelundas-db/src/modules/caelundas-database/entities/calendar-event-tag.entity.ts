@@ -8,10 +8,7 @@ import type { Relation } from "typeorm";
 /**
  * One row of the `calendar_event_tags` join table: an event carrying a tag.
  *
- * The key is the pair, so an event carries a tag at most once, and both
- * sides cascade on delete. The primary key leads with the event, which
- * serves reading an event's tags, so a second index leads with the tag,
- * which serves finding the events that carry one.
+ * The key is the pair, so an event carries a tag once; both sides cascade on delete. The primary key leads with the event; a second index leads with the tag.
  */
 @Entity()
 @Index("calendar_event_tags_tag_id_calendar_event_id", [

@@ -12,12 +12,11 @@ import type { Glossary } from "@coinagerie/core";
 
 /**
  * Renders and parses the JSON glossary: a flat object sorted by word, each
- * value the definition or `""` when there is none yet.
+ * value a definition or empty.
  *
- * The whole file is the glossary, so writing replaces it. Parsing is strict
- * on purpose, like the markdown format: anything it cannot read is refused
- * rather than dropped, because a dropped word reads as stale and writing
- * would delete its definition.
+ * The whole file is the glossary, so writing replaces it. Parsing is strict:
+ * anything unreadable is refused, not dropped, since a dropped word would lose
+ * its definition.
  */
 @Injectable()
 export class JsonService implements GlossaryFormatHandler {

@@ -7,13 +7,10 @@ import { TERM_LENGTH_PATTERN } from "../words/words.constants";
 import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration";
 
 /**
- * Folds the surface forms of a word into one headword, so the glossary lists
- * a term once however the code inflects it.
+ * Folds a word's surface forms into one headword, so each term is listed once.
  *
- * Plurals fold into their singular and inflected verbs into their lemma:
- * `aspects` into `aspect`, `configured` and `configuring` into `configure`.
- * Derivational families stay apart, so `configuration` keeps its own entry —
- * unless the configuration's own `fold` merges them.
+ * Plurals fold into their singular and inflected verbs into their lemma: `aspects` into `aspect`, `configured` into `configure`.
+ * Derivational families stay apart, so `configuration` keeps its own entry unless `fold` merges them.
  */
 @Injectable()
 export class FoldingService {

@@ -2,9 +2,7 @@ import { registerEnumType } from "@nestjs/graphql";
 
 // 🧬 Entities
 
-/**
- * A span the timeline shows at once, from the finest to the coarsest.
- */
+/** The span the timeline shows at once, finest to coarsest. */
 export enum TimelineScale {
   DAY = "day",
   MONTH = "month",

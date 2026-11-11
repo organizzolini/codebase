@@ -7,12 +7,10 @@ import type { CodeObject } from "../code/code.types";
 import type { MeanderRecord } from "../database/database.types";
 
 /**
- * Turns one Code into the row the database holds for it: read once, then
- * measured from that same reading.
+ * Turns one Code into its database row, measured from the same single reading.
  *
- * It is the one place a meander row is built, shared by the `--code` mode and
- * the draw run. Every Characteristic that is nonzero or true is stored in the
- * one `characteristics` map.
+ * Shared by `--code` and the draw run. Only nonzero or true Characteristics are
+ * stored, in one `characteristics` map.
  */
 @Injectable()
 export class DrawRecordService {

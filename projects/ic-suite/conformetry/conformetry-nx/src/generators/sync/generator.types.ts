@@ -14,10 +14,7 @@ export interface SyncGeneratorOptions {
   readonly packageName?: string;
 }
 
-/**
- * Nx's sync runner reads `outOfSyncMessage`; `nx g` calls the return value, so it
- * is a no-op function carrying the message.
- */
+/** No-op function carrying `outOfSyncMessage`; `nx g` calls it too. */
 export type SyncGeneratorResult = (() => void) & {
   readonly outOfSyncMessage: string;
 };

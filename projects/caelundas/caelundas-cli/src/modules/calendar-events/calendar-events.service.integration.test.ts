@@ -63,9 +63,7 @@ function tagged(
   return { ...event(summary, start), tags: eventTags };
 }
 
-/**
- * Thirty seconds rather than the shared five: two batches of inserts take over five seconds on CI.
- */
+/** Thirty seconds: insert batches take over five seconds on CI. */
 const BULK_UPSERT_TIMEOUT_MILLISECONDS = 30_000;
 
 describe("calendar events service integration", () => {

@@ -6,10 +6,7 @@ export const ATTESTATION_SUBJECTS_FILE = "attestation-subjects.txt";
 /** The step output that tells the attestation step to run. */
 export const ATTEST_OUTPUT_LINE = "attest=true\n";
 
-/**
- * Tarball download retries, since npm can trail a publish by minutes: v2.34.0
- * answered 404 for about 4 minutes. Eight minutes in all.
- */
+/** Tarball retries over eight minutes, as npm can lag publishes. */
 export const TARBALL_DOWNLOAD_FLAGS = [
   "--silent",
   "--show-error",

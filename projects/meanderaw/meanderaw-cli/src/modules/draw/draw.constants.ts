@@ -1,8 +1,6 @@
 // ♟️ Constants
 
-/**
- * How many orbit minima `DrawPoolService` sends a worker thread at once. Small enough that every worker stays busy to the last batch.
- */
+/** Orbit minima per thread batch; keeps every worker busy. */
 export const DRAW_POOL_BATCH_SIZE = 1024;
 
 // 🚨 Errors

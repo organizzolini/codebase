@@ -7,7 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the 井 (hanzi jing) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** One isolated Code per orientation of the 井 (hanzi jing). */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "05x04y044002ff102ff1008800",

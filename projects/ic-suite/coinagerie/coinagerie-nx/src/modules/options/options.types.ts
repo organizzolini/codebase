@@ -15,5 +15,5 @@ export interface CoinageriePluginOptions {
   readonly inputs: readonly PluginInput[];
 }
 
-/** One cache input in Nx's own syntax: a string, or an object such as `{ env }`. */
+/** One Nx cache input: a string or an object. */
 export type PluginInput = NonNullable<TargetConfiguration["inputs"]>[number];

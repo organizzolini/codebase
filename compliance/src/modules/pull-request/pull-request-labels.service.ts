@@ -22,10 +22,8 @@ import type {
  * Decides what the repository's label vocabulary should be, and how far it has
  * drifted from that.
  *
- * Every comparison happens here, in one place, over values that were never
- * encoded on the way in. A color or a description is a plain string
- * comparison, so an identical value can never compare unequal because it
- * round-tripped through some intermediate text format on the way from `gh`.
+ * Every comparison happens here, over plain strings. Colors and descriptions are
+ * never passed through text, so an identical value cannot compare unequal.
  */
 @Injectable()
 export class PullRequestLabelsService {

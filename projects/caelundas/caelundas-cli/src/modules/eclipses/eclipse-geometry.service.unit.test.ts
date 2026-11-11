@@ -200,7 +200,7 @@ describe(EclipseGeometryService, () => {
   });
 
   describe("getTopocentricSolarContactGeometry", () => {
-    /** One body seen from the ground, with its upper limb well above the horizon. */
+    /** Body above the horizon, its upper limb well clear. */
     const disc = (
       longitude: number,
       latitude: number,

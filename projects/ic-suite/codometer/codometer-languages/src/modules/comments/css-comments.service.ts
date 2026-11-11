@@ -8,10 +8,7 @@ import type { Comment } from "postcss";
 /**
  * Reads CSS's `/* ... *\/` comments from postcss's own parse.
  *
- * CSS has only the one comment syntax, and no line form at all, so a real
- * parser costs nothing extra here: postcss already reads the repository's
- * stylesheets for `CssService`, and its comment nodes carry a line and column
- * a scanner would otherwise have to recompute by hand.
+ * CSS has one comment syntax, and postcss already parses the stylesheets and gives each comment its line and column.
  */
 @Injectable()
 /* v8 ignore stop */

@@ -11,11 +11,9 @@ import { RenderLimitsService } from "./render-limits.service";
 /**
  * NestJS module that wires the `limits` command.
  *
- * Imports callidescope's own configuration and workspace modules rather than
- * reimplementing either: the listing has to find the same projects a trace
- * finds, skip the same excluded ones, and resolve each project's limits
- * through the one resolver a gate reads — or it would describe a run nobody
- * makes.
+ * Imports callidescope's configuration and workspace modules rather than
+ * reimplementing them, so the listing finds the same projects, skips the same
+ * exclusions, and resolves limits through the one resolver a gate reads.
  */
 @Module({
   controllers: [],

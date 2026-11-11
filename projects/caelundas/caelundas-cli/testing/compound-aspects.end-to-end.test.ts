@@ -8,7 +8,7 @@ import { runPipelineWindow } from "./pipeline-window.functions";
 import type { DetectedCalendarEvent } from "../src/modules/calendar-events/calendar-events.types";
 
 /**
- * Philadelphia, 8–10 October 2026, where a T-square is emitted twice; the test checks its shape, not its minute.
+ * Philadelphia, 8–10 October 2026, where a T-square repeats; checks shape.
  */
 const octoberWindow = {
   endDate: "2026-10-10",
@@ -34,7 +34,7 @@ function compoundBoundaries(
   );
 }
 
-/** Every body name, lower-cased, to pick a simple aspect's two bodies out of its tags. */
+/** Lower-cased body names, to find a simple aspect's two bodies. */
 const bodyNames = new Set(bodies.map((body) => body.toLowerCase()));
 
 /** Lower-cased tag labels, since simple and compound events case body names differently. */

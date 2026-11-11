@@ -13,7 +13,7 @@ import type { KeyboardEvent, ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The tag to draw and what a click, a key, or its handle does to it.
+ * The row to draw, and its click, key, and open handlers.
  */
 export interface TagRowProperties {
   className?: string;

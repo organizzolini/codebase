@@ -2,42 +2,30 @@
 
 import { z } from "zod";
 
-/**
- * How a commit or title subject is read. Unlike the labels check, the breaking
- * marker is captured, since it decides the required release level.
- */
+/** Keeps the breaking marker, since it sets the release level. */
 export const CONVENTIONAL_SUBJECT_PATTERN =
   /^([a-z][a-z-]*)(?:\(([^()]+)\))?(?<breaking>!)?:\s+(?<subject>\S.*)$/u;
 
 /** What one subject's scope group is split on. */
 export const SUBJECT_SCOPE_SEPARATOR_PATTERN = /[,/]/u;
 
-/**
- * Footer that marks a breaking change, as `@semantic-release/commit-analyzer`
- * reads it. A commit with no `!` can still be breaking through it.
- */
+/** Footer marking a breaking change, as `@semantic-release/commit-analyzer` reads it. */
 export const BREAKING_CHANGE_FOOTER_PATTERN = /BREAKING[ -]CHANGE:/u;
 
-/**
- * Path to `release.config.cjs`, read fresh each run so a `releaseRules` change
- * needs no matching edit here.
- */
+/** Path to `release.config.cjs`, read fresh so `releaseRules` needs no edit here. */
 export const RELEASE_CONFIG_PATH = "configuration/release.config.cjs";
 
 /** The plugin entry in `release.config.cjs` whose options hold `releaseRules`. */
 export const COMMIT_ANALYZER_PLUGIN_NAME = "@semantic-release/commit-analyzer";
 
-/**
- * Semver significance of each release level. Safe to hard-code, unlike
- * `releaseRules`, because it is semver itself.
- */
+/** Semver significance of each release level, safe to hard-code. */
 export const RELEASE_LEVEL_RANK: Record<string, number> = {
   major: 3,
   minor: 2,
   patch: 1,
 };
 
-/** The shape one `releaseRules` entry must have, as much as this check reads. */
+/** Shape of a `releaseRules` entry, as this check reads it. */
 export const releaseRuleSchema = z.object({
   breaking: z.boolean().optional(),
   release: z.union([

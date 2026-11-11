@@ -7,7 +7,7 @@ import { PsiGreekLetterCharacteristicsService } from "./psi-greek-letter-charact
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the Ψ (Greek psi) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of Ψ as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x03y4440af900800",

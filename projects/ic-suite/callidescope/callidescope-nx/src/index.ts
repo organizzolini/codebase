@@ -47,10 +47,7 @@ export type {
   ResolvedProjectSelection,
 } from "./modules/projects/projects.types";
 
-/**
- * Infers this plugin's targets onto every project holding a `tsconfig.json`,
- * reading the plugin options once rather than per project.
- */
+/** Infers targets onto each project with a `tsconfig.json`. */
 const createNodes: CreateNodes = [
   PROJECT_CONFIGURATION_GLOB,
   async (

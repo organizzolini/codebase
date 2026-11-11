@@ -11,22 +11,14 @@ export interface CheckInstanceFilesArguments {
   readonly instances: MatchedInstance[];
 }
 
-/**
- * What the existence pass found, and how much it asked for.
- *
- * The total counts every declared file, present ones included.
- */
+/** Existence-pass findings; the total counts every declared file. */
 export interface FilesCheckResult {
   readonly fileResults: ValidationFileResult[];
   /** One requirement per file the matched templates declare. */
   readonly totalWeight: number;
 }
 
-/**
- * A conformance error this pass always weighs.
- *
- * Narrowing the optional `weight` removes a fallback that is never reached.
- */
+/** An error this pass always weighs, so `weight` is never optional. */
 export interface WeighedConformetryDifference extends ConformetryDifference {
   readonly weight: number;
 }

@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * The same empty input with no limit. This passes.
- *
- * See the [limits guide](./README.md).
- */
+// See the [limits guide](./README.md).
+/** The same empty input with no limit. This passes. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   inputs: [

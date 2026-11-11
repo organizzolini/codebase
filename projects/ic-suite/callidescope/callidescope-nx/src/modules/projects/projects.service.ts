@@ -11,10 +11,7 @@ import type { ProjectGraph } from "@nx/devkit";
 /**
  * Resolves Nx project names to the directories a callidescope run traces.
  *
- * This is the only part of callidescope that knows about Nx. The CLI and graph
- * packages take plain directories, so this turns a stable project name into one.
- *
- * The project graph is passed in, so resolution rules are testable without a workspace.
+ * Only this part of callidescope knows about Nx. The project graph is passed in, so resolution is testable without a workspace.
  */
 @Injectable()
 export class ProjectsService {

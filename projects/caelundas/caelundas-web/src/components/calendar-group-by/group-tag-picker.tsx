@@ -14,8 +14,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The tag root to pick from, the tags picked, and where to send a changed
- * pick.
+ * The tag root, the tags picked, and the change handler.
  */
 export interface GroupTagPickerProperties {
   className?: string;

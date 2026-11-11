@@ -39,10 +39,7 @@ export class TypescriptService {
 
   // 🔐 Private Fields
 
-  /**
-   * Handler per syntax kind, reached from `dispatchNode` by computed access,
-   * so each handler traces as its own root.
-   */
+  /** Per-kind handler, reached by computed access, traced as its own root. */
   private readonly kindDispatch: Partial<
     Record<
       number,

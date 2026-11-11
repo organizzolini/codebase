@@ -31,7 +31,7 @@ const callbackSchema = <CallbackType>(): z.ZodType<CallbackType> =>
     message: "Expected a function",
   });
 
-/** A `comment` selector: which language and kind it narrows to, plus its budget. */
+/** A `comment` selector: its language, kind, and budget. */
 const commentSelectorSchema = z.object({
   kind: z.enum(CODOMETER_SYMBOL_KINDS).optional(),
   language: z.enum(CODOMETER_COMMENT_LANGUAGES).optional(),
@@ -41,11 +41,7 @@ const commentSelectorSchema = z.object({
   severity: z.enum(CODOMETER_SEVERITIES).optional(),
 });
 
-/**
- * One configured counter: `patterns`, `symbols`, `comment`, or any mix.
- *
- * Declared only in the top-level `custom` array.
- */
+/** One configured counter: `patterns`, `symbols`, `comment`, or a mix. */
 const customStatisticSchema = z
   .object({
     color: z.string().optional(),
@@ -137,11 +133,7 @@ const markdownOutputSchema = z
     },
   );
 
-/**
- * Validates a configuration file's contents.
- *
- * Zod strips unknown keys rather than rejecting them, so a removed field is silently absent.
- */
+/** Validates a configuration file; Zod silently drops removed fields. */
 export const codometerConfigurationSchema = z
   .object({
     // A counter is addressed by its own label, so two sharing one would make

@@ -7,9 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the ا (final Arabic alef) as a Code holding one isolated copy.
- */
+/** One isolated Code per orientation of the ا (final form). */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {

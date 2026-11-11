@@ -3,12 +3,9 @@ import { Injectable } from "@nestjs/common";
 import { roundToCents } from "../shared-tail/round-to-cents.js";
 
 /**
- * Eight frames, every one of which does something.
+ * Eight frames, each doing real work.
  *
- * This is the stack to compare `ForwardingStackService` against. Both are eight
- * deep and both breach the limit, but every layer here transforms the amount it
- * was handed, so the fix is to question whether pricing needs this many stages
- * — not to delete a layer that was only passing the argument along.
+ * Compare with `ForwardingStackService`, which is as deep but only forwards. Every layer here transforms its argument, so the fix is to question the stages, not delete one.
  */
 @Injectable()
 export class DeepStackService {

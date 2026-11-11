@@ -12,11 +12,9 @@ import type { IssueFormAnswers } from "./issue-metadata.types";
 /**
  * Reads a submitted `issue.yml` body and says which labels it implies.
  *
- * Pure throughout, so the rules are testable without an issue, a token, or a
- * network. Talking to `gh` is the command's job.
+ * Pure, so the rules are testable without a network.
  *
- * Only labels a submitted form actually named are added. An issue opened with
- * `gh` or the API has no form answers, so nothing is derived from it.
+ * Only labels a submitted form named are added; an API-opened issue has no answers.
  */
 @Injectable()
 export class IssueLabelsService {

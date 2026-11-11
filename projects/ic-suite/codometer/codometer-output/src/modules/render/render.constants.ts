@@ -3,11 +3,7 @@
 /** Heading the rendered section is filed under. */
 export const HEADING = "## ⏲️ Codometer";
 
-/**
- * The block this report claims inside a shared document.
- *
- * HTML comment markers are invisible when rendered, so reports can share one document.
- */
+/** Report's block in a shared document, between HTML comments. */
 export const CODOMETER_MARKERS = {
   end: "<!-- codometer-changes:end -->",
   start: "<!-- codometer-changes:start -->",

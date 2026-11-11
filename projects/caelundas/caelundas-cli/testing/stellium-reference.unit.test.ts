@@ -27,7 +27,7 @@ import type { z } from "zod";
 /** A body the stellium step considers. */
 type AspectBody = (typeof aspectBodies)[number];
 
-/** An expected boundary (no `end`) or span, as a subscriber would read it. */
+/** Expected boundary (no `end`) or span, as a subscriber sees. */
 type ReferenceStelliumEvent = StelliumLongitudeFixture["boundaries"][number];
 
 type StelliumLongitudeFixture = z.infer<typeof stelliumLongitudeFixtureSchema>;

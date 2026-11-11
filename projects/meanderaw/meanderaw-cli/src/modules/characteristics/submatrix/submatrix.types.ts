@@ -1,17 +1,11 @@
 // 🏷️ Types
 
-/**
- * One point of a glyph template: where it sits in the glyph's bounding box
- * and the hexadecimal Code digit it must carry exactly.
- */
+/** A template point: its position and exact digit. */
 export interface GlyphCell extends SubmatrixOffset {
   readonly digit: number;
 }
 
-/**
- * A position within a matrix, or a step between two positions, counted in
- * lattice points: `row` grows southward and `column` eastward.
- */
+/** A lattice point or step; `row` grows south, `column` east. */
 export interface SubmatrixOffset {
   readonly column: number;
   readonly row: number;

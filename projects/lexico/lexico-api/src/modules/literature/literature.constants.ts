@@ -9,15 +9,9 @@ export const EMPTY_PARTITION_COUNTS: PartitionCounts = {
   windowCount: 0,
 };
 
-/**
- * Lowercase uuid an entity id cursor must carry, as Postgres returns uuids.
- * A malformed cursor is ignored rather than failing the query.
- */
+/** Lowercase uuid that id cursors carry; malformed ones are ignored. */
 export const ENTITY_ID_PATTERN =
   /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/u;
 
-/**
- * The most ids one page load binds at once; Postgres rejects a statement with
- * more than 65,535 parameters.
- */
+/** Most ids one load binds, under Postgres's 65,535-parameter cap. */
 export const LOAD_CHUNK_SIZE = 1000;

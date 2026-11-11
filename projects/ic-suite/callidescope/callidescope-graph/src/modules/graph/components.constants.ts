@@ -1,4 +1,4 @@
 // ♟️ Constants
 
-/** Low link used when a node's entry is missing; never reached, since every node is opened before it is lifted. */
+/** Fallback low link; never reached, since nodes open before lifting. */
 export const INITIAL_LOW_LINK = 0;

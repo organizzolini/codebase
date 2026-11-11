@@ -6,13 +6,12 @@ import { LoggerService } from "@codebase/observability";
 import { ImportPrTaskCacheService } from "./import-pr-task-cache.service";
 
 /**
- * CLI command that imports the Nx task cache a pull request's own run uploaded
- * as an artifact into its merge group's run, so the tasks it finished are hits.
+ * CLI command that imports the Nx task cache a pull request's run uploaded into
+ * its merge group's run, so finished tasks are hits.
  *
  * Reads `GITHUB_REF`, `GITHUB_REPOSITORY`, `NX_CACHE_SCOPE`, `RUNNER_TEMP`, and
- * the cache locations; `gh` reads `GH_TOKEN`. Always exits 0: a fork's
- * artifact, a missing one, or any failure leaves a cold cache, never a failed
- * run.
+ * the cache locations. Always exits 0: any failure leaves a cold cache, never a
+ * failed run.
  */
 @Command({
   description:

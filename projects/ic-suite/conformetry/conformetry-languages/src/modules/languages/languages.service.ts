@@ -13,10 +13,9 @@ import type { ConformetryLanguageValidator } from "@conformetry/core";
 /**
  * Answers which Languages a run needs, and applies the Fallback.
  *
- * The Languages are injected rather than looked up by name, so this is the
- * only place one has to be registered: adding a Language means adding it to
- * `claimingLanguages` below, and its own descriptor says which extensions it
- * claims. There is no second list of extensions to keep in step.
+ * Languages are injected, so registering one means adding it to
+ * `claimingLanguages`. Each Language's descriptor lists the extensions it claims,
+ * so there is no second list to keep in step.
  */
 @Injectable()
 export class LanguagesService {

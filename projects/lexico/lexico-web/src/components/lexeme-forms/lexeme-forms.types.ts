@@ -9,9 +9,7 @@ export type FormsState =
   | { status: "idle" }
   | { status: "loading" };
 
-/**
- * One form of a lexeme and the word written for it, from the API: fields depend on the kind of form.
- */
+/** A lexeme form and its word; fields vary by kind. */
 export interface LexemeFormRow {
   case?: string;
   degree?: string;

@@ -1,8 +1,6 @@
 // 🏷️ Types
 
-/**
- * Options for the generate command. Keys are camel-cased long flag names, as commander reports them.
- */
+/** Generate options, keyed by camel-cased long flag names. */
 export interface GenerateCommandOptions {
   config: string;
   directory?: string;

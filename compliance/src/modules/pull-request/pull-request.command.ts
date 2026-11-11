@@ -14,10 +14,9 @@ import type { PullRequestContext } from "./pull-request-context.types";
 /**
  * CLI command that writes, then validates, one pull request.
  *
- * The write phase links the description to the ancestors of the issues it closes
- * and reconciles labels. It runs only on `pull_request` events, or locally with
- * `write`, so a merge group never writes to the pull request it judges. Exits 1
- * if anything failed.
+ * The write phase links the description to closed issues' ancestors and
+ * reconciles labels. It runs only on `pull_request` events or with `write`, so
+ * merge groups never write. Exits 1 if anything failed.
  */
 @Command({
   arguments: "[number] [write]",

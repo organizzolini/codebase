@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** The gate could not decide: why, and the exit code to end with. */
+/** Why the gate could not decide, and its exit code. */
 export interface PublishablePackagesGateFailure {
   exitCode: number;
   kind: "failure";

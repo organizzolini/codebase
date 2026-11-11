@@ -6,7 +6,7 @@ export interface CalendarCommandOutput {
   json: { summary: string }[];
 }
 
-/** A place and date range one run of the command is asked for. */
+/** Place and date range for one command run. */
 export interface CalendarCommandRun {
   /** Exclusive end date, `YYYY-MM-DD`. */
   endDate: string;

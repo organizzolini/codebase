@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * A `write` that adds lines to the built-in badge rendering via `renderBadges()`.
- *
- * See the [output guide](./README.md).
- */
+// See the [output guide](./README.md).
+/** A `write` adding lines to the built-in badges via `renderBadges()`. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   outputs: [

@@ -12,12 +12,10 @@ import { SoftwareDatabaseService } from "./software-database.service";
 import { SoftwarePythonService } from "./software-python.service";
 
 /**
- * Installs, on Linux, the developer tools a commit and the security gate need.
+ * Installs the Linux developer tools a commit and the security gate need.
  *
- * Linux has no Homebrew, so the tools come from release archives, uv, the PostgreSQL apt repository,
- * and pnpm. Docker, Ollama, and GPG signing stay Mac-only.
- *
- * Every step warns rather than fails, so one unreachable download does not stop setup.
+ * Linux has no Homebrew, so tools come from release archives, uv, the PostgreSQL apt repository, and pnpm.
+ * Docker, Ollama, and GPG signing stay Mac-only. Steps warn rather than fail.
  */
 @Injectable()
 export class SoftwareLinuxService {

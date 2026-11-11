@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * One module a Python import statement names. Names a `from` statement binds are
- * dropped, as a file graph never uses them.
- */
+/** A module a Python import names; `from` bindings are dropped. */
 export interface PythonImportSpecifier {
   /**
    * Leading dots on a `from` statement's module: `0` for absolute, `1` for

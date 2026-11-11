@@ -31,12 +31,11 @@ import type {
 import type { OnApplicationBootstrap } from "@nestjs/common";
 
 /**
- * Orchestrates every registered characteristic evaluator. Discovers them through Nest's
- * `DiscoveryService`, checks them against the key lists in `characteristics.constants`
- * at boot, and fills one {@link Characteristics} record per Code from a shared context.
+ * Orchestrates every registered characteristic evaluator. It discovers them through Nest's
+ * `DiscoveryService`, checks them against the key lists at boot, and fills one
+ * {@link Characteristics} record per Code from a shared context.
  *
- * It also reduces a record to the sparse map a meander row stores, and answers two
- * questions about a Code as filed, not its repeating unit.
+ * It also reduces a record to the sparse map a meander row stores.
  */
 @Injectable()
 export class CharacteristicsService implements OnApplicationBootstrap {
@@ -55,10 +54,7 @@ export class CharacteristicsService implements OnApplicationBootstrap {
 
   // 🔐 Private Fields
 
-  /**
-   * Every evaluator in key-list order, discovered and checked once. Boot reaches this
-   * through {@link onApplicationBootstrap}; the `??=` only serves an uninitialized test module.
-   */
+  /** Evaluators in key-list order, found at boot or lazily. */
   private registered: readonly CharacteristicEvaluator[] | undefined;
 
   // 🔑 Public Fields

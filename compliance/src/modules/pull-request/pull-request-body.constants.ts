@@ -5,10 +5,7 @@ import type { SectionRule, SectionShape } from "./pull-request-body.types";
 /** The template every pull request description starts as. */
 export const PULL_REQUEST_TEMPLATE_PATH = ".github/PULL_REQUEST_TEMPLATE.md";
 
-/**
- * Sections a description must carry, read here rather than from the template,
- * so a template edit cannot silently drop one.
- */
+/** Required sections, kept here so a template edit cannot drop one. */
 export const SECTION_RULES: readonly SectionRule[] = [
   { heading: "## 🌰 Summary", maximumWords: 48, shape: "paragraph" },
   { heading: "## 📝 Details", maximumWords: 512, shape: "bullet-list" },
@@ -32,10 +29,7 @@ export const SECTION_SHAPE_DESCRIPTIONS: Readonly<
 /** How a `<!-- … -->` prompt is recognized in the template. */
 export const TEMPLATE_COMMENT_PATTERN = /<!--[\S\s]*?-->/gu;
 
-/**
- * How much of a template comment must survive to count as unfilled. A prefix,
- * so an edited prompt still counts.
- */
+/** A template comment's prefix that must survive to count as unfilled. */
 export const TEMPLATE_COMMENT_PREFIX_LENGTH = 40;
 
 /** Said when there is no description to check at all. */

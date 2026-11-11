@@ -3,10 +3,7 @@ import {
   type CodependixProjectConfiguration,
 } from "@codependix/configuration";
 
-/**
- * Settings a project's own `codependix.config.ts` spreads to get its README graph.
- * Without that file, a project gets no export.
- */
+/** Settings a project's `codependix.config.ts` spreads for its README graph. */
 export const projectDefaults = {
   /**
    * Each anchor is named after the package that builds the graph it holds —

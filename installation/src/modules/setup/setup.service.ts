@@ -16,12 +16,10 @@ import { SoftwareService } from "../software/software.service";
 import { STARTUP_FILES } from "./setup.constants";
 
 /**
- * Runs every step of a machine's setup that comes after Node, in order: shell
- * configuration, software, environment files, the remote Nx cache key, then dependencies.
+ * Runs every step of a machine's setup after Node, in order.
  * Shell configuration goes first so completions are wired on a second run.
  *
- * Linux (a cloud session or devcontainer) has no Homebrew or shell to configure, so only
- * environment files, software, and local services apply.
+ * Linux has no Homebrew or shell to configure, so only environment files, software, and local services apply.
  */
 @Injectable()
 export class SetupService {

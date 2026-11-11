@@ -2,10 +2,7 @@ import type { LoggerService } from "@codebase/observability";
 
 // 🏷️ Types
 
-/**
- * A synchronization command, runnable through its own Nx target. `synchronize`
- * reports success rather than exiting, so callers decide over the whole set.
- */
+/** A command with its own Nx target. Reports success; callers decide. */
 export interface SynchronizableCommand {
   readonly synchronizationLabel: string;
   synchronize(mode: SynchronizationMode): Promise<boolean>;

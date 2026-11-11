@@ -24,11 +24,9 @@ import {
 /**
  * Derives a stable identity for a syntax node.
  *
- * Matching by key rather than by position is what lets a file reorder its
- * members, or add new ones, without failing validation: an import is
- * identified by its module specifier, a member by its name, a decorator by its
- * dotted callee. Nodes with no meaningful key fall back to matching on syntax
- * kind alone.
+ * Matching by key, not position, lets a file reorder or add members without
+ * failing. Imports key on module specifier, members on name, decorators on
+ * dotted callee. Keyless nodes match on syntax kind alone.
  */
 @Injectable()
 export class TypescriptNodesService {

@@ -21,7 +21,7 @@ export interface UseCalendarClustersProperties {
 }
 
 /**
- * What the hour views draw instead of every event, and the dialog listing a clicked cluster's events.
+ * What the hour views draw, and the cluster dialog.
  */
 export interface UseCalendarClustersResult {
   /**

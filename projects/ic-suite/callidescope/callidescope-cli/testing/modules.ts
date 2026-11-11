@@ -17,7 +17,7 @@ import {
   ReportModule,
 } from "@callidescope/output";
 
-/** Every analysis module, imported wholesale so any service's dependencies resolve without each test restating them. */
+/** Every analysis module, imported so service dependencies resolve in tests. */
 export const ANALYSIS_MODULES = [
   CallablesModule,
   ConfigurationModule,

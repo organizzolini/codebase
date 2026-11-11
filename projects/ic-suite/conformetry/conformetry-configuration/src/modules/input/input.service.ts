@@ -14,10 +14,8 @@ import type {
 /**
  * Resolves generator inputs from the command line, asking for what is missing.
  *
- * Nobody passes a "may I prompt" boolean any more. It used to be threaded
- * through every method here from a `--no-interactive` flag, which put the one
- * decision that can hang the process in the hands of each caller in turn;
- * `InputPromptingService` owns it now and refuses at the prompt itself.
+ * Prompting is not a boolean argument. `InputPromptingService` owns the
+ * decision and refuses at the prompt, so no caller can hang the process.
  */
 @Injectable()
 export class InputService {

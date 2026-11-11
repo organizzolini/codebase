@@ -31,9 +31,7 @@ export interface JupyterResult {
   totalNodes: number;
 }
 
-/**
- * What notebooks report before any language analyzer runs. The source lists are cell bodies that exist in no file of their own.
- */
+/** Notebook counts before language analysis; sources are cell bodies, not files. */
 export interface NotebookParts {
   cells: number;
   codeCells: number;

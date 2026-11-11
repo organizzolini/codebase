@@ -29,11 +29,7 @@ function createGeneratedSource(functionCount: number): string {
   return `${lines.join("\n")}\n`;
 }
 
-/**
- * Target fixture files, keyed by path relative to the tree root.
- *
- * Written to disk: only a glob can name a build directory.
- */
+/** Target fixture files by path, on disk for glob matching. */
 export const TARGET_FIXTURE_FILES: Readonly<Record<string, string>> = {
   ".hidden/secret.js": "export const secret = 1;\n",
   "dist/index.js": createGeneratedSource(128),

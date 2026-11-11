@@ -5,10 +5,7 @@ import type {
   LoadedCallidescopeConfiguration,
 } from "./configuration.types";
 
-/**
- * The two file reads the collaborators behind `ConfigurationService` need.
- * Narrow so a double can replace the layer.
- */
+/** File reads `ConfigurationService` needs. Narrow so tests can double them. */
 export interface ConfigurationFileReader {
   findConfigurationFileAt(directory: string): string | undefined;
   loadConfigurationFile(

@@ -54,9 +54,8 @@ export class NightSkyEclipticService {
   }
 
   /**
-   * The point of the ecliptic at an ecliptic longitude in degrees, as right
-   * ascension in hours from 0 up to 24 and declination in degrees, turned
-   * from the ecliptic's frame to the equator's by the obliquity.
+   * The ecliptic point at a longitude, as right ascension hours and
+   * declination, via obliquity.
    */
   public toPoint(longitudeDegrees: number): SkyPoint {
     const longitude = longitudeDegrees * RADIANS_PER_DEGREE;

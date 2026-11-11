@@ -16,9 +16,7 @@ import type {
 
 /** Kilometers in one astronomical unit (IAU 2012). */
 export const KILOMETERS_PER_ASTRONOMICAL_UNIT = 149_597_870.7;
-/**
- * Mean radius of the Sun and Moon in kilometers, for the semidiameter that rise and set use.
- */
+/** Mean radius of the Sun and Moon, in kilometers. */
 export const radiusKilometersByHorizonBody: Record<
   AzimuthElevationEphemerisBody,
   number
@@ -30,8 +28,7 @@ export const HORIZON_REFRACTION_DEGREES = 34 / 60;
 /** Swiss Ephemeris flag for converting ecliptic coordinates to horizontal (azimuth/elevation). */
 export const ECLIPTIC_TO_HORIZONTAL_FLAG: number = constants.SE_ECL2HOR;
 /**
- * Observer height above sea level, in meters, for topocentric positions.
- * Sea level matches the US Naval Observatory, which ignores site elevation.
+ * Observer height above sea level, in meters; USNO ignores elevation.
  */
 export const OBSERVER_ELEVATION_METERS = 0;
 /** Swiss Ephemeris flag selecting the proleptic Gregorian calendar for Julian Day conversions. */
@@ -39,14 +36,11 @@ export const GREGORIAN_CALENDAR_FLAG: number = constants.SE_GREG_CAL;
 /** Swiss Ephemeris flag requesting osculating (instantaneous) orbital elements for the Moon. */
 export const OSCULATING_ORBITAL_ELEMENTS_FLAG: number =
   constants.SE_NODBIT_OSCU;
-/**
- * Swiss Ephemeris flags for every body: built-in data files, and daily velocity for retrograde detection.
- */
+/** Swiss Ephemeris flags for every body: built-in files and velocity. */
 export const SWISS_EPHEMERIS_FLAGS: number =
   constants.SEFLG_SWIEPH | constants.SEFLG_SPEED;
 /**
- * {@link SWISS_EPHEMERIS_FLAGS} plus `SEFLG_TOPOCTR`: the position seen from
- * the observer that `set_topo` placed, parallax included, not from Earth's center.
+ * {@link SWISS_EPHEMERIS_FLAGS} plus `SEFLG_TOPOCTR`: observer-topocentric, parallax included.
  */
 export const TOPOCENTRIC_EPHEMERIS_FLAGS: number =
   SWISS_EPHEMERIS_FLAGS | constants.SEFLG_TOPOCTR;
@@ -75,9 +69,7 @@ export const swissEphemerisConstantByAsteroid: Record<Asteroid, number> = {
   vesta: constants.SE_VESTA,
 };
 
-/**
- * Each lunar node or apside's Swiss Ephemeris id; lunar perigee has none, so its value is `null`.
- */
+/** Each node or apside's Swiss Ephemeris id; perigee's is `null`. */
 export const swissEphemerisConstantByNode: Record<Node, null | number> = {
   "lunar apogee": constants.SE_OSCU_APOG,
   "lunar perigee": null,

@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * Consumer root compiler options: the codependix loader reads them from the
- * working directory, and NestJS injection needs decorator metadata.
- */
+/** Consumer compiler options; codependix reads them, and NestJS needs decorator metadata. */
 const ROOT_TSCONFIG = {
   compilerOptions: {
     emitDecoratorMetadata: true,
@@ -15,10 +12,7 @@ const ROOT_TSCONFIG = {
   },
 };
 
-/**
- * Registers all three Nx plugins, each with its target named explicitly, and
- * the conformetry sync generator its README tells a workspace to declare.
- */
+/** The three Nx plugins with named targets, and conformetry's sync generator. */
 const NX_CONFIGURATION = {
   plugins: [
     {
@@ -76,10 +70,7 @@ const CONFORMETRY_CONFIGURATION = `export default [
 ];
 `;
 
-/**
- * A project's complete callidescope configuration: the gate refuses one that
- * leaves a field out.
- */
+/** A complete callidescope configuration, since the gate refuses partial ones. */
 const createCallidescopeConfiguration = (maximumDepth: number): string =>
   `export default {
   entryPoints: {
@@ -99,10 +90,7 @@ const createCallidescopeConfiguration = (maximumDepth: number): string =>
 const toJson = (value: unknown): string =>
   `${JSON.stringify(value, undefined, 2)}\n`;
 
-/**
- * Consumer files independent of the packages under test. `healthy` passes every
- * gate; `broken` fails each for a reason its gate names.
- */
+/** Consumer files independent of the packages under test. `healthy` passes all. */
 export const CONSUMER_FIXTURE_FILES: Readonly<Record<string, string>> = {
   ".gitignore": ".conformetry\n.nx\nnode_modules\n",
   ".npmrc": "registry=https://registry.npmjs.org/\n",

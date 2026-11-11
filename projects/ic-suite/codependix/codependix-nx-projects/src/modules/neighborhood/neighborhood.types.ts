@@ -2,10 +2,7 @@
 
 import type { ProjectGraph } from "@nx/devkit";
 
-/**
- * A project's one-hop neighborhood in the Nx project graph: what it needs and who would
- * break if it changed.
- */
+/** One-hop Nx neighbors: its needs and its dependents. */
 export interface Neighborhood {
   /** Projects this one depends on, sorted. */
   readonly dependencies: string[];
@@ -37,8 +34,5 @@ export interface NxProject {
   readonly tags: string[];
 }
 
-/**
- * A workspace's Nx project graph, held as an opaque handle. Read fields from
- * `NxProject` instead, so the Nx concern stays in this package.
- */
+/** Opaque Nx project graph handle; read `NxProject` instead. */
 export type NxProjectGraph = ProjectGraph;

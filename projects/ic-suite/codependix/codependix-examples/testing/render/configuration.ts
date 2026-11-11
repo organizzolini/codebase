@@ -47,10 +47,7 @@ const MISSING_CONFIGURATION_FILE = "codependix.config.missing.ts";
 /** Workspace demonstrating the per-project-file resolution model. */
 const PER_PROJECT_FILES = "per-project-files";
 
-/**
- * The refusals a configuration file can be rejected with. Each is handed to
- * `codependixConfigurationSchema`, so the rendered message is the real one.
- */
+/** Config refusals, rendered from the real schema's messages. */
 const REFUSED_CONFIGURATIONS = [
   {
     configuration: { workspace: { nxProjects: { target: "both" } } },

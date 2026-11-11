@@ -18,7 +18,7 @@ import type {
   WideCallableFinding,
 } from "@callidescope/core";
 
-/** The limits a stubbed run resolved, so a forwarded lookup can be pinned. */
+/** Stubbed run's resolved limits, so forwarded lookups can be pinned. */
 const LIMITS = createMock<ProjectLimitsLookup>();
 
 /** The per-project reports a stubbed run produced. */

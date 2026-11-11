@@ -1,8 +1,6 @@
 // ♟️ Constants
 
-/**
- * The detector families a sweep runs; a caller can name one family to skip the rest, which dominate cost.
- */
+/** Detector families a sweep runs; naming one skips the rest. */
 export const detectorFamilies = [
   "aspects",
   "dailyCycles",

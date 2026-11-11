@@ -18,10 +18,7 @@ import type { GateExecutorOptions } from "./executor.types";
 import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext, ProjectGraph } from "@nx/devkit";
 
-/**
- * Nx names, deliberately unlike the roots below. A gate handed Nx names owns no finding
- * and passes anything, so the fixture forces them apart.
- */
+/** Nx names, apart from roots, so no gate passes vacuously. */
 const BREACHING_PROJECT_NAME = "the-project-that-breaches";
 const DEPENDENT_PROJECT_NAME = "the-project-that-depends";
 const UNREAD_PROJECT_NAME = "the-project-that-reads-nothing";
@@ -34,10 +31,7 @@ const UNREAD_PROJECT_ROOT = "packages/unread";
 /** The callable whose stack breaches the breaching project's own limit. */
 const BREACHING_ENTRY_POINT = "readBreachingEntryPoint";
 
-/**
- * Filename for the workspace and breaching project limits. JSON, since a TypeScript config
- * would import its type and add an Nx dependency edge.
- */
+/** Limits file, in JSON: TypeScript would add an Nx dependency. */
 const CONFIGURATION_FILE_NAME = "callidescope.config.json";
 
 /** The name a project declares itself through, which must spell `undefined`. */

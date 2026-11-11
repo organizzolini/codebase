@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-/** Directories a project scan skips: dependency caches and generated output, which hold no project to trace. */
+/** Directories a project scan skips: dependency caches and generated output. */
 export const EXCLUDED_SCAN_DIRECTORY_NAMES = [
   "node_modules",
   ".git",
@@ -12,13 +12,13 @@ export const EXCLUDED_SCAN_DIRECTORY_NAMES = [
   "out",
 ] as const;
 
-/** Marks a project root other projects can depend on. A root holding only a `tsconfig.json` is shared settings, not a destination. */
+/** Project root marker; a lone `tsconfig.json` is shared settings. */
 export const PACKAGE_MANIFEST_NAME = "package.json";
 
-/** The file whose presence makes a directory a project. Named once so discovery and exclusions read the same file. */
+/** Project-marking file, named once for discovery and exclusions. */
 export const PROJECT_CONFIGURATION_NAME = "tsconfig.json";
 
-/** Directory holding test scaffolding such as `mocks.ts`; its files exist only for tests, so reports must not count them. */
+/** Test scaffolding directory; reports must not count its files. */
 export const TEST_DIRECTORY_SEGMENT = "testing";
 
 /** Matches a test file, whatever tier it declares. */

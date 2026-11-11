@@ -1,14 +1,9 @@
 // ♟️ Constants
 
-/**
- * Starts every tag field's id, so a rule's path alone says which tag root it filters.
- */
+/** Prefix of tag field ids; a path alone names its root. */
 export const TAG_FIELD_PREFIX = "tag:";
 
-/**
- * The ids of the fields derived from each event's own columns rather than
- * from its tags.
- */
+/** Ids of fields derived from an event's columns, not tags. */
 export const CALENDAR_FIELD_IDS = {
   date: "date",
   duration: "duration",
@@ -19,10 +14,7 @@ export const CALENDAR_FIELD_IDS = {
   weekday: "weekday",
 } as const;
 
-/**
- * The operators a tag field offers. A tag matches every node beneath it,
- * because the tag view carries each event's ancestors.
- */
+/** Operators a tag field offers; a tag also matches its descendants. */
 export const TAG_OPERATORS = {
   hasAllOf: "has_all_of",
   isAnyOf: "is_any_of",
@@ -47,10 +39,7 @@ export const CALENDAR_OPERATORS = {
   notContains: "not_contains",
 } as const;
 
-/**
- * The operators a numeric field offers: equality, the four orderings, and a
- * range.
- */
+/** Operators a numeric field offers: comparisons and a range. */
 export const NUMBER_OPERATORS = {
   between: "between",
   eq: "eq",
@@ -62,10 +51,7 @@ export const NUMBER_OPERATORS = {
   notBetween: "not_between",
 } as const;
 
-/**
- * The SQL comparison each numeric operator but a range stands for; `neq`
- * compares for equality and the rule is then negated.
- */
+/** SQL comparison per numeric operator; neq is equality, then negated. */
 export const COMPARISONS: Readonly<Record<string, string>> = {
   [NUMBER_OPERATORS.eq]: "=",
   [NUMBER_OPERATORS.gt]: ">",

@@ -76,7 +76,7 @@ const LINES: ConstellationLine[] = [
   },
 ];
 
-/** Answers a read of stars or of figure lines with the fixtures above. */
+/** Answers star and figure reads with the fixtures above. */
 const manager = {
   getRepository: (target: unknown) => ({
     find: vi

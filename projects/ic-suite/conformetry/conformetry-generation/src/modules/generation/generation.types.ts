@@ -2,11 +2,7 @@
 
 import type { FileSystemAdapter, GeneratorDefinition } from "@conformetry/core";
 
-/**
- * Formatting applied once generation completes.
- *
- * The default is a no-op, so formatting is left to the host.
- */
+/** Post-generation formatting; the no-op default leaves it to the host. */
 export interface FormatterAdapter {
   formatFiles(filePaths: string[]): Promise<void>;
 }

@@ -6,10 +6,7 @@
 
 // ♟️ Constants
 
-/**
- * The record fields the retired computation also produced, under their new keys.
- * `tileCrossing` is the retired `crossesTheSeam` flag, now `tileCrossingCount > 0`.
- */
+/** Retired fields under new keys; `tileCrossing` replaces `crossesTheSeam`. */
 export const LEGACY_FIELD_KEYS = [
   "bettiNumber0Count",
   "bettiNumber1Count",
@@ -132,9 +129,7 @@ export const LEGACY_FIELDS: Readonly<Record<string, string>> = {
     "1 0 2 0 1 0 0 0 3 0 true true 0 2 4 false true 1 1 true true 1 0",
 };
 
-/**
- * Each fixture Code drawn 1 to 3 times side by side, `|`-separated, with the retired `seamComponents` score per rotation.
- */
+/** Fixture tilings with their retired `seamComponents` scores. */
 export const LEGACY_TILE_CROSSING_COMPONENT_DELTAS: Readonly<
   Record<string, string>
 > = {
@@ -196,7 +191,7 @@ export const LEGACY_TILE_CROSSING_COMPONENT_DELTAS: Readonly<
     "1 1 1 1 1 1 | 1 1 1 1 1 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1",
 };
 
-/** Each fixture Code drawn 1, 2, and 3 times side by side: whether the retired computation called the tiling reducible. */
+/** Fixture tilings, and which the retired code called reducible. */
 export const LEGACY_REDUCIBILITY: Readonly<Record<string, string>> = {
   "01x02y00": "false true true",
   "01x02y03": "false true true",

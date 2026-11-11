@@ -7,12 +7,11 @@ import { USING_GIT_WORKTREES_DIRECTIVE } from "./session-worktree-name.constants
 import { SessionWorktreeNameService } from "./session-worktree-name.service";
 
 /**
- * CLI command behind the worktree-name session hook: is the linked worktree
- * named in lowercase kebab-case, and gitignored when inside the main checkout?
+ * CLI command behind the worktree-name session hook.
  *
- * Its standard output is the report alone, which the hook hands to the agent.
- * Silent with exit 0 when nothing is wrong, otherwise every problem and the
- * directive, with exit 1.
+ * Checks the linked worktree is lowercase kebab-case and gitignored inside the
+ * main checkout. Standard output is the report alone, which the hook passes on.
+ * Exits 1 with every problem; silent with exit 0 otherwise.
  */
 @Command({
   description:

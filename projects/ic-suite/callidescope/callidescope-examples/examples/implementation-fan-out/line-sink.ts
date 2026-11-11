@@ -6,13 +6,9 @@ export interface LineSink {
 }
 
 /**
- * Shows what the implementation-candidate cap is protecting against.
+ * Shows what the implementation-candidate cap guards against.
  *
- * Nine classes in this directory satisfy `LineSink` structurally, and the cap
- * is eight. A member named `emit`, `run`, or `sync` matches dozens of unrelated
- * classes in a real workspace, and expanding all of them manufactures call
- * stacks no execution ever takes — so the cap drops the whole expansion rather
- * than picking a favorite.
+ * Nine classes here satisfy `LineSink` structurally, past the cap of eight. In a real workspace, a common member name like `emit` matches dozens of unrelated classes, and expanding them invents stacks no run takes.
  */
 @Injectable()
 export class ImplementationFanOutService {

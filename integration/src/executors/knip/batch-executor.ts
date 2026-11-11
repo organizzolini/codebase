@@ -9,7 +9,7 @@ import type {
   KnipTaskResult,
 } from "./knip.types";
 
-/** A task of a batch whose workspace is known, ready to be judged. */
+/** A batch task whose workspace is known, ready to judge. */
 interface BatchedTask {
   readonly id: string;
   readonly root: string;

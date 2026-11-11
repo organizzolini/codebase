@@ -8,8 +8,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * How to move the view, and whether the row is too narrow for a title of a
- * fixed width.
+ * The view's navigation, and whether the title may shrink.
  */
 export interface CalendarNavigationGroupProperties {
   className?: string;

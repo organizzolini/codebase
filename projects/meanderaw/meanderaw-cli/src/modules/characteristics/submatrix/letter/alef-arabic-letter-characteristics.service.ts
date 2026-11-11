@@ -38,14 +38,7 @@ export class AlefArabicLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ا (final Arabic alef) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ╷
-   * │
-   * └─╴
-   * ```
-   */
+  /** Upright ا (final form) as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = ["4..", "c..", "a31"];
 
   // 🔑 Public Fields

@@ -3,11 +3,7 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 
 // ♟️ Constants
 
-/**
- * The six variables every project reads, named `<PROJECT>_<SUFFIX>`. The
- * prefix keeps the root's admin `POSTGRES_*` login, loaded into every task,
- * out of applications.
- */
+/** Prefix keeps the root's admin `POSTGRES_*` login out of apps. */
 export const POSTGRES_ENVIRONMENT_SUFFIXES = {
   database: "POSTGRES_DATABASE",
   host: "POSTGRES_HOST",
@@ -33,22 +29,13 @@ export const DEFAULT_POSTGRES_HOST = "localhost";
 /** The port the shared local Docker Postgres publishes. */
 export const DEFAULT_POSTGRES_PORT = 5432;
 
-/**
- * Project names: lowercase letters, digits, and underscores, starting with a
- * letter, so they need no quoting in SQL or environment names.
- */
+/** Lowercase, starting with a letter, so SQL needs no quoting. */
 export const PROJECT_NAME_PATTERN = /^[a-z][a-z0-9_]*$/;
 
-/**
- * Injects the options `PostgresqlModule.forRoot` was given into the
- * `PostgresqlService` that turns them into TypeORM's.
- */
+/** Injection token for the options `PostgresqlModule.forRoot` receives. */
 export const DATABASE_OPTIONS = Symbol("DATABASE_OPTIONS");
 
-/**
- * Shared by every Postgres project: snake case, plural names, and join tables
- * named from both, sorted, so either side declares the same name.
- */
+/** Snake-case, plural table names; join tables sorted from both sides. */
 export const PluralSnakeNamingStrategy: new () => SnakeNamingStrategy = class extends SnakeNamingStrategy {
   /** Builds a deterministic join table name from both entity table names. */
   override joinTableName(

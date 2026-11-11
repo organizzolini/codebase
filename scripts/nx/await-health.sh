@@ -1,15 +1,15 @@
 #!/bin/bash
 #
-# Block until an HTTP endpoint reports healthy, or fail once a deadline passes.
+# Blocks until an HTTP endpoint is healthy, or fails.
 #
 # Usage: await-health.sh --url <url> [--query <graphql>] [--expect <text>] [--timeout <seconds>]
 #
-#   --url      Endpoint to poll. Required.
-#   --query    A GraphQL query to POST to the endpoint. Without it, the script sends a GET.
-#   --expect   Text that must appear in the response body. Without it, any 2xx response passes.
-#   --timeout  Seconds to keep trying before failing. Default 60.
+#   --url      Required.
+#   --query    GraphQL body; else a GET.
+#   --expect   Body text required, else any 2xx.
+#   --timeout  Seconds to retry. Default 60.
 #
-# An empty value counts as unset, so a caller can forward optional flags unconditionally.
+# Empty values count as unset.
 
 set -euo pipefail
 

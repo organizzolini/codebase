@@ -10,24 +10,19 @@ import type {
   StackFrame,
 } from "@callidescope/core";
 
-/**
- * Anything holding a frame list, such as a full `CallStack` or a path with no depth of its own.
- */
+/** Anything holding a frame list, such as a `CallStack`. */
 export interface FramedStack {
   readonly frames: readonly StackFrame[];
 }
 
-/**
- * A diagram under construction. Mutable on purpose, since nodes and edges accumulate across every
- * stack drawn.
- */
+/** A diagram under construction. Mutable, since stacks add nodes and edges. */
 export interface MermaidDiagram {
   readonly edges: Set<string>;
   readonly identifiersByCallable: Map<CallableId, string>;
   readonly nodes: string[];
 }
 
-/** One project's row in the index, and the numbers the scoreboard buckets it by. */
+/** One project's index row and the scoreboard's bucketing numbers. */
 export interface ProjectIndexRow {
   readonly deepest: number;
   readonly headroom: number;
@@ -36,9 +31,7 @@ export interface ProjectIndexRow {
   readonly widest: number;
 }
 
-/**
- * Arguments for rendering only the findings a gate weighs, not the whole run it measured.
- */
+/** Arguments for rendering only the findings a gate weighs. */
 export interface RenderFindingsArguments extends OwnedFindings {
   readonly previewCount: number;
 }
@@ -76,5 +69,5 @@ export interface RenderStacksArguments {
   readonly stacks: readonly CallStack[];
 }
 
-/** How a report draws its stacks. Narrower than the output format: `json` is a different report, not a drawing of this one. */
+/** How a report draws stacks. Excludes `json`, which is no drawing. */
 export type StackRendering = "diagram" | "tree";

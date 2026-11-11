@@ -8,10 +8,9 @@ import { LOAD_CHUNK_SIZE } from "./literature.constants";
 import type { Line, Text, Token } from "@codebase/lexico-db";
 
 /**
- * Request-scoped DataLoaders resolving the relations beneath a page of
- * authors, texts, and lines. Every `load` issued in the same tick for the same
- * page arguments shares one batch of statements, and each answer is cached
- * for the rest of the request, so no relation costs a statement per parent.
+ * Request-scoped DataLoaders for the relations under a page of authors, texts,
+ * and lines. Loads in one tick share a batch, and each answer is cached for the
+ * request, so no relation costs a statement per parent.
  */
 @Injectable({ scope: Scope.REQUEST })
 export class LiteratureRelationsLoader {

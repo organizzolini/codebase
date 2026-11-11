@@ -7,9 +7,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/**
- * The page a row links to, and the path open now, which marks it active.
- */
+/** Linked page, and the open path, which marks it active. */
 export interface NavigationLinkProperties {
   className?: string;
   currentPath: string;

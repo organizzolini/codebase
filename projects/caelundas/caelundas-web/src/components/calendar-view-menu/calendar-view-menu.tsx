@@ -22,8 +22,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * Whether crowded days merge their events, how symbols are drawn, and where
- * to send a change to either.
+ * Clustering and symbol settings, with their change handlers.
  */
 export interface CalendarViewMenuProperties {
   /**

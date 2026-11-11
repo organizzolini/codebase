@@ -44,8 +44,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The events to lay out, how to group them into rows, the period shown, and
- * where to report how it moves.
+ * Events, row grouping, the shown period, and a navigation reporter.
  */
 export interface CalendarTimelineProperties {
   anchor: Date;

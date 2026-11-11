@@ -22,10 +22,7 @@ export const connectionSchema = z.object({
   edges: z.array(z.object({ node: z.custom<ResultNode>() })),
 });
 
-/**
- * The kind of match each tier the API ranks a result in stands for, when that
- * tier carries no measure of its own.
- */
+/** Match kind an API tier without a score stands for. */
 export const MATCH_KINDS: Readonly<Partial<Record<string, LexemeMatchKind>>> = {
   ENCLITIC: "enclitic",
   LEMMA_EXACT: "exact-headword",

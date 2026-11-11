@@ -21,7 +21,7 @@ import type { CodometerSeverity } from "@codometer/core";
 
 const zeroes = buildCodeStatistics();
 
-/** The repository's own metrics, with a counter in every shape a limit reads. */
+/** The repository's metrics, with a counter in every limit shape. */
 const codebaseTarget: MeasuredTarget = {
   files: 12,
   language: buildCodeStatistics({

@@ -4,10 +4,7 @@ import { InputError } from "@codependix/configuration";
 
 import type { ResolvedCodependixSelection } from "@codependix/configuration";
 
-/**
- * A `--projects`/`--tags` selection that matched no project. Refused rather
- * than run: a typo would otherwise judge nothing and pass.
- */
+/** Unmatched `--projects` or `--tags` selection; refused, not run. */
 export const emptySelectionError = (
   selection: ResolvedCodependixSelection,
 ): InputError => {

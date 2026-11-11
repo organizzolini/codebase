@@ -18,9 +18,8 @@ import type { TomlInput, TomlResult } from "./toml.types";
 /**
  * Counts the tables, keys, and arrays a TOML document declares.
  *
- * Read line by line while tracking whether a multi-line string is open, so a
- * `#` or a `[heading]` inside one of those strings is content rather than
- * syntax. That state is the whole reason this is not three regexes.
+ * Reads line by line, tracking whether a multi-line string is open, so a `#` or `[heading]` inside one is content.
+ * That state is why this is not three regexes.
  */
 @Injectable()
 /* v8 ignore stop */

@@ -1,10 +1,7 @@
-// The night sky's stars are the HYG star database v4.1
-// (https://github.com/astronexus/HYG-Database), stored by caelundas-cli to
-// magnitude 6.5 and declination -45 degrees or north. HYG is licensed
-// CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/); the stored
-// catalog is a derived work and keeps that license and the credit to David
-// Nash and the HYG contributors. The constellation figures are d3-celestial's
-// (https://github.com/ofrohn/d3-celestial), BSD-3-Clause, Olaf Frohn.
+// Stars are the HYG v4.1 database (CC BY-SA 4.0), stored by caelundas-cli to
+// magnitude 6.5 and declination -45 degrees or north. Keep its license and
+// credit to David Nash and the HYG contributors. The constellation figures are
+// d3-celestial's (BSD-3-Clause, Olaf Frohn).
 
 import { Injectable } from "@nestjs/common";
 
@@ -98,9 +95,8 @@ export class NightSkySvgService {
   // 🌎 Public Methods
 
   /**
-   * Builds the night sky for a place and moment: the real fixed stars, drawn
-   * about the north celestial pole, which sits above the top edge of the
-   * window, turning as one group with a single animation.
+   * Builds the sky for a place and moment; the stars turn as one group
+   * about the celestial pole.
    */
   public build(options: NightSkyOptions): NightSky {
     const resolved = this.options.withDefaults(options);

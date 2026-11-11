@@ -44,12 +44,10 @@ import type {
 } from "./postgresql-import.types";
 
 /**
- * Restores selected tables from a dump file into the database a URI names,
- * through `pg_restore`. Every option is validated and the dump's contents
- * checked before any connection opens; the restore runs as one
- * transaction and deletes nothing unless `--clean` was given, so a
- * conflict leaves the target as it was. The password reaches `pg_restore`
- * only through its environment.
+ * Restores selected tables from a dump file through `pg_restore`. Everything is
+ * checked before a connection opens. The restore is one transaction and deletes
+ * nothing unless `--clean` is given, so a conflict leaves the target intact.
+ * The password reaches `pg_restore` only via its environment.
  */
 @Command({
   description:

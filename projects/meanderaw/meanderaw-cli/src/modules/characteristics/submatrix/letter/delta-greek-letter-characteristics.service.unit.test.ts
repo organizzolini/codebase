@@ -7,10 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the Δ (Greek delta) as a Code holding one isolated copy.
- * Its diagonals run as orthogonal zig-zags.
- */
+/** One isolated Code per orientation of the Δ (Greek delta). */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "07x04y0065000069a5006900a50a333390",

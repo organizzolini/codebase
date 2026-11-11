@@ -24,13 +24,9 @@ import type {
 } from "./configuration.types";
 
 /**
- * Resolves the configuration file sitting beside each traced project.
+ * Resolves the configuration file beside each traced project.
  *
- * Its own service rather than more of `ConfigurationFileService`, because the two
- * answer different questions: one loads the file a run was pointed at, and this
- * one asks which of a run's projects configure themselves. Every refusal a
- * project configuration can earn belongs here, where the project it names is
- * already in hand.
+ * Its own service, apart from ConfigurationFileService: that one loads the file a run was pointed at, while this asks which projects configure themselves. Every refusal about a project's configuration belongs here.
  */
 @Injectable()
 export class ProjectConfigurationService {

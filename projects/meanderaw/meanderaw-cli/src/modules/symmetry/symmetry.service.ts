@@ -6,12 +6,10 @@ import type { Directions, Tile, TileShape } from "../tile/tile.types";
 import type { PointRank, Transform, TransformChoice } from "./symmetry.types";
 
 /**
- * The symmetries under which two `mosaic` tiles draw the same pattern, and the
- * tile operations that act under them.
+ * The symmetries under which two `mosaic` tiles draw the same pattern.
  *
  * The group has order `4 × columns`: translations, a horizontal mirror, and a
- * vertical flip. It acts on edges rather than points, since edges carry the
- * tile's degrees of freedom.
+ * vertical flip. It acts on edges, since edges carry the tile's degrees of freedom.
  */
 @Injectable()
 export class SymmetryService {

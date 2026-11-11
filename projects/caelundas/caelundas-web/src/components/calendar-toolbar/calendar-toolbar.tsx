@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The toolbar moves the view it sits over, and shows the menus and filter controls the page hands it.
+ * The toolbar's navigation, plus the menus and filters it shows.
  */
 export interface CalendarToolbarProperties {
   className?: string;

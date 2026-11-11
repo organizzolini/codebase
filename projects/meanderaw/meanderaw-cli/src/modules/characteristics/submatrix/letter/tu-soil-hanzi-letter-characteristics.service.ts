@@ -8,17 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the 土 (hanzi tu, soil or
- * earth) glyph — two two-unit bars threaded on a vertical stroke that runs a
- * unit above the upper bar and stops at the lower — one per corner and
- * clockwise rotation, each counting the base template drawn that way. The base
- * faces Southeast, drawn:
- *
- * ```text
- *  ╷
- * ╶┼╴
- * ╶┴╴
- * ```
+ * Provides the sixteen orientation evaluators of the 土 glyph: two two-unit bars threaded on a
+ * stroke rising a unit above the upper bar. One per corner and clockwise rotation, each counting
+ * the base template drawn that way. The base faces Southeast.
  */
 @Injectable()
 export class TuSoilHanziLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -43,7 +35,7 @@ export class TuSoilHanziLetterCharacteristicsService implements CharacteristicEv
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = [".4.", "2f1", "2b1"];
 
   // 🔑 Public Fields

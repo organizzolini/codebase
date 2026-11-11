@@ -2,9 +2,7 @@ import type { LucideIcon } from "lucide-react";
 
 // 🏷️ Types
 
-/**
- * One page the sidebar links to, with the icon its collapsed rail shows.
- */
+/** A linked page, with the icon its collapsed rail shows. */
 export interface NavigationItem {
   href: string;
   icon: LucideIcon;

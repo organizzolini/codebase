@@ -11,12 +11,9 @@ import type {
 import type { ValidationFileResult } from "@conformetry/core";
 
 /**
- * Turns instances that matched no template into ordinary findings.
+ * Turns instances matching no template into ordinary findings.
  *
- * Silence would be the wrong answer here. A glob is the author asserting that
- * a path holds generated code, so a path matching nothing means either the
- * instance drifted past recognition or the glob is wrong — both worth saying
- * out loud, and both invisible if unmatched instances were merely skipped.
+ * A glob asserts that a path holds generated code, so an unmatched path means drift or a wrong glob. Silently skipping it would hide both.
  */
 @Injectable()
 export class ValidationFindingsService {

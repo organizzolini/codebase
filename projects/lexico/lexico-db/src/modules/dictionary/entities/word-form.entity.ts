@@ -8,12 +8,11 @@ import type { Word } from "./word.entity";
 import type { Relation } from "typeorm";
 
 /**
- * Explicit junction entity linking a normalized Latin word string to the
- * morphological form it can surface as. Replaces an implicit TypeORM join
- * table so the relationship row carries audit columns and a stable UUID.
+ * Junction linking a normalized Latin word string to a morphological form.
  *
- * When a Form row is deleted (e.g., during re-ingestion of a lexeme), the
- * database cascades the delete to its WordForm rows automatically.
+ * Replaces an implicit TypeORM join table so the row carries audit columns and a stable UUID.
+ *
+ * Deleting a Form cascades to its WordForm rows.
  */
 @Entity({
   comment:

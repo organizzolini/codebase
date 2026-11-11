@@ -57,22 +57,15 @@ type SpecialtyAspect = keyof typeof symbolBySpecialtyAspect;
 // 🔄 Event Phase Types
 
 /**
- * Array of aspect lifecycle phases.
- * Aspects form as bodies approach, become perfective at peak, then dissolve as bodies separate.
+ * Aspect lifecycle: forming, perfective at peak, then dissolving.
  */
 export const aspectPhases = ["forming", "perfective", "dissolving"] as const;
-/**
- * Array of eclipse event phases.
- * Tracks the start, peak, and end of solar/lunar eclipses.
- */
+/** Eclipse event phases: start, peak, and end. */
 export const eclipsePhases = ["beginning", "maximum", "ending"] as const;
 
 // 🔭 Body Arrays
 
-/**
- * Array of bodies that can exhibit retrograde motion.
- * Excludes Sun, Moon (always direct), and nodes (different calculation).
- */
+/** Bodies that can retrograde; excludes Sun, Moon, and nodes. */
 export const retrogradeBodies = [
   "mercury",
   "venus",
@@ -90,10 +83,7 @@ export const retrogradeBodies = [
   "vesta",
 ] as const;
 
-/**
- * Array of bodies tracked for sign/decan ingress events.
- * Includes planets, asteroids, selected comets, and lunar nodes.
- */
+/** Bodies tracked for sign and decan ingress events. */
 export const ingressBodies = [
   "sun",
   "moon",
@@ -115,10 +105,7 @@ export const ingressBodies = [
   "lunar apogee",
 ] as const;
 
-/**
- * Array of bodies used in aspect calculations.
- * Matches ingressBodies; all tracked bodies can form aspects with each other.
- */
+/** Bodies used in aspect calculations; matches ingressBodies. */
 export const aspectBodies = [
   "sun",
   "moon",
@@ -142,10 +129,7 @@ export const aspectBodies = [
 
 // 🪧 Signs
 
-/**
- * Array of all zodiac sign names in tropical zodiac order.
- * Starts with Aries (0°) and proceeds counter-clockwise around the ecliptic.
- */
+/** Zodiac sign names in tropical order, starting with Aries (0°). */
 export const signs = typedObjectKeys(symbolBySign);
 // export const signSymbols: SignSymbol[] = Object.values(symbolBySign);
 
@@ -181,27 +165,17 @@ export const nodes = typedObjectKeys(symbolByNode);
 
 // 🔭 Bodies
 
-/**
- * Array of all tracked celestial bodies.
- * Combines planets, asteroids, comets, and lunar nodes.
- */
+/** All tracked celestial bodies: planets, asteroids, comets, and nodes. */
 export const bodies = typedObjectKeys(symbolByBody);
 // export const bodySymbols: BodySymbol[] = Object.values(symbolByBody);
 
-/**
- * Bodies queried for azimuth/elevation ephemeris.
- * Used for rise, set, and culmination event detection.
- */
+/** Bodies queried for azimuth/elevation, for rise, set, and culmination. */
 export const azimuthElevationBodies: AzimuthElevationEphemerisBody[] = [
   "sun",
   "moon",
 ];
 
-/**
- * Bodies queried for illumination ephemeris.
- * Used for planetary phase detection. Moon phases are timed by elongation,
- * so the Moon is not queried.
- */
+/** Bodies queried for illumination; Moon phases use elongation instead. */
 export const illuminationBodies: IlluminationEphemerisBody[] = [
   "mercury",
   "venus",
@@ -224,10 +198,7 @@ export const distanceBodies: DistanceEphemerisBody[] = [
 
 // 📐 Major Aspects
 
-/**
- * Array of major aspect names.
- * The five Ptolemaic aspects: conjunction, sextile, square, trine, opposition.
- */
+/** Major aspect names: the five Ptolemaic aspects. */
 export const majorAspects = typedObjectKeys(symbolByMajorAspect);
 // export const majorAspectSymbols: MajorAspectSymbol[] =
 //   Object.values(symbolByMajorAspect);
@@ -244,10 +215,7 @@ export const minorAspects = typedObjectKeys(symbolByMinorAspect);
 
 // 🧮 Specialty Aspects
 
-/**
- * Array of specialty aspect names.
- * Harmonic aspects based on divisions by 5, 7, 9, etc.
- */
+/** Specialty aspect names, harmonic divisions by 5, 7, 9. */
 export const specialtyAspects = typedObjectKeys(symbolBySpecialtyAspect);
 // export const specialtyAspectSymbols: SpecialtyAspectSymbol[] = Object.values(
 //   symbolBySpecialtyAspect,
@@ -285,10 +253,7 @@ const angleByMinorAspect: Record<MinorAspect, number> = {
   sesquiquadrate: 135,
 };
 
-/**
- * Maps each specialty aspect to its exact angle in degrees.
- * Based on harmonic divisions of the circle.
- */
+/** Exact angle in degrees of each specialty aspect. */
 const angleBySpecialtyAspect: Record<SpecialtyAspect, number> = {
   biquintile: 144,
   decile: 36,
@@ -308,10 +273,7 @@ export const angleByAspect: Record<Aspect, number> = {
   ...angleBySpecialtyAspect,
 };
 
-/**
- * Maps each major aspect to its allowable orb (tolerance) in degrees.
- * Larger orbs for more significant aspects.
- */
+/** Allowed orb in degrees for each major aspect. */
 const orbByMajorAspect: Record<MajorAspect, number> = {
   conjunct: 8,
   opposite: 8,
@@ -320,10 +282,7 @@ const orbByMajorAspect: Record<MajorAspect, number> = {
   trine: 6,
 };
 
-/**
- * Maps each minor aspect to its allowable orb in degrees.
- * Smaller orbs for minor aspects.
- */
+/** Allowed orb in degrees for each minor aspect. */
 const orbByMinorAspect: Record<MinorAspect, number> = {
   quincunx: 3,
   semisextile: 2,
@@ -331,10 +290,7 @@ const orbByMinorAspect: Record<MinorAspect, number> = {
   sesquiquadrate: 2,
 };
 
-/**
- * Maps each specialty aspect to its allowable orb in degrees.
- * Very tight orbs for harmonic aspects.
- */
+/** Allowed orb in degrees for each specialty aspect. */
 const orbBySpecialtyAspect: Record<SpecialtyAspect, number> = {
   biquintile: 2,
   decile: 1,
@@ -345,10 +301,7 @@ const orbBySpecialtyAspect: Record<SpecialtyAspect, number> = {
   undecile: 1,
 };
 
-/**
- * Complete mapping of all aspects to their orb tolerances in degrees.
- * Used in aspect detection algorithms to determine if an aspect is active.
- */
+/** Orb tolerance in degrees for every aspect, used in detection. */
 export const orbByAspect: Record<Aspect, number> = {
   ...orbByMajorAspect,
   ...orbByMinorAspect,

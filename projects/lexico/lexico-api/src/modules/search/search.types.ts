@@ -12,10 +12,7 @@ export interface EncliticDecompositionResult {
   stem: string;
 }
 
-/**
- * One lexeme a search matched, with how it matched, before it is mapped to
- * the `LexemeSearchResult` the API returns.
- */
+/** One lexeme a search matched, and how, before mapping. */
 export interface LexemeSearchMatch {
   distance: null | number;
   enclitic: null | string;
@@ -25,24 +22,18 @@ export interface LexemeSearchMatch {
   source: SearchMatchSource;
 }
 
-/**
- * A search match keyed by its lexeme's id, the shape a ranked page is loaded
- * as before it is handed out.
- */
+/** A search match, keyed by lexeme id. */
 export interface RankedLexemeMatch extends LexemeSearchMatch {
   id: string;
 }
 
-/**
- * The SQL ranking every lexeme a search matched — one `lexemeId` and `score`
- * row each — and the parameters it binds.
- */
+/** SQL ranking every matched lexeme, with its bound parameters. */
 export interface RankedLexemeQuery {
   parameters: Record<string, unknown>;
   sql: string;
 }
 
-/** A lexeme on a ranked page, with the score its best tier gave it. */
+/** A lexeme on a ranked page, with its best-tier score. */
 export interface ScoredLexeme {
   lexeme: Lexeme;
   score: number;

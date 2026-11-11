@@ -8,11 +8,10 @@ import { InputService } from "./input.service";
 /**
  * Owns command-line argument parsing and interactive input resolution.
  *
- * `InputOptionsService` is exported as well as `InputService` because a
- * non-interactive host needs option normalization without the prompting
- * machinery, which has nowhere to prompt. `InputPromptingService` is exported
- * for the opposite reason: a command that decides *whether* to ask needs the
- * predicate and the picker without going through input resolution.
+ * `InputOptionsService` is exported for non-interactive hosts, which need
+ * option normalization without prompting. `InputPromptingService` is exported
+ * for commands that decide whether to ask, and need the picker without input
+ * resolution.
  */
 @Module({
   controllers: [],

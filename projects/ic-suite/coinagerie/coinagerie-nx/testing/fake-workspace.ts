@@ -1,10 +1,7 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-/**
- * Fake workspaces are built in this project's gitignored `tmp/`, never the
- * system temp directory, which a Linux runner's swc register hook cannot reach.
- */
+/** Fake workspaces in gitignored `tmp/`; system temp fails on Linux. */
 const TEMPORARY_ROOT = path.join(import.meta.dirname, "..", "tmp");
 
 /** A workspace built on disk, and the way to remove it. */

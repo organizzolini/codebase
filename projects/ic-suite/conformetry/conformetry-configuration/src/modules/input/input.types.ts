@@ -27,11 +27,7 @@ export interface SchemaInput {
   readonly propertySchema: unknown;
 }
 
-/**
- * One template a picker can offer.
- *
- * Only the name and description are passed, so prompting does not depend on the configuration's shape.
- */
+/** A template a picker offers: its name and description only. */
 export interface TemplateChoice {
   readonly description?: string | undefined;
   readonly name: string;

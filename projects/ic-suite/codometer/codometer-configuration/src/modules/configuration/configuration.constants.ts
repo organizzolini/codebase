@@ -22,11 +22,7 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
   ".ts",
 ]);
 
-/**
- * File names a configuration may be written under.
- *
- * Used to spot config files when listing a tree; a run always takes `--config`.
- */
+/** File names a configuration may use; a run always takes `--config`. */
 export const CONFIGURATION_FILE_NAMES = [
   "codometer.config.ts",
   "codometer.config.mts",
@@ -38,11 +34,7 @@ export const CONFIGURATION_FILE_NAMES = [
   "codometer.config.jsonc",
 ] as const;
 
-/**
- * Path globs excluded when a configuration names none: only what every ecosystem generates.
- *
- * Repository-specific noise belongs in its own configuration.
- */
+/** Default excluded globs: only what every ecosystem generates. */
 export const DEFAULT_EXCLUDE_GLOBS = [
   "**/.nx/**",
   "**/build/**",
@@ -51,11 +43,7 @@ export const DEFAULT_EXCLUDE_GLOBS = [
   "**/node_modules/**",
 ] as const;
 
-/**
- * Badge colors for configured counters that name none, cycled in order.
- *
- * Cycling keeps each counter's color stable between runs.
- */
+/** Badge colors for counters naming none, cycled to stay stable. */
 export const DEFAULT_CUSTOM_STATISTIC_COLORS = [
   "7c3aed",
   "0284c7",
@@ -70,47 +58,26 @@ export const DEFAULT_CUSTOM_STATISTIC_COLORS = [
 /** Badge group a configured counter is rendered into when it names none. */
 export const DEFAULT_CUSTOM_STATISTIC_GROUP = "conventions";
 
-/**
- * Name of the input every run measures: the whole codebase.
- *
- * Its files come from ignore files, not globs.
- */
+/** Input every run measures; its files come from ignore files. */
 export const DEFAULT_INPUT_NAME = "codebase";
 
-/**
- * The built-in `codebase` input, present unless a configuration's `inputs`
- * names an entry of its own by that name.
- */
+/** Built-in `codebase` input, unless `inputs` declares its own. */
 export const DEFAULT_CODEBASE_INPUT: CodometerInput = {
   analyses: ["language"],
   include: ["**/*"],
   name: DEFAULT_INPUT_NAME,
 };
 
-/**
- * Compression applied to an input that names none.
- *
- * Gzip, since clients understand it; `none` measures bytes on disk.
- */
+/** Default compression, gzip; `none` measures bytes on disk. */
 export const DEFAULT_INPUT_COMPRESSION = "gzip" satisfies CodometerCompression;
 
-/**
- * Where an input's globs start when it names no directory: the working directory.
- *
- * Reaching outside it must be written down.
- */
+/** Default input directory: the working directory; escapes need writing down. */
 export const DEFAULT_INPUT_DIRECTORY = ".";
 
-/**
- * Severity of a limit that names none. Strict on purpose: a quietly warning limit gates nothing.
- */
+/** Default severity: strict, since a warning limit gates nothing. */
 export const DEFAULT_LIMIT_SEVERITY = "fail" satisfies CodometerSeverity;
 
-/**
- * Multiplier per unit suffix. Decimal, with a required trailing `b`.
- *
- * A map, so an inherited name such as `constructor` finds nothing.
- */
+/** Multiplier per unit suffix; a map, so `constructor` finds nothing. */
 export const LIMIT_UNIT_MULTIPLIERS: ReadonlyMap<string, number> = new Map([
   ["b", 1],
   ["gb", 1_000_000_000],
@@ -119,11 +86,7 @@ export const LIMIT_UNIT_MULTIPLIERS: ReadonlyMap<string, number> = new Map([
   ["tb", 1_000_000_000_000],
 ]);
 
-/**
- * Splits a string limit into its number and unit.
- *
- * Anchored at both ends, so anything extra is rejected rather than half-parsed.
- */
+/** Splits a limit into number and unit, rejecting trailing text. */
 export const LIMIT_VALUE_PATTERN = /^(\d+(?:\.\d+)?)\s*([a-z]*)$/i;
 
 /** Spaces used to indent the JSON report when a configuration names none. */
@@ -135,25 +98,13 @@ export const DEFAULT_MARKDOWN_END_MARKER = "<!-- codometer:end -->";
 /** Opening marker of the generated badge block. */
 export const DEFAULT_MARKDOWN_START_MARKER = "<!-- codometer:start -->";
 
-/**
- * Interpreter for Python analysis when a configuration names none.
- *
- * Repositories with managed environments override it, e.g. `uv run python`.
- */
+/** Python interpreter when none is named; managed environments override it. */
 export const DEFAULT_PYTHON_COMMAND = "python3";
 
-/**
- * Prefix turning an include glob into an exclusion.
- *
- * Read wherever an input's globs are resolved.
- */
+/** Prefix turning an include glob into an exclusion. */
 export const NEGATION_PREFIX = "!";
 
-/**
- * Marks the repository root for an upward search.
- *
- * Package manifests are excluded: every monorepo package has one.
- */
+/** Repository root marker for upward search, skipping package manifests. */
 export const REPOSITORY_ROOT_MARKERS = [".git", "pnpm-workspace.yaml"] as const;
 
 /** Analyses an input may ask to have run over it. */
@@ -181,9 +132,7 @@ export const CODOMETER_COMPRESSIONS = [
   "none",
 ] as const satisfies readonly CodometerCompression[];
 
-/**
- * Message for a configuration with no `format`, written out rather than left to the schema's generic line.
- */
+/** Message for a configuration with no `format`, not the schema's. */
 export const MISSING_FORMAT_MESSAGE =
   'A codometer configuration must name a `format` of "json" or "markdown", and nothing supplies one for it. Set it in this file, or spread a shared default object that sets it — every run has to be told which report shape it produces, and a directory with no configuration file anywhere above it fails here rather than measuring with a format nobody chose.';
 

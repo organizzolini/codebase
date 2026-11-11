@@ -16,13 +16,10 @@ import type {
 import type { GraphRunOutcome } from "@codependix/core";
 
 /**
- * Logs what `MapCommand`'s passes found, and decides whether each pass
- * should fail the run.
+ * Logs what `MapCommand`'s passes found, and decides whether each pass should fail the run.
  *
- * Split out of `MapCommand` purely to keep that file under this
- * repository's per-file line limit: reporting a pass's own findings is a
- * concern of its own, separate from resolving the command line into a mode
- * and orchestrating the passes themselves.
+ * Split out of `MapCommand` to keep that file under the per-file line limit.
+ * Command-line parsing and pass orchestration stay there.
  */
 @Injectable()
 export class ReportingService {

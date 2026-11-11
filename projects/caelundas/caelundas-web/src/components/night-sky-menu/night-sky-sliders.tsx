@@ -7,8 +7,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The sliders of one section, the settings they show, and where to send a
- * moved one.
+ * One section's sliders, settings, and change handler.
  */
 export interface NightSkySlidersProperties {
   className?: string;

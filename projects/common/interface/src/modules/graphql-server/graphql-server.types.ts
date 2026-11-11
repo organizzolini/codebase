@@ -22,10 +22,7 @@ export interface Edge<T> {
   node: T;
 }
 
-/**
- * A type's data properties, without its methods — the active-record methods
- * an entity inherits from TypeORM's `BaseEntity` are not fields.
- */
+/** A type's data properties, excluding TypeORM `BaseEntity` methods. */
 export type GraphQLFields<Type> = {
   [
     Key in keyof Type as Type[Key] extends (...arguments_: never[]) => unknown
@@ -34,10 +31,7 @@ export type GraphQLFields<Type> = {
   ]: Type[Key];
 };
 
-/**
- * The shape a GraphQL object implements for its TypeORM entity: each exposed
- * field, relations retyped as GraphQL types. `Self` is the implementing class.
- */
+/** The GraphQL object shape over its entity. `Self` is the class. */
 export type GraphQLObjectOf<
   Entity,
   Self,
@@ -66,10 +60,7 @@ export type GraphQLObjectOf<
   > &
   Relations<Self, RelationField>;
 
-/**
- * Why a GraphQL object differs from its entity, or `never` when it does not. A
- * new, non-excluded column counts as missing.
- */
+/** Why a GraphQL object differs from its entity, or `never`. */
 export type GraphQLObjectViolations<
   Entity,
   Self,
@@ -96,26 +87,17 @@ export type GraphQLObjectViolations<
       >
     >;
 
-/**
- * What a mapper builds for a GraphQL class: its declared fields, with each
- * `RelationField` relation also `undefined` when unjoined.
- */
+/** A mapper's GraphQL class output; unjoined relations are `undefined`. */
 export type MappedFields<Type, RelationField extends keyof Type = never> = {
   [Key in keyof GraphQLFields<Type>]: Key extends RelationField
     ? GraphQLFields<Type>[Key] | undefined
     : GraphQLFields<Type>[Key];
 };
 
-/**
- * Stands in for a related class in a GraphQL property, like TypeORM's
- * `Relation`, so decorator metadata does not hit a circular import.
- */
+/** Stands in for a related class, avoiding a metadata import cycle. */
 export type Related<Type> = Type;
 
-/**
- * The exposed fields holding related rows, one entity or a list, rather than a
- * column's value such as a `Date`.
- */
+/** Exposed fields holding related rows, not column values like a `Date`. */
 export type RelationKey<Entity, ExcludedField> = {
   [Key in ExposedField<Entity, ExcludedField>]-?: IsRelation<
     NonNullable<GraphQLFields<Entity>[Key]>
@@ -144,10 +126,7 @@ type IsRelation<Value> = [Value] extends [Date]
       ? true
       : false;
 
-/**
- * An entity's fields, each optional one also `undefined`, since an unset row
- * reads it that way.
- */
+/** An entity's fields; optional ones are also `undefined`. */
 type LoadedFields<Entity> = {
   [Key in keyof GraphQLFields<Entity>]: object extends Pick<
     GraphQLFields<Entity>,
@@ -168,7 +147,7 @@ type MismatchedRelation<Fields, Declared> = {
     : Key;
 }[keyof Declared];
 
-/** Each field whose column holds a value its GraphQL type does not, by name. */
+/** Fields whose column value their GraphQL type rejects, by name. */
 type NarrowedField<Fields, SelfFields> = {
   [Key in keyof Fields & keyof SelfFields]-?: [Fields[Key]] extends [
     SelfFields[Key],
@@ -183,7 +162,7 @@ type Relations<Self, RelationField> = Pick<
   keyof GraphQLFields<Self> & RelationField
 >;
 
-/** Whether a relation holds many rows, may be null, and may be unset. */
+/** Whether a relation is a list, nullable, or optional. */
 type RelationShape<Relation> = [
   [NonNullable<Relation>] extends [Connection<unknown>]
     ? "many"

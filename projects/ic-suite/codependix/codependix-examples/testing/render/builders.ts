@@ -45,11 +45,7 @@ import type { INestApplicationContext } from "@nestjs/common";
 
 // ♟️ Constants
 
-/**
- * The codependix builders the examples render through, built by hand as
- * `@codependix/cli` wires them. `ConfigurationService` is the exception: see
- * `getConfigurationService`.
- */
+/** Builders wired by hand as `@codependix/cli` does; see `getConfigurationService`. */
 const logger = new LoggerService();
 
 /** Reads the Nx project graph and renders a one-hop Neighborhood. */
@@ -87,10 +83,7 @@ export const pythonService = new PythonService(
   pythonProjectService,
 );
 
-/**
- * The booted `ConfigurationModule`, or `undefined` until first asked for. Shared
- * so calls never boot a second container.
- */
+/** Shared booted `ConfigurationModule`, or `undefined` until first asked. */
 let configurationContextPromise: Promise<INestApplicationContext> | undefined;
 
 /**
@@ -149,10 +142,7 @@ export const boundaryOutcomeReportService = new BoundaryOutcomeReportService(
   boundaryReportService,
 );
 
-/**
- * Judges every level against its rules and charges findings to projects, as
- * `codependix map --check boundaries` does.
- */
+/** Judges every level against its rules, charging findings to projects. */
 export const boundaryCheckService = new BoundaryCheckService(
   boundariesService,
   new BoundaryFailureService(neighborhoodService),

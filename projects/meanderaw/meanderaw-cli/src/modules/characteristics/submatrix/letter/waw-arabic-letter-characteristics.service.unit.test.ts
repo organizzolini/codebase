@@ -7,9 +7,7 @@ import { WawArabicLetterCharacteristicsService } from "./waw-arabic-letter-chara
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the و (final Arabic waw) as a Code holding one isolated copy.
- */
+/** Each distinct orientation of final و as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [
     {
@@ -54,9 +52,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "wawFinal",
 };
 
-/**
- * Each distinct orientation of the و (isolated Arabic waw) as a Code holding one isolated copy.
- */
+/** Each distinct orientation of isolated و as a standalone Code. */
 const ISOLATED_FORM: LetterFormFixture = {
   aliases: [
     {

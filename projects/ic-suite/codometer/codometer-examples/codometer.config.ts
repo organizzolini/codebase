@@ -23,13 +23,10 @@ import type {
 
 // ♟️ Conventions
 
-/** Name of the target holding the sample corpus, and the join key its limit is written against. */
+/** Target holding the sample corpus that its limit names. */
 const CORPUS_TARGET_NAME = "Corpus";
 
-/**
- * The conventions the corpus demonstrates: two file-pattern counters and one
- * symbol counter, each over a corpus with stated counts.
- */
+/** Conventions the corpus demonstrates: two patterns, one symbol. */
 const conventions: CodometerCustomStatistic[] = [
   { label: "Service Files", patterns: ["**/*.service.ts"] },
   { label: "Unit Tests", patterns: ["**/*.unit.test.ts"] },
@@ -41,10 +38,7 @@ const conventions: CodometerCustomStatistic[] = [
   },
 ];
 
-/**
- * What a run measuring this package measures: the corpus, gated on compressed
- * size so unintended growth fails a check.
- */
+/** The corpus, gated on compressed size to catch growth. */
 const conventionLabels = conventions.map((statistic) => statistic.label);
 
 const codometerConfiguration: CodometerConfiguration = {

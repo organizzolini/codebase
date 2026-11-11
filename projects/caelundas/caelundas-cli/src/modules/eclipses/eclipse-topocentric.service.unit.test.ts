@@ -27,7 +27,7 @@ import type { Moment } from "moment-timezone";
 /** Three consecutive minutes of one value: previous, current, next. */
 type Triple = [previous: number, current: number, next: number];
 
-/** Topocentric semidiameters of the test Sun and Moon; their limbs touch at 0.53°. */
+/** Test Sun and Moon semidiameters; their limbs touch at 0.53°. */
 const SUN_SEMIDIAMETER = 0.26;
 const MOON_SEMIDIAMETER = 0.27;
 
@@ -86,7 +86,7 @@ function getTopocentricWindow(args: {
 /** The minute nearest first contact in each test passage. */
 const PASSAGE_START = moment.utc("2026-08-12T17:11:00.000Z");
 
-/** The topocentric Moon's speed past the Sun in each test passage, degrees per minute. */
+/** Topocentric Moon's speed past the Sun, degrees per minute. */
 const PASSAGE_SPEED = 0.01;
 
 /**
@@ -123,7 +123,7 @@ describe(EclipseTopocentricService, () => {
 
   const lunarContactLimit = getTestContactLimit("lunar");
 
-  /** The Moon's limb reaching the penumbra between the previous minute and this one, nearer this one. */
+  /** Moon's limb reaches the penumbra, nearer this minute. */
   const lunarFirstContact = getLunarCoordinates([
     -(lunarContactLimit + 0.02),
     -(lunarContactLimit - 0.01),

@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * What a `coinagerie.config.ts` exports by default. Every path is relative to
- * the folder the file sits in, which is also the scan root.
- */
+/** A `coinagerie.config.ts` default export; paths are relative to its folder. */
 export interface CoinagerieConfiguration {
   exclude?: CoinagerieExclusions | undefined;
   /**
@@ -32,19 +29,13 @@ export interface CoinagerieExclusions {
   words?: ExcludedWords | undefined;
 }
 
-/**
- * A JSON destination: the whole file is the glossary, a flat object sorted by
- * word with `""` for a word nobody has defined yet.
- */
+/** A JSON destination: a flat object, `""` for undefined words. */
 export interface CoinagerieJsonOutput {
   path: string;
   type: "json";
 }
 
-/**
- * A markdown destination: the glossary block sits between the
- * `coinagerie:start` and `coinagerie:end` anchors, or is appended when they are absent.
- */
+/** Markdown destination: block between `coinagerie:start` and `coinagerie:end`, appended if absent. */
 export interface CoinagerieMarkdownOutput {
   /** Rendered under the heading, telling a reader what the block is. */
   description?: string | undefined;
@@ -55,10 +46,7 @@ export interface CoinagerieMarkdownOutput {
 /** One place a glossary is kept. */
 export type CoinagerieOutput = CoinagerieJsonOutput | CoinagerieMarkdownOutput;
 
-/**
- * Command-line flags layered over the configuration file; a given flag replaces
- * its field. Destination paths resolve from the working directory.
- */
+/** Flags overriding config fields; paths resolve from the working directory. */
 export interface ConfigurationOverrides {
   /** Replaces the description of every markdown destination. */
   description?: string | undefined;
@@ -85,7 +73,7 @@ export interface ExcludedEntries {
 /** One entry of `exclude.words`: an exact word, or a pattern matching many. */
 export type ExcludedWord = RegExp | string;
 
-/** A list of excluded words or patterns, or a function that returns one. */
+/** Excluded words or patterns, or a function returning them. */
 export type ExcludedWords =
   | (() => ExcludedWord[] | Promise<ExcludedWord[]>)
   | ExcludedWord[];
@@ -114,10 +102,7 @@ export interface LoadedConfiguration {
   excluded: ExcludedEntries;
 }
 
-/**
- * A configuration with every default filled in and every path absolute.
- * Downstream code need not check whether a value was written or defaulted.
- */
+/** Every default filled in and every path absolute. */
 export interface ResolvedCoinagerieConfiguration {
   /** The file read, or `undefined` when the run uses only defaults. */
   configurationPath: string | undefined;

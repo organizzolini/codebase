@@ -22,9 +22,7 @@ export interface Selection {
   voice: string;
 }
 
-/**
- * One form of a verb and its word. Which fields are filled depends on the kind of form.
- */
+/** A verb form and its word; fields vary by form kind. */
 export interface VerbFormRow {
   case?: string;
   kind: string;

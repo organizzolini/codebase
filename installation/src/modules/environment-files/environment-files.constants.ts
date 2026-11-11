@@ -6,7 +6,7 @@ export const DEFAULT_FILE_NAME = ".env.default";
 /** The file a developer edits, which is never overwritten once it exists. */
 export const ENVIRONMENT_FILE_NAME = ".env";
 
-/** Git-known `.env.default` files, minus conformetry templates, so a template never becomes a real `.env`. */
+/** Git-known `.env.default` files, minus conformetry templates, which must never become `.env`. */
 export const DEFAULT_FILE_PATTERNS = [
   ".env.default",
   "*/.env.default",

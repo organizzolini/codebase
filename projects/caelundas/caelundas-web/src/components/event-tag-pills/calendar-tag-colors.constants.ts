@@ -1,7 +1,7 @@
 // ♟️ Constants
 
 /**
- * Tag roots in the order they take palette colors, those an event carries most together first.
+ * Tag roots in palette-color order, most-shared first.
  */
 export const TAG_ROOT_ORDER: readonly string[] = [
   "Type",

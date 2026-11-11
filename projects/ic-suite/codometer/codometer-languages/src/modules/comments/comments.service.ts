@@ -32,13 +32,7 @@ export class CommentsService {
   /**
    * Every declared maximum, paired with what this comment measured.
    *
-   * Written as three guarded pushes rather than a table walked by `flatMap`,
-   * because the callback would be one more frame on the deepest stack this
-   * package owns — the JSDoc walk reaches here through eleven of them, and
-   * `callidescope.config.ts` gates that at what it measures. The words are
-   * counted in place for the same reason: splitting a trimmed string on
-   * whitespace runs never yields an empty token, so the empty case is the only
-   * one worth guarding, and a helper would be a frame deeper.
+   * Three guarded pushes, not `flatMap`, to keep a frame off the deepest stack.
    */
   private declaredLimits(
     args: { prose: string; source: string },

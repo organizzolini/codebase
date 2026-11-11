@@ -1,10 +1,7 @@
 import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-/**
- * The fixture tree's contents by relative path, written to a real directory
- * because the behavior under test is what the filesystem reports.
- */
+/** Fixture files by relative path, on real disk under test. */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
   // `README.md` is not named here on purpose. Codometer splices into it, so
   // it excludes it from what it measures without being told.

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // ♟️ Constants
 
-/** The file naming the Node version the workspace runs, relative to the working directory. */
+/** File naming the Node version, relative to the working directory. */
 export const NODE_VERSION_FILE = ".nvmrc";
 
 /** Every Node release, published by the Node.js project. */

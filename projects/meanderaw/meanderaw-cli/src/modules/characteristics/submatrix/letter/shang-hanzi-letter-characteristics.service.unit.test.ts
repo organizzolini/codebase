@@ -7,7 +7,7 @@ import { ShangHanziLetterCharacteristicsService } from "./shang-hanzi-letter-cha
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the 上 (hanzi shang) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of 上 as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   { fixture: "04x03y04000e102b10", names: ["Southeast", "NorthwestHalf"] },
   {

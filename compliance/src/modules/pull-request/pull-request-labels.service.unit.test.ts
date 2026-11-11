@@ -6,7 +6,7 @@ import { PullRequestLabelsService } from "./pull-request-labels.service";
 
 import type { ConventionalLabel } from "./pull-request-labels.types";
 
-/** What the mocked `require` hands back, or throws when it is an error. */
+/** What the mocked `require` returns, or throws when it errors. */
 let conventionalConfig: unknown = { scopes: [], types: [] };
 
 vi.mock("node:module", () => ({

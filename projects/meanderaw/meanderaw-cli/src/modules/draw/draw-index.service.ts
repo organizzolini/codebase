@@ -25,13 +25,10 @@ import type {
 } from "./draw-index.types";
 
 /**
- * Renders the pages the corpus is looked through: one per pattern
- * characteristic, listing every meander it holds shape by shape, plus an
- * index linking them.
+ * Renders the corpus pages: one per pattern characteristic, listing its meanders, plus an index.
  *
- * Each tile is embedded directly, since a meander is a database row rather
- * than a file. Pages stream a batch of rows at a time, as a pattern can hold
- * over a million meanders.
+ * Tiles are embedded, since a meander is a row, not a file. Pages stream rows
+ * in batches, as a pattern can hold millions of meanders.
  */
 @Injectable()
 export class DrawIndexService {

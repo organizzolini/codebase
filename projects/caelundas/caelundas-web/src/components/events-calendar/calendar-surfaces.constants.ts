@@ -1,7 +1,7 @@
 // 🔖 Constants
 
 /**
- * Calendar surfaces over the night sky, as whole class names for Tailwind; `--surface-opacity` sets the opaque share.
+ * Whole Tailwind class names for surfaces over the sky.
  */
 export const SURFACE_CLASS_NAMES = {
   agendaDate: "bg-muted/(--surface-opacity)",
@@ -12,7 +12,7 @@ export const SURFACE_CLASS_NAMES = {
 } as const;
 
 /**
- * The same for the vendored calendars' surfaces, changed here through class hooks and Gantt slot selectors.
+ * Vendored calendar surfaces, set through class hooks.
  */
 export const VENDORED_SURFACE_CLASS_NAMES = {
   ganttHeaders:

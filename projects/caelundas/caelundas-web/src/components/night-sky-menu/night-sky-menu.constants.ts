@@ -15,7 +15,7 @@ import type {
 // ♟️ Constants
 
 /**
- * Where the observer stands and which part of the sky the window shows.
+ * Observer position and the window's view of the sky.
  */
 export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
   {
@@ -56,7 +56,7 @@ export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
   },
 ];
 
-/** Sky and calendar-surface opacity: a dimmer sky and more opaque calendar make text easier to read. */
+/** Sky and calendar opacity, for readable text. */
 export const OPACITY_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "skyOpacity",
@@ -160,8 +160,7 @@ export const ECLIPTIC_SLIDERS: readonly SkySliderControl[] = [
 ];
 
 /**
- * Every number the menu sets. The ranges are what looks right facing north,
- * inside the wider ones the link accepts.
+ * Every number the menu sets, within the link's wider ranges.
  */
 export const SKY_SLIDERS: readonly SkySliderControl[] = [
   ...ANGLE_SLIDERS,
@@ -211,8 +210,7 @@ export const SKY_COLORS: readonly SkyColorControl[] = [
 ];
 
 /**
- * Each key's default, which the menu removes from the link rather than
- * write, so a link names only what differs.
+ * Each key's default; the menu removes a key set to it.
  */
 export const SKY_DEFAULTS: Readonly<
   Partial<Record<SkyParameterKey, number | string>>
@@ -237,8 +235,7 @@ export const SKY_DEFAULTS: Readonly<
 };
 
 /**
- * The keys the Default button removes: every key the menu sets. `sky.debug`
- * stays, since only a link sets it.
+ * Keys the Default button removes; `sky.debug` stays.
  */
 export const RESET_SKY_KEYS: readonly SkyParameterKey[] = [
   "sky",
@@ -249,18 +246,18 @@ export const RESET_SKY_KEYS: readonly SkyParameterKey[] = [
 ];
 
 /**
- * The menu's panel: four columns on a wide screen, one on a phone, scrolling only when short of room.
+ * Panel: four columns wide, one on a phone.
  */
 export const PANEL_CLASS_NAME =
   "w-[min(20rem,calc(100vw-1rem))] md:w-[min(40rem,calc(100vw-1rem))] lg:w-[min(68rem,calc(100vw-1rem))] max-h-(--available-height) overflow-y-auto";
 
 /**
- * Keys the menu reads, which the panel's controls pass up: Escape closes the menu, Tab leaves the panel.
+ * Keys the panel passes up: Escape closes, Tab leaves.
  */
 export const MENU_KEYS: ReadonlySet<string> = new Set(["Escape", "Tab"]);
 
 /**
- * The slider's track is sized here: its own classes read `data-horizontal`, which this Base UI writes as `data-orientation`.
+ * Slider track sizing; Base UI sets `data-orientation`, not `data-horizontal`.
  */
 export const SLIDER_CLASS_NAME =
   "py-2 [&_[data-slot=slider-track]]:h-1.5 [&_[data-slot=slider-track]]:w-full " +
@@ -268,31 +265,29 @@ export const SLIDER_CLASS_NAME =
   "[&_[data-slot=slider-thumb]]:size-4";
 
 /**
- * A group of controls: no heading, so each control's own label carries its
- * meaning; a column divides its groups with a hairline.
+ * A control group with no heading; each control is labeled.
  */
 export const SECTION_CLASS_NAME = "flex flex-col gap-1 py-2";
 
 /**
- * A column of the panel: its groups one under another, a hairline between.
+ * A panel column: groups stacked, hairlines between.
  */
 export const COLUMN_CLASS_NAME = "divide-y";
 
 /**
- * The constellation tree's box: as tall as the other columns on a wide screen, bounded on a phone.
+ * Tree box: column height when wide, bounded on phones.
  */
 export const TREE_CLASS_NAME =
   "max-h-80 min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-md border p-1 lg:max-h-none";
 
 /**
- * A constellation tree row: tall enough to tap, its checkbox and name in line.
+ * A tree row, tall enough to tap.
  */
 export const TREE_ROW_CLASS_NAME =
   "hover:bg-accent flex min-h-7 cursor-pointer items-center gap-2 rounded px-1 text-xs";
 
 /**
- * A folder's checkbox, which shows a dash when some of its constellations
- * show and not all.
+ * A folder checkbox: a dash when some, not all, show.
  */
 export const FOLDER_CHECKBOX_CLASS_NAME =
   "before:hidden before:h-0.5 before:w-2 before:rounded-full before:bg-primary data-indeterminate:border-primary data-indeterminate:before:block data-indeterminate:[&_svg]:hidden";

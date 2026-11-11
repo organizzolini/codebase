@@ -25,11 +25,7 @@ export const EMPTY_MARKDOWN_RESULT: MarkdownResult = {
   thematicBreaks: 0,
 };
 
-/**
- * Maps an mdast node type onto the result field that counts it.
- *
- * Headings and list items need their node, so are absent.
- */
+/** Maps mdast node types to counts; headings and items need nodes. */
 export const NODE_COUNTER_KEYS: Record<string, keyof MarkdownResult> = {
   blockquote: "blockQuotes",
   code: "codeBlocks",

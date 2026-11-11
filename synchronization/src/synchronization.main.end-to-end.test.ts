@@ -13,10 +13,7 @@ const COMMAND_PATH = path.resolve(
   "synchronization.main.ts",
 );
 
-/**
- * Fixture workspaces live in this project's gitignored `tmp`, never the OS temp
- * directory: `@swc-node/register` resolves aliases only from inside the workspace.
- */
+/** Fixtures live in gitignored `tmp`, since OS temp breaks alias resolution. */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
 describe("main end-to-end suite", () => {

@@ -8,12 +8,11 @@ import { describeError } from "../process-runner/process-runner.utilities";
 import { TagCodebaseService } from "./tag-codebase.service";
 
 /**
- * CLI command that runs semantic-release for the codebase's own version, or
- * steps aside when `main` has moved, as the 🔖 Tag Codebase release step.
+ * CLI command that runs semantic-release for the codebase version, or steps
+ * aside when `main` moved, as the 🔖 Tag Codebase release step.
  *
- * Reads `GITHUB_ENV`, where `RELEASE_SUPERSEDED=true` is written when `main`
- * moved; semantic-release itself reads `GITHUB_TOKEN` and the committer
- * identity. Exits 0 when released or stepped aside, 1 otherwise.
+ * Writes `RELEASE_SUPERSEDED=true` to `GITHUB_ENV` when `main` moved. Exits 0
+ * when released or stepped aside, 1 otherwise.
  */
 @Command({
   description:

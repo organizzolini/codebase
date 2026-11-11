@@ -1,7 +1,7 @@
 // ♟️ Constants
 import type { Aspect, Body, Sign } from "../caelundas/caelundas.types";
 
-/** The element of each sign, which an event in the sign also carries. */
+/** Element of each sign, also carried by events in it. */
 export const ELEMENT_BY_SIGN: Record<Sign, string> = {
   aquarius: "Air",
   aries: "Fire",
@@ -17,7 +17,7 @@ export const ELEMENT_BY_SIGN: Record<Sign, string> = {
   virgo: "Earth",
 };
 
-/** The modality of each sign, which an event in the sign also carries. */
+/** Modality of each sign, also carried by events in it. */
 export const MODALITY_BY_SIGN: Record<Sign, string> = {
   aquarius: "Fixed",
   aries: "Cardinal",
@@ -33,10 +33,7 @@ export const MODALITY_BY_SIGN: Record<Sign, string> = {
   virgo: "Mutable",
 };
 
-/**
- * The polarity of each element: fire and air signs are positive, earth and
- * water signs negative.
- */
+/** Element polarity: fire and air positive; earth and water negative. */
 export const POLARITY_BY_ELEMENT: Readonly<Record<string, string>> = {
   Air: "Positive",
   Earth: "Negative",
@@ -44,9 +41,7 @@ export const POLARITY_BY_ELEMENT: Readonly<Record<string, string>> = {
   Water: "Negative",
 };
 
-/**
- * Each point of the annual solar cycle's kind and season, from the Sun's ecliptic longitude.
- */
+/** Kind and season of each annual solar cycle point. */
 export const KIND_AND_SEASON_BY_SOLAR_CYCLE_POINT: Readonly<
   Record<string, readonly [string, string]>
 > = {
@@ -68,9 +63,7 @@ export const KIND_AND_SEASON_BY_SOLAR_CYCLE_POINT: Readonly<
   "Winter Solstice": ["Solstice", "Winter"],
 };
 
-/**
- * Signs each traditional planet is dignified or debilitated in, strongest dignity first; the first listing wins.
- */
+/** Signs each planet is dignified or debilitated in, strongest first. */
 export const SIGNS_BY_DIGNITY_BY_PLANET: Readonly<
   Record<string, readonly (readonly [string, readonly Sign[]])[]>
 > = {
@@ -118,9 +111,7 @@ export const SIGNS_BY_DIGNITY_BY_PLANET: Readonly<
   ],
 };
 
-/**
- * The synodic stage each Mercury, Venus or Mars phase marks; new and full fall at the conjunctions.
- */
+/** Synodic stage each Mercury, Venus, or Mars phase marks. */
 export const SYNODIC_STAGE_BY_PHASE: Readonly<Record<string, string>> = {
   brightest: "Brightest",
   conjunction: "Conjunction",
@@ -149,16 +140,13 @@ export const SYNODIC_STAGE_BY_PHASE: Readonly<Record<string, string>> = {
   "western elongation": "Elongation",
 };
 
-/**
- * Where Mars's stages differ from the inner planets': as an outer planet it
- * is full at opposition, not at a superior conjunction.
- */
+/** Mars's stages where they differ: full at opposition, not conjunction. */
 export const MARTIAN_SYNODIC_STAGE_BY_PHASE: Readonly<Record<string, string>> =
   {
     full: "Opposition",
   };
 
-/** The class of each body, which an event involving the body also carries. */
+/** Class of each body, also carried by events involving it. */
 export const BODY_CLASS_BY_BODY: Record<Body, string> = {
   ceres: "Asteroid",
   chiron: "Asteroid",
@@ -207,9 +195,7 @@ export const NATURE_AND_HARMONIC_BY_ASPECT: Record<
   undecile: ["Neutral", 11],
 };
 
-/**
- * The nature and harmonic of each compound pattern, taken from the aspects that make it up.
- */
+/** Nature and harmonic of each compound pattern, from its aspects. */
 export const NATURE_AND_HARMONIC_BY_PATTERN: Readonly<
   Record<string, readonly [string, number]>
 > = {

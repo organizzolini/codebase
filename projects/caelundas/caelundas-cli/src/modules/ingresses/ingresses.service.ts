@@ -38,8 +38,7 @@ export class IngressesService {
   // 🔑 Public Fields
 
   /**
-   * Maps each zodiac sign to its ecliptic longitude range: twelve 30° segments
-   * from Aries at 0°, on the tropical zodiac (aligned with seasons).
+   * Each sign's longitude range: twelve 30° tropical segments from 0°.
    */
   static readonly degreeRangeBySign: Record<
     Sign,

@@ -20,16 +20,13 @@ export interface FakeProcessBehavior {
   readonly skillsUnavailable?: boolean;
 }
 
-/** A process runner that records what it was asked and fakes the outcome. */
+/** A process runner that records its calls and fakes outcomes. */
 export interface FakeProcessRunner {
   readonly commands: string[];
   readonly run: (command: ProcessCommand) => ProcessResult;
 }
 
-/**
- * Which locked skills are absent from disk, or why that could not be told.
- * Nothing missing and nothing readable are different answers.
- */
+/** Locked skills missing from disk, or why that is unknown. */
 export type MissingSkillsResult =
   | { readonly kind: "no-lockfile" }
   | { readonly kind: "read"; readonly missing: readonly string[] }

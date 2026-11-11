@@ -2,10 +2,7 @@
 
 import ts from "typescript";
 
-/**
- * How each TypeScript and JavaScript extension is parsed. JavaScript goes
- * through the same compiler, reading JSX in every file the way bundlers do.
- */
+/** Parsing per extension; JSX is read everywhere, as bundlers do. */
 export const TYPESCRIPT_SCRIPT_KINDS: ReadonlyMap<string, ts.ScriptKind> =
   new Map([
     [".cjs", ts.ScriptKind.JS],
@@ -18,10 +15,7 @@ export const TYPESCRIPT_SCRIPT_KINDS: ReadonlyMap<string, ts.ScriptKind> =
     [".tsx", ts.ScriptKind.TSX],
   ]);
 
-/**
- * Declarations whose name may be quoted. A quoted name here is a key and counts
- * as an identifier; other string literals are text.
- */
+/** Declarations with quotable names; a quoted name is an identifier. */
 export const QUOTABLE_NAME_OWNER_KINDS: ReadonlySet<ts.SyntaxKind> = new Set([
   ts.SyntaxKind.EnumMember,
   ts.SyntaxKind.GetAccessor,
@@ -33,10 +27,7 @@ export const QUOTABLE_NAME_OWNER_KINDS: ReadonlySet<ts.SyntaxKind> = new Set([
   ts.SyntaxKind.SetAccessor,
 ]);
 
-/**
- * Every reserved or contextual keyword the compiler knows, lowercased. Read
- * from its keyword range, so the list cannot fall behind.
- */
+/** Every reserved or contextual keyword, lowercased, read from the compiler. */
 export const TYPESCRIPT_KEYWORDS: string[] = Array.from(
   { length: ts.SyntaxKind.LastKeyword - ts.SyntaxKind.FirstKeyword + 1 },
   (_unused, offset) => ts.tokenToString(ts.SyntaxKind.FirstKeyword + offset),

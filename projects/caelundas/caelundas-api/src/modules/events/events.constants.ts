@@ -10,10 +10,7 @@ export const EVENT_FILTER_ARGUMENT_DESCRIPTION =
 export const EVENT_GROUPING_ARGUMENT_DESCRIPTION =
   "The levels to read each event's group keys for, and the field it is colored by; each event comes back with one list of keys per level, so an event with two planets is under both and one with no key at a level has an empty list there.";
 
-/**
- * The span and zone of the whole dataset, or no row when it is empty. The
- * zone is the most common one, because the app shows one observer location.
- */
+/** Dataset span and its common zone; the app shows one place. */
 export const DATASET_SQL = `
   select
     count(*) as count,
@@ -38,17 +35,7 @@ export const datasetRowSchema = z.object({
   timezone: z.string(),
 });
 
-/**
- * The events that overlap a period, earliest first, each with the tags it was
- * given as a JSON array, read through the derived-times view. Binds the
- * period's end, then its start; ends are compared inclusively so an instant
- * at the period's first moment is still found. `{filter}` is replaced by
- * the compiled filter, or by nothing, and `{groups}` by the columns that read
- * each grouping level's keys, or by nothing. The instants where an aspect
- * begins forming or dissolves are left out, since the event that spans the
- * aspect says as much; they stay in the data. Text sorts by bytes, rather
- * than by the database's locale.
- */
+/** Events overlapping a period, minus aspect forming and dissolving instants. */
 export const EVENTS_IN_PERIOD_SQL = `
   select
     e.id,
@@ -98,10 +85,7 @@ export const tagSchema = z.object({
   path: z.string(),
 });
 
-/**
- * The group keys of one level, as {@link EVENTS_IN_PERIOD_SQL} gathers them
- * into a `group_<level>` column.
- */
+/** The group keys of one level, gathered into a `group_<level>` column. */
 export const groupKeysSchema = z.array(
   z.object({
     key: z.string(),
@@ -110,10 +94,7 @@ export const groupKeysSchema = z.array(
   }),
 );
 
-/**
- * One row of {@link EVENTS_IN_PERIOD_SQL}; the `group_<level>` columns it
- * adds for a grouping are read by {@link groupKeysSchema} apart.
- */
+/** One row of the events query; grouping columns are read apart. */
 export const eventRowSchema = z.looseObject({
   color: z.string().nullable(),
   description: z.string(),
@@ -129,14 +110,7 @@ export const eventRowSchema = z.looseObject({
   timezone: z.string(),
 });
 
-/**
- * Every tag in the tree with its root, its path beneath that root, and the
- * number of events it matches among those that overlap a period, its
- * descendants' included, roots and their tags each in path order. Binds the
- * period's end, then its start; a null bound leaves that side open, so two
- * nulls count every event. `{filter}` is replaced by the compiled filter, or
- * by nothing, so the counts cover the events the filter keeps.
- */
+/** Every tag with its root, path, and count of matching events. */
 export const FACETS_SQL = `
   with in_period as (
     select e.id

@@ -15,10 +15,7 @@ import type {
   Repository,
 } from "typeorm";
 
-/**
- * How the testing module connects: through the project's own database
- * module, or through the helper's own `PostgresqlModule.forRoot`.
- */
+/** Connects via the project's database module or `PostgresqlModule.forRoot`. */
 export interface DatabaseTestingConnection {
   /**
    * The project's own database module, so modules under test share its one

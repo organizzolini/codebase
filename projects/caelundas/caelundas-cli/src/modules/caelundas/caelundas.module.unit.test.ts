@@ -8,9 +8,7 @@ type ConfigOptions =
       validate?: (config: Record<string, unknown>) => unknown;
     };
 
-/**
- * Sixty seconds rather than the shared ten: importing the app afresh takes far longer on a CI runner.
- */
+/** Sixty seconds: a fresh app import is slow on CI. */
 const IMPORT_TIMEOUT_MILLISECONDS = 60_000;
 
 describe("caelundas module", () => {

@@ -1,10 +1,7 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
-/**
- * The default interpreter: no `python` block, so `python3` on PATH is used.
- *
- * See the [python guide](./README.md).
- */
+// See the [python guide](./README.md).
+/** No `python` block, so `python3` on PATH is used. */
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
 };

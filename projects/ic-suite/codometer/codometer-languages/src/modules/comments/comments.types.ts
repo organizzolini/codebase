@@ -13,9 +13,7 @@ export interface CommentBlock {
   tokens: CommentToken[];
 }
 
-/**
- * How long one comment block may run, shaped to match the `comment` selector's maxima.
- */
+/** How long one comment block may run, per the `comment` selector. */
 export interface CommentBudget {
   maximumCharacters: number | undefined;
   maximumLines: number | undefined;
@@ -23,9 +21,7 @@ export interface CommentBudget {
   severity: CodometerSeverity;
 }
 
-/**
- * One `comment` custom statistic's budget and what it is over. A counter naming both `kind` and `language` is measured as a `kind`.
- */
+/** One `comment` statistic's budget and overage; `kind` wins over `language`. */
 export interface CommentCounter {
   budget: CommentBudget;
   kind: CodometerSymbolKind | undefined;
@@ -54,9 +50,7 @@ export interface LabeledCommentMeasurement {
   measurement: CommentMeasurement;
 }
 
-/**
- * Comment-bearing files per language. Declared here, not taken from discovery, so `languages` depends on `comments` alone.
- */
+/** Comment-bearing files per language, declared here so `languages` needs only `comments`. */
 export interface LanguageCommentFiles {
   cssFiles: string[];
   hclFiles: string[];
@@ -107,23 +101,19 @@ export interface MeasureLanguageCommentsArguments {
   workingDirectory: string;
 }
 
-/**
- * A comment token with the YAML tree offset that orders it. The offset is not part of a comment.
- */
+/** A comment token with the YAML tree offset that orders it. */
 export interface PositionedToken {
   offset: number;
   token: CommentToken;
 }
 
-/**
- * One TypeScript or JavaScript file's in-progress scan, keyed by position so a range read twice is kept once.
- */
+/** A TypeScript or JavaScript file's scan, keyed by position so repeats collapse. */
 export interface TypescriptCommentScan {
   content: string;
   ranges: Map<number, CommentRange>;
 }
 
-/** One YAML file's in-progress scan: the text, its lines, and what was found. */
+/** One YAML file's in-progress scan: text, lines, and findings. */
 export interface YamlCommentScan {
   content: string;
   lineCounter: LineCounter;

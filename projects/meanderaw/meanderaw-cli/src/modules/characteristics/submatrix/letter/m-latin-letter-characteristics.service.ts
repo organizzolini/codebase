@@ -8,16 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the M glyph — three legs
- * hanging from a bar, the middle one half as long, legs pointing south — one
- * per corner and clockwise rotation, each counting the base template drawn
- * that way. The base faces Southeast, drawn:
- *
- * ```text
- * ┌┬┐
- * │╵│
- * ╵ ╵
- * ```
+ * Provides the sixteen orientation evaluators of the M glyph: three legs hanging from a bar, the
+ * middle one half as long, legs pointing south. One per corner and clockwise rotation, each
+ * counting the base template drawn that way. The base faces Southeast.
  */
 @Injectable()
 export class MLatinLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -42,7 +35,7 @@ export class MLatinLetterCharacteristicsService implements CharacteristicEvaluat
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = ["675", "c8c", "8.8"];
 
   // 🔑 Public Fields

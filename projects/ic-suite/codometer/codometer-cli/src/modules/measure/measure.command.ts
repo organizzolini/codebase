@@ -92,20 +92,8 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Measure one directory and produce every resolved output, returning whether
-   * the run failed.
-   *
-   * Nothing here reads the working directory or sets the exit code, so `run`
-   * can measure many directories in one process and weigh each one's verdict
-   * on its own. `options.config` should be absolute, since a relative path is
-   * read against the process's working directory.
-   *
-   * Flags are independent: `--output-json`/`--output-markdown` each write
-   * their own destination, `--check reports` fails on a stale report,
-   * `--check limits` fails on a breached limit, `--format` prints, and none of
-   * them turns another on. Every output is produced before any finding is
-   * weighed, so a run that writes and gates leaves the report behind even
-   * when the gate trips.
+   * Measure one directory and return whether the run failed. Sets no exit
+   * code, so `run` can measure many directories in one process.
    */
   private async measureDirectory(
     options: MeasureCommandOptions,
@@ -145,16 +133,8 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Read the configuration, or say why it could not be read.
-   *
-   * Reports the reason and returns `undefined` rather than failing the process:
-   * whoever called `measureDirectory` decides what a refused run costs.
-   *
-   * `--config` is required: no file is searched for and none is assumed, so a
-   * run without it fails naming the flag, and so does a path that names no
-   * file or a configuration nothing can parse. A shared default object,
-   * spread by each project's own `codometer.config.ts`, is what states
-   * `format` once for a workspace.
+   * Read the configuration, or report why it could not be read and return
+   * `undefined`. `--config` is required; no file is searched for.
    */
   private async readConfiguration(
     options: MeasureCommandOptions,
@@ -395,15 +375,8 @@ export class MeasureCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Measure the process's working directory, or each directory named, and fail
-   * the process when any run failed.
-   *
-   * Directories are named only by a caller that would otherwise start this
-   * command once per directory and pay its start-up each time. Each is
-   * measured exactly as a run started inside it would be, with `--config`
-   * read against that directory, and one that throws fails its own run
-   * without stopping the rest. Without any, a throw is the command line's to
-   * report, as it always was.
+   * Measure the working directory, or each named directory, and fail on any
+   * failed run. Named directories avoid repeated start-up.
    */
   async run(
     directories: string[],

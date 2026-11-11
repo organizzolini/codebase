@@ -1,4 +1,4 @@
 // ♟️ Constants
 
-/** The directories the `batch` command judges, one or more, named after the command. */
+/** Directories the `batch` command judges; one or more required. */
 export const BATCH_ARGUMENTS = "<directories...>";

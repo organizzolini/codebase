@@ -8,11 +8,10 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the س
- * (Arabic seen) skeleton — final, initial, isolated, and medial — one per
- * corner and clockwise rotation, each counting that form's base template, which
- * faces Southwest, drawn that way. A letter sharing a form's skeleton,
- * differing from it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the س skeleton, final,
+ * initial, isolated, and medial. One per corner and clockwise rotation, each counting that form's
+ * base template, which faces Southwest. Letters sharing a skeleton, differing only by dots, are
+ * aliases.
  */
 @Injectable()
 export class SeenArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -72,50 +71,24 @@ export class SeenArabicLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /**
-   * The upright س (final Arabic seen) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *    ╷╷╷
-   * ╷ ┌┴┴┴╴
-   * └─┘
-   * ```
-   */
+  /** Upright final س glyph as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [
     "...444.",
     "4.6bbb1",
     "a39....",
   ];
 
-  /**
-   * The upright س (initial Arabic seen) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *  ╷╷╷
-   * ╶┴┴┘
-   * ```
-   */
+  /** Upright initial س glyph as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = [".444", "2bb9"];
 
-  /**
-   * The upright س (isolated Arabic seen) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *    ╷╷╷
-   * ╷ ┌┴┴┘
-   * └─┘
-   * ```
-   */
+  /** Upright isolated س glyph as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = [
     "...444",
     "4.6bb9",
     "a39...",
   ];
 
-  /**
-   * The upright س (medial Arabic seen) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *  ╷╷╷
-   * ╶┴┴┴╴
-   * ```
-   */
+  /** Upright medial س glyph as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = [".444.", "2bbb1"];
 
   // 🔑 Public Fields

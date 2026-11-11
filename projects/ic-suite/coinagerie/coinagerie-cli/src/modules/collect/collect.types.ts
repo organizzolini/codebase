@@ -22,8 +22,5 @@ export interface CollectCommandOptions {
   write?: boolean | undefined;
 }
 
-/**
- * What one run does with the vocabulary: print it, check every destination
- * against it, or write it into every destination.
- */
+/** Mode for the vocabulary: print, check, or write it. */
 export type CollectMode = "check" | "print" | "write";

@@ -38,9 +38,7 @@ interface ShippedSkill {
   name: unknown;
 }
 
-/**
- * Reads every skill this package ships, so a skill added without a test cannot go unnoticed.
- */
+/** Reads every shipped skill, so untested additions cannot slip by. */
 const readShippedSkills = (): ShippedSkill[] => {
   const entries = fs
     .readdirSync(skillsDirectory, { withFileTypes: true })

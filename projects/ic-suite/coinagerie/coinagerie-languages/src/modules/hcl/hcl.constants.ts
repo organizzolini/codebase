@@ -7,10 +7,7 @@ import type { LexicalGrammar } from "../scanner/scanner.types";
 /** The extensions HCL configuration is written with. */
 export const HCL_EXTENSIONS: readonly string[] = [".hcl", ".tf", ".tfvars"];
 
-/**
- * Comments, quoted strings, and here-documents in HCL. A quoted key or block label is
- * a name; an interpolation stays inside its string.
- */
+/** HCL comments, strings, here-documents; quoted keys and labels are names. */
 export const HCL_GRAMMAR: LexicalGrammar = {
   identifier: /[\p{L}_][\p{L}\p{N}_-]*/uy,
   keys: [
@@ -34,10 +31,7 @@ export const HCL_GRAMMAR: LexicalGrammar = {
   ],
 };
 
-/**
- * The keywords of HCL, lowercased. Its own words, not Terraform's: `resource`
- * and `variable` are block types HCL does not reserve.
- */
+/** HCL's own keywords, lowercased. `resource` and `variable` are not reserved. */
 export const HCL_KEYWORDS: string[] = [
   "else",
   "endfor",

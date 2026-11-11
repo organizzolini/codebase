@@ -15,7 +15,7 @@ const packageDirectory = path.resolve(
 const workspaceRoot = path.resolve(packageDirectory, "..", "..", "..", "..");
 const examplesDirectory = path.join(packageDirectory, "examples");
 
-/** How the guides say to run the command-line host from the workspace root. */
+/** How the guides run the command-line host from the root. */
 const CONFORMETRY_COMMAND = [
   "--import",
   "@swc-node/register/esm-register",
@@ -38,10 +38,7 @@ interface ExampleExpectation {
   readonly present: string[];
 }
 
-/**
- * Each example's promised outcome. Keyed by directory, so an example added
- * without one fails. Each guide's quoted output is asserted here.
- */
+/** Promised outcome per example; a new example needs one. */
 const EXPECTATIONS: Record<string, ExampleExpectation> = {
   "ambiguous-attribution": {
     exitCode: 1,
@@ -119,10 +116,7 @@ const EXPECTATIONS: Record<string, ExampleExpectation> = {
   },
 };
 
-/**
- * Examples whose committed instance is the generator's output. Both render, so
- * a copied instance must match generated output byte for byte.
- */
+/** Examples whose instance must match generated output exactly. */
 const ROUND_TRIPS = [
   {
     directory: "hello-template",
@@ -145,7 +139,7 @@ const ROUND_TRIPS = [
   },
 ];
 
-/** The two guides that index the examples, and must keep naming all of them. */
+/** Guides indexing the examples, which must name each one. */
 const guides = ["README.md", "AGENTS.md"].map((name) => ({
   contents: fs.readFileSync(path.join(packageDirectory, name), "utf8"),
   name,

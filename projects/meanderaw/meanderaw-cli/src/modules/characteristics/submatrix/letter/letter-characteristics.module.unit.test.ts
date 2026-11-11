@@ -151,16 +151,16 @@ const LETTERS: readonly Type<CharacteristicEvaluatorGroup<number>>[] = [
   ZLatinLetterCharacteristicsService,
 ];
 
-/** The token a consumer module gathers every letter service under, through a factory whose `inject` list only resolves exported providers. */
+/** Token a consumer gathers exported letter services under. */
 const GROUPS = Symbol("GROUPS");
 
-/** The script a letter key names, read from its end: `daletSouthwestHebrewCount` is Hebrew. */
+/** Script a letter key names, read from its end. */
 const SCRIPT = new RegExp(
   `(${Object.keys(LETTER_SCRIPTS).join("|")})Count$`,
   "u",
 );
 
-/** A letter key's orientation name and script, read from its end, leaving the letter and any positional form: `behInitialSouthwestArabicCount` leaves `behInitial`. */
+/** Key's orientation and script, leaving the letter and form. */
 const ORIENTATION = new RegExp(
   `(?:${LETTER_ORIENTATION_NAMES.join("|")})(?:${Object.keys(LETTER_SCRIPTS).join("|")})Count$`,
   "u",
@@ -195,7 +195,7 @@ function trimmedGlyph(formula: string): string {
     .join(String.raw` \\ `);
 }
 
-/** Each arm a Code digit can carry: its bit, the step to the neighbor it reaches, and the bit that neighbor must carry back. */
+/** Code digit arm: its bit, neighbor step, and return bit. */
 const ARMS = [
   { back: 4, bit: 8, column: 0, row: -1 },
   { back: 8, bit: 4, column: 0, row: 1 },

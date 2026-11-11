@@ -31,7 +31,7 @@ const MODULE_OPTIONS: TestingModuleOptions = {
 describe(DrawingService, () => {
   let service: DrawingService;
 
-  /** Built directly, not via `CodeService.parse`: fixtures may carry fewer rows than a full meander. */
+  /** Built directly, not parsed, so fixtures may be shorter. */
   const code = (digits: string, columns: number, repeats = 1): CodeObject => ({
     columns,
     digits,

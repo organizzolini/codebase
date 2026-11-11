@@ -23,11 +23,9 @@ import type {
 /**
  * Checks that a Jupyter notebook conforms to its template.
  *
- * A notebook is three formats at once, so this validator composes the three
- * that already exist rather than reimplementing any: JSON for the envelope,
- * markdown for prose cells, and the Python bridge for code cells. Validating a
- * code cell through Python's own parser is what lets a notebook be re-run and
- * reformatted without failing.
+ * Composes the existing JSON, markdown, and Python validators: JSON for the
+ * envelope, markdown for prose cells, Python for code cells. Python's own
+ * parser lets notebooks be re-run and reformatted without failing.
  */
 @Injectable()
 export class JupyterService implements ConformetryLanguageValidator {

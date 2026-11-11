@@ -17,7 +17,7 @@ import type { AspectBodies } from "../aspects/aspects.types";
 import type { AspectPhase } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
-/** Moon–Mars–Jupiter grand trine with Venus opposite the Moon and sextile the other two. */
+/** Moon–Mars–Jupiter grand trine; Venus opposes Moon, sextiles the others. */
 const kiteEdges: AspectBodies[] = [
   { aspect: "trine", bodies: ["moon", "mars"] },
   { aspect: "trine", bodies: ["mars", "jupiter"] },

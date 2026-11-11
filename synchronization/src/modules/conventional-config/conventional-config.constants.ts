@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * Markdown files with the generated type and scope tables, each holding
- * `types-*` and `scopes-*` markers. Real paths, never mirrors.
- */
+/** Real Markdown files holding the generated `types-*` and `scopes-*` tables. */
 export const SYNC_CONVENTIONAL_CONFIG_MARKDOWN_FILES = [
   ".github/CONTRIBUTING.md",
   ".agents/skills/checkout-branch/SKILL.md",

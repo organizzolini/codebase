@@ -18,7 +18,7 @@ export type NumericSkySetting = {
 }[keyof NightSkyOverrides];
 
 /**
- * One color the menu picks, the link key it writes and the setting it shows.
+ * A color control: its link key, label, and field.
  */
 export interface SkyColorControl {
   field:
@@ -31,18 +31,17 @@ export interface SkyColorControl {
 }
 
 /**
- * A key of the link the Night sky menu sets, such as `sky.lat`.
+ * A link key the sky menu sets, such as `sky.lat`.
  */
 export type SkyParameterKey = Extract<keyof CalendarSearch, `sky${string}`>;
 
 /**
- * A change to the link's sky keys: a value to set, or undefined to remove
- * one, which leaves it at its default.
+ * Sky key changes: a value to set, or undefined to reset.
  */
 export type SkySearchChange = Partial<Pick<CalendarSearch, SkyParameterKey>>;
 
 /**
- * One number the menu sets with a slider: its link key, setting, range, step and unit.
+ * A slider control: its link key, field, range, step, and unit.
  */
 export interface SkySliderControl {
   field: NumericSkySetting;

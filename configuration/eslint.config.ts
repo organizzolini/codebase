@@ -34,11 +34,7 @@ import type { ConfigWithExtends } from "typescript-eslint";
 
 const folderStructureRule = projectStructurePlugin.rules["folder-structure"];
 
-/**
- * `folder-structure`, rebound to markdown's tree: the rule listens on
- * `Program`, which markdown never emits, so it binds to mdast's `root`
- * instead.
- */
+/** `folder-structure` rebound to markdown, binding mdast's `root` not `Program`. */
 const markdownStructurePlugin = {
   rules: {
     "folder-structure": {
@@ -77,10 +73,7 @@ function findProjectRoots(tags: readonly string[]): string[] {
     .map((file) => path.join(tsconfigRootDir, path.dirname(file)));
 }
 
-/**
- * Syntax no source file may use. A block that sets `no-restricted-syntax`
- * replaces these rather than adding to them, so it spreads them back in.
- */
+/** Banned syntax for source files; overriding blocks must spread it. */
 const RESTRICTED_SYNTAX = [
   {
     message:
@@ -98,18 +91,13 @@ const RESTRICTED_SYNTAX = [
   },
 ];
 
-/**
- * Every React application: its `src/` is held to one file shape per kind.
- */
+/** One file shape per kind, for every React application's `src/`. */
 const WEB_APPLICATION_ROOTS = findProjectRoots([
   "framework:react",
   "type:application",
 ]);
 
-/**
- * The file kinds a web application's `src/` may hold; any other `.ts` or
- * `.tsx` file fits no kind and fails.
- */
+/** Allowed `src/` file kinds; other `.ts` and `.tsx` files fail. */
 const WEB_APPLICATION_FILE_KINDS = [
   "**/*.constants.ts",
   "**/*.schemas.ts",
@@ -127,9 +115,7 @@ const WEB_APPLICATION_FILE_KINDS = [
   "src/routes/**/*.tsx",
 ];
 
-/**
- * A hook file's siblings, which share its `use-` prefix but not its shape.
- */
+/** Hook siblings: share the `use-` prefix, but not the shape. */
 const HOOK_SIBLING_FILES = [
   "**/*.constants.ts",
   "**/*.schemas.ts",
@@ -138,11 +124,7 @@ const HOOK_SIBLING_FILES = [
   "**/*.utilities.ts",
 ];
 
-/**
- * The workspace's size and complexity limits for a web application, with
- * complexity raised to an error so a project's own configuration cannot loosen
- * it.
- */
+/** Web app size limits; complexity is a hard error. */
 const WEB_APPLICATION_LIMITS: NonNullable<ConfigWithExtends["rules"]> = {
   "better-max-params/better-max-params": [
     "error",
@@ -256,10 +238,7 @@ function defineWebApplicationFileShape(basePath: string): ConfigWithExtends[] {
   ];
 }
 
-/**
- * The Nx project boundaries: which tags may depend on which, and the cycles
- * among the common packages that are allowed.
- */
+/** Nx tag rules, and the cycles allowed among common packages. */
 const MODULE_BOUNDARIES = {
   depConstraints: [
     {

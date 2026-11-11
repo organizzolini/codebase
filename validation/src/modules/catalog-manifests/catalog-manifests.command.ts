@@ -8,12 +8,11 @@ import { CatalogManifestsService } from "./catalog-manifests.service";
 /**
  * CLI command that enforces the workspace catalog policy.
  *
- * Every external dependency in every workspace manifest must be pinned
- * `catalog:`, and every internal one `workspace:*`. Both directions are
- * checked, in all four dependency sections, and every violation is reported
- * together rather than one run at a time.
+ * External dependencies must be pinned `catalog:` and internal ones `workspace:*`.
+ * Both directions are checked, in all four sections, and every violation is
+ * reported together.
  *
- * Exits 0 when every manifest conforms and 1 when any of them does not.
+ * Exits 0 when every manifest conforms and 1 when any does not.
  */
 @Command({
   description:

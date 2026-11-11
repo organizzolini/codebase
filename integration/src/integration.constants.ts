@@ -6,13 +6,10 @@ const DEFAULT_DATA_DIRECTORY = ".nx/workspace-data";
 /** Where Nx keeps its task outputs unless told otherwise. */
 const DEFAULT_CACHE_DIRECTORY = ".nx/cache";
 
-/** Where Nx reads the machine id from on Linux, in the order it tries them. */
+/** Linux files Nx reads the machine id from, in order. */
 const DEFAULT_MACHINE_ID_FILES = "/var/lib/dbus/machine-id /etc/machine-id";
 
-/**
- * Input variables the integration commands read. Each is optional or carries
- * Nx's own default, since each command decides what its missing input means.
- */
+/** Input variables read by integration commands; each is optional. */
 export const environmentSchema = z.object({
   ARGUMENTS: z.string().optional(),
   /** A push's previous tip, `github.event.before`. */

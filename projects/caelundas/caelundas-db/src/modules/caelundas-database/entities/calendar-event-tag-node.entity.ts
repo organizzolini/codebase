@@ -17,7 +17,7 @@ export class CalendarEventTagNode {
   @PrimaryColumn("uuid")
   calendarEventId!: string;
 
-  /** Whether the event was given this tag itself, rather than a descendant of it. */
+  /** Whether the event was tagged directly, not through a descendant. */
   @Column("boolean")
   isDirect!: boolean;
 

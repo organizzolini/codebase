@@ -2,7 +2,7 @@ import type { CalendarEventRecord } from "../events-calendar/calendar-records.ty
 import type { FilterOption } from "@codebase/presentation";
 
 /**
- * A derived field's id: a period an event starts in, or its duration.
+ * A derived field's id: a time period or duration.
  */
 export type DerivedGroupId =
   | "day"
@@ -15,7 +15,7 @@ export type DerivedGroupId =
   | "year";
 
 /**
- * A dimension events group by: a tag root, whose tree a grouping can descend, or a value derived from each event's times.
+ * A dimension events group by: a tag root or derived time.
  */
 export interface EventGroupField {
   /**
@@ -44,7 +44,7 @@ export interface EventGroupField {
 export type EventGrouping = readonly EventGroupLevel[];
 
 /**
- * One level of a grouping: its field, and for a tag root the tags it groups by, or else the children at `depth`.
+ * One grouping level: a field, plus tags or a `depth`.
  */
 export interface EventGroupLevel {
   depth?: number | undefined;
@@ -53,8 +53,7 @@ export interface EventGroupLevel {
 }
 
 /**
- * One group of events at one level of a grouping, and the groups it splits
- * into at the next level.
+ * One group of events at a level, with its child groups.
  */
 export interface EventGroupNode {
   children: EventGroupNode[];

@@ -7,10 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the Λ (Greek lambda) as a Code holding one isolated copy.
- * Its diagonals run as orthogonal zig-zags.
- */
+/** One isolated Code per orientation of the Λ (Greek lambda). */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "05x03y0650069a5080080",

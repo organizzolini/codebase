@@ -1,40 +1,28 @@
 // 🏷️ Types
 
-/**
- * What makes a quoted string a key. `after` is tested where the string ends;
- * `before`, if given, sees the line's text before it.
- */
+/** Key test: `after` checks the string's end, `before` what precedes. */
 export interface KeyPattern {
   after: RegExp;
   before?: RegExp;
 }
 
-/**
- * Language grammar. Rules are tried in order, so comment openers win over
- * `identifier`. With no `identifier`, only quoted keys are read.
- */
+/** Grammar: rules run in order; comment openers beat `identifier`. */
 export interface LexicalGrammar {
   identifier?: RegExp;
   keys: readonly KeyPattern[];
   rules: readonly LexicalRule[];
 }
 
-/**
- * How the vocabulary treats a matched token. Comments are skipped; quoted
- * identifiers count by content; strings count only as keys.
- */
+/** Matched token treatment: comments skipped, strings count only as keys. */
 export type LexicalKind = "comment" | "identifier" | "string";
 
-/**
- * One token kind, matched whole. A stray quote cannot swallow more than the
- * language's syntax; the first capture group is the content.
- */
+/** One token kind, matched whole; first capture group is content. */
 export interface LexicalRule {
   kind: LexicalKind;
   pattern: RegExp;
 }
 
-/** One token read at a position: how far it reaches, and the name it spells. */
+/** Token read at a position: its length and name. */
 export interface LexicalToken {
   identifier?: string | undefined;
   length: number;

@@ -22,8 +22,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The view shown, which decides what can be arranged, and the grouping and
- * scale with where to send a changed one.
+ * The view, its grouping and scale, and the change handlers.
  */
 export interface CalendarViewOptionsProperties {
   className?: string;

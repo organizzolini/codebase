@@ -36,7 +36,7 @@ export const TIMELINE_BARS = [
 export const EVENT_HEIGHTS = ["h-8", "h-12", "h-8", "h-16", "h-8"] as const;
 
 /**
- * The layout of each view's skeleton: a grid, columns, a list for the agenda, or bars for the timeline.
+ * Each view's skeleton layout: grid, columns, list, or bars.
  */
 export const LAYOUTS: Readonly<
   Record<CalendarViewName, "columns" | "grid" | "list" | "timeline">

@@ -153,7 +153,7 @@ export const nounGender = {
   none: "",
 } as const;
 
-/** Grammatical gender of a Latin noun, including `masc/fem` for nouns whose gender varies by referent. */
+/** Grammatical gender of a Latin noun; `masc/fem` if it varies. */
 export const nounGenders = Object.values(nounGender);
 
 export const adjectiveDegree = {
@@ -172,10 +172,7 @@ export const adverbType = {
   none: "",
 } as const;
 
-/**
- * Functional classification of a Latin adverb.
- * Descriptive adverbs modify a verb or adjective; conjunctional adverbs link clauses.
- */
+/** Adverb function: descriptive adverbs modify; conjunctional adverbs link clauses. */
 export const adverbTypes = Object.values(adverbType);
 
 export const adverbDegree = {

@@ -556,19 +556,19 @@ What this project is judged against, as declared in its own `callidescope.config
 **2. `DeepStackService.quote`** — depth 8 · orphan-root
 
 ```text
-🚀 DeepStackService.quote(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:50]
+🚀 DeepStackService.quote(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:47]
    ↳ Quotes one order, priced through every stage below.
-  └─> DeepStackService.validate(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:43]
+  └─> DeepStackService.validate(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:40]
      ↳ Rejects a negative amount before anything else reads it.
-    └─> DeepStackService.removeDiscount(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:33]
+    └─> DeepStackService.removeDiscount(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:30]
        ↳ Removes the tier discount from the validated amount.
-      └─> DeepStackService.resolveTier(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:38]
+      └─> DeepStackService.resolveTier(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:35]
          ↳ Picks the pricing tier the discounted amount falls into.
-        └─> DeepStackService.loadRate(amount: number, tier: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:28]
+        └─> DeepStackService.loadRate(amount: number, tier: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:25]
            ↳ Looks up the tax rate the resolved tier pays.
-          └─> DeepStackService.applyTax(amount: number, rate: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:18]
+          └─> DeepStackService.applyTax(amount: number, rate: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:15]
              ↳ Adds tax at the resolved rate.
-            └─> DeepStackService.convertCurrency(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:23]
+            └─> DeepStackService.convertCurrency(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:20]
                ↳ Converts to the reporting currency and rounds through the shared tail.
               └─> roundToCents(amount: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/shared-tail/round-to-cents.ts:4]
                  ↳ The tail two deep stacks share, so their mermaid diagrams converge.
@@ -663,8 +663,8 @@ What this project is judged against, as declared in its own `callidescope.config
 **8. `bootstrap`** — depth 3 · module-bootstrap
 
 ```text
-🚀 bootstrap(): number [projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts:14]
-   ↳ The `module-bootstrap` entry-point kind.
+🚀 bootstrap(): number [projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts:5]
+   ↳ `module-bootstrap` entry kind: `bootstrap` or `main` is a root.
   └─> OrdersService.place(available: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/injected-dependency/orders.ts:21]
      ↳ Places one order against the injected inventory.
     └─> InventoryService.reserve(available: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/injected-dependency/inventory.ts:9]
@@ -674,10 +674,10 @@ What this project is judged against, as declared in its own `callidescope.config
 **9. `CallbackArgumentService.shoutAll`** — depth 3 · orphan-root
 
 ```text
-🚀 CallbackArgumentService.shoutAll(entries: readonly string[]): string[] [projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:22]
+🚀 CallbackArgumentService.shoutAll(entries: readonly string[]): string[] [projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:20]
    ↳ Shouts every entry, through a callback `map` invokes.
-  └─> CallbackArgumentService.map(…)(entry: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:23]
-    └─> CallbackArgumentService.shout(entry: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:15]
+  └─> CallbackArgumentService.map(…)(entry: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:21]
+    └─> CallbackArgumentService.shout(entry: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:13]
        ↳ Upper-cases one entry.
 ```
 
@@ -713,8 +713,8 @@ What this project is judged against, as declared in its own `callidescope.config
 **13. `normalizeExampleLabel`** — depth 2 · exported-function
 
 ```text
-🚀 normalizeExampleLabel(label: string): string [projects/ic-suite/callidescope/callidescope-examples/src/index.ts:15]
-   ↳ The `exported-function` entry-point kind.
+🚀 normalizeExampleLabel(label: string): string [projects/ic-suite/callidescope/callidescope-examples/src/index.ts:6]
+   ↳ `exported-function` entry kind; the rule keys on `src/`.
   └─> normalizeLabel(label: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/plain-call/normalize-label.ts:2]
      ↳ Trims a label and collapses the whitespace inside it.
 ```
@@ -748,9 +748,9 @@ What this project is judged against, as declared in its own `callidescope.config
 **17. `DependencyClosureService.allowsDepth`** — depth 2 · orphan-root
 
 ```text
-🚀 DependencyClosureService.allowsDepth(args: { configuration: CallidescopeConfiguration; depth: number; }): boolean [projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:32]
+🚀 DependencyClosureService.allowsDepth(args: { configuration: CallidescopeConfiguration; depth: number; }): boolean [projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:28]
    ↳ Whether a configuration allows a stack as deep as the one asked about.
-  └─> DependencyClosureService.readDepthLimit(configuration: CallidescopeConfiguration): number [projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:24]
+  └─> DependencyClosureService.readDepthLimit(configuration: CallidescopeConfiguration): number [projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:20]
      ↳ Reads the depth limit the dependency's own defaulting settles on.
 ```
 
@@ -778,16 +778,16 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `bootstrap` | 2 | `OrdersService.place`, `OrdersService.constructor` | `projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts:14` |
+| `bootstrap` | 2 | `OrdersService.place`, `OrdersService.constructor` | `projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts:5` |
 | `BaseClassService.run` | 1 | `BaseTaskService.run` | `projects/ic-suite/callidescope/callidescope-examples/examples/base-class/base-class.ts:16` |
-| `CallbackArgumentService.shoutAll` | 1 | `CallbackArgumentService.map(…)` | `projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:22` |
+| `CallbackArgumentService.shoutAll` | 1 | `CallbackArgumentService.map(…)` | `projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:20` |
 
 <details>
 <summary>48 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `CallbackArgumentService.map(…)` | 1 | `CallbackArgumentService.shout` | `projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:23` |
+| `CallbackArgumentService.map(…)` | 1 | `CallbackArgumentService.shout` | `projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:21` |
 | `ComputedMemberService.choose` | 1 | `ComputedMemberService.apply` | `projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:26` |
 | `ComputedMemberService.normalize` | 1 | `ComputedMemberService.route` | `projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:31` |
 | `ComputedMemberService.prepare` | 1 | `ComputedMemberService.choose` | `projects/ic-suite/callidescope/callidescope-examples/examples/computed-member/computed-member.ts:36` |
@@ -798,14 +798,14 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ConstructedClassService.count` | 1 | `ParserService.constructor` | `projects/ic-suite/callidescope/callidescope-examples/examples/constructed-class/constructed-class.ts:17` |
 | `DeclaredEntryPointsService.collect` | 1 | `DeclaredEntryPointsService.render` | `projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:22` |
 | `DeclaredEntryPointsService.publish` | 1 | `DeclaredEntryPointsService.collect` | `projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:27` |
-| `DeepStackService.applyTax` | 1 | `DeepStackService.convertCurrency` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:18` |
-| `DeepStackService.convertCurrency` | 1 | `roundToCents` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:23` |
-| `DeepStackService.loadRate` | 1 | `DeepStackService.applyTax` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:28` |
-| `DeepStackService.removeDiscount` | 1 | `DeepStackService.resolveTier` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:33` |
-| `DeepStackService.resolveTier` | 1 | `DeepStackService.loadRate` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:38` |
-| `DeepStackService.validate` | 1 | `DeepStackService.removeDiscount` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:43` |
-| `DeepStackService.quote` | 1 | `DeepStackService.validate` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:50` |
-| `DependencyClosureService.allowsDepth` | 1 | `DependencyClosureService.readDepthLimit` | `projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:32` |
+| `DeepStackService.applyTax` | 1 | `DeepStackService.convertCurrency` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:15` |
+| `DeepStackService.convertCurrency` | 1 | `roundToCents` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:20` |
+| `DeepStackService.loadRate` | 1 | `DeepStackService.applyTax` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:25` |
+| `DeepStackService.removeDiscount` | 1 | `DeepStackService.resolveTier` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:30` |
+| `DeepStackService.resolveTier` | 1 | `DeepStackService.loadRate` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:35` |
+| `DeepStackService.validate` | 1 | `DeepStackService.removeDiscount` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:40` |
+| `DeepStackService.quote` | 1 | `DeepStackService.validate` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:47` |
+| `DependencyClosureService.allowsDepth` | 1 | `DependencyClosureService.readDepthLimit` | `projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:28` |
 | `EntryPointsService.onModuleInit` | 1 | `EntryPointsService.prepareCache` | `projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:26` |
 | `EntryPointsService.readReport` | 1 | `EntryPointsService.buildReport` | `projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:31` |
 | `ForwardingStackService.execute` | 1 | `ForwardingStackService.forward` | `projects/ic-suite/callidescope/callidescope-examples/examples/forwarding-stack/forwarding-stack.ts:16` |
@@ -834,7 +834,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ProjectDepthLimitService.resolveConfiguration` | 1 | `ProjectDepthLimitService.readLimit` | `projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:34` |
 | `ProjectDepthLimitService.judge` | 1 | `ProjectDepthLimitService.resolveConfiguration` | `projects/ic-suite/callidescope/callidescope-examples/examples/project-depth-limit/project-depth-limit.ts:41` |
 | `StructuralInterfaceService.ingestDocument` | 1 | `FilesystemProviderService.ingest` | `projects/ic-suite/callidescope/callidescope-examples/examples/structural-interface/structural-interface.ts:17` |
-| `normalizeExampleLabel` | 1 | `normalizeLabel` | `projects/ic-suite/callidescope/callidescope-examples/src/index.ts:15` |
+| `normalizeExampleLabel` | 1 | `normalizeLabel` | `projects/ic-suite/callidescope/callidescope-examples/src/index.ts:6` |
 
 </details>
 <!-- callidescope:end -->

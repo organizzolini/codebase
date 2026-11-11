@@ -3,11 +3,7 @@ import type { EventFilterCombinator } from "../filters/event-filter-combinator.e
 import type { TAG_OPERATORS } from "../filters/event-filter-fields.constants";
 import type { EventFilterGroupEntity } from "../filters/event-filter.entities";
 
-/**
- * A named set of filters the calendar applies in one step, written by tag
- * names rather than ids so it does not depend on the database it is applied
- * to.
- */
+/** A named filter set, written by tag names, not ids. */
 export interface Preset {
   description: string;
   filter: PresetGroup;
@@ -23,11 +19,7 @@ export interface PresetGroup {
   rules: readonly (PresetGroup | PresetRule)[];
 }
 
-/**
- * Keeps, or with `is_none_of` drops, the events carrying any of the tags
- * whose paths beneath a root are listed, each path written as the tag names
- * joined by " / ".
- */
+/** Events tagged with a listed tag path; is_none_of negates. */
 export interface PresetRule {
   operator: typeof TAG_OPERATORS.isAnyOf | typeof TAG_OPERATORS.isNoneOf;
   paths: readonly string[];

@@ -58,7 +58,7 @@ describe(SkillExclusionsCommand, () => {
     `${file.commentPrefix} ${BLOCK_END_LABEL}`,
   ];
 
-  /** One exclusion file by path, so a test can name the file it cares about. */
+  /** Finds one exclusion file by path. */
   const fileNamed = (filePath: string): SkillExclusionFile => {
     const file = SKILL_EXCLUSION_FILES.find(
       (candidate) => candidate.filePath === filePath,
@@ -76,7 +76,7 @@ describe(SkillExclusionsCommand, () => {
     (file) => file.renderEntry !== undefined,
   );
 
-  /** The line a file keeps for one skill; throws for a file that keeps none. */
+  /** A file's line for one skill; throws if it has none. */
   const entryFor = (file: SkillExclusionFile, skillName: string): string => {
     if (file.renderEntry === undefined) {
       throw new Error(`${file.filePath} lists no skills`);

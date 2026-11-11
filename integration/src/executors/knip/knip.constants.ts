@@ -1,4 +1,4 @@
 // ♟️ Constants
 
-/** Path to knip, run from the workspace's own `node_modules`, so this project needs no knip dependency. */
+/** Knip's path in the workspace `node_modules`, so no knip dependency. */
 export const KNIP_BINARY = "node_modules/.bin/knip";

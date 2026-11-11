@@ -1,7 +1,7 @@
 import type { DerivedGroupId } from "./event-groups.types";
 
 /**
- * The most levels a grouping nests: a group, a sub-group, and one more.
+ * The most levels a grouping nests.
  */
 export const MAXIMUM_GROUP_LEVELS = 3;
 
@@ -25,8 +25,7 @@ export const DERIVED_GROUP_IDS = {
 } as const;
 
 /**
- * The derived fields in the order the picker lists them: periods from the
- * longest down, then the duration.
+ * Derived fields in picker order: longest periods, then duration.
  */
 export const DERIVED_GROUP_ORDER: readonly DerivedGroupId[] = [
   "year",

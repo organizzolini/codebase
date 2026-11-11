@@ -42,7 +42,7 @@ export class HLatinLetterCharacteristicsService implements CharacteristicEvaluat
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, `.` outside it. */
   private readonly template: readonly string[] = ["44", "ed", "88"];
 
   // 🔑 Public Fields

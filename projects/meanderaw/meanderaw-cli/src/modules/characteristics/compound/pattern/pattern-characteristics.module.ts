@@ -34,13 +34,9 @@ import { IsWhirlCharacteristicService } from "./is-whirl-characteristic.service"
 import { StrandUtilitiesService } from "./strand-utilities.service";
 
 /**
- * Provides and exports every compound pattern characteristic evaluator — one
- * boolean per named pattern a meander can be filtered by, each a combination
- * of the characteristics the groups below measure — as one
- * group `CharacteristicsModule` imports and re-exports. It imports the
- * groups whose evaluators these predicates read and the shared
- * `CompoundUtilitiesModule`, and provides its own stateless
- * `StrandUtilitiesService`.
+ * Provides and exports every compound pattern characteristic evaluator, one boolean per
+ * named pattern, as one group. It imports the groups these predicates read and the shared
+ * `CompoundUtilitiesModule`, and provides its own `StrandUtilitiesService`.
  */
 @Module({
   controllers: [],

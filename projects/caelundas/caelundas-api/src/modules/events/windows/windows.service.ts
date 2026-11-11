@@ -24,9 +24,7 @@ import type { Period, Windows, WindowsOptions } from "./windows.types";
 @Injectable()
 export class WindowsService {
   /**
-   * The days the timeline's axis spans at a scale, as the Gantt lays them
-   * out: the day, the week from Sunday, the month, the quarter widened to
-   * whole weeks, or otherwise the year.
+   * The timeline axis span at a scale, with quarters widened to whole weeks.
    */
   private getTimelineDays(scale: TimelineScale, anchor: Date): Period {
     const year = anchor.getUTCFullYear();
@@ -141,15 +139,8 @@ export class WindowsService {
   }
 
   /**
-   * The days a view shows around the day it opens on, as UTC midnights, and
-   * the period read for them, a day wider either side: a zone's midnight lies
-   * up to a day from UTC's, so the buffer holds every event the zone's days
-   * show. Only these days are read, whatever the data spans; the agenda's
-   * count of days is held to 1 through 366. A timeline also answers how long
-   * one column of its axis lasts.
-   *
-   * With no view, the windows cover the month and the agenda both, so a resize
-   * between them needs no reload.
+   * The days a view shows, and the period read for them, with a day's buffer
+   * either side.
    */
   public getWindows(
     calendarWindow: CalendarWindow | null | undefined,

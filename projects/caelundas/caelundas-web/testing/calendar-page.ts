@@ -9,7 +9,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 export const BUILDER_TEST = { timeout: 30_000 };
 
 /**
- * The time each step of such a test may wait for the builder.
+ * Time each step of a builder test may wait.
  */
 export const BUILDER_WAIT = { timeout: 10_000 };
 

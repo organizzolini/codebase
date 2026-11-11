@@ -15,7 +15,7 @@ import type {
 } from "./executor.types";
 import type { CapturedOutput } from "@codebase/testing";
 
-/** The workspace root: this project, so the fake command line resolves from it. */
+/** Workspace root: this project, so the fake command resolves. */
 const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../..",

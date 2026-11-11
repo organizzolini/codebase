@@ -6,36 +6,30 @@ import type { UpgradeStep } from "./upgrade-dependencies.types";
 /** How many of a failed step's last lines the pull request quotes. */
 export const TAIL_LINES = 20;
 
-/** The most characters of them it quotes, so one runaway line cannot flood it. */
+/** Most characters quoted, so one runaway line cannot flood it. */
 export const TAIL_CHARACTERS = 2000;
 
-/**
- * Git's empty tree. As the attributes source, it stops `.gitattributes`
- * `-diff` from counting lockfile changes as 0.
- */
+/** Git's empty tree, as attributes source, so `-diff` ignores lockfiles. */
 export const EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
 
-/** The file, in the OS temp directory, the pull request body is written to. */
+/** OS temp file the pull request body is written to. */
 export const PULL_REQUEST_BODY_FILE = "pull-request-body.md";
 
-/** The workflow that runs this command, linked from the pull request body when no run id is known. */
+/** This command's workflow, linked when no run id is known. */
 export const WORKFLOW_URL =
   "https://github.com/organizzolini/codebase/actions/workflows/upgrade-dependencies.yml";
 
-/** Where this repository's workflow runs live, to which a run id is appended. */
+/** Where workflow runs live; a run id is appended. */
 export const RUNS_URL =
   "https://github.com/organizzolini/codebase/actions/runs";
 
 /** The most `⚠` lines the pull request quotes from one step. */
 export const WARNING_LIMIT = 10;
 
-/** The most characters it quotes of a warning or of a skipped step's reason. */
+/** Most characters quoted from a warning or skipped step's reason. */
 export const LINE_CHARACTERS = 160;
 
-/**
- * Formats what an upgrade wrote, since the commit hook would reformat upstream's
- * unformatted files and the pull request would misreport them.
- */
+/** Formats upgrades, so the commit hook does not reformat them. */
 const FORMAT_UPGRADED_FILES: Command = [
   "pnpm",
   "exec",
@@ -44,14 +38,11 @@ const FORMAT_UPGRADED_FILES: Command = [
   "configuration:oxfmt:write",
 ];
 
-/** Printed when skipped steps are all the run has to show for itself. */
+/** Printed when skipped steps are all the run shows. */
 export const NOTHING_SHIPPED_MESSAGE =
   "Upgrade steps were skipped and nothing else changed, so there is no pull request to report them in.";
 
-/**
- * Upgrades. A failed step is undone and reported, and the next still runs.
- * Steps with logic are tasks; the rest are commands.
- */
+/** Upgrades. A failed step is undone; the rest still run. */
 export const UPGRADE_STEPS: readonly UpgradeStep[] = [
   { label: "Upgrade pnpm", task: "pnpm" },
   { label: "Upgrade node", task: "node" },
@@ -115,6 +106,6 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
 export const unrestoredMessage = (label: string, reason: string): string =>
   `${label} failed and could not be undone (${reason}); stopping so a half-applied change is not committed.`;
 
-/** The workflow annotation that makes a skipped step show on the run page. */
+/** Annotation that shows a skipped step on the run page. */
 export const skippedAnnotation = (label: string, exitCode: number): string =>
   `::warning title=${label} skipped::Exited ${String(exitCode)}; its changes were undone and the run carried on.`;

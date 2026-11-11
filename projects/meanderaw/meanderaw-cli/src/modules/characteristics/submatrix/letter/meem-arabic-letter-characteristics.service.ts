@@ -51,14 +51,7 @@ export class MeemArabicLetterCharacteristicsService implements CharacteristicEva
 
   // 🔐 Private Fields
 
-  /** The upright م (final Arabic meem) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ┌┬╴
-   * ├┘
-   * │
-   * ╵
-   * ```
-   */
+  /** Upright final م glyph as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [
     "671",
     "e9.",
@@ -66,22 +59,10 @@ export class MeemArabicLetterCharacteristicsService implements CharacteristicEva
     "8..",
   ];
 
-  /**
-   * The upright م (initial Arabic meem) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ╶┬┐
-   *  └┘
-   * ```
-   */
+  /** Upright initial م glyph as hexadecimal Code digits, facing Southwest. */
   private readonly initialTemplate: readonly string[] = ["275", ".a9"];
 
-  /**
-   * The upright م (medial Arabic meem) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   * ╶┬┬╴
-   *  └┘
-   * ```
-   */
+  /** Upright medial م glyph as hexadecimal Code digits, facing Southwest. */
   private readonly medialTemplate: readonly string[] = ["2771", ".a9."];
 
   // 🔑 Public Fields

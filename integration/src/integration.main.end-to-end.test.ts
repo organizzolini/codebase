@@ -5,13 +5,10 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { environmentSchema } from "./integration.constants";
 
-/** The workspace root, which the spawned command runs from, as the Nx targets do. */
+/** The workspace root, where the spawned command runs. */
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../..");
 
-/**
- * How long the one real boot may take. A cold transform of the module graph
- * took 20.6s in CI, so this leaves headroom.
- */
+/** Boot timeout, with headroom over a 20.6s cold CI transform. */
 const BOOT_TIMEOUT_MILLISECONDS = 60_000;
 
 /** The commands the container must register, each named in the help. */
@@ -31,10 +28,7 @@ const COMMAND_NAMES = [
   "verify-task-database",
 ];
 
-/**
- * Runs the real command line once for its help, with inputs left out and git
- * pointed at no repository.
- */
+/** Runs the real command's help, with no inputs or repository. */
 const runHelp = (): { output: string; status: null | number } => {
   const result = spawnSync(
     process.execPath,

@@ -34,7 +34,7 @@ vi.mock("../../modules/plugin/plugin-context.utilities", () => ({
     await Promise.resolve(pluginService),
 }));
 
-/** The context a batch worker hands over: no project, since it holds many. */
+/** Batch context: no project, since a batch holds many. */
 const CONTEXT: ExecutorContext = {
   cwd: "/workspace",
   isVerbose: false,

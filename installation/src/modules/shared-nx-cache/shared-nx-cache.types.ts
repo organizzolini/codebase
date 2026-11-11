@@ -27,7 +27,7 @@ export interface EvictionResult {
   removed: number;
 }
 
-/** One request and the response it is owed, with the directory to serve from. */
+/** A request and its owed response, served from a directory. */
 export interface Exchange {
   /** The directory entries live in. */
   directory: string;

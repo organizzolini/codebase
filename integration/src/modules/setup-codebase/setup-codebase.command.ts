@@ -18,10 +18,11 @@ import {
 import type { Environment } from "../../integration.types";
 
 /**
- * CLI command that readies a CI job's Nx state after `pnpm install`: bounds a
- * push's base to its previous tip, imports the pull request's cache into a
- * merge group, discards a damaged restored task database, and adopts the
- * restored one as this machine's. Exits 1 only when a push's base cannot be bounded.
+ * CLI command readying a CI job's Nx state after `pnpm install`: bounds a
+ * push's base, imports a pull request's cache into a merge group, discards a
+ * damaged task database, and adopts the restored one locally.
+ *
+ * Exits 1 only when a push's base cannot be bounded.
  */
 @Command({
   description:

@@ -18,7 +18,7 @@ import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
 // 🔧 Configuration
 
-/** The point that carries no ink at all, which is what a position off the Code reads as. */
+/** The inkless point that off-Code positions read as. */
 const BARE = { east: false, north: false, south: false, west: false };
 
 // 🧪 Tests
@@ -436,10 +436,10 @@ describe(CodeService, () => {
   });
 
   describe("symmetricalCodes", () => {
-    /** Ranks every phase alike, so a phase is chosen by its digits alone. */
+    /** Ranks every phase alike; the digits alone pick one. */
     const rankedAlike = (): number => 0;
 
-    /** A tile's Code at its own canonical phase, as a row would store it. */
+    /** A tile's Code at its canonical phase, as stored. */
     const storedCode = (tile: Tile): string =>
       service.format(
         service.canonicalPhase(service.parse(service.spell(tile)), rankedAlike),

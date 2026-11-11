@@ -12,10 +12,7 @@ export const SHELL_EXTENSIONS: readonly string[] = [
   ".zsh",
 ];
 
-/**
- * A `#` begins a comment only at a word's start. A string followed by `]=` is
- * a key, the only key shell has.
- */
+/** `#` comments only at word start; keys precede `]=`. */
 export const SHELL_GRAMMAR: LexicalGrammar = {
   identifier: PLAIN_IDENTIFIER,
   keys: [{ after: /\]=/y }],
@@ -34,10 +31,7 @@ export const SHELL_GRAMMAR: LexicalGrammar = {
   ],
 };
 
-/**
- * The reserved words and builtin commands of POSIX shell and Bash, lowercased.
- * A plain array, so spreading it into `exclude.words` excludes nothing extra.
- */
+/** POSIX shell and Bash reserved words and builtins, lowercased. */
 export const SHELL_KEYWORDS: string[] = [
   "alias",
   "break",

@@ -1,8 +1,6 @@
 // 🏷️ Types
 
-/**
- * One callable and the distinct callables it calls directly, unfiltered by any limit.
- */
+/** A callable and the distinct callables it calls directly, unfiltered. */
 export interface CallableBreadthReport {
   readonly breadth: number;
   readonly callees: readonly WideCallableCallee[];
@@ -22,7 +20,7 @@ export interface CallableDocumentation {
   readonly tags: readonly string[];
 }
 
-/** Stable callable id: workspace-relative path plus the byte offset of its declaration, since lines can be shared. */
+/** Stable id: workspace path and byte offset; lines can be shared. */
 export type CallableId = string;
 
 /** The declaration shape a callable was found as. */
@@ -128,7 +126,7 @@ export interface EntryPoint {
   readonly kind: EntryPointKind;
 }
 
-/** What promoted a callable to a call-stack root. Only `declared` is a person's choice; the rest are inferred. */
+/** Root reason; only `declared` is a person's choice, the rest inferred. */
 export type EntryPointKind =
   | "declared"
   | "decorated-method"
@@ -137,9 +135,7 @@ export type EntryPointKind =
   | "module-bootstrap"
   | "orphan-root";
 
-/**
- * Everything one project contributed to a run, scoped by the project the entry point sits in.
- */
+/** One project's contribution to a run, scoped by its entry point. */
 export interface ProjectReport {
   /** Every callable with at least one direct callee. */
   readonly callableBreadths: readonly CallableBreadthReport[];
@@ -170,9 +166,7 @@ export interface StackFrame {
   readonly signature: CallableSignature | undefined;
 }
 
-/**
- * A call site that produced no edge. Depths measured through its callable are lower bounds, so the reason is kept.
- */
+/** No-edge call site; depths through it are lower bounds. */
 export interface UnresolvedCall {
   readonly calleeText: string;
   readonly callerId: CallableId;

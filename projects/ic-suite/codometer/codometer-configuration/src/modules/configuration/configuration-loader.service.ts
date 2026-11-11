@@ -20,13 +20,10 @@ import type { LoadedConfigurationModule } from "./configuration-loader.types";
 import type { LoadConfigurationArguments } from "./configuration.types";
 
 /**
- * Reads the codometer configuration file at a given path.
+ * Reads the codometer configuration file at a path.
  *
- * Owns locating the file by its path and turning whatever it exports into a plain,
- * unvalidated configuration object — parsing JSON/JSONC by hand, everything
- * else through `jiti`. What the object means is `ConfigurationService`'s to
- * validate and resolve, kept apart so a file finding no configuration reads
- * exactly like one that found an empty object.
+ * Parses JSON or JSONC by hand and everything else through `jiti`, returning an unvalidated object.
+ * `ConfigurationService` validates and resolves it, so a file with no configuration is never mistaken for an empty one.
  */
 @Injectable()
 export class ConfigurationLoaderService {

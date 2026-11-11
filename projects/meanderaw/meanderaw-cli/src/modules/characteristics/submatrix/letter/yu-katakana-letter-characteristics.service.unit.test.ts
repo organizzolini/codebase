@@ -10,7 +10,7 @@ import type {
   LetterOrientationFixture,
 } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the ユ (katakana yu) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each orientation of ユ, as one isolated copy. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   { fixture: "04x02y25002b10", names: ["Southeast", "NorthwestHalf"] },
   {

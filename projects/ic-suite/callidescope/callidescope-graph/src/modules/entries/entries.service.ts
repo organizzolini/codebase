@@ -32,10 +32,10 @@ import type {
 /**
  * Decides which callables are the roots of a call stack.
  *
- * Most code is called by a framework rather than by anything in the repository,
- * so roots must be named. A configuration can also name one by address.
+ * Most roots are called by a framework, so they must be named, by configuration
+ * or address.
  *
- * Orphan promotion catches misses: anything left with no caller becomes a root.
+ * Orphan promotion catches misses: anything with no caller becomes a root.
  */
 @Injectable()
 export class EntriesService {

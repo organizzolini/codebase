@@ -5,25 +5,17 @@ import type { Preset, PresetRule } from "./presets.types";
 
 // ♟️ Constants
 
-/**
- * The id of the preset the calendar opens on when its link names no
- * filter.
- */
+/** Preset the calendar opens on when its link names none. */
 export const DEFAULT_PRESET_ID = "highlights";
 
-/**
- * The tags a "without the Moon" preset leaves out: every event the Moon
- * is part of, whose aspects change several times a day.
- */
+/** Tags a Moon-free preset drops, since lunar aspects change often. */
 const WITHOUT_THE_MOON: PresetRule = {
   operator: TAG_OPERATORS.isNoneOf,
   paths: ["Moon"],
   root: "Planet",
 };
 
-/**
- * The long cycles, which are few enough to read without a filter on them.
- */
+/** Long cycles, few enough to read without a filter. */
 const LONG_CYCLES: PresetRule = {
   operator: TAG_OPERATORS.isAnyOf,
   paths: [
@@ -37,10 +29,7 @@ const LONG_CYCLES: PresetRule = {
   root: "Type",
 };
 
-/**
- * The presets the calendar offers, in the order its menu lists them. A
- * preset that names tags the data lacks applies to the ones it has.
- */
+/** Presets in menu order; missing tags are skipped, not fatal. */
 export const PRESETS: readonly Preset[] = [
   {
     description:

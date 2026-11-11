@@ -8,11 +8,10 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the د
- * (Arabic dal) skeleton — final and isolated — one per corner and clockwise
- * rotation, each counting that form's base template, which faces Southwest,
- * drawn that way. A letter sharing a form's skeleton, differing from it only by
- * dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the د skeleton: final and isolated.
+ * Each counts that form's base template, drawn facing Southwest.
+ *
+ * A letter differing from a form only by dots or other marks is an alias of it.
  */
 @Injectable()
 export class DalArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -50,22 +49,10 @@ export class DalArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright د (final Arabic dal) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *  ╶┐
-   * ╶─┴╴
-   * ```
-   */
+  /** Upright د (final form) as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [".25.", "23b1"];
 
-  /**
-   * The upright د (isolated Arabic dal) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *  ╶┐
-   * ╶─┘
-   * ```
-   */
+  /** Upright د (isolated form) as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = [".25", "239"];
 
   // 🔑 Public Fields

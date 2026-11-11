@@ -29,12 +29,12 @@ import type {
 } from "./link-packages.types";
 
 /**
- * Links each published ic-suite package on npm to this repository and lists
- * this run's publishes for `actions/attest`.
+ * Links each published ic-suite package to this repository, and lists this
+ * run's publishes for `actions/attest`.
  *
- * Only versions this run published are attested, since an attestation says
- * this run built the package. Those count as on npm even before its metadata
- * lists them. One failed link does not stop the rest.
+ * Only versions this run published are attested, since this run built them.
+ * Those count as on npm before the metadata lists them. One failed link does
+ * not stop the rest.
  */
 @Injectable()
 export class LinkPackagesService {

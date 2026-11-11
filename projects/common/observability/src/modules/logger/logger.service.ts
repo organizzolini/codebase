@@ -20,11 +20,10 @@ import type {
 } from "./logger.types";
 
 /**
- * Transient logger, so each injecting class gets its own instance. Each
- * consumer calls `setContext(ClassName.name)`. Backed by pino: JSON in
- * production, pretty-printed in development. Messages start with an emoji
- * naming the subject, then a verb in present progressive or past tense.
- * Varying values such as counts go in `data`, so messages stay groupable.
+ * Transient logger, so each injecting class gets its own instance. Consumers
+ * call `setContext(ClassName.name)`. Backed by pino: JSON in production,
+ * pretty-printed in development. Messages start with an emoji naming the subject,
+ * then a present or past-tense verb. Varying values such as counts go in `data`.
  */
 @Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService
@@ -42,7 +41,7 @@ export class LoggerService
   private static readonly isProduction =
     process.env["NODE_ENV"] === "production";
 
-  /** Built on first use, so `logToStandardError` can still choose the destination after import. */
+  /** Built lazily, so `logToStandardError` can still set the destination. */
   private static rootLogger: pino.Logger | undefined;
 
   /** Whether lines go to standard error instead of standard output. */

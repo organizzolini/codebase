@@ -1,7 +1,4 @@
-/**
- * Fake command line for `node -e`, written without single quotes so the shell
- * carries it as one argument. Directory names select failure modes.
- */
+/** Fake command line for `node -e`, with no single quotes. */
 const FAKE_PROGRAM = String.raw`
 const directories = process.argv.slice(2).filter((word) => !word.startsWith("--"));
 const write = process.argv.includes("--write");
@@ -27,5 +24,5 @@ const verdicts = directories
 console.log(JSON.stringify(verdicts));
 `;
 
-/** The shell command that runs the fake command line; `batch` and directories follow it. */
+/** Shell command running the fake; `batch` and directories follow. */
 export const FAKE_COMMAND = `node -e '${FAKE_PROGRAM}'`;

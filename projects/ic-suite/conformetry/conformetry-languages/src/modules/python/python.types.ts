@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * One error as the bridge emits it. Snake_case and `unknown` throughout: nothing
- * from a subprocess's stdout is trusted until narrowed.
- */
+/** One bridge error in snake_case, `unknown` until narrowed. */
 export type PythonBridgeError = Readonly<Record<string, unknown>>;
 
 /** The bridge's response envelope. */

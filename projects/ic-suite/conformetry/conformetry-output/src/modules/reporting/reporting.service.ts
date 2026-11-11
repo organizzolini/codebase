@@ -28,12 +28,11 @@ import type {
 } from "@conformetry/core";
 
 /**
- * Renders structured conformance differences as human-readable text.
+ * Renders conformance differences as human-readable text.
  *
- * Reports are grouped by file and then by error, and every error prints the
- * template requirement that produced it plus a concrete `fix` line. That last
- * part is the point: the output is meant to be actionable by whoever — or
- * whatever — is asked to make the file conform.
+ * Groups reports by file, then by error. Each error prints the template
+ * requirement behind it and a concrete `fix` line, so whoever makes the file
+ * conform can act on it.
  */
 @Injectable()
 export class ReportingService {

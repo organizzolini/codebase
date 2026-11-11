@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * Files beside a database that belong to it: write-ahead log, shared-memory
- * index and rollback journal. Operations treat all four as one.
- */
+/** A database's log, shared-memory index, and journal, always handled together. */
 export const COMPANION_SUFFIXES: readonly string[] = [
   "-wal",
   "-shm",
@@ -31,7 +28,7 @@ export const NO_MACHINE_ID_MESSAGE =
 export const corruptMessage = (database: string, result: string): string =>
   `::warning::Discarding corrupt cache (${database}): ${result}`;
 
-/** Reports a restored database that cannot be renamed for want of a schema. */
+/** Reports a restored database lacking the schema to rename it. */
 export const noSchemaMessage = (name: string): string =>
   `::warning::Not adopting ${name}: no -v<schema> suffix to keep`;
 
@@ -91,7 +88,7 @@ export const schemaMismatchReason = (
 export const notMergingMessage = (source: string, reason: string): string =>
   `::warning::Not merging the Nx cache from ${source}: ${reason}`;
 
-/** Reports a source taken whole, for want of a database to merge into. */
+/** Reports a source taken whole: no database to merge into. */
 export const nothingToMergeIntoMessage = (source: string): string =>
   `🧩 Adopted the Nx cache from ${source}: nothing to merge into`;
 

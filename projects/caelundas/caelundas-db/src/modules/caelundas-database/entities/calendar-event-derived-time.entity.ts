@@ -1,9 +1,9 @@
 import { ViewColumn, ViewEntity } from "typeorm";
 
-/** The event's start as a wall-clock timestamp in the event's own zone, so reads group by local day and hour. */
+/** Event start, a wall-clock timestamp in the event's zone. */
 const LOCAL_START = `(e."start" at time zone e.timezone)`;
 
-/** The event's start as a UTC wall-clock `timestamp`, which every derived time but the duration reads. */
+/** UTC wall-clock start; every derived time but duration reads it. */
 const UTC_START = `(e."start" at time zone 'UTC')`;
 
 /**

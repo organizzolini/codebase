@@ -13,10 +13,7 @@ import type {
 
 // 🏷️ Types
 
-/**
- * One example project's exploration outcome: a graph, or the failure that
- * stopped it. Modelled on `codependix-cli`'s `ProjectRunResult` and `ProjectRunFailure`.
- */
+/** A graph, or the failure that stopped one project. */
 type Exploration =
   | {
       readonly error: string;
@@ -46,10 +43,7 @@ const EMPTY_CONTAINER = ["ambient-modules", "empty-container"];
 /** Container whose options factory refuses to run if it is ever called. */
 const PREVIEW_CONTAINER = ["preview-mode", "container"];
 
-/**
- * The root module each example application boots from, keyed by project name.
- * A project absent here is a library, rooted in a synthetic module.
- */
+/** Boot root module per app; absent projects are libraries. */
 export const EXAMPLE_ROOT_MODULES: Readonly<Record<string, NestjsRootModule>> =
   {
     "rooted-application": {
@@ -73,10 +67,7 @@ const FAILING_CONTAINER = ["container-rooting", "failing-container"];
 
 // 🕸️ Graphs
 
-/**
- * Module graphs already built, keyed by project root. Only a successful
- * exploration is cached: a container that refuses to load raises every time.
- */
+/** Built module graphs by project root; only successes are cached. */
 const graphsByRoot = new Map<string, Promise<NestjsModuleGraph>>();
 
 /** Builds one example container's module graph. */

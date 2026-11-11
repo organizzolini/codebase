@@ -1,7 +1,7 @@
 import type { EventFilterValue } from "./event-filters.types";
 
 /**
- * A filter group from somewhere looser than the builder, such as a parsed link, where a rule's value may be missing.
+ * A filter group from a parsed link, possibly holding valueless rules.
  */
 export interface LooseEventFilterGroup {
   combinator: "and" | "or";

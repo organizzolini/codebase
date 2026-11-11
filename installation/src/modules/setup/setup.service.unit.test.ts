@@ -17,7 +17,7 @@ import { SetupService } from "./setup.service";
 
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
-/** The steps a setup can run, as mocks, with the service built over them. */
+/** Mocked setup steps, with the service built over them. */
 interface Steps {
   dependencies: DeepMocked<DependenciesService>;
   environmentFiles: DeepMocked<EnvironmentFilesService>;

@@ -2,10 +2,7 @@
 
 import type { CodependixBoundaryRule } from "@codependix/configuration";
 
-/**
- * One cycle in a graph. `source` and `target` are the edge that closed it, so callers
- * need not index into `path`.
- */
+/** One graph cycle; `source` and `target` are its closing edge. */
 export interface BoundaryCycle {
   /** The whole path, with the closing node repeated at the end. */
   readonly path: readonly string[];
@@ -13,20 +10,14 @@ export interface BoundaryCycle {
   readonly target: string;
 }
 
-/**
- * One node depending on another. `implicit` marks Nx `implicitDependencies` edges, which
- * import-reading lint rules cannot see; absent elsewhere, not `false`.
- */
+/** One dependency edge; `implicit` marks Nx `implicitDependencies`. */
 export interface BoundaryEdge {
   readonly implicit?: boolean | undefined;
   readonly source: string;
   readonly target: string;
 }
 
-/**
- * One built graph, reduced to what rule evaluation needs. Deliberately not the builders'
- * graph types, which would pull their framework dependencies in.
- */
+/** A built graph, reduced to what rule evaluation needs. */
 export interface BoundaryGraph {
   readonly edges: readonly BoundaryEdge[];
   /** Which of codependix's four levels this graph was built at. */
@@ -39,10 +30,7 @@ export interface BoundaryGraph {
   readonly scope: string;
 }
 
-/**
- * One node in a graph. Its fields are optional because levels carry different ones; a selector
- * naming a missing field matches nothing.
- */
+/** One graph node; levels carry different optional fields. */
 export interface BoundaryNode {
   readonly id: string;
   readonly path?: string | undefined;
@@ -72,20 +60,14 @@ export interface BoundaryViolation {
   readonly target: string;
 }
 
-/**
- * The level a graph was built at, or a violation was found at.
- * Finer than `CodependixGraphType`: `fileImports` splits into `typescript` and `python`.
- */
+/** Level a graph is built at; finer than `CodependixGraphType`. */
 export type CodependixBoundaryLevel =
   | "nestjsModules"
   | "nxProjects"
   | "python"
   | "typescript";
 
-/**
- * The bookkeeping of one depth-first cycle walk. Passed as one object to stay within the
- * three-parameter limit.
- */
+/** Bookkeeping of one depth-first cycle walk, passed as one object. */
 export interface CycleWalkState {
   /** Every cycle found so far. */
   readonly cycles: BoundaryCycle[];

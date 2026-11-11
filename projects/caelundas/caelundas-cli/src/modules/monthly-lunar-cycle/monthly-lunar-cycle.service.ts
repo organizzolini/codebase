@@ -22,12 +22,7 @@ import type {
 import type { Moment } from "moment-timezone";
 
 /**
- * Detects the Moon's monthly phases and the spans between them.
- *
- * Every phase is timed by the Moon's elongation from the Sun in ecliptic
- * longitude: the four primary phases at 0°, 90°, 180° and 270°, as USNO and
- * the almanacs time them, and the crescent and gibbous phases at the octants
- * between them, 45°, 135°, 225° and 315°.
+ * Detects the Moon's monthly phases and the spans between them. Phases are timed by elongation from the Sun: the four primary phases at 0°, 90°, 180° and 270°, as USNO times them, and the octants between at 45°, 135°, 225° and 315°.
  */
 @Injectable()
 export class MonthlyLunarCycleService {

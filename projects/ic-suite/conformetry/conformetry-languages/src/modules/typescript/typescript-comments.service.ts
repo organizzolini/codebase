@@ -16,10 +16,8 @@ import type {
 /**
  * Checks that a file carries the comments its template requires, in order.
  *
- * Order matters here in a way it does not for declarations: the section
- * markers (`🏗 Dependency Injection`, `🔏 Private Methods`, …) are comments,
- * and a file that has them all but in the wrong order has not adopted the
- * layout. Matching is therefore a subsequence check, not a set check.
+ * Order matters for section marker comments, so matching is a subsequence check,
+ * not a set check.
  */
 @Injectable()
 export class TypescriptCommentsService {

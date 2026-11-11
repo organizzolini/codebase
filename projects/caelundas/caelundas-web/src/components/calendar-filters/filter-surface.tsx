@@ -22,8 +22,7 @@ import type { ReactElement, ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The builder to open, the button that opens it, and whether the screen is
- * a tablet's.
+ * The builder's trigger element and whether this is a tablet.
  */
 export interface FilterSurfaceProperties {
   children?: ReactNode;

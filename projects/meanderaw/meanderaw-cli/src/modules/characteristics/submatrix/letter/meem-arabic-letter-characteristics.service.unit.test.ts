@@ -7,9 +7,7 @@ import { MeemArabicLetterCharacteristicsService } from "./meem-arabic-letter-cha
 
 import type { LetterFormFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the م (final Arabic meem) as a Code holding one isolated copy.
- */
+/** Each distinct orientation of final م as a standalone Code. */
 const FINAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -49,9 +47,7 @@ const FINAL_FORM: LetterFormFixture = {
   prefix: "meemFinal",
 };
 
-/**
- * Each distinct orientation of the م (initial Arabic meem) as a Code holding one isolated copy.
- */
+/** Each distinct orientation of initial م as a standalone Code. */
 const INITIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [
@@ -91,9 +87,7 @@ const INITIAL_FORM: LetterFormFixture = {
   prefix: "meemInitial",
 };
 
-/**
- * Each distinct orientation of the م (medial Arabic meem) as a Code holding one isolated copy.
- */
+/** Each distinct orientation of medial م as a standalone Code. */
 const MEDIAL_FORM: LetterFormFixture = {
   aliases: [],
   orientations: [

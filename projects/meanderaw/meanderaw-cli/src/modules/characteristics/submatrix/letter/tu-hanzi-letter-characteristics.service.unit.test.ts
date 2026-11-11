@@ -7,7 +7,7 @@ import { TuHanziLetterCharacteristicsService } from "./tu-hanzi-letter-character
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the 凸 (hanzi tu) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of 凸 as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "05x03y0650069a50a3390",

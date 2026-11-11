@@ -28,10 +28,7 @@ vi.mock("node:fs", () => ({
   mkdirSync: mkdirSyncMock,
 }));
 
-/**
- * The builder mocks `LoggerService`, the class under test, so a custom provider
- * restores the real one.
- */
+/** Builder mocks `LoggerService`; custom providers restore the real one. */
 const REAL_LOGGER = {
   providers: [{ provide: LoggerService, useClass: LoggerService }],
 };

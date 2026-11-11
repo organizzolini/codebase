@@ -7,19 +7,14 @@ import { TimelineScale } from "./timeline-scale.entities";
  */
 export const AGENDA_DAY_COUNT = 30;
 
-/**
- * A zone's midnight lies within a day of UTC's, so a period reads one more
- * day either side.
- */
+/** Zone midnights lie up to a day from UTC's. */
 export const BUFFER_DAYS = 1;
 
 export const DAY_MILLISECONDS = 86_400_000;
 
 const DAY_MINUTES = 1440;
 
-/**
- * How long one column of each scale lasts, in minutes, on the Gantt's axis.
- */
+/** Minutes per timeline column, at each scale. */
 export const COLUMN_MINUTES: Readonly<Record<TimelineScale, number>> = {
   [TimelineScale.DAY]: 15,
   [TimelineScale.MONTH]: DAY_MINUTES,
@@ -33,9 +28,7 @@ export const COLUMN_MINUTES: Readonly<Record<TimelineScale, number>> = {
  */
 export const DEFAULT_TIMELINE_SCALE = TimelineScale.MONTH;
 
-/**
- * The most days the agenda lists at once, however far it is scrolled.
- */
+/** Most days the agenda lists at once. */
 export const MAXIMUM_AGENDA_DAYS = 366;
 
 // The month grid always draws six weeks, so it shows up to six days of the

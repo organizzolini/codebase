@@ -1,7 +1,4 @@
-/**
- * A boolean SQL expression over the derived events view, aliased `e`, with
- * the values its `$n` placeholders stand for.
- */
+/** A boolean SQL expression over the events view, aliased `e`. */
 export interface CompiledEventFilter {
   parameters: unknown[];
   sql: string;
@@ -16,10 +13,7 @@ export interface EventFilterGroup {
   rules: EventFilterRule[];
 }
 
-/**
- * Collects the values a compiled expression binds, numbering the `$n`
- * placeholders after the `offset` the query already binds.
- */
+/** Values a compiled expression binds, numbered after the existing offset. */
 export interface EventFilterParameters {
   readonly offset: number;
   readonly values: unknown[];
@@ -35,10 +29,7 @@ export interface EventFilterRule {
   values: string[];
 }
 
-/**
- * A SQL comparison, negated for `neq` and "is not between", which flip the
- * positive condition.
- */
+/** A SQL comparison; neq and not-between are negated, flipping it. */
 export interface NumberCondition {
   negated: boolean;
   sql: string;

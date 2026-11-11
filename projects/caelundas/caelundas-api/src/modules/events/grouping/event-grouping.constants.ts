@@ -6,10 +6,7 @@ import type { EventGroupLevel } from "./event-grouping.types";
 
 // ♟️ Constants
 
-/**
- * The most levels a grouping nests: a group, a sub-group, and one more. The
- * level the events are colored by is not counted.
- */
+/** Most levels a grouping nests, not counting the color level. */
 export const MAXIMUM_GROUP_LEVELS = 3;
 
 /**
@@ -17,21 +14,13 @@ export const MAXIMUM_GROUP_LEVELS = 3;
  */
 export const MAXIMUM_GROUP_DEPTH = 16;
 
-/**
- * The most tags one level may pick, so a request cannot ask the database for
- * an unbounded list.
- */
+/** Most tags one level may pick; keeps queries bounded. */
 export const MAXIMUM_GROUP_TAGS = 256;
 
-/**
- * The longest a field id may be: a tag root's id after its prefix.
- */
+/** Longest allowed field id, after its tag prefix. */
 export const MAXIMUM_GROUP_FIELD_LENGTH = 64;
 
-/**
- * The ids of the fields derived from each event's start or duration, longest
- * period first.
- */
+/** Ids of start or duration fields, longest period first. */
 export const CALENDAR_GROUP_IDS = [
   "year",
   "quarter",
@@ -51,9 +40,7 @@ const DURATION_BUCKET_SQL = `case ${DURATION_BUCKETS.map(
     `when e.duration_minutes between ${String(bucket.minimum)} and ${String(bucket.maximum)} then '${bucket.value}'`,
 ).join(" ")} end`;
 
-/**
- * Each derived field's text group key, read in the event's own zone. Weekdays count from Sunday as 0.
- */
+/** Derived fields' group keys, in the event's zone; Sunday is 0. */
 export const CALENDAR_GROUP_KEY_SQL: Readonly<
   Record<(typeof CALENDAR_GROUP_IDS)[number], string>
 > = {
@@ -73,15 +60,10 @@ export const CALENDAR_GROUP_KEY_SQL: Readonly<
  */
 export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, null::text as "path"`;
 
-/**
- * A source that puts every event in no group at its level, for a field the
- * calendar does not know.
- */
+/** Puts every event in no group, for an unknown field. */
 export const NO_GROUP_SQL = `select null::text as "key", null::text as label, null::text as "path" where false`;
 
-/**
- * Tags an event falls under in one root at one depth; a shallower leaf stands for itself.
- */
+/** Tags an event falls under at a depth; shallower leaves count. */
 export const TAG_GROUP_SQL = `
   select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path"
   from calendar_event_tag_nodes t
@@ -106,18 +88,14 @@ export const TAG_GROUP_SQL = `
     )
 `;
 
-/**
- * Picked tags an event falls under; an event is attached to every tag above its own.
- */
+/** Picked tags an event falls under, including every ancestor tag. */
 export const PICKED_TAG_GROUP_SQL = `
   select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path"
   from calendar_event_tag_nodes t
   where t.calendar_event_id = e.id and t.tag_id = any({tags}::uuid[])
 `;
 
-/**
- * Gathers one level's group rows into a JSON column. An unknown key puts the event in no group, not one named null.
- */
+/** Gathers a level's rows into JSON; unknown keys mean no group. */
 export const GROUP_COLUMN_SQL = `,
     coalesce(
       (
@@ -131,10 +109,7 @@ export const GROUP_COLUMN_SQL = `,
       '[]'::json
     ) as {column}`;
 
-/**
- * Validates one level of a grouping as it arrives from GraphQL, where the
- * optional fields may be absent or null.
- */
+/** Validates one grouping level from GraphQL, with optional nulls. */
 export const eventGroupLevelSchema: z.ZodType<EventGroupLevel> = z.object({
   depth: z
     .number()
@@ -151,10 +126,7 @@ export const eventGroupLevelSchema: z.ZodType<EventGroupLevel> = z.object({
     .transform((tags) => tags ?? []),
 });
 
-/**
- * Validates a grouping as it arrives from GraphQL: at most
- * {@link MAXIMUM_GROUP_LEVELS} levels, and a color level of its own.
- */
+/** Validates a grouping from GraphQL, with at most the maximum levels. */
 export const eventGroupingSchema = z.object({
   colorBy: eventGroupLevelSchema
     .nullish()

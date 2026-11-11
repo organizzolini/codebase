@@ -22,10 +22,7 @@ export interface BuiltTestingModule<Target> {
   readonly module: TestingModule;
 }
 
-/**
- * What to build a testing module with, besides the class under test and the
- * logger mock it always gets.
- */
+/** What a testing module needs beyond the class and logger mock. */
 export interface TestingModuleOptions {
   /** Modules to import, for real dependencies they provide. */
   readonly imports?: ModuleMetadata["imports"];

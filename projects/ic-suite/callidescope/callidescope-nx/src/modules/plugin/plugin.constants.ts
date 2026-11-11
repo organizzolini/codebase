@@ -1,19 +1,19 @@
 // ♟️ Constants
 
-/** Glob `createNodes` matches, covering the callidescope configuration too so an edit to it re-runs the plugin. */
+/** Glob `createNodes` matches, including configuration, so edits re-run the plugin. */
 export const PROJECT_CONFIGURATION_GLOB =
   "**/{project.json,callidescope.config.*}";
 
 /** Basename that marks a matched file as an actual project description. */
 export const PROJECT_CONFIGURATION_FILENAME = "project.json";
 
-/** Cache input naming the project's own callidescope configuration, `{projectRoot}`-relative so one edit invalidates only its gate. */
+/** Cache input for the project's configuration, relative to its root. */
 export const PROJECT_LIMITS_INPUT = "{projectRoot}/callidescope.config.*";
 
-/** Key the plugin context is cached under on `globalThis`, so re-loading the module still yields one context per process. */
+/** `globalThis` key for the plugin context; one per process. */
 export const PLUGIN_CONTEXT_GLOBAL_KEY = "__callidescopePluginContext";
 
-/** Printed when a judged project's own files were never read. A gate fails on it; a trace prints it and passes. */
+/** Judged project's files were never read. Gates fail; traces pass. */
 export const reportUnreadProjects = (projectNames: readonly string[]): string =>
   [
     "## Read nothing of its own (0 files)",
@@ -34,7 +34,7 @@ export const reportUnreadProjects = (projectNames: readonly string[]): string =>
     "project still holds sources its `tsconfig.json` includes.",
   ].join("\n");
 
-/** Printed when a gate's run read no code at all. Failing beats passing, since a gate that never looked cannot judge. */
+/** No code read by a gate's run. Failing beats passing. */
 export const EMPTY_TRACE_REPORT = [
   "## Traced nothing (0 callables)",
   "",
@@ -46,7 +46,7 @@ export const EMPTY_TRACE_REPORT = [
   "pattern matching everything the project holds.",
 ].join("\n");
 
-/** Printed when a gate's Nx selection resolved to no directory, so nothing was traced and no verdict is recorded. */
+/** Gate's Nx selection matched no directory; nothing was traced. */
 export const EMPTY_SCOPE_REPORT = [
   "## Traced nothing (no directories in scope)",
   "",

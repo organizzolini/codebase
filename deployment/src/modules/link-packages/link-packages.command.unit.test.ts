@@ -58,10 +58,7 @@ describe(LinkPackagesCommand, () => {
   let runnerTemp: string;
   let workspace: string;
 
-  /**
-   * Answers the release group: `cli` published by this run, `core` already
-   * on npm and linked, `fresh` on neither.
-   */
+  /** Release group: `cli` published, `core` already on npm, `fresh` neither. */
   const script = (): Record<string, ScriptedAnswer<CapturedProcess>> => ({
     [CREATE_RECORD]: succeeded("{}"),
     "curl *": succeeded(),

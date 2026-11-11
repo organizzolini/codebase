@@ -54,7 +54,7 @@ const PROJECTS = [
   { absoluteRoot: "/workspace/packages/a", name: "a", tags: [] },
 ];
 
-/** A dependency of `a`, built but never judged when only `a` is selected. */
+/** A dependency of `a`, built but not judged. */
 const DEPENDENCY = {
   absoluteRoot: "/workspace/packages/b",
   name: "b",

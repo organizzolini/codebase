@@ -58,20 +58,14 @@ const jsonSchemaDefinitionSchema: z.ZodType = z.lazy(() => {
   ]);
 });
 
-/**
- * A function hook. Zod cannot check arity or return type, so it refuses only a
- * non-function and names the hook.
- */
+/** A function hook; Zod can only check it is callable. */
 const generatorHookSchema = (hookName: string): z.ZodType<GeneratorHook> => {
   return z.custom<GeneratorHook>((value) => typeof value === "function", {
     message: `The ${hookName} hook must be a function`,
   });
 };
 
-/**
- * Validates the generator list from a config file. Generator objects are
- * strict, so an undeclared key is reported rather than stripped.
- */
+/** Generator list from a config file; undeclared keys are reported. */
 export const conformetryConfigurationSchema = z
   .array(
     z.strictObject({

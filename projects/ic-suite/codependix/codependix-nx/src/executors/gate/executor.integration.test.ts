@@ -12,10 +12,7 @@ import type { GateExecutorOptions } from "./executor.types";
 import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext, TaskGraph } from "@nx/devkit";
 
-/**
- * Fixture workspaces live inside this package, never the OS temp directory: the
- * loader resolves helpers from the importing file's directory.
- */
+/** Fixtures stay in this package, not the OS temp directory. */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
 /** Long enough for one cold command-line boot on a slow CI runner. */

@@ -21,8 +21,7 @@ export class AspectCalculationSupportService {
   // 🔐 Private Fields
 
   /**
-   * Windows already read, keyed by ephemeris and then minute, so each body is
-   * read once per minute rather than once per pair.
+   * Windows read so far, keyed by ephemeris then minute.
    */
   private readonly windowCache = new WeakMap<
     CoordinateEphemeris,

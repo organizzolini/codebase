@@ -19,8 +19,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The events to show, the day the calendar opens on, and the zone it renders
- * every time in.
+ * The events, opening day, and display zone.
  */
 export interface EventsCalendarProperties {
   /**

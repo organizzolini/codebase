@@ -9,10 +9,8 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Counts the independent closed loops of one repeat — the first Betti
- * number $b_1$, its cycle rank — as edges minus vertices plus components of
- * the Code read as a graph over the cyclic band. A loop that closes only by
- * crossing the tile boundary counts, since the band really does close it.
+ * Counts the independent closed loops of one repeat, the first Betti number $b_1$: edges minus
+ * vertices plus components. A loop closed only across the tile boundary still counts.
  */
 @Injectable()
 export class BettiNumber1CountCharacteristicService implements CharacteristicEvaluator<number> {

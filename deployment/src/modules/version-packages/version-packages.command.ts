@@ -8,13 +8,13 @@ import { describeError } from "../process-runner/process-runner.utilities";
 import { VersionPackagesService } from "./version-packages.service";
 
 /**
- * CLI command that versions the ic-suite packages and writes their
- * changelogs, uncommitted, as the 🏷️ Version Packages release step, after
- * pointing the remote at the release token and pushing any missing tags.
+ * CLI command that versions ic-suite packages and writes changelogs,
+ * uncommitted, after pointing `origin` at the release token and pushing missing
+ * tags.
  *
- * Reads `GITHUB_TOKEN`, `GITHUB_REPOSITORY`, and `GITHUB_ENV`, where
- * `RELEASE_SUPERSEDED=true` is written when `main` has already moved. Exits
- * with Nx's code, the tagging's when that failed, or 1 on any other failure.
+ * Reads `GITHUB_TOKEN` and `GITHUB_ENV`, where `RELEASE_SUPERSEDED=true` is
+ * written when `main` has moved. Exits with Nx's code, the tagging's when that
+ * failed, or 1 otherwise.
  */
 @Command({
   description:

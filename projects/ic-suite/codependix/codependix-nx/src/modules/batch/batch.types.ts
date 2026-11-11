@@ -2,7 +2,7 @@
 
 import type { GateOptions } from "../gate/gate.types";
 
-/** What a command line run left behind once it ended or failed to start. */
+/** What a command line run left behind, however it ended. */
 export interface CapturedRun {
   /** Why the process could not be started, when it could not. */
   readonly error?: string;
@@ -11,9 +11,7 @@ export interface CapturedRun {
   readonly standardOutput: string;
 }
 
-/**
- * What one task of a gate batch settled on: whether it passed, and the output to show and cache.
- */
+/** One task's outcome: whether it passed, and its output. */
 export interface GateBatchTaskResult {
   readonly success: boolean;
   readonly terminalOutput: string;
@@ -26,7 +24,7 @@ export interface GateRunGroup {
   readonly tasks: RunGateBatchTask[];
 }
 
-/** A task of a batch, with the command line that explains it should it fail. */
+/** A batch task, plus the command line explaining a failure. */
 export interface JudgedTask {
   /** The command line that judges this project alone, for its own report. */
   readonly singleArguments: string[];

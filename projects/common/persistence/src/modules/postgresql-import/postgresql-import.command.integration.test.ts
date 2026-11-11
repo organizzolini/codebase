@@ -41,7 +41,7 @@ vi.mock("node:child_process", async (importOriginal) => {
 const UNREACHABLE_TARGET_URI =
   "postgresql://fixture_username:hunter2-secret@127.0.0.1:1/fixture_testing";
 
-/** The dumps `postgresql-export` writes once for every test, keyed by what they hold. */
+/** Dumps `postgresql-export` writes once for all tests, keyed by content. */
 const DUMPS = {
   archive: ["--table", "archive.notes", "--data", "--ddl"],
   both: ["--table", "widgets", "--table", "fixture.parts", "--data", "--ddl"],

@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * The relations a word lookup joins: every form and lexeme the word links
- * to, each lexeme with the relations a lexeme lookup returns.
- */
+/** Word lookup joins: its forms, and its lexemes' relations. */
 export const WORD_RELATIONS = {
   wordForms: { form: true },
   wordLexemes: {

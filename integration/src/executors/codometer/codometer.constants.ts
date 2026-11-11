@@ -1,8 +1,6 @@
 // ♟️ Constants
 
-/**
- * The codometer command line, relative to the workspace root, run from source under the swc hook.
- */
+/** Codometer's command line, run from source under the swc hook. */
 export const CODOMETER_CLI_MAIN =
   "projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts";
 

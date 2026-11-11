@@ -7,7 +7,7 @@ import { WangHanziLetterCharacteristicsService } from "./wang-hanzi-letter-chara
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the 王 (hanzi wang) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of 王 as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x03y27102f102b10",

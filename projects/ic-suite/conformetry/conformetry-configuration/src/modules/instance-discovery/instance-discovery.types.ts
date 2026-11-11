@@ -21,11 +21,7 @@ export interface FindInstancesArguments {
   readonly workingDirectory: string;
 }
 
-/**
- * A place a template's tree is rendered into, with the name it renders with.
- *
- * The host's glob expansion supplies it.
- */
+/** A directory a template renders into, with its render name. */
 export interface Instance {
   /**
    * Absolute paths narrowing the match, or `undefined` for the whole tree. A file
@@ -86,17 +82,13 @@ export interface PrepareDocumentsArguments {
   readonly instances: MatchedInstance[];
 }
 
-/** The outcome of resolving a set of instances against a set of templates. */
+/** Outcome of resolving instances against templates. */
 export interface ResolvedInstances {
   readonly matched: MatchedInstance[];
   readonly unmatched: UnmatchedInstance[];
 }
 
-/**
- * Arguments for taking an inventory of templates and instances.
- *
- * Both filters narrow the pairing, so an entry that survives neither drops out.
- */
+/** Arguments for an inventory of templates and instances. */
 export interface ResolveInventoryArguments {
   readonly configuration: ConformetryConfiguration;
   /** Globs narrowing which instances count; the configured ones when absent. */
@@ -106,11 +98,7 @@ export interface ResolveInventoryArguments {
   readonly workingDirectory: string;
 }
 
-/**
- * One template weighed against an instance during matching.
- *
- * `matchRatio` measures fit by file presence alone, not conformance score.
- */
+/** A template weighed against an instance. `matchRatio` counts files only. */
 export interface TemplateMatch {
   readonly matchedFileCount: number;
   /** Share of the template's files the instance already has, 0 to 1. */
@@ -130,8 +118,5 @@ export interface UnmatchedInstance {
   readonly tiedTemplateNames: string[];
 }
 
-/**
- * Why an instance went unmatched. Reported, not skipped: a glob asserts the
- * directory is an instance, so no match is a finding.
- */
+/** Why an instance matched no template; always a finding. */
 export type UnmatchedReason = "ambiguous" | "no-match";

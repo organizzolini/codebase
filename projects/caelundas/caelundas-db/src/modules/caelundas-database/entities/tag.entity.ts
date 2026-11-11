@@ -38,7 +38,7 @@ export class Tag extends PostgresqlUpdatableEntity {
   @TreeParent({ onDelete: "CASCADE" })
   parent?: null | Tag;
 
-  /** The tag this one refines, or null for the root of a dimension. */
+  /** The tag this refines, or null for a dimension root. */
   @Column("uuid", { nullable: true })
   parentId?: null | string;
 }

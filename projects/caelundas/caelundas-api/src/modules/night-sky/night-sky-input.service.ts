@@ -141,10 +141,7 @@ export class NightSkyInputService {
   }
 
   /**
-   * The input a request is really drawn from: the time snapped down to the
-   * minute, the size up to its bucket and each figure named once, in order,
-   * so every request for the same sky gives the same input and the same
-   * cache key.
+   * The input a request is drawn from, snapped so equal skies share a cache key.
    */
   public snap(input: ParsedNightSkyInput): ParsedNightSkyInput {
     const bucket = (pixels: number): number =>

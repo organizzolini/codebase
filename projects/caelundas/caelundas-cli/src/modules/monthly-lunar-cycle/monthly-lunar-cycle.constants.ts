@@ -5,7 +5,7 @@ import type { LunarPhase } from "../caelundas/caelundas.types";
 export const LUNAR_APOGEE_TAG = "Apogee";
 export const LUNAR_PERIGEE_TAG = "Perigee";
 
-/** Apsis events keep clear of "Monthly Lunar Cycle", whose phase events are paired into spans. */
+/** Apsis events stay clear of "Monthly Lunar Cycle" phase spans. */
 export const LUNAR_APSIDES_BASE_TAGS = [
   "Astronomy",
   "Astrology",
@@ -13,9 +13,7 @@ export const LUNAR_APSIDES_BASE_TAGS = [
   "Lunar",
 ] as const;
 
-/**
- * The Moon's minus the Sun's ecliptic longitude at each phase's start; the four primary phases match USNO's definition.
- */
+/** Moon's minus Sun's ecliptic longitude at each phase's start. */
 export const ELONGATION_BY_LUNAR_PHASE: Record<LunarPhase, number> = {
   "first quarter": 90,
   full: 180,

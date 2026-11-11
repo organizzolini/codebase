@@ -49,8 +49,7 @@ export class EclipseCalculationService {
   // 🔐 Private Fields
 
   /**
-   * The lunar and solar eclipses in progress, each keeping the type estimated at
-   * its first minute so its whole span is titled alike.
+   * Eclipses in progress, each keeping its first minute's type.
    */
   private lunarOccurrence: EclipseOccurrence<LunarEclipseType> | null = null;
 

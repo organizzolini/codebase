@@ -23,11 +23,7 @@ import {
 
 describe("every example configuration this package ships", () => {
   describe("what codometer writes, it does not measure", () => {
-    /**
-     * One copy, walked in the order the guide describes.
-     *
-     * Each step sees exactly the tree it would in its own copy.
-     */
+    /** One copy, walked in the order the guide describes. */
     let firstWrite: CodometerRun;
     let remeasured: CodometerReport;
     let rewritten: CodometerReport;

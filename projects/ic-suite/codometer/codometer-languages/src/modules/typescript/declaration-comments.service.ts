@@ -44,7 +44,8 @@ export class DeclarationCommentsService {
   }
 
   /**
-   * Finds the node's leading JSDoc range, the last if several. A blank line detaches it, leaving it to the file header. Walked in a loop to keep a frame off the stack.
+   * Finds the node's last leading JSDoc range, which a blank line detaches.
+   * Loops to keep a frame off the stack.
    */
   private getJsDocRange(
     node: tsCompiler.Node,

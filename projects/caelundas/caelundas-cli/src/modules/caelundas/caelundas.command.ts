@@ -11,13 +11,7 @@ import { PerfectiveService } from "../perfective/perfective.service";
 import { ProgressiveService } from "../progressive/progressive.service";
 
 /**
- * CLI entry point for caelundas.
- * CLI entry point that orchestrates the full calendar generation pipeline.
- *
- * Reads observer coordinates and date range from environment variables,
- * runs perfective and progressive event detection in sequence, upserts the
- * detected events into the Postgres database, then reads the requested range and location
- * back and writes it to `.ics` and JSON files via {@link CalendarService}.
+ * CLI entry point for caelundas. Reads observer coordinates and date range from environment variables, detects and upserts events into Postgres, then writes the requested range to `.ics` and JSON files via {@link CalendarService}.
  */
 @Command({
   description: "Run the caelundas command",

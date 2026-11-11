@@ -7,8 +7,7 @@ import type { Period } from "./calendar-records.types";
 // 🏷️ Types
 
 /**
- * What a read of the events asks for: a period, and optionally the filter
- * the events in it must meet and the grouping each is read with keys for.
+ * Events read: a period, plus an optional filter and grouping.
  */
 export interface EventsReadQuery {
   filter?: EventFilterGroupInput | null | undefined;

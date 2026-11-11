@@ -1,5 +1,2 @@
-/**
- * Prefix for every temporary directory a test makes, so one a crashed run left
- * behind traces back to its tests.
- */
+/** Prefix for test temp directories, so leftovers trace to their tests. */
 export const TEMPORARY_DIRECTORY_PREFIX = "codebase-test-";

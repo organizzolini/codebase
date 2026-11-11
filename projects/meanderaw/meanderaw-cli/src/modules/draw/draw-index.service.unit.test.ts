@@ -15,7 +15,7 @@ import type { Meander } from "../database/entities/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
 
-/** A mocked database plus fixed-answer stand-ins for the code parser and the drawing. */
+/** Mocked database, with stubbed parser and drawing. */
 const MODULE_OPTIONS: TestingModuleOptions = {
   mocks: [DatabaseService],
   providers: [
@@ -48,7 +48,7 @@ describe(DrawIndexService, () => {
   let databaseService: DatabaseService;
   let service: DrawIndexService;
 
-  /** Every field a fixture row does not care about, defaulted so a case only spells out what it means to test. */
+  /** Defaults for the row fields a case does not test. */
   const meander = (
     overrides: Partial<Meander> & Pick<Meander, "code">,
   ): Meander => ({

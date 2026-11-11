@@ -101,9 +101,8 @@ export class NightSkyLinesService {
   // 🌎 Public Methods
 
   /**
-   * Draws the figures' segments in the style given, as one group of polylines
-   * cut where they leave the ring the window crosses, as stars beyond it are
-   * left out. Answers nothing when no segment shows.
+   * Draws the figures as one group of polylines, cut at the window's ring.
+   * Answers nothing when no segment shows.
    */
   public formatConstellationLines(
     geometry: SkyGeometry,

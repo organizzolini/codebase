@@ -7,10 +7,7 @@ import { LETTER_ORIENTATION_NAMES } from "./letter.constants";
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/**
- * Each distinct orientation of the Κ (Greek kappa) as a Code holding one isolated copy.
- * Its diagonals run as orthogonal zig-zags.
- */
+/** One isolated Code per orientation of the Κ (Greek kappa). */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "04x05y4040c690ed00ca508080",

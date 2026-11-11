@@ -1,9 +1,6 @@
 // ♟️ Constants
 
-/**
- * The projects whose change makes the publishable-packages check worth
- * running: every ic-suite package, and `validation`, which owns the check.
- */
+/** Projects whose changes trigger the check: ic-suite packages, `validation`. */
 export const GATED_PROJECTS = "projects/ic-suite/**,validation";
 
 /** What `nx show projects` prints when none of them is affected. */

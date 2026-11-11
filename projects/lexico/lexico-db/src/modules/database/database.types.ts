@@ -32,10 +32,7 @@ export type AdjectiveDegree =
 /** Degree of comparison of a Latin adverb. */
 export type AdverbDegree = (typeof adverbDegree)[keyof typeof adverbDegree];
 
-/**
- * Functional classification of a Latin adverb.
- * Descriptive adverbs modify a verb or adjective; conjunctional adverbs link clauses.
- */
+/** Adverb function: descriptive adverbs modify; conjunctional adverbs link clauses. */
 export type AdverbType = (typeof adverbType)[keyof typeof adverbType];
 
 /** Grammatical case of a Latin inflected form. */
@@ -47,10 +44,7 @@ export type FormDegree = (typeof formDegree)[keyof typeof formDegree];
 /** Grammatical gender of a Latin inflected form. */
 export type FormGender = (typeof formGender)[keyof typeof formGender];
 
-/**
- * Grammatical case of a Latin gerund.
- * Gerunds only appear in the four oblique cases — nominative and vocative are excluded.
- */
+/** Grammatical case of a gerund: only the four oblique cases. */
 export type FormGerundCase =
   (typeof formGerundCase)[keyof typeof formGerundCase];
 
@@ -69,10 +63,7 @@ export type FormNumber = (typeof formNumber)[keyof typeof formNumber];
 /** Grammatical person of a finite Latin verb form. */
 export type FormPerson = (typeof formPerson)[keyof typeof formPerson];
 
-/**
- * Case of a Latin supine form.
- * Supines occur only in the accusative (to express purpose) and ablative (to express respect).
- */
+/** Case of a supine: accusative (purpose) or ablative (respect). */
 export type FormSupineCase =
   (typeof formSupineCase)[keyof typeof formSupineCase];
 
@@ -86,13 +77,13 @@ export type FormVoice = (typeof formVoice)[keyof typeof formVoice];
 export type NounDeclension =
   (typeof nounDeclension)[keyof typeof nounDeclension];
 
-/** Grammatical gender of a Latin noun, including `masc/fem` for nouns whose gender varies by referent. */
+/** Grammatical gender of a Latin noun; `masc/fem` if it varies. */
 export type NounGender = (typeof nounGender)[keyof typeof nounGender];
 
 /** Grammatical case governed by a Latin preposition. */
 export type PrepositionCase =
   (typeof prepositionCase)[keyof typeof prepositionCase];
 
-/** Conjugation class of a Latin verb, which determines its inflectional stem and personal endings. */
+/** Conjugation class of a Latin verb, setting its endings. */
 export type VerbConjugation =
   (typeof verbConjugation)[keyof typeof verbConjugation];

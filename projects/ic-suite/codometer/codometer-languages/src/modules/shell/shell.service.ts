@@ -21,10 +21,8 @@ import type { ShellInput, ShellResult } from "./shell.types";
 /**
  * Counts the constructs a shell script is built from.
  *
- * Pattern-based rather than parsed: shell has no syntax tree available without
- * a native dependency, and a heuristic that a reader would agree with is worth
- * more here than no measurement at all. Comment lines are recognized before
- * anything else so that a `#` opening a line never reads as code.
+ * Pattern-based rather than parsed, since shell has no syntax tree without a native dependency.
+ * Comment lines are recognized first, so a `#` opening a line never reads as code.
  */
 @Injectable()
 /* v8 ignore stop */

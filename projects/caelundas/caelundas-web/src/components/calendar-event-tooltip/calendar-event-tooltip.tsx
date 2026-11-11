@@ -17,8 +17,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The event to describe and what to draw for it, which the tooltip opens
- * over.
+ * The event and the trigger content its tooltip opens over.
  */
 export interface CalendarEventTooltipProperties {
   children?: ReactNode;

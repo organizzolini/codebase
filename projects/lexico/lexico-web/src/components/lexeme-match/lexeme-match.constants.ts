@@ -12,9 +12,7 @@ import type { LucideIcon } from "lucide-react";
 
 // ♟️ Constants
 
-/**
- * The language of the word a search matched, as an icon and what it says.
- */
+/** A matched word's language, as an icon and label. */
 export const LANGUAGES: Readonly<
   Record<"english" | "latin", { hint: string; icon: LucideIcon; label: string }>
 > = {
@@ -30,9 +28,7 @@ export const LANGUAGES: Readonly<
   },
 };
 
-/**
- * How closely the word matched what was searched, as an icon and what it says.
- */
+/** How closely a word matched, as an icon and label. */
 export const TYPES: Readonly<
   Record<
     "contains" | "exact" | "fuzzy" | "starts-with",
@@ -45,10 +41,7 @@ export const TYPES: Readonly<
   "starts-with": { icon: ListStart, label: "Starts with" },
 };
 
-/**
- * Which language and how close each way a search can match a lexeme is, and a
- * few words explaining it.
- */
+/** Ways a search can match a lexeme, with explanations. */
 export const KINDS: Readonly<
   Record<
     LexemeMatchKind,

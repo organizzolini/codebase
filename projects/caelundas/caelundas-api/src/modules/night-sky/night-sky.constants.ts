@@ -20,9 +20,7 @@ export const RADIANS_PER_DEGREE = Math.PI / 180;
 
 export const MILLISECONDS_PER_DAY = 86_400_000;
 
-/**
- * Julian day of the Unix epoch, and of the J2000 epoch the star catalog uses.
- */
+/** Julian days of the Unix and J2000 epochs. */
 export const UNIX_EPOCH_JULIAN_DAY = 2_440_587.5;
 
 export const J2000_JULIAN_DAY = 2_451_545;
@@ -50,33 +48,21 @@ export const DEFAULT_OPTIONS = {
 
 // 📏 Input
 
-/**
- * The most pixels a query may ask the sky to span along either side.
- */
+/** Most pixels a query may ask the sky to span. */
 export const MAXIMUM_SIZE_PIXELS = 8192;
 
-/**
- * The window sizes the sky is built for, in pixels, so nearby sizes share one built sky.
- */
+/** Pixel sizes to build for; nearby sizes share one sky. */
 export const SIZE_BUCKET_PIXELS = 64;
 
-/**
- * How many built skies are kept before the least recently used is dropped.
- */
+/** Built skies cached before evicting the least recently used. */
 export const NIGHT_SKY_CACHE_SIZE = 64;
 
-/**
- * Milliseconds in the minute a request's time is snapped down to, about a
- * quarter of a degree of the sky's turn.
- */
+/** Milliseconds a time snaps down to; a quarter degree of turn. */
 export const MILLISECONDS_PER_MINUTE = 60_000;
 
 // 📐 Geometry
 
-/**
- * Extra pixels kept on either side of the ring of visible stars, so a dot
- * near the edge is not dropped.
- */
+/** Extra pixels beyond the star ring, so edge dots survive. */
 export const RING_MARGIN = 24;
 
 /**
@@ -120,10 +106,7 @@ export const COLOR_BUCKET_LOWEST = -4;
 
 export const COLOR_BUCKET_HIGHEST = 20;
 
-/**
- * The orange end of the color ramp, also the fallback for any color index the
- * lookup does not place.
- */
+/** Orange end of the color ramp; the fallback for unplaced indexes. */
 export const LAST_COLOR_SEGMENT: ColorSegment = {
   from: 1.5,
   fromColor: [255, 184, 119],
@@ -131,10 +114,7 @@ export const LAST_COLOR_SEGMENT: ColorSegment = {
   toColor: [255, 154, 85],
 };
 
-/**
- * B−V color index to display color, from blue-white to orange, as a blackbody
- * ramp.
- */
+/** B−V color index to display color, a blackbody ramp. */
 export const COLOR_SEGMENTS: readonly ColorSegment[] = [
   { from: -0.4, fromColor: [155, 176, 255], to: 0, toColor: [202, 215, 255] },
   { from: 0, fromColor: [202, 215, 255], to: 0.4, toColor: [248, 247, 255] },
@@ -148,36 +128,22 @@ export const COLOR_INDEX_LOWEST = -0.4;
 
 export const COLOR_INDEX_HIGHEST = 2;
 
-/**
- * The steps each figure segment is drawn in along its great circle, enough
- * for the longest segment to bend smoothly with the projection.
- */
+/** Steps per figure segment, enough to bend smoothly. */
 export const CONSTELLATION_SEGMENT_STEPS = 8;
 
-/**
- * How the figures are drawn besides their color, opacity and width: unfilled
- * round-ended lines, the same width however far the tuning view zooms out.
- */
+/** Unfilled, round-ended figure lines, constant width when zoomed out. */
 export const CONSTELLATION_LINE_ATTRIBUTES =
   'fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"';
 
 // ☀️ Ecliptic
 
-/**
- * The tilt of the Earth's axis, the angle between the ecliptic and the
- * celestial equator, at J2000.
- */
+/** Earth's axial tilt at J2000: the ecliptic against the equator. */
 export const OBLIQUITY_DEGREES = 23.44;
 
-/**
- * The degrees of ecliptic longitude between the points the ecliptic is drawn
- * through, fine enough for its curve under the projection.
- */
+/** Ecliptic longitude degrees between drawn points, fine enough to curve smoothly. */
 export const ECLIPTIC_STEP_DEGREES = 5;
 
-/**
- * Dashed, so the ecliptic reads as a path rather than a figure, however far the tuning view zooms out.
- */
+/** Dashed, so the ecliptic reads as a path, not a figure. */
 export const ECLIPTIC_ATTRIBUTES =
   'fill="none" stroke-dasharray="6 4" stroke-linecap="round" vector-effect="non-scaling-stroke"';
 

@@ -8,11 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of each positional form of the ٯ
- * (Arabic dotless qaf) skeleton — final and isolated — one per corner and
- * clockwise rotation, each counting that form's base template, which faces
- * Southwest, drawn that way. A letter sharing a form's skeleton, differing from
- * it only by dots or by other marks, is an alias of that form.
+ * Provides the sixteen orientation evaluators of each positional form of the ٯ skeleton, final and
+ * isolated. One per corner and clockwise rotation, each counting that form's base template, which
+ * faces Southwest. Letters sharing a skeleton, differing only by dots, are aliases.
  */
 @Injectable()
 export class QafArabicLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -50,28 +48,14 @@ export class QafArabicLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /**
-   * The upright ٯ (final Arabic dotless qaf) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *   ┌┐
-   * ╷ ├┴╴
-   * └─┘
-   * ```
-   */
+  /** Upright final ٯ glyph as hexadecimal Code digits, facing Southwest. */
   private readonly finalTemplate: readonly string[] = [
     "..65.",
     "4.eb1",
     "a39..",
   ];
 
-  /**
-   * The upright ٯ (isolated Arabic dotless qaf) glyph as hexadecimal Code digits, facing Southwest:
-   * ```text
-   *   ┌┐
-   * ╷ ├┘
-   * └─┘
-   * ```
-   */
+  /** Upright isolated ٯ glyph as hexadecimal Code digits, facing Southwest. */
   private readonly isolatedTemplate: readonly string[] = [
     "..65",
     "4.e9",

@@ -15,25 +15,17 @@ import { SizeService } from "./size.service";
 
 import type { CodometerCompression } from "@codometer/configuration";
 
-/**
- * The two fixture files every assertion measures.
- *
- * One whose compressed size moves with the deflate level, and one small file.
- */
+/** Two fixtures: one compresses by deflate level, one is small. */
 const MEASURED_FILES = ["dist/index.js", "dist/nested/deep.js"];
 
-/**
- * Byte counts these files must always report, per compression.
- *
- * Written out, so a change to how compression is called fails here.
- */
+/** Expected byte counts per compression, so call changes fail here. */
 const PINNED_BYTES: Readonly<Record<CodometerCompression, number>> = {
   brotli: 504,
   gzip: 825,
   none: 6906,
 };
 
-/** What the same files compress to at zlib's default level rather than 9. */
+/** Same files compressed at zlib's default level, not 9. */
 const DEFAULT_LEVEL_BYTES = 924;
 
 describe(`${SizeService.name} over real files`, () => {

@@ -10,12 +10,11 @@ import type { EdgesDraft, Tile, TileShape } from "../tile/tile.types";
 import type { EdgeAddress, Environment } from "./enumeration.types";
 
 /**
- * Enumerates every distinct tile of a given shape: every subset of its edges,
- * `2^edges` in all, decided one edge at a time.
+ * Enumerates every distinct tile of a shape: every subset of its edges.
  *
- * `DRAW_EDGE_BUDGET` caps the edges one tile may hold, which keeps the walk
- * finite. The result is folded by symmetry class, and
- * `SymmetryService.canonicalTile` picks the member the corpus draws.
+ * `DRAW_EDGE_BUDGET` caps the edges one tile may hold, keeping the walk finite.
+ * The result is folded by symmetry class, and `SymmetryService.canonicalTile`
+ * picks the member the corpus draws.
  */
 @Injectable()
 export class TileEnumerationService {
@@ -40,10 +39,7 @@ export class TileEnumerationService {
    */
   private readonly edgeBudget: number;
 
-  /**
-   * Every shape already enumerated, keyed by `rows x columns`. Enumeration is a
-   * pure function of the shape, so the answer is kept.
-   */
+  /** Enumerations by `rows x columns`, kept since they are pure. */
   private readonly tilesByShape = new Map<string, Tile[]>();
 
   // 🔑 Public Fields

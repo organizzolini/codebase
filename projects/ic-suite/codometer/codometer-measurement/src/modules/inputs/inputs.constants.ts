@@ -1,10 +1,6 @@
 // ♟️ Constants
 
-/**
- * Characters making a glob segment match more than its literal text.
- *
- * The literal prefix is walked directly, never the whole repository.
- */
+/** Glob characters; walks start at the literal prefix. */
 export const GLOB_MAGIC_CHARACTERS = /[!*+?@[\]{}()]/;
 
 /** Separator every relative path the walk produces uses, on every platform. */

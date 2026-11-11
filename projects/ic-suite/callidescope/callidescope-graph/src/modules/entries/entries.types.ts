@@ -20,10 +20,7 @@ export interface EntryPointCollection {
   readonly unresolvedAddresses: readonly UnresolvedEntryPointAddress[];
 }
 
-/**
- * What every pass over a run's callables shares: the run's own arguments, and
- * the roots and claims the passes accumulate between them.
- */
+/** Run arguments, plus the roots and claims passes accumulate. */
 export interface EntryPointPassArguments {
   /** Callables some pass has already rooted, so no later one roots them twice. */
   readonly claimed: Set<CallableId>;
@@ -31,10 +28,7 @@ export interface EntryPointPassArguments {
   readonly resolveArguments: ResolveEntriesArguments;
 }
 
-/**
- * One configuration's entry-point rules, with decorator names in a set. Built once, since it is
- * asked per declaration.
- */
+/** Entry-point rules, with decorator names in a set, built once. */
 export interface ProjectEntryRules {
   readonly decorators: ReadonlySet<string>;
   readonly includeExportedFunctions: boolean;

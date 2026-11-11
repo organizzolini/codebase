@@ -1,6 +1,6 @@
 import type { CallidescopeProjectConfiguration } from "@callidescope/configuration";
 
-/** What one leaf project says about itself, completely. Every field is written out rather than spread from `projectDefaults`. */
+/** Leaf project's full configuration, with no `projectDefaults` spread. */
 const callidescopeConfiguration: CallidescopeProjectConfiguration = {
   /**
    * One glob, naming the generated file this project does not want measured.

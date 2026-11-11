@@ -14,10 +14,7 @@ import { resolveToolInputs } from "./plugin-inputs.utilities";
 
 import type { ToolInputsLogger } from "./plugin.types";
 
-/**
- * Where fixture closures are written: this package's gitignored `tmp/`, never
- * this repository's closure, which grows with every dependency.
- */
+/** Fixture closures go in gitignored `tmp/`, never the repository's closure. */
 const FIXTURE_ROOT = path.resolve(import.meta.dirname, "../../../tmp");
 
 /** This repository's root, which holds `@codependix/cli` as a workspace package. */

@@ -10,14 +10,13 @@ import {
 import { PublishablePackagesGateService } from "./publishable-packages-gate.service";
 
 /**
- * CLI command that runs `validation:verify-publishable-packages` when a change
- * between `NX_BASE` and `NX_HEAD` affects an ic-suite package or the check
- * itself, and does nothing otherwise.
+ * CLI command that runs `validation:verify-publishable-packages` when the range
+ * `NX_BASE` to `NX_HEAD` touches an ic-suite package or the check, else does
+ * nothing.
  *
- * The consumer the check creates lives beneath
- * `PUBLISHABLE_PACKAGES_CONSUMER_ROOT`, which the workflow points at
- * `$RUNNER_TEMP`. Exits with the check's own code, or 1 when a revision is
- * missing or Nx cannot say what is affected.
+ * Its consumer lives under `PUBLISHABLE_PACKAGES_CONSUMER_ROOT`. Exits 1 when a
+ * revision is missing or Nx cannot say what is affected, else with the check's
+ * code.
  */
 @Command({
   description:

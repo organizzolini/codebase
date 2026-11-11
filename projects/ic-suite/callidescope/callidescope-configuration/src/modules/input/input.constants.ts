@@ -3,10 +3,7 @@
 /**
  * Raised when a run names no callidescope configuration file.
  *
- * There is no default location and nothing is searched for, so the path must
- * come from the caller. The message names the surface that should have carried
- * it — the command-line flag, the executor option, or the plugin option — so
- * the reader is told which of the three to fix.
+ * No default location is searched, so the path must come from the caller. The message names the flag, executor option, or plugin option that should have carried it.
  */
 export class ConfigurationPathRequiredError extends Error {
   constructor(surface: string) {
@@ -28,12 +25,12 @@ export class InputError extends Error {
   }
 }
 
-/** Refuses a required value that cannot be asked for, since a prompt on a non-terminal exits 0 having done nothing. */
+/** Refuses a prompt on a non-terminal, which exits 0 silently. */
 export const missingInputError = (subject: string): InputError =>
   new InputError(
     `${subject} is required, and stdin is not a terminal so it cannot be asked for.`,
   );
 
-/** A prompt dismissed without an answer. Worded apart from an unrecognized answer, since escape is ordinary. */
+/** Prompt dismissed without an answer, unlike a wrong answer. */
 export const promptCancelledError = (subject: string): InputError =>
   new InputError(`${subject} was not answered.`);

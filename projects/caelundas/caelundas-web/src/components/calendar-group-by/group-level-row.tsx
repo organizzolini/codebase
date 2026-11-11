@@ -11,8 +11,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The level shown, the fields to pick from, whether the tag tree is open
- * beneath it, and where to send a change.
+ * The level, its fields, its open state, and change handlers.
  */
 export interface GroupLevelRowProperties {
   className?: string;

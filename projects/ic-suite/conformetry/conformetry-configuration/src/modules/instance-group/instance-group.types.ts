@@ -1,11 +1,6 @@
 // 🏷️ Types
 
-/**
- * One set of instance globs and the substitutions their template renders with.
- *
- * Directory and file patterns behave differently on purpose — see
- * `Instance.path`.
- */
+/** Instance globs, and the substitutions their template renders with. */
 export interface ConformetryInstanceGroup {
   /**
    * Workspace-relative globs naming paths that are never instances, such as

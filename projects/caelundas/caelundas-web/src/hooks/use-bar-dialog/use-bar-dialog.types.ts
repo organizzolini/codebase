@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 // 🏷️ Types
 
 /**
- * The events a clicked marker holds, and the title its dialog opens under.
+ * A clicked marker's events, and its dialog title.
  */
 export interface OpenedBar {
   records: readonly CalendarEventRecord[];

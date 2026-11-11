@@ -8,17 +8,9 @@ import type {
 } from "../../characteristics.types";
 
 /**
- * Provides the sixteen orientation evaluators of the ㅕ (hangul yeo) glyph —
- * two unit strokes reaching west from the middle two points of a three-unit
- * stem — one per corner and clockwise rotation, each counting the base
- * template drawn that way. The base faces Southeast, drawn:
- *
- * ```text
- *  ╷
- * ╶┤
- * ╶┤
- *  ╵
- * ```
+ * Provides the sixteen orientation evaluators of the ㅕ glyph: two unit strokes reaching west from
+ * the middle two points of a three-unit stem. One per corner and clockwise rotation, each counting
+ * the base template drawn that way. The base faces Southeast.
  */
 @Injectable()
 export class YeoHangulLetterCharacteristicsService implements CharacteristicEvaluatorGroup<number> {
@@ -40,7 +32,7 @@ export class YeoHangulLetterCharacteristicsService implements CharacteristicEval
 
   // 🔐 Private Fields
 
-  /** The upright glyph's points as hexadecimal Code digits, one string per row, `.` outside the glyph. */
+  /** Upright glyph as hexadecimal Code digits, one string per row. */
   private readonly template: readonly string[] = [".4", "2d", "2d", ".8"];
 
   // 🔑 Public Fields

@@ -25,11 +25,10 @@ import {
 import type { SoftwareEnvironment } from "./software.types";
 
 /**
- * Installs just the software it is named: any tool `software` installs from a release archive
- * (Linux only), or `postgres-client` (Linux and Mac).
+ * Installs just the tools named: any release-archive tool `software` installs (Linux only), or `postgres-client` (Linux and Mac).
  *
  * Installs match `software`, so every machine runs one version of each tool. Unlike `software`,
- * a tool that cannot be installed fails the run, since it was asked for.
+ * an uninstallable tool fails the run, since it was asked for.
  */
 @Injectable()
 export class SoftwareNamedService {

@@ -20,11 +20,7 @@ export interface AnalyzeTypescriptFileArguments {
 }
 
 /** Everything one walk of one file's AST needs to carry down the tree. */
-/**
- * Everything one node's JSDoc measurement needs, gathered before counting.
- *
- * Keeps `DeclarationCommentsService.measure` within the statement budget without adding a helper to its stack.
- */
+/** One node's JSDoc measurement inputs, gathered to keep frames shallow. */
 export interface PreparedDeclarationComment {
   counters: CommentCounter[];
   declaration: string;
@@ -89,9 +85,7 @@ export interface TypescriptSymbolCounter {
   patterns: string[];
 }
 
-/**
- * Per-file state carried through the AST walk. Narrowed once per file, since counter selection depends only on the path.
- */
+/** Per-file state carried through the AST walk, narrowed once per file. */
 export interface TypescriptWalkContext {
   commentCounters: CommentCounter[];
   /**

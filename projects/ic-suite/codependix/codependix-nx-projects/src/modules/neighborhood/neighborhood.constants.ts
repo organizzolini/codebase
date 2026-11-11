@@ -1,6 +1,6 @@
 // ♟️ Constants
 
-/** Rendered in place of a diagram for a project with no neighbors at all. */
+/** Replaces the diagram of a project with no neighbors. */
 export const NEIGHBORHOOD_UNCONNECTED =
   "_This project has no immediate Nx dependencies or dependents._";
 

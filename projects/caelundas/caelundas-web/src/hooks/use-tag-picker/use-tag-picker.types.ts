@@ -18,7 +18,7 @@ export type UseTagPickerProperties = Pick<
 };
 
 /**
- * What the tag picker draws and does: its rows, and how a tick, handle and key change the rule or the folding.
+ * The tag picker's rows and its tick, handle, and key handlers.
  */
 export interface UseTagPickerResult {
   handleOpen: (id: string, open: boolean) => void;

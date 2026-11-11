@@ -8,11 +8,7 @@ import {
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-/**
- * Fixture files keyed by path relative to the tree root.
- *
- * Written to disk, not mocked: symlinks and ignore files are under test.
- */
+/** Fixture files by root-relative path, written to disk, not mocked. */
 const FIXTURE_FILES: Readonly<Record<string, string>> = {
   // `README.md` is not named here on purpose. Codometer splices into it, so
   // it excludes it from what it measures without being told.

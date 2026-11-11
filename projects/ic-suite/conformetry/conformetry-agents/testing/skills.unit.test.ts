@@ -38,10 +38,7 @@ interface ShippedSkill {
   name: unknown;
 }
 
-/**
- * Reads every shipped skill from disk, so a skill added without a test cannot
- * slip past these checks.
- */
+/** Reads every shipped skill, so untested skills cannot slip past. */
 const readShippedSkills = (): ShippedSkill[] => {
   const entries = fs
     .readdirSync(skillsDirectory, { withFileTypes: true })

@@ -4,9 +4,7 @@
 
 // ♟️ Constants
 
-/**
- * How many times each row's tile repeats along its band. Six is enough for the eye to read the period.
- */
+/** Tile repeats per band: six shows the period. */
 export const BAND_REPEAT_COUNT = 6;
 
 /**
@@ -19,9 +17,7 @@ export const BAND_REPEAT_COUNT = 6;
  * other kind of identifier the page might grow.
  */
 
-/**
- * The page's stylesheet. `.art > svg` is the band alone, so nested repeats keep their placed size.
- */
+/** Page stylesheet; `.art > svg` sizes only the band. */
 export const PAGE_STYLES = `
 :root { color-scheme: light dark; }
 body { font: 13px/1.4 system-ui, sans-serif; margin: 24px; }

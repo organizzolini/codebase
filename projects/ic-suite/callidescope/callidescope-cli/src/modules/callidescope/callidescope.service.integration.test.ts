@@ -21,13 +21,10 @@ import type { ResolvedCallidescopeConfiguration } from "@callidescope/configurat
 import type { CallGraphResult } from "@callidescope/core";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 
-/** A workspace file no traced project sits beside, so none is skipped as the run's own. */
+/** A workspace file beside no traced project, so none is skipped. */
 const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
 
-/**
- * Depth `ApplicationCommand` measures once its call into the library resolves. Written out so
- * the scoped and unscoped runs agree on a checked number.
- */
+/** Depth `ApplicationCommand` measures after its library call resolves. */
 const SCOPED_COMMAND_DEPTH = 3;
 
 /** The configuration file name a project declares itself through. */

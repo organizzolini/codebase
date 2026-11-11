@@ -36,7 +36,7 @@ export interface FileFilter {
   readonly isExcluded: (workspaceRelativePath: string) => boolean;
 }
 
-/** Reports the workspace-relative paths one project's program pulled in, however that program was built. */
+/** Workspace-relative paths a project's program pulled in. */
 export type ResolveProjectFilesFunction = (
   project: WorkspaceProject,
 ) => readonly string[];

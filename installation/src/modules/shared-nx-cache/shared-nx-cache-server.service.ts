@@ -26,11 +26,10 @@ import type {
 } from "./shared-nx-cache.types";
 
 /**
- * Serves Nx's self-hosted remote cache API on this machine, so every worktree shares task outputs.
+ * Serves Nx's self-hosted remote cache API, shared by every worktree.
  *
- * `PUT` and `GET /v1/cache/{hash}` sit behind a bearer token compared in constant time, and listen
- * on 127.0.0.1 only. The hash must match a pattern with no path separator, so requests stay in the cache directory.
- * Evicts on startup and then hourly.
+ * `PUT` and `GET /v1/cache/{hash}` need a bearer token, compared in constant time, and listen on 127.0.0.1 only.
+ * Hashes must avoid path separators, keeping requests in the cache directory. Evicts on startup and then hourly.
  */
 @Injectable()
 export class SharedNxCacheServerService {

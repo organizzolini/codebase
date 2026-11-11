@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * The `Lexeme` column the API omits: junction rows to the words that represent
- * it, which the API reaches from the word instead.
- */
+/** `Lexeme` word junction rows, reached from the word side instead. */
 export type LexemeDatabaseOnlyField = "wordLexemes";
 
 /** The `Lexeme` relations the API exposes, each as its own GraphQL type. */
@@ -14,16 +11,13 @@ export type LexemeRelationField =
   | "pronunciations"
   | "translations";
 
-/** The `PrincipalPart` column the API does not expose: the join to its lexeme. */
+/** The `PrincipalPart` column the API omits: its lexeme join. */
 export type PrincipalPartDatabaseOnlyField = "lexeme";
 
-/** The `Pronunciation` column the API does not expose: the join to its lexeme. */
+/** The `Pronunciation` column the API omits: its lexeme join. */
 export type PronunciationDatabaseOnlyField = "lexeme";
 
-/**
- * The `Translation` columns the API does not expose: the join to its lexeme,
- * and the generated full-text search vector English search ranks by.
- */
+/** `Translation` columns the API omits: lexeme join, search vector. */
 export type TranslationDatabaseOnlyField =
   | "lexeme"
   | "translationFullTextSearch";

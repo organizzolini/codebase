@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-/**
- * The whole-workspace NestJS module graph, combining every project's module graph.
- * Each node is qualified by project, since module class names are not unique.
- */
+/** Workspace NestJS module graph; nodes are qualified by project. */
 export interface NestjsModulesWorkspaceGraph {
   /** Every drawn import relationship, sorted so the diagram never churns. */
   readonly edges: NestjsModulesWorkspaceGraphEdge[];

@@ -13,10 +13,7 @@ import type { CallGraphResult } from "@callidescope/core";
 /**
  * Decides whether a traced result passes, for every target that reads one.
  *
- * Its own service so one trace can be judged once per project: a batch of
- * gates traces the workspace a single time and asks this the same question of
- * each project, which is why a verdict takes the result and the projects to
- * judge rather than a trace to run.
+ * One trace serves a batch: this judges each project from the same result. A verdict takes the result and the projects to judge, not a trace to run.
  */
 @Injectable()
 export class VerdictService {

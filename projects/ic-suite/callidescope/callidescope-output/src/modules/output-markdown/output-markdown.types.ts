@@ -11,10 +11,7 @@ export interface SyncAnchoredBlockArguments {
   readonly path: string | undefined;
 }
 
-/**
- * Arguments for syncing the configured markdown destination. The markdown arrives already
- * rendered; this only decides where it lands.
- */
+/** Arguments for syncing the markdown destination, already rendered. */
 export interface SyncMarkdownArguments {
   readonly check: boolean;
   readonly content: string;

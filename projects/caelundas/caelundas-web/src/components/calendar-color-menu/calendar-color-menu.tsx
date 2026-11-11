@@ -23,8 +23,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * Whether events are colored, what by, the tag roots the data has, and where
- * to send a change to either.
+ * Whether events are colored, the color level, and the change handlers.
  */
 export interface CalendarColorMenuProperties {
   className?: string;

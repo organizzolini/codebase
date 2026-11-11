@@ -27,12 +27,11 @@ import type {
 } from "@callidescope/core";
 
 /**
- * Turns every callable's body into edges in the call graph.
+ * Turns every callable's body into call-graph edges.
  *
- * Only calls landing on traced code become edges. A call into a dependency is a
- * leaf: whether `Array.prototype.map` is deeply implemented is not a fact about
- * whether this repository's layering is too deep, and counting it would make
- * every reported number move on an unrelated upgrade.
+ * Only calls to traced code become edges. A call into a dependency is a leaf,
+ * since counting its depth would move every reported number on an unrelated
+ * upgrade.
  */
 @Injectable()
 export class EdgesService {

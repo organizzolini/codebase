@@ -2,9 +2,7 @@
 
 import type { CodeStatisticsResult } from "@codometer/core";
 
-/**
- * Anchor mechanics a `write` function would otherwise reimplement. Splicing a generated block between HTML comments is the common case.
- */
+/** Anchor helpers a `write` function would otherwise reimplement. */
 export interface MarkdownAnchorHelpers {
   endMarker: string;
   startMarker: string;
@@ -21,11 +19,7 @@ export interface MarkdownAnchorHelpers {
   wrapInAnchors: (content?: string) => string;
 }
 
-/**
- * Decides what the markdown report says and where it lands.
- *
- * Return `false` to mark the destination stale, failing a check run.
- */
+/** Renders the markdown report. Return `false` to mark it stale. */
 export type WriteMarkdownOutput = (
   args: WriteMarkdownOutputArguments,
 ) => boolean;

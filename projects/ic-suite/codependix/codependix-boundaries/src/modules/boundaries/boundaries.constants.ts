@@ -3,19 +3,13 @@
 /** How a cycle's nodes are joined when one is reported. */
 export const CYCLE_SEPARATOR = " → ";
 
-/**
- * The sentence an `acyclic` rule reports when it names none.
- * Names the whole path, since the closing edge alone says little.
- */
+/** Default `acyclic` message, naming the whole cycle path. */
 export const describeCycle = (args: {
   cycle: readonly string[];
   rule: string;
 }): string => `${args.rule}: ${args.cycle.join(CYCLE_SEPARATOR)} is a cycle.`;
 
-/**
- * The sentence an `allow` rule reports when it names none.
- * Worded as what is permitted, since readers next ask what the rule allows.
- */
+/** Default `allow` message, worded as what is permitted. */
 export const describeDisallowedEdge = (args: {
   rule: string;
   source: string;
@@ -23,7 +17,7 @@ export const describeDisallowedEdge = (args: {
 }): string =>
   `${args.rule}: ${args.source} may not depend on ${args.target}, which the rule's allowed targets do not cover.`;
 
-/** The sentence a violated `forbid` rule reports when it names none of its own. */
+/** Default `forbid` message when a rule names none. */
 export const describeForbiddenEdge = (args: {
   rule: string;
   source: string;

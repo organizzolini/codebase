@@ -16,8 +16,7 @@ export interface PendingGroup {
 }
 
 /**
- * The rows laid out so far: the list each row's nested rows go in, and the
- * events each row holds, by row id.
+ * Laid-out rows: their nested rows and member events, by id.
  */
 export interface RowLayout {
   children: Map<string, GanttResource[]>;
@@ -25,7 +24,7 @@ export interface RowLayout {
 }
 
 /**
- * What a timeline bar draws: one event, or a cluster of crowded ones.
+ * A timeline bar: one event, or a cluster of them.
  */
 export interface TimelineBar {
   /**
@@ -36,7 +35,7 @@ export interface TimelineBar {
 }
 
 /**
- * The timeline's rows and the bars drawn in them, nested as the grouping nests, with each row's count of distinct events.
+ * The timeline's rows and bars, with each row's event count.
  */
 export interface TimelineRows {
   counts: ReadonlyMap<string, number>;

@@ -7,7 +7,7 @@ import { YaHangulLetterCharacteristicsService } from "./ya-hangul-letter-charact
 
 import type { LetterOrientationFixture } from "../../../../../testing/letters";
 
-/** Each distinct orientation of the ㅑ (hangul ya) as a Code holding one isolated copy, beside every orientation name drawing that ink. */
+/** Each distinct orientation of ㅑ as a standalone Code. */
 const ORIENTATIONS: readonly LetterOrientationFixture[] = [
   {
     fixture: "03x04y400e10e10800",

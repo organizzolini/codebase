@@ -132,9 +132,7 @@ export class NightSkyViewService {
   }
 
   /**
-   * Projects the sky about the north celestial pole with a stereographic
-   * projection, scaled so the window is exactly as tall as the SVG, and finds
-   * where the pole falls.
+   * Projects the sky about the pole, scaled so the window fits the SVG height.
    */
   public computeGeometry(options: ResolvedNightSkyOptions): SkyGeometry {
     const fieldOfView = this.limitFieldOfView(options);
@@ -161,9 +159,8 @@ export class NightSkyViewService {
   }
 
   /**
-   * Linear speed equals angular speed times distance from the pole, so the
-   * period that gives the requested pixels per second follows from how far
-   * the window center sits below the pole.
+   * The period giving the requested speed, since speed grows with distance
+   * from the pole.
    */
   public computeMotion(
     geometry: SkyGeometry,

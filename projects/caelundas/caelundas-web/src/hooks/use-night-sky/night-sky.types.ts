@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 /**
- * One constellation the sky has a figure for, as the figure picker lists it.
+ * A constellation the sky draws a figure for.
  */
 export interface ConstellationListing {
   /** The Latin name, such as `Ursa Major`. */
@@ -10,7 +10,7 @@ export interface ConstellationListing {
 }
 
 /**
- * What the API measured of a sky it drew that the page may warn of.
+ * The API's field-of-view measurements, for a warning.
  */
 export interface FieldOfViewMeasurements {
   fieldOfViewClamped: boolean;

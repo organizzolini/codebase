@@ -67,7 +67,7 @@ const PAGE_FIELDS = `
   totalCount
 `;
 
-/** Looks up one text, climbing three parents and paging its children and lines. */
+/** Looks up one text, its parents, children, and lines. */
 const TEXT = `
   query Text(
     $id: ID

@@ -2,30 +2,24 @@ import { z } from "zod";
 
 // ♟️ Constants
 
-/**
- * The faintest magnitude stored: as faint as the eye sees from a dark site, unless a figure needs more.
- */
+/** Faintest magnitude stored, the naked-eye limit from a dark site. */
 export const MAXIMUM_MAGNITUDE = 6.5;
 
 /**
- * The most southern declination stored. The view faces north, and -45
- * degrees keeps the southern zodiac figures, Scorpius, Sagittarius and
- * Capricornus, whole.
+ * Most southern declination stored; -45 keeps southern zodiac figures whole.
  */
 export const MINIMUM_DECLINATION_DEGREES = -45;
 
-/**
- * How far a figure's vertex may lie from a catalog star and still match it; the catalogs agree to 0.01 degree.
- */
+/** Vertex match tolerance; catalogs agree to 0.01 degree. */
 export const MATCH_TOLERANCE_DEGREES = 0.05;
 
 /** The bands, per degree of declination, that the star index groups by. */
 export const INDEX_BANDS_PER_DEGREE = 10;
 
-/** The color index of a star the catalog gives none, a Sun-like white. */
+/** Color index for a star lacking one: Sun-like white. */
 export const MISSING_COLOR_INDEX = 0.6;
 
-/** The HYG columns read, in the order a catalog row is built from. */
+/** HYG columns read, in catalog row order. */
 export const CATALOG_COLUMNS = ["id", "hip", "ra", "dec", "mag", "ci"] as const;
 
 /** The IAU designations of the twelve zodiac constellations. */
@@ -44,10 +38,7 @@ export const ZODIAC_DESIGNATIONS: ReadonlySet<string> = new Set([
   "Vir",
 ]);
 
-/**
- * The constellations d3-celestial draws in two parts, each part under the
- * same designation, by the one name the IAU gives the whole.
- */
+/** Constellations d3-celestial draws in two parts under one IAU name. */
 export const SPLIT_CONSTELLATION_NAMES: ReadonlyMap<string, string> = new Map([
   ["Ser", "Serpens"],
 ]);
@@ -62,10 +53,7 @@ export const constellationsFileSchema = z.object({
   ),
 });
 
-/**
- * d3-celestial's `constellations.lines.json`: each figure as polylines of
- * [longitude, latitude] vertices, right ascension in degrees from -180 to 180.
- */
+/** d3-celestial's `constellations.lines.json`: figures as polylines, RA in degrees. */
 export const linesFileSchema = z.object({
   features: z.array(
     z.object({

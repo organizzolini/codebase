@@ -46,7 +46,7 @@ const PROJECTS: readonly WorkspaceProject[] = [
   SIBLING_PROJECT,
 ];
 
-/** A run filter that excludes nothing, so only the project layer can decide. */
+/** Filter excluding nothing, so the project layer decides alone. */
 const PERMISSIVE_FILTER: FileFilter = { isExcluded: (): boolean => false };
 
 describe(FileFilterService, () => {

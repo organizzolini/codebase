@@ -3,7 +3,7 @@ import type { EventColorRule } from "./calendar-colors.types";
 // ♟️ Constants
 
 /**
- * Event colors by kind, as literal colors since a stylesheet drops unused theme variables. The most specific rule wins.
+ * Literal colors by kind; the most specific rule wins.
  */
 export const EVENT_COLOR_RULES: readonly EventColorRule[] = [
   {
