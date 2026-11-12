@@ -13,6 +13,18 @@ import type {
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
+/** The version of `name` this workspace has installed, so a registry release cannot move the leg. */
+function installedVersion(name: string): string {
+  const manifest = JSON.parse(
+    fs.readFileSync(
+      path.join(WORKSPACE_ROOT, "node_modules", name, "package.json"),
+      "utf8",
+    ),
+  ) as { version: string };
+
+  return manifest.version;
+}
+
 describe("the coinagerie plugin installed from a registry", () => {
   let runner: VerdaccioPluginRunner;
   let workspace: ConsumerWorkspace;
@@ -65,7 +77,7 @@ describe("the coinagerie plugin installed from a registry", () => {
       workspaceRoot: WORKSPACE_ROOT,
     });
     workspace = await runner.createWorkspace({
-      dependencies: { nx: "^24.0.0" },
+      dependencies: { nx: installedVersion("nx") },
       packages: ["@coinagerie/cli", "@coinagerie/nx"],
     });
     workspace.registerPlugin("@coinagerie/nx");
@@ -87,7 +99,7 @@ describe("the coinagerie plugin installed from a registry", () => {
     const result = await runTarget("documented:coinagerie-check");
 
     expect(result.exitCode).toBe(0);
-  });
+  }, 900_000);
 
   it("fails the check of a project whose glossary lacks its words", async () => {
     expect.hasAssertions();

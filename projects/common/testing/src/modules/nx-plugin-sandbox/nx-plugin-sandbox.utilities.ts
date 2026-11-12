@@ -60,18 +60,13 @@ export async function startVerdaccioPluginRunner(
       },
       port,
       publish: async ({ packages, tarballDirectory, workspaceRoot }) => {
-        const tarballs = findTarballs(
-          tarballDirectory ?? path.join(workspaceRoot, TARBALL_DIRECTORY),
-          packages,
-        );
+        const sourceDirectory =
+          tarballDirectory ?? path.join(workspaceRoot, TARBALL_DIRECTORY);
 
-        for (const [index, tarball] of tarballs.entries()) {
-          await publishTarball(tarball, {
-            name: packages[index] ?? "",
-            npmrc,
-            registryUrl,
-            tag,
-          });
+        for (const name of packages) {
+          for (const tarball of findTarballs(sourceDirectory, [name])) {
+            await publishTarball(tarball, { name, npmrc, registryUrl, tag });
+          }
         }
       },
       registryUrl,
@@ -139,10 +134,7 @@ async function createRegistryToken(registryUrl: string): Promise<string> {
   return token;
 }
 
-/**
- * Builds a Verdaccio server, not yet listening, storing under `directory`.
- * Packages in `localScopes` come first, so they match before the proxying `**`.
- */
+/** Builds a Verdaccio server, not yet listening; `localScopes` match before the proxying `**`. */
 async function createServer(
   directory: string,
   localScopes: readonly string[],
@@ -176,12 +168,7 @@ async function listen(server: Server): Promise<void> {
   });
 }
 
-/**
- * Publishes one tarball as it is, so the registry sees the packed manifest.
- *
- * A packed `publishConfig.registry` overrides `--registry`, so a scoped package
- * is pinned to the sandbox registry by its scope, which npm consults first.
- */
+/** Publishes one tarball as packed; its scope pins the registry, since `publishConfig` beats `--registry`. */
 async function publishTarball(
   tarball: string,
   registry: {

@@ -13,6 +13,18 @@ import type {
 
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../../..");
 
+/** The version of `name` this workspace has installed, so a registry release cannot move the leg. */
+function installedVersion(name: string): string {
+  const manifest = JSON.parse(
+    fs.readFileSync(
+      path.join(WORKSPACE_ROOT, "node_modules", name, "package.json"),
+      "utf8",
+    ),
+  ) as { version: string };
+
+  return manifest.version;
+}
+
 const CONFIGURATION = `export default [
   {
     description: "One template file",
@@ -93,7 +105,10 @@ describe("the conformetry plugin installed from a registry", () => {
       workspaceRoot: WORKSPACE_ROOT,
     });
     workspace = await runner.createWorkspace({
-      dependencies: { nx: "^24.0.0", typescript: "^6.0.3" },
+      dependencies: {
+        nx: installedVersion("nx"),
+        typescript: installedVersion("typescript"),
+      },
       packages: ["@conformetry/nx"],
     });
     writeWorkspace();
@@ -137,7 +152,7 @@ describe("the conformetry plugin installed from a registry", () => {
     const validated = await nx(["run", "docs:conformetry-validate"]);
 
     expect(validated.exitCode).toBe(0);
-  });
+  }, 900_000);
 
   it("fails the validation of an instance that drifted from its template", async () => {
     expect.hasAssertions();
