@@ -1,3 +1,12 @@
+## 0.0.81 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.81
+- Updated callidescope-output to 0.0.80
+- Updated callidescope-graph to 0.0.80
+- Updated callidescope-core to 0.0.80
+
 ## 0.0.80 (2026-11-11)
 
 ### 🚀 Features

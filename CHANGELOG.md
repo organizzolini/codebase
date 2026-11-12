@@ -2,6 +2,281 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.0](https://github.com/organizzolini/codebase/compare/v3.63.0...v4.0.0) (2026-11-12)
+
+### ⚠ BREAKING CHANGES
+
+* **dependencies:** GraphQL 14 and 15 are no
+longer supported. The <code>graphql</code> peer dependency is now
+<code>^16.0.0 || ^17.0.0</code>, so upgrade <code>graphql</code>
+to version 16 or 17 before updating to this version.</p>
+</li>
+<li>
+<p><a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/pull/11075">#11075</a>
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Thanks <a
+href="https://github.com/eddeee888"><code>@​eddeee888</code></a>! -
+* **dependencies:** Node.js versions below
+22.18.0 are no longer supported. Upgrade to Node.js 22.18.0 or later
+before updating to this
+version.</p>
+</li>
+<li>
+<p><a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/pull/11075">#11075</a>
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Thanks <a
+href="https://github.com/eddeee888"><code>@​eddeee888</code></a>! -
+* **dependencies:** Remove the deprecated
+<code>emitLegacyCommonJSImports</code> config option and the
+<code>--emit-legacy-common-js-imports</code> CLI flag</p>
+<p>Use <code>importExtension</code> (or <code>--import-extension</code>)
+to set the extension appended to relative imports.
+When <code>importExtension</code> is not set, no extension is
+appended.</p>
+<p><code>@graphql-codegen/plugin-helpers</code> no longer exports
+<code>normalizeImportExtension</code>. Use
+<code>importExtension ?? ''</code> instead.</p>
+<p>Migration:</p>
+<pre lang="diff"><code> const config: CodegenConfig = {
+-  emitLegacyCommonJSImports: false,
++  importExtension: '.js',
+ };
+</code></pre>
+</li>
+</ul>
+<h3>Minor Changes</h3>
+<ul>
+<li>
+<p><a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/pull/11103">#11103</a>
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/409ffbfda5c56d6f46f0e0a4045c547714df2264"><code>409ffbf</code></a>
+Thanks <a
+href="https://github.com/jerelmiller"><code>@​jerelmiller</code></a>! -
+Add support for graphql v17 fragment
+arguments (<code>experimentalFragmentArguments</code>).</p>
+<p>To use fragment arguments, set the parser option in the root
+<code>config</code>:</p>
+<pre lang="ts"><code>const config: CodegenConfig = {
+  config: { experimentalFragmentArguments: true }
+  // ...
+}
+</code></pre>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/e5a5669f4197c6db561956a9b4c47244d4e29b48"><code>e5a5669</code></a>
+chore(release): update monorepo packages versions (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/plugins/typescript/operations/issues/11085">#11085</a>)</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/409ffbfda5c56d6f46f0e0a4045c547714df2264"><code>409ffbf</code></a>
+Add support for GraphQL 17 experimental fragment arguments (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/plugins/typescript/operations/issues/11103">#11103</a>)</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Next major feature branch (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/plugins/typescript/operations/issues/11075">#11075</a>)</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/11ac951a30b79369d3b0aa78f83a79d309ffcc77"><code>11ac951</code></a>
+test: copy dev-test fixtures into package tests (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/plugins/typescript/operations/issues/11098">#11098</a>)</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/cbefcf33b7fde93d3a44c337a4edb5f32ab38fdb"><code>cbefcf3</code></a>
+Revert &quot;chore: update <a
+href="https://github.com/graphql-tools"><code>@​graphql-tools</code></a>
+to latest majors and drop Node below 22....</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/1161d66e36bb074809849cca9367213deed9c443"><code>1161d66</code></a>
+chore: update <a
+href="https://github.com/graphql-tools"><code>@​graphql-tools</code></a>
+to latest majors and drop Node below 22.18 and g...</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fc181792a6751246c416650b1e26b69fd679e9c3"><code>fc18179</code></a>
+chore(release): update monorepo packages versions (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/plugins/typescript/operations/issues/11077">#11077</a>)</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/48ebd5d96fcbc7b7b9b990f98bc571d4dc37f278"><code>48ebd5d</code></a>
+[typescript-operations] feat: add native-with-string-values enumType (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/plugins/typescript/operations/issues/7295">#7295</a>)
+...</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/710d41525f5c2c3283e185b1ac0c94dd988630e7"><code>710d415</code></a>
+chore: type-check spec files with a solution-style root tsconfig (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/plugins/typescript/operations/issues/11053">#11053</a>)</li>
+<li>See full diff in <a
+href="https://github.com/dotansimha/graphql-code-generator/commits/@graphql-codegen/typescript-operations@7.0.0/packages/plugins/typescript/operations">compare
+view</a></li>
+</ul>
+</details>
+<br />
+
+
+[![Dependabot compatibility
+score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=@graphql-codegen/typescript-operations&package-manager=npm_and_yarn&previous-version=6.1.10&new-version=7.0.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
+
+Dependabot will resolve any conflicts with this PR as long as you don't
+alter it yourself. You can also trigger a rebase manually by commenting
+`@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+* **dependencies:** GraphQL 14 and 15 are no
+longer supported. The <code>graphql</code> peer dependency is now
+<code>^16.0.0 || ^17.0.0</code>, so upgrade <code>graphql</code>
+to version 16 or 17 before updating to this version.</p>
+</li>
+<li>
+<p><a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/pull/11075">#11075</a>
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Thanks <a
+href="https://github.com/eddeee888"><code>@​eddeee888</code></a>! -
+* **dependencies:** Node.js versions below
+22.18.0 are no longer supported. Upgrade to Node.js 22.18.0 or later
+before updating to this
+version.</p>
+</li>
+</ul>
+<h3>Patch Changes</h3>
+<ul>
+<li>
+<p><a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/pull/11075">#11075</a>
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Thanks <a
+href="https://github.com/eddeee888"><code>@​eddeee888</code></a>! -
+dependencies updates:</p>
+<ul>
+<li>Updated dependency
+<a
+href="https://www.npmjs.com/package/graphql/v/16.0.0"><code>graphql@^16.0.0
+|| ^17.0.0</code> ↗︎</a> (from
+<code>^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 ||
+^17.0.0</code>, in <code>peerDependencies</code>)</li>
+</ul>
+</li>
+<li>
+<p><a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/pull/11075">#11075</a>
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Thanks <a
+href="https://github.com/eddeee888"><code>@​eddeee888</code></a>! -
+dependencies updates:</p>
+<ul>
+<li>Updated dependency
+<a
+href="https://www.npmjs.com/package/graphql/v/16.0.0"><code>graphql@^16.0.0
+|| ^17.0.0</code> ↗︎</a> (from
+<code>^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 ||
+^17.0.0</code>, in <code>peerDependencies</code>)</li>
+</ul>
+</li>
+<li>
+<p>Updated dependencies
+[<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/409ffbfda5c56d6f46f0e0a4045c547714df2264"><code>409ffbf</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>,
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>]:</p>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/e5a5669f4197c6db561956a9b4c47244d4e29b48"><code>e5a5669</code></a>
+chore(release): update monorepo packages versions (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/plugins/typescript/typescript/issues/11085">#11085</a>)</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Next major feature branch (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/plugins/typescript/typescript/issues/11075">#11075</a>)</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/cbefcf33b7fde93d3a44c337a4edb5f32ab38fdb"><code>cbefcf3</code></a>
+Revert &quot;chore: update <a
+href="https://github.com/graphql-tools"><code>@​graphql-tools</code></a>
+to latest majors and drop Node below 22....</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/1161d66e36bb074809849cca9367213deed9c443"><code>1161d66</code></a>
+chore: update <a
+href="https://github.com/graphql-tools"><code>@​graphql-tools</code></a>
+to latest majors and drop Node below 22.18 and g...</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/710d41525f5c2c3283e185b1ac0c94dd988630e7"><code>710d415</code></a>
+chore: type-check spec files with a solution-style root tsconfig (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/plugins/typescript/typescript/issues/11053">#11053</a>)</li>
+<li>See full diff in <a
+href="https://github.com/dotansimha/graphql-code-generator/commits/@graphql-codegen/typescript@7.0.0/packages/plugins/typescript/typescript">compare
+view</a></li>
+</ul>
+</details>
+<br />
+
+
+[![Dependabot compatibility
+score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=@graphql-codegen/typescript&package-manager=npm_and_yarn&previous-version=6.1.2&new-version=7.0.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
+
+Dependabot will resolve any conflicts with this PR as long as you don't
+alter it yourself. You can also trigger a rebase manually by commenting
+`@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+### 🔧 Chores
+
+* **dependencies:** 🔧 bump @graphql-codegen/typescript from 6.1.2 to 7.0.0 ([#2256](https://github.com/organizzolini/codebase/issues/2256)) ([112314f](https://github.com/organizzolini/codebase/commit/112314f9097f34861490c588d9711bb10ab02c4d))
+* **dependencies:** 🔧 bump @graphql-codegen/typescript-operations from 6.1.10 to 7.0.0 ([#2260](https://github.com/organizzolini/codebase/issues/2260)) ([f8e07be](https://github.com/organizzolini/codebase/commit/f8e07bec759f92d9ff83a0e0462885f014d04d70))
+
 ## [3.63.0](https://github.com/organizzolini/codebase/compare/v3.62.0...v3.63.0) (2026-11-11)
 
 ### ✨ Features
