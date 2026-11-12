@@ -354,6 +354,22 @@
       "executor": "nx:noop",
       "inputs": ["default"]
     },
+    "end-to-end": {
+      "cache": true,
+      "dependsOn": ["^pack", "pack"],
+      "description": "Run the packed-artifact tests (`*.packed.test.ts`): install the tarballs `pack` leaves in dist/tarballs into an isolated sandbox and run the real executable there. A project opts in by declaring an empty `end-to-end` target. Separate from `vitest:end-to-end`, which runs `*.end-to-end.test.ts` against source.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/configuration/vitest.packed.config.mts",
+        "default",
+        "dependency-versions"
+      ],
+      "options": {
+        "command": "pnpm exec vitest run --root . --config \"$NX_WORKSPACE_ROOT/configuration/vitest.packed.config.mts\"",
+        "cwd": "{projectRoot}"
+      }
+    },
     "eslint": [
       {
         "cache": true,
@@ -753,8 +769,8 @@
     "pack": [
       {
         "cache": true,
-        "dependsOn": ["build"],
-        "description": "Pack this package into a tarball in dist/tarballs using pnpm pack.",
+        "dependsOn": ["^pack", "build"],
+        "description": "Pack this package into a tarball in dist/tarballs using pnpm pack, after packing every workspace dependency so a packed-artifact test can install the whole closure.",
         "executor": "nx:run-commands",
         "filter": {
           "projects": ["tag:type:package"]

@@ -92,6 +92,23 @@ describe("tarball sandbox", () => {
       expect(runner.tarballs).toHaveLength(2);
     });
 
+    it("refuses a closure that omits a sibling workspace package", async () => {
+      const directory = createTemporaryDirectory("open-closure");
+      await createFixtureTarball(directory, {
+        dependencies: { "@fixture/lib": "1.0.0" },
+        name: "@fixture/cli",
+        version: "1.0.0",
+      });
+
+      await expect(
+        createTarballSandboxRunner({
+          packages: ["@fixture/cli"],
+          tarballDirectory: directory,
+          workspaceRoot: directory,
+        }),
+      ).rejects.toThrow(/missing from the sandbox.*@fixture\/lib/u);
+    });
+
     it("removes the sandbox on dispose", async () => {
       const directory = createTemporaryDirectory("only-tarballs");
       await createFixtureTarball(directory, { name: "solo", version: "1.0.0" });
