@@ -2,6 +2,1595 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.0](https://github.com/organizzolini/codebase/compare/v5.0.0...v6.0.0) (2026-11-12)
+
+### ⚠ BREAKING CHANGES
+
+* **dependencies:** GraphQL 14 and 15 are no
+longer supported. The <code>graphql</code> peer dependency is now
+<code>^16.0.0 || ^17.0.0</code>, so upgrade <code>graphql</code>
+to version 16 or 17 before updating to this version.</p>
+</li>
+<li>
+<p><a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/pull/11075">#11075</a>
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Thanks <a
+href="https://github.com/eddeee888"><code>@​eddeee888</code></a>! -
+* **dependencies:** Node.js versions below
+22.18.0 are no longer supported. Upgrade to Node.js 22.18.0 or later
+before updating to this
+version.</p>
+</li>
+<li>
+<p><a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/pull/11075">#11075</a>
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Thanks <a
+href="https://github.com/eddeee888"><code>@​eddeee888</code></a>! -
+<code>generate()</code> now returns
+<code>Promise&lt;FileOutput[] | void&gt;</code> instead of
+<code>Promise&lt;FileOutput[] | any&gt;</code>. The result is no longer
+<code>any</code>, so consumers using the result as an array must narrow
+it first.</p>
+<p>Refs <a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/issues/11071">#11071</a></p>
+</li>
+<li>
+<p><a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/pull/11075">#11075</a>
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Thanks <a
+href="https://github.com/eddeee888"><code>@​eddeee888</code></a>! -
+* **dependencies:** Remove the deprecated
+<code>emitLegacyCommonJSImports</code> config option and the
+<code>--emit-legacy-common-js-imports</code> CLI flag</p>
+<p>Use <code>importExtension</code> (or <code>--import-extension</code>)
+to set the extension appended to relative imports.
+When <code>importExtension</code> is not set, no extension is
+appended.</p>
+<p><code>@graphql-codegen/plugin-helpers</code> no longer exports
+<code>normalizeImportExtension</code>. Use
+<code>importExtension ?? ''</code> instead.</p>
+<p>Migration:</p>
+<pre lang="diff"><code> const config: CodegenConfig = {
+-  emitLegacyCommonJSImports: false,
++  importExtension: '.js',
+ };
+</code></pre>
+</li>
+<li>
+<p><a
+href="https://redirect.github.com/dotansimha/graphql-code-generator/pull/11075">#11075</a>
+<a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Thanks <a
+href="https://github.com/eddeee888"><code>@​eddeee888</code></a>! -
+* **dependencies:** <code>@graphql-tools/*</code>
+dependencies are updated to their latest majors, which require Node.js
+22.18.0 or later and
+GraphQL 16 or 17. If you import <code>@graphql-tools/*</code> packages
+in your own code, update them to the
+same majors to avoid duplicate installs.
+<code>@graphql-tools/code-file-loader@9</code> now extracts</p>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/e5a5669f4197c6db561956a9b4c47244d4e29b48"><code>e5a5669</code></a>
+chore(release): update monorepo packages versions (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/graphql-codegen-cli/issues/11085">#11085</a>)</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/fa49a3725bf269abf07616b5df1336cf86a4838d"><code>fa49a37</code></a>
+Next major feature branch (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/graphql-codegen-cli/issues/11075">#11075</a>)</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/11ac951a30b79369d3b0aa78f83a79d309ffcc77"><code>11ac951</code></a>
+test: copy dev-test fixtures into package tests (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/graphql-codegen-cli/issues/11098">#11098</a>)</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/cbefcf33b7fde93d3a44c337a4edb5f32ab38fdb"><code>cbefcf3</code></a>
+Revert &quot;chore: update <a
+href="https://github.com/graphql-tools"><code>@​graphql-tools</code></a>
+to latest majors and drop Node below 22....</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/1161d66e36bb074809849cca9367213deed9c443"><code>1161d66</code></a>
+chore: update <a
+href="https://github.com/graphql-tools"><code>@​graphql-tools</code></a>
+to latest majors and drop Node below 22.18 and g...</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/291cfb2a434f24de54a856cc09c6a4dd8ad01526"><code>291cfb2</code></a>
+chore(deps): bump shell-quote from 1.9.0 to 1.11.0 in the security group
+acro...</li>
+<li><a
+href="https://github.com/dotansimha/graphql-code-generator/commit/710d41525f5c2c3283e185b1ac0c94dd988630e7"><code>710d415</code></a>
+chore: type-check spec files with a solution-style root tsconfig (<a
+href="https://github.com/dotansimha/graphql-code-generator/tree/HEAD/packages/graphql-codegen-cli/issues/11053">#11053</a>)</li>
+<li>See full diff in <a
+href="https://github.com/dotansimha/graphql-code-generator/commits/@graphql-codegen/cli@8.0.0/packages/graphql-codegen-cli">compare
+view</a></li>
+</ul>
+</details>
+<br />
+
+<!-- codometer-changes:start -->
+## ⏲️ Codometer
+
+_Compared against
+[`main`](https://github.com/organizzolini/codebase/actions/runs/43312133089)._
+
+<details>
+<summary>`affirmancy` — 71 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 33 | — | — |
+| 🆕 | codebase.folders | 3 | — | — |
+| 🆕 | codebase.javascript.imports | 2 | — | — |
+| 🆕 | codebase.json.arrays | 1 | — | — |
+| 🆕 | codebase.json.booleans | 1 | — | — |
+| 🆕 | codebase.json.files | 3 | — | — |
+| 🆕 | codebase.json.items | 4 | — | — |
+| 🆕 | codebase.json.lines | 69 | — | — |
+| 🆕 | codebase.json.maxDepth | 6 | — | — |
+| 🆕 | codebase.json.objects | 34 | — | — |
+| 🆕 | codebase.json.properties | 49 | — | — |
+| 🆕 | codebase.json.strings | 20 | — | — |
+| 🆕 | codebase.json.totalNodes | 56 | — | — |
+| 🆕 | codebase.jupyter.cells | 16 | — | — |
+| 🆕 | codebase.jupyter.classes | 9 | — | — |
+| 🆕 | codebase.jupyter.codeCells | 14 | — | — |
+| 🆕 | codebase.jupyter.codeLines | 876 | — | — |
+| 🆕 | codebase.jupyter.decorators | 1 | — | — |
+| 🆕 | codebase.jupyter.files | 3 | — | — |
+| 🆕 | codebase.jupyter.functions | 21 | — | — |
+| 🆕 | codebase.jupyter.headings | 2 | — | — |
+| 🆕 | codebase.jupyter.imports | 63 | — | — |
+| 🆕 | codebase.jupyter.markdownCells | 2 | — | — |
+| 🆕 | codebase.jupyter.markdownLines | 7 | — | — |
+| 🆕 | codebase.jupyter.maxDepth | 5 | — | — |
+| 🆕 | codebase.jupyter.properties | 126 | — | — |
+| 🆕 | codebase.jupyter.totalNodes | 1,028 | — | — |
+| 🆕 | codebase.linesOfCode | 4,375 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 9 | — | — |
+| 🆕 | codebase.markdown.files | 5 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 2 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 22 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 16 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 97 | — | — |
+| 🆕 | codebase.markdown.lines | 573 | — | — |
+| 🆕 | codebase.markdown.links | 6 | — | — |
+| 🆕 | codebase.markdown.listItems | 47 | — | — |
+| 🆕 | codebase.markdown.lists | 5 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 75 | — | — |
+| 🆕 | codebase.markdown.tableRows | 35 | — | — |
+| 🆕 | codebase.markdown.tables | 6 | — | — |
+| 🆕 | codebase.python.files | 15 | — | — |
+| 🆕 | codebase.python.classes | 19 | — | — |
+| 🆕 | codebase.python.functions | 83 | — | — |
+| 🆕 | codebase.python.constants | 121 | — | — |
+| 🆕 | codebase.python.imports | 52 | — | — |
+| 🆕 | codebase.python.decorators | 74 | — | — |
+| 🆕 | codebase.python.lines | 3,485 | — | — |
+| 🆕 | codebase.python.comments | 23 | — | — |
+| 🆕 | codebase.python.commentLines | 23 | — | — |
+| 🆕 | codebase.python.docstrings | 23 | — | — |
+| 🆕 | codebase.python.docstringLines | 74 | — | — |
+| 🆕 | codebase.repositoryBytes | 246,510 | — | — |
+| 🆕 | codebase.sourceFiles | 18 | — | — |
+| 🆕 | codebase.toml.arrays | 16 | — | — |
+| 🆕 | codebase.toml.comments | 11 | — | — |
+| 🆕 | codebase.toml.files | 1 | — | — |
+| 🆕 | codebase.toml.keys | 56 | — | — |
+| 🆕 | codebase.toml.lines | 96 | — | — |
+| 🆕 | codebase.toml.tables | 12 | — | — |
+| 🆕 | codebase.typescript.files | 3 | — | — |
+| 🆕 | codebase.yaml.comments | 170 | — | — |
+| 🆕 | codebase.yaml.documents | 1 | — | — |
+| 🆕 | codebase.yaml.files | 1 | — | — |
+| 🆕 | codebase.yaml.keys | 97 | — | — |
+| 🆕 | codebase.yaml.lines | 361 | — | — |
+| 🆕 | codebase.yaml.mappings | 20 | — | — |
+| 🆕 | codebase.yaml.maxDepth | 4 | — | — |
+| 🆕 | codebase.yaml.scalars | 262 | — | — |
+| 🆕 | codebase.yaml.sequences | 5 | — | — |
+</details>
+
+<details>
+<summary>`caelundas-cli` — 60 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 386 | — | — |
+| 🆕 | codebase.folders | 34 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 296 | — | — |
+| 🆕 | codebase.javascript.classes | 115 | — | — |
+| 🆕 | codebase.javascript.commentLines | 3,022 | — | — |
+| 🆕 | codebase.javascript.comments | 1,972 | — | — |
+| 🆕 | codebase.javascript.constants | 4,107 | — | — |
+| 🆕 | codebase.javascript.exported | 494 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 22 | — | — |
+| 🆕 | codebase.javascript.functions | 2,670 | — | — |
+| 🆕 | codebase.javascript.imports | 2,138 | — | — |
+| 🆕 | codebase.javascript.methods | 860 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 3,234 | — | — |
+| 🆕 | codebase.javascript.testFiles | 116 | — | — |
+| 🆕 | codebase.javascript.todos | 4 | — | — |
+| 🆕 | codebase.json.arrays | 91 | — | — |
+| 🆕 | codebase.json.booleans | 10 | — | — |
+| 🆕 | codebase.json.files | 52 | — | — |
+| 🆕 | codebase.json.items | 287 | — | — |
+| 🆕 | codebase.json.lines | 2,624 | — | — |
+| 🆕 | codebase.json.maxDepth | 7 | — | — |
+| 🆕 | codebase.json.numbers | 555 | — | — |
+| 🆕 | codebase.json.objects | 471 | — | — |
+| 🆕 | codebase.json.properties | 1,797 | — | — |
+| 🆕 | codebase.json.strings | 1,009 | — | — |
+| 🆕 | codebase.json.totalNodes | 2,136 | — | — |
+| 🆕 | codebase.linesOfCode | 55,863 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 134 | — | — |
+| 🆕 | codebase.markdown.files | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 2 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 29 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 50 | — | — |
+| 🆕 | codebase.markdown.images | 166 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 2,966 | — | — |
+| 🆕 | codebase.markdown.lines | 5,148 | — | — |
+| 🆕 | codebase.markdown.links | 29 | — | — |
+| 🆕 | codebase.markdown.listItems | 328 | — | — |
+| 🆕 | codebase.markdown.lists | 24 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 538 | — | — |
+| 🆕 | codebase.markdown.tableRows | 713 | — | — |
+| 🆕 | codebase.markdown.tables | 11 | — | — |
+| 🆕 | codebase.repositoryBytes | 2,413,980 | — | — |
+| 🆕 | codebase.sourceFiles | 325 | — | — |
+| 🆕 | codebase.typescript.decorators | 132 | — | — |
+| 🆕 | codebase.typescript.docComments | 969 | — | — |
+| 🆕 | codebase.typescript.files | 325 | — | — |
+| 🆕 | codebase.typescript.genericDeclarations | 15 | — | — |
+| 🆕 | codebase.typescript.interfaces | 94 | — | — |
+| 🆕 | codebase.custom.Module Files | 34 | — | — |
+| 🆕 | codebase.custom.Service Files | 74 | — | — |
+| 🆕 | codebase.custom.Command Files | 3 | — | — |
+| 🆕 | codebase.custom.Constants Files | 39 | — | — |
+| 🆕 | codebase.custom.Types Files | 33 | — | — |
+| 🆕 | codebase.custom.Utilities Files | 11 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 92 | — | — |
+| 🆕 | codebase.custom.Integration Tests | 15 | — | — |
+| 🆕 | codebase.custom.End To End Tests | 9 | — | — |
+| 🆕 | codebase.custom.Static Methods | 20 | — | — |
+| 🆕 | Compiled JavaScript.files | 182 | — | — |
+| 🆕 | Compiled JavaScript.size | 169.14 kB | — | — |
+</details>
+
+<details>
+<summary>`caelundas-db` — 62 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 43 | — | — |
+| 🆕 | codebase.folders | 6 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 26 | — | — |
+| 🆕 | codebase.javascript.classes | 12 | — | — |
+| 🆕 | codebase.javascript.commentLines | 143 | — | — |
+| 🆕 | codebase.javascript.comments | 89 | — | — |
+| 🆕 | codebase.javascript.constants | 37 | — | — |
+| 🆕 | codebase.javascript.exported | 24 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 9 | — | — |
+| 🆕 | codebase.javascript.functions | 63 | — | — |
+| 🆕 | codebase.javascript.imports | 94 | — | — |
+| 🆕 | codebase.javascript.methods | 12 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 49 | — | — |
+| 🆕 | codebase.javascript.testFiles | 4 | — | — |
+| 🆕 | codebase.json.arrays | 13 | — | — |
+| 🆕 | codebase.json.booleans | 8 | — | — |
+| 🆕 | codebase.json.files | 4 | — | — |
+| 🆕 | codebase.json.items | 38 | — | — |
+| 🆕 | codebase.json.lines | 168 | — | — |
+| 🆕 | codebase.json.maxDepth | 7 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 42 | — | — |
+| 🆕 | codebase.json.properties | 108 | — | — |
+| 🆕 | codebase.json.strings | 86 | — | — |
+| 🆕 | codebase.json.totalNodes | 150 | — | — |
+| 🆕 | codebase.linesOfCode | 1,580 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 8 | — | — |
+| 🆕 | codebase.markdown.files | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 2 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 14 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 20 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 109 | — | — |
+| 🆕 | codebase.markdown.lines | 573 | — | — |
+| 🆕 | codebase.markdown.links | 7 | — | — |
+| 🆕 | codebase.markdown.listItems | 38 | — | — |
+| 🆕 | codebase.markdown.lists | 4 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 70 | — | — |
+| 🆕 | codebase.markdown.tableRows | 30 | — | — |
+| 🆕 | codebase.markdown.tables | 5 | — | — |
+| 🆕 | codebase.repositoryBytes | 105,506 | — | — |
+| 🆕 | codebase.sourceFiles | 29 | — | — |
+| 🆕 | codebase.sql.commonTableExpressions | 6 | — | — |
+| 🆕 | codebase.sql.creates | 21 | — | — |
+| 🆕 | codebase.sql.deletes | 9 | — | — |
+| 🆕 | codebase.sql.files | 2 | — | — |
+| 🆕 | codebase.sql.inserts | 3 | — | — |
+| 🆕 | codebase.sql.lines | 264 | — | — |
+| 🆕 | codebase.sql.selects | 1 | — | — |
+| 🆕 | codebase.sql.statements | 74 | — | — |
+| 🆕 | codebase.sql.updates | 8 | — | — |
+| 🆕 | codebase.typescript.decorators | 96 | — | — |
+| 🆕 | codebase.typescript.docComments | 62 | — | — |
+| 🆕 | codebase.typescript.files | 29 | — | — |
+| 🆕 | codebase.custom.Module Files | 1 | — | — |
+| 🆕 | codebase.custom.Service Files | 1 | — | — |
+| 🆕 | codebase.custom.Constants Files | 2 | — | — |
+| 🆕 | codebase.custom.Types Files | 1 | — | — |
+| 🆕 | codebase.custom.Utilities Files | 1 | — | — |
+| 🆕 | codebase.custom.TypeORM Entities | 9 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 2 | — | — |
+| 🆕 | codebase.custom.Integration Tests | 2 | — | — |
+</details>
+
+<details>
+<summary>`callidescope-agents` — 43 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 18 | — | — |
+| 🆕 | codebase.folders | 5 | — | — |
+| 🆕 | codebase.javascript.commentLines | 24 | — | — |
+| 🆕 | codebase.javascript.comments | 19 | — | — |
+| 🆕 | codebase.javascript.constants | 18 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 6 | — | — |
+| 🆕 | codebase.javascript.functions | 14 | — | — |
+| 🆕 | codebase.javascript.imports | 11 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 14 | — | — |
+| 🆕 | codebase.javascript.testFiles | 1 | — | — |
+| 🆕 | codebase.json.arrays | 7 | — | — |
+| 🆕 | codebase.json.booleans | 3 | — | — |
+| 🆕 | codebase.json.files | 3 | — | — |
+| 🆕 | codebase.json.items | 17 | — | — |
+| 🆕 | codebase.json.lines | 71 | — | — |
+| 🆕 | codebase.json.maxDepth | 5 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 25 | — | — |
+| 🆕 | codebase.json.properties | 51 | — | — |
+| 🆕 | codebase.json.strings | 35 | — | — |
+| 🆕 | codebase.json.totalNodes | 71 | — | — |
+| 🆕 | codebase.linesOfCode | 190 | — | — |
+| 🆕 | codebase.markdown.blockQuotes | 1 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 26 | — | — |
+| 🆕 | codebase.markdown.files | 8 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 5 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 41 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 35 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 539 | — | — |
+| 🆕 | codebase.markdown.lines | 1,717 | — | — |
+| 🆕 | codebase.markdown.links | 14 | — | — |
+| 🆕 | codebase.markdown.listItems | 62 | — | — |
+| 🆕 | codebase.markdown.lists | 20 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 247 | — | — |
+| 🆕 | codebase.markdown.tableRows | 66 | — | — |
+| 🆕 | codebase.markdown.tables | 11 | — | — |
+| 🆕 | codebase.repositoryBytes | 107,570 | — | — |
+| 🆕 | codebase.sourceFiles | 7 | — | — |
+| 🆕 | codebase.typescript.docComments | 9 | — | — |
+| 🆕 | codebase.typescript.files | 7 | — | — |
+| 🆕 | codebase.typescript.interfaces | 1 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 1 | — | — |
+</details>
+
+<details>
+<summary>`callidescope-examples` — 47 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 76 | — | — |
+| 🆕 | codebase.folders | 22 | — | — |
+| 🆕 | codebase.javascript.classes | 31 | — | — |
+| 🆕 | codebase.javascript.commentLines | 344 | — | — |
+| 🆕 | codebase.javascript.comments | 188 | — | — |
+| 🆕 | codebase.javascript.constants | 52 | — | — |
+| 🆕 | codebase.javascript.exported | 39 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 8 | — | — |
+| 🆕 | codebase.javascript.functions | 108 | — | — |
+| 🆕 | codebase.javascript.imports | 61 | — | — |
+| 🆕 | codebase.javascript.methods | 76 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 184 | — | — |
+| 🆕 | codebase.javascript.testFiles | 1 | — | — |
+| 🆕 | codebase.json.arrays | 1,292 | — | — |
+| 🆕 | codebase.json.booleans | 2,318 | — | — |
+| 🆕 | codebase.json.files | 5 | — | — |
+| 🆕 | codebase.json.items | 1,848 | — | — |
+| 🆕 | codebase.json.lines | 18,660 | — | — |
+| 🆕 | codebase.json.maxDepth | 11 | — | — |
+| 🆕 | codebase.json.numbers | 1,649 | — | — |
+| 🆕 | codebase.json.objects | 3,390 | — | — |
+| 🆕 | codebase.json.properties | 12,517 | — | — |
+| 🆕 | codebase.json.strings | 5,721 | — | — |
+| 🆕 | codebase.json.totalNodes | 14,370 | — | — |
+| 🆕 | codebase.linesOfCode | 1,950 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 79 | — | — |
+| 🆕 | codebase.markdown.files | 25 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 22 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 84 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 50 | — | — |
+| 🆕 | codebase.markdown.images | 330 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 838 | — | — |
+| 🆕 | codebase.markdown.lines | 3,079 | — | — |
+| 🆕 | codebase.markdown.links | 192 | — | — |
+| 🆕 | codebase.markdown.listItems | 43 | — | — |
+| 🆕 | codebase.markdown.lists | 10 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 318 | — | — |
+| 🆕 | codebase.markdown.tableRows | 258 | — | — |
+| 🆕 | codebase.markdown.tables | 33 | — | — |
+| 🆕 | codebase.repositoryBytes | 990,614 | — | — |
+| 🆕 | codebase.sourceFiles | 46 | — | — |
+| 🆕 | codebase.typescript.decorators | 32 | — | — |
+| 🆕 | codebase.typescript.docComments | 135 | — | — |
+| 🆕 | codebase.typescript.files | 46 | — | — |
+| 🆕 | codebase.typescript.interfaces | 4 | — | — |
+| 🆕 | codebase.custom.Module Files | 1 | — | — |
+| 🆕 | codebase.custom.Integration Tests | 1 | — | — |
+</details>
+
+<details>
+<summary>`codebase` — 103 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 1,055 | — | — |
+| 🆕 | codebase.folders | 173 | — | — |
+| 🆕 | codebase.hcl.attributes | 329 | — | — |
+| 🆕 | codebase.hcl.blocks | 121 | — | — |
+| 🆕 | codebase.hcl.comments | 82 | — | — |
+| 🆕 | codebase.hcl.files | 10 | — | — |
+| 🆕 | codebase.hcl.interpolations | 10 | — | — |
+| 🆕 | codebase.hcl.lines | 852 | — | — |
+| 🆕 | codebase.hcl.outputs | 12 | — | — |
+| 🆕 | codebase.hcl.resources | 32 | — | — |
+| 🆕 | codebase.hcl.variables | 19 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 1,167 | — | — |
+| 🆕 | codebase.javascript.classes | 226 | — | — |
+| 🆕 | codebase.javascript.commentLines | 4,637 | — | — |
+| 🆕 | codebase.javascript.comments | 3,325 | — | — |
+| 🆕 | codebase.javascript.constants | 3,479 | — | — |
+| 🆕 | codebase.javascript.exported | 959 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 62 | — | — |
+| 🆕 | codebase.javascript.files | 6 | — | — |
+| 🆕 | codebase.javascript.functions | 3,150 | — | — |
+| 🆕 | codebase.javascript.imports | 3,167 | — | — |
+| 🆕 | codebase.javascript.methods | 985 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 2,968 | — | — |
+| 🆕 | codebase.javascript.testFiles | 216 | — | — |
+| 🆕 | codebase.javascript.todos | 4 | — | — |
+| 🆕 | codebase.json.arrays | 458 | — | — |
+| 🆕 | codebase.json.booleans | 210 | — | — |
+| 🆕 | codebase.json.files | 56 | — | — |
+| 🆕 | codebase.json.items | 1,661 | — | — |
+| 🆕 | codebase.json.lines | 8,022 | — | — |
+| 🆕 | codebase.json.maxDepth | 11 | — | — |
+| 🆕 | codebase.json.numbers | 46 | — | — |
+| 🆕 | codebase.json.objects | 1,278 | — | — |
+| 🆕 | codebase.json.properties | 3,048 | — | — |
+| 🆕 | codebase.json.strings | 2,766 | — | — |
+| 🆕 | codebase.json.totalNodes | 4,758 | — | — |
+| 🆕 | codebase.linesOfCode | 69,712 | — | — |
+| 🆕 | codebase.markdown.blockQuotes | 23 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 597 | — | — |
+| 🆕 | codebase.markdown.files | 182 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 143 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 880 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 819 | — | — |
+| 🆕 | codebase.markdown.headingLevel4 | 82 | — | — |
+| 🆕 | codebase.markdown.images | 1,497 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 16,050 | — | — |
+| 🆕 | codebase.markdown.lines | 46,114 | — | — |
+| 🆕 | codebase.markdown.links | 1,240 | — | — |
+| 🆕 | codebase.markdown.listItems | 4,831 | — | — |
+| 🆕 | codebase.markdown.lists | 986 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 6,787 | — | — |
+| 🆕 | codebase.markdown.tableRows | 2,974 | — | — |
+| 🆕 | codebase.markdown.tables | 298 | — | — |
+| 🆕 | codebase.markdown.taskListItems | 60 | — | — |
+| 🆕 | codebase.markdown.thematicBreaks | 50 | — | — |
+| 🆕 | codebase.python.files | 1 | — | — |
+| 🆕 | codebase.python.lines | 5 | — | — |
+| 🆕 | codebase.python.docstrings | 1 | — | — |
+| 🆕 | codebase.python.docstringLines | 4 | — | — |
+| 🆕 | codebase.repositoryBytes | 7,276,242 | — | — |
+| 🆕 | codebase.shell.commentLines | 266 | — | — |
+| 🆕 | codebase.shell.comments | 266 | — | — |
+| 🆕 | codebase.shell.conditionals | 142 | — | — |
+| 🆕 | codebase.shell.exports | 19 | — | — |
+| 🆕 | codebase.shell.files | 21 | — | — |
+| 🆕 | codebase.shell.functions | 18 | — | — |
+| 🆕 | codebase.shell.lines | 1,841 | — | — |
+| 🆕 | codebase.shell.loops | 21 | — | — |
+| 🆕 | codebase.shell.pipelines | 53 | — | — |
+| 🆕 | codebase.shell.shebangs | 22 | — | — |
+| 🆕 | codebase.shell.variables | 172 | — | — |
+| 🆕 | codebase.sourceFiles | 706 | — | — |
+| 🆕 | codebase.toml.arrays | 14 | — | — |
+| 🆕 | codebase.toml.arrayTables | 6 | — | — |
+| 🆕 | codebase.toml.comments | 25 | — | — |
+| 🆕 | codebase.toml.files | 3 | — | — |
+| 🆕 | codebase.toml.keys | 48 | — | — |
+| 🆕 | codebase.toml.lines | 131 | — | — |
+| 🆕 | codebase.toml.tables | 12 | — | — |
+| 🆕 | codebase.typescript.decorators | 269 | — | — |
+| 🆕 | codebase.typescript.docComments | 1,652 | — | — |
+| 🆕 | codebase.typescript.files | 699 | — | — |
+| 🆕 | codebase.typescript.genericDeclarations | 9 | — | — |
+| 🆕 | codebase.typescript.interfaces | 177 | — | — |
+| 🆕 | codebase.yaml.comments | 459 | — | — |
+| 🆕 | codebase.yaml.documents | 22 | — | — |
+| 🆕 | codebase.yaml.files | 22 | — | — |
+| 🆕 | codebase.yaml.keys | 1,660 | — | — |
+| 🆕 | codebase.yaml.lines | 3,266 | — | — |
+| 🆕 | codebase.yaml.mappings | 459 | — | — |
+| 🆕 | codebase.yaml.maxDepth | 8 | — | — |
+| 🆕 | codebase.yaml.scalars | 3,352 | — | — |
+| 🆕 | codebase.yaml.sequences | 90 | — | — |
+| 🆕 | codebase.custom.Module Files | 70 | — | — |
+| 🆕 | codebase.custom.Service Files | 90 | — | — |
+| 🆕 | codebase.custom.Command Files | 50 | — | — |
+| 🆕 | codebase.custom.Constants Files | 85 | — | — |
+| 🆕 | codebase.custom.Types Files | 76 | — | — |
+| 🆕 | codebase.custom.Utilities Files | 10 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 204 | — | — |
+| 🆕 | codebase.custom.Integration Tests | 5 | — | — |
+| 🆕 | codebase.custom.End To End Tests | 7 | — | — |
+| 🆕 | codebase.custom.Static Methods | 4 | — | — |
+</details>
+
+<details>
+<summary>`codependix-agents` — 43 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 19 | — | — |
+| 🆕 | codebase.folders | 6 | — | — |
+| 🆕 | codebase.javascript.commentLines | 24 | — | — |
+| 🆕 | codebase.javascript.comments | 19 | — | — |
+| 🆕 | codebase.javascript.constants | 18 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 6 | — | — |
+| 🆕 | codebase.javascript.functions | 14 | — | — |
+| 🆕 | codebase.javascript.imports | 11 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 14 | — | — |
+| 🆕 | codebase.javascript.testFiles | 1 | — | — |
+| 🆕 | codebase.json.arrays | 7 | — | — |
+| 🆕 | codebase.json.booleans | 3 | — | — |
+| 🆕 | codebase.json.files | 3 | — | — |
+| 🆕 | codebase.json.items | 17 | — | — |
+| 🆕 | codebase.json.lines | 71 | — | — |
+| 🆕 | codebase.json.maxDepth | 5 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 25 | — | — |
+| 🆕 | codebase.json.properties | 51 | — | — |
+| 🆕 | codebase.json.strings | 35 | — | — |
+| 🆕 | codebase.json.totalNodes | 71 | — | — |
+| 🆕 | codebase.linesOfCode | 190 | — | — |
+| 🆕 | codebase.markdown.blockQuotes | 1 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 20 | — | — |
+| 🆕 | codebase.markdown.files | 9 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 49 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 27 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 481 | — | — |
+| 🆕 | codebase.markdown.lines | 1,540 | — | — |
+| 🆕 | codebase.markdown.links | 11 | — | — |
+| 🆕 | codebase.markdown.listItems | 67 | — | — |
+| 🆕 | codebase.markdown.lists | 22 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 225 | — | — |
+| 🆕 | codebase.markdown.tableRows | 50 | — | — |
+| 🆕 | codebase.markdown.tables | 10 | — | — |
+| 🆕 | codebase.repositoryBytes | 88,416 | — | — |
+| 🆕 | codebase.sourceFiles | 7 | — | — |
+| 🆕 | codebase.typescript.docComments | 9 | — | — |
+| 🆕 | codebase.typescript.files | 7 | — | — |
+| 🆕 | codebase.typescript.interfaces | 1 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 1 | — | — |
+</details>
+
+<details>
+<summary>`codependix-examples` — 67 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 136 | — | — |
+| 🆕 | codebase.folders | 72 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 91 | — | — |
+| 🆕 | codebase.javascript.classes | 27 | — | — |
+| 🆕 | codebase.javascript.commentLines | 420 | — | — |
+| 🆕 | codebase.javascript.comments | 357 | — | — |
+| 🆕 | codebase.javascript.constants | 257 | — | — |
+| 🆕 | codebase.javascript.exported | 163 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 20 | — | — |
+| 🆕 | codebase.javascript.functions | 292 | — | — |
+| 🆕 | codebase.javascript.imports | 209 | — | — |
+| 🆕 | codebase.javascript.methods | 3 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 204 | — | — |
+| 🆕 | codebase.javascript.testFiles | 3 | — | — |
+| 🆕 | codebase.json.arrays | 30 | — | — |
+| 🆕 | codebase.json.booleans | 19 | — | — |
+| 🆕 | codebase.json.files | 16 | — | — |
+| 🆕 | codebase.json.items | 56 | — | — |
+| 🆕 | codebase.json.lines | 292 | — | — |
+| 🆕 | codebase.json.maxDepth | 6 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 67 | — | — |
+| 🆕 | codebase.json.properties | 172 | — | — |
+| 🆕 | codebase.json.strings | 127 | — | — |
+| 🆕 | codebase.json.totalNodes | 244 | — | — |
+| 🆕 | codebase.linesOfCode | 5,230 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 113 | — | — |
+| 🆕 | codebase.markdown.files | 26 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 23 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 157 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 21 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 588 | — | — |
+| 🆕 | codebase.markdown.lines | 2,484 | — | — |
+| 🆕 | codebase.markdown.links | 102 | — | — |
+| 🆕 | codebase.markdown.listItems | 39 | — | — |
+| 🆕 | codebase.markdown.lists | 6 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 257 | — | — |
+| 🆕 | codebase.markdown.tableRows | 81 | — | — |
+| 🆕 | codebase.markdown.tables | 9 | — | — |
+| 🆕 | codebase.python.files | 15 | — | — |
+| 🆕 | codebase.python.classes | 1 | — | — |
+| 🆕 | codebase.python.functions | 4 | — | — |
+| 🆕 | codebase.python.constants | 9 | — | — |
+| 🆕 | codebase.python.imports | 12 | — | — |
+| 🆕 | codebase.python.lines | 53 | — | — |
+| 🆕 | codebase.python.comments | 1 | — | — |
+| 🆕 | codebase.python.commentLines | 1 | — | — |
+| 🆕 | codebase.python.docstrings | 4 | — | — |
+| 🆕 | codebase.python.docstringLines | 4 | — | — |
+| 🆕 | codebase.repositoryBytes | 300,294 | — | — |
+| 🆕 | codebase.sourceFiles | 91 | — | — |
+| 🆕 | codebase.typescript.decorators | 29 | — | — |
+| 🆕 | codebase.typescript.docComments | 275 | — | — |
+| 🆕 | codebase.typescript.files | 76 | — | — |
+| 🆕 | codebase.typescript.interfaces | 16 | — | — |
+| 🆕 | codebase.yaml.documents | 1 | — | — |
+| 🆕 | codebase.yaml.files | 1 | — | — |
+| 🆕 | codebase.yaml.keys | 3 | — | — |
+| 🆕 | codebase.yaml.lines | 4 | — | — |
+| 🆕 | codebase.yaml.mappings | 3 | — | — |
+| 🆕 | codebase.yaml.maxDepth | 4 | — | — |
+| 🆕 | codebase.yaml.scalars | 4 | — | — |
+| 🆕 | codebase.custom.Module Files | 27 | — | — |
+| 🆕 | codebase.custom.Service Files | 1 | — | — |
+| 🆕 | codebase.custom.Integration Tests | 3 | — | — |
+| 🆕 | codebase.custom.Static Methods | 1 | — | — |
+</details>
+
+<details>
+<summary>`codometer-agents` — 42 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 18 | — | — |
+| 🆕 | codebase.folders | 5 | — | — |
+| 🆕 | codebase.javascript.commentLines | 24 | — | — |
+| 🆕 | codebase.javascript.comments | 19 | — | — |
+| 🆕 | codebase.javascript.constants | 18 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 6 | — | — |
+| 🆕 | codebase.javascript.functions | 14 | — | — |
+| 🆕 | codebase.javascript.imports | 11 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 14 | — | — |
+| 🆕 | codebase.javascript.testFiles | 1 | — | — |
+| 🆕 | codebase.json.arrays | 7 | — | — |
+| 🆕 | codebase.json.booleans | 3 | — | — |
+| 🆕 | codebase.json.files | 3 | — | — |
+| 🆕 | codebase.json.items | 17 | — | — |
+| 🆕 | codebase.json.lines | 71 | — | — |
+| 🆕 | codebase.json.maxDepth | 5 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 25 | — | — |
+| 🆕 | codebase.json.properties | 51 | — | — |
+| 🆕 | codebase.json.strings | 35 | — | — |
+| 🆕 | codebase.json.totalNodes | 71 | — | — |
+| 🆕 | codebase.linesOfCode | 190 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 15 | — | — |
+| 🆕 | codebase.markdown.files | 8 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 5 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 30 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 20 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 301 | — | — |
+| 🆕 | codebase.markdown.lines | 1,025 | — | — |
+| 🆕 | codebase.markdown.links | 9 | — | — |
+| 🆕 | codebase.markdown.listItems | 21 | — | — |
+| 🆕 | codebase.markdown.lists | 9 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 113 | — | — |
+| 🆕 | codebase.markdown.tableRows | 40 | — | — |
+| 🆕 | codebase.markdown.tables | 7 | — | — |
+| 🆕 | codebase.repositoryBytes | 61,997 | — | — |
+| 🆕 | codebase.sourceFiles | 7 | — | — |
+| 🆕 | codebase.typescript.docComments | 9 | — | — |
+| 🆕 | codebase.typescript.files | 7 | — | — |
+| 🆕 | codebase.typescript.interfaces | 1 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 1 | — | — |
+</details>
+
+<details>
+<summary>`codometer-examples` — 144 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 94 | — | — |
+| 🆕 | codebase.css.atRules | 1 | — | — |
+| 🆕 | codebase.css.comments | 1 | — | — |
+| 🆕 | codebase.css.customProperties | 5 | — | — |
+| 🆕 | codebase.css.declarations | 8 | — | — |
+| 🆕 | codebase.css.files | 1 | — | — |
+| 🆕 | codebase.css.lines | 25 | — | — |
+| 🆕 | codebase.css.mediaQueries | 1 | — | — |
+| 🆕 | codebase.css.rules | 4 | — | — |
+| 🆕 | codebase.css.selectors | 5 | — | — |
+| 🆕 | codebase.folders | 27 | — | — |
+| 🆕 | codebase.hcl.attributes | 10 | — | — |
+| 🆕 | codebase.hcl.blocks | 5 | — | — |
+| 🆕 | codebase.hcl.comments | 1 | — | — |
+| 🆕 | codebase.hcl.files | 1 | — | — |
+| 🆕 | codebase.hcl.interpolations | 1 | — | — |
+| 🆕 | codebase.hcl.lines | 29 | — | — |
+| 🆕 | codebase.hcl.outputs | 1 | — | — |
+| 🆕 | codebase.hcl.resources | 2 | — | — |
+| 🆕 | codebase.hcl.variables | 2 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 3 | — | — |
+| 🆕 | codebase.javascript.classes | 8 | — | — |
+| 🆕 | codebase.javascript.commentLines | 547 | — | — |
+| 🆕 | codebase.javascript.comments | 269 | — | — |
+| 🆕 | codebase.javascript.constants | 175 | — | — |
+| 🆕 | codebase.javascript.exported | 40 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 10 | — | — |
+| 🆕 | codebase.javascript.files | 4 | — | — |
+| 🆕 | codebase.javascript.functions | 172 | — | — |
+| 🆕 | codebase.javascript.imports | 94 | — | — |
+| 🆕 | codebase.javascript.methods | 21 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 190 | — | — |
+| 🆕 | codebase.javascript.testFiles | 15 | — | — |
+| 🆕 | codebase.json.arrays | 13 | — | — |
+| 🆕 | codebase.json.booleans | 6 | — | — |
+| 🆕 | codebase.json.files | 4 | — | — |
+| 🆕 | codebase.json.items | 29 | — | — |
+| 🆕 | codebase.json.lines | 119 | — | — |
+| 🆕 | codebase.json.maxDepth | 5 | — | — |
+| 🆕 | codebase.json.nulls | 1 | — | — |
+| 🆕 | codebase.json.numbers | 4 | — | — |
+| 🆕 | codebase.json.objects | 31 | — | — |
+| 🆕 | codebase.json.properties | 78 | — | — |
+| 🆕 | codebase.json.strings | 56 | — | — |
+| 🆕 | codebase.json.totalNodes | 111 | — | — |
+| 🆕 | codebase.jupyter.cells | 5 | — | — |
+| 🆕 | codebase.jupyter.classes | 1 | — | — |
+| 🆕 | codebase.jupyter.codeCells | 3 | — | — |
+| 🆕 | codebase.jupyter.codeLines | 18 | — | — |
+| 🆕 | codebase.jupyter.decorators | 1 | — | — |
+| 🆕 | codebase.jupyter.executedCells | 3 | — | — |
+| 🆕 | codebase.jupyter.files | 1 | — | — |
+| 🆕 | codebase.jupyter.functions | 1 | — | — |
+| 🆕 | codebase.jupyter.headings | 2 | — | — |
+| 🆕 | codebase.jupyter.imports | 1 | — | — |
+| 🆕 | codebase.jupyter.links | 1 | — | — |
+| 🆕 | codebase.jupyter.markdownCells | 2 | — | — |
+| 🆕 | codebase.jupyter.markdownLines | 8 | — | — |
+| 🆕 | codebase.jupyter.maxDepth | 8 | — | — |
+| 🆕 | codebase.jupyter.outputs | 2 | — | — |
+| 🆕 | codebase.jupyter.properties | 40 | — | — |
+| 🆕 | codebase.jupyter.totalNodes | 74 | — | — |
+| 🆕 | codebase.linesOfCode | 3,063 | — | — |
+| 🆕 | codebase.markdown.blockQuotes | 1 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 50 | — | — |
+| 🆕 | codebase.markdown.files | 15 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 13 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 76 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 24 | — | — |
+| 🆕 | codebase.markdown.images | 150 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 457 | — | — |
+| 🆕 | codebase.markdown.lines | 1,692 | — | — |
+| 🆕 | codebase.markdown.links | 89 | — | — |
+| 🆕 | codebase.markdown.listItems | 54 | — | — |
+| 🆕 | codebase.markdown.lists | 13 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 198 | — | — |
+| 🆕 | codebase.markdown.tableRows | 94 | — | — |
+| 🆕 | codebase.markdown.tables | 12 | — | — |
+| 🆕 | codebase.markdown.taskListItems | 2 | — | — |
+| 🆕 | codebase.markdown.thematicBreaks | 1 | — | — |
+| 🆕 | codebase.python.files | 1 | — | — |
+| 🆕 | codebase.python.classes | 3 | — | — |
+| 🆕 | codebase.python.functions | 4 | — | — |
+| 🆕 | codebase.python.constants | 2 | — | — |
+| 🆕 | codebase.python.protocols | 1 | — | — |
+| 🆕 | codebase.python.imports | 3 | — | — |
+| 🆕 | codebase.python.decorators | 2 | — | — |
+| 🆕 | codebase.python.lines | 49 | — | — |
+| 🆕 | codebase.python.comments | 1 | — | — |
+| 🆕 | codebase.python.commentLines | 1 | — | — |
+| 🆕 | codebase.python.docstrings | 8 | — | — |
+| 🆕 | codebase.python.docstringLines | 8 | — | — |
+| 🆕 | codebase.repositoryBytes | 194,158 | — | — |
+| 🆕 | codebase.shell.commentLines | 2 | — | — |
+| 🆕 | codebase.shell.comments | 2 | — | — |
+| 🆕 | codebase.shell.conditionals | 1 | — | — |
+| 🆕 | codebase.shell.exports | 1 | — | — |
+| 🆕 | codebase.shell.files | 1 | — | — |
+| 🆕 | codebase.shell.functions | 2 | — | — |
+| 🆕 | codebase.shell.lines | 30 | — | — |
+| 🆕 | codebase.shell.loops | 2 | — | — |
+| 🆕 | codebase.shell.pipelines | 1 | — | — |
+| 🆕 | codebase.shell.shebangs | 1 | — | — |
+| 🆕 | codebase.shell.variables | 1 | — | — |
+| 🆕 | codebase.sourceFiles | 67 | — | — |
+| 🆕 | codebase.sql.comments | 1 | — | — |
+| 🆕 | codebase.sql.commonTableExpressions | 1 | — | — |
+| 🆕 | codebase.sql.creates | 2 | — | — |
+| 🆕 | codebase.sql.deletes | 1 | — | — |
+| 🆕 | codebase.sql.files | 1 | — | — |
+| 🆕 | codebase.sql.inserts | 1 | — | — |
+| 🆕 | codebase.sql.joins | 1 | — | — |
+| 🆕 | codebase.sql.lines | 39 | — | — |
+| 🆕 | codebase.sql.selects | 2 | — | — |
+| 🆕 | codebase.sql.statements | 6 | — | — |
+| 🆕 | codebase.sql.updates | 1 | — | — |
+| 🆕 | codebase.toml.arrays | 1 | — | — |
+| 🆕 | codebase.toml.arrayTables | 2 | — | — |
+| 🆕 | codebase.toml.comments | 1 | — | — |
+| 🆕 | codebase.toml.files | 1 | — | — |
+| 🆕 | codebase.toml.keys | 9 | — | — |
+| 🆕 | codebase.toml.lines | 19 | — | — |
+| 🆕 | codebase.toml.tables | 2 | — | — |
+| 🆕 | codebase.typescript.docComments | 101 | — | — |
+| 🆕 | codebase.typescript.enums | 1 | — | — |
+| 🆕 | codebase.typescript.files | 62 | — | — |
+| 🆕 | codebase.typescript.genericDeclarations | 2 | — | — |
+| 🆕 | codebase.typescript.interfaces | 9 | — | — |
+| 🆕 | codebase.yaml.aliases | 2 | — | — |
+| 🆕 | codebase.yaml.anchors | 1 | — | — |
+| 🆕 | codebase.yaml.comments | 1 | — | — |
+| 🆕 | codebase.yaml.documents | 1 | — | — |
+| 🆕 | codebase.yaml.files | 1 | — | — |
+| 🆕 | codebase.yaml.keys | 12 | — | — |
+| 🆕 | codebase.yaml.lines | 21 | — | — |
+| 🆕 | codebase.yaml.mappings | 5 | — | — |
+| 🆕 | codebase.yaml.maxDepth | 5 | — | — |
+| 🆕 | codebase.yaml.scalars | 20 | — | — |
+| 🆕 | codebase.yaml.sequences | 4 | — | — |
+| 🆕 | codebase.custom.Service Files | 4 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 6 | — | — |
+| 🆕 | codebase.custom.Static Methods | 7 | — | — |
+| 🆕 | Corpus.files | 27 | — | — |
+| 🆕 | Corpus.size | 8.32 kB | — | — |
+</details>
+
+<details>
+<summary>`coinagerie-agents` — 42 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 20 | — | — |
+| 🆕 | codebase.folders | 6 | — | — |
+| 🆕 | codebase.javascript.commentLines | 32 | — | — |
+| 🆕 | codebase.javascript.comments | 25 | — | — |
+| 🆕 | codebase.javascript.constants | 26 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 5 | — | — |
+| 🆕 | codebase.javascript.functions | 27 | — | — |
+| 🆕 | codebase.javascript.imports | 15 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 27 | — | — |
+| 🆕 | codebase.javascript.testFiles | 2 | — | — |
+| 🆕 | codebase.json.arrays | 7 | — | — |
+| 🆕 | codebase.json.booleans | 3 | — | — |
+| 🆕 | codebase.json.files | 3 | — | — |
+| 🆕 | codebase.json.items | 17 | — | — |
+| 🆕 | codebase.json.lines | 70 | — | — |
+| 🆕 | codebase.json.maxDepth | 5 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 25 | — | — |
+| 🆕 | codebase.json.properties | 50 | — | — |
+| 🆕 | codebase.json.strings | 34 | — | — |
+| 🆕 | codebase.json.totalNodes | 70 | — | — |
+| 🆕 | codebase.linesOfCode | 285 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 13 | — | — |
+| 🆕 | codebase.markdown.files | 9 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 36 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 16 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 242 | — | — |
+| 🆕 | codebase.markdown.lines | 894 | — | — |
+| 🆕 | codebase.markdown.links | 9 | — | — |
+| 🆕 | codebase.markdown.listItems | 61 | — | — |
+| 🆕 | codebase.markdown.lists | 16 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 125 | — | — |
+| 🆕 | codebase.markdown.tableRows | 56 | — | — |
+| 🆕 | codebase.markdown.tables | 9 | — | — |
+| 🆕 | codebase.repositoryBytes | 61,319 | — | — |
+| 🆕 | codebase.sourceFiles | 8 | — | — |
+| 🆕 | codebase.typescript.docComments | 13 | — | — |
+| 🆕 | codebase.typescript.files | 8 | — | — |
+| 🆕 | codebase.typescript.interfaces | 1 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 2 | — | — |
+</details>
+
+<details>
+<summary>`conformetry-agents` — 42 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 21 | — | — |
+| 🆕 | codebase.folders | 7 | — | — |
+| 🆕 | codebase.javascript.commentLines | 25 | — | — |
+| 🆕 | codebase.javascript.comments | 20 | — | — |
+| 🆕 | codebase.javascript.constants | 18 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 6 | — | — |
+| 🆕 | codebase.javascript.functions | 14 | — | — |
+| 🆕 | codebase.javascript.imports | 11 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 14 | — | — |
+| 🆕 | codebase.javascript.testFiles | 1 | — | — |
+| 🆕 | codebase.json.arrays | 7 | — | — |
+| 🆕 | codebase.json.booleans | 3 | — | — |
+| 🆕 | codebase.json.files | 3 | — | — |
+| 🆕 | codebase.json.items | 17 | — | — |
+| 🆕 | codebase.json.lines | 71 | — | — |
+| 🆕 | codebase.json.maxDepth | 5 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 25 | — | — |
+| 🆕 | codebase.json.properties | 51 | — | — |
+| 🆕 | codebase.json.strings | 35 | — | — |
+| 🆕 | codebase.json.totalNodes | 71 | — | — |
+| 🆕 | codebase.linesOfCode | 195 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 17 | — | — |
+| 🆕 | codebase.markdown.files | 11 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 8 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 54 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 21 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 271 | — | — |
+| 🆕 | codebase.markdown.lines | 1,452 | — | — |
+| 🆕 | codebase.markdown.links | 17 | — | — |
+| 🆕 | codebase.markdown.listItems | 72 | — | — |
+| 🆕 | codebase.markdown.lists | 23 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 267 | — | — |
+| 🆕 | codebase.markdown.tableRows | 54 | — | — |
+| 🆕 | codebase.markdown.tables | 9 | — | — |
+| 🆕 | codebase.repositoryBytes | 80,619 | — | — |
+| 🆕 | codebase.sourceFiles | 7 | — | — |
+| 🆕 | codebase.typescript.docComments | 9 | — | — |
+| 🆕 | codebase.typescript.files | 7 | — | — |
+| 🆕 | codebase.typescript.interfaces | 1 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 1 | — | — |
+</details>
+
+<details>
+<summary>`conformetry-examples` — 72 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 115 | — | — |
+| 🆕 | codebase.folders | 94 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 2 | — | — |
+| 🆕 | codebase.javascript.classes | 17 | — | — |
+| 🆕 | codebase.javascript.commentLines | 277 | — | — |
+| 🆕 | codebase.javascript.comments | 169 | — | — |
+| 🆕 | codebase.javascript.constants | 83 | — | — |
+| 🆕 | codebase.javascript.exported | 36 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 15 | — | — |
+| 🆕 | codebase.javascript.functions | 29 | — | — |
+| 🆕 | codebase.javascript.imports | 36 | — | — |
+| 🆕 | codebase.javascript.methods | 12 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 39 | — | — |
+| 🆕 | codebase.javascript.testFiles | 1 | — | — |
+| 🆕 | codebase.javascript.todos | 1 | — | — |
+| 🆕 | codebase.json.arrays | 13 | — | — |
+| 🆕 | codebase.json.booleans | 25 | — | — |
+| 🆕 | codebase.json.files | 9 | — | — |
+| 🆕 | codebase.json.items | 34 | — | — |
+| 🆕 | codebase.json.lines | 297 | — | — |
+| 🆕 | codebase.json.maxDepth | 6 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 70 | — | — |
+| 🆕 | codebase.json.properties | 200 | — | — |
+| 🆕 | codebase.json.strings | 134 | — | — |
+| 🆕 | codebase.json.totalNodes | 243 | — | — |
+| 🆕 | codebase.jupyter.cells | 4 | — | — |
+| 🆕 | codebase.jupyter.codeCells | 2 | — | — |
+| 🆕 | codebase.jupyter.codeLines | 2 | — | — |
+| 🆕 | codebase.jupyter.files | 2 | — | — |
+| 🆕 | codebase.jupyter.headings | 2 | — | — |
+| 🆕 | codebase.jupyter.markdownCells | 2 | — | — |
+| 🆕 | codebase.jupyter.markdownLines | 4 | — | — |
+| 🆕 | codebase.jupyter.maxDepth | 5 | — | — |
+| 🆕 | codebase.jupyter.properties | 24 | — | — |
+| 🆕 | codebase.jupyter.totalNodes | 34 | — | — |
+| 🆕 | codebase.linesOfCode | 1,221 | — | — |
+| 🆕 | codebase.markdown.blockQuotes | 2 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 92 | — | — |
+| 🆕 | codebase.markdown.files | 43 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 40 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 102 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 33 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 402 | — | — |
+| 🆕 | codebase.markdown.lines | 2,180 | — | — |
+| 🆕 | codebase.markdown.links | 103 | — | — |
+| 🆕 | codebase.markdown.listItems | 36 | — | — |
+| 🆕 | codebase.markdown.lists | 12 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 222 | — | — |
+| 🆕 | codebase.markdown.tableRows | 142 | — | — |
+| 🆕 | codebase.markdown.tables | 18 | — | — |
+| 🆕 | codebase.python.files | 1 | — | — |
+| 🆕 | codebase.python.functions | 1 | — | — |
+| 🆕 | codebase.python.lines | 6 | — | — |
+| 🆕 | codebase.python.docstrings | 2 | — | — |
+| 🆕 | codebase.python.docstringLines | 2 | — | — |
+| 🆕 | codebase.repositoryBytes | 146,799 | — | — |
+| 🆕 | codebase.sourceFiles | 53 | — | — |
+| 🆕 | codebase.toml.files | 2 | — | — |
+| 🆕 | codebase.toml.keys | 2 | — | — |
+| 🆕 | codebase.toml.lines | 6 | — | — |
+| 🆕 | codebase.toml.tables | 2 | — | — |
+| 🆕 | codebase.typescript.decorators | 2 | — | — |
+| 🆕 | codebase.typescript.docComments | 69 | — | — |
+| 🆕 | codebase.typescript.files | 52 | — | — |
+| 🆕 | codebase.typescript.interfaces | 7 | — | — |
+| 🆕 | codebase.custom.Module Files | 1 | — | — |
+| 🆕 | codebase.custom.Service Files | 15 | — | — |
+| 🆕 | codebase.custom.Constants Files | 6 | — | — |
+| 🆕 | codebase.custom.Types Files | 6 | — | — |
+| 🆕 | codebase.custom.Integration Tests | 1 | — | — |
+</details>
+
+<details>
+<summary>`interface` — 51 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 37 | — | — |
+| 🆕 | codebase.folders | 7 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 6 | — | — |
+| 🆕 | codebase.javascript.classes | 6 | — | — |
+| 🆕 | codebase.javascript.commentLines | 91 | — | — |
+| 🆕 | codebase.javascript.comments | 63 | — | — |
+| 🆕 | codebase.javascript.constants | 98 | — | — |
+| 🆕 | codebase.javascript.exported | 47 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 5 | — | — |
+| 🆕 | codebase.javascript.functions | 120 | — | — |
+| 🆕 | codebase.javascript.imports | 38 | — | — |
+| 🆕 | codebase.javascript.methods | 11 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 125 | — | — |
+| 🆕 | codebase.javascript.testFiles | 4 | — | — |
+| 🆕 | codebase.json.arrays | 14 | — | — |
+| 🆕 | codebase.json.booleans | 9 | — | — |
+| 🆕 | codebase.json.files | 4 | — | — |
+| 🆕 | codebase.json.items | 37 | — | — |
+| 🆕 | codebase.json.lines | 160 | — | — |
+| 🆕 | codebase.json.maxDepth | 7 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 38 | — | — |
+| 🆕 | codebase.json.properties | 102 | — | — |
+| 🆕 | codebase.json.strings | 81 | — | — |
+| 🆕 | codebase.json.totalNodes | 143 | — | — |
+| 🆕 | codebase.linesOfCode | 1,772 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 8 | — | — |
+| 🆕 | codebase.markdown.files | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 2 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 12 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 25 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 102 | — | — |
+| 🆕 | codebase.markdown.lines | 509 | — | — |
+| 🆕 | codebase.markdown.links | 5 | — | — |
+| 🆕 | codebase.markdown.listItems | 9 | — | — |
+| 🆕 | codebase.markdown.lists | 3 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 42 | — | — |
+| 🆕 | codebase.markdown.tableRows | 33 | — | — |
+| 🆕 | codebase.markdown.tables | 5 | — | — |
+| 🆕 | codebase.repositoryBytes | 86,254 | — | — |
+| 🆕 | codebase.sourceFiles | 25 | — | — |
+| 🆕 | codebase.typescript.decorators | 16 | — | — |
+| 🆕 | codebase.typescript.docComments | 54 | — | — |
+| 🆕 | codebase.typescript.files | 25 | — | — |
+| 🆕 | codebase.typescript.genericDeclarations | 35 | — | — |
+| 🆕 | codebase.typescript.interfaces | 7 | — | — |
+| 🆕 | codebase.custom.Constants Files | 3 | — | — |
+| 🆕 | codebase.custom.Types Files | 3 | — | — |
+| 🆕 | codebase.custom.Utilities Files | 4 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 4 | — | — |
+</details>
+
+<details>
+<summary>`lexico-db` — 65 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 74 | — | — |
+| 🆕 | codebase.folders | 11 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 29 | — | — |
+| 🆕 | codebase.javascript.classes | 37 | — | — |
+| 🆕 | codebase.javascript.commentLines | 209 | — | — |
+| 🆕 | codebase.javascript.comments | 134 | — | — |
+| 🆕 | codebase.javascript.constants | 144 | — | — |
+| 🆕 | codebase.javascript.exported | 112 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 10 | — | — |
+| 🆕 | codebase.javascript.functions | 194 | — | — |
+| 🆕 | codebase.javascript.imports | 209 | — | — |
+| 🆕 | codebase.javascript.methods | 18 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 183 | — | — |
+| 🆕 | codebase.javascript.testFiles | 8 | — | — |
+| 🆕 | codebase.javascript.todos | 5 | — | — |
+| 🆕 | codebase.json.arrays | 10 | — | — |
+| 🆕 | codebase.json.booleans | 8 | — | — |
+| 🆕 | codebase.json.files | 4 | — | — |
+| 🆕 | codebase.json.items | 31 | — | — |
+| 🆕 | codebase.json.lines | 148 | — | — |
+| 🆕 | codebase.json.maxDepth | 7 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 41 | — | — |
+| 🆕 | codebase.json.properties | 99 | — | — |
+| 🆕 | codebase.json.strings | 74 | — | — |
+| 🆕 | codebase.json.totalNodes | 134 | — | — |
+| 🆕 | codebase.linesOfCode | 4,887 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 12 | — | — |
+| 🆕 | codebase.markdown.files | 5 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 1 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 12 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 24 | — | — |
+| 🆕 | codebase.markdown.images | 166 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 116 | — | — |
+| 🆕 | codebase.markdown.lines | 731 | — | — |
+| 🆕 | codebase.markdown.links | 14 | — | — |
+| 🆕 | codebase.markdown.listItems | 27 | — | — |
+| 🆕 | codebase.markdown.lists | 3 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 63 | — | — |
+| 🆕 | codebase.markdown.tableRows | 31 | — | — |
+| 🆕 | codebase.markdown.tables | 5 | — | — |
+| 🆕 | codebase.repositoryBytes | 259,234 | — | — |
+| 🆕 | codebase.sourceFiles | 60 | — | — |
+| 🆕 | codebase.sql.commonTableExpressions | 37 | — | — |
+| 🆕 | codebase.sql.creates | 62 | — | — |
+| 🆕 | codebase.sql.deletes | 18 | — | — |
+| 🆕 | codebase.sql.files | 4 | — | — |
+| 🆕 | codebase.sql.inserts | 31 | — | — |
+| 🆕 | codebase.sql.lines | 387 | — | — |
+| 🆕 | codebase.sql.statements | 337 | — | — |
+| 🆕 | codebase.sql.updates | 17 | — | — |
+| 🆕 | codebase.typescript.decorators | 153 | — | — |
+| 🆕 | codebase.typescript.docComments | 100 | — | — |
+| 🆕 | codebase.typescript.files | 60 | — | — |
+| 🆕 | codebase.typescript.genericDeclarations | 2 | — | — |
+| 🆕 | codebase.typescript.interfaces | 8 | — | — |
+| 🆕 | codebase.custom.Module Files | 3 | — | — |
+| 🆕 | codebase.custom.Service Files | 3 | — | — |
+| 🆕 | codebase.custom.Constants Files | 4 | — | — |
+| 🆕 | codebase.custom.Types Files | 3 | — | — |
+| 🆕 | codebase.custom.TypeORM Entities | 28 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 6 | — | — |
+| 🆕 | codebase.custom.Integration Tests | 2 | — | — |
+| 🆕 | Compiled JavaScript.files | 44 | — | — |
+| 🆕 | Compiled JavaScript.size | 26.34 kB | — | — |
+</details>
+
+<details>
+<summary>`lexico-web` — 67 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 137 | — | — |
+| 🆕 | codebase.css.atRules | 2 | — | — |
+| 🆕 | codebase.css.comments | 2 | — | — |
+| 🆕 | codebase.css.customProperties | 14 | — | — |
+| 🆕 | codebase.css.declarations | 14 | — | — |
+| 🆕 | codebase.css.files | 1 | — | — |
+| 🆕 | codebase.css.lines | 35 | — | — |
+| 🆕 | codebase.css.rules | 3 | — | — |
+| 🆕 | codebase.css.selectors | 4 | — | — |
+| 🆕 | codebase.folders | 27 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 23 | — | — |
+| 🆕 | codebase.javascript.commentLines | 788 | — | — |
+| 🆕 | codebase.javascript.comments | 615 | — | — |
+| 🆕 | codebase.javascript.constants | 179 | — | — |
+| 🆕 | codebase.javascript.exported | 313 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 22 | — | — |
+| 🆕 | codebase.javascript.files | 2 | — | — |
+| 🆕 | codebase.javascript.functions | 290 | — | — |
+| 🆕 | codebase.javascript.imports | 290 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 267 | — | — |
+| 🆕 | codebase.javascript.testFiles | 24 | — | — |
+| 🆕 | codebase.json.arrays | 15 | — | — |
+| 🆕 | codebase.json.booleans | 10 | — | — |
+| 🆕 | codebase.json.files | 3 | — | — |
+| 🆕 | codebase.json.items | 54 | — | — |
+| 🆕 | codebase.json.lines | 205 | — | — |
+| 🆕 | codebase.json.maxDepth | 5 | — | — |
+| 🆕 | codebase.json.numbers | 2 | — | — |
+| 🆕 | codebase.json.objects | 41 | — | — |
+| 🆕 | codebase.json.properties | 135 | — | — |
+| 🆕 | codebase.json.strings | 124 | — | — |
+| 🆕 | codebase.json.totalNodes | 192 | — | — |
+| 🆕 | codebase.linesOfCode | 7,110 | — | — |
+| 🆕 | codebase.markdown.blockQuotes | 1 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 33 | — | — |
+| 🆕 | codebase.markdown.files | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 2 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 18 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 29 | — | — |
+| 🆕 | codebase.markdown.images | 169 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 254 | — | — |
+| 🆕 | codebase.markdown.lines | 1,068 | — | — |
+| 🆕 | codebase.markdown.links | 27 | — | — |
+| 🆕 | codebase.markdown.listItems | 39 | — | — |
+| 🆕 | codebase.markdown.lists | 5 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 99 | — | — |
+| 🆕 | codebase.markdown.tableRows | 72 | — | — |
+| 🆕 | codebase.markdown.tables | 6 | — | — |
+| 🆕 | codebase.repositoryBytes | 312,018 | — | — |
+| 🆕 | codebase.sourceFiles | 121 | — | — |
+| 🆕 | codebase.typescript.docComments | 302 | — | — |
+| 🆕 | codebase.typescript.enums | 2 | — | — |
+| 🆕 | codebase.typescript.files | 119 | — | — |
+| 🆕 | codebase.typescript.genericDeclarations | 17 | — | — |
+| 🆕 | codebase.typescript.interfaces | 47 | — | — |
+| 🆕 | codebase.custom.Constants Files | 19 | — | — |
+| 🆕 | codebase.custom.Types Files | 18 | — | — |
+| 🆕 | codebase.custom.Utilities Files | 18 | — | — |
+| 🆕 | codebase.custom.Variable JSDoc Budget | 4 | — | — |
+| 🆕 | Client entry JavaScript.files | 1 | — | — |
+| 🆕 | Client entry JavaScript.size | 186.68 kB | — | — |
+| 🆕 | Client route JavaScript.files | 4 | — | — |
+| 🆕 | Client route JavaScript.size | 52.00 kB | — | — |
+| 🆕 | Client CSS.files | 1 | — | — |
+| 🆕 | Client CSS.size | 46.93 kB | — | — |
+| 🆕 | Server JavaScript.files | 9 | — | — |
+| 🆕 | Server JavaScript.size | 208.10 kB | — | — |
+</details>
+
+<details>
+<summary>`meanderaw-cli` — 64 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 456 | — | — |
+| 🆕 | codebase.folders | 36 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 438 | — | — |
+| 🆕 | codebase.javascript.classes | 209 | — | — |
+| 🆕 | codebase.javascript.commentLines | 2,779 | — | — |
+| 🆕 | codebase.javascript.comments | 1,616 | — | — |
+| 🆕 | codebase.javascript.constants | 1,353 | — | — |
+| 🆕 | codebase.javascript.exported | 339 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 20 | — | — |
+| 🆕 | codebase.javascript.functions | 2,388 | — | — |
+| 🆕 | codebase.javascript.imports | 2,560 | — | — |
+| 🆕 | codebase.javascript.methods | 545 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 2,495 | — | — |
+| 🆕 | codebase.javascript.testFiles | 179 | — | — |
+| 🆕 | codebase.json.arrays | 15 | — | — |
+| 🆕 | codebase.json.booleans | 9 | — | — |
+| 🆕 | codebase.json.files | 4 | — | — |
+| 🆕 | codebase.json.items | 41 | — | — |
+| 🆕 | codebase.json.lines | 178 | — | — |
+| 🆕 | codebase.json.maxDepth | 7 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 49 | — | — |
+| 🆕 | codebase.json.properties | 117 | — | — |
+| 🆕 | codebase.json.strings | 88 | — | — |
+| 🆕 | codebase.json.totalNodes | 162 | — | — |
+| 🆕 | codebase.linesOfCode | 42,231 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 136 | — | — |
+| 🆕 | codebase.markdown.files | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 1 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 18 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 38 | — | — |
+| 🆕 | codebase.markdown.images | 166 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 1,848 | — | — |
+| 🆕 | codebase.markdown.lines | 6,208 | — | — |
+| 🆕 | codebase.markdown.links | 32 | — | — |
+| 🆕 | codebase.markdown.listItems | 97 | — | — |
+| 🆕 | codebase.markdown.lists | 11 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 302 | — | — |
+| 🆕 | codebase.markdown.tableRows | 408 | — | — |
+| 🆕 | codebase.markdown.tables | 9 | — | — |
+| 🆕 | codebase.repositoryBytes | 2,188,083 | — | — |
+| 🆕 | codebase.sourceFiles | 439 | — | — |
+| 🆕 | codebase.sql.commonTableExpressions | 2 | — | — |
+| 🆕 | codebase.sql.creates | 7 | — | — |
+| 🆕 | codebase.sql.files | 4 | — | — |
+| 🆕 | codebase.sql.inserts | 1 | — | — |
+| 🆕 | codebase.sql.lines | 107 | — | — |
+| 🆕 | codebase.sql.statements | 29 | — | — |
+| 🆕 | codebase.typescript.decorators | 480 | — | — |
+| 🆕 | codebase.typescript.docComments | 872 | — | — |
+| 🆕 | codebase.typescript.files | 439 | — | — |
+| 🆕 | codebase.typescript.genericDeclarations | 7 | — | — |
+| 🆕 | codebase.typescript.interfaces | 50 | — | — |
+| 🆕 | codebase.custom.Module Files | 33 | — | — |
+| 🆕 | codebase.custom.Service Files | 157 | — | — |
+| 🆕 | codebase.custom.Command Files | 1 | — | — |
+| 🆕 | codebase.custom.Constants Files | 29 | — | — |
+| 🆕 | codebase.custom.Types Files | 20 | — | — |
+| 🆕 | codebase.custom.TypeORM Entities | 1 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 167 | — | — |
+| 🆕 | codebase.custom.Integration Tests | 11 | — | — |
+| 🆕 | codebase.custom.End To End Tests | 1 | — | — |
+| 🆕 | Compiled JavaScript.files | 246 | — | — |
+| 🆕 | Compiled JavaScript.size | 206.30 kB | — | — |
+</details>
+
+<details>
+<summary>`observability` — 55 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 32 | — | — |
+| 🆕 | codebase.folders | 6 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 12 | — | — |
+| 🆕 | codebase.javascript.classes | 4 | — | — |
+| 🆕 | codebase.javascript.commentLines | 175 | — | — |
+| 🆕 | codebase.javascript.comments | 125 | — | — |
+| 🆕 | codebase.javascript.constants | 84 | — | — |
+| 🆕 | codebase.javascript.exported | 16 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 7 | — | — |
+| 🆕 | codebase.javascript.functions | 91 | — | — |
+| 🆕 | codebase.javascript.imports | 39 | — | — |
+| 🆕 | codebase.javascript.methods | 22 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 101 | — | — |
+| 🆕 | codebase.javascript.testFiles | 4 | — | — |
+| 🆕 | codebase.json.arrays | 19 | — | — |
+| 🆕 | codebase.json.booleans | 7 | — | — |
+| 🆕 | codebase.json.files | 4 | — | — |
+| 🆕 | codebase.json.items | 61 | — | — |
+| 🆕 | codebase.json.lines | 193 | — | — |
+| 🆕 | codebase.json.maxDepth | 7 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 40 | — | — |
+| 🆕 | codebase.json.properties | 108 | — | — |
+| 🆕 | codebase.json.strings | 106 | — | — |
+| 🆕 | codebase.json.totalNodes | 173 | — | — |
+| 🆕 | codebase.linesOfCode | 1,540 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 13 | — | — |
+| 🆕 | codebase.markdown.files | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 2 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 18 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 27 | — | — |
+| 🆕 | codebase.markdown.images | 166 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 121 | — | — |
+| 🆕 | codebase.markdown.lines | 647 | — | — |
+| 🆕 | codebase.markdown.links | 7 | — | — |
+| 🆕 | codebase.markdown.listItems | 19 | — | — |
+| 🆕 | codebase.markdown.lists | 5 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 62 | — | — |
+| 🆕 | codebase.markdown.tableRows | 30 | — | — |
+| 🆕 | codebase.markdown.tables | 8 | — | — |
+| 🆕 | codebase.repositoryBytes | 84,701 | — | — |
+| 🆕 | codebase.sourceFiles | 20 | — | — |
+| 🆕 | codebase.typescript.decorators | 5 | — | — |
+| 🆕 | codebase.typescript.docComments | 48 | — | — |
+| 🆕 | codebase.typescript.files | 20 | — | — |
+| 🆕 | codebase.typescript.interfaces | 6 | — | — |
+| 🆕 | codebase.custom.Module Files | 1 | — | — |
+| 🆕 | codebase.custom.Service Files | 1 | — | — |
+| 🆕 | codebase.custom.Constants Files | 1 | — | — |
+| 🆕 | codebase.custom.Types Files | 1 | — | — |
+| 🆕 | codebase.custom.Utilities Files | 1 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 4 | — | — |
+| 🆕 | codebase.custom.Static Methods | 2 | — | — |
+| 🆕 | Compiled JavaScript.files | 7 | — | — |
+| 🆕 | Compiled JavaScript.size | 4.69 kB | — | — |
+</details>
+
+<details>
+<summary>`persistence` — 58 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 100 | — | — |
+| 🆕 | codebase.folders | 12 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 272 | — | — |
+| 🆕 | codebase.javascript.classes | 36 | — | — |
+| 🆕 | codebase.javascript.commentLines | 616 | — | — |
+| 🆕 | codebase.javascript.comments | 360 | — | — |
+| 🆕 | codebase.javascript.constants | 585 | — | — |
+| 🆕 | codebase.javascript.exported | 147 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 22 | — | — |
+| 🆕 | codebase.javascript.functions | 610 | — | — |
+| 🆕 | codebase.javascript.imports | 409 | — | — |
+| 🆕 | codebase.javascript.methods | 62 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 400 | — | — |
+| 🆕 | codebase.javascript.testFiles | 35 | — | — |
+| 🆕 | codebase.json.arrays | 13 | — | — |
+| 🆕 | codebase.json.booleans | 9 | — | — |
+| 🆕 | codebase.json.files | 4 | — | — |
+| 🆕 | codebase.json.items | 38 | — | — |
+| 🆕 | codebase.json.lines | 185 | — | — |
+| 🆕 | codebase.json.maxDepth | 7 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 42 | — | — |
+| 🆕 | codebase.json.properties | 123 | — | — |
+| 🆕 | codebase.json.strings | 100 | — | — |
+| 🆕 | codebase.json.totalNodes | 165 | — | — |
+| 🆕 | codebase.linesOfCode | 9,776 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 20 | — | — |
+| 🆕 | codebase.markdown.files | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 2 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 12 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 32 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 475 | — | — |
+| 🆕 | codebase.markdown.lines | 1,208 | — | — |
+| 🆕 | codebase.markdown.links | 6 | — | — |
+| 🆕 | codebase.markdown.listItems | 45 | — | — |
+| 🆕 | codebase.markdown.lists | 7 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 109 | — | — |
+| 🆕 | codebase.markdown.tableRows | 99 | — | — |
+| 🆕 | codebase.markdown.tables | 10 | — | — |
+| 🆕 | codebase.repositoryBytes | 405,911 | — | — |
+| 🆕 | codebase.sourceFiles | 88 | — | — |
+| 🆕 | codebase.typescript.decorators | 46 | — | — |
+| 🆕 | codebase.typescript.docComments | 280 | — | — |
+| 🆕 | codebase.typescript.files | 88 | — | — |
+| 🆕 | codebase.typescript.genericDeclarations | 7 | — | — |
+| 🆕 | codebase.typescript.interfaces | 30 | — | — |
+| 🆕 | codebase.custom.Module Files | 8 | — | — |
+| 🆕 | codebase.custom.Service Files | 3 | — | — |
+| 🆕 | codebase.custom.Command Files | 2 | — | — |
+| 🆕 | codebase.custom.Constants Files | 6 | — | — |
+| 🆕 | codebase.custom.Types Files | 6 | — | — |
+| 🆕 | codebase.custom.Utilities Files | 6 | — | — |
+| 🆕 | codebase.custom.TypeORM Entities | 6 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 20 | — | — |
+| 🆕 | codebase.custom.Integration Tests | 14 | — | — |
+| 🆕 | codebase.custom.End To End Tests | 1 | — | — |
+| 🆕 | codebase.custom.Static Methods | 1 | — | — |
+</details>
+
+<details open>
+<summary>`presentation` — 50 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 20 | — | — |
+| 🆕 | codebase.css.atRules | 12 | — | — |
+| 🆕 | codebase.css.comments | 17 | — | — |
+| 🆕 | codebase.css.customProperties | 117 | — | — |
+| 🆕 | codebase.css.declarations | 124 | — | — |
+| 🆕 | codebase.css.files | 1 | — | — |
+| 🆕 | codebase.css.lines | 213 | — | — |
+| 🆕 | codebase.css.rules | 9 | — | — |
+| 🆕 | codebase.css.selectors | 10 | — | — |
+| 🆕 | codebase.folders | 2 | — | — |
+| 🆕 | codebase.javascript.commentLines | 61 | — | — |
+| 🆕 | codebase.javascript.comments | 25 | — | — |
+| 🆕 | codebase.javascript.constants | 2 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 6 | — | — |
+| 🆕 | codebase.javascript.files | 2 | — | — |
+| 🆕 | codebase.javascript.functions | 1 | — | — |
+| 🆕 | codebase.javascript.imports | 10 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 1 | — | — |
+| 🆕 | codebase.json.arrays | 10 | — | — |
+| 🆕 | codebase.json.booleans | 7 | — | — |
+| 🆕 | codebase.json.files | 4 | — | — |
+| 🆕 | codebase.json.items | 25 | — | — |
+| 🆕 | codebase.json.lines | 161 | — | — |
+| 🆕 | codebase.json.maxDepth | 5 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 36 | — | — |
+| 🆕 | codebase.json.properties | 119 | — | — |
+| 🆕 | codebase.json.strings | 94 | — | — |
+| 🆕 | codebase.json.totalNodes | 148 | — | — |
+| 🆕 | codebase.linesOfCode | 411 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 29 | — | — |
+| 🆕 | codebase.markdown.files | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 2 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 23 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 51 | — | — |
+| 🆕 | codebase.markdown.images | 166 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 86 | — | — |
+| 🆕 | codebase.markdown.lines | 1,365 | — | — |
+| 🆕 | codebase.markdown.links | 30 | — | — |
+| 🆕 | codebase.markdown.listItems | 141 | — | — |
+| 🆕 | codebase.markdown.lists | 15 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 197 | — | — |
+| 🆕 | codebase.markdown.tableRows | 16 | — | — |
+| 🆕 | codebase.markdown.tables | 3 | — | — |
+| 🆕 | codebase.repositoryBytes | 108,282 | — | — |
+| 🆕 | codebase.sourceFiles | 9 | — | — |
+| 🆕 | codebase.typescript.docComments | 3 | — | — |
+| 🆕 | codebase.typescript.files | 7 | — | — |
+| 🆕 | Library bundle.files | 1 | — | — |
+| ❗ | Library bundle.size | 492.25 kB | — | — |
+</details>
+
+<details>
+<summary>`testing` — 53 changed</summary>
+
+| | Metric | Value | `main` | Change |
+|--|--------|-------|--------|--------|
+| 🆕 | codebase.files | 74 | — | — |
+| 🆕 | codebase.folders | 18 | — | — |
+| 🆕 | codebase.javascript.asyncFunctions | 56 | — | — |
+| 🆕 | codebase.javascript.classes | 7 | — | — |
+| 🆕 | codebase.javascript.commentLines | 210 | — | — |
+| 🆕 | codebase.javascript.comments | 142 | — | — |
+| 🆕 | codebase.javascript.constants | 152 | — | — |
+| 🆕 | codebase.javascript.exported | 58 | — | — |
+| 🆕 | codebase.javascript.externalPackages | 21 | — | — |
+| 🆕 | codebase.javascript.functions | 262 | — | — |
+| 🆕 | codebase.javascript.imports | 168 | — | — |
+| 🆕 | codebase.javascript.methods | 4 | — | — |
+| 🆕 | codebase.javascript.syncFunctions | 210 | — | — |
+| 🆕 | codebase.javascript.testFiles | 17 | — | — |
+| 🆕 | codebase.json.arrays | 14 | — | — |
+| 🆕 | codebase.json.booleans | 9 | — | — |
+| 🆕 | codebase.json.files | 4 | — | — |
+| 🆕 | codebase.json.items | 41 | — | — |
+| 🆕 | codebase.json.lines | 189 | — | — |
+| 🆕 | codebase.json.maxDepth | 7 | — | — |
+| 🆕 | codebase.json.numbers | 1 | — | — |
+| 🆕 | codebase.json.objects | 41 | — | — |
+| 🆕 | codebase.json.properties | 124 | — | — |
+| 🆕 | codebase.json.strings | 104 | — | — |
+| 🆕 | codebase.json.totalNodes | 169 | — | — |
+| 🆕 | codebase.linesOfCode | 2,672 | — | — |
+| 🆕 | codebase.markdown.codeBlocks | 27 | — | — |
+| 🆕 | codebase.markdown.files | 6 | — | — |
+| 🆕 | codebase.markdown.headingLevel1 | 2 | — | — |
+| 🆕 | codebase.markdown.headingLevel2 | 12 | — | — |
+| 🆕 | codebase.markdown.headingLevel3 | 27 | — | — |
+| 🆕 | codebase.markdown.images | 165 | — | — |
+| 🆕 | codebase.markdown.inlineCode | 467 | — | — |
+| 🆕 | codebase.markdown.lines | 888 | — | — |
+| 🆕 | codebase.markdown.links | 5 | — | — |
+| 🆕 | codebase.markdown.listItems | 24 | — | — |
+| 🆕 | codebase.markdown.lists | 3 | — | — |
+| 🆕 | codebase.markdown.paragraphs | 73 | — | — |
+| 🆕 | codebase.markdown.tableRows | 119 | — | — |
+| 🆕 | codebase.markdown.tables | 5 | — | — |
+| 🆕 | codebase.repositoryBytes | 145,095 | — | — |
+| 🆕 | codebase.sourceFiles | 62 | — | — |
+| 🆕 | codebase.typescript.decorators | 5 | — | — |
+| 🆕 | codebase.typescript.docComments | 109 | — | — |
+| 🆕 | codebase.typescript.files | 62 | — | — |
+| 🆕 | codebase.typescript.genericDeclarations | 5 | — | — |
+| 🆕 | codebase.typescript.interfaces | 13 | — | — |
+| 🆕 | codebase.custom.Module Files | 1 | — | — |
+| 🆕 | codebase.custom.Service Files | 2 | — | — |
+| 🆕 | codebase.custom.Constants Files | 6 | — | — |
+| 🆕 | codebase.custom.Types Files | 7 | — | — |
+| 🆕 | codebase.custom.Utilities Files | 13 | — | — |
+| 🆕 | codebase.custom.Unit Tests | 15 | — | — |
+</details>
+
+*Updated automatically when you push new commits.*
+<!-- codometer-changes:end -->
+
+Signed-off-by: dependabot[bot] <support@github.com>
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+### 📝 Documentation
+
+* **documentation:** 📝 close commit sub-issues as agents commit and the spec when done ([#2272](https://github.com/organizzolini/codebase/issues/2272)) ([1d81603](https://github.com/organizzolini/codebase/commit/1d816033acb450a8287fd7c8bb2a6d67553f2c2a)), closes [#2271](https://github.com/organizzolini/codebase/issues/2271) [#2270](https://github.com/organizzolini/codebase/issues/2270)
+* **documentation:** 📝 require one overlapping scope per commit, not every scope ([#2270](https://github.com/organizzolini/codebase/issues/2270)) ([1173e8a](https://github.com/organizzolini/codebase/commit/1173e8a9fa884bd52c26cc6bd1998e9aba5288b1)), closes [#2269](https://github.com/organizzolini/codebase/issues/2269) [#2036](https://github.com/organizzolini/codebase/issues/2036)
+
+### 🔧 Chores
+
+* **dependencies:** 🔧 bump @graphql-codegen/cli from 7.4.6 to 8.0.0 ([#2258](https://github.com/organizzolini/codebase/issues/2258)) ([7bc29d4](https://github.com/organizzolini/codebase/commit/7bc29d4b551e4478fcc251cd8300441643321404))
+
 ## [5.0.0](https://github.com/organizzolini/codebase/compare/v4.0.1...v5.0.0) (2026-11-12)
 
 ### ⚠ BREAKING CHANGES

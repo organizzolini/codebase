@@ -1,3 +1,9 @@
+## 0.0.83 (2026-11-12)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-core to 0.0.81
+
 ## 0.0.82 (2026-11-12)
 
 ### 🧱 Updated Dependencies
