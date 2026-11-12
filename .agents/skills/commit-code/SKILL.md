@@ -119,6 +119,8 @@ Keeping a branch scoped to one project or module (see the root [AGENTS.md](../..
 5. **Docs**: Use `documentation`
 6. **Dependencies**: Use `dependencies`
 
+Scope each commit to the one project or module it changes. A pull request title then needs only the smallest set of scopes that overlaps every commit, not their union.
+
 ## Subject
 
 **Required.** The subject line must:
